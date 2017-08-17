@@ -23,31 +23,9 @@ body {
   clear: both;
 }
 
-.asset_inventory_link_wrapper {
-  float: right;
-  position: relative;
-  top: -2.3rem;
-  left: -17rem;
-
-  button {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    font-family: "Open Sans", "Helvetica", Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.618rem;
-    color: $primary-text;
-    background: $white;
-    border: 1px solid $light-grey-1;
-    cursor: pointer;
-
-    &:disabled {
-      cursor: default;
-      color: $light-grey-1;
-    }
-  }
-}
-
 .internal-asset-manager {
+  margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom
+
   .header {
     margin: 0 $horizontal_margin;
     height: 7.5rem;
@@ -64,7 +42,7 @@ body {
         display: inline-block;
         margin-right: 0.75rem;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 600;
 
         &.active {
           color: $black;

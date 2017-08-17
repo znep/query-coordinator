@@ -26,16 +26,31 @@
 
   .catalog-footer {
     padding: 0 $horizontal_margin;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    .pager {
-      display: inline-block;
-      margin-bottom: 0;
-      margin-right: 1rem;
+    .pagination-and-result-count {
+      .pager {
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 1rem;
+      }
+
+      .result-count {
+        display: inline-block;
+        float: none;
+      }
     }
 
-    .result-count {
-      display: inline-block;
-      float: none;
+    .asset-inventory-link-wrapper {
+      float: right;
+      margin: 0.5rem 0;
+
+      form {
+        margin: 0;
+      }
     }
   }
 }

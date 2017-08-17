@@ -8,7 +8,7 @@ export const changeTab = (newTab) => (dispatch, getState) => {
     dispatch({ type: 'CHANGE_TAB', newTab });
     dispatch({ type: 'CLEAR_ALL_FILTERS' });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   const initialState = { ...getUnfilteredState(), pageNumber: 1 };

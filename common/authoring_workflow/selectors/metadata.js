@@ -28,7 +28,7 @@ export const getDisplayableColumns = createSelector(
   (domain, datasetUid, datasetMetadata) => {
 
     if (datasetMetadata) {
-      return new dataProviders.MetadataProvider({domain, datasetUid}).getDisplayableColumns(datasetMetadata);
+      return new dataProviders.MetadataProvider({domain, datasetUid}, true).getDisplayableColumns(datasetMetadata);
     } else {
       return []; // No data yet.
     }
@@ -60,7 +60,7 @@ export const getValidDimensions = createSelector(
   getDatasetUid,
   getDatasetMetadata,
   (domain, datasetUid, datasetMetadata) => {
-    const datasetMetadataProvider = new dataProviders.MetadataProvider({domain, datasetUid});
+    const datasetMetadataProvider = new dataProviders.MetadataProvider({domain, datasetUid}, true);
 
     return _.chain(datasetMetadata).
       get('columns').
@@ -161,7 +161,7 @@ export const getAnyLocationColumn = createSelector(
 export const getSoqlDataProvider = createSelector(
   getDomain,
   getDatasetUid,
-  (domain, datasetUid) => new dataProviders.SoqlDataProvider({ domain, datasetUid })
+  (domain, datasetUid) => new dataProviders.SoqlDataProvider({ domain, datasetUid }, true)
 );
 
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});

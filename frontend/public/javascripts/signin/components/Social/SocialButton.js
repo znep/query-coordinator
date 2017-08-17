@@ -10,7 +10,7 @@ class SocialButton extends React.Component {
   }
 
   handleClick() {
-    this.props.doAuth0Login({
+    this.props.doAuth0Authorize({
       connection: this.props.connectionName
     });
   }
@@ -25,7 +25,7 @@ class SocialButton extends React.Component {
 }
 
 SocialButton.propTypes = {
-  doAuth0Login: PropTypes.func.isRequired,
+  doAuth0Authorize: PropTypes.func.isRequired,
   connectionName: PropTypes.string.isRequired,
   style: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired

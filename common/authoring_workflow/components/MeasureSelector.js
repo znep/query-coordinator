@@ -108,11 +108,14 @@ export const MeasureSelector = React.createClass({
       placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
     };
 
+    const deleteMeasureLink = this.renderDeleteMeasureLink(seriesIndex);
+
     return (
       <li {...measureListItemAttributes}>
         <div className="measure-column-selector-dropdown-container">
           <Dropdown {...measureAttributes} />
         </div>
+        {deleteMeasureLink}
       </li>
     );
   },
@@ -187,6 +190,7 @@ export const MeasureSelector = React.createClass({
 
   renderDeleteMeasureLink(seriesIndex) {
     const { vifAuthoring } = this.props;
+    const { isSeriesPending } = this.state;
 
     const deleteLinkAttributes = {
       className: 'measure-delete-link',
@@ -194,7 +198,7 @@ export const MeasureSelector = React.createClass({
       onClick: () => this.handleOnClickDeleteMeasure(seriesIndex)
     };
 
-    return isMultiSeries(vifAuthoring) ? (
+    return (isSeriesPending || isMultiSeries(vifAuthoring)) ? (
       <div className="measure-delete-link-container">
         <a {...deleteLinkAttributes}>
           <span className="socrata-icon-close" />
@@ -235,20 +239,31 @@ export const MeasureSelector = React.createClass({
   
   handleOnClickDeleteMeasure(seriesIndex) {
     const { onRemoveMeasure } = this.props;
-    onRemoveMeasure(seriesIndex);
-  },
-
-  handleOnSelectionMeasureColumn(seriesIndex, option) {
-    const { onAddMeasure, onSetMeasureColumn } = this.props;
     const { isSeriesPending } = this.state;
 
     if (isSeriesPending) {
+      this.setState({ isSeriesPending: false });
+    }
+    else {
+      onRemoveMeasure(seriesIndex);
+    }
+  },
+
+  handleOnSelectionMeasureColumn(seriesIndex, option) {
+    const { onAddMeasure, onSetMeasureColumn, vifAuthoring } = this.props;
+    const { isSeriesPending } = this.state;
+
+    const series = getSeries(vifAuthoring);
+
+    if (isSeriesPending && (seriesIndex == series.length)) {
+
       onAddMeasure(seriesIndex, option.value);
+      this.setState({ isSeriesPending: false });
+
     } else {
+
       onSetMeasureColumn(seriesIndex, option.value);
     }
-
-    this.setState({ isSeriesPending: false });
   },
 
   handleOnSelectionMeasureAggregation(seriesIndex, option) {

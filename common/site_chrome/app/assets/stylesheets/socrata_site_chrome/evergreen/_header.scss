@@ -179,7 +179,7 @@ header#site-chrome-header[template="evergreen"] {
             }
           }
 
-          .collapsible-search[data-catalog-autocomplete="true"] {
+          .collapsible-search[data-autocomplete="true"] {
             input {
               box-sizing: content-box !important;
               top: calc((#{$banner_height} - #{$searchbox-height}) / 2);

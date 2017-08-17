@@ -14,7 +14,7 @@ var _ = require('lodash');
  *  @property {String} datasetUid - The uid of the dataset against which
  *    the user intends to query.
  */
-function SoqlDataProvider(config) {
+function SoqlDataProvider(config, useCache = false) {
   var self = this;
 
   _.extend(this, new DataProvider(config));
@@ -24,6 +24,13 @@ function SoqlDataProvider(config) {
 
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
+
+  if (useCache) {
+    const cached = this.cachedInstance("SoqlDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
 
   /**
    * Public methods
@@ -226,6 +233,7 @@ function SoqlDataProvider(config) {
   //   message: status text,
   //   soqlError: response JSON
   // }
+  const soqlGetRequestPromiseCache = {};
   const makeSoqlGetRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
@@ -242,11 +250,17 @@ function SoqlDataProvider(config) {
       headers['X-Socrata-Federation'] = 'Honey Badger';
     }
 
-    return new Promise(
+    const cacheKey = `${domain}-${url}-${JSON.stringify(headers)}`;
+
+    const cachedPromise = soqlGetRequestPromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    const soqlGetRequestPromise = new Promise(
       function(resolve, reject) {
 
         function handleError(jqXHR) {
-
           reject(
             {
               status: parseInt(jqXHR.status, 10),
@@ -263,8 +277,14 @@ function SoqlDataProvider(config) {
           success: resolve,
           error: handleError
         });
+
       }
     );
+
+    soqlGetRequestPromiseCache[cacheKey] = soqlGetRequestPromise;
+
+    return soqlGetRequestPromise;
+
   };
 
   function escapeColumnName(columnName) {

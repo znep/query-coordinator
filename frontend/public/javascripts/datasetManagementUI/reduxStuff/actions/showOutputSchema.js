@@ -37,7 +37,6 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) 
     const { source } = Selectors.pathForOutputSchema(entities, oldOutputSchema.id);
 
     const url = dsmapiLinks.newOutputSchema(source.id, oldOutputSchema.input_schema_id);
-
     return socrataFetch(url, {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
@@ -229,8 +228,8 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn, params)
   };
 }
 
-export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
-  return dispatch => {
+export function saveCurrentOutputSchemaId(revision, outputSchemaId, params) {
+  return (dispatch) => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
       params: { outputSchemaId }
@@ -239,7 +238,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.revisionBase;
+    const url = dsmapiLinks.revisionBase(params);
     return socrataFetch(url, {
       method: 'PUT',
       body: JSON.stringify({

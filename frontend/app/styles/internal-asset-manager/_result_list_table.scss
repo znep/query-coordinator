@@ -1,7 +1,6 @@
 @import "styleguide-colors";
 @import "internal-asset-manager/action_dropdown";
 @import "internal-asset-manager/action_modal";
-@import "internal-asset-manager/mixins/multi_line_ellipsis";
 
 $result_list_row_bg_color: $white;
 $result_list_row_bg_hover_color: $primary-light;
@@ -24,7 +23,7 @@ table.result-list-table {
         position: relative;
 
         &.active {
-          font-weight: 700;
+          font-weight: 600;
           background: $light-grey-4;
         }
 
@@ -86,12 +85,6 @@ table.result-list-table {
 
     &:hover {
       background: $result_list_row_bg_hover_color;
-
-      td.name {
-        span.description {
-          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $result_list_row_bg_hover_color);
-        }
-      }
     }
 
     td {
@@ -103,8 +96,6 @@ table.result-list-table {
       }
 
       &.name {
-        overflow: visible; // Name column handles its text overflow separately (see multiLineEllipsis)
-
         a {
           text-decoration: none;
           &:hover, &:focus {
@@ -128,7 +119,9 @@ table.result-list-table {
 
         span.description {
           display: block;
-          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $result_list_row_bg_color);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 
@@ -139,6 +132,10 @@ table.result-list-table {
       }
 
       &.visibility {
+        * {
+          font-weight: 600;
+        }
+
         .title {
           display: flex;
           align-items: baseline;

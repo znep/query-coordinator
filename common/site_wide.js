@@ -27,14 +27,14 @@ if (userId) {
 /*
  * This adds a "autocomplete" function that can be called by an external application
  * (i.e. socrata_site_chrome) to scan the DOM and transform any search fields with the attribute
- * data-catalog-autocomplete="true" into autocomplete search fields after the page has loaded.
+ * data-autocomplete="true" into autocomplete search fields after the page has loaded.
  */
 /*****************************************************************************************************/
 
-Array.from(document.querySelectorAll('[data-catalog-autocomplete="true"]')).forEach((container) => {
-  const collapsible = container.dataset.catalogAutocompleteCollapsible === 'true';
-  const animate = container.dataset.catalogAutocompleteDisableAnimation !== 'true';
-  const mobile = container.dataset.catalogAutocompleteMobile === 'true';
+Array.from(document.querySelectorAll('[data-autocomplete="true"]')).forEach((container) => {
+  const collapsible = container.dataset.autocompleteCollapsible === 'true';
+  const animate = container.dataset.autocompleteDisableAnimation !== 'true';
+  const mobile = container.dataset.autocompleteMobile === 'true';
 
   const options = {
     collapsible,
@@ -42,11 +42,7 @@ Array.from(document.querySelectorAll('[data-catalog-autocomplete="true"]')).forE
     mobile
   };
 
-  const defaultState = {
-    collapsed: collapsible
-  };
-
-  ReactDOM.render(<StatefulAutocomplete defaultState={defaultState} options={options} />, container);
+  ReactDOM.render(<StatefulAutocomplete options={options} />, container);
 });
 
 // Place a reference to the autocomplete function on window, so that external consumers can use it.

@@ -13,9 +13,6 @@ import LoginModal from 'components/LoginModal';
 import defaultOptions from '../DefaultOptions';
 
 describe('<SignInSignUpSwitcher />', () => {
-  // to make translations happy...
-  window.blist = { };
-
   describe('switching', () => {
     it('renders signin', () => {
       const wrapper = shallow(

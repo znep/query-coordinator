@@ -2,16 +2,30 @@ import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { assert } from 'chai';
 import { spy } from 'sinon';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
 import { ClearFilters } from 'internalAssetManager/components/clear_filters';
 
-describe('<ClearFilters />', () => {
+import I18nJS from 'i18n-js';
 
+const store = configureMockStore([ thunk ])();
+
+const clearFilterProps = (options = {}) => ({
+  allFilters: {},
+  buttonStyle: false,
+  clearAllFilters: () => {},
+  I18n: I18nJS,
+  store: store,
+  ...options
+});
+
+describe('<ClearFilters />', () => {
   describe('default props', () => {
     it('defaults to buttonStyle false and showTitle true', () => {
-      const wrapper = mount(<ClearFilters clearAllFilters={() => {}} allFilters={{}} />);
-      assert.equal(false, wrapper.props().buttonStyle);
-      assert.equal(true, wrapper.props().showTitle);
+      const wrapper = mount(<ClearFilters {...clearFilterProps()} />);
+      assert.equal(false, ClearFilters.defaultProps.buttonStyle);
+      assert.equal(true, ClearFilters.defaultProps.showTitle);
     });
   });
 
@@ -19,7 +33,7 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is false', () => {
       it('does not render anything', () => {
         const wrapper = shallow(
-          <ClearFilters buttonStyle={false} clearAllFilters={() => {}} allFilters={{}} showTitle={false} />
+          <ClearFilters {...clearFilterProps({showTitle: false})} />
         );
 
         assert.equal(0, wrapper.find('*').length);
@@ -29,7 +43,7 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is true', () => {
       it('renders the title', () => {
         const wrapper = shallow(
-          <ClearFilters buttonStyle={false} clearAllFilters={() => {}} allFilters={{}} showTitle={true} />
+          <ClearFilters {...clearFilterProps({showTitle: true})} />
         );
 
         assert.equal(1, wrapper.find('.title').length);
@@ -52,7 +66,7 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is false', () => {
       it('renders the expected filter count', () => {
         const wrapper = shallow(
-          <ClearFilters clearAllFilters={() => {}} allFilters={allFilters} showTitle={false} />
+          <ClearFilters {...clearFilterProps({allFilters, showTitle: false})} />
         );
 
         assert.equal(1, wrapper.find('.filter-count').length);
@@ -61,7 +75,7 @@ describe('<ClearFilters />', () => {
 
       it('still renders the title', () => {
         const wrapper = shallow(
-          <ClearFilters clearAllFilters={() => {}} allFilters={allFilters} showTitle={false} />
+          <ClearFilters {...clearFilterProps({allFilters, showTitle: false})} />
         );
 
         assert.equal(1, wrapper.find('span.title').length);
@@ -70,7 +84,7 @@ describe('<ClearFilters />', () => {
 
     describe('when buttonStyle is false', () => {
       it('renders as an icon', () => {
-        const wrapper = shallow(<ClearFilters clearAllFilters={() => {}} allFilters={allFilters} />);
+        const wrapper = shallow(<ClearFilters {...clearFilterProps({allFilters})} />);
 
         assert.equal(1, wrapper.find('.socrata-icon-close-circle').length);
         assert.equal(0, wrapper.find('.socrata-icon-close').length);
@@ -80,7 +94,7 @@ describe('<ClearFilters />', () => {
 
       it('calls clearAllFilters when clicked', () => {
         const clearFiltersSpy = spy();
-        const wrapper = shallow(<ClearFilters clearAllFilters={clearFiltersSpy} allFilters={allFilters} />);
+        const wrapper = shallow(<ClearFilters {...clearFilterProps({clearAllFilters: clearFiltersSpy, allFilters})} />);
 
         wrapper.find('.clear-all-filters').simulate('click');
         assert(clearFiltersSpy.calledOnce, 'Expected clearAllFilters to have been invoked');
@@ -90,7 +104,7 @@ describe('<ClearFilters />', () => {
     describe('when buttonStyle is true', () => {
       it('renders as an button', () => {
         const wrapper = shallow(
-          <ClearFilters buttonStyle clearAllFilters={() => {}} allFilters={allFilters} />
+          <ClearFilters {...clearFilterProps({buttonStyle: true, allFilters})} />
         );
 
         assert.equal(0, wrapper.find('.socrata-icon-close-circle').length);
@@ -101,7 +115,7 @@ describe('<ClearFilters />', () => {
       it('calls clearAllFilters when clicked', () => {
         const clearFiltersSpy = spy();
         const wrapper = shallow(
-          <ClearFilters buttonStyle clearAllFilters={clearFiltersSpy} allFilters={allFilters} />
+          <ClearFilters {...clearFilterProps({buttonStyle: true, clearAllFilters: clearFiltersSpy, allFilters})} />
         );
 
         wrapper.find('.clear-filters-wrapper.button').simulate('click');

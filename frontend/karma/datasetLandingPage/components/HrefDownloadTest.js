@@ -55,13 +55,13 @@ describe('components/HrefDownload', function() {
       window.serverConfig = _.cloneDeep(mockServerConfig);
     });
 
-    it('is hidden if the user is not a publisher or an admin', function() {
+    it('is hidden if the user is not logged in', function() {
       window.serverConfig.currentUser = null;
       var element = renderComponent(HrefDownload, getProps());
       assert.isNull(element.querySelector('.edit-prompt'));
     });
 
-    it('is visible if the user is a publisher or an admin', function() {
+    it('is visible if the user has the edit_others_datasets right', function() {
       window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(HrefDownload, getProps());
       assert.ok(element.querySelector('.edit-prompt'));

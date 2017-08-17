@@ -115,7 +115,8 @@ describe('utils.js', function() {
         handler = function(e) {
           assert.isFalse(e.bubbles, 'bubbles is false');
           assert.isFalse(e.cancelable, 'cancelable is false');
-          assert.isUndefined(e.detail, 'detail is undefined');
+          // This assertion keeps ping ponging: Sometimes `null` and sometimes `undefined`
+          assert(!e.detail, 'detail is falsy');
           done();
         };
 

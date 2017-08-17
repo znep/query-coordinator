@@ -19,7 +19,7 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_SORT_ORDER', order: newOrder });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   return fetchResults(

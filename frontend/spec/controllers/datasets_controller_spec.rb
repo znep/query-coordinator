@@ -402,7 +402,7 @@ describe DatasetsController do
       allow(subject).to receive(:dataset_management_page_enabled?).and_return(true)
     end
 
-    context 'GET /category/view_name/id/revisions/revision_seq' do
+    context 'GET /:category/:view_name/:id/revisions/manage' do
       before do
         stub_request(:get, 'http://localhost:8080/views/test-data.json').
           with(:headers => request_headers).
@@ -424,7 +424,7 @@ describe DatasetsController do
         login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
         expect(response).to have_http_status(:success)
       end
 
@@ -433,7 +433,7 @@ describe DatasetsController do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new('response'))
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
         expect(response).to have_http_status(:not_found)
       end
 
@@ -443,24 +443,12 @@ describe DatasetsController do
         login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => false)
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
         expect(response).to have_http_status(:forbidden)
-      end
-
-      # 4x4 does not have a revision with that sequence number should 404
-      it '404s when DSMAPI can\'t find that revision_seq' do
-        init_current_user(controller)
-        login
-        expect(View).to receive(:find).and_return(view)
-        view.stub(:can_read? => true)
-        allow(DatasetManagementAPI).to receive(:get_revision).and_raise(DatasetManagementAPI::ResourceNotFound.new('response'))
-
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
-        expect(response).to have_http_status(:not_found)
       end
     end
 
-    context 'GET /d/id/revisions/revision_seq' do
+    context 'GET /d/:id/revisions/:revision_seq' do
       before do
         init_environment
         init_current_user(controller)
@@ -471,28 +459,28 @@ describe DatasetsController do
       end
 
       # 4x4 is valid and has revision, directly to path with sequence number
-      it 'redirects to the cannoical address' do
+      it 'redirects to the canonical address' do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        get :dsmui, :view_name => 'Test-Data', :id => 'test-data', :rest_of_path => '/revisions/0'
         expect(response).to have_http_status(:redirect)
-        expect(response['Location']).to end_with('/revisions/0')
+        expect(response['Location']).to end_with('/manage/revisions/0')
       end
 
-      it 'redirects to the cannoical address, preserving the full path' do
+      it 'redirects to the canonical address, preserving the full path' do
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
-        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0', :rest_of_path => '/metadata/columns'
+        get :dsmui, :view_name => 'Test-Data', :id => 'test-data', :rest_of_path => '/revisions/0/metadata/columns'
         expect(response).to have_http_status(:redirect)
-        expect(response['Location']).to end_with('/revisions/0/metadata/columns')
+        expect(response['Location']).to end_with('/manage/revisions/0/metadata/columns')
       end
     end
 
-    context 'GET /category/view_name/id/revisions/current' do
+    context 'GET /:category/:view_name/:id/revisions/current' do
       before do
         init_environment
         init_current_user(controller)

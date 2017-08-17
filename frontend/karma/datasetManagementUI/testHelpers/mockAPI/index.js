@@ -38,6 +38,13 @@ export const sourceShow = () =>
     statusText: STATUS_TEXT.OK
   });
 
+export const sourceIndex = () =>
+  fetchMock.get('express:/api/publishing/v1/revision/:viewId/:revisionSeq/source', {
+    body: JSON.stringify(responses.sourceIndex),
+    status: 200,
+    statusText: STATUS_TEXT.OK
+  });
+
 export const newOutputSchema = () =>
   fetchMock.post(
     'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId',
@@ -191,6 +198,7 @@ const mockAPI = () => {
   sourceCreate();
   sourceBytes();
   sourceShow();
+  sourceIndex();
   newOutputSchema();
   rows();
   columnErrors();

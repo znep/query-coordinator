@@ -1,10 +1,9 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/Field/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
-import * as Actions from 'reduxStuff/actions/outputColumns';
-import { editView } from 'reduxStuff/actions/views';
+import * as ColActions from 'reduxStuff/actions/outputColumns';
+import * as FormActions from 'reduxStuff/actions/forms';
 
 /*
 This component is just a more specialized version of Field. Field decides,
@@ -15,30 +14,25 @@ does the same thing but for Dataset metadata. This allows us to use the same Fie
 component for both Datset and Column forms.
 */
 
-const mapStateToProps = ({ entities, ui }, { field, params }) => {
-  const { fourfour } = params;
-
-  const errors = _.chain(entities)
-    .get(`views.${fourfour}.columnMetadataErrors`, [])
+const mapStateToProps = ({ ui }, { field }) => {
+  const errors = _.chain(ui.forms.columnForm.errors)
     .filter(error => error.fieldName === field.data.name)
     .map(error => error.message)
     .value();
 
-  const showErrors = !!entities.views[fourfour].showErrors;
+  const showErrors = !!ui.forms.columnForm.showErrors;
 
-  return { errors, fourfour, showErrors };
+  return { errors, showErrors };
 };
 
-const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   const id = _.toNumber(ownProps.field.data.name.split('-').reverse()[0]);
   const propName = getPropName(ownProps.field.data.name);
 
   return {
-    ...rest,
-    ...ownProps,
     setValue: value => {
-      dispatch(editView(fourfour, { columnFormDirty: true }));
-      dispatch(Actions.editOutputColumn(id, { [propName]: value }));
+      dispatch(FormActions.markFormDirty('columnForm'));
+      dispatch(ColActions.editOutputColumn(id, { [propName]: value }));
     }
   };
 };
@@ -53,4 +47,4 @@ function getPropName(fieldName) {
   }
 }
 
-export default withRouter(connect(mapStateToProps, null, mergeProps)(Field));
+export default connect(mapStateToProps, mapDispatchToProps)(Field);

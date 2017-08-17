@@ -135,39 +135,40 @@
   <%- end -%>
 
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
-    <%- if @view.can_modify_data? -%>
-    <div id="editBar" class="clearfix">
-      <ul id="editOptions">
-        <li><a href="#Undo" class="button undo" title="<%= t('screens.ds.bar.format.undo') %>">
-          <span class="icon"><%= t('screens.ds.bar.format.undo') %></span>
-        </a></li>
-        <li><a href="#Redo" class="button redo" title="<%= t('screens.ds.bar.format.redo') %>">
-          <span class="icon"><%= t('screens.ds.bar.format.redo') %></span>
-        </a></li>
-      </ul>
 
-      <div id="formatOptions" class="disabled">
-        <ul>
-          <li><%= format_link_tag('bold') %></li>
-          <li><%= format_link_tag('underline') %></li>
-          <li><%= format_link_tag('italic') %></li>
-          <li><%= format_link_tag('strike') %></li>
-          <li><%= format_link_tag('bullet') %></li>
-          <li><%= format_link_tag('number') %></li>
-          <li><%= format_link_tag('link') %></li>
-          <li><%= select_tag('format_fontFamily', font_select_options('Helvetica'), :class => 'fontFamily') %></li>
-          <li><%= select_tag('format_fontSize', font_size_select_options(12), :class => 'fontSize') %></li>
-          <li>
-            <div class="menu color">
-              <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
-                <span class="colorIcon colorIndicator"></span><span class="icon"></span>
-              </a>
-            </div>
-          </li>
-          <li><div class="align menu alignLeft"></div></li>
+    <%- if !is_nbe_only_grid_view? && @view.can_modify_data? -%>
+      <div id="editBar" class="clearfix">
+        <ul id="editOptions">
+          <li><a href="#Undo" class="button undo" title="<%= t('screens.ds.bar.format.undo') %>">
+            <span class="icon"><%= t('screens.ds.bar.format.undo') %></span>
+          </a></li>
+          <li><a href="#Redo" class="button redo" title="<%= t('screens.ds.bar.format.redo') %>">
+            <span class="icon"><%= t('screens.ds.bar.format.redo') %></span>
+          </a></li>
         </ul>
+
+        <div id="formatOptions" class="disabled">
+          <ul>
+            <li><%= format_link_tag('bold') %></li>
+            <li><%= format_link_tag('underline') %></li>
+            <li><%= format_link_tag('italic') %></li>
+            <li><%= format_link_tag('strike') %></li>
+            <li><%= format_link_tag('bullet') %></li>
+            <li><%= format_link_tag('number') %></li>
+            <li><%= format_link_tag('link') %></li>
+            <li><%= select_tag('format_fontFamily', font_select_options('Helvetica'), :class => 'fontFamily') %></li>
+            <li><%= select_tag('format_fontSize', font_size_select_options(12), :class => 'fontSize') %></li>
+            <li>
+              <div class="menu color">
+                <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
+                  <span class="colorIcon colorIndicator"></span><span class="icon"></span>
+                </a>
+              </div>
+            </li>
+            <li><div class="align menu alignLeft"></div></li>
+          </ul>
+        </div>
       </div>
-    </div>
     <%- end -%>
 
     <div class="sidebarOptionsContainer clearfix">
@@ -181,12 +182,19 @@
         <li><%= sidebar_link('discuss') %></li>
         <li><%= sidebar_link('embed') %></li>
         <li><%= sidebar_link('about') %></li>
-        <li class="hide"><%= sidebar_link('more') %></li>
+        <%- if !is_nbe_only_grid_view? -%>
+          <li class="hide"><%= sidebar_link('more') %></li>
+        <%- end -%>
       </ul>
     </div>
   </div>
 <% end %>
-<%= render :partial => 'dataset_bar', :locals => {:sidebar_position => sidebar_position} %>
+
+<%- if is_nbe_only_grid_view? -%>
+  <%= render :partial => 'dataset_bar', :locals => {:sidebar_position => sidebar_position} %>
+<%- else -%>
+  <%= render :partial => 'dataset_bar', :locals => {:sidebar_position => sidebar_position} %>
+<%- end -%>
 
 <div class="outerContainer" role="main">
   <div id="renderTypeContainer" class="innerContainer">

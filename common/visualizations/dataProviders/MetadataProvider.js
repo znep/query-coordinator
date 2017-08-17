@@ -26,7 +26,7 @@ const headersForDomain = (domain) => {
   return headers;
 };
 
-function MetadataProvider(config) {
+function MetadataProvider(config, useCache = false) {
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');
 
@@ -35,10 +35,18 @@ function MetadataProvider(config) {
 
   _.extend(this, new DataProvider(config));
 
+  if (useCache) {
+    const cached = this.cachedInstance("MetadataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
+
   const soqlDataProvider = new SoqlDataProvider({
     domain: this.getConfigurationProperty('domain'),
     datasetUid: this.getConfigurationProperty('datasetUid')
-  });
+  },
+                                               true);
 
   /**
    * Public methods
@@ -99,7 +107,7 @@ function MetadataProvider(config) {
       (migrationMetadata) =>
         // If there's a migration, we're definitely A) a default view, and
         // B) the OBE view has the correct metadata.
-        new MetadataProvider({ domain, datasetUid: migrationMetadata.obeId }).
+        new MetadataProvider({ domain, datasetUid: migrationMetadata.obeId }, true).
           getDatasetMetadata(),
       () => {
         // Lack of migration means we're either A) NBE-only, B) derived
@@ -337,11 +345,19 @@ function MetadataProvider(config) {
       });
   };
 
+  const metadataRequestCache = {};
   const makeMetadataRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
 
-    return new Promise((resolve, reject) => {
+    const cacheKey = `${domain}-${url}`;
+
+    const cachedPromise = metadataRequestCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    const metadataRequestPromise = new Promise((resolve, reject) => {
       function handleError(jqXHR) {
         reject({
           status: parseInt(jqXHR.status, 10),
@@ -358,6 +374,10 @@ function MetadataProvider(config) {
         headers: headersForDomain(domain)
       });
     });
+
+    metadataRequestCache[cacheKey] = metadataRequestPromise;
+
+    return metadataRequestPromise;
   };
 }
 

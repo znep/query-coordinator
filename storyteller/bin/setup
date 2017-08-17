@@ -49,14 +49,18 @@ On Ubuntu:
   end
 
   puts "\n== Generating .env file =="
-  File.open('.env', 'a') do |file|
-    file << %Q{export AWS_ACCESS_KEY_ID="$(aws configure get aws_access_key_id --profile staging)"\n}
-    file << %Q{export AWS_SECRET_KEY="$(aws configure get aws_secret_access_key --profile staging)"\n}
+  has_aws_config = File.exists?('.env') &&
+    File.open('.env') { |f| f.each_line.find { |line| line =~ /AWS_ACCESS_KEY_ID/ } }
+
+  if !has_aws_config
+    File.open('.env', 'a') do |file|
+      file << %Q{export AWS_ACCESS_KEY_ID="$(aws configure get aws_access_key_id --profile staging)"\n}
+      file << %Q{export AWS_SECRET_KEY="$(aws configure get aws_secret_access_key --profile staging)"\n}
+    end
   end
 
   puts "\n== Preparing database =="
-  system "bin/rake db:create"
-  system "bin/rake db:schema:load"
+  system "bin/rake db:migrate 2>/dev/null || bin/rake db:setup"
 
   puts "\n== Removing old logs and tempfiles =="
   system "rm -f log/*"

@@ -1,13 +1,12 @@
 class Auth0Controller < ApplicationController
   include Auth0Helper
   include UserSessionsHelper
-  skip_before_filter :require_user, :only => [:callback, :link]
+  skip_before_filter :require_user, :only => [:callback, :link, :connections]
   protect_from_forgery
   before_filter :set_empty_user_session, :redirect_if_logged_in
   cattr_accessor :auth_providers
 
   def callback
-
     # This stores all the user information that came from Auth0 and the IdP
     userinfo_hash = request.env['omniauth.auth']
     auth0_identifier = userinfo_hash[:extra][:raw_info][:socrata_user_id]
@@ -76,17 +75,16 @@ class Auth0Controller < ApplicationController
       @signup.user.email = auth0_token.email if auth0_token.email.present?
       @signup.user.screenName = auth0_token.name if auth0_token.name.present?
     when :post
-      unless SocrataRecaptcha.valid(params['g-recaptcha-response'])
-        flash[:error] = t('recaptcha2.errors.verification_failed')
-        return redirect_to(auth0_link_path)
-      end
-
-      if signup_params.present?
-          signup_params[:auth0Identifier] = auth0_identifier
-      end
-      @signup = SignupPresenter.new(signup_params || {})
       if params[:user_session].nil?
         # signup attempt
+        unless SocrataRecaptcha.valid(params['g-recaptcha-response'])
+          flash[:error] = t('recaptcha2.errors.verification_failed')
+          return redirect_to(auth0_link_path)
+        end
+        if signup_params.present?
+          signup_params[:auth0Identifier] = auth0_identifier
+        end
+        @signup = SignupPresenter.new(signup_params || {})
         @body_id = 'signup'
         if @signup.create
           # auth0 identifier was linked as part of the create step
@@ -109,6 +107,10 @@ class Auth0Controller < ApplicationController
     render :template => 'auth0/link'
   end
 
+  def connections
+    get_auth0_connections
+  end
+
 private
   def set_empty_user_session
     @user_session = UserSessionProvider.klass.new
@@ -127,6 +129,15 @@ private
     Rails.logger.info("attempting to add auth0 link")
     resp = CoreServer::Base.connection.create_request("/auth0_identifiers/", {:identifier => auth0Id}.to_json)
     Rails.logger.info(resp)
+  end
+
+  def transform_connections(source)
+    connections = []
+    source.each do |connection|
+      connection_status = (connection['options']['domain_aliases'].to_a.detect { |e| e.include?('DISABLED') }).nil?
+      connections << { name: connection["name"], domain_aliases: connection["options"]["domain_aliases"], status: connection_status }
+    end
+    connections.to_json
   end
 
 end

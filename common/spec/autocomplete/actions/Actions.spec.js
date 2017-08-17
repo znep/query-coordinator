@@ -11,7 +11,7 @@ describe('actions', () => {
   });
 
   it('should create results changed action', () => {
-    const someResults = {
+    const someResponse = {
       results: [
         { title: 'Birds', display_title: '<span>Birds</span>' },
         { title: 'Not Birds', display_title: 'Not <span>Birds</span>' },
@@ -20,9 +20,9 @@ describe('actions', () => {
     };
     const expectedAction = {
       type: actions.RESULTS_CHANGED,
-      results: someResults
+      response: someResponse
     };
-    expect(actions.resultsChanged(someResults)).to.eql(expectedAction)
+    expect(actions.resultsChanged(someResponse)).to.eql(expectedAction)
   });
 
   it('should create results visibility changed action', () => {
@@ -53,8 +53,8 @@ describe('actions', () => {
   });
 
   it('should create search cleared', () => {
-    const expectedAction = { type: actions.SEARCH_CLEARED, query: null };
-    expect(actions.searchCleared()).to.eql(expectedAction);
+    const expectedAction = { type: actions.CLEAR_SEARCH };
+    expect(actions.clearSearch()).to.eql(expectedAction);
   });
 
 })

@@ -6,16 +6,16 @@ import styles from './ColumnForm.scss';
 
 class ColumnForm extends Component {
   componentWillMount() {
-    const { setErrors } = this.props;
-    setErrors();
+    const { errors } = this.props;
+    setFormErrors('columnFormn', errors);
   }
 
   componentWillReceiveProps(nextProps) {
     const { errors: oldErrors } = this.props;
-    const { setErrors, errors: currentErrors } = nextProps;
+    const { errors: currentErrors } = nextProps;
 
     if (!_.isEqual(oldErrors, currentErrors)) {
-      setErrors();
+     setFormErrors('columnFormn', currentErrors);
     }
   }
 
@@ -41,8 +41,7 @@ class ColumnForm extends Component {
 ColumnForm.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setErrors: PropTypes.func.isRequired,
-  outputSchemaId: PropTypes.number.isRequired
+  setFormErrors: PropTypes.func.isRequired
 };
 
 export default ColumnForm;

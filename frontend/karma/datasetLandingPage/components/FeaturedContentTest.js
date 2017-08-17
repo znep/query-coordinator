@@ -27,9 +27,10 @@ describe('components/FeaturedContent', function() {
     assert.isNull(element);
   });
 
-  it('does not render anything if the contentList is empty and the user is not a publisher', function() {
+  it('does not render anything if the contentList is empty and the user does not have edit_others_datasets right', function() {
     serverConfig.currentUser = {
-      roleName: 'chief executive senior vice president of technical marketing operations engineer'
+      roleName: 'chief executive senior vice president of technical marketing operations engineer',
+      rights: [ 'achieve_synergy' ]
     };
 
     var element = renderComponent(FeaturedContent, {
@@ -40,7 +41,7 @@ describe('components/FeaturedContent', function() {
   });
 
   describe('manage prompt', function() {
-    it('renders the manage prompt if the user is a publisher', function() {
+    it('renders the manage prompt if the user has the edit_others_datasets', function() {
       serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(FeaturedContent, getProps());
       assert.ok(element.querySelector('.manage-prompt'));

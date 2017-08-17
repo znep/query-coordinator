@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { get as getCookie, set as setCookie, erase as eraseCookie } from 'browser-cookies';
-import { Translate } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import LoginModal from './LoginModal';
 import SignInContainer from './SignInContainer';
@@ -10,8 +9,6 @@ import SignUp from './SignUp';
 class SignInSignUpSwitcher extends React.Component {
   constructor(props) {
     super(props);
-
-    const translate = new Translate(props.options.translations);
 
     this.state = {
       // whether or not the modal is being displayed
@@ -22,9 +19,7 @@ class SignInSignUpSwitcher extends React.Component {
       displayingSignIn: props.signin,
 
       // if this is set to true, then on next render all flashes will be cleared
-      clearFlashes: false,
-
-      translate: translate.get
+      clearFlashes: false
     };
 
     props.options.toggleViewMode = this.toggleViewMode.bind(this);
@@ -93,7 +88,7 @@ class SignInSignUpSwitcher extends React.Component {
   }
 
   render() {
-    const { displayingModal, displayingSignIn, clearFlashes, translate } = this.state;
+    const { displayingModal, displayingSignIn, clearFlashes } = this.state;
     const { options } = this.props;
     const opts = { ...options, flashes: clearFlashes ? [] : options.flashes };
 
@@ -101,21 +96,16 @@ class SignInSignUpSwitcher extends React.Component {
       return (
         <LoginModal
           modalConfig={options.modalConfig}
-          translate={translate}
           onCancel={this.cancelModal}
           onConfirm={this.confirmModal} />
       );
     } else if (displayingSignIn) {
       return (
-        <SignInContainer
-          options={opts}
-          translate={translate} />
+        <SignInContainer options={opts} />
       );
     } else {
       return (
-        <SignUp
-          options={opts}
-          translate={translate} />
+        <SignUp options={opts} />
       );
     }
   }

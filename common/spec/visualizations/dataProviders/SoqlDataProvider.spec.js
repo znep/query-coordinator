@@ -1036,10 +1036,9 @@ describe('SoqlDataProvider', () => {
       );
     });
 
-
     it('only fetches stats for number, calendar_date, and text columns', () => {
-      soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn, fakeColumn]);
-      assert.lengthOf(server.requests, 4);
+      soqlDataProvider.getColumnStats([textColumn, numberColumn, calendarDateColumn, fakeColumn]);
+      assert.lengthOf(server.requests, 3);
     });
 
     it('passes through errors', (done) => {
@@ -1083,4 +1082,33 @@ describe('SoqlDataProvider', () => {
       server.respond([200, {'Content-Type': 'application/json'}, '[{"columnName": "value"}]']);
     });
   });
+
+  describe('cache behavior', () => {
+
+    let soqlDataProvider;
+
+    const textColumn = {
+      fieldName: 'textColumn',
+      dataTypeName: 'text'
+    };
+
+    beforeEach(() => {
+      server = sinon.fakeServer.create();
+      soqlDataProvider = new SoqlDataProvider({
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      });
+    });
+
+    afterEach(() => {
+      server.restore();
+    });
+
+    it('only performs one request even though the data are requested multiple times', () => {
+      soqlDataProvider.getColumnStats([textColumn, textColumn, textColumn, textColumn]);
+      assert.lengthOf(server.requests, 1);
+    });
+
+  });
+
 });

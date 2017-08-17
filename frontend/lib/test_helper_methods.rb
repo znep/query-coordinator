@@ -288,6 +288,31 @@ module TestHelperMethods
                  headers: { 'Set-Cookie' => empty_cookie_string })
   end
 
+  def stub_auth0_identifiers
+    stub_request(:post, 'http://localhost:8080/auth0_identifiers/')
+      .with(body: { 'identifier' => 1 }.to_json,
+            headers: { 'Accept' => '*/*',
+                       'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                       'Content-Type' => 'application/json',
+                       'User-Agent' => 'Ruby',
+                       'X-Socrata-Host' => 'localhost'})
+      .to_return(status: 200,
+                 headers: {})
+  end
+
+  def stub_recaptcha_valid_success
+    stub_request(:post, 'https://www.google.com/recaptcha/api/siteverify')
+      .with(body: 'secret=&response=true',
+            headers: { 'Accept' => '*/*',
+                       'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                       'User-Agent' => 'Ruby' })
+      .to_return(status: 200,
+                 headers: { 'Content-Type' => 'application/json' },
+                 body: { 'success': true,
+                         'hostname': 'localhost'
+                       }.to_json)
+  end
+
   def authentication_body
     {
       id: 'tugg-ikce',

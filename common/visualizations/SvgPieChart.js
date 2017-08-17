@@ -117,7 +117,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
 
     const domain =  _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
-    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
@@ -194,7 +194,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     const soqlDataProvider = new SoqlDataProvider({
       datasetUid: series.dataSource.datasetUid,
       domain: series.dataSource.domain
-    });
+    }, true);
     const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
     const dimensionAlias = SoqlHelpers.dimensionAlias();
     const measure = SoqlHelpers.measure(vifToRender, seriesIndex);

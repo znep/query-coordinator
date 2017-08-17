@@ -1,8 +1,9 @@
 import React from 'react';
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
+import I18n from 'common/i18n';
 import { renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
@@ -16,10 +17,11 @@ class SignInContainer extends React.Component {
     const { auth0Uri, auth0ClientId, baseDomainUri } = this.props.options;
 
     this.state = {
-      auth0Client: new Auth0({
+      auth0Client: new auth0.WebAuth({
         domain: auth0Uri,
         clientID: auth0ClientId,
-        callbackURL: `${baseDomainUri}/auth/auth0/callback`
+        responseType: 'code',
+        redirectUri: `${baseDomainUri}/auth/auth0/callback`
       }),
       auth0Connections: [],
       renderLoginForm: false,
@@ -38,18 +40,15 @@ class SignInContainer extends React.Component {
     // get a list of all connections from auth0
     // setting the state forces a re-render but then all child components have access to the list
     // the list is used for i.e. finding email domains that use SSO
-    this.state.auth0Client.getConnections((error, auth0Connections) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      this.setState({ auth0Connections });
+    fetch(`${this.props.options.baseDomainUri}/auth/auth0/connections`).then((response) => {
+      return response.json().then((connections) => {
+        this.setState({ auth0Connections: connections });
+      });
     });
   }
 
   onConnectionChosen(connection) {
-    this.state.auth0Client.login({ connection });
+    this.state.auth0Client.authorize({ connection });
   }
 
   onLoginStart() {
@@ -66,7 +65,7 @@ class SignInContainer extends React.Component {
   }
 
   renderChooseConnectionOrSignInForm() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { auth0Client, auth0Connections, renderLoginForm } = this.state;
 
     // if "auth0_connections" is set in the site config, we show a list
@@ -75,16 +74,16 @@ class SignInContainer extends React.Component {
       return (
         <ChooseConnection
           options={options}
-          translate={translate}
           onConnectionChosen={this.onConnectionChosen}
           setLoginFormVisibility={this.setLoginFormVisibility} />);
     } else {
-      const doAuth0Login = auth0Client.login.bind(auth0Client);
+      const doAuth0Authorize = auth0Client.authorize.bind(auth0Client);
+      const doAuth0Login = auth0Client.redirect.loginWithCredentials.bind(auth0Client);
       return (
         // either there aren't any specific connections set up,
         // or the "Sign in with a Socrata ID" button was clicked
         <SignIn
-          translate={translate}
+          doAuth0Authorize={doAuth0Authorize}
           doAuth0Login={doAuth0Login}
           onLoginStart={this.onLoginStart}
           onLoginError={this.onLoginError}
@@ -109,7 +108,7 @@ class SignInContainer extends React.Component {
   }
 
   renderBackButton() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { renderLoginForm } = this.state;
 
     // only show the button to go back to "choose connection" if we're told to
@@ -122,7 +121,7 @@ class SignInContainer extends React.Component {
           <span styleName="back-to-options-icon">
             <SocrataIcon name="arrow-left" />
             <div
-              dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.back_to_sign_in_selection') }} />
+              dangerouslySetInnerHTML={{ __html: I18n.t('screens.sign_in.back_to_sign_in_selection') }} />
           </span>
         </a>
       );
@@ -131,7 +130,7 @@ class SignInContainer extends React.Component {
 
   render() {
     const { alerts } = this.state;
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { flashes } = options;
     return (
       <div styleName="container">
@@ -142,7 +141,7 @@ class SignInContainer extends React.Component {
         <div styleName="header-container">
           <h2 styleName="header">
             {
-              translate(
+              I18n.t(
                 'screens.sign_in.headline',
                 { site: options.companyName }
               )
@@ -158,7 +157,6 @@ class SignInContainer extends React.Component {
 }
 
 SignInContainer.propTypes = {
-  translate: React.PropTypes.func.isRequired,
   options: OptionsPropType.isRequired
 };
 

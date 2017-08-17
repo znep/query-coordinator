@@ -557,15 +557,11 @@
       }
     }
 
-    .dimension-grouping-column-name-selector-container {
-      padding: 0 0 20px;
-    }
-
     .grouped-stacked-selector-container {
       margin: 0 0 30px;
     }
 
-    #grouping-display-grouped-container, #grouping-display-stacked-container {
+    #grouping-display-grouped-container, #grouping-display-stacked-container, #grouping-display-100-percent-stacked-container {
 
       &.disabled {
         opacity: 0.25;

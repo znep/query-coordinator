@@ -30,6 +30,9 @@
   display: none !important;
 }
 
+/**
+ * 'Classic' sidebar
+ */
 #gridSidebar {
   background-color: $color_chrome_sidebar_background;
   border: 0 solid $color_chrome_box_border;
@@ -240,6 +243,1294 @@
         left: 0;
         right: 0.6em;
       };
+    }
+  }
+}
+
+/**
+ * EN-17053/EN-17170 - Make the grid view look more contemporary
+ *
+ * These styles are slightly more specific than the default ones, and are
+ * intended to override the defaults in order to make the grid view look more
+ * like a 'Styleguide' app (in other words, to make the grid view look more like
+ * the rest of the platform).
+ */
+.styleguide {
+
+  #gridSidebar {
+    position: absolute;
+    top: 0;
+    width: 26em;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 15px !important;
+    background-color: #f8f8f8;
+    border: 0 solid #ccc;
+    box-shadow: 8px 0 -30px #5e5e5e;
+
+    .close {
+      position: absolute;
+      right: 0.5em;
+      top: 0.7em;
+      z-index: 1;
+    }
+
+    .paneOverlay {
+      background-color: #cccccc;
+      height: 100%;
+      left: 0;
+      filter: alpha(opacity = 30);
+      opacity: 0.3;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 60;
+    }
+
+    .loadingSpinnerContainer {
+      top: 33%;
+    }
+
+    /**
+     * General layout
+     */
+    .outerPane {
+
+      .mainTitleBlock {
+        padding: 0.5em 1em;
+
+        .title {
+          color: #fff;
+          font-size: 15px;
+          font-weight: 200;
+          letter-spacing: -0.3px;
+          text-transform: none;
+        }
+      }
+
+      /**
+       * Headings
+       */
+      h3 {
+        font-size: 15px !important;
+        font-weight: 400 !important;
+      }
+
+      h4.formHeader {
+        font-size: 18px !important;
+      }
+
+      div.formHeader {
+        font-size: 15px !important;
+        font-weight: 400 !important;
+      }
+
+      /**
+       * Buttons
+       */
+      .button {
+        display: inline-block;
+        margin: 0;
+        padding: 11px 15px;
+        width: 100%;
+        height: auto;
+        color: #5e5e5e !important;
+        font-size: 15px;
+        font-weight: normal;
+        line-height: 1.25em;
+        text-align: center;
+        letter-spacing: 0;
+        text-decoration: none !important;
+        text-shadow: none;
+        background: #f1f1f1;
+        border: solid 1px #c8c8c8;
+        border-radius: 1px;
+        box-sizing: border-box;
+        transition: color 0.2s, background-color 0.2s;
+
+        &.submit,
+        &.saveEditedFilter {
+          color: #fff !important;
+          background: #2279a6;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: #176289;
+            box-shadow: none;
+          }
+        }
+
+        &.saveEditedFilter,
+        &.discardEditedFilter,
+        .postNewCommentButton,
+        .cancelNewCommentButton {
+          width: 40%;
+        }
+
+        &.disabled {
+          color: #c8c8c8 !important;
+          background-color: #f6f6f6 !important;
+          border-color: #e4e4e4 !important;
+          cursor: not-allowed;
+        }
+
+        &:hover,
+        &:focus,
+        &:active {
+          color: #5e5e5e;
+          background: #e4e4e4;
+          box-shadow: none;
+        }
+      }
+
+      .actionButtons {
+
+        li {
+          margin-right: 1em;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+
+        &.finishButtons {
+
+          li {
+            float: right !important;
+            margin-left: 12px;
+            margin-right: 0;
+          }
+        }
+      }
+
+      .fullButton {
+        width: 50%;
+        font-size: 16px;
+      }
+
+      /**
+       * Sorting menus (e.g. the on the 'More Views' pane that allows users to sort snapshots and views)
+       */
+      div.menu {
+
+        .menuDropdown {
+
+          ul.menuColumns {
+
+            li.menuColumn {
+
+              ul.menuEntries {
+
+                li.menuEntry {
+
+                  a {
+                    font-size: 15px !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * Form controls
+       */
+      .uniform.selector {
+        height: 36px;
+        font-size: 15px;
+        line-height: 1.2em;
+        background: none !important;
+
+        .container {
+          background: none;
+          opacity: 0;
+        }
+
+        select {
+          display: block;
+          height: 36px;
+          color: #5e5e5e;
+          font-family: 'Open Sans', sans-serif;
+          font-size: 13px;
+          font-weight: 400 !important;
+          background-color: #fff;
+          border: solid 1px #ccc;
+          border-radius: 5px;
+          box-sizing: border-box;
+          opacity: 1 !important;
+        }
+
+        &.disabled {
+
+          select {
+            color: #c8c8c8 !important;
+            background-color: #f6f6f6 !important;
+            border-color: #e4e4e4 !important;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .uniform.checker,
+      .uniform.radio {
+        margin: 0;
+        padding: 0;
+
+        span {
+          background: none !important;
+
+          input {
+            margin: 0;
+            width: auto;
+            height: auto;
+            line-height: 1.25em;
+            opacity: 1 !important;
+          }
+        }
+
+        &.disabled {
+
+          span {
+
+            input[type="radio"] {
+              opacity: 0 !important;
+            }
+          }
+        }
+      }
+
+      .required {
+        margin: 0 0 15px 12px;
+        padding: 0;
+        font-size: 15px;
+        font-weight: 200;
+        line-height: 18.5px;
+      }
+
+      /**
+       * Form layout
+       */
+      .formSection {
+
+        label {
+          margin: 4px 0 4px 4px;
+          font-size: 15px !important;
+          line-height: 15px !important;
+          font-weight: 400 !important;
+          color: #767676 !important;
+          overflow: visible !important;
+
+          &.formHeader {
+            color: #474747 !important;
+          }
+        }
+
+        .sectionContent {
+          padding: 8px 15px;
+          background: #f7f7f7 !important;
+          border: 1px solid #cecece;
+          border-radius: 1px !important;
+
+          p {
+            color: #767676 !important;
+            font-size: 15px;
+            line-height: 1.25em;
+
+            a {
+              color: #767676 !important;
+              font-size: 15px !important;
+              text-decoration: underline;
+
+              &.button {
+                display: inline-block;
+                margin: 0;
+                padding: 11px 15px;
+                width: 100%;
+                height: auto;
+                color: #5e5e5e !important;
+                font-size: 15px;
+                font-weight: normal;
+                line-height: 1.25em;
+                text-align: center;
+                letter-spacing: 0;
+                text-decoration: none !important;
+                text-shadow: none;
+                background: #f1f1f1;
+                border: solid 1px #c8c8c8;
+                border-radius: 1px;
+                box-sizing: border-box;
+                transition: color 0.2s, background-color 0.2s;
+
+                &:hover,
+                &:focus,
+                &:active {
+                  color: #5e5e5e;
+                  background: #e4e4e4;
+                  box-shadow: none;
+                }
+              }
+            }
+          }
+
+          dl {
+            background-color: #fff !important;
+            border-radius: 1px;
+
+            dt, dd {
+              font-size: 12px;
+            }
+
+            dt {
+              padding: 1em 1em 1em 0;
+              width: 38%;
+              font-weight: 600;
+              line-height: 15px;
+              text-overflow: ellipsis;
+
+              &.widenedItem {
+                text-align: left;
+              }
+
+              &:first-child {
+                padding-top: 0;
+              }
+            }
+
+            dd {
+              padding: 1em 0 1em 40%;
+              width: 60%;
+              min-height: 15px;
+              font-weight: 400;
+              line-height: 15px;
+              word-break: break-all;
+              overflow: visible;
+
+              &:last-child {
+                padding-bottom: 0;
+              }
+            }
+          }
+
+          .textWrapper {
+            margin: 0;
+            padding: 0;
+
+            input {
+              width: 100%;
+              left: 0;
+              top: 0;
+              font-size: 15px;
+              line-height: 18.5px;
+              background: none !important;
+
+              &[type="text"] {
+                background: #fff !important;
+              }
+            }
+          }
+
+          .line {
+            margin: 0;
+            padding: 4px 0;
+            min-height: auto !important;
+            line-height: normal !important;
+
+            label {
+              position: relative !important;
+              display: inline-block !important;
+              margin: 0 0 0.5em 0 !important;
+              padding: 0 !important;
+              width: auto !important;
+              top: 0 !important;
+              right: 0 !important;
+              bottom: 0 !important;
+              left: 0 !important;
+              line-height: normal !important;
+              background: none !important;
+            }
+
+            .error {
+              margin: 0;
+              padding: 0;
+              font-size: 15px;
+              font-weight: 200;
+              line-height: 1.25em;
+            }
+
+            .line {
+
+              &.group {
+
+                .removeLink {
+                  left: 0;
+                  top: 13px;
+                }
+
+                label {
+                  padding: 6px 0 0px 26px !important;
+                }
+
+                .line.radioGroup {
+
+                  .radioLine {
+                    margin-bottom: 1em;
+
+                    label {
+                      margin: -1px 0 0 -1px !important;
+                      padding: 0 !important;
+                    }
+                  }
+                }
+
+                &:hover {
+                  background-color: #fafafa !important;
+                }
+              }
+            }
+
+            .inputWrapper,
+            .filterValueEditor {
+
+              input {
+                margin: 0 0 4px 0;
+                padding: 0.5em;
+                color: #5e5e5e;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 15px;
+                font-weight: 400 !important;
+                border-radius: 1px;
+                box-shadow: none;
+                box-sizing: border-box;
+
+                &:hover,
+                &:focus,
+                &:active {
+                  box-shadow: none !important;
+                }
+
+                &.prompt {
+                  color: #c4c4c4;
+                }
+              }
+            }
+
+            .button.addValue.add {
+              margin: 8px 0 0 8px;
+              max-width: auto;
+            }
+
+            &.inputFirst {
+
+              label {
+                line-height: 16px;
+              }
+            }
+
+            &.static {
+
+              .inputWrapper {
+
+                span {
+                  color: #5e5e5e;
+                  font-family: 'Open Sans', sans-serif;
+                  font-size: 15px;
+                  font-weight: 400 !important;
+                  border-radius: 1px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * Pane content
+       */
+      &#gridSidebar_outer_edit,
+      &#gridSidebar_outer_manage,
+      &#gridSidebar_outer_moreViews,
+      &#gridSidebar_outer_filter,
+      &#gridSidebar_outer_visualize,
+      &#gridSidebar_outer_export,
+      &#gridSidebar_outer_feed,
+      &#gridSidebar_outer_embed,
+      &#gridSidebar_outer_about {
+
+        .panes {
+          position: relative;
+          overflow-x: hidden;
+          overflow-y: scroll;
+
+          .headerLink {
+            @include sprite-accordion-icons;
+
+            display: block;
+            margin: 0;
+            padding: 15px;
+            color: #474747;
+            font-size: 15px;
+            font-weight: normal;
+            line-height: 18.5px;
+            background-color: #f1f1f1;
+            border: none;
+            border-bottom: solid 1px #ccc;
+
+            &.selected {
+              color: #474747;
+              background-color: #ccc;
+
+              & + .controlPane {
+                background-color: #eee;
+                border-bottom: solid 1px #c8c8c8;
+              }
+            }
+
+            &.disabled {
+              color: #999999;
+              cursor: default;
+
+              .icon {
+                visibility: hidden;
+              }
+            }
+
+            .icon {
+              float: right;
+            }
+
+            &:hover {
+              color: #474747;
+              background-color: #e4e4e4;
+            }
+
+            &:focus,
+            &:active {
+              text-decoration: none !important;
+            }
+          }
+
+          .controlPane {
+            padding-bottom: 16px !important;
+            min-height: 0 !important;
+            font-size: 1em !important;
+
+            p {
+              color: #474747 !important;
+              font-size: 15px !important;
+              font-weight: 200 !important;
+              line-height: 1.25em !important;
+              text-shadow: none !important;
+
+              a {
+                color: #474747 !important;
+                font-size: 15px !important;
+                text-decoration: underline;
+              }
+            }
+
+            .subtitleBlock {
+              padding: 8px 15px;
+
+              .subtitle {
+                font-weight: 200 !important;
+
+                strong {
+                  color: #474747 !important;
+                  font-family: 'Open Sans', sans-serif !important;
+                  font-weight: 400 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+
+
+      /**
+       * Edit pane overrides
+       */
+      &#gridSidebar_outer_edit {
+
+        .mainTitleBlock {
+          background-color: #ffcd1a !important;
+        }
+      }
+
+      /**
+       * Manage pane overrides
+       */
+      &#gridSidebar_outer_manage {
+
+        .mainTitleBlock {
+          background-color: #b8864b !important;
+        }
+
+        .columnOrder {
+
+          .custom {
+
+            label {
+              display: none;
+            }
+
+            .columnOrderBlock {
+
+              .columnsList {
+                background: #fff !important;
+
+                .columnItem {
+                  font-size: 10px;
+                  line-height: 18.5px;
+                }
+              }
+
+              p {
+                margin-top: 1em;
+
+                strong {
+                  font-weight: 400;
+
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * More views pane overrides
+       */
+      &#gridSidebar_outer_moreViews {
+
+        .mainTitleBlock {
+          background-color: #ed77e6 !important;
+        }
+
+        .sortMenu,
+        .showMenu {
+
+          .menuButton {
+            font-size: 15px !important;
+            font-weight: 400 !important;
+            line-height: 1.25em !important;
+          }
+
+          .menuDropdown {
+
+            .menuColumns {
+
+              .menuColumn {
+
+                .menuEntries {
+
+                  .menuEntry {
+
+                    .contents {
+                      font-size: 15px !important;
+                    }
+
+                    .subtext {
+                      font-size: 12px !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .searchWrapper {
+
+          input {
+            margin: 0 0 4px 0;
+            padding: 8px;
+            color: #5e5e5e;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 400 !important;
+            border-radius: 1px;
+            box-shadow: none;
+            box-sizing: border-box;
+
+            &:hover,
+            &:focus,
+            &:active {
+              box-shadow: none !important;
+            }
+
+            &.prompt {
+              color: #c4c4c4;
+            }
+          }
+        }
+
+        .emptyResult {
+          font-size: 15px !important;
+          font-weight: 400 !important;
+          font-style: normal !important;
+        }
+
+        .itemsList {
+
+          .viewItem {
+
+            .nameLink {
+              display: inline-block;
+              width: 80%;
+
+              .pubDate {
+                margin-bottom: 8px;
+                font-size: 15px;
+                font-weight: 400;
+              }
+
+              .name {
+                margin: 0;
+                padding: 0;
+                font-size: 15px;
+                font-weight: 400;
+              }
+            }
+
+            .authorLine {
+              display: inline-block;
+              width: 80%;
+              font-size: 12px;
+              line-height: 15px;
+            }
+            .description {
+              width: 95%;
+              font-size: 12px;
+              font-weight: 400;
+              line-height: 14px;
+            }
+
+            .deleteViewLink {
+              top: 8px;
+              right: 8px;
+              bottom: auto;
+              left: auto;
+            }
+
+            .expand {
+              top: 50px;
+              right: 8px;
+              bottom: auto;
+              left: auto;
+            }
+
+            &.ownerItem {
+              background: rgba(255,255,0,0.075);
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+      /**
+       * Filter pane overrides
+       */
+      &#gridSidebar_outer_filter {
+
+        .mainTitleBlock {
+          background-color: #3e91ce !important;
+        }
+
+        .conditionalFormatting {
+
+          .conditionGroup {
+            margin: 0;
+            padding-bottom: 0.5em;
+
+            .radioBlock {
+              margin: 11px 0 0 0 !important;
+            }
+
+            .textWrapper {
+
+              input {
+                margin: 0.5em 0 0 1.7em;
+                width: 88%;
+                color: #5e5e5e;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 15px !important;
+                font-weight: 200 !important;
+                line-height: 1.25em !important;
+                border-radius: 1px;
+              }
+            }
+          }
+        }
+
+        .unifiedFilter {
+
+          .mainFilterOptionsMenu {
+
+            .filterOptionsMenuButton {
+              position: absolute;
+              right: 26px;
+              top: 26px;
+            }
+          }
+
+          .advancedStateLine {
+            color: #767676 !important;
+            font-size: 15px;
+            line-height: 1.25em;
+          }
+
+          .initialFilterMode,
+          .normalFilterMode,
+          .tutorialSection,
+          .editFilterBlock {
+            padding: 0;
+
+            .filterConditions {
+              margin-top: 1.5em;
+
+              .filterCondition {
+
+                .filterHeadline {
+                  margin: 0 0 1em 0;
+                  padding: 0;
+
+                  .filterLink {
+                    font-size: 15px !important;
+                    font-weight: 400 !important;
+                    line-height: 1.25em !important;
+                  }
+                }
+
+                .filterValues {
+
+                  .line {
+                    margin: 0;
+                    padding: 0 0 0 2em;
+                    min-height: auto;
+
+                    .conjunction {
+                      margin-top: 7px;
+                      font-size: 15px !important;
+                      font-weight: 200 !important;
+                      line-height: 1.25em !important;
+                    }
+                  }
+                }
+
+                .filterOptionsLabel {
+                  font-size: 12px;
+                  right: 24px;
+                  bottom: 7px;
+                }
+
+                &:hover {
+                  background-color: #fafafa !important;
+                }
+              }
+            }
+          }
+
+          .tutorialSection {
+
+            p {
+              margin: 1em 0;
+            }
+          }
+
+          .editFilterBlock {
+
+            .editModeMessage {
+              margin: 0;
+              padding: 1em;
+            }
+          }
+        }
+      }
+
+      /**
+       * Visualize pane overrides
+       */
+      &#gridSidebar_outer_visualize {
+
+        .mainTitleBlock {
+          background-color: #36a572 !important;
+        }
+      }
+
+      /**
+       * Export pane overrides
+       */
+      &#gridSidebar_outer_export {
+
+        .mainTitleBlock {
+          background-color: #8ae8ff !important;
+        }
+
+        .sectionContent {
+          border-radius: 1px;
+        }
+
+        .apiContentWrapper,
+        .odataContentWrapper {
+          background: #f7f7f7 !important;
+
+          .apiEndpointWrapper,
+          .odataEndpointWrapper {
+            margin: 8px 0 12px 0;
+            padding: 8px;
+            font-size: 12px;
+
+            input {
+              width: 97.5%;
+              color: #5e5e5e;
+              font-family: 'Open Sans', sans-serif;
+              font-weight: 300;
+              border-radius: 1px;
+              box-shadow: none;
+              cursor: text;
+            }
+          }
+        }
+
+        .downloadsSectionContent {
+          margin: 0;
+          padding: 0;
+
+          .downloadsTable {
+
+            .gridListWrapper {
+              font-family: 'Open Sans', sans-serif;
+              font-size: 12px !important;
+              font-weight: 400 !important;
+              border-radius: 0;
+
+              table {
+
+                thead {
+
+                  tr {
+
+                    th {
+                      background: #c8c8c8;
+                      border-radius: 0;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * Discuss pane overrides
+       */
+      &#gridSidebar_outer_feed {
+
+        .mainTitleBlock {
+          background-color: #ffa733 !important;
+        }
+
+        .feedFilterLine {
+          position: relative;
+          display: block;
+          float: none;
+          margin: 0 0 0.5em 0;
+          font-size: 15px;
+          line-height: 2em;
+
+          .text {
+            margin-right: 0.5em;
+            color: #474747 !important;
+            font-size: 15px !important;
+            line-height: 15px !important;
+            font-weight: 400 !important;
+          }
+
+          .selector.uniform {
+            top: 4px;
+          }
+        }
+
+        .feedNewCommentButton {
+          float: none;
+          margin: 0.5em 0;
+        }
+
+        .newCommentForm {
+          position: relative;
+          display: block;
+          float: none;
+          margin: 0.5em 0;
+
+          label {
+            margin: 0;
+            padding: 8px 0;
+            font-size: 15px !important;
+            line-height: 30px !important;
+          }
+
+          textarea {
+            margin: 0 0 4px 0;
+            padding: 0.5em;
+            color: #5e5e5e;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 400 !important;
+            border-radius: 1px;
+            box-shadow: none;
+            box-sizing: border-box;
+            resize: vertical;
+
+            &:hover,
+            &:focus,
+            &:active {
+              box-shadow: none !important;
+            }
+          }
+
+          .button {
+            width: 40%;
+          }
+        }
+
+        .feedList {
+          margin: 1em 0 0.5em 0;
+
+          .feedItem {
+            margin: 0.5em 0;
+            padding: 1em;
+            background: #f7f7f7;
+            border: solid 1px #c7c7c7;
+
+            .feedCommon {
+
+              .icon {
+                margin: 3px 3px 0 0;
+              }
+
+              .feedActor {
+                display: inline-block;
+                margin: 0 0 0.5em 0;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 1.25em;
+              }
+
+              .feedBody {
+                position: relative;
+                display: block;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 15px;
+                font-weight: 200;
+              }
+            }
+
+            .feedCustom {
+
+              .viewDetails {
+
+                .viewName {
+                  margin: 0 0 8px 45px;
+                  font-size: 15px;
+                  font-weight: 400;
+                }
+
+                .viewDescription {
+                  margin: 0 0 0 45px;
+                  font-size: 12px;
+                }
+              }
+
+              .commentActions {
+
+                li {
+
+                  a {
+                    text-decoration: underline;
+                  }
+                }
+              }
+            }
+
+            .feedChildren {
+              margin: 1em 0 0 0;
+            }
+
+            &.specialFeedItem {
+              background-color: rgba(255, 255, 0, 0.075);
+            }
+
+            &:first-child {
+              margin-top: 0;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .feedMoreItemsLink {
+
+        }
+
+        .noResults {
+          font-family: 'Open Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 200;
+          font-style: normal;
+          line-height: 30px;
+        }
+      }
+
+      /**
+       * Embed pane overrides
+       */
+      &#gridSidebar_outer_embed {
+
+        .mainTitleBlock {
+          background-color: #ff7377 !important;
+        }
+
+        .embedSdp {
+
+          .embedForm {
+
+            textarea {
+              color: #5e5e5e;
+              font-size: 12px;
+              overflow-y: scroll;
+              resize: none;
+            }
+
+            .sizes,
+            .dimensions,
+            .template {
+              background: #f7f7f7 !important;
+            }
+
+            .sizes {
+              padding-left: 0;
+              padding-right: 0;
+
+              li {
+                width: 91px;
+
+                .sizePreview {
+                  margin: 0 auto;
+                  background: #fff !important;
+
+                  &.small {
+                    width: 38px;
+                    height: 32.5px;
+                  }
+
+                  &.medium {
+                    width: 56px;
+                    height: 47.5px;
+                  }
+
+                  &.large {
+                    width: 74px;
+                    height: 63px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /** 
+       * About pane overrides
+       */
+      &#gridSidebar_outer_about {
+
+        .mainTitleBlock {
+          background-color: #d36674 !important;
+        }
+
+        .dslpLink {
+          font-family: 'Open Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 200;
+          line-height: 1.25em;
+          background: #f7f7f7 !important;
+          border: 1px solid #ccc;
+        }
+
+        /**
+         * We actually don't want to show a lot of these things,
+         * but the styles were already written when we decided that
+         * so they're being kept intact here in case we change our
+         * minds. The elements that are to be hidden are hidden in
+         * bulk below using :nth-child(n) because a lot of the
+         * elements we want to hide have no distinguishable
+         * targeting characteristics (argh!).
+         */
+        .aboutHeader {
+          font-size: 15px;
+
+          .aboutAuthorName {
+            display: inline-block;
+            padding: 8px 0 5px 0;
+            font-size: 18.5px;
+            font-weight: 600;
+          }
+
+          p {
+
+            em {
+              margin-right: 18.5px;
+              font-weight: 400;
+              font-style: normal;
+            }
+          }
+        }
+
+        .editMetadataButton,
+        .viewFullLink {
+          display: inline-block;
+          margin: 0 1em 0 0;
+          padding: 11px 15px;
+          width: 45%;
+          height: auto;
+          color: #5e5e5e !important;
+          font-size: 15px;
+          font-weight: normal;
+          line-height: 18.5px;
+          text-align: center;
+          letter-spacing: 0;
+          text-decoration: none !important;
+          text-shadow: none;
+          background: #f1f1f1;
+          border: solid 1px #c8c8c8;
+          border-radius: 1px;
+          box-sizing: border-box;
+          transition: color 0.2s, background-color 0.2s;
+
+          &.disabled {
+            color: #c8c8c8 !important;
+            background-color: #f6f6f6 !important;
+            border-color: #e4e4e4 !important;
+            cursor: not-allowed;
+          }
+
+          &:hover,
+          &:focus,
+          &:active {
+            color: #5e5e5e;
+            background: #e4e4e4;
+            box-shadow: none;
+          }
+        }
+      }
     }
   }
 }

@@ -21,17 +21,18 @@ import {
 } from 'reduxStuff/actions/manageUploads';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { editView } from 'reduxStuff/actions/views';
+import { showFormErrors, hideFormErrors, markFormClean } from 'reduxStuff/actions/forms';
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
-  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/metadata.*/; // eslint-disable-line
+  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
   const helper = hist => {
     const location = hist[hist.length - 1];
 
     if (hist.length === 0) {
-      browserHistory.push(Links.home(params));
+      browserHistory.push(Links.revisionBase(params));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
       browserHistory.push(currentOutputSchemaPath);
     } else if (isDatasetModalPath.test(location.pathname)) {
@@ -44,20 +45,20 @@ export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatc
   helper(history);
 };
 
-export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
-  const { entities } = getState();
-  const view = entities.views[fourfour];
-  const { datasetMetadataErrors: errors } = view;
+export const saveDatasetMetadata = (revision, params) => (dispatch, getState) => {
+  const { ui } = getState();
+  const formName = 'datasetForm';
+  const { errors } = ui.forms[formName];
 
   dispatch(hideFlashMessage());
 
   if (errors.length) {
-    dispatch(editView(fourfour, { showErrors: true }));
+    dispatch(showFormErrors(formName));
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
     return Promise.reject();
   }
 
-  const datasetMetadata = Selectors.datasetMetadata(view);
+  const datasetMetadata = Selectors.datasetMetadata(revision.metadata);
 
   const callId = uuid();
 
@@ -67,48 +68,48 @@ export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
       params: {}
     })
   );
-  // Promise.all fails if one of the operations passed into it fails. This is what
-  // we want for now because DSMAPI's "Update Revision" endpoint does no validations
-  // so we want to rely on core for that. Similarly, when DSMAPI updates start winning
-  // over what's already in core, we want to show a failure even though core update
-  // succeeds since applying the revision will overwrite that info.
+
   // TODO: remove core api call (the first one here) once validations go into
   // dsmapi and once dsmapi revisions start overriding what's in core
-  return Promise.all([
-    socrataFetch(`/api/views/${fourfour}`, {
-      method: 'PUT',
-      body: JSON.stringify(datasetMetadata)
-    }),
-    socrataFetch(dsmapiLinks.revisionBase, {
-      method: 'PUT',
-      body: JSON.stringify({
-        metadata: datasetMetadata
-      })
+  return socrataFetch(`/api/views/${params.fourfour}`, {
+    method: 'PUT',
+    body: JSON.stringify(datasetMetadata)
+  })
+    .then(checkStatus)
+    .then(() => {
+      return socrataFetch(dsmapiLinks.revisionBase(params), {
+        method: 'PUT',
+        body: JSON.stringify({
+          metadata: datasetMetadata
+        })
+      });
     })
-  ])
-    .then(resp => {
-      // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
-      // Because of the way .then works, you can't just return the resp here. You get
-      // an array of Promise rather than a Promise of array.
-      return Promise.all(resp.map(r => r.json()));
-    })
-    .then(resp => {
-      const [dsmapi] = resp.filter(r => r.resource).map(r => r.resource);
+    .then(checkStatus)
+    .then(getJson)
+    .then(dsmapiResp => {
+      const dsmapi = dsmapiResp.resource;
 
       if (!dsmapi.metadata) {
         throw new Error('No metadata in api response');
       }
+
       dispatch(
         editView(dsmapi.fourfour, {
           ..._.omit(dsmapi.metadata, 'metadata', 'privateMetadata'),
           metadata: dsmapi.metadata.metadata,
           privateMetadata: dsmapi.metadata.privateMetadata,
-          showErrors: false,
-          datasetFormDirty: false,
           metadataLastUpdatedAt: Date.now()
         })
       );
 
+      dispatch(
+        editRevision(revision.id, {
+          metadata: dsmapi.metadata
+        })
+      );
+
+      dispatch(hideFormErrors(formName));
+      dispatch(markFormClean(formName));
       dispatch(apiCallSucceeded(callId));
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     })
@@ -123,17 +124,16 @@ export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
 };
 
 export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getState) => {
-  const { entities } = getState();
-  const { fourfour } = params;
-  const view = entities.views[fourfour];
-  const { columnMetadataErrors: errors } = view;
+  const { entities, ui } = getState();
+  const formName = 'columnForm';
+  const { errors } = ui.forms[formName];
 
   dispatch(hideFlashMessage());
 
   if (errors.length) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
-    dispatch(editView(fourfour, { showErrors: true }));
+    dispatch(showFormErrors(formName));
 
     return Promise.reject();
   }
@@ -206,18 +206,18 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
       return resp;
     })
     .then(({ resource: { id: newOutputSchemaId } }) => {
-      dispatch(
-        editView(fourfour, {
-          columnFormDirty: false,
-          showErrors: false
-        })
-      );
-      const revision = Selectors.latestRevision(entities);
+      dispatch(markFormClean(formName));
+
+      dispatch(hideFormErrors(formName));
+
+      const revision = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
+
       dispatch(
         editRevision(revision.id, {
           output_schema_id: newOutputSchemaId
         })
       );
+
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
       const redirect = Links.columnMetadataForm(params, newOutputSchemaId);

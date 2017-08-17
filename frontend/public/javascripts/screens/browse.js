@@ -702,100 +702,98 @@ $(function() {
     });
   }
 
-  $.live(
-    '#create-story-button',
-    'click',
-    generateCreateNewStoryHandler(
-      $('#create-resource-dropdown')
-    )
-  );
-  $.live(
-    '#create-story-footer-button',
-    'click',
-    generateCreateNewStoryHandler(
-      $('#create-resource-footer-dropdown')
-    )
-  );
+  // Wire up the dropdown buttons for creating stories and measures. Both types
+  // of asset share a common approach for creation: allocating a view, then
+  // publishing it, then redirecting to some appropriate page where the user can
+  // begin editing their asset. The method below encapsulates that workflow; the
+  // respective click handlers follow.
+  //
+  // TODO: I don't think it's really appropriate for this to be part of the
+  // `browse.js` file, since it has nothing to do with the catalog.
+  //
+  // NOTE: See other very important information at
+  //  common/site_chrome/app/assets/javascripts/socrata_site_chrome/admin_header.js
 
-  function generateCreateNewStoryHandler($dropdownElement) {
+  function createPublishedView(metadata) {
+    // You can't perform this operation without an app token.
+    var appToken = getAppToken();
+    if (!appToken) {
+      return Promise.reject(new Error('AppToken is not accessible!'));
+    }
 
-    return function() {
-
-      function onError() {
-
-        $dropdownElement.removeClass('working');
-
-        alert('Oh no! There’s been a problem. Please try again.');
-      }
-
-      function onSuccess(data, textStatus, xhr) {
-
-        function validate4x4(testString) {
-
-          var valid = false;
-          var pattern = window.blist.util.patterns.UID;
-
-          if (pattern) {
-            valid = testString.match(pattern) !== null;
-          }
-
-          return valid;
-        }
-
-        function onPublishSuccess(publishData) {
-
-          if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
-
-            // This is the second phase of the creation action,
-            // and this endpoint is responsible for removing the
-            // '"initialized": false' flag (or setting it to true)
-            // when it succeeds at creating the new story objects
-            // in Storyteller's datastore.
-            //
-            // This isn't perfect but it should (hopefully) be
-            // reliable enough that users will not totally fail to
-            // create stories when they intend to do so.
-            window.location.href = '/stories/s/' + publishData.id + '/create';
-
-          } else {
-            onError();
-          }
-        }
-
-        if (window.hasOwnProperty('blist') &&
-          window.blist.hasOwnProperty('configuration') &&
-          window.blist.configuration.hasOwnProperty('appToken')) {
-
-          if (data.hasOwnProperty('id') && validate4x4(data.id)) {
-
-            // Next we need to publish the newly-created catalog
-            // asset, since the publish action provisions a new
-            // 4x4.
-            var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
-            var publishSettings = {
-              contentType: false,
-              error: onError,
-              headers: {
-                'X-App-Token': blist.configuration.appToken
-              },
-              type: 'POST',
-              success: onPublishSuccess
-            };
-
-            $.ajax(publishUrl, publishSettings);
-
-          } else {
-            onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
-          }
-        }
-      }
-
-      var newStoryName = (
-        'Untitled Story - ' +
-        (new Date().format('m-d-Y'))
+    // Allocate a new asset.
+    return new Promise(function(resolve, reject) {
+      var allocationError = new Error(
+        'View allocation failed; check network response for details.'
       );
 
-      var newStoryData = {
+      $.ajax({
+        url: '/api/views.json',
+        type: 'POST',
+        data: JSON.stringify(metadata),
+        headers: {
+          'Content-type': 'application/json',
+          'X-App-Token': appToken
+        },
+        success: function(response) {
+          var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+          valid ? resolve(response.id) : reject(allocationError);
+        },
+        error: function() { reject(allocationError); }
+      });
+    }).then(function(id) {
+      // If allocation was successful, publish the asset.
+      return new Promise(function(resolve, reject) {
+        var publicationError = new Error(
+          'View publication failed; check network response for details.'
+        );
+
+        $.ajax({
+          url: '/api/views/' + id + '/publication.json?accessType=WEBSITE',
+          type: 'POST',
+          headers: {
+            'X-App-Token': appToken
+          },
+          success: function(response) {
+            var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+            valid ? resolve(response.id) : reject(publicationError);
+          },
+          error: function() { reject(publicationError); }
+        });
+      });
+    });
+  }
+
+  function getAppToken() {
+    return blist && blist.configuration && blist.configuration.appToken;
+  }
+
+  // Ensure that a valid 4x4 was generated.
+  function validate4x4(testString) {
+    return /^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(testString);
+  }
+
+  // Add a datestring to a generic title.
+  function generateDatedTitle(title) {
+    var now = new Date();
+    var datePieces = [
+      String(now.getMonth() + 1).padStart(2, 0),
+      String(now.getDate()).padStart(2, 0),
+      now.getFullYear()
+    ];
+    return title + ' - ' + datePieces.join('-');
+  }
+
+  $(document).on(
+    'click',
+    '#create-story-button, #create-story-footer-button',
+    function(event) {
+      event.preventDefault();
+
+      var $dropdownElement = $(this).closest('.jq-dropdown');
+
+      var defaultTitle = blist.translations.shared.site_chrome.header.create_menu.default_story_title;
+      var metadata = {
         displayFormat: {},
         displayType: 'story',
         metadata: {
@@ -820,26 +818,56 @@ $(function() {
           },
           tileConfig: {}
         },
-        name: newStoryName,
+        name: generateDatedTitle(defaultTitle),
         query: {}
       };
 
-      var url = '/api/views.json';
-      var settings = {
-        contentType: false,
-        data: JSON.stringify(newStoryData),
-        dataType: 'json',
-        error: onError,
-        headers: {
-          'Content-type': 'application/json',
-          'X-App-Token': blist.configuration.appToken
+      $dropdownElement.addClass('working');
+      createPublishedView(metadata).then(
+        function(uid) { window.location.href = '/stories/s/' + uid + '/create'; },
+        function(error) {
+          $dropdownElement.removeClass('working');
+          console.error(error);
+          alert(blist.translations.controls.browse.generic_error);
+        }
+      );
+    }
+  );
+
+  $(document).on(
+    'click',
+    '#create-measure-button, #create-measure-footer-button',
+    function(event) {
+      event.preventDefault();
+
+      var $dropdownElement = $(this).closest('.jq-dropdown');
+
+      var defaultTitle = blist.translations.shared.site_chrome.header.create_menu.default_measure_title;
+      var metadata = {
+        displayFormat: {},
+        displayType: 'measure',
+        metadata: {
+          availableDisplayTypes: ['measure'],
+          jsonQuery: {},
+          renderTypeConfig: {
+            visible: {
+              measure: true
+            }
+          }
         },
-        type: 'POST',
-        success: onSuccess
+        name: generateDatedTitle(defaultTitle),
+        query: {}
       };
 
       $dropdownElement.addClass('working');
-      $.ajax(url, settings);
-    };
-  }
+      createPublishedView(metadata).then(
+        function(uid) { window.location.href = '/d/' + uid; },
+        function(error) {
+          $dropdownElement.removeClass('working');
+          console.error(error);
+          alert(blist.translations.controls.browse.generic_error);
+        }
+      );
+    }
+  );
 });

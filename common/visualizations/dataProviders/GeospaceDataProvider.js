@@ -2,7 +2,7 @@ const utils = require('common/js_utils');
 const DataProvider = require('./DataProvider');
 const _ = require('lodash');
 
-function GeospaceDataProvider(config) {
+function GeospaceDataProvider(config, useCache = false) {
 
   _.extend(this, new DataProvider(config));
 
@@ -12,11 +12,20 @@ function GeospaceDataProvider(config) {
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
+  if (useCache) {
+    const cached = this.cachedInstance("GeospaceDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
+
   /**
    * Public methods
    */
 
+  const featureExtentPromiseCache = {};
   this.getFeatureExtent = function(columnName) {
+
     const url = 'https://{0}/resource/{1}.json?$select=extent({2})&$$read_from_nbe=true&$$version=2.1'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid'),
@@ -26,8 +35,15 @@ function GeospaceDataProvider(config) {
       Accept: 'application/json'
     };
 
-    return (
-      new Promise(function(resolve, reject) {
+    const cacheKey = url;
+
+    const cachedPromise = featureExtentPromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    const loadFeatureExtentPromise = new Promise(
+      (resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
         function onFail() {
@@ -51,7 +67,6 @@ function GeospaceDataProvider(config) {
           const status = parseInt(xhr.status, 10);
 
           if (status === 200) {
-
             try {
               const responseTextWithoutNewlines = xhr.
                 responseText.
@@ -62,7 +77,6 @@ function GeospaceDataProvider(config) {
               );
 
               if (!_.isUndefined(coordinates)) {
-
                 return resolve({
                   southwest: [coordinates[0][1], coordinates[0][0]],
                   northeast: [coordinates[2][1], coordinates[2][0]]
@@ -87,11 +101,18 @@ function GeospaceDataProvider(config) {
         });
 
         xhr.send();
-      })
+      }
     );
+
+    featureExtentPromiseCache[cacheKey] = loadFeatureExtentPromise;
+
+    return loadFeatureExtentPromise;
+
   };
 
+  const shapefilePromiseCache = {};
   this.getShapefile = function(extent) {
+
     let url = 'https://{0}/resource/{1}.geojson'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
@@ -130,61 +151,66 @@ function GeospaceDataProvider(config) {
       }
     }
 
-    return (
-      new Promise(function(resolve, reject) {
-        const xhr = new XMLHttpRequest();
+    const cacheKey = url;
 
-        function onFail() {
-          let error;
+    const cachedPromise = shapefilePromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
 
-          try {
-            error = JSON.parse(xhr.responseText);
-          } catch (e) {
-            console.log(e);
-            error = xhr.statusText;
-          }
+    const loadShapefilePromise = new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
 
-          return reject({
-            status: parseInt(xhr.status, 10),
-            message: xhr.statusText,
-            soqlError: error
-          });
+      function onFail() {
+        let error;
+
+        try {
+          error = JSON.parse(xhr.responseText);
+        } catch (e) {
+          console.log(e);
+          error = xhr.statusText;
         }
 
-        xhr.onload = function() {
-          const status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
-
-            try {
-              const responseTextWithoutNewlines = xhr.
-                responseText.
-                replace(/\n/g, '');
-
-              resolve(JSON.parse(responseTextWithoutNewlines));
-
-            } catch (e) {
-              console.log(e);
-              // Let this fall through to the `onFail()` below.
-            }
-          }
-
-          onFail();
-        };
-
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
-
-        xhr.open('GET', url, true);
-
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
+        return reject({
+          status: parseInt(xhr.status, 10),
+          message: xhr.statusText,
+          soqlError: error
         });
+      }
 
-        xhr.send();
-      })
-    );
+      xhr.onload = function() {
+        const status = parseInt(xhr.status, 10);
+
+        if (status === 200) {
+          try {
+            const responseTextWithoutNewlines = xhr.responseText.replace(/\n/g, '');
+            resolve(JSON.parse(responseTextWithoutNewlines));
+          } catch (e) {
+            console.log(e);
+            // Let this fall through to the `onFail()` below.
+          }
+        }
+
+        onFail();
+      };
+
+      xhr.onabort = onFail;
+      xhr.onerror = onFail;
+
+      xhr.open('GET', url, true);
+
+      // Set user-defined headers.
+      _.each(headers, function(value, key) {
+        xhr.setRequestHeader(key, value);
+      });
+
+      xhr.send();
+    });
+
+    shapefilePromiseCache[cacheKey] = loadShapefilePromise;
+
+    return loadShapefilePromise;
+
   };
 
   function extentIsValid(extent) {

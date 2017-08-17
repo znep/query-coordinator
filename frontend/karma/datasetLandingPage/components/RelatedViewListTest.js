@@ -47,7 +47,7 @@ describe('components/RelatedViewList', function() {
     assert.isNull(element);
   });
 
-  it('does not render if the user is not an admin or publisher and the list is empty', function() {
+  it('does not render if the user has no rights and the list is empty', function() {
     window.serverConfig.currentUser = { roleName: 'wizard', rights: [ ] };
     var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
       viewList: []

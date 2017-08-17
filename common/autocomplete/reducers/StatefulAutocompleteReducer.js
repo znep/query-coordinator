@@ -1,18 +1,30 @@
 import _ from 'lodash';
 import * as actions from '../actions';
 
+export const defaultState = {
+  collapsed: true,
+  focusedResult: undefined,
+  query: _.get(window, 'initialState.autocomplete.query'),
+  resultsVisible: true,
+  searchResults: {
+    resultSetSize: 0,
+    results: [],
+    timings: {}
+  }
+};
+
 function queryChanged(state, action) {
   const { query } = action;
-  const searchResults = _.isEmpty(query) ? [] : state.searchResults;
+  const searchResults = _.isEmpty(query) ? {} : state.searchResults;
 
   return { ...state, query, searchResults };
 }
 
 function resultsChanged(state, action) {
   // keep results empty if the query is empty
-  const searchResults = _.isEmpty(state.query) ? [] : action.results;
+  const searchResults = _.isEmpty(state.query) ? { results: [] } : action.response;
 
-  return { ...state, searchResults };
+  return { ...state, searchResults, resultsVisible: searchResults.results.length > 0 };
 }
 
 function resultVisibilityChanged(state, action) {
@@ -50,11 +62,11 @@ function collapseChanged(state, action) {
   return { ...state, collapsed: action.collapsed, focusedResult: undefined };
 }
 
-function searchCleared(state, action) {
-  return { ...state, query: null };
+function clearSearch(state) {
+  return { ...state, query: '' };
 }
 
-export default function autocompleteReducer(state, action) {
+export default function(state = defaultState, action) {
   switch (action.type) {
     case actions.QUERY_CHANGED:
       return queryChanged(state, action);
@@ -66,8 +78,8 @@ export default function autocompleteReducer(state, action) {
       return focusedResultChanged(state, action);
     case actions.COLLAPSE_CHANGED:
       return collapseChanged(state, action);
-    case action.SEARCH_CLEARED:
-      return searchCleared(state, action);
+    case actions.CLEAR_SEARCH:
+      return clearSearch(state);
     default:
       return state;
   }

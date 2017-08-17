@@ -102,79 +102,7 @@ const initialState = {
               }
             ]
           }
-        ],
-        colFormModel: {
-          'display-name-1945': 'IDd\\',
-          'description-1945': '',
-          'field-name-1945': 'id',
-          'display-name-1946': 'Case Number',
-          'description-1946': '',
-          'field-name-1946': 'case_number',
-          'display-name-1947': 'Date',
-          'description-1947': '',
-          'field-name-1947': 'date',
-          'display-name-1948': 'Block',
-          'description-1948': '',
-          'field-name-1948': 'block',
-          'display-name-1949': 'IUCR',
-          'description-1949': '',
-          'field-name-1949': 'iucr',
-          'display-name-1950': 'Primary Type',
-          'description-1950': '',
-          'field-name-1950': 'primary_type',
-          'display-name-1951': 'Description',
-          'description-1951': '',
-          'field-name-1951': 'description',
-          'display-name-1952': 'Location Description',
-          'description-1952': '',
-          'field-name-1952': 'location_description',
-          'display-name-1953': 'Arrest',
-          'description-1953': '',
-          'field-name-1953': 'arrest',
-          'display-name-1954': 'Domestic',
-          'description-1954': '',
-          'field-name-1954': 'domestic',
-          'display-name-1955': 'Beat',
-          'description-1955': '',
-          'field-name-1955': 'beat',
-          'display-name-1956': 'District',
-          'description-1956': '',
-          'field-name-1956': 'district',
-          'display-name-1957': 'Ward',
-          'description-1957': '',
-          'field-name-1957': 'ward',
-          'display-name-1958': 'Community Area',
-          'description-1958': '',
-          'field-name-1958': 'community_area',
-          'display-name-1959': 'FBI Code',
-          'description-1959': '',
-          'field-name-1959': 'fbi_code',
-          'display-name-1960': 'X Coordinate',
-          'description-1960': '',
-          'field-name-1960': 'x_coordinate',
-          'display-name-1961': 'Y Coordinate',
-          'description-1961': '',
-          'field-name-1961': 'y_coordinate',
-          'display-name-1962': 'Year',
-          'description-1962': '',
-          'field-name-1962': 'year',
-          'display-name-1963': 'Updated On',
-          'description-1963': '',
-          'field-name-1963': 'updated_on',
-          'display-name-1964': 'Latitude',
-          'description-1964': '',
-          'field-name-1964': 'latitude',
-          'display-name-1965': 'Longitude',
-          'description-1965': '',
-          'field-name-1965': 'longitude',
-          'display-name-1966': 'Location',
-          'description-1966': '',
-          'field-name-1966': 'location'
-        },
-        colFormIsDirty: {
-          fields: ['display-name-1945'],
-          form: true
-        }
+        ]
       }
     },
     revisions: {
@@ -188,6 +116,109 @@ const initialState = {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
           display_name: 'branweb'
+        },
+        metadata: {
+          id: 'kg5j-unyr',
+          name: 'omgwtf',
+          owner: {
+            id: 'tugg-ikce',
+            displayName: 'branweb',
+            emailUnsubscribed: false,
+            profileLastModified: 1488413060,
+            screenName: 'branweb',
+            rights: [
+              'create_datasets',
+              'edit_others_datasets',
+              'edit_sdp',
+              'edit_site_theme',
+              'moderate_comments',
+              'manage_users',
+              'chown_datasets',
+              'edit_nominations',
+              'approve_nominations',
+              'feature_items',
+              'federations',
+              'manage_stories',
+              'manage_approval',
+              'change_configurations',
+              'view_domain',
+              'view_others_datasets',
+              'create_pages',
+              'edit_pages',
+              'view_goals',
+              'view_dashboards',
+              'edit_goals',
+              'edit_dashboards',
+              'create_dashboards',
+              'manage_provenance',
+              'view_all_dataset_status_logs',
+              'use_data_connectors',
+              'create_story',
+              'edit_story_title_desc',
+              'create_story_copy',
+              'delete_story',
+              'manage_story_collaborators',
+              'manage_story_visibility',
+              'manage_story_public_version',
+              'edit_story',
+              'view_unpublished_story',
+              'view_story'
+            ],
+            flags: ['admin']
+          },
+          lastUpdatedAt: new Date(1497400577000),
+          dataLastUpdatedAt: new Date(1497400577000),
+          metadataLastUpdatedAt: new Date(1497400577000),
+          createdAt: new Date(1497400577000),
+          viewCount: 0,
+          downloadCount: 0,
+          license: {},
+          schema: {
+            isValid: true,
+            fields: {
+              name: {
+                isValid: true,
+                required: true,
+                errors: []
+              }
+            }
+          },
+          tags: [],
+          privateMetadata: {},
+          attachments: [],
+          metadata: {},
+          customMetadataFields: [
+            {
+              name: 'FS One',
+              fields: [
+                {
+                  name: 'name',
+                  required: false
+                },
+                {
+                  name: 'animals',
+                  options: ['dog', 'cat', 'pig', 'sheep'],
+                  type: 'fixed',
+                  required: false
+                },
+                {
+                  private: true,
+                  name: 'thing',
+                  required: false
+                }
+              ]
+            },
+            {
+              name: 'wuttt',
+              fields: [
+                {
+                  private: true,
+                  name: 'hay',
+                  required: false
+                }
+              ]
+            }
+          ]
         }
       }
     },
@@ -431,470 +462,6 @@ const initialState = {
           email: 'brandon.webster@socrata.com',
           display_name: 'branweb'
         },
-        output_columns: [
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1907
-                }
-              ],
-              transform_expr: 'to_number(`id`)',
-              output_soql_type: 'number',
-              id: 1939,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 0,
-            is_primary_key: false,
-            id: 1945,
-            field_name: 'id',
-            display_name: 'ID',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1908
-                }
-              ],
-              transform_expr: '`case_number`',
-              output_soql_type: 'text',
-              id: 1940,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 1,
-            is_primary_key: false,
-            id: 1946,
-            field_name: 'case_number',
-            display_name: 'Case Number',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1909
-                }
-              ],
-              transform_expr: 'to_floating_timestamp(`date`)',
-              output_soql_type: 'calendar_date',
-              id: 1941,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 2,
-            is_primary_key: false,
-            id: 1947,
-            field_name: 'date',
-            display_name: 'Date',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1910
-                }
-              ],
-              transform_expr: '`block`',
-              output_soql_type: 'text',
-              id: 1942,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 3,
-            is_primary_key: false,
-            id: 1948,
-            field_name: 'block',
-            display_name: 'Block',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1911
-                }
-              ],
-              transform_expr: '`iucr`',
-              output_soql_type: 'text',
-              id: 1943,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 4,
-            is_primary_key: false,
-            id: 1949,
-            field_name: 'iucr',
-            display_name: 'IUCR',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1912
-                }
-              ],
-              transform_expr: '`primary_type`',
-              output_soql_type: 'text',
-              id: 1944,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 5,
-            is_primary_key: false,
-            id: 1950,
-            field_name: 'primary_type',
-            display_name: 'Primary Type',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1913
-                }
-              ],
-              transform_expr: '`description`',
-              output_soql_type: 'text',
-              id: 1945,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 6,
-            is_primary_key: false,
-            id: 1951,
-            field_name: 'description',
-            display_name: 'Description',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1914
-                }
-              ],
-              transform_expr: '`location_description`',
-              output_soql_type: 'text',
-              id: 1946,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 7,
-            is_primary_key: false,
-            id: 1952,
-            field_name: 'location_description',
-            display_name: 'Location Description',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1915
-                }
-              ],
-              transform_expr: 'to_boolean(`arrest`)',
-              output_soql_type: 'checkbox',
-              id: 1947,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 8,
-            is_primary_key: false,
-            id: 1953,
-            field_name: 'arrest',
-            display_name: 'Arrest',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1916
-                }
-              ],
-              transform_expr: 'to_boolean(`domestic`)',
-              output_soql_type: 'checkbox',
-              id: 1948,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 9,
-            is_primary_key: false,
-            id: 1954,
-            field_name: 'domestic',
-            display_name: 'Domestic',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1917
-                }
-              ],
-              transform_expr: 'to_number(`beat`)',
-              output_soql_type: 'number',
-              id: 1949,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 10,
-            is_primary_key: false,
-            id: 1955,
-            field_name: 'beat',
-            display_name: 'Beat',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1918
-                }
-              ],
-              transform_expr: 'to_number(`district`)',
-              output_soql_type: 'number',
-              id: 1950,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 11,
-            is_primary_key: false,
-            id: 1956,
-            field_name: 'district',
-            display_name: 'District',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1919
-                }
-              ],
-              transform_expr: 'to_number(`ward`)',
-              output_soql_type: 'number',
-              id: 1951,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 12,
-            is_primary_key: false,
-            id: 1957,
-            field_name: 'ward',
-            display_name: 'Ward',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1920
-                }
-              ],
-              transform_expr: 'to_number(`community_area`)',
-              output_soql_type: 'number',
-              id: 1952,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 13,
-            is_primary_key: false,
-            id: 1958,
-            field_name: 'community_area',
-            display_name: 'Community Area',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1921
-                }
-              ],
-              transform_expr: '`fbi_code`',
-              output_soql_type: 'text',
-              id: 1953,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 14,
-            is_primary_key: false,
-            id: 1959,
-            field_name: 'fbi_code',
-            display_name: 'FBI Code',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1922
-                }
-              ],
-              transform_expr: 'to_number(`x_coordinate`)',
-              output_soql_type: 'number',
-              id: 1954,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 15,
-            is_primary_key: false,
-            id: 1960,
-            field_name: 'x_coordinate',
-            display_name: 'X Coordinate',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1923
-                }
-              ],
-              transform_expr: 'to_number(`y_coordinate`)',
-              output_soql_type: 'number',
-              id: 1955,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 16,
-            is_primary_key: false,
-            id: 1961,
-            field_name: 'y_coordinate',
-            display_name: 'Y Coordinate',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1924
-                }
-              ],
-              transform_expr: 'to_number(`year`)',
-              output_soql_type: 'number',
-              id: 1956,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 17,
-            is_primary_key: false,
-            id: 1962,
-            field_name: 'year',
-            display_name: 'Year',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1925
-                }
-              ],
-              transform_expr: 'to_floating_timestamp(`updated_on`)',
-              output_soql_type: 'calendar_date',
-              id: 1957,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 18,
-            is_primary_key: false,
-            id: 1963,
-            field_name: 'updated_on',
-            display_name: 'Updated On',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1926
-                }
-              ],
-              transform_expr: 'to_number(`latitude`)',
-              output_soql_type: 'number',
-              id: 1958,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 19,
-            is_primary_key: false,
-            id: 1964,
-            field_name: 'latitude',
-            display_name: 'Latitude',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1927
-                }
-              ],
-              transform_expr: 'to_number(`longitude`)',
-              output_soql_type: 'number',
-              id: 1959,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 20,
-            is_primary_key: false,
-            id: 1965,
-            field_name: 'longitude',
-            display_name: 'Longitude',
-            description: ''
-          },
-          {
-            transform: {
-              transform_input_columns: [
-                {
-                  input_column_id: 1928
-                }
-              ],
-              transform_expr: '`location`',
-              output_soql_type: 'text',
-              id: 1960,
-              failed_at: null,
-              completed_at: '2017-06-14T00:37:21',
-              attempts: 0
-            },
-            position: 21,
-            is_primary_key: false,
-            id: 1966,
-            field_name: 'location',
-            display_name: 'Location',
-            description: ''
-          }
-        ],
         completed_at: new Date(1497400641000)
       }
     },

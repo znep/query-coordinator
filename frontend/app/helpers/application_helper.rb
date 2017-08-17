@@ -387,6 +387,8 @@ module ApplicationHelper
   # Returns flashes with the markup the Socrata Styleguide expects to style for
   # alerts. Used on dataset landing page and hopefully other places moving forward
   def display_styleguide_flashes
+    return if @suppress_flashes
+
     flash_obj = formatted_flashes
 
     return if flash_obj.blank?
@@ -631,7 +633,9 @@ module ApplicationHelper
       "action_#{controller.controller_name}_#{controller.action_name}",
       @suppress_chrome ? 'suppressChrome' : nil,
       "locale_#{I18n.locale}",
-      @body_class
+      @body_class,
+      # EN-17053/EN-17170 - Make the grid view look more contemporary
+      FeatureFlags.derive(nil, request)[:enable_nbe_only_grid_view_optimizations] ? 'styleguide' : ''
     ].compact.join(' ')
   end
 
@@ -917,6 +921,15 @@ module ApplicationHelper
     end
   end
 
+  # this should be called in templates with an array of translation keys
+  # can be called multiple times to build up keys across templates
+  # the translations themselves are eventually rendered in the layout
+  # e.x.
+  # <% translations_for('screens.sign_in', 'screens.sign_up', 'account.common') %>
+  def translations_for(*partial_paths)
+    @translation_keys = (@translation_keys ||= []) + Array(partial_paths).flatten
+  end
+
   def render_mixpanel_config
     mixpanel_config = {
       :token => APP_CONFIG.mixpanel_token
@@ -1014,7 +1027,13 @@ module ApplicationHelper
   end
 
   def current_user_can_create_story?
-    FeatureFlags.derive.stories_enabled && current_user.has_right?(UserRights::CREATE_STORY)
+    FeatureFlags.derive(nil, request).stories_enabled &&
+      current_user.has_right?(UserRights::CREATE_STORY)
+  end
+
+  def current_user_can_create_measure?
+    # TODO: Pending the future of rights management, add an appropriate rights check.
+    op_standalone_measures_enabled?
   end
 
   # ONCALL-3032: Spam e-mail sent via the Socrata platform

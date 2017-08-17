@@ -51,6 +51,8 @@ class UserSessionsController < ApplicationController
       # If specifying a return_to param, let that override request.referer
       session[:return_to] ||= params[:return_to] || request.referer
     end
+
+    render :layout => 'styleguide' if use_auth0?
   end
 
   def expire_if_idle

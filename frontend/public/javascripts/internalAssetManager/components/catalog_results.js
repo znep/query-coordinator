@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+
 import ResultListTable from './result_list_table';
 import Pager from 'common/components/Pager';
 import ResultCount from './result_count';
-import { changePage } from '../actions/pager';
+import AssetInventoryLink from './asset_inventory_link';
+import * as pager from '../actions/pager';
 import * as filters from '../actions/filters';
-import _ from 'lodash';
-import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
-import { ClearFilters } from './clear_filters';
+import Autocomplete from 'common/autocomplete/components/Autocomplete';
+import { getCeteraResults } from 'common/autocomplete/Util';
+import ClearFilters from './clear_filters';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -20,26 +23,11 @@ export class CatalogResults extends Component {
     };
 
     _.bindAll(this,
-      'changePage',
-      'changeQ',
-      'clearSearch',
       'renderError',
       'renderFooter',
       'renderTable',
       'renderTopbar'
     );
-  }
-
-  changeQ(query) {
-    this.props.changeQ(query);
-  }
-
-  changePage(pageNumber) {
-    this.props.changePage(pageNumber);
-  }
-
-  clearSearch() {
-    this.props.clearSearch();
   }
 
   renderError() {
@@ -56,28 +44,32 @@ export class CatalogResults extends Component {
   }
 
   renderTopbar() {
-    const collapsible = false;
     const autocompleteOptions = {
-      anonymous: false,
-      collapsible,
       animate: true,
+      anonymous: false,
+      collapsible: false,
+      currentQuery: this.props.currentQuery,
+      getSearchResults: getCeteraResults,
+      millisecondsBeforeSearch: 60,
       mobile: false,
-      onChooseResult: this.changeQ,
-      onClearSearch: this.clearSearch
+      onChooseResult: this.props.changeQ,
+      onClearSearch: this.props.clearSearch
     };
 
-    const defaultState = { collapsed: collapsible };
+    const { allFilters, clearAllFilters, clearSearch } = this.props;
 
-    const { allFilters, clearAllFilters } = this.props;
+    const clearFiltersProps = {
+      allFilters,
+      buttonStyle: true,
+      clearAllFilters,
+      clearSearch,
+      showTitle: false
+    };
 
     return (
       <div className="topbar clearfix">
-        <StatefulAutocomplete defaultState={defaultState} options={autocompleteOptions} />
-        <ClearFilters
-          allFilters={allFilters}
-          buttonStyle
-          clearAllFilters={clearAllFilters}
-          showTitle={false} />
+        <Autocomplete {...autocompleteOptions} />
+        <ClearFilters {...clearFiltersProps} />
       </div>
     );
   }
@@ -109,7 +101,7 @@ export class CatalogResults extends Component {
     }
 
     const pagerProps = {
-      changePage: this.changePage,
+      changePage: this.props.changePage,
       currentPage: pageNumber,
       resultCount: resultSetSize,
       resultsPerPage: RESULTS_PER_PAGE
@@ -123,8 +115,13 @@ export class CatalogResults extends Component {
 
     return (
       <div className="catalog-footer">
-        <Pager {...pagerProps} />
-        <ResultCount {...resultCountProps} />
+        <div className="pagination-and-result-count">
+          <Pager {...pagerProps} />
+          <ResultCount {...resultCountProps} />
+        </div>
+        <div className="asset-inventory-link-wrapper">
+          <AssetInventoryLink />
+        </div>
       </div>
     );
   }
@@ -147,6 +144,7 @@ CatalogResults.propTypes = {
   changeQ: PropTypes.func.isRequired,
   clearSearch: PropTypes.func,
   clearAllFilters: PropTypes.func.isRequired,
+  currentQuery: PropTypes.string,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   fetchingResultsErrorType: PropTypes.string,
@@ -156,6 +154,7 @@ CatalogResults.propTypes = {
 };
 
 CatalogResults.defaultProps = {
+  currentQuery: '',
   fetchingResults: false,
   fetchingResultsError: false,
   pageNumber: 1
@@ -163,6 +162,7 @@ CatalogResults.defaultProps = {
 
 const mapStateToProps = (state) => ({
   allFilters: state.filters,
+  currentQuery: state.filters.q,
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   fetchingResultsErrorType: state.catalog.fetchingResultsErrorType,
@@ -172,9 +172,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  changePage: (pageNumber) => dispatch(changePage(pageNumber)),
+  changePage: (pageNumber) => dispatch(pager.changePage(pageNumber)),
   changeQ: (query) => dispatch(filters.changeQ(query)),
-  clearAllFilters: () => dispatch(filters.clearAllFilters()),
+  clearAllFilters: (shouldClearSearch) => dispatch(filters.clearAllFilters(shouldClearSearch)),
   clearSearch: () => dispatch(filters.clearSearch())
 });
 

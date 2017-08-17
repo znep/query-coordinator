@@ -147,9 +147,9 @@ const fieldsetEmail = emailVal => {
 };
 
 // DATASET METADATA HELPERS
-// shapeCustomFieldsets : View -> {[string] : Fieldset}
-const shapeCustomFieldsets = view =>
-  view.customMetadataFieldsets
+// shapeCustomFieldsets : Revision -> CustomFieldsets -> {[string] : Fieldset}
+const shapeCustomFieldsets = (revision, customFieldsets) =>
+  customFieldsets
     .map(fieldset => ({
       ...fieldset,
       fields: fieldset.fields
@@ -158,8 +158,8 @@ const shapeCustomFieldsets = view =>
             // they are located in a different place, depending on public/private
             // status of the field
           const value = field.private
-              ? _.get(view, `privateMetadata.custom_fields.${fieldset.name}.${field.name}`, null)
-              : _.get(view, `metadata.custom_fields.${fieldset.name}.${field.name}`, null);
+              ? _.get(revision, `metadata.privateMetadata.custom_fields.${fieldset.name}.${field.name}`, null)
+              : _.get(revision, `metadata.metadata.custom_fields.${fieldset.name}.${field.name}`, null);
 
           const fieldData = FieldDescriptor(
               field.name,
@@ -197,14 +197,14 @@ const shapeCustomFieldsets = view =>
       {}
     );
 
-// makeCustomFieldsets : View -> List Fieldset
-const makeCustomFieldsets = view => {
-  const customFieldsets = shapeCustomFieldsets(view);
-  return Object.keys(customFieldsets).map(key => customFieldsets[key]);
+// makeCustomFieldsets : Revision -> CustomFieldsets -> List Fieldset
+const makeCustomFieldsets = (revision, customFieldsets) => {
+  const customMetadataFieldsets = shapeCustomFieldsets(revision, customFieldsets);
+  return Object.keys(customMetadataFieldsets).map(key => customMetadataFieldsets[key]);
 };
 
-// makeRegularFieldsets : View -> List Fieldsets
-export const makeRegularFieldsets = view => {
+// makeRegularFieldsets : Revision -> List Fieldsets
+export const makeRegularFieldsets = revision => {
   const {
     name,
     description,
@@ -214,22 +214,25 @@ export const makeRegularFieldsets = view => {
     attribution,
     attributionLink,
     privateMetadata
-  } = view;
+  } = revision.metadata;
 
   const email = privateMetadata ? privateMetadata.contactEmail : null;
 
+  const tagsValue = tags || [];
+
   return [
     fieldsetTitleAndDesc(name, description),
-    fieldsetCategoryAndTags(category, tags),
+    fieldsetCategoryAndTags(category, tagsValue),
     fieldsetLicense(licenseId, attribution, attributionLink),
     fieldsetEmail(email)
   ];
 };
 
-// makeFieldsets : View -> {custom : List Fieldset, regular : List Fieldset}
-export const makeFieldsets = view => ({
-  custom: makeCustomFieldsets(view),
-  regular: makeRegularFieldsets(view)
+// makeFieldsets : Revision -> CustomFieldsets ->
+//  {custom : List Fieldset, regular : List Fieldset}
+export const makeFieldsets = (revision, customFieldsets) => ({
+  custom: makeCustomFieldsets(revision, customFieldsets),
+  regular: makeRegularFieldsets(revision)
 });
 
 // DATASET METADATA FIELDSET VALIDATIONS
@@ -257,8 +260,10 @@ const validateFieldsetTitleAndDesc = fieldset => {
 const validateFieldsetCategoryAndTags = fieldset => {
   const model = makeDataModel(fieldset);
 
+  const tagValue = model.tags.value || [];
+
   return Validation.of()
-    .concat(areUnique(model.tags.name, model.tags.value))
+    .concat(areUnique(model.tags.name, tagValue))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };

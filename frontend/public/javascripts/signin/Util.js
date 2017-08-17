@@ -98,37 +98,3 @@ export function renderAlerts(alerts) {
 
   return (<Alerts alerts={messages} />);
 }
-
-/**
- * Handles getting translations out of a translations object
- */
-export class Translate {
-  constructor(translations) {
-    if (_.isEmpty(translations) && blist) {
-      this.translations = blist.translations;
-    } else {
-      this.translations = translations;
-    }
-
-    this.get = this.get.bind(this);
-  }
-
-  /**
-   * key: The key to get from the translations given to the constructor
-   * values: Object with keys to replace in the translation
-   */
-  get(key, values) {
-    const translation = _.get(this.translations, key);
-
-    // if the translation is missing, just return a message saying so
-    // this makes it *much* easier to debug translations strings that are wrong or missing
-    if (_.isEmpty(translation)) {
-      console.warn(`Missing translation for key: ${key}`);
-      return `(missing translation: ${key})`;
-    }
-
-    // replacements come in like %{this}
-    const template = _.template(translation, { interpolate: /%{([\s\S]+?)}/g });
-    return template(values);
-  }
-}

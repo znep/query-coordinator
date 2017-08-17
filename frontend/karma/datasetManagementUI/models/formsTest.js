@@ -6,9 +6,14 @@ import dotProp from 'dot-prop-immutable';
 
 describe('models/forms', () => {
   describe('validateDatasetForm', () => {
+
+    const customMetadataFieldsets = state.entities.views['nn5w-zj56'].customMetadataFieldsets;
+    const revision = state.entities.revisions[187];
+
     it('succeeds if form is valid', () => {
       const { regular, custom } = FormModel.makeFieldsets(
-        state.entities.views['nn5w-zj56']
+        revision,
+        customMetadataFieldsets
       );
 
       const res = FormModel.validateDatasetForm(regular, custom).matchWith({
@@ -21,7 +26,8 @@ describe('models/forms', () => {
 
     it('fails if form is invalid', () => {
       const { regular, custom } = FormModel.makeFieldsets(
-        state.entities.views['nn5w-zj56']
+        revision,
+        customMetadataFieldsets
       );
 
       const [head, ...tail] = regular;

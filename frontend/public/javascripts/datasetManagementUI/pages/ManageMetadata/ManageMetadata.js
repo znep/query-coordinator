@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { editView } from 'reduxStuff/actions/views';
+import { editRevision } from 'reduxStuff/actions/revisions';
 import { addOutputColumns } from 'reduxStuff/actions/outputColumns';
 import {
   dismissMetadataPane,
@@ -13,6 +13,7 @@ import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'reduxStuff/actions/
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import MetadataContent from 'containers/MetadataContentContainer';
 import * as Selectors from 'selectors';
+import { markFormClean, showFormErrors } from 'reduxStuff/actions/forms';
 import * as Links from 'links';
 import { connect } from 'react-redux';
 import { getCurrentColumns } from 'models/forms';
@@ -30,10 +31,10 @@ export class ManageMetadata extends Component {
   }
 
   componentWillMount() {
-    const { view, currentColumns } = this.props;
+    const { revision, currentColumns } = this.props;
 
     this.setState({
-      initialDatasetMetadata: Selectors.datasetMetadata(view),
+      initialDatasetMetadata: Selectors.datasetMetadata(revision.metadata),
       initialColMetadata: currentColumns
     });
   }
@@ -43,36 +44,44 @@ export class ManageMetadata extends Component {
   }
 
   revertChanges() {
-    const { dispatch, params } = this.props;
+    const { dispatch, revision } = this.props;
 
     // The metadata forms connect directly to the store, so if the user clicks
     // cancel, we want to reset the data in the store back to what it was when
     // this component first mounted (which we've cached in the local state here)
     dispatch(
-      editView(params.fourfour, {
-        ...this.state.initialDatasetMetadata,
-        columnFormDirty: false,
-        datasetFormDirty: false
+      editRevision(revision.id, {
+        metadata: this.state.initialDatasetMetadata
       })
     );
 
+    dispatch(markFormClean('datasetForm'));
+    dispatch(markFormClean('columnForm'));
     dispatch(addOutputColumns(this.state.initialColMetadata));
   }
 
   handleSaveClick(e) {
     e.preventDefault();
 
-    const { dispatch, view, currentColumns, outputSchemaId, params } = this.props;
+    const {
+      dispatch,
+      revision,
+      currentColumns,
+      outputSchemaId,
+      datasetFormDirty,
+      columnFormDirty,
+      params
+    } = this.props;
 
-    if (this.onDatasetTab() && view.datasetFormDirty) {
-      dispatch(saveDatasetMetadata(params.fourfour))
+    if (this.onDatasetTab() && datasetFormDirty) {
+      dispatch(saveDatasetMetadata(revision, params))
         .then(() => {
           this.setState({
-            initialDatasetMetadata: Selectors.datasetMetadata(view)
+            initialDatasetMetadata: Selectors.datasetMetadata(revision.metadata)
           });
         })
         .catch(() => console.warn('Save failed'));
-    } else if (view.columnFormDirty) {
+    } else if (columnFormDirty) {
       dispatch(saveColumnMetadata(outputSchemaId, params))
         .then(() => {
           this.setState({
@@ -103,15 +112,15 @@ export class ManageMetadata extends Component {
   }
 
   handleTabClick() {
-    const { dispatch, params } = this.props;
+    const { dispatch } = this.props;
 
     dispatch(hideFlashMessage());
-
-    dispatch(editView(params.fourfour, { showErrors: true }));
+    dispatch(showFormErrors('datasetForm'));
+    dispatch(showFormErrors('columnForm'));
   }
 
   render() {
-    const { columnsExist, view, outputSchemaId, params } = this.props;
+    const { columnsExist, outputSchemaId, datasetFormDirty, columnFormDirty, params } = this.props;
 
     const metadataContentProps = {
       onDatasetTab: this.onDatasetTab(),
@@ -128,14 +137,14 @@ export class ManageMetadata extends Component {
         operation: SAVE_DATASET_METADATA,
         params: {},
         onClick: this.handleSaveClick,
-        forceDisable: !view.datasetFormDirty
+        forceDisable: !datasetFormDirty
       };
     } else {
       saveBtnProps = {
         operation: SAVE_COLUMN_METADATA,
         params: {},
         onClick: this.handleSaveClick,
-        forceDisable: !view.columnFormDirty
+        forceDisable: !columnFormDirty
       };
     }
 
@@ -161,7 +170,9 @@ export class ManageMetadata extends Component {
 }
 
 ManageMetadata.propTypes = {
-  view: PropTypes.object.isRequired,
+  revision: PropTypes.object.isRequired,
+  datasetFormDirty: PropTypes.bool.isRequired,
+  columnFormDirty: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   currentColumns: PropTypes.object.isRequired,
@@ -171,14 +182,20 @@ ManageMetadata.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities }, ownProps) => {
+const mapStateToProps = ({ entities, ui }, ownProps) => {
   const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
+  const revision = _.find(
+    entities.revisions,
+    r => r.revision_seq === _.toNumber(ownProps.params.revisionSeq)
+  );
+
   return {
-    view: entities.views[ownProps.params.fourfour],
     path: ownProps.route.path,
-    params: ownProps.params,
+    datasetFormDirty: ui.forms.datasetForm.isDirty,
+    columnFormDirty: ui.forms.columnForm.isDirty,
     columnsExist: !_.isEmpty(entities.output_columns),
     outputSchemaId,
+    revision,
     entities: entities,
     currentColumns: _.chain(getCurrentColumns(outputSchemaId, entities))
       .map(restoreColumn)

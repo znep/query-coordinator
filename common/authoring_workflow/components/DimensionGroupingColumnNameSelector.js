@@ -61,17 +61,12 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
     };
 
     return (
-      <div className="dimension-grouping-column-name-selector-container">
-        <div className="authoring-field">
-          <BlockLabel
-            title={I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle`)}
-            htmlFor={dimensionGroupingColumnNameAttributes.id}
-            description={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')} />
-          <Dropdown {...dimensionGroupingColumnNameAttributes} />
-        </div>
-        <p className="authoring-field-description">
-          <small>{I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')}</small>
-        </p>
+      <div className="authoring-field">
+        <BlockLabel
+          title={I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle`)}
+          htmlFor={dimensionGroupingColumnNameAttributes.id}
+          description={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')} />
+        <Dropdown {...dimensionGroupingColumnNameAttributes} />
       </div>
     );
   }

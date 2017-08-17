@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import _ from 'lodash';
 import styles from './alerts.scss';
 
 const Alerts = ({ alerts }) => {

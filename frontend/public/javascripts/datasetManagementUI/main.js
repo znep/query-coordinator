@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import Perf from 'react-addons-perf';
-import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
@@ -17,14 +16,6 @@ if (window.serverConfig.environment === 'development') {
   // 126728 is Publishing airbrake project id
   Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
-
-store.dispatch(
-  bootstrapApp(
-    window.initialState.view,
-    window.initialState.revision,
-    window.initialState.customMetadataFieldsets
-  )
-);
 
 browserHistory.listen(location => {
   store.dispatch(addLocation(location));

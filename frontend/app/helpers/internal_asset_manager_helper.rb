@@ -52,25 +52,32 @@ module InternalAssetManagerHelper
     javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")
   end
 
+  # This method provides the initial redux store state for the internal asset manager using default values
+  # along with any filters, search terms, etc. on the URL. After the page has loaded, the Redux store is the
+  # source of truth and any changes to it will be reflected in the URL.
   def render_internal_asset_manager_initial_state
-    javascript_tag(%Q(
-      window.initialState = {
-        assetCounts: {
-          values: #{@asset_counts.to_json}
-        },
-        catalog: {
-          columns: #{internal_asset_manager_table_columns},
-          results: #{@catalog_results.to_json},
-          resultSetSize: #{@catalog_result_set_size}
-        },
-        domainCategories: #{@domain_categories.to_json},
-        domainTags: #{@domain_tags.to_json},
-        initialFilters: #{@initial_filters.to_json},
-        initialOrder: #{@initial_order.to_json},
-        initialPage: #{@initial_page.to_json},
-        usersList: #{@users_list.to_json}
-      };
-    ))
+    initial_state = {
+      :assetCounts => {
+        :values => @asset_counts
+      },
+      :assetInventoryViewModel => asset_inventory_view_model,
+      :autocomplete => {
+        query: params[:q].to_s
+      },
+      :catalog => {
+        :columns => internal_asset_manager_table_columns,
+        :results => @catalog_results,
+        :resultSetSize => @catalog_result_set_size
+      },
+      :domainCategories => @domain_categories,
+      :domainTags => @domain_tags,
+      :initialFilters => @initial_filters,
+      :initialOrder => @initial_order,
+      :initialPage => @initial_page,
+      :q => params[:q].to_s,
+      :usersList => @users_list
+    }
+    javascript_tag("window.initialState = #{json_escape(initial_state.to_json)}")
   end
 
   # Defines the default order of the columns for the internal asset manager table.

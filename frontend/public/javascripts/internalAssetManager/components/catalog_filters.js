@@ -7,8 +7,9 @@ import { Dropdown } from 'common/components';
 import SearchboxFilter from './filters/searchbox_filter';
 import * as filterOptions from '../lib/catalog_filter_options';
 import * as filters from '../actions/filters';
-import { ClearFilters } from './clear_filters';
+import ClearFilters from './clear_filters';
 import { FeatureFlags } from 'common/feature_flags';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class CatalogFilters extends React.Component {
   constructor(props) {
@@ -19,7 +20,6 @@ export class CatalogFilters extends React.Component {
     };
 
     _.bindAll(this,
-      'getTranslation',
       'handleFilterContentToggleClick',
       'renderFilterCheckbox',
       'renderFilterDropdown'
@@ -57,9 +57,29 @@ export class CatalogFilters extends React.Component {
   }
 
   render() {
-    const { activeTab, allFilters, assetTypes, authority, category, changeAssetType, changeAuthority,
-      changeCategory, changeOwner, changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags,
-      onlyRecentlyViewed, ownedBy, tag, toggleRecentlyViewed, usersList, visibility } = this.props;
+    const {
+      activeTab,
+      allFilters,
+      assetTypes,
+      authority,
+      category,
+      changeAssetType,
+      changeAuthority,
+      changeCategory,
+      changeOwner,
+      changeTag,
+      changeVisibility,
+      clearAllFilters,
+      domainCategories,
+      domainTags,
+      I18n,
+      onlyRecentlyViewed,
+      ownedBy,
+      tag,
+      toggleRecentlyViewed,
+      usersList,
+      visibility
+    } = this.props;
 
     const { filterContentOpen } = this.state;
 
@@ -71,9 +91,9 @@ export class CatalogFilters extends React.Component {
         onClick={this.handleFilterContentToggleClick}
         onKeyDown={handleEnter(this.handleFilterContentToggleClick, true)}>
         <span
-          aria-label={this.getTranslation('mobile.expand')}
+          aria-label={I18n.t('internal_asset_manager.filters.mobile.expand')}
           className="socrata-icon-arrow-left"
-          title={this.getTranslation('mobile.expand')} />
+          title={I18n.t('internal_asset_manager.filters.mobile.expand')} />
       </button> : null;
 
     const closeFiltersButton = filterContentOpen ?
@@ -81,16 +101,16 @@ export class CatalogFilters extends React.Component {
         className="close-filters filter-content-toggle"
         onClick={this.handleFilterContentToggleClick}
         onKeyDown={handleEnter(this.handleFilterContentToggleClick, true)}>
-        {this.getTranslation('mobile.hide')}
+        {I18n.t('internal_asset_manager.filters.mobile.hide')}
         <span
-          aria-label={this.getTranslation('mobile.contract')}
+          aria-label={I18n.t('internal_asset_manager.filters.mobile.contract')}
           className="socrata-icon-arrow-right"
-          title={this.getTranslation('mobile.contract')} />
+          title={I18n.t('internal_asset_manager.filters.mobile.contract')} />
       </button> : null;
 
     const filterHeader = (
       <div className="catalog-filters-header">
-        <ClearFilters allFilters={allFilters} clearAllFilters={clearAllFilters} />
+        <ClearFilters {...this.props} allFilters={allFilters} clearAllFilters={clearAllFilters} />
         {closeFiltersButton}
       </div>
     );
@@ -99,7 +119,7 @@ export class CatalogFilters extends React.Component {
       <div className="filter-section recently-viewed">
         {this.renderFilterCheckbox({
           inputId: 'filter-recently-viewed',
-          labelText: this.getTranslation('recently_viewed.label'),
+          labelText: I18n.t('internal_asset_manager.filters.recently_viewed.label'),
           isChecked: onlyRecentlyViewed,
           onChange: toggleRecentlyViewed
         })}
@@ -113,7 +133,7 @@ export class CatalogFilters extends React.Component {
 
     const assetTypesFilterSection = (
       <div className="filter-section asset-types">
-        <label className="filter-label">{this.getTranslation('asset_types.label')}</label>
+        <label className="filter-label">{I18n.t('internal_asset_manager.filters.asset_types.label')}</label>
         {this.renderFilterDropdown({
           options: assetTypeOptions,
           value: assetTypes,
@@ -124,7 +144,7 @@ export class CatalogFilters extends React.Component {
 
     const authorityFilterSection = activeTab === 'myAssets' ? null : (
       <div className="filter-section authority">
-        <label className="filter-label">{this.getTranslation('authority.label')}</label>
+        <label className="filter-label">{I18n.t('internal_asset_manager.filters.authority.label')}</label>
         {this.renderFilterDropdown({
           options: filterOptions.authorityOptions,
           value: authority,
@@ -136,20 +156,20 @@ export class CatalogFilters extends React.Component {
     const ownedByFilterSection = activeTab === 'myAssets' ? null : (
       <div className="filter-section owned-by">
         <label className="filter-label" htmlFor="owned-by-filter">
-          {this.getTranslation('owned_by.label')}
+          {I18n.t('internal_asset_manager.filters.owned_by.label')}
         </label>
         <SearchboxFilter
           inputId="owned-by-filter"
           options={_.map(usersList, (user) => ({ title: user.displayName, value: user.id }))}
           onSelection={changeOwner}
-          placeholder={this.getTranslation('owned_by.placeholder')}
+          placeholder={I18n.t('internal_asset_manager.filters.owned_by.placeholder')}
           value={ownedBy.displayName} />
       </div>
     );
 
     const visibilityFilterSection = (
       <div className="filter-section visibility">
-        <label className="filter-label">{this.getTranslation('visibility.label')}</label>
+        <label className="filter-label">{I18n.t('internal_asset_manager.filters.visibility.label')}</label>
         {this.renderFilterDropdown({
           options: filterOptions.visibilityOptions,
           value: visibility,
@@ -161,25 +181,27 @@ export class CatalogFilters extends React.Component {
     const categoryFilterSection = (
       <div className="filter-section category">
         <label className="filter-label" htmlFor="category-filter">
-          {this.getTranslation('category.label')}
+          {I18n.t('internal_asset_manager.filters.category.label')}
         </label>
         <SearchboxFilter
           inputId="category-filter"
           options={_.map(domainCategories, (curCategory) => ({ title: curCategory, value: curCategory }))}
           onSelection={changeCategory}
-          placeholder={this.getTranslation('category.placeholder')}
+          placeholder={I18n.t('internal_asset_manager.filters.category.placeholder')}
           value={category} />
       </div>
     );
 
     const tagsFilterSection = (
       <div className="filter-section tags">
-        <label className="filter-label" htmlFor="tag-filter">{this.getTranslation('tags.label')}</label>
+        <label className="filter-label" htmlFor="tag-filter">
+          {I18n.t('internal_asset_manager.filters.tags.label')}
+        </label>
         <SearchboxFilter
           inputId="tag-filter"
           options={_.map(domainTags, (curTag) => ({ title: curTag, value: curTag }))}
           onSelection={changeTag}
-          placeholder={this.getTranslation('tags.placeholder')}
+          placeholder={I18n.t('internal_asset_manager.filters.tags.placeholder')}
           value={tag} />
       </div>
     );
@@ -220,6 +242,7 @@ CatalogFilters.propTypes = {
   clearAllFilters: PropTypes.func.isRequired,
   domainCategories: PropTypes.array.isRequired,
   domainTags: PropTypes.array.isRequired,
+  I18n: PropTypes.object.isRequired,
   onlyRecentlyViewed: PropTypes.bool.isRequired,
   ownedBy: PropTypes.shape({
     displayName: PropTypes.string,
@@ -257,4 +280,4 @@ const mapDispatchToProps = (dispatch) => ({
   toggleRecentlyViewed: () => dispatch(filters.toggleRecentlyViewed())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CatalogFilters);
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(CatalogFilters));

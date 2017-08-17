@@ -1,8 +1,9 @@
 <div
   class="searchbox"
-  data-catalog-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
-  data-catalog-autocomplete-disable-animation="true"
-  data-catalog-autocomplete-mobile="<%= local_assigns[:mobile] == true %>">
+  data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
+  data-autocomplete-collapsible="true"
+  data-autocomplete-disable-animation="true"
+  data-autocomplete-mobile="<%= local_assigns[:mobile] == true %>">
   <form action="<%= path %>" method="get">
     <fieldset>
       <% unless local_assigns[:mobile] %>

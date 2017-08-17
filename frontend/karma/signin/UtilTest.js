@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import * as Util from 'Util';
 
 describe('Util', () => {
@@ -41,8 +41,8 @@ describe('Util', () => {
 
   describe('findForcedConnection', () => {
     it('finds forced connections', () => {
-      expect(Util.findForcedConnection('cool.guy@some-domain.gov', forcedConnections)).to.equal(forcedConnections[1]);
-      expect(Util.findForcedConnection('cool.person.CTR@some-domain.gov', forcedConnections)).to.equal(forcedConnections[0]);
+      assert.equal(Util.findForcedConnection('cool.guy@some-domain.gov', forcedConnections), forcedConnections[1]);
+      assert.equal(Util.findForcedConnection('cool.person.CTR@some-domain.gov', forcedConnections), forcedConnections[0]);
     });
 
     it('returns nothing if no forced connection is found', () => {
@@ -54,8 +54,8 @@ describe('Util', () => {
 
   describe('findEmailDomainConnection', () => {
     it('finds connection by email domain', () => {
-      expect(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, false)).to.equal(auth0Connections[0]);
-      expect(Util.findEmailDomainConnection('cool.gal@somewhere-else.gov', auth0Connections, false)).to.equal(auth0Connections[2]);
+      assert.equal(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, false), auth0Connections[0]);
+      assert.equal(Util.findEmailDomainConnection('cool.gal@somewhere-else.gov', auth0Connections, false), auth0Connections[2]);
     });
 
     it('returns nothing when email does not match a connection', () => {
@@ -85,11 +85,11 @@ describe('Util', () => {
         }
       ];
 
-      expect(Util.findConnection('spectacular.person@some-domain.gov', someConnection, forcedConnection, false)).to.equal(forcedConnection[0].connection);
+      assert.equal(Util.findConnection('spectacular.person@some-domain.gov', someConnection, forcedConnection, false), forcedConnection[0].connection);
     });
 
     it('returns regular connection if no forced connection is found', () => {
-      expect(Util.findConnection('spectacular.dude@socrata.com', auth0Connections, forcedConnections, false)).to.equal('socrata-okta-sts');
+      assert.equal(Util.findConnection('spectacular.dude@socrata.com', auth0Connections, forcedConnections, false), 'socrata-okta-sts');
     });
 
     it('returns nothing if no connection is found', () => {
@@ -98,45 +98,6 @@ describe('Util', () => {
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
       assert.isNotOk(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true));
-    });
-  });
-
-  describe('translate', () => {
-    const translator = new Util.Translate({
-      a: {
-        very: {
-          deep: {
-            translation: 'hello'
-          }
-        }
-      },
-      translation: {
-        with: {
-          replacements: "what's up %{name}",
-          multiple_replacements: "hey there %{name} you're very %{adjective}"
-        }
-      }
-    });
-
-    it('gets nested translations', () => {
-      expect(translator.get('a.very.deep.translation')).to.equal('hello');
-    });
-
-    it('replaces strings properly', () => {
-      expect(translator.get('translation.with.replacements', { name: 'dude' })).to.equal("what's up dude")
-    });
-
-    it('replaces multiple strings properly', () => {
-      expect(
-        translator.get(
-          'translation.with.multiple_replacements',
-          { name: 'dudette', adjective: 'cool'}
-        )
-      ).to.equal("hey there dudette you're very cool")
-    });
-
-    it('returns errors', () => {
-      expect(translator.get('a.missing.translation')).to.equal('(missing translation: a.missing.translation)')
     });
   });
 });

@@ -75,8 +75,6 @@ export function getCeteraResults(query, callback, numberOfResults, anonymous) {
       searchResults.results = _.take(searchResults.results, number);
       callback(searchResults);
     },
-    (error) => {
-      console.error('Failed to fetch data', error);
-    }
+    (error) => console.error('Failed to fetch data', error)
   ).catch((ex) => console.error('Error parsing JSON', ex));
 }

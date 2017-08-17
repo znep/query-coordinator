@@ -2,60 +2,69 @@ import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import { SocrataIcon } from 'common/components';
 import _ from 'lodash';
-import PollingInput from './PollingInput';
+import I18n from 'common/i18n';
 import styles from './sign-in-form.scss';
 
 class PasswordInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.renderDefault = this.renderDefault.bind(this);
-  }
-
-  renderSsoEnabled() {
+  renderSsoEnabled(isUsingSingleSignOn) {
     return (
-      <div>
+      <div
+        className="signin-sso-enabled-container"
+        style={{ visibility: !isUsingSingleSignOn ? 'hidden' : 'visible' }}
+        styleName="sso-enabled-container">
         <div styleName="icon-container">
           <SocrataIcon name="private" />
         </div>
         <div
           className="signin-password-sso-enabled-text"
           styleName="sso-enabled-text">
-            {this.props.translate('screens.sign_in.sso_enabled')}
+            {I18n.t('screens.sign_in.sso_enabled')}
         </div>
       </div>
     );
   }
 
-  renderDefault() {
-    const { translate, onChange } = this.props;
+  renderInput(isUsingSingleSignOn) {
+    const { onChange } = this.props;
     return (
-      <div>
+      <div
+        className="signin-password-input-container"
+        style={{ visibility: isUsingSingleSignOn ? 'hidden' : 'visible' }}>
         <div styleName="icon-container">
           <SocrataIcon name="private" />
         </div>
-        <PollingInput
+        <input
           name="user_session[password]"
-          aria-label={translate('screens.sign_in.form.password_placeholder')}
+          aria-label={I18n.t('screens.sign_in.form.password_placeholder')}
           styleName="input-password"
           type="password"
-          placeholder={translate('screens.sign_in.form.password_placeholder')}
+          placeholder={I18n.t('screens.sign_in.form.password_placeholder')}
           onChange={onChange} />
       </div>
       );
   }
 
   render() {
-    if (_.isEmpty(this.props.connectionName)) {
-      return this.renderDefault();
-    } else {
-      return this.renderSsoEnabled();
-    }
+    const isUsingSingleSignOn = !_.isEmpty(this.props.connectionName);
+
+    // Note that both the input and the "SSO enabled" text are rendered
+    // but their visibility is toggled by whether or not we have been
+    // passed a connection name via props.
+    //
+    // Originally, this component conditionally rendered one or another
+    // but some browser plugins (i.e. lastpass) would detect the form "changing"
+    // and "helpfully" fill it back in, making it impossible to clear out the inputs
+    return (
+      <div>
+        {this.renderInput(isUsingSingleSignOn)}
+        {this.renderSsoEnabled(isUsingSingleSignOn)}
+      </div>
+    );
   }
 }
 
 PasswordInput.propTypes = {
   onChange: PropTypes.func.isRequired,
-  translate: PropTypes.func.isRequired,
   connectionName: PropTypes.string
 };
 

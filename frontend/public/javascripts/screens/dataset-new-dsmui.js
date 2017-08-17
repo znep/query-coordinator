@@ -85,7 +85,7 @@ function createDataset() {
         dataType: 'json',
         success: function() {
           document.location =
-            (locale ? locale[0] : '/') + 'd/' + newView.id + '/revisions/0';
+            (locale ? locale[0] : '/') + 'd/' + newView.id + '/manage/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
           handleRevisionError(

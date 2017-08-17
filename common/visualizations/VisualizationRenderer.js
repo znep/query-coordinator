@@ -145,8 +145,10 @@ export const VisualizationRenderer = function(vif, element, options) {
       this.destroy();
     }
 
-    this.vif = newVif;
-    render();
+    if (!_.isEqual(this.vif, newVif)) {
+      this.vif = newVif;
+      render();
+    }
   };
 
   this.destroy = () => {

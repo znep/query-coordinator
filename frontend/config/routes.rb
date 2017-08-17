@@ -446,7 +446,7 @@ Rails.application.routes.draw do
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
     scope '/:category/:view_name/:id', :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
-      get '/:row_id', :action => 'show', :as => :view_row, :constraints => { :row_id => /\d+/ }
+      get '/:row_id', :action => 'show', :as => :view_row, :constraints => { :row_id => /\d+/ }, :bypass_dslp => true
       get '/data', :action => 'show', :as => :data_grid, :bypass_dslp => true
       get '/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get '/edit', :action => 'edit', :as => :edit_view
@@ -455,8 +455,8 @@ Rails.application.routes.draw do
       get '/stats', :action => 'stats', :as => :view_stats
       get '/form_success', :action => 'form_success', :as => :view_form_success
       get '/about', :action => 'about', :as => :about_view
-      get '/revisions/current(*rest_of_path)', :action => 'current_revision', :as => :current_revision
-      get '/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision', :as => :show_revision
+      get '/manage/revisions/current(*rest_of_path)', :action => 'current_revision', :as => :current_revision
+      get '/manage(*rest_of_path)', :action => 'dsmui', :as => :show_revision
       get '/visualization', :action => 'create_visualization_canvas'
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
@@ -495,10 +495,10 @@ Rails.application.routes.draw do
       get 'd/:id/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
       get 'd/:id/edit', :action => 'edit'
 
-      get 'd/:id/revisions/current(*rest_of_path)', :action => 'current_revision'
-      get 'd/:id/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision'
+      get 'd/:id/manage/revisions/current(*rest_of_path)', :action => 'current_revision'
+      get 'd/:id/manage(*rest_of_path)', :action => 'dsmui'
 
-      get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
+      get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}, :bypass_dslp => true
     end
 
     # Semantic web cannoical URLs
@@ -531,6 +531,7 @@ Rails.application.routes.draw do
 
     if Frontend.auth0_configured?
       scope :protocol => 'https' do
+        get '/auth/auth0/connections' => 'auth0#connections', :as => 'auth0_connections'
         get '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
         match '/auth/auth0/link' => 'auth0#link', :as => 'auth0_link', via: [:get, :post]
       end

@@ -65,5 +65,10 @@ module SocrataSiteChrome
     def can_create_stories?
       has_right?('create_story')
     end
+
+    def can_create_measures?
+      # TODO: Pending the future of rights management, add an appropriate rights check.
+      true
+    end
   end
 end

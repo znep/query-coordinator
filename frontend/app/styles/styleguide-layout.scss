@@ -13,6 +13,10 @@ body {
 }
 
 main {
-  flex: 1;
+  flex: 1 0 100vh;
   flex-basis: auto;
+}
+
+header, footer {
+  flex-shrink: 0;
 }

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
-import { getSearchUrl } from '../../Util';
 import { resultFocusChanged, resultVisibilityChanged, queryChanged } from '../../actions';
 import Result from './Result';
 import styles from './results.scss';
@@ -57,20 +56,23 @@ class Results extends React.Component {
     }
 
     // Enter searches for selected result or what's in the input
-    if (event.keyCode === 13 && hasFocusedResult) {
+    if (event.keyCode === 13) {
       if (_.isEmpty(results)) {
         return;
       }
 
-      // goto search if we have a result
-      const result = results[focusedResult];
-      if (!_.isUndefined(result)) {
-        // set the textbox to be what was clicked and close the results
-        onQueryChanged(result.title);
-        onResultsVisibilityChanged(false);
-        onChooseResult(result.title);
+      if (hasFocusedResult) {
+        // goto search if we have a result
+        const result = results[focusedResult];
+        if (!_.isUndefined(result)) {
+          // set the textbox to be what was clicked and close the results
+          onQueryChanged(result.title);
+          onChooseResult(result.title);
+        }
       }
-    }
+
+      onResultsVisibilityChanged(false);
+   }
   }
 
   renderResults() {
@@ -118,11 +120,15 @@ Results.defaultProps = {
   results: []
 };
 
-const mapStateToProps = (state) => ({
-  results: _.isEmpty(state.searchResults) ? [] : state.searchResults.results,
-  visible: state.resultsVisible,
-  focusedResult: state.focusedResult
-});
+const mapStateToProps = (state) => {
+  const { focusedResult, resultsVisible, searchResults } = state.autocomplete;
+
+  return {
+    results: _.isEmpty(searchResults) ? [] : searchResults.results,
+    visible: resultsVisible,
+    focusedResult: focusedResult
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   onResultFocusChanged: (newFocus) => { dispatch(resultFocusChanged(newFocus)); },

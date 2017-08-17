@@ -122,11 +122,12 @@ export class ShowOutputSchema extends Component {
       canApplyRevision,
       numLoadsInProgress,
       saveCurrentOutputSchema,
-      goHome,
-      routing
+      goToRevisionBase,
+      params
     } = this.props;
 
     const path = {
+      revisionSeq: params.revisionSeq,
       sourceId: source.id,
       inputSchemaId: inputSchema.id,
       outputSchemaId: outputSchema.id
@@ -138,8 +139,8 @@ export class ShowOutputSchema extends Component {
 
     return (
       <div className={styles.outputSchemaContainer}>
-        <Modal fullScreen onDismiss={goHome}>
-          <ModalHeader onDismiss={goHome}>
+        <Modal fullScreen onDismiss={goToRevisionBase}>
+          <ModalHeader onDismiss={goToRevisionBase}>
             <UploadBreadcrumbs />
           </ModalHeader>
           <ModalContent>
@@ -195,7 +196,7 @@ export class ShowOutputSchema extends Component {
                   direction="right"
                   scrollToColIdx={this.scrollToColIdx} />}
             </div>
-            <PagerBar path={path} routing={routing} displayState={displayState} />
+            <PagerBar path={path} displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>
@@ -203,7 +204,7 @@ export class ShowOutputSchema extends Component {
 
             <div>
               <ApiCallButton
-                onClick={() => saveCurrentOutputSchema(revision, outputSchema.id)}
+                onClick={() => saveCurrentOutputSchema(revision, outputSchema.id, params)}
                 operation={SAVE_CURRENT_OUTPUT_SCHEMA}
                 params={{ outputSchemaId: outputSchema.id }}>
                 {I18n.home_pane.save_for_later}
@@ -225,13 +226,13 @@ ShowOutputSchema.propTypes = {
   displayState: DisplayState.propType.isRequired,
   canApplyRevision: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
-  goHome: PropTypes.func.isRequired,
+  goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
-  routing: PropTypes.object.isRequired,
-  urlParams: PropTypes.shape({
-    outputSchemaId: PropTypes.string
-  })
+  params: PropTypes.shape({
+    revisionSeq: PropTypes.string.isRequired,
+    outputSchemaId: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export function mapStateToProps(state, ownProps) {
@@ -257,20 +258,20 @@ export function mapStateToProps(state, ownProps) {
     canApplyRevision,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
-    routing: ownProps.location,
-    urlParams: ownProps.params
+    params
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
-    goHome: () => {
-      browserHistory.push(Links.home(ownProps.params));
+    goToRevisionBase: () => {
+      browserHistory.push(Links.revisionBase(ownProps.params));
     },
-    saveCurrentOutputSchema: (revision, outputSchemaId) => {
-      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId)).then(() => {
-        browserHistory.push(Links.home(ownProps.params));
-      });
+    saveCurrentOutputSchema: (revision, outputSchemaId, params) => {
+      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId, params))
+        .then(() => {
+          browserHistory.push(Links.revisionBase(ownProps.params));
+        });
     },
     dispatch
   };

@@ -758,6 +758,8 @@ en:
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
         create_dataset_verb: Create
+        create_measure_short: Measure
+        create_measure_verb: Create
         create_resource: Create a New Socrata Resource
         create_resource_short: Create new...
         create_resource_verb: Create
@@ -957,6 +959,7 @@ en:
           visualization_help: New
         view_types_singular_title: type
         view_types_title: View Types
+      generic_error: "Oh no! There's been a problem. Please try again."
       listing:
         comment_count: Number of comments
         error: We're sorry. Results could not be retrieved at this time. Please try again later.
@@ -1735,7 +1738,7 @@ en:
       title: What's in this Dataset?
     dataset_preview:
       all_rows: Showing all rows
-      grid_view_link: Explore Data
+      grid_view_link: View Data
       latitude: Latitude
       longitude: Longitude
       many_rows: Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}
@@ -2757,6 +2760,10 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
+    asset_inventory_dataset_link:
+      asset_inventory_dataset: Asset Inventory Dataset
+      disabled_tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
+      initialize: Initialize Asset Inventory
     asset_types:
       blob: File or Document
       calendar: Calendar
@@ -2806,7 +2813,9 @@ en:
         label: Category
         placeholder: Any Category
       header:
-        title: Filters
+        title:
+          clear_filters_only: Filters
+          clear_filter_and_search: Clear All
       last_updated_date:
         label: Last Updated Date
         options:

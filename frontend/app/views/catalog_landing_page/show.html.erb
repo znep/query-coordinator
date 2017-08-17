@@ -21,10 +21,10 @@
 
   <div
     class="search-with-autocomplete"
-    data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
+    data-autocomplete="<%= FeatureFlags.derive(nil, request).browse_autocomplete %>">
   </div>
 
-  <% unless FeatureFlags.derive(@view, request).browse_autocomplete %>
+  <% unless FeatureFlags.derive(nil, request).browse_autocomplete %>
     <div id="search-content"></div>
   <% end %>
 

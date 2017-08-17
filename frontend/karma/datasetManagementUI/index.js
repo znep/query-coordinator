@@ -7,6 +7,7 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
 import windowState from './data/windowState';
+
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 window.I18n = require('mockTranslations');

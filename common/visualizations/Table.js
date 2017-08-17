@@ -9,7 +9,7 @@ const InlineDataProvider = require('./dataProviders/InlineDataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 
-const ROW_HEIGHT_PX = 39;
+const ROW_HEIGHT_PX = 31;
 const MAX_COLUMN_COUNT = 64;
 
 // Passing in locale is a temporary workaround to localize the Table & Pager
@@ -22,7 +22,7 @@ $.fn.socrataTable = function(originalVif, locale) {
   // the output of _.memoize.
   const getMemoizedDatasetMetadata = _.memoize(
     function(metadataProviderConfig) {
-      return new MetadataProvider(metadataProviderConfig).getDatasetMetadata();
+      return new MetadataProvider(metadataProviderConfig, true).getDatasetMetadata();
     },
     function(metadataProviderConfig) {
       const domain = metadataProviderConfig.domain;
@@ -718,7 +718,7 @@ $.fn.socrataTable = function(originalVif, locale) {
     }
 
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {
-      const displayableColumns = new MetadataProvider(dataProviderConfig).
+      const displayableColumns = new MetadataProvider(dataProviderConfig, true).
         getDisplayableColumns(datasetMetadata).
         slice(0, MAX_COLUMN_COUNT);
 
@@ -738,7 +738,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         );
       }
 
-      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
+      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig, true);
 
       const soqlRowCountPromise = getMemoizedRowCount(
         soqlDataProvider,

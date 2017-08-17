@@ -10,8 +10,7 @@
   background-color: $btn-disabled-background-color;
   cursor: not-allowed;
 
-  &.btn-dark,
-  &.btn-inverse {
+  &.btn-dark {
     color: $btn-disabled-dark-color;
     border-color: $btn-disabled-dark-border-color;
     background-color: $btn-disabled-dark-background-color;
@@ -194,6 +193,10 @@
   &.btn-inverse {
     color: $btn-primary-inverse-color;
     background-color: $btn-primary-inverse-background-color;
+
+    &.btn-disabled {
+      @include btn-disabled;
+    }
   }
 
   &.btn-busy span {

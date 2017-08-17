@@ -5,7 +5,7 @@ import _ from 'lodash';
 import url from 'url';
 import 'whatwg-fetch';
 import { getCeteraResults } from '../Util';
-import AutocompleteReducer from '../reducers/AutocompleteReducer';
+import reducer from '../reducers';
 import Autocomplete from './Autocomplete';
 import Localization from 'common/i18n/components/Localization';
 
@@ -13,27 +13,23 @@ class StatefulAutocomplete extends React.Component {
   constructor(props) {
     super(props);
 
-    // default to empty state
-    const { defaultState } = this.props;
-    const state = _.isEmpty(defaultState) ? { } : defaultState;
+    const { collapsible, animate } = this.props.options;
+    const initialReduxState = { autocomplete: { query: '', collapsed: collapsible } };
 
     // we only want to set the query to the current one if we're NOT collapsible and if we're animating
     // the appearance of the "clear search" icon, which the version used in the header bar does not have.
-     if (!_.isEmpty(props.options) &&
-      (props.options.collapsible === false && props.options.animate === true)) {
+     if (collapsible === false && animate === true) {
       // grab the current search query from the URL
-      const parsedUrl = url.parse(window.location.href, true);
-      const currentQuery = _.get(parsedUrl, 'query.q', '');
+      const currentQuery = _.get(url.parse(window.location.href, true), 'query.q', '');
 
-      // set our query only if we weren't passed on by props
-      if (_.isEmpty(state.query) && !_.isEmpty(currentQuery)) {
-        state.query = currentQuery;
+      if (_.isEmpty(initialReduxState.autocomplete.query) && !_.isEmpty(currentQuery)) {
+        initialReduxState.autocomplete.query = currentQuery;
       }
     }
 
     this.store = createStore(
-      AutocompleteReducer,
-      state,
+      reducer,
+      initialReduxState,
       window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
   }
@@ -71,7 +67,8 @@ class StatefulAutocomplete extends React.Component {
             animate={animate}
             mobile={mobile}
             onChooseResult={onChooseResult}
-            onClearSearch={onClearSearch} />
+            onClearSearch={onClearSearch}
+            currentQuery={this.store.getState().autocomplete.query} />
         </Provider>
       </Localization>
     );
@@ -91,9 +88,6 @@ StatefulAutocomplete.propTypes = {
     mobile: PropTypes.bool,
     onChooseResult: PropTypes.func,
     onClearSearch: PropTypes.func
-  }),
-  defaultState: PropTypes.shape({
-    query: PropTypes.string
   })
 };
 
@@ -104,10 +98,6 @@ StatefulAutocomplete.defaultProps = {
     millisecondsBeforeSearch: 60,
     collapsible: false,
     mobile: false
-  },
-  defaultState: {
-    query: '',
-    collapsed: false
   }
 };
 

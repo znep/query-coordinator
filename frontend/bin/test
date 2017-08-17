@@ -11,6 +11,7 @@ cd "$(git rev-parse --show-toplevel)"
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
 if ./bin/should_run_tests frontend; then
+
   # Find commit where this pull request branched from
   MERGE_BASE=$(git merge-base HEAD origin/master)
 
@@ -56,6 +57,13 @@ if ./bin/should_run_tests frontend; then
   fi
 
   cd frontend
+
+  # We can get into a weird situation when using the node_modules built in the master branch
+  # where define-properties has trouble finding its object-keys dependency. Reinstalling it
+  # clears it up. Come back and delete once merged into master.
+  # for package in `ls node_modules`; do npm uninstall $package; done;
+  npm uninstall define-properties
+  npm install
 
   # Ruby tests
   export CORE_SESSION=${CORE_SESSION:-'frontend-generated'}

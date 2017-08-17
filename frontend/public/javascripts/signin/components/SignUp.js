@@ -2,8 +2,10 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 import url from 'url';
+import _ from 'lodash';
+import I18n from 'common/i18n';
 import { renderAlerts } from '../Util';
 import signUpReducer from '../reducers/SignUpReducer';
 import OptionsPropType from '../PropTypes/OptionsPropType';
@@ -26,10 +28,11 @@ class SignUp extends React.Component {
     const screenName = _.get(params, 'screenName', '');
 
     this.state = {
-      auth0Client: new Auth0({
+      auth0Client: new auth0.WebAuth({
         domain: auth0Uri,
         clientID: auth0ClientId,
-        callbackURL: `${baseDomainUri}/auth/auth0/callback`
+        responseType: 'token',
+        redirectUri: `${baseDomainUri}/auth/auth0/callback`
       })
     };
 
@@ -71,7 +74,7 @@ class SignUp extends React.Component {
     };
 
     this.store = createStore(
-      signUpReducer(props.translate),
+      signUpReducer(),
       defaultState
     );
 
@@ -83,9 +86,8 @@ class SignUp extends React.Component {
     // only render social sign-in if module is enabled
     if (this.props.options.showSocial) {
       const { auth0Client } = this.state;
-      const { translate } = this.props;
-      const doAuth0Login = auth0Client.login.bind(auth0Client);
-      return <SocialSignIn doAuth0Login={doAuth0Login} translate={translate} />;
+      const doAuth0Authorize = auth0Client.authorize.bind(auth0Client);
+      return <SocialSignIn doAuth0Authorize={doAuth0Authorize} />;
     }
   }
 
@@ -100,7 +102,8 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
+    const { toggleViewMode } = options;
 
     const flashes = _.get(this.props, 'options.flashes', null);
 
@@ -109,23 +112,30 @@ class SignUp extends React.Component {
         <div styleName="container">
           {renderAlerts(flashes)}
 
-          <h3>{translate('screens.sign_up.headline', { site: options.companyName })}</h3>
+          <h3>{I18n.t('screens.sign_up.headline', { site: options.companyName })}</h3>
 
           <div styleName="divider"></div>
 
           <h4
             styleName="create-new-id"
-            dangerouslySetInnerHTML={{ __html: translate('screens.sign_up.prompt_html') }} />
+            dangerouslySetInnerHTML={{ __html: I18n.t('screens.sign_up.prompt_html') }} />
 
           <h5
             styleName="socrata-powered"
-            dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.tips_html') }} />
+            dangerouslySetInnerHTML={{ __html: I18n.t('screens.sign_in.tips_html') }} />
 
           {this.renderDisclaimer()}
 
-          <SignUpForm options={options} translate={translate} />
+          <SignUpForm options={options} />
 
           {this.renderSocialSignIn()}
+
+          <div styleName="go-to-signin">
+            {I18n.t('screens.sign_up.already_have_account')}{' '}
+            <a onClick={toggleViewMode} styleName="signin-link">
+              {I18n.t('screens.sign_in.form.sign_in_button')}
+            </a>
+          </div>
         </div>
       </Provider>
     );
@@ -133,7 +143,6 @@ class SignUp extends React.Component {
 }
 
 SignUp.propTypes = {
-  translate: React.PropTypes.func.isRequired,
   options: OptionsPropType.isRequired
 };
 

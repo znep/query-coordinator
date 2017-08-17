@@ -1,3 +1,4 @@
+/* eslint-disable */
 import _ from 'lodash';
 import pluralRuleParser from 'cldrpluralruleparser/src/CLDRPluralRuleParser';
 import cldrData from 'cldr-core/supplemental/plurals.json';

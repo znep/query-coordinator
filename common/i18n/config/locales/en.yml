@@ -89,9 +89,11 @@ en:
         create_menu:
           dataset: Dataset
           dataset_beta: Tabular Dataset (beta)
+          default_measure_title: Untitled Measure
+          default_story_title: Untitled Story
+          measure: Measure
           story: Story
           title: Create
-          default_story_title: Untitled Story
         header_links_aria_label: Header links
         language: Language
         menu: Menu
@@ -308,6 +310,7 @@ en:
             dimension_grouping_options:
               grouped: Grouped
               stacked: Stacked
+              one_hundred_percent_stacked: 100% Stacked
               title: Multi-Series Display Options
             measure:
               description: A measure is a numeric field or the count of rows associated with the selected dimension.
@@ -361,7 +364,7 @@ en:
           loading_metadata_error: This dataset is empty, private or has been deleted. Please check the dataset itself for availability.
           subheaders:
             data_selection: Data Selection
-            timeline_options: Timeline Options
+            timeline_options: Timeline Display Options
           title: Data
           uhoh: Uh oh!
         legends_and_flyouts:

@@ -61,4 +61,8 @@ module LocaleCache
       translations.deep_merge!(render_partial_translations(:common, false)) if with_common
     end
   end
+
+  def self.render_all_translation_keys(keys)
+    ((keys || []) + %w[common shared]).uniq.map { |key| render_partial_translations(key, false) }.reduce(&:deep_merge)
+  end
 end

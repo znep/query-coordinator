@@ -6,7 +6,7 @@ import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 import { handleKeyPress } from '../../common/a11yHelpers';
 
-export class ApiFlannel extends Component {
+export class ApiModal extends Component {
   constructor(props) {
     super(props);
 
@@ -207,7 +207,7 @@ export class ApiFlannel extends Component {
   }
 }
 
-ApiFlannel.propTypes = {
+ApiModal.propTypes = {
   onClickCopy: PropTypes.func.isRequired,
   view: PropTypes.object.isRequired
 };
@@ -228,4 +228,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ApiFlannel);
+export default connect(mapStateToProps, mapDispatchToProps)(ApiModal);

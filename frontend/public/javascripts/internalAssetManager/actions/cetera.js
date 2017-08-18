@@ -83,9 +83,9 @@ const translateParamsToMixpanelEvent = (params) => {
 // Caution: If a key exists in getState().filters but is missing from parameters, then the value in the
 // current state will be used instead. If you wish values in the parameters object to override the current
 // state, you _must_ provide the override value in the parameters object.
-const ceteraUtilsParams = (getState, parameters) => {
+export const ceteraUtilsParams = (getState, parameters) => {
   const { activeTab, assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
-    visibility } = _.merge({}, getState().catalog, getState().filters, parameters);
+    visibility } = _.merge({}, getState().catalog, getState().filters, getState().header, parameters);
 
   const ceteraOrder = () => {
     if (_.isUndefined(order)) {

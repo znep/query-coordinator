@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { fetchResults } from 'actions/cetera';
+import { ceteraUtilsParams, fetchResults } from 'actions/cetera';
 import getState from 'reducers/catalog';
 import ceteraUtils from 'common/cetera_utils';
 import mockCeteraFacetCountsResponse from 'data/mock_cetera_facet_counts_response';
@@ -23,6 +23,28 @@ describe('cetera.js', () => {
   afterEach(() => {
     ceteraStub.restore()
     ceteraAssetCountsStub.restore();
+  });
+
+  describe('ceteraUtilsParams', () => {
+    it('does not have a forUser filter if activeTab is null', () => {
+      const parameters = { activeTab: null };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.forUser);
+    });
+
+    it('does not have a forUser filter if activeTab is "All Assets"', () => {
+      const parameters = { activeTab: 'allAssets' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.forUser);
+    });
+
+    it('does have a forUser filter if activeTab is "My Assets"', () => {
+      window.serverConfig.currentUser = { 'id': 'abcd-1234' };
+
+      const parameters = { activeTab: 'myAssets' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.equal(result.forUser, 'abcd-1234');
+    });
   });
 
   // fetchResults returns a promise

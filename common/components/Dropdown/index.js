@@ -264,7 +264,7 @@ export default React.createClass({
   renderPlaceholder() {
     let { placeholder } = this.props;
     let icon = null;
-    const { selectedOption } = this.state;
+    const { opened, selectedOption } = this.state;
     const caret = <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />;
     const placeholderText = text => <span key="placeholder">{text}</span>;
     const placeholderIsFunction = typeof placeholder === 'function';
@@ -287,7 +287,7 @@ export default React.createClass({
     };
 
     if (placeholderIsFunction) {
-      placeholder = placeholder();
+      placeholder = placeholder({isOpened: opened});
     } else if (selectedOption) {
       placeholder = [placeholderText(selectedOption.title), caret];
       // TODO: Make this an explicit test for a SocrataIcon,

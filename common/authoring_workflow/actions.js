@@ -670,10 +670,11 @@ export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {
 }
 
 export const SET_STACKED = 'SET_STACKED';
-export function setStacked(stacked) {
+export function setStacked({ stacked, oneHundredPercent }) {
   return {
     type: SET_STACKED,
-    stacked
+    stacked,
+    oneHundredPercent
   };
 }
 

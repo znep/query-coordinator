@@ -874,6 +874,11 @@ function SvgVisualization($element, vif, options) {
     return adjustPositionsToFitRange(positions, minValue, maxValue);
   };
 
+  this.getOneHundredPercentStackedPositionsForRange = function(groupedDataToRender, minValue, maxValue) {
+    const positions = getOneHundredPercentStackedPositions(groupedDataToRender);
+    return adjustPositionsToFitRange(positions, minValue, maxValue);
+  };
+
   /**
    * Private methods
    */
@@ -1037,63 +1042,65 @@ function SvgVisualization($element, vif, options) {
 
   function getPositions(groupedDataToRender) {
 
-    const positions = [];
+    return groupedDataToRender.map(row => {
+      const values = row.slice(1); // first index is the dimension name
 
-    groupedDataToRender.forEach(row => {
-
-      const group = [];
-
-      row.forEach((o, i) => {
-
-        if (i == 0)
-          return; // skip the dimension label
-
+      return values.map((o) => {
         const value = o || 0;
-
-        if (value >= 0) {
-          group.push({ start: 0, end: value });
-        } else {
-          group.push({ start: value, end: 0 });
-        }
+        return (value >= 0) ? { start: 0, end: value } : { start: value, end: 0 };
       });
-
-      positions.push(group);
     });
-
-    return positions;
   }
 
   function getStackedPositions(groupedDataToRender) {
 
-    const positions = [];
+    return groupedDataToRender.map(row => {
+      const values = row.slice(1); // first index is the dimension name
 
-    groupedDataToRender.forEach(row => {
+      let positiveOffset = 0;
+      let negativeOffset = 0;
 
-      const group = [];
-      var positiveOffset = 0;
-      var negativeOffset = 0;
-
-      row.forEach((o, i) => {
-
-        if (i == 0) {
-          return; // skip the dimension label
-        }
-
+      return values.map((o) => {
         const value = o || 0;
+        let position;
 
         if (value >= 0) {
-          group.push({ start: positiveOffset, end: positiveOffset + value });
+          position = { start: positiveOffset, end: positiveOffset + value };
           positiveOffset += value;
         } else {
-          group.push({ start: negativeOffset + value, end: negativeOffset });
+          position = { start: negativeOffset + value, end: negativeOffset };
           negativeOffset += value;
         }
+
+        return position;
       });
-
-      positions.push(group);
     });
+  }
 
-    return positions;
+  function getOneHundredPercentStackedPositions(groupedDataToRender) {
+
+    return groupedDataToRender.map(row => {
+      const values = row.slice(1); // first index is the dimension name
+      const sumOfValues = values.reduce((a, b) => a + (b || 0), 0);
+
+      let positiveOffset = 0;
+      let negativeOffset = 0;
+  
+      return values.map(o => {
+        const percent = (o || 0) / sumOfValues;
+        let position;
+
+        if (percent >= 0) {
+          position = { start: positiveOffset, end: positiveOffset + percent, percent: (percent * 100) };
+          positiveOffset += percent;
+        } else {
+          position = { start: negativeOffset + percent, end: negativeOffset, percent: (percent * 100) };
+          negativeOffset += percent;
+        }
+
+        return position;
+      });
+    });
   }
 
   function adjustPositionsToFitRange(positions, minValue, maxValue) {

@@ -310,6 +310,7 @@ en:
             dimension_grouping_options:
               grouped: Grouped
               stacked: Stacked
+              one_hundred_percent_stacked: 100% Stacked
               title: Multi-Series Display Options
             measure:
               description: A measure is a numeric field or the count of rows associated with the selected dimension.

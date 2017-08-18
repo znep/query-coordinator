@@ -1,0 +1,12 @@
+$character-count-color: #a1a1a1;
+
+.bounded-text-input {
+  position: relative;
+}
+
+.character-count {
+  bottom: 1em;
+  color: $character-count-color;
+  position: absolute;
+  right: .25em;
+}

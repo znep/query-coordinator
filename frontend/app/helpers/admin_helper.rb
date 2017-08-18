@@ -160,6 +160,10 @@ module AdminHelper
         FeatureFlags.derive(nil, request).open_performance_narrative_editor == 'storyteller')
   end
 
+  def user_can_see_roles?
+    feature_flag?('enable_configurable_roles_ui', request) && user_can?(UserRights::MANAGE_USERS)
+  end
+
   def user_can_see_routing_approval?
     module_enabled?(:routing_approval) && current_user.can_approve?
   end

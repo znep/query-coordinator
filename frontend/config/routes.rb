@@ -193,6 +193,10 @@ Rails.application.routes.draw do
         get '/:id', :action => 'show'
       end
 
+      scope :controller => 'administration/roles', :path => '/roles' do
+        get '', :action => :index, :as => 'roles_administration'
+      end
+
       get :views
       put :save_featured_views
       get :goals

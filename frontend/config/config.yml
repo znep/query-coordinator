@@ -133,6 +133,8 @@ development: &development
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
 
+  roles_admin_faq_url: https://google.com
+
 # Running unit tests; NOT test-socrata.com
 test:
   <<: *default

@@ -1,6 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
 
+/**
+ * TODO: EN-17923 - This code should be removed in favor of the code in `common/components/Localization`
+ */
+
 export default class Localization extends React.Component {
   constructor(props) {
     super(props);
@@ -54,8 +58,8 @@ export default class Localization extends React.Component {
     }
 
     return translation.replace(
-      /%{[^}]+}/g,
-      (dataKey) => (data || {})[dataKey.slice(2, -1)] || ''
+      /%{([^}]+)}/g,
+      (match, key) => _.get(data, key, '')
     );
   }
 

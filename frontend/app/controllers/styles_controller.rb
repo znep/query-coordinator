@@ -154,7 +154,10 @@ class DevelopmentCache
   # stylesheet.
   def get(top_level_stylesheet_filename)
     raise 'Block required' unless block_given?
-    return yield unless ApplicationController.use_discrete_assets?
+    unless ApplicationController.use_discrete_assets?
+      engine = yield
+      return engine.render
+    end
 
     # This process has never rendered this stylesheet. In order to validate its staleness
     # in the (on-disk, petsistent) cache, we must know the stylesheet's dependency list.

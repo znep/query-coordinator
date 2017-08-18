@@ -44,26 +44,26 @@ export class ApiFlannel extends Component {
     const resourceTypes = {};
 
     resourceTypes.canonical = {
-      label: I18n.api_flannel.json,
+      label: I18n.api_modal.json,
       url: view.resourceUrl
     };
 
     if (!_.isEmpty(view.namedResourceUrl)) {
       resourceTypes.name = {
-        label: I18n.api_flannel.name,
+        label: I18n.api_modal.name,
         url: view.namedResourceUrl
       };
     }
 
     if (view.geoJsonResourceUrl) {
       resourceTypes.geoJson = {
-        label: I18n.api_flannel.geojson,
+        label: I18n.api_modal.geojson,
         url: view.geoJsonResourceUrl
       };
     }
 
     resourceTypes.csv = {
-      label: I18n.api_flannel.csv,
+      label: I18n.api_modal.csv,
       url: view.csvResourceUrl
     };
 
@@ -104,7 +104,7 @@ export class ApiFlannel extends Component {
           tabIndex="0">
           <span aria-hidden>{resourceTypes[resourceType].label}</span>
           <span className="socrata-icon-arrow-down" role="presentation" />
-          <ul role="menu" aria-label={I18n.api_flannel.resource_type} className="dropdown-options">
+          <ul role="menu" aria-label={I18n.api_modal.resource_type} className="dropdown-options">
             {dropdownOptions}
           </ul>
         </div>
@@ -128,14 +128,14 @@ export class ApiFlannel extends Component {
             href={view.apiFoundryUrl}
             target="_blank">
             <span className="icon-copy-document"></span>
-            {I18n.api_flannel.foundry_button}
+            {I18n.api_modal.foundry_button}
           </a>
           <a
             className="btn btn-default btn-sm documentation-link"
             href="https://dev.socrata.com"
             target="_blank">
             <span className="icon-settings"></span>
-            {I18n.api_flannel.developer_portal_button}
+            {I18n.api_modal.developer_portal_button}
           </a>
         </section>
       );
@@ -159,7 +159,7 @@ export class ApiFlannel extends Component {
 
         <section className="flannel-content">
           <h6 id="api-endpoint" className="endpoint-title">
-            {I18n.api_flannel.endpoint_title}
+            {I18n.api_modal.endpoint_title}
           </h6>
           <form onSubmit={this.onSubmit}>
             <span className="input-group">
@@ -188,7 +188,7 @@ export class ApiFlannel extends Component {
         id="api-flannel"
         className="flannel flannel-hidden">
         <header className="flannel-header">
-          <h2 id="api-flannel-title" className="flannel-header-title">{I18n.api_flannel.title}</h2>
+          <h2 id="api-flannel-title" className="flannel-header-title">{I18n.api_modal.title}</h2>
           <button
             aria-label={I18n.close}
             className="btn btn-transparent flannel-header-dismiss"
@@ -198,7 +198,7 @@ export class ApiFlannel extends Component {
         </header>
 
         <section className="flannel-content api-description">
-          <p className="small">{I18n.api_flannel.description}</p>
+          <p className="small">{I18n.api_modal.description}</p>
         </section>
 
         {this.renderEndpoint()}

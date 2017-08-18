@@ -1677,7 +1677,7 @@ en:
       odata: Access Data via OData
       share: Share
     add: Add
-    api_flannel:
+    api_modal:
       canonical: Canonical ID
       csv: CSV
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.

@@ -1,9 +1,9 @@
 import { expect, assert } from 'chai';
-import { ApiFlannel } from 'components/ApiFlannel';
+import { ApiModal } from 'components/ApiModal';
 import { Simulate } from 'react-addons-test-utils';
 import mockView from 'data/mockView';
 
-describe('components/ApiFlannel', () => {
+describe('components/ApiModal', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       view: mockView,
@@ -17,12 +17,12 @@ describe('components/ApiFlannel', () => {
   const getFoundryLinks = (el) => el.querySelectorAll('.documentation-link');
 
   it('renders an element', () => {
-    const element = renderComponent(ApiFlannel, getProps());
+    const element = renderComponent(ApiModal, getProps());
     assert.ok(element);
   });
 
   it('renders a dropdown for the resource type if the view has a named resource url', () => {
-    const element = renderComponent(ApiFlannel, getProps({
+    const element = renderComponent(ApiModal, getProps({
       view: {
         namedResourceUrl: 'ohm'
       }
@@ -33,7 +33,7 @@ describe('components/ApiFlannel', () => {
   });
 
   it('renders resource dropdown without geojson if location column doesnt exist', () => {
-    const element = renderComponent(ApiFlannel, getProps());
+    const element = renderComponent(ApiModal, getProps());
     expect(getDropdownOptions(element).length).to.equal(2);
   });
 
@@ -43,12 +43,12 @@ describe('components/ApiFlannel', () => {
         geoJsonResourceUrl: 'something'
       }
     };
-    const element = renderComponent(ApiFlannel, getProps(customProps));
+    const element = renderComponent(ApiModal, getProps(customProps));
     expect(getDropdownOptions(element).length).to.equal(3);
   });
 
   it('switches the resource text when clicking the dropdown options', () => {
-    const element = renderComponent(ApiFlannel, getProps({
+    const element = renderComponent(ApiModal, getProps({
       view: {
         namedResourceUrl: 'ohm'
       }
@@ -66,13 +66,13 @@ describe('components/ApiFlannel', () => {
   describe('API foundry link', () => {
     it('is visible if the feature flag is enabled', () => {
       window.serverConfig.featureFlags.enable_dataset_landing_page_foundry_links = true;
-      const element = renderComponent(ApiFlannel, getProps());
+      const element = renderComponent(ApiModal, getProps());
       expect(getFoundryLinks(element)).to.have.length(2);
     });
 
     it('is not visible if the feature flag is disabled', () => {
       window.serverConfig.featureFlags.enable_dataset_landing_page_foundry_links = false;
-      const element = renderComponent(ApiFlannel, getProps());
+      const element = renderComponent(ApiModal, getProps());
       expect(getFoundryLinks(element)).to.have.length(0);
     });
   });

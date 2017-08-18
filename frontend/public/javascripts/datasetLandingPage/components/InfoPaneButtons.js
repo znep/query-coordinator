@@ -278,7 +278,7 @@ export default class InfoPaneButtons extends Component {
     }
 
     return (
-      <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
+      <button className="btn btn-simple btn-sm api" data-modal="api-modal">
         {I18n.action_buttons.api}
       </button>
     );
@@ -327,7 +327,7 @@ export default class InfoPaneButtons extends Component {
     if (!isBlobbyOrHref) {
       apiLink = (
         <li>
-          <a tabIndex="0" role="button" className="option api-link" data-flannel="api-flannel">
+          <a tabIndex="0" role="button" className="option api-link" data-modal="api-modal">
             {I18n.action_buttons.api}
           </a>
         </li>

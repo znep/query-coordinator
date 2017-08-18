@@ -122,7 +122,7 @@ export class ApiModal extends Component {
 
     if (enableDatasetLandingPageFoundryLinks) {
       foundryLinks = (
-        <section className="flannel-content">
+        <section className="modal-content">
           <a
             className="btn btn-default btn-sm documentation-link"
             href={view.apiFoundryUrl}
@@ -141,6 +141,7 @@ export class ApiModal extends Component {
       );
     }
 
+    // TODO: copyButton code is identical with ODataModal. Maybe should have a CopyButton component.
     const copyButton = isCopyingSupported ?
       <span className="input-group-btn">
         <button
@@ -157,7 +158,7 @@ export class ApiModal extends Component {
       <div className="endpoint api-endpoint">
         {foundryLinks}
 
-        <section className="flannel-content">
+        <section className="modal-content">
           <h6 id="api-endpoint" className="endpoint-title">
             {I18n.api_modal.endpoint_title}
           </h6>
@@ -184,24 +185,32 @@ export class ApiModal extends Component {
     return (
       <div
         role="dialog"
-        aria-labelledby="api-flannel-title"
-        id="api-flannel"
-        className="flannel flannel-hidden">
-        <header className="flannel-header">
-          <h2 id="api-flannel-title" className="flannel-header-title">{I18n.api_modal.title}</h2>
+        aria-labelledby="api-modal-title"
+        id="api-modal"
+        className="modal modal-overlay modal-hidden"
+        data-modal-dismiss>
+        <header className="modal-header">
+          { /* NOTE ODataModal has className with "h2" as well as modal-header-title */}
+          <h2 id="api-modal-title" className="modal-header-title">{I18n.api_modal.title}</h2>
           <button
             aria-label={I18n.close}
-            className="btn btn-transparent flannel-header-dismiss"
-            data-flannel-dismiss>
+            className="btn btn-transparent modal-header-dismiss"
+            data-modal-dismiss>
             <span className="icon-close-2"></span>
           </button>
         </header>
 
-        <section className="flannel-content api-description">
+        <section className="modal-content api-description">
           <p className="small">{I18n.api_modal.description}</p>
         </section>
 
         {this.renderEndpoint()}
+
+        <footer className="modal-actions">
+          <button className="btn btn-default btn-sm" data-modal-dismiss>
+            {I18n.done}
+          </button>
+        </footer>
       </div>
     );
   }

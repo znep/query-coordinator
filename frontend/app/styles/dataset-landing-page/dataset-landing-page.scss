@@ -524,7 +524,7 @@ div.container.landing-page-container {
   width: 400px;
 }
 
-#api-flannel {
+#api-modal {
   letter-spacing: 0;
   text-align: left;
   width: 520px;
@@ -540,11 +540,15 @@ div.container.landing-page-container {
     margin-bottom: 0;
   }
 
-  .flannel-header {
-    max-width: 95%;
-  }
+  // .modal-header {
+  //   h2 {
+  //     margin: 0;
+  //     font-size: 19px;
+  //     font-weight: normal;
+  //   }
+  // }
 
-  .flannel-content {
+  .modal-content {
     &.api-description {
       margin-bottom: 1.5rem;
     }
@@ -575,7 +579,7 @@ div.container.landing-page-container {
   }
 }
 
-#api-flannel,
+#api-modal,
 #odata-modal {
   .endpoint {
     &:not(:last-child) {

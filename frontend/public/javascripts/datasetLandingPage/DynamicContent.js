@@ -1,5 +1,5 @@
 import React from 'react';
-import ApiFlannel from './components/ApiFlannel';
+import ApiModal from './components/ApiModal';
 import ContactForm from './components/ContactForm';
 import FeaturedContentModal from './components/FeaturedContentModal';
 import ODataModal from './components/ODataModal';
@@ -9,7 +9,7 @@ import PlotlyModal from './components/PlotlyModal';
 
 const DynamicContent = () => (
   <div>
-    <ApiFlannel />
+    <ApiModal />
     <CartoModal />
     <PlotlyModal />
     <ContactForm />

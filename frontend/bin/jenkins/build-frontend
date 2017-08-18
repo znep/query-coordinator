@@ -52,10 +52,6 @@ bundle install --without=development --deployment
 # Note, if ClamAV is failing, see https://wiki.jenkins-ci.org/display/JENKINS/ClamAV+Plugin
 # for appropriate changes to clamd.conf
 
-# Make sure the locale is setup
-sudo locale-gen en_US.UTF-8
-sudo update-locale LANG=en_US.UTF-8
-
 # Environment vars
 export LANG=en_US.UTF-8
 export RUBYOPT="-E utf-8"
@@ -101,7 +97,7 @@ fi
 # Write dockerize.properties file if we are running the dockerize job after this
 cd ${WORKSPACE}
 rm -f dockerize.properties
-if ${TRIGGER_DOCKERIZE}; then
+if ${TRIGGER_DOCKERIZE}; then  
   touch dockerize.properties
   echo "SERVICE=${SERVICE_NAME}" >> dockerize.properties
   echo "SERVICE_NAME_PATTERN=${SERVICE_NAME}" >> dockerize.properties
@@ -109,13 +105,13 @@ if ${TRIGGER_DOCKERIZE}; then
   echo "SERVICE_SHA=$(git rev-parse HEAD)" >> dockerize.properties
   echo "SERVICE_VERSION=${SERVICE_VERSION}" >> dockerize.properties
   echo "DOCKER_REPO=${GIT_URL}" >> dockerize.properties
-
+  
   if [ -d frontend ]; then
   	echo "DOCKER_PATH=frontend/" >> dockerize.properties
   else
     echo "DOCKER_PATH=." >> dockerize.properties
   fi
-
+  
   echo "DOCKER_ARTIFACT_JOB=${JOB_NAME}" >> dockerize.properties
   echo "DOCKER_ARTIFACT=${SERVICE_ARTIFACT}" >> dockerize.properties
   echo "BRANCH_SPECIFIER=${BRANCH_SPECIFIER}" >> dockerize.properties

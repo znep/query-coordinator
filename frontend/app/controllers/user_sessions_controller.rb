@@ -52,7 +52,7 @@ class UserSessionsController < ApplicationController
       session[:return_to] ||= params[:return_to] || request.referer
     end
 
-    render :layout => 'styleguide' if use_auth0?
+    render :layout => 'styleguide' if use_auth0? && !performed?
   end
 
   def expire_if_idle

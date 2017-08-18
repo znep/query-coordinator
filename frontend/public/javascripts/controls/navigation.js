@@ -126,7 +126,7 @@
 
     var $info = navObj.$dom().find('.info');
     $info.find('.curPage').text(navObj._curPageIndex + 1);
-    $info.find('.totalPages').text(pageCount);
+    $info.find('.totalPages').text(pageCount.toLocaleString());
 
     navObj.$dom().find('.start, .previous').toggleClass('disabled', navObj._curPageIndex <= 0);
     navObj.$dom().find('.end, .next').toggleClass('disabled', navObj._curPageIndex >= pageCount - 1);

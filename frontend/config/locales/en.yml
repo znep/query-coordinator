@@ -4898,6 +4898,7 @@ en:
           map: map
           page: single row
           table: table
+          socrataVizTable: table
           template: template
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
         working_copy_title: "[Working Copy]"

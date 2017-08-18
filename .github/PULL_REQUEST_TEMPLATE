@@ -1,6 +1,7 @@
 *Reviewers: please verify the below tasks.*
 
 All below boxes should be checked before merging:
+- [ ] Demo given.
 - [ ] JIRA ticket IDs present in ALL commit subject(s).
 - [ ] `Gemfile.lock` and `package.json` are up to date.
 - [ ] Changes in `common/` verified in all affected applications (Storyteller, DSLP, etc).

@@ -3079,120 +3079,6 @@ en:
   recaptcha2:
     errors:
       verification_failed: We were unable to confirm your response, please try again.
-  roles:
-    default_roles:
-      administrator:
-        name: Administrator
-      designer:
-        name: Designer
-      editor:
-        name: Editor
-      editor_stories:
-        name: Editor (Stories)
-      publisher:
-        name: Publisher
-      publisher_stories:
-        name: Publisher (Stories)
-      viewer:
-        name: Viewer
-    right_categories:
-      administer_site:
-        name: Administer Site
-      manage_assets:
-        name: Explore and Manage Assets
-      manage_dataslate:
-        name: Manage Dataslate
-      manage_open_performance:
-        name: Manage Open Performance
-      manage_perspectives:
-        name: Manage Perspectives
-      manage_site_connections:
-        name: Manage Site Connections
-      manage_site_design:
-        name: Manage Design and Navigation
-      moderate_community_activity:
-        name: Moderate Community Activity
-      review_and_approve_assets:
-        name: Review and Approve Assets
-    rights:
-      approve_nominations:
-        name: Approve or reject community-submitted dataset suggestions
-      chown_datasets:
-        name: Change owner of all assets on site from one user to another
-      change_configurations:
-        name: Update a site's internal configurations (proceed with caution)
-      create_dashboards:
-        name: Create performance dashboards
-      create_datasets:
-        name: Create new datasets, charts, maps, and other views
-      create_pages:
-        name: Create new DataSlate pages
-      create_story:
-        name: Create new stories
-      create_story_copy:
-        name: Make a copy of an exisitng story
-      delete_story:
-        name: Delete stories from site
-      edit_dashboards:
-        name: Edit performance dashboards
-      edit_goals:
-        name: Edit all performance goals
-      edit_nominations:
-        name: Modify community-submitted dataset suggestions
-      edit_others_datasets:
-        name: Edit all datasets, charts, maps, and other views
-      edit_others_stories:
-        name: Edit all stories
-      edit_pages:
-        name: Edit existing DataSlate pages
-      edit_sdp:
-        name: Edit Social Data Player (embed) template design
-      edit_site_theme:
-        name: Update sitewide header/footer design and navigation
-      edit_story:
-        name: Edit content for all stories
-      edit_story_title_desc:
-        name: Edit metadata for all stories
-      feature_items:
-        name: Feature content on data catalog and Primer pages
-      federations:
-        name: Add, remove, and manage Socrata-to-Socrata federation relationships
-      manage_approval:
-        name: Review and approve assets submitted for 'open' release
-      manage_provenance:
-        name: Update an asset's provenance (community/official) via API
-      manage_stories:
-        name: Manage Stories
-      manage_story_public_version:
-        name: Manage publishing status of stories
-      manage_story_collaborators:
-        name: Invite and manage collaborators on stories
-      manage_story_visibility:
-        name: Manage visibility of stories
-      manage_users:
-        name: Add, remove, and manage users
-      moderate_comments:
-        name: Approve or reject community comments on assets
-      short_session:
-        name: Require users to be signed out after 15 minutes of inactivity
-      use_data_connectors:
-        name: Add, remove, and manage external data connectors and federations
-      view_all_dataset_status_logs:
-        name: View log of data updates
-      view_dashboards:
-        name: View performance dashboards
-      view_domain:
-        name: View Domain
-      view_goals:
-        name: View all performance goals
-      view_others_datasets:
-        name: View all datasets, charts, maps, and other views
-      view_story:
-        name: View all published stories
-      view_stories_stats:
-        name: View stats around stories
-      view_unpublished_story:
-        name: View 'draft' versions of all existing stories
   screens:
     about:
       actions: Actions
@@ -3556,8 +3442,6 @@ en:
         activity_log_description: Monitor updates, data jobs, and other activity on your Socrata site
         metadata: Metadata
         metadata_description: Structure and customize site-wide dataset metadata, including categories and custom fields
-        roles: Roles & Permissions
-        roles_description: Review the actions users can take on your site
         sdp_templates: Embed (Social Data Player) Templates
         sdp_templates_description: Style and customize templates used to embed your data around the web
         site_analytics: Analytics
@@ -3925,55 +3809,6 @@ en:
         story_link_description: URL of the webpage you would like this story to link to when clicked
         story_link_url: Story Link URL
         title: Manage Home Page
-      roles:
-        alerts:
-          delete_role:
-            error_html: "<strong>Error</strong> Unable to delete role"
-            success_html: "<strong>Success</strong> Role deleted successfully"
-          load_data:
-            error_html: "<strong>Error</strong> There was an error while loading data for this page."
-          save_roles:
-            error_html: "<strong>Error</strong> Save Failed with error: %{error}"
-            success_html: "<strong>Success</strong> Save Successful"
-        buttons:
-          cancel: Cancel
-          create: Create
-          edit_custom_roles: Edit Custom Roles
-          new_custom_role: New Custom Role
-          save: Save
-        errors:
-          role_name_empty: Role Name cannot be empty
-          role_name_length: "Role Name cannot exceed %{maxCharacterCount} characters"
-        index_page:
-          title: "Roles & Permissions"
-          page_title: "Roles & Permissions"
-          custom_role_modal:
-            title: New Custom Role
-            form:
-              role_name:
-                label: Role Name
-                placeholder: Name your new role
-              template:
-                label: Use Template
-                none_selected: None Selected
-                custom: Custom
-                default: Default
-          description:
-            title: Platform User Roles
-            content: There are five standard user roles on the Socrata platform. In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package.
-          edit_controls:
-            rename_role: Rename Role
-            edit_role: Edit Role
-            delete_role: Delete Role
-          grid:
-            currently: "Currently"
-            role: Role
-            user_count:
-              one: "%{count} User"
-              other: "%{count} Users"
-          faq_modal:
-            title: Frequently Asked Questions
-            content_html: '<h4>What are the different roles?</h4> <p>There are 5 default roles on the Socrata platform:</p> <ul> <li> Organization Member - Can sign into the site and view all internally published assets. </li> <li> Contributor - Can create new data assets privatly, but not publish assets without review. </li> <li> Data Publisher - Can create and publish data assets to the entire organization, as well as approve any internal publishing requests. </li> <li> Open Data Gatekeeper - Can publish and approve data assets for the Open Data Catalog. </li> <li>Site Administrator - Can manage users and sitewide settings.</li> </ul> <p> In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package. </p> <h4>Can I change the roles?</h4> <p> No, you cannot change the default roles, however you can create your own custom roles, in addition to the default ones. </p> <h4>How do roles interact with datasets, visualizations, and stories?</h4> <p>Some awesome answer.</p> <a href="https://socrata.com" target="_blank"> Read More about Roles and Permissions </a>'
       routing_approval:
         age_by_stage_report: Age by Stage Report
         approval_management: Approval Management

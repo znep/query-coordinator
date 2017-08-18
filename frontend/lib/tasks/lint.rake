@@ -20,11 +20,6 @@ namespace :lint do
       run_eslint('public/javascripts/adminActivityFeed', args[:format])
     end
 
-    desc 'run eslint on the adminRoles files'
-    task :adminRoles, :format do |task, args|
-      run_eslint('public/javascripts/adminRoles', args[:format])
-    end
-
     desc 'run eslint on the dataCards files'
     task :dataCards, :format do |task, args|
       run_eslint('public/javascripts/angular', args[:format])

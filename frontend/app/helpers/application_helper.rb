@@ -1215,7 +1215,6 @@ module ApplicationHelper
       connector
       internal
       internal_asset_manager
-      roles
       routing_approval
       site_appearance
     ).include?(controller_name)

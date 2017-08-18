@@ -124,8 +124,6 @@ class AppConfig < Hashie::Trash
   # Caching
   property :cache_dataslate_routing, default: 1.minute
 
-  # Configurable Roles Admin
-  property :roles_admin_faq_url
   # Misc
   property :secondary_group_identifier
   property :threadpool_count, default: 0, transform_with: as_int

@@ -94,6 +94,9 @@ end
 #
 # On startup, our dependency graph cache is empty. It is populated on-demand
 # on a per-stylesheet basis.
+
+# TODO Move this class out of this file and into its own file so class autoreloading works and people
+# can find this class by looking for a file named development_cache.rb
 class DevelopmentCache
   include Singleton
 
@@ -129,6 +132,11 @@ class DevelopmentCache
   def initialize
     @reverse_dependencies = {}
     @forward_dependencies = {}
+
+    start_listener! if ApplicationController.use_discrete_assets?
+  end
+
+  def start_listener!
     listener = Listen.to(
       *SCSS_WATCH_PATHS,
       :only => /\.scss/,
@@ -146,6 +154,7 @@ class DevelopmentCache
   # stylesheet.
   def get(top_level_stylesheet_filename)
     raise 'Block required' unless block_given?
+    return yield unless ApplicationController.use_discrete_assets?
 
     # This process has never rendered this stylesheet. In order to validate its staleness
     # in the (on-disk, petsistent) cache, we must know the stylesheet's dependency list.
@@ -349,12 +358,12 @@ class StylesController < ApplicationController
     headers['Content-Type'] = 'text/css'
 
     cache_key = generate_cache_key("widget.#{params[:customization_id]}.#{updated_at || 0}")
-    cached = Rails.cache.read(cache_key) unless use_discrete_assets?
+    cached = Rails.cache.read(cache_key) unless ApplicationController.use_discrete_assets?
 
     if cached.nil?
       # get sitewide includes
       includes_cache_key = generate_cache_key('_includes')
-      includes = Rails.cache.read(includes_cache_key) unless use_discrete_assets?
+      includes = Rails.cache.read(includes_cache_key) unless ApplicationController.use_discrete_assets?
       if includes.nil?
         includes = get_includes
         Rails.cache.write(includes_cache_key, includes)

@@ -288,7 +288,8 @@ module ApplicationHelper
 # STYLES
 
   def should_render_individual_styles?
-    Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
+    ApplicationController.use_discrete_assets? &&
+      FeatureFlags.derive(@view, request).use_merged_styles != true
   end
 
   def rendered_stylesheet_tag(stylesheet, media='all')

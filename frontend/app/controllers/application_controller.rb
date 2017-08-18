@@ -373,7 +373,8 @@ class ApplicationController < ActionController::Base
     ExternalConfig.update_all!
   end
 
-  def use_discrete_assets?
+  # This is used by the DevelopmentCache class which is presently hiding inside styles_controller.rb
+  def self.use_discrete_assets?
     Rails.env.development?
   end
 

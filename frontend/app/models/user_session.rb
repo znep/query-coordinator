@@ -44,7 +44,7 @@ class UserSession
   end
 
   cattr_accessor :controller
-  attr_accessor :login, :password, :new_session, :cookie, :remember_me, :id
+  attr_accessor :login, :password, :new_session, :cookie, :id
 
   # You can initialize a session by doing any of the following:
   #
@@ -63,10 +63,6 @@ class UserSession
     if args.size == 1 && args.first.is_a?(Hash)
       self.credentials = args.first
     end
-  end
-
-  def remember_me=(value)
-    @remember_me = (value == '1' || value.to_s.downcase == 'on')
   end
 
   # Return true if the session hasn't been saved yet.
@@ -216,9 +212,6 @@ class UserSession
       'password' => password,
       'remoteAddress' => controller.request.remote_ip
     }
-    if remember_me
-      creds['remember_me'] = 'true'
-    end
 
     creds
   end
@@ -302,7 +295,7 @@ class UserSession
   def credentials=(values)
     return if values.blank? || !values.is_a?(Hash)
 
-    values.slice('login', 'password', 'remember_me').each do |field, value|
+    values.slice('login', 'password').each do |field, value|
       send("#{field}=", value)
     end
   end

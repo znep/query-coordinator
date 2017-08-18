@@ -7,7 +7,6 @@ import defaultOptions from '../../DefaultOptions';
 
 import SignInForm from 'components/SignInForm/SignInForm';
 import PasswordInput from 'components/SignInForm/PasswordInput';
-import RememberMe from 'components/SignInForm/RememberMe';
 
 describe('<SignInForm />', () => {
   const defaultProps = {
@@ -17,22 +16,6 @@ describe('<SignInForm />', () => {
     onLoginError: () => { },
     options: defaultOptions
   };
-
-  describe('remember me', () => {
-    it('renders remember me when remember me is true', () => {
-      const props = _.cloneDeep(defaultProps);
-      props.options.rememberMe = true;
-      const wrapper = shallow(<SignInForm {...props} />);
-      assert.lengthOf(wrapper.find(RememberMe), 1);
-    });
-
-    it('does not render remember me when remember me is false', () => {
-      const props = _.cloneDeep(defaultProps);
-      props.options.rememberMe = false;
-      const wrapper = shallow(<SignInForm {...props} />);
-      assert.lengthOf(wrapper.find(RememberMe), 0);
-    });
-  });
 
   describe('renders error or spinner', () => {
     it('renders spinner', () => {

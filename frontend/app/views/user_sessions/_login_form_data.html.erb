@@ -16,13 +16,6 @@
   <%= f.password_field :password %>
 </div>
 
-<%- if feature? :remember_me -%>
-  <div class="line">
-    <%= f.check_box :remember_me %>
-    <%= f.label :remember_me, t('account.common.form.remember_me'), :class => 'pushUp' %>
-  </div>
-<%- end -%>
-
 <div class="formActionButtons">
   <%= submit_tag t('screens.sign_in.form.sign_in_button'), :class => 'button default' %>
   <div class="accountSignupHint loginSignupHint">

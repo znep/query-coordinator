@@ -12,7 +12,6 @@ en:
         password_requirements: 'Required. Your password must be between 8 and 40 characters and satisfy three of the following four criteria: contain a digit; contain a lowercase letter; contain an uppercase letter; contain a non-alphanumeric symbol.'
         password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
         password_restrictions: Restrictions apply
-        remember_me: Remember me
         sign_up_prompt: Sign up now
       inline_auth:
         sign_in_headline: Sign in using your Socrata ID

@@ -58,7 +58,7 @@ class MetadataEditor extends Component {
 MetadataEditor.propTypes = {
   flashVisible: PropTypes.bool.isRequired,
   onDatasetTab: PropTypes.bool.isRequired,
-  outputSchemaId: PropTypes.number.isRequired
+  outputSchemaId: PropTypes.number
 };
 
 export default MetadataEditor;

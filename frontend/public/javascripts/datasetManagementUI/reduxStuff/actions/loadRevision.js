@@ -68,12 +68,12 @@ function getCurrentRevision(params) {
         id: resource.id,
         fourfour: resource.fourfour,
         metadata: resource.metadata,
+        output_schema_id: resource.output_schema_id,
         permission: _.get(resource, 'action.permission', 'public'),
         task_sets: resource.task_sets,
         revision_seq: _.toNumber(resource.revision_seq),
         created_at: parseDate(resource.created_at),
-        created_by: resource.created_by,
-        datasetMetadataErrors: []
+        created_by: resource.created_by
       };
     });
 }

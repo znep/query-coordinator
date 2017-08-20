@@ -14,14 +14,6 @@ describe('ShowRevision page', () => {
     assert.isFalse(component.find('.homeContainer').isEmpty());
   });
 
-  it('renders the InfoPane', () => {
-    assert.isFalse(component.find('InfoPane').isEmpty());
-  });
-
-  it('renders the MetadataTable', () => {
-    assert.isFalse(component.find('MetadataTable').isEmpty());
-  });
-
   it('renders the SchemaPreview', () => {
     assert.isFalse(
       component.find('withRouter(Connect(SchemaPreview))').isEmpty()

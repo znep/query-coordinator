@@ -179,7 +179,17 @@ const convertToNull = val => (val === '' ? null : val);
 
 const regularPublic = metadata =>
   _.chain(metadata)
-    .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
+    .pick([
+      'id',
+      'name',
+      'description',
+      'category',
+      'licenseId',
+      'license',
+      'attribution',
+      'attributionLink',
+      'tags'
+    ])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();

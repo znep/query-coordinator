@@ -4,11 +4,11 @@
 
 // WRAPPER
 .resultCard {
-    background-color: $white;
-    border: 1px solid #e4e4e4;
-    border-bottom: 2px solid #e4e4e4;
-    margin-bottom: 15px;
-    clear: both;
+  background-color: $white;
+  border: 1px solid #e4e4e4;
+  border-bottom: 2px solid #e4e4e4;
+  margin-bottom: 15px;
+  clear: both;
 }
 
 // GENERAL SCHEMA
@@ -100,47 +100,6 @@
   }
 }
 
-// INFO PANE
-.infoPaneContainer {
-  :global {
-    .info-pane .container {
-      max-width: none;
-
-      .entry-main {
-        border: none;
-      }
-    }
-
-    .info-pane.result-card {
-      border-right: none;
-    }
-
-    .entry-content {
-      display: flex;
-
-      .entry-main {
-        flex-grow: 5;
-      }
-
-      .entry-meta {
-        flex-grow: 3;
-      }
-    }
-  }
-}
-
-// METADATA
-.metadataContainer {
-  :global {
-    .metadata-table-wrapper {
-      padding: 1em;
-      .landing-page-section {
-        padding: 0;
-      }
-    }
-  }
-}
-
 // SCHEMA PREVIEW
 .schemaPreviewContainer {
   h2 {
@@ -148,7 +107,6 @@
   }
 
   composes: container from global;
-
 
   :global {
     .schema-preview h2 {

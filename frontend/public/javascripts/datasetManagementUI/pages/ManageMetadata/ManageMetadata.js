@@ -11,7 +11,7 @@ import {
 import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'reduxStuff/actions/apiCalls';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
-import MetadataContent from 'containers/MetadataContentContainer';
+import MetadataContent from 'components/MetadataContent/MetadataContent';
 import * as Selectors from 'selectors';
 import { markFormClean, showFormErrors } from 'reduxStuff/actions/forms';
 import * as Links from 'links';
@@ -95,9 +95,11 @@ export class ManageMetadata extends Component {
   }
 
   handleCancelClick() {
-    const { dispatch, params } = this.props;
+    const { dispatch, params, datasetFormDirty, columnFormDirty } = this.props;
 
-    this.revertChanges();
+    if (datasetFormDirty || columnFormDirty) {
+      this.revertChanges();
+    }
 
     let path;
     if (!this.onDatasetTab()) {
@@ -179,15 +181,25 @@ ManageMetadata.propTypes = {
   entities: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  outputSchemaId: PropTypes.number.isRequired
+  outputSchemaId: PropTypes.number
 };
 
 const mapStateToProps = ({ entities, ui }, ownProps) => {
-  const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
+  let outputSchemaId;
+
   const revision = _.find(
     entities.revisions,
     r => r.revision_seq === _.toNumber(ownProps.params.revisionSeq)
   );
+
+  if (ownProps.params.outputSchemaId) {
+    outputSchemaId = ownProps.params.outputSchemaId;
+  } else if (revision && revision.output_schema_id) {
+    outputSchemaId = revision.output_schema_id;
+  } else {
+    const os = Selectors.currentOutputSchema(entities);
+    outputSchemaId = os ? os.id : null;
+  }
 
   return {
     path: ownProps.route.path,

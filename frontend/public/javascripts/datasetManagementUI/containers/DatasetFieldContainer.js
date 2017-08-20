@@ -37,7 +37,7 @@ const mergeProps = ({ revision, ...rest }, { dispatch }, ownProps) => {
     ...rest,
     ...ownProps,
     setValue: value => {
-      dispatch(FormActions .markFormDirty('datasetForm'));
+      dispatch(FormActions.markFormDirty('datasetForm'));
       dispatch(RevisionActions.setRevisionValue(path, value));
     }
   };

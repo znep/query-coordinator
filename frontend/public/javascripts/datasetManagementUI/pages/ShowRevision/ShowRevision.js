@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, Link } from 'react-router';
-import { InfoPane } from 'common/components';
-import MetadataTable from '../../../common/components/MetadataTable';
+import { Link } from 'react-router';
+import MetadataTable from 'containers/MetadataTableContainer';
 import SchemaPreview from 'containers/SchemaPreviewContainer';
 import HomePaneSidebar from 'containers/HomePaneSidebarContainer';
 import DatasetPreview from 'containers/DatasetPreviewContainer';
@@ -117,70 +116,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-export function ShowRevision({ view, params, entities, createUpload, pushToEditMetadata }) {
-  let metadataSection;
-  const paneProps = {
-    name: view.name,
-    description: view.description,
-    category: view.category
-  };
-
-  // MetadataTable component doesn't distinguish between private and non-private
-  // custom metadata. So we have to do some data-massaging here before passing
-  // custom metadata info to it.
-  const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});
-
-  const nonPrivateCustomMetadata = _.get(view, 'metadata.custom_fields', {});
-
-  const combinedCustomMetadata = _.merge(nonPrivateCustomMetadata, privateCustomMetadata);
-
-  const currentAvailableFields = view.customMetadataFields
-    ? view.customMetadataFields.map(fieldset => fieldset.name)
-    : [];
-
-  // Have to perform this check in case user deletes a field but we still have
-  // data for it.
-  const customMetadataFieldsets = _.pickBy(combinedCustomMetadata, (v, k) =>
-    currentAvailableFields.includes(k)
-  );
-
-  const tableProps = {
-    view: {
-      ...view,
-      tags: view.tags,
-      attribution: view.attribution,
-      attributionLink: '',
-      attachments: view.attachments, // MetadataTable transforms this
-      licenseName: view.license.name,
-      licenseLogo: view.license.logoUrl,
-      licenseUrl: view.license.termsLink,
-      editMetadataUrl: '#',
-      statsUrl: '', // MetadataTable computes this because permission checking
-      disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
-      lastUpdatedAt: view.lastUpdatedAt,
-      dataLastUpdatedAt: view.dataLastUpdatedAt,
-      metadataLastUpdatedAt: view.metadataLastUpdatedAt,
-      createdAt: view.createdAt,
-      viewCount: view.viewCount,
-      downloadCount: view.downloadCount,
-      ownerName: view.owner.displayName // owner.name
-    },
-    customMetadataFieldsets,
-    onClickEditMetadata: e => {
-      e.preventDefault();
-      pushToEditMetadata(Links.metadata(params));
-    }
-  };
-
-  metadataSection = (
-    <div className={styles.metadataContainer}>
-      <div className={styles.infoPaneContainer}>
-        <InfoPane {...paneProps} />
-      </div>
-      <MetadataTable {...tableProps} />
-    </div>
-  );
-
+export function ShowRevision({ view, params, entities, createUpload }) {
   const outputSchema = Selectors.currentOutputSchema(entities);
   const doesUpsertExist = _.size(
     _.filter(entities.task_sets, uj => uj.status !== ApplyRevision.TASK_SET_FAILURE)
@@ -231,7 +167,7 @@ export function ShowRevision({ view, params, entities, createUpload, pushToEditM
   return (
     <div className={styles.homeContainer}>
       <div className={styles.homeContent}>
-        {metadataSection}
+        <MetadataTable />
         <div className={styles.schemaPreviewContainer}>
           <SchemaPreview />
           <RowDetails />
@@ -254,16 +190,14 @@ ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  createUpload: PropTypes.func.isRequired,
-  pushToEditMetadata: PropTypes.func.isRequired
+  createUpload: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     createUpload: (file, params) => {
       dispatch(Actions.createUpload(file, params));
-    },
-    pushToEditMetadata: url => browserHistory.push(url)
+    }
   };
 }
 

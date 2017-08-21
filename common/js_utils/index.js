@@ -679,6 +679,22 @@ var utils = {
       output = '-';
     }
     return output.slice(0, 50);
+  },
+
+  /**
+   * Extension of _.get where it searches many paths until
+   * a value is found.
+   *
+   * Usage:
+   * object1 = { foo: { bar: 1 }}
+   * object2 = { a: { b: { c: 99 }}, foo: { bar: 1 }}
+   * sift(object1, 'a.b.c', 'd.e', 'foo.bar') === 1
+   * sift(object2, 'a.b.c', 'd.e', 'foo.bar') === 99
+   */
+  sift: function(object, ...pathsToSearch) {
+    return _.reduce(pathsToSearch,
+      (memo, path) => _.isUndefined(memo) ? _.get(object, path) : memo,
+      undefined);
   }
 };
 

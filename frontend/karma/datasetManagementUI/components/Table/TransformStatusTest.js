@@ -22,6 +22,10 @@ describe('components/Table/TransformStatus', () => {
       inputSchemaId: '0',
       outputSchemaId: '0'
     },
+    flyouts: false,
+    onClickError: _.noop,
+    shortcuts: [],
+    showShortcut: false,
     columnId: 50,
     totalRows: 5000,
     transform: {
@@ -36,10 +40,9 @@ describe('components/Table/TransformStatus', () => {
 
       assert.isAtLeast(component.find('.success').length, 1);
       assert.isAtLeast(component.find('ProgressBar').length, 1);
-      assert.equal(
+      assert.include(
         component.text(),
-        `<ProgressBar /><SocrataIcon />${I18n.show_output_schema.column_header
-          .no_errors_exist}`
+        I18n.show_output_schema.column_header.no_errors_exist
       );
     });
 
@@ -56,9 +59,9 @@ describe('components/Table/TransformStatus', () => {
 
       assert.equal(component.find('ProgressBar').prop('percent'), 50);
 
-      assert.equal(
+      assert.include(
         component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        I18n.show_output_schema.column_header.scanning
       );
     });
 
@@ -74,9 +77,9 @@ describe('components/Table/TransformStatus', () => {
 
       const component = shallow(<TransformStatus {...props} />);
 
-      assert.equal(
+      assert.include(
         component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        I18n.show_output_schema.column_header.scanning
       );
     });
 
@@ -92,9 +95,9 @@ describe('components/Table/TransformStatus', () => {
 
       const component = shallow(<TransformStatus {...props} />);
 
-      assert.equal(
+      assert.include(
         component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        I18n.show_output_schema.column_header.scanning
       );
     });
   });
@@ -149,7 +152,10 @@ describe('components/Table/TransformStatus', () => {
 
       const component = shallow(<TransformStatus {...props} />);
 
-      assert.equal(component.text(), '<ProgressBar /><Link /><ErrorFlyout />');
+      assert.include(component.text(), '<ProgressBar />');
+      assert.include(component.text(), '<ErrorFlyout />');
+      assert.include(component.text(), '<Link />');
+
     });
   });
 });

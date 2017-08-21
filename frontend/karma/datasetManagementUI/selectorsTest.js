@@ -291,32 +291,26 @@ describe('Selectors', () => {
       });
     });
 
-    it('crawls backwards through output schemas to figure out which ignored column to keep if there is more than one', () => {
-      const ignoredColumnsWithSameTransform = [1923, 1943];
-      const ignoredColumnIds = output.ignored.map(oc => oc.id);
-      assert.include(ignoredColumnIds, ignoredColumnsWithSameTransform[1]);
-      assert.notInclude(ignoredColumnIds, ignoredColumnsWithSameTransform[0]);
-    });
+    // This never actually tests anything?? this is just testing that our fixtures are right
+    // it('returns only output columns derived for the current input schema', () => {
+    //   const outputSchemaIds = Object.keys(entities.output_schemas)
+    //     .map(_.toNumber)
+    //     .filter(key => !!key);
 
-    it('returns only output columns derived for the current input schema', () => {
-      const outputSchemaIds = Object.keys(entities.output_schemas)
-        .map(_.toNumber)
-        .filter(key => !!key);
+    //   const currentOutputSchemaId = Math.max(...outputSchemaIds);
 
-      const currentOutputSchemaId = Math.max(...outputSchemaIds);
+    //   const currentInputSchemaId =
+    //     entities.output_schemas[currentOutputSchemaId].input_schema_id;
 
-      const currentInputSchemaId =
-        entities.output_schemas[currentOutputSchemaId].input_schema_id;
+    //   const currentInputColumns = Object.keys(entities.input_columns).filter(
+    //     icid =>
+    //       entities.input_columns[icid].input_schema_id === currentInputSchemaId
+    //   );
 
-      const currentInputColumns = Object.keys(entities.input_columns).filter(
-        icid =>
-          entities.input_columns[icid].input_schema_id === currentInputSchemaId
-      );
+    //   const returnedColumns = [...output.current, ...output.ignored];
 
-      const returnedColumns = [...output.current, ...output.ignored];
-
-      assert.isAtMost(returnedColumns.length, currentInputColumns.length);
-    });
+    //   assert.isAtMost(returnedColumns.length, currentInputColumns.length);
+    // });
   });
 
   describe('allTransformsDone', () => {

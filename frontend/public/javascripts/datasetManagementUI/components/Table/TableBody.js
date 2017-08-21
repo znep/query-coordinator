@@ -4,10 +4,22 @@ import { connect } from 'react-redux';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';
-import { PAGE_SIZE } from '../../actions/loadData';
 import styles from 'styles/Table/TableBody.scss';
+import * as LoadDataActions from '../../actions/loadData';
 
 class TableBody extends Component {
+
+  componentDidMount() {
+    const { displayState, dispatch } = this.props;
+    dispatch(LoadDataActions.loadVisibleData(displayState));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { displayState, dispatch } = nextProps;
+
+    dispatch(LoadDataActions.loadVisibleData(displayState));
+  }
+
   shouldComponentUpdate(nextProps) {
     const nextStuff = {
       columns: nextProps.columns.map(c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)),
@@ -28,8 +40,8 @@ class TableBody extends Component {
   getData() {
     const props = this.props;
 
-    const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
-    const endRow = startRow + PAGE_SIZE;
+    const startRow = (props.displayState.pageNo - 1) * LoadDataActions.PAGE_SIZE;
+    const endRow = startRow + LoadDataActions.PAGE_SIZE;
     let rowIndices;
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.entities.transforms[props.displayState.transformId];
@@ -71,8 +83,8 @@ class TableBody extends Component {
   renderNormalRow(row) {
     return (
       <tr key={row.rowIdx}>
-        {row.transforms.map(transform => {
-          return <TableCell key={transform.id} cell={transform.cell} />;
+        {row.transforms.map((transform, offset) => {
+          return <TableCell key={`${row.rowIdx}-${offset}`} cell={transform.cell} />;
         })}
       </tr>
     );
@@ -103,7 +115,8 @@ TableBody.propTypes = {
   apiCalls: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayState: PropTypes.object.isRequired,
-  inputSchemaId: PropTypes.number.isRequired
+  inputSchemaId: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps)(TableBody);

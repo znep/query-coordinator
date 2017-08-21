@@ -10,10 +10,19 @@ import Publishing from 'components/Modals/Publishing';
 import PublishConfirmation from 'components/Modals/PublishConfirmation';
 import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAID';
 import RowIdentifierError from 'components/Modals/RowIdentifierError';
+import GeocodeShortcut from 'components/Modals/GeocodeShortcut';
+
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName, payload) => {
   switch (contentComponentName) {
+    case 'geocode':
+      return {
+        ...props,
+        children: [<GeocodeShortcut key={1} payload={payload} />],
+        className: styles.shortcut
+      };
+
     case 'ErrorsHelp':
       return {
         ...props,

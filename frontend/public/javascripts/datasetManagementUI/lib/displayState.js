@@ -28,7 +28,6 @@ export const rowErrors = (pageNo, outputSchemaId) => ({
 export function fromUiUrl({ params, route }) {
   const pageNo = _.toNumber(params.pageNo || '1');
   const outputSchemaId = _.toNumber(params.outputSchemaId);
-
   if (params.errorsTransformId) {
     return columnErrors(_.toNumber(params.errorsTransformId), pageNo, outputSchemaId);
   } else if (route.path.indexOf('row_errors') > 0) {
@@ -71,6 +70,10 @@ export function toUiUrl(path, params, displayState) {
     default:
       console.error('unknown display state type', displayState.type);
   }
+}
+
+export function inErrorMode(displayState, transform) {
+  return displayState.type === COLUMN_ERRORS && transform.id === displayState.transformId;
 }
 
 export const propType = PropTypes.shape({

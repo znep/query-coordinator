@@ -2123,12 +2123,33 @@ en:
         singular: Additional error
         plural: Additional errors
       click_to_view: Click to view
+      geocode_shortcut:
+        title: Georeference your dataset
+        what_is_an_error: Treats the cell as an error, which removes the row from the dataset on import
+        skip_row: Skip Row
+        what_is_forgive: Imports the row with the georeferenced value as null
+        treat_as_empty: Treat value as empty
+        error_handling: Geocoding Error Handling
+        column_preview: Column Preview
+        new_column_name: New Georeferenced Column
+        transform_too_complex: This transformation cannot be edited through this tool
+        full_address: Full Address
+        address: Street Address
+        city: City
+        state: State
+        zip: Zip
+        latitude: Latitude
+        longitude: Longitude
+        hide_original_columns: Do not import original columns
+        begin_georeferencing: Select columns to georeference this dataset
+        preview: Preview
       column_header:
         column_options: Column Options
         column_status_flyout:
           click_to_view: Click to view
-          error_msg_plural: "{num_errors} rows didn't match the type {type}"
-          error_msg_singular: "{num_errors} row didn't match the type {type}"
+          error_msg_plural: "{num_errors} rows could not be transformed into {type}"
+          error_msg_singular: "{num_errors} row could not be transformed into {type}"
+        transform_failed: Unexpected error!
         error_exists: Error total
         error_exists_scanning: Error found so far
         errors_exist: Errors total
@@ -2139,6 +2160,9 @@ en:
         no_errors_exist: All cells will import correctly
         scanning: Still scanning for errors...
         set_row_id: Set as row identifier
+        geocode: Use as georeference
+        can_geocode: Data in this column can be geocoded
+        click_for_options: Click for more options
         type_display_names:
           checkbox: True/False
           date: Date & Time (with timezone)

@@ -2,15 +2,34 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.statusText {
-  padding: 5px 5px;
-  border-bottom: 2px solid $light-grey-3;
+.statusItem {
+  padding: 5px;
+  border-bottom: 1px solid $light-grey-4;
   display: relative;
   z-index: 100;
   text-align: left;
 }
 
-.colErrors {
+.statusText {
+  composes: statusItem;
+  flex-grow: 1;
+}
+
+.geoBadge {
+  composes: statusItem;
+  margin-right: -5px;
+  flex-grow: 0;
+}
+
+.colAttributes {
+  display: flex;
+}
+
+.colFailed {
+
+}
+
+.colErrors, .colFailed {
   font-weight: normal;
   font-size: 10px;
   color: $grey;
@@ -21,7 +40,6 @@
     color: $grey;
     text-decoration: none;
     display: block;
-    width: 100%;
 
     &:hover {
       background-color: $alternate-3-light;
@@ -38,11 +56,6 @@
   color: $alternate-1-dark;
   font-style: italic;
   background-color: #f6f6f6 !important; //lol
-}
-.statusText {
-  padding: 5px;
-  border-bottom: 1px solid $light-grey-4;
-  text-align: left;
 }
 
 .transformStatusSelected {
@@ -81,6 +94,13 @@
   border-radius: 1.1em;
   color: $white;
   margin-right: 0.5em;
+}
+
+.geoIcon {
+  composes: socrata-icon-geo from global;
+  composes: primary from global;
+  composes: statusIcon;
+  margin-right: 0;
 }
 
 .spinner {

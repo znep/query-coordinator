@@ -2,6 +2,12 @@ import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'actions/apiCalls';
 import { CREATE_UPLOAD } from 'actions/manageUploads';
+import {
+  stripToTextAst,
+  stripToNumberAst,
+  stripToBooleanAst,
+  stripToDatetimeAst
+} from 'lib/ast';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
@@ -106,51 +112,51 @@ export function pathForOutputSchema(entities, outputSchemaId) {
   };
 }
 
+export function sourceFromInputSchema(entities, inputSchemaId) {
+  const inputSchema = entities.input_schemas[inputSchemaId];
+  return entities.sources[inputSchema.source_id];
+}
+
 export function rowLoadOperationsInProgress(apiCalls) {
   return _.filter(apiCalls, call => call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS)
     .length;
 }
 
-// so we would store this as a boolean property of output columns, but turns out
-// this would require a lot of DSMAPI changes (probably more code than here, amazingly), in:
-// - computation of denormalized error count for output schema
-// - starting new transforms when a new output schema is created
-// - endpoints which return results
+// hooray this thing is still wrong, and will always be wrong - each time we add a new
+// feature we get to re-write it to make it right for our specific use case
 export function currentAndIgnoredOutputColumns(entities, osid) {
   const osIds = Object.keys(entities.output_schemas).map(_.toNumber);
 
   const latestOutputSchemaId = osid || Math.max(...osIds);
-
-  const outputSchema = entities.output_schemas[latestOutputSchemaId];
+  const firstOutputSchemaId = Math.min(...osIds);
 
   const actualColumns = columnsForOutputSchema(entities, latestOutputSchemaId);
+  const firstColumns = columnsForOutputSchema(entities, firstOutputSchemaId);
 
-  const referencedInputColumns = _.flatMap(actualColumns, oc =>
-    oc.transform.transform_input_columns.map(tic => tic.input_column_id)
-  );
 
-  const unreferencedInputColumns = Object.values(entities.input_columns)
-    .filter(ic => ic.input_schema_id === outputSchema.input_schema_id)
-    .filter(ic => referencedInputColumns.indexOf(ic.id) === -1);
-
-  const ocSortedByNewest = _.chain(entities.output_schemas)
-    .sortBy([oc => -oc.id])
-    .flatMap(os => columnsForOutputSchema(entities, os.id))
-    .value();
-
-  const unreferencedOutputColumns = _.flatMap(unreferencedInputColumns, ic => {
-    const outCol = _.find(ocSortedByNewest, oc => {
-      if (
-        oc.transform &&
-        oc.transform.transform_input_columns &&
-        oc.transform.transform_input_columns.length === 1
-      ) {
-        return oc.transform.transform_input_columns[0].input_column_id === ic.id;
-      }
-      return false;
-    });
-    return outCol ? [outCol] : [];
+  const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
+    const ast = oc.transform.parsed_expr;
+    return _.uniqWith([
+      ast,
+      stripToTextAst(ast),
+      stripToNumberAst(ast),
+      stripToBooleanAst(ast),
+      stripToDatetimeAst(ast)
+    ], _.isEqual);
   });
+
+  const isAstUsed = (ast) => !!_.find(outputColumnsStrippedAsts, (a) => _.isEqual(a, ast));
+
+  const isUnreferenced = (outputColumn) => {
+    const ast = outputColumn.transform.parsed_expr;
+    return !isAstUsed(ast) &&
+      !isAstUsed(stripToTextAst(ast)) &&
+      !isAstUsed(stripToNumberAst(ast)) &&
+      !isAstUsed(stripToBooleanAst(ast)) &&
+      !isAstUsed(stripToDatetimeAst(ast));
+  };
+
+  const unreferencedOutputColumns = firstColumns.filter(isUnreferenced);
 
   return {
     current: actualColumns,

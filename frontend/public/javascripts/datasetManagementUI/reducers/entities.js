@@ -6,6 +6,7 @@ import { EDIT_OUTPUT_COLUMN, ADD_OUTPUT_COLUMNS } from 'actions/outputColumns';
 import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
+import { EDIT_INPUT_COLUMN } from 'actions/inputColumns';
 import { UPDATE_PROGRESS } from 'actions/manageUploads';
 import { EDIT_REVISION, SET_REVISION_VALUE } from 'actions/revisions';
 
@@ -68,7 +69,20 @@ const inputSchemas = (state = {}, action) => {
   }
 };
 
-const inputColumns = (state = {}) => state;
+const inputColumns = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_INPUT_COLUMN:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          ...action.payload
+        }
+      };
+    default:
+      return state;
+  }
+};
 
 const outputSchemas = (state = {}, action) => {
   switch (action.type) {

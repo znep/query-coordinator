@@ -7,6 +7,7 @@ import {
 } from 'components/Uploads/UploadSidebar';
 import dotProp from 'dot-prop-immutable';
 import state from '../../data/initialState';
+import entities from 'data/entities';
 
 describe('components/Uploads/UploadSidebar', () => {
 
@@ -50,7 +51,7 @@ describe('components/Uploads/UploadSidebar', () => {
           outputSchemaId: 214
         }
       ],
-      entities: {},
+      entities,
       params: {}
     };
 
@@ -80,7 +81,7 @@ describe('components/Uploads/UploadSidebar', () => {
     it('shows no sources message if there are no sources', () => {
       const newProps = { currentUpload: null, otherUploads: [] };
       const component = shallow(<UploadSidebar {...newProps} />);
-      assert.equal(component.find('span').text(), 'No uploads yet');
+      assert.include(component.find('span').text(), 'No uploads yet');
     });
 
   });

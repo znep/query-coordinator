@@ -8,7 +8,6 @@ import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import * as Actions from '../actions/showOutputSchema';
-import * as LoadDataActions from '../actions/loadData';
 import { SAVE_CURRENT_OUTPUT_SCHEMA } from '../actions/apiCalls';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
@@ -37,20 +36,8 @@ export class ShowOutputSchema extends Component {
   }
 
   componentDidMount() {
-    const { displayState, dispatch } = this.props;
-
-    dispatch(LoadDataActions.loadVisibleData(displayState));
-
     this.setSize();
-
     window.addEventListener('resize', this.throttledSetSize);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { dispatch } = this.props;
-    const { displayState } = nextProps;
-
-    dispatch(LoadDataActions.loadVisibleData(displayState));
   }
 
   componentWillUnmount() {
@@ -62,6 +49,19 @@ export class ShowOutputSchema extends Component {
       scrollLeft: this.tableWrap.scrollLeft,
       viewportWidth: this.tableWrap.offsetWidth
     });
+  }
+
+  getPath() {
+    const {
+      source,
+      inputSchema,
+      outputSchema
+    } = this.props;
+    return {
+      sourceId: source.id,
+      inputSchemaId: inputSchema.id,
+      outputSchemaId: outputSchema.id
+    };
   }
 
   errorsNotInView() {
@@ -114,7 +114,6 @@ export class ShowOutputSchema extends Component {
   render() {
     const {
       revision,
-      source,
       inputSchema,
       outputSchema,
       columns,
@@ -126,12 +125,7 @@ export class ShowOutputSchema extends Component {
       params
     } = this.props;
 
-    const path = {
-      revisionSeq: params.revisionSeq,
-      sourceId: source.id,
-      inputSchemaId: inputSchema.id,
-      outputSchemaId: outputSchema.id
-    };
+    const path = this.getPath();
 
     const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 

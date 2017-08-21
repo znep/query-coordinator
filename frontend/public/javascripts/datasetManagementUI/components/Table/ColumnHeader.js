@@ -48,6 +48,10 @@ export class ColumnHeader extends Component {
     this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.outputColumn);
   }
 
+  onGeocode() {
+    this.props.showShortcut('geocode');
+  }
+
   optionsFor() {
     if (this.props.outputColumn.ignored) {
       return [
@@ -80,6 +84,12 @@ export class ColumnHeader extends Component {
         icon: 'socrata-icon-question',
         disabled: this.props.outputColumn.is_primary_key,
         render: DropdownWithIcon
+      },
+      {
+        title: 'geocode',
+        value: 'onGeocode',
+        icon: 'socrata-icon-geo',
+        render: DropdownWithIcon
       }
     ];
   }
@@ -101,10 +111,13 @@ export class ColumnHeader extends Component {
     const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis, params } = this.props;
     const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis;
 
-    const inputColumn = outputColumn.inputColumn;
+    let convertibleTo = [];
+    if (outputColumn.inputColumns.length === 1) {
+      const inputColumn = outputColumn.inputColumns[0];
 
-    const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
-    const convertibleTo = _.keys(inputColumnTypeInfo.conversions);
+      const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
+      convertibleTo = _.keys(inputColumnTypeInfo.conversions);
+    }
 
     const types = convertibleTo.map(type => ({
       humanName: Translations.type_display_names[type.toLowerCase()],
@@ -112,6 +125,8 @@ export class ColumnHeader extends Component {
     }));
 
     const orderedTypes = _.sortBy(types, 'humanName');
+
+    const isSelectorDisabled = isDisabled || (orderedTypes.length === 0);
 
     const dropdownProps = {
       onSelection: e => this[e.value](outputColumn),
@@ -155,7 +170,7 @@ export class ColumnHeader extends Component {
         {this.icon(isDisabled)}
         <select
           name="col-type"
-          disabled={isDisabled}
+          disabled={isSelectorDisabled}
           value={this.columnType()}
           aria-label={`col-type-${outputColumn.field_name}`}
           onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, params)}>
@@ -177,6 +192,7 @@ ColumnHeader.propTypes = {
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
+  showShortcut: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired
 };

@@ -2,42 +2,6 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-// WRAPPER
-.resultCard {
-  background-color: $white;
-  border: 1px solid #e4e4e4;
-  border-bottom: 2px solid #e4e4e4;
-  margin-bottom: 15px;
-  clear: both;
-}
-
-// GENERAL SCHEMA
-.tableInfo {
-  text-align: center;
-  padding: 4em 0em;
-  margin: 0px auto;
-  max-width: 64em;
-  height: 543px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 400px;
-  display: flex;
-  justify-content: center;
-}
-
-.tableInfo p {
-  color: $dark-grey-1;
-  margin: 0em 0em 1em 0em;
-}
-
-.previewAreaHeader {
-  font-style: italic;
-  color: $dark-grey-1;
-  font-size: 17px;
-}
-
 .homeContainer {
   h2 {
     font-weight: 500;
@@ -53,24 +17,6 @@
 .homeContent {
   overflow: auto;
   flex: 1;
-}
-
-// NO DATA
-.fileTypes {
-  padding-top: 15px;
-}
-
-.sourceButton {
-  composes: btn from global;
-  composes: btn-primary from global;
-}
-
-// OUPUT SCHEMA
-.reviewBtn {
-  composes: btn from global;
-  composes: btn-sm from global;
-  composes: btn-alternate-2 from global;
-  margin: 0em 0em 1em 0em;
 }
 
 // UPSERT PREVIEW

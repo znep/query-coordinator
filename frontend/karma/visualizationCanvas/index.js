@@ -39,7 +39,8 @@ function requireAll(context) {
 
 // Setup mock feature flags
 FeatureFlags.useTestFixture({
-  visualization_canvas_embed_button: 'embed-only'
+  visualization_canvas_embed_button: 'embed-only',
+  visualization_authoring_enable_pretty_nbe_url_cols: false
 });
 
 // Run all the tests

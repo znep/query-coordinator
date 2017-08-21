@@ -594,27 +594,5 @@ describe PageMetadataManager do
       end
     end
 
-    # NOTE not including this test when porting over from Minitest because
-    # it's basically already tested in 'returns roll-up query'
-
-    # def test_build_rollup_soql_has_date_trunc
-    #   manager.stubs(
-    #     dataset_metadata: { body: v1_dataset_metadata },
-    #     column_field_name: 'fieldName',
-    #     logical_datatype_name: 'fred',
-    #     fetch_min_max_in_column: {
-    #       'min' => '1987-08-15T00:00:00.000',
-    #       'max' => '1987-08-15T00:00:00.000'
-    #     }
-    #   )
-    #
-    #   columns = v1_dataset_metadata.fetch('columns')
-    #
-    #   cards = data_lens_page_metadata.fetch('cards')
-    #
-    #   soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
-    #   assert_match(/date_trunc/, soql)
-    # end
-
   end
 end

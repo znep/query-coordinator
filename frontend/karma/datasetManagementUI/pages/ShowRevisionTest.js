@@ -30,9 +30,6 @@ describe('ShowRevision page', () => {
     );
   });
 
-  it('renders "manage data" button', () => {
-    assert.isFalse(component.find('.manageDataBtn').isEmpty());
-  });
 
   it('renders without errors when there is no output schema', () => {
     const propsWithoutOutputSchema = _.clone(defaultProps);
@@ -44,23 +41,5 @@ describe('ShowRevision page', () => {
       <ShowRevision {...propsWithoutOutputSchema} />
     );
     assert.isFalse(theComponent.isEmpty());
-  });
-
-  it('renders list of accepted file types', () => {
-    const clonedProps = _.cloneDeep(ShowRevisionProps);
-    clonedProps.entities.output_schemas = {};
-    clonedProps.entities.input_schemas = {};
-    clonedProps.entities.sources = {};
-    clonedProps.entities.task_sets = {};
-
-    const theComponent = shallow(<ShowRevision {...clonedProps} />);
-    assert.equal(
-      theComponent
-        .find('WrapDataTablePlaceholder')
-        .dive()
-        .find('.fileTypes')
-        .text(),
-      'Supported file types: .csv, .tsv, .xls, .xlsx'
-    );
   });
 });

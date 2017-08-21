@@ -25,7 +25,6 @@ describe('DatasetColumnsService', function() {
     },
     map_of_the_world: {
       name: 'Map of the World and the Seven Seas',
-      fred: 'location',
       physicalDatatype: 'point',
       availableCardTypes: ['feature'],
       defaultCardType: 'feature',
@@ -34,7 +33,6 @@ describe('DatasetColumnsService', function() {
     },
     map_of_atlantis: {
       name: 'Map of Atlantis',
-      fred: 'location',
       physicalDatatype: 'point',
       availableCardTypes: ['feature'],
       defaultCardType: 'feature',
@@ -43,7 +41,6 @@ describe('DatasetColumnsService', function() {
     },
     ':system_column': {
       name: 'System Column to Exclude',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
       defaultCardType: 'column',
@@ -58,7 +55,6 @@ describe('DatasetColumnsService', function() {
     },
     ':@computed_column': {
       name: 'Computed Column to Keep',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
       defaultCardType: 'column',
@@ -73,7 +69,6 @@ describe('DatasetColumnsService', function() {
     },
     '*': {
       name: 'Data Table',
-      fred: '*',
       physicalDatatype: '*',
       availableCardTypes: [],
       defaultCardType: 'table',
@@ -168,4 +163,3 @@ describe('DatasetColumnsService', function() {
     });
   });
 });
-

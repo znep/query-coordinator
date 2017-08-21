@@ -32,7 +32,6 @@ xdescribe('ColumnChartController', function() {
         'test_column': {
           name: 'test column name',
           description: 'test column description',
-          fred: 'amount',
           physicalDatatype: 'number',
           defaultCardType: 'column',
           availableCardTypes: ['column']

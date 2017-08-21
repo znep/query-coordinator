@@ -8,28 +8,24 @@ describe('TableCardController', function() {
     'test_column': {
       'name': 'test column title',
       'description': 'test column description',
-      'fred': 'amount',
       'physicalDatatype': 'number',
       'defaultCardType': 'column',
       'availableCardTypes': ['column', 'search']
     },
     'test_timestamp_column': {
       'name': 'what time is it',
-      'fred': 'time',
       'physicalDatatype': 'timestamp',
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline']
     },
     'test_floating_timestamp_column': {
       'name': 'which time is it',
-      'fred': 'time',
       'physicalDatatype': 'floating_timestamp',
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline']
     },
     'test_location_column': {
       'name': 'which place i am in',
-      'fred': 'point',
       'physicalDatatype': 'point',
       'defaultCardType': 'feature',
       'availableCardTypes': ['feature']
@@ -37,7 +33,6 @@ describe('TableCardController', function() {
     ':@test_computed_column': {
       'name': 'Community Districts',
       'description': 'Community district reporting 311 request',
-      'fred': 'location',
       'physicalDatatype': 'number',
       'computationStrategy': {
         'parameters': {
@@ -51,13 +46,11 @@ describe('TableCardController', function() {
     },
     ':test_system_column': {
       'name': ':test_system_column',
-      'fred': 'text',
       'physicalDatatype': 'row_identifier'
     },
     '*': {
       'name': 'Data Table',
       'description': '',
-      'fred': '*',
       'physicalDatatype': '*',
       'defaultCardType': 'table',
       'availableCardTypes': ['table']
@@ -451,35 +444,30 @@ describe('TableCardController', function() {
         var edgeCaseColumns = {
           'a': {
             'name': 'a',
-            'fred': 'time',
             'physicalDatatype': 'timestamp',
             'defaultCardType': 'timeline',
             'availableCardTypes': ['timeline']
           },
           '_': {
             'name': '_',
-            'fred': 'time',
             'physicalDatatype': 'timestamp',
             'defaultCardType': 'timeline',
             'availableCardTypes': ['timeline']
           },
           ' b': {
             'name': ' b',
-            'fred': 'time',
             'physicalDatatype': 'timestamp',
             'defaultCardType': 'timeline',
             'availableCardTypes': ['timeline']
           },
           '1:': {
             'name': '1:',
-            'fred': 'time',
             'physicalDatatype': 'timestamp',
             'defaultCardType': 'timeline',
             'availableCardTypes': ['timeline']
           },
           '*a': {
             'name': '*a',
-            'fred': 'time',
             'physicalDatatype': 'timestamp',
             'defaultCardType': 'timeline',
             'availableCardTypes': ['timeline']

@@ -91,7 +91,6 @@ describe('cardTitle', function() {
           name: 'Table Card',
           description: 'Table Card',
           physicalDatatype: '*',
-          fred: '*',
           availableCardTypes: ['table'],
           defaultCardType: 'table'
         }
@@ -164,7 +163,6 @@ describe('cardTitle', function() {
           myFieldName: {
             name: 'name',
             description: 'search card',
-            fred: 'text',
             physicalDatatype: 'text',
             availableCardTypes: ['search'],
             defaultCardType: 'search'
@@ -182,7 +180,6 @@ describe('cardTitle', function() {
           myFieldName: {
             name: 'name',
             description: 'feature',
-            fred: 'location',
             physicalDatatype: 'point',
             availableCardTypes: ['feature'],
             defaultCardType: 'feature'

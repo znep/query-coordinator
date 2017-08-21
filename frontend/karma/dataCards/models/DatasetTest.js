@@ -77,7 +77,6 @@ describe('Dataset model', function() {
         'normal_column': {
           name: 'title',
           description: 'blank!',
-          fred: 'category',
           physicalDatatype: 'number',
           defaultCardType: 'column',
           availableCardTypes: ['column', 'search']
@@ -85,7 +84,6 @@ describe('Dataset model', function() {
         'normal_column_2': {
           name: 'title',
           description: 'blank!',
-          fred: 'category',
           physicalDatatype: 'number',
           defaultCardType: 'column',
           availableCardTypes: ['column', 'search']
@@ -98,7 +96,6 @@ describe('Dataset model', function() {
         ':@computed_column': {
           name: 'title',
           description: 'blank!',
-          fred: 'category',
           physicalDatatype: 'number',
           computationStrategy: {
             parameters: {
@@ -164,7 +161,6 @@ describe('Dataset model', function() {
         ':@computed_column': {
           name: 'title',
           description: 'blank!',
-          fred: 'category',
           physicalDatatype: 'number',
           defaultCardType: 'column',
           availableCardTypes: ['column', 'search']
@@ -180,7 +176,6 @@ describe('Dataset model', function() {
         'normal_column': {
           name: 'title',
           description: 'blank!',
-          fred: 'category',
           physicalDatatype: 'number',
           defaultCardType: 'column',
           availableCardTypes: ['column', 'search']

@@ -20,7 +20,6 @@ describe('addCardDialog', function() {
       'spot': {
         'name': 'Spot where cool froods hang out.',
         'description': '???',
-        'fred': 'location',
         'physicalDatatype': 'number',
         'computationStrategy': {
           'parameters': {
@@ -34,7 +33,6 @@ describe('addCardDialog', function() {
       'bar': {
         'name': 'A bar where cool froods hang out.',
         'description': '???',
-        'fred': 'text',
         'physicalDatatype': 'text',
         'cardType': 'column',
         'defaultCardType': 'column',
@@ -44,7 +42,6 @@ describe('addCardDialog', function() {
       'distribution': {
         'name': 'Place where things are distributed',
         'description': '???',
-        'fred': 'amount',
         'physicalDatatype': 'number',
         'cardinality': 20,
         'cardType': 'histogram',
@@ -55,7 +52,6 @@ describe('addCardDialog', function() {
       'point': {
         'name': 'Points where crimes have been committed.',
         'description': 'Points.',
-        'fred': 'location',
         'physicalDatatype': 'point',
         'cardType': 'feature',
         'defaultCardType': 'feature',
@@ -65,7 +61,6 @@ describe('addCardDialog', function() {
       'ward': {
         'name': 'Ward where crime was committed.',
         'description': 'Batman has bigger fish to fry sometimes, you know.',
-        'fred': 'location',
         'physicalDatatype': 'number',
         'computationStrategy': {
           'parameters': {
@@ -79,7 +74,6 @@ describe('addCardDialog', function() {
       'multipleVisualizations': {
         'name': 'A card for which multiple visualizations are possible.',
         'description': '???',
-        'fred': 'text',
         'physicalDatatype': 'text',
         'cardinality': 2000,
         'cardType': 'search',

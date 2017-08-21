@@ -136,7 +136,6 @@ describe('cardLayout', function() {
         name: 'statBar_column',
         title: 'test column title',
         description: 'test column description',
-        fred: 'amount',
         physicalDatatype: 'number',
         dataset: datasetModel,
         availableCardTypes: ['column', 'search'],
@@ -145,7 +144,6 @@ describe('cardLayout', function() {
       },
       pointMap_column: {
         name: 'pointMap_column',
-        fred: 'location',
         physicalDatatype: 'point',
         dataset: datasetModel,
         computationStrategy: {
@@ -159,7 +157,6 @@ describe('cardLayout', function() {
       },
       choropleth_column: {
         name: 'choropleth_column',
-        fred: 'location',
         physicalDatatype: 'number',
         shapefile: 'fake-shap',
         dataset: datasetModel,
@@ -174,7 +171,6 @@ describe('cardLayout', function() {
       },
       timeline_column: {
         name: 'timeline_column',
-        fred: 'time',
         physicalDatatype: 'number',
         dataset: datasetModel,
         availableCardTypes: ['timeline'],
@@ -183,7 +179,6 @@ describe('cardLayout', function() {
       },
       search_column: {
         name: 'search_column',
-        fred: 'text',
         physicalDatatype: 'text',
         dataset: datasetModel,
         availableCardTypes: ['search'],
@@ -192,7 +187,6 @@ describe('cardLayout', function() {
       },
       invalid_column: {
         name: 'invalid_column',
-        fred: 'lol',
         physicalDatatype: 'text',
         dataset: datasetModel,
         availableCardTypes: ['invalid'],
@@ -200,7 +194,6 @@ describe('cardLayout', function() {
         cardTypeWeWillAssignForThisTest: 'invalid'
       },
       '*': {
-        fred: '*',
         physicalDatatype: '*',
         dataset: datasetModel,
         availableCardTypes: ['table'],

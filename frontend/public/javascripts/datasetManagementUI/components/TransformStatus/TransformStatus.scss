@@ -2,7 +2,8 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.colErrors {
+.colErrors,
+.colFailed {
   font-weight: normal;
   font-size: 10px;
   color: $grey;
@@ -36,12 +37,37 @@
   box-shadow: inset 0 0 10px -2px $dark-grey-1;
 }
 
-.statusText {
+.statusItem {
   padding: 5px;
   border-bottom: 1px solid $light-grey-4;
-  text-align: left;
   display: relative;
   z-index: 100;
+  text-align: left;
+}
+
+.statusText {
+  composes: statusItem;
+  flex-grow: 1;
+}
+
+.geoBadge {
+  composes: statusItem;
+  margin-right: -5px;
+  flex-grow: 0;
+}
+
+.geoIcon {
+  composes: socrata-icon-geo from global;
+  composes: primary from global;
+  padding: 0 0.5em 1px;
+  border-radius: 1.1em;
+  color: $white;
+  margin-right: 0.5em;
+  margin-right: 0;
+}
+
+.colAttributes {
+  display: flex;
 }
 
 .columnProgressBar {

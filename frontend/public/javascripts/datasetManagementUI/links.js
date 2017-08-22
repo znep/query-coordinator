@@ -1,10 +1,14 @@
-export const home = params =>
-  `${params.locale
-    ? params.locale
-    : ''}/${params.category}/${params.name}/${params.fourfour}/manage`;
+export const home = params => {
+  let prefix = '';
 
-export const revisionBase = (params) =>
-  `${home(params)}/revisions/${params.revisionSeq}`;
+  if (params.locale) {
+    prefix = `/${params.locale}`;
+  }
+
+  return `${prefix}/${params.category}/${params.name}/${params.fourfour}/manage`;
+};
+
+export const revisionBase = params => `${home(params)}/revisions/${params.revisionSeq}`;
 
 export const manageTab = params => `${revisionBase(params)}/manageTab`;
 
@@ -18,8 +22,12 @@ export const columnMetadataForm = (params, outputSchemaId, columnId) =>
 export const sources = params => `${revisionBase(params)}/sources`;
 
 export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
-`${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
-`${pageNo ? `/page/${pageNo}` : ''}`;
+  `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
+  `${pageNo ? `/page/${pageNo}` : ''}`;
+
+// TODO: delete?
+// export const showOutputSchemaShortcut = (sourceId, inputSchemaId, outputSchemaId, name) => routing =>
+//   `${home(routing)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}/shortcut/${name}`;
 
 export const showColumnErrors = (
   params,
@@ -29,11 +37,11 @@ export const showColumnErrors = (
   errorsTransformId,
   pageNo
 ) =>
-`${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
-`${outputSchemaId}/column_errors/${errorsTransformId}` +
-`${pageNo ? `/page/${pageNo}` : ''}`;
+  `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
+  `${outputSchemaId}/column_errors/${errorsTransformId}` +
+  `${pageNo ? `/page/${pageNo}` : ''}`;
 
 export const showRowErrors = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
-`${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
-`${outputSchemaId}/row_errors` +
-`${pageNo ? `/page/${pageNo}` : ''}`;
+  `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
+  `${outputSchemaId}/row_errors` +
+  `${pageNo ? `/page/${pageNo}` : ''}`;

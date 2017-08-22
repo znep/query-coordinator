@@ -1,10 +1,14 @@
 import { connect } from 'react-redux';
+import * as LoadDataActions from 'reduxStuff/actions/loadData';
 import TableBody from 'components/TableBody/TableBody';
 
-function mapStateToProps({ ui }) {
-  return {
-    apiCalls: ui.apiCalls
-  };
-}
+const mapStateToProps = ({ ui }, ownProps) => ({
+  apiCalls: ui.apiCalls,
+  ...ownProps
+});
 
-export default connect(mapStateToProps)(TableBody);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  loadVisibleData: () => dispatch(LoadDataActions.loadVisibleData(ownProps.displayState))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableBody);

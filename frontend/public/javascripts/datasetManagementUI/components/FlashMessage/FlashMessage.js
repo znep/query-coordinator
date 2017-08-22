@@ -40,9 +40,9 @@ const FlashMessage = ({ kind, message, visible, onCloseClick }) => {
 
 FlashMessage.propTypes = {
   kind: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
-  onCloseClick: PropTypes.func.isRequired
+  onCloseClick: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired
 };
 
 export default FlashMessage;

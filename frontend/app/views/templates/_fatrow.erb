@@ -1,5 +1,18 @@
 <div data-renderType="fatrow" class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
-  <div class="columnHeaders"></div>
+  <%-
+    # EN-17685 - Make composite render types work with Socrata Viz Table
+    #
+    # Alternative render types such as the Fat Row, the Page and Visualizations work fine with
+    # the Socrata Viz table, but certain functinalities (such as the column headers filter bar
+    # here) contradict our effort to consolidate functionality into one single point of access
+    # (such as making the filter pane the only place where filtering can be done).
+    #
+    # We therefore want to not render the fat row filter controls at all if we are using the
+    # new Socrata Viz Table grid view.
+    if !FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <div class="columnHeaders"></div>
+  <%- end -%>
   <div class="rowList"></div>
   <ul class="navigation">
     <%- if !@current_user.nil? && @current_user.has_right?(UserRights::CREATE_DATASETS) &&

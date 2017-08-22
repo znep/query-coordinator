@@ -38,7 +38,7 @@ export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatc
     } else if (isDatasetModalPath.test(location.pathname)) {
       helper(hist.slice(0, -1));
     } else {
-      browserHistory.push(location);
+      browserHistory.push(location.pathname);
     }
   };
 

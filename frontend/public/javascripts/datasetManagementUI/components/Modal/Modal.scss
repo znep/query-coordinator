@@ -5,11 +5,18 @@
 .container {
 }
 
-.errorsHelp {
+.errorsHelp, .shortcut {
   :global {
     .modal-container {
       width: 840px;
       max-width: 840px;
+    }
+  }
+}
+
+.errorsHelp {
+  :global {
+    .modal-container {
       text-align: center;
       p, h3, h4, h5, h6 {
         text-align: left;
@@ -26,6 +33,17 @@
           padding: 5px;
         }
       }
+    }
+  }
+}
+
+.shortcut {
+  :global {
+    .modal-content {
+      max-height: none;
+    }
+    .modal-footer {
+      margin-top: 1em;
     }
   }
 }

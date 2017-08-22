@@ -14,7 +14,7 @@
     </a>
   </li>
 
-  <%- if current_user_can_see_admin_link? && !new_admin_ui_enabled? %>
+  <%- if current_user_can_see_admin_link? && !enable_new_admin_ui? %>
     <li>
       <a href="<%= site_chrome_massage_url('/admin') %>">
         <span class="socrata-icon-settings"></span>

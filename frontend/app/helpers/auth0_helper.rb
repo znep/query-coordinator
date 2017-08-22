@@ -275,7 +275,6 @@ module Auth0Helper
       recaptchaSitekey: RECAPTCHA_2_SITE_KEY,
       baseDomainUri: request.base_url,
       authenticityToken: form_authenticity_token,
-      rememberMe: feature?('remember_me'),
       showSocial: feature?('openid_login'),
       hideSocrataId: FeatureFlags.derive(nil, request).hide_socrata_id,
 

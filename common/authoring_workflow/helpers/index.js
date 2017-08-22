@@ -107,6 +107,7 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
     _.unset(state, 'series[0].color.palette');
     _.unset(state, 'configuration.showLegend');
     _.unset(state, 'series[0].dataSource.dimension.grouping');
+    _.unset(state, 'series[0].stacked');
 
   } else {
 
@@ -180,6 +181,7 @@ export const removeSeries = (state, seriesIndex) => {
   if (state.series.length == 1) {
     _.unset(state, 'configuration.showLegend');
     _.unset(state, 'series[0].color.palette');
+    _.unset(state, 'series[0].stacked');
   }
 };
 

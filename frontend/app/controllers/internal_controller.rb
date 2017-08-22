@@ -1,7 +1,10 @@
 class InternalController < ApplicationController
 
+  ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS = [ :show_domain, :feature_flags, :show_config, :show_property ]
+
   before_filter :check_auth
-  before_filter :redirect_to_current_domain, :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
+  before_filter :redirect_to_current_domain, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
+  before_filter :redirect_domain_id_to_domain_cname, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
   before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
   skip_before_filter :require_user, :only => [ :demos ]
   skip_before_filter :check_auth, :only => [ :demos ]
@@ -32,7 +35,7 @@ class InternalController < ApplicationController
   end
 
   def index_orgs
-    @orgs = Organization.find()
+    @orgs = Organization.find
   end
 
   def show_org
@@ -824,6 +827,14 @@ class InternalController < ApplicationController
   def redirect_to_current_domain
     if params[:domain_id] == 'current'
       redirect_to url_for(params.merge(domain_id: CurrentDomain.cname))
+    end
+  end
+
+  def redirect_domain_id_to_domain_cname
+    if /^\d+$/.match(params[:domain_id])
+      redirect_to url_for(params.merge(domain_id: Domain.findById(params[:domain_id]).tap do |domain|
+        return render_404 if domain.nil?
+      end.cname))
     end
   end
 

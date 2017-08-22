@@ -4,7 +4,7 @@
   | Internal Panel | <%= get_site_title %></title>
 <% end %>
 
-<%= render 'left_nav' %>
+<%= render '/internal/left_nav' unless enable_new_admin_ui? %>
 
 <% content_for :breadcrumb do %>
   <%= t('screens.admin.internal.feature_flags') %>

@@ -3,17 +3,27 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links';
 import * as DisplayState from 'lib/displayState';
 import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
 import ProgressBar from 'components/ProgressBar/ProgressBar';
 import ErrorPill from 'components/ErrorPill/ErrorPill';
-import ErrorFlyout, { getFlyoutId } from 'components/ErrorFlyout/ErrorFlyout';
+import ErrorFlyout, { getErrorFlyoutId } from 'components/ErrorFlyout/ErrorFlyout';
+import GeoFlyout, { getGeoFlyoutId } from 'components/GeoFlyout/GeoFlyout';
 import StatusText from 'components/StatusText/StatusText';
 import styles from './TransformStatus.scss';
 
 const SubI18n = I18n.show_output_schema.column_header;
+
+const GeospatialShortcut = ({ showShortcut, flyoutId }) =>
+  <Link className={styles.geoBadge} onClick={() => showShortcut('geocode')} data-flyout={flyoutId}>
+    <span className={styles.geoIcon}>Geo</span>
+  </Link>;
+
+GeospatialShortcut.propTypes = {
+  showShortcut: PropTypes.func.isRequired,
+  flyoutId: PropTypes.string.isRequired
+};
 
 export class TransformStatus extends Component {
   componentDidMount() {
@@ -28,8 +38,23 @@ export class TransformStatus extends Component {
     this.attachFlyouts();
   }
 
+  hasTransformErrors() {
+    return this.props.transform.num_transform_errors > 0;
+  }
+
+  showGeocodeShortcut() {
+    return _.includes(this.props.shortcuts, 'geocode');
+  }
+
   attachFlyouts() {
-    if (this.flyoutParentEl) {
+    // We only want to attach if there are flyouts on the page, otherwise we get a
+    // ton of warnings about how flyouts weren't found - so we need to limit
+    // the attach code to run only when we might be showing an element
+    // that shows a flyout; which at the time of writing this comment
+    // are the transform error and geocode shortcut icons
+    const hasFlyouts = this.hasTransformErrors() || this.showGeocodeShortcut();
+
+    if (this.props.flyouts && this.flyoutParentEl && hasFlyouts) {
       styleguide.attachTo(this.flyoutParentEl);
     }
   }
@@ -47,14 +72,17 @@ export class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, displayState, columnId, isIgnored, params } = this.props;
+    const {
+      transform,
+      totalRows,
+      displayState,
+      columnId,
+      isIgnored,
+      showShortcut,
+      onClickError
+    } = this.props;
 
-    const inErrorMode =
-      displayState.type === DisplayState.COLUMN_ERRORS && transform.id === displayState.transformId;
-
-    const linkPath = inErrorMode
-      ? Links.showOutputSchema(params, path.sourceId, path.inputSchemaId, path.outputSchemaId)
-      : Links.showColumnErrors(params, path.sourceId, path.inputSchemaId, path.outputSchemaId, transform.id);
+    const inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
 
@@ -62,7 +90,7 @@ export class TransformStatus extends Component {
 
     const colStatus = this.determineColStatus(isIgnored, transform, totalRows);
 
-    const hasErrors = transform.num_transform_errors > 0;
+    const hasErrors = this.hasTransformErrors();
 
     const progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
 
@@ -100,7 +128,6 @@ export class TransformStatus extends Component {
     if (hasErrors) {
       extraProps = {
         ref: flyoutParentEl => (this.flyoutParentEl = flyoutParentEl),
-        'data-flyout': getFlyoutId(transform),
         className: classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })
       };
     }
@@ -113,16 +140,21 @@ export class TransformStatus extends Component {
             percent={progressbarPercent}
             ariaLabeledBy={`column-display-name-${columnId}`} />
         </div>
-        {hasErrors
-          ? <Link
-            className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
-            to={linkPath}
-            data-flyout={getFlyoutId(transform)}>
-              <ErrorPill number={transform.num_transform_errors} />
-              {errorStatusMessage}
-            </Link>
-          : <StatusText message={statusTextMessage} status={colStatus} />}
-        {hasErrors && <ErrorFlyout transform={transform} />}
+        <div className={styles.colAttributes}>
+          {this.showGeocodeShortcut() &&
+            <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} showShortcut={showShortcut} />}
+          <GeoFlyout transform={transform} />
+          {hasErrors
+            ? <Link
+              className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
+              onClick={onClickError}
+              data-flyout={getErrorFlyoutId(transform)}>
+                <ErrorPill number={transform.num_transform_errors} />
+                {errorStatusMessage}
+              </Link>
+            : <StatusText message={statusTextMessage} status={colStatus} />}
+          {hasErrors && <ErrorFlyout transform={transform} />}
+        </div>
       </th>
     );
   }
@@ -133,9 +165,11 @@ TransformStatus.propTypes = {
   isIgnored: PropTypes.bool.isRequired,
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,
-  path: PropTypes.object.isRequired,
   totalRows: PropTypes.number,
-  params: PropTypes.object.isRequired
+  shortcuts: PropTypes.array.isRequired,
+  flyouts: PropTypes.bool.isRequired,
+  showShortcut: PropTypes.func.isRequired,
+  onClickError: PropTypes.func.isRequired
 };
 
 export default withRouter(TransformStatus);

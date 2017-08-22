@@ -65,8 +65,38 @@ describe InternalController do
 
     describe 'when superadmin' do
       before do
+        init_feature_flag_signaller
+        stub_site_chrome
         init_current_user(subject)
         allow(current_user).to receive(:is_superadmin?).and_return(true)
+        allow(Organization).to receive(:find).and_return([])
+      end
+
+      render_views
+
+      context 'feature_flags' do
+        before do
+          allow_any_instance_of(Domain).to receive(:has_child_domains?).and_return(true)
+        end
+        it 'does not render the left_nav at all' do
+          get :feature_flags, :org_id => 1, :domain_id => 'localhost'
+          expect(response).to have_http_status(:ok)
+          assert_select('.leftNavBox.internalPanel')
+          assert_select('.super-admin-menu', :count => 0)
+          assert_select('.leftNavBox.adminNavBox', :count => 0)
+        end
+      end
+
+      %i(index index_orgs analytics feature_flag_report demos).each do |page|
+        it "renders the internal_panel left_nav on the '#{page}' page" do
+          VCR.use_cassette('internal_panel', :record => :new_episodes) do
+            get page
+            expect(response).to have_http_status(:ok)
+            assert_select('.leftNavBox.internalPanel') unless page == :demos
+            assert_select('.super-admin-menu', :count => 0)
+            assert_select('.leftNavBox.adminNavBox', :count => 0)
+          end
+        end
       end
 
       xdescribe 'using Signaller' do

@@ -661,6 +661,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`id`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"id","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1916,
             failed_at: null,
@@ -682,6 +683,7 @@ const entities = {
               }
             ],
             transform_expr: '`case_number`',
+            parsed_expr: {"value":"case_number","type":"column_ref"},
             output_soql_type: 'text',
             id: 1917,
             failed_at: null,
@@ -703,6 +705,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_floating_timestamp(`date`)',
+            parsed_expr: {"type":"funcall","function_name":"to_floating_timestamp","args":[{"value":"date","type":"column_ref"}]},
             output_soql_type: 'calendar_date',
             id: 1918,
             failed_at: null,
@@ -724,6 +727,7 @@ const entities = {
               }
             ],
             transform_expr: '`block`',
+            parsed_expr: {"value":"block","type":"column_ref"},
             output_soql_type: 'text',
             id: 1919,
             failed_at: null,
@@ -745,6 +749,7 @@ const entities = {
               }
             ],
             transform_expr: '`iucr`',
+            parsed_expr: {"value":"iucr","type":"column_ref"},
             output_soql_type: 'text',
             id: 1920,
             failed_at: null,
@@ -766,6 +771,7 @@ const entities = {
               }
             ],
             transform_expr: '`primary_type`',
+            parsed_expr: {"value":"primary_type","type":"column_ref"},
             output_soql_type: 'text',
             id: 1921,
             failed_at: null,
@@ -787,6 +793,7 @@ const entities = {
               }
             ],
             transform_expr: '`description`',
+            parsed_expr: {"value":"description","type":"column_ref"},
             output_soql_type: 'text',
             id: 1922,
             failed_at: null,
@@ -808,6 +815,7 @@ const entities = {
               }
             ],
             transform_expr: '`location_description`',
+            parsed_expr: {"value":"location_description","type":"column_ref"},
             output_soql_type: 'text',
             id: 1923,
             failed_at: null,
@@ -829,6 +837,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_boolean(`arrest`)',
+            parsed_expr: {"type":"funcall","function_name":"to_boolean","args":[{"value":"arrest","type":"column_ref"}]},
             output_soql_type: 'checkbox',
             id: 1924,
             failed_at: null,
@@ -850,6 +859,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_boolean(`domestic`)',
+            parsed_expr: {"type":"funcall","function_name":"to_boolean","args":[{"value":"domestic","type":"column_ref"}]},
             output_soql_type: 'checkbox',
             id: 1925,
             failed_at: null,
@@ -871,6 +881,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`beat`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"beat","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1926,
             failed_at: null,
@@ -892,6 +903,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`district`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"district","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1927,
             failed_at: null,
@@ -913,6 +925,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`ward`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"ward","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1928,
             failed_at: null,
@@ -934,6 +947,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`community_area`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"community_area","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1929,
             failed_at: null,
@@ -955,6 +969,7 @@ const entities = {
               }
             ],
             transform_expr: '`fbi_code`',
+            parsed_expr: {"value":"fbi_code","type":"column_ref"},
             output_soql_type: 'text',
             id: 1930,
             failed_at: null,
@@ -976,6 +991,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`x_coordinate`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"x_coordinate","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1931,
             failed_at: null,
@@ -997,6 +1013,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`y_coordinate`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"y_coordinate","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1932,
             failed_at: null,
@@ -1018,6 +1035,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`year`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"year","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1933,
             failed_at: null,
@@ -1039,6 +1057,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_floating_timestamp(`updated_on`)',
+            parsed_expr: {"type":"funcall","function_name":"to_floating_timestamp","args":[{"value":"updated_on","type":"column_ref"}]},
             output_soql_type: 'calendar_date',
             id: 1934,
             failed_at: null,
@@ -1060,6 +1079,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`latitude`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"latitude","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1935,
             failed_at: null,
@@ -1081,6 +1101,7 @@ const entities = {
               }
             ],
             transform_expr: 'to_number(`longitude`)',
+            parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"longitude","type":"column_ref"}]},
             output_soql_type: 'number',
             id: 1936,
             failed_at: null,
@@ -1102,6 +1123,7 @@ const entities = {
               }
             ],
             transform_expr: '`location`',
+            parsed_expr: {"value":"location","type":"column_ref"},
             output_soql_type: 'text',
             id: 1937,
             failed_at: null,
@@ -5019,6 +5041,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`id`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"id","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1916,
       failed_at: null,
@@ -5034,6 +5057,7 @@ const entities = {
         }
       ],
       transform_expr: '`case_number`',
+      parsed_expr: {"value":"case_number","type":"column_ref"},
       output_soql_type: 'text',
       id: 1917,
       failed_at: null,
@@ -5049,6 +5073,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_floating_timestamp(`date`)',
+      parsed_expr: {"type":"funcall","function_name":"to_floating_timestamp","args":[{"value":"date","type":"column_ref"}]},
       output_soql_type: 'calendar_date',
       id: 1918,
       failed_at: null,
@@ -5064,6 +5089,7 @@ const entities = {
         }
       ],
       transform_expr: '`block`',
+      parsed_expr: {"value":"block","type":"column_ref"},
       output_soql_type: 'text',
       id: 1919,
       failed_at: null,
@@ -5079,6 +5105,7 @@ const entities = {
         }
       ],
       transform_expr: '`iucr`',
+      parsed_expr: {"value":"iucr","type":"column_ref"},
       output_soql_type: 'text',
       id: 1920,
       failed_at: null,
@@ -5094,6 +5121,7 @@ const entities = {
         }
       ],
       transform_expr: '`primary_type`',
+      parsed_expr: {"value":"primary_type","type":"column_ref"},
       output_soql_type: 'text',
       id: 1921,
       failed_at: null,
@@ -5109,6 +5137,7 @@ const entities = {
         }
       ],
       transform_expr: '`description`',
+      parsed_expr: {"value":"description","type":"column_ref"},
       output_soql_type: 'text',
       id: 1922,
       failed_at: null,
@@ -5124,6 +5153,7 @@ const entities = {
         }
       ],
       transform_expr: '`location_description`',
+      parsed_expr: {"value":"location_description","type":"column_ref"},
       output_soql_type: 'text',
       id: 1923,
       failed_at: null,
@@ -5139,6 +5169,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_boolean(`arrest`)',
+      parsed_expr: {"type":"funcall","function_name":"to_boolean","args":[{"value":"arrest","type":"column_ref"}]},
       output_soql_type: 'checkbox',
       id: 1924,
       failed_at: null,
@@ -5154,6 +5185,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_boolean(`domestic`)',
+      parsed_expr: {"type":"funcall","function_name":"to_boolean","args":[{"value":"domestic","type":"column_ref"}]},
       output_soql_type: 'checkbox',
       id: 1925,
       failed_at: null,
@@ -5169,6 +5201,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`beat`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"beat","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1926,
       failed_at: null,
@@ -5184,6 +5217,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`district`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"district","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1927,
       failed_at: null,
@@ -5199,6 +5233,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`ward`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"ward","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1928,
       failed_at: null,
@@ -5214,6 +5249,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`community_area`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"community_area","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1929,
       failed_at: null,
@@ -5229,6 +5265,7 @@ const entities = {
         }
       ],
       transform_expr: '`fbi_code`',
+      parsed_expr: {"value":"fbi_code","type":"column_ref"},
       output_soql_type: 'text',
       id: 1930,
       failed_at: null,
@@ -5244,6 +5281,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`x_coordinate`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"x_coordinate","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1931,
       failed_at: null,
@@ -5259,6 +5297,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`y_coordinate`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"y_coordinate","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1932,
       failed_at: null,
@@ -5274,6 +5313,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`year`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"year","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1933,
       failed_at: null,
@@ -5289,6 +5329,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_floating_timestamp(`updated_on`)',
+      parsed_expr: {"type":"funcall","function_name":"to_floating_timestamp","args":[{"value":"updated_on","type":"column_ref"}]},
       output_soql_type: 'calendar_date',
       id: 1934,
       failed_at: null,
@@ -5304,6 +5345,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`latitude`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"latitude","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1935,
       failed_at: null,
@@ -5319,6 +5361,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_number(`longitude`)',
+      parsed_expr: {"type":"funcall","function_name":"to_number","args":[{"value":"longitude","type":"column_ref"}]},
       output_soql_type: 'number',
       id: 1936,
       failed_at: null,
@@ -5334,6 +5377,7 @@ const entities = {
         }
       ],
       transform_expr: '`location`',
+      parsed_expr: {"value":"location","type":"column_ref"},
       output_soql_type: 'text',
       id: 1937,
       failed_at: null,
@@ -5349,6 +5393,7 @@ const entities = {
         }
       ],
       transform_expr: 'to_text(id)',
+      parsed_expr: {"type":"funcall","function_name":"to_text","args":[{"value":"id","type":"column_ref"}]},
       output_soql_type: 'text',
       id: 1938,
       failed_at: null,

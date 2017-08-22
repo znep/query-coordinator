@@ -193,7 +193,7 @@ const mapStateToProps = ({ entities, ui }, ownProps) => {
   );
 
   if (ownProps.params.outputSchemaId) {
-    outputSchemaId = ownProps.params.outputSchemaId;
+    outputSchemaId = _.toNumber(ownProps.params.outputSchemaId);
   } else if (revision && revision.output_schema_id) {
     outputSchemaId = revision.output_schema_id;
   } else {

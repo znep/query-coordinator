@@ -22,6 +22,10 @@ describe('components/TransformStatus', () => {
       inputSchemaId: '0',
       outputSchemaId: '0'
     },
+    flyouts: false,
+    onClickError: _.noop,
+    shortcuts: [],
+    showShortcut: false,
     columnId: 50,
     totalRows: 5000,
     transform: {
@@ -146,7 +150,10 @@ describe('components/TransformStatus', () => {
 
       const component = shallow(<TransformStatus {...props} />);
 
-      assert.equal(component.text(), '<ProgressBar /><Link /><ErrorFlyout />');
+      assert.include(component.text(), '<ProgressBar />');
+      assert.include(component.text(), '<ErrorFlyout />');
+      assert.include(component.text(), '<Link />');
+
     });
   });
 });

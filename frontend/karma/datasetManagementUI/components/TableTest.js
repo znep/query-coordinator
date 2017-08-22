@@ -125,7 +125,9 @@ const defaultProps = {
   updateColumnType: () => {},
   addColumn: () => {},
   dropColumn: () => {},
-  validateThenSetRowIdentifier: () => {}
+  validateThenSetRowIdentifier: () => {},
+  onClickError: () => {},
+  showShortcut: () => {}
 };
 
 describe('components/Table', () => {

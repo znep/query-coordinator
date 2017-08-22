@@ -12,7 +12,7 @@
   <%= t('screens.admin.site_appearance.site_appearance') %>
 <% end %>
 
-<% if new_admin_ui_enabled? %>
+<% if enable_new_admin_ui? %>
   <% content_for :admin_header do %>
     <div class="site-appearance-header">
       <%= render 'tabs' %>
@@ -22,7 +22,7 @@
 <% end %>
 
 <div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
-  <% unless new_admin_ui_enabled? %>
+  <% unless enable_new_admin_ui? %>
     <div class="header-title">
       <h1>
         <%= t('screens.admin.site_appearance.site_appearance') %>
@@ -63,7 +63,7 @@
         <% end %>
       </div>
     <% else %>
-      <% unless new_admin_ui_enabled? %>
+      <% unless enable_new_admin_ui? %>
         <div class="site-appearance-header in-page-body">
           <%= render 'tabs' %>
           <%= render 'page_controls' %>

@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { browserHistory } from 'react-router';
+import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
@@ -12,6 +12,7 @@ import {
   DROP_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
+  NEW_OUTPUT_SCHEMA,
   VALIDATE_ROW_IDENTIFIER,
   SAVE_CURRENT_OUTPUT_SCHEMA
 } from 'reduxStuff/actions/apiCalls';
@@ -26,7 +27,7 @@ import {
 } from 'reduxStuff/actions/manageUploads';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
-function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) {
+function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
     const callId = uuid();
 
@@ -34,15 +35,17 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) 
 
     const { entities } = getState();
 
-    const { source } = Selectors.pathForOutputSchema(entities, oldOutputSchema.id);
+    const source = Selectors.sourceFromInputSchema(entities, inputSchemaId);
 
-    const url = dsmapiLinks.newOutputSchema(source.id, oldOutputSchema.input_schema_id);
+    const url = dsmapiLinks.newOutputSchema(source.id, inputSchemaId);
+
     return socrataFetch(url, {
       method: 'POST',
-      body: JSON.stringify({ output_columns: newOutputColumns })
+      body: JSON.stringify({ output_columns: desiredColumns })
     })
       .then(checkStatus)
       .then(getJson)
+      .catch(getError)
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
 
@@ -50,17 +53,31 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) 
         dispatch(subscribeToOutputSchema(resp.resource));
         dispatch(subscribeToTransforms(resp.resource));
 
-        browserHistory.push(
-          Links.showOutputSchema(params, source.id, oldOutputSchema.input_schema_id, resp.resource.id)
-        );
+        return resp;
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
+        throw err;
       });
   };
 }
 
-export const updateColumnType = (outputSchema, oldColumn, newType, params) => (dispatch, getState) => {
+export const redirectToOutputSchema = (params, outputSchemaId) => (dispatch, getState) => {
+  const { entities } = getState();
+  const { source, inputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
+  return browserHistory.push(Links.showOutputSchema(params, source.id, inputSchema.id, outputSchemaId));
+};
+
+export const newOutputSchema = (inputSchemaId, desiredColumns) => (dispatch) => {
+  const call = {
+    operation: NEW_OUTPUT_SCHEMA,
+    params: {}
+  };
+
+  return dispatch(createNewOutputSchema(inputSchemaId, desiredColumns, call));
+};
+
+export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -73,10 +90,11 @@ export const updateColumnType = (outputSchema, oldColumn, newType, params) => (d
 
   const newOutputColumns = outputColumnsWithChangedType(entities, outputSchema, oldColumn, newType);
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const addColumn = (outputSchema, outputColumn, params) => (dispatch, getState) => {
+
+export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -88,7 +106,7 @@ export const addColumn = (outputSchema, outputColumn, params) => (dispatch, getS
   };
 
   // check for clashes with existing columns
-  const { current } = Selectors.currentAndIgnoredOutputColumns(entities);
+  const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
 
   const { existingFieldNames, existingDisplayNames } = current.reduce(
     (acc, oc) => {
@@ -103,17 +121,19 @@ export const addColumn = (outputSchema, outputColumn, params) => (dispatch, getS
   const newOutputColumn = {
     ...outputColumn,
     field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
-    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
+    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name),
+    position: current.length + 1 // one based
   };
 
   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
-    toNewOutputColumn(oc, sameTransform(entities))
+    buildNewOutputColumn(oc, sameTransform(entities))
   );
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
+
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const dropColumn = (outputSchema, column, params) => (dispatch, getState) => {
+export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -127,12 +147,12 @@ export const dropColumn = (outputSchema, column, params) => (dispatch, getState)
 
   const newOutputColumns = current
     .filter(oc => oc.id !== column.id)
-    .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
+    .map(oc => buildNewOutputColumn(oc, sameTransform(entities)));
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const setRowIdentifier = (outputSchema, outputColumnToSet, params) => (dispatch, getState) => {
+export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -145,12 +165,12 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet, params) => (di
       ...outputColumn,
       is_primary_key: outputColumn.id === outputColumnToSet.id
     }))
-    .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
+    .map(oc => buildNewOutputColumn(oc, sameTransform(entities)));
 
-  dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
+  dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-function toNewOutputColumn(outputColumn, genTransform) {
+export function buildNewOutputColumn(outputColumn, genTransform) {
   return {
     field_name: outputColumn.field_name,
     position: outputColumn.position,
@@ -161,6 +181,10 @@ function toNewOutputColumn(outputColumn, genTransform) {
     },
     is_primary_key: outputColumn.is_primary_key
   };
+}
+
+export function cloneOutputColumn(outputColumn) {
+  return buildNewOutputColumn(outputColumn, (oc) => oc.transform.transform_expr);
 }
 
 function sameTransform(entities) {
@@ -193,10 +217,10 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
 
     return inputColumn.soql_type === newType ? `\`${fieldName}\`` : `${conversionFunc}(${fieldName})`;
   };
-  return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
+  return oldOutputColumns.map(c => buildNewOutputColumn(c, genTransform));
 }
 
-export function validateThenSetRowIdentifier(outputSchema, outputColumn, params) {
+export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
   return (dispatch, getState) => {
     const { source } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
     const transformId = outputColumn.transform_id;
@@ -219,7 +243,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn, params)
         if (!result.valid) {
           dispatch(showModal('RowIdentifierError', result));
         } else {
-          dispatch(setRowIdentifier(outputSchema, outputColumn, params));
+          dispatch(setRowIdentifier(outputSchema, outputColumn));
         }
       })
       .catch(error => {
@@ -228,7 +252,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn, params)
   };
 }
 
-export function saveCurrentOutputSchemaId(revision, outputSchemaId, params) {
+export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
   return (dispatch) => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
@@ -238,7 +262,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId, params) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.revisionBase(params);
+    const url = dsmapiLinks.revisionBase;
     return socrataFetch(url, {
       method: 'PUT',
       body: JSON.stringify({

@@ -13,6 +13,7 @@ import ActivityFeedPagination from './ActivityFeedPagination';
 import AssetName from './AssetName';
 import ActivityActions from './ActivityActions';
 import Status from './Status';
+import InitiatedBy from './InitiatedBy';
 
 import { showDetailsModal, showRestoreModal } from '../actions';
 import './ActivityFeedTable.scss';
@@ -46,7 +47,7 @@ class ActivityFeedTable extends React.Component {
       {
         id: 'initiatedBy',
         title: t('columns.initiated_by'),
-        mapper: activity => activity.getIn(['initiated_by', 'displayName'], '')
+        mapper: activity => <InitiatedBy activity={activity}/>
       },
       {
         id: 'status',

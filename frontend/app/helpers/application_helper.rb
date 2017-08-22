@@ -193,6 +193,10 @@ module ApplicationHelper
     end
   end
 
+  def javascript_polyfills
+    content_tag(:script, nil, :src => '/javascripts/util/polyfills.js', :type => 'text/javascript')
+  end
+
   def javascript_error_helper_tag
     %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe +
       include_webpack_bundle('open-data/errors.js')
@@ -288,7 +292,8 @@ module ApplicationHelper
 # STYLES
 
   def should_render_individual_styles?
-    Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
+    ApplicationController.use_discrete_assets? &&
+      FeatureFlags.derive(@view, request).use_merged_styles != true
   end
 
   def rendered_stylesheet_tag(stylesheet, media='all')
@@ -1207,7 +1212,7 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    return false unless new_admin_ui_enabled?
+    return false unless enable_new_admin_ui?
 
     %w(
       activity_feed
@@ -1215,12 +1220,13 @@ module ApplicationHelper
       connector
       internal
       internal_asset_manager
+      roles
       routing_approval
       site_appearance
     ).include?(controller_name)
   end
 
-  def new_admin_ui_enabled?
+  def enable_new_admin_ui?
     feature_flag?('enable_new_admin_ui', request)
   end
 

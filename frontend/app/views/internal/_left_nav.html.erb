@@ -1,4 +1,4 @@
-<div class="leftNavBox">
+<div class="leftNavBox internalPanel">
   <div class="domainCompletion">
     Search for a domain:
     <div>
@@ -14,6 +14,7 @@
     <%- if Signaller.healthy? %>
       <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
     <%- end %>
+    <%# Note: This link is intentionally accessible by direct navigation without requiring login. %>
     <li><a class="highlight" href='/internal/demos'>Component Demos</a></li>
   </ul>
 </div>

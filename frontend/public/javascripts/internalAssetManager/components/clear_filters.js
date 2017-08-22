@@ -41,10 +41,12 @@ export class ClearFilters extends Component {
 
   renderButton(showTitle) {
     const { I18n } = this.props;
-    const buttonTitle = I18n.t('internal_asset_manager.filters.header.title.clear_filter_and_search');
-    const hasFiltersOrQuery = this.activeFilters().length > 0 || this.activeFilters().q;
+    const hasActiveFilters = this.activeFilters().length > 0;
+    const buttonTitle = hasActiveFilters ?
+      I18n.t('internal_asset_manager.filters.header.title.clear_filter_and_search') : null;
+    const hasFiltersOrQuery = hasActiveFilters || this.activeFilters().q;
 
-    const clearFiltersControls = this.activeFilters().length > 0 ?
+    const clearFiltersControls = hasActiveFilters ?
       <span>
         <span
           className="filter-section clear-all-filters socrata-icon-close"
@@ -69,10 +71,11 @@ export class ClearFilters extends Component {
 
   renderIcon(showTitle) {
     const { I18n } = this.props;
-    const buttonTitle = I18n.t('internal_asset_manager.filters.clear');
-    const hasFiltersOrQuery = this.activeFilters().length > 0 || this.activeFilters().q;
+    const hasActiveFilters = this.activeFilters().length > 0;
+    const buttonTitle = hasActiveFilters ? I18n.t('internal_asset_manager.filters.clear') : null;
+    const hasFiltersOrQuery = hasActiveFilters || this.activeFilters().q;
 
-    const clearFiltersControls = this.activeFilters().length > 0 ?
+    const clearFiltersControls = hasActiveFilters ?
       <span>
         <span className="filter-count">({this.activeFilters().length})</span>
         <span

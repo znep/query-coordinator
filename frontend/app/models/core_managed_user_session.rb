@@ -107,7 +107,7 @@ class CoreManagedUserSession
   end
 
   cattr_accessor :controller
-  attr_accessor :new_session, :cookie, :remember_me, :login, :password, :id
+  attr_accessor :new_session, :cookie, :login, :password, :id
 
   # You can initialize a session by doing any of the following:
   #
@@ -156,10 +156,6 @@ class CoreManagedUserSession
   # Return true if the session hasn't been saved yet.
   def persisted?
     @new_session.present?
-  end
-
-  def remember_me=(value)
-    @remember_me = (value == '1' || value.to_s.downcase == 'on')
   end
 
   # Create or update an existing authentication session.
@@ -233,7 +229,7 @@ class CoreManagedUserSession
 
   # Your login credentials in hash format.
   def credentials
-    { :login => login, :password => password, :remember_me => remember_me }
+    { :login => login, :password => password }
   end
 
   # Lets you set your login and password via a hash format. It's safe to use
@@ -242,7 +238,7 @@ class CoreManagedUserSession
   def credentials=(values)
     return if values.blank? || !values.is_a?(Hash)
 
-    values.slice('login', 'password', 'remember_me').each do |field, value|
+    values.slice('login', 'password').each do |field, value|
       send("#{field}=", value)
     end
   end
@@ -253,7 +249,6 @@ class CoreManagedUserSession
       'password' => password,
       'remoteAddress' => controller.request.remote_ip
     }
-    creds['remember_me'] = 'true' if remember_me
     creds
   end
 

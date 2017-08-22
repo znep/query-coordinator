@@ -4,14 +4,14 @@ import { singularOrPlural } from 'lib/util';
 import { commaify } from '../../../common/formatNumber';
 import styles from './ErrorFlyout.scss';
 
-export function getFlyoutId(transform) {
+export function getErrorFlyoutId(transform) {
   return `transform-status-flyout-${transform.id}`;
 }
 
 const ErrorFlyout = ({ transform }) => {
   const SubI18n = I18n.show_output_schema.column_header;
 
-  const flyoutId = getFlyoutId(transform);
+  const flyoutId = getErrorFlyoutId(transform);
 
   const msgTemplate = singularOrPlural(
     transform.num_transform_errors,

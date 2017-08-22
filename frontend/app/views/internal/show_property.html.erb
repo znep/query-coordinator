@@ -5,7 +5,7 @@
   <%= get_site_title %></title>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render '/internal/left_nav' %>
 
 <%- is_json = !@property.is_a?(String) -%>
 

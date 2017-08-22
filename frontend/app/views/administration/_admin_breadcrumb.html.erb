@@ -1,6 +1,6 @@
 <div class="admin-breadcrumb">
   <h1>
-    <%= admin_nav_link_to('screens.admin.index.page_title', '/admin') %>
+    <%= admin_nav_link_to('screens.admin.index.page_title', :controller => '/administration') %>
     <%- if content_for?(:breadcrumb) %>
       <span class="socrata-icon-arrow-right separator"></span>
       <span class="current-page"><%= yield :breadcrumb %></span>

@@ -8,7 +8,6 @@ import OptionsPropType from '../../PropTypes/OptionsPropType';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
-import RememberMe from './RememberMe';
 import styles from './sign-in-form.scss';
 
 class SignInForm extends React.Component {
@@ -195,12 +194,6 @@ class SignInForm extends React.Component {
     return null;
   }
 
-  renderRememberMe(options) {
-    if (options.rememberMe) {
-      return <RememberMe />;
-    }
-  }
-
   render() {
     const { options } = this.props;
     const { connectionName } = this.state;
@@ -229,8 +222,6 @@ class SignInForm extends React.Component {
         <PasswordInput
           onChange={this.onPasswordChange}
           connectionName={connectionName} />
-
-        {this.renderRememberMe(options, I18n.t)}
 
         <a
           href="/forgot_password"

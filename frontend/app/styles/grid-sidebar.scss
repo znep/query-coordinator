@@ -267,6 +267,10 @@
     border: 0 solid #ccc;
     box-shadow: 8px 0 -30px #5e5e5e;
 
+    .outerPane {
+      border-left: 1px solid #cecece;
+    }
+
     .close {
       position: absolute;
       right: 0.5em;
@@ -1420,7 +1424,7 @@
               padding-right: 0;
 
               li {
-                width: 91px;
+                width: 90px;
 
                 .sizePreview {
                   margin: 0 auto;

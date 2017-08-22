@@ -1,0 +1,105 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:14567/version.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 22:57:36 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '204'
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"signaller_version":"1.12.0","signaller_environment":"development","feature_flags_version":"v15.12.0","feature_flags_mtime":1502389214,"feature_flags_checksum":"946f59d9587fa67e6fdf2b4bfebeb56994f9e872"}'
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 22:57:36 GMT
+- request:
+    method: get
+    uri: http://localhost:14567/version.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 22:58:29 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '204'
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"signaller_version":"1.12.0","signaller_environment":"development","feature_flags_version":"v15.12.0","feature_flags_mtime":1502389214,"feature_flags_checksum":"946f59d9587fa67e6fdf2b4bfebeb56994f9e872"}'
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 22:58:29 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/organizations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 23:57:47 GMT
+      X-Socrata-Requestid:
+      - 2ua9c7vjel601tlm24lgxybj9
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 23:57:47 GMT
+recorded_with: VCR 3.0.3

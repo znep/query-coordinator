@@ -5,7 +5,6 @@ export default {
   baseDomainUri:"https://opendata-demo.rc-socrata.com",
   allowUsernamePasswordLogin: false,
   authenticityToken:"not-a-token",
-  rememberMe: null,
   showSocial: null,
   hideSocrataId: false,
   socrataEmailsBypassAuth0: false,

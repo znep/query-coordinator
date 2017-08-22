@@ -6,6 +6,7 @@ import { EDIT_OUTPUT_COLUMN, ADD_OUTPUT_COLUMNS } from 'reduxStuff/actions/outpu
 import { EDIT_OUTPUT_SCHEMA } from 'reduxStuff/actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'reduxStuff/actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'reduxStuff/actions/inputSchemas';
+import { EDIT_INPUT_COLUMN } from 'reduxStuff/actions/inputColumns';
 import { UPDATE_PROGRESS } from 'reduxStuff/actions/manageUploads';
 import { EDIT_REVISION, SET_REVISION_VALUE } from 'reduxStuff/actions/revisions';
 
@@ -68,7 +69,20 @@ const inputSchemas = (state = {}, action) => {
   }
 };
 
-const inputColumns = (state = {}) => state;
+const inputColumns = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_INPUT_COLUMN:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          ...action.payload
+        }
+      };
+    default:
+      return state;
+  }
+};
 
 const outputSchemas = (state = {}, action) => {
   switch (action.type) {

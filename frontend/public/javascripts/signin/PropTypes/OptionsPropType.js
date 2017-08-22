@@ -30,9 +30,6 @@ export default
     // Token for rails form
     authenticityToken: PropTypes.string.isRequired,
 
-    // Whether to show the "Remember Me" checkbox
-    rememberMe: PropTypes.bool,
-
     // Whether to show social login
     showSocial: PropTypes.bool,
 

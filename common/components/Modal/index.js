@@ -16,9 +16,11 @@ export const Modal = React.createClass({
   propTypes: {
     children: PropTypes.arrayOf(PropTypes.element),
     className: PropTypes.string,
+    containerStyle: PropTypes.object,
     fullScreen: PropTypes.bool,
     onDismiss: PropTypes.func.isRequired,
-    overlay: PropTypes.bool
+    overlay: PropTypes.bool,
+    overlayStyle: PropTypes.object
   },
 
   getDefaultProps() {
@@ -97,7 +99,7 @@ export const Modal = React.createClass({
   },
 
   render() {
-    const { children, className, fullScreen, overlay } = this.props;
+    const { children, className, containerStyle, fullScreen, overlay, overlayStyle } = this.props;
     const { forceFullScreen } = this.state;
 
     const modalClasses = classNames({
@@ -111,11 +113,12 @@ export const Modal = React.createClass({
       <div
         ref={(ref) => this.modalElement = ref}
         className={modalClasses}
+        style={overlayStyle}
         role="dialog"
         onKeyDown={this.tryFocusTrap}
         onKeyUp={this.tryEscDismiss}
         onClick={this.tryOverlayClickDismiss}>
-        <div className="modal-container" ref={(ref) => this.modalContainer = ref}>
+        <div className="modal-container" style={containerStyle} ref={(ref) => this.modalContainer = ref}>
           {children}
         </div>
       </div>

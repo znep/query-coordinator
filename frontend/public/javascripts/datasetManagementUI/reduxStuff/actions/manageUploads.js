@@ -8,6 +8,7 @@ import { parseDate } from 'lib/parseDate';
 import { editOutputSchema } from 'reduxStuff/actions/outputSchemas';
 import { editTransform } from 'reduxStuff/actions/transforms';
 import { editInputSchema } from 'reduxStuff/actions/inputSchemas';
+import { editInputColumn } from 'reduxStuff/actions/inputColumns';
 import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 
@@ -190,12 +191,13 @@ function listenForOutputSchema(sourceId, params) {
     const channel = socket.channel(`source:${sourceId}`);
 
     channel.on('insert_input_schema', is => {
-      // it seems to be a quirk of dsmapi that it broadcasts a list of os here
-      // there should only every be one, so we just take the first one here
+      // output_schemas is a list, but there will only be one at this point,
+      // so we take the first
       const [os] = is.output_schemas;
 
       dispatch(insertInputSchema(is, sourceId));
       dispatch(subscribeToRowErrors(is));
+      dispatch(subscribeToInputColumns(is));
       dispatch(subscribeToTotalRows(is));
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
@@ -306,6 +308,21 @@ export function subscribeToRowErrors(is) {
     );
 
     channel.join();
+  };
+}
+
+
+export function subscribeToInputColumns(is) {
+  return (dispatch, getState, socket) => {
+    is.input_columns.forEach(ic => {
+      const channel = socket.channel(`input_column:${ic.id}`);
+
+      channel.on('update', (updatedInputColumn) => {
+        dispatch(editInputColumn(ic.id, updatedInputColumn));
+      });
+
+      channel.join();
+    });
   };
 }
 

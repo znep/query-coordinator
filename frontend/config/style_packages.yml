@@ -147,6 +147,8 @@ administration-metadata:
 - screen-administration-metadata
 administration-moderation:
 - screen-administration-moderation
+administration-roles:
+- screen-administration-roles
 administration-routing-approval:
 - screen-administration-routing-approval
 administration-sdp-templates:

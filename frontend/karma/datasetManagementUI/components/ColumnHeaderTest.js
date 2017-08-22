@@ -26,15 +26,18 @@ describe('components/ColumnHeader', () => {
       transform: {
         output_soql_type: 'text'
       },
-      inputColumn: {
-        soql_type: 'text'
-      }
+      inputColumns: [
+        {
+          soql_type: 'text'
+        }
+      ]
     },
     activeApiCallInvolvingThis: false,
     updateColumnType: _.noop,
     addColumn: _.noop,
     dropColumn: _.noop,
     validateThenSetRowIdentifier: _.noop,
+    showShortcut: _.noop,
     params: testParams
   };
 
@@ -89,6 +92,12 @@ describe('components/ColumnHeader', () => {
       ...defaultProps,
       outputColumn: {
         ...defaultProps.outputColumn,
+        transform: {
+          output_soql_type: 'text'
+        },
+        inputColumns: [{
+          soql_type: 'text'
+        }],
         ignored: true
       },
       updateColumnType: _.noop,
@@ -152,11 +161,24 @@ describe('components/ColumnHeader', () => {
     });
 
     it('renders correct list of types for a geo input column', () => {
-      const withGeoInput = dotProp.set(
-        defaultProps,
-        'outputColumn.inputColumn.soql_type',
-        'multipolygon'
-      );
+      const withGeoInput = {
+        ...defaultProps,
+        outputColumn: {
+          display_name: 'foo',
+          transform: {
+            output_soql_type: 'text'
+          },
+          inputColumns: [
+            {
+              soql_type: 'multipolygon'
+            }
+          ]
+        }
+      };
+
+      const element = document.createElement('tr');
+      console.log(withGeoInput.outputColumn.inputColumns[0])
+
 
       const component = shallow(<ColumnHeader {...withGeoInput} />);
 
@@ -166,11 +188,21 @@ describe('components/ColumnHeader', () => {
     });
 
     it('renders correct list of types for a number column', () => {
-      const withNumInput = dotProp.set(
-        defaultProps,
-        'outputColumn.inputColumn.soql_type',
-        'number'
-      );
+      const element = document.createElement('tr');
+      const withNumInput = {
+        ...defaultProps,
+        outputColumn: {
+          display_name: 'foo',
+          transform: {
+            output_soql_type: 'text'
+          },
+          inputColumns: [
+            {
+              soql_type: 'number'
+            }
+          ]
+        }
+      };
 
       const component = shallow(<ColumnHeader {...withNumInput} />);
 
@@ -183,7 +215,19 @@ describe('components/ColumnHeader', () => {
   it('renders a spinner if activeApiCallInvolvingThis is true', () => {
     const props = {
       ...defaultProps,
-      activeApiCallInvolvingThis: true
+      outputColumn: {
+        inputColumns: [{
+          soql_type: 'text'
+        }],
+        id: 5,
+        transform: {
+          output_soql_type: 'text'
+        }
+      },
+      activeApiCallInvolvingThis: true,
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop
     };
 
     const component = shallow(<ColumnHeader {...props} />);
@@ -191,8 +235,24 @@ describe('components/ColumnHeader', () => {
     assert.isAtLeast(component.find('.progressSpinner').length, 1);
   });
 
-  it('does not render a spinner if activeApiCallInvolvingThis is false', () => {
-    const component = shallow(<ColumnHeader {...defaultProps} />);
+  it("doesn't render a spinner if there's no api call in progress", () => {
+    const props = {
+      ...defaultProps,
+      outputColumn: {
+        inputColumns: [{
+          soql_type: 'text'
+        }],
+        id: 5,
+        transform: {
+          output_soql_type: 'text'
+        }
+      },
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop
+    };
+    const element = document.createElement('tr');
+    const component = shallow(<ColumnHeader {...props} />);
 
     assert.equal(component.find('progressSpinner').length, 0);
   });
@@ -201,9 +261,9 @@ describe('components/ColumnHeader', () => {
     const props = {
       ...defaultProps,
       outputColumn: {
-        inputColumn: {
+        inputColumns: [{
           soql_type: 'text'
-        },
+        }],
         transform: {
           output_soql_type: 'text'
         },

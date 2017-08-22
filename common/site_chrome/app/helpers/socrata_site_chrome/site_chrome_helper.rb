@@ -39,7 +39,7 @@ module SocrataSiteChrome
       SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat') rescue false
     end
 
-    def new_admin_ui_enabled?
+    def enable_new_admin_ui?
       get_feature_flag('enable_new_admin_ui')
     end
 

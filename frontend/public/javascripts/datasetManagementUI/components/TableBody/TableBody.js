@@ -7,6 +7,17 @@ import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import styles from './TableBody.scss';
 
 class TableBody extends Component {
+  componentDidMount() {
+    const { loadVisibleData } = this.props;
+    loadVisibleData();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { loadVisibleData } = nextProps;
+
+    loadVisibleData();
+  }
+
   shouldComponentUpdate(nextProps) {
     const nextStuff = {
       columns: nextProps.columns.map(c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)),
@@ -72,8 +83,8 @@ class TableBody extends Component {
   renderNormalRow(row) {
     return (
       <tr key={row.rowIdx}>
-        {row.transforms.map(transform => {
-          return <TableCell key={transform.id} cell={transform.cell} />;
+        {row.transforms.map((transform, offset) => {
+          return <TableCell key={`${row.rowIdx}-${offset}`} cell={transform.cell} />;
         })}
       </tr>
     );
@@ -98,7 +109,8 @@ TableBody.propTypes = {
   apiCalls: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayState: PropTypes.object.isRequired,
-  inputSchemaId: PropTypes.number.isRequired
+  inputSchemaId: PropTypes.number.isRequired,
+  loadVisibleData: PropTypes.func.isRequired
 };
 
 export default TableBody;

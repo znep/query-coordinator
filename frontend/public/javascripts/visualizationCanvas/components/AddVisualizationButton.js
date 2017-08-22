@@ -12,7 +12,7 @@ export class AddVisualizationButton extends Component {
     return (
       <div className="add-visualization-button-container">
         <button
-          className="btn btn-primary"
+          className="btn btn-primary btn-dark"
           onClick={onClickHandler}
           disabled={hasVisualization}>
           <span className="socrata-icon-add" role="presentation" />

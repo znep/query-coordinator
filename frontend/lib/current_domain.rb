@@ -287,7 +287,7 @@ class CurrentDomain
     end
 
     def member?(user)
-      !!(user && user.rights && user.rights.size > 0)
+      user.try(:rights).present?
     end
 
     def user_can?(user, action)

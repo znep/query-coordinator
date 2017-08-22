@@ -180,7 +180,7 @@ export function pollForTaskSetProgress(taskSetId, params) {
         }
       })
       .catch(err => {
-        console.error('polling for upsert job progress failed', err);
+        console.error('polling for task set progress failed', err);
       });
   };
 }

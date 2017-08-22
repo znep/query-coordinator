@@ -1,0 +1,569 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/users?domain=localhost&limit=9999
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Requestid:
+      - ''
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:56 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: '{"error":"No user was provided to search users"}'
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:57 GMT
+      X-Socrata-Requestid:
+      - dd7u0v8hwxxzrnyytt7l4dduw
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 2,
+          "acceptedUserId" : 3,
+          "acceptorScreenName" : "Randy Antler",
+          "lensName" : "",
+          "providerScreenName" : "Randy Antler",
+          "searchBoost" : 0.8,
+          "sourceDomainCName" : "grimoire.local",
+          "sourceDomainId" : 4,
+          "targetDomainCName" : "localhost",
+          "targetDomainId" : 1
+        }, {
+          "id" : 1,
+          "acceptedUserId" : 3,
+          "acceptorScreenName" : "Randy Antler",
+          "lensName" : "",
+          "providerScreenName" : "Randy Antler",
+          "searchBoost" : 0.8,
+          "sourceDomainCName" : "localhost",
+          "sourceDomainId" : 1,
+          "targetDomainCName" : "grimoire.local",
+          "targetDomainId" : 4
+        } ]
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/widget_customization.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:57 GMT
+      X-Socrata-Requestid:
+      - cm46xp2f54ayyuwnljaglxjy4
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "name" : "Default Customization",
+          "customization" : "{\"version\":1}",
+          "hidden" : false,
+          "uid" : "v79z-iz27"
+        } ]
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=false&type=site_theme
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:57 GMT
+      X-Socrata-Requestid:
+      - 2jw56je5lmtoiv7yfiijgwr4w
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 4,
+          "name" : "Current Theme",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "parentId" : 3,
+          "type" : "site_theme",
+          "updatedAt" : 1498082547,
+          "properties" : [ {
+            "name" : "templates_v2b.header",
+            "value" : ""
+          }, {
+            "name" : "theme_v2b",
+            "value" : {
+              "urls" : {
+                "footer" : [ {
+                  "text" : "What is Socrata?",
+                  "href" : "http://www.socrata.com/about"
+                }, {
+                  "text" : "Blog",
+                  "href" : "http://blog.socrata.com/",
+                  "class" : "rss"
+                }, {
+                  "rel" : "nofollow",
+                  "text" : "Company Info",
+                  "href" : "http://www.socrata.com/company-info"
+                }, {
+                  "rel" : "nofollow",
+                  "text" : "Terms of Service",
+                  "href" : "http://www.socrata.com/terms-of-service"
+                }, {
+                  "rel" : "nofollow",
+                  "text" : "Privacy",
+                  "href" : "http://www.socrata.com/privacy"
+                }, {
+                  "rel" : "nofollow",
+                  "text" : "Contact Us",
+                  "href" : "http://www.socrata.com/contact-us"
+                } ],
+                "headerUser" : [ {
+                  "text" : "What is Socrata?",
+                  "href" : "http://www.socrata.com/about"
+                }, {
+                  "text" : "Help",
+                  "href" : "http://www.getsatisfaction.com/socrata"
+                } ],
+                "headerMain" : [ {
+                  "text" : "Home",
+                  "href" : "/"
+                }, {
+                  "ifModuleEnabled" : "community_module",
+                  "text" : "Community",
+                  "href" : "/community"
+                }, {
+                  "text" : "My Socrata",
+                  "href" : "/home"
+                } ],
+                "signup" : [ {
+                  "text" : "Terms of Service",
+                  "href" : "/terms-of-service"
+                }, {
+                  "text" : "Privacy Policy",
+                  "href" : "/privacy"
+                } ]
+              },
+              "images" : {
+                "logo_footer" : {
+                  "width" : "89",
+                  "href" : "/stylesheets/images/common/socrata_logo_footer.png",
+                  "type" : "static",
+                  "height" : "20"
+                },
+                "logo_header" : {
+                  "width" : "129",
+                  "href" : "/stylesheets/images/common/socrata_logo.png",
+                  "type" : "static",
+                  "height" : "34"
+                },
+                "favicon" : {
+                  "href" : "/stylesheets/images/common/favicon.ico",
+                  "type" : "static"
+                },
+                "logo_square" : {
+                  "width" : 94,
+                  "href" : "/stylesheets/images/common/socrata_logo_square.png",
+                  "type" : "static",
+                  "height" : 110
+                }
+              },
+              "buttons" : {
+                "default" : {
+                  "border" : "993333",
+                  "background" : [ {
+                    "color" : "ff3333"
+                  }, {
+                    "color" : "993333"
+                  } ],
+                  "text" : "ffffff"
+                },
+                "default_disabled" : {
+                  "border" : "cc6666",
+                  "background" : [ {
+                    "color" : "ff8888"
+                  }, {
+                    "color" : "cc6666"
+                  } ],
+                  "text" : "eeeeee"
+                },
+                "active" : {
+                  "border" : "999999",
+                  "shadow" : "rgba(0,0,0,0.2)",
+                  "background" : [ {
+                    "color" : "fefefe"
+                  }, {
+                    "color" : "f2f2f2"
+                  } ],
+                  "text" : "666666"
+                },
+                "disabled" : {
+                  "border" : "dddddd",
+                  "background" : [ {
+                    "color" : "fcfcfc"
+                  }, {
+                    "color" : "f8f8f8"
+                  } ],
+                  "text" : "888888"
+                }
+              },
+              "chrome" : {
+                "box_border" : "cecece",
+                "nav_buttons" : {
+                  "border" : "042656",
+                  "background" : [ {
+                    "color" : "19538b"
+                  }, {
+                    "color" : "042656"
+                  } ]
+                },
+                "background" : "f7f7f7",
+                "sidebar" : {
+                  "background" : "f7f7f7",
+                  "text" : "666"
+                }
+              },
+              "links" : {
+                "normal" : "3B5998",
+                "visited" : "253A60"
+              },
+              "text" : {
+                "error" : "b01e2d"
+              },
+              "table" : {
+                "header" : {
+                  "inactive" : "e0e4e9",
+                  "active" : "c5ccd5"
+                }
+              }
+            }
+          }, {
+            "name" : "sdp_template",
+            "value" : "v79z-iz27"
+          }, {
+            "name" : "strings.company",
+            "value" : "Socrata"
+          }, {
+            "name" : "templates_v2b.footer",
+            "value" : "<a href=\"/\" class=\"footerLogo\">Socrata</a><ul class=\"siteFooterNav\">{{urls.footer}}</ul>"
+          }, {
+            "name" : "custom_css",
+            "value" : "/*** css/styles.css ***/"
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=metadata
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:57 GMT
+      X-Socrata-Requestid:
+      - 2rzfvly94nvsrrbyi79welyoz
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 13,
+          "name" : "Metadata configuration",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "metadata",
+          "updatedAt" : 1492794981
+        } ]
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=view_categories
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:36:57 GMT
+      X-Socrata-Requestid:
+      - dew03zwfl78axqiyjil0ixngu
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 21,
+          "name" : "View categories",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "view_categories",
+          "updatedAt" : 1501699705,
+          "properties" : [ {
+            "name" : "government",
+            "value" : {
+              "enabled" : true
+            }
+          }, {
+            "name" : "education",
+            "value" : {
+              "enabled" : true
+            }
+          }, {
+            "name" : "business",
+            "value" : {
+              "enabled" : true
+            }
+          }, {
+            "name" : "State",
+            "value" : {
+              "locale_strings" : {
+                "en" : "State",
+                "nyan" : "",
+                "it" : "",
+                "es" : "",
+                "ca" : "",
+                "nl" : ""
+              },
+              "parent" : "Government",
+              "enabled" : true
+            }
+          }, {
+            "name" : "Local",
+            "value" : {
+              "locale_strings" : {
+                "en" : "Local",
+                "nyan" : "",
+                "it" : "",
+                "es" : "",
+                "ca" : "",
+                "nl" : ""
+              },
+              "parent" : "Government",
+              "enabled" : true
+            }
+          }, {
+            "name" : "personal",
+            "value" : {
+              "enabled" : true
+            }
+          }, {
+            "name" : "fun",
+            "value" : {
+              "enabled" : true
+            }
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:36:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/stories.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:48:30 GMT
+      X-Socrata-Requestid:
+      - epkcj25nck7ijslf6lm4yfqrs
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:48:30 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 18 Aug 2017 21:48:30 GMT
+      X-Socrata-Requestid:
+      - csbazzw8mcu9qert74m2w3cit
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Fri, 18 Aug 2017 21:48:30 GMT
+recorded_with: VCR 3.0.3

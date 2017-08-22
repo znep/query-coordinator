@@ -50,7 +50,11 @@ module SiteChromeConsumerHelpers
 
   def site_chrome_webtrends_tag
     webtrends_url = site_chrome_instance.general[:webtrends_url]
-    javascript_include_tag(webtrends_url, :async => true) if webtrends_url.present?
+    if webtrends_url.present?
+      javascript_include_tag(webtrends_url, :async => true) +
+        # This meta tag is used _only_ by Open Calgary, but we put it on every page. :sadpanda:
+        tag('meta', :name => 'DC.creator', :content => 'Open Calgary')
+    end
   end
 
   def site_chrome_analytics_tags

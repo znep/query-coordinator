@@ -7,9 +7,9 @@ var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
 
 webpackConfig.externals = {
   jquery: 'jQuery',
-  'react/addons': true,
-  'react/lib/ExecutionEnvironment': true,
-  'react/lib/ReactContext': 'window'
+  // 'react/addons': true,
+  // 'react/lib/ExecutionEnvironment': true,
+  // 'react/lib/ReactContext': 'window'
 };
 
 // To make tests easier to write, we disable auto scss class prefixes.

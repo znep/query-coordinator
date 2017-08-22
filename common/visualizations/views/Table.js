@@ -4,6 +4,7 @@ const _ = require('lodash');
 const SvgVisualization = require('./SvgVisualization.js');
 const DataTypeFormatter = require('./DataTypeFormatter.js');
 const I18n = require('common/i18n').default;
+const { FeatureFlags } = require('common/feature_flags');
 
 const MINIMUM_COLUMN_WIDTH = 64;
 
@@ -389,6 +390,102 @@ module.exports = function Table(element, originalVif, locale) {
     `;
   }
 
+  /**
+   * EN-17640 - Make URL columns great again
+   *
+   * Attempts to identify NBE columns that were converted from OBE URL columns to regular
+   * text columns. This is not foolproof as we can only guess by looking for related columns
+   * based on 'name' and 'fieldName', which a user can control
+   *
+   * @param {Array} columnData - the unaltered column data
+   * @returns {Array} - a list of columns that we think came from an OBE URL column.
+   *                    This list only returns the 'url' half of the url + description pair
+   */
+  function findNbeUrlCols(columnData) {
+    utils.assertIsArray(columnData);
+
+    return _.filter(columnData, ({name, fieldName}) => {
+      return _.find(columnData, _.matches({
+        name: `${name} (description)`,
+        fieldName: `${fieldName}_description`
+      }));
+    });
+  }
+
+  /**
+   * EN-17640 - Make URL columns great again (for NBE datasets)
+   *
+   * Looks for columns that resemble exploded URL columns like 'link' & 'link_description'
+   * and combines them into an OBE-like URL column
+   *
+   * @param {Array} columnData - the unaltered column data
+   * @param {Array} urlCols - list of columns that _probably_ came from OBE URL columns
+   * @returns {Array} a list of columns where exploded NBE URL columns are molded back into OBE URL columns
+   */
+  function reconstructColumnsWithObeUrls(columnData, urlCols) {
+    utils.assertIsArray(columnData);
+    utils.assertIsArray(urlCols);
+
+    return _.chain(columnData).
+      map((col) => {
+        const colCopy = _.clone(col, true);
+        _.forEach(urlCols, (urlCol) => {
+          if (colCopy.fieldName === urlCol.fieldName) {
+            colCopy.renderTypeName = 'url';
+          }
+        });
+        return colCopy;
+      }).
+      // remove _description sub-column since all URL data will be combined into a single column
+      reject((col) => {
+        return _.some(urlCols, (urlCol) => {
+          return col.fieldName === `${urlCol.fieldName}_description`;
+        });
+      }).
+      value();
+  }
+
+  /**
+   * EN-17640 - Make URL columns great again (for NBE datasets)
+   *
+   * Combines row data for likely URL columns (e.g. 'link', 'link_description') into a single
+   * row item that looks like { description: 'Google', url: 'www.google.com' }
+   *
+   * @param {Array} rowData - the unaltered row data
+   * @param {Array} columnData - the unaltered column data
+   * @param {Array} urlCols - list of columns that _probably_ came from OBE URL columns
+   * @returns {Array} row data where individual urls and url descriptions are combined
+   */
+  function reconstructRowsWithObeUrls(rowData, columnData, urlCols) {
+    utils.assertIsArray(rowData);
+    utils.assertIsArray(columnData);
+    utils.assertIsArray(urlCols);
+
+    return _.map(rowData, (row) => {
+      const rowCopy = _.clone(row, true);
+
+      _.forEach(urlCols, (urlCol) => {
+        const urlColIndex = _.findIndex(columnData, (col) => _.isEqual(urlCol, col));
+        const urlColDescriptionIndex = _.findIndex(columnData, (col) => {
+          return col.fieldName === `${urlCol.fieldName}_description`;
+        });
+
+        const description = row[urlColDescriptionIndex];
+        const url = row[urlColIndex];
+
+        // is it possible to have just a description w/o a url?
+        if (url || description) {
+          rowCopy[urlColIndex] = { description, url };
+        }
+
+        // Remove the _description data from the row since it is part of the new fake OBE url col
+        _.pullAt(rowCopy, urlColDescriptionIndex);
+      });
+
+      return rowCopy;
+    });
+  }
+
   function render(vif, data) {
     const $existingTable = self.$element.find('.socrata-table');
 
@@ -396,6 +493,22 @@ module.exports = function Table(element, originalVif, locale) {
 
     if (!data) {
       return;
+    }
+
+    // EN-17640 Make URL columns great again (for NBE datasets)
+    // We manually edit the column and row data to spoof 'url' type columns
+    // just like we had in the good 'ol days (OBE). I promise these columns are
+    // real, and not fake like the NYTimes.
+    if (FeatureFlags.value('visualization_authoring_enable_pretty_nbe_url_cols')) {
+      const urlCols = findNbeUrlCols(data.columns);
+
+      if (!_.isEmpty(urlCols)) {
+        const nbeColumnsWithObeUrls = reconstructColumnsWithObeUrls(data.columns, urlCols);
+        const nbeRowsWithObeUrls = reconstructRowsWithObeUrls(data.rows, data.columns, urlCols);
+
+        data.columns = nbeColumnsWithObeUrls;
+        data.rows = nbeRowsWithObeUrls;
+      }
     }
 
     const $template = $(templateTable(vif, data));

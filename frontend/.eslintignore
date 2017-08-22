@@ -12,4 +12,5 @@ public/javascripts/util/interpolator.js
 public/javascripts/util/pluralize.js
 public/javascripts/util/polyfills.js
 public/javascripts/util/typed-arrays.js
+public/javascripts/common/generated-core-roles-api.js
 socrata-components

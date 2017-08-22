@@ -19,6 +19,8 @@ http://www.socrata.com
 -->
 
 <head>
+  <%= javascript_polyfills %>
+
   <%- if enable_site_chrome? || enable_govstat_chrome? -%>
     <%= site_chrome_analytics_tags %>
     <%= site_chrome_meta_viewport_tag %>
@@ -41,31 +43,28 @@ http://www.socrata.com
   <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
 
   <% unless prevent_platform_styling? %>
-
     <!--[if IE]>
     <style type="text/css">
       v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
     </style>
     <![endif]-->
+
     <%= rendered_stylesheet_tag 'base' %>
 
-      <%- if module_enabled?(:govStat) -%>
-        <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
-
-
-        <%- if suppress_govstat? -%>
-          <%= rendered_stylesheet_tag 'govstat-base' %>
-        <%- else -%>
-          <%= rendered_stylesheet_tag 'govstat-layout' %>
-        <%- end -%>
+    <%- if module_enabled?(:govStat) -%>
+      <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
+      <%- if suppress_govstat? -%>
+        <%= rendered_stylesheet_tag 'govstat-base' %>
+      <%- else -%>
+        <%= rendered_stylesheet_tag 'govstat-layout' %>
       <%- end -%>
+    <%- end -%>
 
     <%= rendered_stylesheet_tag 'print', 'print' %>
 
     <%- if render_admin_header? %>
       <%= rendered_stylesheet_tag 'administration-header' %>
     <%- end %>
-
   <% end %>
 
   <%= jquery_include %>

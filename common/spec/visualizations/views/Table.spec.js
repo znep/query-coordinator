@@ -1,8 +1,9 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var Table = require('common/visualizations/views/Table');
-var I18n = require('common/i18n').default;
-var allLocales = require('common/i18n/config/locales').default;
+const _ = require('lodash');
+const $ = require('jquery');
+const Table = require('common/visualizations/views/Table');
+const I18n = require('common/i18n').default;
+const allLocales = require('common/i18n/config/locales').default;
+const { FeatureFlags } = require('common/feature_flags');
 
 describe('Table', function() {
 
@@ -235,6 +236,69 @@ describe('Table', function() {
 
         assert.lengthOf(table.element.find('td'), 1);
         assert.equal(table.element.find('td').text().trim(), 'something');
+      });
+    });
+
+    describe('rendering NBE url columns', function() {
+      const nbeUrlColumns = [
+        { fieldName: 'link_description', name: 'Link (description)', renderTypeName: 'text' },
+        { fieldName: 'link', name: 'Link', renderTypeName: 'text' }
+      ];
+      const nbeUrlRows = [['Google', 'www.google.com']]
+
+      describe('when visualization_authoring_enable_pretty_nbe_url_cols is false', function() {
+        it('renders exploded URL columns as separate text columns', function() {
+          render(
+            table,
+            {
+              columns: nbeUrlColumns,
+              rows: nbeUrlRows
+            }
+          );
+
+          // Check column headers
+          assert.lengthOf(table.element.find('.column-header-content-column-name'), 2);
+          assert.equal(table.element.find('.column-header-content-column-name')[0].textContent.trim(), 'Link (description)');
+          assert.equal(table.element.find('.column-header-content-column-name')[1].textContent.trim(), 'Link');
+
+          // Check row contents
+          assert.lengthOf(table.element.find('td'), 2);
+          assert.equal(table.element.find('td')[0].textContent.trim(), 'Google');
+          assert.equal(table.element.find('td')[1].textContent.trim(), 'www.google.com');
+        });
+      });
+
+      describe('when visualization_authoring_enable_pretty_nbe_url_cols is true', function() {
+        before(function() {
+          FeatureFlags.updateTestFixture({
+            visualization_authoring_enable_pretty_nbe_url_cols: true
+          });
+        });
+
+        after(function() {
+          FeatureFlags.updateTestFixture({
+            visualization_authoring_enable_pretty_nbe_url_cols: false
+          });
+        });
+
+        it('renders exploded URL columns as a single OBE-like URL column', function() {
+          render(
+            table,
+            {
+              columns: nbeUrlColumns,
+              rows: nbeUrlRows
+            }
+          );
+
+          // Check column headers
+          assert.lengthOf(table.element.find('.column-header-content-column-name'), 1);
+          assert.equal(table.element.find('.column-header-content-column-name')[0].textContent.trim(), 'Link');
+
+          // Check row contents
+          assert.lengthOf(table.element.find('td'), 1);
+          assert.equal(table.element.find('td a')[0].getAttribute('href'), 'www.google.com');
+          assert.equal(table.element.find('td a')[0].textContent.trim(), 'Google');
+        });
       });
     });
 

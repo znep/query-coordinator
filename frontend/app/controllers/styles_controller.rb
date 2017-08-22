@@ -41,6 +41,7 @@ SCSS_WATCH_PATHS = %w(
   /../common
   /app/styles
   /node_modules
+  /public/javascripts/common/components
 ).map do |path|
   Pathname.new(path.prepend(Rails.root.to_s)).realpath.to_s
 end

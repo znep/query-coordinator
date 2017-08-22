@@ -122,7 +122,7 @@ export default React.createClass({
     if (!this.state.mousedDownOnOptions) {
       this.optionsRef.scrollTop = 0;
       this.setState({ focused: false });
-    } else if (!this.state.opened) {
+    } else if (!this.state.opened && this.placeholderRef) {
       this.placeholderRef.focus();
     }
 
@@ -149,7 +149,9 @@ export default React.createClass({
 
   onBlurPicklist() {
     this.setState({ focused: true, opened: false });
-    this.placeholderRef.focus();
+    if (this.placeholderRef) {
+      this.placeholderRef.focus();
+    }
   },
 
   onClickOption(selectedOption) {

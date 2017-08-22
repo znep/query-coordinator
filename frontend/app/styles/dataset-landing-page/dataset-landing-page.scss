@@ -144,26 +144,22 @@ body {
     }
   }
 
-  .entry-actions {
-    .explore-dropdown {
-      background-color: $primary-dark;
+  .entry-actions .explore-dropdown {
+    .btn-label {
+      margin-right: 10px;
+    }
 
-      .btn-label {
-        color: $white;
-        margin-right: 10px;
-      }
+    .icon-arrow-down {
+      color: $white;
+      font-size: 12px;
+    }
 
-      .icon-arrow-down {
-        color: $white;
-        font-size: 12px;
-      }
-
-      .openin-separator {
-        padding: 10px 0 10px 15px;
-        font-size: 11px;
-        border-top: 1px solid $light-grey-2;
-        background-color: $light-grey-5;
-      }
+    .openin-separator {
+      color: $dark-grey-2;
+      padding: 10px 0 10px 15px;
+      font-size: 11px;
+      border-top: 1px solid $light-grey-2;
+      background-color: $light-grey-5;
     }
   }
 

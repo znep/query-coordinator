@@ -88,6 +88,11 @@ module AdminHelper
   end
 
   def admin_nav_link(title_key, options)
+    # This method should support Hash and url only strings as `options`
+    if options.is_a?(Hash)
+      options[:locale] = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
+    end
+
     link_to(
       content_tag(:strong, I18n.t(title_key)) + content_tag(:span, I18n.t("#{title_key}_description")),
       options
@@ -111,7 +116,8 @@ module AdminHelper
   end
 
   def user_can_see_goals?
-    CurrentDomain.module_enabled?(:govStat)
+    CurrentDomain.module_enabled?(:govStat) &&
+      user_can?(UserRights::EDIT_GOALS)
   end
 
   def user_can_see_federations?

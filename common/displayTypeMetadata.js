@@ -1,26 +1,26 @@
-function getIconClassForDisplayType(displayType, isPublished = true) {
+function getIconNameForDisplayType(displayType, isPublished = true) {
   switch (displayType) {
     case 'filter':
     case 'grouped':
-      return 'socrata-icon-filter';
+      return 'filter';
 
     case 'federated_href':
     case 'href':
-      return 'socrata-icon-external';
+      return 'external';
 
     case 'data_lens':
     case 'datalens':
     case 'visualization':
-      return 'socrata-icon-cards';
+      return 'cards';
 
     case 'story':
-      return 'socrata-icon-story';
+      return 'story';
 
     case 'data_lens_map':
     case 'geomap':
     case 'intensitymap':
     case 'map':
-      return 'socrata-icon-map';
+      return 'map';
 
     case 'annotatedtimeline':
     case 'areachart':
@@ -31,27 +31,34 @@ function getIconClassForDisplayType(displayType, isPublished = true) {
     case 'imagesparkline':
     case 'linechart':
     case 'piechart':
-      return 'socrata-icon-bar-chart';
+      return 'bar-chart';
 
     case 'calendar':
-      return 'socrata-icon-date';
+      return 'date';
 
     case 'form':
-      return 'socrata-icon-list2';
+      return 'list2';
 
     case 'blob':
     case 'file':
-      return 'socrata-icon-attachment';
+      return 'attachment';
 
     case 'blist':
     case 'dataset':
     case 'federated':
     case 'table':
-      return isPublished ? 'socrata-icon-dataset' : 'socrata-icon-working-copy';
+      return isPublished ? 'dataset' : 'working-copy';
 
     default:
-      return 'socrata-icon-data';
+      return 'data';
   }
 }
 
-export { getIconClassForDisplayType };
+const getIconClassForDisplayType = (displayType, isPublished = true) =>
+  `socrata-icon-${getIconNameForDisplayType(displayType, isPublished)}`;
+
+
+export {
+  getIconNameForDisplayType,
+  getIconClassForDisplayType
+};

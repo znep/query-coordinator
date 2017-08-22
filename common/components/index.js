@@ -18,6 +18,7 @@ import TabsFactory from './legacy/Tabs';
 import ToggleFactory from './legacy/Toggle';
 import TourFactory from './legacy/Tour';
 
+import AssetTypeIcon from './AssetTypeIcon';
 import ColorPicker from './ColorPicker';
 import Dropdown from './Dropdown';
 import Picklist from './Picklist';
@@ -52,6 +53,7 @@ module.exports = {
     TourFactory
   },
 
+  AssetTypeIcon,
   ColorPicker,
   Dropdown,
   Picklist,

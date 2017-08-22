@@ -1,0 +1,76 @@
+<% content_for :head do %>
+  <title>Example Usage: AssetTypeIcon</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Asset Type Icon</h2>
+
+  <div class="styleguide-example">
+    <p>Renders an icon as an inlined SVG rather than using the icon font, using the appropriate color.</p>
+    <p>"displayType" refers to the displayType field on a lens</p>
+    <div id="socrata-data-icon-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+
+  <div class="styleguide-example">
+    <p>Different asset types can be rendered thusly:</p>
+    Chart: <div id="socrata-data-icon-container-for-chart"></div>
+    Data Lens: <div id="socrata-data-icon-container-for-data-lens"></div>
+    Story: <div id="socrata-data-icon-container-for-story"></div>
+    File: <div id="socrata-data-icon-container-for-attachment"></div>
+    Working Copy: <div id="socrata-data-icon-container-for-working-copy"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= render_demos_javascript_environment %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        displayType: 'map'
+      };
+
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, props),
+        document.getElementById('socrata-data-icon-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, {displayType: "data_lens"}),
+        document.getElementById('socrata-data-icon-container-for-data-lens')
+      );
+
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, {displayType: "story"}),
+        document.getElementById('socrata-data-icon-container-for-story')
+      );
+
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, {displayType: "chart"}),
+        document.getElementById('socrata-data-icon-container-for-chart')
+      );
+
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, {displayType: "file"}),
+        document.getElementById('socrata-data-icon-container-for-attachment')
+      );
+
+      ReactDOM.render(
+        React.createElement(components.AssetTypeIcon, {displayType: "dataset", isPublished: false}),
+        document.getElementById('socrata-data-icon-container-for-working-copy')
+      );
+    });
+  </script>
+<% end %>

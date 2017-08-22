@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 
-export function SocrataIcon({ name, className }) {
+export function SocrataIcon({ name, className, otherAttributes }) {
   const attributes = {
     className: classNames('socrata-icon', `socrata-icon-${name}`, className),
     dangerouslySetInnerHTML: {
@@ -9,16 +9,18 @@ export function SocrataIcon({ name, className }) {
     }
   };
 
-  return <span {...attributes} />;
+  return <span {...attributes} {...otherAttributes} />;
 }
 
 SocrataIcon.propTypes = {
   name: PropTypes.string.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  otherAttributes: PropTypes.object
 };
 
 SocrataIcon.defaultProps = {
-  className: ''
+  className: '',
+  otherAttributes: {}
 };
 
 export default SocrataIcon;

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import styles from './roles-admin.scss';
-import ActionBar from './ActionBar';
+import SaveBar from './SaveBar';
 import EditBar from './EditBar';
 import { applyMiddleware, bindActionCreators, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
@@ -91,7 +91,7 @@ class UnstyledRolesAdmin extends Component {
                       <RolesGrid />
                     </div>}
               </div>
-              <ActionBar />
+              <SaveBar />
             </div>}
       </div>
     );

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { Picklist } from 'common/components';
-import { handleEnter } from 'common/helpers/keyPressHelpers';
+import { handleDownArrow, handleEnter } from 'common/helpers/keyPressHelpers';
 
 export class SearchboxFilter extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export class SearchboxFilter extends React.Component {
       value: null
     };
 
-    _.bindAll(this, 'onEnter', 'onInputChange', 'onInputFocus', 'onInputBlur', 'onPicklistFocus',
+    _.bindAll(this, 'onEnter', 'onInputChange', 'onInputFocus', 'onInputBlur', 'onKeyUp', 'onPicklistFocus',
       'onPicklistBlur', 'onSelection', 'getPicklistOptions', 'filterOptions');
   }
 
@@ -50,6 +50,11 @@ export class SearchboxFilter extends React.Component {
   onInputBlur() {
     // Defer, which allows tab focus to find the picklist before it is hidden.
     _.defer(() => { this.setState({ inputFocused: false }); });
+  }
+
+  onKeyUp() {
+    this.setState({ inputFocused: false, picklistFocused: true });
+    this.filterInput.parentElement.querySelector('.picklist').focus();
   }
 
   onPicklistFocus() {
@@ -119,6 +124,7 @@ export class SearchboxFilter extends React.Component {
           onChange={this.onInputChange}
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
+          onKeyUp={handleDownArrow(this.onKeyUp)}
           onKeyDown={handleEnter(this.onEnter)}
           placeholder={this.props.placeholder}
           value={this.state.inputDisplayText} />

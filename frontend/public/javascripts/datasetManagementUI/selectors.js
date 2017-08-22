@@ -124,15 +124,16 @@ export function rowLoadOperationsInProgress(apiCalls) {
 
 // hooray this thing is still wrong, and will always be wrong - each time we add a new
 // feature we get to re-write it to make it right for our specific use case
-export function currentAndIgnoredOutputColumns(entities, osid) {
-  const osIds = Object.keys(entities.output_schemas).map(_.toNumber);
+export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
+  const outputSchema = entities.output_schemas[outputSchemaId];
+  const osIds = Object.values(entities.output_schemas)
+    .filter(os => os.input_schema_id === outputSchema.input_schema_id)
+    .map(os => os.id);
 
-  const latestOutputSchemaId = osid || Math.max(...osIds);
   const firstOutputSchemaId = Math.min(...osIds);
 
-  const actualColumns = columnsForOutputSchema(entities, latestOutputSchemaId);
+  const actualColumns = columnsForOutputSchema(entities, outputSchemaId);
   const firstColumns = columnsForOutputSchema(entities, firstOutputSchemaId);
-
 
   const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
     const ast = oc.transform.parsed_expr;

@@ -143,7 +143,7 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
       outputColumnId: column.id
     }
   };
-  const { current } = Selectors.currentAndIgnoredOutputColumns(entities);
+  const { current } = Selectors.currentAndIgnoredOutputColumns(entities, outputSchema.id);
 
   const newOutputColumns = current
     .filter(oc => oc.id !== column.id)

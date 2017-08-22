@@ -32,7 +32,7 @@ class InternalController < ApplicationController
   end
 
   def index_orgs
-    @orgs = Organization.find()
+    @orgs = Organization.find
   end
 
   def show_org

@@ -5,15 +5,126 @@ describe AdministrationController do
 
   let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
 
+  before(:all) { init_current_domain }
+
   before(:each) do
     init_feature_flag_signaller
     stub_site_chrome
+    init_current_user(subject)
+  end
+
+  describe 'when logged in as non-superadmin user', :verify_stubs => false do
+    before { stub_viewer_user }
+
+    it 'forbid access' do
+      get :index
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe 'when logged in as a superadmin user', :verify_stubs =>  false do
+    before do
+      allow(subject).to receive(:check_member).and_return(true)
+      allow_any_instance_of(AdministrationHelper).to receive(:show_site_appearance_admin_panel?).and_return(true)
+      allow(AdministrationHelper).to receive(:user_can_see_administration_section?).and_return(true)
+      allow(subject).to receive(:check_auth_level).and_return(true)
+      allow(subject).to receive(:check_auth_levels_any).and_return(true)
+      stub_superadmin_user
+    end
+
+    render_views
+
+    it 'allows access' do
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
+
+    context 'when enable_new_admin_ui is enabled' do
+      before do
+        rspec_stub_feature_flags_with(:enable_new_admin_ui => true)
+        allow(subject).to receive(:enable_new_admin_ui?).and_return(true)
+        allow(CuratedRegion).to receive(:all).and_return([])
+        allow(User).to receive(:roles_list).and_return([])
+      end
+
+      it 'renders the superadmin section on the index page' do
+        get :index
+        expect(response).to have_http_status(:ok)
+        assert_select('.super-admin-menu')
+        assert_select('.leftNavBox.adminNavBox', :count => 0)
+        assert_select('.leftNavBox.internalPanel', :count => 0)
+      end
+
+          # Pages that intentionally do not show the left_nav are: assets, site_appearance, activity_feed, goals
+      %i(users analytics federations sdp_templates georegions home metadata).each do |page|
+        it "renders the superadmin section on the '#{page}' page" do
+          VCR.use_cassette('sectioned_admin') do
+            get page
+            expect(response).to have_http_status(:ok)
+            # This section is only shown on the index (tested above)
+            assert_select('.super-admin-menu', :count => 0)
+            assert_select('.leftNavBox.adminNavBox', :count => 0)
+            assert_select('.leftNavBox.internalPanel', :count => 0)
+          end
+        end
+      end
+    end
+
+    context 'when enable_new_admin_ui is disabled' do
+      before do
+        rspec_stub_feature_flags_with(:enable_new_admin_ui => false)
+        allow(subject).to receive(:enable_new_admin_ui?).and_return(false)
+        allow(subject).to receive(:check_auth_level).with(UserRights::MANAGE_USERS).and_return(true)
+        allow(User).to receive(:roles_list).and_return([])
+      end
+
+      %i(index users analytics).each do |page|
+        it "renders the superadmin section on the '#{page}' page" do
+          get page
+          expect(response).to have_http_status(:ok)
+          assert_select('.super-admin-menu', :count => 0)
+          assert_select('.leftNavBox.adminNavBox')
+          assert_select('.leftNavBox.internalPanel', :count => 0)
+        end
+      end
+    end
+  end
+
+  describe 'when logged in as admin user', :verify_stubs => false do
+    before do
+      init_current_user(subject)
+      stub_administrator_user # Is NOT a member of the domain in this test
+    end
+
+    render_views
+
+    describe 'and user is a member of the domain' do
+      before { allow(subject).to receive(:check_member).and_return(true) }
+
+      it 'allows access' do
+        get :index
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'does not render the internal panel in the superadmin section' do
+        get :index
+        assert_select('.super-admin-menu', :count => 0)
+        assert_select('.leftNavBox.adminNavBox')
+        assert_select('.leftNavBox.adminNavBox .internal', :count => 0)
+      end
+    end
+
+    describe 'and user is not a member of the domain' do
+      it 'does not allow access' do
+        get :index
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'goals', :verify_stubs => false do
     before do
       init_current_user(subject)
-      init_current_domain
       stub_administrator_user
     end
 
@@ -42,12 +153,10 @@ describe AdministrationController do
     end
   end
 
-
   # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
   describe 'georegions', :verify_stubs => false do
     before(:each) do
       init_current_user(subject)
-      init_current_domain
       allow(subject).to receive(:default_url_options).and_return({})
       allow(subject).to receive(:sync_logged_in_cookie)
       allow(subject).to receive(:set_user)
@@ -148,14 +257,15 @@ describe AdministrationController do
           view_model = assigns(:view_model)
           expect(view_model.available_count).to eq(3)
           expect(view_model.default_count).to eq(1)
-          expect(view_model.curated_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
+          expect(view_model.curated_regions).to contain_exactly(
+            an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion)
+          )
           expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
 
       end
 
       describe 'logged in as superadmin user' do
-
         it 'responds successfully with a 200 HTTP status code' do
           stub_superadmin_user
           curated_region = build(:curated_region)
@@ -475,9 +585,7 @@ describe AdministrationController do
   end
 
   describe 'metadata' do
-
     before(:each) do
-      init_current_domain
       init_current_user(controller)
       allow(subject).to receive(:default_url_options).and_return({})
       allow(subject).to receive(:sync_logged_in_cookie)
@@ -505,28 +613,30 @@ describe AdministrationController do
     end
 
     context 'when metadata_field already has choices set up' do
-      let(:expected_new_field) { [Hashie::Mash.new(:name => 'Metadata', :fields => [Hashie::Mash.new(:name => 'Field with options', :options => nil, :type => 'text')])] }
+      let(:expected_new_field) {
+        [Hashie::Mash.new(
+          :name => 'Metadata',
+          :fields => [Hashie::Mash.new(:name => 'Field with options', :options => nil, :type => 'text')]
+        )]
+      }
 
       before(:each) do
-        allow(Configuration).to receive(:find_by_type).and_return(
-          Configuration.parse('[{"id": 1, "name": "Metadata configuration", "type": "metadata", "properties": [{ "name": "fieldsets", "value": [{ "name": "Metadata", "fields": [{ "name": "Field with options", "options": ["option1", "option2"], "type": "fixed" }]}]}]}]'))
+        allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse(configuration_stub))
       end
 
       describe '#save_metadata_field' do
         it 'nullifies the options if all are removed from the field' do
-          expect_any_instance_of(AdministrationController).to receive(:save_metadata).with(anything, expected_new_field, anything, anything)
+          expect_any_instance_of(AdministrationController).to receive(:save_metadata).
+            with(anything, expected_new_field, anything, anything)
           post :save_metadata_field, :fieldset => 0, :field => 'Field with options', :options => nil
         end
       end
     end
-
   end
 
   describe 'set_view_moderation_status' do
-
     before do
       init_current_user(subject)
-      init_current_domain
     end
 
     it 'should set a flash[:notice] unless request is JSON' do
@@ -555,12 +665,7 @@ describe AdministrationController do
   end
 
   describe 'site appearance panel', :verify_stubs => false do
-    before(:each) do
-      init_current_domain
-    end
-
     context '#show_site_appearance_admin_panel?' do
-
       context 'with site_appearance_visible set to true' do
         before(:each) do
           make_site_appearance_visible(true)
@@ -658,7 +763,6 @@ describe AdministrationController do
       # EN-6555: Hide site appearance panel if custom h/f is activated
       context 'with custom content in the site chrome config' do
         before(:each) do
-          init_current_domain
           make_site_appearance_visible(true)
           stub_site_chrome_custom_content(:header => { :html => '<div>custom header</div>' })
           stub_site_chrome(SocrataSiteChrome::DomainConfig.default_configuration.first.tap do |config|
@@ -695,9 +799,7 @@ describe AdministrationController do
           end
         end
       end
-
     end
-
   end
 
   private
@@ -735,6 +837,38 @@ describe AdministrationController do
     allow(CurrentDomain).to receive(:feature_flags).and_return(
       Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = state }
     )
+  end
+
+  def configuration_stub
+    '
+      [
+        {
+          "id": 1,
+          "name": "Metadata configuration",
+          "type": "metadata",
+          "properties": [
+            {
+              "name": "fieldsets",
+              "value": [
+                {
+                  "name": "Metadata",
+                  "fields": [
+                    {
+                      "name": "Field with options",
+                      "options": [
+                        "option1",
+                        "option2"
+                      ],
+                      "type": "fixed"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    '
   end
 
 end

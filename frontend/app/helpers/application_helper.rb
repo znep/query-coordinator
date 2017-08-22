@@ -1212,7 +1212,7 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    return false unless new_admin_ui_enabled?
+    return false unless enable_new_admin_ui?
 
     %w(
       activity_feed
@@ -1226,7 +1226,7 @@ module ApplicationHelper
     ).include?(controller_name)
   end
 
-  def new_admin_ui_enabled?
+  def enable_new_admin_ui?
     feature_flag?('enable_new_admin_ui', request)
   end
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import TablePreview from 'components/TablePreview/TablePreview';
 
-describe.only('components/TablePreview', () => {
+describe('components/TablePreview', () => {
   const defaultProps = {
     params: {
       category: 'dataset',

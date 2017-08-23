@@ -25,7 +25,6 @@ describe('FeatureMapController', function() {
   var COLUMNS = {
     'test_number': {
       'name': 'number title',
-      'fred': 'amount',
       'physicalDatatype': 'number',
       'defaultCardType': 'column',
       'availableCardTypes': ['column', 'search'],
@@ -33,7 +32,6 @@ describe('FeatureMapController', function() {
     },
     'test_timestamp': {
       'name': 'timestamp title',
-      'fred': 'time',
       'physicalDatatype': 'timestamp',
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline'],
@@ -41,7 +39,6 @@ describe('FeatureMapController', function() {
     },
     'test_location': {
       'name': 'location title',
-      'fred': 'point',
       'physicalDatatype': 'point',
       'renderTypeName': 'location',
       'defaultCardType': 'feature',
@@ -50,7 +47,6 @@ describe('FeatureMapController', function() {
     },
     'test_location_address': {
       'name': 'location title (address)',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -58,7 +54,6 @@ describe('FeatureMapController', function() {
     },
     'test_location_city': {
       'name': 'location title (city)',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -66,7 +61,6 @@ describe('FeatureMapController', function() {
     },
     'mail_state': {
       'name': 'mail state',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -74,7 +68,6 @@ describe('FeatureMapController', function() {
     },
     'mail_zip': {
       'name': 'mail zip',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -82,7 +75,6 @@ describe('FeatureMapController', function() {
     },
     'mailing_address': {
       'name': 'mail address',
-      'fred': 'point',
       'physicalDatatype': 'point',
       'renderTypeName': 'location',
       'defaultCardType': 'feature',
@@ -91,7 +83,6 @@ describe('FeatureMapController', function() {
     },
     'mailing_address_address': {
       'name': 'mail address (address)',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -99,7 +90,6 @@ describe('FeatureMapController', function() {
     },
     'mailing_address_city': {
       'name': 'mail address (city)',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
@@ -107,7 +97,6 @@ describe('FeatureMapController', function() {
     },
     'test_null': {
       'name': 'test null',
-      'fred': 'text',
       'physicalDatatype': 'text',
       'defaultCardType': 'search',
       'availableCardTypes': ['column', 'search'],

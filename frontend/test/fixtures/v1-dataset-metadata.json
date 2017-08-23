@@ -3,56 +3,48 @@
     "some_column":{
       "cardinality": 25,
       "description": "",
-      "fred": "category",
       "name": "Categories",
       "physicalDatatype": "number"
     },
     "some_other_column":{
       "cardinality": 12,
       "description": "",
-      "fred": "text",
       "name": "Numbers",
       "physicalDatatype": "number"
     },
     "some_number_column":{
       "cardinality": 80,
       "description": "",
-      "fred": "number",
       "name": "number",
       "physicalDatatype": "number"
     },
     "time_column_large_granularity":{
       "cardinality": 3,
       "description": "",
-      "fred": "text",
       "name": "Boulders",
       "physicalDatatype": "floating_timestamp"
     },
     "time_column_fine_granularity":{
       "cardinality": 3,
       "description": "",
-      "fred": "text",
       "name": "Sand",
       "physicalDatatype": "floating_timestamp"
     },
     "parent_column": {
       "cardinality": 5,
       "description": "A column that - in the OBE - had sub-columns.",
-      "fred": "text",
       "name": "Parent",
       "physicalDatatype": "number"
     },
     "parent_column_child_type": {
       "cardinality": 5,
       "description": "A column that - in the OBE - was a child column, and had data. Name must pass filter check in lib/common_metadata_methods#flag_subcolumns!",
-      "fred": "text",
       "name": "Parent (child with data)",
       "physicalDatatype": "number"
     },
     "parent_column_child_description": {
       "cardinality": 1,
       "description": "A column that - in the OBE - was a child column, and had no data. Name must pass filter check in lib/common_metadata_methods#flag_subcolumns!",
-      "fred": "text",
       "name": "Parent (child sans data)",
       "physicalDatatype": "number"
     }

@@ -5,7 +5,7 @@ class PageMetadataManager
   include CommonMetadataTransitionMethods
   include ApplicationHelper
 
-  attr_accessor :column_field_name, :logical_datatype_name
+  attr_accessor :column_field_name
 
   V0_CARD_TEMPLATE = {
     'fieldName' => nil,
@@ -335,7 +335,6 @@ class PageMetadataManager
 
   def initialize_metadata_key_names
     @column_field_name = 'fieldName'
-    @logical_datatype_name = 'fred'
   end
 
   # Strip out outer keys we don't want in the inner page_metadata

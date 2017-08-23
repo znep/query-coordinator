@@ -22,53 +22,45 @@
         "columns": {
             ":created_at": {
                 "description": "",
-                "fred": "text",
                 "name": ":created_at",
                 "physicalDatatype": "fixed_timestamp"
             },
             ":id": {
                 "description": "",
-                "fred": "text",
                 "name": ":id",
                 "physicalDatatype": "row_identifier"
             },
             ":updated_at": {
                 "description": "",
-                "fred": "text",
                 "name": ":updated_at",
                 "physicalDatatype": "fixed_timestamp"
             },
             ":version": {
                 "description": "",
-                "fred": "text",
                 "name": ":version",
                 "physicalDatatype": "row_version"
             },
             "site_name": {
                 "cardinality": 6,
                 "description": "",
-                "fred": "text",
                 "name": "Site Name",
                 "physicalDatatype": "text"
             },
             "site_uptime_": {
                 "cardinality": 73,
                 "description": "",
-                "fred": "text",
                 "name": "Site Uptime (%)",
                 "physicalDatatype": "number"
             },
             "total_downtime_minutes_": {
                 "cardinality": 72,
                 "description": "",
-                "fred": "text",
                 "name": "Total Downtime (Minutes)",
                 "physicalDatatype": "number"
             },
             "week": {
                 "cardinality": 114,
                 "description": "",
-                "fred": "text",
                 "name": "Week",
                 "physicalDatatype": "text"
             }

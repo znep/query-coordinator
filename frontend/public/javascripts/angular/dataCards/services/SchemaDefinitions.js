@@ -93,9 +93,6 @@ module.exports = function() {
                     type: 'string',
                     minLength: 1
                   },
-                  fred: {
-                    type: 'string'
-                  },
                   physicalDatatype: {
                     type: 'string'
                   },
@@ -117,9 +114,6 @@ module.exports = function() {
                   name: {
                     type: 'string',
                     minLength: 1
-                  },
-                  fred: {
-                    type: 'string'
                   },
                   physicalDatatype: {
                     type: 'string',

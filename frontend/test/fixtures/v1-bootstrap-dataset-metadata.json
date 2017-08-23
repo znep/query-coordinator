@@ -16,34 +16,29 @@
     "no_cardinality": {
       "name": "no cardinality",
       "description": "no cardinality description",
-      "fred": "category",
       "physicalDatatype": "number"
     },
     "cardinal_biggles": {
       "name": "Cardinal Biggles",
       "description": "no cardinality description",
-      "fred": "category",
       "physicalDatatype": "number",
       "cardinality": 35000
     },
     "cardinal_fang": {
       "name": "Cardinal Fang",
       "description": "no cardinality description",
-      "fred": "category",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "location": {
       "name": "Point",
       "description": "What's your point?",
-      "fred": "location",
       "physicalDatatype": "point",
       "cardinality": 100
     },
     ":@computed": {
       "name": "computed column",
       "description": "adjust your lattitude",
-      "fred": "location",
       "physicalDatatype": "number",
       "computationStrategy": {
         "parameters": {
@@ -56,7 +51,6 @@
     ":@other_computed": {
       "name": "other computed column",
       "description": "adjust your lattitude",
-      "fred": "location",
       "physicalDatatype": "point",
       "cardinality": 1000,
       "computationStrategy": {
@@ -69,7 +63,6 @@
     },
     "point_city": {
       "name": "Point (city)",
-      "fred": "text",
       "description": "sub-column card from OBE",
       "cardinality": 1,
       "physicalDatatype": "text",
@@ -79,140 +72,120 @@
     "latitude": {
       "name": "LaTiTUde",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "longitude": {
       "name": "LONGITUDE",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "lat": {
       "name": "LAT",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "lng": {
       "name": "Lng",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "x": {
       "name": "X",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "y": {
       "name": "y",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "below": {
       "name": "below min cardinality",
       "description": "below min cardinality description",
-      "fred": "category",
       "physicalDatatype": "number",
       "cardinality": 1
     },
     "none1": {
       "name": "none1",
       "description": "column description",
-      "fred": "invalid logical datatype",
       "physicalDatatype": "boolean",
       "cardinality": 34
     },
     "none2": {
       "name": "none2",
       "description": "column description",
-      "fred": "time",
       "physicalDatatype": "geo_entity",
       "cardinality": 36
     },
     "single1": {
       "name": "RedHerring (not a subcolumn)",
       "description": "column description",
-      "fred": "amount",
       "physicalDatatype": "invalid physical datatype",
       "cardinality": 34
     },
     "single2": {
       "name": "single2 (not a subcolumn)",
       "description": "column description",
-      "fred": "category",
       "physicalDatatype": "boolean",
       "cardinality": 36
     },
     "single3": {
       "name": "single3 (not a subcolumn)",
       "description": "column description",
-      "fred": "identifier",
       "physicalDatatype": "fixed_timestamp",
       "cardinality": 34
     },
     "single4": {
       "name": "single4 (not a subcolumn)",
       "description": "column description",
-      "fred": "identifier",
       "physicalDatatype": "money",
       "cardinality": 36
     },
     "multi1": {
       "name": "multi1 (not a subcolumn)",
       "description": "column description",
-      "fred": "category",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi2": {
       "name": "multi2 (not a subcolumn)",
       "description": "column description",
-      "fred": "category",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "multi3": {
       "name": "multi3 (not a subcolumn)",
       "description": "column description",
-      "fred": "identifier",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi4": {
       "name": "multi4 (not a subcolumn)",
       "description": "column description",
-      "fred": "identifier",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "multi5": {
       "name": "multi5 (not a subcolumn)",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi6": {
       "name": "multi6 (not a subcolumn)",
       "description": "column description",
-      "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "multi7": {
       "name": "multi7 (not a subcolumn)",
       "description": "column description",
-      "fred": "category",
       "physicalDatatype": "text"
     },
     "point": {

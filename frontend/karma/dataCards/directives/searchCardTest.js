@@ -68,7 +68,6 @@ describe('searchCard', function() {
       'filler_column': {
         name: 'filler column title',
         description: 'filler column description',
-        fred: 'text',
         physicalDatatype: 'text',
         defaultCardType: 'search',
         availableCardTypes: ['column', 'search']
@@ -76,7 +75,6 @@ describe('searchCard', function() {
       'test_column_number': {
         name: 'test number column title',
         description: 'test number column description',
-        fred: 'text',
         physicalDatatype: 'number',
         defaultCardType: 'search',
         availableCardTypes: ['column', 'search']
@@ -84,7 +82,6 @@ describe('searchCard', function() {
       'test_column_text': {
         name: 'test text column title',
         description: 'test text column description',
-        fred: 'text',
         physicalDatatype: 'text',
         defaultCardType: 'search',
         availableCardTypes: ['column', 'search']

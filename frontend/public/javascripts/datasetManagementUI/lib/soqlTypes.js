@@ -73,6 +73,7 @@ const soqlPropertiesList = addIdentityTransforms([
     canonicalName: 'location',
     cssName: 'location',
     sodaType: 'location',
+    icon: 'map',
     conversions: {
       text: 'to_text'
     }

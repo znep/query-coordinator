@@ -264,7 +264,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.revisionBase;
+    const url = dsmapiLinks.revisionBase({ revisionSeq: revision.revision_seq });
     return socrataFetch(url, {
       method: 'PUT',
       body: JSON.stringify({

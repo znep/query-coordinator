@@ -10,7 +10,7 @@ class TableCell extends Component {
   }
 
   render() {
-    const { cell } = this.props;
+    const { cell, type } = this.props;
 
     if (!cell) {
       return (<td className={styles.notYetLoaded} />);
@@ -37,25 +37,42 @@ class TableCell extends Component {
     } else {
       return (
         <td className={styles.base}>
-          <div>{renderCellValue(cell.ok)}</div>
+          <div>{renderCellValue(cell.ok, type)}</div>
         </td>
       );
 
     }
   }
-
 }
 
-function renderCellValue(value) {
-  if (value.type) {
-    return geojson2wkt.convert(value);
-  } else {
-    return `${value}`;
+function renderLocation({ latitude, longitude, human_address: address }) {
+  return `Location(
+    latitude = ${latitude},
+    longitude = ${longitude},
+    address = ${address.address},
+    city = ${address.city},
+    state = ${address.state},
+    zip = ${address.zip}
+  )
+  `;
+}
+
+function renderCellValue(value, type) {
+  switch (type) {
+    case 'location':
+      return renderLocation(value);
+    default:
+      if (value.type) {
+        return geojson2wkt.convert(value);
+      } else {
+        return `${value}`;
+      }
   }
 }
 
 TableCell.propTypes = {
-  cell: PropTypes.object
+  cell: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default TableCell;

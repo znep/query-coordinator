@@ -2,7 +2,6 @@ import d3 from 'd3';
 import _ from 'lodash';
 import testData from '../testData';
 import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
-import { FeatureFlags } from 'common/feature_flags';
 
 describe('MetadataProvider', () => {
   const VALID_DOMAIN = 'example.com';
@@ -331,53 +330,31 @@ describe('MetadataProvider', () => {
   });
 
   describe('isSubcolumn()', () => {
-    const sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
-
-    sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Location 1",
-      "dataTypeName" : "point",
-      "fieldName" : "location_1",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
-      "renderTypeName" : "point",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
-    });
-
-    sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Location 1 (city)",
-      "dataTypeName" : "point",
-      "fieldName" : "location_1_city",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
-      "renderTypeName" : "point",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
-    });
-
-    sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Website URL",
-      "dataTypeName" : "text",
-      "fieldName" : "website_url",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 3,
-      "renderTypeName" : "text",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
-    });
-
-    sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Website URL (description)",
-      "dataTypeName" : "text",
-      "fieldName" : "website_url_description",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 4,
-      "renderTypeName" : "text",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
-    });
-
     it('returns true when there is a suffix', () => {
+      const sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
+
+      sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
+        "id" : _.uniqueId(),
+        "name" : "Location 1",
+        "dataTypeName" : "point",
+        "fieldName" : "location_1",
+        "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
+        "renderTypeName" : "point",
+        "tableColumnId" : _.uniqueId(),
+        "format" : { }
+      });
+
+      sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
+        "id" : _.uniqueId(),
+        "name" : "Location 1 (city)",
+        "dataTypeName" : "point",
+        "fieldName" : "location_1_city",
+        "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
+        "renderTypeName" : "point",
+        "tableColumnId" : _.uniqueId(),
+        "format" : { }
+      });
+
       assert.isFalse(metadataProvider.isSubcolumn(
         'location_1',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
@@ -387,32 +364,12 @@ describe('MetadataProvider', () => {
         'location_1_city',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
       ));
-
-      assert.isTrue(metadataProvider.isSubcolumn(
-        'website_url_description',
-        sampleDatasetMetadataWithExtraSimilarlyNamedColumns
-      ));
     });
 
     it('flags subcolumns when there is not a suffix', () => {
       assert.isFalse(metadataProvider.isSubcolumn('location', SAMPLE_DATASET_METADATA));
       assert.isTrue(metadataProvider.isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
     });
-
-    it('doesnt flag URL subcolumns if visualization_authoring_enable_pretty_nbe_url_cols is true', () => {
-      FeatureFlags.updateTestFixture({
-        visualization_authoring_enable_pretty_nbe_url_cols: true
-      });
-
-      assert.isFalse(metadataProvider.isSubcolumn(
-        'website_url_description',
-        sampleDatasetMetadataWithExtraSimilarlyNamedColumns
-      ));
-
-      FeatureFlags.updateTestFixture({
-        visualization_authoring_enable_pretty_nbe_url_cols: false
-      });
-    })
   });
 
   describe('isHiddenColumn()', () => {

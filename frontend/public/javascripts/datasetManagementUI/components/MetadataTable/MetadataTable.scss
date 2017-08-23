@@ -1,0 +1,40 @@
+// METADATA
+.metadataContainer {
+  :global {
+    .metadata-table-wrapper {
+      padding: 1em;
+      .landing-page-section {
+        padding: 0;
+      }
+    }
+  }
+}
+
+// INFO PANE
+.infoPaneContainer {
+  :global {
+    .info-pane .container {
+      max-width: none;
+
+      .entry-main {
+        border: none;
+      }
+    }
+
+    .info-pane.result-card {
+      border-right: none;
+    }
+
+    .entry-content {
+      display: flex;
+
+      .entry-main {
+        flex-grow: 5;
+      }
+
+      .entry-meta {
+        flex-grow: 3;
+      }
+    }
+  }
+}

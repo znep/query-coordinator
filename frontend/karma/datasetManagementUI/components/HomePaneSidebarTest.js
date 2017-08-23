@@ -1,16 +1,9 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import rootReducer from 'reducers/rootReducer';
-import { bootstrapApp } from 'actions/bootstrap';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
-import { ManageData, HomePaneSidebar } from 'components/HomePaneSidebar';
-import mockSocket from '../testHelpers/mockSocket';
-import { bootstrapChannels } from '../data/socketChannels';
+import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
 
 describe('components/HomePaneSidebar', () => {
-  let store;
 
   const defaultProps = {
     entities: {
@@ -63,34 +56,6 @@ describe('components/HomePaneSidebar', () => {
       sidebarSelection: null
     }
   };
-
-  const socket = mockSocket(bootstrapChannels);
-
-  beforeEach(() => {
-    store = createStore(
-      rootReducer,
-      applyMiddleware(thunk.withExtraArgument(socket))
-    );
-    store.dispatch(
-      bootstrapApp(
-        window.initialState.view,
-        window.initialState.revision,
-        window.initialState.customMetadataFieldsets
-      )
-    );
-  });
-
-  it("shows a disabled 'Describe Columns' button if columnsExist is falsey", () => {
-    const component = shallow(<ManageData {...defaultProps} />);
-
-    assert.isOk(component.find('button').first().prop('disabled'));
-  });
-
-  it('shows 0 checkmarks when nothing is done', () => {
-    const component = shallow(<ManageData {...defaultProps} />);
-
-    assert.equal(component.find('.finished').length, 0);
-  });
 
   it('shows the activity feed by default', () => {
     const component = shallow(<HomePaneSidebar {...defaultProps} />);

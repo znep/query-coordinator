@@ -695,6 +695,8 @@ export const ShowOutputSchemaProps = {
     key: '5wnin1',
     query: {}
   },
+  revision: {},
+  saveCurrentOutputSchema: () => {},
   urlParams: {
     category: 'dataset',
     name: 'okokokokokok',

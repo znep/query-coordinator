@@ -1,8 +1,8 @@
 import { assert } from 'chai';
-import { SHOW_MODAL, showModal, HIDE_MODAL, hideModal } from 'actions/modal';
+import { SHOW_MODAL, showModal, HIDE_MODAL, hideModal } from 'reduxStuff/actions/modal';
 
-describe('actions/modal', () => {
-  describe('actions/modal/hideModal', () => {
+describe('modal actions', () => {
+  describe('hideModal', () => {
     const action = hideModal();
 
     const expectedAction = {
@@ -14,7 +14,7 @@ describe('actions/modal', () => {
     });
   });
 
-  describe('actions/modal/showModal', () => {
+  describe('showModal', () => {
     const action = showModal('TestComponent');
 
     const expectedAction = {

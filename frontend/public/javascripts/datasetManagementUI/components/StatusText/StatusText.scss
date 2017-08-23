@@ -1,0 +1,35 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.statusIcon {
+  padding: 0 0.5em 1px;
+  border-radius: 1.1em;
+  color: $white;
+  margin-right: 0.5em;
+}
+
+.successIcon {
+  composes: success from global;
+  composes: statusIcon;
+}
+
+.disabledIcon {
+  composes: warning from global;
+  composes: statusIcon;
+  background-color: $alternate-1-base !important;
+}
+
+.spinner {
+  composes: spinner-default from global;
+  composes: statusIcon;
+  margin: -5px 5px -5px 0; // Turns out the spinner is actually too tall for this cell.
+}
+
+.statusText {
+  padding: 5px;
+  border-bottom: 1px solid $light-grey-4;
+  text-align: left;
+  display: relative;
+  z-index: 100;
+}

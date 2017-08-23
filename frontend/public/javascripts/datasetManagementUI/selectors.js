@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
-import { LOAD_ROWS } from 'actions/apiCalls';
-import { CREATE_UPLOAD } from 'actions/manageUploads';
+import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
+import { CREATE_UPLOAD } from 'reduxStuff/actions/manageUploads';
 import {
   stripToTextAst,
   stripToNumberAst,
@@ -167,6 +167,7 @@ export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
 
 export const latestOutputSchemaForSource = (entities, sourceId) => {
   const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];
+
   if (!inputSchema) {
     return null; // an input schema has not yet been parsed out of this upload
   }
@@ -185,7 +186,17 @@ const convertToNull = val => (val === '' ? null : val);
 
 const regularPublic = metadata =>
   _.chain(metadata)
-    .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
+    .pick([
+      'id',
+      'name',
+      'description',
+      'category',
+      'licenseId',
+      'license',
+      'attribution',
+      'attributionLink',
+      'tags'
+    ])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();

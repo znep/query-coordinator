@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import configureStore from 'redux-mock-store';
-import { bootstrapApp } from 'actions/bootstrap';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 
 describe('bootstrap', () => {
 

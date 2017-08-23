@@ -2,13 +2,13 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import { applyRevision, updateRevision } from 'actions/applyRevision';
+import { applyRevision, updateRevision } from 'reduxStuff/actions/applyRevision';
 import state from '../data/stateWithRevision';
 import mockAPI from '../testHelpers/mockAPI';
 
 const mockStore = configureStore([thunk]);
 
-describe('actions/applyRevision', () => {
+describe('applyRevision actions', () => {
   let unmock;
   let fakeStore;
 

@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import React from 'react';
-import { AppBar } from 'components/AppBar';
+import AppBar from 'components/AppBar/AppBar';
 import { shallow } from 'enzyme';
 
 describe('components/AppBar', () => {
@@ -16,6 +16,7 @@ describe('components/AppBar', () => {
   });
 
   it('renders a link to primer', () => {
-    assert.equal(component.find('a').childAt(0).text(), 'Preview Primer');
+    const linkContents = component.find('PreviewLink').dive().text();
+    assert.isTrue(linkContents.indexOf('Preview Primer') > -1);
   });
 });

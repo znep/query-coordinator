@@ -1,0 +1,76 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.colErrors,
+.colFailed {
+  font-weight: normal;
+  font-size: 10px;
+  color: $grey;
+  padding: 0;
+  width: 250px;
+
+  a {
+    color: $grey;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+
+    &:hover {
+      background-color: $alternate-3-light;
+    }
+
+    &:active {
+      box-shadow: inset 0 0 10px -2px $black;
+    }
+  }
+}
+
+.disabledColumn {
+  composes: colErrors;
+  color: $alternate-1-dark;
+  font-style: italic;
+  background-color: #f6f6f6 !important; //lol
+}
+
+.transformStatusSelected {
+  box-shadow: inset 0 0 10px -2px $dark-grey-1;
+}
+
+.statusItem {
+  padding: 5px;
+  border-bottom: 1px solid $light-grey-4;
+  display: relative;
+  z-index: 100;
+  text-align: left;
+}
+
+.statusText {
+  composes: statusItem;
+  flex-grow: 1;
+}
+
+.geoBadge {
+  composes: statusItem;
+  margin-right: -5px;
+  flex-grow: 0;
+}
+
+.geoIcon {
+  composes: socrata-icon-geo from global;
+  composes: primary from global;
+  padding: 0 0.5em 1px;
+  border-radius: 1.1em;
+  color: $white;
+  margin-right: 0.5em;
+  margin-right: 0;
+}
+
+.colAttributes {
+  display: flex;
+}
+
+.columnProgressBar {
+  height: 2px;
+  width: 100%;
+}

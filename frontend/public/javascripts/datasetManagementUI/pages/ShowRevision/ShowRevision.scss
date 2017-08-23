@@ -1,0 +1,66 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.homeContainer {
+  h2 {
+    font-weight: 500;
+    padding: 11px 0;
+  }
+
+  flex-grow: 1;
+  margin: 0;
+  display: flex;
+  background-color: $light-grey-7;
+}
+
+.homeContent {
+  overflow: auto;
+  flex: 1;
+}
+
+// UPSERT PREVIEW
+.manageDataLink {
+  float: right;
+  margin-top: 7px;
+}
+
+.manageDataBtn {
+  composes: btn from global;
+  composes: btn-sm from global;
+  composes: btn-alternate-2 from global;
+}
+
+// TABLE CONTAINER
+.header {
+  float: left;
+  font-weight: 500;
+  padding: 11px 0;
+}
+
+.tableContainer {
+  padding: 1em;
+
+  input[type=file] {
+    display: none;
+  }
+}
+
+// SCHEMA PREVIEW
+.schemaPreviewContainer {
+  h2 {
+    float: left;
+  }
+
+  composes: container from global;
+
+  :global {
+    .schema-preview h2 {
+      float: left;
+    }
+
+    .section-content {
+      clear: both;
+    }
+  }
+}

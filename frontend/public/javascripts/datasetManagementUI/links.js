@@ -25,8 +25,9 @@ export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
-export const showOutputSchemaShortcut = (sourceId, inputSchemaId, outputSchemaId, name) => routing =>
-  `${home(routing)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}/shortcut/${name}`;
+// TODO: delete?
+// export const showOutputSchemaShortcut = (sourceId, inputSchemaId, outputSchemaId, name) => routing =>
+//   `${home(routing)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}/shortcut/${name}`;
 
 export const showColumnErrors = (
   params,

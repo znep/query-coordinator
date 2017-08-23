@@ -1,8 +1,8 @@
 import { assert } from 'chai';
-import notificationReducer from 'reducers/notifications';
-import { addNotification, removeNotification } from 'actions/notifications';
+import notificationReducer from 'reduxStuff/reducers/notifications';
+import { addNotification, removeNotification } from 'reduxStuff/actions/notifications';
 
-describe('reducers/notifications', () => {
+describe('notification reducer', () => {
   it('handles ADD_NOTIFICATION', () => {
     const action = addNotification(
       'source',

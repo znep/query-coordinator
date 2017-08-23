@@ -7,11 +7,11 @@ import {
   HIDE_FLASH_MESSAGE,
   hideFlashMessage,
   showFlashMessage
-} from 'actions/flashMessage';
+} from 'reduxStuff/actions/flashMessage';
 
 const mockStore = configureStore([thunk]);
 
-describe('actions/flashMessage', () => {
+describe('flashMessage actions', () => {
   const store = mockStore({})
 
   describe('showFlashMessage', () => {

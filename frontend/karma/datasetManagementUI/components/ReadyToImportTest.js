@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
 import _ from 'lodash';
-import ReadyToImportConnected, { ReadyToImport } from 'components/ReadyToImport';
+import ReadyToImport from 'components/ReadyToImport/ReadyToImport';
 
 describe('components/ReadyToImport', () => {
   const defaultProps = {

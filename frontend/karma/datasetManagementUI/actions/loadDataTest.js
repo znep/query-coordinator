@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import React from 'react';
-import { needToLoadAnything, loadNormalPreview } from 'actions/loadData';
+import { needToLoadAnything, loadNormalPreview } from 'reduxStuff/actions/loadData';
 import state from '../data/stateWithRevision';
 import * as DisplayState from 'lib/displayState';
 import mockAPI from '../testHelpers/mockAPI';
@@ -10,7 +10,7 @@ import _ from 'lodash';
 
 const mockStore = configureStore([thunk]);
 
-describe('actions/loadData', () => {
+describe('loadData actions', () => {
   describe('needToLoadAnything', () => {
     it('DisplayState.NORMAL returns true when not loaded', () => {
       const displayState = DisplayState.normal(

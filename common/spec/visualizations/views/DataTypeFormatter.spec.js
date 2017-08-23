@@ -1,4 +1,6 @@
+var $ = require('jquery');
 var _ = require('lodash');
+var moment = require('moment');
 var DataTypeFormatter = require('common/visualizations/views/DataTypeFormatter');
 var I18n = require('common/i18n').default;
 var allLocales = require('common/i18n/config/locales').default;
@@ -98,6 +100,183 @@ describe('DataTypeFormatter', function() {
       var cellContent = DataTypeFormatter.renderCellHTML('anything', { renderTypeName: 'anything' });
       assert.equal(cellContent, undefined);
       sinon.assert.called(consoleErrorStub);
+    });
+  });
+
+  describe('XSS protection', function() {
+    // Silence a deprecation warning. See
+    // https://github.com/moment/moment/issues/2469
+    let originalFallback = null;
+    before(() => {
+      originalFallback = moment.createFromInputFallback;
+      moment.createFromInputFallback = (config) => {
+        config._d = new Date(NaN);
+      };
+    });
+    after(() => {
+      moment.createFromInputFallback = originalFallback;
+    });
+
+    afterEach(() => {
+      delete window.ranEvil;
+    });
+
+    const addToDOM = (html) => {
+      $('<div>').html(html).appendTo(document.body).remove();
+    };
+
+    const scriptInjection = '<script>window.ranEvil = true;</script>';
+
+    const trivialXssContents = [ scriptInjection, _.escape(scriptInjection) ];
+
+    // Maps a renderer name to a XSS attack for it (column/content pair).
+    // These are basic tests, but hopefully they will
+    // catch the most egregious violators.
+    const xssTestContents = {
+      renderCellHTML: {
+        column: { renderTypeName: 'unknown' },
+        contents: trivialXssContents
+      },
+      renderFormattedTextHTML: {
+        contents: trivialXssContents
+      },
+      renderBooleanCellHTML: {
+        contents: trivialXssContents
+      },
+      renderNumberCellHTML: {
+        column: {},
+        contents: trivialXssContents
+      },
+      renderMoneyCellHTML: {
+        column: {},
+        contents: trivialXssContents
+      },
+      renderUrlCellHTML: {
+        contents: [
+          {
+            url: scriptInjection,
+            description: scriptInjection
+          },
+          {
+            url: _.escape(scriptInjection),
+            description: _.escape(scriptInjection)
+          }
+        ]
+      },
+      renderGeoCellHTML: {
+        contents: [
+          {
+            value: {
+              coordinates: [
+                scriptInjection,
+                scriptInjection
+              ]
+            }
+          },
+          {
+            value: {
+              coordinates: [
+                _.escape(scriptInjection),
+                _.escape(scriptInjection)
+              ]
+            }
+          }
+        ]
+      },
+      renderPhoneCellHTML: {
+        contents: [
+          {
+            phone_number: scriptInjection
+          },
+          {
+            phone_number: _.escape(scriptInjection)
+          }
+        ]
+      },
+      renderEmailCellHTML: {
+        contents: trivialXssContents
+      },
+      renderBlobCellHTML: {
+        contents: trivialXssContents
+      },
+      renderPhotoCellHTML: {
+        contents: trivialXssContents
+      },
+      renderDocumentCellHTML: {
+        contents: [
+          {
+            filename: scriptInjection
+          },
+          {
+            filename: _.escape(scriptInjection)
+          }
+        ]
+      },
+      renderMultipleChoiceCellHTML: {
+        column: {
+            dropDown: {
+              values: [
+                {
+                  id: scriptInjection,
+                  description: scriptInjection
+                },
+                {
+                  id: _.escape(scriptInjection),
+                  description: _.escape(scriptInjection)
+                }
+              ]
+            }
+        },
+        contents: trivialXssContents
+      },
+      renderTimestampCellHTML: {
+        contents: trivialXssContents
+      },
+      renderObeLocationHTML: {
+        contents: [
+          {
+            latitude: scriptInjection,
+            longitude: scriptInjection
+          },
+          {
+            latitude: _.escape(scriptInjection),
+            longitude: _.escape(scriptInjection)
+          }
+        ]
+      }
+    };
+
+    const rendererNames = _(DataTypeFormatter).
+      keys().
+      filter((name) => name.match(/render.*HTML/)).
+      value();
+
+    it('is a valid test suite', () => {
+      assert.isUndefined(window.ranEvil);
+      addToDOM(scriptInjection);
+      assert.isTrue(window.ranEvil);
+      delete window.ranEvil;
+      assert.isAtLeast(rendererNames.length, 1);
+    });
+
+    _.each(rendererNames, (rendererName) => {
+      describe(rendererName, () => {
+        it('blocks trivial XSS', () => {
+          const test = xssTestContents[rendererName];
+          assert(
+            test !== undefined,
+            `No test payload defined - add ${rendererName} to xssTestContents`
+          );
+
+          _.each(test.contents, (content) => {
+            addToDOM(DataTypeFormatter[rendererName](content, test.column));
+            assert(
+              window.ranEvil === undefined,
+              `XSS payload was run - renderer is vulnerable to injection attack: ${JSON.stringify(content)}`
+            );
+          });
+        });
+      });
     });
   });
 
@@ -940,6 +1119,19 @@ describe('DataTypeFormatter', function() {
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderEmailCellHTML({});
+      assert.equal(cellContent, '');
+    });
+  });
+
+  describe('blob formatting', function() {
+    it('should render a link', function() {
+      var cellContent = DataTypeFormatter.renderBlobCellHTML('blobid', 'example.com', 'xxxx-yyyy');
+      var expected = '<a href="https://example.com/views/xxxx-yyyy/files/blobid" target="_blank" rel="external">blobid</a>';
+      assert.equal(cellContent, expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderBlobCellHTML({});
       assert.equal(cellContent, '');
     });
   });

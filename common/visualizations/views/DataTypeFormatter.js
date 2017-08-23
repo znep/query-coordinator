@@ -167,19 +167,23 @@ const TIME_FORMATS = {
 // return unsafe strings. Do not place them into the DOM
 // directly. Consider using an *HTML renderer.
 module.exports = {
+  // Before exporting any *UnsafePlainText functions, think
+  // carefully about the potential security impact.
   renderCellHTML: renderCellHTML,
-  renderBooleanCellHTML: renderBooleanCellHTML,
-  renderNumberCellHTML: renderNumberCellHTML,
-  renderGeoCellHTML: renderGeoCellHTML,
-  renderMoneyCellHTML: renderMoneyCellHTML,
-  renderUrlCellHTML: renderUrlCellHTML,
-  renderEmailCellHTML: renderEmailCellHTML,
-  renderPhoneCellHTML: renderPhoneCellHTML,
-  renderBlobCellHTML: renderBlobCellHTML,
-  renderPhotoCellHTML: renderPhotoCellHTML,
-  renderDocumentCellHTML: renderDocumentCellHTML,
-  renderMultipleChoiceCellHTML: renderMultipleChoiceCellHTML,
-  renderTimestampCellHTML: renderTimestampCellHTML,
+  renderBooleanCellHTML,
+  renderNumberCellHTML,
+  renderGeoCellHTML,
+  renderMoneyCellHTML,
+  renderUrlCellHTML,
+  renderEmailCellHTML,
+  renderPhoneCellHTML,
+  renderBlobCellHTML,
+  renderPhotoCellHTML,
+  renderDocumentCellHTML,
+  renderMultipleChoiceCellHTML,
+  renderTimestampCellHTML,
+  renderObeLocationHTML,
+  renderFormattedTextHTML,
   getCellAlignment: getCellAlignment
 };
 
@@ -281,9 +285,7 @@ function renderCellHTML(cellContent, column, domain, datasetUid) {
 * Renders a formatted text column (only preserves plain text content).
 */
 function renderFormattedTextHTML(cellContent) {
-  // TODO: This is _NOT_ sufficient XSS protection.
-  // Remember, .text() can return almost any string!
-  return $(`<p>${cellContent}</p>`).text();
+  return _.escape($(`<p>${cellContent}</p>`).text());
 }
 
 /**
@@ -298,6 +300,8 @@ function renderBooleanCellHTML(cellContent) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCellUnsafePlainText(input, column) {
+  // TODO: Floats are not ideal to use - our backend supports much more precision
+  // than JavaScript numbers do. Consider something like BigNumber.
   const amount = parseFloat(input);
   const locale = utils.getLocale(window);
   const format = _.extend({
@@ -419,8 +423,11 @@ function renderGeoCellHTML(cellContent) {
     const latitudeTitle = I18n.t('shared.visualizations.charts.common.latitude');
     const longitudeTitle = I18n.t('shared.visualizations.charts.common.longitude');
 
-    const latitude = `<span title="${latitudeTitle}">${coordinates[latitudeIndex]}°</span>`;
-    const longitude = `<span title="${longitudeTitle}">${coordinates[longitudeIndex]}°</span>`;
+    const latitudeText = _.escape(`${coordinates[latitudeIndex]}`);
+    const longitudeText = _.escape(`${coordinates[longitudeIndex]}`);
+
+    const latitude = `<span title="${latitudeTitle}">${latitudeText}°</span>`;
+    const longitude = `<span title="${longitudeTitle}">${longitudeText}°</span>`;
 
     return `(${latitude}, ${longitude})`;
   } else {
@@ -441,7 +448,7 @@ function renderWKTCellHTML(cellContent) {
 function renderBlobCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
     const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
-    return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
+    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
   }
 
   return '';
@@ -557,7 +564,8 @@ function renderMoneyCellHTML(cellContent, column) {
 function renderUrlCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
     const { url, description } = cellContent;
-    return `<a href="${url}" target="_blank" rel="external">${description || url}</a>`;
+    const text = _.escape(description || url);
+    return `<a href="${url}" target="_blank" rel="external">${text}</a>`;
   }
 
   return '';
@@ -568,7 +576,7 @@ function renderUrlCellHTML(cellContent) {
 */
 function renderEmailCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
-    return `<a href="mailto:${cellContent}" target="_blank" rel="external">${cellContent}</a>`;
+    return `<a href="mailto:${cellContent}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
   }
 
   return '';
@@ -582,7 +590,7 @@ function renderPhoneCellHTML(cellContent) {
     const phoneNumber = _.get(cellContent, 'phone_number', '');
     const phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
 
-    return `<a href="tel:${phoneHref}" target="_blank" rel="external">${phoneNumber}</a>`;
+    return `<a href="tel:${phoneHref}" target="_blank" rel="external">${_.escape(phoneNumber)}</a>`;
   }
 
   return '';
@@ -596,7 +604,7 @@ function renderPhoneCellHTML(cellContent) {
 function renderPhotoCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
     const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
-    return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
+    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
   }
 
   return '';
@@ -610,7 +618,7 @@ function renderPhotoCellHTML(cellContent, domain, datasetUid) {
 function renderDocumentCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
     const href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
-    return `<a href="${href}" target="_blank" rel="external">${cellContent.filename}</a>`;
+    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent.filename)}</a>`;
   }
 
   return '';

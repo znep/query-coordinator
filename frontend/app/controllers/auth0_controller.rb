@@ -100,7 +100,7 @@ class Auth0Controller < ApplicationController
           add_auth0_identifier(auth0_identifier)
           return redirect_to(login_redirect_url)
         else
-          flash.now[:notice_login] = "Unable to login with that username and password; please try again"
+          flash.now[:notice_login] = 'Unable to login with that username and password; please try again'
         end
       end
     end
@@ -125,19 +125,21 @@ private
     Auth0Authentication
   end
 
-  def add_auth0_identifier(auth0Id)
-    Rails.logger.info("attempting to add auth0 link")
-    resp = CoreServer::Base.connection.create_request("/auth0_identifiers/", {:identifier => auth0Id}.to_json)
+  def add_auth0_identifier(auth0_id)
+    Rails.logger.info('attempting to add auth0 link')
+    resp = CoreServer::Base.connection.create_request('/auth0_identifiers/', {:identifier => auth0_id}.to_json)
     Rails.logger.info(resp)
   end
 
   def transform_connections(source)
     connections = []
     source.each do |connection|
-      connection_status = (connection['options']['domain_aliases'].to_a.detect { |e| e.include?('DISABLED') }).nil?
-      connections << { name: connection["name"], domain_aliases: connection["options"]["domain_aliases"], status: connection_status }
+      domain_aliases = connection.fetch('options', {}).fetch('domain_aliases', [])
+      # A disabled connection will have a single 'domain_aliases' item that is 'THIS CONNECTION IS DISABLED.'
+      connection_status = domain_aliases.any? { |domain_alias| domain_alias.include?('DISABLED') }
+      connections << { name: connection['name'], domain_aliases: domain_aliases, status: connection_status }
     end
-    connections.to_json
+    connections
   end
 
 end

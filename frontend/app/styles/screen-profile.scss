@@ -1,5 +1,78 @@
 @import "_flexbox";
 
+@import "_flexbox";
+@import "styleguide-colors";
+
+// EN-15850: (adding SIAM to /profile page). When SIAM is enabled, it uses the "styleguide" layout. When it
+// is disabled, it uses the old "main" layout. This is mainly because the old asset list was impossible to
+// get working on the styleguide layout.
+// When SIAM is enabled (styleguide layout), we have to do some additional styling to make some of the other
+// sections of the page look good.
+.profileContent.styleguide {
+  padding: 20px;
+  line-height: 1;
+  font-size: 62.5%;
+
+  .content {
+    > .innerItem  p {
+      margin: 0;
+    }
+
+    .textItem {
+      margin: 0;
+    }
+
+    .fieldName { font-size: 12px; }
+    .fieldValue { font-size: 11px; }
+    .statHeader {
+      font-size: 12px;
+      margin: 0 0 0.5em 0;
+    }
+    .number {
+      margin: 0;
+    }
+
+    .profile-header--user-name {
+      font-weight: 600;
+      margin-bottom: 0.4rem !important;
+    }
+    .profile-header--secondary-user-info h4 {
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    h2 { font-size: 15px; }
+    h3 { font-size: 13px; }
+  }
+}
+
+.internal-asset-manager#internal-asset-manager-content {
+  margin: 1rem 0;
+  border: 1px solid $light-grey-3;
+
+  font-size: 15px;
+  line-height: 24.27px;
+
+  .header {
+    height: auto;
+  }
+
+  .results-and-filters {
+    border: none;
+
+    .result-list-table {
+      thead tr th:first-of-type {
+        border-left: none;
+      }
+    }
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0 !important;
+}
+
 .profileContent {
   .flash {
     margin-left: auto;

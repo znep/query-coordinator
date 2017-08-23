@@ -11,6 +11,7 @@ import * as filters from '../actions/filters';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import { getCeteraResults } from 'common/autocomplete/Util';
 import ClearFilters from './clear_filters';
+import { SocrataIcon } from 'common/components';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -66,10 +67,20 @@ export class CatalogResults extends Component {
       showTitle: false
     };
 
+    const allAssetsButton = (this.props.page === 'profile') ? (
+      <a href="/admin/assets?tab=allAssets">
+        <button className="btn btn-default all-assets-button">
+          {_.get(I18n, 'all_assets_button')}
+          <SocrataIcon name="arrow-right" />
+        </button>
+      </a>
+    ) : null;
+
     return (
       <div className="topbar clearfix">
         <Autocomplete {...autocompleteOptions} />
         <ClearFilters {...clearFiltersProps} />
+        {allAssetsButton}
       </div>
     );
   }
@@ -78,16 +89,19 @@ export class CatalogResults extends Component {
     const { fetchingResults } = this.props;
     const { tableView } = this.state;
 
-    if (fetchingResults) {
-      return (
-        <div className="catalog-results-spinner-container">
-          <span className="spinner-default spinner-large"></span>
-        </div>
-      );
-    }
+    const spinner = fetchingResults ? (
+      <div className="catalog-results-spinner-container">
+        <span className="spinner-default spinner-large"></span>
+      </div>
+    ) : null;
 
     if (tableView === 'list') {
-      return <ResultListTable />;
+      return (
+        <div>
+          <ResultListTable />
+          {spinner}
+        </div>
+      );
     } else {
       // Currently only support for the "list" view. TODO: add "card" view and the ability to toggle them.
       // return <ResultCardTable />;
@@ -95,7 +109,7 @@ export class CatalogResults extends Component {
   }
 
   renderFooter() {
-    const { pageNumber, fetchingResults, resultSetSize } = this.props;
+    const { page, pageNumber, fetchingResults, resultSetSize } = this.props;
     if (fetchingResults) {
       return;
     }
@@ -113,15 +127,19 @@ export class CatalogResults extends Component {
       total: resultSetSize
     };
 
+    const renderedAssetInventoryLink = (page === 'profile') ? null : (
+      <div className="asset-inventory-link-wrapper">
+        <AssetInventoryLink />
+      </div>
+    );
+
     return (
       <div className="catalog-footer">
         <div className="pagination-and-result-count">
           <Pager {...pagerProps} />
           <ResultCount {...resultCountProps} />
         </div>
-        <div className="asset-inventory-link-wrapper">
-          <AssetInventoryLink />
-        </div>
+        {renderedAssetInventoryLink}
       </div>
     );
   }
@@ -149,6 +167,7 @@ CatalogResults.propTypes = {
   fetchingResultsError: PropTypes.bool,
   fetchingResultsErrorType: PropTypes.string,
   order: PropTypes.object,
+  page: PropTypes.string,
   pageNumber: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired
 };

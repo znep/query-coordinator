@@ -5,8 +5,8 @@ class ProfileController < ApplicationController
   # the comment at the top of ProfileHelper's implementation.
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
-
   include NotificationsHelper
+  include InternalAssetManagerHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
@@ -44,85 +44,110 @@ class ProfileController < ApplicationController
       end
       @app_tokens = @user.app_tokens
 
-      browse_options = {
-        browse_in_container: true,
-        for_user: @user.id,
-        nofederate: true,
-        use_federations: false,
-        sortBy: 'newest',
-        ignore_params: [ :id, :profile_name ],
-        view_type: 'table',
-        row_count: 3
-      }
+      if internal_asset_manager_on_profile_enabled?
+        cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
-      if params[:ownership] == 'sharedToMe'
-        browse_options[:facets] = []
-        browse_options[:sort_opts] = []
-        browse_options[:limit] = 10
-        browse_options[:page] = params[:page] || 1
+        catalog_results_response = begin
+          AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options).to_h
+        rescue => e
+          report_siam_error("Error fetching Cetera results: #{e.inspect}")
+          { 'results' => [], 'resultSetSize' => 0 }
+        end
 
-        # pass this to browse_actions so it knows we're fetching shared assets
-        @profile_search_method = :search_shared_to_user
+        @catalog_results = catalog_results_response['results'].to_a
+        @catalog_result_set_size = catalog_results_response['resultSetSize'].to_i
 
-        view_results = View.find_shared_to_user(
-          @user.id,
-          offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
-          limit: browse_options[:limit]
-        )
-        browse_options[:view_results] = view_results['results']
-        browse_options[:view_count] = view_results['count']
+        @initial_filters = initial_filters
+        @initial_order = {
+          value: query_param_value('orderColumn'),
+          ascending: query_param_value('orderDirection').to_s.downcase == 'asc'
+        }
+        @initial_page = query_param_value('page').to_i
+
+        render :layout => 'styleguide'
       else
-        if @is_user_current
-          browse_options[:publication_stage] = [ 'published', 'unpublished' ]
-          vtf = view_types_facet
-
-          datasets_index = vtf[:options].index { |option|
-            option[:value] == 'datasets'
+        begin
+          browse_options = {
+            browse_in_container: true,
+            for_user: @user.id,
+            nofederate: true,
+            use_federations: false,
+            sortBy: 'newest',
+            ignore_params: [ :id, :profile_name ],
+            view_type: 'table',
+            row_count: 3
           }
 
-          unless datasets_index.present?
-            datasets_index = 0
+          if params[:ownership] == 'sharedToMe'
+            browse_options[:facets] = []
+            browse_options[:sort_opts] = []
+            browse_options[:limit] = 10
+            browse_options[:page] = params[:page] || 1
+
+            # pass this to browse_actions so it knows we're fetching shared assets
+            @profile_search_method = :search_shared_to_user
+
+            view_results = View.find_shared_to_user(
+              @user.id,
+              offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+              limit: browse_options[:limit]
+            )
+            browse_options[:view_results] = view_results['results']
+            browse_options[:view_count] = view_results['count']
+          else
+            if @is_user_current
+              browse_options[:publication_stage] = [ 'published', 'unpublished' ]
+              vtf = view_types_facet
+
+              datasets_index = vtf[:options].index { |option|
+                option[:value] == 'datasets'
+              }
+
+              unless datasets_index.present?
+                datasets_index = 0
+              end
+
+              # always show "unpublished datasets" after "datasets", or at least after "data lens"
+              vtf[:options].insert(datasets_index + 1, {
+                :text => t('controls.browse.facets.view_types.unpublished'),
+                :value => 'unpublished',
+                :class => 'typeUnpublished'
+              })
+
+              browse_options[:facets] = [vtf, categories_facet(params)]
+            else
+              browse_options[:facets] = [view_types_facet, categories_facet(params)]
+            end
+
+            topic_chop = get_facet_cutoff(:topic)
+            user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
+            top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, topic_chop).map {|t| t[0]}
+            if !params[:tags].nil? && !top_tags.include?(params[:tags])
+              top_tags.push(params[:tags])
+            end
+            top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
+            tag_cloud = nil
+            if user_tags.length > topic_chop
+              tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
+                map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
+            end
+
+            browse_options[:facets] << { :title => 'Topics',
+              :singular_description => 'topic',
+              :param => :tags,
+              :options => top_tags,
+              :extra_options => tag_cloud,
+              :tag_cloud => true
+            }
+
+            # pass this to browse_actions so it knows we're fetching shared assets
+            @profile_search_method = :search_owned_by_user
           end
 
-          # always show "unpublished datasets" after "datasets", or at least after "data lens"
-          vtf[:options].insert(datasets_index + 1, {
-            :text => t('controls.browse.facets.view_types.unpublished'),
-            :value => 'unpublished',
-            :class => 'typeUnpublished'
-          })
-
-          browse_options[:facets] = [vtf, categories_facet(params)]
-        else
-          browse_options[:facets] = [view_types_facet, categories_facet(params)]
+          @news = retrieve_zendesk_news
+          @processed_browse = process_browse(request, browse_options)
         end
-
-        topic_chop = get_facet_cutoff(:topic)
-        user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
-        top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, topic_chop).map {|t| t[0]}
-        if !params[:tags].nil? && !top_tags.include?(params[:tags])
-          top_tags.push(params[:tags])
-        end
-        top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
-        tag_cloud = nil
-        if user_tags.length > topic_chop
-          tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
-            map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
-        end
-
-        browse_options[:facets] << { :title => 'Topics',
-          :singular_description => 'topic',
-          :param => :tags,
-          :options => top_tags,
-          :extra_options => tag_cloud,
-          :tag_cloud => true
-        }
-
-        # pass this to browse_actions so it knows we're fetching shared assets
-        @profile_search_method = :search_owned_by_user
       end
-
-      @news = retrieve_zendesk_news
-      @processed_browse = process_browse(request, browse_options)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required'
         require_user(true)
@@ -493,6 +518,14 @@ private
         @stat_displays << [stats[index][:name], json['count']]
       end
     end
+  end
+
+  def report_siam_error(error_message)
+    Airbrake.notify(
+      :error_class => 'InternalAssetManager',
+      :error_message => error_message
+    )
+    Rails.logger.error(error_message)
   end
 end
 

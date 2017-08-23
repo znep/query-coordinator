@@ -1,3 +1,11 @@
 .topbar {
   margin: 0.5rem $horizontal_margin;
+
+  .all-assets-button {
+    float: right;
+
+    button > span {
+      margin-left: 0.3rem;
+    }
+  }
 }

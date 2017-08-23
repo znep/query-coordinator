@@ -1,13 +1,17 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-show' %>
+  <%= rendered_stylesheet_tag 'internal-asset-manager' if internal_asset_manager_on_profile_enabled? %>
   <title><%= @user.displayName %> | <%= get_site_title %></title>
 <% end %>
 
-<div id="profile" class="profileContent clearfix">
-  <div class="mainFlash">
-    <%= display_standard_flashes %>
-  </div>
+<% using_styleguide = internal_asset_manager_on_profile_enabled? %>
 
+<div id="profile" class="profileContent clearfix <%= 'styleguide' if using_styleguide %>">
+  <% unless using_styleguide %>
+    <div class="mainFlash">
+      <%= display_standard_flashes %>
+    </div>
+  <% end %>
   <%= render :partial => '/profile/socrata_news/sidebar' %>
 
   <div class="profileMainContent">
@@ -52,21 +56,25 @@
       </div>
     <%- end -%>
 
-    <div class="datasetsList content">
-      <h2><%= t('screens.profile.browse.title', user: @user.displayName) %></h2>
-      <%- if @is_user_current -%>
-      <ul class="ownershipLinks">
-        <%# @base_url comes from browse_controller %>
-        <li><a href="<%= @processed_browse[:base_url] %>"
-          class="<%= params[:ownership] != 'sharedToMe' ?
-            'active' : '' %>"><%= t('screens.profile.browse.owned_datasets') %></a></li>
-        <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
-          class="<%= params[:ownership] == 'sharedToMe' ?
-            'active' : '' %>"><%= t('screens.profile.browse.shared_datasets') %></a></li>
-      </ul>
-      <%- end -%>
-      <%= render_browse(@processed_browse) %>
-    </div>
+    <% if internal_asset_manager_on_profile_enabled? %>
+      <div class="internal-asset-manager" id="internal-asset-manager-content"></div>
+    <% else %>
+      <div class="datasetsList content">
+        <h2><%= t('screens.profile.browse.title', user: @user.displayName) %></h2>
+        <%- if @is_user_current -%>
+        <ul class="ownershipLinks">
+          <%# @base_url comes from browse_controller %>
+          <li><a href="<%= @processed_browse[:base_url] %>"
+            class="<%= params[:ownership] != 'sharedToMe' ?
+              'active' : '' %>"><%= t('screens.profile.browse.owned_datasets') %></a></li>
+          <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
+            class="<%= params[:ownership] == 'sharedToMe' ?
+              'active' : '' %>"><%= t('screens.profile.browse.shared_datasets') %></a></li>
+        </ul>
+        <%- end -%>
+        <%= render_browse(@processed_browse) %>
+      </div>
+    <% end %>
 
     <%- if !@app_tokens.blank? || @user == current_user -%>
       <div class="appTokens content">
@@ -108,4 +116,17 @@
     blist.profile.profileUserId = '<%= @user.id %>';
   </script>
   <%= include_webpack_bundle 'open-data/screen-profile.js' %>
+<% end %>
+
+<% if internal_asset_manager_on_profile_enabled? %>
+  <%= content_for :scripts do %>
+    <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
+    <script type="text/javascript">var I18n = I18n || {};</script>
+
+    <%= render_internal_asset_manager_translations %>
+    <%= render_internal_asset_manager_session_data %>
+    <%= render_internal_asset_manager_server_config %>
+    <%== render_internal_asset_manager_initial_state %>
+    <%= include_webpack_bundle 'internal-asset-manager/profile' %>
+  <%- end %>
 <% end %>

@@ -29,6 +29,12 @@ export class Header extends React.Component {
   }
 
   render() {
+    const { page } = this.props;
+
+    if (page === 'profile') {
+      return null; // TODO: we may want to eventually show "My Assets" and "Shared to me" tabs.. TBD
+    }
+
     const myAssetsTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
       this.renderTab('myAssets', _.get(I18n, 'header.asset_toggles.my_assets')) : null;
 
@@ -47,7 +53,8 @@ export class Header extends React.Component {
 
 Header.propTypes = {
   activeTab: PropTypes.string.isRequired,
-  changeTab: PropTypes.func.isRequired
+  changeTab: PropTypes.func.isRequired,
+  page: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({

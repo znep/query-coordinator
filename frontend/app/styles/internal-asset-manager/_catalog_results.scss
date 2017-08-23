@@ -7,6 +7,8 @@
     width: 100%;
   }
 
+  position: relative;
+
   div[class*=autocomplete_container] {
     float: left;
     width: 40rem;
@@ -22,6 +24,7 @@
     right: 0;
     bottom: 0;
     left: 0;
+    background: rgba($dark-grey-1, 0.1);
   }
 
   .catalog-footer {

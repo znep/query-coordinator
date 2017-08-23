@@ -1245,6 +1245,14 @@ module ApplicationHelper
     view_model
   end
 
+  def internal_asset_manager_enabled?
+    feature_flag?(:enable_internal_asset_manager_beta, request)
+  end
+
+  def internal_asset_manager_on_profile_enabled?
+    feature_flag?(:enable_internal_asset_manager_on_profile, request)
+  end
+
   # There are over 600 font families to choose from at https://fonts.google.com/
   def google_font_link(family: 'Open+Sans', weights: [300, 400, 600, 700], italic: true)
     italics = italic ? weights.map { |weight| "#{weight}italic" } : []

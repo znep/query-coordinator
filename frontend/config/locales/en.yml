@@ -2783,6 +2783,7 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
+    all_assets_button: View All Assets
     asset_inventory_dataset_link:
       asset_inventory_dataset: Asset Inventory Dataset
       disabled_tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.

@@ -19,33 +19,8 @@ class InternalAssetManagerController < ApplicationController
   def show
     cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
-    # Note, changes to filters and search options in this method must match the corresponding implementation
-    # in platform-ui/frontend/public/javascripts/common/cetera_utils.js
-
-    search_options = {
-      domains: CurrentDomain.cname,
-      limit: RESULTS_PER_PAGE,
-      order: 'updatedAt DESC',
-      published: 'true',
-      q: params[:q],
-      show_visibility: true
-    }.merge(initial_filter_cetera_opts)
-
-    if params[:assetTypes] == 'workingCopies'
-      search_options.merge!(published: false, only: 'datasets')
-    end
-
-    if params[:assetTypes] == 'datasets'
-      search_options.merge!(published: true)
-    end
-
-    # EN-15849
-    if FeatureFlags.derive(nil, request).enable_internal_asset_manager_my_assets
-      search_options.merge!(for_user: current_user.id)
-    end
-
     catalog_results_response = begin
-      AssetInventoryService::InternalAssetManager.find(request_id, cookie, search_options).to_h
+      AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options).to_h
     rescue => e
       report_error("Error fetching Cetera results: #{e.inspect}")
       { 'results' => [], 'resultSetSize' => 0 }
@@ -62,7 +37,7 @@ class InternalAssetManagerController < ApplicationController
     end
 
     @asset_counts = begin
-      Cetera::Utils.get_asset_counts(asset_types, request_id, forwardable_session_cookies, search_options)
+      Cetera::Utils.get_asset_counts(asset_types, request_id, forwardable_session_cookies, siam_search_options)
     rescue => e
       report_error("Error fetching Cetera asset counts: #{e.inspect}")
       {}

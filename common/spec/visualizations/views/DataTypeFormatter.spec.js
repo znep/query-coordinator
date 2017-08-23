@@ -95,7 +95,7 @@ describe('DataTypeFormatter', function() {
     });
 
     it('records an error message', function() {
-      var cellContent = DataTypeFormatter.renderCell('anything', { renderTypeName: 'anything' });
+      var cellContent = DataTypeFormatter.renderCellHTML('anything', { renderTypeName: 'anything' });
       assert.equal(cellContent, undefined);
       sinon.assert.called(consoleErrorStub);
     });
@@ -107,7 +107,7 @@ describe('DataTypeFormatter', function() {
 
     it('should render boolean cells with checkboxes for true, empty for false', function() {
       BOOLEAN_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderBooleanCell(value);
+        var cellContent = DataTypeFormatter.renderBooleanCellHTML(value);
         assert.equal(cellContent, value ? '✓' : '');
       });
     });
@@ -133,7 +133,7 @@ describe('DataTypeFormatter', function() {
           renderTypeName: 'percent'
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -147,7 +147,7 @@ describe('DataTypeFormatter', function() {
           }
         };
 
-        assert.equal(DataTypeFormatter.renderNumberCell(100, columnMetadata), '100%');
+        assert.equal(DataTypeFormatter.renderNumberCellHTML(100, columnMetadata), '100%');
       });
 
       it('should respect fixed precision', function() {
@@ -158,7 +158,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
@@ -171,7 +171,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -183,7 +183,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -198,7 +198,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -213,7 +213,7 @@ describe('DataTypeFormatter', function() {
           };
 
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -230,7 +230,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -245,7 +245,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
@@ -259,7 +259,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -272,7 +272,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
           assert.notMatch(cellContent, /^-?0\d/);
         });
@@ -288,7 +288,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -305,7 +305,7 @@ describe('DataTypeFormatter', function() {
             }
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -319,7 +319,7 @@ describe('DataTypeFormatter', function() {
           renderTypeName: 'number'
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, NUMBER_FORMAT_REGEX);
         });
       });
@@ -332,7 +332,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, NUMBER_FIXED_FORMAT_REGEX);
         });
       });
@@ -345,7 +345,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, NUMBER_NOCOMMAS_FORMAT_REGEX);
         });
 
@@ -356,7 +356,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, NUMBER_NOCOMMAS_FORMAT_REGEX);
         });
       });
@@ -367,7 +367,7 @@ describe('DataTypeFormatter', function() {
         };
         var values = _.filter(NUMBER_DATA, function(value) { return /^\-?\d{4}$/.test(value); })
         values.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, /\d{4}/);
         });
       });
@@ -381,7 +381,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -395,7 +395,7 @@ describe('DataTypeFormatter', function() {
             renderTypeName: 'number'
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -412,7 +412,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FORMAT_REGEX);
         });
       });
@@ -426,7 +426,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
@@ -440,7 +440,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
         });
 
@@ -452,7 +452,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
         });
       });
@@ -467,7 +467,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -484,7 +484,7 @@ describe('DataTypeFormatter', function() {
             }
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -501,7 +501,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, CURRENCY_FORMAT_REGEX);
         });
       });
@@ -515,7 +515,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, CURRENCY_FIXED_FORMAT_REGEX);
         });
       });
@@ -529,7 +529,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, CURRENCY_NOCOMMAS_FORMAT_REGEX);
         });
 
@@ -541,7 +541,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, CURRENCY_NOCOMMAS_FORMAT_REGEX);
         });
       });
@@ -557,7 +557,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
         });
       });
@@ -575,7 +575,7 @@ describe('DataTypeFormatter', function() {
             }
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
           });
         });
@@ -592,7 +592,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, FINANCIAL_FORMAT_REGEX);
         });
       });
@@ -606,7 +606,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, FINANCIAL_FIXED_FORMAT_REGEX);
         });
       });
@@ -620,7 +620,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, FINANCIAL_NOCOMMAS_FORMAT_REGEX);
         });
 
@@ -632,7 +632,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, FINANCIAL_NOCOMMAS_FORMAT_REGEX);
         });
       });
@@ -647,7 +647,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -664,7 +664,7 @@ describe('DataTypeFormatter', function() {
             }
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -681,7 +681,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, SCIENTIFIC_FORMAT_REGEX);
         });
       });
@@ -695,7 +695,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, SCIENTIFIC_FIXED_FORMAT_REGEX);
         });
       });
@@ -710,7 +710,7 @@ describe('DataTypeFormatter', function() {
           }
         };
         NUMBER_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
           assert.match(cellContent, SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
@@ -727,7 +727,7 @@ describe('DataTypeFormatter', function() {
             }
           };
           NUMBER_DATA.forEach(function(value) {
-            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
             assert.match(cellContent, SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
@@ -743,7 +743,7 @@ describe('DataTypeFormatter', function() {
         }
       };
       NUMBER_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
         assert.match(cellContent, MASK_FORMAT_REGEX);
       });
     });
@@ -769,13 +769,6 @@ describe('DataTypeFormatter', function() {
     columnMetadata = {
       renderTypeName: 'location'
     };
-
-    it('should render point cells as plain text', function() {
-      POINT_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderGeoCell(value, columnMetadata);
-        assert.match(cellContent, COORDINATES_REGEX);
-      });
-    });
 
     it('should render point cells with latitude & longitude', function() {
       POINT_DATA.forEach(function(value) {
@@ -811,7 +804,7 @@ describe('DataTypeFormatter', function() {
         renderTypeName: 'money'
       };
       MONEY_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderMoneyCellHTML(value, columnMetadata);
         assert.match(cellContent, MONEY_REGEX);
       });
     });
@@ -826,7 +819,7 @@ describe('DataTypeFormatter', function() {
         }
       };
       MONEY_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderMoneyCellHTML(value, columnMetadata);
         assert.match(cellContent, MONEY_WITH_USER_FORMAT_REGEX);
       });
     });
@@ -839,7 +832,7 @@ describe('DataTypeFormatter', function() {
         }
       };
       MONEY_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderMoneyCellHTML(value, columnMetadata);
         assert.match(cellContent, MONEY_HUMANE_FORMAT_REGEX);
       });
     });
@@ -854,7 +847,7 @@ describe('DataTypeFormatter', function() {
           format: {}
         };
         MONEY_DATA.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
+          var cellContent = DataTypeFormatter.renderMoneyCellHTML(value, columnMetadata);
           assert.match(cellContent, MONEY_WITH_USER_FORMAT_REGEX);
         });
       });
@@ -880,7 +873,7 @@ describe('DataTypeFormatter', function() {
         renderTypeName: 'calendar_date'
       };
       TIMESTAMP_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderTimestampCellHTML(value, columnMetadata);
         assert.match(cellContent, TIMESTAMP_REGEX);
       });
     });
@@ -893,7 +886,7 @@ describe('DataTypeFormatter', function() {
         }
       };
       TIMESTAMP_DATA.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderTimestampCellHTML(value, columnMetadata);
         assert.match(cellContent, TIMESTAMP_WITH_USER_FORMAT_REGEX);
       });
     });
@@ -904,7 +897,7 @@ describe('DataTypeFormatter', function() {
       };
       var values = _.filter(TIMESTAMP_DATA, function(value) { return /00:00:00$/.test(value); });
       values.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderTimestampCellHTML(value, columnMetadata);
         assert.match(cellContent, TIMESTAMP_NO_HR_MIN_SEC_REGEX);
       });
     });
@@ -915,7 +908,7 @@ describe('DataTypeFormatter', function() {
       };
       var values = _.map(TIMESTAMP_DATA, function(value) { return value + 'xx'; });
       values.forEach(function(value) {
-        var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
+        var cellContent = DataTypeFormatter.renderTimestampCellHTML(value, columnMetadata);
         assert.equal(cellContent, '');
       });
     });
@@ -969,21 +962,21 @@ describe('DataTypeFormatter', function() {
   // TODO: Remove this once we don't need to support OBE datasets
   describe('html formatting', function() {
     it('should render only the text contents of HTML', function() {
-      var cellContent = DataTypeFormatter.renderCell('<div>here <b>we</b> go<span style="color:red;">!</span></div>', { renderTypeName: 'html' });
+      var cellContent = DataTypeFormatter.renderCellHTML('<div>here <b>we</b> go<span style="color:red;">!</span></div>', { renderTypeName: 'html' });
       assert.equal(cellContent, 'here we go!');
     });
 
     it('should not fail on text that looks like a selector', function() {
       // EN-15513
-      var cellContent = DataTypeFormatter.renderCell('5 lb. Comm. Line for 3 Cemt.', { renderTypeName: 'html' });
+      var cellContent = DataTypeFormatter.renderCellHTML('5 lb. Comm. Line for 3 Cemt.', { renderTypeName: 'html' });
       assert.equal(cellContent, '5 lb. Comm. Line for 3 Cemt.');
     });
 
     it('should render an empty string if no data', function() {
-      var cellContent = DataTypeFormatter.renderCell('', { renderTypeName: 'html' });
+      var cellContent = DataTypeFormatter.renderCellHTML('', { renderTypeName: 'html' });
       assert.equal(cellContent, '');
 
-      cellContent = DataTypeFormatter.renderCell(undefined, { renderTypeName: 'html' });
+      cellContent = DataTypeFormatter.renderCellHTML(undefined, { renderTypeName: 'html' });
       assert.equal(cellContent, '');
     });
   });
@@ -1026,7 +1019,7 @@ describe('DataTypeFormatter', function() {
   // TODO: Remove this once we don't need to support OBE datasets
   describe('multiple choice formatting', function() {
     it('should render the corresponding value', function() {
-      var cellContent = DataTypeFormatter.renderMultipleChoiceCell(
+      var cellContent = DataTypeFormatter.renderMultipleChoiceCellHTML(
         'abcd-1234',
         {
           dropDown: {
@@ -1047,7 +1040,7 @@ describe('DataTypeFormatter', function() {
     });
 
     it('should render an empty string if no data', function() {
-      var cellContent = DataTypeFormatter.renderMultipleChoiceCell('', {});
+      var cellContent = DataTypeFormatter.renderMultipleChoiceCellHTML('', {});
       assert.equal(cellContent, '');
     });
   });
@@ -1077,26 +1070,26 @@ describe('DataTypeFormatter', function() {
     };
 
     it('should render location as latitude and longitude', function() {
-      const locationOutput = DataTypeFormatter.renderCell(LOCATION, { renderTypeName: 'location' });
+      const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION, { renderTypeName: 'location' });
       assert.equal(locationOutput, '(47.615267°, -122.317664°)');
     });
 
     it('should render location with human address', function() {
-      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDESS, { renderTypeName: 'location' });
+      const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION_WITH_HUMAN_ADDESS, { renderTypeName: 'location' });
       const address = JSON.parse(LOCATION_WITH_HUMAN_ADDESS.human_address);
       const point = `(${LOCATION_WITH_HUMAN_ADDESS.latitude}°, ${LOCATION_WITH_HUMAN_ADDESS.longitude}°)`;
       assert.equal(locationOutput, `${address.address} ${address.city} ${address.state} ${address.zip} ${point}`);
     });
 
     it('should render only the parts of given human address', function() {
-      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS, { renderTypeName: 'location' });
+      const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS, { renderTypeName: 'location' });
       const address = JSON.parse(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.human_address);
       const point = `(${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.latitude}°, ${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.longitude}°)`;
       assert.equal(locationOutput, `${address.address} ${address.zip} ${point}`);
     });
 
     it('should render only the latitude and longitude if human address is not a valid json', function () {
-      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDRESS_ERROR, { renderTypeName: 'location' });
+      const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION_WITH_HUMAN_ADDRESS_ERROR, { renderTypeName: 'location' });
       const point = `(${LOCATION_WITH_HUMAN_ADDRESS_ERROR.latitude}°, ${LOCATION_WITH_HUMAN_ADDRESS_ERROR.longitude}°)`;
       assert.equal(locationOutput, `${point}`);
     });

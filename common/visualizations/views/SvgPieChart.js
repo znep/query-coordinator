@@ -223,7 +223,7 @@ function SvgPieChart($element, vif, options) {
         return otherLabel;
       } else {
         const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
-        return _.unescape(ColumnFormattingHelpers.formatValue(columnValue, column, dataToRender[0]));
+        return _.unescape(ColumnFormattingHelpers.formatValueHTML(columnValue, column, dataToRender[0]));
       }
     }
 
@@ -263,7 +263,7 @@ function SvgPieChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
             }
           }
         });
@@ -671,7 +671,7 @@ function SvgPieChart($element, vif, options) {
       title = otherLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`)
-      title = ColumnFormattingHelpers.formatValue(titleValue, column, dataToRender[0]);
+      title = ColumnFormattingHelpers.formatValueHTML(titleValue, column, dataToRender[0]);
     }
 
     // not compatible with multiple series
@@ -697,7 +697,7 @@ function SvgPieChart($element, vif, options) {
       valueString = noValueLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`)
-      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);
+      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
 
       if (value === 1) {
         valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;

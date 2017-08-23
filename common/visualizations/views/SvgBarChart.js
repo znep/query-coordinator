@@ -704,7 +704,7 @@ function SvgBarChart($element, vif, options) {
             } else if (d === otherLabel) {
               return otherLabel;
             } else if (_.isNumber(d)) {
-              return ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+              return ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
             } else {
               return '';
             }
@@ -1075,7 +1075,7 @@ function SvgBarChart($element, vif, options) {
           } else if (value === otherLabel) {
             return otherLabel;
           } else {
-            return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+            return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
 
       }).
@@ -1102,7 +1102,7 @@ function SvgBarChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
         ).
@@ -1133,7 +1133,7 @@ function SvgBarChart($element, vif, options) {
           if (value === otherLabel) {
             return otherLabel;
           } else {
-            return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+            return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
         }
       ).
@@ -1164,7 +1164,7 @@ function SvgBarChart($element, vif, options) {
             if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
         ).
@@ -1390,7 +1390,7 @@ function SvgBarChart($element, vif, options) {
               } else if (datum[0] === otherLabel) {
                 dimensionValue = otherLabel;
               } else {
-                dimensionValue = ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+                dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
               }
 
               const dimensionGroup = yAxisAndSeriesSvg.select(
@@ -1526,7 +1526,7 @@ function SvgBarChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
-            label = ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+            label = ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
           }
 
           return conditionallyTruncateLabel(label);
@@ -1590,7 +1590,7 @@ function SvgBarChart($element, vif, options) {
       formatter = d3.format('p');
     } else {
       const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-      formatter = (d) => ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
     }
 
     const axis = d3.svg.axis().
@@ -1701,7 +1701,7 @@ function SvgBarChart($element, vif, options) {
       } else {
         const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
+        valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
         if (value === 1) {
           valueString += ` ${unitOne}`;
@@ -1790,7 +1790,7 @@ function SvgBarChart($element, vif, options) {
     } else {
       const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
+      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
       if (value === 1) {
         valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;

@@ -156,26 +156,36 @@ const TIME_FORMATS = {
   default_date: 'YYYY MMM DD'
 };
 
+// Please note: Functions whose name ends with HTML
+// will return HTML ready to place into the DOM. Do
+// not process further.
+//
+// SECURITY NOTE: If you modify any of these methods, ensure
+// you don't introduce any XSS vulnerabilities. Write tests.
+//
+// SECURITY NOTE: Functions whose name ends with UnsafePlainText
+// return unsafe strings. Do not place them into the DOM
+// directly. Consider using an *HTML renderer.
 module.exports = {
-  renderCell: renderCell,
-  renderBooleanCell: renderBooleanCell,
-  renderNumberCell: renderNumberCell,
-  renderGeoCell: renderGeoCell,
+  renderCellHTML: renderCellHTML,
+  renderBooleanCellHTML: renderBooleanCellHTML,
+  renderNumberCellHTML: renderNumberCellHTML,
   renderGeoCellHTML: renderGeoCellHTML,
-  renderMoneyCell: renderMoneyCell,
+  renderMoneyCellHTML: renderMoneyCellHTML,
   renderUrlCellHTML: renderUrlCellHTML,
   renderEmailCellHTML: renderEmailCellHTML,
   renderPhoneCellHTML: renderPhoneCellHTML,
   renderBlobCellHTML: renderBlobCellHTML,
   renderPhotoCellHTML: renderPhotoCellHTML,
   renderDocumentCellHTML: renderDocumentCellHTML,
-  renderMultipleChoiceCell: renderMultipleChoiceCell,
-  renderTimestampCell: renderTimestampCell,
+  renderMultipleChoiceCellHTML: renderMultipleChoiceCellHTML,
+  renderTimestampCellHTML: renderTimestampCellHTML,
   getCellAlignment: getCellAlignment
 };
 
-function renderCell(cellContent, column, domain, datasetUid) {
-  let cellText;
+function renderCellHTML(cellContent, column, domain, datasetUid) {
+  // SECURITY NOTE: Only return safe HTML from this function!
+  let cellHTML;
 
   utils.assertIsOneOfTypes(column, 'object');
   utils.assertHasProperty(column, 'renderTypeName');
@@ -187,14 +197,13 @@ function renderCell(cellContent, column, domain, datasetUid) {
   try {
     switch (column.renderTypeName) {
       case 'checkbox':
-        cellText = _.escape(renderBooleanCell(cellContent, column));
+        cellHTML = renderBooleanCellHTML(cellContent, column);
         break;
       case 'number':
-        cellText = _.escape(renderNumberCell(cellContent, column));
+        cellHTML = renderNumberCellHTML(cellContent, column);
         break;
-      // Avoid escaping because cell content is HTML.
       case 'geo_entity':
-        cellText = renderGeoCellHTML(cellContent);
+        cellHTML = renderGeoCellHTML(cellContent);
         break;
       case 'point':
       case 'line':
@@ -202,62 +211,62 @@ function renderCell(cellContent, column, domain, datasetUid) {
       case 'multipoint':
       case 'multiline':
       case 'multipolygon':
-        cellText = renderWKTCell(cellContent);
+        cellHTML = renderWKTCellHTML(cellContent);
         break;
       case 'calendar_date':
-        cellText = _.escape(renderTimestampCell(cellContent, column));
+        cellHTML = renderTimestampCellHTML(cellContent, column);
         break;
       case 'blob':
-        cellText = renderBlobCellHTML(cellContent, domain, datasetUid);
+        cellHTML = renderBlobCellHTML(cellContent, domain, datasetUid);
         break;
       // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
       case 'email':
-        cellText = renderEmailCellHTML(cellContent);
+        cellHTML = renderEmailCellHTML(cellContent);
         break;
       case 'money':
-        cellText = _.escape(renderMoneyCell(cellContent, column));
+        cellHTML = renderMoneyCellHTML(cellContent, column);
         break;
       // OBE location columns are actually objects with latitude and longitude
       // keys, so we need to handle them as a special case.
       case 'location':
-        cellText = _.escape(renderObeLocation(cellContent));
+        cellHTML = renderObeLocationHTML(cellContent);
         break;
       // EN-3548 - Note that only OBE datasets can have a column renderTypeName
       // of 'percent'. Corresponding NBE datasets will have a column
       // renderTypeName of 'number'. In order to keep that sort of logic somewhat
-      // contained, inside of the implementation of `renderNumberCell()` we do a
+      // contained, inside of the implementation of `renderNumberCellUnsafePlainText()` we do a
       // few tests to figure out if we should be formatting the resulting value
       // as a percentage.
       case 'percent':
-        cellText = _.escape(renderNumberCell(cellContent, column));
+        cellHTML = renderNumberCellHTML(cellContent, column);
         break;
       case 'phone':
-        cellText = renderPhoneCellHTML(cellContent);
+        cellHTML = renderPhoneCellHTML(cellContent);
         break;
       case 'url':
-        cellText = renderUrlCellHTML(cellContent);
+        cellHTML = renderUrlCellHTML(cellContent);
         break;
 
       // TODO: Remove these types once we no longer support OBE datasets
       // OBE types that are deprecated post-NBE migration:
       case 'date':
-        cellText = _.escape(renderTimestampCell(cellContent, column));
+        cellHTML = renderTimestampCellHTML(cellContent, column);
         break;
       case 'document':
-        cellText = renderDocumentCellHTML(cellContent, domain, datasetUid);
+        cellHTML = renderDocumentCellHTML(cellContent, domain, datasetUid);
         break;
       case 'drop_down_list':
-        cellText = _.escape(renderMultipleChoiceCell(cellContent, column));
+        cellHTML = renderMultipleChoiceCellHTML(cellContent, column);
         break;
       case 'html': // Formatted Text
-        cellText = $(`<p>${cellContent}</p>`).text();
+        cellHTML = renderFormattedTextHTML(cellContent);
         break;
       case 'photo':
-        cellText = renderPhotoCellHTML(cellContent, domain, datasetUid);
+        cellHTML = renderPhotoCellHTML(cellContent, domain, datasetUid);
         break;
 
       default:
-        cellText = _.escape(cellContent);
+        cellHTML = _.escape(cellContent);
         break;
     }
   } catch (e) {
@@ -265,21 +274,30 @@ function renderCell(cellContent, column, domain, datasetUid) {
     console.error(e);
   }
 
-  return cellText;
+  return cellHTML;
+}
+
+/**
+* Renders a formatted text column (only preserves plain text content).
+*/
+function renderFormattedTextHTML(cellContent) {
+  // TODO: This is _NOT_ sufficient XSS protection.
+  // Remember, .text() can return almost any string!
+  return $(`<p>${cellContent}</p>`).text();
 }
 
 /**
 * Renders a boolean value in checkbox format
 */
-function renderBooleanCell(cellContent) {
-  return _.isBoolean(cellContent) && cellContent ? '✓' : '';
+function renderBooleanCellHTML(cellContent) {
+  return _.escape(_.isBoolean(cellContent) && cellContent ? '✓' : '');
 }
 
 /**
 * Render a number based on column specified formatting.
 * This has lots of possible options, so we delegate to helpers.
 */
-function renderNumberCell(input, column) {
+function renderNumberCellUnsafePlainText(input, column) {
   const amount = parseFloat(input);
   const locale = utils.getLocale(window);
   const format = _.extend({
@@ -345,10 +363,18 @@ function renderNumberCell(input, column) {
 }
 
 /**
+* Render a number based on column specified formatting.
+*/
+
+function renderNumberCellHTML(input, column) {
+  return renderNumberCellUnsafePlainText(input, column);
+}
+
+/**
  * Renders an OBE-style location (an object with latitude and longitude
  * properties).
  */
-function renderObeLocation(cellContent) {
+function renderObeLocationUnsafePlainText(cellContent) {
   let humanAddress = null;
   if (cellContent.human_address) {
     try {
@@ -370,17 +396,12 @@ function renderObeLocation(cellContent) {
 }
 
 /**
-* Renders a Point in plain text as a lat/lng pair.
-*/
-function renderGeoCell(cellContent) {
-  const latitudeIndex = 1;
-  const longitudeIndex = 0;
-  const coordinates = _cellCoordinates(cellContent);
-  if (coordinates) {
-    return `(${coordinates[latitudeIndex]}°, ${coordinates[longitudeIndex]}°)`;
-  } else {
-    return '';
-  }
+ * Renders an OBE-style location (an object with latitude and longitude
+ * properties).
+ */
+
+function renderObeLocationHTML(cellContent) {
+  return _.escape(renderObeLocationUnsafePlainText(cellContent));
 }
 
 /**
@@ -410,8 +431,8 @@ function renderGeoCellHTML(cellContent) {
 /**
 * Renders any GeoJSON column by serializing to Well Known Text.
 */
-function renderWKTCell(cellContent) {
-  return wkt.stringify(cellContent);
+function renderWKTCellHTML(cellContent) {
+  return _.escape(wkt.stringify(cellContent));
 }
 
 /**
@@ -429,7 +450,7 @@ function renderBlobCellHTML(cellContent, domain, datasetUid) {
 /**
 * Render a numeric value as currency
 */
-function renderMoneyCell(cellContent, column) {
+function renderMoneyCellHTML(cellContent, column) {
   const locale = utils.getLocale(window);
   const format = _.extend(
     {
@@ -527,7 +548,7 @@ function renderMoneyCell(cellContent, column) {
     cellContent = `${currencySymbol}${sign}${cellContent}`;
   }
 
-  return cellContent;
+  return _.escape(cellContent);
 }
 
 /**
@@ -600,13 +621,13 @@ function renderDocumentCellHTML(cellContent, domain, datasetUid) {
 *
 * TODO: Remove this function once we don't need to support OBE datasets
 */
-function renderMultipleChoiceCell(cellContent, column) {
+function renderMultipleChoiceCellHTML(cellContent, column) {
   if (!_.isEmpty(cellContent)) {
     const selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
       return _.isEqual(option.id, cellContent);
     });
 
-    return selectedOption ? selectedOption.description : '';
+    return _.escape(selectedOption ? selectedOption.description : '');
   }
 
   return '';
@@ -617,7 +638,7 @@ function renderMultipleChoiceCell(cellContent, column) {
 */
 
 
-function renderTimestampCell(cellContent, column) {
+function renderTimestampCellUnsafePlainText(cellContent, column) {
   if (!_.isString(cellContent) && !_.isNumber(cellContent)) {
     return '';
   }
@@ -653,6 +674,14 @@ function renderTimestampCell(cellContent, column) {
     return time.format(TIME_FORMATS.default_date_time);
 
   }
+}
+
+/**
+* Render a date or timestamp following column formatting, otherwise following defaults.
+*/
+
+function renderTimestampCellHTML(cellContent, column) {
+  return _.escape(renderTimestampCellUnsafePlainText(cellContent, column));
 }
 
 function getCellAlignment(column) {

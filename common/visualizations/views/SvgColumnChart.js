@@ -824,7 +824,7 @@ function SvgColumnChart($element, vif, options) {
         } else if (datum[0] === otherLabel) {
           return otherLabel;
         } else {
-          return ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+          return ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
         }
       }).
       attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
@@ -850,7 +850,7 @@ function SvgColumnChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
         ).
@@ -881,7 +881,7 @@ function SvgColumnChart($element, vif, options) {
           if (value === otherLabel) {
             return otherLabel;
           } else {
-            return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+            return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
         }
       ).
@@ -1068,7 +1068,7 @@ function SvgColumnChart($element, vif, options) {
             } else if (datum[0] === otherLabel) {
               dimensionValue = otherLabel;
             } else {
-              dimensionValue = ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+              dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
             }
 
             const dimensionGroup = xAxisAndSeriesSvg.select(
@@ -1200,7 +1200,7 @@ function SvgColumnChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
-            label = ColumnFormattingHelpers.formatValue(d, column, dataToRender);
+            label = ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender);
           }
 
           return conditionallyTruncateLabel(label);
@@ -1264,7 +1264,7 @@ function SvgColumnChart($element, vif, options) {
       formatter = d3.format('p');
     } else {
       const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-      formatter = (d) => ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
     }
 
     return d3.svg.axis().
@@ -1364,7 +1364,7 @@ function SvgColumnChart($element, vif, options) {
         valueString = noValueLabel;
       } else {
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
+        valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
         if (value === 1) {
           valueString += ` ${unitOne}`;
@@ -1450,7 +1450,7 @@ function SvgColumnChart($element, vif, options) {
     } else {
 
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
+      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
       if (value === 1) {
         valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;

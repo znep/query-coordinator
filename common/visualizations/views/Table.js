@@ -136,7 +136,7 @@ module.exports = function Table(element, originalVif, locale) {
    */
 
   function templateTableCell(column, cell) {
-    const cellData = DataTypeFormatter.renderCell(
+    const cellData = DataTypeFormatter.renderCellHTML(
       cell,
       column,
       _.get(vifToRender, 'series[0].dataSource.domain'),

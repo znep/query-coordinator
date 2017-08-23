@@ -995,13 +995,13 @@ function SvgTimelineChart($element, vif, options) {
       // We do not want to apply formatting if the label is `(Other)` category
       if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
         const groupingColumn = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
-        label = _.isNil(groupingColumn) ? label : ColumnFormattingHelpers.formatValue(label, groupingColumn, dataToRender, true);
+        label = _.isNil(groupingColumn) ? label : ColumnFormattingHelpers.formatValueHTML(label, groupingColumn, dataToRender, true);
       }
 
       let value = series.rows[firstSeriesIndex][measureIndex];
       if (!_.isNil(value)) {
         const measureColumn = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-        value = ColumnFormattingHelpers.formatValue(value, measureColumn, dataToRender);
+        value = ColumnFormattingHelpers.formatValueHTML(value, measureColumn, dataToRender);
       }
 
       return {

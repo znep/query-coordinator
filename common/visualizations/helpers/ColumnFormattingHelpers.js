@@ -12,7 +12,7 @@ export function getColumnFormats(columns) {
 
 
 // Formats a value from the dataset for rendering within the chart.
-export function formatValue(value, column, dataToRender, forceHumane = false) {
+export function formatValueHTML(value, column, dataToRender, forceHumane = false) {
   const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
 
   if (!formatInfo.renderTypeName) {
@@ -31,5 +31,5 @@ export function formatValue(value, column, dataToRender, forceHumane = false) {
     formatInfo.format.forceHumane = true;
   }
 
-  return DataTypeFormatter.renderCell(value, formatInfo);
+  return DataTypeFormatter.renderCellHTML(value, formatInfo);
 }

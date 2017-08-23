@@ -3,7 +3,6 @@ const _ = require('lodash');
 const utils = require('common/js_utils');
 const DataProvider = require('./DataProvider');
 const SoqlDataProvider = require('./SoqlDataProvider');
-const { FeatureFlags } = require('common/feature_flags');
 
 const headersForDomain = (domain) => {
   const isSameDomain = domain === window.location.hostname;
@@ -211,7 +210,6 @@ function MetadataProvider(config, useCache = false) {
    * column is likely to be a subcolumn (so not guaranteed to be 100% accurate!).
    *
    * This code is lifted from frontend: lib/common_metadata_methods.rb.
-   *
    */
   this.isSubcolumn = (fieldName, datasetMetadata) => {
     utils.assertIsOneOfTypes(fieldName, 'string');
@@ -222,14 +220,8 @@ function MetadataProvider(config, useCache = false) {
     const fieldNameByName = {};
 
     const fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
+    const hasExplodedSuffix = /_(address|city|state|zip|type|description)$/.test(fieldNameWithoutCollisionSuffix);
 
-    // EN-17640 - If we want pretty URL columns for NBE datasets, we need to let
-    // the _description subcolumn through to reconstruct OBE-like URL columns
-    const explodedSuffixes = FeatureFlags.value('visualization_authoring_enable_pretty_nbe_url_cols') ?
-      /_(address|city|state|zip|type)$/ :
-      /_(address|city|state|zip|type|description)$/;
-
-    const hasExplodedSuffix = explodedSuffixes.test(fieldNameWithoutCollisionSuffix);
     const matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
 
     utils.assert(

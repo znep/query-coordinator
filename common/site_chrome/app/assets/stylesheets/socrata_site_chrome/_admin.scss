@@ -35,7 +35,7 @@
     }
 
     .site-chrome-admin-user {
-      padding: 5px 10px;
+      padding: 5px 22px;
       height: 32px;
 
       > .socrata-icon-user {
@@ -46,7 +46,7 @@
     }
 
     .site-chrome-admin-settings {
-      padding: 5px 10px 0 10px;
+      padding: 5px 22px 0 22px;
       height: 32px;
 
       span[class^=socrata-icon] {
@@ -125,7 +125,7 @@
   }
 
   .site-chrome-admin-settings {
-    padding: 8px 8px;
+    padding: 8px 22px;
 
     span[class^=socrata-icon] {
       display: block;
@@ -204,7 +204,7 @@
   }
 
   .site-chrome-admin-user {
-    padding: 7px 8px;
+    padding: 7px 22px;
 
     ul {
       right: 2px;
@@ -245,7 +245,7 @@
       background: white;
       filter: drop-shadow(0px 2px 5px #999);
       z-index: 10;
-      margin: 15px 0 0 0;
+      margin: 15px 12px 0 0;
 
       &::after {
         position: absolute;

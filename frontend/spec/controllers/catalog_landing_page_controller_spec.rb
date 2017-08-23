@@ -46,7 +46,7 @@ describe CatalogLandingPageController do
     describe 'while logged in as a normal user' do
       before(:each) do
         init_current_user(controller)
-        stub_normal_user
+        stub_user(subject)
       end
 
       it 'should tell me I have insufficient privileges' do
@@ -58,7 +58,7 @@ describe CatalogLandingPageController do
     describe 'while logged in as an admin' do
       before(:each) do
         init_current_user(controller)
-        stub_administrator_user
+        stub_administrator_user(subject)
       end
 
       it '404s when enable_catalog_landing_page is false' do
@@ -121,7 +121,7 @@ describe CatalogLandingPageController do
     describe 'while logged in as a normal user' do
       before(:each) do
         init_current_user(controller)
-        stub_normal_user
+        stub_user(subject)
       end
 
       it 'should tell me I have insufficient privileges' do
@@ -133,7 +133,7 @@ describe CatalogLandingPageController do
     describe 'while logged in as an admin' do
       before(:each) do
         init_current_user(controller)
-        stub_administrator_user
+        stub_administrator_user(subject)
       end
 
       it '404s when enable_catalog_landing_page is false' do
@@ -159,21 +159,5 @@ describe CatalogLandingPageController do
   end
 
   private
-
-  def stub_normal_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:is_administrator?).and_return(false)
-    allow(user).to receive(:is_designer?).and_return(false)
-    allow_any_instance_of(CatalogLandingPageController).to receive(:current_user).and_return(user)
-  end
-
-  def stub_administrator_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:is_administrator?).and_return(true)
-    allow(user).to receive(:is_designer?).and_return(false)
-    allow_any_instance_of(CatalogLandingPageController).to receive(:current_user).and_return(user)
-  end
 
 end

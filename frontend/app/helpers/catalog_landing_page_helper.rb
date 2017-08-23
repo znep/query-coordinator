@@ -79,7 +79,7 @@ module CatalogLandingPageHelper
   end
 
   def can_manage_catalog_landing_page?
-    current_user.try(:is_any?, :publisher, :administrator, :superadmin)
+    current_user.present? && current_user.has_right?(UserRights::EDIT_OTHERS_DATASETS)
   end
 
 end

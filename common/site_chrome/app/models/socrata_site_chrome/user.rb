@@ -12,34 +12,6 @@ module SocrataSiteChrome
       flag?('admin')
     end
 
-    def is_administrator?
-      role_name == 'administrator'
-    end
-
-    def is_designer?
-      role_name == 'designer'
-    end
-
-    def is_publisher?
-      role_name == 'publisher'
-    end
-
-    def is_publisher_stories?
-      role_name == 'publisher_stories'
-    end
-
-    def is_editor?
-      role_name == 'editor'
-    end
-
-    def is_editor_stories?
-      role_name == 'editor_stories'
-    end
-
-    def is_viewer?
-      role_name == 'viewer'
-    end
-
     def role_name
       @data['roleName']
     end
@@ -50,6 +22,10 @@ module SocrataSiteChrome
 
     def has_right?(right)
       rights && rights.include?(right.to_s)
+    end
+
+    def has_any_rights?
+      rights.present?
     end
 
     # Attribute helpers in an attempt to move away from method_missing.

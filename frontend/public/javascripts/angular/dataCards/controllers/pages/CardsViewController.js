@@ -178,11 +178,11 @@ module.exports = function CardsViewController(
 
   $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
 
-  var isCurrentUserAdminOrPublisher$ =
+  var currentUserCanEditOthersDatasets$ =
     currentUser$.
     map(function(user) {
-      var roleName = user.roleName;
-      return _.includes(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+      return _.includes(user.flags, 'admin') ||
+             _.includes(user.rights, 'edit_others_datasets');
     });
 
   var userCanManageView$ = $scope.isEphemeral ?
@@ -206,7 +206,7 @@ module.exports = function CardsViewController(
   var currentUserHasSaveRight$ = userCanManageView$.
     combineLatest(
       isCurrentUserOwnerOfDataset$,
-      isCurrentUserAdminOrPublisher$,
+      currentUserCanEditOthersDatasets$,
       function(a, b, c) { return a || b || c; }).
     catchException(Rx.Observable.returnValue(false));
 

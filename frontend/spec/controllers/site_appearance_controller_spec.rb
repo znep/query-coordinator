@@ -43,14 +43,14 @@ describe SiteAppearanceController do
 
     it 'is forbidden to users without rights' do
       init_current_user(@controller)
-      stub_normal_user
+      stub_user(subject)
       get :edit
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'loads if superadmin' do
       init_current_user(@controller)
-      stub_superadmin_user
+      stub_superadmin_user(subject)
       make_site_appearance_visible
       VCR.use_cassette('site_appearance/controller/edit') do
         get :edit
@@ -60,7 +60,7 @@ describe SiteAppearanceController do
 
     it 'loads if administrator' do
       init_current_user(@controller)
-      stub_administrator_user
+      stub_administrator_user(subject)
       make_site_appearance_visible
       VCR.use_cassette('site_appearance/controller/edit') do
         get :edit
@@ -70,7 +70,7 @@ describe SiteAppearanceController do
 
     it 'loads if designer' do
       init_current_user(@controller)
-      stub_administrator_user
+      stub_administrator_user(subject)
       make_site_appearance_visible
       VCR.use_cassette('site_appearance/controller/edit') do
         get :edit
@@ -95,7 +95,7 @@ describe SiteAppearanceController do
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
-      stub_normal_user
+      stub_user(subject)
       allow(@controller).to receive(:get_site_title).and_return('site title')
       put :update, content: new_content
       expect(response).to have_http_status(:forbidden)
@@ -124,7 +124,7 @@ describe SiteAppearanceController do
     describe 'activation_state' do
       before(:each) do
         init_current_user(@controller)
-        stub_superadmin_user
+        stub_superadmin_user(subject)
         allow(@controller).to receive(:get_site_title).and_return('site title')
         auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
       end
@@ -204,40 +204,6 @@ describe SiteAppearanceController do
   end
 
   private
-
-  def stub_normal_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:is_administrator?).and_return(false)
-    allow(user).to receive(:is_designer?).and_return(false)
-    allow_any_instance_of(SiteAppearanceController).to receive(:current_user).and_return(user)
-  end
-
-  # a la spec/controllers/administration_controller/spec.rb
-  def stub_superadmin_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(true)
-    allow(user).to receive(:is_administrator?).and_return(false)
-    allow(user).to receive(:is_designer?).and_return(false)
-    allow_any_instance_of(SiteAppearanceController).to receive(:current_user).and_return(user)
-  end
-
-  # a la spec/controllers/administration_controller/spec.rb
-  def stub_administrator_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:is_administrator?).and_return(true)
-    allow(user).to receive(:is_designer?).and_return(false)
-    allow_any_instance_of(SiteAppearanceController).to receive(:current_user).and_return(user)
-  end
-
-  def stub_designer_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:is_administrator?).and_return(false)
-    allow(user).to receive(:is_designer?).and_return(true)
-    allow_any_instance_of(SiteAppearanceController).to receive(:current_user).and_return(user)
-  end
 
   def empty_site_appearance
     SiteAppearance.new

@@ -196,7 +196,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
     it 'returns a new SocrataSiteChrome::User object' do
       fake_user = {
         'displayName' => 'bob ross',
-        'roleName' => 'designer',
+        'rights' => ['edit_site_theme'],
         'id' => '999'
       }
       allow(helper).to receive(:site_chrome_request_current_user).and_return(fake_user)
@@ -204,7 +204,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
       expect(result.class).to eq(SocrataSiteChrome::User)
       expect(result.display_name).to eq('bob ross')
-      expect(result.is_designer?).to be(true)
+      expect(result.has_right?('edit_site_theme')).to be(true)
       expect(result.id).to eq('999')
     end
   end
@@ -234,75 +234,27 @@ describe SocrataSiteChrome::SiteChromeHelper do
       end
     end
 
-    context 'for regular admins' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'administrator') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for publishers' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'publisher') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for publishers with Perspectives licenses' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'publisher_stories') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for designers' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'designer') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for editors' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'editor') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for editors with Perspectives licenses' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'editor_stories') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for viewers' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'viewer') }
-
-      it 'returns true' do
-        expect(helper.current_user_can_see_admin_link?).to eq(true)
-      end
-    end
-
-    context 'for none of the above' do
-      let(:user) { SocrataSiteChrome::User.new('roleName' => 'asdfasdf') }
+    context 'for users with nil rights' do
+      let(:user) { SocrataSiteChrome::User.new('rights' => nil) }
 
       it 'returns false' do
         expect(helper.current_user_can_see_admin_link?).to eq(false)
       end
     end
 
-    context 'for an empty role' do
-      let(:user) { SocrataSiteChrome::User.new() }
+    context 'for users with empty rights' do
+      let(:user) { SocrataSiteChrome::User.new('rights' => []) }
 
       it 'returns false' do
         expect(helper.current_user_can_see_admin_link?).to eq(false)
+      end
+    end
+
+    context 'for users with some rights' do
+      let(:user) { SocrataSiteChrome::User.new('rights' => [ 'do_a_thing' ]) }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
       end
     end
   end

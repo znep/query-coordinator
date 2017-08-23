@@ -64,9 +64,10 @@ module.exports = function UserSessionService($http, $q, rx) {
   }
 
   function isSuperadmin(user) {
+    // EN-18397: Should not be checking 'manage_users' here. Replace with appropriate right or other mechanism.
     var flags = _.get(user, 'flags', []);
-    var roleName = _.get(user, 'roleName');
-    return _.includes(flags, 'admin') || roleName === 'administrator';
+    var rights = _.get(user, 'rights');
+    return _.includes(flags, 'admin') || _.includes(rights, 'manage_users');
   }
 
   return {

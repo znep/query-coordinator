@@ -385,7 +385,8 @@ class ApplicationController < ActionController::Base
   def display_dataset_landing_page_notice
     feature_flags = FeatureFlags.derive(nil, request)
 
-    should_display_notice = current_user.try(:roleName) == 'administrator' &&
+    #EN-18397: Temporarily using manage_users as a proxy for a needed right
+    should_display_notice = current_user.try(:has_right?, UserRights::MANAGE_USERS)  &&
       !dataset_landing_page_enabled? &&
       feature_flags.display_dataset_landing_page_notice == true
 

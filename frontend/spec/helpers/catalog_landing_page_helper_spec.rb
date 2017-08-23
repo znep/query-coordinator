@@ -3,46 +3,25 @@ require 'rails_helper'
 describe CatalogLandingPageHelper do
   include TestHelperMethods
 
-  let(:is_publisher?) { true }
-  let(:is_administrator?) { true }
-  let(:is_superadmin?) { true }
   let(:catalog_landing_page) { double }
 
-  let(:current_user) do
-    allow(helper).to receive(:current_user).and_return(double)
-  end
-
   before do
-    init_current_domain
-    init_feature_flag_signaller
-    current_user = init_current_user(
-      ApplicationController.new.tap do |controller|
-        session_double = double
-        allow(session_double).to receive(:[]=)
-        controller.request = ActionDispatch::Request.new(ENV)
-        controller.response = ActionDispatch::Response.new
-        allow(controller).to receive(:session).and_return(session_double)
-      end
-    )
-    allow(current_user).to receive(:is_publisher?).and_return(is_publisher?)
-    allow(current_user).to receive(:is_administrator?).and_return(is_administrator?)
-    allow(current_user).to receive(:is_superadmin?).and_return(is_superadmin?)
-    allow(helper).to receive(:current_user).and_return(current_user)
+    init_anonymous_environment
     helper.instance_variable_set('@catalog_landing_page', catalog_landing_page)
   end
 
   describe '#can_manage_catalog_landing_page?', :verify_stubs => false do
     context 'either administrator, publisher, or superadmin' do
+      before do
+        stub_administrator_user(helper)
+      end
+
       it 'should return true' do
         expect(helper.can_manage_catalog_landing_page?).to eq(true)
       end
     end
 
     context 'none of administrator, publisher, superadmin' do
-      let(:is_publisher?){ false }
-      let(:is_administrator?) { false }
-      let(:is_superadmin?) { false }
-
       it 'should return false' do
         expect(helper.can_manage_catalog_landing_page?).to eq(false)
       end

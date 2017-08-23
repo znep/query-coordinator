@@ -130,7 +130,7 @@ export const isEditIndividualRoleAppState = state =>
 export const stateHasCustomRoles = state => getRolesFromState(state).some(roleIsCustom);
 
 export const configurableRoleFeatureFlagFromState = state =>
-  state.getIn(['featureFlags', 'configurableRoles']);
+  state.getIn(['featureFlags', 'configurable_roles']);
 
 export const updateRoleWithError = curry((error, role) => role.merge({ error, hasError: true }));
 

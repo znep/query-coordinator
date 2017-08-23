@@ -22,7 +22,7 @@ class AdministrationController < ApplicationController
 
   skip_before_filter :require_user, :only => [:configuration, :flag_out_of_date]
 
-  before_filter :check_admin_or_superadmin, :only => [:goals]
+  before_filter :check_can_see_goals, :only => [:goals]
   before_filter :check_member, :only => [:index, :analytics]
   before_filter :allow_georegions_access?, :only => [:georegions, :add_georegion, :enable_georegion, :disable_georegion, :set_georegion_default_status, :edit_georegion, :remove_georegion]
   before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
@@ -1165,8 +1165,12 @@ class AdministrationController < ApplicationController
     run_access_check { feature_flag?(feature_flag, request) }
   end
 
-  def check_admin_or_superadmin
-    run_access_check{current_user.is_administrator? || current_user.is_superadmin?}
+  # TODO EN-17760 replace this with a REAL right i.e. "manage_goals"
+  # manage_users is a placeholder for what used to be a role name check for "administrator"
+  def check_can_see_goals
+    run_access_check do
+      current_user.present? && (current_user.is_superadmin? || current_user.has_right?(UserRights::MANAGE_USERS))
+    end
   end
 
   private

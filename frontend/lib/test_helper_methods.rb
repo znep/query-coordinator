@@ -71,6 +71,8 @@ module TestHelperMethods
 
     init_current_domain
     init_feature_flag_signaller(:with => feature_flags)
+    UserSessionProvider.klass.controller = @controller
+
     init_core_session
 
     if site_chrome
@@ -81,13 +83,16 @@ module TestHelperMethods
       when TestHelperMethods::ADMIN
         stub_current_user
         stub_authenticate_success
+        user_session = UserSessionProvider.klass.new
+        controller.try(:current_user_session=, user_session)
       when TestHelperMethods::ANONYMOUS
         stub_anonymous_user
       when TestHelperMethods::NON_ROLED
         stub_non_roled_user
+        stub_authenticate_success
+        user_session = UserSessionProvider.klass.new
+        controller.try(:current_user_session=, user_session)
     end
-
-    UserSessionProvider.klass.controller = @controller
   end
 
   def init_anonymous_environment
@@ -175,14 +180,22 @@ module TestHelperMethods
   end
 
   def stub_site_chrome_custom_content(content = {})
+    activated = content.present?
+
     default_content = {
       :header => { :html => nil, :css => nil, :js => nil },
       :footer => { :html => nil, :css => nil, :js => nil }
     }
 
     if Object.respond_to?(:stubs)
-      SocrataSiteChrome::CustomContent.any_instance.stubs(:fetch => default_content.deep_merge(content))
+      SocrataSiteChrome::CustomContent.any_instance.stubs(
+        :activated? => activated,
+        :fetch => default_content.deep_merge(content)
+      )
     else
+      allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:activated?).and_return(
+        activated
+      )
       allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:fetch).and_return(
         default_content.deep_merge(content)
       )
@@ -357,4 +370,126 @@ module TestHelperMethods
     }
   end
 
+  def stub_administrator_user(subject)
+    stub_user(subject,
+      %w[
+        approve_nominations
+        change_configurations
+        chown_datasets
+        create_dashboards
+        create_datasets
+        create_pages
+        create_story
+        create_story_copy
+        delete_story
+        edit_dashboards
+        edit_goals
+        edit_nominations
+        edit_others_datasets
+        edit_pages
+        edit_sdp
+        edit_site_theme
+        edit_story
+        edit_story_title_desc
+        feature_items
+        federations
+        manage_approval
+        manage_stories
+        manage_story_collaborators
+        manage_story_public_version
+        manage_story_visibility
+        manage_provenance
+        manage_users
+        moderate_comments
+        use_data_connectors
+        view_all_dataset_status_logs
+        view_dashboards
+        view_domain
+        view_goals
+        view_others_datasets
+        view_story
+        view_unpublished_story
+      ]
+    )
+  end
+
+  def stub_superadmin_user(subject)
+    stub_user(subject,
+      %w[
+        approve_nominations
+        change_configurations
+        chown_datasets
+        create_dashboards
+        create_datasets
+        create_pages
+        create_story
+        create_story_copy
+        delete_story
+        edit_dashboards
+        edit_goals
+        edit_nominations
+        edit_others_datasets
+        edit_pages
+        edit_sdp
+        edit_site_theme
+        edit_story
+        edit_story_title_desc
+        feature_items
+        federations
+        manage_approval
+        manage_stories
+        manage_story_collaborators
+        manage_story_public_version
+        manage_story_visibility
+        manage_provenance
+        manage_users
+        moderate_comments
+        use_data_connectors
+        view_all_dataset_status_logs
+        view_dashboards
+        view_domain
+        view_goals
+        view_others_datasets
+        view_story
+        view_unpublished_story
+      ],
+      true
+    )
+  end
+
+  def stub_designer_user(subject)
+    stub_user(subject,
+      %w[
+        change_configurations
+        create_datasets
+        create_pages
+        edit_sdp
+        edit_site_theme
+        feature_items
+        view_domain
+        view_others_datasets
+        view_story
+        view_unpublished_story
+      ]
+    )
+  end
+
+  def stub_viewer_user(subject)
+    stub_user(subject,
+      %w[
+        view_dashboards
+        view_goals
+        view_others_datasets
+        view_story
+        view_unpublished_story
+      ]
+    )
+  end
+
+  def stub_user(subject, rights = [], superadmin = false)
+    user = User.new
+    allow(user).to receive(:is_superadmin?).and_return(superadmin)
+    user.rights = rights
+    allow(subject).to receive(:current_user).and_return(user)
+  end
 end

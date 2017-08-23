@@ -179,10 +179,6 @@ class User < Model
     CoreServer::Base.connection.multipart_post_file("/users/#{id}/profile_images", file)
   end
 
-  def is_any?(*properties)
-    properties.any? { |property| try(:"is_#{property}?") }
-  end
-
   def is_owner?(view)
     view.owner.id == id
   end
@@ -199,28 +195,13 @@ class User < Model
   end
   alias :superadmin? :is_superadmin?
 
-  def is_administrator?
-    role_name == 'administrator'
-  end
-  alias :administrator? :is_administrator?
-
-  def is_publisher?
-    role_name == 'publisher'
-  end
-  alias publisher? :is_publisher?
-
-  def is_designer?
-    role_name == 'designer'
-  end
-  alias :designer? :is_designer?
-
   def has_right_to_publish?(view)
     # Taken from View.java canUpdateView:1257 in core
     view.rights_include?(ViewRights::UPDATE_VIEW) || has_right?(UserRights::EDIT_OTHERS_DATASETS)
   end
 
   def has_right?(right)
-    rights && rights.include?(right)
+    rights.to_a.include?(right)
   end
 
   def can_approve?
@@ -234,7 +215,7 @@ class User < Model
   def can_use_site_appearance?
     is_superadmin? ||
       (FeatureFlags.derive[:site_appearance_visible] &&
-        (is_administrator? || is_designer?))
+      has_right?(UserRights::EDIT_SITE_THEME))
   end
 
   def role_name

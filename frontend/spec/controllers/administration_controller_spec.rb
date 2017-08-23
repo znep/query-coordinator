@@ -5,17 +5,11 @@ describe AdministrationController do
 
   let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
 
-  before(:all) { init_current_domain }
-
   before(:each) do
-    init_feature_flag_signaller
-    stub_site_chrome
-    init_current_user(subject)
+    init_environment(:test_user => TestHelperMethods::NON_ROLED)
   end
 
   describe 'when logged in as non-superadmin user', :verify_stubs => false do
-    before { stub_viewer_user }
-
     it 'forbid access' do
       get :index
       expect(response).to have_http_status(:forbidden)
@@ -29,7 +23,7 @@ describe AdministrationController do
       allow(AdministrationHelper).to receive(:user_can_see_administration_section?).and_return(true)
       allow(subject).to receive(:check_auth_level).and_return(true)
       allow(subject).to receive(:check_auth_levels_any).and_return(true)
-      stub_superadmin_user
+      stub_superadmin_user(subject)
     end
 
     render_views
@@ -91,15 +85,10 @@ describe AdministrationController do
   end
 
   describe 'when logged in as admin user', :verify_stubs => false do
-    before do
-      init_current_user(subject)
-      stub_administrator_user # Is NOT a member of the domain in this test
-    end
-
     render_views
 
     describe 'and user is a member of the domain' do
-      before { allow(subject).to receive(:check_member).and_return(true) }
+      before { allow(CurrentDomain).to receive(:member?).and_return(true) }
 
       it 'allows access' do
         get :index
@@ -115,6 +104,8 @@ describe AdministrationController do
     end
 
     describe 'and user is not a member of the domain' do
+      before { allow(CurrentDomain).to receive(:member?).and_return(false) }
+
       it 'does not allow access' do
         get :index
         expect(response).to have_http_status(:forbidden)
@@ -123,13 +114,10 @@ describe AdministrationController do
   end
 
   describe 'goals', :verify_stubs => false do
-    before do
-      init_current_user(subject)
-      stub_administrator_user
-    end
-
     describe 'GET /admin/goals' do
-      before do
+      before(:each) do
+        init_environment
+        stub_administrator_user(subject)
         allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
       end
 
@@ -185,7 +173,8 @@ describe AdministrationController do
 
       describe 'logged in as viewer user' do
         before(:each) do
-          stub_viewer_user
+          init_environment
+          stub_viewer_user(subject)
         end
 
         it 'should be forbidden' do
@@ -196,7 +185,8 @@ describe AdministrationController do
 
       describe 'logged in as admin user' do
         before(:each) do
-          stub_administrator_user
+          init_environment
+          stub_administrator_user(subject)
         end
 
         it 'responds successfully with a 200 HTTP status code' do
@@ -267,7 +257,7 @@ describe AdministrationController do
 
       describe 'logged in as superadmin user' do
         it 'responds successfully with a 200 HTTP status code' do
-          stub_superadmin_user
+          stub_superadmin_user(subject)
           curated_region = build(:curated_region)
           allow(CuratedRegion).to receive(:find).and_return([curated_region])
           get :georegions
@@ -281,7 +271,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1) }
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
       end
 
       it 'redirects to /admin/geo' do
@@ -325,7 +315,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -421,7 +411,7 @@ describe AdministrationController do
       end
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -443,7 +433,7 @@ describe AdministrationController do
 
     describe 'DELETE /admin/geo/:id' do
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
       end
 
       it 'redirects to /admin/geo' do
@@ -456,7 +446,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_enabled).and_return([])
       end
@@ -479,7 +469,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -499,7 +489,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user
+        stub_administrator_user(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_default).and_return([])
       end
@@ -636,7 +626,7 @@ describe AdministrationController do
 
   describe 'set_view_moderation_status' do
     before do
-      init_current_user(subject)
+      init_environment
     end
 
     it 'should set a flash[:notice] unless request is JSON' do
@@ -681,14 +671,14 @@ describe AdministrationController do
 
         context 'as a viewer' do
           it 'should return false' do
-            stub_viewer_user
+            stub_viewer_user(subject)
             expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a superadmin' do
           it 'should return true' do
-            stub_superadmin_user
+            stub_superadmin_user(subject)
             VCR.use_cassette('administration_controller_superadmin') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
@@ -697,7 +687,7 @@ describe AdministrationController do
 
         context 'as an administrator' do
           it 'should return true' do
-            stub_administrator_user
+            stub_administrator_user(subject)
             rspec_stub_feature_flags_with(site_appearance_visible: true)
             VCR.use_cassette('administration_controller_administrator') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
@@ -707,7 +697,7 @@ describe AdministrationController do
 
         context 'as a designer' do
           it 'should return true' do
-            stub_designer_user
+            stub_designer_user(subject)
             rspec_stub_feature_flags_with(site_appearance_visible: true)
             VCR.use_cassette('administration_controller_designer') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
@@ -731,14 +721,14 @@ describe AdministrationController do
 
         context 'as a viewer' do
           it 'should return false' do
-            stub_viewer_user
+            stub_viewer_user(subject)
             expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a superadmin' do
           it 'should return true' do
-            stub_superadmin_user
+            stub_superadmin_user(subject)
             VCR.use_cassette('administration_controller_superadmin') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
@@ -747,14 +737,14 @@ describe AdministrationController do
 
         context 'as an administrator' do
           it 'should return false' do
-            stub_administrator_user
+            stub_administrator_user(subject)
             expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a designer' do
           it 'should return false' do
-            stub_designer_user
+            stub_designer_user(subject)
             expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
@@ -774,7 +764,7 @@ describe AdministrationController do
 
         context 'as a superadmin' do
           it 'should return false' do
-            stub_superadmin_user
+            stub_superadmin_user(subject)
             VCR.use_cassette('administration_controller_superadmin') do
               expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
@@ -783,7 +773,7 @@ describe AdministrationController do
 
         context 'as an administrator' do
           it 'should return false' do
-            stub_administrator_user
+            stub_administrator_user(subject)
             VCR.use_cassette('administration_controller_administrator') do
               expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
@@ -792,7 +782,7 @@ describe AdministrationController do
 
         context 'as a designer' do
           it 'should return false' do
-            stub_designer_user
+            stub_designer_user(subject)
             VCR.use_cassette('administration_controller_designer') do
               expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
@@ -804,39 +794,11 @@ describe AdministrationController do
 
   private
 
-  def stub_administrator_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:roleName).and_return('administrator')
-    allow(user).to receive(:role_name).and_return('administrator')
-    allow(subject).to receive(:current_user).and_return(user)
-  end
-
-  def stub_superadmin_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(true)
-    allow(subject).to receive(:current_user).and_return(user)
-  end
-
-  def stub_designer_user
-    user = User.new
-    allow(user).to receive(:is_designer?).and_return(true)
-    allow(user).to receive(:roleName).and_return('designer')
-    allow(user).to receive(:role_name).and_return('designer')
-    allow(subject).to receive(:current_user).and_return(user)
-  end
-
-  def stub_viewer_user
-    user = User.new
-    allow(user).to receive(:is_superadmin?).and_return(false)
-    allow(user).to receive(:roleName).and_return('viewer')
-    allow(subject).to receive(:current_user).and_return(user)
-  end
-
   def make_site_appearance_visible(state)
     allow(CurrentDomain).to receive(:feature_flags).and_return(
       Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = state }
     )
+    init_feature_flag_signaller(:with => { :site_appearance_visible => state })
   end
 
   def configuration_stub

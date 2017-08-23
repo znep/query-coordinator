@@ -17,6 +17,7 @@ module CommonMetadataMethods
   ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES = %w(administrator publisher)
   ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer publisher_stories editor_stories)
 
+  #EN-18397: Leaving this role name check because we do not have a good way to represent this with rights currently
   def roles_allowed_to_create_data_lenses
     if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]
       ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES
@@ -26,7 +27,11 @@ module CommonMetadataMethods
   end
 
   def role_allows_data_lens_creation?(role)
-    roles_allowed_to_create_data_lenses.include?(role)
+    if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]
+      role.present?
+    else
+      roles_allowed_to_create_data_lenses.include?(role)
+    end
   end
 
   def can_create_metadata?

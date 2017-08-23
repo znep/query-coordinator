@@ -120,12 +120,12 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_published
       when 'api/v1/uploads'
         require_sufficient_rights_for_api_uploads
-      when 'cetera'
-        require_sufficient_rights_for_search_proxy
       when 'consul_checks'
         require_sufficient_rights_for_consul_checks
       when 'errors'
         true
+      when 'license_check'
+        require_sufficient_rights_for_license_checks
       when 'post_login'
         require_sufficient_rights_for_post_login
       when 'stat/goals'
@@ -487,11 +487,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def require_sufficient_rights_for_search_proxy
+  def require_sufficient_rights_for_license_checks
     action = params[:action]
 
     case action
-      when 'users'
+      when 'user_has_stories_rights?'
         require_logged_in_user # TODO: double-check this
       else
         raise_undefined_authorization_handler_error

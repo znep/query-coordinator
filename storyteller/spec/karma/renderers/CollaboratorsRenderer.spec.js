@@ -18,15 +18,15 @@ describe('CollaboratorsRenderer', () => {
 
   let userLookupResponse;
   function respondWithNoUserFound() {
-    userLookupResponse = null;
+    userLookupResponse = { userExists: false, hasStoriesRights: false };
   }
 
-  function respondWithUserRole(role) {
-    userLookupResponse = { roleName: role };
+  function respondWithFoundUser(hasStoriesRights) {
+    userLookupResponse = { userExists: true, hasStoriesRights };
   }
 
   function MockCollaboratorsDataProvider() {
-    this.lookupUserByEmail = () => Promise.resolve(userLookupResponse);
+    this.doesUserWithEmailHaveStoriesRights = () => Promise.resolve(userLookupResponse);
     this.getCollaborators = () => Promise.resolve([]);
   }
 
@@ -239,34 +239,17 @@ describe('CollaboratorsRenderer', () => {
         );
       });
 
-      describe('user has a stories/administrator role', () => {
-        verifyAddButtonBehaviorWithRole('administrator');
+      describe('user has stories rights', () => {
+        verifyAddButtonBehavior(true);
 
-        it('should enable owner selection for an administrator', (done) => {
-          respondWithUserRole('administrator');
-
-          $email.val('valid@valid.com').trigger('input');
-
-          setTimeout(
-            () => {
-
-              assert.isFalse(
-                $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
-              );
-
-              done();
-            },
-            300
-          );
-        });
-
-        it('should enable owner selection for a stories role', (done) => {
-          respondWithUserRole('publisher_stories');
+        it('should enable owner selection for a user with stories rights', (done) => {
+          respondWithFoundUser(true);
 
           $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
             () => {
+
               assert.isFalse(
                 $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
               );
@@ -278,11 +261,11 @@ describe('CollaboratorsRenderer', () => {
         });
       });
 
-      describe('user does not have a stories/administrator role', () => {
-        verifyAddButtonBehaviorWithRole('nope');
+      describe('user does not have stories rights', () => {
+        verifyAddButtonBehavior(false);
 
-        it('should disable owner selection for users without a stories/administrator role', (done) => {
-          respondWithUserRole('nope');
+        it('should disable owner selection for users without stories rights', (done) => {
+          respondWithFoundUser(false);
 
           $email.val('valid@valid.com').trigger('input');
 
@@ -299,7 +282,7 @@ describe('CollaboratorsRenderer', () => {
         });
       });
 
-      function verifyAddButtonBehaviorWithRole(role) {
+      function verifyAddButtonBehavior(hasStoriesRights) {
         describe('add button', () => {
           let $resultantTableRow;
 
@@ -308,7 +291,7 @@ describe('CollaboratorsRenderer', () => {
           }
 
           beforeEach((done) => {
-            respondWithUserRole(role);
+            respondWithFoundUser(hasStoriesRights);
 
             $email.val('valid@valid.com').trigger('input');
 

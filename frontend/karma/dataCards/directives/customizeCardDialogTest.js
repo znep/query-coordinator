@@ -86,7 +86,6 @@ describe('Customize card dialog', function() {
     choropleth: {
       name: 'Spot where cool froods hang out.',
       description: '???',
-      fred: 'location',
       physicalDatatype: 'number',
       computationStrategy: {
         parameters: {
@@ -99,7 +98,6 @@ describe('Customize card dialog', function() {
     feature: {
       name: 'Froods who really know where their towels are.',
       description: '???',
-      fred: 'location',
       physicalDatatype: 'point',
       availableCardTypes: ['feature'],
       defaultCardType: 'feature',
@@ -108,7 +106,6 @@ describe('Customize card dialog', function() {
     many_kinds: {
       name: 'A column suffering an identity crisis.',
       description: '???',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['feature', 'choropleth', 'column', 'histogram', 'search'],
       defaultCardType: 'search'
@@ -116,7 +113,6 @@ describe('Customize card dialog', function() {
     bar: {
       name: 'A bar where cool froods hang out.',
       description: '???',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'search'],
       defaultCardType: 'column'
@@ -124,7 +120,6 @@ describe('Customize card dialog', function() {
     high_cardinality: {
       name: 'A bar where cool froods hang out.',
       description: '???',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'search'],
       defaultCardType: 'column',
@@ -132,7 +127,6 @@ describe('Customize card dialog', function() {
     },
     ':@computedColumn': {
       name: 'Computed Column',
-      fred: 'number',
       physicalDatatype: 'number',
       availableCardTypes: ['choropleth'],
       defaultCardType: 'choropleth',
@@ -145,14 +139,12 @@ describe('Customize card dialog', function() {
     },
     ':system_column': {
       name: 'System Column to Exclude',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
       defaultCardType: 'column'
     },
     sub_column: {
       name: 'Subcolumn to Exclude',
-      fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
       defaultCardType: 'column',

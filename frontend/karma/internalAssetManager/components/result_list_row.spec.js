@@ -39,62 +39,62 @@ describe('components/ResultListRow', () => {
 
   describe('renders a span with the correct icon class for the "type" cell', () => {
     it('renders the correct icon for type "dataset", "table", or "federated"', () => {
-      assert.equal(elementWithType('dataset').querySelector('td span').className, 'socrata-icon-dataset');
-      assert.equal(elementWithType('federated').querySelector('td span').className, 'socrata-icon-dataset');
-      assert.equal(elementWithType('table').querySelector('td span').className, 'socrata-icon-dataset');
+      assert.include(elementWithType('dataset').querySelector('td span').className, 'socrata-icon-dataset');
+      assert.include(elementWithType('federated').querySelector('td span').className, 'socrata-icon-dataset');
+      assert.include(elementWithType('table').querySelector('td span').className, 'socrata-icon-dataset');
     });
     it('renders the correct icon for type "filter" or "grouped"', () => {
-      assert.equal(elementWithType('filter').querySelector('td span').className, 'socrata-icon-filter');
-      assert.equal(elementWithType('grouped').querySelector('td span').className, 'socrata-icon-filter');
+      assert.include(elementWithType('filter').querySelector('td span').className, 'socrata-icon-filter');
+      assert.include(elementWithType('grouped').querySelector('td span').className, 'socrata-icon-filter');
     });
     it('renders the correct icon for type "href"', () => {
-      assert.equal(elementWithType('href').querySelector('td span').className, 'socrata-icon-external');
+      assert.include(elementWithType('href').querySelector('td span').className, 'socrata-icon-external');
     });
     it('renders the correct icon for "datalens", or "visualization" types', () => {
-      assert.equal(elementWithType('data_lens').querySelector('td span').className, 'socrata-icon-cards');
-      assert.equal(elementWithType('datalens').querySelector('td span').className, 'socrata-icon-cards');
-      assert.equal(elementWithType('visualization').querySelector('td span').className, 'socrata-icon-cards');
+      assert.include(elementWithType('data_lens').querySelector('td span').className, 'socrata-icon-cards');
+      assert.include(elementWithType('datalens').querySelector('td span').className, 'socrata-icon-cards');
+      assert.include(elementWithType('visualization').querySelector('td span').className, 'socrata-icon-cards');
     });
     it('renders the correct icon for type "story"', () => {
-      assert.equal(elementWithType('story').querySelector('td span').className, 'socrata-icon-story');
+      assert.include(elementWithType('story').querySelector('td span').className, 'socrata-icon-story');
     });
     it('renders the correct icon for "map" types', () => {
-      assert.equal(elementWithType('data_lens_map').querySelector('td span').className, 'socrata-icon-map');
-      assert.equal(elementWithType('geomap').querySelector('td span').className, 'socrata-icon-map');
-      assert.equal(elementWithType('intensitymap').querySelector('td span').className, 'socrata-icon-map');
-      assert.equal(elementWithType('map').querySelector('td span').className, 'socrata-icon-map');
+      assert.include(elementWithType('data_lens_map').querySelector('td span').className, 'socrata-icon-map');
+      assert.include(elementWithType('geomap').querySelector('td span').className, 'socrata-icon-map');
+      assert.include(elementWithType('intensitymap').querySelector('td span').className, 'socrata-icon-map');
+      assert.include(elementWithType('map').querySelector('td span').className, 'socrata-icon-map');
     });
     it('renders the correct icon for "chart" types', () => {
-      assert.equal(
+      assert.include(
         elementWithType('annotatedtimeline').querySelector('td span').className, 'socrata-icon-bar-chart'
       );
-      assert.equal(elementWithType('areachart').querySelector('td span').className, 'socrata-icon-bar-chart');
-      assert.equal(elementWithType('barchart').querySelector('td span').className, 'socrata-icon-bar-chart');
-      assert.equal(elementWithType('chart').querySelector('td span').className, 'socrata-icon-bar-chart');
-      assert.equal(
+      assert.include(elementWithType('areachart').querySelector('td span').className, 'socrata-icon-bar-chart');
+      assert.include(elementWithType('barchart').querySelector('td span').className, 'socrata-icon-bar-chart');
+      assert.include(elementWithType('chart').querySelector('td span').className, 'socrata-icon-bar-chart');
+      assert.include(
         elementWithType('columnchart').querySelector('td span').className, 'socrata-icon-bar-chart'
       );
-      assert.equal(
+      assert.include(
         elementWithType('data_lens_chart').querySelector('td span').className, 'socrata-icon-bar-chart'
       );
-      assert.equal(
+      assert.include(
         elementWithType('imagesparkline').querySelector('td span').className, 'socrata-icon-bar-chart'
       );
-      assert.equal(elementWithType('linechart').querySelector('td span').className, 'socrata-icon-bar-chart');
-      assert.equal(elementWithType('piechart').querySelector('td span').className, 'socrata-icon-bar-chart');
+      assert.include(elementWithType('linechart').querySelector('td span').className, 'socrata-icon-bar-chart');
+      assert.include(elementWithType('piechart').querySelector('td span').className, 'socrata-icon-bar-chart');
     });
     it('renders the correct icon for type "calendar"', () => {
-      assert.equal(elementWithType('calendar').querySelector('td span').className, 'socrata-icon-date');
+      assert.include(elementWithType('calendar').querySelector('td span').className, 'socrata-icon-date');
     });
     it('renders the correct icon for type "form"', () => {
-      assert.equal(elementWithType('form').querySelector('td span').className, 'socrata-icon-list2');
+      assert.include(elementWithType('form').querySelector('td span').className, 'socrata-icon-list2');
     });
     it('renders the correct icon for type "file", or "blob"', () => {
-      assert.equal(elementWithType('blob').querySelector('td span').className, 'socrata-icon-attachment');
-      assert.equal(elementWithType('file').querySelector('td span').className, 'socrata-icon-attachment');
+      assert.include(elementWithType('blob').querySelector('td span').className, 'socrata-icon-attachment');
+      assert.include(elementWithType('file').querySelector('td span').className, 'socrata-icon-attachment');
     });
     it('renders a generic data icon for unknown types', () => {
-      assert.equal(elementWithType('unknown').querySelector('td span').className, 'socrata-icon-data');
+      assert.include(elementWithType('unknown').querySelector('td span').className, 'socrata-icon-data');
     });
   });
 

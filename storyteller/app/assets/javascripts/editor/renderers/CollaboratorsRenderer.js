@@ -258,10 +258,10 @@ export default function CollaboratorsRenderer() {
   // Then, call updateUi.
   function fetchUserThenUpdateUi(email) {
     if (!_.has(userDetailsCache, email)) {
-      collaboratorsDataProvider.lookupUserByEmail(email).
+      collaboratorsDataProvider.doesUserWithEmailHaveStoriesRights(email).
         catch(_.constant(null)). // If the request fails, assume user does not exist.
-        then(function(userDetails) {
-          userDetailsCache[email] = userDetails;
+        then((userInfo) => {
+          userDetailsCache[email] = userInfo;
           updateUi();
         });
     }
@@ -274,32 +274,44 @@ export default function CollaboratorsRenderer() {
   // Updates the state of the UI (button enabled/disabled states,
   // warning visibilities, etc).
   function updateUi() {
-    var value = getValueInInputBox();
-    var accessLevel = $collaborators.find('option:selected').val();
-    var collaborator = {email: value, accessLevel: accessLevel};
+    const value = getValueInInputBox();
+    const accessLevel = $collaborators.find('option:selected').val();
+    const collaborator = { email: value, accessLevel: accessLevel };
 
-    var hasCollaborator = collaboratorsStore.hasCollaborator(collaborator);
-    var hasUserDetails = _.has(userDetailsCache, value);
-    var userDetails = userDetailsCache[value]; // Updated async, we'll get called again if it changes.
-    var roleName = _.get(userDetails, 'roleName') || _.get(userDetails, 'role_name'); // Cetera uses the latter! Remove the first half once we're fully off Core for user search.
+    const hasCollaborator = collaboratorsStore.hasCollaborator(collaborator);
+    const hasUserDetails = _.has(userDetailsCache, value);
 
-    var validEmail = getValidEmailInInputBoxOrNull();
-    $collaborators.find('.collaborators-email-input-wrapper').toggleClass('busy', !!validEmail && !hasUserDetails);
+    // Updated async, we'll get called again if it changes.
+    const userInfo = userDetailsCache[value];
+    const userExists = _.get(userInfo, 'userExists', false);
+    const hasStoriesRights = _.get(userInfo, 'hasStoriesRights', false);
+
+    // the "!!" here is to coerce the value into a boolean instead of a truthy value
+    // this is because jQuery expects a boolean in its "toggleClass" method
+    const isValidEmail = !!getValidEmailInInputBoxOrNull();
+
+    // turn on/off the spinny thing based on whether or not
+    // we've gotten a repsonse from the user lookup
+    $collaborators.find('.collaborators-email-input-wrapper').toggleClass('busy', isValidEmail && !hasUserDetails);
 
     if (hasCollaborator) {
+      // User is already a collaborator;
+      // Add a message and disable everything
       toggleAlreadyAddedWarning(true);
       toggleUserHasNoAccountWarning(false);
       toggleOwnerSelection(false);
       toggleAddCollaboratorsButton(false);
-    } else if (hasUserDetails && validEmail) {
-      if (isStoriesOrAdministratorRole(roleName)) {
-        // Licensed stories user.
+    } else if (isValidEmail) {
+      if (hasStoriesRights === true) {
+        // Licensed stories user,
+        // allowed to add as co-owner
         toggleAlreadyAddedWarning(false);
         toggleUserHasNoAccountWarning(false);
         toggleOwnerSelection(true);
         toggleAddCollaboratorsButton(true);
-      } else if (userDetails) {
-        // Non stories, but still a registered user.
+      } else if (userExists === true) {
+        // Non-licensed existant user,
+        // cannot be co-owner
         toggleAlreadyAddedWarning(false);
         toggleUserHasNoAccountWarning(false);
         toggleOwnerSelection(false);
@@ -308,7 +320,7 @@ export default function CollaboratorsRenderer() {
             has('li:last-child input:not(:checked)').length === 1
         );
       } else {
-        // Unroled user. Not allowed.
+        // Non-existant user; disable everything
         toggleAlreadyAddedWarning(false);
         toggleUserHasNoAccountWarning(true);
         toggleOwnerSelection(false);

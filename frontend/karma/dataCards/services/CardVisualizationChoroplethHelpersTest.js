@@ -33,7 +33,6 @@ describe('CardVisualizationChoroplethHelpers service', function() {
             "strategy_type": "georegion_match_on_point"
           },
           "description": "descr",
-          "fred": "location",
           "name": "computed_column human readable name",
           "physicalDatatype": "text"
         };
@@ -67,7 +66,6 @@ describe('CardVisualizationChoroplethHelpers service', function() {
             "strategy_type": "georegion_match_on_point"
           },
           "description": "descr",
-          "fred": "location",
           "name": "computed_column human readable name",
           "physicalDatatype": "text"
         };

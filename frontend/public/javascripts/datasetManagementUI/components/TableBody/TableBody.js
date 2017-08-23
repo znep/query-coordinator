@@ -84,7 +84,12 @@ class TableBody extends Component {
     return (
       <tr key={row.rowIdx}>
         {row.transforms.map((transform, offset) => {
-          return <TableCell key={`${row.rowIdx}-${offset}`} cell={transform.cell} />;
+          const t = this.props.entities.transforms[transform.id];
+          const type = t ? t.output_soql_type : false;
+          return (<TableCell
+            key={`${row.rowIdx}-${offset}`}
+            cell={transform.cell}
+            type={type} />);
         })}
       </tr>
     );

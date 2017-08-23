@@ -15,7 +15,6 @@ describe('cardAggregationSelector', function() {
     column1_number: {
       name: 'test column title',
       description: 'test column description',
-      fred: 'amount',
       physicalDatatype: 'number',
       defaultCardType: 'column',
       availableCardTypes: ['column', 'search']
@@ -23,7 +22,6 @@ describe('cardAggregationSelector', function() {
     column2_number: {
       name: 'second test column title',
       description: 'second test column description',
-      fred: 'amount',
       physicalDatatype: 'number',
       defaultCardType: 'column',
       availableCardTypes: ['column', 'search']
@@ -31,7 +29,6 @@ describe('cardAggregationSelector', function() {
     column3_money: {
       name: 'third test column title',
       description: 'third test column description',
-      fred: 'amount',
       physicalDatatype: 'money',
       defaultCardType: 'column',
       availableCardTypes: ['column', 'search']
@@ -39,7 +36,6 @@ describe('cardAggregationSelector', function() {
     column4_text: {
       name: 'fourth test column title',
       description: 'fourth test column description',
-      fred: 'text',
       physicalDatatype: 'text',
       defaultCardType: 'column',
       availableCardTypes: ['column', 'search']
@@ -146,7 +142,6 @@ describe('cardAggregationSelector', function() {
           unicornName: {
             name: 'unicorn name',
             description: 'the name of this mythical beast',
-            fred: 'text',
             physicalDatatype: 'text',
             defaultCardType: 'search',
             availableCardTypes: ['column', 'search']

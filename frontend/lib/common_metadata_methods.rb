@@ -164,7 +164,6 @@ module CommonMetadataMethods
       :defaultCardType => 'table',
       :name => 'Data Table',
       :description => '',
-      :fred => '*',
       :physicalDatatype => '*'
     }
     dataset_metadata[:columns]['*'] = table_column
@@ -334,7 +333,6 @@ module CommonMetadataMethods
         cardinality: column.dig(:cachedContents, :cardinality).to_i,
         computationStrategy: get_computation_strategy_legacy_structure(column),
         description: column[:description],
-        fred: column[:renderTypeName],
         name: column[:name],
         physicalDatatype: column[:renderTypeName] == 'checkbox' ? 'boolean' : column[:renderTypeName]
       }.compact

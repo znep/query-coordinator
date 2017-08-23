@@ -53,8 +53,14 @@ describe('components/Modals/GeocodeShortcut', () => {
     );
 
     assert.equal(
-      component.instance().genNewExpression(),
-      'geocode(`block`, `iucr`, to_text(to_boolean(`domestic`)), to_text(to_number(`community_area`)))'
+      component.instance().genNewExpression().replace(/\s/g,''),
+      'make_location(\
+        `block`,\
+        `iucr`,\
+        to_text(to_boolean(`domestic`)),\
+        to_text(to_number(`community_area`)),\
+        geocode(`block`, `iucr`, to_text(to_boolean(`domestic`)), to_text(to_number(`community_area`)))\
+      )'.replace(/\s/g,'')
     );
   });
 
@@ -69,8 +75,8 @@ describe('components/Modals/GeocodeShortcut', () => {
       _.find(outputColumns, oc => oc.field_name === 'block')
     );
     assert.equal(
-      component.instance().genNewExpression(),
-      'location_to_point(geocode(to_location(`block`)))'
+      component.instance().genNewExpression().replace(/\s/g,''),
+      'geocode(to_location(`block`))'.replace(/\s/g,'')
     );
   });
 
@@ -90,9 +96,9 @@ describe('components/Modals/GeocodeShortcut', () => {
     );
 
     assert.equal(
-      component.instance().genNewExpression(),
+      component.instance().genNewExpression().replace(/\s/g,''),
       //make_point/2 is lat, lng ;_;
-      'make_point(to_number(`block`), to_number(`ward`))'
+      'make_location(make_point(to_number(`block`), to_number(`ward`)))'.replace(/\s/g,'')
     );
   });
 
@@ -108,8 +114,8 @@ describe('components/Modals/GeocodeShortcut', () => {
     );
     instance.toggleConvertToNull();
     assert.equal(
-      component.instance().genNewExpression(),
-      'forgive(location_to_point(geocode(to_location(`block`))))'
+      component.instance().genNewExpression().replace(/\s/g,''),
+      'forgive(geocode(to_location(`block`)))'.replace(/\s/g,'')
     );
   });
 

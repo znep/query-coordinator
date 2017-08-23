@@ -174,13 +174,11 @@ describe('ChoroplethController', function() {
         points: {
           name: 'source column.',
           description: 'required',
-          fred: 'location',
           physicalDatatype: 'point'
         },
         ward: {
           name: 'Ward where crime was committed.',
           description: 'Batman has bigger fish to fry sometimes, you know.',
-          fred: 'location',
           physicalDatatype: 'number',
           computationStrategy: {
             parameters: {
@@ -383,13 +381,11 @@ describe('ChoroplethController', function() {
         points: {
           name: 'source column.',
           description: 'required',
-          fred: 'location',
           physicalDatatype: 'point',
         },
         ward: {
           name: 'Ward where crime was committed.',
           description: 'Batman has bigger fish to fry sometimes, you know.',
-          fred: 'location',
           physicalDatatype: 'text',
           computationStrategy: {
             parameter: {
@@ -418,13 +414,11 @@ describe('ChoroplethController', function() {
         points: {
           name: 'source column.',
           description: 'required',
-          fred: 'location',
           physicalDatatype: 'point'
         },
         ward: {
           name: 'Ward where crime was committed.',
           description: 'Batman has bigger fish to fry sometimes, you know.',
-          fred: 'location',
           physicalDatatype: 'text',
           computationStrategy: {
             parameters: {
@@ -460,13 +454,11 @@ describe('ChoroplethController', function() {
           points: {
             name: 'source column.',
             description: 'required',
-            fred: 'location',
             physicalDatatype: 'point'
           },
           ward: {
             name: 'Ward where crime was committed.',
             description: 'Batman has bigger fish to fry sometimes, you know.',
-            fred: 'location',
             physicalDatatype: 'text'
           }
         };
@@ -499,13 +491,11 @@ describe('ChoroplethController', function() {
           points: {
             name: 'source column.',
             description: 'required',
-            fred: 'location',
             physicalDatatype: 'point'
           },
           ward: {
             name: 'Ward where crime was committed.',
             description: 'Batman has bigger fish to fry sometimes, you know.',
-            fred: 'location',
             physicalDatatype: 'text'
           }
         };
@@ -529,13 +519,11 @@ describe('ChoroplethController', function() {
           'points': {
             'name': 'source column.',
             'description': 'required',
-            'fred': 'location',
             'physicalDatatype': 'point'
           },
           'ward': {
             'name': 'Ward where crime was committed.',
             'description': 'Batman has bigger fish to fry sometimes, you know.',
-            'fred': 'location',
             'physicalDatatype': 'text',
             'computationStrategy': {
               'parameters': {
@@ -610,13 +598,11 @@ describe('ChoroplethController', function() {
           points: {
             name: 'source column.',
             description: 'required',
-            fred: 'location',
             physicalDatatype: 'point'
           },
           ward: {
             name: 'Ward where crime was committed.',
             description: 'Batman has bigger fish to fry sometimes, you know.',
-            fred: 'location',
             physicalDatatype: 'text',
             computationStrategy: {
               parameters: {
@@ -647,13 +633,11 @@ describe('ChoroplethController', function() {
         points: {
           name: 'source column.',
           description: 'required',
-          fred: 'location',
           physicalDatatype: 'point'
         },
         ward: {
           name: 'Some area where the crime was committed that can be described by a string',
           description: 'Batman has bigger fish to fry sometimes, you know.',
-          fred: 'number',
           physicalDatatype: 'number',
           computationStrategy: {
             parameters: {
@@ -693,13 +677,11 @@ describe('ChoroplethController', function() {
         points: {
           name: 'source column.',
           description: 'required',
-          fred: 'location',
           physicalDatatype: 'point'
         },
         ward: {
           name: 'Some area where the crime was committed that can be described by a string',
           description: 'Batman has bigger fish to fry sometimes, you know.',
-          fred: 'number',
           physicalDatatype: 'number',
           computationStrategy: {
             parameters: {

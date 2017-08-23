@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
+import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import ActionDropdown from './action_dropdown';
 import Provenance from './provenance';
 import VisibilityCell from './visibility_cell';
@@ -47,10 +47,10 @@ export class ResultListRow extends React.Component {
           assetTypeTooltip = _.get(I18n, 'asset_types.working_copy');
         }
         return cellTag(
-          <span
-            className={getIconClassForDisplayType(type, isPublished)}
-            data-type={type}
-            title={assetTypeTooltip} />
+          <AssetTypeIcon
+            displayType={type}
+            isPublished={isPublished}
+            tooltip={assetTypeTooltip} />
         );
       }
       case 'visibility': {

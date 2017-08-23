@@ -26,7 +26,13 @@ const composeFromComponents = (mappings) => {
   const state = toTextExpr(getOutputColumnFromMapping(mappings, 'state'));
   const zip = toTextExpr(getOutputColumnFromMapping(mappings, 'zip'));
 
-  return `geocode(${address}, ${city}, ${state}, ${zip})`;
+  return `make_location(
+    ${address},
+    ${city},
+    ${state},
+    ${zip},
+    geocode(${address}, ${city}, ${state}, ${zip})
+  )`;
 };
 
 const decomposeFromComponents = (geocodeFunc, outputColumns) => {

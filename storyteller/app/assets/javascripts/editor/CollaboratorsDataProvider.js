@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import { FeatureFlags } from 'common/feature_flags';
-
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import { assert } from 'common/js_utils';
@@ -40,13 +38,11 @@ export default function CollaboratorsDataProvider() {
    * Returns null if the user is not found or there is an
    * error.
    */
-  this.lookupUserByEmail = function(email) {
-    const userUrl = FeatureFlags.value('enable_deprecated_user_search_api') ?
-      `/api/search/users.json?q=${email}` : // Core
-      `/stories/search/users.json?email=${email}`; // Cetera
+  this.doesUserWithEmailHaveStoriesRights = function(email) {
+    const userUrl = `/stories/search/users/hasStoriesRights?email=${email}`;
 
     return httpRequest('GET', userUrl).then(
-      ({ data }) => _.get(data, 'results[0]', null),
+      ({ data }) => data,
       (error) => {
         exceptionNotifier.notify(error);
         return null;

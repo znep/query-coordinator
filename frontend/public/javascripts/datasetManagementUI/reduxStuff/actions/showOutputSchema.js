@@ -143,7 +143,7 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
       outputColumnId: column.id
     }
   };
-  const { current } = Selectors.currentAndIgnoredOutputColumns(entities);
+  const { current } = Selectors.currentAndIgnoredOutputColumns(entities, outputSchema.id);
 
   const newOutputColumns = current
     .filter(oc => oc.id !== column.id)
@@ -262,7 +262,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.revisionBase;
+    const url = dsmapiLinks.revisionBase({ revisionSeq: revision.revision_seq });
     return socrataFetch(url, {
       method: 'PUT',
       body: JSON.stringify({

@@ -18,7 +18,7 @@ CombinedFields.propTypes = fieldPropTypes;
 
 const composeFromCombined = (mappings) => {
   const fullAddress = toTextExpr(getOutputColumnFromMapping(mappings, 'full_address'));
-  return `location_to_point(geocode(to_location(${fullAddress})))`;
+  return `geocode(to_location(${fullAddress}))`;
 };
 
 const decomposeFromCombined = (locToPoint, outputColumns) => {

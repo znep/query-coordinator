@@ -507,7 +507,6 @@ class NewUxBootstrapController < ActionController::Base
       :defaultCardType => 'table',
       :name => 'Data Table',
       :description => '',
-      :fred => '*',
       :physicalDatatype => '*'
     }
 

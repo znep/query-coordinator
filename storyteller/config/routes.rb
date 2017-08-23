@@ -94,7 +94,7 @@ Rails.application.routes.draw do
   end
 
   # Search proxy routes
-  get '/search/users' => 'cetera#users', defaults: { format: 'json' }
+  get '/search/users/hasStoriesRights' => 'license_check#user_has_stories_rights?', defaults: { format: 'json' }
 
   # Story theme CSS generator
   get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }

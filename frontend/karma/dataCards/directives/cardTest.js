@@ -79,7 +79,6 @@ describe('card directive', function() {
           name: 'Table Card',
           description: 'Table Card',
           physicalDatatype: '*',
-          fred: '*',
           availableCardTypes: ['table'],
           defaultCardType: 'table'
         }
@@ -329,7 +328,6 @@ describe('card directive', function() {
           myFieldName: {
             name: 'name',
             description: newDescriptionText,
-            fred: 'text',
             physicalDatatype: 'text',
             availableCardTypes: ['search'],
             defaultCardType: 'search',

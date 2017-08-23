@@ -2,10 +2,10 @@
 
 $background-color: $white;
 
-$container-right-offset: 3px;
-$container-right-offset-small: 1px;
-$container-right-with-settings-button: 40px;
-$container-right-with-settings-button-small: 38px;
+$container-right-offset: 44px;
+$container-right-offset-small: 36px;
+$container-right-with-settings-button: 108px;
+$container-right-with-settings-button-small: 98px;
 
 $container-top: 65px;
 $container-top-small: 50px;
@@ -48,7 +48,7 @@ $spinner-margin-bottom: 295px;
   right: $container-right-with-settings-button;
 }
 
-:global(.site-chrome-with-settings-button, .site-chrome-small) .container {
+:global(.site-chrome-small .site-chrome-with-settings-button) .container {
   right: $container-right-with-settings-button-small;
 }
 

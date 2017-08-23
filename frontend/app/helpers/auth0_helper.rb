@@ -168,8 +168,13 @@ module Auth0Helper
       'content-type' => 'application/json',
       'authorization' => "Bearer #{get_authorization_token}"
     )
-    connections = transform_connections(JSON.parse(http.request(request).read_body))
-    render :json => connections
+    result = http.request(request)
+    if result.is_a?(Net::HTTPSuccess)
+      connections = transform_connections(JSON.parse(result.read_body))
+    else
+      connections = []
+    end
+    render :json => connections.to_json
   end
 
   def use_auth0_component(view, request)

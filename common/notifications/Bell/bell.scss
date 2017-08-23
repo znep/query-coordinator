@@ -6,7 +6,7 @@ $bell-light: #FFFFFF;
 .button {
   position: relative;
   cursor: pointer;
-  padding: 12px 8px 9px;
+  padding: 12px 22px;
   background: none;
   border: none;
   width: 100%;
@@ -40,12 +40,12 @@ $bell-light: #FFFFFF;
   height: 6px;
   position: absolute;
   top: 13px;
-  left: 16px;
+  left: 30px;
 }
 
 :global(.site-chrome-small) {
   & .button {
-    padding: 7px 10px 1px;
+    padding: 7px 22px 1px;
     height: 32px;
 
     & :global(.socrata-icon) {

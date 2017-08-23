@@ -246,15 +246,14 @@ describe('Selectors', () => {
   });
 
   describe('currentAndIgnoredOutputColumns', () => {
-    const output = Selectors.currentAndIgnoredOutputColumns(entities);
+    const outputSchemaIds = Object.keys(entities.output_schemas)
+      .map(_.toNumber)
+      .filter(key => !!key);
+    const currentOutputSchemaId = Math.max(...outputSchemaIds);
+
+    const output = Selectors.currentAndIgnoredOutputColumns(entities, currentOutputSchemaId);
 
     it('puts all columns in current output schema into current array', () => {
-      const outputSchemaIds = Object.keys(entities.output_schemas)
-        .map(_.toNumber)
-        .filter(key => !!key);
-
-      const currentOutputSchemaId = Math.max(...outputSchemaIds);
-
       const currentOutputColumnIds = _.chain(entities.output_schema_columns)
         .filter(osc => osc.output_schema_id === currentOutputSchemaId)
         .reduce((innerAcc, osc) => {

@@ -23,7 +23,7 @@ const composeFromLatLng = mappings => {
   const lat = toNumberExpr(getOutputColumnFromMapping(mappings, 'latitude'));
   const lng = toNumberExpr(getOutputColumnFromMapping(mappings, 'longitude'));
 
-  return `make_point(${lat}, ${lng})`;
+  return `make_location(make_point(${lat}, ${lng}))`;
 };
 
 // given a make_point AST, and the output columns, return a mapping

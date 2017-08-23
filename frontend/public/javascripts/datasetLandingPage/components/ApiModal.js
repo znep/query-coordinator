@@ -183,34 +183,32 @@ export class ApiModal extends Component {
 
   render() {
     return (
-      <div
-        role="dialog"
+      <div id="api-modal" className="modal modal-overlay modal-hidden"
         aria-labelledby="api-modal-title"
-        id="api-modal"
-        className="modal modal-overlay modal-hidden"
         data-modal-dismiss>
-        <header className="modal-header">
-          { /* NOTE ODataModal has className with "h2" as well as modal-header-title */}
-          <h2 id="api-modal-title" className="modal-header-title">{I18n.api_modal.title}</h2>
-          <button
-            aria-label={I18n.close}
-            className="btn btn-transparent modal-header-dismiss"
-            data-modal-dismiss>
-            <span className="icon-close-2"></span>
-          </button>
-        </header>
+        <div className="modal-container">
+          <header className="modal-header">
+            <h2 id="api-modal-title" className="modal-header-title">{I18n.api_modal.title}</h2>
+            <button
+              aria-label={I18n.close}
+              className="btn btn-transparent modal-header-dismiss"
+              data-modal-dismiss>
+              <span className="icon-close-2"></span>
+            </button>
+          </header>
 
-        <section className="modal-content api-description">
-          <p className="small">{I18n.api_modal.description}</p>
-        </section>
+          <section className="modal-content api-description">
+            <p className="small">{I18n.api_modal.description}</p>
+          </section>
 
-        {this.renderEndpoint()}
+          {this.renderEndpoint()}
 
-        <footer className="modal-actions">
-          <button className="btn btn-default btn-sm" data-modal-dismiss>
-            {I18n.done}
-          </button>
-        </footer>
+          <footer className="modal-actions">
+            <button className="btn btn-default btn-sm" data-modal-dismiss>
+              {I18n.done}
+            </button>
+          </footer>
+        </div>
       </div>
     );
   }

@@ -527,7 +527,6 @@ div.container.landing-page-container {
 #api-modal {
   letter-spacing: 0;
   text-align: left;
-  width: 520px;
   max-width: 100%; // mobile
 
   h2 {
@@ -540,15 +539,9 @@ div.container.landing-page-container {
     margin-bottom: 0;
   }
 
-  // .modal-header {
-  //   h2 {
-  //     margin: 0;
-  //     font-size: 19px;
-  //     font-weight: normal;
-  //   }
-  // }
-
   .modal-content {
+    overflow-y: visible;
+
     &.api-description {
       margin-bottom: 1.5rem;
     }

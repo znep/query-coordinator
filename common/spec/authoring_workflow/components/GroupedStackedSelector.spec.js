@@ -20,7 +20,7 @@ function render(type) {
   };
 }
 
-describe.only('GroupedStackedSelector', function() {
+describe('GroupedStackedSelector', function() {
   var component;
   var props;
 

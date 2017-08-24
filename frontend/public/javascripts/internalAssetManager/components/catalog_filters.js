@@ -155,7 +155,7 @@ export class CatalogFilters extends React.Component {
 
     const ownedByFilterSection = activeTab === 'myAssets' ? null : (
       <div className="filter-section owned-by">
-        <label className="filter-label" htmlFor="owned-by-filter">
+        <label className="filter-label">
           {I18n.t('internal_asset_manager.filters.owned_by.label')}
         </label>
         <SearchboxFilter
@@ -180,7 +180,7 @@ export class CatalogFilters extends React.Component {
 
     const categoryFilterSection = (
       <div className="filter-section category">
-        <label className="filter-label" htmlFor="category-filter">
+        <label className="filter-label">
           {I18n.t('internal_asset_manager.filters.category.label')}
         </label>
         <SearchboxFilter
@@ -194,7 +194,7 @@ export class CatalogFilters extends React.Component {
 
     const tagsFilterSection = (
       <div className="filter-section tags">
-        <label className="filter-label" htmlFor="tag-filter">
+        <label className="filter-label">
           {I18n.t('internal_asset_manager.filters.tags.label')}
         </label>
         <SearchboxFilter

@@ -109,13 +109,14 @@ export class SearchboxFilter extends React.Component {
       'value'
     );
 
-    const searchboxFilterInputClassnames = classNames('text-input []', {
+    const searchboxFilterInputClassnames = classNames('text-input', {
       'searchbox-selected': !!inputValue
     });
 
     return (
       <div className="searchbox-filter">
         <input
+          aria-label={this.props.placeholder}
           autoComplete="off"
           className={searchboxFilterInputClassnames}
           id={this.props.inputId}

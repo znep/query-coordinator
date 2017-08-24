@@ -15,18 +15,20 @@
       <%- (fieldset.fields || []).each do |field| -%>
         <%- required       = field['required'].present?
             md_field       = field['private'].present? ? 'privateMetadata' : 'metadata'
-            type           = field['type']
+            type           = field['type'] || 'text'
             existing_value = existing_fields[field.name] || '' -%>
 
-        <div class="line clearfix<%= ' customRequired' if required %>">
+        <div class="line clearfix<%= ' validateOptions' if type == 'fixed' %>">
         <%-
           form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]"
           form_id = sanitize_to_id form_name
         -%>
           <%= label_tag(form_name, field.name, class: required && 'required') %>
 
-          <%- if field['type'] && field['type'] == 'fixed' -%>
-            <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
+          <%- if type == 'fixed' -%>
+            <%- options  = (['']+field['options']+[existing_value]).uniq
+                disabled = field['options'].include?(existing_value) ? [] : [existing_value] -%>
+            <%= select_tag(form_name, options_for_select(options, selected: existing_value, disabled: disabled),
                            :class => required && 'required') %>
           <%- else -%>
             <%= text_field_tag(form_name, existing_value, :class => required && 'required') %>

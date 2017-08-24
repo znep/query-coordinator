@@ -520,7 +520,7 @@
         "privateMetadata": {
             "custom_fields": {
                 "fieldset_foo": {
-                    "field_bar": "some private custom metadata"
+                    "field_baz": "some private custom metadata"
                 }
             }
         },

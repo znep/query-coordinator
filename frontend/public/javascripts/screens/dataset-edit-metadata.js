@@ -3,19 +3,28 @@ $(function() {
 
   // Validation
   var $form = $('#editMetadataForm');
+  var rules = {};
+  rules['view[name]'] = 'required';
+  rules['view[attributionLink]'] = 'customUrl';
+  rules['view[metadata[customRdfClass]]'] = {url: true};
+  $form.find('.validateOptions select').each(function() {
+    rules[$(this).name()] = 'validateOptions';
+  });
+
+  var messages = {};
+  messages['view[name]'] = $.t('screens.edit_metadata.dataset_title_error');
+  messages['view[attributionLink]'] = $.t('screens.edit_metadata.source_link_error');
+  messages['view[metadata[customRdfClass]]'] = $.t('screens.edit_metadata.custom_error');
+  $form.find('.validateOptions select').each(function() {
+    var initialValue = $(this).find(':selected').text();
+    messages[$(this).name()] = {
+      validateOptions: $.t('screens.edit_metadata.option_unavailable', { value: initialValue })
+    };
+  });
+
   var $validator = $form.validate({
-    rules: {
-      'view[name]': 'required',
-      'view[attributionLink]': 'customUrl',
-      'view[metadata[customRdfClass]]': {
-        url: true
-      }
-    },
-    messages: {
-      'view[name]': $.t('screens.edit_metadata.dataset_title_error'),
-      'view[attributionLink]': $.t('screens.edit_metadata.source_link_error'),
-      'view[metadata[customRdfClass]]': $.t('screens.edit_metadata.custom_error')
-    },
+    rules: rules,
+    messages: messages,
     errorPlacement: function(error, element) {
       switch (element.get(0).id) {
         case 'view_metadata_customRdfClass':
@@ -130,6 +139,8 @@ $(function() {
       $form.submit();
     }
   });
+
+  $form.find('.submitButton').toggleClass('disabled', !$form.valid());
 
 
   $form.find('.comboToggle').click(function(event) {

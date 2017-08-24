@@ -88,6 +88,10 @@ $(function() {
     return /^EPSG:\d+$/i.test(value);
   });
 
+  $.validator.addMethod('validateOptions', function(value, element) {
+    return $(element).find(':selected')[0].getAttribute('disabled') == null;
+  });
+
   // drop in translated default validation messages
   var messages = {};
   _.each($.validator.messages, function(__, key) {

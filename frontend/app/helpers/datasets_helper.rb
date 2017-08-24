@@ -28,7 +28,18 @@ module DatasetsHelper
   end
 
   def category_select_options(selected_category = nil)
-    options_for_select(flatten_category_tree, selected_category)
+    options = flatten_category_tree.uniq
+    if selected_category.present?
+      option_keys = options.map { |n| n[1] }
+      if option_keys.include?(selected_category)
+        options_for_select(options, selected_category)
+      else
+        completeOptions = options + [[selected_category, selected_category]]
+        options_for_select(completeOptions, selected: selected_category, disabled: selected_category)
+      end
+    else
+      options_for_select(options, selected_category)
+    end
   end
 
   def license_options(selected_license = '')

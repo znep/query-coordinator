@@ -26,9 +26,9 @@
       <%= text_area_tag('view[description]', @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => 'textPrompt') %>
     </div>
 
-    <div class="line clearfix">
+    <div class="line clearfix validateOptions">
       <%= label_tag('view[category]', t('screens.edit_metadata.category')) %>
-      <%= select_tag('view[category]', category_select_options(@view.category.nil? ? '' : @view.category)) %>
+      <%= select_tag('view[category]', category_select_options(@view.category)) %>
     </div>
 
     <div class="line clearfix">

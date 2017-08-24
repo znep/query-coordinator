@@ -450,9 +450,9 @@ class ViewTest < Minitest::Test
       'fields' => [ 'name' => 'field_bar', 'private' => true ]
     ])
     view.stubs(can_see_private_meta?: true) # Signed user.
-    assert_equal 'some private custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Signed user should see private metadata'
+    assert_equal 'some private custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_baz', nil), 'Signed user should see private metadata'
     view.stubs(can_see_private_meta?: false) # Unsigned user.
-    refute(view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should not see private metadata')
+    refute(view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_baz', nil), 'Unsigned user should not see private metadata')
 
     # public metadata field
     CurrentDomain.stubs(property: [

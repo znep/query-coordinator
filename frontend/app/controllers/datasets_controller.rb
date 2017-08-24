@@ -965,32 +965,6 @@ class DatasetsController < ApplicationController
 
   def parse_meta(view)
     if !view.metadata.nil?
-      # Make sure required fields are filled in
-      domain_meta = CurrentDomain.property(:fieldsets, :metadata)
-      params[:view] = params[:view].fix_key_encoding if params && params[:view]
-      unless domain_meta.blank?
-        error_fields = []
-        domain_meta.each do |fieldset|
-          unless fieldset.fields.blank?
-            fieldset.fields.each do |field|
-              if field.required.present?
-                if (field.private.present? &&
-                    params[:view][:privateMetadata][:custom_fields][fieldset.name][field.name].blank?) ||
-                  (field.private.blank? &&
-                    params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?)
-                  error_fields << field.name
-                end
-              end
-            end
-          end
-        end
-        unless error_fields.empty?
-          flash.now[:error] = error_fields.length == 1 ?
-            "The field '#{error_fields.first}' is required." :
-            "The fields '#{error_fields[0..-2].join("', '")}' and '#{error_fields[-1]}' are required."
-          return false
-        end
-      end
       new_feature_flags = {}
       if params[:view][:metadata].present?
         if params[:view][:metadata][:rdfClass] =~ /^_.*/

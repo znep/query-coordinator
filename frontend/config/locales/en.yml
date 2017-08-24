@@ -5797,6 +5797,7 @@ en:
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude
       optional: Optional
+      option_unavailable: '''%{value}'' is no longer available. Select a new value.'
       private_help: This field has been marked private by your organization and is not publicly viewable
       remove: Remove
       remove_image: Remove Image

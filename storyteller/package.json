@@ -30,7 +30,7 @@
     "chroma-js": "0.5.6",
     "es6-promise-polyfill": "1.2.0",
     "eslint": "2.10.2",
-    "eslint-base": "2.0.1",
+    "eslint-base": "2.2.0",
     "eslint-plugin-react": "5.2.2",
     "expose-loader": "0.7.1",
     "file-loader": "0.8.5",

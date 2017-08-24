@@ -125,9 +125,10 @@ table.result-list-table {
         }
       }
 
-      &.type, &.visibility {
-        *[class^="socrata-icon-"] {
-          font-size: 18px;
+      &.type {
+        span.socrata-icon {
+          height: 20px;
+          width: 20px;
         }
       }
 

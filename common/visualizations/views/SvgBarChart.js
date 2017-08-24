@@ -452,14 +452,14 @@ function SvgBarChart($element, vif, options) {
 
       bars.
         attr(
-          'x', 
+          'x',
           (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             return d3XScale(position.start);
           }
         ).
         attr(
-          'width', 
+          'width',
           (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             const value = position.end - position.start;
@@ -480,7 +480,7 @@ function SvgBarChart($element, vif, options) {
       if (isOneHundredPercentStacked) {
         bars.
           attr(
-            'data-percent', 
+            'data-percent',
             (d, measureIndex, dimensionIndex) => positions[dimensionIndex][measureIndex].percent
           );
       }
@@ -695,7 +695,7 @@ function SvgBarChart($element, vif, options) {
               return styleAttr;
             }
           ).
-          text((d, measureIndex, dimensionIndex) => {
+          html((d, measureIndex, dimensionIndex) => {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
 
@@ -959,7 +959,7 @@ function SvgBarChart($element, vif, options) {
     // This scale is used for groupings of bars under a single dimension
     // category.
     d3GroupingYScale = generateYGroupScale(
-      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      self.getOrdinalDomainFromMeasureLabels(measureLabels),
       d3DimensionYScale);
 
     d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
@@ -1064,7 +1064,7 @@ function SvgBarChart($element, vif, options) {
     dimensionGroupSvgs.
       attr('class', 'dimension-group').
       attr(
-        'data-dimension-value',
+        'data-dimension-value-html',
         (d, dimensionIndex, measureIndex) => {
           const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -1091,7 +1091,7 @@ function SvgBarChart($element, vif, options) {
       barUnderlaySvgs.
         attr('class', 'bar-underlay').
         attr(
-          'data-dimension-value',
+          'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -1124,7 +1124,7 @@ function SvgBarChart($element, vif, options) {
     barSvgs.
       attr('class', 'bar').
       attr(
-        'data-dimension-value',
+        'data-dimension-value-html',
         (datum, measureIndex, dimensionIndex) => {
           const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -1155,7 +1155,7 @@ function SvgBarChart($element, vif, options) {
 
       barTextSvgs.
         attr(
-          'data-dimension-value',
+          'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -1256,7 +1256,7 @@ function SvgBarChart($element, vif, options) {
               )[0][0];
               const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
               const label = measureLabels[measureIndex];
-              
+
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
               // add one to measure index to get the actual measure value from
@@ -1300,7 +1300,7 @@ function SvgBarChart($element, vif, options) {
             );
             const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
             const label = measureLabels[measureIndex];
-            
+
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
             // add one to measure index to get the actual measure value from
@@ -1308,7 +1308,7 @@ function SvgBarChart($element, vif, options) {
             // array returned by .datum() is the dimension value).
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
             const percent = parseFloat(this.getAttribute('data-percent'));
-            
+
             showBarHighlight(this);
             showBarFlyout(this, { measureIndex, color, label, value, percent });
           }
@@ -1356,7 +1356,7 @@ function SvgBarChart($element, vif, options) {
             // array returned by .datum() is the dimension value).
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
             const percent = parseFloat(this.getAttribute('data-percent'));
-            
+
             showBarHighlight(siblingBar);
             showBarFlyout(siblingBar, { measureIndex, color, label, value, percent });
           }
@@ -1393,9 +1393,17 @@ function SvgBarChart($element, vif, options) {
                 dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
               }
 
-              const dimensionGroup = yAxisAndSeriesSvg.select(
-                `g.dimension-group[data-dimension-value="${dimensionValue}"]`
+              // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
+              // We can't easily use a CSS selector because we lack a simple API to apply CSS-string escaping
+              // rules.
+              // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
+              // but both of those are out of reach for us at the moment.
+              const dimensionGroup = d3.select(
+                _(yAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
+                filter((group) => group.getAttribute('data-dimension-value-html') === dimensionValue).
+                first()
               );
+
               const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
 
               showGroupFlyout(seriesElement, dimensionGroup, dimensionValues, positions);
@@ -1526,7 +1534,8 @@ function SvgBarChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
-            label = ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+            // NOTE: We must use plain text; our axes are SVG (not HTML).
+            label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
           }
 
           return conditionallyTruncateLabel(label);
@@ -1662,12 +1671,12 @@ function SvgBarChart($element, vif, options) {
   }
 
   function showGroupFlyout(seriesElement, groupElement, dimensionValues, positions) {
-    const title = groupElement.attr('data-dimension-value');
+    const titleHTML = groupElement.attr('data-dimension-value-html');
 
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).text(
-          (title === NO_VALUE_SENTINEL) ? noValueLabel : title
+        $('<td>', {'colspan': 2}).html(
+          (titleHTML === NO_VALUE_SENTINEL) ? noValueLabel : titleHTML
         )
       );
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
@@ -1694,27 +1703,27 @@ function SvgBarChart($element, vif, options) {
         getSeriesIndexByMeasureIndex(measureIndex)
       );
 
-      let valueString;
+      let valueHTML;
 
       if (value === null) {
-        valueString = noValueLabel;
+        valueHTML = noValueLabel;
       } else {
         const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
+        valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
         if (value === 1) {
-          valueString += ` ${unitOne}`;
+          valueHTML += ` ${_.escape(unitOne)}`;
         } else {
-          valueString += ` ${unitOther}`;
+          valueHTML += ` ${_.escape(unitOther)}`;
         }
       }
 
       const percent = parseFloat(positions[dimensionIndex][measureIndex].percent);
       const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
       const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
-  
-      $valueCell.html(`${valueString} ${percentAsString}`);
+
+      $valueCell.html(`${valueHTML} ${percentAsString}`);
 
       return $('<tr>', {'class': 'socrata-flyout-row'}).
         append([
@@ -1767,13 +1776,13 @@ function SvgBarChart($element, vif, options) {
   }
 
   function showBarFlyout(barElement, { measureIndex, color, label, value, percent }) {
-    const title = barElement.getAttribute('data-dimension-value') || noValueLabel;
+    const titleHTML = barElement.getAttribute('data-dimension-value-html') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
 
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).text(
-          (title) ? title : ''
+        $('<td>', {'colspan': 2}).html(
+          (titleHTML) ? titleHTML : ''
         )
       );
     const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
@@ -1783,26 +1792,26 @@ function SvgBarChart($element, vif, options) {
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
-    let valueString;
+    let valueHTML;
 
     if (value === null) {
-      valueString = noValueLabel;
+      valueHTML = noValueLabel;
     } else {
       const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
+      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
       if (value === 1) {
-        valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
       } else {
-        valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
       }
     }
 
     const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
     const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
 
-    $valueCell.html(`${valueString} ${percentAsString}`);
+    $valueCell.html(`${valueHTML} ${percentAsString}`);
 
     $valueRow.append([
       $labelCell,

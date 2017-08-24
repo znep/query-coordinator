@@ -663,15 +663,15 @@ function SvgPieChart($element, vif, options) {
       'label'
     );
 
-    let title;
+    let titleHTML;
 
     if (_.isNil(titleValue)) {
-      title = noValueLabel;
+      titleHTML = noValueLabel;
     } else if (titleValue === otherLabel) {
-      title = otherLabel;
+      titleHTML = otherLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`)
-      title = ColumnFormattingHelpers.formatValueHTML(titleValue, column, dataToRender[0]);
+      titleHTML = ColumnFormattingHelpers.formatValueHTML(titleValue, column, dataToRender[0]);
     }
 
     // not compatible with multiple series
@@ -684,30 +684,30 @@ function SvgPieChart($element, vif, options) {
 
     // Constructing html table for flyout content
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
-      append($('<td>', {'colspan': 2}).text(title || ''));
+      append($('<td>', {'colspan': 2}).html(titleHTML || ''));
     const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
       append($title);
     const value = data.value;
 
-    let valueString;
+    let valueHTML;
 
     if (value === null) {
-      valueString = noValueLabel;
+      valueHTML = noValueLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`)
-      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
+      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
 
       if (value === 1) {
-        valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
       } else {
-        valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
       }
 
     }
 
-    $valueCell.html(`${valueString} ${percentAsString}`);
+    $valueCell.html(`${valueHTML} ${percentAsString}`);
 
     $valueRow.
       append([$valueCell]).

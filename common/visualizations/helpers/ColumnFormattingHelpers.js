@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 const DataTypeFormatter = require('../views/DataTypeFormatter');
 
@@ -11,7 +12,7 @@ export function getColumnFormats(columns) {
 }
 
 
-// Formats a value from the dataset for rendering within the chart.
+// Formats a value from the dataset for rendering within the chart as HTML.
 export function formatValueHTML(value, column, dataToRender, forceHumane = false) {
   const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
 
@@ -32,4 +33,13 @@ export function formatValueHTML(value, column, dataToRender, forceHumane = false
   }
 
   return DataTypeFormatter.renderCellHTML(value, formatInfo);
+}
+
+// Formats a value from the dataset for rendering within the chart as plain text.
+export function formatValuePlainText(value, column, dataToRender, forceHumane = false) {
+  // This is a very brain-dead solution. However, it works safely and keeps us
+  // from maintaining separate plain/html renderers for each column type.
+  return $('<div>').
+    html(formatValueHTML(value, column, dataToRender, forceHumane)).
+    text();
 }

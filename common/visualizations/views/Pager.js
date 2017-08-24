@@ -54,8 +54,8 @@ module.exports = function Pager(element, locale) {
     }
 
     message = message.format({
-      unitOne: options.unit.one,
-      unitOther: options.unit.other,
+      unitOne: _.escape(options.unit.one),
+      unitOther: _.escape(options.unit.other),
       firstRowOrdinal: options.datasetRowCount ? utils.commaify(options.startIndex + 1) : undefined,
       lastRowOrdinal: options.datasetRowCount ? utils.commaify(endIndex) : undefined,
       datasetRowCount: utils.commaify(options.datasetRowCount)

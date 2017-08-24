@@ -794,7 +794,7 @@ function SvgHistogram($element, vif, options) {
     );
   }
 
-  function bucketTitle(bucketData) {
+  function bucketTitleHTML(bucketData) {
     //TODO units
     const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
     return `${ColumnFormattingHelpers.formatValueHTML(bucketData.x0, column, dataToRender[0], true)} to ${ColumnFormattingHelpers.formatValueHTML(bucketData.x1, column, dataToRender[0], true)}`;
@@ -811,16 +811,16 @@ function SvgHistogram($element, vif, options) {
 
     utils.assertIsOneOfTypes(seriesIndex, 'number');
 
-    var title = bucketTitle(datum);
+    var titleHTML = bucketTitleHTML(datum);
     var label = seriesLabel(seriesIndex);
     var value = datum.value;
-    var valueString;
+    var valueHTML;
     var payload = null;
     var $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).
-          text(
-            (title) ? title : ''
+          html(
+            (titleHTML) ? titleHTML : ''
           )
         );
     var $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
@@ -831,23 +831,23 @@ function SvgHistogram($element, vif, options) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = I18n.t('shared.visualizations.charts.common.no_value');
+      valueHTML = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
       const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
       const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
 
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
+      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
 
       if (value == 1) {
-        valueString += ` ${unitOne}`;
+        valueHTML += ` ${_.escape(unitOne)}`;
       } else {
-        valueString += ` ${unitOther}`;
+        valueHTML += ` ${_.escape(unitOther)}`;
       }
     }
 
     $valueCell.
-      text(valueString);
+      html(valueHTML);
 
     $valueRow.append([
       $labelCell,

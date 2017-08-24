@@ -403,14 +403,14 @@ function SvgColumnChart($element, vif, options) {
 
       columns.
         attr(
-          'y', 
+          'y',
           (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             return d3YScale(position.end);
           }
         ).
         attr(
-          'height', 
+          'height',
             (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             const value = position.end - position.start;
@@ -431,7 +431,7 @@ function SvgColumnChart($element, vif, options) {
       if (isOneHundredPercentStacked) {
         columns.
           attr(
-            'data-percent', 
+            'data-percent',
             (d, measureIndex, dimensionIndex) => positions[dimensionIndex][measureIndex].percent
           );
       }
@@ -626,7 +626,7 @@ function SvgColumnChart($element, vif, options) {
     // This scale is used for groupings of columns under a single dimension
     // category.
     d3GroupingXScale = generateXGroupScale(
-      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      self.getOrdinalDomainFromMeasureLabels(measureLabels),
       d3DimensionXScale);
 
     d3XAxis = generateXAxis(d3DimensionXScale);
@@ -815,7 +815,7 @@ function SvgColumnChart($element, vif, options) {
 
     dimensionGroupSvgs.
       attr('class', 'dimension-group').
-      attr('data-dimension-value', (datum, dimensionIndex, measureIndex) => {
+      attr('data-dimension-value-html', (datum, dimensionIndex, measureIndex) => {
         const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
 
@@ -839,7 +839,7 @@ function SvgColumnChart($element, vif, options) {
       columnUnderlaySvgs.
         attr('class', 'column-underlay').
         attr(
-          'data-dimension-value',
+          'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -872,7 +872,7 @@ function SvgColumnChart($element, vif, options) {
     columnSvgs.
       attr('class', 'column').
       attr(
-        'data-dimension-value',
+        'data-dimension-value-html',
         (datum, measureIndex, dimensionIndex) => {
           const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
@@ -1071,8 +1071,15 @@ function SvgColumnChart($element, vif, options) {
               dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
             }
 
-            const dimensionGroup = xAxisAndSeriesSvg.select(
-              `g.dimension-group[data-dimension-value="${dimensionValue}"]`
+            // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
+            // We can't easily use a CSS selector because we lack a simple API to apply CSS-string escaping
+            // rules.
+            // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
+            // but both of those are out of reach for us at the moment.
+            const dimensionGroup = d3.select(
+              _(xAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
+              filter((group) => group.getAttribute('data-dimension-value-html') === dimensionValue).
+              first()
             );
 
             showGroupFlyout(dimensionGroup, dimensionValues, positions);
@@ -1200,7 +1207,8 @@ function SvgColumnChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
-            label = ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender);
+            // NOTE: We must use plain text; our axes are SVG (not HTML).
+            label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender);
           }
 
           return conditionallyTruncateLabel(label);
@@ -1330,11 +1338,11 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function showGroupFlyout(groupElement, dimensionValues, positions) {
-    const title = groupElement.attr('data-dimension-value');
+    const titleHTML = groupElement.attr('data-dimension-value-html');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).text(
-          (title === NO_VALUE_SENTINEL) ? noValueLabel : title
+        $('<td>', {'colspan': 2}).html(
+          (titleHTML === NO_VALUE_SENTINEL) ? noValueLabel : titleHTML
         )
       );
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
@@ -1358,26 +1366,26 @@ function SvgColumnChart($element, vif, options) {
       const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
       const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
 
-      let valueString;
+      let valueHTML;
 
       if (value === null) {
-        valueString = noValueLabel;
+        valueHTML = noValueLabel;
       } else {
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
+        valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
         if (value === 1) {
-          valueString += ` ${unitOne}`;
+          valueHTML += ` ${_.escape(unitOne)}`;
         } else {
-          valueString += ` ${unitOther}`;
+          valueHTML += ` ${_.escape(unitOther)}`;
         }
       }
 
       const percent = parseFloat(positions[dimensionIndex][measureIndex].percent);
       const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
       const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
-  
-      $valueCell.html(`${valueString} ${percentAsString}`);
+
+      $valueCell.html(`${valueHTML} ${percentAsString}`);
 
       return $('<tr>', {'class': 'socrata-flyout-row'}).
         append([
@@ -1427,12 +1435,12 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function showColumnFlyout(columnElement, { measureIndex, color, label, value, percent }) {
-    const title = columnElement.getAttribute('data-dimension-value') || noValueLabel;
+    const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).text(
-          (title) ? title : ''
+        $('<td>', {'colspan': 2}).html(
+          (titleHTML) ? titleHTML : ''
         )
       );
     const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
@@ -1442,28 +1450,28 @@ function SvgColumnChart($element, vif, options) {
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
-    let valueString;
+    let valueHTML;
     let payload = null;
 
     if (value === null) {
-      valueString = noValueLabel;
+      valueHTML = noValueLabel;
     } else {
 
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueString = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
+      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 
       if (value === 1) {
-        valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
       } else {
-        valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
       }
     }
 
     const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
     const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
 
-    $valueCell.html(`${valueString} ${percentAsString}`);
-    
+    $valueCell.html(`${valueHTML} ${percentAsString}`);
+
     $valueRow.append([
       $labelCell,
       $valueCell

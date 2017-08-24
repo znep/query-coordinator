@@ -11,7 +11,7 @@ Object.keys(api).forEach(key => {
         { xCSRFToken: defaultHeaders['X-CSRF-Token'], xAppToken: defaultHeaders['X-App-Token'] },
         params
       )
-    )(wrappedFetch);
+    )(wrappedFetch, '/api');
 });
 
 export default wrappedApi;

@@ -121,8 +121,7 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
   const newOutputColumn = {
     ...outputColumn,
     field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
-    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name),
-    position: current.length + 1 // one based
+    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
   };
 
   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>

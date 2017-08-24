@@ -222,49 +222,66 @@ window.socrata.featureFlags =
     end
 
     context 'when custom_css is not blank' do
-      context 'when govStat is not enabled' do
-        let(:govstat_enabled) { false }
+      context 'in admin pages' do
+        let(:request) { double('request', path: '/admin/activity_feed') }
+        before do
+          allow(helper).to receive(:request).and_return(request)
+        end
 
-        it 'applies custom_css' do
-          expect(apply_custom_css?).to eq(true)
+        it 'does not apply custom_css' do
+          expect(apply_custom_css?).to eq(false)
         end
       end
+      context 'not in admin pages' do
+        let(:request) { double('request', path: '/') }
+        before do
+          allow(helper).to receive(:request).and_return(request)
+        end
 
-      context 'when govStat is enabled' do
-        let(:govstat_enabled) { true }
+        context 'when govStat is not enabled' do
+          let(:govstat_enabled) { false }
 
-        context 'when action is "chromeless"' do
-          let(:action_name) { 'chromeless' }
-
-          it 'does not apply custom_css' do
-            expect(apply_custom_css?).to eq(false)
+          it 'applies custom_css' do
+            expect(apply_custom_css?).to eq(true)
           end
         end
 
-        context 'when action is not "chromeless"' do
-          context 'when using dataslate and we are on the homepage' do
-            let(:using_dataslate) { true }
-            let(:on_homepage) { true }
+        context 'when govStat is enabled' do
+          let(:govstat_enabled) { true }
 
-            it 'applies custom_css' do
-              expect(apply_custom_css?).to eq(true)
+          context 'when action is "chromeless"' do
+            let(:action_name) { 'chromeless' }
+
+            it 'does not apply custom_css' do
+              expect(apply_custom_css?).to eq(false)
             end
           end
 
-          context 'when not using dataslate or not on the homepage' do
-            context 'when suppressing govstat' do
-              let(:suppress_govstat) { true }
+          context 'when action is not "chromeless"' do
+            context 'when using dataslate and we are on the homepage' do
+              let(:using_dataslate) { true }
+              let(:on_homepage) { true }
 
-              it 'applies custom css' do
+              it 'applies custom_css' do
                 expect(apply_custom_css?).to eq(true)
               end
             end
 
-            context 'when not suppressing govstat' do
-              let(:suppress_govstat) { false }
+            context 'when not using dataslate or not on the homepage' do
+              context 'when suppressing govstat' do
+                let(:suppress_govstat) { true }
 
-              it 'does not apply custom css' do
-                expect(apply_custom_css?).to eq(false)
+                it 'applies custom css' do
+                  expect(apply_custom_css?).to eq(true)
+                end
+              end
+
+              context 'when not suppressing govstat' do
+                let(:suppress_govstat) { false }
+
+                it 'does not apply custom css' do
+                  expect(apply_custom_css?).to eq(false)
+                end
               end
             end
           end

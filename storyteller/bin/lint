@@ -2,10 +2,9 @@
 
 npm update eslint > /dev/null
 
-NEW_PROBLEMS=`./node_modules/.bin/eslint -c package.json -f compact app | sort | tail -n +3`
-NEW_PROBLEMS_COUNT=`wc -l <(echo -n "$NEW_PROBLEMS") | awk '{print $1}'`
+NEW_PROBLEMS=`./node_modules/.bin/eslint -c package.json -f compact app spec/karma | sort | tail -n +3`
 
-if [ "$NEW_PROBLEMS_COUNT" -gt 0 ]; then
+if [[ ! -z "$NEW_PROBLEMS" ]]; then
   echo
   echo "New errors:"
   echo "$NEW_PROBLEMS"

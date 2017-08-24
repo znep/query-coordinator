@@ -30,8 +30,7 @@ class PublishConfirmationUSAID extends Component {
       dispatchApplyRevision,
       setPermission,
       btnDisabled,
-      publicSelected,
-      params
+      publicSelected
     } = this.props;
 
     return (
@@ -70,7 +69,7 @@ class PublishConfirmationUSAID extends Component {
             operation={APPLY_REVISION}
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
-            onClick={() => dispatchApplyRevision(params)}>
+            onClick={() => dispatchApplyRevision()}>
             {publicSelected
               ? I18n.home_pane.publish_confirmation.button
               : I18n.home_pane.publish_confirmation_usaid.button}
@@ -87,8 +86,7 @@ PublishConfirmationUSAID.propTypes = {
   dispatchApplyRevision: PropTypes.func.isRequired,
   btnDisabled: PropTypes.bool,
   setPermission: PropTypes.func,
-  publicSelected: PropTypes.bool.isRequired,
-  params: PropTypes.object.isRequired
+  publicSelected: PropTypes.bool.isRequired
 };
 
 export default PublishConfirmationUSAID;

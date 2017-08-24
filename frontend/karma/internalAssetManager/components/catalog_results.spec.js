@@ -48,4 +48,11 @@ describe('components/CatalogResults', () => {
     const element = mount(renderLocalizedComponentWithPropsAndStore(CatalogResults, catalogResultsProps(), store));
     assert.isNotNull(element.find('.result-list-table'));
   });
+
+  it('hides the asset inventory button when on the "My Assets" tab', () => {
+    const element = mount(renderLocalizedComponentWithPropsAndStore(CatalogResults, catalogResultsProps({
+      activeTab: 'myAssets'
+    }), store));
+    assert.isNull(document.querySelector('.asset-inventory-link-wrapper'));
+  });
 });

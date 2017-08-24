@@ -109,7 +109,7 @@ export class CatalogResults extends Component {
   }
 
   renderFooter() {
-    const { page, pageNumber, fetchingResults, resultSetSize } = this.props;
+    const { activeTab, page, pageNumber, fetchingResults, resultSetSize } = this.props;
     if (fetchingResults) {
       return;
     }
@@ -127,7 +127,9 @@ export class CatalogResults extends Component {
       total: resultSetSize
     };
 
-    const renderedAssetInventoryLink = (page === 'profile') ? null : (
+    // EN-18329: Hide the Asset Inventory button on the /profile page,
+    // or on the /admin/assets page when filtered on "My Assets".
+    const renderedAssetInventoryLink = (page === 'profile' || activeTab === 'myAssets') ? null : (
       <div className="asset-inventory-link-wrapper">
         <AssetInventoryLink />
       </div>
@@ -157,6 +159,7 @@ export class CatalogResults extends Component {
 }
 
 CatalogResults.propTypes = {
+  activeTab: PropTypes.string.isRequired,
   allFilters: PropTypes.object,
   changePage: PropTypes.func.isRequired,
   changeQ: PropTypes.func.isRequired,
@@ -180,6 +183,7 @@ CatalogResults.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
+  activeTab: state.header.activeTab,
   allFilters: state.filters,
   currentQuery: state.filters.q,
   fetchingResults: state.catalog.fetchingResults,

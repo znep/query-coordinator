@@ -27,14 +27,14 @@ export function mapStateToProps({ entities, ui }) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, { params }) {
   return {
     doCancel: initialPermission => {
-      dispatch(updateRevision(initialPermission));
+      dispatch(updateRevision(initialPermission, params));
       dispatch(hideModal());
     },
-    dispatchApplyRevision: params => dispatch(applyRevision(params)),
-    setPermission: permission => dispatch(updateRevision(permission))
+    dispatchApplyRevision: () => dispatch(applyRevision(params)),
+    setPermission: permission => dispatch(updateRevision(permission, params))
   };
 }
 

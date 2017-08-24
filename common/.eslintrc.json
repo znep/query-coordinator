@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "plugins": [
     "react",
-    "import"
+    "import",
+    "mocha"
   ],
   "rules": {
     "react/no-danger": 0,
@@ -12,7 +13,8 @@
         "allowKeywords": true,
         "allowPattern": "^[a-z]+(_[a-z]+)+$"
       }
-    ]
+    ],
+    "mocha/no-exclusive-tests": "error"
   },
   "parserOptions": {
     "ecmaFeatures": {

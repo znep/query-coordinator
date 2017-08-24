@@ -7,7 +7,14 @@ describe('containers/RowDetailsContainer', () => {
   describe('mapStateToProps', () => {
     it('renders when there is no output schema', () => {
       const stateWithoutOS = dotProp.set(state, 'entities.output_schemas', {});
-      const props = mapStateToProps(stateWithoutOS);
+
+      const ownProps = {
+        revisionSeq: 0,
+        fourfour: 'kg5j-unyr'
+      };
+
+      const props = mapStateToProps(stateWithoutOS, ownProps);
+
       assert.deepEqual(props, {
         columnCount: 0,
         rowCount: 0,
@@ -35,17 +42,27 @@ describe('containers/RowDetailsContainer', () => {
         updatedTransforms
       );
 
-      const props = mapStateToProps(stateWithUpdatedTransforms);
+      const ownProps = {
+        revisionSeq: 0,
+        fourfour: 'kg5j-unyr'
+      };
+
+      const props = mapStateToProps(stateWithUpdatedTransforms, ownProps);
 
       assert.deepEqual(props, {
         columnCount: 22,
-        rowCount: 0,
+        rowCount: 9,
         rowLabel: 'row'
       });
     });
 
     it('renders when there is an output schema, and transforms have rows', () => {
-      const props = mapStateToProps(state);
+      const ownProps = {
+        revisionSeq: 0,
+        fourfour: 'kg5j-unyr'
+      };
+
+      const props = mapStateToProps(state, ownProps);
 
       assert.deepEqual(props, {
         columnCount: 22,

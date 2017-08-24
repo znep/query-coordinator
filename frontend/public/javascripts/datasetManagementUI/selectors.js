@@ -100,7 +100,7 @@ export function sourcesInProgress(apiCalls) {
 }
 
 export function totalRows(entities, revisionSequence) {
-  if (!entities || !revisionSequence) {
+  if (!entities || revisionSequence == null) {
     return 0;
   }
 

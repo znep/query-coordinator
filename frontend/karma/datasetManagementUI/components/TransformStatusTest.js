@@ -86,6 +86,7 @@ describe('components/TransformStatus', () => {
         ...defaultProps,
         transform: {
           output_soql_type: 'text',
+          contiguous_rows_processed: 0,
           id: 5
         },
         totalRows: undefined
@@ -153,7 +154,6 @@ describe('components/TransformStatus', () => {
       assert.include(component.text(), '<ProgressBar />');
       assert.include(component.text(), '<ErrorFlyout />');
       assert.include(component.text(), '<Link />');
-
     });
   });
 });

@@ -71,7 +71,6 @@ const defaultState = {
 };
 
 describe('Selectors', () => {
-
   describe('rowsUpserted', () => {
     it('returns the number of rows upserted for an upsert job', () => {
       assert.equal(Selectors.rowsUpserted(defaultState, '26'), 20);
@@ -251,7 +250,10 @@ describe('Selectors', () => {
       .filter(key => !!key);
     const currentOutputSchemaId = Math.max(...outputSchemaIds);
 
-    const output = Selectors.currentAndIgnoredOutputColumns(entities, currentOutputSchemaId);
+    const output = Selectors.currentAndIgnoredOutputColumns(
+      entities,
+      currentOutputSchemaId
+    );
 
     it('puts all columns in current output schema into current array', () => {
       const currentOutputColumnIds = _.chain(entities.output_schema_columns)
@@ -313,60 +315,37 @@ describe('Selectors', () => {
   });
 
   describe('allTransformsDone', () => {
-
     it('returns false when transforms not done', () => {
       const columnsWithTransforms = [
-        { transform: { contiguous_rows_processed: 2500 } },
-        { transform: { contiguous_rows_processed: 300 } }
+        { transform: { completed_at: null } },
+        { transform: { completed_at: '2017-06-13T18:43:32' } }
       ];
-      const inputSchema = {
-        total_rows: 5000
-      };
-      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+
+      const result = Selectors.allTransformsDone(columnsWithTransforms);
       assert.isFalse(result);
     });
 
     it('returns false when transform progress not defined yet', () => {
       const columnsWithTransforms = [
         { transform: {} },
-        { transform: { contiguous_rows_processed: 300 } }
+        { transform: { completed_at: '2017-06-13T18:43:32' } }
       ];
-      const inputSchema = {
-        total_rows: 5000
-      };
-      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+
+      const result = Selectors.allTransformsDone(columnsWithTransforms);
       assert.isFalse(result);
     });
 
-    it('returns true when transform progress matches input schema', () => {
+    it('returns true when all transforms have a truthy completed_at', () => {
       const columnsWithTransforms = [
-        { transform: { contiguous_rows_processed: 5000 } },
-        { transform: { contiguous_rows_processed: 5000 } }
+        { transform: { completed_at: '2017-06-13T18:43:32' } },
+        { transform: { completed_at: '2017-06-13T18:43:32' } }
       ];
-      const inputSchema = {
-        total_rows: 5000
-      };
-      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+      const result = Selectors.allTransformsDone(columnsWithTransforms);
       assert.isTrue(result);
     });
-
-    // EN-16784
-    it('returns true when input schema has 0 rows', () => {
-      const columnsWithTransforms = [
-        { transform: { contiguous_rows_processed: 0 } },
-        { transform: { contiguous_rows_processed: 0 } }
-      ];
-      const inputSchema = {
-        total_rows: 0
-      };
-      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
-      assert.isTrue(result);
-    });
-
   });
 
   describe('latestOutputSchemaForSource', () => {
-
     it('returns null if the source has no output schemas', () => {
       const entities = {
         sources: {
@@ -393,10 +372,11 @@ describe('Selectors', () => {
         }
       };
 
-      const latestOutputSchema = Selectors.latestOutputSchemaForSource(entities, 0);
+      const latestOutputSchema = Selectors.latestOutputSchemaForSource(
+        entities,
+        0
+      );
       assert.equal(latestOutputSchema.id, 1);
     });
-
   });
-
 });

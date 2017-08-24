@@ -171,11 +171,16 @@ export const changeVisibility = (value) => (dispatch, getState) => {
 export const changeQ = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_Q', value });
+    dispatch(clearSortOrder()); // EN-18325: Clear sort order for the cetera "relevance" default sort
     clearPage(dispatch);
     updateQueryString({ getState });
   };
 
-  return fetchResults(dispatch, getState, { action: 'CHANGE_Q', q: value, pageNumber: 1 }, onSuccess);
+  return fetchResults(
+    dispatch,
+    getState,
+    { action: 'CHANGE_Q', q: value, pageNumber: 1, order: undefined }, onSuccess
+  );
 };
 
 export const clearSearch = () => (dispatch, getState) => {

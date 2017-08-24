@@ -145,4 +145,39 @@ describe('actions/filters', () => {
       });
     });
   });
+
+  describe('changeQ', () => {
+    beforeEach(() => {
+      ceteraStub = stubCeteraQuery();
+      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+      ceteraAssetCountsStub.restore();
+    });
+
+    it('changes the current query and clears the existing sort', () => {
+      const store = mockStore({
+        filters: { q: null },
+        catalog: { order: { ascending: false, value: 'name' } }
+      });
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CHANGE_Q', value: 'transformers! robots in disguise' },
+        { type: 'CHANGE_SORT_ORDER', order: undefined },
+        { type: 'CHANGE_PAGE', pageNumber: 1 },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+      ];
+
+      return store.dispatch(Actions.changeQ('transformers! robots in disguise')).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
 });

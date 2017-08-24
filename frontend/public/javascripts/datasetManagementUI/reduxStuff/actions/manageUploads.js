@@ -149,7 +149,7 @@ export function uploadFile(sourceId, file) {
     return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
-        dispatch(uploadFileSuccess(sourceId, new Date(), resp.resource.id, resp.resource.total_rows));
+        dispatch(uploadFileSuccess(sourceId, new Date()));
 
         dispatch(apiCallSucceeded(callId));
 
@@ -168,13 +168,11 @@ export function uploadFile(sourceId, file) {
   };
 }
 
-function uploadFileSuccess(sourceId, finishedAt, inputSchemaId, totalRows) {
+function uploadFileSuccess(sourceId, finishedAt) {
   return {
     type: UPLOAD_FILE_SUCCESS,
     sourceId,
-    finishedAt,
-    inputSchemaId,
-    totalRows
+    finishedAt
   };
 }
 

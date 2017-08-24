@@ -60,11 +60,12 @@ export class TransformStatus extends Component {
   }
 
   determineColStatus(isIgnored, transform, totalRows) {
-    if (!transform.contiguous_rows_processed || !totalRows) {
-      return 'inProgress';
-    } else if (isIgnored) {
+    // TODO delete this when dsmapi pr goes in
+    const oldDoneCheck = transform.contiguous_rows_processed === totalRows;
+
+    if (isIgnored) {
       return 'isIgnored';
-    } else if (transform.contiguous_rows_processed === totalRows) {
+    } else if (transform.completed_at || oldDoneCheck) {
       return 'done';
     } else {
       return 'inProgress';

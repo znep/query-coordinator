@@ -237,7 +237,7 @@ export function listenForOutputSchemaSuccess(outputSchemaResponse, inputSchema) 
     .map(oc => ({
       ...oc.transform,
       error_indices: [],
-      contiguous_rows_processed: oc.transform.completed_at ? totalRows : null
+      contiguous_rows_processed: oc.transform.completed_at ? totalRows : 0 // TODO change 0 to null when dsmapi pr goes in
     }))
     .reduce(
       (acc, transform) => ({
@@ -364,40 +364,45 @@ export function subscribeToTransforms(os) {
     os.output_columns.forEach(oc => {
       // == null catches null and undefined
       // we only want to subscribe to transforms that are NOT completed since,
-      // if completed, we don't need to know about their progress
-      // TODO: we need num_transform_errors on the rest reponse for this to work
-      const channel = socket.channel(`transform:${oc.transform.id}`);
+      // if completed, we don't need to know about their progress. This check
+      // is the reason this will be more efficient than what we are curently doing
+      // TODO: we need num_transform_errors on the rest reponse for this to work.
+      // Right now we get it only from a socket, which means we HAVE to subscribe
+      // to transform channels even if they are complete, just to get this one thing
+      if (oc.transform.completed_at == null) {
+        const channel = socket.channel(`transform:${oc.transform.id}`);
 
-      const maxPtrHandler = ({ end_row_offset }) =>
-        dispatch(
-          editTransform(oc.transform.id, {
-            contiguous_rows_processed: end_row_offset
-          })
-        );
+        const maxPtrHandler = ({ end_row_offset }) =>
+          dispatch(
+            editTransform(oc.transform.id, {
+              contiguous_rows_processed: end_row_offset
+            })
+          );
 
-      const updateHandler = ({ completed_at }) =>
-        dispatch(
-          editTransform(oc.transform.id, {
-            completed_at
-          })
-        );
+        const updateHandler = ({ completed_at }) =>
+          dispatch(
+            editTransform(oc.transform.id, {
+              completed_at
+            })
+          );
 
-      const transformErrorHandler = ({ count }) =>
-        dispatch(
-          editTransform(oc.transform.id, {
-            num_transform_errors: count
-          })
-        );
+        const transformErrorHandler = ({ count }) =>
+          dispatch(
+            editTransform(oc.transform.id, {
+              num_transform_errors: count
+            })
+          );
 
-      channel.on('update', updateHandler);
+        channel.on('update', updateHandler);
 
-      // DSMAPI sends these messages too fast for the frontend, which causes
-      // too many rerenders and makes UI laggy, so gotta throttle
-      channel.on('max_ptr', _.throttle(maxPtrHandler, PROGRESS_THROTTLE_TIME));
+        // DSMAPI sends these messages too fast for the frontend, which causes
+        // too many rerenders and makes UI laggy, so gotta throttle
+        channel.on('max_ptr', _.throttle(maxPtrHandler, PROGRESS_THROTTLE_TIME));
 
-      channel.on('errors', _.throttle(transformErrorHandler, PROGRESS_THROTTLE_TIME));
+        channel.on('errors', _.throttle(transformErrorHandler, PROGRESS_THROTTLE_TIME));
 
-      channel.join();
+        channel.join();
+      }
 
       // TODO: Delete everything til DELETE END after dsmapi pr goes in
       const oldChannel = socket.channel(`transform_progress:${oc.transform.id}`);

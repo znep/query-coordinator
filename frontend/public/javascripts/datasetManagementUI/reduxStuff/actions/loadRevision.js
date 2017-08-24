@@ -121,11 +121,11 @@ function sideEffectyStuff(revision, sources, params) {
       dispatch(subscribeToRowErrors(is));
     });
 
-    outputSchemas.forEach(os => dispatch(listenForOutputSchemaSuccess(os)));
+    outputSchemas.forEach(os => {
+      const is = inputSchemas.find(schema => schema.id === os.input_schema_id);
+      dispatch(listenForOutputSchemaSuccess(os, is));
+    });
 
-    // TODO: Once we swap out the view logic that uses client-supplied attributes
-    // (contiguous_rows_processed, num_transform_errors) and make it use server-side
-    // attributes (completed_at on the os), than add this line here: .filter(os => os.completed_at === null)
     outputSchemas.forEach(os => {
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));

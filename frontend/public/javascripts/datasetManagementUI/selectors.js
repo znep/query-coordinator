@@ -2,12 +2,7 @@ import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
 import { CREATE_UPLOAD } from 'reduxStuff/actions/manageUploads';
-import {
-  stripToTextAst,
-  stripToNumberAst,
-  stripToBooleanAst,
-  stripToDatetimeAst
-} from 'lib/ast';
+import { stripToTextAst, stripToNumberAst, stripToBooleanAst, stripToDatetimeAst } from 'lib/ast';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
@@ -82,7 +77,8 @@ export function treeForOutputSchema(entities, outputSchemaId) {
   };
 }
 
-export function allTransformsDone(columnsWithTransforms, inputSchema) {
+// TODO: delete this once DSMAPI websocket change goes in
+export function allTransformsDoneOld(columnsWithTransforms, inputSchema) {
   return columnsWithTransforms.every(
     column =>
       !_.isUndefined(column.transform.contiguous_rows_processed) &&
@@ -90,11 +86,35 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
   );
 }
 
+export function allTransformsDone(columnsWithTransforms = []) {
+  return columnsWithTransforms
+    .map(col => !!col.transform.completed_at)
+    .reduce((acc, bool) => acc && bool, true);
+}
+
 export function sourcesInProgress(apiCalls) {
   return _.filter(
     apiCalls,
     apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
   );
+}
+
+export function totalRows(entities, revisionSequence) {
+  if (!entities || !revisionSequence) {
+    return 0;
+  }
+
+  const revSeq = _.toNumber(revisionSequence);
+
+  const rev = _.find(entities.revisions, r => r.revision_seq === revSeq);
+
+  const os = rev && rev.output_schema_id ? entities.output_schemas[rev.output_schema_id] : null;
+
+  const is = os && os.input_schema_id ? entities.input_schemas[os.input_schema_id] : null;
+
+  const rows = is ? is.total_rows : null;
+
+  return rows || 0;
 }
 
 export function rowsTransformed(outputColumns) {
@@ -137,24 +157,23 @@ export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
 
   const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
     const ast = oc.transform.parsed_expr;
-    return _.uniqWith([
-      ast,
-      stripToTextAst(ast),
-      stripToNumberAst(ast),
-      stripToBooleanAst(ast),
-      stripToDatetimeAst(ast)
-    ], _.isEqual);
+    return _.uniqWith(
+      [ast, stripToTextAst(ast), stripToNumberAst(ast), stripToBooleanAst(ast), stripToDatetimeAst(ast)],
+      _.isEqual
+    );
   });
 
-  const isAstUsed = (ast) => !!_.find(outputColumnsStrippedAsts, (a) => _.isEqual(a, ast));
+  const isAstUsed = ast => !!_.find(outputColumnsStrippedAsts, a => _.isEqual(a, ast));
 
-  const isUnreferenced = (outputColumn) => {
+  const isUnreferenced = outputColumn => {
     const ast = outputColumn.transform.parsed_expr;
-    return !isAstUsed(ast) &&
+    return (
+      !isAstUsed(ast) &&
       !isAstUsed(stripToTextAst(ast)) &&
       !isAstUsed(stripToNumberAst(ast)) &&
       !isAstUsed(stripToBooleanAst(ast)) &&
-      !isAstUsed(stripToDatetimeAst(ast));
+      !isAstUsed(stripToDatetimeAst(ast))
+    );
   };
 
   const unreferencedOutputColumns = firstColumns.filter(isUnreferenced);

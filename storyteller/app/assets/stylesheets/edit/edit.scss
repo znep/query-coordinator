@@ -30,10 +30,6 @@ body {
   background-color: $body-bg-color;
 }
 
-a {
-  color: $link-color;
-}
-
 .header-main {
   @include unselectable();
   @include clearfix();

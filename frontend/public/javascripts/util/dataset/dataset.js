@@ -41,60 +41,6 @@
 
       var ds = this;
 
-      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
-        // Override whatever the renderTypeConfig might actually be with ONLY
-        // the table/grid view, since that is the only one we want to support
-        // moving forward with NBE-only datasets.
-        //
-        // It seems safer to expunge the presence of unsupported
-        // renderTypeConfigs from view JSON used to instantiate the Dataset
-        // model rather than trying to track down every single thing that might
-        // be reading these properties in any number of dynamic property path
-        // constructions, blargh.
-        if (
-          v.hasOwnProperty('metadata') &&
-          v.metadata.hasOwnProperty('renderTypeConfig')
-        ) {
-
-          // Store the original values so that we can replace them when we make
-          // updates to the server's notion of the view, since we want the below
-          // change to be transparent and client-side only.
-          //
-          // Note that for some reason when loading a grid view page the Dataset
-          // model gets instantiated twice (?!) so we need to guard against
-          // overwriting the original stashed values with the overridden ones.
-          if (!window.blist.hasOwnProperty('originalDatasetTypeMetadata')) {
-            window.blist.originalDatasetTypeMetadata = {
-              availableDisplayTypes: _.cloneDeep(v.metadata.availableDisplayTypes),
-              renderTypeConfig: _.cloneDeep(v.metadata.renderTypeConfig)
-            };
-          }
-
-          if (_.has(v, 'metadata.renderTypeConfig.visible.table')) {
-            delete v.metadata.renderTypeConfig.visible.table;
-
-            v.metadata.renderTypeConfig.visible.socrataVizTable = true;
-          }
-
-          if (
-            _.has(v, 'metadata.availableDisplayTypes') &&
-            _.isArray(v.metadata.availableDisplayTypes)
-          ) {
-
-            v.metadata.availableDisplayTypes = v.metadata.availableDisplayTypes.
-              filter(function(availableDisplayType) {
-
-                return !_.include(
-                  ['table', 'socrataVizTable'],
-                  availableDisplayType
-                );
-              });
-
-            v.metadata.availableDisplayTypes.push('socrataVizTable');
-          }
-        }
-      }
-
       // Avoid overwriting functions with static values from Rails (e.g., totalRows)
       _.each(v, function(curVal, key) {
         if (!_.isFunction(ds[key])) {
@@ -377,10 +323,6 @@
     save: function(successCallback, errorCallback, allowedKeys) {
       var ds = this;
 
-      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
-        ds = restoreOriginalTypeMetadata(ds);
-      }
-
       if (!ds.hasRight(blist.rights.view.UPDATE_VIEW)) {
         return false;
       }
@@ -426,10 +368,6 @@
         }
       };
       var ds = cleanViewForCreate(this);
-
-      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
-        ds = restoreOriginalTypeMetadata(ds);
-      }
 
       // Munge permissions for forms, since those don't get carried over
       // or inherited
@@ -5133,30 +5071,6 @@
         20000
       );
     }
-  }
-
-  // EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
-  //
-  // Since we want to override view.metadata.availableDisplayTypes and
-  // view.metadata.renderTypeConfig at runtime only, we need to stash the
-  // original properties of these values somewhere and restore them before we
-  // attempt to save the dataset, because Core Server will just overwrite the
-  // previous values with whatever happens to be in the view that we send it.
-  function restoreOriginalTypeMetadata(view) {
-    var originalTypeMetadata = _.get(window, 'blist.originalDatasetTypeMetadata');
-
-    if (originalTypeMetadata) {
-
-      if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
-        _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
-      }
-
-      if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
-        _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
-      }
-    }
-
-    return view;
   }
 
   function cleanViewForSave(ds, allowedKeys) {

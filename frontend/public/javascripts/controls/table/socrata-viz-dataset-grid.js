@@ -10,7 +10,7 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
       function() {
         if (console && console.error) {
           console.error(
-            'The Socrata Visualizations Table could not be instantiated not ' +
+            'The Socrata Visualizations Table could not be instantiated ' +
             'because it is not defined.'
           );
         }

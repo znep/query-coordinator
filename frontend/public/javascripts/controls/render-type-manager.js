@@ -137,45 +137,6 @@
       scrollsInline: false
     },
 
-    table: {
-      name: 'table',
-      domId: 'gridRenderType',
-      javascripts: [{
-        assets: 'shared-table-render'
-      }],
-      stylesheets: [{
-        assets: 'grid',
-        hasImages: true
-      }, {
-        assets: 'render-images-bundle',
-        hasImages: true
-      }],
-      initFunction: function($dom, settings) {
-        $dom.datasetGrid($.extend({
-            view: settings.view,
-            columnDeleteEnabled: settings.editEnabled &&
-              settings.view.type == 'blist' &&
-              settings.view.hasRight(blist.rights.view.REMOVE_COLUMN),
-            columnPropertiesEnabled: settings.columnEditEnabled,
-            columnNameEdit: settings.columnEditEnabled &&
-              (settings.view.isDefault() ||
-                settings.view.type == 'grouped') &&
-              settings.view.hasRight(blist.rights.view.UPDATE_COLUMN),
-            showAddColumns: settings.editEnabled &&
-              settings.view.type == 'blist' &&
-              settings.view.hasRight(blist.rights.view.ADD_COLUMN),
-            editEnabled: settings.editEnabled
-          },
-          settings.common,
-          settings.table));
-      },
-      reset: function() {
-        this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table').off('.table');
-      },
-      scrollsInline: true,
-      translations: ['controls.grid', 'screens.ds']
-    },
-
     href: {
       name: 'href',
       domId: 'staticRenderType',
@@ -240,43 +201,88 @@
           }, settings.common,
           settings.blob));
       }
-    },
-
-    // EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
-    //
-    // This 'Render Type' defines the usage of the 'socrataVizTable' in the
-    // context of the /dataset/four-four 'grid view'. It is meant to be a
-    // mostly-drop-in replacement for the 'table' 'Render Type', which is the
-    // grid view that was in use until July 2017 (and later, if the
-    // 'enable_nbe_only_grid_view_optimizations' feature flag is set to 'false'
-    // on the domain in question.
-    socrataVizTable: {
-      name: 'socrataVizTable',
-      domId: 'gridRenderType',
-      javascripts: [{
-        assets: 'shared-table-render'
-      }],
-      stylesheets: [],
-      initFunction: function($dom, settings) {
-        var settingsForSocrataVizDatasetGrid = $.extend(
-          {
-            view: settings.view,
-            columnDeleteEnabled: false,
-            columnPropertiesEnabled: false,
-            columnNameEdit: false,
-            showAddColumns: false,
-            editEnabled: false
-          },
-          settings.common,
-          settings.table
-        );
-
-        $dom.socrataVizDatasetGrid(settingsForSocrataVizDatasetGrid);
-      },
-      scrollsInline: true,
-      translations: []
     }
   };
+
+  // EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
+  //
+  // This 'Render Type' defines the usage of the 'socrataVizTable' in the
+  // context of the /dataset/four-four 'grid view'. It is meant to be a
+  // mostly-drop-in replacement for the 'table' 'Render Type', which is the
+  // grid view that was in use until July 2017 (and later, if the
+  // 'enable_nbe_only_grid_view_optimizations' feature flag is set to 'false'
+  // on the domain in question.
+  var socrataVizTableTypeConfig = {
+    name: 'socrataVizTable',
+    domId: 'gridRenderType',
+    javascripts: [{
+      assets: 'shared-table-render'
+    }],
+    stylesheets: [],
+    initFunction: function($dom, settings) {
+      var settingsForSocrataVizDatasetGrid = $.extend(
+        {
+          view: settings.view,
+          columnDeleteEnabled: false,
+          columnPropertiesEnabled: false,
+          columnNameEdit: false,
+          showAddColumns: false,
+          editEnabled: false
+        },
+        settings.common,
+        settings.table
+      );
+
+      $dom.socrataVizDatasetGrid(settingsForSocrataVizDatasetGrid);
+    },
+    scrollsInline: true,
+    translations: []
+  };
+
+  var legacyTableTypeConfig = {
+    name: 'table',
+    domId: 'gridRenderType',
+    javascripts: [{
+      assets: 'shared-table-render'
+    }],
+    stylesheets: [{
+      assets: 'grid',
+      hasImages: true
+    }, {
+      assets: 'render-images-bundle',
+      hasImages: true
+    }],
+    initFunction: function($dom, settings) {
+      $dom.datasetGrid($.extend({
+          view: settings.view,
+          columnDeleteEnabled: settings.editEnabled &&
+            settings.view.type == 'blist' &&
+            settings.view.hasRight(blist.rights.view.REMOVE_COLUMN),
+          columnPropertiesEnabled: settings.columnEditEnabled,
+          columnNameEdit: settings.columnEditEnabled &&
+            (settings.view.isDefault() ||
+              settings.view.type == 'grouped') &&
+            settings.view.hasRight(blist.rights.view.UPDATE_COLUMN),
+          showAddColumns: settings.editEnabled &&
+            settings.view.type == 'blist' &&
+            settings.view.hasRight(blist.rights.view.ADD_COLUMN),
+          editEnabled: settings.editEnabled
+        },
+        settings.common,
+        settings.table));
+    },
+    reset: function() {
+      this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table').off('.table');
+    },
+    scrollsInline: true,
+    translations: ['controls.grid', 'screens.ds']
+  };
+
+  if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+    typeConfigs.table = socrataVizTableTypeConfig;
+  } else {
+    typeConfigs.table = legacyTableTypeConfig;
+  }
 
   typeConfigs.api = typeConfigs.table;
   typeConfigs.assetinventory = typeConfigs.table;

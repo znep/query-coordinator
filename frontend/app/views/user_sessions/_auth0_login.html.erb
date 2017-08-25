@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= csrf_meta_tags %>
+  <%= rendered_stylesheet_tag 'styleguide' %>
 <% end %>
 
 <%#
@@ -11,7 +11,16 @@
 <% @suppress_flashes = true %>
 <% translations_for('screens.sign_in', 'screens.sign_up', 'account.common', 'core.validation') %>
 
-<% content_for :scripts do %>
+<% content_for :js_footer do %>
+  <%#
+    This translations rendering is usually done in stylguide.html.erb,
+    but since we can't actually use that layout yet we have to do it here.
+    See EN-18452 and EN-18453
+  %>
+  <script type="text/javascript">
+    window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
+  </script>
+
   <%= include_webpack_bundle 'signin/main.js' %>
 
   <script type="text/javascript">

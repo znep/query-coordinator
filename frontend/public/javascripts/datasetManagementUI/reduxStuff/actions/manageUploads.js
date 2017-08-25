@@ -189,7 +189,6 @@ function uploadFileFailure(sourceId) {
 function listenForOutputSchema(sourceId, params) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
-
     channel.on('insert_input_schema', is => {
       // output_schemas is a list, but there will only be one at this point,
       // so we take the first
@@ -233,6 +232,8 @@ export function listenForOutputSchemaSuccess(outputSchemaResponse, inputSchema) 
   // completed, we know there is nothing left to process, so we just set it to
   // the totoal number of rows, which is just another way of representig that all
   // rows have been processed.
+  // TODO: add error_count to transform here, and maybe rename all instances of
+  // num_transform_errors to error_count so there is a 1:1 match with the api
   const transforms = outputSchemaResponse.output_columns
     .map(oc => ({
       ...oc.transform,
@@ -328,8 +329,12 @@ export function subscribeToInputColumns(is) {
     is.input_columns.forEach(ic => {
       const channel = socket.channel(`input_column:${ic.id}`);
 
-      channel.on('update', updatedInputColumn => {
-        dispatch(editInputColumn(ic.id, updatedInputColumn));
+      channel.on('update', ({ semantic_type }) => {
+        dispatch(
+          editInputColumn(ic.id, {
+            semantic_type
+          })
+        );
       });
 
       channel.join();
@@ -369,7 +374,7 @@ export function subscribeToTransforms(os) {
       // TODO: we need num_transform_errors on the rest reponse for this to work.
       // Right now we get it only from a socket, which means we HAVE to subscribe
       // to transform channels even if they are complete, just to get this one thing
-      if (oc.transform.completed_at == null) {
+      if (!oc.transform.completed_at) {
         const channel = socket.channel(`transform:${oc.transform.id}`);
 
         const maxPtrHandler = ({ end_row_offset }) =>

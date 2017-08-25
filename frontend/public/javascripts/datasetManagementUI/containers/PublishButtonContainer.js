@@ -17,7 +17,7 @@ function isDataSatisfied(state) {
 
     const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
     dataSatisfied =
-      Selectors.allTransformsDoneOld(columns, inputSchema) || Selectors.allTransformsDone(columns);
+      Selectors.allTransformsDone(columns) || Selectors.allTransformsDoneOld(columns, inputSchema);
   } else {
     dataSatisfied = false;
   }

@@ -239,7 +239,7 @@ export function mapStateToProps(state, ownProps) {
   const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   // TODO: delete allTransformsDoneOld once DSMAPI websocket pr goes in
   const canApplyRevision =
-    Selectors.allTransformsDoneOld(columns, inputSchema) || Selectors.allTransformsDone(columns);
+    Selectors.allTransformsDone(columns) || Selectors.allTransformsDoneOld(columns, inputSchema);
 
   return {
     revision,

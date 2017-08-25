@@ -17,8 +17,10 @@ export class ActionDropdown extends React.Component {
       fetchingPermissions: false
     };
 
-    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'renderDeleteAssetMenuOption',
-      'renderDropdownOption', 'renderEditMetadataMenuOption', 'renderChangeVisibilityMenuOption', 'showActionModal');
+    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose',
+      'renderDeleteAssetMenuOption', 'renderDropdownOption', 'renderEditMetadataMenuOption',
+      'renderChangeVisibilityMenuOption', 'showActionModal'
+    );
   }
 
   componentDidMount() {
@@ -31,12 +33,8 @@ export class ActionDropdown extends React.Component {
     document.removeEventListener('click', this.handleDocumentClick, false);
   }
 
-  handleDocumentClick(event) {
-    if (this.mounted) {
-      if (!ReactDOM.findDOMNode(this).contains(event.target)) {
-        this.setState({ dropdownIsOpen: false });
-      }
-    }
+  getTranslation(key) {
+    return _.get(I18n, `result_list_table.action_dropdown.${key}`);
   }
 
   handleButtonClick(event) {
@@ -51,6 +49,14 @@ export class ActionDropdown extends React.Component {
   handleModalClose() {
     this.setState({ activeActionModal: null });
     this.props.closeModal();
+  }
+
+  handleDocumentClick(event) {
+    if (this.mounted) {
+      if (!ReactDOM.findDOMNode(this).contains(event.target)) {
+        this.setState({ dropdownIsOpen: false });
+      }
+    }
   }
 
   showActionModal(actionName) {
@@ -101,12 +107,10 @@ export class ActionDropdown extends React.Component {
     const { ownerUid } = this.props;
 
     if (ownerUid === _.get(serverConfig, 'currentUser.id')) {
-      return this.renderDropdownOption(this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'));
+      return this.renderDropdownOption(
+        this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset')
+      );
     }
-  }
-
-  getTranslation(key) {
-    return _.get(I18n, `result_list_table.action_dropdown.${key}`);
   }
 
   render() {

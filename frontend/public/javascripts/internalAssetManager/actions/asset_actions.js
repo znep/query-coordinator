@@ -4,13 +4,17 @@ import ceteraUtils from 'common/cetera_utils';
 
 const performingAction = (actionType) => ({ type: 'PERFORMING_ACTION', actionType });
 const performingActionSuccess = (actionType) => ({ type: 'PERFORMING_ACTION_SUCCESS', actionType });
-const performingActionFailure = (actionType, response) => ({ type: 'PERFORMING_ACTION_FAILURE', actionType, response });
+const performingActionFailure = (actionType, response) => (
+  { type: 'PERFORMING_ACTION_FAILURE', actionType, response }
+);
 
 export const closeModal = () => ({ type: 'CLOSE_MODAL' });
 
 export const fetchChildAssets = (uid) => () => ceteraUtils.query({ derivedFrom: uid });
 
-export const fetchParentVisibility = (uid) => () => ceteraUtils.query({ idFilters: [uid], showVisibility: 'true' });
+export const fetchParentVisibility = (uid) => () => (
+  ceteraUtils.query({ idFilters: [uid], showVisibility: 'true' })
+);
 
 export const deleteAsset = (uid) => (dispatch) => {
   const ACTION_TYPE = 'deleteAsset';
@@ -26,7 +30,7 @@ export const deleteAsset = (uid) => (dispatch) => {
     then(checkStatus).
     then(() => dispatch(performingActionSuccess(ACTION_TYPE))).
     then(reload).
-    catch((result) => {dispatch(performingActionFailure(ACTION_TYPE, result.response))});
+    catch((result) => (dispatch(performingActionFailure(ACTION_TYPE, result.response))));
 };
 
 export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) => {

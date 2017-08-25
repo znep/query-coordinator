@@ -47,6 +47,7 @@ git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
 
 # Package assets
 npm run build:prod
+
 bundle exec rake assets:precompile
 
 shopt -s nocasematch

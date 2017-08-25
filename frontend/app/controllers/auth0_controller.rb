@@ -131,15 +131,4 @@ private
     Rails.logger.info(resp)
   end
 
-  def transform_connections(source)
-    connections = []
-    source.each do |connection|
-      domain_aliases = connection.fetch('options', {}).fetch('domain_aliases', [])
-      # A disabled connection will have a single 'domain_aliases' item that is 'THIS CONNECTION IS DISABLED.'
-      connection_status = domain_aliases.any? { |domain_alias| domain_alias.include?('DISABLED') }
-      connections << { name: connection['name'], domain_aliases: domain_aliases, status: connection_status }
-    end
-    connections
-  end
-
 end

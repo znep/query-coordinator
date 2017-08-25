@@ -108,7 +108,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 5000,
-          num_transform_errors: 5
+          error_count: 5
         }
       };
 
@@ -125,7 +125,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 2500,
-          num_transform_errors: 5
+          error_count: 5
         }
       };
 
@@ -144,7 +144,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 2500,
-          num_transform_errors: 5
+          error_count: 5
         },
         totalRows: null
       };

@@ -95,6 +95,34 @@ describe Auth0Helper do
     end
   end
 
+  context '#transform_connections' do
+    it 'identifies connection status' do
+      source = [
+        {
+          'name' => 'Active Connection',
+          'options' => {
+            'domain_aliases' => [
+              'socrata.com'
+            ]
+          }
+        },
+        {
+          'name' => 'Disabled Connection',
+          'options' => {
+            'domain_aliases' => [
+              'THIS CONNECTION IS DISABLED.'
+            ]
+          }
+        }
+      ]
+      actual = transform_connections(source)
+      expect(actual).to contain_exactly(
+        { name: 'Disabled Connection', domain_aliases: ['THIS CONNECTION IS DISABLED.'], status: false },
+        { name: 'Active Connection', domain_aliases: ['socrata.com'], status: true }
+      )
+    end
+  end
+
   context 'auth0 config' do
     it 'gets config values from config' do
       auth0_connections = []

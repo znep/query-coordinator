@@ -182,6 +182,15 @@ module Auth0Helper
     flags.use_auth0 && flags.use_auth0_component
   end
 
+  def transform_connections(source)
+    source.map do |connection|
+      domain_aliases = connection.fetch('options', {}).fetch('domain_aliases', [])
+      # A disabled connection will have a single 'domain_aliases' item that is 'THIS CONNECTION IS DISABLED.'
+      connection_status = domain_aliases.none? { |domain_alias| domain_alias.include?('DISABLED') }
+      { name: connection['name'], domain_aliases: domain_aliases, status: connection_status }
+    end
+  end
+
   ##
   # Tests an Auth0 connection string for redirection eligibility.
   # A client is redirected if:

@@ -86,6 +86,7 @@ describe('components/TransformStatus', () => {
         ...defaultProps,
         transform: {
           output_soql_type: 'text',
+          contiguous_rows_processed: 0,
           id: 5
         },
         totalRows: undefined
@@ -107,7 +108,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 5000,
-          num_transform_errors: 5
+          error_count: 5
         }
       };
 
@@ -124,7 +125,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 2500,
-          num_transform_errors: 5
+          error_count: 5
         }
       };
 
@@ -143,7 +144,7 @@ describe('components/TransformStatus', () => {
         transform: {
           output_soql_type: 'text',
           contiguous_rows_processed: 2500,
-          num_transform_errors: 5
+          error_count: 5
         },
         totalRows: null
       };
@@ -153,7 +154,6 @@ describe('components/TransformStatus', () => {
       assert.include(component.text(), '<ProgressBar />');
       assert.include(component.text(), '<ErrorFlyout />');
       assert.include(component.text(), '<Link />');
-
     });
   });
 });

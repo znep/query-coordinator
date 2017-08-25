@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import * as Selectors from 'selectors';
 import CommonRowDetails from '../../common/components/RowDetails';
 
-export function mapStateToProps(state) {
-  const view = _.values(state.entities.views)[0];
+export function mapStateToProps({ entities }, { revisionSeq, fourfour }) {
+  const view = entities.views[fourfour];
   const rowLabel = _.get(view, 'metadata.rowLabel', I18n.common.default_row_label);
-  const currentSchema = Selectors.currentOutputSchema(state.entities);
+  const currentSchema = Selectors.currentOutputSchema(entities);
   if (!currentSchema) {
     return {
       rowLabel,
@@ -14,8 +14,8 @@ export function mapStateToProps(state) {
       columnCount: 0
     };
   }
-  const columns = Selectors.columnsForOutputSchema(state.entities, currentSchema.id);
-  const rowCount = Selectors.rowsTransformed(columns);
+  const columns = Selectors.columnsForOutputSchema(entities, currentSchema.id);
+  const rowCount = Selectors.totalRows(entities, revisionSeq);
   return {
     rowLabel,
     rowCount,

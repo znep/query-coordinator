@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 describe('components/MetadataTable', () => {
   const props = {
     view: {},
-    customMetadataFieldsets: [],
+    customMetadataFieldsets: {},
     onClickEditMetadata: sinon.spy()
   };
 

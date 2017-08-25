@@ -8,7 +8,6 @@ import { commaify } from '../../../common/formatNumber';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
 import * as Actions from 'reduxStuff/actions/showOutputSchema';
-import * as LoadDataActions from 'reduxStuff/actions/loadData';
 import { SAVE_CURRENT_OUTPUT_SCHEMA } from 'reduxStuff/actions/apiCalls';
 import * as DisplayState from 'lib/displayState';
 import Table from 'containers/TableContainer';
@@ -53,11 +52,7 @@ export class ShowOutputSchema extends Component {
   }
 
   getPath() {
-    const {
-      source,
-      inputSchema,
-      outputSchema
-    } = this.props;
+    const { source, inputSchema, outputSchema } = this.props;
     return {
       sourceId: source.id,
       inputSchemaId: inputSchema.id,
@@ -83,7 +78,7 @@ export class ShowOutputSchema extends Component {
     let firstColWithErrors = null;
     let errorSum = 0;
     columns.forEach(col => {
-      const numErrors = col.transform.num_transform_errors || 0;
+      const numErrors = col.transform.error_count || 0;
       errorSum += numErrors;
       if (firstColWithErrors === null && numErrors > 0) {
         firstColWithErrors = col.position;
@@ -242,7 +237,9 @@ export function mapStateToProps(state, ownProps) {
   const outputSchema = entities.output_schemas[params.outputSchemaId];
 
   const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
-  const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
+  // TODO: delete allTransformsDoneOld once DSMAPI websocket pr goes in
+  const canApplyRevision =
+    Selectors.allTransformsDone(columns) || Selectors.allTransformsDoneOld(columns, inputSchema);
 
   return {
     revision,
@@ -263,10 +260,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       browserHistory.push(Links.revisionBase(ownProps.params));
     },
     saveCurrentOutputSchema: (revision, outputSchemaId, params) => {
-      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId, params))
-        .then(() => {
-          browserHistory.push(Links.revisionBase(ownProps.params));
-        });
+      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId, params)).then(() => {
+        browserHistory.push(Links.revisionBase(ownProps.params));
+      });
     },
     dispatch
   };

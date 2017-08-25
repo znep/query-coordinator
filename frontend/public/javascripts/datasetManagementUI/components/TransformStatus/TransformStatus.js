@@ -39,7 +39,7 @@ export class TransformStatus extends Component {
   }
 
   hasTransformErrors() {
-    return this.props.transform.num_transform_errors > 0;
+    return this.props.transform.error_count > 0;
   }
 
   showGeocodeShortcut() {
@@ -60,11 +60,12 @@ export class TransformStatus extends Component {
   }
 
   determineColStatus(isIgnored, transform, totalRows) {
-    if (!transform.contiguous_rows_processed || !totalRows) {
-      return 'inProgress';
-    } else if (isIgnored) {
+    // TODO delete this when dsmapi pr goes in
+    const oldDoneCheck = transform.contiguous_rows_processed === totalRows;
+
+    if (isIgnored) {
       return 'isIgnored';
-    } else if (transform.contiguous_rows_processed === totalRows) {
+    } else if (transform.completed_at || oldDoneCheck) {
       return 'done';
     } else {
       return 'inProgress';
@@ -96,9 +97,9 @@ export class TransformStatus extends Component {
 
     const errorStatusMessage =
       colStatus === 'done'
-        ? singularOrPlural(transform.num_transform_errors, SubI18n.error_exists, SubI18n.errors_exist)
+        ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
         : singularOrPlural(
-            transform.num_transform_errors,
+            transform.error_count,
             SubI18n.error_exists_scanning,
             SubI18n.errors_exist_scanning
           );
@@ -149,7 +150,7 @@ export class TransformStatus extends Component {
               className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
               onClick={onClickError}
               data-flyout={getErrorFlyoutId(transform)}>
-                <ErrorPill number={transform.num_transform_errors} />
+                <ErrorPill number={transform.error_count} />
                 {errorStatusMessage}
               </Link>
             : <StatusText message={statusTextMessage} status={colStatus} />}

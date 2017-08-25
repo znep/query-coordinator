@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ColumnHeader from 'components/ColumnHeader/ColumnHeader';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
+import * as DisplayState from 'lib/displayState';
 import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
 import styles from './Table.scss';
 
@@ -37,7 +38,7 @@ function Table({
   showShortcut,
   onClickError
 }) {
-  // const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
+  const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const showFlyouts = true;
   const numRowErrors = inputSchema.num_row_errors;
   return (
@@ -74,7 +75,11 @@ function Table({
           )}
         </tr>
         {numRowErrors > 0 &&
-          <RowErrorsLink path={path} displayState={displayState} numRowErrors={numRowErrors} />}
+          <RowErrorsLink
+            path={path}
+            displayState={displayState}
+            numRowErrors={numRowErrors}
+            inRowErrorMode={inRowErrorMode} />}
       </thead>
       <TableBody
         entities={entities}

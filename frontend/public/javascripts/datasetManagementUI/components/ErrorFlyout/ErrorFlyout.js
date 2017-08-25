@@ -14,7 +14,7 @@ const ErrorFlyout = ({ transform }) => {
   const flyoutId = getErrorFlyoutId(transform);
 
   const msgTemplate = singularOrPlural(
-    transform.num_transform_errors,
+    transform.error_count,
     SubI18n.column_status_flyout.error_msg_singular,
     SubI18n.column_status_flyout.error_msg_plural
   );
@@ -25,7 +25,7 @@ const ErrorFlyout = ({ transform }) => {
     <div id={flyoutId} className={styles.transformStatusFlyout}>
       <section className={styles.flyoutContent}>
         {msgTemplate.format({
-          num_errors: commaify(transform.num_transform_errors),
+          num_errors: commaify(transform.error_count),
           type: SubI18n.type_display_names[canonicalTypeName]
         })}
         <TypeIcon type={canonicalTypeName} />

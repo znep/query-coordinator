@@ -108,6 +108,7 @@ const initialState = {
     revisions: {
       '179': {
         id: 179,
+        output_schema_id: '144',
         fourfour: 'kg5j-unyr',
         task_sets: [],
         revision_seq: 0,
@@ -454,7 +455,7 @@ const initialState = {
     output_schemas: {
       '144': {
         id: 144,
-        input_schema_id: 98,
+        input_schema_id: '98',
         error_count: 0,
         created_at: new Date(1497400637490),
         created_by: {

@@ -6,7 +6,7 @@ import { GeocodeShortcut } from 'components/GeocodeShortcut/GeocodeShortcut';
 import entities from 'data/entities';
 import * as Selectors from 'selectors';
 
-describe('components/Modals/GeocodeShortcut', () => {
+describe('components/GeocodeShortcut', () => {
   const defaultProps = {
     displayState: {
       type: 'NORMAL',
@@ -23,7 +23,8 @@ describe('components/Modals/GeocodeShortcut', () => {
     newOutputSchema: _.noop,
     redirectToOutputSchema: _.noop,
     onDismiss: sinon.spy(),
-    showError: sinon.spy()
+    showError: sinon.spy(),
+    params: {}
   };
 
   it('renders', () => {

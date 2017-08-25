@@ -35,6 +35,8 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
 
     const { entities } = getState();
 
+    const inputSchema = entities.input_schemas[inputSchemaId];
+
     const source = Selectors.sourceFromInputSchema(entities, inputSchemaId);
 
     const url = dsmapiLinks.newOutputSchema(source.id, inputSchemaId);
@@ -49,7 +51,7 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(listenForOutputSchemaSuccess(resp.resource));
+        dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
         dispatch(subscribeToOutputSchema(resp.resource));
         dispatch(subscribeToTransforms(resp.resource));
 
@@ -68,7 +70,7 @@ export const redirectToOutputSchema = (params, outputSchemaId) => (dispatch, get
   return browserHistory.push(Links.showOutputSchema(params, source.id, inputSchema.id, outputSchemaId));
 };
 
-export const newOutputSchema = (inputSchemaId, desiredColumns) => (dispatch) => {
+export const newOutputSchema = (inputSchemaId, desiredColumns) => dispatch => {
   const call = {
     operation: NEW_OUTPUT_SCHEMA,
     params: {}
@@ -92,7 +94,6 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
-
 
 export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const { entities } = getState();
@@ -127,7 +128,6 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
     buildNewOutputColumn(oc, sameTransform(entities))
   );
-
 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
@@ -183,7 +183,7 @@ export function buildNewOutputColumn(outputColumn, genTransform) {
 }
 
 export function cloneOutputColumn(outputColumn) {
-  return buildNewOutputColumn(outputColumn, (oc) => oc.transform.transform_expr);
+  return buildNewOutputColumn(outputColumn, oc => oc.transform.transform_expr);
 }
 
 function sameTransform(entities) {
@@ -252,7 +252,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
 }
 
 export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
-  return (dispatch) => {
+  return dispatch => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
       params: { outputSchemaId }

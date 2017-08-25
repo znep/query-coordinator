@@ -200,7 +200,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
       });
     })
     .then(resp => {
-      dispatch(listenForOutputSchemaSuccess(resp.resource));
+      dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
       dispatch(subscribeToOutputSchema(resp.resource));
       dispatch(subscribeToTransforms(resp.resource));
       return resp;

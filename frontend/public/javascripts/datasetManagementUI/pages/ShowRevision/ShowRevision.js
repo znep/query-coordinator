@@ -13,7 +13,7 @@ export function ShowRevision({ params }) {
         <MetadataTable />
         <div className={styles.schemaPreviewContainer}>
           <SchemaPreview />
-          <RowDetails />
+          <RowDetails fourfour={params.fourfour} revisionSeq={params.revisionSeq} />
         </div>
         <section className={styles.tableContainer}>
           <h2 className={styles.header}>

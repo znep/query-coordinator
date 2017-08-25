@@ -174,32 +174,18 @@ describe('components/TablePreview', () => {
       row_errors: {},
       col_data: {}
     },
-
-    createUpload: '[function createUpload]'
+    createUpload: () => {}
   };
-
-  // it('renders "manage data" button', () => {
-  //   const component = shallow(<TablePreview {...defaultProps} />);
-  //   assert.isFalse(component.find('.manageDataBtn').isEmpty());
-  // });
 
   it('renders list of accepted file types', () => {
     const component = shallow(<TablePreview {...defaultProps} />);
-    console.log(component.debug());
-    // const clonedProps = _.cloneDeep(ShowRevisionProps);
-    // clonedProps.entities.output_schemas = {};
-    // clonedProps.entities.input_schemas = {};
-    // clonedProps.entities.sources = {};
-    // clonedProps.entities.task_sets = {};
-    //
-    // const theComponent = shallow(<ShowRevision {...clonedProps} />);
-    // assert.equal(
-    //   theComponent
-    //     .find('WrapDataTablePlaceholder')
-    //     .dive()
-    //     .find('.fileTypes')
-    //     .text(),
-    //   'Supported file types: .csv, .tsv, .xls, .xlsx'
-    // );
+    const actual = component
+      .find('NoDataYetView')
+      .dive()
+      .find('.fileTypes')
+      .text();
+    const expected = 'Supported file types: .csv, .tsv, .xls, .xlsx';
+
+    assert.equal(actual, expected);
   });
 });

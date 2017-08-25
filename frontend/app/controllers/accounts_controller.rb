@@ -26,7 +26,11 @@ class AccountsController < ApplicationController
     # This is so we can display the login screen dynamically
     @user_session = UserSessionProvider.klass.new unless params[:no_js].present?
 
-    render :layout => 'styleguide' if use_auth0?
+    # Styleguide layout cannot be used yet because not all sites are using site chrome
+    # for the header/footer
+    # Once they are all using site chrome, uncomment this
+    # See EN-18452 and EN-18453
+    # render :layout => 'styleguide' if use_auth0?
   end
 
   # This is the true target of the form when signing up for a new account not '/profile/account'

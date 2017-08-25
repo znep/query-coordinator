@@ -78,7 +78,7 @@ export class ShowOutputSchema extends Component {
     let firstColWithErrors = null;
     let errorSum = 0;
     columns.forEach(col => {
-      const numErrors = col.transform.num_transform_errors || 0;
+      const numErrors = col.transform.error_count || 0;
       errorSum += numErrors;
       if (firstColWithErrors === null && numErrors > 0) {
         firstColWithErrors = col.position;

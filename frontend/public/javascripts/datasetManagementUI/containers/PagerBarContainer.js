@@ -7,7 +7,7 @@ import PagerBar from 'components/PagerBar/PagerBar';
 function numItemsToPaginate(entities, outputSchemaId, displayState) {
   switch (displayState.type) {
     case DisplayState.COLUMN_ERRORS:
-      return entities.transforms[displayState.transformId].num_transform_errors;
+      return entities.transforms[displayState.transformId].error_count;
 
     case DisplayState.ROW_ERRORS: {
       const outputSchema = entities.output_schemas[outputSchemaId];

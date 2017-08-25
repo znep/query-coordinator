@@ -230,10 +230,8 @@ export function listenForOutputSchemaSuccess(outputSchemaResponse, inputSchema) 
   // just the count of transforms on a column that DSMAPI has completed. We initialize
   // it here and then update it via socket later. Notice that if the transform is
   // completed, we know there is nothing left to process, so we just set it to
-  // the totoal number of rows, which is just another way of representig that all
+  // the total number of rows, which is just another way of representing that all
   // rows have been processed.
-  // TODO: add error_count to transform here, and maybe rename all instances of
-  // num_transform_errors to error_count so there is a 1:1 match with the api
   const transforms = outputSchemaResponse.output_columns
     .map(oc => ({
       ...oc.transform,
@@ -367,13 +365,9 @@ export function subscribeToTotalRows(is) {
 export function subscribeToTransforms(os) {
   return (dispatch, getState, socket) => {
     os.output_columns.forEach(oc => {
-      // == null catches null and undefined
       // we only want to subscribe to transforms that are NOT completed since,
       // if completed, we don't need to know about their progress. This check
       // is the reason this will be more efficient than what we are curently doing
-      // TODO: we need num_transform_errors on the rest reponse for this to work.
-      // Right now we get it only from a socket, which means we HAVE to subscribe
-      // to transform channels even if they are complete, just to get this one thing
       if (!oc.transform.completed_at) {
         const channel = socket.channel(`transform:${oc.transform.id}`);
 
@@ -394,7 +388,7 @@ export function subscribeToTransforms(os) {
         const transformErrorHandler = ({ count }) =>
           dispatch(
             editTransform(oc.transform.id, {
-              num_transform_errors: count
+              error_count: count
             })
           );
 
@@ -431,7 +425,7 @@ export function subscribeToTransforms(os) {
           ({ count }) =>
             dispatch(
               editTransform(oc.transform.id, {
-                num_transform_errors: count
+                error_count: count
               })
             ),
           PROGRESS_THROTTLE_TIME

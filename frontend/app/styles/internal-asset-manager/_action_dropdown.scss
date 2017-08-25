@@ -24,6 +24,13 @@
     margin: 0;
     padding: 0;
     box-shadow: 0 0 8px -2px $grey;
+    min-width: 10rem;
+    min-height: 5rem;
+
+    .action-dropdown-menu-container {
+      margin-top: 2rem;
+      text-align: center;
+    }
 
     a {
       display: block;

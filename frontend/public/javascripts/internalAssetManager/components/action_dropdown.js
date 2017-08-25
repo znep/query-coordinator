@@ -13,7 +13,8 @@ export class ActionDropdown extends React.Component {
 
     this.state = {
       activeActionModal: null,
-      dropdownIsOpen: false
+      dropdownIsOpen: false,
+      fetchingPermissions: false
     };
 
     _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'renderDeleteAssetMenuOption',
@@ -110,8 +111,7 @@ export class ActionDropdown extends React.Component {
 
   render() {
     const { assetType, uid } = this.props;
-    const { dropdownIsOpen } = this.state;
-
+    const { dropdownIsOpen, fetchingPermissions } = this.state;
 
     const dropdownButton = (
       <button
@@ -123,13 +123,23 @@ export class ActionDropdown extends React.Component {
       </button>
     );
 
-    const dropdownMenu = dropdownIsOpen ? (
+    const busySpinner = (
+      <div className="action-dropdown-menu">
+        <div className="action-dropdown-menu-container">
+          <span className="spinner-default"></span>
+        </div>
+      </div>
+    );
+
+    const actionsList = fetchingPermissions ? busySpinner : (
       <div className="action-dropdown-menu">
         {this.renderEditMetadataMenuOption()}
         {this.renderChangeVisibilityMenuOption()}
         {this.renderDeleteAssetMenuOption()}
       </div>
-    ) : null;
+    );
+
+    const dropdownMenu = dropdownIsOpen ? actionsList : null;
 
     const actionModalProps = {
       assetType,

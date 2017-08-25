@@ -13,7 +13,7 @@ export default function apiCalls(state = initialState, action) {
           id: action.id,
           status: STATUS_CALL_IN_PROGRESS,
           operation: action.operation,
-          params: action.params,
+          callParams: action.callParams,
           startedAt: new Date()
         }
       };

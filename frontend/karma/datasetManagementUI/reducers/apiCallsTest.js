@@ -10,7 +10,7 @@ describe('apiCalls reducer', () => {
 
   const call = {
     operation: 'LOAD_ROWS',
-    params: {
+    callParams: {
       outputSchemaId: 2,
       pageNo: 1
     }
@@ -25,7 +25,7 @@ describe('apiCalls reducer', () => {
       0: {
         id: 0,
         operation: call.operation,
-        params: call.params,
+        callParams: call.callParams,
         status: 'STATUS_CALL_IN_PROGRESS'
       }
     })
@@ -36,7 +36,7 @@ describe('apiCalls reducer', () => {
       0: {
         id: 0,
         operation: call.operation,
-        params: call.params,
+        callParams: call.callParams,
         status: 'STATUS_CALL_IN_PROGRESS'
       }
     };
@@ -47,7 +47,7 @@ describe('apiCalls reducer', () => {
       0: {
         id: 0,
         operation: call.operation,
-        params: call.params,
+        callParams: call.callParams,
         status: 'STATUS_CALL_SUCCEEDED'
       }
     })
@@ -58,7 +58,7 @@ describe('apiCalls reducer', () => {
       0: {
         id: 0,
         operation: call.operation,
-        params: call.params,
+        callParams: call.callParams,
         status: 'STATUS_CALL_IN_PROGRESS'
       }
     };
@@ -69,7 +69,7 @@ describe('apiCalls reducer', () => {
       0: {
         id: 0,
         operation: call.operation,
-        params: call.params,
+        callParams: call.callParams,
         status: 'STATUS_CALL_FAILED',
         error: 'some-error'
       }

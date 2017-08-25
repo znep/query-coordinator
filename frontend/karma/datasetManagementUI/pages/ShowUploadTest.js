@@ -49,7 +49,7 @@ describe('ShowUpload page', () => {
       '1234abcd': {
         operation: 'UPLOAD_FILE',
         status: 'STATUS_CALL_IN_PROGRESS',
-        params: { id: sourceId }
+        callParams: { id: sourceId }
       }
     });
     const { inProgress } = mapStateToProps(newState);

@@ -82,7 +82,7 @@ export function updateRevision(permission, params) {
     dispatch(
       apiCallStarted(callId, {
         operation: UPDATE_REVISION,
-        params: {
+        callParams: {
           action: {
             permission
           }
@@ -120,7 +120,7 @@ export function applyRevision(params) {
     dispatch(
       apiCallStarted(callId, {
         operation: APPLY_REVISION,
-        params: {}
+        callParams: {}
       })
     );
 

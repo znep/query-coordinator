@@ -1,149 +1,121 @@
-import sinon from 'sinon';
-import { expect, assert } from 'chai';
-import React from 'react';
-import TestUtils from 'react-addons-test-utils';
-import configureStore from 'redux-mock-store';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import { assert } from 'chai';
+import { parseDate } from 'lib/parseDate';
+import dotProp from 'dot-prop-immutable';
 import {
-  STATUS_CALL_IN_PROGRESS,
-  STATUS_CALL_SUCCEEDED,
-  STATUS_CALL_FAILED
-} from 'lib/apiCallStatus';
-
-const mockStore = configureStore();
+  mapStateToProps,
+  findMatchingApiCall
+} from 'containers/ApiCallButtonContainer';
 
 describe('containers/ApiCallButtonContainer', () => {
-  it('calls its onClick callback when clicked', () => {
-    const store = mockStore({
-      entities: {},
-      ui: {
-        apiCalls: {}
-      }
-    });
-    const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(
-      ApiCallButton,
-      {
-        onClick: saveSpy,
-        operation: 'CHANGE_COLUMN_TYPE',
-        params: { outputSchemaId: 2, outputColumnId: 32 }
+  const apiCalls = {
+    '00541ed7-7424-4355-ac41-8fff03ef4a67': {
+      id: '00541ed7-7424-4355-ac41-8fff03ef4a67',
+      status: 'STATUS_CALL_SUCCEEDED',
+      operation: 'LOAD_ROWS',
+      callParams: {
+        displayState: {
+          type: 'NORMAL',
+          pageNo: 3,
+          outputSchemaId: 683
+        }
       },
-      store
-    );
-
-    TestUtils.Simulate.click(element);
-
-    expect(saveSpy.calledOnce).to.eq(true);
-  });
-
-  it('renders in a default state when there is no matching api call', () => {
-    const store = mockStore({
-      entities: {},
-      ui: {
-        apiCalls: {}
-      }
-    });
-    const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(
-      ApiCallButton,
-      {
-        onClick: saveSpy,
-        operation: 'CHANGE_COLUMN_TYPE',
-        params: { outputSchemaId: 2, outputColumnId: 32 }
+      startedAt: parseDate(new Date().toISOString()),
+      succeededAt: parseDate(new Date().toISOString())
+    },
+    'e6e1a8f9-30f6-408c-92fe-26e7441f922c': {
+      id: 'e6e1a8f9-30f6-408c-92fe-26e7441f922c',
+      status: 'STATUS_CALL_SUCCEEDED',
+      operation: 'SAVE_CURRENT_OUTPUT_SCHEMA',
+      callParams: {
+        outputSchemaId: 683
       },
-      store
-    );
-
-    assert.ok(element);
-    assert.isTrue(element.classList.contains('btn'));
-  });
-
-  const apiCall = {
-    operation: 'CHANGE_COLUMN_TYPE',
-    params: { outputSchemaId: 2, outputColumnId: 32 }
+      startedAt: parseDate(new Date().toISOString()),
+      succeededAt: parseDate(new Date().toISOString())
+    }
   };
 
-  it('renders a progress state when there is an in-progress api call', () => {
-    const store = mockStore({
-      entities: {},
-      ui: {
-        apiCalls: {
-          'asdf-some-uuid': {
-            ...apiCall,
-            status: STATUS_CALL_IN_PROGRESS,
-            startedAt: new Date()
-          }
-        }
-      }
+  describe('findMatchingApiCall', () => {
+    it('returns api call if there is a match', () => {
+      const match = findMatchingApiCall(
+        apiCalls,
+        'SAVE_CURRENT_OUTPUT_SCHEMA',
+        { outputSchemaId: 683 }
+      );
+
+      assert.ok(match);
+      assert.equal(match.id, 'e6e1a8f9-30f6-408c-92fe-26e7441f922c');
     });
-    const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(
-      ApiCallButton,
-      {
-        onClick: saveSpy,
-        operation: 'CHANGE_COLUMN_TYPE',
-        params: { outputSchemaId: 2, outputColumnId: 32 }
-      },
-      store
-    );
-    assert.isTrue(element.classList.contains('btn-busy'));
+
+    it("excludes calls if callParams don't match", () => {
+      const match = findMatchingApiCall(
+        apiCalls,
+        'SAVE_CURRENT_OUTPUT_SCHEMA',
+        { outputSchemaId: 44 }
+      );
+
+      assert.isUndefined(match);
+    });
+
+    it("excludes calls if operations don't match", () => {
+      const match = findMatchingApiCall(apiCalls, 'WEEE', {
+        outputSchemaId: 683
+      });
+
+      assert.isUndefined(match);
+    });
+
+    it('excludes calls if completed/failed outside specified timeframe', () => {
+      const updatedApiCalls = dotProp.set(
+        apiCalls,
+        'e6e1a8f9-30f6-408c-92fe-26e7441f922c',
+        existing => ({
+          ...existing,
+          startedAt: '2017-04-25T20:13:28.172Z',
+          succeededAt: '2017-04-25T20:13:28.172Z'
+        })
+      );
+
+      const match = findMatchingApiCall(
+        updatedApiCalls,
+        'SAVE_CURRENT_OUTPUT_SCHEMA',
+        {
+          outputSchemaId: 683
+        }
+      );
+
+      assert.isUndefined(match);
+    });
   });
 
-  it('renders a success state when there is a successful api call', () => {
-    const store = mockStore({
-      entities: {},
-      ui: {
-        apiCalls: {
-          'asdf-some-uuid': {
-            ...apiCall,
-            status: STATUS_CALL_SUCCEEDED,
-            startedAt: new Date(),
-            succeededAt: new Date()
-          }
+  describe('mapStateToProps', () => {
+    it('returns the call status as status if there is a match', () => {
+      const ownProps = {
+        operation: 'SAVE_CURRENT_OUTPUT_SCHEMA',
+        callParams: {
+          outputSchemaId: 683
         }
-      }
+      };
+
+      const state = { ui: { apiCalls } };
+
+      const { status } = mapStateToProps(state, ownProps);
+
+      assert.equal(status, 'STATUS_CALL_SUCCEEDED');
     });
-    const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(
-      ApiCallButton,
-      {
-        onClick: saveSpy,
-        operation: 'CHANGE_COLUMN_TYPE',
-        params: { outputSchemaId: 2, outputColumnId: 32 }
-      },
-      store
-    );
 
-    assert.ok(element);
-    assert.isTrue(element.classList.contains('btn-success'));
-  });
-
-  it('renders a failed state when there is a failed api call', () => {
-    const store = mockStore({
-      entities: {},
-      ui: {
-        apiCalls: {
-          'asdf-some-uuid': {
-            ...apiCall,
-            status: STATUS_CALL_FAILED,
-            startedAt: new Date(),
-            succeededAt: new Date()
-          }
+    it('returns null as status if there is no match', () => {
+      const ownProps = {
+        operation: 'SAVE_CURRENT_OUTPUT_SCHEMA',
+        callParams: {
+          outputSchemaId: 1111111
         }
-      }
-    });
-    const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(
-      ApiCallButton,
-      {
-        onClick: saveSpy,
-        operation: 'CHANGE_COLUMN_TYPE',
-        params: { outputSchemaId: 2, outputColumnId: 32 }
-      },
-      store
-    );
+      };
 
-    assert.ok(element);
-    assert.isTrue(element.classList.contains('btn-error'));
+      const state = { ui: { apiCalls } };
+
+      const { status } = mapStateToProps(state, ownProps);
+
+      assert.isNull(status);
+    });
   });
 });

@@ -45,8 +45,8 @@ export const mapStateToProps = ({ entities, ui }) => {
       call =>
         call.operation === 'UPLOAD_FILE' &&
         call.status === STATUS_CALL_IN_PROGRESS &&
-        call.params &&
-        call.params.id === sourceId
+        call.callParams &&
+        call.callParams.id === sourceId
     );
   }
 

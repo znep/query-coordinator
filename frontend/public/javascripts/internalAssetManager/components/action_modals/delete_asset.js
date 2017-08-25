@@ -142,12 +142,12 @@ DeleteAsset.propTypes = {
   I18n: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   assetActions: state.assetActions,
   results: state.catalog.results
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   deleteAsset: (uid) => dispatch(deleteAsset(uid)),
   fetchChildAssets: (uid) => dispatch(fetchChildAssets(uid))
 });

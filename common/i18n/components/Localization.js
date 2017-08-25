@@ -8,12 +8,12 @@ export default class Localization extends React.Component {
     super(props);
 
     if (_.isUndefined(props.localePrefix)) {
-      props.localePrefix = props.locale
+      props.localePrefix = props.locale;
     }
 
     I18nJS.locale = props.locale;
     I18nJS.pluralization[I18nJS.locale] = pluralization(I18nJS.locale);
-    _.assign(I18nJS.translations, { [I18nJS.locale]: props.translations })
+    _.assign(I18nJS.translations, { [I18nJS.locale]: props.translations });
 
     if (I18nJS.locale === 'nyan') {
       I18nJS.t = () => 'nyan';
@@ -55,7 +55,6 @@ Localization.propTypes = {
   locale: React.PropTypes.string,
   notFoundText: React.PropTypes.string.isRequired,
   returnKeyForNotFound: React.PropTypes.bool.isRequired,
-  root: React.PropTypes.string,
   children: React.PropTypes.any,
   localePrefix: React.PropTypes.string
 };

@@ -22,6 +22,33 @@ describe('LocalizedDate', () => {
 
     const output = renderComponent(component);
 
-    assert(output.textContent === 'March 22, 2017');
+    assert.equal(output.textContent, 'March 22, 2017');
   });
+
+  describe('should render with time', () => {
+    it('without seconds', () => {
+      const component = (
+        <Localization translations={translations} locale="en">
+          <LocalizedDate date={date} withTime/>
+        </Localization>
+      );
+
+      const output = renderComponent(component);
+
+      assert.equal(output.textContent, 'March 22, 2017 12:00 AM');
+    });
+
+    it('with seconds', () => {
+      const component = (
+        <Localization translations={translations} locale="en">
+          <LocalizedDate date={date} withTime includeSeconds/>
+        </Localization>
+      );
+
+      const output = renderComponent(component);
+
+      assert.equal(output.textContent, 'March 22, 2017 12:00:00 AM');
+    });
+  });
+
 });

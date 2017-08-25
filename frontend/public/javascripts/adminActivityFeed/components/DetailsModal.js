@@ -4,9 +4,9 @@ import {connect} from 'react-redux';
 import {dismissDetailsModal} from '../actions';
 import {Modal, ModalHeader, ModalContent, ModalFooter} from 'common/components';
 
-import connectLocalization from './Localization/connectLocalization';
-import LocalizedDate from './Localization/LocalizedDate';
-import LocalizedText from './Localization/LocalizedText';
+import I18n from 'common/i18n';
+import LocalizedDate from 'common/i18n/components/LocalizedDate';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 class DetailsModal extends React.Component {
 
@@ -19,14 +19,14 @@ class DetailsModal extends React.Component {
 
     const datasetName = activity.get('dataset') ?
       activity.getIn(['dataset', 'name']) :
-      <LocalizedText localeKey="index_page.deleted_dataset"/>;
+      <LocalizedText localeKey='screens.admin.jobs.index_page.deleted_dataset'/>;
 
     const filename = activity.getIn(['data', 'activity_name']) ?
       `(${activity.getIn(['data', 'activity_name'])})` :
-      <LocalizedText localeKey="show_page.file_name_unknown"/>;
+      <LocalizedText localeKey='screens.admin.jobs.show_page.file_name_unknown'/>;
 
     return (
-      <li id="line-activity-name">
+      <li id='line-activity-name'>
         {datasetName} {filename}
       </li>
     );
@@ -42,7 +42,7 @@ class DetailsModal extends React.Component {
 
     return (
       <li id="line-activity-bad-rows">
-        <span className="line-title"><LocalizedText localeKey="show_page.failed_rows"/>: </span>
+        <span className='line-title'><LocalizedText localeKey='screens.admin.jobs.show_page.failed_rows'/>: </span>
         <a href={errorsDownloadUrl}>errors.csv</a>
       </li>
     );
@@ -55,35 +55,37 @@ class DetailsModal extends React.Component {
     const eventType = activity.getIn(['data', 'latest_event', 'event_type']);
     const type = eventType ? eventType.replace(/-/g, '_') : 'generic';
     const eventInfo = activity.getIn(['data', 'latest_event', 'info']);
-    const serviceNameLocaleKey = `show_page.services.${activity.getIn(['data', 'service'])}`;
+    const serviceNameLocaleKey = `screens.admin.jobs.show_page.services.${activity.getIn(['data', 'service'])}`;
 
     return (
       <ul>
-        <li id="line-activity-type">
-          <span className="line-title">{activity.getIn(['data', 'activity_type'])}</span>
+        <li id='line-activity-type'>
+          <LocalizedText
+            localeKey={`screens.admin.jobs.actions.${_.lowerCase(activity.getIn(['data', 'activity_type']))}`}
+            className='line-title' />
         </li>
         {this.renderNameLine()}
-        <li id="line-activity-event-title">
-          <span className="line-title">
-            <LocalizedText localeKey={`show_page.event_messages.${status}.${type}.title`}/>
-          </span>
-        </li>
-        <li id="line-activity-event-desc">
+        <li id='line-activity-event-title'>
           <LocalizedText
-            localeKey={`show_page.event_messages.${status}.${type}.description`}
+            localeKey={`screens.admin.jobs.show_page.event_messages.${status}.${type}.title`}
+            className='line-title' />
+        </li>
+        <li id='line-activity-event-desc'>
+          <LocalizedText
+            localeKey={`screens.admin.jobs.show_page.event_messages.${status}.${type}.description`}
             data={eventInfo ? eventInfo.toJS() : {}}
           />
         </li>
-        <li id="line-activity-started-by">
-          <span className="line-title"><LocalizedText localeKey="started_by"/>: </span>
+        <li id='line-activity-started-by'>
+          <span className='line-title'><LocalizedText localeKey='screens.admin.jobs.started_by'/>: </span>
           {activity.getIn(['initiated_by', 'displayName'])}
         </li>
-        <li id="line-activity-initiated-at">
-          <span className="line-title"><LocalizedText localeKey="initiated_at"/>: </span>
-          <LocalizedDate withTime={true} date={activity.getIn(['data', 'created_at'])}/>
+        <li id='line-activity-initiated-at'>
+          <span className='line-title'><LocalizedText localeKey='screens.admin.jobs.initiated_at'/>: </span>
+          <LocalizedDate withTime date={activity.getIn(['data', 'created_at'])}/>
         </li>
-        <li id="line-activity-import-method">
-          <span className="line-title"><LocalizedText localeKey="import_method"/>: </span>
+        <li id='line-activity-import-method'>
+          <span className='line-title'><LocalizedText localeKey='screens.admin.jobs.import_method'/>: </span>
           <LocalizedText localeKey={serviceNameLocaleKey}/>
         </li>
         {this.renderErrorsDownloadLink()}
@@ -92,7 +94,7 @@ class DetailsModal extends React.Component {
   }
 
   render() {
-    const {localization, dispatchDismissDetailsModal} = this.props;
+    const {dispatchDismissDetailsModal} = this.props;
 
     const modalProps = {
       fullScreen: false,
@@ -100,7 +102,7 @@ class DetailsModal extends React.Component {
       className: 'details-modal'
     };
     const headerProps = {
-      title: localization.translate('details'),
+      title: I18n.t('screens.admin.jobs.details'),
       onDismiss: dispatchDismissDetailsModal
     };
 
@@ -114,8 +116,8 @@ class DetailsModal extends React.Component {
 
         <ModalFooter>
           <div>
-            <button className="btn btn-default" onClick={dispatchDismissDetailsModal}>
-              <LocalizedText localeKey='close'/>
+            <button className='btn btn-default' onClick={dispatchDismissDetailsModal}>
+              <LocalizedText localeKey='screens.admin.jobs.close'/>
             </button>
           </div>
         </ModalFooter>
@@ -126,7 +128,6 @@ class DetailsModal extends React.Component {
 
 DetailsModal.propTypes = {
   activity: React.PropTypes.object,
-  localization: React.PropTypes.object.isRequired,
   dispatchDismissDetailsModal: React.PropTypes.func.isRequired
 };
 
@@ -137,4 +138,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchDismissDetailsModal: () => dispatch(dismissDetailsModal())
 });
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(DetailsModal));
+export default connect(mapStateToProps, mapDispatchToProps)(DetailsModal);

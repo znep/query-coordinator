@@ -46,6 +46,7 @@
         .asset-deleted {
           display: inline-block;
           vertical-align: middle;
+          color: $error-dark;
         }
       }
 
@@ -63,20 +64,6 @@
 
       &[data-column=actions] {
         width: 8%;
-      }
-    }
-
-    td {
-      a {
-        color: #5e5e5e;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      .asset-deleted {
-        color: $error-dark;
       }
     }
   }

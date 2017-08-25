@@ -2,9 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import connectLocalization from './Localization/connectLocalization';
-import LocalizedDate from './Localization/LocalizedDate';
-import LocalizedText from './Localization/LocalizedText';
+import LocalizedDate from 'common/i18n/components/LocalizedDate';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 import * as helpers from '../helpers';
 
 import ActivityFeedTableHeaderColumn from './ActivityFeedTableHeaderColumn';
@@ -22,36 +21,35 @@ class ActivityFeedTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const localization = props.localization;
-    const t = localization.translate;
-
     this.columns = [
       {
         id: 'dateStarted',
-        title: t('columns.date_started'),
+        title: <LocalizedText localeKey='screens.admin.jobs.columns.date_started'/>,
         mapper: item => item.getIn(['data', 'created_at']),
-        template: date => <LocalizedDate date={date}/>
+        template: date => <LocalizedDate date={date} withTime includeSeconds/>
       },
       {
         id: 'event',
-        title: t('columns.event'),
+        title: <LocalizedText localeKey='screens.admin.jobs.columns.event'/>,
         mapper: helpers.activities.getType,
-        template: type => <LocalizedText localeKey={`actions.${type}`}/>
+        template: type => <LocalizedText localeKey={`screens.admin.jobs.actions.${type}`}/>
       },
       {
         id: 'name',
-        title: t('columns.asset_name'),
+        title: <LocalizedText localeKey='screens.admin.jobs.columns.asset_name'/>,
         mapper: _.identity,
         template: activity => <AssetName activity={activity}/>
       },
       {
         id: 'initiatedBy',
-        title: t('columns.initiated_by'),
-        mapper: activity => <InitiatedBy activity={activity}/>
+        title: <LocalizedText localeKey='screens.admin.jobs.columns.initiated_by'/>,
+        mapper: activity => (
+            <InitiatedBy activity={activity}/>
+        )
       },
       {
         id: 'status',
-        title: t('columns.status'),
+        title: <LocalizedText localeKey='screens.admin.jobs.columns.status'/>,
         mapper: helpers.activities.getStatus,
         template: status => <Status status={status}/>
       },
@@ -75,7 +73,7 @@ class ActivityFeedTable extends React.Component {
     const { activities } = this.props;
 
     return (
-      <div className="activity-feed-table">
+      <div className='activity-feed-table'>
         <DataTable
           data={activities}
           columns={this.columns}
@@ -99,4 +97,4 @@ const mapDispatchToProps = (dispatch) => ({
   onRestoreActivity: (activity) => dispatch(showRestoreModal(activity))
 });
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(ActivityFeedTable));
+export default connect(mapStateToProps, mapDispatchToProps)(ActivityFeedTable);

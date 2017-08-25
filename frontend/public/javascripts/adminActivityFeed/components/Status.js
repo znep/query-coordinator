@@ -1,5 +1,5 @@
 import React from 'react';
-import LocalizedText from './Localization/LocalizedText';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 import './Status.scss';
 
@@ -17,9 +17,9 @@ export default class Status extends React.Component {
     const iconClassName = statusIcons[status];
 
     return (
-      <div className="activity-status" data-status={status}>
+      <div className='activity-status' data-status={status}>
         <i className={iconClassName}/>
-        <LocalizedText localeKey={`statuses.${status}`}/>
+        <LocalizedText localeKey={`screens.admin.jobs.statuses.${status}`}/>
       </div>
     );
   }

@@ -46,12 +46,14 @@ export default class Pagination extends React.Component {
       'btn btn-transparent btn-page-changer btn-page-changer-next',
       {disabled: nextButtonDisabled}
     );
+    const nextButtonTextEl = _.isObject(nextButtonText) ?
+      nextButtonText : <span>{nextButtonText}</span>;
     const nextButton = (
       <button
         className={nextButtonClass}
         disabled={nextButtonDisabled}
         onClick={() => onGotoPage(currentPage + 1)}>
-        <span>{nextButtonText}</span>
+        {nextButtonTextEl}
         <SocrataIcon name="arrow-right" />
       </button>
     );
@@ -61,13 +63,16 @@ export default class Pagination extends React.Component {
       'btn btn-transparent btn-page-changer btn-page-changer-previous',
       {disabled: prevButtonDisabled}
     );
+    const previousButtonTextEl = _.isObject(previousButtonText) ?
+      previousButtonText : <span>{previousButtonText}</span>;
+
     const prevButton = (
       <button
         className={prevButtonClass}
         disabled={prevButtonDisabled}
         onClick={() => onGotoPage(currentPage - 1)}>
-        <SocrataIcon name="arrow-left" />
-        <span>{previousButtonText}</span>
+        <SocrataIcon name='arrow-left' />
+        {previousButtonTextEl}
       </button>
     );
 
@@ -86,7 +91,7 @@ export default class Pagination extends React.Component {
     }
 
     return (
-      <div className="pagination">
+      <div className='pagination'>
         {prevButton}
         {pageNumbers}
         {nextButton}
@@ -111,7 +116,13 @@ Pagination.propTypes = {
   showCurrentPageNumber: React.PropTypes.bool.isRequired,
   otherPageNumbersRange: React.PropTypes.number.isRequired,
   onGotoPage: React.PropTypes.func.isRequired,
-  nextButtonText: React.PropTypes.string.isRequired,
-  previousButtonText: React.PropTypes.string.isRequired,
+  nextButtonText: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.object
+  ]).isRequired,
+  previousButtonText: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.object
+  ]).isRequired,
   disabled: React.PropTypes.bool
 };

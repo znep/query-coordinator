@@ -58,13 +58,11 @@ describe('ActivityFeedTable', () => {
     const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
     const dateColumns = [].slice.call(output.querySelectorAll('tr td[data-column=dateStarted]')).map(c => c.textContent);
 
-    const expectedDateColumns = [
-      'March 14, 2017',
-      'March 7, 2017',
-      'March 7, 2017',
-      'August 3, 2017',
-      'April 24, 2017'
-    ];
+    moment.tz.setDefault('America/Seattle');
+
+    const expectedDateColumns = mockActivities.activities.map(activity => {
+      return moment(activity.data.created_at, moment.ISO_8601).format('MMMM D, YYYY hh:mm:ss A');
+    });
 
     assert.deepEqual(expectedDateColumns, dateColumns);
   });
@@ -80,6 +78,28 @@ describe('ActivityFeedTable', () => {
     rows.
       filter(row => statusesForDetails.includes(getRowStatus(row))).
       forEach(row => assert(getRowAction(row) === 'View Details'));
+  });
+
+  describe('initiated by column', () => {
+    it('should render initiated by column with user name', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      rows.forEach((row, index) => {
+        const column = row.querySelector('td[data-column=initiatedBy]');
+
+        const displayName = mockActivities.activities[index].initiated_by.flags.includes('admin') ?
+          `${mockActivities.activities[index].initiated_by.displayName} (Socrata)` :
+          mockActivities.activities[index].initiated_by.displayName;
+
+        assert.equal(column.textContent, displayName);
+
+        assert.equal(
+          column.getElementsByTagName('a')[0].getAttribute('href'),
+          mockActivities.activities[index].initiated_by.profile_url
+        );
+      });
+    });
   });
 
   describe('should render deleted datasets names correctly', () => {

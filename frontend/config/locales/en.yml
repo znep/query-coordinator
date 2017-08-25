@@ -2934,6 +2934,7 @@ en:
         delete_asset:
           accept: Delete
           chart: chart
+          denied: You are not allowed to delete this asset. Please contact your administrator or support@socrata.com.
           description: Are you sure you want to delete "%{name}"?
           description_related_assets:
             one: '%{count} related asset built using this dataset will also be deleted permanently.'

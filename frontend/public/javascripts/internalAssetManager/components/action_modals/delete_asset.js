@@ -98,7 +98,7 @@ export class DeleteAsset extends React.Component {
     const hasError = assetActions.performingActionFailure;
     const errorMessage = hasError ? (
       <div className="alert error">
-        {getTranslation('error')}
+        {getTranslation(assetActions.response.status === 403 ? 'denied' : 'error')}
       </div>
     ) : null;
 

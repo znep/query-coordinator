@@ -52,7 +52,11 @@ class UserSessionsController < ApplicationController
       session[:return_to] ||= params[:return_to] || request.referer
     end
 
-    render :layout => 'styleguide' if use_auth0? && !performed?
+    # Styleguide layout cannot be used yet because not all sites are using site chrome
+    # for the header/footer
+    # Once they are all using site chrome, uncomment this
+    # See EN-18452 and EN-18453
+    # render :layout => 'styleguide' if use_auth0? && !performed?
   end
 
   def expire_if_idle

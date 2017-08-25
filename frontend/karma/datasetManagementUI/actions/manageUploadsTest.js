@@ -83,7 +83,7 @@ describe('manageUploads actions', () => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
           assert.equal(
-            actions[0].params.source_type.filename,
+            actions[0].callParams.source_type.filename,
             'petty_crimes.csv'
           );
 

@@ -24,11 +24,11 @@ export const COLUMN_OPERATIONS = [
 
 // TODO: factor these to just be params, not an object
 export const API_CALL_STARTED = 'API_CALL_STARTED';
-export const apiCallStarted = (id, { operation, params }) => ({
+export const apiCallStarted = (id, { operation, callParams }) => ({
   type: API_CALL_STARTED,
   id,
   operation,
-  params
+  callParams
 });
 
 export const API_CALL_SUCCEEDED = 'API_CALL_SUCCEEDED';

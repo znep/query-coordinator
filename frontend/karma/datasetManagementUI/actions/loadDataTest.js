@@ -90,7 +90,7 @@ describe('loadData actions', () => {
     it('dispatches correct api call and table updates', done => {
       const apiCall = {
         operation: 'LOAD_ROWS',
-        params: {
+        callParams: {
           displayState: DisplayState.normal(
             2,
             Number(Object.keys(state.entities.output_schemas)[0])

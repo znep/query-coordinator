@@ -73,7 +73,7 @@ export const redirectToOutputSchema = (params, outputSchemaId) => (dispatch, get
 export const newOutputSchema = (inputSchemaId, desiredColumns) => dispatch => {
   const call = {
     operation: NEW_OUTPUT_SCHEMA,
-    params: {}
+    callParams: {}
   };
 
   return dispatch(createNewOutputSchema(inputSchemaId, desiredColumns, call));
@@ -84,7 +84,7 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 
   const call = {
     operation: UPDATE_COLUMN_TYPE,
-    params: {
+    callParams: {
       outputSchemaId: outputSchema.id,
       outputColumnId: oldColumn.id
     }
@@ -100,7 +100,7 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
 
   const call = {
     operation: ADD_COLUMN,
-    params: {
+    callParams: {
       outputSchemaId: outputSchema.id,
       outputColumnId: outputColumn.id
     }
@@ -137,7 +137,7 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
 
   const call = {
     operation: DROP_COLUMN,
-    params: {
+    callParams: {
       outputSchemaId: outputSchema.id,
       outputColumnId: column.id
     }
@@ -156,7 +156,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
 
   const call = {
     operation: SET_ROW_IDENTIFIER,
-    params: { outputSchema, outputColumnToSet }
+    callParams: { outputSchema, outputColumnToSet }
   };
 
   const newOutputColumns = Selectors.columnsForOutputSchema(entities, outputSchema.id)
@@ -225,7 +225,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
     const transformId = outputColumn.transform_id;
     const call = {
       operation: VALIDATE_ROW_IDENTIFIER,
-      params: {
+      callParams: {
         outputSchemaId: outputSchema.id,
         outputColumnId: outputColumn.id
       }
@@ -255,7 +255,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
   return dispatch => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
-      params: { outputSchemaId }
+      callParams: { outputSchemaId }
     };
 
     const callId = uuid();

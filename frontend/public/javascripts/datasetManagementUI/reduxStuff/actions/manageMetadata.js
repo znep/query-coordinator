@@ -65,7 +65,7 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
   dispatch(
     apiCallStarted(callId, {
       operation: SAVE_DATASET_METADATA,
-      params: {}
+      callParams: {}
     })
   );
 
@@ -157,7 +157,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
   dispatch(
     apiCallStarted(callId, {
       operation: SAVE_COLUMN_METADATA,
-      params: {}
+      callParams: {}
     })
   );
 

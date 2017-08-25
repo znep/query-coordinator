@@ -15,7 +15,7 @@ export const LOAD_NORMAL_PREVIEW_SUCCESS = 'LOAD_NORMAL_PREVIEW_SUCCESS';
 export function needToLoadAnything(entities, apiCalls, displayState) {
   // don't want to load if there's any matching api call -
   // succeeded, in progress, or failed.
-  const previousApiCall = _.find(apiCalls, call => _.isEqual(call.params.displayState, displayState));
+  const previousApiCall = _.find(apiCalls, call => _.isEqual(call.callParams.displayState, displayState));
   switch (displayState.type) {
     case DisplayState.NORMAL: {
       const { inputSchema } = Selectors.pathForOutputSchema(entities, displayState.outputSchemaId);
@@ -44,7 +44,7 @@ export function loadVisibleData(displayState) {
       dispatch(
         loadData({
           operation: LOAD_ROWS,
-          params: { displayState }
+          callParams: { displayState }
         })
       );
     }
@@ -53,7 +53,7 @@ export function loadVisibleData(displayState) {
 
 function loadData(apiCall) {
   return dispatch => {
-    switch (apiCall.params.displayState.type) {
+    switch (apiCall.callParams.displayState.type) {
       case DisplayState.NORMAL:
         dispatch(loadNormalPreview(apiCall));
         break;
@@ -93,7 +93,7 @@ function urlForPreview(entities, displayState) {
 export function loadNormalPreview(apiCall) {
   return (dispatch, getState) => {
     const { entities } = getState();
-    const displayState = apiCall.params.displayState;
+    const displayState = apiCall.callParams.displayState;
     const url = urlForPreview(entities, displayState);
     const callId = uuid();
 
@@ -163,7 +163,7 @@ function loadNormalPreviewSuccess(colData, rowErrors) {
 export function loadColumnErrors(apiCall) {
   return (dispatch, getState) => {
     const { entities } = getState();
-    const displayState = apiCall.params.displayState;
+    const displayState = apiCall.callParams.displayState;
     const url = urlForPreview(entities, displayState);
     const callId = uuid();
 
@@ -259,7 +259,7 @@ function loadColumnErrorsSuccess(colData, transforms) {
 export function loadRowErrors(apiCall) {
   return (dispatch, getState) => {
     const entities = getState().entities;
-    const displayState = apiCall.params.displayState;
+    const displayState = apiCall.callParams.displayState;
     const inputSchemaId = entities.output_schemas[displayState.outputSchemaId].input_schema_id;
     const url = urlForPreview(entities, displayState);
     const callId = uuid();

@@ -2996,7 +2996,7 @@ export default {
         id: '01a04af9-d75a-4d25-9184-59f63cd0ea0e',
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'CREATE_UPLOAD',
-        params: {
+        callParams: {
           source_type: {
             type: 'upload',
             filename: 'austin_animal_center_stray_map.csv'
@@ -3009,7 +3009,7 @@ export default {
         id: '31545f2c-d7f1-4afd-b310-d761bb0832c6',
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'UPLOAD_FILE',
-        params: {
+        callParams: {
           id: 123
         },
         startedAt: new Date(1497553190739),
@@ -3019,7 +3019,7 @@ export default {
         id: 'aae08d59-bd43-4702-b559-3fb026a2bfcd',
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'LOAD_ROWS',
-        params: {
+        callParams: {
           displayState: {
             type: 'NORMAL',
             pageNo: 1,
@@ -3033,7 +3033,7 @@ export default {
         id: '29719135-e046-404c-abfe-681d9a285167',
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'APPLY_REVISION',
-        params: {
+        callParams: {
           outputSchemaId: 152
         },
         startedAt: new Date(1497553200055),

@@ -2018,7 +2018,7 @@ const initialState = {
         id: 'e627a631-875d-4684-8ede-505f54dc88ec',
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'LOAD_ROWS',
-        params: {
+        callParams: {
           displayState: {
             type: 'NORMAL',
             pageNo: 1,

@@ -87,7 +87,7 @@ export function createUpload(file, params) {
 
     const call = {
       operation: CREATE_UPLOAD,
-      params: {
+      callParams: {
         source_type: sourceType
       }
     };
@@ -140,7 +140,7 @@ export function uploadFile(sourceId, file) {
 
     const call = {
       operation: UPLOAD_FILE,
-      params: uploadUpdate
+      callParams: uploadUpdate
     };
 
     dispatch(apiCallStarted(callId, call));

@@ -47,7 +47,7 @@ describe('components/DragDropUpload', () => {
       const expectedAction = actions.filter(
         action =>
           action.operation === 'CREATE_UPLOAD' &&
-          action.params.source_type.filename === 'testfile.csv'
+          action.callParams.source_type.filename === 'testfile.csv'
       );
       assert.equal(expectedAction.length, 1);
       done();

@@ -54,6 +54,7 @@
   composes: statusItem;
   margin-right: -5px;
   flex-grow: 0;
+  flex-basis: 0;
 }
 
 .geoIcon {

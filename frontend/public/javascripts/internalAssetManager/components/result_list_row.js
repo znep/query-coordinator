@@ -18,7 +18,18 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, isPublished, link, name, ownerName, provenance, type, uid, updatedAt } = this.props;
+    const {
+      description,
+      isPublished,
+      link,
+      name,
+      ownerName,
+      ownerUid,
+      provenance,
+      type,
+      uid,
+      updatedAt
+    } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -30,7 +41,7 @@ export class ResultListRow extends React.Component {
         return cellTag(dateString);
       }
       case 'actions':
-        return cellTag(<ActionDropdown assetType={type} uid={uid} />);
+        return cellTag(<ActionDropdown assetType={type} uid={uid} ownerUid={ownerUid} />);
       case 'name':
         return (cellTag(
           <div>
@@ -94,6 +105,7 @@ ResultListRow.propTypes = {
   moderationStatus: PropTypes.string,
   name: PropTypes.string,
   ownerName: PropTypes.string,
+  ownerUid: PropTypes.string,
   provenance: PropTypes.string,
   routingStatus: PropTypes.string,
   type: PropTypes.string,

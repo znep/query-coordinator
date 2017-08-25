@@ -16,8 +16,8 @@ export class ActionDropdown extends React.Component {
       dropdownIsOpen: false
     };
 
-    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'renderDropdownOption',
-      'renderEditMetadataMenuOption', 'renderChangeVisibilityMenuOption', 'showActionModal');
+    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'renderDeleteAssetMenuOption',
+      'renderDropdownOption', 'renderEditMetadataMenuOption', 'renderChangeVisibilityMenuOption', 'showActionModal');
   }
 
   componentDidMount() {
@@ -96,21 +96,30 @@ export class ActionDropdown extends React.Component {
     }
   }
 
+  renderDeleteAssetMenuOption() {
+    const { ownerUid } = this.props;
+
+    if (ownerUid === _.get(serverConfig, 'currentUser.id')) {
+      return this.renderDropdownOption(this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'));
+    }
+  }
+
+  getTranslation(key) {
+    return _.get(I18n, `result_list_table.action_dropdown.${key}`);
+  }
+
   render() {
     const { assetType, uid } = this.props;
     const { dropdownIsOpen } = this.state;
 
-    const getTranslation = (key) => _.get(I18n, `result_list_table.action_dropdown.${key}`);
 
     const dropdownButton = (
       <button
-        aria-label={getTranslation('title')}
+        aria-label={this.getTranslation('title')}
         className={classNames('action-dropdown-button', { active: dropdownIsOpen })}
         onClick={this.handleButtonClick}
         role="button">
-        <span
-          className="socrata-icon-waiting"
-          alt={getTranslation('title')} />
+        <span className="socrata-icon-waiting" alt={this.getTranslation('title')} />
       </button>
     );
 
@@ -118,7 +127,7 @@ export class ActionDropdown extends React.Component {
       <div className="action-dropdown-menu">
         {this.renderEditMetadataMenuOption()}
         {this.renderChangeVisibilityMenuOption()}
-        {this.renderDropdownOption(getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'))}
+        {this.renderDeleteAssetMenuOption()}
       </div>
     ) : null;
 
@@ -149,7 +158,8 @@ export class ActionDropdown extends React.Component {
 ActionDropdown.propTypes = {
   assetType: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
-  uid: PropTypes.string.isRequired
+  uid: PropTypes.string.isRequired,
+  ownerUid: PropTypes.string.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({

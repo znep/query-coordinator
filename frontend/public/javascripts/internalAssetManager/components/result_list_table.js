@@ -40,6 +40,7 @@ export class ResultListTable extends React.Component {
         link: result.link,
         moderationStatus: result.metadata.moderation_status,
         ownerName: result.owner.display_name,
+        ownerUid: result.owner.id,
         routingStatus: result.metadata.routing_status,
         uid: result.resource.id,
         visibleToAnonymous: result.metadata.visible_to_anonymous

@@ -346,12 +346,57 @@ body.styleguide {
 
   #datasetBar {
     background: #fff !important;
+    padding-bottom: 0 !important;
 
     #infoBox {
       margin: 0 680px 0 0;
       padding: 8px;
       font-size: 15px;
       font-weight: 400;
+
+      .toolbarButton {
+        display: inline-block;
+        margin: 0 0 -2px 0 !important;
+        padding: 5px 8px !important;
+        width: auto;
+        height: auto;
+        color: #5e5e5e !important;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 18.5px;
+        text-align: center;
+        letter-spacing: 0;
+        text-decoration: none !important;
+        text-shadow: none;
+        background: #f1f1f1;
+        border: solid 1px #c8c8c8;
+        border-radius: 1px;
+        box-sizing: border-box;
+        vertical-align: text-bottom;
+        transition: color 0.2s, background-color 0.2s;
+
+        &.save,
+        &.saveAs,
+        &.publish {
+          color: #fff !important;
+          background: #2279a6 !important;
+          border: solid 1px #2279a6;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: #176289 !important;
+            border: solid 1px #176289;
+          }
+        }
+
+        &:hover,
+        &:focus,
+        &:active {
+          background: #e4e4e4 !important;
+          box-shadow: none !important;
+        }
+      }
 
       #datasetIcon {
         display: none;
@@ -363,49 +408,34 @@ body.styleguide {
         h2 {
           display: inline-block;
           margin-bottom: 8px;
-          font-size: 24px;
-          font-weight: 300;
+          color: #d06463;
+          font-size: 18px !important;
+          font-weight: 600 !important;
+          line-height: 24px !important;
           letter-spacing: -0.5px;
-        }
 
-        .toolbarButton {
-          display: inline-block;
-          margin: 0;
-          padding: 5px 8px;
-          width: auto;
-          height: auto;
-          color: #5e5e5e !important;
-          font-size: 12px;
-          font-weight: normal;
-          line-height: 18.5px;
-          text-align: center;
-          letter-spacing: 0;
-          text-decoration: none !important;
-          text-shadow: none;
-          background: #f1f1f1;
-          border: solid 1px #c8c8c8;
-          border-radius: 1px;
-          box-sizing: border-box;
-          transition: color 0.2s, background-color 0.2s;
+          &:before {
+            content: "[";
+          }
 
-          &.save,
-          &.saveAs {
-            color: #fff !important;
-            background: #2279a6;
-            border: solid 1px #2279a6;
-
-            &:hover,
-            &:focus,
-            &:active {
-              background: #176289;
-              border: solid 1px #176289;
-              box-shadow: none;
-            }
+          &:after {
+            content: "]";
           }
         }
       }
 
+      .unpublished {
+        display: inline-block !important;
+        margin: 5px 0 0 0 !important;
+        color: #d06463;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        letter-spacing: -0.5px;
+      }
+
       #datasetName {
+        display: block;
         margin-bottom: 8px;
         font-size: 24px;
         font-weight: 300;
@@ -424,9 +454,29 @@ body.styleguide {
       .basedOnParent,
       .basedOnTemp {
         color: #5e5e5e;
+        font-size: 15px !important;
         font-weight: 300;
+        line-height: 18px !important;
 
         a {
+          color: #2279a6;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      #publishedLink {
+        display: inline-block;
+        margin: 5px 0 15px 12px !important;
+        color: #2279a6;
+        font-size: 15px !important;
+        font-weight: 300;
+        line-height: 18px !important;
+        vertical-align: middle;
+
+        &:hover {
           text-decoration: underline;
         }
       }

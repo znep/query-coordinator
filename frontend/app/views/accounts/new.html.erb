@@ -5,7 +5,6 @@
 <% end %>
 
 <% if use_auth0_component(@view, request) %>
-  <%= rendered_stylesheet_tag 'styleguide' %>
   <%= render partial: 'user_sessions/auth0_login', locals: { login: false } %>
 <% else %>
   <% content_for :skip_links do %>

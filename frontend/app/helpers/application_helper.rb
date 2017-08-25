@@ -824,6 +824,9 @@ module ApplicationHelper
     # Only load custom CSS if it exists.
     return false if CurrentDomain.properties.custom_css.blank?
 
+    # Never load custom CSS for admin pages
+    return false if request.path.starts_with('/admin')
+
     # Always load custom CSS if the GovStat module isn't enabled.
     return true unless module_enabled?(:govStat)
 

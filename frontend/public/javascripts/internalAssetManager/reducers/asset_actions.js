@@ -44,7 +44,7 @@ export default (state, action) => {
       performingAction: false,
       performingActionSuccess: false,
       performingActionFailure: true,
-      response: action.response
+      actionResponse: action.response
     };
   }
 

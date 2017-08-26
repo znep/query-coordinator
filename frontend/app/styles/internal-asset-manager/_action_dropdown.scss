@@ -27,9 +27,19 @@
     min-width: 10rem;
     min-height: 5rem;
 
-    .action-dropdown-menu-container {
-      margin-top: 2rem;
+    .action-dropdown-spinner-container {
       text-align: center;
+
+      .spinner-default {
+        margin-top: 2rem;
+      }
+    }
+
+    .no-actions-possible {
+      text-align: left;
+      color: $light-grey-6;
+      background-color: $grey;
+      padding: 1.2rem 0.75rem;
     }
 
     a {

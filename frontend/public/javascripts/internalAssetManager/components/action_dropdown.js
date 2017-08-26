@@ -1,11 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { closeModal } from 'actions/asset_actions';
-import ChangeVisibility from './action_modals/change_visibility';
-import DeleteAsset from './action_modals/delete_asset';
 import _ from 'lodash';
 import classNames from 'classnames';
+
+import { defaultHeaders, checkStatus } from 'common/http';
+
+import { closeModal, fetchPermissions } from 'actions/asset_actions';
+import ChangeVisibility from './action_modals/change_visibility';
+import DeleteAsset from './action_modals/delete_asset';
 
 export class ActionDropdown extends React.Component {
   constructor(props) {
@@ -14,12 +17,15 @@ export class ActionDropdown extends React.Component {
     this.state = {
       activeActionModal: null,
       dropdownIsOpen: false,
-      fetchingPermissions: false
+      fetchingPermissions: false,
+      verifiedPermissions: false,
+      view: null,
+      allowableActions: []
     };
 
     _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose',
       'renderDeleteAssetMenuOption', 'renderDropdownOption', 'renderEditMetadataMenuOption',
-      'renderChangeVisibilityMenuOption', 'showActionModal'
+      'renderChangeVisibilityMenuOption', 'showActionModal', 'permissionsError', 'verifyPermissions'
     );
   }
 
@@ -38,12 +44,63 @@ export class ActionDropdown extends React.Component {
   }
 
   handleButtonClick(event) {
+    const { verifiedPermissions } = this.state;
+    const { ownerUid, uid } = this.props;
+
     event.stopPropagation();
     event.preventDefault();
+
+    const fetchOptions = {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: defaultHeaders
+    };
+
+    if (verifiedPermissions === false) {
+      this.setState({
+        fetchingPermissions: true
+      });
+      fetch(`/api/views/${uid}.json`, fetchOptions).
+        then(checkStatus).
+        then((response) => response.json().then(this.verifyPermissions)).
+        catch(this.permissionsError)
+    }
 
     this.setState({
       dropdownIsOpen: !this.state.dropdownIsOpen
     });
+  }
+
+  permissionsError(response) {
+    console.error('Permissions verification failed: ', response);
+    this.setState({
+      allowableActions: [],
+      fetchingPermissions: false,
+      verifiedPermissions: false,
+      view: null
+    });
+  }
+
+  verifyPermissions(view) {
+    const { verifiedPermissions } = this.state;
+    let allowableActions = [];
+
+    if (verifiedPermissions === false) {
+      if (view !== null) {
+        if (view.rights.includes('delete') || view.rights.includes('delete_view')) {
+          allowableActions.push('delete_asset');
+        }
+        if (view.rights.includes('write') || view.rights.includes('update_view')) {
+          allowableActions.push('change_visibility');
+          allowableActions.push('edit_metadata');
+        }
+      }
+      this.setState({
+        allowableActions,
+        fetchingPermissions: false,
+        verifiedPermissions: true
+      });
+    }
   }
 
   handleModalClose() {
@@ -69,6 +126,11 @@ export class ActionDropdown extends React.Component {
 
   renderEditMetadataMenuOption() {
     const { assetType, uid } = this.props;
+    const { allowableActions } = this.state;
+
+    if (!allowableActions.includes('edit_metadata')) {
+      return null;
+    }
 
     switch (assetType) {
       case 'story':
@@ -84,6 +146,12 @@ export class ActionDropdown extends React.Component {
   }
 
   renderChangeVisibilityMenuOption() {
+    const { allowableActions } = this.state;
+
+    if (!allowableActions.includes('change_visibility')) {
+      return null;
+    }
+
     switch (this.props.assetType) {
       case 'story':
         /* TODO: Need to do something different if a story is unpublished vs published:
@@ -104,11 +172,23 @@ export class ActionDropdown extends React.Component {
   }
 
   renderDeleteAssetMenuOption() {
-    const { ownerUid } = this.props;
+    const { allowableActions } = this.state;
 
-    if (ownerUid === _.get(serverConfig, 'currentUser.id')) {
+    if (allowableActions.includes('delete_asset')) {
       return this.renderDropdownOption(
         this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset')
+      );
+    }
+  }
+
+  renderNoActionsAllowed() {
+    const { allowableActions } = this.state;
+
+    if (_.isEmpty(allowableActions)) {
+      return (
+        <div className="no-actions-possible">
+          {this.getTranslation('no_actions_possible')}
+        </div>
       );
     }
   }
@@ -129,7 +209,7 @@ export class ActionDropdown extends React.Component {
 
     const busySpinner = (
       <div className="action-dropdown-menu">
-        <div className="action-dropdown-menu-container">
+        <div className="action-dropdown-spinner-container">
           <span className="spinner-default"></span>
         </div>
       </div>
@@ -140,6 +220,7 @@ export class ActionDropdown extends React.Component {
         {this.renderEditMetadataMenuOption()}
         {this.renderChangeVisibilityMenuOption()}
         {this.renderDeleteAssetMenuOption()}
+        {this.renderNoActionsAllowed()}
       </div>
     );
 
@@ -177,7 +258,8 @@ ActionDropdown.propTypes = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal())
+  closeModal: () => dispatch(closeModal()),
+  fetchPermissions: (uid) => dispatch(fetchPermissions(uid))
 });
 
 export default connect(null, mapDispatchToProps)(ActionDropdown);

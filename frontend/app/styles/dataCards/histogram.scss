@@ -1,5 +1,14 @@
 $tick-font-size: 0.75rem;
 
+.histogram {
+  svg {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    -ms-overflow-y: hidden;
+  }
+}
+
 .histogram-axis {
   shape-rendering: crispEdges;
 }

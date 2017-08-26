@@ -32,6 +32,14 @@ describe('components/ActionDropdown', () => {
       assert.isNull(element.querySelector('.action-dropdown-menu'));
     });
 
+    describe.only('when fetching permissions', () => {
+      it('renders a spinner when fetching the permissions', () => {
+        const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
+        TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
+        assert.isNotNull(element.querySelector('.spinner-default'));
+      });
+    });
+
     it('renders when the dropdown button is clicked', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));

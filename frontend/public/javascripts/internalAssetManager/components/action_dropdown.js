@@ -71,14 +71,14 @@ export class ActionDropdown extends React.Component {
     });
   }
 
-  permissionsError(response) {
-    console.error('Permissions verification failed: ', response);
     this.setState({
       allowableActions: [],
       fetchingPermissions: false,
       verifiedPermissions: false,
       view: null
     });
+  permissionsError(result) {
+    console.error('Permissions verification failed: status = ', result.response.status);
   }
 
   verifyPermissions(view) {

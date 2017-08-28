@@ -528,15 +528,17 @@ export default function StoryStore() {
 
     component = block.components[index];
 
-    if (component.type !== payload.type || component.value !== payload.value) {
-
+    if (
+      !_.isEqual(component.type, payload.type) ||
+      !_.isEqual(component.value, payload.value)
+    ) {
       block.components[payload.componentIndex] = {
         type: payload.type,
         value: payload.value
       };
-    }
 
-    self._emitChange();
+      self._emitChange();
+    }
   }
 
   /**
@@ -835,8 +837,7 @@ export default function StoryStore() {
     }
   });
 
-  // The history state is set in HistoryStore, and a `.waitFor()` ensures
-  // this will always run after the cursor is in the correct position.
+  // Applies the snapshot at _undoCursor.
   function _applyHistoryState() {
     var snapshot = self.getStorySnapshotAtCursor();
     var currentStoryData = _getStory(snapshot.uid);

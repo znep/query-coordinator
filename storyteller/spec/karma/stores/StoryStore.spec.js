@@ -1789,10 +1789,8 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given valid data', function() {
-
-        it('should update the specified component', function() {
-
+      describe('given valid, different data', function() {
+        const dispatchAction = () => {
           dispatch({
             action: Actions.BLOCK_UPDATE_COMPONENT,
             blockId: block1Id,
@@ -1800,8 +1798,38 @@ describe('StoryStore', function() {
             type: validComponentType,
             value: validComponentValue
           });
+        };
 
+        it('should update the specified component', function() {
+          dispatchAction();
           assert.equal(storyStore.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
+        });
+
+        it('should call the change handler', function() {
+          const spy = sinon.spy();
+          storyStore.addChangeListener(spy);
+          dispatchAction();
+          sinon.assert.calledOnce(spy);
+        });
+      });
+
+      describe('given data identical to the current state', function() {
+
+        it('does not call the change handler', function() {
+          const currentBlock = storyStore.getBlockComponentAtIndex(block1Id, 1);
+
+          const spy = sinon.spy();
+          storyStore.addChangeListener(spy);
+
+          dispatch({
+            action: Actions.BLOCK_UPDATE_COMPONENT,
+            blockId: block1Id,
+            componentIndex: validComponentIndex,
+            type: currentBlock.type,
+            value: currentBlock.value
+          });
+
+          sinon.assert.notCalled(spy);
         });
       });
     });

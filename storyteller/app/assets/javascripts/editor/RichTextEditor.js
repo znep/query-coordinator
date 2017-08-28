@@ -43,6 +43,14 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   var _defaultThemesCss = $('#themes').html() || '';
   var _customThemesCss = $('#custom').html() || '';
 
+  // Last content passed to setContent(), verbatim.
+  let _lastSetContent;
+
+  // Last content passed to setContent(), but transformed through
+  // Squire/the browser's normalization rules.
+  // See comment in _broadcastContentChangeWhenSettled.
+  let _lastSetContentSquireNormalized;
+
   if (typeof contentToPreload !== 'undefined') {
     _contentToPreload = contentToPreload;
   }
@@ -74,6 +82,29 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
    * re-broadcast as a content change (so it doesn't end up in undo-redo).
    */
   this.setContent = function(newContent) {
+    // Different browsers give slightly-different HTML for the same content. For example,
+    // Chrome specifies inline colors like this:
+    // <span style="color:rgb(x, y, z)">
+    // while IE uses a hex representation:
+    // <span style="color: #AABBCC">.
+    //
+    // This matters because setting the content steals focus (in IE only).
+    // The net result of this is focus going haywire when a user edits a
+    // story with some text having custom colors. As a workaround, we
+    // remember what content an editor is "supposed" to have and skip
+    // setting the content if we've already tried to set that content.
+    // We can't use _editor.getHTML (or this.contentDiffersFrom) because
+    // then we'd have to parse inline CSS and convert between color
+    // representations (and who knows what other differences lurk).
+    //
+    // Also, there's a non-trivial performance cost to setting HTML
+    // all the time - we call this method quite liberally and often
+    // unnecessarily. Eliminating those extra calls is not practical;
+    // the best place to handle the issue is right here.
+    if (newContent === _lastSetContent) {
+      return;
+    }
+    _lastSetContent = newContent;
 
     if (_editor === null) {
       // Our iframe hasn't loaded yet.
@@ -83,9 +114,14 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       return;
     }
 
-    if (_editor && this.contentDiffersFrom(newContent)) {
+    if (
+      _editor &&
+      this.contentDiffersFrom(newContent) &&
+      this.contentDiffersFrom(_lastSetContentSquireNormalized)
+    ) {
       _editor.setHTML(newContent);
-      _handleContentChange();
+      _lastSetContentSquireNormalized = _editor.getHTML();
+      _updateContentHeight();
     }
   };
 
@@ -251,15 +287,15 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       _editor.addEventListener('keydown', _broadcastFormatChangeOnArrowKeydown);
       _editor.addEventListener('pathChange', _broadcastFormatChange);
 
-      _editor.addEventListener('input', _handleContentChangeByUser);
+      _editor.addEventListener('input', _handleContentChange);
       _editor.addEventListener('willPaste', function(pasteEvent) {
         _sanitizeClipboardInput(pasteEvent);
-        _handleContentChangeByUser();
+        _handleContentChange();
       });
       _editor.addEventListener('drop', function() {
         // We get no opportunity to edit the dropped content, so sanitize everything.
         _sanitizeCurrentContent();
-        _handleContentChangeByUser();
+        _handleContentChange();
       });
 
       _editor.setKeyHandler('ctrl-k', _clickEditorLinkButton);
@@ -451,17 +487,11 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   }
 
   /**
-   * Handles changes to content, whether or not they're initiated by the user.
+   * Handles changes to content. Changes will be broadcast out of the component
+   * via a custom event ('rich-text-editor::content-change').
    */
   function _handleContentChange() {
     _updateContentHeight();
-  }
-
-  /**
-   * Handles changes to content that have been explicitly initiated by the user.
-   */
-  function _handleContentChangeByUser() {
-    _handleContentChange();
     _broadcastContentChangeWhenSettled();
   }
 
@@ -553,15 +583,36 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
    * Instead of maintaining a huge brittle state machine, we bite the async bullet and broadcast
    * the event when things settle down for a frame. This guaranees that all pasting, dropping,
    * typing, and (critically) sanitization have run.
+   *
+   * Additionally, the browser will "normalize" (lol) any HTML we load into it according to complicated,
+   * browser-version-specific rules. Squire will notice these normalizations and raise the
+   * generic "change" event. We need to filter out these normalization-only changes, because
+   * our undo-redo implementation depends on the 'rich-text-editor::content-change' event to represent
+   * a discrete user-driven edit. For example, here is the scenario that drove this implementation:
+   *
+   * Story with blocks:
+   * 1: Plain Text
+   * 2: Text with a custom color set in IE (it uses #hex colors, chrome uses rgb).
+   *
+   * Repro:
+   * 1. Load above story in Chrome.
+   * 2. Type a character into block 1.
+   * 3. Hit Undo once.
+   * Expect: Redo button still enabled.
+   * Actual: It's disabled.
+   *
+   * Why? Because Undo triggers squire to normalize block 2 (because chrome converts the color to rgb),
+   * which is then seen as a user edit. This blows away the redo stack.
    */
-  var _broadcastContentChangeWhenSettled = _.debounce(_broadcastContentChangeNow, 1);
-
-  function _broadcastContentChangeNow() {
-    _emitEvent(
-      'rich-text-editor::content-change',
-      { content: _editor.getHTML(), editor: _self }
-    );
-  }
+  var _broadcastContentChangeWhenSettled = _.debounce(() => {
+    const content = _editor.getHTML();
+    if (content !== _lastSetContentSquireNormalized) {
+      _emitEvent(
+        'rich-text-editor::content-change',
+        { content: content, editor: _self }
+      );
+    }
+  }, 1);
 
   function _broadcastFormatChange() {
     _emitEvent(

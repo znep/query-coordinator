@@ -10,23 +10,27 @@ import { closeModal } from 'actions/asset_actions';
 import ChangeVisibility from './action_modals/change_visibility';
 import DeleteAsset from './action_modals/delete_asset';
 
-const initialReactState = {
-  activeActionModal: null,
-  dropdownIsOpen: false,
-  fetchingPermissions: false,
-  verifiedPermissions: false,
-  allowableActions: []
+const initialReactState = (options = {}) => {
+  return {
+    activeActionModal: null,
+    dropdownIsOpen: false,
+    fetchingPermissions: false,
+    failedPermissions: false,
+    verifiedPermissions: false,
+    allowableActions: [],
+    ...options
+  }
 };
 
 export class ActionDropdown extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = initialReactState;
+    this.state = initialReactState();
 
-    _.bindAll(this, 'fetchPermissions', 'handleDocumentClick', 'handleButtonClick', 'handleModalClose',
-      'renderDeleteAssetMenuOption', 'renderDropdownOption', 'renderEditMetadataMenuOption',
-      'renderChangeVisibilityMenuOption', 'showActionModal', 'permissionsError', 'verifyPermissions'
+    _.bindAll(this, 'fetchPermissions', 'handleButtonClick', 'handleDocumentClick', 'handleModalClose',
+      'renderDeleteAssetMenuOption', 'renderEditMetadataMenuOption', 'renderChangeVisibilityMenuOption',
+      'showActionModal', 'permissionsError', 'verifyPermissions'
     );
   }
 
@@ -45,17 +49,17 @@ export class ActionDropdown extends React.Component {
   }
 
   handleButtonClick(event) {
-    const { verifiedPermissions } = this.state;
+    const { dropdownIsOpen, failedPermissions, verifiedPermissions } = this.state;
 
     event.stopPropagation();
     event.preventDefault();
 
-    if (verifiedPermissions === false) {
+    if (verifiedPermissions === false && failedPermissions === false) {
       this.fetchPermissions();
     }
 
     this.setState({
-      dropdownIsOpen: !this.state.dropdownIsOpen
+      dropdownIsOpen: dropdownIsOpen === false
     });
   }
 
@@ -78,8 +82,12 @@ export class ActionDropdown extends React.Component {
   }
 
   permissionsError(result) {
-    console.error('Permissions verification failed: status = ', result.response.status);
-    this.setState(initialReactState);
+    console.error('Permissions verification failed: status = ', _.get(result, 'response.status'));
+    this.setState(initialReactState({
+      failedPermissions: true,
+      fetchingPermissions: false,
+      verifyPermissions: false
+    }));
   }
 
   verifyPermissions(view) {
@@ -183,23 +191,27 @@ export class ActionDropdown extends React.Component {
     }
   }
 
-  renderNoActionsAllowed() {
-    const { allowableActions } = this.state;
+  renderNoActionsPossible() {
+    return (
+      <div className="no-actions-possible">
+        {this.getTranslation('no_actions_possible')}
+      </div>
+    );
+  }
 
-    if (_.isEmpty(allowableActions)) {
-      return (
-        <div className="no-actions-possible">
-          {this.getTranslation('no_actions_possible')}
-        </div>
-      );
-    }
+  renderErrorMessage() {
+    return (
+      <div className="error-message">
+        {this.getTranslation('permissions_error')}
+      </div>
+    );
   }
 
   render() {
     const { assetType, uid } = this.props;
-    const { dropdownIsOpen, fetchingPermissions } = this.state;
+    const { allowableActions, dropdownIsOpen, failedPermissions, fetchingPermissions } = this.state;
 
-    const dropdownButton = (
+    const actionDropdownButton = (
       <button
         aria-label={this.getTranslation('title')}
         className={classNames('action-dropdown-button', { active: dropdownIsOpen })}
@@ -210,23 +222,37 @@ export class ActionDropdown extends React.Component {
     );
 
     const busySpinner = (
-      <div className="action-dropdown-menu">
-        <div className="action-dropdown-spinner-container">
-          <span className="spinner-default"></span>
-        </div>
+      <div className="action-dropdown-spinner-container">
+        <span className="spinner-default"></span>
       </div>
     );
 
-    const actionsList = fetchingPermissions ? busySpinner : (
+    const actionMenu = (
       <div className="action-dropdown-menu">
         {this.renderEditMetadataMenuOption()}
         {this.renderChangeVisibilityMenuOption()}
         {this.renderDeleteAssetMenuOption()}
-        {this.renderNoActionsAllowed()}
       </div>
     );
 
-    const dropdownMenu = dropdownIsOpen ? actionsList : null;
+    const wrapContent = (content) => <div className="action-dropdown-content">{content}</div>;
+
+    let actionDropdownContent = null;
+    if (dropdownIsOpen) {
+      if (fetchingPermissions) {
+        actionDropdownContent = wrapContent(busySpinner);
+      } else {
+        actionDropdownContent = wrapContent(actionMenu);
+
+        if (_.isEmpty(allowableActions)) {
+          actionDropdownContent = wrapContent(this.renderNoActionsPossible());
+        }
+
+        if (failedPermissions) {
+          actionDropdownContent = wrapContent(this.renderErrorMessage());
+        }
+      }
+    }
 
     const actionModalProps = {
       assetType,
@@ -244,8 +270,8 @@ export class ActionDropdown extends React.Component {
 
     return (
       <div className="action-dropdown">
-        {dropdownButton}
-        {dropdownMenu}
+        {actionDropdownButton}
+        {actionDropdownContent}
         {renderedActionModal}
       </div>
     );

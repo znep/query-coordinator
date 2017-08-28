@@ -19,9 +19,7 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     it('renders', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
@@ -45,14 +43,12 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     it('shows a spinner before fetching permissions', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
-      const spinner = element.querySelector('.action-dropdown-menu .action-dropdown-spinner-container');
+      const spinner = element.querySelector('.action-dropdown-content .action-dropdown-spinner-container');
       assert(spinner);
     });
   });
@@ -64,15 +60,13 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     it('indicates that no actions are possible', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
       _.defer(() => {
-        const notice = element.querySelector('.action-dropdown-menu .no-actions-possible');
+        const notice = element.querySelector('.action-dropdown-content .no-actions-possible');
         assert(notice);
         done();
       });
@@ -86,9 +80,7 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     it('renders a link for the delete action', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
@@ -114,9 +106,7 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     it('renders links to change visibility and edit metadata', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
@@ -145,9 +135,7 @@ describe('components/ActionDropdown', () => {
       )));
     });
 
-    afterEach(() => {
-      window.fetch.restore();
-    });
+    afterEach(() => window.fetch.restore());
 
     describe('when fetching permissions', () => {
       it('renders a spinner when fetching the permissions', () => {
@@ -165,7 +153,7 @@ describe('components/ActionDropdown', () => {
     it('renders when the dropdown button is clicked', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
-      assert.isNotNull(element.querySelector('.action-dropdown-menu'));
+      assert.isNotNull(element.querySelector('.action-dropdown-content'));
     });
 
     it('renders a link for each action', (done) => {

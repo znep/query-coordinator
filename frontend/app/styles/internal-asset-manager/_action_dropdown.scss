@@ -15,7 +15,7 @@
     }
   }
 
-  .action-dropdown-menu {
+  .action-dropdown-content {
     position: absolute;
     z-index: 1000;
     border: 1px solid $light-grey-3;
@@ -35,7 +35,7 @@
       }
     }
 
-    .no-actions-possible {
+    .error-message, .no-actions-possible {
       text-align: left;
       color: $light-grey-6;
       background-color: $grey;

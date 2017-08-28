@@ -2917,6 +2917,7 @@ en:
         transfer_ownership: Transfer Ownership...
         delete_asset: Delete...
         no_actions_possible: There are no actions possible.
+        permissions_error: Error determining permissions.
       action_modal:
         change_visibility:
           accept: OK

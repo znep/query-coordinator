@@ -253,13 +253,11 @@ export class ActionDropdown extends React.Component {
 ActionDropdown.propTypes = {
   assetType: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
-  uid: PropTypes.string.isRequired,
-  ownerUid: PropTypes.string.isRequired
+  uid: PropTypes.string.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal()),
-  fetchPermissions: (uid) => dispatch(fetchPermissions(uid))
+  closeModal: () => dispatch(closeModal())
 });
 
 export default connect(null, mapDispatchToProps)(ActionDropdown);

@@ -1,17 +1,17 @@
 import React from 'react';
-import { SocrataIcon } from 'common/components';
+import { AssetTypeIcon, SocrataIcon } from 'common/components';
 
-const calendarIcon = <SocrataIcon name="date" />;
-const chartIcon = <SocrataIcon name="bar-chart" />;
-const datasetIcon = <SocrataIcon name="dataset" />;
-const datalensIcon = <SocrataIcon name="cards" />;
-const externalIcon = <SocrataIcon name="external" />;
-const fileIcon = <SocrataIcon name="attachment" />;
-const filteredIcon = <SocrataIcon name="filter" />;
-const formIcon = <SocrataIcon name="list2" />;
-const mapIcon = <SocrataIcon name="map" />;
-const storyIcon = <SocrataIcon name="story" />;
-const workingIcon = <SocrataIcon name="working-copy" />;
+const calendarIcon = <AssetTypeIcon displayType="calendar" />;
+const chartIcon = <AssetTypeIcon displayType="chart" />;
+const datasetIcon = <AssetTypeIcon displayType="dataset" />;
+const datalensIcon = <AssetTypeIcon displayType="datalens" />;
+const externalIcon = <AssetTypeIcon displayType="href" />;
+const fileIcon = <AssetTypeIcon displayType="attachment" />;
+const filteredIcon = <AssetTypeIcon displayType="filter" />;
+const formIcon = <AssetTypeIcon displayType="form" />;
+const mapIcon = <AssetTypeIcon displayType="map" />;
+const storyIcon = <AssetTypeIcon displayType="story" />;
+const workingIcon = <AssetTypeIcon displayType="dataset" isPublished={false} />;
 
 const communityIcon = <SocrataIcon name="community" />;
 const officialIcon = <SocrataIcon name="official2" />;

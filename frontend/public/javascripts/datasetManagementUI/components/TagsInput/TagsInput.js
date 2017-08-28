@@ -34,7 +34,7 @@ class TagsInput extends Component {
       return;
     }
 
-    setValue([...value, this.state.tag]);
+    setValue([...value, this.state.tag.toLowerCase()]);
 
     this.setState({
       tag: ''

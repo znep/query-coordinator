@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import I18n from 'common/i18n';
-import { isValidEmail, findConnection } from '../../Util';
+import { isValidEmail, findConnection, isSpoofing } from '../../Util';
 import { processAuth0Error } from '../../Auth0Errors';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
@@ -34,8 +34,9 @@ class SignInForm extends React.Component {
     };
 
     _.bindAll(this, [
-      'doSignIn',
+      'findConnectionAndSetState',
       'onEmailChange',
+      'onFormSubmit',
       'onLoginError',
       'onLoginStart',
       'onPasswordChange',
@@ -50,27 +51,12 @@ class SignInForm extends React.Component {
   onEmailChange(event) {
     const email = event.target.value;
 
-    if (isValidEmail(email)) {
-      const { auth0Connections, options } = this.props;
-      const {
-        forcedConnections,
-        socrataEmailsBypassAuth0,
-        allowUsernamePasswordLogin } = options;
-
-      if (allowUsernamePasswordLogin === false) {
-        const connectionName = findConnection(
-          email,
-          auth0Connections,
-          forcedConnections,
-          socrataEmailsBypassAuth0
-        );
-
-        this.setState({ email, connectionName });
-      } else {
-        this.setState({ email });
-      }
+    if (isSpoofing(email)) {
+      this.setState({ email, connectionName: null, spoofing: true });
+    } else if (isValidEmail(email)) {
+      this.findConnectionAndSetState(email);
     } else {
-      this.setState({ email: null, connectionName: null });
+      this.setState({ email: null, connectionName: null, spoofing: false });
     }
   }
 
@@ -90,19 +76,11 @@ class SignInForm extends React.Component {
     this.props.onLoginError(level, message);
   }
 
-  setLoginErrorMessage(error) {
-    if (!_.isEmpty(error)) {
-      console.error(error);
-    }
-
-    this.setState({ error });
-  }
-
-  doSignIn(event) {
+  onFormSubmit(event) {
     event.preventDefault();
 
     const { options, auth0Connections } = this.props;
-    const { connectionName, email } = this.state;
+    const { connectionName, email, spoofing } = this.state;
     const {
         forcedConnections,
         socrataEmailsBypassAuth0,
@@ -111,7 +89,12 @@ class SignInForm extends React.Component {
     // blank out error
     this.setLoginErrorMessage(null);
 
-    if (!_.isEmpty(connectionName)) {
+    if (spoofing) {
+      // if we're spoofing, just submit the form
+      // spoofing itself is handled by frontend/core
+      this.onLoginStart();
+      this.formDomNode.submit();
+    } else if (!_.isEmpty(connectionName)) {
       // we already have a connection name; just use that
       this.auth0Login(connectionName);
     } else if (!_.isEmpty(email) && allowUsernamePasswordLogin === false) {
@@ -135,6 +118,43 @@ class SignInForm extends React.Component {
       // frontend will redirect back to the login page with a flash
       // describing what went wrong.
       this.formLogin();
+    }
+  }
+
+  setLoginErrorMessage(error) {
+    if (!_.isEmpty(error)) {
+      console.error(error);
+    }
+
+    this.setState({ error });
+  }
+
+  /**
+   * Attempts to find a connection for the given email address and,
+   * if one is found, sets the state's "connectionName" to be the connection.
+   *
+   * If no connection is found, then only the state's "email" is updated.
+   *
+   * Expects the email to have already been validated.
+   */
+  findConnectionAndSetState(email) {
+    const { auth0Connections, options } = this.props;
+    const {
+      forcedConnections,
+      socrataEmailsBypassAuth0,
+      allowUsernamePasswordLogin } = options;
+
+    if (allowUsernamePasswordLogin === false) {
+      const connectionName = findConnection(
+        email,
+        auth0Connections,
+        forcedConnections,
+        socrataEmailsBypassAuth0
+      );
+
+      this.setState({ email, connectionName, spoofing: false });
+    } else {
+      this.setState({ email, connectionName: null, spoofing: false });
     }
   }
 
@@ -207,8 +227,9 @@ class SignInForm extends React.Component {
         ref={(formDomNode) => { this.formDomNode = formDomNode; }}
         action="/user_sessions"
         method="post"
-        onSubmit={this.doSignIn}
-        autoComplete={disableSignInAutocomplete ? 'off' : 'on'}>
+        onSubmit={this.onFormSubmit}
+        autoComplete={disableSignInAutocomplete ? 'off' : 'on'}
+        noValidate>
         {this.renderError()}
 
         { /* These are for submitting straight to rails */ }

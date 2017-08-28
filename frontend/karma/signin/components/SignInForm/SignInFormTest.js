@@ -17,6 +17,25 @@ describe('<SignInForm />', () => {
     options: defaultOptions
   };
 
+  const propsWithAuth0Connections = _.cloneDeep(defaultProps);
+  propsWithAuth0Connections.auth0Connections = [
+    {
+      domain_aliases: ['socrata.com'],
+      name: 'socrata-okta-sts',
+      status: true
+    },
+    {
+      domain_aliases: ['some-domain.gov'],
+      name: 'some-domain-dev-blah',
+      status: true
+    },
+    {
+      domain_aliases: ['disabled.com'],
+      name: 'disabled',
+      status: false
+    }
+  ];
+
   describe('renders error or spinner', () => {
     it('renders spinner', () => {
       const wrapper = shallow(<SignInForm {...defaultProps} />);
@@ -60,25 +79,6 @@ describe('<SignInForm />', () => {
   });
 
   describe('onEmailChange', () => {
-    const propsWithAuth0Connections = _.cloneDeep(defaultProps);
-    propsWithAuth0Connections.auth0Connections = [
-      {
-        domain_aliases: ['socrata.com'],
-        name: 'socrata-okta-sts',
-        status: true
-      },
-      {
-        domain_aliases: ['some-domain.gov'],
-        name: 'some-domain-dev-blah',
-        status: true
-      },
-      {
-        domain_aliases: ['disabled.com'],
-        name: 'disabled',
-        status: false
-      }
-    ];
-
     let wrapperWithSocrataEmail;
 
     beforeEach(() => {
@@ -133,6 +133,81 @@ describe('<SignInForm />', () => {
       const ssoEnabledContainer = passwordInput.find('.signin-sso-enabled-container');
       assert.lengthOf(ssoEnabledContainer, 1);
       assert.equal(ssoEnabledContainer.get(0).style.visibility, 'hidden');
+    });
+  });
+
+  describe('spoofing', () => {
+    let wrapper;
+
+    const spoofedEmail = 'user@email.com superadmin@socrata.com';
+
+    beforeEach(() => {
+      wrapper = shallow(<SignInForm {...propsWithAuth0Connections} />);
+    });
+
+    it('does not render SSO enabled when spoofing', () => {
+      wrapper = mount(<SignInForm {...propsWithAuth0Connections} />);
+      wrapper.instance().onEmailChange({ target: { value: spoofedEmail } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'connectionName', null);
+
+      const passwordInput = wrapper.find(PasswordInput);
+      const ssoEnabledContainer = passwordInput.find('.signin-sso-enabled-container');
+      assert.lengthOf(ssoEnabledContainer, 1);
+      assert.equal(ssoEnabledContainer.get(0).style.visibility, 'hidden');
+    });
+
+    it('properly detects spoofing', () => {
+      wrapper.instance().onEmailChange({ target: { value: spoofedEmail } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'connectionName', null);
+      assert.propertyVal(wrapper.state(), 'email', spoofedEmail);
+      assert.propertyVal(wrapper.state(), 'spoofing', true);
+    });
+
+    it('properly un-detects spoofing', () => {
+      wrapper.instance().onEmailChange({ target: { value: spoofedEmail } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', true);
+
+      wrapper.instance().onEmailChange({ target: { value: 'no-longer-spoofed@email.com' } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', false);
+    });
+
+    it('properly detects SSO after entering spoofed email then going back', () => {
+      wrapper.instance().onEmailChange({ target: { value: spoofedEmail } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', true);
+      assert.propertyVal(wrapper.state(), 'connectionName', null);
+
+      wrapper.instance().onEmailChange({ target: { value: '@socrata.com' } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', false);
+      assert.propertyVal(wrapper.state(), 'connectionName', 'socrata-okta-sts');
+    });
+
+    it('does not spoof unless both emails are valid', () => {
+      wrapper.instance().onEmailChange({ target: { value: 'valid@email.com not-valid-at-all' } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', false);
+
+      wrapper.instance().onEmailChange({ target: { value: 'not-valid-at-all valid@email.com' } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', false);
+
+      wrapper.instance().onEmailChange({ target: { value: spoofedEmail } });
+      wrapper.update();
+
+      assert.propertyVal(wrapper.state(), 'spoofing', true);
     });
   });
 });

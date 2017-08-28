@@ -2,7 +2,7 @@ import React from 'react';
 import Alerts from './components/Alerts';
 import _ from 'lodash';
 
-// (yuck!)
+// (yuck! this came from core, don't blame me)
 // eslint-disable-next-line max-len
 const CORE_EMAIL_REGEX = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
@@ -21,13 +21,26 @@ export function isValidEmail(email, strict = false) {
 }
 
 /**
+ * Returns true if the given email is an attempt to "spoof" a user.
+ * That is, it is of the form "user_email@email.com superadmin@socrata.com"
+ */
+export function isSpoofing(email) {
+  if (_.isEmpty(email)) {
+    return false;
+  }
+
+  const split = email.split(' ');
+  return split.length === 2 && isValidEmail(split[0], true) && isValidEmail(split[1], true);
+}
+
+/**
  * This finds the first connection in the list of forced connections that matches the given email.
  * If no such forced connection is found, undefined is returned instead.
  */
 export function findForcedConnection(email, forcedConnections) {
   return _.find(
     forcedConnections,
-    (forcedConnection) => new RegExp(`^${forcedConnection.match}$`).test(email)
+    (forcedConnection) => new RegExp(`^${forcedConnection.match}$`, 'i').test(email)
   );
 }
 

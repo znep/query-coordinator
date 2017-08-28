@@ -4,21 +4,47 @@ import * as Util from 'Util';
 describe('Util', () => {
   const forcedConnections = [
     {
-      "match": ".*[.][cC][tT][rR]@some-domain[.]gov",
-      "connection":"some-domain-CTR"
+      match: '.*[.][c][t][r]@some-domain[.]gov',
+      connection: 'some-domain-CTR'
     },
     {
-      "match": ".*@some-domain[.]gov",
-      "connection": "some-domain"
+      match: '.*@some-domain[.]gov',
+      connection: 'some-domain'
     }
   ];
 
   const auth0Connections = [
-    {"name":"socrata-okta-sts","domain":"socrata.com","domain_aliases":["socrata.com"],"strategy":"samlp","status":true},
-    {"name":"adfs.somewhere.ca","domain":"somewhere.ca","domain_aliases":["somewhere.ca"],"strategy":"adfs","status":false},
-    {"name":"data-somewhere-else","domain":"somewhere-else.gov","domain_aliases":["somewhere-else.gov"],"strategy":"samlp","status":true},
-    {"name":"twitter","strategy":"twitter","status":true},
-    {"name":"facebook","scope":"email","strategy":"facebook","status":true}
+    {
+      name: 'socrata-okta-sts',
+      domain: 'socrata.com',
+      domain_aliases: ['socrata.com'],
+      strategy: 'samlp',
+      status: true
+    },
+    {
+      name: 'adfs.somewhere.ca',
+      domain: 'somewhere.ca',
+      domain_aliases: ['somewhere.ca'],
+      strategy: 'adfs',
+      status: false
+    },
+    {
+      name: 'data-somewhere-else',
+      domain: 'somewhere-else.gov',
+      domain_aliases: ['somewhere-else.gov'],
+      strategy: 'samlp',
+      status: true
+    },
+    {
+      name: 'twitter',
+      strategy: 'twitter',
+      status: true},
+    {
+      name: 'facebook',
+      scope: 'email',
+      strategy: 'facebook',
+      status: true
+    }
   ];
 
   describe('isValidEmail', () => {
@@ -43,6 +69,8 @@ describe('Util', () => {
     it('finds forced connections', () => {
       assert.equal(Util.findForcedConnection('cool.guy@some-domain.gov', forcedConnections), forcedConnections[1]);
       assert.equal(Util.findForcedConnection('cool.person.CTR@some-domain.gov', forcedConnections), forcedConnections[0]);
+      assert.equal(Util.findForcedConnection('cool.person.ctr@some-domain.gov', forcedConnections), forcedConnections[0]);
+      assert.equal(Util.findForcedConnection('cool.person.CtR@some-domain.gov', forcedConnections), forcedConnections[0]);
     });
 
     it('returns nothing if no forced connection is found', () => {
@@ -75,13 +103,19 @@ describe('Util', () => {
   describe('findConnection', () => {
     it('returns forced email even when connection is present', () => {
       const someConnection = [
-        {"name":"some-domain","domain":"some-domain.gov","domain_aliases":["some-domain.gov"],"strategy":"samlp","status":true}
+        {
+          name: 'some-domain',
+          domain: 'some-domain.gov',
+          domain_aliases: ['some-domain.gov'],
+          strategy: 'samlp',
+          status: true
+        }
       ];
 
       const forcedConnection = [
         {
-          "match": ".*@some-domain[.]gov",
-          "connection": "some-domain"
+          match: '.*@some-domain[.]gov',
+          connection: 'some-domain'
         }
       ];
 
@@ -98,6 +132,30 @@ describe('Util', () => {
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
       assert.isNotOk(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true));
+    });
+  });
+
+  describe('isSpoofing', () => {
+    it('returns true for spoofed emails', () => {
+      assert.isTrue(Util.isSpoofing('user@email.com superadmin@socrata.com'));
+    });
+
+    it('returns false for regular emails', () => {
+      assert.isFalse(Util.isSpoofing('user@email.com'));
+    });
+
+    it('returns false if either email is not valid', () => {
+      assert.isFalse(Util.isSpoofing('not-valid superadmin@socrata.com'));
+      assert.isFalse(Util.isSpoofing('user@email.com not-valid'));
+    });
+
+    it('returns false for null and undefined', () => {
+      assert.isFalse(Util.isSpoofing(null));
+      assert.isFalse(Util.isSpoofing(undefined));
+    });
+
+    it('returns false for empty string', () => {
+      assert.isFalse(Util.isSpoofing(''));
     });
   });
 });

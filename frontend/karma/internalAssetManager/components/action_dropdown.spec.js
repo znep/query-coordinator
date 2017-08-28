@@ -4,14 +4,6 @@ import { ActionDropdown } from 'components/action_dropdown';
 import { mockResponse } from 'httpHelpers';
 
 describe('components/ActionDropdown', () => {
-  beforeEach(() => {
-    sinon.stub(console, 'error');
-  });
-
-  afterEach(() => {
-    console.error.restore();
-  });
-
   const actionDropdownProps = (options = {}) => ({
     assetType: 'dataset',
     closeModal: () => undefined,

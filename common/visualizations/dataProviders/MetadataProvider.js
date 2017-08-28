@@ -220,8 +220,10 @@ function MetadataProvider(config, useCache = false) {
     const fieldNameByName = {};
 
     const fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
-    const hasExplodedSuffix = /_(address|city|state|zip|type|description)$/.test(fieldNameWithoutCollisionSuffix);
 
+    // EN-17640 - If we want pretty URL columns for NBE datasets, we need to let
+    // the _description subcolumn through to reconstruct OBE-like URL columns
+    const hasExplodedSuffix = /_(address|city|state|zip|type)$/.test(fieldNameWithoutCollisionSuffix);
     const matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
 
     utils.assert(

@@ -50,8 +50,10 @@ describe('FilterBar', () => {
       assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_location_zip']));
     });
 
-    it('omits url subcolumns', () => {
-      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_website_description']));
+    // EN-17640: Return, rather than omit URL subcolumns, since we need the data to render
+    // OBE-like URL columns using NBE columns
+    it('returns url subcolumns', () => {
+      assert.ok(_.find(props.columns, ['fieldName', 'marsupial_website_description']));
     });
 
     it('omits phone subcolumns', () => {

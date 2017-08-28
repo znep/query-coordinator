@@ -53,33 +53,4 @@ describe('actions/assetActions', () => {
     });
   });
 
-  describe('fetchPermissions', () => {
-    beforeEach(() => sinon.stub(window, 'fetch'));
-
-    afterEach(() => window.fetch.restore());
-
-    it('fetches the permissions successfully', () => {
-      const fakeResponse = mockResponse(null, 200);
-      window.fetch.returns(Promise.resolve(fakeResponse));
-      const store = mockStore();
-      const expectedActions = [
-        { type: 'FETCH_PERMISSIONS_SUCCESS', response: fakeResponse }
-      ];
-
-      return store.dispatch(actions.fetchPermissions('1234-abcd')).then(() => {
-        assert.deepEqual(store.getActions(), expectedActions);
-      });
-    })
-
-    it('fetches the permissions unsuccessfully', () => {
-      const fakeResponse = mockResponse(null, 500);
-      window.fetch.returns(Promise.resolve(fakeResponse));
-      const store = mockStore();
-      const expectedActions = [
-        { type: 'FETCH_PERMISSIONS_FAILURE', response: fakeResponse }
-      ];
-    });
-
-  });
-
 });

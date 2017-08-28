@@ -1,5 +1,13 @@
 $filter-content-width: 260px;
 
+/* $dark-grey-1 in common/styleguide/variables/_colors, but for some godawful reason, it doesn't
+ * align with the variables set in /frontend/app/styles/_styleguide-colors.scss
+ * I tried removing that import altogether and changing SIAM to only import the former, newer, common
+ * file, but it would require a larger change - webpack config change for the SASS compiler, and changing
+ * some variable names ($primary-base > $primary, not sure if there are others).
+*/
+$dark-grey-1: #5e5e5e;
+
 .catalog-filters {
   background: $light-grey-4;
   border-left: 1px solid $light-grey-3;
@@ -41,6 +49,8 @@ $filter-content-width: 260px;
       &.authority {
         .picklist-option {
           .picklist-title > .socrata-icon {
+            color: $dark-grey-1;
+
             &.socrata-icon-official2 {
               color: $alternate-1;
               width: 21px;
@@ -102,12 +112,15 @@ $filter-content-width: 260px;
 
         .dropdown-placeholder {
           &.dropdown-selected {
-            color: $primary-text;
-          }
-          // EN-17883: Note that ordering here is important. We want the "default" styling to override the
-          // dropdown-selected styling (for the 'All' filter option case).
-          &.default {
-            color: inherit;
+            &:not(.default) {
+              span:not(.socrata-icon) {
+                color: $primary-text;
+              }
+            }
+
+            .socrata-icon {
+              color: $dark-grey-1;
+            }
           }
         }
 

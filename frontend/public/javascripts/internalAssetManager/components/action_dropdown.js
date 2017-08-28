@@ -84,7 +84,7 @@ export class ActionDropdown extends React.Component {
 
   verifyPermissions(view) {
     const { verifiedPermissions } = this.state;
-    let allowableActions = [];
+    const allowableActions = [];
 
     if (verifiedPermissions === false) {
       if (view !== null) {

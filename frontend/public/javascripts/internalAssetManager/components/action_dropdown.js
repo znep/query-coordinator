@@ -6,24 +6,25 @@ import classNames from 'classnames';
 
 import { defaultHeaders, checkStatus } from 'common/http';
 
-import { closeModal, fetchPermissions } from 'actions/asset_actions';
+import { closeModal } from 'actions/asset_actions';
 import ChangeVisibility from './action_modals/change_visibility';
 import DeleteAsset from './action_modals/delete_asset';
+
+const initialReactState = {
+  activeActionModal: null,
+  dropdownIsOpen: false,
+  fetchingPermissions: false,
+  verifiedPermissions: false,
+  allowableActions: []
+};
 
 export class ActionDropdown extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      activeActionModal: null,
-      dropdownIsOpen: false,
-      fetchingPermissions: false,
-      verifiedPermissions: false,
-      view: null,
-      allowableActions: []
-    };
+    this.state = initialReactState;
 
-    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose',
+    _.bindAll(this, 'fetchPermissions', 'handleDocumentClick', 'handleButtonClick', 'handleModalClose',
       'renderDeleteAssetMenuOption', 'renderDropdownOption', 'renderEditMetadataMenuOption',
       'renderChangeVisibilityMenuOption', 'showActionModal', 'permissionsError', 'verifyPermissions'
     );
@@ -45,25 +46,12 @@ export class ActionDropdown extends React.Component {
 
   handleButtonClick(event) {
     const { verifiedPermissions } = this.state;
-    const { ownerUid, uid } = this.props;
 
     event.stopPropagation();
     event.preventDefault();
 
-    const fetchOptions = {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: defaultHeaders
-    };
-
     if (verifiedPermissions === false) {
-      this.setState({
-        fetchingPermissions: true
-      });
-      fetch(`/api/views/${uid}.json`, fetchOptions).
-        then(checkStatus).
-        then((response) => response.json().then(this.verifyPermissions)).
-        catch(this.permissionsError)
+      this.fetchPermissions();
     }
 
     this.setState({
@@ -71,14 +59,27 @@ export class ActionDropdown extends React.Component {
     });
   }
 
+  fetchPermissions() {
+    const { uid } = this.props;
+    const fetchOptions = {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: defaultHeaders
+    };
+
     this.setState({
-      allowableActions: [],
-      fetchingPermissions: false,
-      verifiedPermissions: false,
-      view: null
+      fetchingPermissions: true
     });
+
+    fetch(`/api/views/${uid}.json`, fetchOptions).
+      then(checkStatus).
+      then((response) => response.json().then(this.verifyPermissions)).
+      catch(this.permissionsError);
+  }
+
   permissionsError(result) {
     console.error('Permissions verification failed: status = ', result.response.status);
+    this.setState(initialReactState);
   }
 
   verifyPermissions(view) {
@@ -95,6 +96,7 @@ export class ActionDropdown extends React.Component {
           allowableActions.push('edit_metadata');
         }
       }
+
       this.setState({
         allowableActions,
         fetchingPermissions: false,

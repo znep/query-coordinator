@@ -24,14 +24,14 @@
     margin: 0;
     padding: 0;
     box-shadow: 0 0 8px -2px $grey;
+    min-height: 1rem;
     min-width: 10rem;
-    min-height: 5rem;
 
     .action-dropdown-spinner-container {
       text-align: center;
 
       .spinner-default {
-        margin-top: 2rem;
+        margin-top: 0.5rem;
       }
     }
 

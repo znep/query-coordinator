@@ -37,11 +37,6 @@ bundle config repo.socrata.com ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD}
 set -x
 bundle check || bundle install
 
-# install build dependencies. Hate to have to do this manually, but it's not working
-# well in our build process.
-gem install localeapp
-gem install httparty
-
 # Write REVISION file
 git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
 

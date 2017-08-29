@@ -6,6 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import App from './app';
 import reducer from './reducers';
+import Localization from 'common/i18n/components/Localization';
 
 
 const middleware = [thunk];
@@ -18,8 +19,10 @@ middleware.push(createLogger({
 const store = createStore(reducer, applyMiddleware(...middleware));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Localization locale={serverConfig.locale || 'en'}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Localization>,
   document.querySelector('#app')
 );

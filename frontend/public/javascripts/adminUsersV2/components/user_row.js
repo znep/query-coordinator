@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Dropdown, SocrataIcon } from 'common/components';
 import _ from 'lodash';
+import moment from 'moment';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
-export default class UserRow extends React.Component {
+export class UserRow extends React.Component {
 
   renderCheckbox() {
     return (
@@ -33,7 +35,20 @@ export default class UserRow extends React.Component {
   }
 
   renderLastActive() {
-    return (<td>{this.props.lastActive}</td>);
+    const { I18n, lastActive } = this.props;
+    let lastActiveText;
+
+    if (_.isUndefined(lastActive)) {
+      // users that have not logged in since we started tracking this
+      lastActiveText = I18n.t('users.last_active.unknown');
+    } else if (moment(lastActive, 'X').isSame(moment(), 'day')) {
+      // we only update once a day, no point in showing more granular than that
+      lastActiveText = I18n.t('users.last_active.today');
+    } else {
+      lastActiveText = moment(lastActive, 'X').fromNow();
+    }
+
+    return (<td>{lastActiveText}</td>);
   }
 
   renderPendingActionStatus() {
@@ -88,9 +103,12 @@ UserRow.propTypes = {
   screenName: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  lastActive: PropTypes.string.isRequired,
+  lastActive: PropTypes.number,
   availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
   currentRole: PropTypes.string.isRequired,
   pendingRole: PropTypes.string,
-  onRoleChange: PropTypes.func.isRequired
+  onRoleChange: PropTypes.func.isRequired,
+  I18n: PropTypes.object.isRequired
 };
+
+export const LocalizedUserRow = connectLocalization(UserRow);

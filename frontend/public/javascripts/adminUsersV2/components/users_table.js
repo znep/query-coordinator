@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import UserRow from './user_row';
+import { LocalizedUserRow } from './user_row';
 import _ from 'lodash';
 import * as Actions from '../actions';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class UsersTable extends React.Component {
 
@@ -45,40 +46,45 @@ export class UsersTable extends React.Component {
     const onRoleChange = (newRole) => this.props.onRoleChange(user.id, newRole);
 
     const userProps = {
-      isSelected,
-      onSelectionChange,
+      // user properties
       screenName: user.screenName,
       userId: user.id,
       email: user.email,
-      lastActive: 'TBD',
-      availableRoles,
+      lastActive: user.lastAuthenticatedAt,
       currentRole: user.roleName,
       pendingRole: user.pendingRole,
-      onRoleChange
+      isSelected,
+      // handlers
+      onSelectionChange,
+      onRoleChange,
+      // domain-level properties
+      availableRoles
     };
 
     return (
-      <UserRow
+      <LocalizedUserRow
         {...userProps}
         key={user.id} />
     );
   }
 
   renderHeaderRow() {
+    const { I18n, selectAll, onSelectAll } = this.props;
+
     return (
       <thead className="results-list-header">
         <tr>
           <th>
             <input
               type="checkbox"
-              checked={this.props.selectAll}
-              onChange={() => this.props.onSelectAll(!this.props.selectAll)} />
+              checked={selectAll}
+              onChange={() => onSelectAll(!selectAll)} />
           </th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Last Sign In</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>{I18n.t('users.headers.name')}</th>
+          <th>{I18n.t('users.headers.email')}</th>
+          <th>{I18n.t('users.headers.last_active')}</th>
+          <th>{I18n.t('users.headers.role')}</th>
+          <th>{I18n.t('users.headers.actions')}</th>
         </tr>
       </thead>
     );
@@ -109,7 +115,8 @@ UsersTable.propTypes = {
   onRoleChange: PropTypes.func.isRequired,
   onSelectionChange: PropTypes.func.isRequired,
   selectAll: PropTypes.bool.isRequired,
-  onSelectAll: PropTypes.func.isRequired
+  onSelectAll: PropTypes.func.isRequired,
+  I18n: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
@@ -131,4 +138,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export const ConnectedUsersTable = connect(mapStateToProps, mapDispatchToProps)(UsersTable);
+export const ConnectedUsersTable = connectLocalization(
+  connect(mapStateToProps, mapDispatchToProps)(UsersTable)
+);

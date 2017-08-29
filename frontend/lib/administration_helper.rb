@@ -45,10 +45,12 @@ module AdministrationHelper
       localePrefix: locale_prefix.to_s
     }
 
+    translations = LocaleCache.render_partial_translations(:users)
 
     javascript_tag(%Q(
       window.initialState = #{json_escape(initial_state.to_json)};
       window.serverConfig = #{json_escape(server_config.to_json)};
+      window.translations = #{json_escape(translations.to_json)};
     ))
   end
 

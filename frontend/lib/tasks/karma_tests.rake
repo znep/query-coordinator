@@ -223,12 +223,13 @@ namespace :test do
 
       task :update_admin_users_v2_translations do
         translation_map = {
-          '': 'screens.admin.jobs'
+          '': 'users'
         }
 
         update_translations(
           translation_map,
-          'karma/adminUsersV2/mockTranslations.js'
+          'karma/adminUsersV2/mockTranslations.js',
+          export = 'module.exports ='
         )
       end
 

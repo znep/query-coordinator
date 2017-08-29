@@ -4,7 +4,8 @@ import React from 'react';
 import sinon from 'sinon';
 
 import { UsersTable } from 'components/users_table';
-import UserRow from 'components/user_row';
+import { LocalizedUserRow } from 'components/user_row';
+import I18nJS from 'i18n-js';
 
 import { initialState } from '../helpers/stateFixtures';
 
@@ -13,7 +14,8 @@ describe('components/UsersTable', () => {
     ...initialState,
     onRoleChange: sinon.spy(),
     onSelectionChange: sinon.spy(),
-    onSelectAll: sinon.spy()
+    onSelectAll: sinon.spy(),
+    I18n: I18nJS
   };
 
   it('renders a table with 40 rows', () => {
@@ -26,7 +28,7 @@ describe('components/UsersTable', () => {
 
   it('passes the onRoleChange function to a row', () => {
     const component = shallow(<UsersTable {...defaultProps} />);
-    const rows = component.find(UserRow);
+    const rows = component.find(LocalizedUserRow);
     const firstRow = rows.first();
     firstRow.props().onRoleChange('administrator');
 
@@ -35,7 +37,7 @@ describe('components/UsersTable', () => {
 
   it('passes the onSelectionChange function to a row', () => {
     const component = shallow(<UsersTable {...defaultProps} />);
-    const rows = component.find(UserRow);
+    const rows = component.find(LocalizedUserRow);
     const firstRow = rows.first();
     firstRow.props().onSelectionChange();
     assert(defaultProps.onSelectionChange.calledWith(defaultProps.users[0].id, true));

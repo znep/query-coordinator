@@ -6378,6 +6378,16 @@ en:
       long: "%B %d, %Y %I:%M %p"
       short: "%H:%M:%S"
     pm: pm
+  users:
+    headers:
+      name: Name
+      email: Email
+      last_active: Last Active
+      role: Role
+      actions: Actions
+    last_active:
+      today: today
+      unknown: unknown
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

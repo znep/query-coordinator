@@ -300,7 +300,6 @@ export const singleRowState = {
   screenName: 'Justin Bieber',
   userId: 'abcd-1234',
   email: 'burrito@despacito.com',
-  lastActive: 'TBD',
   currentRole: 'administrator',
   availableRoles: [
     {

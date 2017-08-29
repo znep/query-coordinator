@@ -6,18 +6,23 @@ import _ from 'lodash';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
+import I18nJS from 'i18n-js';
+import mockTranslations from 'mockTranslations';
+import Localization from 'common/i18n/components/Localization';
 
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
-window.I18n = require('mockTranslations');
+
+window.translations = { users: mockTranslations };
+I18nJS.translations = { en: { users: mockTranslations } };
+// Reset the defaultProps since at load time they are (might be) undefined
+Localization.defaultProps.translations = window.translations;
+
 window.serverConfig = {
   csrfToken: 'abcdefgh1234',
   appToken: 'global-frontend-token',
   currentUserId: 'asdf-1234',
   localePrefix: 'en',
-  featureFlags: {
-    usaidFeaturesEnabled: false
-  }
 };
 
 window.renderPureComponent = _.flow(

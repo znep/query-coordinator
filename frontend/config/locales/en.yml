@@ -6380,11 +6380,11 @@ en:
     pm: pm
   users:
     headers:
-      name: Name
+      actions: Actions
       email: Email
       last_active: Last Active
+      name: Name
       role: Role
-      actions: Actions
     last_active:
       today: today
       unknown: unknown

@@ -12,6 +12,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     domain: series.dataSource.domain
   }, true);
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
+  const grouping = SoqlHelpers.grouping(vif, seriesIndex);
   const measure = SoqlHelpers.measure(vif, seriesIndex);
   const errorBarsLower = SoqlHelpers.errorBarsLower(vif, seriesIndex);
   const errorBarsUpper = SoqlHelpers.errorBarsUpper(vif, seriesIndex);
@@ -35,7 +36,10 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     _.isNull(series.dataSource.dimension.aggregationFunction) &&
     _.isNull(series.dataSource.measure.aggregationFunction)
   );
-  // We only want to follow the showOtherCategory code path if that property
+  const isQueryWithInClause = _.find(
+    series.dataSource.filters,
+    (filter) => { return (filter.function === "in"); });
+    // We only want to follow the showOtherCategory code path if that property
   // is set to true AND there is a defined limit.
   const showOtherCategory = (
     _.get(vif, 'configuration.showOtherCategory', false) &&
@@ -71,10 +75,9 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       `${errorBarsUpper} AS ${errorBarsUpperAlias}`);
   }
 
+  // Note that we add one to the limit before making the query so that we can
+  // identify when an additional 'other' category query may be necessary.
   if (isUnaggregatedQuery) {
-
-    // Note that we add one to the limit before making the query so that we can
-    // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
       fields.join(', '),
@@ -83,10 +86,19 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       'NULL LAST',
       `LIMIT ${limit + 1}`
     ].join(' ');
+  } else if (isQueryWithInClause) {
+    queryString = [
+      'SELECT',
+        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+        `${grouping} AS ${SoqlHelpers.groupingAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${groupByClause}, ${SoqlHelpers.groupingAlias()}`,
+      `ORDER BY ${orderByClause}`,
+      'NULL LAST',
+      `LIMIT ${limit + 1}`
+    ].join(' ');
   } else {
-
-    // Note that we add one to the limit before making the query so that we can
-    // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
       fields.join(', '),
@@ -112,7 +124,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
         queryResponse.rows.map((row) => row[0])
       ).length;
 
-      if (queryResponseRowCount !== queryResponseUniqueDimensionCount) {
+      if (!isQueryWithInClause &&
+          (queryResponseRowCount !== queryResponseUniqueDimensionCount)) {
         const error = new Error();
 
         error.errorMessages = [

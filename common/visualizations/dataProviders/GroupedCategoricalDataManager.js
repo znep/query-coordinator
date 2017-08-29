@@ -292,29 +292,29 @@ function getData(vif, options) {
       /**
        * Anteater queries
        */
-      state.groupingValues.forEach((groupingValue) => {
-        const groupingValuesFilters = _.cloneDeep(filtersFromVif);
 
-        groupingValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.columnName,
-            arguments: getBinaryOperatorFilterArguments(dimensionValue)
-          }
-        );
-        groupingValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.groupingColumnName,
-            arguments: getBinaryOperatorFilterArguments(groupingValue)
-          }
-        );
+      const groupingValuesFilters = _.cloneDeep(filtersFromVif);
 
-        groupingData.push({
-          vif: generateGroupingVifWithFilters(groupingValuesFilters),
-          dimensionValue,
-          groupingValue
-        });
+      groupingValuesFilters.push(
+        {
+          function: 'binaryOperator',
+          columnName: state.columnName,
+          arguments: getBinaryOperatorFilterArguments(dimensionValue)
+        }
+      );
+
+      groupingValuesFilters.push(
+        {
+          function: 'in',
+          columnName: state.groupingColumnName,
+          arguments: state.groupingValues
+        }
+      );
+
+      groupingData.push({
+        vif: generateGroupingVifWithFilters(groupingValuesFilters),
+        dimensionValue,
+        groupingValues: state.groupingValues
       });
 
       /**
@@ -589,48 +589,58 @@ function getData(vif, options) {
       'groupingData'
     );
 
+    const dimensionColumn = 'dimension';
+    const dimensionIndex = 0;
     const measureIndex = 1;
-    const dataToRenderColumns = ['dimension'].concat(state.groupingValues);
+    const dataToRenderColumns = [dimensionColumn].concat(state.groupingValues);
 
     if (state.groupingRequiresOtherCategory) {
       const otherCategoryName = I18n.t(
         'shared.visualizations.charts.common.other_category'
       );
-
       dataToRenderColumns.push(otherCategoryName);
     }
 
-    const uniqueDimensionValues = _.uniq(
-      state.groupingData.map((groupingDatum) => groupingDatum.dimensionValue)
-    );
-    const dataToRenderRows = uniqueDimensionValues.map(
-      (uniqueDimensionValue) => {
-        const groupingDataForDimension = state.groupingData.filter(
-          (groupingDatum) => {
-            return groupingDatum.dimensionValue === uniqueDimensionValue;
-          }
-        );
-        const row = [uniqueDimensionValue];
+    // state.groupingData is an array of objects. Each of those objects has a
+    // data field. That field must be processed cleanly and return something
+    // that matches the expected table, one meant for rendering.
 
-        // Ignore the 'dimension' column, but fill in all the rest from their
-        // corresponding groupingDataForDimension collections.
-        dataToRenderColumns.slice(1).forEach((groupingValue) => {
-          const datumForGroupingValue = _.find(
-            groupingDataForDimension,
-            (datum) => datum.groupingValue === groupingValue
-          );
-          const rowValue = _.get(
-            datumForGroupingValue,
-            `data.rows[0][${measureIndex}]`,
-            null
-          );
+    const table = {};
 
-          row.push(rowValue);
+    state.groupingData.forEach((datum) => {
+      if (datum.groupingValues) {
+        // The presence of datum.groupingValues (note the plural) indicates that
+        // an IN clause was used in the original query. It must be handled
+        // separately.
+        datum.data.rows.forEach((row) => {
+          const [dimension, grouping, measure] = row;
+          const standardizedDimension = (typeof dimension === "undefined") ? null : dimension;
+          const path = [standardizedDimension, grouping];
+          const existing = _.get(table, path, 0);
+          _.setWith(table, path, existing + measure, Object);
         });
-
-        return row;
+      } else {
+        // Otherwise, the query returned just one value to incorporate into the
+        // results table.
+        const dimension = _.get(datum, `data.rows[0][${dimensionIndex}]`, null);
+        const rowValue = _.get(datum, `data.rows[0][${measureIndex}]`, null);
+        const path = [dimension, datum.groupingValue];
+        _.setWith(table, path, rowValue, Object);
       }
-    );
+    });
+
+    // Convert the table (a map data structure) into an array of rows suitable
+    // for rendering, with entries ordered as specified by dataToRenderColumns:
+    const dataToRenderRows = _.map(table, (rowData, dimension) => {
+      const realDimension = (dimension === "null") ? null : dimension;
+      const row = [realDimension];
+      dataToRenderColumns.forEach((col) => {
+        if (col !== dimensionColumn) {
+          row.push(_.get(rowData, col, null));
+        }
+      });
+      return row;
+    });
 
     return {
       columns: dataToRenderColumns,

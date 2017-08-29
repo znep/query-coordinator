@@ -2916,6 +2916,8 @@ en:
         change_permissions: Change Permissions...
         transfer_ownership: Transfer Ownership...
         delete_asset: Delete...
+        no_actions_possible: There are no actions possible.
+        permissions_error: Error determining permissions.
       action_modal:
         change_visibility:
           accept: OK
@@ -2934,6 +2936,7 @@ en:
         delete_asset:
           accept: Delete
           chart: chart
+          denied: You are not allowed to delete this asset. Please contact your administrator or support@socrata.com.
           description: Are you sure you want to delete "%{name}"?
           description_related_assets:
             one: '%{count} related asset built using this dataset will also be deleted permanently.'

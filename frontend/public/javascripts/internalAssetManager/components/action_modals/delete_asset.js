@@ -98,7 +98,7 @@ export class DeleteAsset extends React.Component {
     const hasError = assetActions.performingActionFailure;
     const errorMessage = hasError ? (
       <div className="alert error">
-        {getTranslation('error')}
+        {getTranslation(assetActions.actionResponse.status === 403 ? 'denied' : 'error')}
       </div>
     ) : null;
 
@@ -142,12 +142,12 @@ DeleteAsset.propTypes = {
   I18n: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   assetActions: state.assetActions,
   results: state.catalog.results
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   deleteAsset: (uid) => dispatch(deleteAsset(uid)),
   fetchChildAssets: (uid) => dispatch(fetchChildAssets(uid))
 });

@@ -32,6 +32,34 @@ describe('cetera_utils.js', () => {
     ceteraStub.restore();
   });
 
+  describe('encoding query string parameters', () => {
+
+    it('encodes "false" boolean values', () => {
+       ceteraUtils.query({ showVisibility: false });
+       assert.equal(
+         window.fetch.args[0][0],
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost&show_visibility=false'
+       );
+    });
+
+    it('encodes "true" boolean values', () => {
+       ceteraUtils.query({ showVisibility: true });
+       assert.equal(
+         window.fetch.args[0][0],
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost&show_visibility=true'
+       );
+    });
+
+    it('omits null values', () => {
+       ceteraUtils.query({ showVisibility: null });
+       assert.equal(
+         window.fetch.args[0][0],
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost'
+       );
+    });
+
+  });
+
   describe('unsuccessful response', () => {
 
     let airBrakeStub = null;

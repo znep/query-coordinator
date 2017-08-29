@@ -131,12 +131,16 @@ export const ceteraUtils = (() => {
       parameters.published = 'true';
     }
 
-    return _.reduce(
-      _.omit(parameters, 'ids'),
-      (result, value, key) =>
-        (key && value ? result.concat([`${key}=${encodeURIComponent(value)}`]) : result), []).
-      concat(parameters.ids ? [`${parameters.ids}`] : []).
-      join('&');
+    const reduceUriEncodedQueryParameter = (result, value, key) => {
+      if (!_.isNull(key) && !_.isNull(value)) {
+        return result.concat([`${key}=${encodeURIComponent(value)}`]);
+      } else {
+        return result;
+      }
+    };
+
+    return _.reduce(_.omit(parameters, 'ids'), reduceUriEncodedQueryParameter, []).
+      concat(parameters.ids ? [`${parameters.ids}`] : []).join('&');
   };
 
   return {

@@ -18,7 +18,17 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, isPublished, link, name, ownerName, provenance, type, uid, updatedAt } = this.props;
+    const {
+      description,
+      isPublished,
+      link,
+      name,
+      ownerName,
+      provenance,
+      type,
+      uid,
+      updatedAt
+    } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>

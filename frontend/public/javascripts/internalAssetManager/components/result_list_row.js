@@ -24,7 +24,6 @@ export class ResultListRow extends React.Component {
       link,
       name,
       ownerName,
-      ownerUid,
       provenance,
       type,
       uid,
@@ -41,7 +40,7 @@ export class ResultListRow extends React.Component {
         return cellTag(dateString);
       }
       case 'actions':
-        return cellTag(<ActionDropdown assetType={type} uid={uid} ownerUid={ownerUid} />);
+        return cellTag(<ActionDropdown assetType={type} uid={uid} />);
       case 'name':
         return (cellTag(
           <div>
@@ -105,7 +104,6 @@ ResultListRow.propTypes = {
   moderationStatus: PropTypes.string,
   name: PropTypes.string,
   ownerName: PropTypes.string,
-  ownerUid: PropTypes.string,
   provenance: PropTypes.string,
   routingStatus: PropTypes.string,
   type: PropTypes.string,

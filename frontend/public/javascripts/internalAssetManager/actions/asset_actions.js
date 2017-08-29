@@ -13,7 +13,7 @@ export const closeModal = () => ({ type: 'CLOSE_MODAL' });
 export const fetchChildAssets = (uid) => () => ceteraUtils.query({ derivedFrom: uid });
 
 export const fetchParentVisibility = (uid) => () => (
-  ceteraUtils.query({ idFilters: [uid], showVisibility: 'true' })
+  ceteraUtils.query({ idFilters: [uid], showVisibility: true })
 );
 
 export const deleteAsset = (uid) => (dispatch) => {

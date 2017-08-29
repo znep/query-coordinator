@@ -19,7 +19,7 @@ const initialReactState = (options = {}) => {
     verifiedPermissions: false,
     allowableActions: [],
     ...options
-  }
+  };
 };
 
 export class ActionDropdown extends React.Component {

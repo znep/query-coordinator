@@ -22,6 +22,12 @@ body {
   background: $light-grey-6;
 }
 
+.authoring-field {
+  .text-input {
+    line-height: inherit;
+  }
+}
+
 .visualization-canvas {
   min-height: 90vh;
 

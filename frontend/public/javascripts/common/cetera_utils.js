@@ -137,7 +137,7 @@ export const ceteraUtils = (() => {
       } else {
         return result;
       }
-    }
+    };
 
     return _.reduce(_.omit(parameters, 'ids'), reduceUriEncodedQueryParameter, []).
       concat(parameters.ids ? [`${parameters.ids}`] : []).join('&');

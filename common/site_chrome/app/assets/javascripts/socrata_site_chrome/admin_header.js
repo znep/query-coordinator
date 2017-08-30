@@ -4,6 +4,8 @@
     return;
   }
 
+  var appToken = getAppToken();
+
   var header = $('#site-chrome-admin-header');
   var createMenu = $('#site-chrome-create-menu');
 
@@ -19,7 +21,7 @@
     on('keydown', keydownAdminDropdownItem).
     on('keyup', keyupAdminDropdownItem);
 
-  if (getAppToken()) {
+  if (appToken) {
     createMenu.find('.create-story').on('click', clickCreateStory);
     createMenu.find('.create-measure').on('click', clickCreateMeasure);
   } else {
@@ -214,8 +216,9 @@
    * jQuery 1.x AJAX capabilities. Promises are polyfilled in IE11.
    */
   function createPublishedView(metadata) {
-    // You can't perform this operation without an app token.
-    var appToken = getAppToken();
+    // You can't perform this operation without an app token and CSRF token.
+    // We retrieve the CSRF token per request, which should help down the road
+    // if we decide to rotate CSRF tokens more aggressively.
     if (!appToken) {
       return Promise.reject(new Error('AppToken is not accessible!'));
     }
@@ -232,7 +235,8 @@
         data: JSON.stringify(metadata),
         headers: {
           'Content-type': 'application/json',
-          'X-App-Token': appToken
+          'X-App-Token': appToken,
+          'X-CSRF-Token': getCSRFToken()
         },
         success: function(response) {
           var valid = response.hasOwnProperty('id') && validate4x4(response.id);
@@ -251,7 +255,8 @@
           url: '/api/views/' + id + '/publication.json?accessType=WEBSITE',
           type: 'POST',
           headers: {
-            'X-App-Token': appToken
+            'X-App-Token': appToken,
+            'X-CSRF-Token': getCSRFToken()
           },
           success: function(response) {
             var valid = response.hasOwnProperty('id') && validate4x4(response.id);
@@ -273,9 +278,19 @@
 
   function getAppToken() {
     var siteChromeAppToken = window.socrata && window.socrata.siteChrome && window.socrata.siteChrome.appToken;
+    var serverConfigAppToken = window.serverConfig && window.serverConfig.appToken;
     var blistAppToken = window.blist && window.blist.configuration && window.blist.configuration.appToken;
 
-    return siteChromeAppToken || blistAppToken || null;
+    return siteChromeAppToken || serverConfigAppToken || blistAppToken || null;
+  }
+
+  // This token could also be obtained via $.cookies.get('socrata-csrf-token').
+  // See all-screens.js for reference.
+  function getCSRFToken() {
+    var serverConfigCSRFToken = window.serverConfig && window.serverConfig.csrfToken;
+    var blistCSRFToken = $('meta[name="csrf-token"]').attr('content');
+
+    return serverConfigCSRFToken || blistCSRFToken || null;
   }
 
   function generateDatedTitle(defaultTitle) {

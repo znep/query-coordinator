@@ -1,0 +1,209 @@
+{
+  "id": "pe6p-uu2n",
+  "name": "test dataset",
+  "description": "dataset for unit test",
+  "defaultPage": "defa-ultp",
+  "locale": "en_US",
+  "ownerId": "8ueb-zucv",
+  "updatedAt": "2014-08-17T04:07:03.000Z",
+  "domain": "dataspace-demo.test-socrata.com",
+  "version": 1,
+  "columns": {
+    ":system": {
+      "name": "system column",
+      "description": "is this even possible?"
+    },
+    "no_cardinality": {
+      "name": "no cardinality",
+      "description": "no cardinality description",
+      "physicalDatatype": "number"
+    },
+    "cardinal_biggles": {
+      "name": "Cardinal Biggles",
+      "description": "no cardinality description",
+      "physicalDatatype": "number",
+      "cardinality": 35000,
+      "defaultCardType": "search",
+      "availableCardTypes": ["column", "search"]
+    },
+    "cardinal_fang": {
+      "name": "Cardinal Fang",
+      "description": "no cardinality description",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "location": {
+      "name": "Point",
+      "description": "What's your point?",
+      "physicalDatatype": "point",
+      "cardinality": 100
+    },
+    ":@computed": {
+      "name": "computed column",
+      "description": "adjust your lattitude",
+      "physicalDatatype": "number",
+      "computationStrategy": {
+        "parameters": {
+          "region": "_c8h8-ygvf",
+          "geometryLabel": "geoid10"
+        },
+        "strategy_type": "georegion_match_on_point"
+      }
+    },
+    ":@other_computed": {
+      "name": "other computed column",
+      "description": "adjust your lattitude",
+      "physicalDatatype": "point",
+      "cardinality": 1000,
+      "computationStrategy": {
+        "parameters": {
+          "region": "_c8h8-ygvf",
+          "geometryLabel": "geoid11"
+        },
+        "strategy_type": "georegion_match_on_point"
+      }
+    },
+    "point_city": {
+      "name": "Point (city)",
+      "description": "sub-column card from OBE",
+      "cardinality": 1,
+      "physicalDatatype": "text",
+      "defaultCardType": "search",
+      "availableCardTypes": ["column", "search"]
+    },
+    "latitude": {
+      "name": "LaTiTUde",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "longitude": {
+      "name": "LONGITUDE",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "lat": {
+      "name": "LAT",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "lng": {
+      "name": "Lng",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "x": {
+      "name": "X",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "y": {
+      "name": "y",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "below": {
+      "name": "below min cardinality",
+      "description": "below min cardinality description",
+      "physicalDatatype": "number",
+      "cardinality": 1
+    },
+    "none1": {
+      "name": "none1",
+      "description": "column description",
+      "physicalDatatype": "boolean",
+      "cardinality": 34
+    },
+    "none2": {
+      "name": "none2",
+      "description": "column description",
+      "physicalDatatype": "geo_entity",
+      "cardinality": 36
+    },
+    "single1": {
+      "name": "RedHerring (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "invalid physical datatype",
+      "cardinality": 34
+    },
+    "single2": {
+      "name": "single2 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "boolean",
+      "cardinality": 36
+    },
+    "single3": {
+      "name": "single3 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "fixed_timestamp",
+      "cardinality": 34
+    },
+    "single4": {
+      "name": "single4 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "money",
+      "cardinality": 36
+    },
+    "multi1": {
+      "name": "multi1 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi2": {
+      "name": "multi2 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "multi3": {
+      "name": "multi3 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi4": {
+      "name": "multi4 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "multi5": {
+      "name": "multi5 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi6": {
+      "name": "multi6 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "multi7": {
+      "name": "multi7 (not a subcolumn)",
+      "description": "column description",
+      "physicalDatatype": "text"
+    },
+    "point": {
+      "name" : "Point",
+      "physicalDatatype" : "text",
+      "description": "This is the parent column to any column with name: 'Point (something else)', AND field_name 'point_*'"
+    },
+    "redherring_parent_column": {
+      "name" : "RedHerring",
+      "physicalDatatype" : "text",
+      "description": "This tests to make sure that columns with names like 'OtherColumn (parenthetical)' - where 'OtherColumn' exists - are not filtered out, unless their fieldName ALSO conforms to the subcolumn naming convention. In this case, it doesn't."
+    },
+    "wacko_card_type": {
+      "name": "BlueHerring",
+      "physicalDatatype": "completely-invalid-datatype",
+      "description": "You think we wouldn't make a card for this evil card type?  Think again.  Well, we used to.  But now we don't because I fixed it."
+    }
+  }
+}

@@ -3,10 +3,10 @@ require 'test_helper'
 class DataLensControllerTest < ActionController::TestCase
 
   def setup
-    init_environment
+    init_environment(feature_flags: { :phidippides_deprecation_metadata_source => 'core-only' })
+
     ::Configuration.stubs(:find_by_type => [])
 
-    @controller.stubs(:phidippides => Phidippides.new('localhost', 2401))
     load_sample_data('test/fixtures/sample-data.json')
 
     test_view = View.find('test-data')
@@ -17,25 +17,42 @@ class DataLensControllerTest < ActionController::TestCase
     )
 
     View.stubs(
-      :migrations => {
-        :nbeId => 'test-data',
-        :obeId => 'obev-rson'
-      }
+      :migrations => migration_metadata
     )
   end
 
   test 'should successfully get data_lens' do
     stub_basic_data_lens
-    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
-    # Should flag subcolumns
-    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+  end
+
+  test 'should assign dataset_id' do
+    stub_basic_data_lens
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
+    assert_equal(assigns[:dataset_id], migration_metadata[:obeId])
+  end
+
+  test 'should assign dataset_metadata' do
+    stub_basic_data_lens
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
+    assert_equal(assigns[:dataset_metadata], v1_dataset_metadata)
+  end
+
+  test 'should assign page metadata' do
+    stub_basic_data_lens
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
+    assert_equal(assigns[:page_metadata], data_lens_page_metadata)
+  end
+
+  test 'should assign migration metadata' do
+    stub_basic_data_lens
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
+    assert_equal(assigns[:migration_metadata], migration_metadata)
   end
 
   test 'should allow frame embedding of data_lens page' do
     stub_basic_data_lens
-    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
     # Should set the header that allows frame embedding
@@ -44,34 +61,20 @@ class DataLensControllerTest < ActionController::TestCase
 
   test 'should successfully get data_lens for single card view' do
     stub_basic_data_lens
-    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :field_id => 'field', :app => 'dataCards'
     assert_response :success
-    # Should flag subcolumns
-    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+    assert_equal(assigns[:dataset_metadata], v1_dataset_metadata)
   end
 
-  test 'should successfully get data_lens with empty Phidippides page data' do
+  test 'should successfully get data_lens with empty page data' do
     DataLensManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
-      :show => data_lens_page_metadata
+      :show => data_lens_page_metadata,
     )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
-    init_feature_flag_signaller(:with => {
-      :phidippides_deprecation_metadata_source => 'phidippides-only'
-    })
+    DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
 
-    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
-    # Should flag subcolumns
-    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
   test 'should successfully get data_lens with empty metadb page data' do
@@ -80,22 +83,10 @@ class DataLensControllerTest < ActionController::TestCase
     PageMetadataManager.any_instance.stubs(
       :show => data_lens_page_metadata
     )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
-    init_feature_flag_signaller(:with => {
-      :phidippides_deprecation_metadata_source => 'phidippides-only'
-    })
+    DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
 
-    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
-    # Should flag subcolumns
-    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
   test 'should raise an error when a non-existent app is requested' do
@@ -144,17 +135,7 @@ class DataLensControllerTest < ActionController::TestCase
       PageMetadataManager.any_instance.stubs(
         :show => data_lens_page_metadata
       )
-      Phidippides.any_instance.stubs(
-        :fetch_dataset_metadata => {
-          :status => '200',
-          :body => v1_dataset_metadata
-        },
-        :set_default_and_available_card_types_to_columns! => {}
-      )
-
-      init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      })
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
     end
@@ -171,16 +152,7 @@ class DataLensControllerTest < ActionController::TestCase
 
   context 'when unauthenticated' do
     setup do
-      Phidippides.any_instance.stubs(
-        :fetch_dataset_metadata => {
-          :status => '200',
-          :body => v1_dataset_metadata
-        },
-        :set_default_and_available_card_types_to_columns! => {}
-      )
-      init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      })
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
     end
 
     should 'redirect to the login page if the page is private' do
@@ -202,10 +174,6 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'redirect to the login page if the dataset is private' do
       DataLensManager.any_instance.stubs(:fetch).raises(DataLensManager::ViewAuthenticationRequired)
-
-      init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      })
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -230,7 +198,7 @@ class DataLensControllerTest < ActionController::TestCase
     end
 
     should 'redirect to 403 for permission denied error on migration endpoint' do
-      @controller.stubs(
+      DataLensController.any_instance.stubs(
         :fetch_page_metadata => data_lens_page_metadata,
         :fetch_dataset_metadata => v1_dataset_metadata
       )
@@ -246,7 +214,7 @@ class DataLensControllerTest < ActionController::TestCase
     end
 
     should 'return success for CoreServer::ResourceNotFound' do
-      @controller.stubs(
+      DataLensController.any_instance.stubs(
         :fetch_page_metadata => data_lens_page_metadata,
         :fetch_dataset_metadata => v1_dataset_metadata
       )
@@ -261,13 +229,7 @@ class DataLensControllerTest < ActionController::TestCase
 
   context 'when authenticated' do
     setup do
-      Phidippides.any_instance.stubs(
-        :fetch_dataset_metadata => {
-          :status => '200',
-          :body => v1_dataset_metadata
-        },
-        :set_default_and_available_card_types_to_columns! => {}
-      )
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata)
     end
 
     should 'redirect to the 403 page if the page is private' do
@@ -288,11 +250,8 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'redirect to the 403 page if the dataset is private' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
-      Phidippides.any_instance.stubs(:fetch_dataset_metadata => { status: '403' })
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       DataLensManager.any_instance.stubs(:fetch).returns({})
-      init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      })
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
@@ -303,7 +262,7 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'redirect to the 403 page if the dataset is private case two' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
-      @controller.stubs(:fetch_permissions_and_normalize_exceptions).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
       DataLensManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
@@ -335,13 +294,7 @@ class DataLensControllerTest < ActionController::TestCase
 
   context 'visualization_add' do
     setup do
-      Phidippides.any_instance.stubs(
-        :fetch_dataset_metadata => {
-          :status => '200',
-          :body => v1_dataset_metadata
-        },
-        :set_default_and_available_card_types_to_columns! => {}
-      )
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
 
       # note that this is not parsed json!
       View.any_instance.stubs(:find_related_as_json => '[]')
@@ -351,16 +304,16 @@ class DataLensControllerTest < ActionController::TestCase
           :all => [ 'test-data', 'obev-rson' ]
         }
       )
-      init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      })
     end
 
     should 'successfully get' do
       get :visualization_add, :datasetId => 'test-data', :app => 'dataCards'
       assert_response :success
-      # Should flag subcolumns
-      assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+    end
+
+    should 'assign dataset_metadata' do
+      get :visualization_add, :datasetId => 'test-data', :app => 'dataCards'
+      assert_equal(assigns[:dataset_id], 'obev-rson')
     end
   end
 
@@ -369,19 +322,13 @@ class DataLensControllerTest < ActionController::TestCase
       PageMetadataManager.any_instance.stubs(
         :show => data_lens_page_metadata
       )
-      Phidippides.any_instance.stubs(
-        :fetch_dataset_metadata => {
-          :status => '200',
-          :body => v1_dataset_metadata
-        },
-        :set_default_and_available_card_types_to_columns! => {}
-      )
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
       DataLensManager.any_instance.stubs(:fetch).returns({})
     end
 
     should 'not render google analytics JS if feature flag is not set' do
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only',
+        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => false,
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -392,7 +339,7 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is set to true' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only',
+        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => true,
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -403,7 +350,7 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is an empty string' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only',
+        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => '',
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -413,7 +360,7 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'render google analytics JS with explicit ga code if specified' do
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'phidippides-only',
+        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => 'UA-1234-567890',
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -483,6 +430,13 @@ class DataLensControllerTest < ActionController::TestCase
 
   private
 
+  def migration_metadata
+    {
+      :nbeId => 'test-data',
+      :obeId => 'obev-rson'
+    }
+  end
+
   def data_lens_page_metadata
     outer_metadata = JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")).with_indifferent_access
     outer_metadata['displayFormat']['data_lens_page_metadata']
@@ -502,18 +456,7 @@ class DataLensControllerTest < ActionController::TestCase
 
   def stub_basic_data_lens
     DataLensManager.any_instance.stubs(:fetch).returns({})
-    PageMetadataManager.any_instance.stubs(
-      :show => data_lens_page_metadata
-    )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
-    init_feature_flag_signaller(:with => {
-      :phidippides_deprecation_metadata_source => 'phidippides-only'
-    })
+    PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
+    DataLensController.any_instance.stubs(:fetch_dataset_metadata).returns(v1_dataset_metadata.with_indifferent_access)
   end
 end

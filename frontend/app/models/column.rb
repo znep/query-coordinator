@@ -437,6 +437,9 @@ class Column < Model
   # is slow. We have to fetch the cardinality at this stage because we depend on cardinality to
   # suggest cards, as well as do some filtering out of columns based on it. If we could do something
   # else, we would.
+  #
+  # As of 08/2017, we have column stats in the core view of derived views. We should be able to
+  # optimize this code.
   def self.get_derived_view_columns(derived_view)
     column_threads = []
     updated_columns = {}

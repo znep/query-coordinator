@@ -21,6 +21,7 @@ class PageMetadataController < ApplicationController
   end
 
   def create
+
     begin
       page_metadata = json_parameter(:pageMetadata)
     rescue CommonMetadataTransitionMethods::UserError => error
@@ -31,9 +32,8 @@ class PageMetadataController < ApplicationController
 
     # permission checks
     parent_lens_id = page_metadata['parentLensId']
-    can_create_from_dataset = can_create_metadata? && ephemeral_bootstrap_enabled?
     can_derive_from_existing_lens = current_user && parent_lens_id.present?
-    unless can_create_from_dataset || can_derive_from_existing_lens
+    unless can_create_metadata? || can_derive_from_existing_lens
       return render :nothing => true, :status => '401'
     end
 
@@ -58,11 +58,9 @@ class PageMetadataController < ApplicationController
         :cookies => forwardable_session_cookies
       )
       render :json => result[:body], :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    rescue Phidippides::NoDatasetIdException => error
+    rescue PageMetadataManager::NoDatasetIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue Phidippides::NoCardsException => error
+    rescue PageMetadataManager::NoCardsException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue DataLensManager::DataLensNotCreatedError => error
       message = "Core error creating catalog lens request ID #{request_id}: #{error}"
@@ -77,6 +75,7 @@ class PageMetadataController < ApplicationController
   end
 
   def update
+
     unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
     end
@@ -110,11 +109,9 @@ class PageMetadataController < ApplicationController
         :cookies => forwardable_session_cookies
       )
       render :json => result[:body], :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    rescue Phidippides::NoDatasetIdException => error
+    rescue PageMetadataManager::NoDatasetIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue Phidippides::NoPageIdException => error
+    rescue PageMetadataManager::NoPageIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue CoreServer::Error, CoreServer::ResourceNotFound => error
       render :json => { :body => "Error: #{error}" }, :status => '500'
@@ -122,6 +119,7 @@ class PageMetadataController < ApplicationController
   end
 
   def destroy
+
     begin
       return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
     rescue CoreServer::ResourceNotFound
@@ -144,7 +142,4 @@ class PageMetadataController < ApplicationController
     View.find(id || json_parameter(:pageMetadata)['datasetId'])
   end
 
-  def ephemeral_bootstrap_enabled?
-    FeatureFlags.derive(nil, request)[:use_ephemeral_bootstrap]
-  end
 end

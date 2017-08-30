@@ -432,7 +432,7 @@ describe CardTypeMapping do
     it_behaves_like 'a column with available card types', %w(column search)
     it_behaves_like 'a column with available card types', %w(choropleth) do
       let(:computation_strategy) do
-        { :strategy_type => 'georegion_match_on_string' }
+        { :type => 'georegion_match_on_string' }
       end
     end
 
@@ -484,7 +484,7 @@ describe CardTypeMapping do
             'geometryLabel' => 'label',
             'column' => 'name'
           },
-          'strategy_type' => 'georegion_match_on_string'
+          'type' => 'georegion_match_on_string'
         }
       end
 
@@ -548,7 +548,7 @@ describe CardTypeMapping do
     it_behaves_like 'a column with available card types', %w(column search histogram)
     it_behaves_like 'a column with available card types', %w(choropleth) do
       let(:computation_strategy) do
-        { :strategy_type => 'georegion_match_on_string' }
+        { :type => 'georegion_match_on_string' }
       end
     end
 
@@ -600,7 +600,7 @@ describe CardTypeMapping do
             'region' => '_abcd-efgh',
             'geometryLabel' => 'label'
           },
-          'strategy_type' => 'georegion_match_on_string'
+          'type' => 'georegion_match_on_string'
         }
       end
 
@@ -614,7 +614,7 @@ describe CardTypeMapping do
             'region' => '_abcd-efgh',
             'geometryLabel' => 'label'
           },
-          'strategy_type' => 'georegion_match_on_point'
+          'type' => 'georegion_match_on_point'
         }
       end
 

@@ -1,6 +1,7 @@
 module CommonMetadataMethods
 
   include CommonSocrataMethods
+  include DataLensMetadataHelper
 
   class AuthenticationRequired < RuntimeError; end
   class UnauthorizedPageMetadataRequest < RuntimeError; end
@@ -14,24 +15,11 @@ module CommonMetadataMethods
   # migration what parses JSON. The risk associated with that was deemed worse
   # than keying off of the role.
   # Note that bootstrapping old backend datasets is controlled by this as well.
-  ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES = %w(administrator publisher)
   ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer publisher_stories editor_stories)
 
   #EN-18397: Leaving this role name check because we do not have a good way to represent this with rights currently
-  def roles_allowed_to_create_data_lenses
-    if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]
-      ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES
-    else
-      ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES
-    end
-  end
-
   def role_allows_data_lens_creation?(role)
-    if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]
-      role.present?
-    else
-      roles_allowed_to_create_data_lenses.include?(role)
-    end
+    ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES.include?(role)
   end
 
   def can_create_metadata?
@@ -44,10 +32,6 @@ module CommonMetadataMethods
 
   def page_metadata_manager
     @page_metadata_manager ||= PageMetadataManager.new
-  end
-
-  def phidippides
-    @phidippides ||= Phidippides.new
   end
 
   def fetch_permissions(id)
@@ -80,14 +64,7 @@ module CommonMetadataMethods
         raise UnknownRequestError.new("Error fetching derived view metadata for #{dataset_id}")
       end
     else
-      result = case FeatureFlags.derive.phidippides_deprecation_metadata_source
-        when 'phidippides-only'
-          fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
-        when 'core-only'
-          fetch_dataset_metadata_from_core(dataset_id, request_options)
-        when 'mixed-mode'
-          fetch_dataset_metadata_in_mixed_mode(dataset_id, request_options)
-      end
+      result = fetch_dataset_metadata_from_core(dataset_id, request_options)
 
       if result[:status] != '200'
         case result[:status]
@@ -107,9 +84,9 @@ module CommonMetadataMethods
     # properties on columns before we send them to the front-end.
     # This method call will check the metadata transition phase
     # internally and just pass through if it is not set to '3'.
-    phidippides.set_default_and_available_card_types_to_columns!(result, options[:is_from_derived_view])
+    set_default_and_available_card_types_to_columns!(result, options[:is_from_derived_view])
 
-    dataset_metadata = result[:body]
+    dataset_metadata = result[:body].with_indifferent_access
     dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
 
     if options[:add_table_column]
@@ -143,7 +120,7 @@ module CommonMetadataMethods
   # - we have to use the `read_from_nbe=true` flag whenever talking to Core, including the /views
   #   endpoint, because there are special snowflake hacks in place under that flag for derived views
   #   that make data lens for derived views possible
-  def fetch_dataset_metadata_for_derived_view(dataset_id)
+  def fetch_dataset_metadata_for_derived_view(dataset_id, request_options = {})
     derived_view_dataset = View.find_derived_view_using_read_from_nbe(dataset_id)
 
     dataset_metadata = derived_view_dataset.as_json.merge({
@@ -158,7 +135,7 @@ module CommonMetadataMethods
 
     # This mutates dataset_metadata with the extra things we need by looking up the view again in
     # Core. While it's in the Phidippides class, it doesn't actually talk to Phidippides.
-    phidippides.mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
+    mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
 
     dataset_metadata
   end
@@ -257,14 +234,6 @@ module CommonMetadataMethods
     request_options[:request_id] || (request_id rescue nil)
   end
 
-  def fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
-    phidippides.fetch_dataset_metadata(
-      dataset_id,
-      :request_id => _request_id(request_options),
-      :cookies => _cookies(request_options)
-    )
-  end
-
   def fetch_dataset_metadata_from_core(dataset_id, request_options)
     # it's necessary to get nbe metadata because it contains
     # fields that are not present in obe metadata
@@ -285,38 +254,6 @@ module CommonMetadataMethods
     )
 
     { body: core_metadata, status: '200' }
-  end
-
-  def fetch_dataset_metadata_in_mixed_mode(dataset_id, request_options)
-    phidippides_metadata = fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
-    core_metadata = fetch_dataset_metadata_from_core(dataset_id, request_options)
-
-    # allow phiddy errors to bubble up (non-200 responses from core will be handled
-    # by the caller, because deep_merge gives precedence to the core response)
-    unless phidippides_metadata[:status] == '200'
-      return phidippides_metadata
-    end
-
-    merged = phidippides_metadata.deep_merge(core_metadata)
-
-    # it seems to be theoretically possible (i.e. happens locally for unknown
-    # reasons) that core and phidippides might disagree about the existence of
-    # columns. one manifestation of the problem was a data lens that, prior to
-    # this change, correctly hid hidden columns while authenticated but not when
-    # anonymous, because we might report different metadata depending on whether
-    # you're logged in.
-    #
-    # to resolve this potential complication, we're going to make assertions
-    # about the structure of the merged metadata and deal with anything that
-    # doesn't match our expectations. (this is why a single source of truth is
-    # important, mmkay?)
-    merged[:body][:columns].each do |_, column|
-      if column[:hideInTable].nil?
-        column[:hideInTable] = true
-      end
-    end
-
-    merged
   end
 
   # In core, computationStrategy has a slightly different structure
@@ -361,10 +298,10 @@ module CommonMetadataMethods
       metadata[:downloadOverride] = nbe_metadata[:metadata][:overrideLink]
     end
 
-    # phidippides.rb has a helper method augment_dataset_metadata!
+    # DataLensMetadataHelper has a helper method augment_dataset_metadata!
     # that will create phidippides-like structure on some fields using core metadata
     # this helper method is especially useful in creating fields with a complex structure
-    phidippides.augment_dataset_metadata!(nbe_metadata[:id], metadata)
+    augment_dataset_metadata!(nbe_metadata[:id], metadata)
 
     metadata
   end

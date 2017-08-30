@@ -1,0 +1,77 @@
+{
+  "columns": {
+    "intersection_leg": {
+      "cardinality": 147,
+      "name": "Intersection-Leg",
+      "physicalDatatype": "text",
+      "isSubcolumn": false,
+      "position": 2,
+      "format": {},
+      "dataTypeName": "text",
+      "renderTypeName": "text",
+      "hideInTable": false
+    },
+    "start_date": {
+      "cardinality": 135,
+      "name": "Start Date",
+      "physicalDatatype": "floating_timestamp",
+      "isSubcolumn": false,
+      "position": 4,
+      "format": {
+        "formatString": "MM/DD/YYYY"
+      },
+      "dataTypeName": "calendar_date",
+      "renderTypeName": "calendar_date",
+      "hideInTable": false
+    },
+    "days": {
+      "cardinality": 3,
+      "name": "Days",
+      "physicalDatatype": "number",
+      "isSubcolumn": false,
+      "position": 5,
+      "format": {
+        "decimalSeparator": ".",
+        "groupSeparator": ","
+      },
+      "dataTypeName": "number",
+      "renderTypeName": "number",
+      "hideInTable": false
+    },
+    "awdt": {
+      "cardinality": 698,
+      "name": "AWDT",
+      "physicalDatatype": "number",
+      "isSubcolumn": false,
+      "position": 6,
+      "format": {
+        "decimalSeparator": ".",
+        "groupSeparator": ","
+      },
+      "dataTypeName": "number",
+      "renderTypeName": "number",
+      "hideInTable": false
+    },
+
+    "location": {
+      "cardinality": 143,
+      "name": "Location",
+      "physicalDatatype": "point",
+      "isSubcolumn": false,
+      "position": 23,
+      "format": {},
+      "dataTypeName": "location",
+      "renderTypeName": "location",
+      "hideInTable": false
+    }
+  },
+  "permissions": {
+    "isPublic": true
+  },
+  "domain": "localhost",
+  "id": "dfm9-4t6u",
+  "locale": "en",
+  "name": "Avg Weekday Daily Traffic 2016",
+  "ownerId": "tugg-ikce",
+  "updatedAt": "2017-08-28T16:58:55.000-07:00"
+}

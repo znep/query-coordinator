@@ -770,7 +770,7 @@ ${JSON.stringify(errors)}`
     },
 
     getShapefileDatasetMetadata: function(shapefileId) {
-      var url = $.baseUrl(`/metadata/v1/dataset/${shapefileId}.json`);
+      var url = $.baseUrl(`/api/views/${shapefileId}.json`);
       var config = httpConfig.call(this);
 
       // Make request, unwrapping successful response, and handling

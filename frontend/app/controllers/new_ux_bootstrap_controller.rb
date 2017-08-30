@@ -10,7 +10,6 @@ class NewUxBootstrapController < ActionController::Base
   include ApplicationHelper
 
   before_filter :hook_auth_controller
-  before_filter :set_locale
 
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
@@ -18,8 +17,6 @@ class NewUxBootstrapController < ActionController::Base
   helper :data_lens
 
   layout 'angular'
-
-  SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
 
   def initialize(*args)
     @added_card_types = Set.new
@@ -37,19 +34,10 @@ class NewUxBootstrapController < ActionController::Base
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.
     #
-    # 1a. Check to make sure that the user is authorized to create a new view.
-    #     Crucially, this includes SuperAdmins so that Socrata employees can
-    #     test this functionality without having to impersonate customers.
-    #     This check can be skipped when using the ephemeral bootstrapping
-    #     approach, since it separates the creation of something renderable
-    #     from the actual persistence.
+    # 1a. Check to make sure that there is a user.
     #
     # 1b. Check if the dataset is a derived view. If it is, and creating a data lens
     #     from a derived view is enabled, exit early and gather required metadata.
-    #     While this approach uses the ephemeral bootstrapping approach, so we still
-    #     first check the current user's permissions, as it has the side effect of
-    #     obtaining the user session (which is needed, for instance, if your derived
-    #     view is private).
     #
     # 2. Check to make sure the dataset in question is in the new backend,
     #    if it isn't 400.
@@ -60,33 +48,11 @@ class NewUxBootstrapController < ActionController::Base
     # 4. Fetch the dataset metadata, which is used downstream to create cards. If we
     #    cannot fetch the dataset data then we fail early. We will let Airbrake know
     #    about this, but not the user.
-    #
-    # 5. If use_ephemeral_bootstrap is false, check to see if any 'new UX' pages already exist.
-    #
-    # 6a. If they do, then we send the user to the default or the last page in
-    #     the collection.
-    #
-    # 6b. If no pages already exist, then we need to create one. This is hacky
-    #     and non-deterministic.
 
-    # Note: As of 5/24/2017 use_ephemeral_bootstrap is true on all production domains
-    use_ephemeral_bootstrap = FeatureFlags.derive(@view, request)[:use_ephemeral_bootstrap]
-
-    # 1a. Check to make sure that the user is authorized to create a new view.
+    # 1a. Check to make sure that the user is authorized to bootstrap.
     # NOTE! Calling current_user method has side effect of creating user session.
     unless current_user.present?
       return redirect_to "/d/#{params[:id]}"
-    end
-
-    # IMPORTANT: can_create_metadata? *must* come first in this conditional
-    # because it has the side effect of obtaining the user session.
-    # If the order is swapped, the logic is short-circuited and the call to
-    # dataset_is_new_backend? will fail unexpectedly.
-    unless can_create_metadata? || use_ephemeral_bootstrap
-      return render :json => {
-        error: true,
-        reason: "User must be one of these roles: #{roles_allowed_to_create_data_lenses.join(', ')}"
-      }, :status => :forbidden
     end
 
     # 1b. Check if dataset is a derived view and exit early if the feature flag is not enabled.
@@ -128,108 +94,11 @@ class NewUxBootstrapController < ActionController::Base
       return render :nothing => true, :status => 404
     end
 
-    # If we're in ephemeral mode, exit this logic early — we don't care about
-    # controlling for the presence of existing pages, and we also don't want
-    # to persist the data lens page automatically.
-    if use_ephemeral_bootstrap
-      begin
-        return instantiate_ephemeral_view(dataset_metadata)
-      rescue CoreServer::TimeoutError
-        flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
-        return render 'shared/error', :status => 504, :layout => 'main'
-      end
-    end
-
-    # 5. Check to see if any 'new UX' pages already exist.
-
-    pages_response = phidippides.fetch_pages_for_dataset(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    has_publisher_pages = pages_response.try(:[], :body).present? &&
-      pages_response[:body].try(:[], :publisher).present?
-
-    request_successful_and_has_publisher_pages =
-      has_publisher_pages && pages_response[:status] == '200'
-
-    request_successful_but_no_pages =
-      ((!has_publisher_pages && pages_response[:status] == '200') ||
-        pages_response[:status] == '404')
-
-    # 6a. There is at least one 'New UX' page already, so we can find a default.
-    if request_successful_and_has_publisher_pages
-      pages = pages_response[:body][:publisher]
-
-      if dataset_metadata[:defaultPage].present?
-        default_page = pages.find do |page|
-          page[:pageId] == dataset_metadata[:defaultPage]
-        end
-      end
-
-      if default_page.present? && page_accessible?(default_page[:pageId])
-        # If we found a default page as specified in the dataset_metadata,
-        # check its metadata version.
-        # Note that the .to_i will coerce potential nil results into 0.
-        if default_page[:version].to_i > 0
-          # If the default page version is greater than or equal to 1,
-          # immediately redirect to the default page.
-          redirect_args = { controller: 'data_lens', action: 'data_lens', app: 'dataCards', id: default_page[:pageId] }
-          unless I18n.locale.to_s == CurrentDomain.default_locale
-            redirect_args[:locale] = I18n.locale
-          end
-
-          return redirect_to redirect_args
-        else
-          # Otherwise, generate a new default page and redirect to it.
-          generate_and_redirect_to_new_page(dataset_metadata)
-        end
-      else
-        # In any other metadata transition phase, however, if no pages match
-        # the default page listed in the dataset_metadata, we attempt to find
-        # a page in the collection that is of at least version 1 page
-        # metadata.
-        some_page = pages.find do |page|
-          # Note that this may be nil and, if so, will be coerced by .to_i into 0
-          page[:version].to_i > 0
-        end
-        if some_page.present? && page_accessible?(some_page[:pageId])
-          # If we have found a qualifying default page, set it as the default
-          # and then redirect to it.
-          set_default_page(dataset_metadata, some_page[:pageId])
-          redirect_args = { controller: 'data_lens', action: 'data_lens', app: 'dataCards', id: some_page[:pageId] }
-          unless I18n.locale.to_s == CurrentDomain.default_locale
-            redirect_args[:locale] = I18n.locale
-          end
-
-          return redirect_to redirect_args
-        else
-          # If no qualifying pages exist, then generate a new page and redirect
-          # to it instead.
-          generate_and_redirect_to_new_page(dataset_metadata)
-        end
-      end
-
-    # 6b. If there are no pages, we will need to create a default 'New UX' page.
-    elsif request_successful_but_no_pages
-      generate_and_redirect_to_new_page(dataset_metadata)
-
-    # This is a server error so we should notify Airbrake.
-    else
-      Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
-        :request => { :params => params },
-        :context => { :pages_response => pages_response }
-      )
-      Rails.logger.error(
-        "Dataset #{params[:id].inspect} failed to return pages for bootstrapping. " \
-        "Response: #{pages_response.inspect}"
-      )
-      flash[:error] = I18n.t('screens.ds.new_ux_error')
-
-      return redirect_to action: 'show', controller: 'datasets'
+    begin
+      return instantiate_ephemeral_view(dataset_metadata)
+    rescue CoreServer::TimeoutError
+      flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
+      return render 'shared/error', :status => 504, :layout => 'main'
     end
   end
 
@@ -238,71 +107,9 @@ class NewUxBootstrapController < ActionController::Base
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
-  def page_accessible?(page_id)
-    return false unless page_id.present?
-
-    default_page_metadata = page_metadata_manager.show(page_id)
-    default_page_metadata[:status] == '200'
-  end
-
-  def set_default_page(dataset_metadata, page_id)
-    # Set the specified page as the default.
-    dataset_metadata[:defaultPage] = page_id
-
-    # Send a request to phidippides to set the default page.
-    dataset_metadata_response = phidippides.update_dataset_metadata(
-      dataset_metadata,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    unless dataset_metadata_response[:status] == '200'
-      Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
-        :request => { :params => params },
-        :context => { :dataset_metadata_response => dataset_metadata_response }
-      )
-      Rails.logger.error(
-        "Could not save new default page #{page_id.inspect} " \
-        "Dataset #{params[:id].inspect}. " \
-        "Response: #{dataset_metadata_response.inspect}"
-      )
-    end
-  end
-
-  def create_default_page(dataset_metadata)
-    new_ux_page = generate_page_metadata(dataset_metadata)
-
-    page_creation_response = HashWithIndifferentAccess.new(
-      page_metadata_manager.create(
-        new_ux_page,
-        :request_id => request_id,
-        :cookies => forwardable_session_cookies
-      )
-    )
-
-    page_id = page_creation_response.try(:[], :body).try(:[], :pageId)
-
-    unless page_creation_response[:status].to_s == '200' && page_id.present?
-      # Somehow the page creation failed so we should notify Airbrake.
-      Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => "Error creating page for dataset #{params[:id]}",
-        :request => { :params => params },
-        :context => { :page_creation_result => page_creation_response }
-      )
-      Rails.logger.error(
-        "Error creating page for dataset #{params[:id]}. " \
-        "Response: #{page_creation_response.inspect}"
-      )
-    end
-
-    page_id
-  end
-
   def get_version
-    FeatureFlags.derive(@view, request)[:create_v2_data_lens] ? 2 : 1
+    # EN-9653: We are now at version 2 for everyone
+    2
   end
 
   def generate_page_metadata(new_dataset_metadata)
@@ -361,7 +168,7 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def system_column?(field_name)
-    (field_name =~ Phidippides::SYSTEM_COLUMN_ID_REGEX) != nil
+    (field_name =~ DataLensMetadataHelper::SYSTEM_COLUMN_ID_REGEX) != nil
   end
 
   def hidden_column?(column)
@@ -459,24 +266,6 @@ class NewUxBootstrapController < ActionController::Base
     end.compact
   end
 
-  def generate_and_redirect_to_new_page(dataset_metadata)
-    default_page_id = create_default_page(dataset_metadata)
-
-    unless default_page_id.present?
-      flash[:error] = I18n.t('screens.ds.new_ux_error')
-      return redirect_to action: 'show', controller: 'datasets'
-    end
-
-    # Set the newly-created page as the default.
-    set_default_page(dataset_metadata, default_page_id)
-    redirect_args = {controller: 'data_lens', action: 'data_lens', app: 'dataCards', id: default_page_id}
-    unless I18n.locale.to_s == CurrentDomain.default_locale
-      redirect_args[:locale] = I18n.locale
-    end
-
-    redirect_to redirect_args
-  end
-
   def instantiate_ephemeral_view(dataset_metadata)
     @dataset_metadata = dataset_metadata
 
@@ -487,7 +276,7 @@ class NewUxBootstrapController < ActionController::Base
 
     # Set up card-type info for (non-system) columns
     @dataset_metadata[:columns].each do |field_name, column|
-      unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
+      unless DataLensMetadataHelper::SYSTEM_COLUMN_ID_REGEX.match(field_name)
         column['defaultCardType'] = default_card_type_for(
           column,
           dataset_size,
@@ -531,7 +320,6 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   # EN-12365: This exists to create data lenses from derived views. We have a number of limitations:
-  # - we cannot use Phidippides
   # - most derived views are based on the OBE version of a dataset, so the /views endpoint will
   #   return OBE columns, which makes data lens very, very unhappy
   # - we have to use the `read_from_nbe=true` flag whenever talking to Core, including the /views
@@ -554,7 +342,7 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def dataset
-    View.find(params[:id])
+    @dataset ||= View.find(params[:id])
   end
 
   def is_from_derived_view
@@ -567,11 +355,6 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset_has_group_by?
     dataset.query.present? && dataset.query.groupBys.present?
-  end
-
-  # EN-1111: Force Data Lens to always use English
-  def set_locale
-    I18n.locale = 'en'
   end
 
 end

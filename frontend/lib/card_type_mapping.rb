@@ -144,9 +144,8 @@ module CardTypeMapping
 
   def has_georegion_computation_strategy?(column)
     # Phidippides returns strategy_type in its computation strategies, Core returns type in
-    # its computation strategies. As of 1/2017, the only data lenses using the Core
-    # computation strategies are data lenses created from derived views, since they can't use
-    # Phidippides
+    # computation_strategy_type = column.dig(:computationStrategy, :type)
+    # its computation strategies.
     computation_strategy_type = column.dig(:computationStrategy, :strategy_type) ||
       column.dig(:computationStrategy, :type)
 

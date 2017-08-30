@@ -5,10 +5,16 @@ class PageMetadataManager
   include CommonMetadataTransitionMethods
   include ApplicationHelper
 
-  attr_accessor :column_field_name
+  class NoDatasetIdException < RuntimeError; end
+  class NoCardsException < RuntimeError; end
+  class NoPageIdException < RuntimeError; end
+  class NoDatasetMetadataException < RuntimeError; end
+  class NoMinMaxInColumnException < RuntimeError; end
+
+  COLUMN_FIELD_NAME = 'fieldName'.freeze
 
   V0_CARD_TEMPLATE = {
-    'fieldName' => nil,
+    COLUMN_FIELD_NAME => nil,
     'cardSize' => 1,
     'cardCustomStyle' => {},
     'expandedCustomStyle' => {},
@@ -22,7 +28,7 @@ class PageMetadataManager
     'cardType' => 'invalid',
     'description' => '',
     'expanded' => false,
-    'fieldName' => nil,
+    COLUMN_FIELD_NAME => nil,
     'name' => ''
   }.freeze
 
@@ -32,21 +38,22 @@ class PageMetadataManager
 
   def merge_new_card_data_with_default(field_name, card_type, cardinality = nil)
     V1_CARD_TEMPLATE.deep_dup.merge(
-      'fieldName' => field_name,
+      COLUMN_FIELD_NAME => field_name,
       'cardType' => card_type
     )
   end
 
   # This is where we poke spandex to index the dataset so search cards can autocomplete
-  def request_soda_fountain_secondary_index(dataset_id, options = {})
+  def request_soda_fountain_secondary_index(dataset_id, request_options = {})
     secondary_group_identifier = APP_CONFIG.secondary_group_identifier
     unless secondary_group_identifier.blank?
       soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
-      options = options.merge(
+      options = {
         dataset_id: dataset_id,
         identifier: secondary_group_identifier,
         verb: :post
-      )
+      }.reverse_merge(request_options)
+
       response = soda_fountain_secondary.issue_request(options)
       if response.fetch(:status) !~ /^2[0-9][0-9]$/
         report_error(
@@ -58,7 +65,7 @@ class PageMetadataManager
   end
 
   # Retrieve page metadata
-  def show(id, options = {})
+  def show(id, request_options = {})
     # Inherit the permissions from the catalog entry that points to this page.
     permissions = fetch_permissions(id)
 
@@ -80,7 +87,7 @@ class PageMetadataManager
     page_metadata = ensure_page_metadata_properties(page_metadata)
 
     # Migrate page metadata to the newest schema version before serving to client.
-    page_metadata = migrated_page_metadata(page_metadata, options)
+    page_metadata = migrated_page_metadata(page_metadata, request_options)
 
     page_metadata[:permissions] = permissions.stringify_keys!
     page_metadata[:moderationStatus] = result[:moderationStatus]
@@ -94,22 +101,20 @@ class PageMetadataManager
   end
 
   # Creates a new page
-  def create(page_metadata, options = {})
+  def create(page_metadata, request_options = {})
     metadata = page_metadata.with_indifferent_access
 
     unless metadata.key?('datasetId')
-      raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
+      raise NoDatasetIdException.new('cannot create page with no dataset id')
     end
 
     unless metadata.key?('cards')
-      raise Phidippides::NoCardsException.new('no cards entry on page metadata')
+      raise NoCardsException.new('no cards entry on page metadata')
     end
-
-    initialize_metadata_key_names
 
     # Make sure that there is a table card
     has_table_card = metadata['cards'].any? do |card|
-      card['fieldName'] == '*' || card['cardType'] == 'table'
+      card[COLUMN_FIELD_NAME] == '*' || card['cardType'] == 'table'
     end
 
     metadata['cards'] << table_card unless has_table_card
@@ -120,9 +125,9 @@ class PageMetadataManager
     metadata['pageId'] = new_page_id
 
     unless metadata['isFromDerivedView']
-      update_metadata_rollup_table(metadata, options)
+      update_metadata_rollup_table(metadata, request_options)
       if contains_search_cards?(metadata)
-        request_soda_fountain_secondary_index(metadata['datasetId'], options)
+        request_soda_fountain_secondary_index(metadata['datasetId'], request_options)
       end
     end
 
@@ -133,15 +138,13 @@ class PageMetadataManager
   # Else update the Phiddy metadata.
   # Note that the update will simply overwrite the existing value with the
   # given value, so any missing keys will become missing in the datastore.
-  def update(page_metadata, options = {})
+  def update(page_metadata, request_options = {})
     if page_metadata['datasetId'].blank?
-      raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
+      raise NoDatasetIdException.new('cannot create page with no dataset id')
     end
     if page_metadata['pageId'].blank?
-      raise Phidippides::NoPageIdException.new('cannot create page with no page id')
+      raise NoPageIdException.new('cannot create page with no page id')
     end
-
-    initialize_metadata_key_names
 
     begin
       metadb_metadata = data_lens_manager.fetch(page_metadata['pageId'])
@@ -160,12 +163,13 @@ class PageMetadataManager
       :description => page_metadata['description']
     )
     if contains_search_cards?(page_metadata)
-      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+      request_soda_fountain_secondary_index(page_metadata['datasetId'], request_options)
     end
-    update_metadb_page_metadata(page_metadata, metadb_metadata, options)
+    update_metadb_page_metadata(page_metadata, metadb_metadata, request_options)
   end
 
-  def delete(id, options = {})
+  # request_options is not used
+  def delete(id, request_options = {})
     begin
       metadb_metadata = data_lens_manager.fetch(id)
     rescue CoreServer::TimeoutError => error
@@ -202,11 +206,13 @@ class PageMetadataManager
     page_metadata = metadb_metadata['displayFormat']['data_lens_page_metadata']
 
     unless page_metadata['isFromDerivedView']
-      # Delete any rollups created for the page
-      response = soda_fountain.delete_rollup_table(
+      options = {
         dataset_id: page_metadata['datasetId'],
         identifier: id
-      )
+      }.reverse_merge(request_options)
+
+      # Delete any rollups created for the page
+      response = soda_fountain.delete_rollup_table(options)
       if response.fetch(:status) !~ /^2[0-9][0-9]$/
         report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
       end
@@ -221,7 +227,7 @@ class PageMetadataManager
     # Get cards info, specifically the field names
     column_chart_rollups = cards.
       select { |card| card['cardType'] == 'column' }.
-      pluck(column_field_name).
+      pluck(COLUMN_FIELD_NAME).
       uniq
 
     choropleth_rollups = cards.
@@ -246,14 +252,12 @@ class PageMetadataManager
     "select #{rolled_up_columns_soql}, #{aggregation_clause} group by #{rolled_up_columns_soql}"
   end
 
-  # Phidippides call for the dataset metadata - needed to fetch columns for both
-  # metadb and phidippides backed page metadata.
-  def fetch_dataset_columns(dataset_id, options)
+  def fetch_dataset_columns(dataset_id, request_options)
     begin
-      dataset_metadata = fetch_dataset_metadata(dataset_id, options)
+      dataset_metadata = fetch_dataset_metadata(dataset_id, request_options)
     rescue => ex
       Rails.logger.error(ex)
-      raise Phidippides::NoDatasetMetadataException.new(
+      raise NoDatasetMetadataException.new(
         "could not fetch dataset metadata for id: #{dataset_id}"
       )
     end
@@ -263,7 +267,6 @@ class PageMetadataManager
 
   def migrated_page_metadata(page_metadata, options)
     page_metadata = HashWithIndifferentAccess.new(page_metadata)
-    return page_metadata unless enable_data_lens_page_metadata_migrations?
 
     version = page_metadata[:version]
     return page_metadata unless version.present?
@@ -333,10 +336,6 @@ class PageMetadataManager
     metadata
   end
 
-  def initialize_metadata_key_names
-    @column_field_name = 'fieldName'
-  end
-
   # Strip out outer keys we don't want in the inner page_metadata
   def strip_page_metadata_properties!(page_metadata)
     self.class.keys_to_skip.each do |property|
@@ -347,11 +346,11 @@ class PageMetadataManager
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.
-  def update_metadb_page_metadata(page_metadata, metadb_metadata, options)
+  def update_metadb_page_metadata(page_metadata, metadb_metadata, request_options)
     strip_page_metadata_properties!(page_metadata)
 
     unless page_metadata['isFromDerivedView']
-      update_metadata_rollup_table(page_metadata, options)
+      update_metadata_rollup_table(page_metadata, request_options)
     end
 
     url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
@@ -367,11 +366,11 @@ class PageMetadataManager
     }
   end
 
-  def update_metadata_rollup_table(page_metadata, options = {})
+  def update_metadata_rollup_table(page_metadata, request_options = {})
     page_id = page_metadata['pageId']
     dataset_id = page_metadata.fetch('datasetId')
     cards = page_metadata['cards']
-    columns = fetch_dataset_columns(dataset_id, options)
+    columns = fetch_dataset_columns(dataset_id, request_options)
     rollup_soql = build_rollup_soql(page_metadata, columns, cards)
 
     # if we can roll up anything for this query, do so
@@ -382,7 +381,7 @@ class PageMetadataManager
         page_id: page_id,
         soql: rollup_soql
       }
-      args.reverse_merge!(options)
+      args.reverse_merge!(request_options)
       update_rollup_table(args)
     end
   end
@@ -393,21 +392,21 @@ class PageMetadataManager
     # representation in order to avoid modifying the logic that determines
     # whether a column should be rolled up.
     columns.map do |key, value|
-      value[column_field_name] = key
+      value[COLUMN_FIELD_NAME] = key
       value
     end
   end
 
   def columns_to_roll_up_by_date_trunc(columns, cards)
     columns.select do |column|
-      column_used_by_any_card?(column[column_field_name], cards) &&
+      column_used_by_any_card?(column[COLUMN_FIELD_NAME], cards) &&
         column['physicalDatatype'] == 'floating_timestamp'
-    end.pluck(column_field_name)
+    end.pluck(COLUMN_FIELD_NAME)
   end
 
   def column_used_by_any_card?(field_name, cards, card_type = nil)
     cards.any? do |card|
-      card['fieldName'] == field_name && (card_type.nil? || card['cardType'] == card_type)
+      card[COLUMN_FIELD_NAME] == field_name && (card_type.nil? || card['cardType'] == card_type)
     end
   end
 
@@ -434,7 +433,7 @@ class PageMetadataManager
   def date_trunc_column_queries(dataset_id, cards)
     cards.select { |card| card['cardType'] == 'timeline' }.
       map do |card|
-        field_name = card['fieldName']
+        field_name = card[COLUMN_FIELD_NAME]
         days = time_range_in_column(dataset_id, field_name)
         date_trunc_function = date_trunc_function_for_time_range(days)
         "#{date_trunc_function}(#{field_name})"
@@ -450,7 +449,7 @@ class PageMetadataManager
   def bucketed_column_queries(dataset_id, cards)
     cards.select { |card| card['cardType'] == 'histogram' }.map do |card|
 
-      field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
+      field_name, bucket_type, card_options = card.values_at(COLUMN_FIELD_NAME, 'bucketType', 'cardOptions')
       bucket_size = card_options['bucketSize'] if card_options
 
       # If the bucket type has explicitly been set to logarithmic or the
@@ -508,7 +507,7 @@ class PageMetadataManager
   def time_range_in_column(dataset_id, field_name)
     result = fetch_min_max_in_column(dataset_id, field_name)
     unless result && result['min'] && result['max']
-      raise Phidippides::NoMinMaxInColumnException.new(
+      raise NoMinMaxInColumnException.new(
         "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
       )
     end
@@ -592,10 +591,6 @@ class PageMetadataManager
     @soda_fountain ||= SodaFountain.new
   end
 
-  def phidippides
-    @phidippides ||= Phidippides.new
-  end
-
   def data_lens_manager
     @data_lens_manager ||= DataLensManager.new
   end
@@ -626,10 +621,6 @@ class PageMetadataManager
     end
 
     dataset_category
-  end
-
-  def enable_data_lens_page_metadata_migrations?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_data_lens_page_metadata_migrations]
   end
 
   # NOTE; Current method of tracking view counts for catalog search and site analytics page.

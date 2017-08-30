@@ -1,3 +1,9 @@
+# DEPRECATED
+# We're in the process of actively deprecating the metadata/v1/dataset endpoint.
+# Access to the methods in this controller a feature flag called `disable_metadata_v1_endpoint`
+# We're leaving this around for a short while after EN-18348 is deployed so we can see if there
+# are any external users of this service. Once we've identified that no users of this endpoint
+# exist, we'll be able to turn it off via feature flag and then ultimately remove this dead code.
 class DatasetMetadataController < ApplicationController
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
@@ -17,6 +23,8 @@ class DatasetMetadataController < ApplicationController
   helper_method :current_user_session
 
   def index
+    Rails.logger.warn("DEPRECATED - Call to DatasetMetadataController#index with params: #{params}")
+    return render :nothing => true, :status => '404' if api_disabled?
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
@@ -38,6 +46,8 @@ class DatasetMetadataController < ApplicationController
   # This endpoint is 'safe' for the public and for checking permissions and
   # fetching the geometry label of shape files, however.
   def show
+    Rails.logger.warn("DEPRECATED - Call to DatasetMetadataController#show with params: #{params}")
+    return render :nothing => true, :status => '404' if api_disabled?
     return render :nothing => true, :status => '400' unless params[:id].present?
     return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
 
@@ -83,6 +93,9 @@ class DatasetMetadataController < ApplicationController
   end
 
   def update
+    Rails.logger.warn("DEPRECATED - Call to DatasetMetadataController#update with params: #{params}")
+    return render :nothing => true, :status => '404' if api_disabled?
+
     unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
     end
@@ -122,10 +135,19 @@ class DatasetMetadataController < ApplicationController
   end
 
   def destroy
+    Rails.logger.warn("DEPRECATED - Call to DatasetMetadataController#destroy with params: #{params}")
     render :nothing => true, :status => '400'
   end
 
   private
+
+  def api_disabled?
+    FeatureFlags.derive(nil, request).disable_metadata_v1_endpoint
+  end
+
+  def phidippides
+    @phidippides ||= Phidippides.new
+  end
 
   def dataset(id = nil)
     ::View.find(id || json_parameter(:datasetMetadata)['id'])

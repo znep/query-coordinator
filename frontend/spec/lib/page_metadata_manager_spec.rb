@@ -57,7 +57,6 @@ describe PageMetadataManager do
   describe '#show' do
     before do
       init_current_domain
-      rspec_stub_feature_flags_with(enable_data_lens_page_metadata_migrations: false)
     end
 
     let(:uid) { 'tyia-pmfq' }
@@ -176,54 +175,39 @@ describe PageMetadataManager do
   end
 
   describe '#fetch_dataset_columns' do
-
-    let(:phidippides_options) do
-      {
-        :request_id => 'request_id',
-        :cookies => { :chocolate_chip => 'secretly raisins' }
-      }
+    let(:dataset_id) { 'ij2u-iwtx' }
+    let(:request_options) do
+      { request_id: 'request_id' }
     end
+
+    let(:result) { subject.fetch_dataset_columns(dataset_id, request_options) }
 
     before do
       init_current_domain
-
-      allow_any_instance_of(DataLensManager).to receive(:fetch).
-      and_return(
-        :rights => %w(read write)
-      )
-      allow_any_instance_of(Phidippides).to receive(:connection_details).
-        and_return(
-          'address' => '127.0.0.1',
-          'port' => 2401
-        )
-      allow_any_instance_of(Phidippides).to receive(:get_dataset_size)
     end
 
-    context 'when call to phidippides is success' do
-
+    context 'when call to fetch_dataset_metadata is successful' do
       it 'returns columns' do
-        VCR.use_cassette('page_metadata_manager') do
-          expected_keys = %w{
-            fiscal_year free full_price percent_free_rp_of_total
-            reduced_price total total_lunches_served
-          }
-          actual = subject.fetch_dataset_columns('ij2u-iwtx', phidippides_options)
-          expect(actual.keys.sort).to eq(expected_keys.sort)
-        end
-      end
+        mock_metadata = { :columns => :test_columns }.with_indifferent_access
 
+        expect(subject).to receive(:fetch_dataset_metadata).
+          with(dataset_id, request_options).
+          and_return(mock_metadata)
+
+        expect(result).to eq(:test_columns)
+      end
     end
 
-    context 'when call to phidippides is not successful' do
+    context 'when call to core is not successful' do
+      it 'raises NoDatasetMetadataException' do
+        mock_metadata = { :columns => :test_columns }
 
-      it 'raises' do
-        VCR.use_cassette('page_metadata_manager') do
-          expect {
-            subject.fetch_dataset_columns('abcd-efgh', phidippides_options)
-          }.to raise_error(Phidippides::NoDatasetMetadataException)
-        end
+        expect(subject).to receive(:fetch_dataset_metadata).
+          with(dataset_id, request_options).
+          and_raise(StandardError.new)
+
+        expect { result }.to raise_error(PageMetadataManager::NoDatasetMetadataException)
       end
-
     end
   end
 
@@ -349,7 +333,6 @@ describe PageMetadataManager do
     let(:result) { subject.build_rollup_soql(data_lens_page_metadata, columns, cards) }
 
     before do
-      allow(subject).to receive(:column_field_name).and_return('fieldName')
       allow(subject).to receive(:fetch_min_max_in_column).and_return({
         'min' => '1987-08-15T00:00:00.000',
         'max' => '1987-08-15T00:00:00.000'

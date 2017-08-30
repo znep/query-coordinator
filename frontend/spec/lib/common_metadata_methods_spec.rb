@@ -14,10 +14,7 @@ describe CommonMetadataMethods do
     init_current_domain
     init_feature_flag_signaller
 
-    allow_any_instance_of(Phidippides).to receive(:connection_details).
-      and_return('address' => 'localpost', 'port' => 2402)
-
-    allow_any_instance_of(Phidippides).to receive(:get_dataset_size).and_return(1)
+    allow(dummy_class_instance).to receive(:get_dataset_size).and_return(1)
   end
 
   describe '#flag_subcolumns!' do
@@ -55,11 +52,6 @@ describe CommonMetadataMethods do
   end
 
   describe 'fetch_dataset_metadata' do
-    before do
-      # default mode, overridden for a few cases below
-      rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'phidippides-only')
-    end
-
     let(:request_options) do
       {
         :request_id => '12345',
@@ -90,10 +82,6 @@ describe CommonMetadataMethods do
         :grants => {},
         :rights => ['view']
       })
-      allow_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata).and_return({
-        :status => '200',
-        :body => { :columns => test_columns }
-      })
       allow(View).to receive(:migrations).and_return({
         obeId: 'kang-aroo',
         nbeId: 'elep-hant'
@@ -111,10 +99,10 @@ describe CommonMetadataMethods do
       end
 
       before do
-        allow(CurrentDomain).to receive(:cname).and_return('penguins.com')
+        allow(CurrentDomain).to receive(:cname).and_return('example.com')
         allow(I18n).to receive(:locale).and_return('en')
         allow(Column).to receive(:get_derived_view_columns).and_return(test_columns)
-        allow_any_instance_of(Phidippides).to receive(:mirror_nbe_column_metadata!)
+        allow(dummy_class_instance).to receive(:mirror_nbe_column_metadata!)
       end
 
       it 'requests the derived view dataset' do
@@ -146,44 +134,14 @@ describe CommonMetadataMethods do
 
     context 'regular data lens' do
 
-      context 'phidippides_deprecation_metadata_source = phidippides-only' do
-        before do
-          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'phidippides-only')
-        end
-
-        it 'requests dataset metadata from phidippides' do
-          expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
-          expect(View).not_to receive(:find)
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
-        end
+      it 'requests dataset metadata from core' do
+        expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
+        expect(View).to receive(:find).exactly(3).times
+        dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       end
 
-      context 'phidippides_deprecation_metadata_source = core-only' do
-        before do
-          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'core-only')
-        end
-
-        it 'requests dataset metadata from core' do
-          expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
-          expect(View).to receive(:find).exactly(3).times
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
-        end
-      end
-
-      context 'phidippides_deprecation_metadata_source = mixed-mode' do
-        before do
-          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'mixed-mode')
-        end
-
-        it 'requests dataset metadata from both phidippides and core' do
-          expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
-          expect(View).to receive(:find).exactly(3).times
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
-        end
-      end
-
-      it 'raises AuthenticationRequired for 401 response from Phidippides' do
-        expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata).and_return({
+      it 'raises AuthenticationRequired for 401 response from core' do
+        expect(dummy_class_instance).to receive(:fetch_dataset_metadata_from_core).and_return({
           :status => '401',
           :body => {
             :columns => {
@@ -198,8 +156,8 @@ describe CommonMetadataMethods do
         }.to raise_error(CommonMetadataMethods::AuthenticationRequired)
       end
 
-      it 'raises UnauthorizedDatasetMetadataRequest for 403 response from Phidippides' do
-        expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata).and_return({
+      it 'raises UnauthorizedDatasetMetadataRequest for 403 response from core' do
+        expect(dummy_class_instance).to receive(:fetch_dataset_metadata_from_core).and_return({
           :status => '403',
           :body => {}
         })
@@ -209,8 +167,8 @@ describe CommonMetadataMethods do
         }.to raise_error(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       end
 
-      it 'raises DatasetMetadataNotFound for 404 response from Phidippides' do
-        expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata).and_return({
+      it 'raises DatasetMetadataNotFound for 404 response from core' do
+        expect(dummy_class_instance).to receive(:fetch_dataset_metadata_from_core).and_return({
           :status => '404',
           :body => {}
         })
@@ -220,8 +178,8 @@ describe CommonMetadataMethods do
         }.to raise_error(CommonMetadataMethods::DatasetMetadataNotFound)
       end
 
-      it 'raises UnknownRequestError for other non-200 responses from Phidippides' do
-        expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata).and_return({
+      it 'raises UnknownRequestError for other non-200 responses from core' do
+        expect(dummy_class_instance).to receive(:fetch_dataset_metadata_from_core).and_return({
           :status => '500',
           :body => {}
         })
@@ -244,6 +202,11 @@ describe CommonMetadataMethods do
     end
 
     it 'flags subcolumns' do
+      allow(dummy_class_instance).to receive(:fetch_dataset_metadata_from_core).and_return({
+        :status => '200',
+        :body => { :columns => test_columns }
+      })
+
       result = dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       expect(result[:columns]['location_city'][:isSubcolumn]).to eq(true)
     end
@@ -259,18 +222,29 @@ describe CommonMetadataMethods do
       })
     end
 
+    let(:test_columns) do
+      {
+        'location' => {
+          'name' => 'Location'
+        },
+        'location_city' => {
+          'name' => 'Location (City)'
+        }
+      }.with_indifferent_access
+    end
+
     before do
-      allow(CurrentDomain).to receive(:cname).and_return('penguins.com')
+      allow(CurrentDomain).to receive(:cname).and_return('example.com')
       allow(I18n).to receive(:locale).and_return('en')
       allow(Column).to receive(:get_derived_view_columns).and_return({})
       allow(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
       allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
-      allow_any_instance_of(Phidippides).to receive(:mirror_nbe_column_metadata!)
+      allow(dummy_class_instance).to receive(:mirror_nbe_column_metadata!)
     end
 
     it 'should add domain' do
       result = dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
-      expect(result[:domain]).to eq('penguins.com')
+      expect(result[:domain]).to eq('example.com')
     end
 
     it 'should add locale' do
@@ -279,14 +253,6 @@ describe CommonMetadataMethods do
     end
 
     it 'should call the Column class method to mimic phidippides column metadata' do
-      test_columns = {
-        'location' => {
-          'name' => 'Location'
-        },
-        'location_city' => {
-          'name' => 'Location (City)'
-        }
-      }.with_indifferent_access
       expect(Column).to receive(:get_derived_view_columns).and_return(test_columns)
       result = dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
 
@@ -309,7 +275,7 @@ describe CommonMetadataMethods do
     end
 
     it 'should use phidippides data column transformations' do
-      expect_any_instance_of(Phidippides).to receive(:mirror_nbe_column_metadata!)
+      expect(dummy_class_instance).to receive(:mirror_nbe_column_metadata!)
       dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
     end
 

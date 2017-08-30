@@ -73,7 +73,6 @@ class DataLensManagerTest < Minitest::Test
   end
 
   def test_create_v2_data_lens
-    stub_feature_flags_with(:create_v2_data_lens => true)
     response = File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")
     connection_stub = mock
     created = false

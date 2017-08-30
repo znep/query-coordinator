@@ -752,7 +752,7 @@
 
       ds.getNewBackendId().done(function(newBackendId) {
         if (newBackendId) {
-          var datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+          var datasetMetadataUrl = '/api/views/{0}.json';
 
           $.get(datasetMetadataUrl.format(newBackendId)).done(function(metadata) {
             ds._newBackendMetadata = metadata;

@@ -12,11 +12,6 @@ class PageMetadataManagerTest < Minitest::Test
 
     DataLensManager.any_instance.stubs(create: 'niew-veww')
     DataLensManager.any_instance.stubs(update: nil)
-    PageMetadataManager.any_instance.stubs(:phidippides => Phidippides.new('localhost', 2401))
-    Phidippides.any_instance.stubs(connection_details: {
-      'address' => 'localhost',
-      'port' => '2401'
-    })
     SodaFountain.any_instance.stubs(connection_details: {
       'address' => 'localhost',
       'port' => '6010'
@@ -27,13 +22,10 @@ class PageMetadataManagerTest < Minitest::Test
         :migrations => stub_migrations
       )
     )
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
-    stub_feature_flags_with(:phidippides_deprecation_metadata_source => 'phidippides-only')
     @dataset_copy_stub = stub_dataset_copy_request(NBE_DATASET_ID)
   end
 
   def test_show_succeeds_when_migration_happens_without_update_rights
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => true)
     core_stub = mock
     core_stub.expects(:get_request).times(2).with do |url|
       assert_equal('/views/four-four.json', url)
@@ -42,29 +34,20 @@ class PageMetadataManagerTest < Minitest::Test
     CoreServer::Base.stubs(connection: core_stub)
 
     manager.show('four-four', options)
-
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
   end
 
   def test_create_ignores_provided_pageId_with_v2_page_metadata
-    stub_feature_flags_with(:create_v2_data_lens => true)
     PageMetadataManager.any_instance.expects(:fetch_min_max_in_column).returns(
       'min' => '1987-08-15T00:00:00.000',
       'max' => '1987-08-15T00:00:00.000'
     )
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
     PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).never
+    PageMetadataManager.any_instance.expects(:fetch_dataset_metadata).returns(v1_dataset_metadata_without_rollup_columns.with_indifferent_access)
     DataLensManager.any_instance.expects(:create).times(1).with do |category, metadata|
       assert_equal(metadata['name'], data_lens_page_metadata['name'])
       assert_equal(metadata['description'], data_lens_page_metadata['description'])
     end.returns('data-lens')
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: {
-        status: '200',
-        body: v1_dataset_metadata_without_rollup_columns
-      }.with_indifferent_access,
-      get_dataset_size: 1
-    )
     DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
     result = manager.create(data_lens_page_metadata, options)
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
@@ -80,7 +63,7 @@ class PageMetadataManagerTest < Minitest::Test
   def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
 
-    assert_raises(Phidippides::NoDatasetIdException) do
+    assert_raises(PageMetadataManager::NoDatasetIdException) do
       manager.update(data_lens_page_metadata.except('datasetId'))
     end
   end
@@ -88,7 +71,7 @@ class PageMetadataManagerTest < Minitest::Test
   def test_update_raises_an_error_if_page_id_is_not_present_in_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
 
-    assert_raises(Phidippides::NoPageIdException) do
+    assert_raises(PageMetadataManager::NoPageIdException) do
       manager.update(data_lens_page_metadata.except('pageId'))
     end
   end
@@ -154,7 +137,7 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_time_range_in_column_catches_fetch_min_max_in_column_returning_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error.new(nil))
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
+    assert_raises(PageMetadataManager::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'fieldName')
     end
   end
@@ -220,7 +203,7 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_time_range_in_column_raises_exception_without_min_max
     manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns({})
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
+    assert_raises(PageMetadataManager::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
@@ -229,7 +212,7 @@ class PageMetadataManagerTest < Minitest::Test
     manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
       'max' => '1984-01-01T00:00:00.000'
     )
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
+    assert_raises(PageMetadataManager::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
@@ -238,7 +221,7 @@ class PageMetadataManagerTest < Minitest::Test
     manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
       'min' => '1984-01-01T00:00:00.000'
     )
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
+    assert_raises(PageMetadataManager::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
@@ -274,17 +257,14 @@ class PageMetadataManagerTest < Minitest::Test
         fetch_min_max_in_column: {
           'min' => '1987-08-15T00:00:00.000',
           'max' => '1987-08-15T00:00:00.000'
-        }
+        },
+        fetch_dataset_metadata: v1_dataset_metadata.with_indifferent_access
       )
 
       DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
 
       PageMetadataManager.any_instance.expects(:update_rollup_table)
 
-      Phidippides.any_instance.stubs(
-        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }.with_indifferent_access,
-        get_dataset_size: 1
-      )
       DataLensManager.any_instance.expects(:create).returns('data-lens')
       manager.create(data_lens_page_metadata, options)
       assert_not_requested @dataset_copy_stub
@@ -302,17 +282,14 @@ class PageMetadataManagerTest < Minitest::Test
         fetch_min_max_in_column: {
           'min' => '1987-08-15T00:00:00.000',
           'max' => '1987-08-15T00:00:00.000'
-        }
+        },
+        fetch_dataset_metadata: v1_dataset_metadata.with_indifferent_access
       )
 
       DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
 
       PageMetadataManager.any_instance.expects(:update_rollup_table)
 
-      Phidippides.any_instance.stubs(
-        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }.with_indifferent_access,
-        get_dataset_size: 1
-      )
       DataLensManager.any_instance.expects(:create).returns('data-lens')
       manager.create(data_lens_page_metadata, options)
       assert_not_requested @dataset_copy_stub
@@ -379,12 +356,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def page_metadata_with_no_cards(page_metadata)
     page_metadata.dup.tap { |metadata| metadata['cards'] = [] }
-  end
-
-  def stub_fetch_dataset_metadata(body)
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: body }
-    )
   end
 
   def assert_page_has_table_card(page_metadata)

@@ -55,7 +55,6 @@
 
   // See datasets_helper.rb for sidebarHidden settings
   var userCanUpdateMetadata = $.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.dataLensCreate;
-  var useEphemeralBootstrap = blist.feature_flags.use_ephemeral_bootstrap;
   var _newBackendMetadata;
 
   // We already check the feature flag when deciding whether or not to show the data lens pane,
@@ -64,7 +63,7 @@
   var isDerivedView = _.includes(['grouped', 'filter'], blist.dataset.type);
   var allowDerivedViewBootstrap = blist.feature_flags.enable_data_lens_using_derived_view;
 
-  if (useEphemeralBootstrap && userCanUpdateMetadata) {
+  if (userCanUpdateMetadata) {
     $.gridSidebar.registerConfig('visualize.dataLensCreate', 'pane_dataLensCreate', 2, 'chart');
 
     // Fetch dataset migration, in case it's needed later

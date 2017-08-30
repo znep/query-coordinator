@@ -3011,9 +3011,22 @@ en:
       format:
         format: "%n%"
   open_performance:
+    dismiss: Dismiss
+    edit: Edit
+    edit_menu_label: Menu
     measure:
+      edit_modal:
+        accept: Accept
+        cancel: Cancel
+        title: Configure Measure
       reporting_period: Reporting Period
+    preview: Preview
     render_error: There was a problem rendering this page.
+    save: Save
+    save_error: Oh no! Something went wrong.
+    save_error_retry_prompt: Try saving again.
+    save_success: Success! Your changes were saved!
+    saving: Saving
   plugins:
     daterangepicker:
       clear: Clear

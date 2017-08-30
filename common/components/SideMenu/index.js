@@ -80,10 +80,8 @@ export const SideMenu = React.createClass({
     document.body.addEventListener('keyup', this.bodyEscapeHandler);
   },
 
-  componentDidUpdate(oldProps) {
-    const { isOpen } = this.props;
-
-    if (oldProps.isOpen !== isOpen) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.isOpen !== this.props.isOpen) {
       this.toggleVisibility();
     }
   },

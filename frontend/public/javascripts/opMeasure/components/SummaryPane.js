@@ -1,9 +1,18 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import I18n from 'common/i18n';
+
+import { launchEditModal } from '../actions/editor';
+import { ModeStates } from '../lib/constants';
+
+// Pane containing high-level (mostly prose) description of the measure.
 export class SummaryPane extends Component {
   renderOverview() {
+    const { description } = this.props.measure;
+
     return (
       <div className="metadata-table-wrapper">
         <div className="metadata-section">
@@ -42,33 +51,37 @@ export class SummaryPane extends Component {
             </div>
           </dl>
           <hr />
-          <p>
-            Part 1 property crimes are calculated weekly and are a standard FBI index crime.
-            The city has been collecting this data since 2003.
-          </p>
+          <p>{description || '(No description provided)'}</p>
         </div>
       </div>
     );
   }
 
-  renderDescription() {
+  renderMethodsAndAnalysis() {
+    const { measure, mode, onClickEdit } = this.props;
+
+    let editButton = null;
+    if (mode === ModeStates.EDIT) {
+      editButton = (
+        <div className="btn-group">
+          <button className="btn btn-alternate-2 btn-sm btn-edit" onClick={onClickEdit}>
+            {I18n.t('open_performance.edit')}
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="summary-pane-description">
+        {editButton}
+
         <h4>Methods and Analysis</h4>
 
         <h5>Methods</h5>
-        <p>The Federal Bureau of Investigations (FBI) identifies seven "Part I Index Crimes"
-        based on their seriousness and frequency of occurrence. Three categories for property
-        crimes include: burglary, theft, and auto theft. The Austin Police Department (APD)
-        reports crime counts to the FBI, whose Uniform Crime Reporting (UCR) program provides
-        consistent crime reporting across the country.</p>
+        <p>{measure.metadata.methods}</p>
 
         <h5>Analysis</h5>
-        <p>The FY 2015-16 result is a slight decrease from the previous fiscal year. Austin&apos;s
-        property crime rate in calendar year 2015 (the most recent official results) was 37.71,
-        6% lower than the rate of 40.11 for large US cities.* In FY 2015-16, Austin ranked 17th
-        as the safest city in property crime rates out of large US cities (population 5,000,000
-        and greater).</p>
+        <p>{measure.metadata.analysis}</p>
       </div>
     );
   }
@@ -82,18 +95,27 @@ export class SummaryPane extends Component {
     return (
       <div className="pane" data-pane="summary">
        {this.renderOverview()}
-       {this.renderDescription()}
+       {this.renderMethodsAndAnalysis()}
       </div>
     );
   }
 }
 
 SummaryPane.propTypes = {
-  activePane: PropTypes.string.isRequired
+  activePane: PropTypes.string,
+  measure: PropTypes.object,
+  mode: PropTypes.oneOf(_.values(ModeStates)),
+  onClickEdit: PropTypes.func
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'activePane');
+  return state.view;
 }
 
-export default connect(mapStateToProps)(SummaryPane);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    onClickEdit: launchEditModal
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryPane);

@@ -1,4 +1,5 @@
 export default {
   environment: 'test',
-  domain: 'example.com'
+  domain: 'example.com',
+  usersnapProjectID: 'fake-project-id'
 };

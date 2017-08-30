@@ -1,17 +1,21 @@
-import opMeasure from 'reducer';
+import rootReducer from 'reducers';
+import { ModeStates } from 'lib/constants';
 
 export function getDefaultStore() {
-  return redux.createStore(opMeasure);
+  return redux.createStore(rootReducer);
 }
 
 export function getStore(state) {
   const preloadedState = _.merge(
     {
-      // TODO: Provide any default state that doesn't come from window.
+      view: window.initialState,
+      editor: {
+        isEditing: true,
+        measure: window.initialState.measure
+      }
     },
-    window.initialState,
     state
   );
 
-  return redux.createStore(opMeasure, preloadedState);
+  return redux.createStore(rootReducer, preloadedState);
 };

@@ -22,11 +22,11 @@ export const ExpandableMenuListItem = React.createClass({
     };
   },
 
-  componentDidUpdate(oldProps) {
+  componentDidUpdate(prevProps) {
     const { children, isOpen } = this.props;
 
     // Sets focus on the first actionable item inside of the children
-    if (oldProps.isOpen !== isOpen && children && this.contentElement) {
+    if (prevProps.isOpen !== isOpen && children && this.contentElement) {
       const actionableElement = getFirstActionableElement(this.contentElement);
 
       if (isOpen && actionableElement) {

@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+// Pane containing generic asset metadata for the measure.
 export class MetadataPane extends Component {
   render() {
     const { activePane } = this.props;
@@ -18,11 +18,11 @@ export class MetadataPane extends Component {
 }
 
 MetadataPane.propTypes = {
-  activePane: PropTypes.string.isRequired
+  activePane: PropTypes.string
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'activePane');
+  return state.view;
 }
 
 export default connect(mapStateToProps)(MetadataPane);

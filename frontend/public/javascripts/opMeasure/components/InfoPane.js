@@ -1,13 +1,44 @@
+import React from 'react';
 import { connect } from 'react-redux';
 
-import InfoPaneComponent from '../../common/components/InfoPaneComponent';
+import I18n from 'common/i18n';
 
-function mapStateToProps() {
+import InfoPaneComponent from '../../common/components/InfoPaneComponent';
+import { ModeStates } from '../lib/constants';
+
+// This component wraps a common implementation, passing through a configuration
+// based on app state.
+
+function mapStateToProps(state) {
+  const navigateToEdit = () => {
+    const path = window.location.pathname.replace(/\/?$/, '');
+    window.location.assign(`${path}/edit`);
+  };
+
+  const renderEditButton = () => {
+    if (state.view.mode === ModeStates.VIEW) { // TODO: add rights check here
+      return (
+        <button className="btn btn-simple btn-sm btn-edit" onClick={navigateToEdit}>
+          {I18n.t('open_performance.edit')}
+        </button>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return {
     name: 'Part I Property Crime Rate per 1,000 Population',
     description: '',
     provenance: null,
-    isPaneCollapsible: false
+    isPaneCollapsible: false,
+    renderButtons() {
+      return (
+        <div className="btn-group">
+          {renderEditButton()}
+        </div>
+      );
+    }
   };
 }
 

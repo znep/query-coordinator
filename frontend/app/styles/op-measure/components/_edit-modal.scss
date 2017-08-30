@@ -1,0 +1,90 @@
+.measure-edit-modal {
+  .measure-edit-modal-content {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54px; // TODO: VERIFY TOP/BOTTOM CROSS-BROWSER
+    bottom: -14px;
+  }
+
+  .measure-edit-modal-footer {
+    padding: 5px;
+
+    .btn {
+      margin-left: 5px;
+    }
+  }
+
+  .measure-edit-modal-tabs {
+    width: 300px;
+    border-right: 1px solid $light-grey-3;
+    margin: 0;
+    border: 0;
+    padding: 0;
+
+    li {
+      position: relative;
+      display: block;
+      padding: 0;
+      height: 62px;
+
+      a {
+        display: block;
+        line-height: 58px;
+        padding: 0;
+        // Override default bottom-border from .nav-tabs
+        border: 0;
+        border-bottom: 1px solid $light-grey-3;
+
+        &::after {
+          display: block;
+          content: "";
+          position: absolute;
+          top: -1px;
+          left: 0;
+          bottom: -1px;
+          width: 6px;
+          background-color: $light-grey-3;
+        }
+      }
+
+      &.current a {
+        // Override default bottom-border from .nav-tabs
+        border: 0;
+        border-bottom: 1px solid $light-grey-3;
+
+        &::after {
+          background-color: $primary;
+        }
+      }
+    }
+
+    span[role="presentation"] {
+      font-size: 22px;
+      padding-left: 16px;
+    }
+
+    span.tab-title {
+      padding-left: 10px;
+    }
+  }
+
+  .measure-edit-modal-panels {
+    flex-grow: 1;
+    padding: 16px;
+    border-left: 1px solid $light-grey-3;
+
+    > .hidden {
+      display: none;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      resize: vertical;
+    }
+  }
+}

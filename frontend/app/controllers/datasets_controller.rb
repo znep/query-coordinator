@@ -593,6 +593,8 @@ class DatasetsController < ApplicationController
 
     return if render_as_visualization_canvas(true)
 
+    return if render_as_op_measure(true)
+
     return render_404 if @view.is_published? && @view.is_blist?
 
     unless @view.can_replace?
@@ -1307,16 +1309,30 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def render_as_op_measure
-    if op_standalone_measures_enabled? && @view.op_measure?
+  def render_as_op_measure(as_edit = false)
+    # The page will momentarily render in view mode, even if as_edit is true, and
+    # setting the @site_chrome_admin_header_options @body_classes variables below is to make
+    # the transition look less jarring.
+    return false unless @view.op_measure?
+
+    if op_standalone_measures_enabled?
+      # See if the user is accessing the canonical URL; if not, redirect
+      unless using_canonical_url?
+        if as_edit
+          redirect_to "#{canonical_path}/edit"
+        else
+          redirect_to canonical_path
+        end
+        return true
+      end
+
+      @edit_mode = as_edit
+
       render 'op_measure', :layout => 'styleguide'
-      true
-    elsif !op_standalone_measures_enabled? && @view.op_measure? && false
-      # TODO: remove false check when View#op_measure? has a valid implementation
-      render_404
-      true
     else
-      false
+      render_404
     end
+
+    true
   end
 end

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { SocrataIcon } from 'common/components';
 import I18n from 'common/i18n';
 
+// Affordance to change reporting period and trigger metric recalculation.
 export class ReportingPeriodSelector extends Component {
   render() {
     // TODO: Add aria-label to the toggles

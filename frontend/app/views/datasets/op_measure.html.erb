@@ -1,3 +1,10 @@
+<%
+if @edit_mode
+  @site_chrome_admin_header_options = {size: 'small'}
+  @body_classes = 'hide-site-chrome'
+end
+%>
+
 <% content_for :head do %>
   <title><%= @view.name %> | <%= get_site_title %></title>
   <%= meta_tags :description => view_meta_description, :keywords => view_meta_keywords %>
@@ -6,8 +13,6 @@
 <% end %>
 
 <div id="app" class="op-measure">
-  <!-- TODO -->
-
   <div class="placeholder-wrapper">
     <div class="main-spinner">
       <div class="spinner-default spinner-large"></div>
@@ -17,9 +22,7 @@
 
 <% content_for :scripts do %>
   <script type="text/javascript" id="op-measure-initial-state">
-    var initialState = {
-
-    };
+    var initialState = <%== op_measure_initial_state.to_json %>;
   </script>
 
   <%= render_feature_flags_for_javascript %>

@@ -1498,8 +1498,7 @@ class View < Model
   end
 
   def op_measure?
-    # displayType == 'measure' && viewType == 'something'
-    true
+    displayType == 'measure' && viewType == 'measure'
   end
 
   def is_href?

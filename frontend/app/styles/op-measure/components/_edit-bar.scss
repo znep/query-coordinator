@@ -1,0 +1,135 @@
+$edit-bar-height: 60px;
+$edit-bar-font-color: $light-grey-3;
+$edit-bar-name-width: 330px;
+$edit-bar-menu-width: 60px;
+$edit-bar-z-index: 8;
+
+.edit-bar {
+  z-index: $edit-bar-z-index;
+
+  .page-name {
+    width: 300px;
+  }
+
+  .edit-bar-child {
+    display: flex;
+    justify-content: flex-end;
+    width: calc(100% - #{$edit-bar-menu-width + $edit-bar-name-width});
+    padding: 0 16px;
+    font-weight: lighter;
+
+    .btn-save {
+      width: 110px;
+      margin-right: 5px;
+      background-color: transparent;
+      color: $edit-bar-font-color;
+
+      &:not([disabled]) {
+        &:hover, &:focus {
+          background-color: $dark-grey-2;
+          color: $white;
+        }
+      }
+
+      .spinner-default {
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    .save-notification {
+      .alert-overlay {
+        position: fixed;
+        top: $edit-bar-height;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      &.hidden {
+        display: none;
+      }
+
+      .alert {
+        position: fixed;
+        top: 70px;
+        right: 16px;
+
+        button {
+          cursor: pointer;
+          padding: 0;
+        }
+
+        .btn-dismiss {
+          float: right;
+          margin-top: 4px;
+          margin-left: 20px;
+
+          .socrata-icon svg {
+            width: 15px;
+            height: 15px;
+          }
+        }
+
+        &.success {
+          .btn-dismiss {
+            .socrata-icon svg g {
+              fill: $success-dark;
+            }
+
+            &:hover, &:focus {
+              .socrata-icon svg {
+                g {
+                  fill: $success;
+                }
+              }
+            }
+          }
+        }
+
+        &.error {
+          .btn-dismiss {
+            .socrata-icon svg g {
+              fill: $error-dark;
+            }
+
+            &:hover, &:focus {
+              .socrata-icon svg {
+                g {
+                  fill: $error;
+                }
+              }
+            }
+          }
+
+          .btn-retry {
+            color: $error-dark;
+            padding-left: 5px;
+            font-weight: bold;
+
+            &:hover, &:focus {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    .btn-preview {
+      color: $edit-bar-font-color;
+      text-decoration: none;
+      text-align: right;
+      padding: 11px 18px;
+
+      &:hover, &:focus {
+        color: $white;
+      }
+
+      .socrata-icon-preview {
+        padding-left: 8px;
+        font-size: 16px;
+      }
+    }
+  }
+}

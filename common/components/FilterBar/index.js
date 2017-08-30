@@ -131,20 +131,20 @@ export const FilterBar = React.createClass({
     }
   },
 
-  componentDidUpdate(previousProps) {
+  componentDidUpdate(prevProps) {
     this.setMaxVisibleFilters();
 
     const { filters, isReadOnly } = this.props;
 
     if (!isReadOnly) {
       // if we've added a filter, we need to focus on the new filter
-      if (previousProps.filters.length < filters.length && this.container) {
+      if (prevProps.filters.length < filters.length && this.container) {
         // the new filter should be the last rendered filter (there should be at least one rendered
         // filter if we get to this point)
         _.last(this.container.querySelectorAll('.filter-control-toggle')).focus();
 
       // otherwise we should focus on the add filter button
-      } else if (previousProps.filters.length > filters.length && this.addFilter) {
+      } else if (prevProps.filters.length > filters.length && this.addFilter) {
         // we should always have an Add Filter button when isReadOnly is false
         this.addFilter.querySelector('button').focus();
       }

@@ -43,4 +43,21 @@ module OpMeasureHelper
 
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
   end
+
+  def op_measure_initial_state
+    # If this becomes more complex, parts can be factored out into view.rb; see
+    # visualization canvas treatment of initial state for comparison.
+    {
+      :mode => @edit_mode ? 'EDIT' : 'VIEW',
+      :measure => {
+        :name => @view.name,
+        :description => @view.description || 'Description goes here',
+        :metadata => {
+          :methods => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          :analysis => 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. '
+        },
+        :metric => {}
+      }
+    }
+  end
 end

@@ -71,6 +71,12 @@ Visualization Canvas:
 60 Filter bar controls in Authoring Experience
 1001 Share modal size dropdown
 
+OP Measures:
+5 Preview bar
+8 Edit bar
+9 Site chrome admin header
+
+
 DataCards:
 1 Cards area
 1 Cards themselves, except when dragged

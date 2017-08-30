@@ -3,8 +3,9 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { setActivePane } from '../actions';
+import { setActivePane } from '../actions/view';
 
+// Nav tabs implementation.
 export class PaneTabs extends Component {
   render() {
     const { activePane, onClickTab } = this.props;
@@ -36,12 +37,12 @@ export class PaneTabs extends Component {
 }
 
 PaneTabs.propTypes = {
-  activePane: PropTypes.string.isRequired,
-  onClickTab: PropTypes.func.isRequired
+  activePane: PropTypes.string,
+  onClickTab: PropTypes.func
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'activePane');
+  return state.view;
 }
 
 function mapDispatchToProps(dispatch) {
@@ -49,7 +50,7 @@ function mapDispatchToProps(dispatch) {
     onClickTab(event) {
       event.preventDefault();
 
-      const tabItem = event.target.parentElement;
+      const tabItem = event.currentTarget.parentElement;
       if (tabItem.classList.contains('current')) {
         return;
       }

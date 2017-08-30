@@ -38,13 +38,11 @@ export class EditMenu extends Component {
     }
   }
 
-  // TODO: Remvove this when EN-15238 is addressed. We have to manually select the title because
+  // TODO: Remove this when EN-15238 is addressed. We have to manually select the title because
   // the SideMenu has two things trying to manage focus and hitting it hard with a hammer here is
   // what we decided to do as a bandaid.
-  componentDidUpdate(oldProps) {
-    const { isActive } = this.props;
-
-    if (!oldProps.isActive && isActive && this.title) {
+  componentDidUpdate(prevProps) {
+    if (!prevProps.isActive && this.props.isActive && this.title) {
       this.title.select();
     }
   }

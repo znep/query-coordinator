@@ -29,4 +29,10 @@ _.defer(function() {
 
     throw e;
   }
+
+  // Show the footer once the App has attempted to render.
+  const footer = document.querySelector('#site-chrome-footer');
+  if (footer) {
+    footer.style.visibility = 'visible';
+  }
 });

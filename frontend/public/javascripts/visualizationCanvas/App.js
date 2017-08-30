@@ -29,8 +29,8 @@ export const App = React.createClass({
     this.setSiteChromeVisibility();
   },
 
-  componentDidUpdate(newProps) {
-    if (newProps.mode !== this.props.mode) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.mode !== this.props.mode) {
       this.setSiteChromeVisibility();
     }
   },

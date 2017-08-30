@@ -1,9 +1,6 @@
 // .reporting-period repeats most of the declarations from common/FilterItem -
 // the dropdown may look the same, but the logic behind a FilterItem is too
 // specialized to be used in this case.
-
-@import "styleguide-colors";
-
 .reporting-period {
   align-self: flex-end;
   height: 58px; // aligns bottom of .reporting-period-wrapper to .nav-tabs

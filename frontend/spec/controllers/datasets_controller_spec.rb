@@ -211,11 +211,38 @@ describe DatasetsController do
         expect(response).to render_template(:op_measure)
       end
 
-      xit 'does not render the OP measure if the module/feature flag combo is disabled' do
+      it 'does not render the OP measure if the module/feature flag combo is disabled' do
         allow(subject).to receive(:op_standalone_measures_enabled?).and_return(false)
         get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
         expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'OP measure' do
+    before(:each) do
+      init_environment
+      init_current_user(controller)
+      login
+      stub_site_chrome
+
+      allow(view).to receive(:op_measure?).and_return(true)
+      allow(subject).to receive(:get_view).and_return(view)
+      allow(subject).to receive(:using_canonical_url?).and_return(true)
+      allow(subject).to receive(:op_standalone_measures_enabled?).and_return(true)
+    end
+
+    describe 'GET /category/view_name/id/edit' do
+      it 'should render the OP measure edit page' do
+        get :edit, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template(:op_measure)
+
+        # options that are set specifically for edit mode
+        expect(subject.instance_variable_get('@site_chrome_admin_header_options')).to eq({size: 'small'})
+        expect(subject.instance_variable_get('@body_classes')).to eq('hide-site-chrome')
       end
     end
   end

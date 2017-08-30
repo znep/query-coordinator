@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
+
 import { PaneTabs } from 'components/PaneTabs';
 
 describe('PaneTabs', () => {

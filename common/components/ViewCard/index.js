@@ -112,14 +112,14 @@ export default React.createClass({
     }
   },
 
-  componentDidUpdate(oldProps) {
-    if (this.shouldEllipsify(oldProps, this.props)) {
+  componentDidUpdate(prevProps) {
+    if (this.shouldEllipsify(prevProps, this.props)) {
       this.ellipsify();
     }
   },
 
-  shouldEllipsify(oldProps, newProps) {
-    return oldProps.name !== newProps.name || oldProps.description !== newProps.description;
+  shouldEllipsify(prevProps, newProps) {
+    return prevProps.name !== newProps.name || prevProps.description !== newProps.description;
   },
 
   ellipsify() {

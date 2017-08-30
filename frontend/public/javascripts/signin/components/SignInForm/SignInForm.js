@@ -172,17 +172,25 @@ class SignInForm extends React.Component {
     const { doAuth0Login, options } = this.props;
     const { email, password } = this.state;
     const { auth0DatabaseConnection, allowUsernamePasswordLogin } = options;
-    this.onLoginStart();
 
     if (allowUsernamePasswordLogin) {
+      this.onLoginStart();
       this.formDomNode.submit();
     } else {
-      // execute Auth0 login method with user credentials
-      doAuth0Login({
-        connection: auth0DatabaseConnection,
-        username: email,
-        password: password
-      }, (error) => { this.onLoginError(error); });
+      if (!isValidEmail(email, true)) {
+        this.props.onLoginError('error', I18n.t('core.validation.email'));
+      } else if (_.isEmpty(password)) {
+        this.props.onLoginError('error', I18n.t('account.common.form.password_required'));
+      } else {
+        this.onLoginStart();
+
+        // execute Auth0 login method with user credentials
+        doAuth0Login({
+          connection: auth0DatabaseConnection,
+          username: email,
+          password: password
+        }, error => { this.onLoginError(error); });
+      }
     }
   }
 

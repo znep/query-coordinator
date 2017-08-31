@@ -751,10 +751,12 @@ function getData(vif, options) {
     ),
     groupingValues: null,
     groupingVifs: null,
-    soqlDataProvider: new SoqlDataProvider({
-      datasetUid: _.get(vif, 'series[0].dataSource.datasetUid', null),
-      domain: _.get(vif, 'series[0].dataSource.domain', null)
-    }),
+    soqlDataProvider: new SoqlDataProvider(
+      {
+        datasetUid: _.get(vif, 'series[0].dataSource.datasetUid', null),
+        domain: _.get(vif, 'series[0].dataSource.domain', null)
+      },
+      true),
     vif: vif
   };
 

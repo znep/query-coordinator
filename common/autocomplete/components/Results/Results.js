@@ -55,24 +55,21 @@ class Results extends React.Component {
       event.preventDefault();
     }
 
-    // Enter searches for selected result or what's in the input
-    if (event.keyCode === 13) {
+    // Enter searches for selected result
+    if (event.keyCode === 13 && hasFocusedResult) {
       if (_.isEmpty(results)) {
         return;
       }
 
-      if (hasFocusedResult) {
-        // goto search if we have a result
-        const result = results[focusedResult];
-        if (!_.isUndefined(result)) {
-          // set the textbox to be what was clicked and close the results
-          onQueryChanged(result.title);
-          onChooseResult(result.title);
-        }
+      // goto search if we have a result
+      const result = results[focusedResult];
+      if (!_.isUndefined(result)) {
+        // set the textbox to be what was clicked and close the results
+        onQueryChanged(result.title);
+        onResultsVisibilityChanged(false);
+        onChooseResult(result.title);
       }
-
-      onResultsVisibilityChanged(false);
-   }
+    }
   }
 
   renderResults() {

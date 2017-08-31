@@ -45,8 +45,7 @@ function MetadataProvider(config, useCache = false) {
   const soqlDataProvider = new SoqlDataProvider({
     domain: this.getConfigurationProperty('domain'),
     datasetUid: this.getConfigurationProperty('datasetUid')
-  },
-                                               true);
+  }, true);
 
   /**
    * Public methods

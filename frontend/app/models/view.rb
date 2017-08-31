@@ -1382,12 +1382,7 @@ class View < Model
   end
 
   def use_soda2?
-    should_use = newBackend? || FeatureFlags.derive(self).useSoda2
-
-    case should_use
-      when 'always', TrueClass then true
-      else false
-    end
+    newBackend?
   end
 
   def can_add_form?

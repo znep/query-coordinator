@@ -2695,18 +2695,8 @@
 
     _determineUseSODA2: function() {
       var ds = this;
-      var useSoda2Flag = false;
-      if (!_.isUndefined(blist.feature_flags.useSoda2)) {
-        if (blist.feature_flags.useSoda2 === 'always') {
-          useSoda2Flag = true;
-        } else if (blist.feature_flags.useSoda2 === 'never') {
-          useSoda2Flag = false;
-        } else if (blist.feature_flags.useSoda2 === 'read-only') {
-          useSoda2Flag = !!blist.currentUser;
-        }
-      }
 
-      if (ds.newBackend || blist.configuration.useSoda2 || useSoda2Flag) {
+      if (ds.newBackend || blist.configuration.useSoda2) {
         ds._useSODA2 = true;
       } else {
         ds._useSODA2 = false;

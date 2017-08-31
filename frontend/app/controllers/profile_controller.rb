@@ -16,7 +16,7 @@ class ProfileController < ApplicationController
   helper :user
 
   def index
-    redirect_to profile_path(current_user)
+    redirect_to("#{profile_path(current_user)}?#{request.query_string}")
   end
 
   def generic_account

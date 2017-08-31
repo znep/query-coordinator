@@ -27,7 +27,7 @@
 
           <%- if type == 'fixed' -%>
             <%- options  = (['']+field['options']+[existing_value]).uniq
-                disabled = field['options'].include?(existing_value) ? [] : [existing_value] -%>
+                disabled = field['options'].include?(existing_value) || existing_value.empty? ? [] : [existing_value] -%>
             <%= select_tag(form_name, options_for_select(options, selected: existing_value, disabled: disabled),
                            :class => required && 'required') %>
           <%- else -%>

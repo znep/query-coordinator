@@ -96,10 +96,10 @@ export class ActionDropdown extends React.Component {
 
     if (verifiedPermissions === false) {
       if (view !== null) {
-        if (view.rights.includes('delete') || view.rights.includes('delete_view')) {
+        if (_(view.rights).includes('delete') || _(view.rights).includes('delete_view')) {
           allowableActions.push('delete_asset');
         }
-        if (view.rights.includes('write') || view.rights.includes('update_view')) {
+        if (_(view.rights).includes('write') || _(view.rights).includes('update_view')) {
           allowableActions.push('change_visibility');
           allowableActions.push('edit_metadata');
         }
@@ -138,7 +138,7 @@ export class ActionDropdown extends React.Component {
     const { assetType, uid } = this.props;
     const { allowableActions } = this.state;
 
-    if (!allowableActions.includes('edit_metadata')) {
+    if (!_(allowableActions).includes('edit_metadata')) {
       return null;
     }
 
@@ -158,7 +158,7 @@ export class ActionDropdown extends React.Component {
   renderChangeVisibilityMenuOption() {
     const { allowableActions } = this.state;
 
-    if (!allowableActions.includes('change_visibility')) {
+    if (!_(allowableActions).includes('change_visibility')) {
       return null;
     }
 
@@ -184,7 +184,7 @@ export class ActionDropdown extends React.Component {
   renderDeleteAssetMenuOption() {
     const { allowableActions } = this.state;
 
-    if (allowableActions.includes('delete_asset')) {
+    if (_(allowableActions).includes('delete_asset')) {
       return this.renderDropdownOption(
         this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset')
       );

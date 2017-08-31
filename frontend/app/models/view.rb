@@ -1218,6 +1218,15 @@ class View < Model
     mutation_rights? && !is_grouped? && !is_api?
   end
 
+  def can_see_stats?
+    # Core checks View.isOwner(), which checks the following rights:
+    [
+      ViewRights::GRANT,
+      ViewRights::ADD_COLUMN,
+      ViewRights::REMOVE_COLUMN
+    ].all? { |right| rights_include?(right) }
+  end
+
   def rights_include?(right)
     (data || {}).fetch('rights', []).include?(right)
   end

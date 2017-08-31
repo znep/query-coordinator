@@ -53,6 +53,35 @@ describe DatasetsController do
       to_return(:status => 200, :body => view_json, :headers => {})
   end
 
+  describe 'stats page' do
+    let(:stats_response) do
+      allow(view).to receive(:can_see_stats?).and_return(can_see_stats)
+      get :stats, :id => view.id
+      response
+    end
+
+    before(:each) do
+      init_environment
+      allow(subject).to receive(:get_view).and_return(view)
+    end
+
+    describe 'user can see stats page' do
+      let(:can_see_stats) { true }
+
+      it 'responds success' do
+        expect(stats_response).to have_http_status(:success)
+      end
+    end
+
+    describe 'user cannot see stats page' do
+      let(:can_see_stats) { false }
+
+      it 'responds 403' do
+        expect(stats_response).to have_http_status(403)
+      end
+    end
+  end
+
   describe 'Accessing public forms on private datasets' do
     before(:each) do
       init_environment

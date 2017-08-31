@@ -344,7 +344,7 @@ class DatasetLandingPage
     end
 
     def stats_url(view, current_user)
-      if (view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
+      if view.can_see_stats?
         view_stats_path(view)
       end
     end

@@ -342,4 +342,42 @@ describe View do
       expect(view.blobs.first['href']).to eq(expected)
     end
   end
+
+  describe 'can_see_stats?' do
+    let (:view) do
+      View.new({
+        'rights' => rights
+      })
+    end
+
+    describe 'on a view giving no rights' do
+      let (:rights) { [] }
+
+      it 'returns false' do
+        expect(view.can_see_stats?).to be(false)
+      end
+    end
+
+    describe 'on a view giving insufficient rights' do
+      let (:rights) { [
+        'read', 'write', 'add', 'delete', 'grant', 'add_column', # no remove_column right!
+        'update_column', 'update_view', 'delete_view'
+      ] }
+
+      it 'returns false' do
+        expect(view.can_see_stats?).to be(false)
+      end
+    end
+
+    describe 'on a view giving grant, add_column, and remove_column rights' do
+      let (:rights) { [
+        'read', 'write', 'add', 'delete', 'grant', 'add_column', 'remove_column',
+        'update_column', 'update_view', 'delete_view'
+      ] }
+
+      it 'returns true' do
+        expect(view.can_see_stats?).to be(true)
+      end
+    end
+  end
 end

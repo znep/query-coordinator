@@ -44,6 +44,24 @@ describe DatasetLandingPage do
     }
   end
 
+  describe '#stats_url' do
+    describe 'user cannot see stats' do
+      it 'returns nil' do
+        expect(view).to receive(:can_see_stats?).and_return(false)
+        expect(DatasetLandingPage.send(:stats_url, view, nil)).to be_nil
+      end
+    end
+
+    describe 'user can see stats' do
+      it 'returns a link to the stats page' do
+        expect(view).to receive(:can_see_stats?).and_return(true)
+        expect(DatasetLandingPage.send(:stats_url, view, nil)).to include(
+          "/dataset/#{view.id}/stats"
+        )
+      end
+    end
+  end
+
   describe '#get_derived_views' do
     it 'returns nothing if the view does not exist' do
       expect(View).to receive(:find).and_return(nil)

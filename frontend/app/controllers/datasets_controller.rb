@@ -660,7 +660,7 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    unless @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
+    unless @view.can_see_stats?
       return render_forbidden
     end
 

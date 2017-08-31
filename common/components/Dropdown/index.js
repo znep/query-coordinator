@@ -268,25 +268,9 @@ export default React.createClass({
     let icon = null;
     const { opened, selectedOption } = this.state;
     const caret = <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />;
-    const placeholderText = text => <span key="placeholder">{text}</span>;
+    const placeholderText = text => <span className="placeholder" key="placeholder">{text}</span>;
     const placeholderIsFunction = typeof placeholder === 'function';
     const placeholderIsString = typeof placeholder === 'string';
-
-    const attributes = {
-      onFocus: this.onFocusPlaceholder,
-      onBlur: this.onBlurPlaceholder,
-      onClick: this.onClickPlaceholder,
-      onKeyUp: this.onKeyUpPlaceholder,
-      onKeyDown: this.onKeyDownPlaceholder,
-      tabIndex: '0',
-      ref: ref => this.placeholderRef = ref,
-      className: classNames({
-        'default': _.get(selectedOption, 'defaultOption'),
-        'dropdown-placeholder': !placeholderIsFunction,
-        'dropdown-selected': !!selectedOption
-      }),
-      role: 'button'
-    };
 
     if (placeholderIsFunction) {
       placeholder = placeholder({isOpened: opened});
@@ -302,6 +286,23 @@ export default React.createClass({
     } else if (placeholder === null) {
       placeholder = [placeholderText('Select...'), caret];
     }
+
+    const attributes = {
+      onFocus: this.onFocusPlaceholder,
+      onBlur: this.onBlurPlaceholder,
+      onClick: this.onClickPlaceholder,
+      onKeyUp: this.onKeyUpPlaceholder,
+      onKeyDown: this.onKeyDownPlaceholder,
+      tabIndex: '0',
+      ref: ref => this.placeholderRef = ref,
+      className: classNames({
+        'default': _.get(selectedOption, 'defaultOption'),
+        'dropdown-placeholder': !placeholderIsFunction,
+        'dropdown-selected': !!selectedOption,
+        'dropdown-selected-with-icon': !!selectedOption && !!icon
+      }),
+      role: 'button'
+    };
 
     return <div {...attributes}>{icon}{placeholder}</div>;
   },

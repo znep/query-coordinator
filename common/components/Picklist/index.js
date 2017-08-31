@@ -243,11 +243,12 @@ export const Picklist = React.createClass({
       'aria-selected': isSelected
     };
 
+    const pickListTitleClasses = classNames('picklist-title', { 'picklist-with-icon' : !!option.icon })
     const content = hasRenderFunction ?
       option.render(option) :
-      <span className="picklist-title" key={index}>
+      <span className={pickListTitleClasses} key={index}>
         {option.icon}
-        {option.title}
+        <span className="picklist-item">{option.title}</span>
       </span>;
 
     return (

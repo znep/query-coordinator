@@ -65,10 +65,16 @@ function SoqlDataProvider(config, useCache = false) {
    *
    * @return {Promise}
    */
-  this.query = function(queryString, nameAlias, valueAlias, errorBarsLowerAlias, errorBarsUpperAlias) {
+  this.query = function(queryString, nameAlias, valueAlias, errorBarsLowerAlias, errorBarsUpperAlias, groupingAlias) {
     const path = pathForQuery(`$query=${encodeURIComponent(queryString)}`);
 
     return makeSoqlGetRequest(path).then((data) => {
+
+      let basicAliases = [nameAlias, valueAlias];
+      if (!_.isUndefined(groupingAlias)) {
+        // XXX: Column order is critical here:
+        basicAliases = [nameAlias, groupingAlias, valueAlias];
+      }
 
       let errorBarsAliases;
 
@@ -76,7 +82,7 @@ function SoqlDataProvider(config, useCache = false) {
         errorBarsAliases = [nameAlias, errorBarsLowerAlias, errorBarsUpperAlias];
       }
 
-      return mapRowsResponseToTable([nameAlias, valueAlias], data, errorBarsAliases);
+      return mapRowsResponseToTable(basicAliases, data, errorBarsAliases);
     });
   };
 
@@ -426,7 +432,7 @@ function SoqlDataProvider(config, useCache = false) {
    *     <second column value>,
    *     ...
    *   ]
-   * 
+   *
    * Each row in the errorBars array is of the format:
    *
    *   [
@@ -436,9 +442,10 @@ function SoqlDataProvider(config, useCache = false) {
    *   ]
    */
   function mapRowsResponseToTable(columnNames, data, errorBarColumnNames) {
+    const nonNullColumnNames = _.without(columnNames, null);
     const table = {
-      columns: columnNames,
-      rows: _.map(data, (datum) => _.at(datum, columnNames)),
+      columns: nonNullColumnNames,
+      rows: _.map(data, (datum) => _.at(datum, nonNullColumnNames)),
       // NOTE: The ':id' property will only exist for queries against NBE
       // datasets. Therefore, we can only use rowIds for the row double click
       // event when displaying NBE datasets.

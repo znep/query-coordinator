@@ -116,7 +116,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias(),
       errorBarsLowerAlias,
-      errorBarsUpperAlias
+      errorBarsUpperAlias,
+      (isQueryWithInClause ? SoqlHelpers.groupingAlias() : null)
     ).
     then((queryResponse) => {
       const queryResponseRowCount = queryResponse.rows.length;
@@ -435,10 +436,14 @@ function augmentSocrataDataResponseWithOtherCategory(
 function mapQueryResponseToDataTable(queryResponse) {
   const dataTable = queryResponse;
   const dimensionIndex = dataTable.columns.indexOf(SoqlHelpers.dimensionAlias());
+  const groupingIndex = dataTable.columns.indexOf(SoqlHelpers.groupingAlias());
   const measureIndex = dataTable.columns.indexOf(SoqlHelpers.measureAlias());
 
   dataTable.columns[dimensionIndex] = 'dimension';
   dataTable.columns[measureIndex] = 'measure';
+  if (groupingIndex !== -1) {
+    dataTable.columns[groupingIndex] = 'grouping';
+  }
 
   dataTable.rows.forEach((row) => {
 
@@ -446,7 +451,14 @@ function mapQueryResponseToDataTable(queryResponse) {
       row[dimensionIndex] = null;
     }
 
+    if (groupingIndex !== -1) {
+      if (_.isUndefined(row[groupingIndex])) {
+        row[groupingIndex] = null;
+      }
+    }
+
     row[measureIndex] = getNumberValue(row[measureIndex]);
+
   });
 
   if (!_.isUndefined(dataTable.errorBars)) {

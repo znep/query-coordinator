@@ -27,19 +27,25 @@ describe('EditModal', () => {
 
   it('updates the selected tab on tab click', () => {
     const element = renderComponentWithStore(EditModal, {}, getStore());
-    const getVisibility = (selector) => (
-      element.querySelector(selector).getAttribute('aria-hidden') !== 'true'
+    const getCurrentness = (tabLinkSelector) => (
+      _.includes(
+        Array.from(element.querySelector(tabLinkSelector).parentElement.classList),
+        'current'
+      )
+    );
+    const getVisibility = (panelSelector) => (
+      element.querySelector(panelSelector).getAttribute('aria-hidden') !== 'true'
     );
 
-    assert.include(Array.from(element.querySelectorAll('li')[0].classList), 'current');
-    assert.notInclude(Array.from(element.querySelectorAll('li')[1].classList), 'current');
+    assert.isTrue(getCurrentness('#general-info-link'));
+    assert.isFalse(getCurrentness('#methods-and-analysis-link'));
     assert.isTrue(getVisibility('#general-info-panel'));
     assert.isFalse(getVisibility('#methods-and-analysis-panel'));
 
     Simulate.click(element.querySelector('#methods-and-analysis-link'));
 
-    assert.notInclude(Array.from(element.querySelectorAll('li')[0].classList), 'current');
-    assert.include(Array.from(element.querySelectorAll('li')[1].classList), 'current');
+    assert.isFalse(getCurrentness('#general-info-link'));
+    assert.isTrue(getCurrentness('#methods-and-analysis-link'));
     assert.isFalse(getVisibility('#general-info-panel'));
     assert.isTrue(getVisibility('#methods-and-analysis-panel'));
   });

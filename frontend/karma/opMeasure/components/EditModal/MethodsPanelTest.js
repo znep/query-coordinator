@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-addons-test-utils';
 
 import { MethodsPanel } from 'components/EditModal/MethodsPanel';
 

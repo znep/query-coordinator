@@ -23,6 +23,9 @@ export default (state = initialState(), action) => {
   }
 
   switch (action.type) {
+    case actions.RECEIVE_DATA_SOURCE:
+      return updateMeasureProperty(state, 'metric.dataSource', action.dataSource);
+
     case actions.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);
 

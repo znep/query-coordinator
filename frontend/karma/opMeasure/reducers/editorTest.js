@@ -20,6 +20,21 @@ describe('Edit modal reducer', () => {
     state = undefined;
   });
 
+  describe('RECEIVE_DATA_SOURCE', () => {
+    it('updates the data source in the measure metric', () => {
+      const dataSource = {
+        status: 'NO_ROWS',
+        uid: 'test-test'
+      };
+
+      assert.isUndefined(_.get(state.measure), 'metric.dataSource');
+
+      state = reducer(state, actions.receiveDataSource(dataSource));
+
+      assert.deepEqual(state.measure.metric.dataSource, dataSource);
+    });
+  });
+
   describe('SET_ANALYSIS', () => {
     it('updates the analysis description in the measure metadata', () => {
       assert.isUndefined(_.get(state.measure), 'metadata.analysis');

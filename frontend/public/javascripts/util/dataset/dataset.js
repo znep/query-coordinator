@@ -28,6 +28,16 @@
 
   var Dataset = ServerModel.extend({
     _init: function(v) {
+
+      switch (blist.feature_flags.ignore_metadata_jsonquery_property_in_view) {
+        case 'frontend':
+        case 'all':
+          if (v.hasOwnProperty('metadata') && v.metadata.hasOwnProperty('jsonQuery')) {
+            delete v.metadata.jsonQuery;
+          }
+          break;
+      }
+
       this._super();
 
       this.registerEvent(['columns_changed', 'valid', 'query_change',

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import { COLOR_PALETTES } from '../constants';
+import { COLOR_PALETTES, ERROR_BARS_DEFAULT_BAR_COLOR } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {})
 export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
@@ -20,12 +20,12 @@ export const getCurrentVif = createSelector(
 
 export const getConfiguration = createSelector(
   getCurrentVif,
-  vif => vif.configuration
+  (vif) => vif.configuration
 );
 
 export const getDimension = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.dimension', null)
+  (vif) => _.get(vif, 'series[0].dataSource.dimension', null)
 );
 
 // Warning: This should only be used if you know what you're doing.
@@ -43,7 +43,7 @@ export const getAnyDimension = createSelector(
 
 export const getMeasure = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.measure', null)
+  (vif) => _.get(vif, 'series[0].dataSource.measure', null)
 );
 
 export const getAnyMeasure = createSelector(
@@ -58,42 +58,42 @@ export const getAnyMeasure = createSelector(
 
 export const getSeries = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'series', [])
+  (vif) => _.get(vif, 'series', [])
 );
 
 export const getTitle = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'title', null)
+  (vif) => _.get(vif, 'title', null)
 );
 
 export const getDescription = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'description', null)
+  (vif) => _.get(vif, 'description', null)
 );
 
 export const getPrimaryColor = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].color.primary', null)
+  (vif) => _.get(vif, 'series[0].color.primary', null)
 );
 
 export const getSecondaryColor = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].color.secondary', null)
+  (vif) => _.get(vif, 'series[0].color.secondary', null)
 );
 
 export const getPointOpacity = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.pointOpacity', 1) * 100
+  (vif) => _.get(vif, 'configuration.pointOpacity', 1) * 100
 );
 
 export const getPointSize = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.pointSize', 1)
+  (vif) => _.get(vif, 'configuration.pointSize', 1)
 );
 
 export const getColorScale = createSelector(
   getCurrentVif,
-  vif => {
+  (vif) => {
     return {
       negativeColor: _.get(vif, 'configuration.legend.negativeColor'),
       zeroColor: _.get(vif, 'configuration.legend.zeroColor'),
@@ -104,97 +104,123 @@ export const getColorScale = createSelector(
 
 export const getColorPalette = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].color.palette', null)
+  (vif) => _.get(vif, 'series[0].color.palette', null)
 );
 
 export const getBaseLayer = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.baseLayerUrl')
+  (vif) => _.get(vif, 'configuration.baseLayerUrl')
 );
 
 export const getBaseLayerOpacity = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'configuration.baseLayerOpacity', 1) * 100
+  (vif) => _.get(vif, 'configuration.baseLayerOpacity', 1) * 100
 );
 
 export const getShapefileUid = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'configuration.shapefile.uid', null)
+  (vif) => _.get(vif, 'configuration.shapefile.uid', null)
 );
 
 export const getUnitOne = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].unit.one', null)
+  (vif) => _.get(vif, 'series[0].unit.one', null)
 );
 
 export const getUnitOther = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'series[0].unit.other', null)
+  (vif) => _.get(vif, 'series[0].unit.other', null)
 );
 
 export const getRowInspectorTitleColumnName = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'configuration.rowInspectorTitleColumnName', null)
+  (vif) => _.get(vif, 'configuration.rowInspectorTitleColumnName', null)
 );
 
 export const getDatasetUid = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'series[0].dataSource.datasetUid')
+  (vif) => _.get(vif, 'series[0].dataSource.datasetUid')
 );
 
 export const getDomain = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'series[0].dataSource.domain')
+  (vif) => _.get(vif, 'series[0].dataSource.domain')
 );
 
 export const getAxisLabels = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.axisLabels')
+  (vif) => _.get(vif, 'configuration.axisLabels')
 );
 
 export const getViewSourceDataLink = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.viewSourceDataLink', true)
+  (vif) => _.get(vif, 'configuration.viewSourceDataLink', true)
 );
 
 export const getShowDimensionLabels = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.showDimensionLabels', false)
+  (vif) => _.get(vif, 'configuration.showDimensionLabels', false)
 );
 
 export const getShowValueLabels = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.showValueLabels', false)
+  (vif) => _.get(vif, 'configuration.showValueLabels', false)
 );
 
 export const getShowValueLabelsAsPercent = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.showValueLabelsAsPercent', false)
+  (vif) => _.get(vif, 'configuration.showValueLabelsAsPercent', false)
 );
 
 export const getShowLegend = (defaultValue = false) => createSelector(
-    getCurrentVif,
-    vif => _.get(vif, 'configuration.showLegend', defaultValue)
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.showLegend', defaultValue)
 );
 
 export const getXAxisScalingMode = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.xAxisScalingMode')
+  (vif) => _.get(vif, 'configuration.xAxisScalingMode')
 );
 
 export const getMeasureAxisMinValue = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.measureAxisMinValue', null)
+  (vif) => _.get(vif, 'configuration.measureAxisMinValue', null)
 );
 
 export const getMeasureAxisMaxValue = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.measureAxisMaxValue', null)
+  (vif) => _.get(vif, 'configuration.measureAxisMaxValue', null)
 );
 
 export const getDimensionGroupingColumnName = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
+  (vif) => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
+);
+
+export const getErrorBarsLowerBoundColumnName = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].errorBars.lowerBoundColumnName')
+);
+
+export const getErrorBarsUpperBoundColumnName = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].errorBars.upperBoundColumnName')
+);
+
+export const getErrorBarsColor = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR)
+);
+
+export const hasErrorBars = createSelector(
+  getErrorBarsLowerBoundColumnName,
+  getErrorBarsUpperBoundColumnName,
+  (lowerBoundColumnName, upperBoundColumnName) => !_.isUndefined(lowerBoundColumnName) && !_.isUndefined(upperBoundColumnName)
+);
+
+export const getStacked = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].stacked', false)
 );
 
 export const hasDimensionGroupingColumnName = createSelector(
@@ -225,27 +251,27 @@ export const hasCustomColorPalette = createSelector(
 
 export const getOrderBy = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.orderBy')
+  (vif) => _.get(vif, 'series[0].dataSource.orderBy')
 );
 
 export const getPrecision = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.precision')
+  (vif) => _.get(vif, 'series[0].dataSource.precision')
 );
 
 export const getTreatNullValuesAsZero = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.treatNullValuesAsZero')
+  (vif) => _.get(vif, 'configuration.treatNullValuesAsZero')
 );
 
 export const getLimitCount = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].dataSource.limit', null)
+  (vif) => _.get(vif, 'series[0].dataSource.limit', null)
 );
 
 export const getShowOtherCategory = createSelector(
   getCurrentVif,
-  vif => {
+  (vif) => {
 
     return (
       !_.isNull(_.get(vif, 'series[0].dataSource.limit')) &&
@@ -256,17 +282,22 @@ export const getShowOtherCategory = createSelector(
 
 export const getVisualizationType = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].type', null)
+  (vif) => _.get(vif, 'series[0].type', null)
 );
 
 export const hasVisualizationType = createSelector(
   getVisualizationType,
-  type => _.isString(type)
+  (type) => _.isString(type)
 );
 
 export const hasVisualizationDimension = createSelector(
   getDimension,
-  dimension => dimension !== null
+  (dimension) => dimension !== null
+);
+
+export const isGrouping = createSelector(
+  getDimensionGroupingColumnName,
+  (dimensionGroupingColumnName) => _.isString(dimensionGroupingColumnName)
 );
 
 export const isMultiSeries = createSelector(
@@ -275,11 +306,9 @@ export const isMultiSeries = createSelector(
 );
 
 export const isGroupingOrMultiSeries = createSelector(
-  getDimensionGroupingColumnName,
+  isGrouping,
   isMultiSeries,
-  (dimensionGroupingColumnName, isMultiSeries) => {
-    return _.isString(dimensionGroupingColumnName) || isMultiSeries;
-  }
+  (isGrouping, isMultiSeries) => isGrouping || isMultiSeries
 );
 
 export const isStacked = createSelector(
@@ -324,7 +353,7 @@ export const isValidRegionMapVif = createSelector(
 
 export const isBarChart = createSelector(
   getVisualizationType,
-  type => type === 'barChart'
+  (type) => type === 'barChart'
 );
 
 export const isValidBarChartVif = createSelector(
@@ -343,7 +372,7 @@ export const isValidBarChartVif = createSelector(
 
 export const isColumnChart = createSelector(
   getVisualizationType,
-  type => type === 'columnChart'
+  (type) => type === 'columnChart'
 );
 
 export const isValidColumnChartVif = createSelector(
@@ -362,7 +391,7 @@ export const isValidColumnChartVif = createSelector(
 
 export const isHistogram = createSelector(
   getVisualizationType,
-  type => type === 'histogram'
+  (type) => type === 'histogram'
 );
 
 export const isValidHistogramVif = createSelector(
@@ -381,7 +410,7 @@ export const isValidHistogramVif = createSelector(
 
 export const isFeatureMap = createSelector(
   getVisualizationType,
-  type => type === 'featureMap'
+  (type) => type === 'featureMap'
 );
 
 export const isValidFeatureMapVif = createSelector(
@@ -399,7 +428,7 @@ export const isValidFeatureMapVif = createSelector(
 
 export const isTimelineChart = createSelector(
   getVisualizationType,
-  type => type === 'timelineChart'
+  (type) => type === 'timelineChart'
 );
 
 export const isValidTimelineChartVif = createSelector(
@@ -418,7 +447,7 @@ export const isValidTimelineChartVif = createSelector(
 
 export const isPieChart = createSelector(
   getVisualizationType,
-  type => type === 'pieChart'
+  (type) => type === 'pieChart'
 );
 
 export const isValidPieChartVif = createSelector(
@@ -512,3 +541,4 @@ export const hasMadeChangesToVifs = createSelector(
     return !_.isEqual(clonedModifiedVifs, clonedCheckpointVifs);
   }
 );
+

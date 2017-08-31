@@ -236,7 +236,8 @@ export var PresentationPane = React.createClass({
     const { vifAuthoring } = this.props;
 
     const valueLabelsVisible = (selectors.isBarChart(vifAuthoring) || selectors.isPieChart(vifAuthoring)) && 
-      !selectors.isStacked(vifAuthoring);
+      !selectors.isStacked(vifAuthoring) &&
+      !selectors.hasErrorBars(vifAuthoring);
 
     const valueLabels = valueLabelsVisible ? this.renderShowValueLabels() : null;
     const valueLabelsAsPercent = selectors.isPieChart(vifAuthoring) ? this.renderShowPercentLabels() : null;

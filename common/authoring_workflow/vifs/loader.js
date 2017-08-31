@@ -15,6 +15,9 @@ const paths = {
   dimensionColumnName: 'series[0].dataSource.dimension.columnName',
   dimensionGroupingColumnName: 'series[0].dataSource.dimension.grouping.columnName',
   domain: 'series[0].dataSource.domain',
+  errorBarsBarColor: 'series[0].errorBars.barColor',
+  errorBarsLowerBoundColumnName: 'series[0].errorBars.lowerBoundColumnName',
+  errorBarsUpperBoundColumnName: 'series[0].errorBars.upperBoundColumnName',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
   labelTop: 'configuration.axisLabels.top',
@@ -134,6 +137,18 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.dimensionGroupingColumnName)) {
     dispatch(actions.setDimensionGroupingColumnName(get(paths.dimensionGroupingColumnName)));
+  }
+
+  if (has(paths.errorBarsBarColor)) {
+    dispatch(actions.setErrorBarsBarColor(get(paths.errorBarsBarColor)));
+  }
+
+  if (has(paths.errorBarsLowerBoundColumnName)) {
+    dispatch(actions.setErrorBarsLowerBoundColumnName(get(paths.errorBarsLowerBoundColumnName)));
+  }
+
+  if (has(paths.errorBarsUpperBoundColumnName)) {
+    dispatch(actions.setErrorBarsUpperBoundColumnName(get(paths.errorBarsUpperBoundColumnName)));
   }
 
   if (has(paths.customColorPalette)) {

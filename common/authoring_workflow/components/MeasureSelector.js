@@ -14,6 +14,7 @@ import {
 import { 
   getDimensionGroupingColumnName,
   getSeries,
+  hasErrorBars,
   isBarChart,
   isColumnChart,
   isFeatureMap,
@@ -215,7 +216,9 @@ export const MeasureSelector = React.createClass({
     const shouldRender = (series.length < MAXIMUM_MEASURES) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    const isDisabled = isSeriesPending || !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring));
+    const isDisabled = isSeriesPending || 
+      !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) ||
+      hasErrorBars(vifAuthoring);
 
     const addMeasureLinkAttributes = {
       id: 'measure-add-measure-link',

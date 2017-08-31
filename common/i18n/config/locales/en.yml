@@ -312,6 +312,12 @@ en:
               stacked: Stacked
               one_hundred_percent_stacked: 100% Stacked
               title: Multi-Series Display Options
+            error_bars:
+              bar_color: Bar Color
+              lower_bound_column: Lower Bound Column
+              none_selected: None Selected
+              select_column: Select Column...
+              upper_bound_column: Upper Bound Column
             measure:
               description: A measure is a numeric field or the count of rows associated with the selected dimension.
               color_and_flyout_label: '{0} ({1})'
@@ -365,6 +371,7 @@ en:
           subheaders:
             data_selection: Data Selection
             timeline_options: Timeline Display Options
+            error_bars: Error Bars
           title: Data
           uhoh: Uh oh!
         legends_and_flyouts:

@@ -27,6 +27,7 @@ function getData(vif, options) {
   function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
     const dimensionIndex = 0;
     const measureIndex = 1;
+    const errorBarsIndex = 1;
     const measureLabels = vif.series.map((series) => {
       return _.get(series, 'label', '');
     });
@@ -40,19 +41,15 @@ function getData(vif, options) {
     const dataToRenderColumns = ['dimension'].concat(measureLabels);
     const dataToRenderRows = uniqueDimensionValues.map(
       (uniqueDimensionValue) => {
-        const row = [uniqueDimensionValue];
 
+        const row = [uniqueDimensionValue];
         dataResponses.forEach((dataResponse) => {
+
           const rowForDimension = _.find(
             dataResponse.rows,
-            (dataResponseRow) => {
-              return dataResponseRow[dimensionIndex] === uniqueDimensionValue;
-            }
-          );
-          const measureValue = (rowForDimension) ?
-            rowForDimension[measureIndex] :
-            null;
+            (dataResponseRow) => (dataResponseRow[dimensionIndex] === uniqueDimensionValue));
 
+          const measureValue = rowForDimension ? rowForDimension[measureIndex] : null;
           row.push(measureValue);
         });
 
@@ -60,10 +57,36 @@ function getData(vif, options) {
       }
     );
 
-    return {
+    const response = {
       columns: dataToRenderColumns,
       rows: dataToRenderRows
     };
+
+    // See if the first response has errorBars.  Either they all do or none do.
+    //
+    if ((dataResponses.length > 0) && !_.isUndefined(dataResponses[0].errorBars)) {
+      const dataToRenderErrorBars = uniqueDimensionValues.map(
+        (uniqueDimensionValue) => {
+
+          const row = [uniqueDimensionValue];
+          dataResponses.forEach((dataResponse) => {
+
+            const rowForDimension = _.find(
+              dataResponse.errorBars,
+              (dataResponseRow) => (dataResponseRow[dimensionIndex] === uniqueDimensionValue));
+
+            const errorBarsValue = rowForDimension ? rowForDimension[errorBarsIndex] : null;
+            row.push(errorBarsValue);
+          });
+
+          return row;
+        }
+      );
+
+      response.errorBars = dataToRenderErrorBars;
+    }
+
+    return response;
   }
 
   // It appears necessary to do a sort before we return the data table because
@@ -143,10 +166,24 @@ function getData(vif, options) {
     return dataTable;
   }
 
+  function applyOrderByToErrorBars(dataTable) {
+    if (_.isUndefined(dataTable.errorBars)) {
+      return dataTable;
+    }
+
+    const dimensionIndex = 0;
+    dataTable.errorBars = dataTable.rows.map((row) =>
+      _.find(dataTable.errorBars, (errorBar) => (errorBar[dimensionIndex] == row[dimensionIndex]))
+    );
+
+    return dataTable;
+  }
+
   return Promise.
     all(dataRequests).
     then(mapUngroupedDataResponsesToMultiSeriesTable).
-    then(applyOrderBy);
+    then(applyOrderBy).
+    then(applyOrderByToErrorBars);
 }
 
 // Generalized comparison routine for arbitrary values.

@@ -80,6 +80,61 @@ function measureAlias() {
 }
 
 /**
+ * Returns a safe alias for all error bars lower bound SoQL references.
+ */
+function errorBarsLowerAlias() {
+  return '__error_bars_lower_alias__';
+}
+
+/**
+ * Returns a safe alias for all error bars upper bound SoQL references.
+ */
+function errorBarsUpperAlias() {
+  return '__error_bars_upper_alias__';
+}
+
+/**
+ * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * Note: Only works with VIF versions >= 2
+ */
+function errorBarsLower(vif, seriesIndex) {
+  const columnName = _.get(vif.series[seriesIndex], 'errorBars.lowerBoundColumnName');
+  const aggregationFunction = _.get(vif.series[seriesIndex], 'dataSource.measure.aggregationFunction');
+
+  return errorBarsForColumnAndAggregation(columnName, aggregationFunction);
+}
+
+/**
+ * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * Note: Only works with VIF versions >= 2
+ */
+function errorBarsUpper(vif, seriesIndex) {
+  const columnName = _.get(vif.series[seriesIndex], 'errorBars.upperBoundColumnName');
+  const aggregationFunction = _.get(vif.series[seriesIndex], 'dataSource.measure.aggregationFunction');
+
+  return errorBarsForColumnAndAggregation(columnName, aggregationFunction);
+}
+
+function errorBarsForColumnAndAggregation(columnName, aggregationFunction) {
+
+  if (_.isEmpty(columnName)) {
+    return null;
+  }
+
+  if (aggregationFunction === 'sum') {
+    return 'SUM(`{0}`)'.format(columnName);
+  } else if (aggregationFunction === 'count') {
+    return 'COUNT(`{0}`)'.format(columnName);
+  } else {
+    return columnName;
+  }
+}
+
+/**
  * @param {Object} vif
  * @param {Number} seriesIndex
  * @param {String} dimensionOrMeasure
@@ -567,6 +622,10 @@ function noopWhereClauseComponent() {
 module.exports = {
   dimension,
   dimensionAlias,
+  errorBarsLower,
+  errorBarsLowerAlias,
+  errorBarsUpper,
+  errorBarsUpperAlias,
   measure,
   measureAlias,
   aggregationClause,

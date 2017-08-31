@@ -510,6 +510,13 @@ function SvgVisualization($element, vif, options) {
     return !_.isEmpty(dimensionGroupingColumnName);
   };
 
+  this.isInRange = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
+  this.isStacked = () => _.get(self.getVif(), 'series[0].stacked', false);
+  
+  this.hasErrorBars = () =>
+    !_.isUndefined(_.get(self.getVif(), 'series[0].errorBars.lowerBoundColumnName')) &&
+    !_.isUndefined(_.get(self.getVif(), 'series[0].errorBars.upperBoundColumnName'));
+
   this.getSeriesIndexByLabel = function(label) {
     const seriesLabels = _.get(self.getVif(), 'series', []).
       map(

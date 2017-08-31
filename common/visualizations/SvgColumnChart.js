@@ -144,7 +144,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
         const [ newColumns, newData, datasetMetadata ] = resolutions;
 
         const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
-        newData.columnFormats  = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
+        newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
 
         renderVisualization(newVif, newData, newColumns);
       }).

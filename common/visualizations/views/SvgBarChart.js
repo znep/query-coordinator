@@ -10,6 +10,9 @@ const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
+  ERROR_BARS_DEFAULT_BAR_COLOR,
+  ERROR_BARS_MAX_END_BAR_LENGTH,
+  ERROR_BARS_STROKE_WIDTH,
   LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
@@ -429,13 +432,75 @@ function SvgBarChart($element, vif, options) {
         attr('shape-rendering', 'crispEdges');
     }
 
+    function renderErrorBars() {
+      if (_.isUndefined(dataToRender.errorBars)) {
+        return;
+      }
+
+      const barHeight = d3GroupingYScale.rangeBand() - 1;
+      const errorBarHeight = Math.min(barHeight, ERROR_BARS_MAX_END_BAR_LENGTH);
+      const color = _.get(self.getVif(), 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR);
+
+      const getMinErrorBarXPosition = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const minValue = _.clamp(d3.min(errorBarValues), minXValue, maxXValue);
+        return d3XScale(minValue);
+      };
+
+      const getMaxErrorBarXPosition = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const maxValue = _.clamp(d3.max(errorBarValues), minXValue, maxXValue);
+        return d3XScale(maxValue);
+      };
+
+      const getMinErrorBarWidth = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        return self.isInRange(d3.min(errorBarValues), minXValue, maxXValue) ? ERROR_BARS_STROKE_WIDTH : 0;
+      };
+
+      const getMaxErrorBarWidth = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        return self.isInRange(d3.max(errorBarValues), minXValue, maxXValue) ? ERROR_BARS_STROKE_WIDTH : 0;
+      };
+
+      const getErrorBarYPosition = (d, measureIndex) => {
+        return ((barHeight - errorBarHeight) / 2) + d3GroupingYScale(measureIndex);
+      };
+
+      dimensionGroupSvgs.selectAll('.error-bar-left').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', getMinErrorBarWidth).
+        attr('x1', getMinErrorBarXPosition).
+        attr('y1', getErrorBarYPosition).
+        attr('x2', getMinErrorBarXPosition).
+        attr('y2', (d, measureIndex) => getErrorBarYPosition(d, measureIndex) + errorBarHeight);
+
+      dimensionGroupSvgs.selectAll('.error-bar-right').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', getMaxErrorBarWidth).
+        attr('x1', getMaxErrorBarXPosition).
+        attr('y1', getErrorBarYPosition).
+        attr('x2', getMaxErrorBarXPosition).
+        attr('y2', (d, measureIndex) => getErrorBarYPosition(d, measureIndex) + errorBarHeight);
+
+      dimensionGroupSvgs.selectAll('.error-bar-middle').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', ERROR_BARS_STROKE_WIDTH).
+        attr('x1', getMinErrorBarXPosition).
+        attr('y1', (d, measureIndex) => getErrorBarYPosition(d, measureIndex) + (errorBarHeight / 2)).
+        attr('x2', getMaxErrorBarXPosition).
+        attr('y2', (d, measureIndex) => getErrorBarYPosition(d, measureIndex) + (errorBarHeight / 2));
+    }
+
     // Note that renderXAxis(), renderYAxis() and renderSeries() all update the
     // elements that have been created by binding the data (which is done
     // inline in this function below).
     function renderSeries() {
 
       if (!isStacked) {
-
         dimensionGroupSvgs.selectAll('rect.bar-underlay').
           attr('x', 0).
           attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
@@ -495,7 +560,7 @@ function SvgBarChart($element, vif, options) {
           attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0));
       }
 
-      if (self.getShowValueLabels() && !isStacked) {
+      if (self.getShowValueLabels() && !isStacked && _.isUndefined(dataToRender.errorBars)) {
 
         dimensionGroupSvgs.selectAll('text').
           attr(
@@ -811,7 +876,7 @@ function SvgBarChart($element, vif, options) {
      */
     renderLegend();
 
-    const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
+    const isStacked = self.isStacked();
     const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
 
     groupedDataToRender = dataToRender.rows;
@@ -867,25 +932,11 @@ function SvgBarChart($element, vif, options) {
 
     try {
 
-      const dataMinXValue = getMinXValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
+      const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex);
+      const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex);
 
-      const dataMaxXValue = getMaxXValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
-
-      const dataMinSummedXValue = getMinSummedXValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
-
-      const dataMaxSummedXValue = getMaxSummedXValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
+      const dataMinSummedXValue = getMinSummedXValue(groupedDataToRender, dataTableDimensionIndex);
+      const dataMaxSummedXValue = getMaxSummedXValue(groupedDataToRender, dataTableDimensionIndex);
 
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
@@ -956,8 +1007,8 @@ function SvgBarChart($element, vif, options) {
       height,
       self.isGroupingOrMultiSeries()
     );
-    // This scale is used for groupings of bars under a single dimension
-    // category.
+
+    // This scale is used for groupings of bars under a single dimension category.
     d3GroupingYScale = generateYGroupScale(
       self.getOrdinalDomainFromMeasureLabels(measureLabels),
       d3DimensionYScale);
@@ -1146,6 +1197,26 @@ function SvgBarChart($element, vif, options) {
         (datum, measureIndex) => measureIndex
       );
 
+    if (!_.isUndefined(dataToRender.errorBars)) {
+      dimensionGroupSvgs.selectAll('line.error-bar-left').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-left');
+
+      dimensionGroupSvgs.selectAll('line.error-bar-middle').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-middle');
+
+      dimensionGroupSvgs.selectAll('line.error-bar-right').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-right');
+    }
+
     if (self.getShowValueLabels()) {
 
       barTextSvgs = dimensionGroupSvgs.selectAll('text').
@@ -1225,6 +1296,8 @@ function SvgBarChart($element, vif, options) {
       renderYAxis();
       renderSeries();
       renderXAxis();
+      renderErrorBars();
+
       updateLabelWidthDragger(leftMargin, topMargin, height);
     // See TODO above.
     // }
@@ -1545,27 +1618,64 @@ function SvgBarChart($element, vif, options) {
       outerTickSize(0);
   }
 
-  function getMinXValue(groupedData, dimensionIndex) {
-    return d3.min(
-      groupedData.map(
+  function getMinXValue(data, dimensionIndex) {
+    const minRowValue = d3.min(
+      data.rows.map(
         (row) => d3.min(
           row.slice(dimensionIndex + 1)
         )
       )
     );
+
+    if (_.isUndefined(data.errorBars)) {
+      return minRowValue;
+    }
+
+    const minErrorBarValue = d3.min(
+      data.errorBars.map(
+        (row) => d3.min(
+          row.slice(dimensionIndex + 1).map(
+            (errorBarValues) => d3.min(
+              errorBarValues.map(
+                (errorBarValue) => errorBarValue || 0)
+            )
+          )
+        )
+      )
+    );
+
+    return Math.min(minRowValue, minErrorBarValue);
   }
 
-  function getMaxXValue(groupedData, dimensionIndex) {
-    return d3.max(
-      groupedData.map(
+  function getMaxXValue(data, dimensionIndex) {
+    const maxRowValue = d3.max(
+      data.rows.map(
         (row) => d3.max(
           row.slice(dimensionIndex + 1)
         )
       )
     );
+
+    if (_.isUndefined(data.errorBars)) {
+      return maxRowValue;
+    }
+    const maxErrorBarValue = d3.max(
+      data.errorBars.map(
+        (row) => d3.max(
+          row.slice(dimensionIndex + 1).map(
+            (errorBarValues) => d3.max(
+              errorBarValues.map(
+                (errorBarValue) => errorBarValue || 0)
+            )
+          )
+        )
+      )
+    );
+
+    return Math.max(maxRowValue, maxErrorBarValue);
   }
 
- function getMinSummedXValue(groupedData, dimensionIndex) {
+  function getMinSummedXValue(groupedData, dimensionIndex) {
     return d3.min(
       groupedData.map(
         (row) => d3.sum(

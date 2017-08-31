@@ -21,3 +21,6 @@ export const AXIS_LABEL_FONT_SIZE = 16;
 export const AXIS_LABEL_COLOR = '#767676';
 export const AXIS_LABEL_MARGIN = 42;
 export const AXIS_LABEL_TEXT_MARGIN = 14;
+export const ERROR_BARS_DEFAULT_BAR_COLOR = '#767676';
+export const ERROR_BARS_MAX_END_BAR_LENGTH = 18
+export const ERROR_BARS_STROKE_WIDTH = 2;

@@ -35,6 +35,32 @@ export default function(state, action) {
       });
       break;
 
+    case actions.SET_ERROR_BARS_BAR_COLOR:
+      forEachSeries(state, series => {
+        _.set(series, 'errorBars.barColor', action.color);
+      });
+      break;
+
+    case actions.SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME:
+      forEachSeries(state, series => {
+        setStringValueOrDeleteProperty(series, 'errorBars.lowerBoundColumnName', action.columnName);
+
+        if ((action.columnName === null) && (_.get(series, 'errorBars.upperBoundColumnName') === undefined)) {
+          _.unset(series, 'errorBars');
+        }
+      });
+      break;
+
+    case actions.SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME:
+      forEachSeries(state, series => {
+        setStringValueOrDeleteProperty(series, 'errorBars.upperBoundColumnName', action.columnName);
+
+        if ((action.columnName === null) && (_.get(series, 'errorBars.lowerBoundColumnName') === undefined)) {
+          _.unset(series, 'errorBars');
+        };
+      });
+      break;
+
     case actions.SET_FILTERS:
       forEachSeries(state, series => {
         _.set(series, 'dataSource.filters', action.filters);

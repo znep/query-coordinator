@@ -60,14 +60,23 @@ function SoqlDataProvider(config, useCache = false) {
    * @param {String} queryString - A valid, non-URI-encoded SoQL query.
    * @param {String} nameAlias - The alias used for the 'name' column.
    * @param {String} valueAlias - The alias used for the 'value' column.
+   * @param {String} errorBarsLowerAlias - The alias used for the error bars lower bound column. Can be undefined.
+   * @param {String} errorBarsUpperAlias - The alias used for the error bars upper bound column. Can be undefined.
    *
    * @return {Promise}
    */
-  this.query = function(queryString, nameAlias, valueAlias) {
+  this.query = function(queryString, nameAlias, valueAlias, errorBarsLowerAlias, errorBarsUpperAlias) {
     const path = pathForQuery(`$query=${encodeURIComponent(queryString)}`);
 
     return makeSoqlGetRequest(path).then((data) => {
-      return mapRowsResponseToTable([ nameAlias, valueAlias ], data);
+
+      let errorBarsAliases;
+
+      if (!_.isEmpty(errorBarsLowerAlias) && !_.isEmpty(errorBarsUpperAlias)) {
+        errorBarsAliases = [nameAlias, errorBarsLowerAlias, errorBarsUpperAlias];
+      }
+
+      return mapRowsResponseToTable([nameAlias, valueAlias], data, errorBarsAliases);
     });
   };
 
@@ -395,37 +404,50 @@ function SoqlDataProvider(config, useCache = false) {
    *     <second column value>,
    *     ...
    *   ]
+   * 
+   * Each row in the errorBars array is of the format:
+   *
+   *   [
+   *     <first column value>,
+   *     <second column value>,
+   *     ...
+   *   ]
    */
-  function mapRowsResponseToTable(columnNames, data) {
-    var table = {
+  function mapRowsResponseToTable(columnNames, data, errorBarColumnNames) {
+    const table = {
       columns: columnNames,
       rows: []
     };
-    var rows;
 
     if (data.length > 0) {
 
-      rows = data.map(
-        function(datum) {
-          var row = [];
-          var column;
-          var value;
+      table.rows = data.map((datum) => {
+        const row = [];
 
-          for (var i = 0; i < table.columns.length; i++) {
+        for (var i = 0; i < table.columns.length; i++) {
+          const column = table.columns[i];
+          const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
+          row.push(value);
+        }
 
-            column = table.columns[i];
-            value = datum.hasOwnProperty(column) ? datum[column] : undefined;
+        return row;
+      });
 
+      if (!_.isUndefined(errorBarColumnNames)) {
+
+        table.errorBars = data.map((datum) => {
+          const row = [];
+
+          for (var i = 0; i < errorBarColumnNames.length; i++) {
+            const column = errorBarColumnNames[i];
+            const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
             row.push(value);
           }
 
           return row;
-        }
-      );
-
-      table.rows = rows;
+        });
+      }
     }
-
     return table;
   }
 }

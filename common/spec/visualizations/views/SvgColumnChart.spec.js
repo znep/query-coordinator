@@ -20,6 +20,26 @@ describe('SvgColumnChart', () => {
       ['30', 30],
       ['40', 40],
       ['50', 50]
+    ],
+    errorBars:[
+      ['10', [null, null]],
+      ['20', [null, null]],
+      ['30', [null, null]],
+      ['40', [null, null]],
+      ['50', [null, null]]
+    ]
+  };
+
+  const noErrorBarsTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10],
+      ['20', 20],
+      ['30', 30],
+      ['40', 40],
+      ['50', 50]
     ]
   };
 
@@ -33,6 +53,13 @@ describe('SvgColumnChart', () => {
       ['30', 30, 30, 30],
       ['40', 40, 40, 40],
       ['50', 50, 50, 50]
+    ],
+    errorBars: [
+      ['10', [null, null], [null, null], [null, null]],
+      ['20', [null, null], [null, null], [null, null]],
+      ['30', [null, null], [null, null], [null, null]],
+      ['40', [null, null], [null, null], [null, null]],
+      ['50', [null, null], [null, null], [null, null]],
     ]
   };
 
@@ -138,6 +165,58 @@ describe('SvgColumnChart', () => {
     I18n.translations = {};
   });
 
+  describe('when configured to show error bars', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should render the error bars', () => {
+
+      columnChart = createColumnChart(null, {
+        series:[{
+          errorBars: {
+            lowerBoundColumnName: 'column_0',
+            upperBoundColumnName: 'column_1'
+          }
+        }]
+      });
+
+      columnChart.chart.render(null, testData);
+
+      // Verify error bars exist
+      //
+      const $errorBarTop = columnChart.element.find('.error-bar-top');
+      assert.isTrue(($errorBarTop.length > 0), 'Error bars not rendered');
+
+      const $errorBarMiddle = columnChart.element.find('.error-bar-middle');
+      assert.isTrue(($errorBarMiddle.length > 0), 'Error bars not rendered');
+
+      const $errorBarBottom = columnChart.element.find('.error-bar-bottom');
+      assert.isTrue(($errorBarBottom.length > 0), 'Error bars not rendered');
+    });
+  });
+
+  describe('when configured to not show error bars', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should not render the error bars', () => {
+
+      columnChart = createColumnChart(null, {});
+      columnChart.chart.render(null, noErrorBarsTestData);
+
+      // Verify error bars do not exist
+      //
+      const $errorBars = columnChart.element.find('.error-bar-middle');
+      assert.isTrue($errorBars.length == 0, 'Error bars not rendered');
+    });
+  });
+
   describe('when configured to show legend and "Show Legend" button is clicked', () => {
     let columnChart;
 
@@ -159,13 +238,13 @@ describe('SvgColumnChart', () => {
       //
       const $button = columnChart.element.find('.socrata-legend-button');
       const buttonExists = ($button.length > 0);
-      assert.isTrue(buttonExists, 'button actually does not exist')
+      assert.isTrue(buttonExists, 'button actually does not exist');
 
       // Verify menu exists
       //
       const $legendMenu = columnChart.element.find('.socrata-legend-menu');
       const menuExists = ($legendMenu.length > 0);
-      assert.isTrue(menuExists, 'menu actually does not exist')
+      assert.isTrue(menuExists, 'menu actually does not exist');
 
       // Verify menu is not shown
       //
@@ -202,7 +281,7 @@ describe('SvgColumnChart', () => {
       //
       const $button = columnChart.element.find('.socrata-legend-button');
       const buttonExists = ($button.length > 0);
-      assert.isTrue(buttonExists, 'button actually does not exist')
+      assert.isTrue(buttonExists, 'button actually does not exist');
     });
   });
 
@@ -227,7 +306,7 @@ describe('SvgColumnChart', () => {
       //
       const $button = columnChart.element.find('.socrata-legend-button');
       const buttonExists = ($button.length > 0);
-      assert.isFalse(buttonExists, 'button actually exists')
+      assert.isFalse(buttonExists, 'button actually exists');
     });
   });
 

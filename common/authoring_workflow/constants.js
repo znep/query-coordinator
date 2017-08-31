@@ -249,3 +249,5 @@ export const DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY = {
   barChart: 10,
   pieChart: 12
 };
+
+export const ERROR_BARS_DEFAULT_BAR_COLOR = '#767676';

@@ -669,6 +669,30 @@ export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {
   };
 }
 
+export const SET_ERROR_BARS_BAR_COLOR = 'SET_ERROR_BARS_BAR_COLOR';
+export function setErrorBarsBarColor(color) {
+  return {
+    type: SET_ERROR_BARS_BAR_COLOR,
+    color
+  };
+}
+
+export const SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME = 'SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME';
+export function setErrorBarsLowerBoundColumnName(columnName) {
+  return {
+    type: SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME,
+    columnName
+  };
+}
+
+export const SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME = 'SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME';
+export function setErrorBarsUpperBoundColumnName(columnName) {
+  return {
+    type: SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME,
+    columnName
+  };
+}
+
 export const SET_STACKED = 'SET_STACKED';
 export function setStacked({ stacked, oneHundredPercent }) {
   return {

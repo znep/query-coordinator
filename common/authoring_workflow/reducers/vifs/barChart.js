@@ -98,6 +98,9 @@ export default function barChart(state, action) {
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:
     case actions.SET_DOMAIN:
+    case actions.SET_ERROR_BARS_BAR_COLOR:
+    case actions.SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME:
+    case actions.SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME:
     case actions.SET_FILTERS:
     case actions.SET_LABEL_TOP:
     case actions.SET_LABEL_LEFT:

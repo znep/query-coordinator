@@ -2,8 +2,10 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
+import ErrorBarsOptions from '../ErrorBarsOptions';
 import I18n from 'common/i18n';
 import { 
+  getValidMeasures,
   hasData, 
   hasError,
   isLoading
@@ -12,8 +14,10 @@ import {
   getPrecision,
   getTreatNullValuesAsZero,
   getVisualizationType,
+  hasErrorBars,
   isBarChart,
   isColumnChart,
+  isGroupingOrMultiSeries,
   isMultiSeries,
   isPieChart,
   isTimelineChart,
@@ -117,7 +121,9 @@ export var DataPane = React.createClass({
   renderGroupingOptions() {
     const { vifAuthoring } = this.props;
     const shouldRender = !isMultiSeries(vifAuthoring) &&
-      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) &&
+      !hasErrorBars(vifAuthoring);
+
 
     return shouldRender ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
@@ -161,6 +167,19 @@ export var DataPane = React.createClass({
       null;
   },
 
+  renderErrorBarsOptions() {
+    const { vifAuthoring } = this.props;
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) && 
+      !isGroupingOrMultiSeries(vifAuthoring);
+
+    return shouldRender ? (
+      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.error_bars')}>
+        <ErrorBarsOptions />
+      </AccordionPane>
+    ) :
+    null;
+  },
+  
   render() {
     const { metadata } = this.props;
 
@@ -174,6 +193,7 @@ export var DataPane = React.createClass({
     const groupingOptions = this.renderGroupingOptions();
     const timelineOptions = this.renderTimelineOptions();
     const displayOptions = this.renderDisplayOptions();
+    const errorBarsOptions = this.renderErrorBarsOptions();
 
     const sections = (
       <Accordion>
@@ -198,6 +218,7 @@ export var DataPane = React.createClass({
         {groupingOptions}
         {timelineOptions}
         {displayOptions}
+        {errorBarsOptions}
       </Accordion>
     );
 

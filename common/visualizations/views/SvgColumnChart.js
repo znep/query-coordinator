@@ -11,6 +11,9 @@ const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
+  ERROR_BARS_DEFAULT_BAR_COLOR,
+  ERROR_BARS_MAX_END_BAR_LENGTH,
+  ERROR_BARS_STROKE_WIDTH,
   LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
@@ -168,6 +171,7 @@ function SvgColumnChart($element, vif, options) {
       // the no value label. If there are not multiple columns, that's an expected null that we
       // should not overwrite with the no value label.
 
+      const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
       measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).map((label) => {
         return self.isGrouping() ? label || noValueLabel : label;
       });
@@ -380,6 +384,77 @@ function SvgColumnChart($element, vif, options) {
         attr('shape-rendering', 'crispEdges');
     }
 
+    function renderErrorBars() {
+      if (_.isUndefined(dataToRender.errorBars)) {
+        return;
+      }
+
+      const columnWidth = d3GroupingXScale.rangeBand() - 1;
+      const errorBarWidth = Math.min(columnWidth, ERROR_BARS_MAX_END_BAR_LENGTH);
+      const color = _.get(self.getVif(), 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR);
+
+      const getMinErrorBarPosition = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const minValue = _.clamp(d3.min(errorBarValues), minYValue, maxYValue);
+        return d3YScale(minValue);
+      };
+
+      const getMaxErrorBarYPosition = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const maxValue = _.clamp(d3.max(errorBarValues), minYValue, maxYValue);
+        return d3YScale(maxValue);
+      };
+
+      // Because the line stroke thickness is 2px, the half of the top horizontal bar is clipped.  This function shifts 
+      // the clipped bar down 1 pixel.  All the other bars are rendered in normal positions.
+      const getMaxErrorBarYPositionAdjusted = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const maxValue = _.clamp(d3.max(errorBarValues), minYValue, maxYValue);
+        return (maxValue == maxYValue) ? d3YScale(maxValue) + 1 : d3YScale(maxValue); // shift down a pixel if at top of viewport
+      };
+
+      const getMinErrorBarWidth = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        return self.isInRange(d3.min(errorBarValues), minYValue, maxYValue) ? ERROR_BARS_STROKE_WIDTH : 0;
+      };
+
+      const getMaxErrorBarWidth = (d, measureIndex, dimensionIndex) => {
+        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        return self.isInRange(d3.max(errorBarValues), minYValue, maxYValue) ? ERROR_BARS_STROKE_WIDTH : 0;
+      };
+
+      const getErrorBarXPosition = (d, measureIndex) => {
+        return ((columnWidth - errorBarWidth) / 2) + d3GroupingXScale(measureIndex);
+      };
+
+      dimensionGroupSvgs.selectAll('.error-bar-bottom').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', getMinErrorBarWidth).
+        attr('x1', getErrorBarXPosition).
+        attr('y1', getMinErrorBarPosition).
+        attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + errorBarWidth).
+        attr('y2', getMinErrorBarPosition);
+
+      dimensionGroupSvgs.selectAll('.error-bar-top').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', getMaxErrorBarWidth).
+        attr('x1', getErrorBarXPosition).
+        attr('y1', getMaxErrorBarYPositionAdjusted).
+        attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + errorBarWidth).
+        attr('y2', getMaxErrorBarYPositionAdjusted);
+
+      dimensionGroupSvgs.selectAll('.error-bar-middle').
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', color).
+        attr('stroke-width', ERROR_BARS_STROKE_WIDTH).
+        attr('x1', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + (errorBarWidth / 2)).
+        attr('y1', getMinErrorBarPosition).
+        attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + (errorBarWidth / 2)).
+        attr('y2', getMaxErrorBarYPosition);
+    }
+
     // Note that renderXAxis(), renderYAxis() and renderSeries() all update the
     // elements that have been created by binding the data (which is done
     // inline in this function below).
@@ -547,7 +622,7 @@ function SvgColumnChart($element, vif, options) {
      */
     renderLegend();
 
-    const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
+    const isStacked = self.isStacked();
     const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
 
     groupedDataToRender = dataToRender.rows;
@@ -637,25 +712,11 @@ function SvgColumnChart($element, vif, options) {
 
     try {
 
-      const dataMinSummedYValue = getMinSummedYValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
+      const dataMinSummedYValue = getMinSummedYValue(groupedDataToRender, dataTableDimensionIndex);
+      const dataMaxSummedYValue = getMaxSummedYValue(groupedDataToRender, dataTableDimensionIndex);
 
-      const dataMaxSummedYValue = getMaxSummedYValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
-
-      const dataMinYValue = getMinYValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
-
-      const dataMaxYValue = getMaxYValue(
-        groupedDataToRender,
-        dataTableDimensionIndex
-      );
+      const dataMinYValue = getMinYValue(dataToRender, dataTableDimensionIndex);
+      const dataMaxYValue = getMaxYValue(dataToRender, dataTableDimensionIndex);
 
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
@@ -894,6 +955,26 @@ function SvgColumnChart($element, vif, options) {
         (datum, measureIndex) => measureIndex
       );
 
+      if (!_.isUndefined(dataToRender.errorBars)) {
+        dimensionGroupSvgs.selectAll('line.error-bar-top').
+          data((d) => d.slice(1)).
+          enter().
+          append('line').
+          attr('class', 'error-bar-top');
+
+        dimensionGroupSvgs.selectAll('line.error-bar-middle').
+          data((d) => d.slice(1)).
+          enter().
+          append('line').
+          attr('class', 'error-bar-middle');
+
+        dimensionGroupSvgs.selectAll('line.error-bar-bottom').
+          data((d) => d.slice(1)).
+          enter().
+          append('line').
+          attr('class', 'error-bar-bottom');
+      }
+
     // TODO: Figure out how we want to handle scaling modes.
     // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
@@ -953,6 +1034,8 @@ function SvgColumnChart($element, vif, options) {
       // We only have to render the y-axis once, after we have decided whether
       // we will show or hide the panning notice.
       renderYAxis();
+      renderErrorBars();
+
     // See TODO above.
     // }
 
@@ -1218,24 +1301,62 @@ function SvgColumnChart($element, vif, options) {
       outerTickSize(0);
   }
 
-  function getMinYValue(groupedData, dimensionIndex) {
-    return d3.min(
-      groupedData.map(
+  function getMinYValue(data, dimensionIndex) {
+    const minRowValue = d3.min(
+      data.rows.map(
         (row) => d3.min(
           row.slice(dimensionIndex + 1)
         )
       )
     );
+
+    if (_.isUndefined(data.errorBars)) {
+      return minRowValue;
+    }
+
+    const minErrorBarValue = d3.min(
+      data.errorBars.map(
+        (row) => d3.min(
+          row.slice(dimensionIndex + 1).map(
+            (errorBarValues) => d3.min(
+              errorBarValues.map(
+                (errorBarValue) => errorBarValue || 0)
+            )
+          )
+        )
+      )
+    );
+
+    return Math.min(minRowValue, minErrorBarValue);
   }
 
-  function getMaxYValue(groupedData, dimensionIndex) {
-    return d3.max(
-      groupedData.map(
+  function getMaxYValue(data, dimensionIndex) {
+    const maxRowValue = d3.max(
+      data.rows.map(
         (row) => d3.max(
           row.slice(dimensionIndex + 1)
         )
       )
     );
+
+    if (_.isUndefined(data.errorBars)) {
+      return maxRowValue;
+    }
+
+    const maxErrorBarValue = d3.max(
+      data.errorBars.map(
+        (row) => d3.max(
+          row.slice(dimensionIndex + 1).map(
+            (errorBarValues) => d3.max(
+              errorBarValues.map(
+                (errorBarValue) => errorBarValue || 0)
+            )
+          )
+        )
+      )
+    );
+
+    return Math.max(maxRowValue, maxErrorBarValue);
   }
 
   function getMinSummedYValue(groupedData, dimensionIndex) {

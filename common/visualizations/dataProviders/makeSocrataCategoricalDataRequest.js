@@ -15,6 +15,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     true);
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
   const measure = SoqlHelpers.measure(vif, seriesIndex);
+  const errorBarsLower = SoqlHelpers.errorBarsLower(vif, seriesIndex);
+  const errorBarsUpper = SoqlHelpers.errorBarsUpper(vif, seriesIndex);
   const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
     vif,
     seriesIndex
@@ -53,14 +55,31 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     maxRowCount;
 
   let queryString;
+  let errorBarsLowerAlias;
+  let errorBarsUpperAlias;
+
+  const fields = [
+    `${dimension} AS ${SoqlHelpers.dimensionAlias()}`,
+    `${measure} AS ${SoqlHelpers.measureAlias()}`
+  ];
+
+  if (!_.isEmpty(errorBarsLower) && !_.isEmpty(errorBarsUpper)) {
+
+    errorBarsLowerAlias = SoqlHelpers.errorBarsLowerAlias();
+    errorBarsUpperAlias = SoqlHelpers.errorBarsUpperAlias();
+
+    fields.push(
+      `${errorBarsLower} AS ${errorBarsLowerAlias}`,
+      `${errorBarsUpper} AS ${errorBarsUpperAlias}`);
+  }
+
   if (isUnaggregatedQuery) {
 
     // Note that we add one to the limit before making the query so that we can
     // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
-        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      fields.join(', '),
       whereClause,
       `ORDER BY ${orderByClause}`,
       'NULL LAST',
@@ -72,8 +91,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
-        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      fields.join(', '),
       whereClause,
       `GROUP BY ${groupByClause}`,
       `ORDER BY ${orderByClause}`,
@@ -86,7 +104,9 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     query(
       queryString,
       SoqlHelpers.dimensionAlias(),
-      SoqlHelpers.measureAlias()
+      SoqlHelpers.measureAlias(),
+      errorBarsLowerAlias,
+      errorBarsUpperAlias
     ).
     then((queryResponse) => {
       const queryResponseRowCount = queryResponse.rows.length;
@@ -121,13 +141,16 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
         // actually want in order to test for the necessity of an 'other'
         // category.
         const actualRows = queryResponse.rows.slice(0, limit);
+        const response = {
+          columns: queryResponse.columns,
+          rows: actualRows
+        };
 
-        return Promise.resolve(
-          {
-            columns: queryResponse.columns,
-            rows: actualRows
-          }
-        );
+        if (!_.isUndefined(queryResponse.errorBars)) {
+          response.errorBars = queryResponse.errorBars;
+        }
+
+        return Promise.resolve(response);
       }
     }).
     then(mapQueryResponseToDataTable);
@@ -370,10 +393,22 @@ function augmentSocrataDataResponseWithOtherCategory(
         actualRows.push(otherCategoryQueryResponse.rows[0]);
       }
 
-      return {
+      const response = {
         columns: queryResponse.columns,
         rows: actualRows
       };
+
+      if (!_.isUndefined(queryResponse.errorBars)) {
+        const actualErrorBars = queryResponse.errorBars.slice(0, limit);
+
+        if (otherCategoryQueryResponse.rows.length > 0) {
+          actualErrorBars.push([otherCategoryLabel, null, null]);
+        }
+
+        response.errorBars = actualErrorBars;
+      }
+
+      return response;
     }).
     catch(() => {
       const error = new Error();
@@ -393,40 +428,60 @@ function mapQueryResponseToDataTable(queryResponse) {
   const dimensionIndex = dataTable.columns.indexOf(SoqlHelpers.dimensionAlias());
   const measureIndex = dataTable.columns.indexOf(SoqlHelpers.measureAlias());
 
-  let valueAsNumber;
-
   dataTable.columns[dimensionIndex] = 'dimension';
   dataTable.columns[measureIndex] = 'measure';
 
   dataTable.rows.forEach((row) => {
 
-    try {
-
-      if (_.isUndefined(row[dimensionIndex])) {
-        row[dimensionIndex] = null;
-      }
-
-      if (_.isUndefined(row[measureIndex])) {
-        valueAsNumber = null;
-      } else {
-        valueAsNumber = Number(row[measureIndex]);
-      }
-    } catch (error) {
-
-      if (window.console && window.console.error) {
-
-        console.error(
-          `Could not convert measure value to number: ${row[measureIndex]}`
-        );
-      }
-
-      valueAsNumber = null;
+    if (_.isUndefined(row[dimensionIndex])) {
+      row[dimensionIndex] = null;
     }
 
-    row[measureIndex] = valueAsNumber;
+    row[measureIndex] = getNumberValue(row[measureIndex]);
   });
 
+  if (!_.isUndefined(dataTable.errorBars)) {
+
+    dataTable.errorBars = dataTable.errorBars.map((row) => {
+
+      const dimensionIndex = 0;
+      const lowerBoundIndex = 1;
+      const upperBoundIndex = 2;
+      const newRow = [];
+
+      // Dimension
+      newRow[dimensionIndex] = _.isUndefined(row[dimensionIndex]) ? null : row[dimensionIndex];
+
+      // Error bar bounds
+      newRow[measureIndex] = [
+        getNumberValue(row[lowerBoundIndex]), 
+        getNumberValue(row[upperBoundIndex])];
+
+      return newRow;
+    });
+  }
+
   return dataTable;
+}
+
+function getNumberValue(o) {
+
+  if (_.isUndefined(o) || _.isNull(o)) {
+    return null;
+  }
+
+  let value;
+
+  try {
+    value = Number(o);
+  } catch (error) {
+    if (window.console && window.console.error) {
+      console.error(`Could not convert value to number: ${o}`);
+    }
+    return null;
+  }
+
+  return value;
 }
 
 module.exports = makeSocrataCategoricalDataRequest;

@@ -7,13 +7,13 @@ http://www.socrata.com
 -->
 
   <head>
+    <%# The "X-UA-Compatible" meta tag _must_ precede any <script> tag within the <head> otherwise IE will ignore it :jackie: %>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <%= javascript_polyfills %>
 
     <%= site_chrome_analytics_tags %>
     <%= site_chrome_meta_viewport_tag %>
     <%= site_chrome_stylesheet_tag %>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <%= rendered_stylesheet_tag 'styleguide-layout' %>
     <%= rendered_stylesheet_tag 'datasets-common' %>

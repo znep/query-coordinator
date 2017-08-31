@@ -245,9 +245,9 @@ export const Picklist = React.createClass({
 
     const content = hasRenderFunction ?
       option.render(option) :
-      <span className="picklist-title" key={index}>
+      <span className={`picklist-title ${option.icon ? 'picklist-with-icon' : null}`} key={index}>
         {option.icon}
-        {option.title}
+        <span className="picklist-item">{option.title}</span>
       </span>;
 
     return (

@@ -47,12 +47,20 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  .picklist-title > .socrata-icon {
-    margin-right: 0.25rem;
-    height: 20px;
-    width: 20px;
-    position: relative;
-    top: -3px;
+  .picklist-title {
+
+    &.picklist-with-icon {
+      .picklist-item {
+        margin-left: 25px;
+      }
+    }
+
+    & > .socrata-icon {
+      margin-right: 0.25rem;
+      height: 20px;
+      width: 20px;
+      position: absolute;
+    }
   }
 
   &:hover {

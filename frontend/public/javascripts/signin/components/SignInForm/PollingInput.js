@@ -30,13 +30,11 @@ class PollingInput extends React.Component {
 
   checkForDomNodeValue() {
     const nodeValue = this.domNode.value;
-    if (!_.isEmpty(nodeValue)) {
-      this.props.onChange(nodeValue);
-    }
+    this.props.onChange({ target: { value: nodeValue } });
   }
 
   handleChange(event) {
-    this.props.onChange(event.target.value);
+    this.props.onChange(event);
   }
 
   render() {

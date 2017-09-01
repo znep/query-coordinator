@@ -49,7 +49,7 @@ describe('components/UserRow', () => {
   it('sets last active to today when a recent time is passed in', () => {
     const props = {
       ...defaultProps,
-      lastActive: moment().subtract(1, 'hour').format('X')
+      lastActive: moment().hour(12).format('X')
     };
     const component = shallow(<UserRow {...props} />);
     const lastActive = component.find("td").at(3);

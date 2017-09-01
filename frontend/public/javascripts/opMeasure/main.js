@@ -4,10 +4,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
+import airbrake from 'common/airbrake';
+
 import I18n from 'common/i18n';
 
 import store from './store';
 import App from './App';
+
+if (window.serverConfig.environment !== 'development') {
+  airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
+}
 
 // Defer rendering so the spinner in the ERB can render.
 _.defer(function() {

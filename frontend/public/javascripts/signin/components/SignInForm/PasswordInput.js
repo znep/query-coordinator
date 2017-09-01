@@ -3,6 +3,7 @@ import cssModules from 'react-css-modules';
 import { SocrataIcon } from 'common/components';
 import _ from 'lodash';
 import I18n from 'common/i18n';
+import PollingInput from './PollingInput';
 import styles from './sign-in-form.scss';
 
 class PasswordInput extends React.Component {
@@ -33,7 +34,7 @@ class PasswordInput extends React.Component {
         <div styleName="icon-container">
           <SocrataIcon name="private" />
         </div>
-        <input
+        <PollingInput
           name="user_session[password]"
           aria-label={I18n.t('screens.sign_in.form.password_placeholder')}
           styleName="input-password"

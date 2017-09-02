@@ -1169,6 +1169,7 @@
           valueMarker(chart, options),
 
           headerDetails,
+          advLegend(chart, options),
           flyoutConfig(chart, options),
           axisOptions(chart, options));
         break;

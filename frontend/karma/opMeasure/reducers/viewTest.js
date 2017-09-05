@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 
+import { ModeStates } from 'lib/constants';
 import reducer from 'reducers/view';
 import * as actions from 'actions/view';
 
@@ -39,6 +40,20 @@ describe('View reducer', () => {
 
       assert.isTrue(state.isDirty);
       assert.equal(state.measure, 'a different measure object');
+    });
+  });
+
+  describe('ENTER_EDIT_MODE', () => {
+    it('sets mode to "EDIT"', () => {
+      const state = reducer(state, actions.enterEditMode());
+      assert.equal(state.mode, ModeStates.EDIT);
+    });
+  });
+
+  describe('ENTER_PREVIEW_MODE', () => {
+    it('sets mode to "PREVIEW"', () => {
+      const state = reducer(state, actions.enterPreviewMode());
+      assert.equal(state.mode, ModeStates.PREVIEW);
     });
   });
 });

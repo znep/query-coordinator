@@ -17,6 +17,9 @@ const Activity = daggy.taggedSum('Activity', {
   Empty: []
 });
 
+const CREATED_AT_FALLBACK = Date.now();
+const CREATED_BY_FALLBACK = 'Unknown';
+
 // shapeRevision :: [Revisions] -> Int -> [Activity]
 const shapeRevisions = (revisions, revisionSeq) => {
   const currentRevision = revisions.find(revision => revision.revision_seq === revisionSeq);
@@ -25,8 +28,8 @@ const shapeRevisions = (revisions, revisionSeq) => {
     return [Activity.Empty];
   }
 
-  const createdAt = currentRevision.created_at || 'hmm';
-  const createdBy = currentRevision.created_by.display_name || 'Unknown';
+  const createdAt = currentRevision.created_at || CREATED_AT_FALLBACK;
+  const createdBy = currentRevision.created_by.display_name || CREATED_BY_FALLBACK;
 
   return [
     Activity.Revision({
@@ -42,8 +45,8 @@ const shapeSources = sources =>
     ? [Activity.Empty]
     : sources.map(source =>
         Activity.Source({
-          createdAt: source.created_at,
-          createdBy: source.created_by.display_name
+          createdAt: source.created_at || CREATED_AT_FALLBACK,
+          createdBy: source.created_by.display_name || CREATED_BY_FALLBACK
         })
       );
 
@@ -56,8 +59,8 @@ const shapeOutputSchemas = (oss, iss, ss) =>
       const source = ss.find(s => s.id === inputSchema.source_id);
 
       return Activity.OutputSchema({
-        createdAt: os.created_at,
-        createdBy: os.created_by.display_name,
+        createdAt: os.created_at || CREATED_AT_FALLBACK,
+        createdBy: os.created_by.display_name || CREATED_BY_FALLBACK,
         sourceId: source.id,
         isid: inputSchema.id,
         osid: os.id
@@ -70,8 +73,8 @@ const shapeTaskSets = tss =>
     ? [Activity.Empty]
     : tss.map(ts =>
         Activity.TaskSet({
-          createdAt: ts.created_at,
-          createdBy: ts.created_by.display_name
+          createdAt: ts.created_at || CREATED_AT_FALLBACK,
+          createdBy: ts.created_by.display_name || CREATED_BY_FALLBACK
         })
       );
 
@@ -85,8 +88,8 @@ const shapeFailedTaskSets = tss => {
     ? [Activity.Empty]
     : failed.map(ts =>
         Activity.FailedTaskSet({
-          createdAt: ts.finished_at,
-          createdBy: ts.created_by.display_name
+          createdAt: ts.finished_at || CREATED_AT_FALLBACK,
+          createdBy: ts.created_by.display_name || CREATED_BY_FALLBACK
         })
       );
 };
@@ -101,8 +104,8 @@ const shapeFinishedTaskSets = tss => {
     ? [Activity.Empty]
     : finished.map(ts =>
         Activity.FinishedTaskSet({
-          createdAt: ts.finished_at,
-          createdBy: ts.created_by.display_name
+          createdAt: ts.finished_at || CREATED_AT_FALLBACK,
+          createdBy: ts.created_by.display_name || CREATED_BY_FALLBACK
         })
       );
 };

@@ -10,9 +10,19 @@ export const updateQueryString = ({ getState, shouldClearSearch = false }) => {
       toPairs().
       // Only a whitelist of filter keys
       filter((filterTypeAndValue) => _.includes(
-        ['assetTypes', 'authority', 'category', 'q', 'tag', 'visibility'],
+        ['assetTypes', 'authority', 'category', 'customFacets', 'q', 'tag', 'visibility'],
         filterTypeAndValue[0])
       ).
+      // map the customFacets object to a flattened array, so each custom facet appears as its own query param
+      map((filterTypeAndValue) => {
+        if (filterTypeAndValue) {
+          const [filterType, filterValue] = filterTypeAndValue;
+          if (filterType === 'customFacets' && !_.isEmpty(filterValue)) {
+            return _(filterValue).toPairs().flatten().value();
+          }
+        }
+        return filterTypeAndValue;
+      }).
       // Only filters with values present
       filter((filterTypeAndValue) => !_.isEmpty(filterTypeAndValue[1])).
       fromPairs().

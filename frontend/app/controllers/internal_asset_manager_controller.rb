@@ -19,6 +19,20 @@ class InternalAssetManagerController < ApplicationController
   def show
     cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
+    # These populate the corresponding values in the filter dropdowns
+    @users_list = fetch_users
+    @domain_categories = fetch_domain_categories
+    @domain_tags = fetch_domain_tags
+    # Note: @domain_custom_facets needs to be set before @initial_filters and @catalog_results
+    @domain_custom_facets = fetch_domain_custom_facets
+
+    @initial_filters = initial_filters
+    @initial_order = {
+      value: query_param_value('orderColumn'),
+      ascending: query_param_value('orderDirection').to_s.downcase == 'asc'
+    }
+    @initial_page = query_param_value('page').to_i
+
     catalog_results_response = begin
       AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options).to_h
     rescue => e
@@ -42,18 +56,6 @@ class InternalAssetManagerController < ApplicationController
       report_error("Error fetching Cetera asset counts: #{e.inspect}")
       {}
     end
-
-    @initial_filters = initial_filters
-    @initial_order = {
-      value: query_param_value('orderColumn'),
-      ascending: query_param_value('orderDirection').to_s.downcase == 'asc'
-    }
-    @initial_page = query_param_value('page').to_i
-
-    # These populate the corresponding values in the filter dropdowns
-    @users_list = fetch_users
-    @domain_categories = fetch_domain_categories
-    @domain_tags = fetch_domain_tags
   end
 
   private
@@ -94,6 +96,15 @@ class InternalAssetManagerController < ApplicationController
       ).to_h['results'].to_a.pluck('domain_tag').reject(&:empty?)
     rescue => e
       report_error("Error fetching Cetera domain tags: #{e.inspect}")
+      []
+    end
+  end
+
+  def fetch_domain_custom_facets
+    begin
+      CurrentDomain.property(:custom_facets, :catalog) # Array of Hashie::Mash
+    rescue => e
+      report_error("Error fetching custom facets: #{e.inspect}")
       []
     end
   end

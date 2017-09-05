@@ -2839,6 +2839,8 @@ en:
       category:
         label: Category
         placeholder: Any Category
+      custom_facet:
+        placeholder: Any
       header:
         title:
           clear_filters_only: Filters

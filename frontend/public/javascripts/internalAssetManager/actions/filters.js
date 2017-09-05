@@ -183,6 +183,30 @@ export const changeQ = (value) => (dispatch, getState) => {
   );
 };
 
+export const changeCustomFacet = (facetParam, value) => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_CUSTOM_FACET', facetParam, value });
+    clearPage(dispatch);
+    updateQueryString({ getState });
+  };
+
+  const existingCustomFacets = getState().filters.customFacets;
+
+  if (value !== existingCustomFacets[facetParam]) {
+    return fetchResults(
+      dispatch,
+      getState,
+      {
+        action: 'CHANGE_CUSTOM_FACET',
+        customFacets: { ...existingCustomFacets, [facetParam]: value },
+        pageNumber: 1,
+        q: getCurrentQuery()
+      },
+      onSuccess
+    );
+  }
+};
+
 export const clearSearch = () => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CLEAR_SEARCH' });
@@ -205,7 +229,12 @@ export const clearAllFilters = (shouldClearSearch = false) => (dispatch, getStat
     updateQueryString({ getState, shouldClearSearch });
   };
 
-  const initialState = { ...getUnfilteredState(), pageNumber: 1, q: getCurrentQuery() };
+  const initialState = {
+    ...getUnfilteredState(),
+    action: 'CLEAR_ALL_FILTERS',
+    pageNumber: 1,
+    q: getCurrentQuery()
+  };
 
   if (shouldClearSearch) {
     initialState.q = '';

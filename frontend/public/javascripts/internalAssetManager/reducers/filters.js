@@ -12,6 +12,8 @@ export const getInitialState = () => ({
   assetTypes: _.get(window, 'initialState.initialFilters.assetTypes', null),
   authority: _.get(window, 'initialState.initialFilters.authority', null),
   category: _.get(window, 'initialState.initialFilters.category'),
+  customFacets: _.get(window, 'initialState.initialFilters.customFacets') || {},
+  domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
   domainCategories: _.get(window, 'initialState.domainCategories') || [],
   domainTags: _.get(window, 'initialState.domainTags') || [],
   onlyRecentlyViewed: false,
@@ -30,6 +32,8 @@ export const getUnfilteredState = () => ({
   assetTypes: null,
   authority: null,
   category: null,
+  customFacets: {},
+  domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
   domainCategories: _.get(window, 'initialState.domainCategories') || [],
   domainTags: _.get(window, 'initialState.domainTags') || [],
   onlyRecentlyViewed: false,
@@ -102,6 +106,16 @@ export default (state, action) => {
       ...state,
       q: action.value
     };
+  }
+
+  if (action.type === 'CHANGE_CUSTOM_FACET') {
+    const newState = _.cloneDeep(state);
+    if (action.value) {
+      newState.customFacets[action.facetParam] = action.value;
+    } else {
+      delete newState.customFacets[action.facetParam];
+    }
+    return newState;
   }
 
   if (action.type === 'CLEAR_SEARCH') {

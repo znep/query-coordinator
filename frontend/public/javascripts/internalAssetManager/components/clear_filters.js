@@ -13,9 +13,13 @@ export class ClearFilters extends Component {
   }
 
   activeFilters() {
-    const { buttonStyle, allFilters } = this.props;
+    const { allFilters, buttonStyle } = this.props;
 
     const getFilterValue = _.partial(_.get, allFilters);
+
+    const customFacetKeyPaths = _.keys(_.get(allFilters, 'customFacets')).map((customFacetKey) => (
+      `customFacets.${customFacetKey}`
+    ));
 
     const filterKeyPaths = [
       'assetTypes',
@@ -26,7 +30,7 @@ export class ClearFilters extends Component {
       'tag',
       'visibility',
       buttonStyle ? 'q' : null
-    ];
+    ].concat(customFacetKeyPaths);
 
     return _(filterKeyPaths).map((filter) => getFilterValue(filter)).compact().value();
   }

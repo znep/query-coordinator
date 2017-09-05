@@ -83,8 +83,18 @@ const translateParamsToMixpanelEvent = (params) => {
 // Caution: If a key exists in getState().filters but is missing from parameters, then the value in the
 // current state will be used instead. If you wish values in the parameters object to override the current
 // state, you _must_ provide the override value in the parameters object.
-export const ceteraUtilsParams = (getState, parameters) => {
-  const { activeTab, assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
+export const ceteraUtilsParams = (getState, parameters = {}) => {
+  const {
+    activeTab,
+    assetTypes,
+    authority,
+    category,
+    onlyRecentlyViewed,
+    order,
+    ownedBy,
+    pageNumber,
+    q,
+    tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, getState().header, parameters);
 
   const ceteraOrder = () => {
@@ -116,9 +126,12 @@ export const ceteraUtilsParams = (getState, parameters) => {
     forUser = _.get(window, 'serverConfig.currentUser.id');
   }
 
+  const customMetadataFilters = (parameters.action === 'CLEAR_ALL_FILTERS') ? {} :
+    _.merge({}, _.get(getState(), 'filters.customFacets'), parameters.customFacets);
+
   return {
-    // TODO: customMetadataFilters,
     category,
+    customMetadataFilters,
     forUser,
     idFilters: lastAccessedUids,
     limit: RESULTS_PER_PAGE,

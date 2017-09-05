@@ -59,6 +59,9 @@ describe('actions/query_string', () => {
           assetTypes: 'charts',
           authority: 'official',
           category: 'Paint',
+          customFacets: {
+            Car_Type: 'Mustang'
+          },
           ownedBy: {
             displayName: 'bobross',
             id: 'abcd-1234'
@@ -71,7 +74,7 @@ describe('actions/query_string', () => {
 
       updateQueryString({ getState });
 
-      const expectedUrl = `${baseUrl}?assetTypes=charts&authority=official&category=Paint&q=paint&tag=painting&visibility=open&ownerId=abcd-1234&ownerName=bobross`;
+      const expectedUrl = `${baseUrl}?assetTypes=charts&authority=official&category=Paint&Car_Type=Mustang&q=paint&tag=painting&visibility=open&ownerId=abcd-1234&ownerName=bobross`;
       sinon.assert.calledWith(historyStub, { path: expectedUrl }, '', expectedUrl);
     });
 

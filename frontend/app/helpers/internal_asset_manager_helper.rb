@@ -70,6 +70,7 @@ module InternalAssetManagerHelper
         :resultSetSize => @catalog_result_set_size
       },
       :domainCategories => @domain_categories,
+      :domainCustomFacets => @domain_custom_facets,
       :domainTags => @domain_tags,
       :initialFilters => @initial_filters,
       :initialOrder => @initial_order,
@@ -99,7 +100,7 @@ module InternalAssetManagerHelper
         displayName: query_param_value('ownerName'),
         id: query_param_value('ownerId')
       }
-    ).delete_if { |k, v| v.blank? }
+    ).merge(:customFacets => custom_facet_filters).delete_if { |k, v| v.blank? }
   end
 
   def initial_cetera_order
@@ -136,7 +137,13 @@ module InternalAssetManagerHelper
       q: query_param_value('q'),
       tags: query_param_value('tag'),
       visibility: query_param_value('visibility')
-    }.delete_if { |k, v| v.blank? }
+    }.merge(custom_facet_filters).delete_if { |k, v| v.blank? }
+  end
+
+  def custom_facet_filters
+    @domain_custom_facets.to_a.map do |facet|
+      { facet.param => query_param_value(facet.param) }
+    end.reduce({}, :merge)
   end
 
   def siam_search_options

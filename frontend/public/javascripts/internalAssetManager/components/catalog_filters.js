@@ -66,11 +66,14 @@ export class CatalogFilters extends React.Component {
       changeAssetType,
       changeAuthority,
       changeCategory,
+      changeCustomFacet,
       changeOwner,
       changeTag,
       changeVisibility,
       clearAllFilters,
+      customFacets,
       domainCategories,
+      domainCustomFacets,
       domainTags,
       I18n,
       onlyRecentlyViewed,
@@ -206,6 +209,23 @@ export class CatalogFilters extends React.Component {
       </div>
     );
 
+    const renderCustomFacetFilterSections = () => (
+      _.map(domainCustomFacets, (customFacet) => {
+        const facetParam = customFacet.param;
+        return (
+          <div className="filter-section custom-facet" key={`custom-facet_${facetParam}`}>
+            <label className="filter-label">{customFacet.title}</label>
+            <SearchboxFilter
+              inputId={`custom-filter-${facetParam}`}
+              options={_.map(customFacet.options, (option) => ({ title: option.text, value: option.value }))}
+              onSelection={(option) => changeCustomFacet(facetParam, option.value)}
+              placeholder={I18n.t('internal_asset_manager.filters.custom_facet.placeholder')}
+              value={customFacets[facetParam]} />
+          </div>
+        );
+      })
+    );
+
     return (
       <div className="catalog-filters">
         {openFiltersButton}
@@ -220,12 +240,17 @@ export class CatalogFilters extends React.Component {
             {visibilityFilterSection}
             {categoryFilterSection}
             {tagsFilterSection}
+            {renderCustomFacetFilterSections()}
           </form>
         </div>
       </div>
     );
   }
 }
+
+CatalogFilters.defaultProps = {
+  customFacets: {}
+};
 
 CatalogFilters.propTypes = {
   activeTab: PropTypes.string.isRequired,
@@ -236,11 +261,14 @@ CatalogFilters.propTypes = {
   changeAssetType: PropTypes.func.isRequired,
   changeAuthority: PropTypes.func.isRequired,
   changeCategory: PropTypes.func.isRequired,
+  changeCustomFacet: PropTypes.func.isRequired,
   changeOwner: PropTypes.func.isRequired,
   changeTag: PropTypes.func.isRequired,
   changeVisibility: PropTypes.func.isRequired,
   clearAllFilters: PropTypes.func.isRequired,
+  customFacets: PropTypes.object,
   domainCategories: PropTypes.array.isRequired,
+  domainCustomFacets: PropTypes.array.isRequired,
   domainTags: PropTypes.array.isRequired,
   I18n: PropTypes.object.isRequired,
   onlyRecentlyViewed: PropTypes.bool.isRequired,
@@ -260,7 +288,9 @@ const mapStateToProps = (state) => ({
   assetTypes: state.filters.assetTypes,
   authority: state.filters.authority,
   category: state.filters.category,
+  customFacets: state.filters.customFacets,
   domainCategories: state.filters.domainCategories,
+  domainCustomFacets: state.filters.domainCustomFacets,
   domainTags: state.filters.domainTags,
   onlyRecentlyViewed: state.filters.onlyRecentlyViewed,
   ownedBy: state.filters.ownedBy,
@@ -273,6 +303,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeAssetType: (value) => dispatch(filters.changeAssetType(value)),
   changeAuthority: (value) => dispatch(filters.changeAuthority(value)),
   changeCategory: (value) => dispatch(filters.changeCategory(value)),
+  changeCustomFacet: (facetParam, value) => dispatch(filters.changeCustomFacet(facetParam, value)),
   changeOwner: (value) => dispatch(filters.changeOwner(value)),
   changeTag: (value) => dispatch(filters.changeTag(value)),
   changeVisibility: (value) => dispatch(filters.changeVisibility(value)),

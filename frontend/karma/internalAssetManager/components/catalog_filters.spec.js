@@ -5,7 +5,6 @@ import I18nJS from 'i18n-js';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
 
-import CatalogFilters from 'components/catalog_filters';
 import { CatalogFilters as _CatalogFilters } from 'components/catalog_filters';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -15,11 +14,13 @@ const catalogFiltersProps = (options = {}) => ({
   changeAssetType: () => undefined,
   changeAuthority: () => undefined,
   changeCategory: () => undefined,
+  changeCustomFacet: () => undefined,
   changeOwner: () => undefined,
   changeTag: () => undefined,
   changeVisibility: () => undefined,
   clearAllFilters: () => undefined,
   domainCategories: [],
+  domainCustomFacets: [],
   domainTags: [],
   I18n: I18nJS,
   onlyRecentlyViewed: false,
@@ -48,13 +49,13 @@ describe('components/CatalogFilters', () => {
   })
 
   it('renders a catalog-filters div', () => {
-    const element = mount(renderLocalizedComponentWithPropsAndStore(CatalogFilters, catalogFiltersProps(), store));
+    const element = mount(renderLocalizedComponentWithPropsAndStore(_CatalogFilters, catalogFiltersProps(), store));
     assert.isNotNull(element);
     assert(element.find('.catalog-filters'));
   });
 
   it('renders a filterHeader', () => {
-    const component = mount(renderLocalizedComponentWithPropsAndStore(CatalogFilters, catalogFiltersProps(), store));
+    const component = mount(renderLocalizedComponentWithPropsAndStore(_CatalogFilters, catalogFiltersProps(), store));
     assert.isNotNull(component.find('.catalog-filters-header'));
     assert.equal(component.find('.catalog-filters-header .title').node.textContent, 'Filters');
   });
@@ -66,7 +67,7 @@ describe('components/CatalogFilters', () => {
     });
 
     it('renders the relevant filter sections', () => {
-      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProps(), store);
+      const element = renderComponentWithPropsAndStore(_CatalogFilters, catalogFiltersProps(), store);
       assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
       assert.isNotNull(element.querySelector('.filter-section.asset-types'));
       assert.isNotNull(element.querySelector('.filter-section.visibility'));
@@ -82,7 +83,7 @@ describe('components/CatalogFilters', () => {
     });
 
     it('renders the relevant filter sections', () => {
-      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProps(), store);
+      const element = renderComponentWithPropsAndStore(_CatalogFilters, catalogFiltersProps(), store);
       assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
       assert.isNotNull(element.querySelector('.filter-section.asset-types'));
       assert.isNotNull(element.querySelector('.filter-section.authority'));
@@ -127,7 +128,7 @@ describe('components/CatalogFilters', () => {
 
   describe('filter content toggle', () => {
     it('closes and opens the filter sidebar when clicked', () => {
-      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProps(), store);
+      const element = renderComponentWithPropsAndStore(_CatalogFilters, catalogFiltersProps(), store);
       assert.isNull(element.querySelector('.filter-content.hidden')); // shown by default
 
       TestUtils.Simulate.click(element.querySelector('.close-filters'));
@@ -135,6 +136,21 @@ describe('components/CatalogFilters', () => {
 
       TestUtils.Simulate.click(element.querySelector('.open-filters'));
       assert.isNull(element.querySelector('.filter-content.hidden'));
+    });
+  });
+
+  describe('custom facet filters', () => {
+    it('renders if there are domainCustomFacets present', () => {
+      const props = catalogFiltersProps({
+        domainCustomFacets: [{
+          options: ['Mustang', 'Jeep', 'Brah'],
+          param: 'Car_Type',
+          title: 'Car Type'
+        }]
+      });
+
+      const element = renderComponentWithPropsAndStore(_CatalogFilters, props, store);
+      assert.isNotNull(element.querySelector('.filter-section.custom-facet'));
     });
   });
 });

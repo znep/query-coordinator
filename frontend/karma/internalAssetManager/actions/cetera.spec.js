@@ -45,6 +45,26 @@ describe('cetera.js', () => {
       const result = ceteraUtilsParams(getState, parameters);
       assert.equal(result.forUser, 'abcd-1234');
     });
+
+    it('adds custom facet filters', () => {
+      const parameters = { customFacets: { Foo_Bar: 'abcd' } };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'abcd' });
+    });
+
+    it('overrides an existing custom facet filter', () => {
+      const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
+      const parameters = { customFacets: { Foo_Bar: null } };
+      const result = ceteraUtilsParams(state, parameters);
+      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: null });
+    });
+
+    it('can have multiple custom facet filters', () => {
+      const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
+      const parameters = { customFacets: { Foo_Bar2: 'another value' } };
+      const result = ceteraUtilsParams(state, parameters);
+      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'some existing value', Foo_Bar2: 'another value' });
+    });
   });
 
   // fetchResults returns a promise

@@ -180,4 +180,35 @@ describe('actions/filters', () => {
       });
     });
   });
+
+  describe('changeCustomFacet', () => {
+    beforeEach(() => {
+      ceteraStub = stubCeteraQuery();
+      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+      ceteraAssetCountsStub.restore();
+    });
+
+    it('changes a given custom facet', () => {
+      const store = mockStore({ filters: { customFacets: { City_Neighborhood: 'Greenlake' } } });
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CHANGE_CUSTOM_FACET', facetParam: 'City_Neighborhood', value: 'Capitol Hill' },
+        { type: 'CHANGE_PAGE', pageNumber: 1 },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+      ];
+
+      return store.dispatch(Actions.changeCustomFacet('City_Neighborhood', 'Capitol Hill')).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
 });

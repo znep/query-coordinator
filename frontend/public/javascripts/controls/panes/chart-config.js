@@ -104,7 +104,7 @@
       var needsValueMarkers = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value);
       var needsValues = _.contains(['pie', 'donut'], chart.value);
       var needsConditional = !_.isUndefined(options.view.metadata.conditionalFormatting);
-      var needsCustom = true;
+      var needsCustom = !_.contains(['timeline'], chart.value);
       var fields = [$.extend({}, origLegendPos, {
         text: $.t('screens.ds.grid_sidebar.chart.legend.display')
       })];
@@ -1169,6 +1169,7 @@
           valueMarker(chart, options),
 
           headerDetails,
+          advLegend(chart, options),
           flyoutConfig(chart, options),
           axisOptions(chart, options));
         break;

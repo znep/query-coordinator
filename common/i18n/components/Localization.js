@@ -46,7 +46,10 @@ Localization.defaultProps = {
   notFoundText: '(no translation available)',
   returnKeyForNotFound: false,
   localePrefix: '',
-  translations: window.translations || _.get(window, 'blist.translations'),
+  // EN-18438: for Data Lens, `datalensTranslations` are the latest translations containing the common/shared
+  // keys. This is only because `window.translations` was already in use in the case of our Angular app.
+  // For every other app, `window.translations` is the new set of translations containing common/shared keys.
+  translations: window.datalensTranslations || window.translations || _.get(window, 'blist.translations'),
   locale: _.get(window, 'serverConfig.locale', _.get(window, 'blist.locale', 'en'))
 };
 

@@ -21,7 +21,10 @@ export const RevisionActivity = ({ details }) =>
     </div>
     <div>
       <p>
-        <span className={styles.createdBy}>{details.createdBy}</span> opened a revision
+        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+          {details.createdBy}
+        </a>{' '}
+        opened a revision
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
@@ -41,7 +44,10 @@ export const SourceActivity = ({ details }) =>
     </div>
     <div>
       <p>
-        <span className={styles.createdBy}>{details.createdBy}</span> uploaded a file
+        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+          {details.createdBy}
+        </a>{' '}
+        uploaded a file
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
@@ -61,7 +67,10 @@ export const OutputSchemaActivity = ({ details, params }) =>
     </div>
     <div>
       <p>
-        <span className={styles.createdBy}>{details.createdBy}</span> changed the&nbsp;
+        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+          {details.createdBy}
+        </a>{' '}
+        changed the&nbsp;
         <Link to={Links.showOutputSchema(params, details.sourceId, details.isid, details.osid)}>schema</Link>
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
@@ -86,7 +95,10 @@ export const TaskSetActivity = ({ details }) =>
     </div>
     <div>
       <p>
-        <span className={styles.createdBy}>{details.createdBy}</span> started data processing
+        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+          {details.createdBy}
+        </a>{' '}
+        started data processing
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>

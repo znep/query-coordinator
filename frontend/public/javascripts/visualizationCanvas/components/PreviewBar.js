@@ -13,7 +13,6 @@ export class PreviewBar extends PureComponent {
       <div className="preview-bar">
         <button
           className="btn btn-transparent btn-back"
-          href="#"
           onClick={onClickExit}
           aria-label={I18n.t('visualization_canvas.exit_preview_mode')}
           autoFocus>
@@ -22,7 +21,6 @@ export class PreviewBar extends PureComponent {
         <span>{I18n.t('visualization_canvas.preview')}</span>
         <button
           className="btn btn-transparent btn-exit"
-          href="#"
           onClick={onClickExit}
           aria-label={I18n.t('visualization_canvas.exit_preview_mode')}>
           <span className="socrata-icon-close-2" role="presentation" />

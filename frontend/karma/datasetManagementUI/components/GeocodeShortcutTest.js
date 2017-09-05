@@ -123,6 +123,50 @@ describe('components/GeocodeShortcut', () => {
     );
   });
 
+  it('generates an expression correctly for geocode/4 something with constants', () => {
+    const component = shallow(<GeocodeShortcut {...defaultProps} />);
+
+    const outputColumns = entities.output_schemas[137].output_columns;
+    component
+      .instance()
+      .setMapping(
+        'address',
+        _.find(outputColumns, oc => oc.field_name === 'block')
+      );
+    component
+      .instance()
+      .setMapping(
+        'city',
+        _.find(outputColumns, oc => oc.field_name === 'iucr')
+      );
+    component
+      .instance()
+      .setMapping(
+        'state',
+        'WA'
+      );
+    component
+      .instance()
+      .setMapping(
+        'zip',
+        _.find(outputColumns, oc => oc.field_name === 'community_area')
+      );
+
+    assert.equal(
+      component.instance().genNewExpression().replace(/\s/g, ''),
+      'make_location(\
+        `block`,\
+        `iucr`,\
+        "WA",\
+        to_text(to_number(`community_area`)),\
+        geocode(`block`, `iucr`, "WA", to_text(to_number(`community_area`)))\
+      )'.replace(
+        /\s/g,
+        ''
+      )
+    );
+  });
+
   it('wraps generated expression in forgive when the user asks', () => {
     const component = shallow(<GeocodeShortcut {...defaultProps} />);
     const instance = component.instance();

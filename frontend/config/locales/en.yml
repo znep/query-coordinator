@@ -2126,6 +2126,8 @@ en:
       click_to_view: Click to view
       geocode_shortcut:
         title: Georeference your dataset
+        none: None
+        constant: Constant
         what_is_an_error: Treats the cell as an error, which removes the row from the dataset on import
         skip_row: Skip Row
         what_is_forgive: Imports the row with the georeferenced value as null

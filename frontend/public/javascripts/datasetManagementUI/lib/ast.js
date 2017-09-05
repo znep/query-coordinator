@@ -62,6 +62,7 @@ function traverse(node, acc, fun) {
   }
 }
 
+
 export {
   traverse,
   stripToTextAst,

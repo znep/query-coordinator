@@ -26,11 +26,11 @@ TextInput.propTypes = {
   value: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   inErrorState: PropTypes.bool.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired
+  handleChange: PropTypes.func,
+  handleBlur: PropTypes.func,
+  handleFocus: PropTypes.func
 };
 
 export default TextInput;

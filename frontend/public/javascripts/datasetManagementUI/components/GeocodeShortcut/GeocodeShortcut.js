@@ -238,7 +238,10 @@ export class GeocodeShortcut extends Component {
   maybeSetColumnsHidden() {
     // Restore the checkbox state from the output schema state
     const shouldHideOriginal = _.every(
-      this.relevantOutputColumnsForComposition().filter(oc => !!oc).map(oc => oc.ignored)
+      this.relevantArgsForComposition()
+        .filter(oc => !!oc) // filter out nones
+        .filter(oc => !_.isString(oc)) // filter out constants
+        .map(oc => oc.ignored) // are all the things that are left ignored?
     );
 
     this.setState({
@@ -250,19 +253,19 @@ export class GeocodeShortcut extends Component {
     return _.every(args, a => a === null || a.type === 'column_ref');
   }
 
-  relevantOutputColumnsForComposition() {
-    const outputColumnsOf = mappingNames =>
+  relevantArgsForComposition() {
+    const argsOf = mappingNames =>
       this.state.mappings
         .filter(([name]) => _.includes(mappingNames, name))
         .map(([_name, outputColumn]) => outputColumn); // eslint-disable-line
 
     switch (this.state.composedFrom) {
       case COMPONENTS:
-        return outputColumnsOf(relevantMappingsForComponents());
+        return argsOf(relevantMappingsForComponents());
       case COMBINED:
-        return outputColumnsOf(relevantMappingsForCombined());
+        return argsOf(relevantMappingsForCombined());
       case LATLNG:
-        return outputColumnsOf(relevantMappingsForLatLng());
+        return argsOf(relevantMappingsForLatLng());
       default:
         return [];
     }
@@ -302,38 +305,47 @@ export class GeocodeShortcut extends Component {
 
   genDesiredColumns() {
     let existingColumns = this.getOutputColumns();
+    const anyMappings = _.some(
+      this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
+    );
 
     if (this.state.shouldHideOriginal) {
-      const columnIdsToHide = this.relevantOutputColumnsForComposition().filter(oc => !!oc).map(oc => oc.id);
+      const columnIdsToHide = this.relevantArgsForComposition().filter(oc => !!oc).map(oc => oc.id);
       existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
     }
 
     let desiredColumns;
     const targetColumn = this.getOutputColumn();
     if (targetColumn) {
-      // We already have a target column - so the default behavior
-      // is to replace the existing one with one of a new expression
-      desiredColumns = existingColumns.map(oc => {
-        if (oc.id === targetColumn.id) {
-          // This is the column we want to update - clone it, but with the new expression
-          return ShowActions.buildNewOutputColumn(oc, () => this.genNewExpression());
-        } else {
-          // Otherwise, we just clone it
-          return ShowActions.cloneOutputColumn(oc);
-        }
-      });
+      if (!anyMappings) {
+        desiredColumns = existingColumns.filter(oc => oc.id !== targetColumn.id);
+      } else {
+        // We already have a target column - so the default behavior
+        // is to replace the existing one with one of a new expression
+        desiredColumns = existingColumns.map(oc => {
+          if (oc.id === targetColumn.id) {
+            // This is the column we want to update - clone it, but with the new expression
+            return ShowActions.buildNewOutputColumn(oc, () => this.genNewExpression());
+          } else {
+            // Otherwise, we just clone it
+            return ShowActions.cloneOutputColumn(oc);
+          }
+        });
+      }
     } else {
       desiredColumns = existingColumns.map(ShowActions.cloneOutputColumn);
-      desiredColumns.push({
-        field_name: 'geocoded_column',
-        position: desiredColumns.length + 1, // position is 1 based, not 0, because core
-        display_name: SubI18n.new_column_name,
-        description: '',
-        transform: {
-          transform_expr: this.genNewExpression()
-        },
-        is_primary_key: false
-      });
+      if (anyMappings) {
+        desiredColumns.push({
+          field_name: 'geocoded_column',
+          position: desiredColumns.length + 1, // position is 1 based, not 0, because core
+          display_name: SubI18n.new_column_name,
+          description: '',
+          transform: {
+            transform_expr: this.genNewExpression()
+          },
+          is_primary_key: false
+        });
+      }
     }
 
     return desiredColumns.map((dc, i) => ({ ...dc, position: i + 1 }));
@@ -447,7 +459,7 @@ export class GeocodeShortcut extends Component {
       [styles.compositionButton]: !isCombined
     });
 
-    const relevantColumns = this.relevantOutputColumnsForComposition();
+    const relevantColumns = this.relevantArgsForComposition();
     const anySelected = relevantColumns.length > 0 && _.some(relevantColumns);
 
     const content = !this.state.configurationError

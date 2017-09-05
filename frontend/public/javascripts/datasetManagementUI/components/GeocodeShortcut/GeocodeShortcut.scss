@@ -103,3 +103,14 @@
 .configurationError {
   margin: 1em 0px;
 }
+
+
+.picklist {
+  margin: 0px;
+}
+.emptyOption {
+  color: $primary-text;
+}
+.constantOption {
+  color: $success-text;
+}

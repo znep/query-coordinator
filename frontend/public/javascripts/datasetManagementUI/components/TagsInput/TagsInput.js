@@ -60,7 +60,7 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { inErrorState, handleFocus, handleBlur, ...data } = this.props;
+    const { inErrorState, handleFocus, handleBlur, ...data } = this.props; // eslint-disable-line
 
     const { name, value, placeholder } = data;
 

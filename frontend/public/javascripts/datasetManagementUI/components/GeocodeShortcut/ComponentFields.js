@@ -4,17 +4,18 @@ import {
   outputColumnSelection,
   getOutputColumnFromMapping,
   columnMatchingAst,
-  fieldPropTypes
+  fieldPropTypes,
+  stringLiteral
 } from './Fields';
 import { stripToTextAst } from 'lib/ast';
 
 
 const ComponentFields = ({ outputColumns, setMapping, mappings }) => (
   <div>
-    {outputColumnSelection('address', outputColumns, setMapping, mappings, ['text'])}
-    {outputColumnSelection('city', outputColumns, setMapping, mappings, ['text'])}
-    {outputColumnSelection('state', outputColumns, setMapping, mappings, ['text'])}
-    {outputColumnSelection('zip', outputColumns, setMapping, mappings, ['text', 'number'])}
+    {outputColumnSelection('address', outputColumns, setMapping, mappings, ['text'], true)}
+    {outputColumnSelection('city', outputColumns, setMapping, mappings, ['text'], true)}
+    {outputColumnSelection('state', outputColumns, setMapping, mappings, ['text'], true)}
+    {outputColumnSelection('zip', outputColumns, setMapping, mappings, ['text', 'number'], true)}
   </div>
 );
 
@@ -43,13 +44,17 @@ const decomposeFromComponents = (geocodeFunc, outputColumns) => {
   return [
     // The ORs here are because we might have wrapped the AST in a to_text call depending on the output column type
     ['address', columnMatchingAst(outputColumns, address)
-      || columnMatchingAst(outputColumns, stripToTextAst(address))],
+      || columnMatchingAst(outputColumns, stripToTextAst(address))
+      || stringLiteral(address)],
     ['city', columnMatchingAst(outputColumns, city)
-      || columnMatchingAst(outputColumns, stripToTextAst(city))],
+      || columnMatchingAst(outputColumns, stripToTextAst(city))
+      || stringLiteral(city)],
     ['state', columnMatchingAst(outputColumns, state)
-      || columnMatchingAst(outputColumns, stripToTextAst(state))],
+      || columnMatchingAst(outputColumns, stripToTextAst(state))
+      || stringLiteral(state)],
     ['zip', columnMatchingAst(outputColumns, zip)
-      || columnMatchingAst(outputColumns, stripToTextAst(zip))]
+      || columnMatchingAst(outputColumns, stripToTextAst(zip))
+      || stringLiteral(zip)]
   ];
 };
 

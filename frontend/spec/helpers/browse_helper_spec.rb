@@ -199,18 +199,24 @@ describe BrowseHelper do
       let(:description) { 'basic plain text description' }
 
       it 'returns the plain text description formatted with simple_format' do
-        expect(helper.view_formatted_description(view)).to eql(%(<p>basic plain text description</p>))
+        expect(helper.view_formatted_description(view)).to eql(%(<div>basic plain text description</div>))
       end
     end
 
-    context 'data_lens formatting' do
-      let (:description) { %(<div>my rich text description \n http://google.com <b>bold!</b></div>) }
+    context 'sanitizing html tags in description' do
+      let(:description) do
+        %(<script>alert('bad things');</script>my rich text description \n http://google.com <b>bold!</b>")
+      end
 
-      it 'returns the description without simple_format-ing if the display type is data_lens' do
+      it 'returns the description sanitized from evil tags' do
         display = double
         allow(display).to receive('type').and_return('data_lens')
         allow(view).to receive('display').and_return(display)
-        expect(helper.view_formatted_description(view)).to eql(%(<div>my rich text description \n <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></div>))
+        expect(helper.view_formatted_description(view)).to eql(
+          %(<div>alert('bad things');my rich text description \n) <<
+          %(<br> <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b>") <<
+          %(</div>)
+        )
       end
     end
   end

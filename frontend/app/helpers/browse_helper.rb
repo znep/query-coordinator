@@ -61,12 +61,6 @@ module BrowseHelper
     end
   end
 
-  def description_contains_html?(display_type)
-    # These types have preformatted descriptions.
-    # Attempting to wrap them in <p> tags causes invalid html
-    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
-  end
-
   # NOTE: This function is currently *ONLY* used to render descriptions safely.
   # It is not currently endorsed for use against other fields.
   # Please bear these facts in mind when making modifications!
@@ -95,17 +89,15 @@ module BrowseHelper
   end
 
   def view_formatted_description(result)
-    description = result.description
-    return unless description.present?
-
-    unless description_contains_html?(result.display.type)
-      description = simple_format(description)
+    if result.description.present?
+      sanitize_string(simple_format(result.description, {}, :wrapper_tag => 'div'))
     end
-    sanitize_string(description)
   end
 
   def a11y_browse_summary(browse_opts)
-    return t('table.no_summary_available') if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
+    if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
+      return t('table.no_summary_available')
+    end
 
     columns = browse_opts[:grid_items].map { | k, v | k if v }.compact.map(&:to_s).map(&:inspect)
     rows = browse_opts[:view_results].map { |row| %("#{row.name}") }

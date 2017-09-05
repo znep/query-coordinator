@@ -307,11 +307,11 @@ $(document).ready(() => {
     $('ul.browse2-facet-section-options').hide();
   }
 
+  // Don't forget to also check here: platform-ui/frontend/public/javascripts/screens/browse2.js
   // Result description truncation
   $('.browse2-result-description').each((index, element) => {
     let descriptionHeight = 0;
-    $(element).children().
-    each((i, childElement) => {
+    $(element).children().each((i, childElement) => {
       descriptionHeight += $(childElement).outerHeight(true);
     });
 

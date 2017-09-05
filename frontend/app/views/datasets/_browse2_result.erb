@@ -52,7 +52,9 @@
     <div class="browse2-result-metadata">
       <%- if result_description.present? -%>
         <div class="browse2-result-description-container">
-          <div class="browse2-result-description" itemprop="description"><%= result_description %></div>
+          <div class="browse2-result-description" itemprop="description">
+            <%= result_description %>
+          </div>
           <div class="browse2-result-description-truncation-toggle-control">
             <a class="browse2-result-description-show-more-label"
               title="<%= t('controls.browse.browse2.description.show_more_label') %>" href="#">

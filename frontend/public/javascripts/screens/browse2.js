@@ -497,11 +497,11 @@ $(function() {
     $('ul.browse2-facet-section-options').hide();
   }
 
+  // Don't forget to also check here: platform-ui/frontend/public/javascripts/catalogLandingPage/catalog.js
   // Result description truncation
   $('.browse2-result-description').each(function(index, element) {
     var descriptionHeight = 0;
-    $(element).children().
-    each(function(i, childElement) {
+    $(element).children().each(function(i, childElement) {
       descriptionHeight += $(childElement).outerHeight(true);
     });
 

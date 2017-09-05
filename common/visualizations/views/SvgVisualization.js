@@ -155,7 +155,9 @@ function SvgVisualization($element, vif, options) {
       isReadOnly: true,
       onUpdate: (newFilters) => {
         const newVif = _.cloneDeep(this.getVif());
-        _.set(newVif, 'series[0].dataSource.filters', newFilters);
+        _.each(newVif.series, (series) => {
+          _.set(series, 'dataSource.filters', newFilters);
+        });
 
         this.emitEvent('SOCRATA_VISUALIZATION_VIF_UPDATED', newVif);
         this.emitEvent('SOCRATA_VISUALIZATION_RENDER_VIF', newVif);

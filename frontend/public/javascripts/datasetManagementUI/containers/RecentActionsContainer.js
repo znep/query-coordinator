@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import RecentActions from 'components/RecentActions/RecentActions';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 
-const Activity = daggy.taggedSum('Activity', {
+export const Activity = daggy.taggedSum('Activity', {
   Revision: ['details'],
   Source: ['details'],
   OutputSchema: ['details'],
@@ -21,7 +21,7 @@ const CREATED_AT_FALLBACK = Date.now();
 const CREATED_BY_FALLBACK = 'Unknown';
 
 // shapeRevision :: [Revisions] -> Int -> [Activity]
-const shapeRevisions = (revisions, revisionSeq) => {
+export const shapeRevisions = (revisions, revisionSeq) => {
   const currentRevision = revisions.find(revision => revision.revision_seq === revisionSeq);
 
   if (!currentRevision) {
@@ -40,7 +40,7 @@ const shapeRevisions = (revisions, revisionSeq) => {
 };
 
 // shapeSources :: [Sources] -> [Activity]
-const shapeSources = sources =>
+export const shapeSources = sources =>
   sources.length === 0
     ? [Activity.Empty]
     : sources.map(source =>
@@ -51,7 +51,7 @@ const shapeSources = sources =>
       );
 
 // shapeOutputSchemas :: [OutputSchema] -> [InputSchema] -> [Sources]  -> [Activity]
-const shapeOutputSchemas = (oss, iss, ss) =>
+export const shapeOutputSchemas = (oss, iss, ss) =>
   oss.length === 0
     ? [Activity.Empty]
     : oss.map(os => {
@@ -68,7 +68,7 @@ const shapeOutputSchemas = (oss, iss, ss) =>
     });
 
 // shapeTaskSets :: [TaskSet] -> [Activity]
-const shapeTaskSets = tss =>
+export const shapeTaskSets = tss =>
   tss.length === 0
     ? [Activity.Empty]
     : tss.map(ts =>
@@ -79,7 +79,7 @@ const shapeTaskSets = tss =>
       );
 
 // shapeFailedTaskSets :: [TaskSet] -> [Activity]
-const shapeFailedTaskSets = tss => {
+export const shapeFailedTaskSets = tss => {
   const failed = tss
     .filter(ts => !!ts.finished_at)
     .filter(ts => ts.status === ApplyRevision.TASK_SET_FAILURE);
@@ -95,7 +95,7 @@ const shapeFailedTaskSets = tss => {
 };
 
 // shapeFinishedTaskSets :: [TaskSet] -> [Activity]
-const shapeFinishedTaskSets = tss => {
+export const shapeFinishedTaskSets = tss => {
   const finished = tss
     .filter(ts => !!ts.finished_at)
     .filter(ts => ts.status === ApplyRevision.TASK_SET_SUCCESSFUL);
@@ -111,7 +111,7 @@ const shapeFinishedTaskSets = tss => {
 };
 
 // createActivities :: Entities -> Params -> [Activity]
-const createActivities = (entities, params) => {
+export const createActivities = (entities, params) => {
   const activities = [
     ...shapeRevisions(_.values(entities.revisions), _.toNumber(params.revisionSeq)),
     ...shapeSources(_.values(entities.sources)),

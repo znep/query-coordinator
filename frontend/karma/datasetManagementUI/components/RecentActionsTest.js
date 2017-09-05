@@ -1,76 +1,104 @@
 import { assert } from 'chai';
 import React from 'react';
-import RecentActions from 'components/RecentActions/RecentActions';
-import state from '../data/stateWithRevision';
-import rootReducer from 'reduxStuff/reducers/rootReducer';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 import { shallow } from 'enzyme';
+import RecentActions from 'components/RecentActions/RecentActions';
+import { Activity } from 'containers/RecentActionsContainer';
 
 describe('components/RecentActions', () => {
-  const store = createStore(rootReducer, state, applyMiddleware(thunk));
-
   const params = {
     category: 'dataset',
-    name: 'mm',
-    fourfour: 'kp42-jdvd',
-    revisionSeq: '0'
+    name: 'test dataset',
+    fourfour: 'abcd-1234'
   };
 
-  const { entities } = store.getState();
+  it('renders proper ui when given a revision activity', () => {
+    const activity = Activity.Revision({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb'
+    });
 
-  const props = {
-    entities,
-    params
-  };
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
+    );
 
-  const component = shallow(<RecentActions {...props} />);
-
-  it('renders all activity', () => {
-    assert.equal(component.find('.activity').length, 5);
+    assert.equal(component.find('RevisionActivity').length, 1);
   });
 
-  it('renders data processing activity', () => {
-    const activities = component.find('.activity');
+  it('renders proper ui when given a source activity', () => {
+    const activity = Activity.Source({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb'
+    });
 
-    assert.isAtLeast(
-      activities.filterWhere(
-        activity => activity.prop('data-activity-type') === 'taskSet'
-      ).length,
-      1
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
     );
+
+    assert.equal(component.find('SourceActivity').length, 1);
   });
 
-  it('renders schema change activity', () => {
-    const activities = component.find('.activity');
+  it('renders proper ui when given an output schema activity', () => {
+    const activity = Activity.OutputSchema({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb',
+      sourceId: 22,
+      isid: 33,
+      osid: 44
+    });
 
-    assert.isAtLeast(
-      activities.filterWhere(
-        activity => activity.prop('data-activity-type') === 'outputschema'
-      ).length,
-      1
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
     );
+
+    assert.equal(component.find('OutputSchemaActivity').length, 1);
   });
 
-  it('renders file source activity', () => {
-    const activities = component.find('.activity');
+  it('renders proper ui when given a taskSet activity', () => {
+    const activity = Activity.TaskSet({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb'
+    });
 
-    assert.isAtLeast(
-      activities.filterWhere(
-        activity => activity.prop('data-activity-type') === 'source'
-      ).length,
-      1
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
     );
+
+    assert.equal(component.find('TaskSetActivity').length, 1);
   });
 
-  it('renders revision activity', () => {
-    const activities = component.find('.activity');
+  it('renders proper ui when given a finished taskSet activity', () => {
+    const activity = Activity.FinishedTaskSet({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb'
+    });
 
-    assert.isAtLeast(
-      activities.filterWhere(
-        activity => activity.prop('data-activity-type') === 'update'
-      ).length,
-      1
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
     );
+
+    assert.equal(component.find('TaskSetFinishedActivity').length, 1);
+  });
+
+  it('renders proper ui when given a failed taskSet activity', () => {
+    const activity = Activity.FailedTaskSet({
+      createdAt: new Date('2017-08-31T20:20:01.942Z'),
+      createdBy: 'branweb'
+    });
+
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
+    );
+
+    assert.equal(component.find('TaskSetFailedActivity').length, 1);
+  });
+
+  it('renders an empty container when given an Empty activity', () => {
+    const activity = Activity.Empty;
+
+    const component = shallow(
+      <RecentActions params={params} activities={[activity]} />
+    );
+
+    assert.equal(component.find('div').children().length, 0);
   });
 });

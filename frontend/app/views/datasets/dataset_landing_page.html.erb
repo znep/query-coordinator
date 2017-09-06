@@ -62,11 +62,7 @@
   <script type="text/javascript">
     var initialState =
       <%= raw({
-        # Note! try not to use dataset_landing_page_view for anything new. See comment in
-        # definition in lib/dataset_landing_page.rb
         :view => @dataset_landing_page_view,
-
-        :coreView => @view,
         :relatedViews => @related_views,
         :featuredContent => @featured_content
       }.to_json)%>

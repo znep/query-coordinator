@@ -96,7 +96,7 @@
                 a.context.view.rowsUpdatedAt || 0
               )
             );
-            // See also common/formatDate.js
+            // See also common/dates.js
             var dateFormat = (blist.locale === 'en' || blist.locale === '') ? 'MMMM D, YYYY' : 'LL';
             return moment(date).format(dateFormat);
           },

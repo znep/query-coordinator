@@ -34,6 +34,7 @@ import SocrataIcon from './SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './Modal';
 import SideMenu, { MenuListItem, ExpandableMenuListItem } from './SideMenu';
 import { Flannel, FlannelHeader, FlannelContent, FlannelFooter } from './Flannel';
+import MetadataTable from './MetadataTable';
 
 module.exports = {
   attachTo: function(element) {
@@ -76,5 +77,6 @@ module.exports = {
   Flannel,
   FlannelHeader,
   FlannelContent,
-  FlannelFooter
+  FlannelFooter,
+  MetadataTable
 };

@@ -2,18 +2,16 @@ import _ from 'lodash';
 
 export const BOOTSTRAP_APP = 'BOOTSTRAP_APP';
 export const bootstrapApp = (view, customMetadataFieldsets) => {
-  const millis = 1000;
-
   const initialView = {
+    // TODO: Can we send the entire view unmodified?
     id: view.id,
     name: view.name,
     description: view.description,
     category: view.category,
     owner: view.owner,
-    lastUpdatedAt: new Date(view.viewLastModified * millis), // TODO: not sure about this one
-    dataLastUpdatedAt: new Date(view.rowsUpdatedAt * millis),
-    metadataLastUpdatedAt: new Date(view.viewLastModified * millis),
-    createdAt: new Date(view.createdAt * millis),
+    viewLastModified: view.viewLastModified,
+    rowsUpdatedAt: view.rowsUpdatedAt,
+    createdAt: view.createdAt,
     viewCount: view.viewCount,
     downloadCount: view.downloadCount,
     license: view.license || {},

@@ -50,6 +50,7 @@ module OpMeasureHelper
     {
       :mode => @edit_mode ? 'EDIT' : 'VIEW',
       :measure => {
+        :coreView => @view,
         :name => @view.name,
         :description => @view.description || 'Description goes here',
         :metadata => {

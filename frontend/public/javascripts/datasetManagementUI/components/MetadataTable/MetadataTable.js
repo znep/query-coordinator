@@ -1,21 +1,31 @@
 import React, { PropTypes } from 'react';
 import { InfoPane } from 'common/components';
-import CommonMetadataTable from '../../../common/components/MetadataTable';
+import CommonMetadataTable from 'common/components/MetadataTable';
 import styles from './MetadataTable.scss';
 import _ from 'lodash';
+import { localizeLink } from '../../../common/locale';
 
-const MetadataTable = ({ view, customMetadataFieldsets, onClickEditMetadata }) => {
-  if (_.isEmpty(view)) {
+const MetadataTable = ({
+  coreView,
+  customMetadataFieldsets,
+  onClickEditMetadata,
+  disableContactDatasetOwner,
+  editMetadataUrl
+}) => {
+  if (_.isEmpty(coreView)) {
     return null;
   }
 
   return (
     <div className={styles.metadataContainer}>
       <div className={styles.infoPaneContainer}>
-        <InfoPane name={view.name} description={view.description} category={view.category} />
+        <InfoPane name={coreView.name} description={coreView.description} category={coreView.category} />
       </div>
       <CommonMetadataTable
-        viewlikeObject={view}
+        editMetadataUrl={editMetadataUrl}
+        localizeLink={localizeLink}
+        disableContactDatasetOwner={disableContactDatasetOwner}
+        coreView={coreView}
         customMetadataFieldsets={customMetadataFieldsets}
         onClickEditMetadata={onClickEditMetadata} />
     </div>
@@ -23,8 +33,10 @@ const MetadataTable = ({ view, customMetadataFieldsets, onClickEditMetadata }) =
 };
 
 MetadataTable.propTypes = {
-  viewlikeObject: PropTypes.object.isRequired,
+  coreView: CommonMetadataTable.propTypes.coreView,
   customMetadataFieldsets: PropTypes.object.isRequired,
+  disableContactDatasetOwner: PropTypes.bool,
+  editMetadataUrl: PropTypes.string,
   onClickEditMetadata: PropTypes.func.isRequired
 };
 

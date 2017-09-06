@@ -183,7 +183,9 @@ export class ApiModal extends Component {
 
   render() {
     return (
-      <div id="api-modal" className="modal modal-overlay modal-hidden"
+      <div
+        id="api-modal"
+        className="modal modal-overlay modal-hidden"
         aria-labelledby="api-modal-title"
         data-modal-dismiss>
         <div className="modal-container">

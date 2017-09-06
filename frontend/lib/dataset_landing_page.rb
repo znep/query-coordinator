@@ -58,17 +58,15 @@ class DatasetLandingPage
         description = Rinku.auto_link(description, :all, 'target="_blank" rel="nofollow external"')
       end
 
-      # TODO: This approach is an anti-pattern.
-      # We should provide the entire view as-is to the DSLP JS. Any extra information should be provided
-      # in a well-signposted sidecar.
+      # Generate a packet of information about the view. DSLP's JS code will use this to render itself.
       #
-      # There are many reasons to avoid the below pick-and-choose pattern:
-      #   * Difficult to reuse DSLP components elsewhere due to gratuitous differences.
-      #   * Tight coupling of JS to Ruby implementation.
-      #   * Unnecessary switching between snake_case and camelCase.
-      #   * Difficult refactoring due to mix of core-provided metadata (verbatim), core-provided metadata
-      #     (different representation, i.e. timestamps), ruby-computed values unrelated to the view (i.e.,
-      #     stats_url), and mashups of the above.
+      # TODO: Many fields are copied quasi-verbatim from "view" into this hash. This approach is an anti-pattern
+      # dating back to earlier DSLP implementations. It remains for the moment because a migration will
+      # need to be properly planned.  We now provide the entire view as-is to the DSLP JS as "coreView".
+      # If the data you need is in coreView, use it directly in the JS (it's in the redux state under view.coreView).
+      #
+      # Any additional information not part of the core view should be added to this hash (i.e., editMetadataUrl).
+      #
       results[:dataset_landing_page_view] = {
         :allAccessPoints => view.allAccessPoints,
         :apiFoundryUrl => view.api_foundry_url,
@@ -88,10 +86,8 @@ class DatasetLandingPage
         :createdAt => view.time_created_at,
         :csvResourceUrl => view.csv_resource_url(request),
         :customMetadataFieldsets => custom_metadata_fieldsets(view),
-        :dataLastUpdatedAt => view.time_data_last_updated_at,
         :description => description,
         :disableContactDatasetOwner => disable_contact_dataset_owner(view),
-        :downloadCount => view.downloadCount,
         :editMetadataUrl => edit_metadata_url(view),
         :editUrl => edit_view_path(view),
         :emailShareUrl => share_email_url(view),
@@ -110,7 +106,6 @@ class DatasetLandingPage
         :licenseLogo => view.license.try(:logoUrl),
         :licenseName => view.license.try(:name),
         :metadata => view.metadata,
-        :metadataLastUpdatedAt => view.time_metadata_last_updated_at,
         :name => view.name,
         :namedResourceUrl => view.named_resource_url,
         :odataUrl => view.odata_url,
@@ -123,7 +118,9 @@ class DatasetLandingPage
         :statsUrl => stats_url(view, current_user),
         :tags => view.tags,
         :twitterShareUrl => share_twitter_url(view),
-        :viewCount => view.viewCount
+        :viewCount => view.viewCount,
+
+        :coreView => view
       }
 
       results

@@ -1,9 +1,9 @@
-import formatDate from '../formatDate';
+import { formatDateWithLocale } from 'common/dates';
 import utils from 'common/js_utils';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 
 export function getDateLabel(updatedAt) {
-  return formatDate(typeof updatedAt === 'object' ? updatedAt : new Date(updatedAt));
+  return formatDateWithLocale(typeof updatedAt === 'object' ? updatedAt : new Date(updatedAt));
 }
 
 export const getViewCountLabel = (viewCount) => {
@@ -24,7 +24,7 @@ export function getViewCardPropsForView(view) {
   return {
     ...view,
     contentType: 'internal',
-    metadataLeft: formatDate(view.updatedAt),
+    metadataLeft: formatDateWithLocale(view.updatedAt),
     metadataRight: getViewCountLabel(_.get(view, 'viewCount', 0)),
     icon: getIconClassForDisplayType(view.displayType),
     linkProps: {

@@ -1,5 +1,5 @@
-@import "styleguide-colors";
-@import "common/breakpoints";
+@import "variables/colors";
+@import "variables/grid";
 
 // TODO: update the StyleGuide colors so we can just use $dark-grey-2, etc.
 $grid-link-color: #5e5e5e; // Mimic color used in styleguide that doesn't follow palette

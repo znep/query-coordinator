@@ -2,15 +2,17 @@ import _ from 'lodash';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import CommonMetadataTable from '../../common/components/MetadataTable';
+import { MetadataTable as CommonMetadataTable } from 'common/components';
+import { localizeLink } from '../../common/locale';
 
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
 
 function mapStateToProps(state) {
-  const viewlikeObject = state.view || {};
+  const view = state.view || {};
+  const { coreView } = view;
 
-  const customFieldsets = viewlikeObject.customMetadataFieldsets || [];
+  const customFieldsets = view.customMetadataFieldsets || [];
 
   // TODO - move to common implementation.
   const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
@@ -30,8 +32,12 @@ function mapStateToProps(state) {
   }, {});
 
   return ({
-    viewlikeObject,
-    customMetadataFieldsets
+    localizeLink,
+    coreView,
+    customMetadataFieldsets,
+    disableContactDatasetOwner: view.disableContactDatasetOwner,
+    editMetadataUrl: view.editMetadataUrl,
+    statsUrl: view.statsUrl
   });
 }
 

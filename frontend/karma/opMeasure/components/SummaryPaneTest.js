@@ -1,3 +1,6 @@
+import { shallow } from 'enzyme';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 
 import { SummaryPane } from 'components/SummaryPane';
@@ -10,6 +13,11 @@ describe('SummaryPane', () => {
       measure: {
         name: 'My Measure',
         description: 'My measure has a description',
+        coreView: {
+          rowsUpdatedAt: 123,
+          viewLastModified: 345,
+          createdAt: 456
+        },
         metadata: {
           analysis: 'Some analysis text',
           methods: 'Some methods text'
@@ -21,18 +29,17 @@ describe('SummaryPane', () => {
   };
 
   it('renders pane content if it is the active pane', () => {
-    const element = renderComponent(SummaryPane, getProps());
+    const element = shallow(<SummaryPane {...getProps()} />);
 
-    assert.ok(element);
-    assert.ok(element.querySelector('.metadata-section'));
-    assert.ok(element.querySelector('.summary-pane-description'));
+    assert.lengthOf(element.find('.metadata-section'), 1);
+    assert.lengthOf(element.find('.summary-pane-description'), 1);
   });
 
   it('renders nothing if it is not the active pane', () => {
-    const element = renderComponent(SummaryPane, getProps({
+    const element = shallow(<SummaryPane {...getProps({
       activePane: 'other'
-    }));
+    })} />);
 
-    assert.isNull(element);
+    assert.isTrue(element.isEmptyRender());
   });
 });

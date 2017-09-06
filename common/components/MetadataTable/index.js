@@ -1,14 +1,28 @@
 import _ from 'lodash';
-import collapsible from '../collapsible';
+import collapsible from 'common/collapsible';
 import velocity from 'velocity-animate';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
-import formatDate, { parseISO8601Date } from '../formatDate';
+import { formatDateWithLocale } from 'common/dates';
 import utils from 'common/js_utils';
-import { handleKeyPress } from '../a11yHelpers';
-import { localizeLink } from '../locale';
 import Linkify from 'react-linkify';
 import moment from 'moment-timezone';
+import I18n from 'common/i18n';
+import { ENTER, SPACE, isOneOfKeys } from 'common/keycodes';
+
+
+// Checks if event is a space or an enter
+const handleInvokeKey = (handler, preventDefault) => (
+  (event) => {
+    if (isOneOfKeys(event, [ ENTER, SPACE ])) {
+      if (preventDefault) {
+        event.preventDefault();
+      }
+
+      return handler(event);
+    }
+  }
+);
 
 // TODO: Make an example page for this component.
 class MetadataTable extends Component {
@@ -35,7 +49,7 @@ class MetadataTable extends Component {
   }
 
   collapseTags() {
-    if (_.isEmpty(this.props.viewlikeObject.tags)) {
+    if (_.isEmpty(this.props.coreView.tags)) {
       return;
     }
 
@@ -115,16 +129,16 @@ class MetadataTable extends Component {
 
   renderHeader() {
     let editMetadata;
-    const { viewlikeObject } = this.props;
+    const { editMetadataUrl, localizeLink } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
 
-    if (viewlikeObject.editMetadataUrl) {
+    if (editMetadataUrl) {
       editMetadata = (
         <a
-          href={localizeLink(viewlikeObject.editMetadataUrl)}
+          href={localizeLink(editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
-          {I18n.common.metadata.edit_metadata}
+          {I18n.t('common.metadata.edit_metadata')}
         </a>
       );
     }
@@ -132,7 +146,7 @@ class MetadataTable extends Component {
     return (
       <div className="landing-page-header-wrapper">
         <h2 className="landing-page-section-header">
-          {I18n.common.metadata.title}
+          {I18n.t('common.metadata.title')}
         </h2>
         {editMetadata}
       </div>
@@ -140,13 +154,9 @@ class MetadataTable extends Component {
   }
 
   render() {
-    const { viewlikeObject, customMetadataFieldsets } = this.props;
+    const { coreView, disableContactDatasetOwner, statsUrl, customMetadataFieldsets, localizeLink } =
+      this.props;
     const onClickStats = this.props.onClickStats || _.noop;
-
-    if (!_.has(viewlikeObject, 'lastUpdatedAt')) {
-      throw new Error('viewlikeObject property does not look like a viewlikeObject. If you are trying to use\
-        a raw core view metadata object, look at coreViewToViewlikeObject');
-    }
 
     let attachments;
     let attribution;
@@ -159,6 +169,22 @@ class MetadataTable extends Component {
     let license;
     let statsSection;
     let tags;
+    const isBlobby = coreView.viewType === 'blobby';
+    const isHref = coreView.viewType === 'href';
+    const isMeasure = coreView.viewType === 'measure';
+    const showDataLastUpdated = !isBlobby && !isHref && !isMeasure;
+    const showDownloadCount = !isMeasure;
+
+    const ownerName = _.get(coreView, 'owner.displayName');
+    const dataLastUpdatedAt = coreView.rowsUpdatedAt;
+    const metadataLastUpdatedAt = coreView.viewLastModified;
+
+    // Mirrors view.rb#time_last_updated_at
+    const lastUpdatedAt = _([
+      coreView.rowsUpdatedAt,
+      coreView.createdAt,
+      coreView.viewLastModified
+    ]).compact().max();
 
     const header = _.get(
       this.props,
@@ -166,16 +192,16 @@ class MetadataTable extends Component {
       this.renderHeader()
     );
 
-    if (viewlikeObject.attribution) {
+    if (coreView.attribution) {
       attribution = (
         <dd className="metadata-detail-group-value">
-          {viewlikeObject.attribution}
+          {coreView.attribution}
         </dd>
       );
     } else {
       attribution = (
         <dd className="metadata-detail-group-value empty">
-          {I18n.common.metadata.no_value}
+          {I18n.t('common.metadata.no_value')}
         </dd>
       );
     }
@@ -219,20 +245,27 @@ class MetadataTable extends Component {
       });
     }
 
-    if (!_.isEmpty(viewlikeObject.attachments)) {
-      const attachmentRows = _.map(viewlikeObject.attachments, (attachment, i) => (
-        <tr key={i}>
-          <td className="attachment">
-            <span className="icon-copy-document"></span>
-            <span dangerouslySetInnerHTML={{ __html: attachment.link }}></span>
-          </td>
-        </tr>
-      ));
+    if (coreView.metadata && !_.isEmpty(coreView.metadata.attachments)) {
+      const attachmentRows = _.map(coreView.metadata.attachments, (attachment, i) => {
+        const displayName = attachment.name || attachment.filename;
+        const href = _.isUndefined(attachment.assetId) ?
+          `/api/assets/${attachment.blobId}?download=true` :
+          `/api/views/${coreView.id}/files/${attachment.assetId}?download=true&filename=${attachment.filename}`;
+
+        return (
+          <tr key={i}>
+            <td className="attachment">
+              <span className="icon-copy-document"></span>
+              <span><a href={href}>{displayName}</a></span>
+            </td>
+          </tr>
+        );
+      });
 
       attachments = (
         <div>
           <h3 className="metadata-table-title">
-            {I18n.common.metadata.attachments}
+            {I18n.t('common.metadata.attachments')}
           </h3>
           <table className="table table-condensed table-borderless table-discrete table-striped">
             <tbody>
@@ -243,17 +276,17 @@ class MetadataTable extends Component {
       );
     }
 
-    if (viewlikeObject.category) {
-      category = <td>{_.upperFirst(viewlikeObject.category)}</td>;
+    if (coreView.category) {
+      category = <td>{_.upperFirst(coreView.category)}</td>;
     } else {
-      category = <td className="empty">{I18n.common.metadata.no_category_value}</td>;
+      category = <td className="empty">{I18n.t('common.metadata.no_category_value')}</td>;
     }
 
-    if (!_.isEmpty(viewlikeObject.tags)) {
-      const tagLinks = _.map(viewlikeObject.tags, (tag, i) => (
+    if (!_.isEmpty(coreView.tags)) {
+      const tagLinks = _.map(coreView.tags, (tag, i) => (
         <span key={i}>
           <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
-          {i === viewlikeObject.tags.length - 1 ? '' : ', '}
+          {i === coreView.tags.length - 1 ? '' : ', '}
         </span>
       ));
 
@@ -263,39 +296,42 @@ class MetadataTable extends Component {
             <div className="tag-list">
               {tagLinks}
 
-              <button className="collapse-toggle more">{I18n.common.more}</button>
-              <button className="collapse-toggle less">{I18n.common.less}</button>
+              <button className="collapse-toggle more">{I18n.t('common.more')}</button>
+              <button className="collapse-toggle less">{I18n.t('common.less')}</button>
             </div>
           </div>
         </td>
       );
     } else {
-      tags = <td className="empty">{I18n.common.metadata.no_tags_value}</td>;
+      tags = <td className="empty">{I18n.t('common.metadata.no_tags_value')}</td>;
     }
 
-    if (viewlikeObject.licenseName) {
-      if (viewlikeObject.licenseLogo) {
-        license = <img src={`/${viewlikeObject.licenseLogo}`} alt={viewlikeObject.licenseName} className="license" />;
+    const licenseName = _.get(coreView, 'license.name');
+    const licenseLink = _.get(coreView, 'license.termsLink');
+    const licenseLogo = _.get(coreView, 'license.logoUrl');
+    if (licenseName) {
+      if (licenseLogo) {
+        license = <img src={`/${licenseLogo}`} alt={licenseName} className="license" />;
       } else {
-        license = viewlikeObject.licenseName;
+        license = licenseName;
       }
 
-      if (viewlikeObject.licenseLink) {
-        license = <a href={viewlikeObject.licenseLink} target="_blank">{license}</a>;
+      if (licenseLink) {
+        license = <a href={licenseLink} target="_blank">{license}</a>;
       }
 
       license = <td>{license}</td>;
     } else {
-      license = <td className="empty">{I18n.common.metadata.no_license_value}</td>;
+      license = <td className="empty">{I18n.t('common.metadata.no_license_value')}</td>;
     }
 
-    if (viewlikeObject.attributionLink) {
+    if (coreView.attributionLink) {
       attributionLink = (
         <tr>
-          <td>{I18n.common.metadata.source_link}</td>
+          <td>{I18n.t('common.metadata.source_link')}</td>
           <td className="attribution">
-            <a href={viewlikeObject.attributionLink} target="_blank" rel="nofollow external">
-              {viewlikeObject.attributionLink}
+            <a href={coreView.attributionLink} target="_blank" rel="nofollow external">
+              {coreView.attributionLink}
               <span className="icon-external-square" />
             </a>
           </td>
@@ -303,52 +339,52 @@ class MetadataTable extends Component {
       );
     }
 
-    if (viewlikeObject.statsUrl) {
+    if (statsUrl) {
       statsSection = (
         <div className="metadata-row middle">
           <a
             className="metadata-detail-group-value"
-            href={localizeLink(viewlikeObject.statsUrl)}
+            href={localizeLink(statsUrl)}
             onClick={onClickStats}>
-            {I18n.common.metadata.view_statistics}
+            {I18n.t('common.metadata.view_statistics')}
           </a>
         </div>
       );
     }
 
-    if (!viewlikeObject.disableContactDatasetOwner) {
+    if (!disableContactDatasetOwner) {
       contactDatasetOwner = (
         <button
           className="btn btn-sm btn-primary btn-block contact-dataset-owner"
           data-modal="contact-form">
-          {I18n.common.contact_dataset_owner}
+          {I18n.t('common.contact_dataset_owner')}
         </button>
       );
     }
 
-    if (!viewlikeObject.isBlobby && !viewlikeObject.isHref) {
+    if (showDataLastUpdated) {
       dataLastUpdated = (
         <div className="metadata-detail-group">
           <dt className="metadata-detail-group-title">
-            {I18n.common.metadata.data_last_updated}
+            {I18n.t('common.metadata.data_last_updated')}
           </dt>
 
           <dd className="metadata-detail-group-value">
-            {formatDate(viewlikeObject.dataLastUpdatedAt)}
+            { formatDateWithLocale(moment.unix(coreView.rowsUpdatedAt)) }
           </dd>
         </div>
       );
     }
 
-    if (_.isFinite(viewlikeObject.downloadCount)) {
+    if (showDownloadCount && _.isFinite(coreView.downloadCount)) {
       downloads = (
         <div className="metadata-pair download-count">
           <dt className="metadata-pair-key">
-            {I18n.common.metadata.downloads}
+            {I18n.t('common.metadata.downloads')}
           </dt>
 
           <dd className="metadata-pair-value">
-            {utils.formatNumber(viewlikeObject.downloadCount)}
+            {utils.formatNumber(coreView.downloadCount)}
           </dd>
         </div>
       );
@@ -365,11 +401,11 @@ class MetadataTable extends Component {
                 <div className="metadata-row">
                   <div className="metadata-pair">
                     <dt className="metadata-pair-key">
-                      {I18n.common.updated}
+                      {I18n.t('common.updated')}
                     </dt>
 
                     <dd className="metadata-pair-value">
-                      {formatDate(viewlikeObject.lastUpdatedAt)}
+                      {formatDateWithLocale(moment.unix(lastUpdatedAt))}
                     </dd>
                   </div>
                 </div>
@@ -379,11 +415,11 @@ class MetadataTable extends Component {
 
                   <div className="metadata-detail-group">
                     <dt className="metadata-detail-group-title">
-                      {I18n.common.metadata.metadata_last_updated}
+                      {I18n.t('common.metadata.metadata_last_updated')}
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {formatDate(viewlikeObject.metadataLastUpdatedAt)}
+                      {formatDateWithLocale(moment.unix(metadataLastUpdatedAt))}
                     </dd>
                   </div>
                 </div>
@@ -391,11 +427,11 @@ class MetadataTable extends Component {
                 <div className="metadata-row metadata-detail-groups">
                   <div className="metadata-detail-group">
                     <dt className="metadata-detail-group-title">
-                      {I18n.common.metadata.creation_date}
+                      {I18n.t('common.metadata.creation_date')}
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {formatDate(viewlikeObject.createdAt)}
+                      {formatDateWithLocale(moment.unix(coreView.createdAt))}
                     </dd>
                   </div>
                 </div>
@@ -407,11 +443,11 @@ class MetadataTable extends Component {
                 <div className="metadata-row metadata-flex">
                   <div className="metadata-pair">
                     <dt className="metadata-pair-key">
-                      {I18n.common.metadata.views}
+                      {I18n.t('common.metadata.views')}
                     </dt>
 
                     <dd className="metadata-pair-value">
-                      {utils.formatNumber(viewlikeObject.viewCount)}
+                      {utils.formatNumber(coreView.viewCount)}
                     </dd>
                   </div>
 
@@ -426,18 +462,18 @@ class MetadataTable extends Component {
                 <div className="metadata-row metadata-flex metadata-detail-groups">
                   <div className="metadata-detail-group">
                     <dt className="metadata-detail-group-title">
-                      {I18n.common.metadata.data_provided_by}
+                      {I18n.t('common.metadata.data_provided_by')}
                     </dt>
                     {attribution}
                   </div>
 
                   <div className="metadata-detail-group">
                     <dt className="metadata-detail-group-title">
-                      {I18n.common.metadata.dataset_owner}
+                      {I18n.t('common.metadata.dataset_owner')}
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {viewlikeObject.ownerName}
+                      {ownerName}
                     </dd>
                   </div>
                 </div>
@@ -454,19 +490,19 @@ class MetadataTable extends Component {
 
               <div className="metadata-table">
                 <h3 className="metadata-table-title">
-                  {I18n.common.metadata.topics}
+                  {I18n.t('common.metadata.topics')}
                 </h3>
 
                 <table
                   className="table table-condensed table-borderless table-discrete table-striped">
                   <tbody>
                     <tr>
-                      <td>{I18n.common.metadata.category}</td>
+                      <td>{I18n.t('common.metadata.category')}</td>
                       {category}
                     </tr>
 
                     <tr>
-                      <td>{I18n.common.metadata.tags}</td>
+                      <td>{I18n.t('common.metadata.tags')}</td>
                       {tags}
                     </tr>
                   </tbody>
@@ -475,14 +511,14 @@ class MetadataTable extends Component {
 
               <div className="metadata-table">
                 <h3 className="metadata-table-title">
-                  {I18n.common.metadata.licensing}
+                  {I18n.t('common.metadata.licensing')}
                 </h3>
 
                 <table
                   className="table table-condensed table-borderless table-discrete table-striped">
                   <tbody>
                     <tr>
-                      <td>{I18n.common.metadata.license}</td>
+                      <td>{I18n.t('common.metadata.license')}</td>
                       {license}
                     </tr>
 
@@ -497,8 +533,8 @@ class MetadataTable extends Component {
                   tabIndex="0"
                   role="button"
                   onClick={this.toggleTable}
-                  onKeyDown={handleKeyPress(this.toggleTable)}>
-                  {I18n.common.more}
+                  onKeyDown={handleInvokeKey(this.toggleTable)}>
+                  {I18n.t('common.more')}
                 </a>
 
                 <a
@@ -506,8 +542,8 @@ class MetadataTable extends Component {
                   tabIndex="0"
                   role="button"
                   onClick={this.toggleTable}
-                  onKeyDown={handleKeyPress(this.toggleTable)}>
-                  {I18n.common.less}
+                  onKeyDown={handleInvokeKey(this.toggleTable)}>
+                  {I18n.t('common.less')}
                 </a>
               </div>
 
@@ -515,15 +551,15 @@ class MetadataTable extends Component {
                 <button
                   className="btn btn-block btn-default metadata-table-toggle more mobile"
                   onClick={this.toggleTable}
-                  onKeyDown={handleKeyPress(this.toggleTable)}>
-                  {I18n.common.more}
+                  onKeyDown={handleInvokeKey(this.toggleTable)}>
+                  {I18n.t('common.more')}
                 </button>
 
                 <button
                   className="btn btn-block btn-default metadata-table-toggle less mobile"
                   onClick={this.toggleTable}
-                  onKeyDown={handleKeyPress(this.toggleTable)}>
-                  {I18n.common.less}
+                  onKeyDown={handleInvokeKey(this.toggleTable)}>
+                  {I18n.t('common.less')}
                 </button>
               </div>
             </div>
@@ -534,50 +570,8 @@ class MetadataTable extends Component {
   }
 }
 
-// Converts a real core view (/api/views/xxxx-xxxx.json) to a form this component can understand.
-// See comments in propTypes.
-// If you want to override some fields (editMetadataUrl and statsUrl come to mind),
-// pass a hash of fields as the "defaults" parameter.
-export const coreViewToViewlikeObject = (coreView, defaults) => {
-  const viewlikeObject = _.cloneDeep(coreView);
-  const license = coreView.license || {};
-
-  const toISO8601 = (date) => {
-    const momentDate = _.isNumber(date) ? moment.unix(date) : parseISO8601Date(date);
-    return momentDate.toISOString();
-  };
-
-  // Mirrors view.rb#time_last_updated_at
-  const lastUpdatedAt = _([
-    coreView.rowsUpdatedAt,
-    coreView.createdAt,
-    coreView.viewLastModified
-  ]).compact().max();
-
-  _.assign(viewlikeObject, {
-    tags: coreView.tags,
-    attribution: coreView.attribution,
-    attributionLink: coreView.attributionLink || '',
-    attachments: coreView.attachments, // MetadataTable transforms this
-    licenseName: license.name,
-    licenseLogo: license.logoUrl,
-    licenseLink: license.termsLink,
-    editMetadataUrl: null,
-    statsUrl: null, // Tricky - need to do a permissions check first. See view.rb#can_see_stats?
-    // Tricky - should be tied to CurrentDomain.feature?(:disable_contact_dataset_owner), but we have
-    // no standard facility to check features in JS (as opposed to FeatureFlags).
-    // Default to a safe value.
-    disableContactDatasetOwner: true,
-    lastUpdatedAt: toISO8601(lastUpdatedAt),
-    dataLastUpdatedAt: toISO8601(coreView.rowsUpdatedAt), // Note the name change :/
-    metadataLastUpdatedAt: toISO8601(coreView.viewLastModified), // Note the name change :/
-    createdAt: toISO8601(coreView.createdAt),
-    viewCount: coreView.viewCount,
-    downloadCount: coreView.downloadCount,
-    ownerName: _.get(coreView, 'owner.displayName')
-  }, defaults || {});
-
-  return viewlikeObject;
+MetadataTable.defaultProps = {
+  localizeLink: _.identity
 };
 
 MetadataTable.propTypes = {
@@ -586,45 +580,47 @@ MetadataTable.propTypes = {
   onExpandMetadataTable: PropTypes.func,
   onExpandTags: PropTypes.func,
 
+  // Optional function to let containing app add a locale prefix to links generated
+  // by MetadataTable. There's no standardized way of doing this for common code,
+  // so the easiest way for now is to externalize the concern.
+  localizeLink: PropTypes.func,
+
   // Header content. If unspecified, uses a default header (with an edit button
-  // going to viewlikeObject.editMetadataUrl).
+  // going to editMetadataUrl).
   header: PropTypes.node,
 
-  // This is a not-quite-core-view object that dates back to an early Primer implementation.
-  // It's terrible, but an ecosystem (more like petri dish) has grown up around it. Unfortunately,
-  // this object is a little sticky because it provides a little more information than what is
-  // provided by a normal core view (some links, statsUrl, etc). This is also not the only
-  // component which uses this viewlikeObject.
-  //
-  // If you're thinking "Dangit, I just wanna display a darn
-  // table!" you're a) right to be miffed, and b) in luck: use
-  // the included coreViewToViewlikeObject. If you have the time,
-  // consider investing the time to refactor viewlikeObject straight
-  // into the depths of the sea of fire from whence it came. You'll
-  // have to address Primer, DatasetManagementUI, and OP Measures.
-  viewlikeObject: PropTypes.shape({
+  // Href for the Edit Metadata button.
+  editMetadataUrl: PropTypes.string,
+
+  // Href for the "view all statistics" link. Null to disable.
+  statsUrl: PropTypes.string,
+
+  // Disables the "contact dataset owner" button if set to true.
+  disableContactDatasetOwner: PropTypes.bool,
+
+  // A simple Core view metadata blob from /api/views/xxxx-yyyy.json
+  // These PropTypes capture the fields actually used by the component.
+  coreView: PropTypes.shape({
     tags: PropTypes.array,
     attribution: PropTypes.string,
-    attachments: PropTypes.array,
+    metadata: PropTypes.shape({
+      attachments: PropTypes.array
+    }),
     category: PropTypes.string,
-    licenseName: PropTypes.string,
-    licenseLink: PropTypes.string,
-    licenseLogo: PropTypes.string,
+    license: PropTypes.shape({
+      name: PropTypes.string,
+      logoUrl: PropTypes.string,
+      termsLink: PropTypes.string
+    }),
     attributionLink: PropTypes.string,
-    statsUrl: PropTypes.string,
-    editMetadataUrl: PropTypes.string,
-    disableContactDatasetOwner: PropTypes.bool,
-    isHref: PropTypes.bool,
-    isBlobby: PropTypes.bool,
+    viewType: PropTypes.string,
 
-    // NOTE! These timestamps are ISO8601, which is gratuitously different from core
-    // (which provides a UNIX timestamp). Sorry.
-    dataLastUpdatedAt: PropTypes.string,
-    lastUpdatedAt: PropTypes.string,
-    metadataLastUpdatedAt: PropTypes.string,
-    createdAt: PropTypes.string,
-
-    ownerName: PropTypes.string,
+    rowsUpdatedAt: PropTypes.number,
+    viewLastModified: PropTypes.number,
+    createdAt: PropTypes.number,
+    owner: PropTypes.shape({
+      displayName: PropTypes.string
+    }),
     viewCount: PropTypes.number,
     downloadCount: PropTypes.number
   }).isRequired,

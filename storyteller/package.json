@@ -145,6 +145,7 @@
     "react-dom": "15.4.2",
     "react-image-crop": "1.0.0-rc3",
     "react-input-range": "0.9.2",
+    "react-linkify": "0.1.1",
     "react-redux": "4.4.5",
     "redux": "3.5.2",
     "redux-logger": "2.6.1",

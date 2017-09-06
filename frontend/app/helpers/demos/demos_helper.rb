@@ -4,7 +4,8 @@ module Demos::DemosHelper
   end
 
   def render_demos_translations
-    translations = json_escape(LocaleCache.render_translations([LocalePart.shared]).to_json)
-    javascript_tag("var translations = #{translations};", :id => 'translations')
+    # Standard cross-app translations.
+    new_translations = json_escape(LocaleCache.render_partial_translations(:shared).to_json)
+    javascript_tag("var translations = #{new_translations};")
   end
 end

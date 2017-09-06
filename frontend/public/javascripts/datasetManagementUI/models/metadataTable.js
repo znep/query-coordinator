@@ -6,41 +6,20 @@ export const getRevision = (rSeq, revisions) => _.chain(revisions).find({ revisi
 
 export const getView = (fourfour, views) => _.chain(views).get(fourfour).value();
 
-// shapeViewForProps :: View -> ViewlikeObj
-const shapeViewForProps = view => ({
-  ...view,
-  tags: view.tags,
-  attribution: view.attribution,
-  attributionLink: view.attributionLink || '',
-  attachments: view.attachments, // MetadataTable transforms this
-  licenseName: view.license.name,
-  licenseLogo: view.license.logoUrl,
-  licenseUrl: view.license.termsLink,
-  editMetadataUrl: '#',
-  statsUrl: '', // MetadataTable computes this because permission checking
-  disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
-  lastUpdatedAt: view.lastUpdatedAt,
-  dataLastUpdatedAt: view.dataLastUpdatedAt,
-  metadataLastUpdatedAt: view.metadataLastUpdatedAt,
-  createdAt: view.createdAt,
-  viewCount: view.viewCount,
-  downloadCount: view.downloadCount,
-  ownerName: view.owner.displayName // owner.name
-});
-
 // shapeRevisionForProps :: Revision -> ViewlikeObj
 const shapeRevisionForProps = revision => ({
   tags: revision.metadata.tags,
   attribution: revision.metadata.attribution,
   attributionLink: revision.metadata.attributionLink || '',
   attachments: revision.metadata.attachments, // MetadataTable transforms this
-  editMetadataUrl: '#',
-  licenseName: revision.metadata.license.name,
-  licenseLogo: revision.metadata.license.logoUrl,
-  licenseUrl: revision.metadata.license.termsLink,
-  statsUrl: '', // MetadataTable computes this because permission checking
-  createdAt: revision.created_at,
-  ownerName: revision.created_by.display_name,
+  license: revision.metadata.license,
+  createdAt: Math.floor(revision.created_at.getTime() / 1000),
+  // TODO Not sure about this - is the revision author effectively the owner?
+  owner: {
+    displayName: revision.created_by.display_name,
+    id: revision.created_by.user_id
+
+  },
   metadata: revision.metadata
 });
 
@@ -75,7 +54,7 @@ export const makeProps = (entities, params) => {
     let customMetadataFieldsets = {};
 
     const viewlikeObj = {
-      ...shapeViewForProps(v),
+      ...v,
       ...shapeRevisionForProps(r)
     };
 
@@ -87,7 +66,10 @@ export const makeProps = (entities, params) => {
     }
 
     return {
-      viewlikeObj,
+      editMetadataUrl: '#',
+      statsUrl: null,
+      disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
+      coreView: viewlikeObj,
       customMetadataFieldsets,
       onClickEditMetadata: e => {
         e.preventDefault();

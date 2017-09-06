@@ -1,6 +1,5 @@
 common:
   - common/breakpoints
-  - common/metadata-table
 
 angular-app-dataCards:
 - dataCards/main

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import formatDate from '../../common/formatDate';
+import { formatDateWithLocale } from 'common/dates';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import InfoPaneButtons from './InfoPaneButtons';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
@@ -21,7 +21,7 @@ function mapStateToProps(state) {
     metadata: {
       first: {
         label: I18n.common.updated,
-        content: formatDate(view.lastUpdatedAt)
+        content: formatDateWithLocale(view.lastUpdatedAt)
       },
       second: attribution
     },

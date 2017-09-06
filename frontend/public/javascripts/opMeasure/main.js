@@ -26,6 +26,9 @@ _.defer(function() {
       document.querySelector('#app')
     );
   } catch (e) {
+    // TODO: Catching-all makes stack traces hard to parse in a development context. The links
+    // in the console don't take you to the code that threw. Instead, they take you to the
+    // raw webpack-generated eval() calls.
     console.error(`Fatal error when rendering: ${e.stack}`);
 
     ReactDOM.render(

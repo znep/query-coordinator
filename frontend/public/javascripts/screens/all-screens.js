@@ -242,7 +242,7 @@ $(function() {
 
   // If any of this logic changes, please make corrsponding changes to dateLocalize() in
   // frontend/public/javascripts/common/locale.js:dateLocalize()
-  // Also in frontend/public/javascripts/common/formatDate.js:formatDate()
+  // Also formatDateWithLocale in common/dates.js.
   $('.dateLocalize').each(function() {
     var $dateSpan = $(this);
     var format = $dateSpan.data('format');

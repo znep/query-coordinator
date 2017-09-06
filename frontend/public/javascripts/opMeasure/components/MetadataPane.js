@@ -1,24 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { localizeLink } from '../../common/locale';
+
+import { MetadataTable } from 'common/components';
 
 // Pane containing generic asset metadata for the measure.
 export class MetadataPane extends Component {
   render() {
-    const { activePane } = this.props;
+    const { activePane, measure } = this.props;
+    const { coreView } = measure;
+
     if (activePane !== 'metadata') {
       return null;
     }
 
     return (
       <div className="pane" data-pane="metadata">
-        <p>Hey, here is some metadata</p>
+        <MetadataTable
+          coreView={coreView}
+          header={null}
+          localizeLink={localizeLink}
+          disableContactDatasetOwner />
       </div>
     );
   }
 }
 
 MetadataPane.propTypes = {
-  activePane: PropTypes.string
+  activePane: PropTypes.string,
+  measure: PropTypes.object
 };
 
 function mapStateToProps(state) {

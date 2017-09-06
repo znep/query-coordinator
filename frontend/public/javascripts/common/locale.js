@@ -39,7 +39,7 @@ const getTimezone = () => _.get(window.blist, 'configuration.userTimeZoneName', 
 // If any of this logic changes, please make corresponding changes to:
 // frontend/public/javascripts/screens/all-screens.js
 // On or about ~L230:$('.dateLocalize').each(function() { ...
-// Also in frontend/public/javascripts/common/formatDate.js:formatDate()
+// Also formatDateWithLocale in common/dates.js.
 export const dateLocalize = (element) => {
   const $dateSpan = $(element);
   const format = $dateSpan.data('format');

@@ -9,6 +9,9 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/opMeasure'),
   entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
+  externals: {
+    jquery: true
+  },
   module: {
     loaders: common.getStandardLoaders([
       {

@@ -8,10 +8,20 @@ import I18n from 'common/i18n';
 import { launchEditModal } from '../actions/editor';
 import { ModeStates } from '../lib/constants';
 
+import moment from 'moment-timezone';
+import { formatDateWithLocale } from 'common/dates';
+
 // Pane containing high-level (mostly prose) description of the measure.
 export class SummaryPane extends Component {
   renderOverview() {
-    const { description } = this.props.measure;
+    const { measure } = this.props;
+    const { description, coreView } = measure;
+
+    const lastUpdatedAt = _([
+      coreView.rowsUpdatedAt,
+      coreView.createdAt,
+      coreView.viewLastModified
+    ]).compact().max();
 
     return (
       <div className="metadata-table-wrapper">
@@ -22,7 +32,7 @@ export class SummaryPane extends Component {
                 Updated
               </dt>
               <dd className="metadata-pair-value">
-                June 2, 2017
+                {formatDateWithLocale(moment.unix(lastUpdatedAt))}
               </dd>
             </div>
             <div className="metadata-pair">
@@ -105,7 +115,12 @@ SummaryPane.propTypes = {
   activePane: PropTypes.string,
   measure: PropTypes.object,
   mode: PropTypes.oneOf(_.values(ModeStates)),
-  onClickEdit: PropTypes.func
+  onClickEdit: PropTypes.func,
+  coreView: PropTypes.shape({
+    rowsUpdatedAt: PropTypes.number,
+    viewLastModified: PropTypes.number,
+    createdAt: PropTypes.number
+  }).isRequired
 };
 
 function mapStateToProps(state) {

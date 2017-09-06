@@ -1,14 +1,14 @@
-import sinon from 'sinon';
-import { expect, assert } from 'chai';
-import App from 'App';
-import $ from 'jquery';
+import { shallow } from 'enzyme';
+import { assert } from 'chai';
 import mockView from 'data/mockView';
-import mockFeaturedItem from 'data/mockFeaturedItem';
-import mockRelatedView from 'data/mockRelatedView';
-import { getDefaultStore } from 'testStore';
-import datasetLandingPage from 'reducers';
-import { createStore } from 'redux';
 import { FeatureFlags } from 'common/feature_flags';
+
+import App from 'App';
+import RowDetails from 'components/RowDetails';
+import SchemaPreview from 'components/SchemaPreview';
+import DatasetPreview from 'components/DatasetPreview';
+import BlobPreview from 'components/BlobPreview';
+import BlobDownload from 'components/BlobDownload';
 
 describe('App', function() {
   before(function() {
@@ -23,56 +23,38 @@ describe('App', function() {
     });
   }
 
-  function getStore(state) {
-    window.initialState = _.defaultsDeep({}, state, {
-      view: mockView,
-      relatedViews: [mockRelatedView],
-      featuredContent: [mockFeaturedItem]
-    });
-
-    return createStore(datasetLandingPage);
-  }
-
   describe('when rendering a dataset', function() {
-    var originalSocrataTable;
+    let element;
 
     beforeEach(function() {
-      originalSocrataTable = $.fn.socrataTable;
-      $.fn.socrataTable = sinon.stub();
-    });
-
-    afterEach(function() {
-      $.fn.socrataTable = originalSocrataTable;
-    });
-
-    var element;
-
-    beforeEach(function() {
-      element = renderComponentWithStore(App, {}, getStore());
+      // App is exported wrapped in Connect. It's much easier
+      // to test the unconnected component, which is exposed at
+      // App.WrappedComponent.
+      element = shallow(<App.WrappedComponent {...getProps()} />);
     });
 
     it('does not render BlobPreview', function() {
-      assert.isNull(element.querySelector('.blob-preview'));
+      assert.lengthOf(element.find(BlobPreview), 0);
     });
 
     it('does not render BlobDownload', function() {
-      assert.isNull(element.querySelector('.blob-download'));
+      assert.lengthOf(element.find(BlobDownload), 0);
     });
 
     it('renders RowDetails', function() {
-      assert.ok(element.querySelector('.dataset-contents'));
+      assert.lengthOf(element.find(RowDetails), 1);
     });
 
     it('renders SchemaPreview', function() {
-      assert.ok(element.querySelector('.schema-preview'));
+      assert.lengthOf(element.find(SchemaPreview), 1);
     });
   });
 
   describe('when rendering a blob', function() {
-    var element;
+    let element;
 
     beforeEach(function() {
-      var storeState = {
+      const props = {
         view: {
           isBlobby: true,
           blobType: 'image',
@@ -81,27 +63,30 @@ describe('App', function() {
         }
       };
 
-      element = renderComponentWithStore(App, {}, getStore(storeState));
+      // App is exported wrapped in Connect. It's much easier
+      // to test the unconnected component, which is exposed at
+      // App.WrappedComponent.
+      element = shallow(<App.WrappedComponent {...getProps(props)} />);
     });
 
     it('renders BlobPreview', function() {
-      assert.ok(element.querySelector('.blob-preview'));
+      assert.lengthOf(element.find(BlobPreview), 1);
     });
 
     it('renders BlobDownload', function() {
-      assert.ok(element.querySelector('.blob-download'));
+      assert.lengthOf(element.find(BlobDownload), 1);
     });
 
     it('does not render RowDetails', function() {
-      assert.isNull(element.querySelector('.dataset-contents'));
+      assert.lengthOf(element.find(RowDetails), 0);
     });
 
     it('does not render SchemaPreview', function() {
-      assert.isNull(element.querySelector('.schema-preview'));
+      assert.lengthOf(element.find(SchemaPreview), 0);
     });
 
     it('does not render DatasetPreview', function() {
-      assert.isNull(element.querySelector('.dataset-preview'));
+      assert.lengthOf(element.find(DatasetPreview), 0);
     });
   });
 });

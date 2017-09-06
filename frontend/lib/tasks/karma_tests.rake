@@ -19,17 +19,24 @@ namespace :test do
         browser = 'Firefox'
       end
 
-      timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 300
-
       cmd = "node --max_old_space_size=4096 ./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
-      puts "Executing the following command with #{timeout_secs} second timeout:\n#{cmd}"
-      begin
-        Timeout.timeout(timeout_secs) do
-          fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+
+      if watch
+        puts "Executing the following command with no timeout:\n#{cmd}"
+        fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+      else
+        timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 300
+
+        puts "Executing the following command with #{timeout_secs} second timeout:\n#{cmd}"
+        begin
+          Timeout.timeout(timeout_secs) do
+            fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+          end
+        rescue Timeout::Error
+          fail("#{dir} Karma tests failed due to time out")
         end
-      rescue Timeout::Error
-        fail("#{dir} Karma tests failed due to time out")
       end
+
       puts "#{dir} Karma tests completed without failure."
     end
 

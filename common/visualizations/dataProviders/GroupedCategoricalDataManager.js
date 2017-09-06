@@ -295,6 +295,8 @@ function getData(vif, options) {
 
       const groupingValuesFilters = _.cloneDeep(filtersFromVif);
 
+      const nonNullGroupingValues = _.without(state.groupingValues, null);
+
       groupingValuesFilters.push(
         {
           function: 'binaryOperator',
@@ -307,15 +309,38 @@ function getData(vif, options) {
         {
           function: 'in',
           columnName: state.groupingColumnName,
-          arguments: state.groupingValues
+          arguments: nonNullGroupingValues
         }
       );
 
       groupingData.push({
         vif: generateGroupingVifWithFilters(groupingValuesFilters),
         dimensionValue,
-        groupingValues: state.groupingValues
+        groupingValues: nonNullGroupingValues
       });
+
+      // XXX: NULL grouping values are handled differently in SOQL when used in
+      // = clauses and IN clauses. No clue why.
+      if (_.size(nonNullGroupingValues) != _.size(state.groupingValues)) {
+        const nullValueFilter =
+              _.cloneDeep(filtersFromVif).concat([
+                {
+                  function: 'binaryOperator',
+                  columnName: state.columnName,
+                  arguments: getBinaryOperatorFilterArguments(dimensionValue)
+                },
+                {
+                  function: 'binaryOperator',
+                  columnName: state.groupingColumnName,
+                  arguments: getBinaryOperatorFilterArguments(null)
+                }
+              ]);
+        groupingData.push({
+          vif: generateGroupingVifWithFilters(nullValueFilter),
+          dimensionValue,
+          groupingValue: null
+        });
+      }
 
       /**
        * Beaver queries

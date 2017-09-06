@@ -185,6 +185,48 @@ export function setMeasureAggregation(seriesIndex, aggregationFunction) {
   };
 }
 
+export const APPEND_REFERENCE_LINE = 'APPEND_REFERENCE_LINE';
+export function appendReferenceLine() {
+  return {
+    type: APPEND_REFERENCE_LINE
+  };
+}
+
+export const REMOVE_REFERENCE_LINE = 'REMOVE_REFERENCE_LINE';
+export function removeReferenceLine(referenceLineIndex) {
+  return {
+    type: REMOVE_REFERENCE_LINE,
+    referenceLineIndex
+  };
+}
+
+export const SET_REFERENCE_LINE_COLOR = 'SET_REFERENCE_LINE_COLOR';
+export function setReferenceLineColor({ referenceLineIndex, color }) {
+  return {
+    type: SET_REFERENCE_LINE_COLOR,
+    referenceLineIndex,
+    color
+  };
+}
+
+export const SET_REFERENCE_LINE_LABEL = 'SET_REFERENCE_LINE_LABEL';
+export function setReferenceLineLabel({ referenceLineIndex, label }) {
+  return {
+    type: SET_REFERENCE_LINE_LABEL,
+    referenceLineIndex,
+    label
+  };
+}
+
+export const SET_REFERENCE_LINE_VALUE = 'SET_REFERENCE_LINE_VALUE';
+export function setReferenceLineValue({ referenceLineIndex, value }) {
+  return {
+    type: SET_REFERENCE_LINE_VALUE,
+    referenceLineIndex,
+    value
+  };
+}
+
 export const SET_VISUALIZATION_TYPE = 'SET_VISUALIZATION_TYPE';
 export function setVisualizationType(visualizationType) {
   return {

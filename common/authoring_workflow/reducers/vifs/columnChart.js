@@ -81,9 +81,14 @@ export default function columnChart(state, action) {
       }
       break;
 
+    case actions.APPEND_REFERENCE_LINE:
     case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
+    case actions.REMOVE_REFERENCE_LINE:
     case actions.REMOVE_SERIES:
+    case actions.SET_REFERENCE_LINE_COLOR:
+    case actions.SET_REFERENCE_LINE_LABEL:
+    case actions.SET_REFERENCE_LINE_VALUE:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:

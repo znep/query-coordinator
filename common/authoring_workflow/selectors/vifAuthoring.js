@@ -46,14 +46,14 @@ export const getMeasure = createSelector(
   (vif) => _.get(vif, 'series[0].dataSource.measure', null)
 );
 
-export const getAnyMeasure = createSelector(
+export const getReferenceLines = createSelector(
   getCurrentVif,
-  getVifs,
-  (vif, vifs) => {
-    return _.isEmpty(vif) ?
-      _.get(vifs, 'columnChart.series[0].dataSource.measure', null) :
-      _.get(vif, 'series[0].dataSource.measure', null);
-  }
+  (vif) =>  _.get(vif, 'referenceLines', [])
+);
+
+export const hasReferenceLineLabels = createSelector(
+  getReferenceLines,
+  (lines) => _.filter(lines, (line) => !_.isEmpty(line.label)).length > 0
 );
 
 export const getSeries = createSelector(

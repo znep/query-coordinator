@@ -1,15 +1,21 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dropdown } from 'common/components';
+import { ColorPicker, Dropdown } from 'common/components';
 import I18n from 'common/i18n';
-import { CHART_SORTING } from '../../constants';
+import { CHART_SORTING, COLORS } from '../../constants';
 import {
+  appendReferenceLine,
+  removeReferenceLine,
+  setReferenceLineColor,
+  setReferenceLineLabel,
+  setReferenceLineValue,
   setOrderBy,
   setMeasureAxisMinValue,
   setMeasureAxisMaxValue,
 } from '../../actions';
 import {
+  getReferenceLines,
   getOrderBy,
   getMeasureAxisMinValue,
   getMeasureAxisMaxValue,
@@ -20,11 +26,11 @@ import {
   isTimelineChart,
   isPieChart
 } from '../../selectors/vifAuthoring';
-
 import EmptyPane from './EmptyPane';
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
+import TextInputButton from '../shared/TextInputButton';
 
 export var AxisAndScalePane = React.createClass({
   propTypes: {
@@ -66,7 +72,7 @@ export var AxisAndScalePane = React.createClass({
 
     const attributes = {
       options,
-      onSelection: (chartSorting) => onSelectChartSorting(chartSorting),
+      onSelection: onSelectChartSorting,
       id: 'chart-sorting-selection',
       value: `${defaultChartSort.parameter}-${defaultChartSort.sort}`
     };
@@ -170,6 +176,146 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
+  renderReferenceLinesControls() {
+    const { vifAuthoring } = this.props;
+    const controls = getReferenceLines(vifAuthoring).map(this.renderReferenceLinesControlsAtIndex);
+    const link = this.renderAddReferenceLineLink();
+    
+    return (
+      <AccordionPane title={I18n.t('shared.visualizations.panes.reference_lines.subheaders.reference_lines')}>
+        {controls}
+        {link}
+      </AccordionPane>
+    );
+  },
+
+  renderReferenceLinesControlsAtIndex(referenceLine, referenceLineIndex) {
+    const {
+      onChangeReferenceLineColor,
+      onChangeReferenceLineValue,
+      onClickRemoveReferenceLine,
+      vifAuthoring
+    } = this.props;
+
+    const containerAttributes = {
+      className: 'reference-lines-reference-line-container',
+      id: `reference-lines-reference-line-container-${referenceLineIndex}`,
+      key: referenceLine.uId
+    };
+
+    const headerLabel = I18n.t('shared.visualizations.panes.reference_lines.fields.reference_line_placeholder').
+      format(referenceLineIndex + 1);
+
+    const valueInputAttributes = {
+      className: 'text-input',
+      id: `reference-lines-value-input-${referenceLineIndex}`,
+      onChange: (event) => {
+        const i = parseFloat(event.target.value);
+        const value = isNaN(i) ? null : i;
+
+        onChangeReferenceLineValue({ referenceLineIndex, value });
+      },
+      placeholder: I18n.t('shared.visualizations.panes.reference_lines.fields.add_value'),
+      step: 1,
+      type: 'number',
+      value: _.isFinite(referenceLine.value) ? referenceLine.value.toString() : '',
+    };
+
+    if (isOneHundredPercentStacked(vifAuthoring)) {
+      valueInputAttributes.max = 100;
+      valueInputAttributes.min = 0;
+    }
+
+    const textInputButton = this.renderReferenceLinesLabelTextInputButton(referenceLine, referenceLineIndex);
+
+    const colorPickerAttributes = {
+      handleColorChange: (color) => onChangeReferenceLineColor({ referenceLineIndex, color }),
+      palette: COLORS,
+      value: referenceLine.color,
+    };
+
+    const removeLinkAttributes = {
+      onClick: () => {
+        const key = this.getExpandedStateKey(referenceLineIndex);
+        this.setState({ [key]: false });
+  
+        onClickRemoveReferenceLine(referenceLineIndex);
+      }
+    };
+
+    return (
+      <div {...containerAttributes}>
+        <label className="block-label">
+          {headerLabel}
+        </label>
+        <div className="reference-lines-controls-container">
+          <DebouncedInput {...valueInputAttributes} />
+          {textInputButton}
+          <ColorPicker {...colorPickerAttributes} />
+          <a {...removeLinkAttributes}>
+            <span className="socrata-icon-close" />
+          </a>
+        </div>
+      </div>
+    );
+  },
+
+  renderReferenceLinesLabelTextInputButton(referenceLine, referenceLineIndex) {
+    const { onChangeReferenceLineLabel } = this.props;
+    const attributes = {
+      onChange: event => onChangeReferenceLineLabel({ referenceLineIndex, label: event.target.value }),
+      placeholder: I18n.t('shared.visualizations.panes.reference_lines.fields.add_label'),
+      textInputId: `reference-lines-label-input-${referenceLineIndex}`,
+      textInputValue: referenceLine.label
+    };
+
+    return <TextInputButton {...attributes} />;
+  },
+
+  renderReferenceLinesLabelInput(referenceLine, referenceLineIndex) {
+    const key = this.getExpandedStateKey(referenceLineIndex);
+    const expanded = _.get(this.state, key, false);
+
+    if (!expanded) {
+      return null;
+    }
+
+    const { onChangeReferenceLineLabel } = this.props;
+    const attributes = {
+      className: 'text-input',
+      onChange: event => onChangeReferenceLineLabel({ referenceLineIndex, label: event.target.value }),
+      placeholder: I18n.t('shared.visualizations.panes.reference_lines.fields.add_label'),
+      value: referenceLine.label
+    };
+
+    return <DebouncedInput {...attributes} />;
+  },
+
+  getExpandedStateKey(referenceLineIndex) {
+    return `text-input-button-expanded-${referenceLineIndex}`;
+  },
+
+  renderAddReferenceLineLink() {
+    const { onClickAddReferenceLine, vifAuthoring } = this.props;
+    const lines = getReferenceLines(vifAuthoring);
+    const linesWithoutValues = _.filter(lines, (line) => _.isUndefined(line.value));
+    const isDisabled = (linesWithoutValues.length > 0);
+
+    const linkAttributes = {
+      className: isDisabled ? 'disabled' : null,
+      id: 'reference-lines-add-reference-line-link',
+      onClick: isDisabled ? null : onClickAddReferenceLine
+    };
+
+    return (
+      <div className="reference-lines-add-reference-line-link-container">
+        <a {...linkAttributes}>
+          <span className="socrata-icon-add" />
+          {I18n.translate('shared.visualizations.panes.reference_lines.fields.add_reference_line')}
+        </a>
+      </div>);
+  },
+
   renderTimelinePrecisionOption(option) {
     return (
       <div className="dataset-column-dropdown-option">
@@ -181,11 +327,13 @@ export var AxisAndScalePane = React.createClass({
   renderBarChartControls() {
     const chartSorting = this.renderChartSorting();
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <Accordion>
         {measureAxisScaleControl}
         {chartSorting}
+        {referenceLinesControls}
       </Accordion>
     );
   },
@@ -193,31 +341,37 @@ export var AxisAndScalePane = React.createClass({
   renderColumnChartControls() {
     const chartSorting = this.renderChartSorting();
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <Accordion>
         {measureAxisScaleControl}
         {chartSorting}
+        {referenceLinesControls}
       </Accordion>
     );
   },
 
   renderHistogramControls() {
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <Accordion>
         {measureAxisScaleControl}
+        {referenceLinesControls}
       </Accordion>
     );
   },
 
   renderTimelineChartControls() {
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
-
+    const referenceLinesControls = this.renderReferenceLinesControls();
+    
     return (
       <Accordion>
         {measureAxisScaleControl}
+        {referenceLinesControls}
       </Accordion>
     );
   },
@@ -274,6 +428,26 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
+    onClickAddReferenceLine: () => {
+      dispatch(appendReferenceLine());
+    },
+
+    onClickRemoveReferenceLine: (referenceLineIndex) => {
+      dispatch(removeReferenceLine(referenceLineIndex));
+    },
+
+    onChangeReferenceLineColor: ({ referenceLineIndex, color }) => {
+      dispatch(setReferenceLineColor({ referenceLineIndex, color }));
+    },
+
+    onChangeReferenceLineLabel: ({ referenceLineIndex, label }) => {
+      dispatch(setReferenceLineLabel({ referenceLineIndex, label }));
+    },
+
+    onChangeReferenceLineValue: ({ referenceLineIndex, value }) => {
+      dispatch(setReferenceLineValue({ referenceLineIndex, value }));
+    },
+
     onSelectChartSorting: (chartSorting) => {
       dispatch(setOrderBy(chartSorting.orderBy));
     },

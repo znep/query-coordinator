@@ -63,6 +63,10 @@ export default function pieChart(state, action) {
       });
       break;
 
+    case actions.SET_SHOW_LEGEND:
+      _.set(state, 'configuration.showLegend', action.showLegend);
+      break;
+
     case actions.SET_SHOW_OTHER_CATEGORY:
       setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
       break;
@@ -75,7 +79,6 @@ export default function pieChart(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_MEASURE:
     case actions.SET_MEASURE_AGGREGATION:
-    case actions.SET_SHOW_LEGEND:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

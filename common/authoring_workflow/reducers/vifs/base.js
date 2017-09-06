@@ -9,8 +9,11 @@ import {
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
   setUnits,
-  setDimensionGroupingColumnName
+  setDimensionGroupingColumnName,
+  trySetShowLegend,
+  tryUnsetShowLegend
 } from '../../helpers';
+import { REFERENCE_LINES_DEFAULT_LINE_COLOR } from '../../constants';
 
 import * as actions from '../../actions';
 
@@ -106,6 +109,59 @@ export default function(state, action) {
       }
       break;
 
+    case actions.APPEND_REFERENCE_LINE:
+      if (!state.referenceLines) {
+        state.referenceLines = [];
+      }
+
+      state.referenceLines.push({
+        color: REFERENCE_LINES_DEFAULT_LINE_COLOR,
+        label: '',
+        uId: _.uniqueId('reference-line-')
+      })
+      break;
+    
+    case actions.REMOVE_REFERENCE_LINE:
+      state.referenceLines.splice(action.referenceLineIndex, 1);
+
+      if (state.referenceLines.length == 0) {
+        _.unset(state, 'referenceLines');
+        tryUnsetShowLegend(state);
+      }
+      break;
+    
+    case actions.SET_REFERENCE_LINE_COLOR:
+      if (action.referenceLineIndex < state.referenceLines.length) {
+        const referenceLine = state.referenceLines[action.referenceLineIndex];
+        _.set(referenceLine, 'color', action.color);
+      }
+      break;
+
+    case actions.SET_REFERENCE_LINE_LABEL:
+      if (action.referenceLineIndex < state.referenceLines.length) {
+        const referenceLine = state.referenceLines[action.referenceLineIndex];
+        _.set(referenceLine, 'label', action.label);
+
+        if (_.isEmpty(action.label)) {
+          tryUnsetShowLegend(state);
+        } else {
+          trySetShowLegend(state);
+        }
+      }
+      break;
+
+    case actions.SET_REFERENCE_LINE_VALUE:
+      if (action.referenceLineIndex < state.referenceLines.length) {
+        const referenceLine = state.referenceLines[action.referenceLineIndex];
+
+        if (_.isFinite(action.value)) {
+          _.set(referenceLine, 'value', action.value);
+        } else {
+          _.unset(referenceLine, 'value');
+        }
+      }
+      break;
+    
     case actions.SET_STACKED:
       forEachSeries(state, series => {
         if (action.stacked) {
@@ -130,7 +186,11 @@ export default function(state, action) {
       break;
 
     case actions.SET_SHOW_LEGEND:
-      _.set(state, 'configuration.showLegend', action.showLegend);
+      if (action.showLegend) {
+        trySetShowLegend(state);
+      } else {
+        _.unset(state, 'configuration.showLegend');
+      }
       break;
 
     case actions.SET_VIEW_SOURCE_DATA_LINK:

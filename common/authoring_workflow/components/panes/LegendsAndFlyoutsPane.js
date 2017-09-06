@@ -11,6 +11,7 @@ import {
   getRowInspectorTitleColumnName,
   getSeries,
   getShowLegend,
+  hasReferenceLineLabels,
   isBarChart,
   isColumnChart,
   isFeatureMap,
@@ -125,7 +126,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     // Currently legends are only available for grouping or multi-series visualizations or pie charts
     const isCurrentlyPieChart = isPieChart(vifAuthoring);
 
-    if (!isGroupingOrMultiSeries(vifAuthoring) && !isCurrentlyPieChart) {
+    if (!isGroupingOrMultiSeries(vifAuthoring) && !isCurrentlyPieChart && !hasReferenceLineLabels(vifAuthoring)) {
       return null;
     }
 
@@ -165,7 +166,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderHistogramControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderTimelineChartControls() {

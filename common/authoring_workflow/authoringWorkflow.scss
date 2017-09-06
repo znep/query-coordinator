@@ -557,6 +557,109 @@
       }
     }
 
+    .reference-lines-reference-line-container {
+      margin: 10px 0 20px;
+
+      .reference-lines-controls-container {
+        display: flex;
+
+        .text-input {
+          height: 40px;
+          margin-bottom: 0;
+        }
+
+        .text-input-button-button {
+          border-left: none;
+          border-right: none;
+        }
+
+        .color-picker {
+          align-self: auto;
+          min-width: 65px;
+          width: 66px;
+
+          .color-buckets-container {
+            left: auto;
+            right: 0;
+          }
+        }
+
+        .socrata-icon-close {
+          color: #5e5e5e;
+          cursor: pointer;
+          font-size: 25px;
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .reference-lines-add-reference-line-link-container {
+      a {
+        cursor: pointer;
+        text-decoration: none;
+
+        &.disabled {
+          color: #777;
+          cursor: not-allowed;
+        }
+
+        .socrata-icon-add {
+          margin: 0 5px;
+        }
+      }
+    }
+
+    .reference-lines-remove-reference-line-link-container {
+      text-align: right;
+
+      a {
+        cursor: pointer;
+        text-decoration: none;
+
+        .socrata-icon-close-2 {
+          margin: 0 5px;
+        }
+      }
+    }
+
+    .text-input-button-container {
+      position: relative;
+
+      .text-input-button-overlay {
+        left: 0;
+        bottom: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 999;
+      }
+
+      .text-input-button-popup {
+        height: 40px;
+        position: absolute;
+        right: -1px;
+        top: 39px;
+        width: 160px;
+        z-index: 999;
+      }
+
+      .text-input-button-button {
+        height: 40px;
+        min-width: 40px;
+        padding: 0;
+        width: 40px;
+
+        .socrata-icon-flyout-options {
+          color: #5e5e5e;
+          font-size: 24px;
+        }
+      }
+
+      .hidden {
+        visibility: hidden;
+      }
+    }
+
     .grouped-stacked-selector-container {
       margin: 0 0 30px;
     }

@@ -35,6 +35,10 @@ const paths = {
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
   primaryColor: 'series[{0}].color.primary',
+  referenceLineColor: `referenceLines[{0}].color`,
+  referenceLineLabel: `referenceLines[{0}].label`,
+  referenceLines: 'referenceLines',
+  referenceLineValue: `referenceLines[{0}].value`,
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[{0}].color.secondary',
   series: 'series',
@@ -114,6 +118,30 @@ export const load = (dispatch, vif) => {
       }
     }
   }
+
+  if (has(paths.referenceLines)) {
+    
+    const referenceLinesCount = get(paths.referenceLines).length;
+
+    for (var i = 0; i < referenceLinesCount; i++) {
+      dispatch(actions.appendReferenceLine());
+
+      const referenceLineColorPath = paths.referenceLineColor.format(i);
+      if (has(referenceLineColorPath)) {
+        dispatch(actions.setReferenceLineColor({ referenceLineIndex: i, color: get(referenceLineColorPath) }));
+      }
+
+      const referenceLineLabelPath = paths.referenceLineLabel.format(i);
+      if (has(referenceLineLabelPath)) {
+        dispatch(actions.setReferenceLineLabel({ referenceLineIndex: i, label: get(referenceLineLabelPath) }));
+      }
+
+      const referenceLineValuePath = paths.referenceLineValue.format(i);
+      if (has(referenceLineValuePath)) {
+        dispatch(actions.setReferenceLineValue({ referenceLineIndex: i, value: get(referenceLineValuePath) }));
+      }
+    }
+  }    
 
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));

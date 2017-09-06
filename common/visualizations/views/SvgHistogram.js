@@ -10,7 +10,11 @@ const I18n = require('common/i18n').default;
 // that have been observed 'in the wild'. They may need to be adjusted slightly
 // in the future, but the adjustments will likely be small in scale.
 import {
-  AXIS_LABEL_MARGIN
+  AXIS_LABEL_MARGIN,
+  REFERENCE_LINES_STROKE_DASHARRAY,
+  REFERENCE_LINES_STROKE_WIDTH,
+  REFERENCE_LINES_UNDERLAY_THICKNESS,
+  LEGEND_BAR_HEIGHT  
 } from './SvgStyleConstants';
 
 const MARGINS = {
@@ -66,7 +70,8 @@ function SvgHistogram($element, vif, options) {
   var dataToRender;
   var d3DimensionXScale;
   var d3YScale;
-
+  let referenceLines;
+  
   _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
@@ -215,13 +220,17 @@ function SvgHistogram($element, vif, options) {
       ))
     );
 
+    referenceLines = self.getReferenceLines();
+
     var chartSvg;
     var viewportSvg;
     var xAxisAndSeriesSvg;
     var seriesSvg;
     var bucketGroupSvgs;
-    var columnUnderlaySvgs;
     var columnSvgs;
+    var columnUnderlaySvgs;
+    let referenceLineSvgs;
+    let referenceLineUnderlaySvgs;
     let minYValue;
     let maxYValue;
 
@@ -386,6 +395,74 @@ function SvgHistogram($element, vif, options) {
         attr('shape-rendering', 'crispEdges');
     }
 
+    function renderReferenceLines() {
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // when at the bottom edge.  All the other lines are rendered in normal positions.
+      const getYPosition = (referenceLine) => {
+        if (referenceLine.value == maxYValue) { 
+          return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
+        } else if (referenceLine.value == minYValue) {
+          return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
+        } else {
+          return d3YScale(referenceLine.value);
+        }
+      };
+
+      const getLineThickness = (referenceLine) => {
+        return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
+      };
+
+      const getUnderlayThickness = (referenceLine) => {
+        return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_UNDERLAY_THICKNESS : 0;
+      };
+
+      // This places the underlay half above the line and half below the line.
+      const underlayUpwardShift = (REFERENCE_LINES_UNDERLAY_THICKNESS) / 2;
+
+      referenceLineUnderlaySvgs.
+        attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill-opacity', 0).
+        attr('x', 0).
+        attr('y', (referenceLine) => getYPosition(referenceLine) - underlayUpwardShift).
+        attr('width', chartWidth).
+        attr('height', getUnderlayThickness);
+
+      referenceLineSvgs.
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', (referenceLine) => referenceLine.color).
+        attr('stroke-dasharray', REFERENCE_LINES_STROKE_DASHARRAY).
+        attr('stroke-width', getLineThickness).
+        attr('x1', 0).
+        attr('y1', getYPosition).
+        attr('x2', chartWidth).
+        attr('y2', getYPosition);
+    }
+
+    function renderLegend() {
+      const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
+
+      if (self.getShowLegend()) {
+
+        const legendItems = self.getLegendItems({referenceLines});
+
+        self.renderLegendBar(legendItems);
+        self.attachLegendBarEventHandlers();
+
+        if (!alreadyDisplayingLegendBar) {
+          viewportHeight -= LEGEND_BAR_HEIGHT;
+        }
+
+      } else {
+
+        self.removeLegendBar();
+
+        if (alreadyDisplayingLegendBar) {
+          viewportHeight += LEGEND_BAR_HEIGHT;
+        }
+      }
+    }
+
     // Note that renderXAxis(), renderYAxis() and renderSeries() all update the
     // elements that have been created by binding the data (which is done
     // inline in this function below).
@@ -519,6 +596,8 @@ function SvgHistogram($element, vif, options) {
       );
     }
 
+    renderLegend(); // adjusts the viewportHeight so must be called before chartHeight is set
+
     chartWidth = viewportWidth;
     chartHeight = viewportHeight - DIMENSION_LABELS_HEIGHT;
 
@@ -586,7 +665,10 @@ function SvgHistogram($element, vif, options) {
     if (self.getYAxisScalingMode() === 'showZero') {
       measureRowExtents.push(0);
     }
+
     const measureExtent = d3.extent(measureRowExtents);
+    const dataMinYValue = getMinYValue(measureExtent[0], referenceLines);
+    const dataMaxYValue = getMaxYValue(measureExtent[1], referenceLines);
 
     try {
       const limitMin = self.getMeasureAxisMinValue();
@@ -602,8 +684,8 @@ function SvgHistogram($element, vif, options) {
         return;
       }
 
-      minYValue = limitMin || _.min([measureExtent[0], 0]);
-      maxYValue = limitMax || _.max([measureExtent[1], 0]);
+      minYValue = limitMin || _.min([dataMinYValue, 0]);
+      maxYValue = limitMax || _.max([dataMaxYValue, 0]);
 
       if (limitMin || limitMax) {
         d3YScale = d3.scale.linear().
@@ -633,7 +715,7 @@ function SvgHistogram($element, vif, options) {
      * 5. Render the chart.
      */
 
-    // Create the top-level <svg> element first.
+     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
       attr('width', viewportWidth + leftMargin + rightMargin).
       attr('height', viewportHeight + topMargin + bottomMargin);
@@ -728,10 +810,23 @@ function SvgHistogram($element, vif, options) {
         }
       );
 
+    referenceLineSvgs = seriesSvg.selectAll('line.reference-line').
+      data(referenceLines).
+      enter().
+      append('line').
+      attr('class', 'reference-line');
+
+    referenceLineUnderlaySvgs = seriesSvg.selectAll('rect.reference-line-underlay').
+      data(referenceLines).
+      enter().
+      append('rect').
+      attr('class', 'reference-line-underlay');
+
     renderXAxis();
     renderSeries();
     renderYAxis();
-
+    renderReferenceLines();
+    
     /**
      * 6. Set up event handlers for mouse interactions.
      */
@@ -764,6 +859,22 @@ function SvgHistogram($element, vif, options) {
         }
       );
 
+    chartSvg.selectAll('.reference-line-underlay').
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+      on('mousemove', function() {
+        if (!isCurrentlyPanning()) {
+          self.showReferenceLineFlyout(this, referenceLines, false);
+        }
+      }).
+      on('mouseleave',
+        () => {
+          if (!isCurrentlyPanning()) {
+            hideFlyout();
+          }
+        }
+      );
+
     chartSvg.selectAll('text').
       attr('cursor', 'default');
 
@@ -773,6 +884,25 @@ function SvgHistogram($element, vif, options) {
       width: viewportWidth,
       height: viewportHeight - DIMENSION_LABELS_HEIGHT
     });
+  }
+
+  function isCurrentlyPanning() {
+    // EN-10810 - Bar Chart flyouts do not appear in Safari
+    //
+    // Internet Explorer will apparently always return a non-zero value for
+    // d3.event.which and even d3.event.button, so we need to check
+    // d3.event.buttons for a non-zero value (which indicates that a button is
+    // being pressed).
+    //
+    // Safari apparently does not support d3.event.buttons, however, so if it
+    // is not a number then we will fall back to d3.event.which to check for a
+    // non-zero value there instead.
+    //
+    // Chrome appears to support both cases, and in the conditional below
+    // Chrome will check d3.event.buttons for a non-zero value.
+    return (_.isNumber(d3.event.buttons)) ?
+      d3.event.buttons !== 0 :
+      d3.event.which !== 0;
   }
 
   function showColumnHighlight(columnElement) {
@@ -874,11 +1004,30 @@ function SvgHistogram($element, vif, options) {
   }
 
   function hideFlyout() {
-
     self.emitEvent(
       'SOCRATA_VISUALIZATION_FLYOUT',
       null
     );
+  }
+
+  function getMinYValue(measureExtent, referenceLines) {
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.min([measureExtent, minReferenceLinesValue]);
+  }
+
+  function getMaxYValue(measureExtent, referenceLines) {
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.max([measureExtent, maxReferenceLinesValue]);
   }
 }
 

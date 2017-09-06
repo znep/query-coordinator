@@ -105,9 +105,10 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
     // If the dimension grouping functionality is being disabled, then we
     // also want to remove any color palette and legend visibility that has been set.
     _.unset(state, 'series[0].color.palette');
-    _.unset(state, 'configuration.showLegend');
     _.unset(state, 'series[0].dataSource.dimension.grouping');
     _.unset(state, 'series[0].stacked');
+
+    tryUnsetShowLegend(state);
 
   } else {
 
@@ -117,10 +118,7 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
       _.set(state, 'series[0].color.palette', 'categorical');
     }
 
-    // If legend visibility has not yet been set, then set it to visible
-    if (_.isEmpty(_.get(state, 'configuration.showLegend'))) {
-      _.set(state, 'configuration.showLegend', true);
-    }
+    trySetShowLegend(state);
   };
 };
 
@@ -165,9 +163,7 @@ export const appendSeries = (state, { isInitialLoad }) => {
 
   // If legend visibility has not yet been set, then set it to visible.
   //
-  if (_.get(state, 'configuration.showLegend') === undefined) {
-    _.set(state, 'configuration.showLegend', true);
-  }
+  trySetShowLegend(state);
 };
 
 export const removeSeries = (state, seriesIndex) => {
@@ -179,14 +175,44 @@ export const removeSeries = (state, seriesIndex) => {
   // If no longer multi-series, remove multi-series properties
   //
   if (state.series.length == 1) {
-    _.unset(state, 'configuration.showLegend');
     _.unset(state, 'series[0].color.palette');
     _.unset(state, 'series[0].stacked');
+
+    tryUnsetShowLegend(state);
   }
 };
 
-export const isGroupingOrMultiSeries = (state) => {
+// This tries to unset the showLegend property, but only if it is not still grouping, multi-series, 
+// or having reference line labels.
+//
+export const tryUnsetShowLegend = (state) => {
 
+  if (isGroupingOrMultiSeries(state)) {
+    return;
+  }
+
+  const referenceLinesWithLabels = _.filter(state.referenceLines, (line) => !_.isEmpty(line.label));
+  if (referenceLinesWithLabels.length > 0) {
+    return;
+  }
+
+  _.unset(state, 'configuration.showLegend');
+}
+
+// This tries to set the showLegend property to true, but only if it is currently grouping, multi-series, 
+// or having reference line labels.
+//
+export const trySetShowLegend = (state) => {
+  const referenceLinesWithLabels = _.filter(state.referenceLines, (line) => !_.isEmpty(line.label));
+
+  if (!isGroupingOrMultiSeries(state) && (referenceLinesWithLabels.length == 0)) {
+    return;
+  }
+
+  _.set(state, 'configuration.showLegend', true);
+}
+
+export const isGroupingOrMultiSeries = (state) => {
   const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping') !== undefined);
   const isMultiSeries = (state.series.length > 1);
 
@@ -194,7 +220,6 @@ export const isGroupingOrMultiSeries = (state) => {
 };
 
 export const getMeasureTitle = (metadata, series) => {
-
   const measure = series.dataSource.measure;
   const column = _.find(metadata.data.columns, (column) => column.fieldName === measure.columnName);
   const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);

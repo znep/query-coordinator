@@ -10,6 +10,9 @@ const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
+  REFERENCE_LINES_STROKE_DASHARRAY,
+  REFERENCE_LINES_STROKE_WIDTH,
+  REFERENCE_LINES_UNDERLAY_THICKNESS,
   LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
@@ -61,6 +64,7 @@ function SvgTimelineChart($element, vif, options) {
   let lastRenderedZoomTranslateOffsetFromEnd;
   let dateBisector;
   let measureLabels;
+  let referenceLines;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -99,6 +103,7 @@ function SvgTimelineChart($element, vif, options) {
       this.updateColumns(newColumns);
     }
 
+    referenceLines = self.getReferenceLines();
     renderData();
   };
 
@@ -213,6 +218,8 @@ function SvgTimelineChart($element, vif, options) {
     const seriesDimensionIndex = 0;
     const seriesMeasureIndex = 1;
 
+    referenceLines = self.getReferenceLines();
+
     let width;
     let xAxisPanningEnabled;
     let height;
@@ -228,6 +235,8 @@ function SvgTimelineChart($element, vif, options) {
     let rootElement;
     let chartSvg;
     let viewportSvg;
+    let referenceLineSvgs;
+    let referenceLineUnderlaySvgs;
 
     function renderXAxis() {
       const renderedXAxisSvg = viewportSvg.select('.x.axis');
@@ -318,8 +327,51 @@ function SvgTimelineChart($element, vif, options) {
         attr('shape-rendering', 'crispEdges');
     }
 
-    function renderValues() {
+    function renderReferenceLines() {
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // when at the bottom edge.  All the other lines are rendered in normal positions.
+      const getYPosition = (referenceLine) => {
+        if (referenceLine.value == maxYValue) { 
+          return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
+        } else if (referenceLine.value == minYValue) {
+          return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
+        } else {
+          return d3YScale(referenceLine.value);
+        }
+      };
 
+      const getLineThickness = (referenceLine) => {
+        return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
+      };
+
+      const getUnderlayThickness = (referenceLine) => {
+        return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_UNDERLAY_THICKNESS : 0;
+      };
+
+      // This places the underlay half above the line and half below the line.
+      const underlayUpwardShift = (REFERENCE_LINES_UNDERLAY_THICKNESS) / 2;
+
+      referenceLineUnderlaySvgs.
+        attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill-opacity', 0).
+        attr('x', 0).
+        attr('y', (referenceLine) => getYPosition(referenceLine) - underlayUpwardShift).
+        attr('width', width).
+        attr('height', getUnderlayThickness);
+
+      referenceLineSvgs.
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', (referenceLine) => referenceLine.color).
+        attr('stroke-dasharray', REFERENCE_LINES_STROKE_DASHARRAY).
+        attr('stroke-width', getLineThickness).
+        attr('x1', 0).
+        attr('y1', getYPosition).
+        attr('x2', width).
+        attr('y2', getYPosition);
+    }
+
+    function renderValues() {
       dataToRenderBySeries.forEach(function(seriesData, seriesIndex) {
         const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
 
@@ -472,7 +524,9 @@ function SvgTimelineChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
+        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+
+        self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {
@@ -577,13 +631,15 @@ function SvgTimelineChart($element, vif, options) {
         );
       }
     }
+
     const allMeasureValues = _.flatMap(
       dataToRender.rows.map((row) => {
         return row.slice(dataTableDimensionIndex + 1);
       })
     );
-    const dataMinYValue = d3.min(allMeasureValues);
-    const dataMaxYValue = d3.max(allMeasureValues);
+
+    const dataMinYValue = getMinYValue(allMeasureValues, referenceLines);
+    const dataMaxYValue = getMaxYValue(allMeasureValues, referenceLines);
 
     try {
       const measureAxisMinValue = self.getMeasureAxisMinValue();
@@ -825,9 +881,30 @@ function SvgTimelineChart($element, vif, options) {
         }
       );
 
+    // Render reference lines
+    referenceLineSvgs = viewportSvg.selectAll('line.reference-line').
+      data(referenceLines).
+      enter().
+      append('line').
+      attr('class', 'reference-line');
+
+    referenceLineUnderlaySvgs = viewportSvg.selectAll('rect.reference-line-underlay').
+      data(referenceLines).
+      enter().
+      append('rect').
+      attr('class', 'reference-line-underlay').
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+      on('mousemove', function() {
+        console.log('mousemove');
+        self.showReferenceLineFlyout(this, referenceLines, false);
+      }).
+      on('mouseleave', hideFlyout);
+
     renderXAxis();
     renderYAxis();
     renderValues();
+    renderReferenceLines();
 
     if (xAxisPanningEnabled) {
 
@@ -937,6 +1014,30 @@ function SvgTimelineChart($element, vif, options) {
     return (isGrouping) ?
       getColorFromPalette() :
       getColorFromVif();
+  }
+
+  function getMinYValue(data, referenceLines) {
+    const minMeasureValue = d3.min(data);
+
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.min([minMeasureValue, minReferenceLinesValue]);
+  }
+
+  function getMaxYValue(data, referenceLines) {
+    const maxMeasureValue = d3.max(data);
+
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.max([maxMeasureValue, maxReferenceLinesValue]);
   }
 
   function handleMouseMove() {

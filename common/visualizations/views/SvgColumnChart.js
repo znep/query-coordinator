@@ -14,7 +14,10 @@ import {
   ERROR_BARS_DEFAULT_BAR_COLOR,
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
-  LEGEND_BAR_HEIGHT
+  LEGEND_BAR_HEIGHT,
+  REFERENCE_LINES_STROKE_DASHARRAY,
+  REFERENCE_LINES_STROKE_WIDTH,
+  REFERENCE_LINES_UNDERLAY_THICKNESS
 } from './SvgStyleConstants';
 
 // The MARGINS values have been eyeballed to provide enough space for axis
@@ -59,6 +62,7 @@ function SvgColumnChart($element, vif, options) {
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
   let measureLabels;
+  let referenceLines;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -177,6 +181,8 @@ function SvgColumnChart($element, vif, options) {
       });
     }
 
+    referenceLines = self.getReferenceLines();
+
     let width;
     let height;
     let groupedDataToRender;
@@ -193,8 +199,10 @@ function SvgColumnChart($element, vif, options) {
     let xAxisAndSeriesSvg;
     let seriesSvg;
     let dimensionGroupSvgs;
-    let columnUnderlaySvgs;
     let columnSvgs;
+    let columnUnderlaySvgs;
+    let referenceLineSvgs;
+    let referenceLineUnderlaySvgs;
     let xAxisBound = false;
     let yAxisBound = false;
     let xAxisPanDistance;
@@ -382,6 +390,54 @@ function SvgColumnChart($element, vif, options) {
         attr('fill', 'none').
         attr('stroke', AXIS_GRID_COLOR).
         attr('shape-rendering', 'crispEdges');
+    }
+
+    function renderReferenceLines() {
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // when at the bottom edge.  All the other lines are rendered in normal positions.
+      const getYPosition = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+
+        if (value == maxYValue) { 
+          return d3YScale(value) + 1; // shift down a pixel if at the top of chart area
+        } else if (value == minYValue) {
+          return d3YScale(value) - 1; // shift up a pixel if at the bottom of chart area
+        } else {
+          return d3YScale(value);
+        }
+      };
+
+      const getLineThickness = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+        return self.isInRange(value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
+      };
+
+      const getUnderlayThickness = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+        return self.isInRange(value, minYValue, maxYValue) ? REFERENCE_LINES_UNDERLAY_THICKNESS : 0;
+      };
+
+      // This places the underlay half above the line and half below the line.
+      const underlayUpwardShift = (REFERENCE_LINES_UNDERLAY_THICKNESS) / 2;
+
+      referenceLineUnderlaySvgs.
+        attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill-opacity', 0).
+        attr('x', 0).
+        attr('y', (referenceLine) => getYPosition(referenceLine) - underlayUpwardShift).
+        attr('width', width).
+        attr('height', getUnderlayThickness);
+
+      referenceLineSvgs.
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', (referenceLine) => referenceLine.color).
+        attr('stroke-dasharray', REFERENCE_LINES_STROKE_DASHARRAY).
+        attr('stroke-width', getLineThickness).
+        attr('x1', 0).
+        attr('y1', getYPosition).
+        attr('x2', width).
+        attr('y2', getYPosition);
     }
 
     function renderErrorBars() {
@@ -599,7 +655,9 @@ function SvgColumnChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
+        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+
+        self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {
@@ -712,11 +770,11 @@ function SvgColumnChart($element, vif, options) {
 
     try {
 
-      const dataMinSummedYValue = getMinSummedYValue(groupedDataToRender, dataTableDimensionIndex);
-      const dataMaxSummedYValue = getMaxSummedYValue(groupedDataToRender, dataTableDimensionIndex);
+      const dataMinSummedYValue = getMinSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+      const dataMaxSummedYValue = getMaxSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
 
-      const dataMinYValue = getMinYValue(dataToRender, dataTableDimensionIndex);
-      const dataMaxYValue = getMaxYValue(dataToRender, dataTableDimensionIndex);
+      const dataMinYValue = getMinYValue(dataToRender, dataTableDimensionIndex, referenceLines);
+      const dataMaxYValue = getMaxYValue(dataToRender, dataTableDimensionIndex, referenceLines);
 
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
@@ -738,8 +796,8 @@ function SvgColumnChart($element, vif, options) {
 
       if (isOneHundredPercentStacked) {
 
-        minYValue = 0; // measure axes are not changeable for 100% stacked charts
-        maxYValue = 1;
+          minYValue = 0; // measure axes are not changeable for 100% stacked charts
+          maxYValue = 1;
 
       } else if (isStacked) {
 
@@ -955,25 +1013,39 @@ function SvgColumnChart($element, vif, options) {
         (datum, measureIndex) => measureIndex
       );
 
-      if (!_.isUndefined(dataToRender.errorBars)) {
-        dimensionGroupSvgs.selectAll('line.error-bar-top').
-          data((d) => d.slice(1)).
-          enter().
-          append('line').
-          attr('class', 'error-bar-top');
+    referenceLineSvgs = seriesSvg.selectAll('line.reference-line').
+      data(referenceLines).
+      enter().
+      append('line').
+      attr('class', 'reference-line');
 
-        dimensionGroupSvgs.selectAll('line.error-bar-middle').
-          data((d) => d.slice(1)).
-          enter().
-          append('line').
-          attr('class', 'error-bar-middle');
+    // Render an invisible rect on top of the reference line that is thicker than the line.  This shape will handle
+    // the mouse events to show the flyout.  This just makes a bigger mouse target.
+    referenceLineUnderlaySvgs = seriesSvg.selectAll('rect.reference-line-underlay').
+      data(referenceLines).
+      enter().
+      append('rect').
+      attr('class', 'reference-line-underlay');
 
-        dimensionGroupSvgs.selectAll('line.error-bar-bottom').
-          data((d) => d.slice(1)).
-          enter().
-          append('line').
-          attr('class', 'error-bar-bottom');
-      }
+    if (!_.isUndefined(dataToRender.errorBars)) {
+      dimensionGroupSvgs.selectAll('line.error-bar-top').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-top');
+
+      dimensionGroupSvgs.selectAll('line.error-bar-middle').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-middle');
+
+      dimensionGroupSvgs.selectAll('line.error-bar-bottom').
+        data((d) => d.slice(1)).
+        enter().
+        append('line').
+        attr('class', 'error-bar-bottom');
+    }
 
     // TODO: Figure out how we want to handle scaling modes.
     // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
@@ -1034,6 +1106,7 @@ function SvgColumnChart($element, vif, options) {
       // We only have to render the y-axis once, after we have decided whether
       // we will show or hide the panning notice.
       renderYAxis();
+      renderReferenceLines();
       renderErrorBars();
 
     // See TODO above.
@@ -1042,7 +1115,7 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 6. Set up event handlers for mouse interactions.
      */
-    if (!isStacked) {
+    if (!isStacked && (referenceLines.length == 0)) {
 
       dimensionGroupSvgs.selectAll('rect.column-underlay').
         on(
@@ -1179,6 +1252,22 @@ function SvgColumnChart($element, vif, options) {
         }
       );
 
+    chartSvg.selectAll('.reference-line-underlay').
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+      on('mousemove', function() {
+        if (!isCurrentlyPanning()) {
+          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked);
+        }
+      }).
+      on('mouseleave',
+        () => {
+          if (!isCurrentlyPanning()) {
+            hideFlyout();
+          }
+        }
+      );
+
     /**
      * 7. Conditionally set up the zoom behavior, which is actually used for
      *    panning the chart along the x-axis if panning is enabled.
@@ -1301,7 +1390,7 @@ function SvgColumnChart($element, vif, options) {
       outerTickSize(0);
   }
 
-  function getMinYValue(data, dimensionIndex) {
+  function getMinYValue(data, dimensionIndex, referenceLines) {
     const minRowValue = d3.min(
       data.rows.map(
         (row) => d3.min(
@@ -1310,8 +1399,14 @@ function SvgColumnChart($element, vif, options) {
       )
     );
 
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
     if (_.isUndefined(data.errorBars)) {
-      return minRowValue;
+      return d3.min([minRowValue, minReferenceLinesValue]);
     }
 
     const minErrorBarValue = d3.min(
@@ -1327,10 +1422,10 @@ function SvgColumnChart($element, vif, options) {
       )
     );
 
-    return Math.min(minRowValue, minErrorBarValue);
+    return d3.min([minRowValue, minReferenceLinesValue, minErrorBarValue]);
   }
 
-  function getMaxYValue(data, dimensionIndex) {
+  function getMaxYValue(data, dimensionIndex, referenceLines) {
     const maxRowValue = d3.max(
       data.rows.map(
         (row) => d3.max(
@@ -1339,8 +1434,14 @@ function SvgColumnChart($element, vif, options) {
       )
     );
 
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
     if (_.isUndefined(data.errorBars)) {
-      return maxRowValue;
+      return d3.max([maxRowValue, maxReferenceLinesValue]);
     }
 
     const maxErrorBarValue = d3.max(
@@ -1356,27 +1457,43 @@ function SvgColumnChart($element, vif, options) {
       )
     );
 
-    return Math.max(maxRowValue, maxErrorBarValue);
+    return d3.max([maxRowValue, maxReferenceLinesValue, maxErrorBarValue]);
   }
 
-  function getMinSummedYValue(groupedData, dimensionIndex) {
-    return d3.min(
+  function getMinSummedYValue(groupedData, dimensionIndex, referenceLines) {
+    const minRowValue = d3.min(
       groupedData.map(
         (row) => d3.sum(
           _.filter(row.slice(dimensionIndex + 1), (i) => i < 0)
         )
       )
     );
+
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.min([minRowValue, minReferenceLinesValue]);
   }
 
-  function getMaxSummedYValue(groupedData, dimensionIndex) {
-    return d3.max(
+  function getMaxSummedYValue(groupedData, dimensionIndex, referenceLines) {
+    const maxRowValue = d3.max(
       groupedData.map(
         (row) => d3.sum(
           _.filter(row.slice(dimensionIndex + 1), (i) => i > 0)
         )
       )
     );
+
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.max([maxRowValue, maxReferenceLinesValue]);
   }
 
   function generateYScale(minValue, maxValue, height) {

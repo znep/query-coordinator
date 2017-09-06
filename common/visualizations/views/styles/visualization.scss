@@ -155,7 +155,14 @@ $axis-padding: 42px;
             left: 16px;
             top: 9px;
             width: 16px;
+
+            &.dashed {
+              border-top-width: 2px;
+              border-top-style: dashed;
+              top: 17px;
+            }
           }
+
         }
       }
     }

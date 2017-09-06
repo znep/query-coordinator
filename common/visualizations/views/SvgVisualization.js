@@ -316,7 +316,7 @@ function SvgVisualization($element, vif, options) {
     self.$container.find('.socrata-visualization-legend-bar-container').empty();
   };
 
-  this.renderLegendBar = function(measureLabels, getColor) {
+  this.renderLegendBar = function(items) {
 
     self.$container.addClass('socrata-visualization-legend-bar');
 
@@ -343,14 +343,21 @@ function SvgVisualization($element, vif, options) {
     //
     const $ul = $('<ul>', { 'class': 'socrata-legend-menu' });
 
-    measureLabels.forEach((label, i) => {
+    items.forEach((item) => {
 
-      const color = getColor(i);
-      $ul.append(
-        $('<li>').
-          text(label).
-          append($('<span>', { 'style': `background-color:${color}`}))
-      );
+      if (item.dashed) {
+        $ul.append(
+          $('<li>').
+            text(item.label).
+            append($('<span>', { 'class': 'dashed', 'style': `border-top-color:${item.color}` }))
+        );
+      } else {
+        $ul.append(
+          $('<li>').
+            text(item.label).
+            append($('<span>', { 'style': `background-color:${item.color}`}))
+        );
+      }
     });
 
     $innerContainer.append($ul);
@@ -388,6 +395,34 @@ function SvgVisualization($element, vif, options) {
 
     self.$container.find('.socrata-legend-menu').click((event) => event.stopPropagation);
   };
+
+  this.getLegendItems = function({dataTableDimensionIndex, measureLabels, referenceLines}) {
+    
+    const referenceLinesWithLabels = _.filter(referenceLines, (line) => !_.isEmpty(line.label));
+    const referenceLineItems = referenceLinesWithLabels.map((line) => {
+      return {
+        label: line.label,
+        color: line.color,
+        dashed: true
+      };
+    });
+
+    let measureItems = [];
+
+    if (measureLabels) {
+      const measureLabelsWithLabels = _.filter(measureLabels, (label) => !_.isEmpty(label));
+      measureItems = measureLabelsWithLabels.map((label, i) => {
+        const color = self.getColor(dataTableDimensionIndex, i, measureLabels);
+        return {
+          label,
+          color,
+          dashed: false
+        };
+      });
+    }
+
+    return [...referenceLineItems, ...measureItems];
+  }
 
   this.hideLegendMenu = function() {
 
@@ -887,6 +922,52 @@ function SvgVisualization($element, vif, options) {
     const positions = getOneHundredPercentStackedPositions(groupedDataToRender);
     return adjustPositionsToFitRange(positions, minValue, maxValue);
   };
+
+  this.getReferenceLines = function() {
+    return _.filter(
+      _.get(self.getVif(), 'referenceLines', []), 
+      (referenceLine) => _.isFinite(referenceLine.value));
+  }
+
+  this.showReferenceLineFlyout = function(element, referenceLines, isPercent) {
+    const index = parseInt(element.getAttribute('data-reference-line-index'), 10);
+    const referenceLine = referenceLines[index];
+
+    const $table = $('<table>', {'class': 'socrata-flyout-table'});
+    const $titleRow = $('<tr>', {'class': 'socrata-flyout-title'}).
+      append($('<td>', {'colspan': 2}).text(referenceLine.label));
+
+    let value = d3.format('s')(referenceLine.value);
+    value = isPercent ? `${value}%` : value;
+
+    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
+
+    if (_.isEmpty(referenceLine.label)) {
+      $valueRow.
+        append($('<td>', {'class': 'socrata-flyout-cell'}).text(value));
+    } else {
+      $valueRow.
+        append($('<td>')).
+        append($('<td>', {'class': 'socrata-flyout-cell'}).text(value));
+
+      $table.append($titleRow);
+    }
+
+    $table.append($valueRow);
+
+    const payload = {
+      element,
+      content: $table,
+      rightSideHint: false,
+      belowTarget: false,
+      dark: true
+    };
+
+    this.emitEvent(
+      'SOCRATA_VISUALIZATION_FLYOUT',
+      payload
+    );
+  }
 
   /**
    * Private methods

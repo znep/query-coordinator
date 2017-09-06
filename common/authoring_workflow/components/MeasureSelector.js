@@ -222,7 +222,7 @@ export const MeasureSelector = React.createClass({
 
     const addMeasureLinkAttributes = {
       id: 'measure-add-measure-link',
-      className: isDisabled ? 'disabled' : '',
+      className: isDisabled ? 'disabled' : null,
       onClick: isDisabled ? null : this.handleOnClickAddMeasure
     };
 

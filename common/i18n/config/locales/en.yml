@@ -282,6 +282,14 @@ en:
             chart_sorting: Chart Sorting
             scale: Scale
           title: Axis
+        reference_lines:
+          fields:
+            add_label: Add Label...
+            add_reference_line: Add Reference Line
+            add_value: Add Value...
+            reference_line_placeholder: Reference Line {0}
+          subheaders:
+            reference_lines: Reference Lines
         data:
           fields:
             bar_chart_limit:

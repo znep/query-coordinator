@@ -91,9 +91,14 @@ export default function barChart(state, action) {
       }
       break;
 
+    case actions.APPEND_REFERENCE_LINE:
     case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
+    case actions.REMOVE_REFERENCE_LINE:
     case actions.REMOVE_SERIES:
+    case actions.SET_REFERENCE_LINE_COLOR:
+    case actions.SET_REFERENCE_LINE_LABEL:
+    case actions.SET_REFERENCE_LINE_VALUE:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:
@@ -102,8 +107,8 @@ export default function barChart(state, action) {
     case actions.SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME:
     case actions.SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME:
     case actions.SET_FILTERS:
-    case actions.SET_LABEL_TOP:
     case actions.SET_LABEL_LEFT:
+    case actions.SET_LABEL_TOP:
     case actions.SET_MEASURE:
     case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:

@@ -13,7 +13,10 @@ import {
   ERROR_BARS_DEFAULT_BAR_COLOR,
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
-  LEGEND_BAR_HEIGHT
+  LEGEND_BAR_HEIGHT,
+  REFERENCE_LINES_STROKE_DASHARRAY,
+  REFERENCE_LINES_STROKE_WIDTH,
+  REFERENCE_LINES_UNDERLAY_THICKNESS
 } from './SvgStyleConstants';
 
 // The MARGINS values have been eyeballed to provide enough space for axis
@@ -64,6 +67,7 @@ function SvgBarChart($element, vif, options) {
   let lastRenderedSeriesHeight = 0;
   let lastRenderedZoomTranslate = 0;
   let measureLabels;
+  let referenceLines;
 
   const labelResizeState = {
     draggerElement: null,
@@ -263,6 +267,8 @@ function SvgBarChart($element, vif, options) {
       map((label) => self.isGrouping() ? label || noValueLabel : label);
     }
 
+    referenceLines = self.getReferenceLines();
+
     let width;
     let height;
     let groupedDataToRender;
@@ -279,8 +285,10 @@ function SvgBarChart($element, vif, options) {
     let yAxisAndSeriesSvg;
     let seriesSvg;
     let dimensionGroupSvgs;
-    let barUnderlaySvgs;
     let barSvgs;
+    let barUnderlaySvgs;
+    let referenceLineSvgs;
+    let referenceLineUnderlaySvgs;
     let barTextSvgs;
     let xAxisBound = false;
     let yAxisBound = false;
@@ -432,6 +440,54 @@ function SvgBarChart($element, vif, options) {
         attr('shape-rendering', 'crispEdges');
     }
 
+    function renderReferenceLines() {
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the left or right edge
+      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1 
+      // pixel when at the right edge.  All the other lines are rendered in normal positions.
+      const getXPosition = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+
+        if (value == minXValue) {
+          return d3XScale(value) + 1; // shift right a pixel if at the left edge of chart area
+        } else if (value == maxXValue) {
+          return d3XScale(value) - 1; // shift left a pixel if at the right edge of chart area
+        } else {
+          return d3XScale(value);
+        }
+      };
+
+      const getLineThickness = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+        return self.isInRange(value, minXValue, maxXValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
+      };
+
+      const getUnderlayThickness = (referenceLine) => {
+        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
+        return self.isInRange(value, minXValue, maxXValue) ? REFERENCE_LINES_UNDERLAY_THICKNESS : 0;
+      };
+
+      // This places the underlay half to the left of the line and half to the right of the line.
+      const underlayLeftwardShift = REFERENCE_LINES_UNDERLAY_THICKNESS / 2;
+
+      referenceLineUnderlaySvgs.
+        attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill-opacity', 0).
+        attr('x', (referenceLine) => getXPosition(referenceLine) - underlayLeftwardShift).
+        attr('y', 0).
+        attr('width', getUnderlayThickness).
+        attr('height', height);
+
+      referenceLineSvgs.
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', (referenceLine) => referenceLine.color).
+        attr('stroke-dasharray', REFERENCE_LINES_STROKE_DASHARRAY).
+        attr('stroke-width', getLineThickness).
+        attr('x1', getXPosition).
+        attr('y1', 0).
+        attr('x2', getXPosition).
+        attr('y2', height);
+    }
+
     function renderErrorBars() {
       if (_.isUndefined(dataToRender.errorBars)) {
         return;
@@ -499,8 +555,7 @@ function SvgBarChart($element, vif, options) {
     // elements that have been created by binding the data (which is done
     // inline in this function below).
     function renderSeries() {
-
-      if (!isStacked) {
+      if (!isStacked && (referenceLines.length == 0)) {
         dimensionGroupSvgs.selectAll('rect.bar-underlay').
           attr('x', 0).
           attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
@@ -853,7 +908,9 @@ function SvgBarChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
+        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+
+        self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {
@@ -932,11 +989,11 @@ function SvgBarChart($element, vif, options) {
 
     try {
 
-      const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex);
-      const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex);
+      const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex, referenceLines);
+      const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex, referenceLines);
 
-      const dataMinSummedXValue = getMinSummedXValue(groupedDataToRender, dataTableDimensionIndex);
-      const dataMaxSummedXValue = getMaxSummedXValue(groupedDataToRender, dataTableDimensionIndex);
+      const dataMinSummedXValue = getMinSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+      const dataMaxSummedXValue = getMaxSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
 
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
@@ -1197,7 +1254,19 @@ function SvgBarChart($element, vif, options) {
         (datum, measureIndex) => measureIndex
       );
 
-    if (!_.isUndefined(dataToRender.errorBars)) {
+    referenceLineSvgs = seriesSvg.selectAll('line.reference-line').
+      data(referenceLines).
+      enter().
+      append('line').
+      attr('class', 'reference-line');
+
+    referenceLineUnderlaySvgs = seriesSvg.selectAll('rect.reference-line-underlay').
+      data(referenceLines).
+      enter().
+      append('rect').
+      attr('class', 'reference-line-underlay');
+
+      if (!_.isUndefined(dataToRender.errorBars)) {
       dimensionGroupSvgs.selectAll('line.error-bar-left').
         data((d) => d.slice(1)).
         enter().
@@ -1296,6 +1365,7 @@ function SvgBarChart($element, vif, options) {
       renderYAxis();
       renderSeries();
       renderXAxis();
+      renderReferenceLines();
       renderErrorBars();
 
       updateLabelWidthDragger(leftMargin, topMargin, height);
@@ -1394,6 +1464,22 @@ function SvgBarChart($element, vif, options) {
           if (!isCurrentlyPanning()) {
 
             hideHighlight();
+            hideFlyout();
+          }
+        }
+      );
+
+    chartSvg.selectAll('.reference-line-underlay').
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+      on('mousemove', function() {
+        if (!isCurrentlyPanning()) {
+          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked);
+        }
+      }).
+      on('mouseleave',
+        () => {
+          if (!isCurrentlyPanning()) {
             hideFlyout();
           }
         }
@@ -1618,7 +1704,7 @@ function SvgBarChart($element, vif, options) {
       outerTickSize(0);
   }
 
-  function getMinXValue(data, dimensionIndex) {
+  function getMinXValue(data, dimensionIndex, referenceLines) {
     const minRowValue = d3.min(
       data.rows.map(
         (row) => d3.min(
@@ -1627,8 +1713,14 @@ function SvgBarChart($element, vif, options) {
       )
     );
 
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
     if (_.isUndefined(data.errorBars)) {
-      return minRowValue;
+      return d3.min([minRowValue, minReferenceLinesValue]);
     }
 
     const minErrorBarValue = d3.min(
@@ -1644,10 +1736,10 @@ function SvgBarChart($element, vif, options) {
       )
     );
 
-    return Math.min(minRowValue, minErrorBarValue);
+    return d3.min([minRowValue, minReferenceLinesValue, minErrorBarValue]);
   }
 
-  function getMaxXValue(data, dimensionIndex) {
+  function getMaxXValue(data, dimensionIndex, referenceLines) {
     const maxRowValue = d3.max(
       data.rows.map(
         (row) => d3.max(
@@ -1656,9 +1748,16 @@ function SvgBarChart($element, vif, options) {
       )
     );
 
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
     if (_.isUndefined(data.errorBars)) {
-      return maxRowValue;
+      return d3.max([maxRowValue, maxReferenceLinesValue]);
     }
+
     const maxErrorBarValue = d3.max(
       data.errorBars.map(
         (row) => d3.max(
@@ -1672,27 +1771,43 @@ function SvgBarChart($element, vif, options) {
       )
     );
 
-    return Math.max(maxRowValue, maxErrorBarValue);
+    return d3.max([maxRowValue, maxReferenceLinesValue, maxErrorBarValue]);
   }
 
-  function getMinSummedXValue(groupedData, dimensionIndex) {
-    return d3.min(
+  function getMinSummedXValue(groupedData, dimensionIndex, referenceLines) {
+    const minRowValue = d3.min(
       groupedData.map(
         (row) => d3.sum(
           _.filter(row.slice(dimensionIndex + 1), (i) => i < 0)
         )
       )
     );
+
+    const minReferenceLinesValue = d3.min(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.min([minRowValue, minReferenceLinesValue]);
   }
 
-  function getMaxSummedXValue(groupedData, dimensionIndex) {
-    return d3.max(
+  function getMaxSummedXValue(groupedData, dimensionIndex, referenceLines) {
+    const maxRowValue = d3.max(
       groupedData.map(
         (row) => d3.sum(
           _.filter(row.slice(dimensionIndex + 1), (i) => i > 0)
         )
       )
     );
+
+    const maxReferenceLinesValue = d3.max(
+      referenceLines.map(
+        (referenceLine) => referenceLine.value
+      )
+    );
+
+    return d3.max([maxRowValue, maxReferenceLinesValue]);
   }
 
   function generateXScale(minValue, maxValue, width) {

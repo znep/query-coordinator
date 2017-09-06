@@ -31,7 +31,6 @@ import {
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 import BlockLabel from '../shared/BlockLabel';
-import DebouncedInput from '../shared/DebouncedInput';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
 import DisplayOptions from '../DisplayOptions';

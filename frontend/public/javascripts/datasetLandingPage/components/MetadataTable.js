@@ -8,10 +8,11 @@ import CommonMetadataTable from '../../common/components/MetadataTable';
 export const MetadataTable = CommonMetadataTable;
 
 function mapStateToProps(state) {
-  const view = state.view || {};
+  const viewlikeObject = state.view || {};
 
-  const customFieldsets = view.customMetadataFieldsets || [];
+  const customFieldsets = viewlikeObject.customMetadataFieldsets || [];
 
+  // TODO - move to common implementation.
   const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
     const currentAvailableFields = fieldset.fields.map(field => field.name);
 
@@ -29,7 +30,7 @@ function mapStateToProps(state) {
   }, {});
 
   return ({
-    view,
+    viewlikeObject,
     customMetadataFieldsets
   });
 }

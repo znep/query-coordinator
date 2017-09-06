@@ -15,7 +15,7 @@ const MetadataTable = ({ view, customMetadataFieldsets, onClickEditMetadata }) =
         <InfoPane name={view.name} description={view.description} category={view.category} />
       </div>
       <CommonMetadataTable
-        view={view}
+        viewlikeObject={view}
         customMetadataFieldsets={customMetadataFieldsets}
         onClickEditMetadata={onClickEditMetadata} />
     </div>
@@ -23,7 +23,7 @@ const MetadataTable = ({ view, customMetadataFieldsets, onClickEditMetadata }) =
 };
 
 MetadataTable.propTypes = {
-  view: PropTypes.object.isRequired,
+  viewlikeObject: PropTypes.object.isRequired,
   customMetadataFieldsets: PropTypes.object.isRequired,
   onClickEditMetadata: PropTypes.func.isRequired
 };

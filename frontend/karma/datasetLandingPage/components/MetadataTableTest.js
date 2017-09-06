@@ -5,7 +5,7 @@ import mockView from 'data/mockView';
 describe('components/MetadataTable', function() {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
-      view: mockView,
+      viewlikeObject: mockView,
       onExpandMetadataTable: _.noop,
       onExpandTags: _.noop
     });
@@ -23,7 +23,7 @@ describe('components/MetadataTable', function() {
 
   it('does not render a contact dataset owner button if disableContactDatasetOwner is true', function() {
     var element = renderComponent(MetadataTable, getProps({
-      view: {
+      viewlikeObject: {
         disableContactDatasetOwner: true
       }
     }));

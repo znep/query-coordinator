@@ -3,11 +3,12 @@ import collapsible from '../collapsible';
 import velocity from 'velocity-animate';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
-import formatDate from '../formatDate';
+import formatDate, { parseISO8601Date } from '../formatDate';
 import utils from 'common/js_utils';
 import { handleKeyPress } from '../a11yHelpers';
 import { localizeLink } from '../locale';
 import Linkify from 'react-linkify';
+import moment from 'moment-timezone';
 
 // TODO: Make an example page for this component.
 class MetadataTable extends Component {
@@ -34,7 +35,7 @@ class MetadataTable extends Component {
   }
 
   collapseTags() {
-    if (_.isEmpty(this.props.view.tags)) {
+    if (_.isEmpty(this.props.viewlikeObject.tags)) {
       return;
     }
 
@@ -112,27 +113,63 @@ class MetadataTable extends Component {
     }
   }
 
-  render() {
-    const { view, customMetadataFieldsets } = this.props;
+  renderHeader() {
+    let editMetadata;
+    const { viewlikeObject } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
+
+    if (viewlikeObject.editMetadataUrl) {
+      editMetadata = (
+        <a
+          href={localizeLink(viewlikeObject.editMetadataUrl)}
+          className="btn btn-sm btn-default btn-alternate-2"
+          onClick={onClickEditMetadata}>
+          {I18n.common.metadata.edit_metadata}
+        </a>
+      );
+    }
+
+    return (
+      <div className="landing-page-header-wrapper">
+        <h2 className="landing-page-section-header">
+          {I18n.common.metadata.title}
+        </h2>
+        {editMetadata}
+      </div>
+    );
+  }
+
+  render() {
+    const { viewlikeObject, customMetadataFieldsets } = this.props;
     const onClickStats = this.props.onClickStats || _.noop;
 
-    let attribution;
-    let attachments;
-    let category;
-    let tags;
-    let license;
-    let attributionLink;
-    let statsSection;
-    let editMetadata;
-    let contactDatasetOwner;
-    let dataLastUpdated;
-    let customMetadataTable;
+    if (!_.has(viewlikeObject, 'lastUpdatedAt')) {
+      throw new Error('viewlikeObject property does not look like a viewlikeObject. If you are trying to use\
+        a raw core view metadata object, look at coreViewToViewlikeObject');
+    }
 
-    if (view.attribution) {
+    let attachments;
+    let attribution;
+    let attributionLink;
+    let category;
+    let contactDatasetOwner;
+    let customMetadataTable;
+    let dataLastUpdated;
+    let downloads;
+    let license;
+    let statsSection;
+    let tags;
+
+    const header = _.get(
+      this.props,
+      'header',
+      this.renderHeader()
+    );
+
+    if (viewlikeObject.attribution) {
       attribution = (
         <dd className="metadata-detail-group-value">
-          {view.attribution}
+          {viewlikeObject.attribution}
         </dd>
       );
     } else {
@@ -182,8 +219,8 @@ class MetadataTable extends Component {
       });
     }
 
-    if (!_.isEmpty(view.attachments)) {
-      const attachmentRows = _.map(view.attachments, (attachment, i) => (
+    if (!_.isEmpty(viewlikeObject.attachments)) {
+      const attachmentRows = _.map(viewlikeObject.attachments, (attachment, i) => (
         <tr key={i}>
           <td className="attachment">
             <span className="icon-copy-document"></span>
@@ -206,17 +243,17 @@ class MetadataTable extends Component {
       );
     }
 
-    if (view.category) {
-      category = <td>{_.upperFirst(view.category)}</td>;
+    if (viewlikeObject.category) {
+      category = <td>{_.upperFirst(viewlikeObject.category)}</td>;
     } else {
       category = <td className="empty">{I18n.common.metadata.no_category_value}</td>;
     }
 
-    if (!_.isEmpty(view.tags)) {
-      const tagLinks = _.map(view.tags, (tag, i) => (
+    if (!_.isEmpty(viewlikeObject.tags)) {
+      const tagLinks = _.map(viewlikeObject.tags, (tag, i) => (
         <span key={i}>
           <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
-          {i === view.tags.length - 1 ? '' : ', '}
+          {i === viewlikeObject.tags.length - 1 ? '' : ', '}
         </span>
       ));
 
@@ -236,15 +273,15 @@ class MetadataTable extends Component {
       tags = <td className="empty">{I18n.common.metadata.no_tags_value}</td>;
     }
 
-    if (view.licenseName) {
-      if (view.licenseLogo) {
-        license = <img src={`/${view.licenseLogo}`} alt={view.licenseName} className="license" />;
+    if (viewlikeObject.licenseName) {
+      if (viewlikeObject.licenseLogo) {
+        license = <img src={`/${viewlikeObject.licenseLogo}`} alt={viewlikeObject.licenseName} className="license" />;
       } else {
-        license = view.licenseName;
+        license = viewlikeObject.licenseName;
       }
 
-      if (view.licenseLink) {
-        license = <a href={view.licenseLink} target="_blank">{license}</a>;
+      if (viewlikeObject.licenseLink) {
+        license = <a href={viewlikeObject.licenseLink} target="_blank">{license}</a>;
       }
 
       license = <td>{license}</td>;
@@ -252,13 +289,13 @@ class MetadataTable extends Component {
       license = <td className="empty">{I18n.common.metadata.no_license_value}</td>;
     }
 
-    if (view.attributionLink) {
+    if (viewlikeObject.attributionLink) {
       attributionLink = (
         <tr>
           <td>{I18n.common.metadata.source_link}</td>
           <td className="attribution">
-            <a href={view.attributionLink} target="_blank" rel="nofollow external">
-              {view.attributionLink}
+            <a href={viewlikeObject.attributionLink} target="_blank" rel="nofollow external">
+              {viewlikeObject.attributionLink}
               <span className="icon-external-square" />
             </a>
           </td>
@@ -266,12 +303,12 @@ class MetadataTable extends Component {
       );
     }
 
-    if (view.statsUrl) {
+    if (viewlikeObject.statsUrl) {
       statsSection = (
         <div className="metadata-row middle">
           <a
             className="metadata-detail-group-value"
-            href={localizeLink(view.statsUrl)}
+            href={localizeLink(viewlikeObject.statsUrl)}
             onClick={onClickStats}>
             {I18n.common.metadata.view_statistics}
           </a>
@@ -279,18 +316,7 @@ class MetadataTable extends Component {
       );
     }
 
-    if (view.editMetadataUrl) {
-      editMetadata = (
-        <a
-          href={localizeLink(view.editMetadataUrl)}
-          className="btn btn-sm btn-default btn-alternate-2"
-          onClick={onClickEditMetadata}>
-          {I18n.common.metadata.edit_metadata}
-        </a>
-      );
-    }
-
-    if (!view.disableContactDatasetOwner) {
+    if (!viewlikeObject.disableContactDatasetOwner) {
       contactDatasetOwner = (
         <button
           className="btn btn-sm btn-primary btn-block contact-dataset-owner"
@@ -300,7 +326,7 @@ class MetadataTable extends Component {
       );
     }
 
-    if (!view.isBlobby && !view.isHref) {
+    if (!viewlikeObject.isBlobby && !viewlikeObject.isHref) {
       dataLastUpdated = (
         <div className="metadata-detail-group">
           <dt className="metadata-detail-group-title">
@@ -308,7 +334,21 @@ class MetadataTable extends Component {
           </dt>
 
           <dd className="metadata-detail-group-value">
-            {formatDate(view.dataLastUpdatedAt)}
+            {formatDate(viewlikeObject.dataLastUpdatedAt)}
+          </dd>
+        </div>
+      );
+    }
+
+    if (_.isFinite(viewlikeObject.downloadCount)) {
+      downloads = (
+        <div className="metadata-pair">
+          <dt className="metadata-pair-key">
+            {I18n.common.metadata.downloads}
+          </dt>
+
+          <dd className="metadata-pair-value">
+            {utils.formatNumber(viewlikeObject.downloadCount)}
           </dd>
         </div>
       );
@@ -317,12 +357,7 @@ class MetadataTable extends Component {
     return (
       <div className="metadata-table-wrapper">
         <section className="landing-page-section">
-          <div className="landing-page-header-wrapper">
-            <h2 className="landing-page-section-header">
-              {I18n.common.metadata.title}
-            </h2>
-            {editMetadata}
-          </div>
+          {header}
 
           <div className="section-content">
             <dl className="metadata-column fancy">
@@ -334,7 +369,7 @@ class MetadataTable extends Component {
                     </dt>
 
                     <dd className="metadata-pair-value">
-                      {formatDate(view.lastUpdatedAt)}
+                      {formatDate(viewlikeObject.lastUpdatedAt)}
                     </dd>
                   </div>
                 </div>
@@ -348,7 +383,7 @@ class MetadataTable extends Component {
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {formatDate(view.metadataLastUpdatedAt)}
+                      {formatDate(viewlikeObject.metadataLastUpdatedAt)}
                     </dd>
                   </div>
                 </div>
@@ -360,7 +395,7 @@ class MetadataTable extends Component {
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {formatDate(view.createdAt)}
+                      {formatDate(viewlikeObject.createdAt)}
                     </dd>
                   </div>
                 </div>
@@ -376,19 +411,11 @@ class MetadataTable extends Component {
                     </dt>
 
                     <dd className="metadata-pair-value">
-                      {utils.formatNumber(view.viewCount)}
+                      {utils.formatNumber(viewlikeObject.viewCount)}
                     </dd>
                   </div>
 
-                  <div className="metadata-pair">
-                    <dt className="metadata-pair-key">
-                      {I18n.common.metadata.downloads}
-                    </dt>
-
-                    <dd className="metadata-pair-value">
-                      {utils.formatNumber(view.downloadCount)}
-                    </dd>
-                  </div>
+                  {downloads}
                 </div>
                 {statsSection}
               </div>
@@ -410,7 +437,7 @@ class MetadataTable extends Component {
                     </dt>
 
                     <dd className="metadata-detail-group-value">
-                      {view.ownerName}
+                      {viewlikeObject.ownerName}
                     </dd>
                   </div>
                 </div>
@@ -507,12 +534,101 @@ class MetadataTable extends Component {
   }
 }
 
+// Converts a real core view (/api/views/xxxx-xxxx.json) to a form this component can understand.
+// See comments in propTypes.
+// If you want to override some fields (editMetadataUrl and statsUrl come to mind),
+// pass a hash of fields as the "defaults" parameter.
+export const coreViewToViewlikeObject = (coreView, defaults) => {
+  const viewlikeObject = _.cloneDeep(coreView);
+  const license = coreView.license || {};
+
+  const toISO8601 = (date) => {
+    const momentDate = _.isNumber(date) ? moment.unix(date) : parseISO8601Date(date);
+    return momentDate.toISOString();
+  };
+
+  // Mirrors view.rb#time_last_updated_at
+  const lastUpdatedAt = _([
+    coreView.rowsUpdatedAt,
+    coreView.createdAt,
+    coreView.viewLastModified
+  ]).compact().max();
+
+  _.assign(viewlikeObject, {
+    tags: coreView.tags,
+    attribution: coreView.attribution,
+    attributionLink: coreView.attributionLink || '',
+    attachments: coreView.attachments, // MetadataTable transforms this
+    licenseName: license.name,
+    licenseLogo: license.logoUrl,
+    licenseUrl: license.termsLink, // TODO consume?
+    editMetadataUrl: `/d/${coreView.id}/edit_metadata`,
+    statsUrl: null, // Tricky - need to do a permissions check first. See view.rb#can_see_stats?
+    // Tricky - should be tied to CurrentDomain.feature?(:disable_contact_dataset_owner), but we have
+    // no standard facility to check features in JS (as opposed to FeatureFlags).
+    // Default to a safe value.
+    disableContactDatasetOwner: true,
+    lastUpdatedAt: toISO8601(lastUpdatedAt),
+    dataLastUpdatedAt: toISO8601(coreView.rowsUpdatedAt), // Note the name change :/
+    metadataLastUpdatedAt: toISO8601(coreView.viewLastModified), // Note the name change :/
+    createdAt: toISO8601(coreView.createdAt),
+    viewCount: coreView.viewCount,
+    downloadCount: coreView.downloadCount,
+    ownerName: coreView.owner.displayName
+  }, defaults || {});
+
+  return viewlikeObject;
+};
+
 MetadataTable.propTypes = {
   onClickEditMetadata: PropTypes.func,
   onClickStats: PropTypes.func,
   onExpandMetadataTable: PropTypes.func,
   onExpandTags: PropTypes.func,
-  view: PropTypes.object.isRequired,
+
+  // Header content. If unspecified, uses a default header (with an edit button
+  // going to viewlikeObject.editMetadataUrl).
+  header: PropTypes.node,
+
+  // This is a not-quite-core-view object that dates back to an early Primer implementation.
+  // It's terrible, but an ecosystem (more like petri dish) has grown up around it. Unfortunately,
+  // this object is a little sticky because it provides a little more information than what is
+  // provided by a normal core view (some links, statsUrl, etc). This is also not the only
+  // component which uses this viewlikeObject.
+  //
+  // If you're thinking "Dangit, I just wanna display a darn
+  // table!" you're a) right to be miffed, and b) in luck: use
+  // the included coreViewToViewlikeObject. If you have the time,
+  // consider investing the time to refactor viewlikeObject straight
+  // into the depths of the sea of fire from whence it came. You'll
+  // have to address Primer, DatasetManagementUI, and OP Measures.
+  viewlikeObject: PropTypes.shape({
+    tags: PropTypes.array,
+    attribution: PropTypes.string,
+    attachments: PropTypes.array,
+    category: PropTypes.string,
+    licenseName: PropTypes.string,
+    licenseUrl: PropTypes.string, // TODO consume?
+    licenseLogo: PropTypes.string,
+    attributionLink: PropTypes.string,
+    statsUrl: PropTypes.string,
+    editMetadataUrl: PropTypes.string,
+    disableContactDatasetOwner: PropTypes.bool,
+    isHref: PropTypes.bool,
+    isBlobby: PropTypes.bool,
+
+    // NOTE! These timestamps are ISO8601, which is gratuitously different from core
+    // (which provides a UNIX timestamp). Sorry.
+    dataLastUpdatedAt: PropTypes.string,
+    lastUpdatedAt: PropTypes.string,
+    metadataLastUpdatedAt: PropTypes.string,
+    createdAt: PropTypes.string,
+
+    ownerName: PropTypes.string,
+    viewCount: PropTypes.number,
+    downloadCount: PropTypes.number
+  }).isRequired,
+
   customMetadataFieldsets: PropTypes.object
 };
 

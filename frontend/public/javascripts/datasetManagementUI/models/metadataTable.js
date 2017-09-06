@@ -87,7 +87,7 @@ export const makeProps = (entities, params) => {
     }
 
     return {
-      view: viewlikeObj,
+      viewlikeObj,
       customMetadataFieldsets,
       onClickEditMetadata: e => {
         e.preventDefault();

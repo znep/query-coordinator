@@ -58,6 +58,17 @@ class DatasetLandingPage
         description = Rinku.auto_link(description, :all, 'target="_blank" rel="nofollow external"')
       end
 
+      # TODO: This approach is an anti-pattern.
+      # We should provide the entire view as-is to the DSLP JS. Any extra information should be provided
+      # in a well-signposted sidecar.
+      #
+      # There are many reasons to avoid the below pick-and-choose pattern:
+      #   * Difficult to reuse DSLP components elsewhere due to gratuitous differences.
+      #   * Tight coupling of JS to Ruby implementation.
+      #   * Unnecessary switching between snake_case and camelCase.
+      #   * Difficult refactoring due to mix of core-provided metadata (verbatim), core-provided metadata
+      #     (different representation, i.e. timestamps), ruby-computed values unrelated to the view (i.e.,
+      #     stats_url), and mashups of the above.
       results[:dataset_landing_page_view] = {
         :allAccessPoints => view.allAccessPoints,
         :apiFoundryUrl => view.api_foundry_url,

@@ -32,14 +32,16 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <div
-        id="site-chrome-header-notifications"
-        tabIndex="-1"
-        class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? && enable_new_admin_ui? %>">
-        <%# This gets filled in by notifications JS %>
-      </div>
+      <% if get_feature_flag('enable_header_notifications') %>
+        <div
+          id="site-chrome-header-notifications"
+          tabIndex="-1"
+          class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? && enable_new_admin_ui? %>">
+          <%# This gets filled in by notifications JS %>
+        </div>
 
-      <div class="site-chrome-admin-separator"></div>
+        <div class="site-chrome-admin-separator"></div>
+      <% end %>
 
       <% if current_user_can_see_admin_link? && enable_new_admin_ui? %>
         <div class="site-chrome-admin-settings"
@@ -49,8 +51,20 @@
           aria-label="<%= t('shared.site_chrome.header.settings_menu.title') %>">
           <%= render 'site_chrome/admin/settings' %>
         </div>
+
         <div class="site-chrome-admin-separator"></div>
       <% end %>
+
+      <div class="collapsible-search" data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-autocomplete-collapsible="true">
+        <span class="socrata-icon-search collapsible-search-toggle"
+          title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
+          onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">
+        </span>
+
+        <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
+      </div>
+
+      <div class="site-chrome-admin-separator"></div>
 
       <div
         class="site-chrome-admin-user"

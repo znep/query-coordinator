@@ -1,6 +1,6 @@
 // Note: on disk, these file names start with "_" i.e. "_search.scss"
 @import "styleguide-colors";
-@import "common/breakpoints";
+@import "variables/breakpoints";
 @import "common/mixins";
 @import "catalog-landing-page/search";
 @import "catalog-landing-page/header";

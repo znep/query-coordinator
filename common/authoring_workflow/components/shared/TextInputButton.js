@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import DebouncedInput from './DebouncedInput';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ENTER, ESCAPE, isolateEventByKeys } from 'common/keycodes';
+import { ENTER, ESCAPE, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 
-class TextInputButton extends Component {
-  constructor() {
-    super();
+export class TextInputButton extends Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
       isPopupOpen: false

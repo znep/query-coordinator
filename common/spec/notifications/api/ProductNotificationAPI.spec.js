@@ -11,9 +11,8 @@ describe('ProductNotificationAPI', () => {
     beforeEach(() => {
       getProductNotifaicationsStub = sinon.stub(
         window,
-        'fetch',
-        _.constant(Promise.resolve(mockResponse([], 200)))
-      );
+        'fetch'
+      ).resolves(mockResponse([], 200));
     });
 
     afterEach(() => {
@@ -33,8 +32,7 @@ describe('ProductNotificationAPI', () => {
       updateProductNotificationLastSeenStub = sinon.stub(
         window,
         'fetch',
-        _.constant(Promise.resolve(mockResponse([], 200)))
-      );
+      ).resolves(mockResponse([], 200));
     });
 
     afterEach(() => {

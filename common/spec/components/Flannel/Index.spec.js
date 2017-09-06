@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import Flannel from 'components/Flannel';
 import { renderComponent } from '../../helpers';
-import { ESCAPE } from 'common/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes';
 
 describe('Flannel', () => {
   let element;

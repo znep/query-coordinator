@@ -4,10 +4,14 @@
 var path = require('path');
 var nodeResolve = require.resolve;
 var platformUiRoot = path.resolve(__dirname, '../..');
+const { getStyleguideIncludePaths } = require(path.resolve(platformUiRoot, './common/webpack/shared_config'));
 
 // TODO Move base webpack config from frontend/webpack into common, then use here.
 var webpackConfig = {
   context: __dirname,
+  sassLoader: {
+    includePaths: getStyleguideIncludePaths()
+  },
   module: {
     loaders: [
       {
@@ -113,7 +117,8 @@ var webpackConfig = {
   externals: {
     'jsdom': 'window',
     'cheerio': 'window',
-    'react/addons': true,
+    'react/addons': 'react',
+    'react-addons-test-utils': 'react-dom',
     'react/lib/ExecutionEnvironment': true,
     'react/lib/ReactContext': true,
     'react/lib/ReactTestUtils': true
@@ -129,7 +134,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai-dom', 'chai', 'sinon', 'intl-shim'],
+    frameworks: ['mocha', 'chai-dom', 'chai', 'intl-shim'],
 
     // list of files / patterns to load in the browser
     files: [

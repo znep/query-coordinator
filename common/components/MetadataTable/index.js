@@ -9,7 +9,7 @@ import utils from 'common/js_utils';
 import Linkify from 'react-linkify';
 import moment from 'moment-timezone';
 import I18n from 'common/i18n';
-import { ENTER, SPACE, isOneOfKeys } from 'common/keycodes';
+import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes';
 
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (

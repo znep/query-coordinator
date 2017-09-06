@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import ceteraUtils from '../../cetera_utils';
+import ceteraUtils from 'common/cetera/utils';
 import BackButton from '../BackButton';
 import Card from './Card';
 import NoResults from './NoResults';
@@ -10,6 +10,7 @@ import ResultCount from './ResultCount';
 import Searchbox from '../searchbox/Searchbox';
 import SortDropdown from './SortDropdown';
 import Spinner from './Spinner';
+import I18n from 'common/i18n';
 
 export class ResultsContainer extends React.Component {
   constructor(props) {
@@ -130,7 +131,7 @@ export class ResultsContainer extends React.Component {
             {this.props.additionalTopbarComponents.map((component) => component)}
             <Searchbox
               onSearch={this.changeQuery}
-              placeholder={_.get(I18n, 'common.asset_selector.results_container.search')} />
+              placeholder={I18n.t('common.asset_selector.results_container.search')} />
           </div>
           {resultContent}
         </div>

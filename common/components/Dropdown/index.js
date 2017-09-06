@@ -3,10 +3,11 @@ import $ from 'jquery';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+
 import SocrataUtils from 'common/js_utils';
-import SocrataIcon from '../SocrataIcon';
-import Picklist from '../Picklist';
-import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/keycodes';
+import SocrataIcon from 'common/components/SocrataIcon';
+import Picklist from 'common/components/Picklist';
+import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes';
 
 class Dropdown extends Component {
   constructor(props) {

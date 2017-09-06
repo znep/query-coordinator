@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'common/site_wide';
 
 (function() {
 

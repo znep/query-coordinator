@@ -8,7 +8,7 @@ import airbrake from 'common/airbrake';
 import reducer from './reducers';
 import App from './App';
 import SearchApp from './SearchApp';
-import { dateLocalize } from '../common/locale';
+import { dateLocalize } from 'common/locale';
 import { AppContainer } from 'react-hot-loader';
 
 const middleware = [thunk];

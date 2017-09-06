@@ -3,29 +3,9 @@ require 'digest/md5'
 require 'listen'
 require 'singleton'
 require 'fileutils'
+require "#{Rails.root}/../lib/shared/load_paths"
 
-# BEWARE /node_modules/normalize.css has to appear above /node_modules
-# otherwise SaSS will try to read normalize.css (which is a directory)
-# as if it's a file :facepalm:
-#
-# KEEP IN SYNC with:
-#   frontend/config/webpack/common.js#getStyleguideIncludePaths
-#   storyteller/config/initializers/assets.rb
-SCSS_LOAD_PATHS = %w(
-  /../common/styleguide
-  /../common
-  /app/styles
-  /..
-  /../common/resources/fonts/templates
-  /node_modules/normalize.css
-  /node_modules
-  /node_modules/bourbon-neat/app/assets/stylesheets
-  /node_modules/bourbon/app/assets/stylesheets
-  /node_modules/modularscale-sass/stylesheets
-  /node_modules/react-datepicker/dist
-  /node_modules/react-input-range/dist
-  /node_modules/leaflet/dist
-).map { |path| path.prepend(Rails.root.to_s) }
+include ::Shared::LoadPaths
 
 #NOTE A reasonable implementation might look at SCSS_LOAD_PATHS, but:
 #  1. This includes .., which resolves to the entirety of platform-ui, and

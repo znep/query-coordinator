@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import I18n from 'common/i18n';
-import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from 'common/keycodes';
+import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 
 export class ColorPicker extends Component {
   constructor(props) {

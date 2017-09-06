@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import 'whatwg-fetch';
-import { checkStatus, defaultHeaders, redirectTo } from '../../common/http';
+import { checkStatus, defaultHeaders, redirectTo } from 'common/http';
 
 import {
   HANDLE_FETCH_ROW_COUNT_SUCCESS,

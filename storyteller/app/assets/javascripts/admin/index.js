@@ -3,6 +3,7 @@ import 'jquery-ujs';
 import StorytellerUtils from '../StorytellerUtils';
 
 import 'common/notifications/main';
+import 'common/site_wide';
 
 function hookUpSectionCollapseCheckboxes() {
   $('.form-section').each(function() {

@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { localizeLink } from '../../common/locale';
-
+import { localizeLink } from 'common/locale';
 import { MetadataTable } from 'common/components';
 
 // Pane containing generic asset metadata for the measure.

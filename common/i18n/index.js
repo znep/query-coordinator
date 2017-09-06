@@ -9,4 +9,10 @@ _.assign(I18nJS.translations, {
   [I18nJS.locale]: window.datalensTranslations || window.translations
 });
 
+export function useTestTranslations(translations) {
+  _.assign(I18nJS.translations, {
+    [I18nJS.locale]: translations
+  });
+};
+
 export default I18nJS;

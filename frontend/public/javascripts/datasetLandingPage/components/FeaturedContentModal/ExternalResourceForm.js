@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { VALID_URL_REGEX } from '../../../common/constants';
+import { VALID_URL_REGEX } from 'common/http/constants';
 import { ExternalViewCard } from 'common/components';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';

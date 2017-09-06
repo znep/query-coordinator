@@ -9,7 +9,7 @@ import { handleKeyPress } from '../../common/a11yHelpers';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
 import { publishView, clearViewPublishError } from '../actions/view';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 // TODO: Make an example page for this component.
 export class PublishNotice extends Component {

@@ -84,5 +84,5 @@ If you wish to add a new NPM package for use in `common` code, follow these step
     3. `storyteller/package.json`
 2. If the package includes styles, tell the SCSS runtimes about them by adding an include path to:
     1. `SCSS_LOAD_PATHS` in `frontend/app/controllers/style_controller.rb`.
-    2. `getStyleguideIncludePaths` in `frontend/config/webpack/common.js`.
+    2. `getStyleguideIncludePaths` in `common/webpack/shared_config.js`.
     3. The `Rails.application.config.assets.paths` list in `storyteller/config/initializers/assets.rb`.

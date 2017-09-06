@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ENTER } from 'common/keycodes';
-import { handleKeyPress } from '../helpers/keyPressHelpers';
+import { ENTER } from 'common/dom_helpers/keycodes';
+import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
 
 export class Pager extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ export class Pager extends React.Component {
   }
 
   lastPage() {
-    return Math.ceil(this.props.resultCount / this.props.resultsPerPage, 10);
+    return Math.ceil(this.props.resultCount / this.props.resultsPerPage, this.props.resultsPerPage);
   }
 
   prevLinkClick(e) {
@@ -185,7 +185,7 @@ Pager.defaultProps = {
   changePage: _.noop,
   currentPage: 1,
   resultCount: 0,
-  resultsPerPage: 6
+  resultsPerPage: 10
 };
 
 export default Pager;

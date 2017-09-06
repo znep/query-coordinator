@@ -15,19 +15,16 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig('.eslintrc.json'),
   module: {
     loaders: common.getStandardLoaders(
-      [
-        {
-          test: /\.s?css$/,
-          // Process styles but don't inline images. We don't use them.
-          loader: 'style-loader!css-loader?url=false!sass-loader'
-        },
-        {
-          test: /\.yml$/,
-          loaders: ['json', 'yaml']
-        }
-      ],
+      [],
       {
-        babelRewirePlugin: true
+        babelRewirePlugin: true,
+        substituteStyleLoaders: [
+          {
+            test: /\.s?css$/,
+            // Process styles but don't inline images. We don't use them.
+            loader: 'style-loader!css-loader?url=false!sass-loader'
+          }
+        ]
       }
     )
   },

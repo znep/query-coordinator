@@ -1,4 +1,4 @@
-@import "common/breakpoints";
+@import "variables/breakpoints";
 
 @mixin desktop {
   @media screen and (min-width: #{$medium}) {

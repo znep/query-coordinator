@@ -1,3 +1,6 @@
+// This is necessary for some tests because they check layout and require the vis styles to be loaded.
+import 'common/visualizations/views/styles/socrata-visualizations.scss';
+
 // Miscellaneous dependencies that require global scope
 window._ = require('lodash');
 window.socrata = window.socrata || {};

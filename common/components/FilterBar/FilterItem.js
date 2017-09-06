@@ -10,7 +10,7 @@ import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
 import I18n from 'common/i18n';
-import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/keycodes';
+import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes';
 import { getFilterToggleText } from './filters';
 
 export class FilterItem extends Component {

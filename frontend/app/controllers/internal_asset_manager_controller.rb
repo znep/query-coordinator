@@ -1,6 +1,7 @@
 class InternalAssetManagerController < ApplicationController
 
   include ApplicationHelper
+  include CatalogResultsHelper
   include InternalAssetManagerHelper
 
   # NOTE: This should match the value of RESULTS_PER_PAGE in

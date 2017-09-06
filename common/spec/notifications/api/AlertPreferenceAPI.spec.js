@@ -18,7 +18,7 @@ describe('AlertPreferenceAPI', () => {
       );
 
       beforeEach(() => {
-        getPreferenceStub = sinon.stub(window, 'fetch', _.constant(Promise.resolve(mockResponse)))
+        getPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
       });
 
       afterEach(() => {
@@ -54,7 +54,7 @@ describe('AlertPreferenceAPI', () => {
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
-        getPreferenceStub = sinon.stub(window, 'fetch', _.constant(Promise.resolve({status: 500})));
+        getPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({status: 500}));
       });
 
       afterEach(() => {
@@ -83,7 +83,7 @@ describe('AlertPreferenceAPI', () => {
       let mockResponse = new Response(JSON.stringify ({data: []}), {status: 200});
 
       beforeEach(() => {
-        setPreferenceStub = sinon.stub(window, 'fetch', _.constant(Promise.resolve(mockResponse)))
+        setPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
       });
 
       afterEach(() => {
@@ -108,7 +108,7 @@ describe('AlertPreferenceAPI', () => {
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
-        setPreferenceStub = sinon.stub(window, 'fetch', _.constant(Promise.resolve({status: 500})))
+        setPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({status: 500}));
       });
 
       afterEach(() => {

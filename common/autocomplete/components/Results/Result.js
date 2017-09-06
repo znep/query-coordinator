@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
-import { getSearchUrl } from '../../Util';
 import { resultFocusChanged, queryChanged, resultVisibilityChanged } from '../../actions';
 import styles from './results.scss';
 

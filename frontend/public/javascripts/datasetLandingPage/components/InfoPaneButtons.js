@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { isUserRoled } from '../../common/user';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 import { FeatureFlags } from 'common/feature_flags';
 
 export default class InfoPaneButtons extends Component {

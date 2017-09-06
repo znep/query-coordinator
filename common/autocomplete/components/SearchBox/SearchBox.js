@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
@@ -7,8 +7,8 @@ import _ from 'lodash';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import connectLocalization from 'common/i18n/components/connectLocalization';
+import I18n from 'common/i18n';
 
-import { getSearchUrl } from '../../Util';
 import { queryChanged, resultsChanged, resultVisibilityChanged } from '../../actions';
 import styles from './search-box.scss';
 
@@ -215,6 +215,7 @@ SearchBox.propTypes = {
 };
 
 SearchBox.defaultProps = {
+  I18n: I18n,
   onClearSearch: _.noop
 };
 

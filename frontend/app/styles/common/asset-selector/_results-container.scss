@@ -1,7 +1,7 @@
-@import "common/breakpoints";
+@import "variables/breakpoints";
 @import "common/mixins";
 @import "common/asset-selector/card";
-@import "common/pager";
+@import "common/styleguide/partials/pager";
 @import "../public/javascripts/common/components/searchbox/searchbox";
 
 .asset-selector {

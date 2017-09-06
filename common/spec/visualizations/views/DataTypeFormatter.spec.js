@@ -86,7 +86,7 @@ describe('DataTypeFormatter', function() {
 
     beforeEach(function() {
       consoleErrorStub = sinon.stub(console, 'error');
-      lodashEscapeStub = sinon.stub(_, 'escape', function() {
+      lodashEscapeStub = sinon.stub(_, 'escape').throws(() => {
         throw new Error('UNESCAPABLE!');
       });
     });

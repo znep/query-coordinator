@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
+import { RELATED_VIEWS_FETCH_LIMIT } from '../lib/constants';
 
 import {
   REQUEST_RELATED_VIEWS,
@@ -12,8 +12,8 @@ import {
 
 const initialRelatedViews = _.get(window.initialState, 'relatedViews', []);
 const initialState = {
-  viewList: _.take(initialRelatedViews, RELATED_VIEWS_CHUNK_SIZE),
-  hasMore: initialRelatedViews.length > RELATED_VIEWS_CHUNK_SIZE,
+  viewList: _.take(initialRelatedViews, RELATED_VIEWS_FETCH_LIMIT),
+  hasMore: initialRelatedViews.length > RELATED_VIEWS_FETCH_LIMIT,
   hasError: false,
   isLoading: false,
   isCollapsed: false
@@ -32,13 +32,13 @@ export default function(state, action) {
       };
 
     case RECEIVE_RELATED_VIEWS:
-      var additionalViews = _.take(action.relatedViews, RELATED_VIEWS_CHUNK_SIZE);
+      var additionalViews = _.take(action.relatedViews, RELATED_VIEWS_FETCH_LIMIT);
       var viewList = _.clone(state.viewList).concat(additionalViews);
 
       return {
         ...state,
         viewList,
-        hasMore: action.relatedViews.length > RELATED_VIEWS_CHUNK_SIZE,
+        hasMore: action.relatedViews.length > RELATED_VIEWS_FETCH_LIMIT,
         hasError: false,
         isLoading: false
       };

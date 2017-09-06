@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 export class ShareModal extends PureComponent {
   render() {

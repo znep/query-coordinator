@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { SoqlDataProvider, MetadataProvider } from 'common/visualizations/dataProviders';
-import { TRAILING_UID_REGEX } from 'common/constants';
+import { TRAILING_UID_REGEX } from 'common/http/constants';
 
 export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
 export const setDataSourceUid = (uid) => ({

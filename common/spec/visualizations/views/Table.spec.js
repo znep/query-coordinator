@@ -472,7 +472,7 @@ describe('Table', function() {
     describe('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function() {
 
       beforeEach(() => {
-        sinon.stub(table.table, 'isMobile', _.constant(false));
+        sinon.stub(table.table, 'isMobile').returns(false);
       });
 
       afterEach(() => {
@@ -518,7 +518,7 @@ describe('Table', function() {
     describe('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function() {
 
       beforeEach(() => {
-        sinon.stub(table.table, 'isMobile', _.constant(false));
+        sinon.stub(table.table, 'isMobile').returns(false);
       });
 
       afterEach(() => {

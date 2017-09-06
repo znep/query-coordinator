@@ -12,15 +12,7 @@ const webpackConfig = _.defaultsDeep(
     output: common.getOutput(identifier),
     eslint: common.getEslintConfig('public/javascripts/adminRoles/.eslintrc.json'),
     module: {
-      loaders: common.getStandardLoaders({
-        test: /\.(css|scss)$/,
-        loaders: [
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-          'autoprefixer-loader',
-          'sass-loader'
-        ]
-      })
+      loaders: common.getStandardLoaders()
     },
     resolve: _.assign(
       { alias: { styles: path.resolve(common.frontendRoot, 'app/styles') } },

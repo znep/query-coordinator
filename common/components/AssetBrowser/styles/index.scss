@@ -1,0 +1,101 @@
+@import "variables/colors";
+@import "sizings";
+@import "catalog_results";
+@import "catalog_filters";
+@import "clear_filters";
+@import "common/styleguide/variables/colors";
+
+@import "common/styleguide/partials/pager";
+
+.catalog-results {
+  margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom
+
+  &.footerless {
+    margin-bottom: 0;
+  }
+
+  .manage-assets-link {
+    float: right;
+    margin-bottom: 0.5rem;
+  }
+
+  .header {
+    margin: 0 $horizontal_margin;
+    height: 7.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .asset-tabs {
+      a.asset-tab {
+        color: $light-grey-2;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0 2px 2px 2px;
+        display: inline-block;
+        margin-right: 0.75rem;
+        font-size: 15px;
+        font-weight: 600;
+
+        &.active {
+          color: $black;
+          border-bottom: 3px solid $primary-base;
+        }
+      }
+    }
+
+    .asset-counts {
+      margin: 0.5rem 0;
+      display: inline-block;
+
+      &.fetching {
+        opacity: 0.5;
+      }
+
+      &.has-error {
+        display: none;
+      }
+
+      .asset-counts-item {
+        display: inline-block;
+        margin-right: 2.5rem;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+
+        .item-count {
+          font-size: 1.5rem;
+          line-height: 1;
+          color: $dark-grey-1;
+          margin-bottom: 0.25rem;
+
+          a {
+            color: $primary-base;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .item-name {
+          color: $dark-grey-1;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .results-and-filters {
+    display: flex;
+    border-top: 1px solid $light-grey-3;
+    border-bottom: 1px solid $light-grey-3;
+
+    .catalog-results .socrata-icon-search {
+      top: -3px !important;
+    }
+  }
+}

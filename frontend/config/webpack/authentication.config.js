@@ -11,17 +11,7 @@ module.exports = _.defaultsDeep({
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/authentication/.eslintrc.json'),
   module: {
-    loaders: common.getStandardLoaders(
-      {
-        test: /\.(css|scss)$/,
-        loaders: [
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-          'autoprefixer-loader',
-          'sass-loader'
-        ]
-      }
-    )
+    loaders: common.getStandardLoaders()
   },
   resolve: common.getStandardResolve([ 'public/javascripts/authentication' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

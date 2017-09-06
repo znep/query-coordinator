@@ -1,15 +1,16 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
+import _ from 'lodash';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
-import _ from 'lodash';
 import airbrake from 'common/airbrake';
-import reducer from './reducers';
-import App from './app';
-import FeedbackPanel from './components/feedback_panel';
-import { dateLocalize } from 'common/locale';
 import { AppContainer } from 'react-hot-loader';
+
+import { dateLocalize } from 'common/locale';
+import AssetBrowser from 'common/components/AssetBrowser';
+import FeedbackPanel from 'common/components/AssetBrowser/components/feedback_panel';
+import reducer from 'common/components/AssetBrowser/reducers';
 
 const middleware = [thunk];
 
@@ -23,22 +24,18 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-const store = createStore(reducer, applyMiddleware(...middleware));
+const assetBrowser = <AssetBrowser showFilters showSearchField />;
 
-ReactDOM.render(
-  <AppContainer>
-    <App store={store} />
-  </AppContainer>,
-  document.querySelector('#internal-asset-manager-content')
-);
+ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-content'));
+
+const store = createStore(reducer, applyMiddleware(...middleware));
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./app', () => {
-    const NextApp = require('./app').default; //eslint-disable-line
+  module.hot.accept('common/components/AssetBrowser', () => {
     ReactDOM.render(
       <AppContainer>
-        <NextApp store={store} />
+        {assetBrowser}
       </AppContainer>,
       document.querySelector('#internal-asset-manager-content')
     );
@@ -46,27 +43,21 @@ if (module.hot) {
 }
 
 _.defer(() => {
-  ReactDOM.render(
-    <AppContainer>
-      <FeedbackPanel store={store} />
-    </AppContainer>,
-    document.querySelector('#dynamic-content')
-  );
+  const feedbackPanel = <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" store={store} />;
+
+  ReactDOM.render(feedbackPanel, document.querySelector('#feedback-panel-content'));
 
   // Hot Module Replacement API
   if (module.hot) {
-    module.hot.accept('./components/feedback_panel', () => {
-      const NextApp = require('./components/feedback_panel').default; //eslint-disable-line
+    module.hot.accept('common/components/AssetBrowser/components/feedback_panel', () => {
       ReactDOM.render(
         <AppContainer>
-          <NextApp store={store} />
+          {feedbackPanel}
         </AppContainer>,
         document.querySelector('#dynamic-content')
       );
     });
   }
 });
-
-// TODO: hide spinner that doesn't exist yet
 
 Array.from(document.querySelectorAll('.dateLocalize')).forEach(dateLocalize);

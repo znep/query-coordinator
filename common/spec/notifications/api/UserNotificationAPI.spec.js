@@ -10,11 +10,8 @@ const userId = 'tugg-ikce';
 
 describe('User Notification Store', () => {
   beforeEach(() => {
-    notificationStub = sinon.stub(
-      window,
-      'fetch',
-      _.constant(Promise.resolve(mockResponse(fakeUserNotifications, 200)))
-    );
+    notificationStub = sinon.stub(window, 'fetch').
+      returns(Promise.resolve(mockResponse(fakeUserNotifications, 200)));
   });
 
   afterEach(() => {

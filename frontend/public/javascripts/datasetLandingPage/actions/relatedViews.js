@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 
-import { checkStatus, defaultHeaders } from '../../common/http';
-import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
+import { checkStatus, defaultHeaders } from 'common/http';
+import { RELATED_VIEWS_FETCH_LIMIT } from '../lib/constants';
 
 import {
   TOGGLE_RELATED_VIEWS,
@@ -52,7 +52,7 @@ export function loadMoreRelatedViews() {
 
     const uid = state.view.id;
     const offset = _.get(state, 'relatedViews.viewList.length', 0);
-    const limit = RELATED_VIEWS_CHUNK_SIZE + 1;
+    const limit = RELATED_VIEWS_FETCH_LIMIT + 1;
     const fetchUrl = `/dataset_landing_page/${uid}/related_views?limit=${limit}&offset=${offset}`;
     const fetchOptions = {
       credentials: 'same-origin',

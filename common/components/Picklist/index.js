@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from 'common/keycodes';
+import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 
 export class Picklist extends Component {
   constructor(props) {

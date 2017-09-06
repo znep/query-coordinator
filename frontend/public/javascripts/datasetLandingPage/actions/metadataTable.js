@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { checkStatus } from '../../common/http';
+import { checkStatus } from 'common/http';
 
 export function createDSMAPIRevision(fourfour) {
   return () => {

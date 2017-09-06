@@ -5,14 +5,33 @@
   },
   "extends": "./node_modules/eslint-base/.eslintrc.json",
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    }
+  },
   "plugins": [
     "react",
-    "import"
+    "import",
+    "mocha"
   ],
   "rules": {
     "import/default": 2,
     "import/export": 2,
-    "import/prefer-default-export": 0
+    "import/prefer-default-export": 0,
+    "react/no-danger": 0,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars" : 2,
+    "strict": [2, "never"],
+    "dot-notation": [
+      1,
+      {
+        "allowKeywords": true,
+        "allowPattern": "^[a-z]+(_[a-z]+)+$"
+      }
+    ],
+    "mocha/no-exclusive-tests": "error"
   },
   "globals": {
     "$": true,

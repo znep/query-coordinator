@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { createDSMAPIRevision } from '../actions/metadataTable';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
 import { FeatureFlags } from 'common/feature_flags';
 

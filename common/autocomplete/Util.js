@@ -1,11 +1,11 @@
 import url from 'url';
 import _ from 'lodash';
 
-let parsedCurrentUrl = undefined;
+let parsedCurrentUrl = null;
 
 // 'true' here means to parse the query string into an object
-function parseUrl() {
-  if (_.isUndefined(parsedCurrentUrl)) {
+function parseCurrentUrl() {
+  if (_.isEmpty(parsedCurrentUrl)) {
     parsedCurrentUrl = url.parse(window.location.href, true);
   }
 
@@ -13,54 +13,52 @@ function parseUrl() {
 }
 
 /** Get the URL for performing the actual catalog search */
-export function getSearchUrl(query) {
-  const currentUrl = parseUrl();
+export function getBrowseUrl(searchTerm) {
+  const currentUrl = parseCurrentUrl();
 
   if (currentUrl.pathname !== '/browse') {
     currentUrl.pathname = '/browse';
     currentUrl.query = { };
   }
 
-  currentUrl.query.q = query;
+  currentUrl.query.q = searchTerm;
   currentUrl.query.sortBy = 'relevance';
 
   // New search means we should return to the first page
   delete currentUrl.query.page;
 
   // have to blank this out to make the 'query' object get used instead
-  currentUrl.search = undefined;
+  currentUrl.search = null;
 
   return url.format(currentUrl);
 }
-/** Get the URL to use to hit Cetera to perform the autocomplete search */
-export function getCeteraUrl(query, category, anonymous) {
-  let ceteraUrl = `/cetera/autocomplete?q=${escape(query)}`;
+// Get the URL for Cetera to perform the autocomplete search using the Rails proxy to cetera-ruby gem.
+export function getCeteraUrl(searchTerm, anonymous) {
+  const ceteraUrl = url.parse('/cetera/autocomplete', true);
+  const currentUrl = parseCurrentUrl();
 
-  if (!_.isEmpty(category)) {
-    ceteraUrl += `&categories[]=${category}`;
-  } else {
-    const currentUrl = parseUrl();
-
-    if (!_.isEmpty(currentUrl.query.category)) {
-      ceteraUrl += `&categories[]=${currentUrl.query.category}`;
-    }
+  if (!_.isEmpty(currentUrl.query)) {
+    ceteraUrl.query = currentUrl.query;
   }
 
   if (!_.isUndefined(anonymous)) {
-    ceteraUrl += `&anonymous=${anonymous}`;
+    ceteraUrl.query.anonymous = anonymous.toString();
   }
 
-  return ceteraUrl;
+  ceteraUrl.query.q = escape(searchTerm);
+  const formattedUrl = url.format(ceteraUrl);
+
+  return formattedUrl;
 }
 
-const DEFAULT_NUMBER_OF_RESULTS = 7;
+export const DEFAULT_NUMBER_OF_RESULTS = 7;
 
-export function getCeteraResults(query, callback, numberOfResults, anonymous) {
-  if (_.isEmpty(query)) {
+export function getCeteraResults(searchTerm, callback, numberOfResults, anonymous) {
+  if (_.isEmpty(searchTerm)) {
     return;
   }
 
-  fetch(getCeteraUrl(query, undefined, anonymous), { credentials: 'same-origin' }).
+  fetch(getCeteraUrl(searchTerm, anonymous), { credentials: 'same-origin' }).
   then((response) => response.json()).
   then(
     (searchResults) => {
@@ -70,7 +68,7 @@ export function getCeteraResults(query, callback, numberOfResults, anonymous) {
         * top 10 results, you would only get back 1 result of "Crime Data".
         * So we ask for more than we need and only take the top n
         */
-      const number = _.isUndefined(numberOfResults) ? DEFAULT_NUMBER_OF_RESULTS : numberOfResults;
+      const number = _.isEmpty(numberOfResults) ? DEFAULT_NUMBER_OF_RESULTS : numberOfResults;
 
       searchResults.results = _.take(searchResults.results, number);
       callback(searchResults);

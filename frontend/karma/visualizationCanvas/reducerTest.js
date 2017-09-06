@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import mixpanel from '../../public/javascripts/common/mixpanel';
+import mixpanel from 'common/mixpanel';
 import reducer, { __RewireAPI__ as reducerAPI} from 'reducer';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from 'lib/constants';

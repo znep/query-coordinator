@@ -1,6 +1,6 @@
-var karmaConfig = require('../helpers/karma_config');
-var _ = require('lodash');
-var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+const karmaConfig = require('../helpers/karma_config');
+const _ = require('lodash');
+const webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'dataset-management-ui.config.js',
   [ 'karma/datasetManagementUI', '.' ]
 );
@@ -13,10 +13,26 @@ webpackConfig.externals = {
 };
 
 // To make tests easier to write, we disable auto scss class prefixes.
-var styleLoader = _(webpackConfig.module.loaders).find((loader) =>
-  loader.loader.indexOf('localIdentName') >= 0
+const styleLoaderWithDisabledAutoScssClassPrefixes =
+  'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass';
+const styleLoader = _(webpackConfig.module.loaders).find((loader) =>
+  _.get(loader, 'loader', '').indexOf('localIdentName') >= 0
 );
-styleLoader.loader = 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass';
+if (styleLoader) {
+  styleLoader.loader = styleLoaderWithDisabledAutoScssClassPrefixes;
+} else {
+  // Sometimes loader is actually loaders - an array instead of a string
+  _(webpackConfig.module.loaders).each((loader) => {
+    const styleLoaders = _.get(loader, 'loaders');
+    if (styleLoaders) {
+      _(styleLoaders).each((entry, index) => {
+        if (entry.indexOf('localIdentName') >= 0) {
+          styleLoaders[index] = styleLoaderWithDisabledAutoScssClassPrefixes;
+        }
+      })
+    }
+  });
+}
 
 webpackConfig.resolve.extensions = ['', '.js', '.scss', '.json'];
 

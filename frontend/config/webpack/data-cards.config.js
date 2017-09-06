@@ -15,10 +15,6 @@ module.exports = _.defaultsDeep({
     loaders: common.getStandardLoaders(
       [
         {
-          test: /\.scss|\.css$/,
-          loader: 'style!css!autoprefixer-loader!sass'
-        },
-        {
           test: /\.png$/,
           loader: 'url-loader?limit=100000'
         },

@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
 
-import * as httpHelpers from '../../common/http';
+import * as httpHelpers from 'common/http';
 
 export default class HttpClient {
   request(url, method, payload, otherOptions) {

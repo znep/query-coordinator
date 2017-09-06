@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { FeaturedContentManager } from 'components/FeaturedContentManager';
-import ceteraUtils from 'common/cetera_utils';
+import ceteraUtils from 'common/cetera/utils';
 import _ from 'lodash';
 
 describe('components/FeaturedContentManager', () => {

@@ -6,7 +6,10 @@
 
 /* Base Palette Colors */
 $primary: #288dc1;
+$primary-base: $primary;
 $primary-text: shade($primary, 14%);
+$primary-light: #eaf4f9;
+$primary-dark: #176289;
 $alternate-1: #e28432;
 $alternate-1-text: shade($alternate-1, 30%);
 $alternate-2: #00a1af;

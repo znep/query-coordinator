@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import { FeedbackPanel } from 'components/FeedbackPanel';
-import { ESCAPE_KEY_CODE } from 'constants';
+import { ESCAPE } from 'common/dom_helpers/keycodes';
 import { Simulate } from 'react-dom/test-utils';
 
 import mockServerConfig from 'mockServerConfig';
@@ -71,7 +71,7 @@ describe('FeedbackPanel', () => {
       });
 
       it('closes on escape keydown', (done) => {
-        Simulate.keyUp(element, {keyCode: ESCAPE_KEY_CODE});
+        Simulate.keyUp(element, { keyCode: ESCAPE });
         assertIsHidden(getContent(element), done);
       });
 

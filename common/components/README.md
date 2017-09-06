@@ -87,6 +87,7 @@ internal component file layout and implementation.
 import Picklist from 'common/components/Picklist'; // AVOID
 ...
 ```
+> Note well: One _cannot_ use the indirect import approach if the component is itself a common component _and_ uses other common components. This is due to potential circular references which are not handled by existing tooling.
 
 #### Legacy components - `common/components/legacy`
 These are written in vanilla JavaScript and are designed around the idea of binding to data attributes on DOM elements.

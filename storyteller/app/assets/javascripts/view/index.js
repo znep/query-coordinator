@@ -27,6 +27,7 @@ import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpoint
 import MostRecentlyUsed from 'common/most_recently_used';
 
 import 'common/notifications/main';
+import 'common/site_wide';
 
 $(document).on('ready', function() {
 

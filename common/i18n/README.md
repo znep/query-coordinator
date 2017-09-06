@@ -98,6 +98,21 @@ const MyComponent = (props) => {
 export default connectLocalization(connect(mapStateToProps)(MyComponent)); // <-- what actually makes I18n available via context
 ```
 
+## In tests
+If you need to set translations in a test, use the `useTestTranslations` helper in the `I18n` module:
+
+```jsx
+import { useTestTranslations } from 'common/i18n';
+
+describe('components/something_awesome', () => {
+  beforeEach(() => {
+    useTestTranslations({ shared: { awesome: { accept: 'Accept awesomeness' } } });
+  });
+
+  // etc
+});
+```
+
 ## Updating Locale strings
 To manually push new locale strings in `/common/i18n/config/locales` up to LocaleApp, you can use `/platform-ui/bin/push_locale`.
 This ruby script accepts 2 command line arguments - a project name (frontend, storyteller, common), and an API key for that project (found in LastPass).

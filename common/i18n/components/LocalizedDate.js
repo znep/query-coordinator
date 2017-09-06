@@ -13,7 +13,7 @@ export default function LocalizedDate(props, context) {
   const format = withTime ?
     (
       includeSeconds ?
-        _.get(formats, 'withTimeIncludingSeconds[locale]', formats.withTimeIncludingSeconds['en']) :
+        _.get(formats, 'withTimeIncludingSeconds[locale]', formats.withTimeIncludingSeconds.en) :
         'LLL'
     ) :
     'LL';

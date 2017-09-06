@@ -8,7 +8,7 @@ import ExternalResourceForm from './FeaturedContentModal/ExternalResourceForm';
 import FeaturedItemSelector from './FeaturedContentModal/FeaturedItemSelector';
 import StoryForm from './FeaturedContentModal/StoryForm';
 import ViewSelectorModal from './FeaturedContentModal/ViewSelectorModal';
-import { ESCAPE_KEY_CODE } from '../../common/constants';
+import { ESCAPE } from 'common/dom_helpers/keycodes';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
 export class FeaturedContentModal extends Component {
@@ -28,7 +28,7 @@ export class FeaturedContentModal extends Component {
 
   onKeyUp(event) {
     const isModalHidden = ReactDOM.findDOMNode(this).classList.contains('modal-hidden');
-    const isKeyEscape = event.keyCode === ESCAPE_KEY_CODE;
+    const isKeyEscape = event.keyCode === ESCAPE;
 
     if (!isModalHidden && isKeyEscape) {
       this.props.onPressEscape();

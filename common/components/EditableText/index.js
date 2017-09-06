@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ENTER, ESCAPE } from 'common/keycodes';
+import { ENTER, ESCAPE } from 'common/dom_helpers/keycodes';
 
 /**
  * An editable text field. Renders as plain text until clicked, then becomes an editable input field.

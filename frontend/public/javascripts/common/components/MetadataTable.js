@@ -342,7 +342,7 @@ class MetadataTable extends Component {
 
     if (_.isFinite(viewlikeObject.downloadCount)) {
       downloads = (
-        <div className="metadata-pair">
+        <div className="metadata-pair download-count">
           <dt className="metadata-pair-key">
             {I18n.common.metadata.downloads}
           </dt>
@@ -561,8 +561,8 @@ export const coreViewToViewlikeObject = (coreView, defaults) => {
     attachments: coreView.attachments, // MetadataTable transforms this
     licenseName: license.name,
     licenseLogo: license.logoUrl,
-    licenseUrl: license.termsLink, // TODO consume?
-    editMetadataUrl: `/d/${coreView.id}/edit_metadata`,
+    licenseLink: license.termsLink,
+    editMetadataUrl: null,
     statsUrl: null, // Tricky - need to do a permissions check first. See view.rb#can_see_stats?
     // Tricky - should be tied to CurrentDomain.feature?(:disable_contact_dataset_owner), but we have
     // no standard facility to check features in JS (as opposed to FeatureFlags).
@@ -574,7 +574,7 @@ export const coreViewToViewlikeObject = (coreView, defaults) => {
     createdAt: toISO8601(coreView.createdAt),
     viewCount: coreView.viewCount,
     downloadCount: coreView.downloadCount,
-    ownerName: coreView.owner.displayName
+    ownerName: _.get(coreView, 'owner.displayName')
   }, defaults || {});
 
   return viewlikeObject;
@@ -608,7 +608,7 @@ MetadataTable.propTypes = {
     attachments: PropTypes.array,
     category: PropTypes.string,
     licenseName: PropTypes.string,
-    licenseUrl: PropTypes.string, // TODO consume?
+    licenseLink: PropTypes.string,
     licenseLogo: PropTypes.string,
     attributionLink: PropTypes.string,
     statsUrl: PropTypes.string,

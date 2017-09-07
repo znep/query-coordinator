@@ -168,19 +168,51 @@ export const changeVisibility = (value) => (dispatch, getState) => {
   }
 };
 
-export const changeQ = (value) => (dispatch, getState) => {
-  const onSuccess = () => {
-    dispatch({ type: 'CHANGE_Q', value });
-    dispatch(clearSortOrder()); // EN-18325: Clear sort order for the cetera "relevance" default sort
-    clearPage(dispatch);
-    updateQueryString({ getState });
+export const changeQ = (value) => {
+  const FOUR_BY_FOUR_REGEX = /^\w{4}\-\w{4}$/;
+
+  // This is the deafult search by query.
+  const searchByQ = (dispatch, getState) => {
+    const onSuccess = () => {
+      dispatch({ type: 'CHANGE_Q', value });
+      // EN-18325: Clear sort order for the cetera "relevance" default sort
+      dispatch(clearSortOrder());
+      clearPage(dispatch);
+      updateQueryString({ getState });
+    };
+
+    return fetchResults(
+      dispatch,
+      getState,
+      { action: 'CHANGE_Q', q: value, pageNumber: 1, order: undefined }, onSuccess
+    );
   };
 
-  return fetchResults(
-    dispatch,
-    getState,
-    { action: 'CHANGE_Q', q: value, pageNumber: 1, order: undefined }, onSuccess
-  );
+  // EN-18709: If the search string is a 4x4, then we should search on ids=4x4 instead.
+  // If this fails, then we will fall back to the original search.
+  if (FOUR_BY_FOUR_REGEX.test(value.trim())) {
+    const ids = [value.trim()];
+    return (dispatch, getState) => {
+      const onSuccess = (notEmpty) => {
+        if (notEmpty) {
+          // EN-18325: Clear sort order for the cetera "relevance" default sort
+          dispatch(clearSortOrder());
+          clearPage(dispatch);
+          updateQueryString({ getState });
+        } else {
+          searchByQ(dispatch, getState);
+        }
+      };
+
+      return fetchResults(
+        dispatch,
+        getState,
+        { action: 'CHANGE_Q', ids, pageNumber: 1, order: undefined }, onSuccess
+      );
+    };
+  } else {
+    return searchByQ;
+  }
 };
 
 export const changeCustomFacet = (facetParam, value) => (dispatch, getState) => {

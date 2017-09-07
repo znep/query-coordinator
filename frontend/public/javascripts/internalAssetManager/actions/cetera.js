@@ -89,6 +89,7 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
     assetTypes,
     authority,
     category,
+    ids,
     onlyRecentlyViewed,
     order,
     ownedBy,
@@ -134,7 +135,7 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
     category,
     customMetadataFilters,
     forUser,
-    idFilters: lastAccessedUids,
+    idFilters: ids || lastAccessedUids,
     limit: RESULTS_PER_PAGE,
     mixpanelContext: {
       eventName: translateParamsToMixpanelEvent(parameters),
@@ -189,7 +190,7 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
 
       dispatch(updateCatalogResults(response, onlyRecentlyViewed, sortByRecentlyViewed));
       dispatch(fetchingResultsSuccess());
-      onSuccess();
+      onSuccess(response.results.length > 0);
 
       fetchAssetCounts(dispatch, getState, parameters);
     } else {

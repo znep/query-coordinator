@@ -8,7 +8,6 @@ var $siteChromeMobileMenu;
 var navLinkFullWidth;
 var navbarRightWidth;
 var initialBodyOverflowY;
-var $siteChromeAdminHeader;
 
 (function($) {
   if (!$) {
@@ -22,7 +21,6 @@ var $siteChromeAdminHeader;
     $siteChromeMobileMenu = $siteChromeHeader.find('.mobile-menu');
     siteChromeTemplate = $siteChromeHeader.attr('template');
     navLinkFullWidth = $siteChromeHeaderDesktopNav.find('.site-chrome-nav-links').width();
-    $siteChromeAdminHeader = $('#site-chrome-admin-header');
 
     if (siteChromeTemplate === 'evergreen')
       navbarRightWidth = $siteChromeHeader.find('.evergreen-link-cluster').width();
@@ -131,23 +129,12 @@ function toggleSearchButton(self) {
 function verticallyPositionSearchbar() {
   var isMSIE = navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0;
   var isSafari = navigator.userAgent.indexOf('Safari') !== -1;
-
   if (isMSIE || isSafari) {
-    var $adminSearchbox = $siteChromeAdminHeader.find('.collapsible-search .searchbox');
-    var $searchbox = $('header#site-chrome-header').find('.collapsible-search .searchbox');
+    var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
+    var $banner = $siteChromeHeader.find('.banner');
+    var positionTop = $banner.height() / 2 - $searchbox.height() / 2;
 
-    if ($adminSearchbox.is(':visible')) {
-      var positionTop = ($siteChromeAdminHeader.height() - $adminSearchbox.height()) / 2;
-
-      $adminSearchbox.css('top', positionTop);
-    }
-
-    if ($searchbox.is(':visible')) {
-      var $banner = $siteChromeHeader.find('.banner');
-      var positionTop = $banner.height() / 2 - $searchbox.height() / 2;
-
-      $searchbox.css('top', positionTop);
-    }
+    $searchbox.css('top', positionTop);
   }
 }
 

@@ -62,6 +62,7 @@ function SoqlDataProvider(config, useCache = false) {
    * @param {String} valueAlias - The alias used for the 'value' column.
    * @param {String} errorBarsLowerAlias - The alias used for the error bars lower bound column. Can be undefined.
    * @param {String} errorBarsUpperAlias - The alias used for the error bars upper bound column. Can be undefined.
+   * @param {String} groupingAlias - The alias used for grouping columns. Can be undefined.
    *
    * @return {Promise}
    */

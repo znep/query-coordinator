@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {fromJS} from 'immutable';
 import moment from 'moment';
 import React from 'react';
@@ -42,18 +43,25 @@ describe('DetailsModal', () => {
   const httpClient = new MockHttpClient();
   const api = new ActivityFeedApi(httpClient);
 
-  const store = testStore(api, {
-    activities: mockActivities.activities,
-    pagination: {
-      currentPage: 1,
-      hasNextPage: true,
-      hasPreviousPage: false
-    },
-    detailsModal: fromJS(mockActivity)
-  });
+  const store =
+    (override = {}) => testStore(
+      api,
+      _.merge(
+        {
+          activities: mockActivities.activities,
+          pagination: {
+            currentPage: 1,
+            hasNextPage: true,
+            hasPreviousPage: false
+          },
+          detailsModal: fromJS(mockActivity)
+        },
+        override
+      )
+    );
 
   it('should render details modal with correct title', () => {
-    const output = renderComponentWithLocalization(DetailsModal, {}, store);
+    const output = renderComponentWithLocalization(DetailsModal, {}, store());
     const title = output.querySelector('.modal-header-title').textContent;
     const expectedTitle = mockTranslations.details;
 
@@ -61,7 +69,7 @@ describe('DetailsModal', () => {
   });
 
   it('should render details modal with correct content', () => {
-    const output = renderComponentWithLocalization(DetailsModal, {}, store);
+    const output = renderComponentWithLocalization(DetailsModal, {}, store());
     const lineActivityType = output.querySelector('#line-activity-type').textContent;
     const lineActivityName = output.querySelector('#line-activity-name').textContent;
     const lineActivityEventTitle = output.querySelector('#line-activity-event-title').textContent;
@@ -91,15 +99,46 @@ describe('DetailsModal', () => {
     assert.equal(lineActivityBadRowsDownloadLink, mockActivity.data.latest_event.info.badRowsPath);
   });
 
-  it('close button should fire close event', (done) => {
-    const output = renderComponentWithLocalization(DetailsModal, {}, store);
+  it('should render details without known event type and description', () => {
+    const mockEventType = 'very_weird_unknown_error';
+    const mockActivityWithUnknownEvent = _.merge(
+      mockActivity,
+      {
+        data: {
+          latest_event: {
+            event_type: 'very_weird_unknown_error'
+          }
+        }
+      }
+    );
 
-    assert.isNotNull(store.getState().toJS().detailsModal);
+    const output = renderComponentWithLocalization(
+      DetailsModal,
+      {},
+      store({detailsModal: fromJS(mockActivityWithUnknownEvent)})
+    );
+
+    const lineActivityEventTitle = output.querySelector('#line-activity-event-title').textContent;
+    const lineActivityEventDesc = output.querySelector('#line-activity-event-desc').textContent;
+
+    const expectedEventTitle = mockTranslations.show_page.fallback_event_title.
+      replace('%{error_code}', mockEventType);
+
+    assert.equal(lineActivityEventTitle, expectedEventTitle);
+    assert.include(lineActivityEventDesc, mockActivity['data']['latest_event']['info']['reason']);
+    assert.include(lineActivityEventDesc, mockActivity['data']['latest_event']['info']['badRowsPath']);
+  });
+
+  it('close button should fire close event', (done) => {
+    const mockStore = store();
+    const output = renderComponentWithLocalization(DetailsModal, {}, mockStore);
+
+    assert.isNotNull(mockStore.getState().toJS().detailsModal);
 
     Simulate.click(output.querySelector('.btn-default'));
 
     setTimeout(() => {
-      assert.isNull(store.getState().toJS().detailsModal);
+      assert.isNull(mockStore.getState().toJS().detailsModal);
 
       done();
     }, 50);

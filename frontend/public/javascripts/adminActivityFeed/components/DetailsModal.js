@@ -1,9 +1,10 @@
 import _ from 'lodash';
+import {Map} from 'immutable';
 import React from 'react';
 import {connect} from 'react-redux';
 import {dismissDetailsModal} from '../actions';
 import {Modal, ModalHeader, ModalContent, ModalFooter} from 'common/components';
-
+import JSONPretty from 'react-json-pretty';
 import I18n from 'common/i18n';
 import LocalizedDate from 'common/i18n/components/LocalizedDate';
 import LocalizedText from 'common/i18n/components/LocalizedText';
@@ -48,13 +49,46 @@ class DetailsModal extends React.Component {
     );
   }
 
+  renderEventMessage() {
+    const {activity} = this.props;
+
+    const eventType = activity.getIn(['data', 'latest_event', 'event_type']);
+    const status = _.snakeCase(activity.getIn(['data', 'latest_event', 'status']));
+    const type = eventType ? eventType.replace(/-/g, '_') : 'generic';
+    const eventInfo = (activity.getIn(['data', 'latest_event', 'info']) || new Map()).toJS();
+
+    const titleTranslationKey = I18n.
+      lookup(`screens.admin.jobs.show_page.event_messages.${status}.${type}.title`) ?
+        `screens.admin.jobs.show_page.event_messages.${status}.${type}.title` :
+        'screens.admin.jobs.show_page.fallback_event_title';
+
+    const description = I18n.
+      lookup(`screens.admin.jobs.show_page.event_messages.${status}.${type}.description`) ?
+        (
+          <LocalizedText
+            localeKey={`screens.admin.jobs.show_page.event_messages.${status}.${type}.description`}
+            data={eventInfo} />
+        ) :
+        <JSONPretty json={eventInfo} />;
+
+    return (
+      <div>
+        <li id='line-activity-event-title'>
+          <LocalizedText
+            localeKey={titleTranslationKey}
+            data={{error_code: type}}
+            className='line-title' />
+        </li>
+        <li id='line-activity-event-desc'>
+          {description}
+        </li>
+      </div>
+    );
+  }
+
   renderDetails() {
     const {activity} = this.props;
 
-    const status = _.snakeCase(activity.getIn(['data', 'latest_event', 'status']));
-    const eventType = activity.getIn(['data', 'latest_event', 'event_type']);
-    const type = eventType ? eventType.replace(/-/g, '_') : 'generic';
-    const eventInfo = activity.getIn(['data', 'latest_event', 'info']);
     const serviceNameLocaleKey = `screens.admin.jobs.show_page.services.${activity.getIn(['data', 'service'])}`;
 
     return (
@@ -65,17 +99,7 @@ class DetailsModal extends React.Component {
             className='line-title' />
         </li>
         {this.renderNameLine()}
-        <li id='line-activity-event-title'>
-          <LocalizedText
-            localeKey={`screens.admin.jobs.show_page.event_messages.${status}.${type}.title`}
-            className='line-title' />
-        </li>
-        <li id='line-activity-event-desc'>
-          <LocalizedText
-            localeKey={`screens.admin.jobs.show_page.event_messages.${status}.${type}.description`}
-            data={eventInfo ? eventInfo.toJS() : {}}
-          />
-        </li>
+        {this.renderEventMessage()}
         <li id='line-activity-started-by'>
           <span className='line-title'><LocalizedText localeKey='screens.admin.jobs.started_by'/>: </span>
           {activity.getIn(['initiated_by', 'displayName'])}

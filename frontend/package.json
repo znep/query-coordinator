@@ -157,6 +157,7 @@
     "react-css-modules": "3.7.10",
     "react-dotdotdot": "1.0.16",
     "react-google-recaptcha": "0.5.4",
+    "react-json-pretty": "1.6.3",
     "react-linkify": "0.1.1",
     "react-motion": "0.5.0",
     "react-radio-group": "2.2.0",

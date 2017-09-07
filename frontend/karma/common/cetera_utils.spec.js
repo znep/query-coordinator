@@ -38,7 +38,7 @@ describe('cetera_utils.js', () => {
        ceteraUtils.query({ showVisibility: false });
        assert.equal(
          window.fetch.args[0][0],
-         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost&show_visibility=false'
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&show_visibility=false'
        );
     });
 
@@ -46,7 +46,7 @@ describe('cetera_utils.js', () => {
        ceteraUtils.query({ showVisibility: true });
        assert.equal(
          window.fetch.args[0][0],
-         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost&show_visibility=true'
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&show_visibility=true'
        );
     });
 
@@ -54,7 +54,7 @@ describe('cetera_utils.js', () => {
        ceteraUtils.query({ showVisibility: null });
        assert.equal(
          window.fetch.args[0][0],
-         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&published=true&search_context=localhost'
+         '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost'
        );
     });
 

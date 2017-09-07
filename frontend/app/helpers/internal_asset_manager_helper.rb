@@ -153,7 +153,6 @@ module InternalAssetManagerHelper
       domains: CurrentDomain.cname,
       limit: InternalAssetManagerController::RESULTS_PER_PAGE,
       order: 'updatedAt DESC',
-      published: 'true',
       q: params[:q],
       show_visibility: true
     }.merge(initial_filter_cetera_opts).tap do |options|

@@ -2,8 +2,10 @@ import _ from 'lodash';
 import React, { PropTypes, PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import I18n from 'common/i18n';
-import { enterEditMode } from '../actions';
+
+import { enterEditMode } from '../actions/view';
 
 export class PreviewBar extends PureComponent {
   render() {
@@ -14,15 +16,15 @@ export class PreviewBar extends PureComponent {
         <button
           className="btn btn-transparent btn-back"
           onClick={onClickExit}
-          aria-label={I18n.t('visualization_canvas.exit_preview_mode')}
+          aria-label={I18n.t('open_performance.exit_preview_mode')}
           autoFocus>
           <span className="socrata-icon-arrow-prev" role="presentation" />
         </button>
-        <span>{I18n.t('visualization_canvas.preview')}</span>
+        <span>{I18n.t('open_performance.preview')}</span>
         <button
           className="btn btn-transparent btn-exit"
           onClick={onClickExit}
-          aria-label={I18n.t('visualization_canvas.exit_preview_mode')}>
+          aria-label={I18n.t('open_performance.exit_preview_mode')}>
           <span className="socrata-icon-close-2" role="presentation" />
         </button>
       </div>
@@ -31,7 +33,7 @@ export class PreviewBar extends PureComponent {
 }
 
 PreviewBar.propTypes = {
-  onClickExit: PropTypes.func.isRequired
+  onClickExit: PropTypes.func
 };
 
 function mapDispatchToProps(dispatch) {

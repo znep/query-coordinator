@@ -1,0 +1,36 @@
+$preview-bar-height: 34px;
+$preview-bar-color: #4a4747;
+$preview-bar-dismiss-hover: #333;
+
+.preview-bar {
+  width: 100%;
+  background: $preview-bar-color;
+  height: $preview-bar-height;
+  color: $white;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 5;
+
+  span {
+    margin-top: 4px;
+  }
+
+  .btn-transparent {
+    color: $white;
+    padding: 0 20px;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: $light-grey-4;
+      background-color: $preview-bar-dismiss-hover;
+    }
+  }
+
+  .socrata-icon-close-2 {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

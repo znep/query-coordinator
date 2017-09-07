@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
+import PreviewBar from './components/PreviewBar';
 import EditBar from './components/EditBar';
 import EditModal from './components/EditModal/EditModal';
 import InfoPane from './components/InfoPane';
@@ -71,9 +72,9 @@ export class App extends Component {
   }
 
   renderPreviewMode() {
-    // TODO: Add <PreviewBar /> as first child of .preview-mode
     return (
       <div className="measure-body preview-mode">
+        <PreviewBar />
         <InfoPane />
         <div className="measure-content">
           <div className="measure-panes">

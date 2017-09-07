@@ -26,8 +26,7 @@ describe('App', () => {
       assert.ok(element.querySelector('.edit-bar'));
     });
 
-    // TODO: unskip when preview mode is implemented
-    xit('does not render a preview bar', () => {
+    it('does not render a preview bar', () => {
       assert.isNull(element.querySelector('.preview-bar'));
       assert.isNull(document.querySelector('.preview-mode'));
     });
@@ -43,8 +42,7 @@ describe('App', () => {
     // TODO: make assertions about contents rendered into each tab + sidebar
   });
 
-  // TODO: unskip when preview mode is implemented
-  xdescribe('preview mode', () => {
+  describe('preview mode', () => {
     let element;
 
     beforeEach(() => {
@@ -90,8 +88,7 @@ describe('App', () => {
       assert.isNull(element.querySelector('.edit-bar'));
     });
 
-    // TODO: unskip when preview mode is implemented
-    xit('does not render a preview bar', () => {
+    it('does not render a preview bar', () => {
       assert.isNull(element.querySelector('.preview-bar'));
       assert.isNull(document.querySelector('.preview-mode'));
     });

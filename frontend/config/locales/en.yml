@@ -3018,6 +3018,7 @@ en:
     dismiss: Dismiss
     edit: Edit
     edit_menu_label: Menu
+    exit_preview_mode: Exit Preview Mode
     measure:
       edit_modal:
         accept: Accept

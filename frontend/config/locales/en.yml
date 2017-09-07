@@ -3595,7 +3595,7 @@ en:
         goals_description: Manage all Open Performance goals on this domain.
         home_page: Homepage Content
         home_page_description: Configure content featured on the home page
-        internal: Internal Panel
+        internal: Go to Internal Panel
         internal_description: Socrata Super-Admin settings
         activity_log: Activity Log
         activity_log_description: Monitor updates, data jobs, and other activity on your Socrata site

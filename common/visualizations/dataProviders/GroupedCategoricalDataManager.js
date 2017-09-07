@@ -281,70 +281,69 @@ function getData(vif, options) {
       'shared.visualizations.charts.common.other_category'
     );
 
+    // Set up an IN clause for dimension values; it will be used in several queries.
+    const dimensionValuesFilter = {
+      function: 'in',
+      columnName: state.columnName,
+      arguments: state.dimensionValues
+    };
+
+    // FIXME: Deal with NULL dimension values.
+
     // First group dimension values by grouping value. If the dimension value is
     // 'dogs' and we are grouping on age, we should make a separate query for
     // 'dogs' for each distinct age value. If there are more distinct age values
     // than MAX_GROUP_COUNT, then we will do the next step, which is to make one
     // additional request for 'dogs' where the age value is none of the existing
     // distinct values we are querying here.
-    state.dimensionValues.forEach((dimensionValue) => {
 
-      /**
-       * Anteater queries
-       */
+    /**
+     * Anteater queries
+     */
 
-      const groupingValuesFilters = _.cloneDeep(filtersFromVif);
+    const groupingValuesFilters = _.cloneDeep(filtersFromVif);
 
-      const nonNullGroupingValues = _.without(state.groupingValues, null);
+    const nonNullGroupingValues = _.without(state.groupingValues, null);
 
-      groupingValuesFilters.push(
-        {
-          function: 'binaryOperator',
-          columnName: state.columnName,
-          arguments: getBinaryOperatorFilterArguments(dimensionValue)
-        }
-      );
+    groupingValuesFilters.push(dimensionValuesFilter);
 
-      groupingValuesFilters.push(
-        {
-          function: 'in',
-          columnName: state.groupingColumnName,
-          arguments: nonNullGroupingValues
-        }
-      );
-
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(groupingValuesFilters),
-        dimensionValue,
-        groupingValues: nonNullGroupingValues
-      });
-
-      // XXX: NULL grouping values are handled differently in SOQL when used in
-      // = clauses and IN clauses. No clue why.
-      if (_.size(nonNullGroupingValues) != _.size(state.groupingValues)) {
-        const nullValueFilter =
-              _.cloneDeep(filtersFromVif).concat([
-                {
-                  function: 'binaryOperator',
-                  columnName: state.columnName,
-                  arguments: getBinaryOperatorFilterArguments(dimensionValue)
-                },
-                {
-                  function: 'binaryOperator',
-                  columnName: state.groupingColumnName,
-                  arguments: getBinaryOperatorFilterArguments(null)
-                }
-              ]);
-        groupingData.push({
-          vif: generateGroupingVifWithFilters(nullValueFilter),
-          dimensionValue,
-          groupingValue: null
-        });
+    groupingValuesFilters.push(
+      {
+        function: 'in',
+        columnName: state.groupingColumnName,
+        arguments: nonNullGroupingValues
       }
+    );
 
-      /**
-       * Beaver queries
-       */
+    groupingData.push({
+      vif: generateGroupingVifWithFilters(groupingValuesFilters),
+      groupingValues: true
+    });
+
+    // XXX: NULL grouping values are handled differently in SOQL when used in
+    // = clauses and IN clauses, no clue why. This means we need an extra
+    // query to retrieve those results.
+    if (_.size(nonNullGroupingValues) != _.size(state.groupingValues)) {
+      const nullValueFilter =
+            _.cloneDeep(filtersFromVif).concat([
+              dimensionValuesFilter,
+              {
+                function: 'binaryOperator',
+                columnName: state.groupingColumnName,
+                arguments: getBinaryOperatorFilterArguments(null)
+              }
+            ]);
+      groupingData.push({
+        vif: generateGroupingVifWithFilters(nullValueFilter),
+        groupingValues: true
+      });
+    }
+
+    /**
+     * Beaver queries
+     */
+
+    state.dimensionValues.forEach((dimensionValue) => {
 
       // Next invert each of the grouping values to get the 'other' category
       // per dimension value (if there are more than MAX_GROUP_COUNT grouping
@@ -403,10 +402,11 @@ function getData(vif, options) {
 
         groupingData.push({
           vif: generateGroupingVifWithFilters(invertedGroupingValuesFilters),
-          dimensionValue,
+          dimensionValue, // XXX: Necessary when iterating over dimension values.
           groupingValue: otherCategoryName
         });
       }
+
     });
 
     /**
@@ -463,7 +463,7 @@ function getData(vif, options) {
 
         groupingData.push({
           vif: generateGroupingVifWithFilters(invertedDimensionValuesFilters),
-          dimensionValue: otherCategoryName,
+          dimensionValue: otherCategoryName, // XXX: critical
           groupingValue
         });
       });
@@ -639,7 +639,7 @@ function getData(vif, options) {
         // separately.
         datum.data.rows.forEach((row) => {
           const [dimension, grouping, measure] = row;
-          const standardizedDimension = (typeof dimension === "undefined") ? null : dimension;
+          const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
           const path = [standardizedDimension, grouping];
           const existing = _.get(table, path, 0);
           _.setWith(table, path, existing + measure, Object);

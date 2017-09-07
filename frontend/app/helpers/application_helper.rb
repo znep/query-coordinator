@@ -1231,6 +1231,10 @@ module ApplicationHelper
     ).include?(controller_name)
   end
 
+  def admin_page_with_left_nav_class
+    !render_admin_header? ? 'withLeftNavigation' : nil
+  end
+
   def enable_new_admin_ui?
     feature_flag?('enable_new_admin_ui', request)
   end

@@ -12,7 +12,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation showJobScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> showJobScreen">
   <div class="adminHeader floating jobs">
     <span class="icon"></span>
     <span class="back-to-jobs-list">
@@ -22,7 +22,7 @@
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation showJobScreen mainContent">
+<div class="contentBox <%= admin_page_with_left_nav_class %> showJobScreen mainContent">
   <%= display_standard_flashes %>
 
   <div style="position: relative;">

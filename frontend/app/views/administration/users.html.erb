@@ -16,7 +16,7 @@
 
 <%- no_js = params[:no_js].present? -%>
 
-<div class="contentBox withLeftNavigation usersScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> usersScreen">
   <div class="adminHeader floating users">
     <div class="usersTopPageButtonArea">
       <%= link_to t('screens.admin.users.export_as_csv'), {:action => 'users', :format => :csv}, {:class => 'button'} %>
@@ -53,7 +53,7 @@
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation usersScreen" id="adminContent">
+<div class="contentBox <%= admin_page_with_left_nav_class %> usersScreen" id="adminContent">
   <%- unless @users_list.blank? %>
     <div class="userRoleSelectFilter">
       <label for="userRoleFilterDropdown"><%= t('screens.admin.users.filter_by') %></label>

@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-analytics-screen' %>
   <%= rendered_stylesheet_tag 'analytics-shared' %>
-  <title>Site Analytics - Overview | <%= get_site_title %></title>
+  <title><%= t('screens.stats.site_analytics_overview') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -16,7 +16,7 @@
 <%= render '/administration/left_nav' %>
 
 <div id="analyticsDataContainer" class="overviewMetrics">
-  <div class="contentBox withLeftNavigation analyticsDataContainer">
+  <div class="contentBox <%= admin_page_with_left_nav_class %> analyticsDataContainer">
     <div>
       <div class="adminHeader floating analytics clearfix">
         <span class="icon"></span>
@@ -30,7 +30,7 @@
     <div class="summaryDisplay clearfix container"></div>
 <%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-  <div class="contentBox withLeftNavigation analyticsDataContainer">
+  <div class="contentBox <%= admin_page_with_left_nav_class %> analyticsDataContainer">
 <%- end -%>
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
@@ -39,7 +39,7 @@
     </div>
 <%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-  <div class="contentBox withLeftNavigation analyticsDataContainer">
+  <div class="contentBox <%= admin_page_with_left_nav_class %> analyticsDataContainer">
 <%- end -%>
     <div class="detailDisplay clearfix container"></div>
 

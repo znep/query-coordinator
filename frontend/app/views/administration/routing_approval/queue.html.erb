@@ -15,7 +15,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div id="routingApprovalContent" class="contentBox withLeftNavigation">
+<div id="routingApprovalContent" class="contentBox <%= admin_page_with_left_nav_class %>">
   <%= render :partial => 'header',
         :locals => {:active => 'queue'} %>
 

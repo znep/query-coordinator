@@ -39,6 +39,8 @@ const AXIS_GRID_COLOR = '#f1f1f1';
 const HIGHLIGHT_COLOR = 'rgba(44, 44, 44, 0.18)';
 const AREA_STROKE_WIDTH = '3px';
 
+const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+
 function SvgTimelineChart($element, vif, options) {
   const self = this;
   const parseDate = d3.

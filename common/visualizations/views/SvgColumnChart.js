@@ -175,7 +175,6 @@ function SvgColumnChart($element, vif, options) {
       // the no value label. If there are not multiple columns, that's an expected null that we
       // should not overwrite with the no value label.
 
-      const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
       measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).map((label) => {
         return self.isGrouping() ? label || noValueLabel : label;
       });
@@ -461,7 +460,7 @@ function SvgColumnChart($element, vif, options) {
         return d3YScale(maxValue);
       };
 
-      // Because the line stroke thickness is 2px, the half of the top horizontal bar is clipped.  This function shifts 
+      // Because the line stroke thickness is 2px, the half of the top horizontal bar is clipped.  This function shifts
       // the clipped bar down 1 pixel.  All the other bars are rendered in normal positions.
       const getMaxErrorBarYPositionAdjusted = (d, measureIndex, dimensionIndex) => {
         const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value

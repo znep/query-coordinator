@@ -93,6 +93,7 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
     order,
     ownedBy,
     pageNumber,
+    published,
     q,
     tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, getState().header, parameters);
@@ -142,6 +143,7 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
     only: assetTypes,
     order: ceteraOrder(),
     pageNumber,
+    published,
     provenance: authority,
     q,
     showVisibility: 'true',
@@ -152,6 +154,9 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
 
 export const fetchAssetCounts = (dispatch, getState, parameters = {}) => {
   dispatch(fetchingAssetCounts());
+
+  // assetType:workingCopies will override this, correctly, in ceteraQueryString().
+  parameters.published = true;
 
   return ceteraUtils.facetCountsQuery(ceteraUtilsParams(getState, parameters)).then((response) => {
     if (response && _.isArray(response) && response.length > 0) {

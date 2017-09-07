@@ -153,15 +153,18 @@ module InternalAssetManagerHelper
       domains: CurrentDomain.cname,
       limit: InternalAssetManagerController::RESULTS_PER_PAGE,
       order: 'updatedAt DESC',
-      published: 'true',
       q: params[:q],
       show_visibility: true
     }.merge(initial_filter_cetera_opts).tap do |options|
       options.merge!(published: false, only: 'datasets') if params[:assetTypes] == 'workingCopies'
       options.merge!(published: true) if params[:assetTypes] == 'datasets'
       # EN-15849
-      options.merge!(for_user: current_user.id) if feature_flag?(:enable_internal_asset_manager_my_assets, request)
+      options.merge!(for_user: current_user.id) if current_tab_is_my_assets && feature_flag?(:enable_internal_asset_manager_my_assets, request)
     end
+  end
+
+  def current_tab_is_my_assets
+    params.fetch(:tab, 'myAssets') == 'myAssets'
   end
 
 end

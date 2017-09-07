@@ -117,10 +117,3 @@ Timeline chart:
 
 Table:
  1 Column resize thumb
-
-Collapsable Search inside Admin Header:
--1 Send searchbox behind other header links
-101 1 higher than the z-index set on .dropdown elements due to EN-11443.
-3 Search button
-3 Search text box
-4 Search Icon

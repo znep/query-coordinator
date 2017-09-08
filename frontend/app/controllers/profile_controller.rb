@@ -44,6 +44,10 @@ class ProfileController < ApplicationController
       end
       @app_tokens = @user.app_tokens
 
+      unless feature_flag?(:enable_header_notifications, request)
+        @news = retrieve_zendesk_news
+      end
+
       if internal_asset_manager_on_profile_enabled?
         cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
@@ -144,7 +148,6 @@ class ProfileController < ApplicationController
             @profile_search_method = :search_owned_by_user
           end
 
-          @news = retrieve_zendesk_news
           @processed_browse = process_browse(request, browse_options)
         end
       end

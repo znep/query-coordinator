@@ -107,6 +107,10 @@ class SearchBox extends React.Component {
     // goto the search URL if we DON'T have a focused result
     if (_.isUndefined(focusedResult)) {
       onChooseResult(query);
+
+      // Collapse any search results that might be there.
+      this.domNode.blur();
+      this.setState({ focused: false });
     }
   }
 

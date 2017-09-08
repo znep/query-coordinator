@@ -2,7 +2,9 @@
 
 .filter-bar-filter {
   .number-filter {
-    min-width: 350px;
+    .range-input {
+      width: 45%;
+    }
 
     form {
       margin: 10px 0 0 0;

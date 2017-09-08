@@ -180,3 +180,24 @@ $max-filter-width: 130px;
     z-index: 1;
   }
 }
+
+@media(max-width: $small) {
+  .filter-bar-filter {
+    .filter-control-container {
+      position: unset;
+
+      .filter-controls {
+        left: 1%;
+        width: 98%;
+        margin-top: -6px;
+      }
+
+      .filter-control-toggle,
+      .filter-config-toggle {
+        &.left + .filter-controls {
+          left: 1%;
+        }
+      }
+    }
+  }
+}

@@ -28,6 +28,18 @@
   }
 
   .range-separator {
-    line-height: 2.5;
+    line-height: 3.5;
   }
+
+}
+
+// EN-16294: Override sizes, because rem units depend on the root element, not parent.
+.react-datepicker__day-name, .react-datepicker__day {
+  width: 39px;
+  line-height: 27px;
+  font-size: 12px;
+}
+
+.react-datepicker__current-month {
+  font-size: 15px;
 }

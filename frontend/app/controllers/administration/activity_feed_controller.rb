@@ -74,7 +74,7 @@ class Administration::ActivityFeedController < AdministrationController
 
     respond_to do |format|
       format.json {
-        render :json => { activities: @activities, pager_info: @pager_info }
+        render :json => { activities: @activities, pager_info: @pager_info, error: @alert }
       }
 
       format.html {

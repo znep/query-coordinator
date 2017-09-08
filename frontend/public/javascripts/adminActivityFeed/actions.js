@@ -43,6 +43,11 @@ export const loadActivities = () => {
         hasNextPage: pagerInfo['has_next_page?'],
         hasPreviousPage: pagerInfo['has_prev_page?']
       }));
+
+      if (data.error) {
+        dispatch(setAlert('error', 'general_error', {error: data.error}));
+      }
+
       dispatch(stopLoading());
 
       return data;

@@ -281,60 +281,77 @@ function getData(vif, options) {
       'shared.visualizations.charts.common.other_category'
     );
 
-    // Set up an IN clause for dimension values; it will be used in several queries.
-    const dimensionValuesFilter = {
-      function: 'in',
-      columnName: state.columnName,
-      arguments: state.dimensionValues
-    };
-
-    // FIXME: Deal with NULL dimension values.
-
-    // First group dimension values by grouping value. If the dimension value is
-    // 'dogs' and we are grouping on age, we should make a separate query for
-    // 'dogs' for each distinct age value. If there are more distinct age values
-    // than MAX_GROUP_COUNT, then we will do the next step, which is to make one
-    // additional request for 'dogs' where the age value is none of the existing
-    // distinct values we are querying here.
-
     /**
      * Anteater queries
      */
 
-    const groupingValuesFilters = _.cloneDeep(filtersFromVif);
+    const nonNullDimensionValuesFilter = {
+      function: 'in',
+      columnName: state.columnName,
+      arguments: _.without(state.dimensionValues, null)
+    };
 
-    const nonNullGroupingValues = _.without(state.groupingValues, null);
+    const nullDimensionValueFilter = {
+      function: 'binaryOperator',
+      columnName: state.columnName,
+      arguments: getBinaryOperatorFilterArguments(null)
+    };
 
-    groupingValuesFilters.push(dimensionValuesFilter);
+    const nonNullGroupingValuesFilter = {
+      function: 'in',
+      columnName: state.groupingColumnName,
+      arguments: _.without(state.groupingValues, null)
+    };
 
-    groupingValuesFilters.push(
-      {
-        function: 'in',
-        columnName: state.groupingColumnName,
-        arguments: nonNullGroupingValues
-      }
-    );
+    const nullGroupingValueFilter = {
+      function: 'binaryOperator',
+      columnName: state.groupingColumnName,
+      arguments: getBinaryOperatorFilterArguments(null)
+    };
 
     groupingData.push({
-      vif: generateGroupingVifWithFilters(groupingValuesFilters),
+      vif: generateGroupingVifWithFilters(
+        _.cloneDeep(filtersFromVif).concat([
+          nonNullDimensionValuesFilter,
+          nonNullGroupingValuesFilter
+        ])
+      ),
       groupingValues: true
     });
 
-    // XXX: NULL grouping values are handled differently in SOQL when used in
-    // = clauses and IN clauses, no clue why. This means we need an extra
-    // query to retrieve those results.
-    if (_.size(nonNullGroupingValues) != _.size(state.groupingValues)) {
-      const nullValueFilter =
-            _.cloneDeep(filtersFromVif).concat([
-              dimensionValuesFilter,
-              {
-                function: 'binaryOperator',
-                columnName: state.groupingColumnName,
-                arguments: getBinaryOperatorFilterArguments(null)
-              }
-            ]);
+    // XXX: NULL values are handled differently in SOQL when used in = clauses
+    // and IN clauses, no clue why. This means we need extra queries to retrieve
+    // those results.
+    if (dimensionValuesIncludeNull) {
       groupingData.push({
-        vif: generateGroupingVifWithFilters(nullValueFilter),
+        vif: generateGroupingVifWithFilters(
+          _.cloneDeep(filtersFromVif).concat([
+            nullDimensionValueFilter,
+            nonNullGroupingValuesFilter
+          ])
+        ),
+        groupingValues: true
+      });
+    }
+    if (groupingValuesIncludeNull) {
+      groupingData.push({
+        vif: generateGroupingVifWithFilters(
+          _.cloneDeep(filtersFromVif).concat([
+            nonNullDimensionValuesFilter,
+            nullGroupingValueFilter
+          ])
+        ),
+        groupingValues: true
+      });
+    }
+    if (dimensionValuesIncludeNull && groupingValuesIncludeNull) {
+      groupingData.push({
+        vif: generateGroupingVifWithFilters(
+          _.cloneDeep(filtersFromVif).concat([
+            nullDimensionValueFilter,
+            nullGroupingValueFilter
+          ])
+        ),
         groupingValues: true
       });
     }

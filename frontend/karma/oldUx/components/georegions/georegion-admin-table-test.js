@@ -59,18 +59,18 @@ describe('GeoregionAdminTable', function() {
     it('renders the rows', function() {
       var rows = TestUtils.scryRenderedComponentsWithType(this.node, GeoregionAdminRow);
       expect(rows).to.have.length(4);
-      expect(rows[0]).to.have.deep.property('props.defaultStatus', true);
-      expect(rows[0]).to.have.deep.property('props.status', Status.ENABLED);
-      expect(rows[0]).to.have.deep.property('props.action', '/admin/geo/1');
-      expect(rows[1]).to.have.deep.property('props.defaultStatus', false);
-      expect(rows[1]).to.have.deep.property('props.status', Status.DISABLED);
-      expect(rows[1]).to.have.deep.property('props.action', '/admin/geo/2');
-      expect(rows[2]).to.have.deep.property('props.defaultStatus', false);
-      expect(rows[2]).to.have.deep.property('props.status', Status.PROGRESS);
-      expect(rows[2]).to.have.deep.property('props.action', '');
-      expect(rows[3]).to.have.deep.property('props.defaultStatus', false);
-      expect(rows[3]).to.have.deep.property('props.status', Status.FAILED);
-      expect(rows[3]).to.have.deep.property('props.action', '');
+      expect(rows[0]).to.have.nested.property('props.defaultStatus', true);
+      expect(rows[0]).to.have.nested.property('props.status', Status.ENABLED);
+      expect(rows[0]).to.have.nested.property('props.action', '/admin/geo/1');
+      expect(rows[1]).to.have.nested.property('props.defaultStatus', false);
+      expect(rows[1]).to.have.nested.property('props.status', Status.DISABLED);
+      expect(rows[1]).to.have.nested.property('props.action', '/admin/geo/2');
+      expect(rows[2]).to.have.nested.property('props.defaultStatus', false);
+      expect(rows[2]).to.have.nested.property('props.status', Status.PROGRESS);
+      expect(rows[2]).to.have.nested.property('props.action', '');
+      expect(rows[3]).to.have.nested.property('props.defaultStatus', false);
+      expect(rows[3]).to.have.nested.property('props.status', Status.FAILED);
+      expect(rows[3]).to.have.nested.property('props.action', '');
     });
 
   });

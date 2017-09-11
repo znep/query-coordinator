@@ -125,10 +125,10 @@ describe('actions/bulkEditActions', () => {
 
       assert.propertyVal(update1, 'goalId', 'a');
       assert.propertyVal(update1.data, 'narrative', GOALS[0].narrative);
-      assert.deepPropertyVal(update1.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
+      assert.deepNestedPropertyVal(update1.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
       assert.propertyVal(update2, 'goalId', 'b');
       assert.propertyVal(update2.data, 'narrative', GOALS[1].narrative);
-      assert.deepPropertyVal(update2.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
+      assert.deepNestedPropertyVal(update2.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
 
       assert.propertyVal(saveFinished, 'type', Actions.BulkEdit.types.saveFinished);
 
@@ -155,9 +155,9 @@ describe('actions/bulkEditActions', () => {
 
       assert.propertyVal(saveStart, 'type', Actions.BulkEdit.types.saveStart);
       assert.propertyVal(progressError1, 'type', Actions.BulkEdit.types.saveProgressError);
-      assert.deepPropertyVal(progressError1, 'data.id', 'a');
+      assert.deepNestedPropertyVal(progressError1, 'data.id', 'a');
       assert.propertyVal(progressError2, 'type', Actions.BulkEdit.types.saveProgressError);
-      assert.deepPropertyVal(progressError2, 'data.id', 'b');
+      assert.deepNestedPropertyVal(progressError2, 'data.id', 'b');
 
       assert.propertyVal(saveFinished, 'type', Actions.BulkEdit.types.saveFinished);
 

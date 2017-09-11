@@ -32,14 +32,14 @@ describe('sections/goals/selectors/getCommonGoalData', () => {
   it('should extract common data among the given goals', () => {
     const commonData = Selectors.getCommonData(EQUAL_STATE).toJS();
     assert.propertyVal(commonData, 'publishing_action', 'make_private');
-    assert.deepPropertyVal(commonData, 'prevailing_measure.start', 'foo');
+    assert.deepNestedPropertyVal(commonData, 'prevailing_measure.start', 'foo');
   });
 
   it('should set null for differences', () => {
     const commonData = Selectors.getCommonData(DIFFERENT_STATE).toJS();
     assert.propertyVal(commonData, 'publishing_action', null);
-    assert.deepPropertyVal(commonData, 'prevailing_measure.start', null);
-    assert.deepPropertyVal(commonData, 'prevailing_measure.end', null);
+    assert.deepNestedPropertyVal(commonData, 'prevailing_measure.start', null);
+    assert.deepNestedPropertyVal(commonData, 'prevailing_measure.end', null);
   });
 });
 

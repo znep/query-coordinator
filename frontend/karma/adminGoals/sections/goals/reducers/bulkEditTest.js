@@ -55,61 +55,61 @@ describe('bulkEdit reducer', () => {
 
   describe('saveStart', () => {
     it('sets saveInProgress', () => {
-      assert.deepPropertyVal(afterSaveStart, 'saveStatus.inProgress', true);
+      assert.deepNestedPropertyVal(afterSaveStart, 'saveStatus.inProgress', true);
     });
     it('sets taskTotalCount', () => {
-      assert.deepPropertyVal(afterSaveStart, 'saveStatus.taskTotalCount', 5);
+      assert.deepNestedPropertyVal(afterSaveStart, 'saveStatus.taskTotalCount', 5);
     });
     it('sets taskCompletedCount', () => {
-      assert.deepPropertyVal(afterSaveStart, 'saveStatus.taskCompletedCount', 0);
+      assert.deepNestedPropertyVal(afterSaveStart, 'saveStatus.taskCompletedCount', 0);
     });
     it('unsets error', () => {
-      assert.deepPropertyVal(afterSaveStart, 'saveStatus.error', false);
+      assert.deepNestedPropertyVal(afterSaveStart, 'saveStatus.error', false);
     });
   });
 
   describe('saveProgressSuccess', () => {
     it('increments taskCompletedCount', () => {
-      assert.deepPropertyVal(afterSaveProgressSuccess, 'saveStatus.taskCompletedCount', 1);
+      assert.deepNestedPropertyVal(afterSaveProgressSuccess, 'saveStatus.taskCompletedCount', 1);
     });
   });
 
   describe('saveProgressError with goal', () => {
     it('increments taskCompletedCount', () => {
-      assert.deepPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.taskCompletedCount', 1);
+      assert.deepNestedPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.taskCompletedCount', 1);
     });
     it('pushes goal onto list of failed goals', () => {
-      assert.deepPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.failedGoals[0].mock', 'goal');
+      assert.deepNestedPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.failedGoals[0].mock', 'goal');
     });
     it('sets error', () => {
-      assert.deepPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.error', true);
+      assert.deepNestedPropertyVal(afterSaveProgressErrorWithGoal, 'saveStatus.error', true);
     });
   });
 
   describe('saveProgressError without  goal', () => {
     it('leaves taskCompletedCount alone', () => {
-      assert.deepPropertyVal(afterSaveProgressErrorNoGoal, 'saveStatus.taskCompletedCount', 0);
+      assert.deepNestedPropertyVal(afterSaveProgressErrorNoGoal, 'saveStatus.taskCompletedCount', 0);
     });
     it('leaves list of failed goals alone', () => {
       assert.lengthOf(afterSaveProgressErrorNoGoal.saveStatus.failedGoals, 0);
     });
     it('sets error', () => {
-      assert.deepPropertyVal(afterSaveProgressErrorNoGoal, 'saveStatus.error', true);
+      assert.deepNestedPropertyVal(afterSaveProgressErrorNoGoal, 'saveStatus.error', true);
     });
   });
 
   describe('saveFinished', () => {
     it('leaves taskCompletedCount alone', () => {
-      assert.deepPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.taskCompletedCount', 2);
+      assert.deepNestedPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.taskCompletedCount', 2);
     });
     it('leaves list of failed goals alone', () => {
       assert.lengthOf(afterSomeErrorsAndSomeSuccess.saveStatus.failedGoals, 1);
     });
     it('leaves error alone', () => {
-      assert.deepPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.error', true);
+      assert.deepNestedPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.error', true);
     });
     it('unsets saveInProgress', () => {
-      assert.deepPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.inProgress', false);
+      assert.deepNestedPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.inProgress', false);
     });
   });
 });

@@ -10,6 +10,7 @@ const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
+  DEFAULT_LINE_HIGHLIGHT_FILL,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -36,7 +37,6 @@ const MAX_ROW_COUNT_WITHOUT_PAN = 1000;
 const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
-const HIGHLIGHT_COLOR = 'rgba(44, 44, 44, 0.18)';
 const AREA_STROKE_WIDTH = '3px';
 
 const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
@@ -175,8 +175,9 @@ function SvgTimelineChart($element, vif, options) {
       });
     }
     else {
-      measureLabels = dataTable.columns.slice(dataTableDimensionIndex + 1).
-      map((label) => self.isGrouping() ? label || noValueLabel : label);
+      measureLabels = columns.map((column) => {
+        return self.isGrouping() ? column || noValueLabel : column;
+      });
     }
 
     const dataTablesBySeries = measureLabels.map((measureLabel, i) => {
@@ -356,6 +357,7 @@ function SvgTimelineChart($element, vif, options) {
 
       referenceLineUnderlaySvgs.
         attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill', DEFAULT_LINE_HIGHLIGHT_FILL).
         attr('fill-opacity', 0).
         attr('x', 0).
         attr('y', (referenceLine) => getYPosition(referenceLine) - underlayUpwardShift).
@@ -861,7 +863,7 @@ function SvgTimelineChart($element, vif, options) {
     const highlightSvg = viewportSvg.append('rect');
     highlightSvg.
       attr('class', 'highlight').
-      attr('fill', HIGHLIGHT_COLOR).
+      attr('fill', DEFAULT_LINE_HIGHLIGHT_FILL).
       attr('stroke', 'none').
       attr('opacity', '0').
       attr('height', height);
@@ -898,10 +900,19 @@ function SvgTimelineChart($element, vif, options) {
       // NOTE: The below function depends on this being set by d3, so it is
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
-        console.log('mousemove');
-        self.showReferenceLineFlyout(this, referenceLines, false);
+        if (!isCurrentlyPanning()) {
+          self.showReferenceLineFlyout(this, referenceLines, false);
+          $(this).attr('fill-opacity', 1);
+        }
       }).
-      on('mouseleave', hideFlyout);
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+      on('mouseleave', function() {
+        if (!isCurrentlyPanning()) {
+          hideFlyout();
+          $(this).attr('fill-opacity', 0);
+        }
+      });
 
     renderXAxis();
     renderYAxis();
@@ -948,6 +959,25 @@ function SvgTimelineChart($element, vif, options) {
 
     lastRenderedStartDate = startDate;
     lastRenderedEndDate = endDate;
+  }
+
+  function isCurrentlyPanning() {
+    // EN-10810 - Bar Chart flyouts do not appear in Safari
+    //
+    // Internet Explorer will apparently always return a non-zero value for
+    // d3.event.which and even d3.event.button, so we need to check
+    // d3.event.buttons for a non-zero value (which indicates that a button is
+    // being pressed).
+    //
+    // Safari apparently does not support d3.event.buttons, however, so if it
+    // is not a number then we will fall back to d3.event.which to check for a
+    // non-zero value there instead.
+    //
+    // Chrome appears to support both cases, and in the conditional below
+    // Chrome will check d3.event.buttons for a non-zero value.
+    return (_.isNumber(d3.event.buttons)) ?
+      d3.event.buttons !== 0 :
+      d3.event.which !== 0;
   }
 
   // Returns one half of the interval between the first and second data in the

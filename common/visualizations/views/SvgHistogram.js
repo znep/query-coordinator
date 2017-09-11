@@ -11,6 +11,7 @@ const I18n = require('common/i18n').default;
 // in the future, but the adjustments will likely be small in scale.
 import {
   AXIS_LABEL_MARGIN,
+  DEFAULT_LINE_HIGHLIGHT_FILL,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -422,6 +423,7 @@ function SvgHistogram($element, vif, options) {
 
       referenceLineUnderlaySvgs.
         attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill', DEFAULT_LINE_HIGHLIGHT_FILL).
         attr('fill-opacity', 0).
         attr('x', 0).
         attr('y', (referenceLine) => getYPosition(referenceLine) - underlayUpwardShift).
@@ -865,12 +867,16 @@ function SvgHistogram($element, vif, options) {
       on('mousemove', function() {
         if (!isCurrentlyPanning()) {
           self.showReferenceLineFlyout(this, referenceLines, false);
+          $(this).attr('fill-opacity', 1);
         }
       }).
       on('mouseleave',
-        () => {
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
+        function() {
           if (!isCurrentlyPanning()) {
             hideFlyout();
+            $(this).attr('fill-opacity', 0);
           }
         }
       );

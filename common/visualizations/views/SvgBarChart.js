@@ -10,6 +10,7 @@ const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
+  DEFAULT_LINE_HIGHLIGHT_FILL,
   ERROR_BARS_DEFAULT_BAR_COLOR,
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
@@ -263,8 +264,9 @@ function SvgBarChart($element, vif, options) {
       // the no value label. If there are not multiple columns, that's an expected null that we
       // should not overwrite with the no value label.
 
-      measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
-      map((label) => self.isGrouping() ? label || noValueLabel : label);
+      measureLabels = columns.map((column) => {
+        return self.isGrouping() ? column || noValueLabel : column;
+      });
     }
 
     referenceLines = self.getReferenceLines();
@@ -471,6 +473,7 @@ function SvgBarChart($element, vif, options) {
 
       referenceLineUnderlaySvgs.
         attr('data-reference-line-index', (referenceLine, index) => index).
+        attr('fill', DEFAULT_LINE_HIGHLIGHT_FILL).
         attr('fill-opacity', 0).
         attr('x', (referenceLine) => getXPosition(referenceLine) - underlayLeftwardShift).
         attr('y', 0).
@@ -1475,12 +1478,16 @@ function SvgBarChart($element, vif, options) {
       on('mousemove', function() {
         if (!isCurrentlyPanning()) {
           self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked);
+          $(this).attr('fill-opacity', 1);
         }
       }).
+      // NOTE: The below function depends on this being set by d3, so it is
+      // not possible to use the () => {} syntax here.
       on('mouseleave',
-        () => {
+        function() {
           if (!isCurrentlyPanning()) {
             hideFlyout();
+            $(this).attr('fill-opacity', 0);
           }
         }
       );

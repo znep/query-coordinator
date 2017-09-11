@@ -19,6 +19,7 @@ export const DEFAULT_LEGEND_TEXT_ATTRIBUTES = {
 };
 export const DEFAULT_PRIMARY_COLOR = '#71abd9';
 export const DEFAULT_SECONDARY_COLOR = '#71abd9';
+export const DEFAULT_LINE_HIGHLIGHT_FILL = 'rgba(44, 44, 44, 0.18)';
 export const ERROR_BARS_DEFAULT_BAR_COLOR = '#767676';
 export const ERROR_BARS_MAX_END_BAR_LENGTH = 18
 export const ERROR_BARS_STROKE_WIDTH = 2;

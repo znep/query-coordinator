@@ -63,13 +63,7 @@ function getData(vif, options) {
     const comparator = (sortFromVifOrDefault === 'asc') ?
       ascendingComparator :
       descendingComparator;
-    const measureLabels = vif.series.map((series, i) => {
-      const seriesLabel = _.get(series, 'label', '');
-
-      return (_.isEmpty(seriesLabel)) ?
-        (I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + i) :
-        seriesLabel;
-    });
+    const measureLabels = vif.series.map((series) => _.get(series, 'label', ''));
     const uniqueDimensionValues = _.uniq(
       _.flatMap(
         dataResponses.map((dataResponse) => {

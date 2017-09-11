@@ -10,6 +10,7 @@ import { closeEditModal, completeEditModal } from '../../actions/editor';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
 import GeneralPanel from './GeneralPanel';
+import DataPanel from './DataPanel';
 import MethodsPanel from './MethodsPanel';
 
 // Modal for editing several aspects of the measure, grouped into tabs/panels.
@@ -125,12 +126,17 @@ EditModal.defaultProps = {
   tabs: [{
     id: 'general-info',
     title: 'General Info',
-    icon: 'warning-alt',
+    icon: 'info-inverse',
     panelComponent: GeneralPanel
+  }, {
+    id: 'data-source',
+    title: 'Data Source',
+    icon: 'data',
+    panelComponent: DataPanel
   }, {
     id: 'methods-and-analysis',
     title: 'Methods and Analysis',
-    icon: 'warning-alt',
+    icon: 'story',
     panelComponent: MethodsPanel
   }],
   onCancel: _.noop,

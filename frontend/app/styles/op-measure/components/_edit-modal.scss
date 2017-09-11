@@ -6,7 +6,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 54px; // TODO: VERIFY TOP/BOTTOM CROSS-BROWSER
+    top: 54px;
     bottom: -14px;
   }
 
@@ -86,5 +86,31 @@
       max-width: 100%;
       resize: vertical;
     }
+  }
+
+  #general-info-panel {
+
+  }
+
+  #data-source-panel {
+    .data-source-indicator {
+      margin-left: 5px;
+
+      &.icon-cross2 {
+        color: $error;
+      }
+
+      &.icon-check-2 {
+        color: $success;
+      }
+
+      &.icon-warning {
+        color: #E7B000; // TODO: $warning from common/styleguide/variables/colors doesn't work?
+      }
+    }
+  }
+
+  #methods-and-analysis-panel {
+
   }
 }

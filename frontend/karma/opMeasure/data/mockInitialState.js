@@ -10,6 +10,11 @@ export default {
       analysis: 'Some analysis text',
       methods: 'Some methods text'
     },
-    metric: {}
+    metric: {
+      type: 'COUNT',
+      label: 'Units',
+      dataSource: {},
+      arguments: {}
+    }
   }
 };

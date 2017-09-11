@@ -7,12 +7,10 @@ const I18n = require('common/i18n').default;
 
 function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   const series = vif.series[seriesIndex];
-  const soqlDataProvider = new SoqlDataProvider(
-    {
-      datasetUid: series.dataSource.datasetUid,
-      domain: series.dataSource.domain
-    },
-    true);
+  const soqlDataProvider = new SoqlDataProvider({
+    datasetUid: series.dataSource.datasetUid,
+    domain: series.dataSource.domain
+  }, true);
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
   const measure = SoqlHelpers.measure(vif, seriesIndex);
   const errorBarsLower = SoqlHelpers.errorBarsLower(vif, seriesIndex);
@@ -365,12 +363,10 @@ function augmentSocrataDataResponseWithOtherCategory(
     ].join(' ');
   }
 
-  const soqlDataProvider = new SoqlDataProvider(
-    {
-      datasetUid: series.dataSource.datasetUid,
-      domain: series.dataSource.domain
-    },
-    true);
+  const soqlDataProvider = new SoqlDataProvider({
+    datasetUid: series.dataSource.datasetUid,
+    domain: series.dataSource.domain
+  }, true);
 
   return soqlDataProvider.
     query(

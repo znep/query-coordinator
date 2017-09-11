@@ -7,6 +7,8 @@ import {
 } from 'containers/ApiCallButtonContainer';
 
 describe('containers/ApiCallButtonContainer', () => {
+  const SCALED_TEST_TIME_LIMIT = Infinity
+
   const apiCalls = {
     '00541ed7-7424-4355-ac41-8fff03ef4a67': {
       id: '00541ed7-7424-4355-ac41-8fff03ef4a67',
@@ -39,7 +41,8 @@ describe('containers/ApiCallButtonContainer', () => {
       const match = findMatchingApiCall(
         apiCalls,
         'SAVE_CURRENT_OUTPUT_SCHEMA',
-        { outputSchemaId: 683 }
+        { outputSchemaId: 683 },
+        SCALED_TEST_TIME_LIMIT
       );
 
       assert.ok(match);
@@ -50,7 +53,8 @@ describe('containers/ApiCallButtonContainer', () => {
       const match = findMatchingApiCall(
         apiCalls,
         'SAVE_CURRENT_OUTPUT_SCHEMA',
-        { outputSchemaId: 44 }
+        { outputSchemaId: 44 },
+        SCALED_TEST_TIME_LIMIT
       );
 
       assert.isUndefined(match);
@@ -59,7 +63,7 @@ describe('containers/ApiCallButtonContainer', () => {
     it("excludes calls if operations don't match", () => {
       const match = findMatchingApiCall(apiCalls, 'WEEE', {
         outputSchemaId: 683
-      });
+      }, SCALED_TEST_TIME_LIMIT);
 
       assert.isUndefined(match);
     });
@@ -80,7 +84,8 @@ describe('containers/ApiCallButtonContainer', () => {
         'SAVE_CURRENT_OUTPUT_SCHEMA',
         {
           outputSchemaId: 683
-        }
+        },
+        SCALED_TEST_TIME_LIMIT
       );
 
       assert.isUndefined(match);
@@ -93,7 +98,8 @@ describe('containers/ApiCallButtonContainer', () => {
         operation: 'SAVE_CURRENT_OUTPUT_SCHEMA',
         callParams: {
           outputSchemaId: 683
-        }
+        },
+        limit: SCALED_TEST_TIME_LIMIT
       };
 
       const state = { ui: { apiCalls } };
@@ -108,7 +114,8 @@ describe('containers/ApiCallButtonContainer', () => {
         operation: 'SAVE_CURRENT_OUTPUT_SCHEMA',
         callParams: {
           outputSchemaId: 1111111
-        }
+        },
+        limit: SCALED_TEST_TIME_LIMIT
       };
 
       const state = { ui: { apiCalls } };

@@ -179,9 +179,11 @@ function renderFlashMessage(messages) {
 
 function renderPage() {
   const georegions = normalizeGeoregions();
-  const defaultBoundaries = _.filter(georegions, 'defaultFlag');
-  const allowDefaulting = defaultBoundaries.length < georegionsNS.maximumDefaultCount;
-  const defaultCount = defaultBoundaries.length;
+  const defaultNonFailedBoundaries = _.filter(georegions, (gr) => {
+    return gr.defaultFlag && gr.enabledFlag && gr.status !== 'Failure';
+  });
+  const allowDefaulting = defaultNonFailedBoundaries.length < georegionsNS.maximumDefaultCount;
+  const defaultCount = defaultNonFailedBoundaries.length;
   const defaultLimit = georegionsNS.maximumDefaultCount;
 
   renderTables(georegions, allowDefaulting, defaultCount, defaultLimit);

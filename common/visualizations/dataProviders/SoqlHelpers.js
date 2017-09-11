@@ -273,6 +273,8 @@ function filterToWhereClauseComponent(filter) {
       return valueRangeWhereClauseComponent(filter);
     case 'in':
       return inWhereClauseComponent(filter);
+    case 'not in':
+      return notInWhereClauseComponent(filter);
     case 'noop':
       return noopWhereClauseComponent(filter);
     default:
@@ -645,6 +647,18 @@ function inWhereClauseComponent(filter) {
     'arguments'
   );
   return '{0} IN ({1})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    filter.arguments.map((arg) => { return soqlEncodeValue(arg); }).join(', ')
+  );
+}
+
+function notInWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments'
+  );
+  return '{0} NOT IN ({1})'.format(
     soqlEncodeColumnName(filter.columnName),
     filter.arguments.map((arg) => { return soqlEncodeValue(arg); }).join(', ')
   );

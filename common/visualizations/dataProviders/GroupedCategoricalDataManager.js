@@ -282,7 +282,7 @@ function getData(vif, options) {
     );
 
     /**
-     * Anteater queries
+     * Setup for Anteater, Beaver, Chinchilla, and Dingo queries
      */
 
     const nonNullDimensionValuesFilter = {
@@ -303,20 +303,31 @@ function getData(vif, options) {
       arguments: _.without(state.groupingValues, null)
     };
 
+    const invertedNonNullGroupingValuesFilter = {
+      function: 'not in',
+      columnName: state.groupingColumnName,
+      arguments: _.without(state.groupingValues, null)
+    };
+
     const nullGroupingValueFilter = {
       function: 'binaryOperator',
       columnName: state.groupingColumnName,
       arguments: getBinaryOperatorFilterArguments(null)
     };
 
+    /**
+     * Anteater queries
+     */
+
     groupingData.push({
+      query: "Anteater", // helpful to see while debugging
       vif: generateGroupingVifWithFilters(
         _.cloneDeep(filtersFromVif).concat([
           nonNullDimensionValuesFilter,
           nonNullGroupingValuesFilter
         ])
       ),
-      groupingValues: true
+      inClauseUsed: true
     });
 
     // XXX: NULL values are handled differently in SOQL when used in = clauses
@@ -324,35 +335,40 @@ function getData(vif, options) {
     // those results.
     if (dimensionValuesIncludeNull) {
       groupingData.push({
+        query: "Anteater (dimensionValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
             nullDimensionValueFilter,
             nonNullGroupingValuesFilter
           ])
         ),
-        groupingValues: true
+        inClauseUsed: true
       });
     }
+
     if (groupingValuesIncludeNull) {
       groupingData.push({
+        query: "Anteater (groupingValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
             nonNullDimensionValuesFilter,
             nullGroupingValueFilter
           ])
         ),
-        groupingValues: true
+        inClauseUsed: true
       });
     }
+
     if (dimensionValuesIncludeNull && groupingValuesIncludeNull) {
       groupingData.push({
+        query: "Anteater (dimensionValuesIncludeNull && groupingValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
             nullDimensionValueFilter,
             nullGroupingValueFilter
           ])
         ),
-        groupingValues: true
+        inClauseUsed: true
       });
     }
 
@@ -360,71 +376,96 @@ function getData(vif, options) {
      * Beaver queries
      */
 
-    state.dimensionValues.forEach((dimensionValue) => {
+    // FIXME: Assuming no null dimension values for now.
 
-      // Next invert each of the grouping values to get the 'other' category
-      // per dimension value (if there are more than MAX_GROUP_COUNT grouping
-      // values per dimension value).
-      if (state.groupingRequiresOtherCategory) {
-        const invertedGroupingValuesFilters = _.cloneDeep(filtersFromVif);
-
-        invertedGroupingValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.columnName,
-            arguments: getBinaryOperatorFilterArguments(dimensionValue)
-          }
-        );
-
-        // If one of the grouping values is null, we don't need to force nulls
-        // to be counted by the other category queries, so we can just add the
-        // one filter excluding the grouping value in question.
-        if (groupingValuesIncludeNull) {
-
-          const invertedGroupingValuesFilterArguments = state.groupingValues.
-            map((groupingValue) => {
-              return getBinaryOperatorFilterArguments(groupingValue, '!=');
-            });
-
-          invertedGroupingValuesFilters.push(
-            {
-              'function': 'binaryOperator',
-              columnName: state.groupingColumnName,
-              arguments: invertedGroupingValuesFilterArguments,
-              joinOn: 'AND'
-            }
-          );
-
-        // If none of the grouping values are null, then we need to explicitly
-        // factor in null values when deriving the grouping value's '(Other)'
-        // category by not only excluding the grouping value in question but
-        // also asking for null values.
-        } else {
-
-          state.groupingValues.forEach((groupingValue) => {
-
-            invertedGroupingValuesFilters.push(
-              {
-                'function': 'binaryOperator',
-                columnName: state.groupingColumnName,
-                arguments: [
-                  getBinaryOperatorFilterArguments(groupingValue, '!='),
-                  { operator: 'IS NULL' }
-                ],
-                joinOn: 'OR'
-              }
-            );
-          });
-        }
-
-        groupingData.push({
-          vif: generateGroupingVifWithFilters(invertedGroupingValuesFilters),
-          dimensionValue, // XXX: Necessary when iterating over dimension values.
-          groupingValue: otherCategoryName
-        });
-      }
-
+    groupingData.push({
+      query: "Beaver", // helpful to see while debugging
+      vif: generateGroupingVifWithFilters(
+        _.cloneDeep(filtersFromVif).concat([
+          nonNullDimensionValuesFilter,
+          invertedNonNullGroupingValuesFilter
+        ])
+      ),
+      inClauseUsed: true
     });
+
+    if (dimensionValuesIncludeNull) {
+      groupingData.push({
+        query: "Beaver (nullDimensionValueFilter)", // helpful to see while debugging
+        vif: generateGroupingVifWithFilters(
+          _.cloneDeep(filtersFromVif).concat([
+            nullDimensionValueFilter,
+            invertedNonNullGroupingValuesFilter
+          ])
+        ),
+        inClauseUsed: true
+      });
+    }
+
+    // FIXME: Delete this.
+    // state.dimensionValues.forEach((dimensionValue) => {
+
+    //   // Next invert each of the grouping values to get the 'other' category
+    //   // per dimension value (if there are more than MAX_GROUP_COUNT grouping
+    //   // values per dimension value).
+    //   if (state.groupingRequiresOtherCategory) {
+    //     const invertedGroupingValuesFilters = _.cloneDeep(filtersFromVif);
+
+    //     invertedGroupingValuesFilters.push(
+    //       {
+    //         'function': 'binaryOperator',
+    //         columnName: state.columnName,
+    //         arguments: getBinaryOperatorFilterArguments(dimensionValue)
+    //       }
+    //     );
+    //     // invertedGroupingValuesFilters.push(nonNullDimensionValuesFilter);
+
+    //     // If one of the grouping values is null, we don't need to force nulls
+    //     // to be counted by the other category queries, so we can just add the
+    //     // one filter excluding the grouping value in question.
+    //     if (groupingValuesIncludeNull) {
+    //       const invertedGroupingValuesFilterArguments = state.groupingValues.
+    //         map((groupingValue) => {
+    //           return getBinaryOperatorFilterArguments(groupingValue, '!=');
+    //         });
+    //       invertedGroupingValuesFilters.push(
+    //         {
+    //           'function': 'binaryOperator',
+    //           columnName: state.groupingColumnName,
+    //           arguments: invertedGroupingValuesFilterArguments,
+    //           joinOn: 'AND'
+    //         }
+    //       );
+    //     // If none of the grouping values are null, then we need to explicitly
+    //     // factor in null values when deriving the grouping value's '(Other)'
+    //     // category by not only excluding the grouping value in question but
+    //     // also asking for null values.
+    //     } else {
+    //       state.groupingValues.forEach((groupingValue) => {
+    //         invertedGroupingValuesFilters.push(
+    //           {
+    //             'function': 'binaryOperator',
+    //             columnName: state.groupingColumnName,
+    //             arguments: [
+    //               getBinaryOperatorFilterArguments(groupingValue, '!='),
+    //               { operator: 'IS NULL' }
+    //             ],
+    //             joinOn: 'OR'
+    //           }
+    //         );
+    //       });
+    //     }
+
+    //     groupingData.push({
+    //       query: "Beaver",
+    //       vif: generateGroupingVifWithFilters(invertedGroupingValuesFilters),
+    //       dimensionValue, // XXX: Necessary when iterating over dimension values.
+    //       // inClauseUsed: true,
+    //       groupingValue: otherCategoryName
+    //     });
+    //   }
+
+    // });
 
     /**
      * Chinchilla queries
@@ -479,6 +520,7 @@ function getData(vif, options) {
         }
 
         groupingData.push({
+          query: "Chinchilla",
           vif: generateGroupingVifWithFilters(invertedDimensionValuesFilters),
           dimensionValue: otherCategoryName, // XXX: critical
           groupingValue
@@ -565,6 +607,7 @@ function getData(vif, options) {
       }
 
       groupingData.push({
+        query: "Dingo",
         vif: generateGroupingVifWithFilters(invertedEverythingValuesFilters),
         dimensionValue: otherCategoryName,
         groupingValue: otherCategoryName
@@ -572,7 +615,6 @@ function getData(vif, options) {
     }
 
     const groupingRequests = groupingData.map((groupingDatum) => {
-
       return makeSocrataCategoricalDataRequest(
         groupingDatum.vif,
         0,
@@ -581,37 +623,11 @@ function getData(vif, options) {
     });
 
     return new Promise((resolve, reject) => {
-
       Promise.all(groupingRequests).then((groupingResponses) => {
-
         groupingData.forEach((groupingDatum, i) => {
-
-          // If this is an 'other' category query response, then we need to sum
-          // all the rows to create a composite 'other' category row. The reason
-          // this is necessary is that the query we make for the 'other'
-          // category must group on the dimension value.
-          if (
-            groupingDatum.dimensionValue === otherCategoryName ||
-            groupingDatum.groupingValue === otherCategoryName
-          ) {
-            const measureIndex = groupingResponses[i].columns.indexOf(
-              'measure'
-            );
-            const sumOfRows = _.sumBy(groupingResponses[i].rows, measureIndex);
-
-            groupingDatum.data = {
-              columns: groupingResponses[i].columns,
-              rows: [
-                [groupingDatum.dimensionValue, sumOfRows]
-              ]
-            };
-          } else {
-            groupingDatum.data = groupingResponses[i];
-          }
+          groupingDatum.data = groupingResponses[i];
         });
-
         state.groupingData = groupingData;
-
         resolve(state);
       }).
       catch(reject);
@@ -623,7 +639,6 @@ function getData(vif, options) {
    * and rationalize them into a single correct data table object.
    */
   function mapGroupingDataResponsesToMultiSeriesTable(state) {
-
     utils.assertHasProperties(
       state,
       'groupingValues',
@@ -636,10 +651,8 @@ function getData(vif, options) {
     const measureIndex = 1;
     const dataToRenderColumns = [dimensionColumn].concat(state.groupingValues);
 
+    const otherCategoryName = I18n.t('shared.visualizations.charts.common.other_category');
     if (state.groupingRequiresOtherCategory) {
-      const otherCategoryName = I18n.t(
-        'shared.visualizations.charts.common.other_category'
-      );
       dataToRenderColumns.push(otherCategoryName);
     }
 
@@ -650,10 +663,7 @@ function getData(vif, options) {
     const table = {};
 
     state.groupingData.forEach((datum) => {
-      if (datum.groupingValues) {
-        // The presence of datum.groupingValues (note the plural) indicates that
-        // an IN clause was used in the original query. It must be handled
-        // separately.
+      if (datum.inClauseUsed) {
         datum.data.rows.forEach((row) => {
           const [dimension, grouping, measure] = row;
           const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
@@ -673,14 +683,25 @@ function getData(vif, options) {
 
     // Convert the table (a map data structure) into an array of rows suitable
     // for rendering, with entries ordered as specified by dataToRenderColumns:
+    const nullConverterFn = (x) => { return (x === "null") ? null : x; };
+    const otherIndex = _.findIndex(dataToRenderColumns, (x) => x === otherCategoryName);
     const dataToRenderRows = _.map(table, (rowData, dimension) => {
-      const realDimension = (dimension === "null") ? null : dimension;
+      const realDimension = nullConverterFn(dimension);
       const row = [realDimension];
+      const otherColumns = _.difference(_.map(_.keys(rowData), nullConverterFn), dataToRenderColumns);
       dataToRenderColumns.forEach((col) => {
         if (col !== dimensionColumn) {
           row.push(_.get(rowData, col, null));
         }
       });
+      // deal with "(Other)" columns
+      if (state.groupingRequiresOtherCategory) {
+        // find all rowData entries for columns /other/ than the ones requested
+        row[otherIndex] = 0;
+        otherColumns.forEach((col) => {
+          row[otherIndex] += _.get(rowData, col, 0);
+        });
+      }
       return row;
     });
 

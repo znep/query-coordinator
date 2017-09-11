@@ -20,7 +20,7 @@ describe('Routes service', function() {
       expect(Routes.getUIStateAndConfigFromUrl('/view/fake-fbfr/')).to.not.have.property('stateName', 'view.cards');
     }));
     it('should return parameters with the correct page ID for a valid page URL', inject(function(Routes) {
-      expect(Routes.getUIStateAndConfigFromUrl('/view/fake-fbfr')).to.have.deep.property('parameters.id', 'fake-fbfr');
+      expect(Routes.getUIStateAndConfigFromUrl('/view/fake-fbfr')).to.have.nested.property('parameters.id', 'fake-fbfr');
     }));
   });
 

@@ -12,6 +12,7 @@ import OptionsPropType from '../PropTypes/OptionsPropType';
 import styles from './signup.scss';
 import SignUpForm from './SignUpForm/SignUpForm';
 import SocialSignIn from './Social/SocialSignIn';
+import SocialLinkMessage from './SocialLinkMessage';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -41,13 +42,13 @@ class SignUp extends React.Component {
       urlAuthToken,
       inputs: {
         email: {
-          value: email,
+          value: _.isNull(email) ? '' : email,
           valid: true,
           message: '',
           required: true
         },
         screenName: {
-          value: screenName,
+          value: _.isNull(screenName) ? '' : screenName,
           valid: true,
           message: '',
           required: true
@@ -74,12 +75,15 @@ class SignUp extends React.Component {
     };
 
     this.store = createStore(
-      signUpReducer(),
+      signUpReducer,
       defaultState
     );
 
-    this.renderSocialSignIn = this.renderSocialSignIn.bind(this);
-    this.renderDisclaimer = this.renderDisclaimer.bind(this);
+    _.bindAll(this, [
+      'renderSocialSignIn',
+      'renderDisclaimer',
+      'renderSocialLinkMessage'
+    ]);
   }
 
   renderSocialSignIn() {
@@ -101,6 +105,19 @@ class SignUp extends React.Component {
     return (<div styleName="disclaimer">{signUpDisclaimer}</div>);
   }
 
+  renderSocialLinkMessage() {
+    const { options } = this.props;
+    const { linkingSocial, toggleViewMode } = options;
+
+    if (!linkingSocial) {
+      return null;
+    }
+
+    return (
+      <SocialLinkMessage signin={false} toggleViewMode={toggleViewMode} />
+    );
+  }
+
   render() {
     const { options } = this.props;
     const { toggleViewMode } = options;
@@ -111,6 +128,7 @@ class SignUp extends React.Component {
       <Provider store={this.store}>
         <div styleName="container">
           {renderAlerts(flashes)}
+          {this.renderSocialLinkMessage()}
 
           <h3>{I18n.t('screens.sign_up.headline', { site: options.companyName })}</h3>
 

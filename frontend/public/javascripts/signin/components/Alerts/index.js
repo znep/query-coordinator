@@ -1,22 +1,31 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import styles from './alerts.scss';
 
-const Alerts = ({ alerts }) => {
-  const renderedMessages = _.map(alerts, ({ message, level }, index) => {
-    const styleName = `alert-${level}`;
+class Alerts extends Component {
+  render() {
+    const { alerts } = this.props;
+    const renderedMessages = _.map(alerts, (alert, index) => {
+      if (_.isNull(alert)) {
+        return null;
+      }
+
+      const { message, level } = alert;
+
+      const styleName = `alert-${level}`;
+      return (
+        <div
+          key={index}
+          styleName={styleName}
+          dangerouslySetInnerHTML={{ __html: message }} />
+      );
+    });
     return (
-      <div
-        key={index}
-        styleName={styleName}
-        dangerouslySetInnerHTML={{ __html: message }} />
+      <div>{renderedMessages}</div>
     );
-  });
-  return (
-    <div>{renderedMessages}</div>
-  );
-};
+  }
+}
 
 Alerts.propTypes = {
   alerts: PropTypes.arrayOf(

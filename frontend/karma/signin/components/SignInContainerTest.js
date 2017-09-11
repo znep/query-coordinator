@@ -8,6 +8,7 @@ import defaultOptions from '../DefaultOptions';
 import SignInContainer from 'components/SignInContainer';
 import SignIn from 'components/SignIn';
 import ChooseConnection from 'components/ChooseConnection/ChooseConnection';
+import SocialLinkMessage from 'components/SocialLinkMessage';
 
 describe('<SignInContainer />', () => {
   describe('choose connection', () => {
@@ -55,6 +56,21 @@ describe('<SignInContainer />', () => {
     it('renders no message when message is blank', () => {
       const wrapper = shallow(<SignInContainer options={defaultOptions} />);
       assert.lengthOf(wrapper.find('.signin-form-message'), 0);
+    });
+  });
+
+  describe('social link message', () => {
+    const optionsWithSocialLink = _.cloneDeep(defaultOptions);
+    optionsWithSocialLink.linkingSocial = true;
+
+    it('does not render social link message when not linking', () => {
+      const wrapper = shallow(<SignInContainer options={defaultOptions} />);
+      assert.lengthOf(wrapper.find(SocialLinkMessage), 0);
+    });
+
+    it('renders social link message when linking', () => {
+      const wrapper = shallow(<SignInContainer options={optionsWithSocialLink} />);
+      assert.lengthOf(wrapper.find(SocialLinkMessage), 1);
     });
   });
 });

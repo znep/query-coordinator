@@ -12,9 +12,10 @@ export const inputChanged = (name, value) => ({
   value
 });
 
-export const validateForm = (callback) => ({
+export const validateForm = (callback, skipPasswordValidation) => ({
   type: VALIDATE_FORM,
-  callback
+  callback,
+  skipPasswordValidation
 });
 
 export const recaptchaCallback = (response) => ({

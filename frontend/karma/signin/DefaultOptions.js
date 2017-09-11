@@ -13,5 +13,6 @@ export default {
   chooseConnectionMessage:"There are several ways you can sign in.",
   formMessage: null,
   flashes: [],
-  companyName: 'Testcrata'
+  companyName: 'Testcrata',
+  linkingSocial: false
 };

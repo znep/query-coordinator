@@ -255,37 +255,48 @@ module Auth0Helper
     @auth0_form_message = properties.try(:auth0_form_message)
   end
 
-  # these options are passed to the login/signup screen
-  def generate_auth0_options
-    # we want to keep email and screenName, in case something failed
-    # and user wants to try again after a page refresh
-    params =
-      (request.params[:signup] || {})
-      .only('email', 'screenName')
-      .map { |k, v| [k, sanitize(v)] }
-      .to_h
-
+  def get_database_connection
     # we only care about the database connection in production
-    database_connection = ''
     if AUTH0_DATABASE_CONNECTION.nil?
       if Rails.env.production?
         throw 'AUTH0_DATABASE_CONNECTION environment variable is not set! It should be set to the proper custom database connection to use for username/password logins.'
       elsif Rails.env.development?
-        database_connection = 'not_applicable'
+        'not_applicable'
       end
     else
-      database_connection = AUTH0_DATABASE_CONNECTION
+      AUTH0_DATABASE_CONNECTION
     end
+  end
 
+  def username_password_login?
+    Rails.env.development? || feature?('username_password_login') == true
+  end
+
+  def sanitized_email_and_screen_name
+    # we want to keep email and screenName, in case something failed
+    # and user wants to try again after a page refresh
+    params =
+    (request.params[:signup] || {})
+    .only('email', 'screenName')
+    .map { |k, v| [k, sanitize(v)] }
+    .to_h
+  end
+
+  def socrata_emails_bypass_auth0?
+    feature?('socrata_emails_bypass_auth0') && !feature?('fedramp')
+  end
+
+  def auth0_component_config
     {
+      linkingSocial: false,
       auth0ClientId: AUTH0_ID,
       auth0Uri: AUTH0_URI,
-      auth0DatabaseConnection: database_connection,
+      auth0DatabaseConnection: get_database_connection,
 
       # here, we basically force "form login" for development
       # if you want to test auth0 logins locally, change this line to false
       # (note that when doing so, the AUTH0_DATABASE_CONNECTION config value needs to be set)
-      allowUsernamePasswordLogin: Rails.env.development? || feature?('username_password_login') == true,
+      allowUsernamePasswordLogin: username_password_login?,
       recaptchaSitekey: RECAPTCHA_2_SITE_KEY,
       baseDomainUri: request.base_url,
       authenticityToken: form_authenticity_token,
@@ -293,7 +304,7 @@ module Auth0Helper
       hideSocrataId: FeatureFlags.derive(nil, request).hide_socrata_id,
 
       # "fedramp" feature trumps "socrata_emails_bypass_auth0"
-      socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0') && !feature?('fedramp'),
+      socrataEmailsBypassAuth0: socrata_emails_bypass_auth0?,
       connections: @auth0_connections,
       forcedConnections: @auth0_forced_connections,
       chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),
@@ -302,8 +313,33 @@ module Auth0Helper
       flashes: formatted_flashes,
       companyName: CurrentDomain.strings.company,
       signUpDisclaimer: CurrentDomain.strings.disclaimer,
-      params: params,
+      params: sanitized_email_and_screen_name,
       disableSignInAutocomplete: feature?('fedramp')
-    }.to_json.html_safe
+    }
+  end
+
+  # these options are passed to the login/signup screen
+  def auth0_component_config_json
+    auth0_component_config.to_json.html_safe
+  end
+
+  # these options are passed to the social account link page
+  def auth0_social_account_link_config_json
+    config = auth0_component_config
+
+    config[:linkingSocial] = true
+
+    # social has already been shown if we're here; don't show it again
+    config[:showSocial] = false
+
+    # these are grabbed from the auth0 token we get back
+    # and are autofilled on the signup form
+    auth0_token = session[:auth0_link_token]
+    config[:params] = {
+      email: auth0_token.email,
+      screenName: auth0_token.name
+    }
+
+    config.to_json.html_safe
   end
 end

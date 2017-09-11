@@ -103,6 +103,10 @@ export function renderAlerts(alerts) {
   }
 
   const messages = alerts.map((flash) => {
+    if (_.isNull(flash)) {
+      return null;
+    }
+
     return {
       level: flash[0],
       message: flash[1]

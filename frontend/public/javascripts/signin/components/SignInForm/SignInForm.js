@@ -35,6 +35,7 @@ class SignInForm extends React.Component {
 
     _.bindAll(this, [
       'findConnectionAndSetState',
+      'getFormActionUrl',
       'onEmailChange',
       'onFormSubmit',
       'onLoginError',
@@ -127,6 +128,17 @@ class SignInForm extends React.Component {
     }
 
     this.setState({ error });
+  }
+
+  getFormActionUrl() {
+    const { options } = this.props;
+    const { linkingSocial } = options;
+
+    if (linkingSocial) {
+      return '/auth/auth0/link';
+    } else {
+      return '/user_sessions';
+    }
   }
 
   /**
@@ -233,7 +245,7 @@ class SignInForm extends React.Component {
       <form
         styleName="form"
         ref={(formDomNode) => { this.formDomNode = formDomNode; }}
-        action="/user_sessions"
+        action={this.getFormActionUrl()}
         method="post"
         onSubmit={this.onFormSubmit}
         autoComplete={disableSignInAutocomplete ? 'off' : 'on'}

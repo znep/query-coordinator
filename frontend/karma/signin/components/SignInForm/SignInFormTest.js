@@ -210,4 +210,22 @@ describe('<SignInForm />', () => {
       assert.propertyVal(wrapper.state(), 'spoofing', true);
     });
   });
+
+  describe('social linking', () => {
+    const optionsWithSocialLink = _.cloneDeep(defaultOptions);
+    optionsWithSocialLink.linkingSocial = true;
+
+    const propsWithSocialLink = _.cloneDeep(defaultProps);
+    propsWithSocialLink.options = optionsWithSocialLink;
+
+    it('has the proper action url when not linking', () => {
+      const wrapper = mount(<SignInForm {...defaultProps} />);
+      assert.isTrue(wrapper.find('form').get(0).action.indexOf('/user_sessions') > -1);
+    });
+
+    it('has the proper action url when linking', () => {
+      const wrapper = mount(<SignInForm {...propsWithSocialLink} />);
+      assert.isTrue(wrapper.find('form').get(0).action.indexOf('/auth/auth0/link') > -1);
+    });
+  });
 });

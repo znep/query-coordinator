@@ -9,7 +9,7 @@
 <div id="signin" style="margin-left: auto; margin-right: auto;"></div>
 
 <% @suppress_flashes = true %>
-<% translations_for('screens.sign_in', 'screens.sign_up', 'account.common', 'core.validation') %>
+<% translations_for('screens.sign_in', 'screens.sign_up', 'account.common', 'core.validation', 'core.or') %>
 
 <% content_for :js_footer do %>
   <%#
@@ -24,6 +24,7 @@
   <%= include_webpack_bundle 'signin/main.js' %>
 
   <script type="text/javascript">
-    window.auth0Login('#signin', <%= auth0_component_config_json %>, <%= login %>);
+    // "false" here makes it show the "sign up" page initially
+    window.auth0Login('#signin', <%= auth0_social_account_link_config_json %>, false);
   </script>
 <%- end -%>

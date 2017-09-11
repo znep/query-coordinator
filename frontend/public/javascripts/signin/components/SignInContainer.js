@@ -8,6 +8,7 @@ import { renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
+import SocialLinkMessage from './SocialLinkMessage';
 import styles from './signin.scss';
 
 class SignInContainer extends React.Component {
@@ -28,12 +29,15 @@ class SignInContainer extends React.Component {
       alerts: []
     };
 
-    this.renderChooseConnectionOrSignInForm = this.renderChooseConnectionOrSignInForm.bind(this);
-    this.onConnectionChosen = this.onConnectionChosen.bind(this);
-    this.onLoginError = this.onLoginError.bind(this);
-    this.onLoginStart = this.onLoginStart.bind(this);
-    this.setLoginFormVisibility = this.setLoginFormVisibility.bind(this);
-    this.renderFormMessage = this.renderFormMessage.bind(this);
+    _.bindAll(this, [
+      'onConnectionChosen',
+      'onLoginError',
+      'onLoginStart',
+      'renderChooseConnectionOrSignInForm',
+      'renderFormMessage',
+      'renderSocialLinkMessage',
+      'setLoginFormVisibility'
+    ]);
   }
 
   componentDidMount() {
@@ -128,6 +132,19 @@ class SignInContainer extends React.Component {
     }
   }
 
+  renderSocialLinkMessage() {
+    const { options } = this.props;
+    const { linkingSocial, toggleViewMode } = options;
+
+    if (!linkingSocial) {
+      return null;
+    }
+
+    return (
+      <SocialLinkMessage signin toggleViewMode={toggleViewMode} />
+    );
+  }
+
   render() {
     const { alerts } = this.state;
     const { options } = this.props;
@@ -135,8 +152,8 @@ class SignInContainer extends React.Component {
     return (
       <div styleName="container">
         {this.renderBackButton()}
-
         {renderAlerts(_.concat(flashes, alerts))}
+        {this.renderSocialLinkMessage()}
 
         <div styleName="header-container">
           <h2 styleName="header">

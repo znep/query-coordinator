@@ -25,9 +25,29 @@ class SignUpForm extends React.Component {
       renderingPasswordHintModal: false
     };
 
-    this.validateAndSubmitForm = this.validateAndSubmitForm.bind(this);
-    this.closePasswordHintModal = this.closePasswordHintModal.bind(this);
-    this.openPasswordHintModal = this.openPasswordHintModal.bind(this);
+    _.bindAll(this, [
+      'closePasswordHintModal',
+      'getFormActionUrl',
+      'renderPasswordInput',
+      'renderPasswordConfirmInput',
+      'openPasswordHintModal',
+      'validateAndSubmitForm'
+    ]);
+  }
+
+  getFormActionUrl() {
+    const { options } = this.props;
+    const { linkingSocial } = options;
+
+    // if we're linking a social account, then we
+    // do a POST to our auth0 endpoint that knows about the
+    // social account that we're linking
+    // otherwise, we're doing a regular signup
+    if (linkingSocial) {
+      return '/auth/auth0/link';
+    } else {
+      return '/signup';
+    }
   }
 
   validateAndSubmitForm(event) {
@@ -88,13 +108,55 @@ class SignUpForm extends React.Component {
     return null;
   }
 
+  // password fields aren't rendered when doing social linking
+  renderPasswordInput(focusOnMount) {
+    const { options, onPasswordBlur } = this.props;
+    const { linkingSocial } = options;
+
+    if (linkingSocial) {
+      return null;
+    }
+
+    return (
+      <SignUpInput
+        focusOnMount={focusOnMount}
+        name="password"
+        label={I18n.t('account.common.form.password')}
+        inputName="signup[password]"
+        inputType="password"
+        onBlur={onPasswordBlur}>
+        <button styleName="password-hint-button" onClick={this.openPasswordHintModal}>
+          {I18n.t('account.common.form.password_restrictions')}
+          <SocrataIcon name="info" />
+        </button>
+      </SignUpInput>
+    );
+  }
+
+  // password fields aren't rendered when doing social linking
+  renderPasswordConfirmInput() {
+    const { options, onPasswordConfirmBlur } = this.props;
+    const { linkingSocial } = options;
+
+    if (linkingSocial) {
+      return null;
+    }
+
+    return (
+      <SignUpInput
+        name="passwordConfirm"
+        label={I18n.t('account.common.form.confirm_password')}
+        inputName="signup[passwordConfirm]"
+        inputType="password"
+        onBlur={onPasswordConfirmBlur} />
+    );
+  }
+
   render() {
     const {
       options,
       onEmailBlur,
       onScreenNameBlur,
-      onPasswordBlur,
-      onPasswordConfirmBlur,
       onRecaptchaCallback,
       enteredEmail,
       enteredScreenName } = this.props;
@@ -111,7 +173,7 @@ class SignUpForm extends React.Component {
     return (
       <form
         styleName="form"
-        action="/signup"
+        action={this.getFormActionUrl()}
         method="post"
         acceptCharset="UTF-8"
         encType="multipart/form-data"
@@ -144,25 +206,9 @@ class SignUpForm extends React.Component {
           inputType="text"
           onBlur={onScreenNameBlur} />
 
-        <SignUpInput
-          focusOnMount={focusOnPassword}
-          name="password"
-          label={I18n.t('account.common.form.password')}
-          inputName="signup[password]"
-          inputType="password"
-          onBlur={onPasswordBlur}>
-          <button styleName="password-hint-button" onClick={this.openPasswordHintModal}>
-            {I18n.t('account.common.form.password_restrictions')}
-            <SocrataIcon name="info" />
-          </button>
-        </SignUpInput>
-
-        <SignUpInput
-          name="passwordConfirm"
-          label={I18n.t('account.common.form.confirm_password')}
-          inputName="signup[passwordConfirm]"
-          inputType="password"
-          onBlur={onPasswordConfirmBlur} />
+        {/* Password inputs are not rendered for social linking */}
+        {this.renderPasswordInput(focusOnPassword)}
+        {this.renderPasswordConfirmInput()}
 
         {/* This label is needed to pass WAVE */}
         <label htmlFor="g-recaptcha-response" hidden="hidden">Recaptcha Response</label>
@@ -207,12 +253,15 @@ const mapStateToProps = (state) => ({
   urlAuthToken: state.urlAuthToken
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   onEmailBlur: () => dispatch(validateEmail()),
   onScreenNameBlur: () => dispatch(validateScreenName()),
   onPasswordBlur: () => dispatch(validatePassword()),
   onPasswordConfirmBlur: () => dispatch(validatePasswordConfirm()),
-  onFormSubmit: (callback) => dispatch(validateForm(callback)),
+
+  // when we're doing social linking, we skip password validation
+  // (since the user will have no password if they are signing up)
+  onFormSubmit: (callback) => dispatch(validateForm(callback, ownProps.options.linkingSocial)),
   onRecaptchaCallback: (response) => dispatch(recaptchaCallback(response))
 });
 

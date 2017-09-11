@@ -1,0 +1,16 @@
+@import "../../common";
+
+.message-container {
+  @extend .alert;
+  @extend .info;
+  margin-bottom: 1.5em;
+  text-align: center;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

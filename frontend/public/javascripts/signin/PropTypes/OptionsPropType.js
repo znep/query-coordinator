@@ -37,7 +37,7 @@ export default
     hideSocrataId: PropTypes.bool,
 
     // Whether to bypass logging in through auth0 with @socrata.com emails
-    // (note that this is still enforced in frontend)
+    // (note that this is also enforced in frontend)
     socrataEmailsBypassAuth0: PropTypes.bool,
 
     // These connections are shown as buttons to login through specific auth0 federated connections
@@ -46,14 +46,15 @@ export default
     // Regex strings that can force emails matching certain patterns to go through a specific connection
     forcedConnections: PropTypes.arrayOf(ForcedConnectionsPropType),
 
-    // The message that displays above the "connections"
-    // Note that if there are no connections, no message is shown
+    // Message that displays above the "connections"
+    // Note that if there are no connections, this message is not shown
     chooseConnectionMessage: PropTypes.string,
 
-    // This message is displayed above the signin form
+    // Message is displayed above the signin form
+    // Displays regardless of the presence of "connections"
     formMessage: PropTypes.string,
 
-    // A modal that pops up, covering any forms, that must be accepted
+    // A modal that pops up, covering any forms, that must be accepted before continuing
     modalConfig: ModalConfigPropType,
 
     // Any flashes to display
@@ -70,8 +71,15 @@ export default
 
     // Any params that come in from the request to load the page; used i.e. to grab the entered userName and emails
     // if the sign up form submission fails (so user doesn't have to re-type them)
+    // Note that this is filtered in the auth0_helper so not ALL params are available
     params: PropTypes.object,
 
     // Whether or not to add "autocomplete=false" to the signin form
-    disableSignInAutocomplete: PropTypes.bool
+    disableSignInAutocomplete: PropTypes.bool,
+
+    // Whether or not we're "linking" a social account.
+    // This should only be true after sucessully logging in to a social account via auth0.
+    // This changes where the forms submit to to take differen actions, and hides the password fields on the signup page.
+    // A message is also shown above signin and signup.
+    linkingSocial: PropTypes.bool.isRequired
   });

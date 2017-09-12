@@ -1,14 +1,13 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideModal } from 'reduxStuff/actions/modal';
 import { applyRevision, updateRevision } from 'reduxStuff/actions/applyRevision';
-import * as Selectors from 'selectors';
 import PublishConfirmationUSAID from 'components/PublishConfirmationUSAID/PublishConfirmationUSAID';
 
-export function mapStateToProps({ entities, ui }) {
-  const latestOutputSchema = Selectors.currentOutputSchema(entities);
-  const outputSchemaId = latestOutputSchema ? latestOutputSchema.id : null;
-  const { id: revisionId } = Selectors.latestRevision(entities);
+export function mapStateToProps({ entities, ui }, { params }) {
+  const rev = _.values(entities.revisions).find(r => r.revision_seq === _.toNumber(params.revisionSeq));
+  const { id: revisionId } = rev;
   const permission = entities.revisions[revisionId] ? entities.revisions[revisionId].permission : 'public';
   const { apiCalls } = ui;
 
@@ -21,7 +20,6 @@ export function mapStateToProps({ entities, ui }) {
   );
 
   return {
-    outputSchemaId,
     btnDisabled: !!revisionUpdatesInProgress.length,
     publicSelected: permission === 'public'
   };

@@ -5,8 +5,9 @@ import CommonRowDetails from '../../common/components/RowDetails';
 
 export function mapStateToProps({ entities }, { revisionSeq, fourfour }) {
   const view = entities.views[fourfour];
+  const numericRevisionSeq = _.toNumber(revisionSeq);
   const rowLabel = _.get(view, 'metadata.rowLabel', I18n.common.default_row_label);
-  const currentSchema = Selectors.currentOutputSchema(entities);
+  const currentSchema = Selectors.currentOutputSchema(entities, numericRevisionSeq);
   if (!currentSchema) {
     return {
       rowLabel,

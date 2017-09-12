@@ -4,16 +4,16 @@ import { withRouter } from 'react-router';
 import * as Selectors from 'selectors';
 import UploadSidebar from 'components/UploadSidebar/UploadSidebar';
 
-export const mapStateToProps = ({ entities }) => {
+export const mapStateToProps = ({ entities }, { params }) => {
   let currentUpload;
   let otherUploads;
-
+  const revisionSeq = _.toNumber(params.revisionSeq);
   const pendingOrSuccessfulSources = _.chain(entities.sources)
     .values()
     .filter(source => !source.failed_at)
     .value();
 
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
 
   if (currentOutputSchema) {
     const { input_schema_id: inputSchemaId } = currentOutputSchema;

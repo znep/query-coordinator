@@ -4,18 +4,20 @@ import PublishButton from 'components/PublishButton/PublishButton';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
+import { withRouter } from 'react-router';
 
-function isDataSatisfied(state) {
+function isDataSatisfied({ entities }, { params }) {
   if (window.serverConfig.featureFlags.usaid_features_enabled) {
     return true;
   }
   let dataSatisfied;
-  const outputSchema = Selectors.currentOutputSchema(state.entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   if (outputSchema) {
     // TODO: delete old stuff once dsmapi websocket change goes in
-    const inputSchema = state.entities.input_schemas[outputSchema.input_schema_id];
+    const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
 
-    const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
+    const columns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
     dataSatisfied =
       Selectors.allTransformsDone(columns) || Selectors.allTransformsDoneOld(columns, inputSchema);
   } else {
@@ -50,4 +52,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishButton);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishButton));

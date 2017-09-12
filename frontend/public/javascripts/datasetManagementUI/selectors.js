@@ -24,14 +24,12 @@ export function rowsUpserted(entities, taskSetId) {
   return _.max(rowItems) || 0;
 }
 
-export function latestRevision(entities) {
-  // TODO: this selector should go away for revisionless DSMUI
-  // and be replaced by getting it from the URL
-  return _.maxBy(_.values(entities.revisions), 'id');
+export function currentRevision(entities, revisionSeq) {
+  return _.values(entities.revisions).find(rev => rev.revision_seq === revisionSeq);
 }
 
-export function currentOutputSchema(entities) {
-  const revision = latestRevision(entities);
+export function currentOutputSchema(entities, revisionSeq) {
+  const revision = currentRevision(entities, revisionSeq);
   if (!_.isNumber(revision.output_schema_id)) {
     return latestOutputSchema(entities);
   }

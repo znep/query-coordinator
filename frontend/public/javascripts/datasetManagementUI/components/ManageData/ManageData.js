@@ -6,8 +6,8 @@ import { Link } from 'react-router';
 import * as Links from 'links';
 import styles from './ManageData.scss';
 
-function query(entities) {
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+function query(entities, revisionSeq) {
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
 
   const outputColumns = currentOutputSchema
     ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
@@ -21,7 +21,8 @@ function query(entities) {
 }
 
 const ManageData = ({ entities, columnsExist, params }) => {
-  const { anyColumnHasDescription } = query(entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const { anyColumnHasDescription } = query(entities, revisionSeq);
 
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
   const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;
@@ -30,7 +31,7 @@ const ManageData = ({ entities, columnsExist, params }) => {
   const visualizationDoneCheckmark = null;
   const featuredDoneCheckmark = null;
 
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const columnDescriptionLink = currentOutputSchema
     ? Links.columnMetadataForm(params, currentOutputSchema.id)
     : '';

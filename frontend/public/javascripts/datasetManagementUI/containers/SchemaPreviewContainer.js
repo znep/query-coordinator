@@ -7,7 +7,8 @@ import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';
 
 function mapStateToProps({ entities }, { params }) {
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
 
   if (currentOutputSchema) {
     const columns = Selectors.columnsForOutputSchema(entities, currentOutputSchema.id).map(column => {

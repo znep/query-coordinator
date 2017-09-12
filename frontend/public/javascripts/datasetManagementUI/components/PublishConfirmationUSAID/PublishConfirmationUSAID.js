@@ -24,14 +24,7 @@ class PublishConfirmationUSAID extends Component {
   }
 
   render() {
-    const {
-      outputSchemaId,
-      doCancel,
-      dispatchApplyRevision,
-      setPermission,
-      btnDisabled,
-      publicSelected
-    } = this.props;
+    const { doCancel, dispatchApplyRevision, setPermission, btnDisabled, publicSelected } = this.props;
 
     return (
       <div>
@@ -67,7 +60,6 @@ class PublishConfirmationUSAID extends Component {
           <ApiCallButton
             additionalClassName={styles.mainButton}
             operation={APPLY_REVISION}
-            params={{ outputSchemaId }}
             forceDisable={btnDisabled}
             onClick={() => dispatchApplyRevision()}>
             {publicSelected
@@ -81,7 +73,6 @@ class PublishConfirmationUSAID extends Component {
 }
 
 PublishConfirmationUSAID.propTypes = {
-  outputSchemaId: PropTypes.number,
   doCancel: PropTypes.func.isRequired,
   dispatchApplyRevision: PropTypes.func.isRequired,
   btnDisabled: PropTypes.bool,

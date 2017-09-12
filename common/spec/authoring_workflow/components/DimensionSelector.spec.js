@@ -36,7 +36,7 @@ describe('DimensionSelector', function() {
     var props;
     var component;
     var overrides = {
-      onSelectDimension: sinon.stub()
+      onSelectDimensionAndOrderBy: sinon.stub()
     };
 
     var emitsPicklistEvent = function(selector, eventName) {
@@ -53,7 +53,7 @@ describe('DimensionSelector', function() {
     });
 
     describe('when changing the dimension dropdown', function() {
-      emitsPicklistEvent('#dimension-selection', 'onSelectDimension');
+      emitsPicklistEvent('#dimension-selection', 'onSelectDimensionAndOrderBy');
     });
   });
 });

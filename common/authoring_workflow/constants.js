@@ -11,7 +11,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'calendar_date',
-    preferredVisualizationTypes: ['timelineChart'],
+    preferredVisualizationTypes: ['columnChart', 'timelineChart'],
     icon: 'icon-date'
   },
   {
@@ -76,7 +76,7 @@ export const VISUALIZATION_TYPES = [
     type: 'columnChart',
     title: I18n.t('shared.visualizations.charts.column_chart.title'),
     icon: 'icon-bar-chart',
-    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
+    preferredDimensionTypes: ['calendar_date', 'money', 'number', 'percent', 'text']
   },
   {
     type: 'pieChart',

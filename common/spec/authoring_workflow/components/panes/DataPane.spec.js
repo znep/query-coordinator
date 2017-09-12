@@ -43,20 +43,6 @@ describe('DataPane', function() {
     });
   }
 
-  function rendersTimelinePrecision() {
-    describe('rendering', function() {
-      it('renders a dropdown with timeline precision options', function() {
-        assert.isNotNull(component.querySelector('#timeline-precision-selection'));
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the timeline precision order', function() {
-        emitsEvent('#timeline-precision-selection .picklist-option', 'onSelectTimelinePrecision', 'click');
-      });
-    });
-  }
-
   function rendersTreatNullValuesAsZeroAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a treat null values as zero checkbox', function() {
@@ -117,7 +103,6 @@ describe('DataPane', function() {
   describe('timelineChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
 
-    rendersTimelinePrecision();
     rendersTreatNullValuesAsZeroAndEmitsEvents();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });

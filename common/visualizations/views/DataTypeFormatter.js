@@ -156,6 +156,12 @@ const TIME_FORMATS = {
   default_date: 'YYYY MMM DD'
 };
 
+const PRECISION_FORMATS = {
+  'year': 'date_y',
+  'month': 'date_ym',
+  'day': 'date_ymd'
+};
+
 // Please note: Functions whose name ends with HTML
 // will return HTML ready to place into the DOM. Do
 // not process further.
@@ -184,7 +190,8 @@ module.exports = {
   renderTimestampCellHTML,
   renderObeLocationHTML,
   renderFormattedTextHTML,
-  getCellAlignment: getCellAlignment
+  getCellAlignment: getCellAlignment,
+  applyCalendarDatePrecisionFormats
 };
 
 function renderCellHTML(cellContent, column, domain, datasetUid) {
@@ -710,6 +717,17 @@ function getCellAlignment(column) {
     default:
       return 'left';
   }
+}
+
+function applyCalendarDatePrecisionFormats(formats, precision) {
+  const precisionFormat = PRECISION_FORMATS[precision];
+
+  if (_.isEmpty(precisionFormat)) {
+    return;
+  }
+
+  const calendarFormats = _.filter(formats, (format) => (format.dataTypeName === 'calendar_date'));
+  _.each(calendarFormats, (calendarFormat) => calendarFormat.format.view = precisionFormat);
 }
 
 /**

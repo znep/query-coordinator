@@ -10,6 +10,7 @@ import {
 } from '../actions';
 
 import {
+  getAnyDimension,
   getLimitCount,
   getShowOtherCategory,
   getVisualizationType,
@@ -18,17 +19,54 @@ import {
   isPieChart,
 } from '../selectors/vifAuthoring';
 
+import { isDimensionTypeCalendarDate } from '../selectors/metadata';
 import BlockLabel from './shared/BlockLabel';
 import DebouncedInput from './shared/DebouncedInput';
 import GroupedStackedSelector from './GroupedStackedSelector';
+import TimelinePrecisionSelector from './TimelinePrecisionSelector';
 
 export const DisplayOptions = React.createClass({
   propTypes: {
-    vifAuthoring: PropTypes.object,
+    metadata: PropTypes.object,
+    vifAuthoring: PropTypes.object
   },
 
-  render() {
-    const { vifAuthoring, onChangeLimitCount, onSelectLimitCount } = this.props;
+  renderGroupedStackedSelector() {
+    const { vifAuthoring } = this.props;
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring));
+
+    return shouldRender ? <GroupedStackedSelector /> : null;
+  },
+
+  renderTimelinePrecisionSelector() {
+    const { metadata, vifAuthoring } = this.props;
+    const column = getAnyDimension(vifAuthoring);
+    const shouldRender = isDimensionTypeCalendarDate(metadata, column);
+
+    return shouldRender ? <TimelinePrecisionSelector /> : null;
+  },
+
+  renderPieChartDescription() {
+    const { vifAuthoring } = this.props;
+    const shouldRender = isPieChart(vifAuthoring);
+    
+    return shouldRender ? (
+        <p className="authoring-field-description">
+          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
+        </p>
+      ) : 
+      null;
+  },
+
+  renderLimitCountSelector() {
+    const { metadata, onChangeLimitCount, onSelectLimitCount, vifAuthoring } = this.props;
+    const column = getAnyDimension(vifAuthoring);
+    const shouldRender = !isDimensionTypeCalendarDate(metadata, column);
+
+    if (!shouldRender) {
+      return null;
+    }
+
     const limitCount = getLimitCount(vifAuthoring);
     const showOtherCategory = getShowOtherCategory(vifAuthoring);
     const visualizationType = getVisualizationType(vifAuthoring);
@@ -139,36 +177,31 @@ export const DisplayOptions = React.createClass({
       </div>
     );
 
-    const descriptionForPieChart = isPieChart(vifAuthoring) ? (
-        <p className="authoring-field-description">
-          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
-        </p>
-      ) : 
-      null;
-
-    const groupedStackedSelector = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) ?
-      <GroupedStackedSelector /> :
-      null;
-
     return (
-      <div>
-        {groupedStackedSelector}
-        <div className="authoring-field">
-          <span id="limit-subtitle">{I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.subtitle`)}</span>
-          <div className="radiobutton">
-            {limitNoneContainer}
-            {limitCountContainer}
-          </div>
+      <div className="authoring-field">
+        <span id="limit-subtitle">{I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.subtitle`)}</span>
+        <div className="radiobutton">
+          {limitNoneContainer}
+          {limitCountContainer}
         </div>
-        {descriptionForPieChart}
       </div>
     );
   },
+
+  render() {
+    return (
+      <div>
+        {this.renderGroupedStackedSelector()}
+        {this.renderLimitCountSelector()}
+        {this.renderPieChartDescription()}
+        {this.renderTimelinePrecisionSelector()}
+      </div>
+    );
+  }
 });
 
 function mapStateToProps(state) {
-  const { vifAuthoring } = state;
-  return { vifAuthoring };
+  return _.pick(state, ['metadata', 'vifAuthoring']);
 }
 
 function mapDispatchToProps(dispatch) {

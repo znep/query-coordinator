@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dropdown } from 'common/components';
-import ErrorBarsOptions from '../ErrorBarsOptions';
 import I18n from 'common/i18n';
 import { 
   getValidMeasures,
@@ -11,7 +9,6 @@ import {
   isLoading
 } from '../../selectors/metadata';
 import {
-  getPrecision,
   getTreatNullValuesAsZero,
   getVisualizationType,
   hasErrorBars,
@@ -22,9 +19,7 @@ import {
   isPieChart,
   isTimelineChart,
 } from '../../selectors/vifAuthoring';
-import { TIMELINE_PRECISION } from '../../constants';
 import {
-  setPrecision,
   setTreatNullValuesAsZero
 } from '../../actions';
 
@@ -34,20 +29,16 @@ import BlockLabel from '../shared/BlockLabel';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
 import DisplayOptions from '../DisplayOptions';
+import ErrorBarsOptions from '../ErrorBarsOptions';
 import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
 import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
+import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
 
 export var DataPane = React.createClass({
   propTypes: {
     metadata: React.PropTypes.object,
     vifAuthoring: React.PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-      timelinePrecision: _.cloneDeep(TIMELINE_PRECISION)
-    };
   },
 
   renderMetadataLoading() {
@@ -64,33 +55,6 @@ export var DataPane = React.createClass({
     return (
       <div className="metadata-error alert error">
         <strong>{I18n.t('shared.visualizations.panes.data.uhoh')}</strong> {I18n.t('shared.visualizations.panes.data.loading_metadata_error')}
-      </div>
-    );
-  },
-
-  renderTimelinePrecision() {
-    const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
-    const defaultPrecision = getPrecision(vifAuthoring) || null;
-    const options = _.map(timelinePrecision, (option) => {
-      option.render = this.renderTimelinePrecisionOption;
-      return option;
-    });
-
-    const attributes = {
-      options,
-      onSelection: onSelectTimelinePrecision,
-      id: 'timeline-precision-selection',
-      value: defaultPrecision
-    };
-
-    return (
-      <div className="authoring-field">
-        <label className="block-label" htmlFor="timeline-precision">
-          {I18n.t('shared.visualizations.panes.data.fields.timeline_precision.title')}
-        </label>
-        <div id="timeline-precision" className="authoring-field">
-          <Dropdown {...attributes} />
-        </div>
       </div>
     );
   },
@@ -123,7 +87,6 @@ export var DataPane = React.createClass({
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) &&
       !hasErrorBars(vifAuthoring);
 
-
     return shouldRender ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
           <DimensionGroupingColumnNameSelector />
@@ -134,14 +97,12 @@ export var DataPane = React.createClass({
 
   renderTimelineOptions() {
     const { vifAuthoring } = this.props;
-    const timelinePrecision = this.renderTimelinePrecision();
-    const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
     const shouldRender = isTimelineChart(vifAuthoring);
 
     return shouldRender ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
-          {timelinePrecision}
-          {treatNullValuesAsZero}
+          <TimelinePrecisionSelector />
+          {this.renderTreatNullValuesAsZero()}
         </AccordionPane>
       ) :
       null;
@@ -238,16 +199,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-
-    onSelectTimelinePrecision: (timelinePrecision) => {
-      dispatch(setPrecision(timelinePrecision.value));
-    },
-
     onChangeTreatNullValuesAsZero: (event) => {
       const treatNullValuesAsZero = event.target.checked;
-
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
     },
   };
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(DataPane);

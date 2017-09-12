@@ -44,11 +44,6 @@ export default function timelineChart(state, action) {
       break;
     }
 
-    case actions.SET_PRECISION:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.precision', action.precision);
-      });
-      break;
 
     case actions.SET_TREAT_NULL_VALUES_AS_ZERO:
       setBooleanValueOrDeleteProperty(state, 'configuration.treatNullValuesAsZero', action.treatNullValuesAsZero);
@@ -67,9 +62,6 @@ export default function timelineChart(state, action) {
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_REFERENCE_LINE:
     case actions.REMOVE_SERIES:
-    case actions.SET_REFERENCE_LINE_COLOR:
-    case actions.SET_REFERENCE_LINE_LABEL:
-    case actions.SET_REFERENCE_LINE_VALUE:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:
@@ -81,7 +73,11 @@ export default function timelineChart(state, action) {
     case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
+    case actions.SET_PRECISION:
     case actions.SET_PRIMARY_COLOR:
+    case actions.SET_REFERENCE_LINE_COLOR:
+    case actions.SET_REFERENCE_LINE_LABEL:
+    case actions.SET_REFERENCE_LINE_VALUE:
     case actions.SET_SHOW_LEGEND:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:

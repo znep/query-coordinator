@@ -49,12 +49,6 @@ export default function pieChart(state, action) {
       setBooleanValueOrDefaultValue(state, 'configuration.showValueLabelsAsPercent', action.showValueLabelsAsPercent, false);
       break;
 
-    case actions.SET_ORDER_BY:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
-      });
-      break;
-
     case actions.SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY:
       setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
 
@@ -79,6 +73,7 @@ export default function pieChart(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_MEASURE:
     case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_ORDER_BY:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

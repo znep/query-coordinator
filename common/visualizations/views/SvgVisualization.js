@@ -1169,14 +1169,19 @@ function SvgVisualization($element, vif, options) {
 
   function getOneHundredPercentStackedPositions(groupedDataToRender) {
 
-    return groupedDataToRender.map(row => {
+    return groupedDataToRender.map((row) => {
       const values = row.slice(1); // first index is the dimension name
       const sumOfValues = values.reduce((a, b) => a + (b || 0), 0);
 
       let positiveOffset = 0;
       let negativeOffset = 0;
   
-      return values.map(o => {
+      return values.map((o) => {
+
+        if (sumOfValues === 0) {
+          return { start: 0, end: 0, percent: 0 };
+        }
+
         const percent = (o || 0) / sumOfValues;
         let position;
 

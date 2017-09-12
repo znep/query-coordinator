@@ -15,6 +15,7 @@ import {
   setMeasureAxisMaxValue,
 } from '../../actions';
 import {
+  getAnyDimension,
   getReferenceLines,
   getOrderBy,
   getMeasureAxisMinValue,
@@ -26,6 +27,7 @@ import {
   isTimelineChart,
   isPieChart
 } from '../../selectors/vifAuthoring';
+import { isDimensionTypeCalendarDate } from '../../selectors/metadata';
 import EmptyPane from './EmptyPane';
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
@@ -61,7 +63,14 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderChartSorting() {
-    const { onSelectChartSorting, chartSorting, vifAuthoring } = this.props;
+    const { metadata, onSelectChartSorting, chartSorting, vifAuthoring } = this.props;
+    const column = getAnyDimension(vifAuthoring);
+    const shouldRender = !isDimensionTypeCalendarDate(metadata, column);
+    
+    if (!shouldRender) {
+      return;
+    }
+
     const defaultChartSort = getOrderBy(vifAuthoring) || { parameter: 'measure', sort: 'desc' };
     const options = _.map(chartSorting, (option) => {
       option.value = `${option.orderBy.parameter}-${option.orderBy.sort}`;
@@ -418,11 +427,7 @@ export var AxisAndScalePane = React.createClass({
 });
 
 function mapStateToProps(state) {
-
-  return {
-    vifAuthoring: state.vifAuthoring,
-    datasetMetadata: state.datasetMetadata
-  };
+  return _.pick(state, ['datasetMetadata', 'metadata', 'vifAuthoring']);
 }
 
 function mapDispatchToProps(dispatch) {

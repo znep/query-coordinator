@@ -86,14 +86,23 @@ export const getRecommendedDimensions = (state, type) => {
   });
 };
 
-export const getRecommendedVisualizationTypes = (state, column) => {
+export const isDimensionTypeCalendarDate = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+  return !_.isUndefined(dimensionType) && (dimensionType.type === 'calendar_date');
+}
+
+export const getDimensionType = (state, column) => {
   const dimension = _.find(getValidDimensions(state), dimension => {
     return column && column.columnName === dimension.fieldName;
   });
 
-  const dimensionType = _.find(COLUMN_TYPES, column => {
+  return _.find(COLUMN_TYPES, column => {
     return dimension && dimension.renderTypeName === column.type;
   });
+};
+
+export const getRecommendedVisualizationTypes = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
 
   return _.filter(VISUALIZATION_TYPES, visualization => {
     return dimensionType && _.includes(dimensionType.preferredVisualizationTypes, visualization.type);

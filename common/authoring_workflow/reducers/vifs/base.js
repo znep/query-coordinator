@@ -109,6 +109,18 @@ export default function(state, action) {
       }
       break;
 
+    case actions.SET_ORDER_BY:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
+      });
+      break;
+
+    case actions.SET_PRECISION:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.precision', action.precision);
+      });
+      break;
+
     case actions.APPEND_REFERENCE_LINE:
       if (!state.referenceLines) {
         state.referenceLines = [];

@@ -5,7 +5,7 @@ import { Picklist } from 'common/components';
 import I18n from 'common/i18n';
 
 import Dimension from './Dimension';
-import { setDimension } from '../actions';
+import { setDimension, setOrderBy } from '../actions';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import {
   getAnyDimension,
@@ -22,7 +22,7 @@ export const DimensionSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
-    onSelectDimension: PropTypes.func
+    onSelectDimensionAndOrderBy: PropTypes.func
   },
 
   renderDimensionOption(recommended, option) {
@@ -34,7 +34,7 @@ export const DimensionSelector = React.createClass({
   },
 
   renderDimensionSelector() {
-    const { metadata, onSelectDimension, vifAuthoring } = this.props;
+    const { metadata, vifAuthoring } = this.props;
     const dimension = getAnyDimension(vifAuthoring);
     const type = getVisualizationType(vifAuthoring);
     const value = dimension.columnName;
@@ -68,8 +68,8 @@ export const DimensionSelector = React.createClass({
     const dimensionAttributes = {
       id: 'dimension-selection',
       options: dimensions,
-      onChange: onSelectDimension,
-      onSelection: onSelectDimension,
+      onChange: this.onSelectDimension,
+      onSelection: this.onSelectDimension,
       value
     };
 
@@ -80,24 +80,27 @@ export const DimensionSelector = React.createClass({
     );
   },
 
-  render() {
-    const { metadata } = this.props;
+  onSelectDimension(dimension) {
+    const sort = (dimension.type === 'calendar_date') ? 'asc' : 'desc';
+    this.props.onSelectDimensionAndOrderBy(dimension, sort);
+  },
 
-    return hasData(metadata) ?
+  render() {
+    return hasData(this.props.metadata) ?
       this.renderDimensionSelector() :
       null;
   }
 });
 
 function mapStateToProps(state) {
-  const { vifAuthoring, metadata } = state;
-  return { vifAuthoring, metadata };
+  return _.pick(state, ['metadata', 'vifAuthoring']);
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectDimension: (dimension) => {
+    onSelectDimensionAndOrderBy: (dimension, sort) => {
       dispatch(setDimension(dimension.value));
+      dispatch(setOrderBy({ parameter: 'measure', sort }));
     }
   };
 }

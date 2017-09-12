@@ -3,11 +3,11 @@ const $ = require('jquery');
 
 const VifHelpers = require('./helpers/VifHelpers');
 const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
+const DataTypeFormatter = require('./views/DataTypeFormatter');
 const SvgColumnChart = require('./views/SvgColumnChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
-const CategoricalDataManager = require(
-  './dataProviders/CategoricalDataManager'
-);
+const CategoricalDataManager = require('./dataProviders/CategoricalDataManager');
+const TimeDataManager = require('./dataProviders/TimeDataManager');
 const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require(
   './dataProviders/SoqlVifValidator.js'
@@ -125,6 +125,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
     const skipPromise = _.constant(Promise.resolve(null));
     const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+    const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
@@ -136,8 +137,21 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
       then((columns) => {
         return Promise.all([
           Promise.resolve(columns),
-          CategoricalDataManager.getData(newVif),
           datasetMetadataProvider.getDatasetMetadata()
+        ]);
+      }).
+      then((resolutions) => {
+        const [ columns, datasetMetadata ] = resolutions;
+        const dimension = _.find(datasetMetadata.columns, (column) => (dimensionColumnName === column.fieldName));
+
+        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') ? 
+          TimeDataManager.getData(newVif) :
+          CategoricalDataManager.getData(newVif);
+  
+        return Promise.all([
+          Promise.resolve(columns),
+          getData,
+          Promise.resolve(datasetMetadata)
         ]);
       }).
       then((resolutions) => {
@@ -145,6 +159,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
 
         const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
         newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
+        DataTypeFormatter.applyCalendarDatePrecisionFormats(newData.columnFormats, newData.precision);
 
         renderVisualization(newVif, newData, newColumns);
       }).

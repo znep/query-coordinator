@@ -38,7 +38,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   );
   const isQueryWithInClause = _.find(
     series.dataSource.filters,
-    (filter) => { return (filter.function === "in"); });
+    (filter) => { return (filter.function === "in" || filter.function == "not in"); });
     // We only want to follow the showOtherCategory code path if that property
   // is set to true AND there is a defined limit.
   const showOtherCategory = (

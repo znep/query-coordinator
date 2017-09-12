@@ -376,8 +376,6 @@ function getData(vif, options) {
      * Beaver queries
      */
 
-    // FIXME: Assuming no null dimension values for now.
-
     groupingData.push({
       query: "Beaver", // helpful to see while debugging
       vif: generateGroupingVifWithFilters(
@@ -401,71 +399,6 @@ function getData(vif, options) {
         inClauseUsed: true
       });
     }
-
-    // FIXME: Delete this.
-    // state.dimensionValues.forEach((dimensionValue) => {
-
-    //   // Next invert each of the grouping values to get the 'other' category
-    //   // per dimension value (if there are more than MAX_GROUP_COUNT grouping
-    //   // values per dimension value).
-    //   if (state.groupingRequiresOtherCategory) {
-    //     const invertedGroupingValuesFilters = _.cloneDeep(filtersFromVif);
-
-    //     invertedGroupingValuesFilters.push(
-    //       {
-    //         'function': 'binaryOperator',
-    //         columnName: state.columnName,
-    //         arguments: getBinaryOperatorFilterArguments(dimensionValue)
-    //       }
-    //     );
-    //     // invertedGroupingValuesFilters.push(nonNullDimensionValuesFilter);
-
-    //     // If one of the grouping values is null, we don't need to force nulls
-    //     // to be counted by the other category queries, so we can just add the
-    //     // one filter excluding the grouping value in question.
-    //     if (groupingValuesIncludeNull) {
-    //       const invertedGroupingValuesFilterArguments = state.groupingValues.
-    //         map((groupingValue) => {
-    //           return getBinaryOperatorFilterArguments(groupingValue, '!=');
-    //         });
-    //       invertedGroupingValuesFilters.push(
-    //         {
-    //           'function': 'binaryOperator',
-    //           columnName: state.groupingColumnName,
-    //           arguments: invertedGroupingValuesFilterArguments,
-    //           joinOn: 'AND'
-    //         }
-    //       );
-    //     // If none of the grouping values are null, then we need to explicitly
-    //     // factor in null values when deriving the grouping value's '(Other)'
-    //     // category by not only excluding the grouping value in question but
-    //     // also asking for null values.
-    //     } else {
-    //       state.groupingValues.forEach((groupingValue) => {
-    //         invertedGroupingValuesFilters.push(
-    //           {
-    //             'function': 'binaryOperator',
-    //             columnName: state.groupingColumnName,
-    //             arguments: [
-    //               getBinaryOperatorFilterArguments(groupingValue, '!='),
-    //               { operator: 'IS NULL' }
-    //             ],
-    //             joinOn: 'OR'
-    //           }
-    //         );
-    //       });
-    //     }
-
-    //     groupingData.push({
-    //       query: "Beaver",
-    //       vif: generateGroupingVifWithFilters(invertedGroupingValuesFilters),
-    //       dimensionValue, // XXX: Necessary when iterating over dimension values.
-    //       // inClauseUsed: true,
-    //       groupingValue: otherCategoryName
-    //     });
-    //   }
-
-    // });
 
     /**
      * Chinchilla queries
@@ -625,7 +558,22 @@ function getData(vif, options) {
     return new Promise((resolve, reject) => {
       Promise.all(groupingRequests).then((groupingResponses) => {
         groupingData.forEach((groupingDatum, i) => {
-          groupingDatum.data = groupingResponses[i];
+          // Dingo queries only:
+          if (groupingDatum.dimensionValue === otherCategoryName &&
+              !groupingDatum.inClauseUsed) {
+            const measureIndex = groupingResponses[i].columns.indexOf('measure');
+            const sumOfRows = _.sumBy(groupingResponses[i].rows, measureIndex);
+            groupingDatum.data = {
+              columns: groupingResponses[i].columns,
+              rows: [
+                [groupingDatum.dimensionValue, sumOfRows]
+              ]
+            };
+          }
+          // everything else
+          else {
+            groupingDatum.data = groupingResponses[i];
+          }
         });
         state.groupingData = groupingData;
         resolve(state);
@@ -695,7 +643,7 @@ function getData(vif, options) {
         }
       });
       // deal with "(Other)" columns
-      if (state.groupingRequiresOtherCategory) {
+      if (state.groupingRequiresOtherCategory && _.isNull(row[otherIndex])) {
         // find all rowData entries for columns /other/ than the ones requested
         row[otherIndex] = 0;
         otherColumns.forEach((col) => {

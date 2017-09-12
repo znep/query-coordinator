@@ -1,402 +1,410 @@
-$cell_vborder_color: #e2e2e2;
-$cell_hborder_color: #d0d0d0;
-$col_hover_color: #ddeaf0;
-$fill_color: #f8f8f8;
-$header_color: #e8e8e8;
-$footer_locked_color: #fcedc1;
-$footer_color: #fef8dc;
+/**
+ * EN-18335 - Update and refactor grid view CSS
+ *
+ * The addition of the 'new' grid view led to a lot of CSS rule collisions and
+ * confusing, unintended inheritance. After a while Giacomo Ferrari suggested
+ * that we just add a class to the body that would contain either the entirety
+ * of the old styles or the entirety of the new ones, and use it as a toggle.
+ *
+ * This was a very, very good idea.
+ *
+ * The 'classic' styles are now all under the '.grid-view-classic' class on the
+ * body, and the updated ones are under the '.grid-view-2017-refresh' class.
+ *
+ * NOTE: This file only applies to the classic grid view as the styles for the
+ * actual table used in the updated one are found in the Socrata Visualizations
+ * project.
+ */
+ body.grid-view-classic {
+  $cell_vborder_color: #e2e2e2;
+  $cell_hborder_color: #d0d0d0;
+  $col_hover_color: #ddeaf0;
+  $fill_color: #f8f8f8;
+  $header_color: #e8e8e8;
+  $footer_locked_color: #fcedc1;
+  $footer_color: #fef8dc;
 
-.blist-table {
-  height: 100%;
-  a {
-    @include underline-on-hover;
+  .blist-table {
+    height: 100%;
+    a {
+      @include underline-on-hover;
+    }
   }
-}
 
-.blist-table-locked-scrolls, .blist-table-inside {
-  background-color: #ffffff;
-}
+  .blist-table-locked-scrolls, .blist-table-inside {
+    background-color: #ffffff;
+  }
 
-.blist-table-header {
-  height: 3.7em;
-}
-
-.blist-th {
-  height: 3.7em;
-  .dragHandle {
+  .blist-table-header {
     height: 3.7em;
   }
-}
 
-.indicators-inactive {
-  .blist-table-header {
-    height: 2.5em;
-  }
   .blist-th {
-    height: 2.5em;
+    height: 3.7em;
     .dragHandle {
+      height: 3.7em;
+    }
+  }
+
+  .indicators-inactive {
+    .blist-table-header {
       height: 2.5em;
     }
-  }
-}
-
-.blist-th {
-  border-left: solid 1px $cell_vborder_color;
-  overflow: hidden;
-  padding: 0 0.4em;
-}
-
-div.blist-th-first {
-  border-left: none;
-  padding-left: 0.5em;
-}
-
-.blist-table-header {
-  .hover,
-  .blist-select-col {
-    background-color: $col_hover_color;
-    .name-wrapper {
-      background-color: $col_hover_color;
+    .blist-th {
+      height: 2.5em;
+      .dragHandle {
+        height: 2.5em;
+      }
     }
   }
-  .hover .indicator-container {
-    background-color: #cddae0;
-  }
-}
 
-.blist-th {
-  .info-container {
-    font-size: 1.2em;
-    height: 1.6667em;
-    left: 12px;
-    line-height: 1;
+  .blist-th {
+    border-left: solid 1px $cell_vborder_color;
     overflow: hidden;
-    position: absolute;
-    text-overflow: ellipsis;
-    top: 3px;
-    width: auto;
-    overflow: hidden;
+    padding: 0 0.4em;
   }
-  &.narrow .info-container {
-    left: 10px;
+
+  div.blist-th-first {
+    border-left: none;
+    padding-left: 0.5em;
   }
-  &.narrower .info-container {
-    left: 1px;
+
+  .blist-table-header {
+    .hover,
+    .blist-select-col {
+      background-color: $col_hover_color;
+      .name-wrapper {
+        background-color: $col_hover_color;
+      }
+    }
+    .hover .indicator-container {
+      background-color: #cddae0;
+    }
   }
-  &.narrow:hover .info-container {
-    display: none;
-  }
-  &.narrow:hover .button-wrapper, &.narrow:hover .menuLink {
-    display: block;
-  }
-  .name-wrapper {
-    height: 1.6667em;
-    background-color: $header-color;
-    padding-right: 5px;
-  }
-  .icon-display .name-wrapper {
-    padding-left: 25px;
-  }
-  &.narrow .icon-display .name-wrapper {
-    padding-left: 0;
-  }
-  .name-wrapper {
-    form {
+
+  .blist-th {
+    .info-container {
+      font-size: 1.2em;
+      height: 1.6667em;
+      left: 12px;
+      line-height: 1;
+      overflow: hidden;
+      position: absolute;
+      text-overflow: ellipsis;
+      top: 3px;
+      width: auto;
+      overflow: hidden;
+    }
+    &.narrow .info-container {
+      left: 10px;
+    }
+    &.narrower .info-container {
+      left: 1px;
+    }
+    &.narrow:hover .info-container {
       display: none;
     }
-    input {
-      border: none;
-      padding: 2px 0;
-      width: 100%;
-    }
-  }
-  &.editable {
-    .info-container {
-      -moz-user-select: text;
+    &.narrow:hover .button-wrapper, &.narrow:hover .menuLink {
+      display: block;
     }
     .name-wrapper {
-      span {
+      height: 1.6667em;
+      background-color: $header-color;
+      padding-right: 5px;
+    }
+    .icon-display .name-wrapper {
+      padding-left: 25px;
+    }
+    &.narrow .icon-display .name-wrapper {
+      padding-left: 0;
+    }
+    .name-wrapper {
+      form {
         display: none;
       }
-      form {
+      input {
+        border: none;
+        padding: 2px 0;
+        width: 100%;
+      }
+    }
+    &.editable {
+      .info-container {
+        -moz-user-select: text;
+      }
+      .name-wrapper {
+        span {
+          display: none;
+        }
+        form {
+          display: block;
+        }
+      }
+    }
+    &.error .name-wrapper input {
+      background-color: #ffb6c1;
+    }
+    .blist-th-name, .name-wrapper input {
+      font-size: 1.0833em;
+    }
+    .blist-th-name {
+      position: relative;
+      top: 3px;
+    }
+  }
+
+  .blist-th-icon {
+    background-position: 0 20px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    width: 20px;
+  }
+
+  .blist-th {
+    .blist-th-icon {
+      left: 0;
+      position: absolute;
+      top: 0;
+    }
+    &.narrow .blist-th-icon, &.narrow .button-wrapper, &.narrow .menuLink {
+      display: none;
+    }
+    .dragHandle {
+      left: 0;
+      position: absolute;
+      width: 10px;
+      z-index: 10;
+      .blist-table-disabled & {
+        z-index: -10;
+      }
+    }
+    &.hover .dragHandle {
+      background-image: url(/stylesheets/images/content/table/column_drag_handle.png);
+      background-position: top left;
+      background-repeat: repeat;
+      cursor: move;
+    }
+  }
+
+  .blist-th-drag {
+    background-color: $col_hover_color;
+    height: 100%;
+    top: 0;
+    z-index: 100;
+  }
+
+  .blist-table .indicator-container {
+    background-color: #dcdcdc;
+    border-top: 1px solid #cccccc;
+  }
+
+  .blist-th .indicator-container {
+    margin: 0 -0.4em;
+  }
+
+  .indicators-inactive .indicator-container {
+    display: none;
+  }
+
+  .blist-th, .blist-tdh {
+    .sort {
+      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
+      background-position: 0 0;
+      height: 12px;
+      top: 0;
+      width: 12px;
+    }
+    .filter {
+      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
+      background-position: 0 0;
+      height: 12px;
+      top: 0;
+      width: 12px;
+      right: 50%;
+    }
+    .sort-asc {
+      background-position: 0 -24px;
+    }
+    &.hover {
+      .sort-asc {
+        background-position: 0 -12px;
+      }
+      .sort-desc {
+        background-position: 0 -36px;
+      }
+      .name-wrapper {
+        background-color: $col_hover_color;
+      }
+    }
+    .filter {
+      background-position: 0 -50px;
+      &.active {
         display: block;
       }
     }
+    .info-button {
+      padding-right: 4px;
+    }
+    .button-wrapper {
+      float: right;
+    }
+    .info-button {
+      width: 14px;
+      height: 14px;
+      background-repeat: no-repeat;
+    }
+    .button-wrapper {
+      width: auto;
+      height: auto;
+    }
+    .menuLink, .info-button {
+      margin: 5px 0;
+      opacity: 1;
+    }
   }
-  &.error .name-wrapper input {
-    background-color: #ffb6c1;
-  }
-  .blist-th-name, .name-wrapper input {
-    font-size: 1.0833em;
-  }
-  .blist-th-name {
+
+  .blist-tdh {
     position: relative;
-    top: 3px;
   }
-}
 
-.blist-th-icon {
-  background-position: 0 20px;
-  background-repeat: no-repeat;
-  display: block;
-  height: 20px;
-  width: 20px;
-}
-
-.blist-th {
-  .blist-th-icon {
-    left: 0;
-    position: absolute;
-    top: 0;
-  }
-  &.narrow .blist-th-icon, &.narrow .button-wrapper, &.narrow .menuLink {
-    display: none;
-  }
-  .dragHandle {
-    left: 0;
-    position: absolute;
-    width: 10px;
-    z-index: 10;
-    .blist-table-disabled & {
-      z-index: -10;
-    }
-  }
-  &.hover .dragHandle {
-    background-image: url(/stylesheets/images/content/table/column_drag_handle.png);
-    background-position: top left;
-    background-repeat: repeat;
-    cursor: move;
-  }
-}
-
-.blist-th-drag {
-  background-color: $col_hover_color;
-  height: 100%;
-  top: 0;
-  z-index: 100;
-}
-
-.blist-table .indicator-container {
-  background-color: #dcdcdc;
-  border-top: 1px solid #cccccc;
-}
-
-.blist-th .indicator-container {
-  margin: 0 -0.4em;
-}
-
-.indicators-inactive .indicator-container {
-  display: none;
-}
-
-.blist-th, .blist-tdh {
-  .sort {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
-    background-position: 0 0;
-    height: 12px;
-    top: 0;
-    width: 12px;
-  }
-  .filter {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
-    background-position: 0 0;
-    height: 12px;
-    top: 0;
-    width: 12px;
-    right: 50%;
-  }
-  .sort-asc {
-    background-position: 0 -24px;
-  }
-  &.hover {
-    .sort-asc {
-      background-position: 0 -12px;
-    }
-    .sort-desc {
-      background-position: 0 -36px;
-    }
-    .name-wrapper {
-      background-color: $col_hover_color;
-    }
-  }
-  .filter {
-    background-position: 0 -50px;
-    &.active {
-      display: block;
-    }
-  }
-  .info-button {
-    padding-right: 4px;
-  }
-  .button-wrapper {
-    float: right;
-  }
-  .info-button {
-    width: 14px;
+  .menuLink {
+    display: block;
     height: 14px;
+    width: 14px;
+    float: right;
     background-repeat: no-repeat;
   }
-  .button-wrapper {
-    width: auto;
-    height: auto;
+
+  .menuLink:hover, .info-button:hover {
+    opacity: 0.5;
+    cursor: pointer;
   }
-  .menuLink, .info-button {
-    margin: 5px 0;
-    opacity: 1;
+
+  .blist-table-header-scrolls {
+    background: $header_color;
   }
-}
 
-.blist-tdh {
-  position: relative;
-}
-
-.menuLink {
-  display: block;
-  height: 14px;
-  width: 14px;
-  float: right;
-  background-repeat: no-repeat;
-}
-
-.menuLink:hover, .info-button:hover {
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-.blist-table-header-scrolls {
-  background: $header_color;
-}
-
-.blist-table-locked-header .blist-th {
-  background: $header_color;
-  border: none;
-  padding: 0 4px;
-}
-
-.blist-th .blist-opener {
-  border-right: 1px solid $cell_vborder_color;
-  float: left;
-  height: 100%;
-  margin-left: -4px;
-  padding: 0 4px;
-}
-
-.blist-th-tooltip {
-  .name {
-    font-weight: bold;
-    text-align: center;
+  .blist-table-locked-header .blist-th {
+    background: $header_color;
+    border: none;
+    padding: 0 4px;
   }
-  .originalName {
-    .title {
+
+  .blist-th .blist-opener {
+    border-right: 1px solid $cell_vborder_color;
+    float: left;
+    height: 100%;
+    margin-left: -4px;
+    padding: 0 4px;
+  }
+
+  .blist-th-tooltip {
+    .name {
       font-weight: bold;
+      text-align: center;
+    }
+    .originalName {
+      .title {
+        font-weight: bold;
+      }
+    }
+    .columnType {
+      line-height: 20px;
+      margin-top: 0.75em;
+    }
+    .blist-th-icon {
+      float: left;
+      margin-right: 0.3em;
+    }
+    .description {
+      margin-top: 0.5em;
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid #999999;
+    }
+    .api-field {
+      border-top: 1px solid #999;
+      padding-top: 0.5em;
     }
   }
-  .columnType {
-    line-height: 20px;
-    margin-top: 0.75em;
+
+  .blist-table .disabled-overlay, .blist-table .select-overlay {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    // See doVertScroll in data/table.js
+    .ie & {
+      height: 5000px;
+    }
   }
-  .blist-th-icon {
+
+  .blist-table .disabled-overlay {
+    background-color: #cccccc;
+    filter: alpha(opacity = 30);
+    opacity: 0.3;
+  }
+
+  .blist-table .select-overlay {
+    background-color: #ffffff;
+    @include opacity(0.2);
+  }
+
+  .blist-table .select-overlay.overlay-hover {
+    background-color: #4d8ab0;
+  }
+
+  .blist-table .blist-table-locked-scrolls .disabled-overlay {
+    left: 0;
+    width: 100%;
+  }
+
+  div.blist-table-ghost div.blist-column-adder {
+    background-image: url("/stylesheets/images/content/table/add_column_icons.gif");
+    background-position: center 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
     float: left;
-    margin-right: 0.3em;
+    height: 15px;
+    margin-top: 5px;
+    width: 15px;
+    &:hover {
+      background-position: center -15px;
+    }
   }
-  .description {
-    margin-top: 0.5em;
-    padding-bottom: 0.5em;
-    border-bottom: 1px solid #999999;
+
+  .blist-table.disabled .blist-column-adder {
+    display: none;
   }
-  .api-field {
-    border-top: 1px solid #999;
-    padding-top: 0.5em;
+
+  div.blist-tr-open div.blist-column-adder,
+  div.blist-tr.blist-hot-row div.blist-column-adder {
+    background-color: $header_color;
+    cursor: pointer;
   }
-}
 
-.blist-table .disabled-overlay, .blist-table .select-overlay {
-  height: 100%;
-  position: absolute;
-  top: 0;
-  z-index: 2;
-  // See doVertScroll in data/table.js
-  .ie & {
-    height: 5000px;
+  div.blist-column-adder {
+    background: none;
+    width: 15px;
+    cursor: auto;
   }
-}
 
-.blist-table .disabled-overlay {
-  background-color: #cccccc;
-  filter: alpha(opacity = 30);
-  opacity: 0.3;
-}
-
-.blist-table .select-overlay {
-  background-color: #ffffff;
-  @include opacity(0.2);
-}
-
-.blist-table .select-overlay.overlay-hover {
-  background-color: #4d8ab0;
-}
-
-.blist-table .blist-table-locked-scrolls .disabled-overlay {
-  left: 0;
-  width: 100%;
-}
-
-div.blist-table-ghost div.blist-column-adder {
-  background-image: url("/stylesheets/images/content/table/add_column_icons.gif");
-  background-position: center 0;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  float: left;
-  height: 15px;
-  margin-top: 5px;
-  width: 15px;
-  &:hover {
-    background-position: center -15px;
+  div.blist-tr-sub.blist-hot-row div.blist-column-adder {
+    background: none;
+    width: 15px;
+    cursor: auto;
+    &.blist-tdfill {
+      background-color: $fill_color;
+    }
   }
-}
 
-.blist-table.disabled .blist-column-adder {
-  display: none;
-}
-
-div.blist-tr-open div.blist-column-adder,
-div.blist-tr.blist-hot-row div.blist-column-adder {
-  background-color: $header_color;
-  cursor: pointer;
-}
-
-div.blist-column-adder {
-  background: none;
-  width: 15px;
-  cursor: auto;
-}
-
-div.blist-tr-sub.blist-hot-row div.blist-column-adder {
-  background: none;
-  width: 15px;
-  cursor: auto;
-  &.blist-tdfill {
-    background-color: $fill_color;
+  div.blist-tr .blist-column-adder-icon {
+    background: none;
+    width: 15px;
+    height: 15px;
   }
-}
 
-div.blist-tr .blist-column-adder-icon {
-  background: none;
-  width: 15px;
-  height: 15px;
-}
-
-div.blist-tr-open .blist-column-adder-icon {
-  background-image: url("/stylesheets/images/content/table/add_column_icons.gif");
-  background-repeat: no-repeat;
-  background-position: center 0px;
-  background-color: $header_color;
-  width: 15px;
-  height: 15px;
-}
-
-div.blist-tr.blist-hot-row {
-  .blist-column-adder-icon {
+  div.blist-tr-open .blist-column-adder-icon {
     background-image: url("/stylesheets/images/content/table/add_column_icons.gif");
     background-repeat: no-repeat;
     background-position: center 0px;
@@ -404,769 +412,780 @@ div.blist-tr.blist-hot-row {
     width: 15px;
     height: 15px;
   }
-  div.blist-column-adder:hover .blist-column-adder-icon {
-    background-position: center -15px;
-  }
-}
 
-div.blist-tr-highlight, div.blist-hot-row {
-  background-color: $row_highlight_color !important;
-}
-
-div.blist-tr-pending {
-  background-color: $header_color;
-}
-
-.blist-table .dropIndicator {
-  background-color: #333333;
-  display: none;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  width: 4px;
-  z-index: 99;
-}
-
-.col-select-holder {
-  border-left: solid 1px $col_hover_color;
-  background-color: $col_hover_color;
-  height: 100%;
-  padding-left: 0.8em;
-  position: absolute;
-  top: 0;
-  z-index: -1;
-}
-
-.blist-table-footer-scrolls,
-.blist-table-locked-footer {
-  background-color: #ffffff;
-  border-top: solid 1px $cell_hborder_color;
-  height: 2.6em;
-}
-
-.blist-table-footer {
-  background-color: $footer_color;
-  bottom: 0.2em;
-  height: 2em;
-}
-
-.blist-tf {
-  border-color: #ffffff;
-  border-style: solid;
-  border-width: 0 1px;
-  font-size: 1.2em;
-  height: 1.6667em;
-  overflow: hidden;
-  padding: 0 0.25em 0 0.3333em;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.blist-table-footer-scrolls .blist-tf-value {
-  bottom: 0.25em;
-  position: absolute;
-  right: 0.4167em;
-}
-
-.blist-tf.blist-tf-first {
-  border-left-width: 0;
-  padding-left: 0.4167em;
-}
-
-.blist-table-locked-footer {
-  .blist-tf {
-    background-color: $footer_locked_color;
-    border: none;
-    float: left;
-    font-size: 1em;
-    font-weight: bold;
-    height: 1.5em;
-    margin-top: 0.4em;
-    overflow: visible;
-    padding: 0.5em 0.4em 0;
-    &.blist-table-row-numbers {
-      z-index: 1;
+  div.blist-tr.blist-hot-row {
+    .blist-column-adder-icon {
+      background-image: url("/stylesheets/images/content/table/add_column_icons.gif");
+      background-repeat: no-repeat;
+      background-position: center 0px;
+      background-color: $header_color;
+      width: 15px;
+      height: 15px;
+    }
+    div.blist-column-adder:hover .blist-column-adder-icon {
+      background-position: center -15px;
     }
   }
-}
 
-.blist-table-pagination {
-  background-color: white;
-  color: #333;
-  border: solid 1px #cacaca;
-
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 3em;
-  z-index: 22;
-
-  .navigation {
-    bottom: 0;
-    height: 3em;
-    left: 0;
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    li {
-      display: inline-block;
-      vertical-align: middle;
-      &.rowCount {
-        float: left;
-        padding-top: 0.7em;
-      }
-      &.bucketSize {
-        float: right;
-        padding-top: 0.7em;
-      }
-      &.info, &.rowCount, &.bucketSize {
-        font-size: 1.2em;
-        line-height: 1.2em;
-        margin: 0 0.5em;
-      }
-      &.active a {
-        color: #999999;
-        cursor: auto;
-      }
-      .button {
-        padding: 0.3em;
-      }
-    }
+  div.blist-tr-highlight, div.blist-hot-row {
+    background-color: $row_highlight_color !important;
   }
-}
 
-.blist-table .blist-tr .blist-table-row-numbers {
-  border-left-width: 0;
-  color: #999999;
-  font-size: 1.1em;
-  height: 1.4545em;
-  line-height: 1.4545em;
-  padding: 0.3636em;
-  text-align: right;
-  a {
-    color: $color_links_normal;
+  div.blist-tr-pending {
+    background-color: $header_color;
   }
-}
 
-.blist-tr .blist-table-row-handle {
-  border-left-width: 0;
-}
-
-.blist-table-inside .blist-tr .blist-table-row-handle {
-  border-left-width: 1px;
-}
-
-.blist-tr {
-  .blist-table-row-handle .menuLink {
-    width: 100%;
+  .blist-table .dropIndicator {
+    background-color: #333333;
+    display: none;
     height: 100%;
-  }
-}
-
-.blist-table-locked .blist-hot-row.blist-tr-sub .blist-table-row-handle .menuLink {
-  display: none;
-}
-
-.blist-td {
-  border-bottom: solid 1px $cell_hborder_color;
-  border-left: solid 1px $cell_vborder_color;
-}
-
-div.blist-table-expander,
-div.blist-table-edit-container.mode-expand {
-  background-color: #ffffff;
-  border-top: solid 1px $cell_hborder_color;
-  border-bottom: solid 1px $cell_hborder_color;
-  border-left: solid 1px $cell_vborder_color;
-  border-right: solid 1px $cell_vborder_color;
-  @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.6));
-}
-
-.blist-td.invalid,
-.invalid .blist-table-editor input {
-  color: #888888;
-  font-style: italic;
-}
-
-.blist-td {
-  position: relative;
-  .annotation {
-    @include cell-annotation-icons;
-    bottom: 0;
     position: absolute;
-    right: 0;
+    top: 0;
+    width: 4px;
+    z-index: 99;
   }
-}
 
-.blist-table-active-container .annotation {
-  @include cell-annotation-icons(true);
-}
+  .col-select-holder {
+    border-left: solid 1px $col_hover_color;
+    background-color: $col_hover_color;
+    height: 100%;
+    padding-left: 0.8em;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+  }
 
-.blist-td.comments-active .annotation {
-  @include cell-annotation-icons(false, true);
-}
+  .blist-table-footer-scrolls,
+  .blist-table-locked-footer {
+    background-color: #ffffff;
+    border-top: solid 1px $cell_hborder_color;
+    height: 2.6em;
+  }
 
-div.blist-td-highlight {
-  background-color: adjust-color($row_highlight_color, $saturation: 15%, $lightness: -20%) !important;
-}
+  .blist-table-footer {
+    background-color: $footer_color;
+    bottom: 0.2em;
+    height: 2em;
+  }
 
-div.blist-tdh {
-  color: #999999;
-}
+  .blist-tf {
+    border-color: #ffffff;
+    border-style: solid;
+    border-width: 0 1px;
+    font-size: 1.2em;
+    height: 1.6667em;
+    overflow: hidden;
+    padding: 0 0.25em 0 0.3333em;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.blist-table-locked-scrolls {
-  .blist-tr[class*="level"] {
-    .menuLink {
-      display: none;
+  .blist-table-footer-scrolls .blist-tf-value {
+    bottom: 0.25em;
+    position: absolute;
+    right: 0.4167em;
+  }
+
+  .blist-tf.blist-tf-first {
+    border-left-width: 0;
+    padding-left: 0.4167em;
+  }
+
+  .blist-table-locked-footer {
+    .blist-tf {
+      background-color: $footer_locked_color;
+      border: none;
+      float: left;
+      font-size: 1em;
+      font-weight: bold;
+      height: 1.5em;
+      margin-top: 0.4em;
+      overflow: visible;
+      padding: 0.5em 0.4em 0;
+      &.blist-table-row-numbers {
+        z-index: 1;
+      }
     }
   }
-}
 
-.blist-tdh .blist-th-icon {
-  display: none;
-  float: left;
-  margin-top: -2px;
-}
+  .blist-table-pagination {
+    background-color: white;
+    color: #333;
+    border: solid 1px #cacaca;
 
-div.blist-tdh.blist-table-row-handle .blist-th-icon {
-  display: none;
-  margin-top: 1px;
-}
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3em;
+    z-index: 22;
 
-.blist-tdh .blist-th-name {
-  margin-left: 4px;
-}
+    .navigation {
+      bottom: 0;
+      height: 3em;
+      left: 0;
+      position: absolute;
+      text-align: center;
+      width: 100%;
+      li {
+        display: inline-block;
+        vertical-align: middle;
+        &.rowCount {
+          float: left;
+          padding-top: 0.7em;
+        }
+        &.bucketSize {
+          float: right;
+          padding-top: 0.7em;
+        }
+        &.info, &.rowCount, &.bucketSize {
+          font-size: 1.2em;
+          line-height: 1.2em;
+          margin: 0 0.5em;
+        }
+        &.active a {
+          color: #999999;
+          cursor: auto;
+        }
+        .button {
+          padding: 0.3em;
+        }
+      }
+    }
+  }
 
-.blist-tdh {
-  .menuLink, .button-wrapper {
+  .blist-table .blist-tr .blist-table-row-numbers {
+    border-left-width: 0;
+    color: #999999;
+    font-size: 1.1em;
+    height: 1.4545em;
+    line-height: 1.4545em;
+    padding: 0.3636em;
+    text-align: right;
+    a {
+      color: $color_links_normal;
+    }
+  }
+
+  .blist-tr .blist-table-row-handle {
+    border-left-width: 0;
+  }
+
+  .blist-table-inside .blist-tr .blist-table-row-handle {
+    border-left-width: 1px;
+  }
+
+  .blist-tr {
+    .blist-table-row-handle .menuLink {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .blist-table-locked .blist-hot-row.blist-tr-sub .blist-table-row-handle .menuLink {
     display: none;
   }
-  .menuLink, .info-button {
-    margin: 0px;
-  }
-}
 
-.blist-tr-open {
-  .blist-tdh {
-    background-color: $header_color;
-    color: #333333;
-    cursor: inherit;
-    .blist-th-icon, .menuLink, .button-wrapper {
-      display: block;
-      z-index: 2;
-    }
-    .blist-th-name {
-      background-color: $header_color;
-      z-index: 3;
-    }
-    .menuLink, .button-wrapper, .blist-th-name {
-      position: relative;
+  .blist-td {
+    border-bottom: solid 1px $cell_hborder_color;
+    border-left: solid 1px $cell_vborder_color;
+  }
+
+  div.blist-table-expander,
+  div.blist-table-edit-container.mode-expand {
+    background-color: #ffffff;
+    border-top: solid 1px $cell_hborder_color;
+    border-bottom: solid 1px $cell_hborder_color;
+    border-left: solid 1px $cell_vborder_color;
+    border-right: solid 1px $cell_vborder_color;
+    @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.6));
+  }
+
+  .blist-td.invalid,
+  .invalid .blist-table-editor input {
+    color: #888888;
+    font-style: italic;
+  }
+
+  .blist-td {
+    position: relative;
+    .annotation {
+      @include cell-annotation-icons;
+      bottom: 0;
+      position: absolute;
+      right: 0;
     }
   }
-  .blist-tdh:hover {
-    .blist-th-name {
-      z-index: 0;
+
+  .blist-table-active-container .annotation {
+    @include cell-annotation-icons(true);
+  }
+
+  .blist-td.comments-active .annotation {
+    @include cell-annotation-icons(false, true);
+  }
+
+  div.blist-td-highlight {
+    background-color: adjust-color($row_highlight_color, $saturation: 15%, $lightness: -20%) !important;
+  }
+
+  div.blist-tdh {
+    color: #999999;
+  }
+
+  .blist-table-locked-scrolls {
+    .blist-tr[class*="level"] {
+      .menuLink {
+        display: none;
+      }
     }
   }
+
+  .blist-tdh .blist-th-icon {
+    display: none;
+    float: left;
+    margin-top: -2px;
+  }
+
   div.blist-tdh.blist-table-row-handle .blist-th-icon {
-    display: block;
+    display: none;
+    margin-top: 1px;
   }
-  .blist-td {
+
+  .blist-tdh .blist-th-name {
+    margin-left: 4px;
+  }
+
+  .blist-tdh {
+    .menuLink, .button-wrapper {
+      display: none;
+    }
+    .menuLink, .info-button {
+      margin: 0px;
+    }
+  }
+
+  .blist-tr-open {
+    .blist-tdh {
+      background-color: $header_color;
+      color: #333333;
+      cursor: inherit;
+      .blist-th-icon, .menuLink, .button-wrapper {
+        display: block;
+        z-index: 2;
+      }
+      .blist-th-name {
+        background-color: $header_color;
+        z-index: 3;
+      }
+      .menuLink, .button-wrapper, .blist-th-name {
+        position: relative;
+      }
+    }
+    .blist-tdh:hover {
+      .blist-th-name {
+        z-index: 0;
+      }
+    }
+    div.blist-tdh.blist-table-row-handle .blist-th-icon {
+      display: block;
+    }
+    .blist-td {
+      border-bottom-color: $fill_color;
+    }
+  }
+
+  .blist-tr {
+    .blist-td-colfill, .initial-tdfill {
+      border-left-width: 0;
+      padding-left: 5px;
+    }
+  }
+
+  .blist-table .blist-td {
+    &.saving {
+      background-color: #ffffcc;
+    }
+    &.error {
+      background-color: #ffb6c1;
+    }
+  }
+
+  div.blist-table-active-container,
+  div.blist-table-edit-container.mode-select {
+    background-color: #ffffff;
+    border: solid 2px #91abcc;
+    overflow: hidden;
+  }
+
+  .blist-table .blist-td.blist-tdfill,
+  .blist-table-locked .blist-tr-sub .blist-td {
+    background-color: $fill_color;
     border-bottom-color: $fill_color;
+    text-align: left;
+    text-indent: -9999px;
   }
-}
 
-.blist-tr {
-  .blist-td-colfill, .initial-tdfill {
-    border-left-width: 0;
-    padding-left: 5px;
-  }
-}
-
-.blist-table .blist-td {
-  &.saving {
-    background-color: #ffffcc;
-  }
-  &.error {
-    background-color: #ffb6c1;
-  }
-}
-
-div.blist-table-active-container,
-div.blist-table-edit-container.mode-select {
-  background-color: #ffffff;
-  border: solid 2px #91abcc;
-  overflow: hidden;
-}
-
-.blist-table .blist-td.blist-tdfill,
-.blist-table-locked .blist-tr-sub .blist-td {
-  background-color: $fill_color;
-  border-bottom-color: $fill_color;
-  text-align: left;
-  text-indent: -9999px;
-}
-
-.blist-table-inside .blist-tr .blist-tdfill {
-  &.blist-table-row-handle,
-  &.blist-column-adder-space {
-    border-left-color: $fill_color;
-  }
-}
-
-.blist-table .last .blist-td.blist-tdfill,
-.blist-table-locked .blist-tr-sub.last .blist-td {
-  border-bottom-color: #dddddd;
-}
-
-div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
-.blist-table div.blist-cell-selected,
-.blist-table .blist-select-row .blist-td.blist-table-row-handle,
-.blist-table .blist-select-row .blist-td.blist-table-ghost {
-  background-color: #ddeaf0;
-}
-
-div.blist-table .blist-tr.blist-tr-noMatch {
-  background-color: #eeeeee;
-}
-
-div.blist-table-active-container {
-  .blist-td {
-    border-bottom: none;
-    padding: 3px;
-    &.comments-active {
-      background-color: #ffffff;
-    }
-    &.blist-first {
-      border-left: none;
-      padding-left: 3px;
-    }
-    &.blist-last {
-      padding-right: 3px;
-    }
-    &.blist-opener {
-      background-position: (-2px) 0;
+  .blist-table-inside .blist-tr .blist-tdfill {
+    &.blist-table-row-handle,
+    &.blist-column-adder-space {
+      border-left-color: $fill_color;
     }
   }
-}
 
-div.blist-table-edit-container {
-  background-color: #ffffff;
-  border: solid 2px #06386a;
-  overflow: hidden;
-  padding: 3px 2px;
-  &.combo-container {
-    overflow: visible;
+  .blist-table .last .blist-td.blist-tdfill,
+  .blist-table-locked .blist-tr-sub.last .blist-td {
+    border-bottom-color: #dddddd;
   }
-}
 
-div.blist-table-editor {
-  padding: 0;
-}
-
-.blist-table-edit-container div.blist-table-editor.type-date,
-.blist-table-edit-container div.blist-table-editor.type-calendar_date {
-  margin: (-5px) 0;
-  input {
-    padding: 5px 0;
+  div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
+  .blist-table div.blist-cell-selected,
+  .blist-table .blist-select-row .blist-td.blist-table-row-handle,
+  .blist-table .blist-select-row .blist-td.blist-table-ghost {
+    background-color: #ddeaf0;
   }
-}
 
-div.blist-table-edit-container.combo-container .blist-combo {
-  //no more need to set min-height to correctly position drop down
-  //min-height: 1.667em
-}
+  div.blist-table .blist-tr.blist-tr-noMatch {
+    background-color: #eeeeee;
+  }
 
-body.blist-html-document {
-  font-size: 12px;
-  padding: 2px 3px 3px 3px;
-}
+  div.blist-table-active-container {
+    .blist-td {
+      border-bottom: none;
+      padding: 3px;
+      &.comments-active {
+        background-color: #ffffff;
+      }
+      &.blist-first {
+        border-left: none;
+        padding-left: 3px;
+      }
+      &.blist-last {
+        padding-right: 3px;
+      }
+      &.blist-opener {
+        background-position: (-2px) 0;
+      }
+    }
+  }
 
-.blist-html p,
-body.blist-html-document p,
-.blist-html ul,
-body.blist-html-document ul,
-.blist-html ol,
-body.blist-html-document ol {
-  line-height: 1.4em;
-  margin: 0.3em 0;
-}
+  div.blist-table-edit-container {
+    background-color: #ffffff;
+    border: solid 2px #06386a;
+    overflow: hidden;
+    padding: 3px 2px;
+    &.combo-container {
+      overflow: visible;
+    }
+  }
 
-.blist-html p,
-body.blist-html-document p {
-  font-size: 1em;
-}
-
-.blist-html ul,
-body.blist-html-document ul {
-  list-style-position: inside;
-  list-style-type: disc;
-}
-
-.blist-html ol,
-body.blist-html-document ol {
-  list-style-position: inside;
-  list-style-type: decimal;
-}
-
-.blist-html a,
-body.blist-html-document a {
-  color: inherit;
-}
-
-.blist-html span,
-body.blist-html-document span,
-.blist-html p,
-body.blist-html-document p,
-.blist-html li,
-body.blist-html-document li,
-.blist-html a,
-body.blist-html-document a,
-.blist-html strong,
-body.blist-html-document strong,
-.blist-html b,
-body.blist-html-document b,
-.blist-html em,
-body.blist-html-document em,
-.blist-html i,
-body.blist-html-document i,
-.blist-html u,
-body.blist-html-document u,
-.blist-html strike,
-body.blist-html-document strike {
-  font-family: inherit;
-}
-
-div.blist-table-editor.type-html {
-  padding: 0;
-}
-
-div.blist-table-edit-container {
-  &.full-size {
+  div.blist-table-editor {
     padding: 0;
   }
-  input {
-    &[type="text"], &.textInput {
-      border: none;
-      font-size: 1em;
-      width: 4.167em;
+
+  .blist-table-edit-container div.blist-table-editor.type-date,
+  .blist-table-edit-container div.blist-table-editor.type-calendar_date {
+    margin: (-5px) 0;
+    input {
+      padding: 5px 0;
+    }
+  }
+
+  div.blist-table-edit-container.combo-container .blist-combo {
+    //no more need to set min-height to correctly position drop down
+    //min-height: 1.667em
+  }
+
+  body.blist-html-document {
+    font-size: 12px;
+    padding: 2px 3px 3px 3px;
+  }
+
+  .blist-html p,
+  body.blist-html-document p,
+  .blist-html ul,
+  body.blist-html-document ul,
+  .blist-html ol,
+  body.blist-html-document ol {
+    line-height: 1.4em;
+    margin: 0.3em 0;
+  }
+
+  .blist-html p,
+  body.blist-html-document p {
+    font-size: 1em;
+  }
+
+  .blist-html ul,
+  body.blist-html-document ul {
+    list-style-position: inside;
+    list-style-type: disc;
+  }
+
+  .blist-html ol,
+  body.blist-html-document ol {
+    list-style-position: inside;
+    list-style-type: decimal;
+  }
+
+  .blist-html a,
+  body.blist-html-document a {
+    color: inherit;
+  }
+
+  .blist-html span,
+  body.blist-html-document span,
+  .blist-html p,
+  body.blist-html-document p,
+  .blist-html li,
+  body.blist-html-document li,
+  .blist-html a,
+  body.blist-html-document a,
+  .blist-html strong,
+  body.blist-html-document strong,
+  .blist-html b,
+  body.blist-html-document b,
+  .blist-html em,
+  body.blist-html-document em,
+  .blist-html i,
+  body.blist-html-document i,
+  .blist-html u,
+  body.blist-html-document u,
+  .blist-html strike,
+  body.blist-html-document strike {
+    font-family: inherit;
+  }
+
+  div.blist-table-editor.type-html {
+    padding: 0;
+  }
+
+  div.blist-table-edit-container {
+    &.full-size {
       padding: 0;
-      background-repeat: repeat-x;
+    }
+    input {
+      &[type="text"], &.textInput {
+        border: none;
+        font-size: 1em;
+        width: 4.167em;
+        padding: 0;
+        background-repeat: repeat-x;
+      }
+    }
+    .labels {
+      border-bottom: 1px solid #06386a;
+      color: #999999;
+      font-size: 0.9167em;
+      height: 1.2727em;
+      span {
+        padding-left: 0.5em;
+        position: absolute;
+      }
+    }
+    .blist-table-editor.type-url {
+      input[type="text"] {
+        height: auto;
+        padding: 3px;
+        top: 1.25em;
+        width: 47%;
+        &.description {
+          border-left: 1px solid #06386a;
+          color: #333333;
+          font-style: normal;
+        }
+      }
+      .description {
+        left: 50%;
+      }
     }
   }
-  .labels {
-    border-bottom: 1px solid #06386a;
-    color: #999999;
-    font-size: 0.9167em;
-    height: 1.2727em;
-    span {
-      padding-left: 0.5em;
-      position: absolute;
-    }
+
+  .blist-table-editor.type-phone {
+    overflow: hidden;
+    padding-right: 0;
   }
-  .blist-table-editor.type-url {
-    input[type="text"] {
+
+  .blist-table .blist-table-edit-container {
+    input[type="text"].phoneNumber {
+      float: left;
       height: auto;
-      padding: 3px;
-      top: 1.25em;
-      width: 47%;
-      &.description {
-        border-left: 1px solid #06386a;
-        color: #333333;
-        font-style: normal;
-      }
+      width: 50%;
     }
-    .description {
-      left: 50%;
+    .type-phone .blist-combo-wrapper {
+      float: right;
+      width: 44%;
+      border-left: 2px solid #06386A;
+      padding-top: 1px;
+      padding-bottom: 1px;
     }
   }
-}
 
-.blist-table-editor.type-phone {
-  overflow: hidden;
-  padding-right: 0;
-}
-
-.blist-table .blist-table-edit-container {
-  input[type="text"].phoneNumber {
-    float: left;
-    height: auto;
-    width: 50%;
+  .blist-table-editor.type-phone input.phoneNumber {
+    margin: 0;
+    padding: 4px;
   }
-  .type-phone .blist-combo-wrapper {
-    float: right;
-    width: 44%;
-    border-left: 2px solid #06386A;
-    padding-top: 1px;
-    padding-bottom: 1px;
+
+  .blist-combo-dd.table-editor-combo li {
+    font-size: 1.2em;
   }
-}
 
-.blist-table-editor.type-phone input.phoneNumber {
-  margin: 0;
-  padding: 4px;
-}
+  .blist-table .blist-table-editor-container .blist-td {
+    -moz-user-select: text;
+  }
 
-.blist-combo-dd.table-editor-combo li {
-  font-size: 1.2em;
-}
-
-.blist-table .blist-table-editor-container .blist-td {
-  -moz-user-select: text;
-}
-
-.blist-percent {
-  height: 100%;
-  .blist-percent-bar-pos {
+  .blist-percent {
     height: 100%;
-  }
-}
-
-div.drill-td .blist-percent,
-div.drill-td .blist-flag {
-  margin-left: 28px;
-}
-
-img.blist-table-option-icon {
-  margin-bottom: -4px;
-  padding-right: 0.4em;
-}
-
-.blist-table-edit-container {
-  .type-document a.docLink {
-    line-height: 1.66667em;
-    margin-left: 0.5em;
-  }
-  .buttons {
-    background-color: white;
-    padding: 0 2px 2px 0;
-    position: absolute;
-  }
-  .type-blob a.tableButton,
-  .type-document a.tableButton,
-  .type-photo a.tableButton {
-    background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
-    background-position: 0 16px;
-    background-repeat: no-repeat;
-    display: block;
-    float: left;
-    height: 16px;
-    margin-left: 0.25em;
-    margin-top: 2px;
-    text-indent: -9999px;
-    width: 16px;
-  }
-  .type-blob a.tableButton.add,
-  .type-document a.tableButton.add {
-    background-position: (-2px) 0;
-  }
-  .type-blob a.tableButton.replace,
-  .type-document a.tableButton.replace,
-  .type-photo a.tableButton.replace {
-    background-position: (-2px) -48px;
-  }
-  .type-blob a.tableButton.remove,
-  .type-document a.tableButton.remove,
-  .type-photo a.tableButton.remove {
-    background-position: (-2px) -64px;
-  }
-  .type-photo a.tableButton.add {
-    background-position: (-2px) -16px;
-  }
-  .type-photo a.tableButton.view {
-    background-position: 0 -32px;
-    width: 20px;
-  }
-  /* Location editor */
-  .blist-table-editor.type-location .labels {
-    border-bottom-color: $cell_hborder_color;
-    border-top: 1px solid #06386a;
-  }
-  .blist-table-editor.type-location .labels.street {
-    border-top: none;
-  }
-  .blist-table-editor.type-location .labels span {
-    position: static;
-  }
-  .blist-table-editor.type-location input[type="text"] {
-    height: auto;
-    padding: 3px;
-    width: 95%;
-  }
-  .blist-table-editor.type-location input.nonInvalid {
-    color: #333333;
-    font-style: normal;
-  }
-  .blist-table-editor.type-location .labels span.longitude,
-  .blist-table-editor.type-location input.longitude {
-    border-left: 1px solid $cell_hborder_color;
-    left: 50%;
-    position: absolute;
-  }
-  .blist-table-editor.type-location input.lat_long {
-    width: 47%;
-  }
-}
-
-.blist-table-expander .blist-td-photo img,
-.blist-table-active-container .blist-td-photo img,
-.blist-table-edit-container .type-photo img {
-  vertical-align: middle;
-}
-
-.columnHeaderMenu {
-  width: 17em;
-}
-
-ul.menu.columnHeaderMenu li,
-ul.menu.rowMenu li {
-  padding: 2px 0 0;
-}
-
-.columnHeaderMenu {
-  .sortAsc a {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
-    background-position: 7px -20px;
-    background-repeat: no-repeat;
-  }
-  .sortDesc a {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
-    background-position: 7px -20px;
-    background-repeat: no-repeat;
-    background-position: 7px 4px;
-  }
-  .sortClear a, .autofilter a, .properties a, .hideCol a, .delete a {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
-    background-repeat: no-repeat;
-  }
-  .sortClear a {
-    background-position: 5px -324px;
-  }
-  .autofilter a {
-    background-position: 5px -531px;
-  }
-  .properties a {
-    background-position: 5px -347px;
-  }
-  .hideCol a {
-    background-position: 5px -1106px;
-  }
-  .delete a {
-    background-position: 5px -324px;
-  }
-  .autofilter {
-    ul.menu {
-      width: 15em;
-    }
-    li.clearFilter {
-      margin-left: 0;
-      border-bottom: solid 1px #cacaca;
-      a {
-        margin-left: 0;
-        background-position: 5px -324px;
-      }
-    }
-    li.filterItem {
-      a,
-      &.active a {
-        background-position: 5px 30px;
-      }
+    .blist-percent-bar-pos {
+      height: 100%;
     }
   }
-}
 
-.blist-table, .columnHeaderMenu, .filterValues .lineValue, .richRendererContainer {
-  .blist-checkbox,
-  .blist-dropdownlist-wrapper,
-  .blist-flag {
-    float: left;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-  }
-  .blist-checkbox {
-    width: 14px;
-  }
-  .blist-phone-icon {
-    float: left;
-    position: static;
-  }
-}
-
-// This is only used for initial positioning; the menu is pulled out, so real
-// styling needs to go directly on the menu
-.blist-th .columnHeaderMenu {
-  font-size: 0.8333em;
-}
-
-.rowMenu {
-  width: 15em;
-  li {
-    a {
-      background-image: url(/stylesheets/images/content/table/blists_item_menu_sprites.png);
-      background-position: 5px 17px;
-      background-repeat: no-repeat;
-    }
-  }
-  li.delete a {
-    background-position: 5px -57px;
-  }
-}
-
-.blist-table-edit-container {
-  &.mode-edit .blist-table-editor.type-stars,
-  &.mode-select .blist-table-editor.type-stars {
-    padding: 0 1px;
-  }
-}
-
-.viewErrorContainer {
-  text-align: center;
-}
-
-.viewError {
-  font-size: 1.4em;
-  padding: 1em;
-}
-
-.viewErrorContainer .actionButtons li {
-  display: inline-block;
-  float: none;
-  width: 15em;
-}
-
-// catalog dataset viewType column
-div.blist-td div {
-  @include sprite-menu-icons(".viewTypeCell", false);
-  .viewTypeCell {
-    text-indent: 20px;
-  }
-}
-
-div.drill-td div {
-  .viewTypeCell {
+  div.drill-td .blist-percent,
+  div.drill-td .blist-flag {
     margin-left: 28px;
   }
-}
 
-// These styles used to live in screen-dataset, but we want need heights
-// on pages other than the dataset grid page, now that we have canvas
+  img.blist-table-option-icon {
+    margin-bottom: -4px;
+    padding-right: 0.4em;
+  }
 
-.blist-td, .blist-table-editor {
-  font-size: 1.2em;
-  line-height: 1.3333em;
-  padding: 0.3333em;
-}
+  .blist-table-edit-container {
+    .type-document a.docLink {
+      line-height: 1.66667em;
+      margin-left: 0.5em;
+    }
+    .buttons {
+      background-color: white;
+      padding: 0 2px 2px 0;
+      position: absolute;
+    }
+    .type-blob a.tableButton,
+    .type-document a.tableButton,
+    .type-photo a.tableButton {
+      background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
+      background-position: 0 16px;
+      background-repeat: no-repeat;
+      display: block;
+      float: left;
+      height: 16px;
+      margin-left: 0.25em;
+      margin-top: 2px;
+      text-indent: -9999px;
+      width: 16px;
+    }
+    .type-blob a.tableButton.add,
+    .type-document a.tableButton.add {
+      background-position: (-2px) 0;
+    }
+    .type-blob a.tableButton.replace,
+    .type-document a.tableButton.replace,
+    .type-photo a.tableButton.replace {
+      background-position: (-2px) -48px;
+    }
+    .type-blob a.tableButton.remove,
+    .type-document a.tableButton.remove,
+    .type-photo a.tableButton.remove {
+      background-position: (-2px) -64px;
+    }
+    .type-photo a.tableButton.add {
+      background-position: (-2px) -16px;
+    }
+    .type-photo a.tableButton.view {
+      background-position: 0 -32px;
+      width: 20px;
+    }
+    /* Location editor */
+    .blist-table-editor.type-location .labels {
+      border-bottom-color: $cell_hborder_color;
+      border-top: 1px solid #06386a;
+    }
+    .blist-table-editor.type-location .labels.street {
+      border-top: none;
+    }
+    .blist-table-editor.type-location .labels span {
+      position: static;
+    }
+    .blist-table-editor.type-location input[type="text"] {
+      height: auto;
+      padding: 3px;
+      width: 95%;
+    }
+    .blist-table-editor.type-location input.nonInvalid {
+      color: #333333;
+      font-style: normal;
+    }
+    .blist-table-editor.type-location .labels span.longitude,
+    .blist-table-editor.type-location input.longitude {
+      border-left: 1px solid $cell_hborder_color;
+      left: 50%;
+      position: absolute;
+    }
+    .blist-table-editor.type-location input.lat_long {
+      width: 47%;
+    }
+  }
 
-.blist-td {
-  height: 1.3333em;
-}
+  .blist-table-expander .blist-td-photo img,
+  .blist-table-active-container .blist-td-photo img,
+  .blist-table-edit-container .type-photo img {
+    vertical-align: middle;
+  }
 
-.blist-td-header {
-  font-weight: bold;
-}
+  .columnHeaderMenu {
+    width: 17em;
+  }
 
-.blist-tr .blist-td-first {
-  border-left-width: 0;
-  padding-left: 0.4167em;
+  ul.menu.columnHeaderMenu li,
+  ul.menu.rowMenu li {
+    padding: 2px 0 0;
+  }
+
+  .columnHeaderMenu {
+    .sortAsc a {
+      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
+      background-position: 7px -20px;
+      background-repeat: no-repeat;
+    }
+    .sortDesc a {
+      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
+      background-position: 7px -20px;
+      background-repeat: no-repeat;
+      background-position: 7px 4px;
+    }
+    .sortClear a, .autofilter a, .properties a, .hideCol a, .delete a {
+      background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
+      background-repeat: no-repeat;
+    }
+    .sortClear a {
+      background-position: 5px -324px;
+    }
+    .autofilter a {
+      background-position: 5px -531px;
+    }
+    .properties a {
+      background-position: 5px -347px;
+    }
+    .hideCol a {
+      background-position: 5px -1106px;
+    }
+    .delete a {
+      background-position: 5px -324px;
+    }
+    .autofilter {
+      ul.menu {
+        width: 15em;
+      }
+      li.clearFilter {
+        margin-left: 0;
+        border-bottom: solid 1px #cacaca;
+        a {
+          margin-left: 0;
+          background-position: 5px -324px;
+        }
+      }
+      li.filterItem {
+        a,
+        &.active a {
+          background-position: 5px 30px;
+        }
+      }
+    }
+  }
+
+  .blist-table, .columnHeaderMenu, .filterValues .lineValue, .richRendererContainer {
+    .blist-checkbox,
+    .blist-dropdownlist-wrapper,
+    .blist-flag {
+      float: left;
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+    }
+    .blist-checkbox {
+      width: 14px;
+    }
+    .blist-phone-icon {
+      float: left;
+      position: static;
+    }
+  }
+
+  // This is only used for initial positioning; the menu is pulled out, so real
+  // styling needs to go directly on the menu
+  .blist-th .columnHeaderMenu {
+    font-size: 0.8333em;
+  }
+
+  .rowMenu {
+    width: 15em;
+    li {
+      a {
+        background-image: url(/stylesheets/images/content/table/blists_item_menu_sprites.png);
+        background-position: 5px 17px;
+        background-repeat: no-repeat;
+      }
+    }
+    li.delete a {
+      background-position: 5px -57px;
+    }
+  }
+
+  .blist-table-edit-container {
+    &.mode-edit .blist-table-editor.type-stars,
+    &.mode-select .blist-table-editor.type-stars {
+      padding: 0 1px;
+    }
+  }
+
+  .viewErrorContainer {
+    text-align: center;
+  }
+
+  .viewError {
+    font-size: 1.4em;
+    padding: 1em;
+  }
+
+  .viewErrorContainer .actionButtons li {
+    display: inline-block;
+    float: none;
+    width: 15em;
+  }
+
+  // catalog dataset viewType column
+  div.blist-td div {
+    @include sprite-menu-icons(".viewTypeCell", false);
+    .viewTypeCell {
+      text-indent: 20px;
+    }
+  }
+
+  div.drill-td div {
+    .viewTypeCell {
+      margin-left: 28px;
+    }
+  }
+
+  // These styles used to live in screen-dataset, but we want need heights
+  // on pages other than the dataset grid page, now that we have canvas
+
+  .blist-td, .blist-table-editor {
+    font-size: 1.2em;
+    line-height: 1.3333em;
+    padding: 0.3333em;
+  }
+
+  .blist-td {
+    height: 1.3333em;
+  }
+
+  .blist-td-header {
+    font-weight: bold;
+  }
+
+  .blist-tr .blist-td-first {
+    border-left-width: 0;
+    padding-left: 0.4167em;
+  }
 }

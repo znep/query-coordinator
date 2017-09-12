@@ -638,9 +638,7 @@ module ApplicationHelper
       "action_#{controller.controller_name}_#{controller.action_name}",
       @suppress_chrome ? 'suppressChrome' : nil,
       "locale_#{I18n.locale}",
-      @body_class,
-      # EN-17053/EN-17170 - Make the grid view look more contemporary
-      FeatureFlags.derive(nil, request)[:enable_nbe_only_grid_view_optimizations] ? 'styleguide' : ''
+      @body_class
     ].compact.join(' ')
   end
 
@@ -1267,6 +1265,14 @@ module ApplicationHelper
       :rel => 'stylesheet',
       :href => "https://fonts.googleapis.com/css?family=#{family}:#{(weights + italics).join(',')}"
     )
+  end
+
+  def data_grid_body_class
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+      return 'grid-view-2017-refresh'
+    else
+      return 'grid-view-classic'
+    end
   end
 
 end

@@ -31,231 +31,249 @@
 }
 
 /**
- * 'Classic' sidebar
+ * EN-18335 - Update and refactor grid view CSS
+ *
+ * The addition of the 'new' grid view led to a lot of CSS rule collisions and
+ * confusing, unintended inheritance. After a while Giacomo Ferrari suggested
+ * that we just add a class to the body that would contain either the entirety
+ * of the old styles or the entirety of the new ones, and use it as a toggle.
+ *
+ * This was a very, very good idea.
+ *
+ * The 'classic' styles are now all under the '.grid-view-classic' class on the
+ * body, and the updated ones are under the '.grid-view-2017-refresh' class.
  */
-#gridSidebar {
-  background-color: $color_chrome_sidebar_background;
-  border: 0 solid $color_chrome_box_border;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  width: 30em;
-  &.position-left {
-    border-right-width: 1px;
-  }
-  &.position-right {
-    border-left-width: 1px;
-  }
-  .close {
-    @include sprite-button-icons;
-    position: absolute;
-    right: 0.5em;
-    top: 0.7em;
-    z-index: 1;
-  }
-  .ui-resizable-w {
-    left: 0;
-    width: 4px;
-  }
-  .paneOverlay {
-    background-color: #cccccc;
-    height: 100%;
-    left: 0;
-    filter: alpha(opacity = 30);
-    opacity: 0.3;
+body.grid-view-classic {
+
+  #gridSidebar {
+    background-color: $color_chrome_sidebar_background;
+    border: 0 solid $color_chrome_box_border;
+    overflow: hidden;
     position: absolute;
     top: 0;
-    width: 100%;
-    z-index: 60;
-  }
-  .loadingSpinnerContainer {
-    top: 33%;
-  }
-  .outerPane {
-    @include sidebar-colors($sidebar_default_tab_color_top);
-    .mainTitleBlock {
-      padding: 0.5em 1em;
-      .title {
-        color: #ffffff;
-        font-size: 1.3em;
-        text-transform: none;
-      }
+    width: 30em;
+    &.position-left {
+      border-right-width: 1px;
     }
-    .headerLink {
-      @include sprite-accordion-icons;
-      border: 1px solid {
-        left: 0;
-        right: 0;
-      };
-      color: #333333;
-      display: block;
-      font-size: 1.1em;
-      font-weight: bold;
-      margin-bottom: 0.25em;
-      padding: 0.5em 0.75em;
-      &.selected {
-        border: none;
-        color: #ffffff;
-        cursor: default;
-        margin-bottom: 0;
-      }
-      &.disabled {
-        color: #999999;
-        cursor: default;
-        .icon {
-          visibility: hidden;
+    &.position-right {
+      border-left-width: 1px;
+    }
+    .close {
+      @include sprite-button-icons;
+      position: absolute;
+      right: 0.5em;
+      top: 0.7em;
+      z-index: 1;
+    }
+    .ui-resizable-w {
+      left: 0;
+      width: 4px;
+    }
+    .paneOverlay {
+      background-color: #cccccc;
+      height: 100%;
+      left: 0;
+      filter: alpha(opacity = 30);
+      opacity: 0.3;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 60;
+    }
+    .loadingSpinnerContainer {
+      top: 33%;
+    }
+    .outerPane {
+      @include sidebar-colors($sidebar_default_tab_color_top);
+      .mainTitleBlock {
+        padding: 0.5em 1em;
+        .title {
+          color: #ffffff;
+          font-size: 1.3em;
+          text-transform: none;
         }
       }
-      .icon {
-        float: right;
+      .headerLink {
+        @include sprite-accordion-icons;
+        border: 1px solid {
+          left: 0;
+          right: 0;
+        };
+        color: #333333;
+        display: block;
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-bottom: 0.25em;
+        padding: 0.5em 0.75em;
+        &.selected {
+          border: none;
+          color: #ffffff;
+          cursor: default;
+          margin-bottom: 0;
+        }
+        &.disabled {
+          color: #999999;
+          cursor: default;
+          .icon {
+            visibility: hidden;
+          }
+        }
+        .icon {
+          float: right;
+        }
       }
-    }
-    &#gridSidebar_outer_edit {
-      @include sidebar-colors($sidebar_edit_tab_color_top);
-    }
-    &#gridSidebar_outer_moreViews {
-      @include sidebar-colors($sidebar_more_views_tab_color_top);
-    }
-    &#gridSidebar_outer_filter {
-      @include sidebar-colors($sidebar_filter_tab_color_top, true);
-    }
-    &#gridSidebar_outer_visualize {
-      @include sidebar-colors($sidebar_visualize_tab_color_top, true);
-    }
-    &#gridSidebar_outer_export {
-      @include sidebar-colors($sidebar_export_tab_color_top);
-    }
-    &#gridSidebar_outer_feed {
-      @include sidebar-colors($sidebar_feed_tab_color_top);
-    }
-    &#gridSidebar_outer_embed {
-      @include sidebar-colors($sidebar_embed_tab_color_top);
-    }
-    &#gridSidebar_outer_about {
-      @include sidebar-colors($sidebar_about_tab_color_top);
-    }
-    &#gridSidebar_outer_manage {
-      @include sidebar-colors($sidebar_manage_tab_color_top);
-    }
-    // publisher tabs
-    &#gridSidebar_outer_metadata {
-      @include sidebar-colors($sidebar_metadata_tab_color_top);
-    }
-    &#gridSidebar_outer_appearance {
-      @include sidebar-colors($sidebar_appearance_tab_color_top);
-    }
-    &#gridSidebar_outer_behavior {
-      @include sidebar-colors($sidebar_behavior_tab_color_top);
-    }
-    &#gridSidebar_outer_advanced {
-      @include sidebar-colors($sidebar_advanced_tab_color_top);
-    }
-    // story customizer tabs
-    &#gridSidebar_outer_textbox {
-      @include sidebar-colors($sidebar_textbox_tab_color_top);
-    }
-    &#gridSidebar_outer_pager {
-      @include sidebar-colors($sidebar_pager_tab_color_top);
-    }
-    &#gridSidebar_outer_other {
-      @include sidebar-colors($sidebar_other_tab_color_top);
-    }
-    // Canvas Designer
-    &#gridSidebar_outer_components {
-      @include sidebar-colors($sidebar_designer_components_tab_color_tab);
-      .headerLink.componentPaletteInput {
-        @include header-color($designer_components_input_color, false, true);
+      &#gridSidebar_outer_edit {
+        @include sidebar-colors($sidebar_edit_tab_color_top);
       }
-      .headerLink.componentPaletteActions {
-        @include header-color($designer_components_actions_color, false, true);
+      &#gridSidebar_outer_moreViews {
+        @include sidebar-colors($sidebar_more_views_tab_color_top);
       }
-      .headerLink.componentPaletteData {
-        @include header-color($designer_components_data_color, false, true);
+      &#gridSidebar_outer_filter {
+        @include sidebar-colors($sidebar_filter_tab_color_top, true);
       }
-      .headerLink.componentPaletteContent {
-        @include header-color($designer_components_content_color, false, true);
+      &#gridSidebar_outer_visualize {
+        @include sidebar-colors($sidebar_visualize_tab_color_top, true);
       }
-    }
-    &#gridSidebar_outer_configuration {
-      @include sidebar-colors($sidebar_designer_configuration_tab_color_tab);
-    }
-    .panes {
-      overflow-y: auto;
-      overflow-x: hidden;
-      position: relative;
-    }
-  }
-}
-
-// sidebar button styles
-#sidebarOptions, #moreActionBarButtons {
-  background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png);
-  background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
-  background-repeat: no-repeat;
-  float: right;
-  padding: 0.2em 0.6em 0.4em 10em;
-  li {
-    float: left;
-    margin-left: 0.6em;
-    position: relative;
-    a {
-      @include dataset-sidebar-icons;
-      @include border-radius(0.35em);
-      color: #fff;
-      display: block;
-      font-size: 0.9em;
-      height: 13px;
-      line-height: 13px;
-      padding: 0.4em 0.7em 0.5em;
-      .icon {
-        display: inline-block;
-        margin-right: 0.4em;
-        vertical-align: bottom;
+      &#gridSidebar_outer_export {
+        @include sidebar-colors($sidebar_export_tab_color_top);
       }
-    }
-    &.active {
-      margin: -2px {
-        left: 0.4em;
-      };
-      a {
-        border: 2px solid #fff;
-        // Chrome can't handle the larger border
-        border-radius: 0.1em;
+      &#gridSidebar_outer_feed {
+        @include sidebar-colors($sidebar_feed_tab_color_top);
+      }
+      &#gridSidebar_outer_embed {
+        @include sidebar-colors($sidebar_embed_tab_color_top);
+      }
+      &#gridSidebar_outer_about {
+        @include sidebar-colors($sidebar_about_tab_color_top);
+      }
+      &#gridSidebar_outer_manage {
+        @include sidebar-colors($sidebar_manage_tab_color_top);
+      }
+      // publisher tabs
+      &#gridSidebar_outer_metadata {
+        @include sidebar-colors($sidebar_metadata_tab_color_top);
+      }
+      &#gridSidebar_outer_appearance {
+        @include sidebar-colors($sidebar_appearance_tab_color_top);
+      }
+      &#gridSidebar_outer_behavior {
+        @include sidebar-colors($sidebar_behavior_tab_color_top);
+      }
+      &#gridSidebar_outer_advanced {
+        @include sidebar-colors($sidebar_advanced_tab_color_top);
+      }
+      // story customizer tabs
+      &#gridSidebar_outer_textbox {
+        @include sidebar-colors($sidebar_textbox_tab_color_top);
+      }
+      &#gridSidebar_outer_pager {
+        @include sidebar-colors($sidebar_pager_tab_color_top);
+      }
+      &#gridSidebar_outer_other {
+        @include sidebar-colors($sidebar_other_tab_color_top);
+      }
+      // Canvas Designer
+      &#gridSidebar_outer_components {
+        @include sidebar-colors($sidebar_designer_components_tab_color_tab);
+        .headerLink.componentPaletteInput {
+          @include header-color($designer_components_input_color, false, true);
+        }
+        .headerLink.componentPaletteActions {
+          @include header-color($designer_components_actions_color, false, true);
+        }
+        .headerLink.componentPaletteData {
+          @include header-color($designer_components_data_color, false, true);
+        }
+        .headerLink.componentPaletteContent {
+          @include header-color($designer_components_content_color, false, true);
+        }
+      }
+      &#gridSidebar_outer_configuration {
+        @include sidebar-colors($sidebar_designer_configuration_tab_color_tab);
+      }
+      .panes {
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
       }
     }
   }
-}
 
-.position-left {
+  // sidebar button styles
   #sidebarOptions, #moreActionBarButtons {
-    background-image: url(/stylesheets/images/interface/dataset_sidebar_fade_left.png?1);
-    background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(right 0 180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, right top, left top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
-    background-position: right top;
-    float: left;
-    padding: {
-      left: 0.6em;
-      right: 10em;
-    };
+    background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png);
+    background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
+    background-repeat: no-repeat;
+    float: right;
+    padding: 0.2em 0.6em 0.4em 10em;
     li {
-      margin: {
-        left: 0;
-        right: 0.6em;
+      float: left;
+      margin-left: 0.6em;
+      position: relative;
+      a {
+        @include dataset-sidebar-icons;
+        @include border-radius(0.35em);
+        color: #fff;
+        display: block;
+        font-size: 0.9em;
+        height: 13px;
+        line-height: 13px;
+        padding: 0.4em 0.7em 0.5em;
+        .icon {
+          display: inline-block;
+          margin-right: 0.4em;
+          vertical-align: bottom;
+        }
+      }
+      &.active {
+        margin: -2px {
+          left: 0.4em;
+        };
+        a {
+          border: 2px solid #fff;
+          // Chrome can't handle the larger border
+          border-radius: 0.1em;
+        }
+      }
+    }
+  }
+
+  .position-left {
+    #sidebarOptions, #moreActionBarButtons {
+      background-image: url(/stylesheets/images/interface/dataset_sidebar_fade_left.png?1);
+      background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(right 0 180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, right top, left top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
+      background-position: right top;
+      float: left;
+      padding: {
+        left: 0.6em;
+        right: 10em;
       };
+      li {
+        margin: {
+          left: 0;
+          right: 0.6em;
+        };
+      }
     }
   }
 }
 
 /**
- * EN-17053/EN-17170 - Make the grid view look more contemporary
+ * EN-18335 - Update and refactor grid view CSS
  *
- * These styles are slightly more specific than the default ones, and are
- * intended to override the defaults in order to make the grid view look more
- * like a 'Styleguide' app (in other words, to make the grid view look more like
- * the rest of the platform).
+ * The addition of the 'new' grid view led to a lot of CSS rule collisions and
+ * confusing, unintended inheritance. After a while Giacomo Ferrari suggested
+ * that we just add a class to the body that would contain either the entirety
+ * of the old styles or the entirety of the new ones, and use it as a toggle.
+ *
+ * This was a very, very good idea.
+ *
+ * The 'classic' styles are now all under the '.grid-view-classic' class on the
+ * body, and the updated ones are under the '.grid-view-2017-refresh' class.
  */
-.styleguide {
+body.grid-view-2017-refresh {
 
   #gridSidebar {
     position: absolute;
@@ -276,6 +294,18 @@
       right: 0.5em;
       top: 0.7em;
       z-index: 1;
+
+      .icon {
+        display: block;
+        width: 10px;
+        height: 10px;
+        text-align: left;
+        text-indent: -9999px;
+        background-color: transparent;
+        background-image: url(/stylesheets/images/icons/button_icons.png?1);
+        background-position: 0 -50px;
+        background-repeat: no-repeat;
+      }
     }
 
     .paneOverlay {
@@ -346,7 +376,7 @@
         text-decoration: none !important;
         text-shadow: none;
         background: #f1f1f1;
-        border: solid 1px #c8c8c8;
+        border: 1px solid #c8c8c8;
         border-radius: 1px;
         box-sizing: border-box;
         transition: color 0.2s, background-color 0.2s;
@@ -412,24 +442,54 @@
         font-size: 16px;
       }
 
+      .columnSelector {
+        display: none;
+      }
+
       /**
        * Sorting menus (e.g. the on the 'More Views' pane that allows users to sort snapshots and views)
        */
-      div.menu {
+      .menu {
 
         .menuDropdown {
+          border: 1px solid #c8c8c8;
+          border-radius: 0;
+          -webkit-border-radius: 0;
+          -moz-border-radius: 0;
+          box-shadow: none;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
 
-          ul.menuColumns {
+          .menuColumns {
+            margin: 0;
 
-            li.menuColumn {
+            .menuEntries {
+              padding: 0;
 
-              ul.menuEntries {
+              .menuEntry {
 
-                li.menuEntry {
+                a {
+                  color: #5e5e5e;
+                  font-size: 13px;
+                  line-height: 18.5px;
+                  border: none !important;
 
-                  a {
-                    font-size: 15px !important;
+                  &:hover,
+                  &:focus,
+                  &:active,
+                  &:visited {
+                    color: #5e5e5e;
                   }
+
+                  &:hover {
+                    border-color: none !important;
+                  }
+                }
+
+                &.divider {
+                  margin-top: 0;
+                  padding-top: 0;
+                  border-top: 1px solid #c8c8c8;
                 }
               }
             }
@@ -453,15 +513,15 @@
 
         select {
           display: block;
-          height: 36px;
-          color: #5e5e5e;
-          font-family: 'Open Sans', sans-serif;
-          font-size: 13px;
+          height: 36px !important;
+          color: #5e5e5e !important;
+          font-family: 'Open Sans', sans-serif !important;
+          font-size: 13px !important;
           font-weight: 400 !important;
-          background-color: #fff;
-          border: solid 1px #ccc;
-          border-radius: 5px;
-          box-sizing: border-box;
+          background-color: #fff !important;
+          border: 1px solid #ccc !important;
+          border-radius: 5px !important;
+          box-sizing: border-box !important;
           opacity: 1 !important;
         }
 
@@ -507,11 +567,30 @@
       }
 
       .required {
-        margin: 0 0 15px 12px;
+        margin: 0 0 15px 0;
         padding: 0;
         font-size: 15px;
         font-weight: 200;
         line-height: 18.5px;
+
+        &:before {
+          font-size: 12px;
+        }
+      }
+
+      .ui-slider {
+
+        .ui-slider-handle {
+          background: #f1f1f1 !important;
+          border: 1px solid #c8c8c8 !important;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: #e4e4e4 !important;
+            box-shadow: none !important;
+          }
+        }
       }
 
       /**
@@ -521,6 +600,7 @@
 
         label {
           margin: 4px 0 4px 4px;
+          max-width: 90%;
           font-size: 15px !important;
           line-height: 15px !important;
           font-weight: 400 !important;
@@ -563,7 +643,7 @@
                 text-decoration: none !important;
                 text-shadow: none;
                 background: #f1f1f1;
-                border: solid 1px #c8c8c8;
+                border: 1px solid #c8c8c8;
                 border-radius: 1px;
                 box-sizing: border-box;
                 transition: color 0.2s, background-color 0.2s;
@@ -654,6 +734,17 @@
               left: 0 !important;
               line-height: normal !important;
               background: none !important;
+
+              &.required {
+                margin-left: 12px !important;
+
+                &:before {
+                  position: absolute;
+                  left: -10px;
+                  top: 2px;
+                  font-size: 12px;
+                }
+              }
             }
 
             .error {
@@ -665,6 +756,20 @@
             }
 
             .line {
+
+              &.columnSelect {
+
+                .removeLink {
+                  position: relative;
+                  display: inline-block;
+                  margin: 0 8px 0 4px;
+                  padding: 4px;
+                  left: 0;
+                  top: 0;
+                  font-size: 15px;
+                  line-height: 18.5px;
+                }
+              }
 
               &.group {
 
@@ -688,10 +793,6 @@
                     }
                   }
                 }
-
-                &:hover {
-                  background-color: #fafafa !important;
-                }
               }
             }
 
@@ -709,6 +810,11 @@
                 box-shadow: none;
                 box-sizing: border-box;
 
+                &.sliderInput {
+                  margin: -2px 0 4px 0 !important;
+                  padding: 0 !important;
+                }
+
                 &:hover,
                 &:focus,
                 &:active {
@@ -723,7 +829,7 @@
 
             .button.addValue.add {
               margin: 8px 0 0 8px;
-              max-width: auto;
+              max-width: fit-content;
             }
 
             &.inputFirst {
@@ -743,6 +849,29 @@
                   font-size: 15px;
                   font-weight: 400 !important;
                   border-radius: 1px;
+                }
+              }
+            }
+
+            &.columnSelect {
+
+              .inputWrapper {
+                padding-left: 10.2em;
+              }
+            }
+
+            &.note {
+
+              .inputWrapper {
+                margin: 0 0 12px 0 !important;
+                padding-left: 0 !important;
+
+                span {
+                  margin: 0 0 12px 0 !important;
+                  padding: 0 !important;
+                  color: #5e5e5e !important;
+                  font-size: 15px !important;
+                  font-weight: 600 !important;
                 }
               }
             }
@@ -1099,6 +1228,7 @@
               margin-top: 1.5em;
 
               .filterCondition {
+                padding: 8px 15px 24px 15px;
 
                 .filterHeadline {
                   margin: 0 0 1em 0;
@@ -1164,6 +1294,488 @@
 
         .mainTitleBlock {
           background-color: #36a572 !important;
+        }
+
+        div.controlPane {
+
+          .columnSelector {
+            display: none !important;
+          }
+
+          &.mapCreate {
+
+            .removeLink + .inputBlock {
+
+              .customWrapper {
+                color: #5e5e5e !important;
+                font-weight: 200 !important;
+
+                span.edit {
+                  color: #2c97de !important;
+
+                  &:hover,
+                  &:focus,
+                  &:active,
+                  &:visited {
+                    color: #2c97de !important;
+                  }
+                }
+              }
+            }
+
+            [id*=alias] {
+              float: right;
+              margin: 0 5px 0 15px;
+              width: 159px;
+            }
+          }
+
+          &.chart_create {
+            margin-top: 0 !important;
+
+            .formSection {
+
+              .formHeader {
+                margin: 0 !important;
+                width: 327px !important;
+                max-width: none !important;
+                background-color: #c2c2c2 !important;
+              }
+
+              label {
+                display: block !important;
+              }
+
+              .option-icons {
+                display: inline-block;
+
+                .radioLine {
+                  position: relative !important;
+                  display: block !important;
+                  float: left !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                }
+
+                & {
+                  display: block;
+                }
+
+                &:after {
+                  clear: both;
+                  content: ".";
+                  display: block;
+                  height: 0;
+                  visibility: hidden;
+                }
+              }
+
+              &.sectionSubheading {
+                margin: 0 !important;
+                background-color: #c2c2c2 !important;
+
+                .formHeader {
+                  color: #fff !important;
+                  border: 1px solid #cecece !important;
+                  opacity: 1 !important;
+
+                  .formHeaderIcon {
+                    margin: 7px 10px 0 -3px !important;
+                  }
+
+                  .currentSelection {
+                    margin-right: -4px !important;
+
+                    .selectionName {
+                      font-size: 14px !important;
+                      line-height: 17px !important;
+                      color: #f8f8f8 !important;
+                    }
+
+                    .selectionIcon {
+                      padding-bottom: 2px !important;
+                    }
+                  }
+                }
+
+                .sectionContent {
+                  margin-top: 0 !important;
+
+                  .subsection {
+                    margin: 0 !important;
+                    padding: 0 !important;
+
+                    .dataSeriesGrouping,
+                    .errorBar {
+
+                      label {
+                        margin-right: 15px !important;
+                        width: auto !important;
+                      }
+
+                      .columnSelect {
+
+                        .inputWrapper {
+                          padding-left: 0 !important;
+                        }
+                      }
+                    }
+
+                    &.errorBars {
+                      padding-top: 15px !important;
+
+                      .inputWrapper {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                      }
+                    }
+
+                    & > .line.note {
+                      margin: 0 !important;
+                      padding: 0 !important;
+                      color: #767676 !important;
+                      font-family: 'Open Sans', sans-serif !important;
+                      font-size: 15px !important;
+                      font-weight: 400 !important;
+                      line-height: 18.5px !important;
+                    }
+
+                    &.dsg {
+
+                      .columnSelect.repeaterAdded {
+                        width: 100% !important;
+                      }
+                    }
+                  }
+
+                  .colorCollapse {
+                    z-index: 2;
+                  }
+
+                  .colorArray {
+
+                    label {
+                      float: none !important;
+                    }
+
+                    .color {
+
+                      .removeLink {
+                        top: 5px !important;
+                        right: 24px !important;
+                        bottom: auto !important;
+                        left: auto !important;
+                      }
+                    }
+
+                    .colorCollapse {
+
+                      .inputWrapper {
+                        padding: 0 !important;
+                      }
+                    }
+
+                    .addValue {
+                      position: absolute !important;
+                      top: 1px !important;
+                      right: 0 !important;
+                      bottom: auto !important;
+                      left: auto !important;
+                      padding: 0 !important;
+                      background-color: transparent !important;
+                      border: none !important;
+                    }
+                  }
+
+                  .line {
+
+                    .inputWrapper {
+                      padding: 0 !important;
+                    }
+
+                    .inputFirst {
+
+                      label {
+                        left: 24px !important;
+                      }
+                    }
+
+                    label {
+
+                      &:empty {
+                        margin: 0 !important;
+                      }
+                    }
+
+                    &.group {
+                      padding: 0 !important;
+                    }
+
+                    &.hasIcon {
+
+                      .line.repeaterAdded {
+
+                        label {
+                          display: inline-block !important;
+                          width: auto !important;
+                        }
+
+                        .inputWrapper {
+                          padding-left: 36px !important;
+                        }
+                      }
+
+                      .inputWrapper {
+                        padding: 0 !important;
+                      }
+                    }
+
+                    &.advLegendCheck {
+
+                      label {
+                        padding-left: 0
+                      }
+                    }
+
+                    &.flyout {
+
+                      .columnSelect {
+
+                        label {
+                          padding: 6px 0 0 0 !important;
+                        }
+                      }
+
+                      .repeaterAdded {
+
+                        .columnSelect {
+
+                          label {
+                            padding: 6px 0 0 36px !important;
+                          }
+                        }
+                      }
+
+                      & + .lineIcon {
+                        margin-top: 20px !important;
+                      }
+                    }
+
+                    &.radioGroup {
+
+                      .radioBlock {
+                        padding: 0 0 0 120px !important;
+
+                        .radioLine {
+
+                          [for*=yAxis] {
+
+                            .inputWrapper {
+                              display: inline-block !important;
+                              padding: 0 !important;
+                              width: 150px !important;
+                            }
+                          }
+                        }
+
+                        &.option-icons {
+                          padding: 0 !important;
+                        }
+                      }
+                    }
+
+                    &.checkbox {
+
+                      .checker {
+                        padding-left: 36px !important;
+                      }
+
+                      &.inputFirst {
+
+                        .checker {
+                          padding-left: 0 !important;
+                        }
+                      }
+                    }
+
+                    & > * {
+                      margin-right: 0 !important;
+                    }
+                  }
+
+                  .lineIcon {
+                    background-color: #288dc1 !important;
+                    border: 1px solid #c2c2c2 !important;
+                  }
+
+                  .labelInBar,
+                  .valueInBar {
+                    position: relative !important;
+                    display: inline-block !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 75% !important;
+
+                    .inputWrapper {
+                      display: inline-block !important;
+                      padding: 0 !important;
+
+                      .uniform.checker {
+                        position: relative !important;
+                      }
+                    }
+
+                    & + .lineIcon {
+                      position: relative !important;
+                      display: inline-block !important;
+                      margin: 0 !important;
+                      padding: 0 !important;
+                    }
+                  }
+
+                  .labelInBar + .lineIcon {
+                    margin-bottom: 15px !important;
+                  }
+
+                  .line.note.flash,
+                  .line.note.warning {
+
+                    .inputWrapper {
+                      margin: 0 !important;
+                      padding: 8px !important;
+
+                      .inputItem {
+                        font-weight: 400 !important;
+                      }
+                    }
+                  }
+
+                  .autoSortButton {
+
+                    .inputWrapper {
+                      padding: 0 !important;
+                    }
+                  }
+                }
+
+                &.collapsed {
+
+                  .formHeaderIcon {
+                    margin: 4px 7px 0 0 !important;
+                  }
+                }
+
+                & > .checker {
+                  position: absolute !important;
+                }
+              }
+
+              &.chartTypeSelection {
+
+                .radioGroup {
+
+                  & > label {
+                    display: none !important;
+                  }
+
+                  .option-icons {
+
+                    .radioLine {
+                      margin: 0 15px 60px 15px !important;
+
+                      .checked {
+                        width: 50px !important;
+                        height: 50px !important;
+                        border: 2px solid #288dc1 !important;
+                        border-radius: 9px !important;
+                      }
+
+                      label {
+                        float: none !important;
+                        margin: 0 !important;
+                        width: 48px !important;
+                        max-width: 48px !important;
+                        background-color: #c2c2c2 !important;
+                        background-image: url(/stylesheets/images/component/cf-icons.png?2) !important;
+                        background-repeat: no-repeat !important;
+                        border: 1px solid #999 !important;
+                        opacity: 1 !important;
+
+                        .inputWrapper > span {
+                          margin: 48px 0 0 -18px !important;
+                          padding: 0 !important;
+                          width: 80px !important;
+                          color: #5e5e5e !important;
+                          font-size: 12px !important;
+                          line-height: 15px !important;
+                          text-align: center !important;
+                        }
+
+                        &:hover,
+                        &:focus,
+                        &:active {
+                          background-color: #adadad !important;
+                          opacity: 1 !important;
+                        }
+                      }
+
+                      &.column > label {
+                        background-position: 0 -352px !important;
+                      }
+
+                      &.stackedcolumn > label {
+                        background-position: 0 -1760px !important;
+                      }
+
+                      &.bar > label {
+                        background-position: 0 -1672px !important;
+                      }
+
+                      &.stackedbar > label {
+                        background-position: 0 -1716px !important;
+                      }
+
+                      &.pie > label {
+                        background-position: 0 -484px !important;
+                      }
+
+                      &.donut > label {
+                        background-position: 0 -1628px !important;
+                      }
+
+                      &.line > label {
+                        background-position: 0 -396px !important;
+                      }
+
+                      &.area > label {
+                        background-position: 0 -1804px !important;
+                      }
+
+                      &.timeline > label {
+                        background-position: 0 -1848px !important;
+                      }
+
+                      &.bubble > label {
+                        background-position: 0 -572px !important;
+                      }
+
+                      &.treemap > label {
+                        background-position: 0 -1892px !important;
+                      }
+                    }
+                  }
+                }
+              }
+
+              &.sectionHeading {
+                background-color: transparent !important;
+
+                .formHeader {
+                  background-color: transparent !important;
+                }
+              }
+            }
+          }
         }
       }
 
@@ -1311,7 +1923,7 @@
             margin: 0.5em 0;
             padding: 1em;
             background: #f7f7f7;
-            border: solid 1px #c7c7c7;
+            border: 1px solid #c7c7c7;
 
             .feedCommon {
 
@@ -1516,7 +2128,7 @@
           text-decoration: none !important;
           text-shadow: none;
           background: #f1f1f1;
-          border: solid 1px #c8c8c8;
+          border: 1px solid #c8c8c8;
           border-radius: 1px;
           box-sizing: border-box;
           transition: color 0.2s, background-color 0.2s;
@@ -1535,6 +2147,161 @@
             background: #e4e4e4;
             box-shadow: none;
           }
+        }
+      }
+    }
+  }
+
+  /**
+   * Unfortunately, Data Slate also uses the sidebar code/classes, so we need
+   * apply some additional styles to the Data Slate elements to make them look
+   * like they did before. These mostly override styles applied by the
+   * grid-view-2017-refresh class.
+   */
+  #gridSidebar.socrata-cf-side {
+    position: absolute;
+    margin-bottom: 0.75em;
+    margin-right: 0.75em;
+    width: 30em;
+    top: 0;
+    bottom: 0;
+    font-family: Arial, sans-serif !important;
+    font-size: 10px !important;
+    line-height: 1;
+    color: #333;
+    background-color: #f7f7f7;
+    border: 0 solid #cecece;
+    border-left-width: 1px;
+    box-shadow: inset 0 0 3px rgba(100, 100, 100, 0.5);
+    -moz-box-shadow: inset 0 0 3px rgba(100, 100, 100, 0.5);
+    -webkit-box-shadow: inset 0 0 3px rgba(100, 100, 100, 0.5);
+    overflow: hidden;
+    z-index: 1000;
+
+    .ui-resizable-w {
+      position: absolute;
+      width: 4px;
+      top: 0;
+      left: 0;
+      font-size: 0.1px;
+      cursor: w-resize;
+      z-index: 99999;
+    }
+
+    .outerPane {
+
+      .paneOverlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background-color: #ccc;
+        filter: alpha(opacity=30);
+        opacity: 0.3;
+        z-index: 60;
+      }
+
+      .mainTitleBlock {
+        padding: 0.5em 1em;
+        background-color: #989898;
+
+        .title {
+          color: #fff;
+          font-size: 1.3em !important;
+          font-weight: bold !important;
+          text-transform: none;
+          letter-spacing: 0;
+        }
+      }
+
+      .panes {
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        .headerLink {
+          display: block;
+          margin-bottom: 0.25em;
+          padding: 0.5em 0.75em;
+          font-size: 1.1em;
+          font-weight: bold;
+          background-color: #9fd2f8;
+          border-color: #1085db;
+          border: 1px solid;
+          border-left: 0;
+          border-right: 0;
+
+          .icon {
+            display:  block;
+            float: right;
+            width: 13px;
+            height: 13px;
+            text-align: left;
+            text-indent: -9999px;
+            background-color: transparent;
+            background-image: url(/stylesheets/images/icons/accordion_icons.png?2);
+            background-repeat: no-repeat;
+            background-position: 0 -13px;
+          }
+
+          &.selected {
+
+            .icon {
+            background-position: 0 0;
+            }
+          }
+
+          &.componentPaletteInput {
+            color: #fff;
+            background-color: #195c3d;
+            border-color: #0e673e;
+          }
+
+          &.componentPaletteActions {
+            color: #fff;
+            background-color: #c36163;
+            border-color: #d45054;
+          }
+
+          &.componentPaletteData {
+            color: #fff;
+            background-color: #b99a2e;
+            border-color: #d0a617;
+          }
+
+          &.componentPaletteContent {
+            color: #fff;
+            background-color: #285a7e;
+            border-color: #195c8d;
+          }
+
+          .propertiesEditor {
+
+            &.selected {
+              background-color: #0b5e9b;
+            }
+          }
+
+          .propertiesPalette {
+
+            &.selected {
+              background-color: #0b5e9b;
+            }
+          }
+        }
+
+        .sectionContent {
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+      }
+
+      &#gridSidebar_outer_components {
+
+        .mainTitleBlock {
+          background-color: #791dad;
         }
       }
     }

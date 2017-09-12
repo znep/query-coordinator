@@ -73,7 +73,20 @@
             // a bit more than an even share; then fit the rest in evenly
             var $fh = $f.siblings(fsObj.settings.fullHeightSelector).filter(':visible').add($f);
             var multiplier = 1;
-            if ($fh.length > 1) {
+
+            // EN-18335 - Update and refactor grid view CSS
+            //
+            // Enabling the new Socrata Viz table in the grid view caused a few rendering bugs.
+            // In this case our special treatment of the first fullHeight sibling (usually not
+            // the table itself) casued the space allotted to the new table in the smallest SDP
+            // widget size to be too small for the table to even render one row, which would
+            // make it look broken. Moving forward, if the user has selected more than one
+            // fullHeight render type, we will split the available vertical space equally among
+            // all of them (but only if the new '2017' grid view update is enabled).
+            if (
+              !window.blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+              $fh.length > 1
+            ) {
               var adjFactor = 1.3333;
               multiplier = $fh.index($f) == 0 ? adjFactor :
                 ($fh.length - adjFactor) / ($fh.length - 1);

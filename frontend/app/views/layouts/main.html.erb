@@ -90,7 +90,7 @@ http://www.socrata.com
   <%= get_favicon_tag %>
 </head>
 
-<body class="<%= body_classes %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
+<body class="<%= body_classes %> <%= data_grid_body_class -%>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
   <div class="skip-links">
     <% skiplink_content = render_text_template('{{urls.skiplinks}}') %>
     <% if skiplink_content.present? %><ul><%= skiplink_content %></ul><% end %>

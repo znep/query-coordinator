@@ -11,324 +11,1220 @@ html, body {
   }
 }
 
-#datasetBar {
-  background-color: white;
-  border-top: 1px solid $color_chrome_box_border;
-  min-height: 5.7em;
-  position: relative;
-  .outOfDate {
-    font-style: italic;
-    color: #aaa;
-  }
-  &.isEditable, &.sidebar-left {
-    padding-bottom: 2.5em;
-  }
-  #infoBox {
-    margin-right: 63em;
-    min-height: 3em;
-    padding: 0.25em {
-      bottom: 0.4em;
-      left: 45px;
-    };
-    position: relative;
-    z-index: 1;
-    #datasetIcon {
-      @include sprite-type-icons-30;
-      left: 0.4em;
-      top: 0.4em;
-      position: absolute;
-      .alertIcon {
-        display: none;
-        position: absolute;
-        top: 0;
-      }
-      &.typeData_lens .icon.icon-cards {
-        font-size: 0;
-        &::before {
-          font-size: 30px;
-        }
-      }
-    }
-    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink {
-      margin: 0 {
-        right: 0.5em;
-      };
-    }
-    .unpublished {
-      display: inline;
-      vertical-align: baseline;
-      white-space: nowrap;
-    }
-    .snapshotted {
-      display: inline;
-      vertical-align: baseline;
-    }
-    #datasetName, .unsavedLine h2 {
-      font-size: 1.6em;
-      font-weight: normal;
-      padding: 0;
+/**
+ * EN-18335 - Update and refactor grid view CSS
+ *
+ * The addition of the 'new' grid view led to a lot of CSS rule collisions and
+ * confusing, unintended inheritance. After a while Giacomo Ferrari suggested
+ * that we just add a class to the body that would contain either the entirety
+ * of the old styles or the entirety of the new ones, and use it as a toggle.
+ *
+ * This was a very, very good idea.
+ *
+ * The 'classic' styles are now all under the '.grid-view-classic' class on the
+ * body, and the updated ones are under the '.grid-view-2017-refresh' class.
+ */
+body.grid-view-classic {
 
-      .tag-provenance {
-        font-size: 16px;
-        margin-left: 10px;
-        text-transform: uppercase;
-        white-space: nowrap;
-
-        svg {
-          width: 23px;
-          height: 23px;
-          position: relative;
-          top: 5px;
-          left: -3px;
-        }
-      }
-      .tag-community {
-        color: #176289;
-
-        svg {
-          path {
-            fill: #288dc1;
-          }
-        }
-      }
-      .tag-official2 {
-        color: #935c23;
-
-        svg {
-          path {
-            fill: #e48424;
-          }
-        }
-      }
-    }
-    #description {
-      margin-top: -0.2em;
-      position: relative;
-      div.descriptionContent {
-        color: #999999;
-        font-size: 1.1em;
-        line-height: 1.1em;
-        margin-right: 1.6em;
-        overflow: hidden;
-        text-align: justify;
-        &.collapsed {
-          height: 1.1em;
-        }
-      }
-      .descriptionExpander {
-        @include sprite-menu-icons;
-        position: absolute;
-        right: 0.3em;
-        top: -0.1em;
-      }
-    }
-    a.toolbarButton {
-      @include button;
-      font-size: 1.2em;
-      margin-right: 0.5em;
-      white-space: nowrap;
-      &.publish {
-        line-height: 20px;
-      }
-    }
-    .unsavedLine {
-      display: none;
-      h2 {
-        display: inline;
-        margin-right: 1em;
-      }
-      .revertMessage {
-        color: #999999;
-        font-size: 1.1em;
-      }
-    }
-    .basedOnParent, .basedOnTemp {
-      color: #999999;
-      display: none;
-      font-size: 1.2em;
-      line-height: 1.1em;
-      margin-bottom: 0.2em;
-    }
-    .basedOnParent.hasParent {
-      display: block;
-    }
-    #publishedLink {
-      display: block;
-      font-size: 1.2em;
-      line-height: 1.1em;
-      margin: {
-        bottom: 0.2em;
-        top: 0.3em;
-      };
-    }
-  }
-  &.unsavedView {
-    background: white url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y;
-    #infoBox {
-      .unsavedLine, .basedOnTemp {
-        display: block;
-      }
-      #datasetIcon .alertIcon {
-        display: block;
-      }
-      #datasetName, .unpublished, .snapshotted, .publish, #description.collapsed, .basedOnParent, #publishedLink {
-        display: none;
-      }
-    }
-    &.dataset .save {
-      display: none;
-    }
-    &.dataset.minorChange .save {
-      display: inline;
-    }
-    &.dataset .unpublishedRevert {
-      display: inline;
-      margin: {
-        left: 1em;
-        top: 0.3em;
-      };
-      position: absolute;
-    }
-    &.dataset.minorChange .unpublishedRevert {
-      display: none;
-    }
-  }
-  #actionBox {
-    height: 100%;
-    // IE7 doesn't make this box tall enough initially
+  #datasetBar {
+    background-color: white;
+    border-top: 1px solid $color_chrome_box_border;
     min-height: 5.7em;
-    position: absolute;
-    right: 0;
-    top: 0;
-    #toolbarOptions {
-      float: right;
-      margin: 0.6em 1.9em 0.3em {
-        left: 0;
+    position: relative;
+    .outOfDate {
+      font-style: italic;
+      color: #aaa;
+    }
+    &.isEditable, &.sidebar-left {
+      padding-bottom: 2.5em;
+    }
+    #infoBox {
+      margin-right: 63em;
+      min-height: 3em;
+      padding: 0.25em {
+        bottom: 0.4em;
+        left: 45px;
       };
-      > li {
+      position: relative;
+      z-index: 1;
+      #datasetIcon {
+        @include sprite-type-icons-30;
+        left: 0.4em;
+        top: 0.4em;
+        position: absolute;
+        .alertIcon {
+          display: none;
+          position: absolute;
+          top: 0;
+        }
+        &.typeData_lens .icon.icon-cards {
+          font-size: 0;
+          &::before {
+            font-size: 30px;
+          }
+        }
+      }
+      #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink {
+        margin: 0 {
+          right: 0.5em;
+        };
+      }
+      .unpublished {
+        display: inline;
+        vertical-align: baseline;
+        white-space: nowrap;
+      }
+      .snapshotted {
+        display: inline;
+        vertical-align: baseline;
+      }
+      #datasetName, .unsavedLine h2 {
+        font-size: 1.6em;
+        font-weight: normal;
+        padding: 0;
+
+        .tag-provenance {
+          font-size: 16px;
+          margin-left: 10px;
+          text-transform: uppercase;
+          white-space: nowrap;
+
+          svg {
+            width: 23px;
+            height: 23px;
+            position: relative;
+            top: 5px;
+            left: -3px;
+          }
+        }
+        .tag-community {
+          color: #176289;
+
+          svg {
+            path {
+              fill: #288dc1;
+            }
+          }
+        }
+        .tag-official2 {
+          color: #935c23;
+
+          svg {
+            path {
+              fill: #e48424;
+            }
+          }
+        }
+      }
+      #description {
+        margin-top: -0.2em;
+        position: relative;
+        div.descriptionContent {
+          color: #999999;
+          font-size: 1.1em;
+          line-height: 1.1em;
+          margin-right: 1.6em;
+          overflow: hidden;
+          text-align: justify;
+          &.collapsed {
+            height: 1.1em;
+          }
+        }
+        .descriptionExpander {
+          @include sprite-menu-icons;
+          position: absolute;
+          right: 0.3em;
+          top: -0.1em;
+        }
+      }
+      a.toolbarButton {
+        @include button;
+        font-size: 1.2em;
+        margin-right: 0.5em;
+        white-space: nowrap;
+        &.publish {
+          line-height: 20px;
+        }
+      }
+      .unsavedLine {
+        display: none;
+        h2 {
+          display: inline;
+          margin-right: 1em;
+        }
+        .revertMessage {
+          color: #999999;
+          font-size: 1.1em;
+        }
+      }
+      .basedOnParent, .basedOnTemp {
+        color: #999999;
+        display: none;
+        font-size: 1.2em;
+        line-height: 1.1em;
+        margin-bottom: 0.2em;
+      }
+      .basedOnParent.hasParent {
         display: block;
-        float: left;
-        margin-right: 1em;
-        #searchForm {
-          background-color: white;
-          border: 1px solid $color_buttons_active_border;
-          @include border-radius(0.2em);
-          @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05));
-          display: inline-block;
-          padding: 0.4em 2em 0.3em 2.8em;
-          position: relative;
-          &:hover {
-            @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.15));
-          }
-          .icon {
-            @include dataset-toolbar-icon-search;
-            left: 0.5em;
-            position: absolute;
-            top: 0.3em;
-          }
-          .searchField {
-            border: none;
-            display: block;
-            height: 13px;
-            padding: 0;
-            -webkit-appearance: none;
-            width: 13em;
-            &.prompt {
-              font-style: normal;
-            }
-          }
-          .clearSearch {
-            @include sprite-menu-icons;
-            display: none;
-            position: absolute;
-            right: 2em;
-            top: 0;
-          }
+      }
+      #publishedLink {
+        display: block;
+        font-size: 1.2em;
+        line-height: 1.1em;
+        margin: {
+          bottom: 0.2em;
+          top: 0.3em;
+        };
+      }
+    }
+    &.unsavedView {
+      background: white url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y;
+      #infoBox {
+        .unsavedLine, .basedOnTemp {
+          display: block;
         }
-        #renderTypeOptions {
-          li a {
-            @include renderType-toggle-icons;
-          }
+        #datasetIcon .alertIcon {
+          display: block;
         }
-        #shareOptions {
-          padding-right: 0.5em;
-          padding-top: 0.3em;
-          .unsavedView & {
-            display: none;
-          }
-          .minorChange & {
-            display: block;
-          }
-          li {
+        #datasetName, .unpublished, .snapshotted, .publish, #description.collapsed, .basedOnParent, #publishedLink {
+          display: none;
+        }
+      }
+      &.dataset .save {
+        display: none;
+      }
+      &.dataset.minorChange .save {
+        display: inline;
+      }
+      &.dataset .unpublishedRevert {
+        display: inline;
+        margin: {
+          left: 1em;
+          top: 0.3em;
+        };
+        position: absolute;
+      }
+      &.dataset.minorChange .unpublishedRevert {
+        display: none;
+      }
+    }
+    #actionBox {
+      height: 100%;
+      // IE7 doesn't make this box tall enough initially
+      min-height: 5.7em;
+      position: absolute;
+      right: 0;
+      top: 0;
+      #toolbarOptions {
+        float: right;
+        margin: 0.6em 1.9em 0.3em {
+          left: 0;
+        };
+        > li {
+          display: block;
+          float: left;
+          margin-right: 1em;
+          #searchForm {
+            background-color: white;
+            border: 1px solid $color_buttons_active_border;
+            @include border-radius(0.2em);
+            @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05));
             display: inline-block;
-            margin-right: 0.5em;
-            &.subscribe {
-              margin-right: 1em;
+            padding: 0.4em 2em 0.3em 2.8em;
+            position: relative;
+            &:hover {
+              @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.15));
             }
-            a {
-              @include sprite-social-media-icons;
+            .icon {
+              @include dataset-toolbar-icon-search;
+              left: 0.5em;
+              position: absolute;
+              top: 0.3em;
+            }
+            .searchField {
+              border: none;
+              display: block;
+              height: 13px;
+              padding: 0;
+              -webkit-appearance: none;
+              width: 13em;
+              &.prompt {
+                font-style: normal;
+              }
+            }
+            .clearSearch {
+              @include sprite-menu-icons;
+              display: none;
+              position: absolute;
+              right: 2em;
+              top: 0;
+            }
+          }
+          #renderTypeOptions {
+            li a {
+              @include renderType-toggle-icons;
+            }
+          }
+          #shareOptions {
+            padding-right: 0.5em;
+            padding-top: 0.3em;
+            .unsavedView & {
+              display: none;
+            }
+            .minorChange & {
+              display: block;
+            }
+            li {
+              display: inline-block;
+              margin-right: 0.5em;
+              &.subscribe {
+                margin-right: 1em;
+              }
+              a {
+                @include sprite-social-media-icons;
+              }
             }
           }
         }
       }
     }
+    .sidebarOptionsContainer {
+      bottom: 0;
+      position: absolute;
+      right: 0;
+    }
+    #sidebarOptions, #moreActionBarButtons {
+      clear: right;
+      li a {
+        background-color: #989898;
+        &.edit {
+          background-color: $sidebar_edit_tab_color_top;
+        }
+        &.moreViews {
+          background-color: $sidebar_more_views_tab_color_top;
+        }
+        &.filter {
+          background-color: $sidebar_filter_tab_color_top;
+        }
+        &.visualize {
+          background-color: $sidebar_visualize_tab_color_top;
+        }
+        &.export {
+          background-color: $sidebar_export_tab_color_top;
+        }
+        &.feed {
+          background-color: $sidebar_feed_tab_color_top;
+        }
+        &.embed {
+          background-color: $sidebar_embed_tab_color_top;
+        }
+        &.about {
+          background-color: $sidebar_about_tab_color_top;
+        }
+        &.manage {
+          background-color: $sidebar_manage_tab_color_top;
+        }
+        .alertIcon {
+          display: none;
+          position: absolute;
+          left: 8px;
+          top: 4px;
+        }
+      }
+    }
+    .fullscreenButton {
+      @include button;
+      padding: 0;
+      position: absolute;
+      right: 0.6em;
+      top: 0.6em;
+      z-index: 2;
+      &.maximize .icon {
+        @include dataset-toolbar-icon-maximize;
+      }
+      &.minimize .icon {
+        @include dataset-toolbar-icon-minimize;
+      }
+    }
   }
-  .sidebarOptionsContainer {
+
+  #actionBar {
     bottom: 0;
     position: absolute;
-    right: 0;
-  }
-  #sidebarOptions, #moreActionBarButtons {
-    clear: right;
-    li a {
-      background-color: #989898;
-      &.edit {
-        background-color: $sidebar_edit_tab_color_top;
-      }
-      &.moreViews {
-        background-color: $sidebar_more_views_tab_color_top;
-      }
-      &.filter {
-        background-color: $sidebar_filter_tab_color_top;
-      }
-      &.visualize {
-        background-color: $sidebar_visualize_tab_color_top;
-      }
-      &.export {
-        background-color: $sidebar_export_tab_color_top;
-      }
-      &.feed {
-        background-color: $sidebar_feed_tab_color_top;
-      }
-      &.embed {
-        background-color: $sidebar_embed_tab_color_top;
-      }
-      &.about {
-        background-color: $sidebar_about_tab_color_top;
-      }
-      &.manage {
-        background-color: $sidebar_manage_tab_color_top;
-      }
-      .alertIcon {
-        display: none;
+    left: 0;
+    width: 100%;
+    &.position-left {
+      #editBar {
+        bottom: 0;
         position: absolute;
-        left: 8px;
-        top: 4px;
+        right: 0;
+      }
+      .sidebarOptionsContainer {
+        position: static;
+      }
+    }
+    #editBar {
+      position: relative;
+      z-index: 10;
+    }
+  }
+}
+
+/**
+ * EN-18335 - Update and refactor grid view CSS
+ *
+ * The addition of the 'new' grid view led to a lot of CSS rule collisions and
+ * confusing, unintended inheritance. After a while Giacomo Ferrari suggested
+ * that we just add a class to the body that would contain either the entirety
+ * of the old styles or the entirety of the new ones, and use it as a toggle.
+ *
+ * This was a very, very good idea.
+ *
+ * The 'classic' styles are now all under the '.grid-view-classic' class on the
+ * body, and the updated ones are under the '.grid-view-2017-refresh' class.
+ */
+body.grid-view-2017-refresh {
+  font-family: 'Open Sans', sans-serif;
+
+  #datasetBar {
+    position: relative;
+    display: block;
+    background: #fff;
+    padding-bottom: 0;
+
+    #infoBox {
+      position: relative;
+      display: block;
+      margin: 0 680px 0 0;
+      padding: 8px;
+      font-size: 15px;
+      font-weight: 400;
+      z-index: 1;
+
+      .toolbarButton {
+        display: inline-block;
+        margin: 0 0 -2px 0;
+        padding: 5px 8px;
+        width: auto;
+        height: auto;
+        color: #5e5e5e;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 18.5px;
+        text-align: center;
+        letter-spacing: 0;
+        text-decoration: none;
+        text-shadow: none;
+        background: #f1f1f1;
+        border: solid 1px #c8c8c8;
+        border-radius: 1px;
+        box-sizing: border-box;
+        vertical-align: text-bottom;
+        transition: color 0.2s, background-color 0.2s;
+        white-space: nowrap;
+
+        &.save,
+        &.saveAs,
+        &.publish {
+          color: #fff;
+          background: #2279a6;
+          border: solid 1px #2279a6;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: #176289;
+            border: solid 1px #176289;
+          }
+        }
+
+        &:hover,
+        &:focus,
+        &:active {
+          background: #e4e4e4;
+          box-shadow: none;
+        }
+      }
+
+      #datasetIcon {
+        display: none;
+      }
+
+      .unsavedLine {
+        display: none;
+        font-family: 'Open Sans', sans-serif;
+        margin: 0 0 8px 0;
+        padding: 8px 8px 4px 8px;
+        background-color: rgba(255, 255, 0, 0.075);
+        border: 1px solid #cecece;
+        box-sizing: border-box;
+
+        h2 {
+          display: inline-block;
+          margin: 0 8px 8px 0;
+          padding: 0;
+          color: #d06463;
+          font-size: 18px;
+          font-weight: 600;
+          line-height: 24px;
+          letter-spacing: -0.5px;
+
+          &:before {
+            content: "[";
+          }
+
+          &:after {
+            content: "]";
+          }
+        }
+      }
+
+      .unpublished {
+        display: inline-block;
+        margin: 5px 0 0 0;
+        color: #d06463;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 24px;
+        letter-spacing: -0.5px;
+      }
+
+      #datasetName {
+        display: block;
+        margin: 0 8px 8px 0;
+        font-size: 24px;
+        font-weight: 300;
+        letter-spacing: -0.5px;
+      }
+
+      .outOfDate {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #808080;
+        font-size: 14px;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      .publish {
+        float: left;
+        margin: 0 12px 0 0;
+      }
+
+      .unpublishedRevert.revertMessage,
+      .basedOnParent,
+      .basedOnTemp {
+        margin: 8px 0;
+        color: #5e5e5e;
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 18px;
+
+        a {
+          color: #2279a6;
+          text-decoration: underline;
+
+          &:hover,
+          &:focus,
+          &:active,
+          &:visited {
+            color: #2279a6;
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .basedOnParent,
+      .basedOnTemp {
+        display: none;
+        margin: 0 8px 5px 0;
+      }
+
+      .unpublishedRevert.revertMessage {
+        position: relative;
+        display: block;
+        margin-top: 0;
+      }
+
+      #publishedLink {
+        display: inline-block;
+        margin: 0 0 15px 0;
+        color: #2279a6;
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 18px;
+        text-decoration: underline;
+        vertical-align: middle;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &:visited {
+          color: #2279a6;
+          text-decoration: underline;
+        }
+      }
+
+      #description {
+        position: relative;
+        margin: 0;
+        padding: 0 20px 0 0;
+
+        div.descriptionContent {
+          margin: 0;
+          padding: 0 0 8px 0;
+          font-size: 14px;
+          line-height: 20px;
+          text-align: justify;
+          overflow: hidden;
+
+          p {
+            margin: 0;
+            padding: 0 0 8px 0;
+            color: #5e5e5e;
+            font-size: 14px;
+            line-height: 20px;
+          }
+
+          &.collapsed {
+            padding-bottom: 0;
+            height: 20px;
+            line-height: 14px;
+          }
+        }
+
+        a.descriptionExpander {
+          position: absolute;
+          right: 0;
+          top: 4px;
+
+          .icon {
+            display: block;
+            width: 13px;
+            height: 13px;
+            text-align: left;
+            text-indent: -9999px;
+            background-color: transparent;
+            background-image: url(/stylesheets/images/icons/menu_icons.png?3);
+            background-repeat: no-repeat;
+          }
+
+          &.rightArrow {
+
+            .icon {
+              background-position: 0 -52px;
+            }
+          }
+
+          &.upArrow {
+
+            .icon {
+              background-position: 0 -39px;
+            }
+          }
+        }
+      }
+    }
+
+    #actionBox {
+      position: absolute;
+      padding: 8px;
+      right: 0;
+      top: 0;
+      height: auto;
+      min-height: auto;
+
+      #toolbarOptions {
+        float: right;
+        margin: 0;
+
+        & > li {
+          display: block;
+          float: left;
+          margin: 0;
+
+          #shareOptions {
+            margin-right: 15px;
+            padding: 5px 12px;
+
+            li {
+              display: inline-block;
+              margin: 0 5px;
+              cursor: pointer;
+
+              a {
+                display: block;
+                width: 16px;
+                height: 16px;
+                text-align: left;
+                text-indent: -9999px;
+                background-color: transparent;
+                background-image: url(/stylesheets/images/icons/social_media_icons.png);
+                background-repeat: no-repeat;
+
+                &.subscribe {
+                  background-position: 0 -48px;
+                }
+
+                &.facebook {
+                  background-position: 0 0;
+                }
+
+                &.twitter {
+                  background-position: 0 -16px;
+                }
+
+                &.email {
+                  background-position: 0 -32px;
+                }
+              }
+            }
+          }
+
+          #renderTypeOptions {
+            margin-right: 15px;
+            border: solid 1px #c8c8c8;
+            border-radius: 2px;
+            overflow: hidden;
+
+            li {
+              display: block;
+              float: left;
+              border-left: solid 1px #c8c8c8;
+
+              a {
+                display: block;
+                margin: 0;
+                padding: 6px 8px;
+                color: #5e5e5e;
+                background: #fff;
+                border: none;
+                box-shadow: none;
+
+                .icon {
+                  display: block;
+                  width: 13px;
+                  height: 13px;
+                  text-align: left;
+                  text-indent: -9999px;
+                  background-color: transparent;
+                  background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png?1);
+                  background-repeat: no-repeat;
+                }
+
+                &.table {
+
+                  .icon {
+                    background-position: 0 0px;
+                  }
+                }
+
+                &.fatrow {
+
+                  .icon {
+                    background-position: 0 -65px;
+                  }
+                }
+
+                &.page {
+
+                  .icon {
+                    background-position: 0 -52px;
+                  }
+                }
+
+                &.template {
+
+                  .icon {
+                    background-position: 0 0px;
+                  }
+                }
+
+                &.active {
+                  background: #e4e4e4;
+                }
+              }
+
+              &:first-child {
+                border-left: none;
+                border-radius: 2px 0 0 2px;
+
+                a {
+                  border: none;
+                }
+              }
+
+              &:last-child {
+                border-radius: 0 2px 2px 0;
+              }
+            }
+
+            &:hover,
+            &:focus,
+            &:active {
+              box-shadow: none;
+            }
+          }
+
+          #searchForm {
+            position: relative;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+            border: solid 1px #c8c8c8;
+
+            .icon {
+              position: absolute;
+              display: block;
+              left: 5px;
+              top: 6px;
+              width: 16px;
+              height: 13px;
+              text-align: left;
+              text-indent: -9999px;
+              background-color: transparent;
+              background-image: url(/stylesheets/images/icons/dataset_toolbar_icons.png);
+              background-position: 0 0;
+              background-repeat: no-repeat;
+              opacity: 0.5;
+            }
+
+            input {
+              display: block;
+              margin: 0;
+              padding: 4px 15px 3px 30px;
+              width: 250px;
+              height: auto;
+              color: #5e5e5e;
+              font-family: 'Open Sans', sans-serif;
+              font-size: 15px;
+              font-weight: 400;
+              border: none;
+              box-shadow: none;
+              box-sizing: border-box;
+
+              &:hover,
+              &:focus,
+              &:active {
+                box-shadow: none;
+              }
+
+              &.prompt {
+                color: #c4c4c4;
+                font-style: normal;
+              }
+            }
+
+            .clearSearch {
+              position: absolute;
+              display: none;
+              top: 0;
+              right: 30px;
+            }
+          }
+        }
+      }
+    }
+
+    #actionBar {
+      position: absolute;
+      display: block;
+      left: 0;
+      right: 0;
+      bottom: 5px;
+      width: 100%;
+      height: 26px;
+      padding: 0;
+
+      .sidebarOptionsContainer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+
+        #sidebarOptions {
+          float: right;
+          margin: 0;
+          padding: 0 8px 0 0;
+          background: transparent;
+          clear: right;
+
+          li {
+            position: relative;
+            display: block;
+            float: left;
+            margin: 0;
+            border: solid 1px #c8c8c8;
+            border-left: none;
+            border-right: none;
+
+            a {
+              display: block;
+              padding: 8px;
+              height: 14px;
+              color: #5e5e5e;
+              font-size: 14px;
+              font-weight: 400;
+              line-height: 14px;
+              text-decoration: none;
+              background: #fff;
+              border-right: none;
+              border-radius: 0;
+
+              .icon {
+                display: none;
+              }
+
+              &.edit {
+                border-left: solid 4px #ffcd1a;
+              }
+
+              &.manage {
+                border-left: solid 4px #b8864b;
+              }
+
+              &.moreViews {
+                border-left: solid 4px #ed77e6;
+              }
+
+              &.filter {
+                border-left: solid 4px #3e91ce;
+              }
+
+              &.visualize {
+                border-left: solid 4px #36a572;
+              }
+
+              &.export {
+                border-left: solid 4px #8ae8ff;
+              }
+
+              &.feed {
+                border-left: solid 4px #ffa733;
+
+                .contentIndicator {
+                  margin: 0;
+                  padding: 0;
+                  width: 18px;
+                  height: 18px;
+                  left: auto !important;
+                  right: -9px;
+                  top: -7px;
+                  color: #fff;
+                  font-family: 'Open Sans', sans-serif;
+                  font-size: 12px;
+                  font-weight: 600;
+                  line-height: 19px;
+                  text-align: center;
+                  box-sizing: border-box;
+                  z-index: 1;
+                }
+              }
+
+              &.embed {
+                border-left: solid 4px #ff7377;
+              }
+
+              &.about {
+                border-left: solid 4px #d36674;
+              }
+
+              &:hover, &:focus, &:active {
+                color: #5e5e5e;
+                background: #e4e4e4;
+              }
+            }
+
+            &.active {
+
+              a {
+                color: #fff;
+                border-top: none;
+                border-bottom: none;
+
+                &.edit {
+                  background: #ffcd1a;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #ffcd1a;
+                  }
+                }
+
+                &.manage {
+                  background: #b8864b;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #b8864b;
+                  }
+                }
+
+                &.moreViews {
+                  background: #ed77e6;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #ed77e6;
+                  }
+                }
+
+                &.filter {
+                  background: #3e91ce;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #3e91ce;
+                  }
+                }
+
+                &.visualize {
+                  background: #36a572;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #36a572;
+                  }
+                }
+
+                &.export {
+                  background: #8ae8ff;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #8ae8ff;
+                  }
+                }
+
+                &.feed {
+                  background: #ffa733;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #ffa733;
+                  }
+                }
+
+                &.embed {
+                  background: #ff7377;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #ff7377;
+                  }
+                }
+
+                &.about {
+                  background: #d36674;
+
+                  &:hover, &:focus, &:active {
+                    color: #fff;
+                    background: #d36674;
+                  }
+                }
+              }
+            }
+
+            &:first-child {
+              border-left: solid 1px #c8c8c8;
+              border-radius: 2px 0 0 2px;
+
+              a {
+                border-radius: 2px 0 0 2px;
+              }
+            }
+
+            &:last-child {
+              border-right: solid 1px #c8c8c8;
+              border-radius: 0 2px 2px 0;
+
+              a {
+                border-right: none;
+                border-radius: 0 2px 2px 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.isEditable,
+    &.unsavedView {
+
+      #infoBox {
+
+        .unpublished {
+          float: left;
+          margin: 0px 15px 15px 0;
+        }
+
+        #datasetName {
+          display: inline-block;
+          font-size: 20px;
+        }
+
+        .basedOnTemp {
+          margin-top: 0;
+        }
+      }
+    }
+
+    &.unsavedView {
+
+      #infoBox {
+
+        .unsavedLine {
+          display: block;
+        }
+
+        .basedOnParent {
+          display: none;
+        }
+
+        .basedOnTemp {
+          display: block;
+        }
       }
     }
   }
-  .fullscreenButton {
-    @include button;
-    padding: 0;
-    position: absolute;
-    right: 0.6em;
-    top: 0.6em;
-    z-index: 2;
-    &.maximize .icon {
-      @include dataset-toolbar-icon-maximize;
+
+  .renderTypeNode {
+
+    .divider {
+      background: #c8c8c8 !important;
     }
-    &.minimize .icon {
-      @include dataset-toolbar-icon-minimize;
+
+    .row,
+    .content {
+      color: #5e5e5e !important;
+      font-size: 10px !important;
+      font-weight: 400 !important;
+
+      .richColumn {
+
+        .richLine {
+          margin-bottom: 8px !important;
+
+          .richLabel,
+          .richItem {
+            padding: 0 5px !important;
+            font-size: 12px !important;
+            line-height: 20px !important;
+          }
+
+          .richLabel {
+            color: #6a6a6a !important;
+            font-weight: 600 !important;
+          }
+        }
+      }
+    }
+
+    &.fatRowRenderType {
+
+      .row {
+
+        &.rowHighlight {
+          background-color: #fff !important;
+        }
+
+        &:nth-child(odd) {
+          background-color: #fff !important;
+        }
+
+        &:nth-child(even) {
+          background-color: #f7f7f7 !important;
+        }
+      }
+    }
+
+    .navigation {
+      height: 40px !important;
+      background: #f8f8f8 !important;
+      border-top: solid 1px #e4e4e4 !important;
+
+      li {
+
+        a {
+          display: inline-block !important;
+          margin: 2px !important;
+          padding: 0 !important;
+          width: 33px !important;
+          height: 33px !important;
+          color: #2279a6 !important;
+          font-size: 14px !important;
+          line-height: 33px !important;
+          background: transparent !important;
+          border: solid 1px transparent !important;
+          border-radius: 2px !important;
+          box-shadow: none !important;
+          cursor: pointer;
+          transition: background 0.15s, border 0.15s, color 0.15s;
+
+          .icon {
+            position: relative !important;
+            top: 10px !important;
+            left: 10px !important;
+          }
+
+          &.disabled {
+            cursor: not-allowed !important;
+
+            .icon {
+              opacity: 0.25 !important;
+            }
+          }
+
+          &:hover,
+          &:focus,
+          &:active {
+            text-decoration: none !important;
+          }
+
+          &:hover {
+            border: solid 1px #d4d4d4 !important;
+
+            &.disabled {
+              border: solid 1px transparent !important;
+            }
+          }
+        }
+
+        &.edit {
+          position: absolute !important;
+          float: none !important;
+          margin: 0 !important;
+          left: 0 !important;
+          top: 0 !important;
+
+          a {
+            padding: 0 8px !important;
+            width: auto !important;
+            font-weight: 400 !important;
+            text-shadow: none !important;
+          }
+        }
+
+        &.page {
+          margin: 0 !important;
+        }
+
+        &.info {
+          color: #5e5e5e !important;
+          font-size: 12px !important;
+          line-height: 15px !important;
+        }
+      }
+    }
+  }
+
+  .outerContainer {
+
+    .innerContainer {
+
+      .socrata-visualization {
+        font-family: "Open Sans", sans-serif;
+        background-color: #fff;
+      }
     }
   }
 }
@@ -428,27 +1324,6 @@ html, body {
         }
       }
     }
-  }
-}
-
-#actionBar {
-  bottom: 0;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  &.position-left {
-    #editBar {
-      bottom: 0;
-      position: absolute;
-      right: 0;
-    }
-    .sidebarOptionsContainer {
-      position: static;
-    }
-  }
-  #editBar {
-    position: relative;
-    z-index: 10;
   }
 }
 
@@ -996,14 +1871,6 @@ html, body {
       &.hidden {
         display: none;
       }
-    }
-  }
-}
-
-.outerContainer {
-  .innerContainer {
-    .socrata-visualization {
-      font-family: "Open Sans", sans-serif;
     }
   }
 }

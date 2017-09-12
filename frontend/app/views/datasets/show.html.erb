@@ -84,25 +84,7 @@
           <%- if @view.available_display_types.length > 1 -%>
             <ul id="renderTypeOptions" class="pillButtons">
               <%- url_types = {'fatrow' => 'richList'} -%>
-              <%-
-                # EN-17053/EN-17685 - Make composite legacy-viz/table layouts work with Socrata Viz Table
-                #
-                # Early on in this project the non-table display types were removed in an effort to simplify
-                # the grid view's usage. Later, we decided that since it was not a tremendous amount of work
-                # to make them function as expected with the new 'socrataVizTable' anyway, we may as well
-                # keep them in place for now. I would personally like to see them eliminated since there aren't
-                # many cases where they are actually helpful, but I'd rather put my energy toward deprecating
-                # other, even sillier things.
-                #
-                # At any rate, this change restores non-table display types and removes the old 'table' type
-                # in favor of the new 'socrataVizTable' type, so we do not have two buttons for a table.
-                #
-                # As of 8/15/2017 we intend to come back to the changes around the 'socrataVizTable' and just
-                # make them default by removing the existing implementation for the 'table' type and replacing
-                # it with the one that is currently called 'socrataVizTable'.
-                available_types_without_table = ['socrataVizTable'] + @view.available_display_types.clone.select { |type|  type != 'table' }
-              -%>
-              <%- available_types_without_table.push('template').each do |type| -%>
+              <%- @view.available_display_types.clone.push('template').each do |type| -%>
                 <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
                 <li>
                   <a

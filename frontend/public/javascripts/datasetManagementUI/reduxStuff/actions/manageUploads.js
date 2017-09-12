@@ -400,38 +400,6 @@ export function subscribeToTransforms(os) {
 
         channel.join();
       }
-
-      // TODO: Delete everything til DELETE END after dsmapi pr goes in
-      const oldChannel = socket.channel(`transform_progress:${oc.transform.id}`);
-
-      oldChannel.on(
-        'max_ptr',
-        _.throttle(
-          ({ end_row_offset }) =>
-            dispatch(
-              editTransform(oc.transform.id, {
-                contiguous_rows_processed: end_row_offset
-              })
-            ),
-          PROGRESS_THROTTLE_TIME
-        )
-      );
-
-      oldChannel.on(
-        'errors',
-        _.throttle(
-          ({ count }) =>
-            dispatch(
-              editTransform(oc.transform.id, {
-                error_count: count
-              })
-            ),
-          PROGRESS_THROTTLE_TIME
-        )
-      );
-
-      oldChannel.join();
-      // DELETE END
     });
   };
 }

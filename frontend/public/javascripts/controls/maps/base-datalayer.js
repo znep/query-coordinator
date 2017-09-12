@@ -458,17 +458,30 @@
       }
       var loc = rows[0].data[layerObj._locCol.lookup];
 
-      var mapLinkQuery;
-      if (loc.human_address) {
-        var address = _.isString(loc.human_address) ?
-          JSON.parse(loc.human_address) :
-          loc.human_address;
+      // Attempt to get the object representation of the human_address field.
+      // Based on reading the prior code, it is most likely that this field is
+      // a stringified JSON object (whose fields may be empty) but technically
+      // possible that it could already be an object at this point.
+      var humanAddressObject;
+      var expectedHumanAddressKeys = ['address', 'city', 'state', 'zip'];
+      if (_.isString(loc.human_address) && !_.isEmpty(loc.human_address)) {
+        try {
+          humanAddressObject = _.omit(JSON.parse(loc.human_address), _.isEmpty);
+        } catch (ex) {
+          console.warn('Failed to parse human_address string: ', loc.human_address);
+          humanAddressObject = {};
+        }
+      } else if (_.isPlainObject(loc.human_address)) {
+        humanAddressObject = _.omit(loc.human_address, _.isEmpty);
+      }
 
-        mapLinkQuery = _.compact(_.values(address)).join(', ');
+      var mapLinkQuery;
+      if (_.intersection(_.keys(humanAddressObject), expectedHumanAddressKeys).length) {
+        mapLinkQuery = _.compact(_.at(humanAddressObject, expectedHumanAddressKeys)).join(' ');
       } else if (loc.coordinates) {
         mapLinkQuery = loc.coordinates.slice().reverse().join(',');
       } else if (loc.latitude && loc.longitude) {
-        mapLinkQuery = [loc.latitude, ',', loc.longitude].join('');
+        mapLinkQuery = [loc.latitude, loc.longitude].join(',');
       }
 
       if (!_.isEmpty(mapLinkQuery)) {

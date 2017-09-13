@@ -1,4 +1,4 @@
-if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+if (blist.feature_flags.enable_2017_grid_refresh) {
 
   (function($) {
     $.fn.socrataTable = _.get(

@@ -10,7 +10,7 @@
     # dependency with the Socrata Visualizations I18n module; if the
     # translations are not present on the window when that code bootstraps no
     # translations will be available.
-    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+    if enable_2017_grid_refresh_for_current_request?
   -%>
     <%= rendered_stylesheet_tag 'socrata-icons' %>
     <%= rendered_stylesheet_tag 'visualizations' %>

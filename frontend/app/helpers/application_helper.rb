@@ -1268,11 +1268,31 @@ module ApplicationHelper
   end
 
   def data_grid_body_class
-    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+    if enable_2017_grid_refresh_for_current_request?
       return 'grid-view-2017-refresh'
     else
       return 'grid-view-classic'
     end
   end
 
+  # EN-18683 - Adjust grid view refresh feature flags
+  #
+  # When deciding whether to render the 2017 grid view refresh or the 'classic' grid view we need to check two things:
+  #
+  #   1. Is the user a publisher or not? We use separate feature flags to control grid view rendering for publishers v.s.
+  #      viewers, since the surface area for us to thoroughly validate for viewers only is much smaller, and we want to
+  #      roll out this change in as controlled a manner as we are able.
+  #
+  #   2. Is the feature flag for publisher or viewer on the domain set to true for whichever group of which the user is
+  #      a member?
+  #
+  # Finally: yes, of course this could be formulated as a single boolean expression. But I think it's clearer and less
+  # error-prone to write it in a more procedural manner.
+  def enable_2017_grid_refresh_for_current_request?
+    if current_user_is_domain_member_and_has_create_datasets_right?
+      FeatureFlags.derive(@view, request).enable_2017_grid_view_refresh_for_users_who_can_create_datasets
+    else
+      FeatureFlags.derive(@view, request).enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon
+    end
+  end
 end

@@ -17,7 +17,7 @@ http://www.socrata.com
   <%= yield :head %>
 </head>
 
-<body>
+<body class="<%= data_grid_body_class -%>">
   <%- if render_site_admin_chrome? -%>
     <%== site_chrome_admin_header(request, response, size: 'small') %>
   <%- end -%>

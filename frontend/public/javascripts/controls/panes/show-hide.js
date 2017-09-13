@@ -62,7 +62,7 @@
 
       // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid
       // view
-      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+      if (blist.feature_flags.enable_2017_grid_refresh) {
         blist.datasetPage.launchNbeColumnManager();
         // There seems to be some latency between clicking the 'Hide Columns'
         // section header and the 'show the section' event being fired, which is

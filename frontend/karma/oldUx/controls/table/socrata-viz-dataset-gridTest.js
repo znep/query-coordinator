@@ -130,7 +130,7 @@ describe('$.fn.socrataVizDatasetGrid', function () {
   beforeEach(function() {
     blist.configuration = {};
     blist.feature_flags = {
-      enable_nbe_only_grid_view_optimizations: true,
+      enable_2017_grid_refresh: true,
       ignore_metadata_jsonquery_property_in_view: 'frontend'
     };
     blist.rights = {

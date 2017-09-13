@@ -72,7 +72,7 @@
     # dependency detailed in the comment with this ticket number at the top
     # of this file (tl;dr: the translations must exist on the window when
     # we boostrap the Socrata Viz package).
-    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+    if enable_2017_grid_refresh_for_current_request?
   -%>
     <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
   <%- end -%>

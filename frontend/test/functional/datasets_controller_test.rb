@@ -485,6 +485,7 @@ class DatasetsControllerTest < ActionController::TestCase
       :rights => [:some_right],
       :role_name => role_name
     )
+    stub_user.stubs(has_right?: false)
     @controller.stubs(current_user: stub_user)
     if has_page_metadata
       @phidippides.stubs(

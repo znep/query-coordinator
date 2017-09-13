@@ -237,6 +237,17 @@ http://www.socrata.com
   <script type="text/javascript">//<![CDATA[
     blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
+    <%-
+      # EN-18683 - Adjust new grid view feature flags
+      #
+      # We want to selectively enable the refreshed grid view based on multiple factors (see implementation
+      # of `enable_2017_grid_refresh_for_current_request?`). In order to avoid having to implement duplicate
+      # logic in JavaScript, we actually compute a 'fake' feature flag that does not exist in the database
+      # but that can be read by the JavaScript application. The value of this fake feature flag is what
+      # is returned by `enable_2017_grid_refresh_for_current_request?`. This is funky, and I hope we can
+      # remove it soon, but I think it's better than trying to duplicate the Ruby logic in JavaScript.
+    -%>
+    blist.feature_flags.enable_2017_grid_refresh = <%= raw enable_2017_grid_refresh_for_current_request? %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;

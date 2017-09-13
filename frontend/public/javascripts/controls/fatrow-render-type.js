@@ -25,7 +25,7 @@
    * We therefore want to not render the fat row filter controls at all if we are using the
    * new Socrata Viz Table grid view.
    */
-  var headersDisabled = _.get(window, 'blist.feature_flags.enable_nbe_only_grid_view_optimizations', false);
+  var headersDisabled = _.get(window, 'blist.feature_flags.enable_2017_grid_refresh', false);
 
   $.extend(FatrowRenderTypeObj, {
     defaults: {

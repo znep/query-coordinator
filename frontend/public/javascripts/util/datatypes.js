@@ -720,7 +720,7 @@ blist.namespace.fetch('blist.datatypes');
       // images being rendered as links (with file sizes in kb appended to the
       // title).
       if (
-        !blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+        !blist.feature_flags.enable_2017_grid_refresh &&
         /image\/\w+;/.test(fileData.contentType)
       ) {
         return renderPhoto.apply(null, arguments);

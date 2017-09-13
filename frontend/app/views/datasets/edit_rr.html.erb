@@ -17,10 +17,6 @@
     </div>
     <a href="#Clear" class="clearLayout button">New Layout</a>
 
-    <%-
-      # EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
-      unless FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
-    -%>
     <ul id="renderTypeOptions" class="pillButtons">
       <li>
         <a href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>"
@@ -35,7 +31,6 @@
         </a>
       </li>
     </ul>
-    <% end %>
   </div>
 
   <div class="mainContainer richRendererContainer">

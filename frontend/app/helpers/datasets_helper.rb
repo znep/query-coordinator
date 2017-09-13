@@ -731,14 +731,6 @@ module DatasetsHelper
     end
   end
 
-  def is_nbe_only_grid_view?
-    (
-      FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations &&
-      controller.controller_name == 'datasets' &&
-      controller.action_name == 'show'
-    )
-  end
-
   def render_socrata_visualizations_translations
     translations = json_escape(LocaleCache.render_translations([LocalePart.shared]).to_json)
     javascript_tag("var translations = #{translations};", :id => 'translations')

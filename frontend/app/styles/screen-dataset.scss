@@ -164,6 +164,7 @@ body.grid-view-classic {
         line-height: 1.1em;
         margin-bottom: 0.2em;
       }
+
       .basedOnParent.hasParent {
         display: block;
       }
@@ -540,6 +541,10 @@ body.grid-view-2017-refresh {
         margin: 0 8px 5px 0;
       }
 
+      .basedOnParent.hasParent {
+        display: block;
+      }
+
       .unpublishedRevert.revertMessage {
         position: relative;
         display: block;
@@ -589,7 +594,6 @@ body.grid-view-2017-refresh {
           &.collapsed {
             padding-bottom: 0;
             height: 20px;
-            line-height: 14px;
           }
         }
 
@@ -712,10 +716,17 @@ body.grid-view-2017-refresh {
                   background-repeat: no-repeat;
                 }
 
+                &.chart {
+
+                  .icon {
+                    background-position: 0 -13px;
+                  }
+                }
+
                 &.table {
 
                   .icon {
-                    background-position: 0 0px;
+                    background-position: 0 0;
                   }
                 }
 
@@ -736,7 +747,7 @@ body.grid-view-2017-refresh {
                 &.template {
 
                   .icon {
-                    background-position: 0 0px;
+                    background-position: 0 0;
                   }
                 }
 

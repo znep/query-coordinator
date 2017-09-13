@@ -3345,7 +3345,7 @@
         // 'invalidateAll' on the Dataset model when the grouping aggregations
         // change that happens inside the !_.isEqual() check below).
         (
-          blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+          blist.feature_flags.enable_2017_grid_refresh &&
           !_.isEqual(oldGroupAggs, newGroupAggs)
         )
       ) {

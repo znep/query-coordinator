@@ -78,11 +78,11 @@ describe('blist.dataset', function () {
 
   describe('saving', function() {
 
-    describe('when the `enable_nbe_only_grid_view_optimizations` feature flag is set to false', function() {
+    describe('when the `enable_2017_grid_refresh` feature flag is set to false', function() {
       var dataset;
 
       beforeEach(function() {
-        delete blist.feature_flags.enable_nbe_only_grid_view_optimizations;
+        delete blist.feature_flags.enable_2017_grid_refresh;
         dataset = new Dataset({metadata:{renderTypeConfig:{}}});
         sinon.stub(dataset, 'makeRequest');
       });
@@ -92,17 +92,17 @@ describe('blist.dataset', function () {
       });
     });
 
-    describe('when the `enable_nbe_only_grid_view_optimizations` feature flag is set to true', function() {
+    describe('when the `enable_2017_grid_refresh` feature flag is set to true', function() {
       var dataset;
 
       beforeEach(function() {
-        blist.feature_flags.enable_nbe_only_grid_view_optimizations = true;
+        blist.feature_flags.enable_2017_grid_refresh = true;
         dataset = new Dataset({metadata:{renderTypeConfig:{}}});
         sinon.stub(dataset, 'makeRequest');
       });
 
       afterEach(function() {
-        delete blist.feature_flags.enable_nbe_only_grid_view_optimizations;
+        delete blist.feature_flags.enable_2017_grid_refresh;
       });
 
 

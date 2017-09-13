@@ -84,7 +84,7 @@
             // fullHeight render type, we will split the available vertical space equally among
             // all of them (but only if the new '2017' grid view update is enabled).
             if (
-              !window.blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+              !window.blist.feature_flags.enable_2017_grid_refresh &&
               $fh.length > 1
             ) {
               var adjFactor = 1.3333;

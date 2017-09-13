@@ -18,12 +18,6 @@ module UserSessionsHelper
     controller.request.core_session = fake_core_session
   end
 
-  ##
-  # Check to see if auth0 is available.
-  def use_auth0?
-    AUTH0_CONFIGURED && FeatureFlags.derive(nil, request).use_auth0
-  end
-
   def password_validation_error?(error)
     /Your password must satisfy three of the following four criteria/.match(error).present?
   end

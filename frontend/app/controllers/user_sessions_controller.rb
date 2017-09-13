@@ -1,5 +1,4 @@
 class UserSessionsController < ApplicationController
-
   include ActionView::Helpers::TranslationHelper
   include Auth0Helper
   include UserSessionsHelper
@@ -42,8 +41,9 @@ class UserSessionsController < ApplicationController
       return redirect_back_or_default('/')
     end
 
-    # Attempt to configure Auth0. This method may result in a redirect.
-    auth0
+    # checks if we're configured to redirect to a specific auth0 connection
+    # if so, this will result in a redirect
+    read_auth0_properties_and_check_for_redirect
 
     @body_id = 'login'
     @user_session = UserSessionProvider.klass.new
@@ -56,7 +56,7 @@ class UserSessionsController < ApplicationController
     # for the header/footer
     # Once they are all using site chrome, uncomment this
     # See EN-18452 and EN-18453
-    # render :layout => 'styleguide' if use_auth0? && !performed?
+    # render :layout => 'styleguide' unless performed?
   end
 
   def expire_if_idle
@@ -68,31 +68,17 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
 
     # In general, if we get here it means that a user session has been created by submitting a login form straight to Rails
-    # If auth0 is enabled, we mostly disallow this.
-    if use_auth0? &&
-       params.key?(:user_session) &&
-       params[:user_session].key?(:login)
-      # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
-      # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
-      # superset of superadmins.
-      # This is enforced in the javascript but we have to enforce it here as well.
-      if Rails.env.production? && params[:user_session][:login].include?('@socrata.com')
-        if feature?('fedramp')
-          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
-          redirect_to login_url and return
-        end
-
-        unless feature?('socrata_emails_bypass_auth0')
-          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
-          redirect_to login_url and return
-        end
-      end
+    # Sometimes, for employees, this is not allowed
+    if params.key?(:user_session) && params[:user_session].key?(:login)
+      check_sso_required_for_socrata_employees
+      return if performed?
     end
 
     if current_user_session
       current_user_session.destroy
       @current_user = nil
     end
+
     # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
     # purpose; but phusion passenger requires "".
     response.headers['ETag'] = ''
@@ -101,24 +87,9 @@ class UserSessionsController < ApplicationController
     session_response = @user_session.save(true)
 
     if session_response.is_a?(Net::HTTPSuccess)
-      # User logged in successfully, but not using auth0...
-      # check if we want to require auth0 for any of the user's roles
-      if use_auth0? && !@user_session.user.is_superadmin?
-        auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
-
-        if auth0_properties.present?
-          restricted_roles = auth0_properties.try(:require_sso_for_rights)
-
-          if restricted_roles.present? &&
-             restricted_roles.any? { |role| @user_session.user.has_right?(role) }
-            # user has a role that requires auth0... fail
-            meter 'login.failure'
-            @user_session.destroy
-            flash[:error] = t('screens.sign_in.sso_required')
-            redirect_to login_url and return
-          end
-        end
-      end
+      # domains can be configured to require SSO for users with specific rights
+      check_sso_required_for_rights
+      return if performed?
 
       meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
@@ -162,14 +133,8 @@ class UserSessionsController < ApplicationController
   def destroy
     kill_session_and_cookies
 
-    if use_auth0?
-      # here, we redirect them to auth0 and then back to "signed_out"
-      redirect_to(generate_auth0_logout_uri)
-    else
-      # not using auth0, so display the flash and go back to "login"
-      flash[:notice] = t('core.dialogs.logout')
-      redirect_to(login_path)
-    end
+    # here, we redirect them to auth0 and then back to "signed_out"
+    redirect_to(generate_auth0_logout_uri)
   end
 
   def signed_out
@@ -186,16 +151,54 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
   end
 
+  def check_sso_required_for_socrata_employees
+    # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
+    # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
+    # superset of superadmins.
+    # This is enforced in the javascript but we have to enforce it here as well.
+    if Rails.env.production? && params[:user_session][:login].include?('@socrata.com')
+      if feature?('fedramp')
+        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
+        redirect_to login_url and return
+      end
+
+      unless feature?('socrata_emails_bypass_auth0')
+        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
+        redirect_to login_url and return
+      end
+    end
+  end
+
+  def check_sso_required_for_rights
+    # User logged in successfully, but not using auth0...
+    # check if we want to require auth0 for any of the user's roles
+    unless @user_session.user.present? && @user_session.user.is_superadmin?
+      auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
+
+      if auth0_properties.present?
+        restricted_roles = auth0_properties.try(:require_sso_for_rights)
+
+        if restricted_roles.present? &&
+            restricted_roles.any? { |role| @user_session.user.has_right?(role) }
+          # user has a role that requires auth0... fail
+          meter 'login.failure'
+          @user_session.destroy
+          flash[:error] = t('screens.sign_in.sso_required')
+          redirect_to login_url
+        end
+      end
+    end
+  end
+
   ##
-  # Sets use_auth0 template variable.
   # Detects if automatic redirect is set and performs that redirect safely.
   #
   # If automatic redirect is not set, configured connections are set as
   # template variables.
-  def auth0
+  def read_auth0_properties_and_check_for_redirect
     properties = CurrentDomain.configuration('auth0').try(:properties)
 
-    if use_auth0? && properties.present?
+    if properties.present?
       # Auth0 Redirection when auth0 configuration is set
       connection = properties.try(:auth0_always_redirect_connection)
       callback_uri = properties.try(:auth0_callback_uri) || "https://#{CurrentDomain.cname}/auth/auth0/callback"

@@ -4,32 +4,4 @@
   <title><%= get_site_title %></title>
 <% end %>
 
-<% if use_auth0_component(@view, request) %>
-  <%= render partial: 'user_sessions/auth0_login', locals: { login: false } %>
-<% else %>
-  <% content_for :skip_links do %>
-    <%- unless params[:no_js].present? -%>
-      <%= link_to t('core.no_js'), '?no_js=true' %>
-    <%- end -%>
-  <% end %>
-
-  <div class="modalContentBox signupModal siteContent narrow">
-    <div class="contentHeader">
-      <%= render :partial => 'accounts/login_header' %>
-    </div>
-    <div class="contentBoxInner clearfix">
-      <div class="loginSignupForm firstColumn column">
-        <%= render 'signup_form' %>
-        <%- unless params[:no_js].present? -%>
-        <%= render :partial => 'user_sessions/login_form' %>
-        <%- end -%>
-      </div>
-    </div>
-  </div>
-
-  <% content_for :js_footer do %>
-    <%- unless params[:no_js].present? -%>
-      <%= include_webpack_bundle 'open-data/screen-login-signup.js' %>
-    <%- end -%>
-  <% end %>
-<% end %>
+<%= render partial: 'user_sessions/auth0_login', locals: { login: false } %>

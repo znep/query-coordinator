@@ -2,37 +2,4 @@
   <title><%= get_site_title %></title>
 <% end %>
 
-<% if use_auth0_component(@view, request) %>
-  <%= render 'user_sessions/auth0_login', :login => true %>
-<% else %>
-
-  <% content_for :head do %>
-    <%= rendered_stylesheet_tag 'screen-login' %>
-  <% end %>
-
-  <%- unless params[:no_js].present? -%>
-    <% content_for :skip_links do %>
-      <%= link_to t('core.no_js'), '?no_js=true' %>
-    <%- end -%>
-  <% end %>
-
-  <div class="modalContentBox loginModal siteContent narrow">
-    <div class="contentHeader">
-      <%= render 'accounts/login_header' %>
-    </div>
-    <div class="contentBoxInner loginScreen clearfix">
-      <div class="loginSignupForm firstColumn column">
-        <%= render 'login_form' %>
-        <%- unless params[:no_js].present? -%>
-          <%= render 'accounts/signup_form' %>
-        <%- end -%>
-      </div>
-    </div>
-  </div>
-
-  <%- unless params[:no_js].present? -%>
-    <% content_for :js_footer do %>
-      <%= include_webpack_bundle 'open-data/screen-login-signup.js' %>
-    <%- end -%>
-  <% end %>
-<% end %>
+<%= render 'user_sessions/auth0_login', :login => true %>

@@ -24,8 +24,8 @@ export var FeatureFlags = {
   },
 
   // Intended usage in tests/specs:
-  //   FeatureFlags.useTestFixture({ use_auth0: false });
-  //   expect(FeatureFlags.value('use_auth0')).to.equal(false);
+  //   FeatureFlags.useTestFixture({ some_flag: false });
+  //   expect(FeatureFlags.value('some_flag')).to.equal(false);
   useTestFixture: function(options) {
     window.socrata = window.socrata || {};
     window.socrata.featureFlags = options || {};

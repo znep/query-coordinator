@@ -48,33 +48,31 @@
         </div>
       </div>
 
-      <%- if CurrentDomain.module_enabled?(:openid_login) && FeatureFlags.derive(@view, request).show_auth0_identifiers -%>
-        <%- auth0_identifiers = current_user.auth0_identifiers -%>
-        <div class="editSection clearfix">
-          <div class="line clearfix">
-            <span class="field textItem">
-              <%= t('screens.profile.edit.account.sso_identifiers') %>
-            </span>
-          </div>
-
-          <%- if auth0_identifiers.empty? -%>
-            <div class="line clearfix">
-              <span class="field emptyItem"><%= t('screens.profile.edit.account.no_auth0id') %></span>
-            </div>
-          <%- else -%>
-            <%- auth0_identifiers.each do |ident| -%>
-              <div class="line clearfix">
-                <%= label_tag "auth0id_delete_list[#{ident.identifier}]", 'Delete' %>
-                <span class="field textItem">
-                  <%= check_box_tag "auth0id_delete_list[#{ident.identifier}]" %>
-                  <%= hidden_field_tag "auth0id_delete_paths[#{ident.identifier}]", ident.delete_path %>
-                  <%= ident.identifier %>
-                </span>
-              </div>
-            <%- end -%>
-          <%- end -%>
+      <%- auth0_identifiers = current_user.auth0_identifiers -%>
+      <div class="editSection clearfix">
+        <div class="line clearfix">
+          <span class="field textItem">
+            <%= t('screens.profile.edit.account.sso_identifiers') %>
+          </span>
         </div>
-      <%- end -%>
+
+        <%- if auth0_identifiers.empty? -%>
+          <div class="line clearfix">
+            <span class="field emptyItem"><%= t('screens.profile.edit.account.no_auth0id') %></span>
+          </div>
+        <%- else -%>
+          <%- auth0_identifiers.each do |ident| -%>
+            <div class="line clearfix">
+              <%= label_tag "auth0id_delete_list[#{ident.identifier}]", 'Delete' %>
+              <span class="field textItem">
+                <%= check_box_tag "auth0id_delete_list[#{ident.identifier}]" %>
+                <%= hidden_field_tag "auth0id_delete_paths[#{ident.identifier}]", ident.delete_path %>
+                <%= ident.identifier %>
+              </span>
+            </div>
+          <%- end -%>
+        <%- end -%>
+      </div>
 
       <div class="editSection clearfix">
         <div class="line clearfix">

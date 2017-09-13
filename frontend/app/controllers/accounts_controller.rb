@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
     # for the header/footer
     # Once they are all using site chrome, uncomment this
     # See EN-18452 and EN-18453
-    # render :layout => 'styleguide' if use_auth0?
+    # render :layout => 'styleguide'
   end
 
   # This is the true target of the form when signing up for a new account not '/profile/account'

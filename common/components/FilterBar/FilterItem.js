@@ -5,6 +5,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import CalendarDateFilter from './CalendarDateFilter';
+import CheckboxFilter from './CheckboxFilter';
 import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
@@ -25,7 +26,7 @@ export const FilterItem = React.createClass({
       isHidden: PropTypes.bool
     }).isRequired,
     column: PropTypes.shape({
-      dataTypeName: PropTypes.oneOf(['calendar_date', 'money', 'number', 'text']),
+      dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
     controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
@@ -236,6 +237,8 @@ export const FilterItem = React.createClass({
       return (<NumberFilter {...filterProps} />);
     } else if (column.dataTypeName === 'text') {
       return (<TextFilter {...filterProps} />);
+    } else if (column.dataTypeName === 'checkbox') {
+      return (<CheckboxFilter {...filterProps} />);
     } else {
       return null;
     }

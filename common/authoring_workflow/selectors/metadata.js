@@ -44,6 +44,7 @@ export const getFilterableColumns = createSelector(
 
       return dataTypeName === 'text' ||
         dataTypeName === 'calendar_date' ||
+        dataTypeName === 'checkbox' ||
         (hasColumnStats && _.includes(['money', 'number'], dataTypeName));
     });
   }

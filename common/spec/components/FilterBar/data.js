@@ -79,6 +79,17 @@ export const mockTextColumn = {
   ]
 };
 
+export const mockCheckboxColumn = {
+  dataTypeName: 'checkbox',
+  fieldName: 'internal',
+  name: 'Internal',
+  top: [
+    { item: true, count: 100 },
+    { item: false, count: 78 },
+    { item: null, count: 45 }
+  ]
+};
+
 export const mockPicklistOptions = [
   { value: 'Purple', title: 'Purple' },
   { value: 'Pesto', title: 'Pesto' },

@@ -314,6 +314,7 @@ function MetadataProvider(config, useCache = false) {
           return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
         case 'text':
         case 'calendar_date':
+        case 'checkbox':
           return true;
         default:
           return false;

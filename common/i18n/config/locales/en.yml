@@ -40,6 +40,15 @@ en:
           selected_values: Selected Values
           single_value_negated: Excluded {0}
           suggested_values: Top Values
+        checkbox_filter:
+          false_value: "False"
+          n_values: "{0} selected"
+          n_values_negated: "{0} excluded"
+          no_value: (No value)
+          no_value_negated: Excluded (No value)
+          single_value_negated: Excluded {0}
+          suggested_values: Top Values
+          true_value: "True"
         to: To
       flannel:
         close_popup: Close popup

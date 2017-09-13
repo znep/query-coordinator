@@ -18,7 +18,8 @@ export const SearchablePicklist = React.createClass({
     onSelection: PropTypes.func.isRequired,
     onBlur: PropTypes.func.isRequired,
     onClickSelectedOption: PropTypes.func,
-    canAddSearchTerm: PropTypes.func
+    canAddSearchTerm: PropTypes.func,
+    hideSearchInput: PropTypes.bool
   },
 
   getInitialState() {
@@ -93,8 +94,13 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderSearch() {
-    const { value } = this.props;
+    const { hideSearchInput, value } = this.props;
     const { isValidating, isError, textEntered } = this.state;
+
+    if (hideSearchInput) {
+      return null;
+    }
+
     const loadingSpinner = isValidating ? <span className="spinner-default"></span> : null;
 
     const buttonClassName = classNames('btn btn-default', {

@@ -20,6 +20,7 @@ const mockStore = configureMockStore([ thunk ]);
 
 let ceteraStub;
 let ceteraAssetCountsStub;
+let customMockCeteraResponse;
 
 describe('actions/filters', () => {
   describe('clearAllFilters', () => {
@@ -176,6 +177,85 @@ describe('actions/filters', () => {
       ];
 
       return store.dispatch(Actions.changeQ('transformers! robots in disguise')).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
+
+  describe('changeQ with a 4x4 that maps to a view', () => {
+    beforeEach(() => {
+      ceteraStub = stubCeteraQuery();
+      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+      ceteraAssetCountsStub.restore();
+    });
+
+    it('searches by 4x4 and clears the existing sort', () => {
+      const store = mockStore({
+        filters: { q: null },
+        catalog: { order: { ascending: false, value: 'name' } }
+      });
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CHANGE_SORT_ORDER', order: undefined },
+        { type: 'CHANGE_PAGE', pageNumber: 1 },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+      ];
+
+      return store.dispatch(Actions.changeQ('asdf-1234')).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
+
+  describe('changeQ with a 4x4 that does not map to a view', () => {
+    beforeEach(() => {
+      customMockCeteraResponse = _.assign({}, mockCeteraResponse,
+        { results: [], resultSetSize: 0 });
+      ceteraStub = sinon.stub(ceteraUtils, 'query')
+        .onFirstCall().callsFake(_.constant(Promise.resolve(customMockCeteraResponse)))
+        .onSecondCall().callsFake(_.constant(Promise.resolve(mockCeteraResponse)))
+      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+      ceteraAssetCountsStub.restore();
+    });
+
+    it('searches by 4x4 and clears the existing sort', () => {
+      const store = mockStore({
+        filters: { q: null },
+        catalog: { order: { ascending: false, value: 'name' } }
+      });
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: customMockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'FETCH_RESULTS' },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CHANGE_Q', value: 'asdf-1234' },
+        { type: 'CHANGE_SORT_ORDER', order: undefined },
+        { type: 'CHANGE_PAGE', pageNumber: 1 },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+      ];
+
+      return store.dispatch(Actions.changeQ('asdf-1234')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });

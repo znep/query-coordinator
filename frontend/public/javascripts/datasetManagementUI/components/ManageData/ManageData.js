@@ -6,24 +6,11 @@ import { Link } from 'react-router';
 import * as Links from 'links';
 import styles from './ManageData.scss';
 
-function query(entities, revisionSeq) {
-  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
-
-  const outputColumns = currentOutputSchema
-    ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
-    : [];
-
-  return {
-    hasMetadata: !!_.values(entities.views)[0].description, // TODO: do we want to have this be more strict?
-    hasData: entities.sources.length > 0,
-    anyColumnHasDescription: outputColumns.some(outputColumn => outputColumn.description)
-  };
-}
-
 const ManageData = ({ entities, columnsExist, params }) => {
   const revisionSeq = _.toNumber(params.revisionSeq);
-  const { anyColumnHasDescription } = query(entities, revisionSeq);
-
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
+  const outputColumns = Selectors.columnsForOutputSchema(entities, currentOutputSchema.id);
+  const anyColumnHasDescription = outputColumns.some(outputColumn => outputColumn.description);
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
   const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;
 
@@ -31,7 +18,6 @@ const ManageData = ({ entities, columnsExist, params }) => {
   const visualizationDoneCheckmark = null;
   const featuredDoneCheckmark = null;
 
-  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const columnDescriptionLink = currentOutputSchema
     ? Links.columnMetadataForm(params, currentOutputSchema.id)
     : '';

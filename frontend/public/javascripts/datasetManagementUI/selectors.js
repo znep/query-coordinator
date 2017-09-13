@@ -30,14 +30,7 @@ export function currentRevision(entities, revisionSeq) {
 
 export function currentOutputSchema(entities, revisionSeq) {
   const revision = currentRevision(entities, revisionSeq);
-  if (!_.isNumber(revision.output_schema_id)) {
-    return latestOutputSchema(entities);
-  }
   return entities.output_schemas[revision.output_schema_id];
-}
-
-function latestOutputSchema(entities) {
-  return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
 export function latestSource(entities) {

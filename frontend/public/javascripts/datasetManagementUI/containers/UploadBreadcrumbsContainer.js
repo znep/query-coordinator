@@ -4,13 +4,14 @@ import { withRouter } from 'react-router';
 import UploadBreadcrumbs from 'components/UploadBreadcrumbs/UploadBreadcrumbs';
 import * as Selectors from 'selectors';
 
-export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
+export const mapStateToProps = ({ entities, ui }, { atShowUpload, params }) => {
   const source = Selectors.latestSource(entities);
+  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
   let currentOutputSchema = { id: null };
   let currentInputSchema = { id: null };
   let sourceId = null;
 
-  if (source) {
+  if (source && revision) {
     sourceId = source.id;
 
     const inputSchemaList = Object.keys(entities.input_schemas).map(
@@ -24,7 +25,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
       : null;
 
     currentOutputSchema = !_.isEmpty(outputSchemasForCurrentInputSchema)
-      ? _.maxBy(_.values(outputSchemasForCurrentInputSchema), 'id') // TODO: use revision current output schema if it's on this input schema
+      ? _.values(outputSchemasForCurrentInputSchema).find(os => os.id === revision.output_schema_id)
       : { id: null };
   }
 

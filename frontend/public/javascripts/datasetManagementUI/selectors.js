@@ -37,8 +37,8 @@ export function currentOutputSchema(entities, revisionSeq) {
 // need to discuss when we link the two (e.g. on upload vs on save)
 export function currentSource(entities, revisionSeq) {
   const os = currentOutputSchema(entities, revisionSeq);
-  const is = entities.input_schemas[os.input_schema_id];
-  return entities.sources[is.source_id];
+  const is = os ? entities.input_schemas[os.input_schema_id] : null;
+  return is ? entities.sources[is.source_id] : null;
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {

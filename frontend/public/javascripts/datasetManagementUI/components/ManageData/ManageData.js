@@ -9,7 +9,9 @@ import styles from './ManageData.scss';
 const ManageData = ({ entities, columnsExist, params }) => {
   const revisionSeq = _.toNumber(params.revisionSeq);
   const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
-  const outputColumns = Selectors.columnsForOutputSchema(entities, currentOutputSchema.id);
+  const outputColumns = currentOutputSchema
+    ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
+    : [];
   const anyColumnHasDescription = outputColumns.some(outputColumn => outputColumn.description);
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
   const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;

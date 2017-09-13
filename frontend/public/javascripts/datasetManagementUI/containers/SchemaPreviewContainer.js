@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router';
 import * as Links from 'links';

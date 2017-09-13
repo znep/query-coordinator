@@ -6,7 +6,7 @@ import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
 import { withRouter } from 'react-router';
 
-function isDataSatisfied({ entities }, { params }) {
+function isDataSatisfied({ entities }, params) {
   if (window.serverConfig.featureFlags.usaid_features_enabled) {
     return true;
   }
@@ -26,8 +26,8 @@ function isDataSatisfied({ entities }, { params }) {
   return dataSatisfied;
 }
 
-function mapStateToProps(state) {
-  const dataSatisfied = isDataSatisfied(state);
+function mapStateToProps(state, { params }) {
+  const dataSatisfied = isDataSatisfied(state, params);
 
   return {
     metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,

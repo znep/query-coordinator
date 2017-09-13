@@ -685,40 +685,22 @@ module.exports = {
       ['0.05', 5],
     ]
   },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND `plausibility` = \'10\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
+  // Anteater
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.05\') AND `plausibility` IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'grouping', 'measure'],
     rows: [
-      ['0.01', 3]
+      ['0.01', 10, 3],
+      ['0.05', 10, 7],
+      ['0.01', 9, 9],
+      ['0.05', 9, 11]
     ]
   },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND `plausibility` = \'10\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
+  // Beaver
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.05\') AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'grouping', 'measure'],
     rows: [
-      ['0.05', 7]
-    ]
-  },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND `plausibility` = \'9\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
-    rows: [
-      ['0.01', 9]
-    ]
-  },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND `plausibility` = \'9\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
-    rows: [
-      ['0.05', 11]
-    ]
-  },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND (`plausibility` != \'10\' OR `plausibility` IS NULL ) AND (`plausibility` != \'9\' OR `plausibility` IS NULL ) GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
-    rows: [
-      ['0.01', 100]
-    ]
-  },
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND (`plausibility` != \'10\' OR `plausibility` IS NULL ) AND (`plausibility` != \'9\' OR `plausibility` IS NULL ) GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'measure'],
-    rows: [
-      ['0.05', 200]
+      ['0.01', null, 100],
+      ['0.05', null, 200],
     ]
   }
 };

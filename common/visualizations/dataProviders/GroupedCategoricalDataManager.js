@@ -52,7 +52,7 @@ function getData(vif, options) {
     const dimensionQueryString = [
       'SELECT',
         `\`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},`,
-        `COUNT(*) AS ${SoqlHelpers.measureAlias()}`,
+        `${SoqlHelpers.aggregationClause(state.vif, 0, 'measure')} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `GROUP BY \`${state.columnName}\``,
       `ORDER BY ${aliasForOrderByParameter} ${orderBySort}`,

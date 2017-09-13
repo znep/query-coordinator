@@ -338,4 +338,29 @@ describe('GroupedCategoricalDataManager', () => {
       });
     });
   });
+
+  describe.only('when aggregating by sum', () => {
+
+    it('aggregates by sum, not count', () => {
+      const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+      vif.series[0].dataSource.measure = {
+        columnName: 'plausibility',
+        aggregationFunction: 'sum'
+      };
+      vif.configuration.showOtherCategory = false;
+      const expectedTable = {
+        columns: ['dimension', '10', '9', '(Other)'],
+        rows: [
+          ['0.05', 7, 11, 200],
+          ['0.01', 3, 9, 100]
+        ]
+      };
+      return GroupedCategoricalDataManager.getData(vif, {MAX_ROW_COUNT, MAX_GROUP_COUNT}).
+        then((response) => {
+          assert.deepEqual(response, expectedTable);
+        }).
+        catch(logAndThrow);
+    });
+
+  });
 });

@@ -720,5 +720,49 @@ module.exports = {
       ["0.01", 5]
 
     ]
+  },
+  // measure sum instead of count(*)
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 3': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.01', 10],
+      ['0.05', 5],
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND `plausibility` = \'10\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.01', 3]
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND `plausibility` = \'10\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.05', 7]
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND `plausibility` = \'9\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.01', 9]
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND `plausibility` = \'9\' GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.05', 11]
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.01\' AND (`plausibility` != \'10\' OR `plausibility` IS NULL ) AND (`plausibility` != \'9\' OR `plausibility` IS NULL ) GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.01', 100]
+    ]
+  },
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` = \'0.05\' AND (`plausibility` != \'10\' OR `plausibility` IS NULL ) AND (`plausibility` != \'9\' OR `plausibility` IS NULL ) GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['0.05', 200]
+    ]
   }
 };

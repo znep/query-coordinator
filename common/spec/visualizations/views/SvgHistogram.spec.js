@@ -217,6 +217,33 @@ describe('SvgHistogram', function() {
     });
   });
 
+  describe('when rendered in different sized containers', () => {
+    afterEach( () => {
+      removeHistogram(histogram);
+    });
+
+    it('should have 11 ticks for wide viewports', () => {
+      histogram = createHistogram();
+      histogram.chart.render(null, testData);
+      var ticks = $('.tick', $('.x')[0]);
+      expect(ticks.length).to.equal(11);
+    });
+
+    it('should have 6 ticks for medium viewports', () => {
+      histogram = createHistogram(420);
+      histogram.chart.render(null, testData);
+      var ticks = $('.tick', $('.x')[0]);
+      expect(ticks.length).to.equal(6);
+    });
+
+    it('should have 3 ticks for small viewports', () => {
+      histogram = createHistogram(400);
+      histogram.chart.render(null, testData);
+      var ticks = $('.tick', $('.x')[0]);
+      expect(ticks.length).to.equal(3);
+    });
+  });
+
   describe('when configured wrong', () => {
     afterEach(function() {
       removeHistogram(histogram);

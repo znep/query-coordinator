@@ -15,7 +15,7 @@ import {
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
-  LEGEND_BAR_HEIGHT  
+  LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
 const MARGINS = {
@@ -37,6 +37,8 @@ const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
 const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
+const SMALL_VIEWPORT_WIDTH = 440; // Not including margins, y-axis, or padding.
+const MIN_TICK_WIDTH = 80; // Rough minimum size for a tick label to avoid overlap.
 
 // Just a safeguard; the data fetching code should never make a huge # of buckets.
 const MAX_BUCKET_COUNT = 500;
@@ -72,7 +74,7 @@ function SvgHistogram($element, vif, options) {
   var d3DimensionXScale;
   var d3YScale;
   let referenceLines;
-  
+
   _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
@@ -249,6 +251,10 @@ function SvgHistogram($element, vif, options) {
         tickFormat(function(d) { return utils.formatNumber(d); }).
         outerTickSize(0);
 
+      if (viewportWidth < SMALL_VIEWPORT_WIDTH) {
+        d3XAxis.ticks(Math.ceil(viewportWidth / MIN_TICK_WIDTH));
+      }
+
       // d3's log scale potentially generates a large number of ticks.
       // Couldn't figure a way of limiting them sanely, so we'll just
       // generate 5 evenly-spaced ticks to use.
@@ -397,11 +403,11 @@ function SvgHistogram($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
       // when at the bottom edge.  All the other lines are rendered in normal positions.
       const getYPosition = (referenceLine) => {
-        if (referenceLine.value == maxYValue) { 
+        if (referenceLine.value == maxYValue) {
           return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
         } else if (referenceLine.value == minYValue) {
           return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
@@ -828,7 +834,7 @@ function SvgHistogram($element, vif, options) {
     renderSeries();
     renderYAxis();
     renderReferenceLines();
-    
+
     /**
      * 6. Set up event handlers for mouse interactions.
      */

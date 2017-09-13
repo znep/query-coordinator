@@ -12,6 +12,12 @@ describe('ShowUpload page', () => {
     inProgress: false
   };
 
+  const ownProps = {
+    params: {
+      revisionSeq: '0'
+    }
+  }
+
   const component = shallow(<ShowUpload {...defaultProps} />);
 
   it('renders a modal', () => {
@@ -39,7 +45,7 @@ describe('ShowUpload page', () => {
 
   it('sets inProgress to false if there is no source', () => {
     const newState = dotProp.set(state, 'entities.sources', {});
-    const { inProgress } = mapStateToProps(newState);
+    const { inProgress } = mapStateToProps(newState, ownProps);
     assert.isFalse(inProgress);
   });
 
@@ -52,7 +58,7 @@ describe('ShowUpload page', () => {
         callParams: { id: sourceId }
       }
     });
-    const { inProgress } = mapStateToProps(newState);
+    const { inProgress } = mapStateToProps(newState, ownProps);
     assert.isTrue(inProgress);
   });
 });

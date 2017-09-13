@@ -17,33 +17,28 @@ export function rowsUpserted(entities, taskSetId) {
   if (!taskSet || !taskSet.log) {
     return 0;
   }
-  // TODO: upate status here to reflect new DSMAPI changes
+  // TODO: update status here to reflect new DSMAPI changes
   const rowItems = taskSet.log
     .filter(logItem => logItem.stage === 'rows_upserted')
     .map(logItem => logItem.details.count);
   return _.max(rowItems) || 0;
 }
 
-export function latestRevision(entities) {
-  // TODO: this selector should go away for revisionless DSMUI
-  // and be replaced by getting it from the URL
-  return _.maxBy(_.values(entities.revisions), 'id');
+export function currentRevision(entities, revisionSeq) {
+  return _.values(entities.revisions).find(rev => rev.revision_seq === revisionSeq);
 }
 
-export function currentOutputSchema(entities) {
-  const revision = latestRevision(entities);
-  if (!_.isNumber(revision.output_schema_id)) {
-    return latestOutputSchema(entities);
-  }
+export function currentOutputSchema(entities, revisionSeq) {
+  const revision = currentRevision(entities, revisionSeq);
   return entities.output_schemas[revision.output_schema_id];
 }
 
-function latestOutputSchema(entities) {
-  return _.maxBy(_.values(entities.output_schemas), 'id');
-}
-
-export function latestSource(entities) {
-  return _.maxBy(_.values(entities.sources), 'id');
+// TODO: prob do some backend work to put sourceId on the revision
+// need to discuss when we link the two (e.g. on upload vs on save)
+export function currentSource(entities, revisionSeq) {
+  const os = currentOutputSchema(entities, revisionSeq);
+  const is = os ? entities.input_schemas[os.input_schema_id] : null;
+  return is ? entities.sources[is.source_id] : null;
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {

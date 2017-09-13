@@ -5,10 +5,20 @@ import state from '../data/initialState';
 import dotProp from 'dot-prop-immutable';
 
 describe('containers/UploadSidebarContainer', () => {
+  const ownProps = {
+    params: {
+      revisionSeq: '0'
+    }
+  };
+
   it('splits out a current upload when there is one', () => {
     const entities = {
       revisions: {
-        0: { id: 0, output_schema_id: 0 }
+        0: {
+          id: 0,
+          output_schema_id: 0,
+          revision_seq: 0
+        }
       },
       sources: {
         0: { id: 0 },
@@ -22,7 +32,7 @@ describe('containers/UploadSidebarContainer', () => {
       }
     };
 
-    const { currentUpload, otherUploads } = mapStateToProps({ entities });
+    const { currentUpload, otherUploads } = mapStateToProps({ entities }, ownProps);
     assert.deepEqual(currentUpload, {
       id: 0
     });
@@ -33,15 +43,20 @@ describe('containers/UploadSidebarContainer', () => {
     // rare case where there is no output_schema_id on the revision
     const entities = {
       revisions: {
-        0: { id: 0, output_schema_id: null }
+        0: {
+          id: 0,
+          output_schema_id: null,
+          revision_seq: 0
+        }
       },
       sources: {
         0: { id: 0 },
         1: { id: 1 }
-      }
+      },
+      output_schemas: {}
     };
 
-    const { currentUpload, otherUploads } = mapStateToProps({ entities });
+    const { currentUpload, otherUploads } = mapStateToProps({ entities }, ownProps);
     assert.isNull(currentUpload);
     assert.deepEqual(otherUploads, [{ id: 0 }, { id: 1 }]);
   });
@@ -52,7 +67,7 @@ describe('containers/UploadSidebarContainer', () => {
       sources: {},
       output_schemas: {}
     }));
-    const { currentUpload, otherUploads } = mapStateToProps(newState);
+    const { currentUpload, otherUploads } = mapStateToProps(newState, ownProps);
     assert.isNull(currentUpload);
     assert.equal(otherUploads.length, 0);
   });

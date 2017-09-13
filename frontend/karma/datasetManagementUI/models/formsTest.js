@@ -65,7 +65,7 @@ describe('models/forms', () => {
 
   describe('validateColumnForm', () => {
     it('returns an empty array if valid', () => {
-      const outputSchemaId = Selectors.currentOutputSchema(state.entities).id;
+      const outputSchemaId = Selectors.currentOutputSchema(state.entities, 0).id;
       const res = FormModel.validateColumnForm(outputSchemaId, state.entities);
 
       assert.deepEqual(res, []);
@@ -77,7 +77,7 @@ describe('models/forms', () => {
         `output_columns.${2125}.field_name`,
         'intake_date'
       );
-      const outputSchemaId = Selectors.currentOutputSchema(state.entities).id;
+      const outputSchemaId = Selectors.currentOutputSchema(state.entities, 0).id;
       const res = FormModel.validateColumnForm(outputSchemaId, invalidEntities);
 
       const expectedRes = [

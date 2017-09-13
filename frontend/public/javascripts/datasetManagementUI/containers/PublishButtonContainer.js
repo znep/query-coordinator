@@ -4,15 +4,17 @@ import PublishButton from 'components/PublishButton/PublishButton';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
+import { withRouter } from 'react-router';
 
-function isDataSatisfied(state) {
+function isDataSatisfied({ entities }, params) {
   if (window.serverConfig.featureFlags.usaid_features_enabled) {
     return true;
   }
   let dataSatisfied;
-  const outputSchema = Selectors.currentOutputSchema(state.entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   if (outputSchema) {
-    const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
+    const columns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
     dataSatisfied = Selectors.allTransformsDone(columns);
   } else {
     dataSatisfied = false;
@@ -20,8 +22,8 @@ function isDataSatisfied(state) {
   return dataSatisfied;
 }
 
-function mapStateToProps(state) {
-  const dataSatisfied = isDataSatisfied(state);
+function mapStateToProps(state, { params }) {
+  const dataSatisfied = isDataSatisfied(state, params);
 
   return {
     metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
@@ -46,4 +48,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishButton);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishButton));

@@ -1,4 +1,5 @@
 /* eslint react/jsx-indent: 0 */
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
@@ -32,9 +33,9 @@ export const ShowUpload = ({ inProgress, goHome }) =>
     </Modal>
   </div>;
 
-export const mapStateToProps = ({ entities, ui }) => {
+export const mapStateToProps = ({ entities, ui }, { params }) => {
   // selector returns undefined if there are no sources
-  const source = Selectors.latestSource(entities);
+  const source = Selectors.currentSource(entities, _.toNumber(params.revisionSeq));
   let apiCall = [];
 
   if (source && source.id) {

@@ -197,7 +197,7 @@ const mapStateToProps = ({ entities, ui }, ownProps) => {
   } else if (revision && revision.output_schema_id) {
     outputSchemaId = revision.output_schema_id;
   } else {
-    const os = Selectors.currentOutputSchema(entities);
+    const os = Selectors.currentOutputSchema(entities, _.toNumber(ownProps.params.revisionSeq));
     outputSchemaId = os ? os.id : null;
   }
 

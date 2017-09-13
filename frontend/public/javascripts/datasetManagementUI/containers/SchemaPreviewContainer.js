@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router';
 import * as Links from 'links';
@@ -7,7 +8,8 @@ import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';
 
 function mapStateToProps({ entities }, { params }) {
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
 
   if (currentOutputSchema) {
     const columns = Selectors.columnsForOutputSchema(entities, currentOutputSchema.id).map(column => {

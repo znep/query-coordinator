@@ -106,7 +106,8 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
   let child;
   const tasksExist = doTasksExist(entities);
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
-  const os = Selectors.currentOutputSchema(entities);
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const os = Selectors.currentOutputSchema(entities, revisionSeq);
 
   if (tasksExist && allTasksSucceeded && os) {
     child = <UpsertCompleteView view={view} outputSchema={os} />;

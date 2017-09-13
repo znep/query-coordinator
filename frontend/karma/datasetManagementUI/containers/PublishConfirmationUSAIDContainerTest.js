@@ -5,6 +5,12 @@ import state from '../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 
 describe('containers/PublishConfirmationUSAIDContainer', () => {
+  const ownProps = {
+    params: {
+      revisionSeq: '0'
+    }
+  }
+
   before(() => {
     window.serverConfig.featureFlags.usaid_features_enabled = true;
   });
@@ -13,13 +19,8 @@ describe('containers/PublishConfirmationUSAIDContainer', () => {
     window.serverConfig.featureFlags.usaid_features_enabled = false;
   });
 
-  it('gets the current outputSchemaId from the store', () => {
-    const props = mapStateToProps(state);
-    assert.equal(props.outputSchemaId, 152);
-  });
-
   it('disables the publish button if any revision updates are in progress', () => {
-    const props = mapStateToProps(state);
+    const props = mapStateToProps(state, ownProps);
     assert.isFalse(props.btnDisabled);
 
     const newState = dotProp.set(state, 'ui.apiCalls', {
@@ -37,12 +38,12 @@ describe('containers/PublishConfirmationUSAIDContainer', () => {
       }
     });
 
-    const newProps = mapStateToProps(newState);
+    const newProps = mapStateToProps(newState, ownProps);
     assert.isTrue(newProps.btnDisabled);
   });
 
   it('correctly figures out which selector is seleced from store', () => {
-    const props = mapStateToProps(state);
+    const props = mapStateToProps(state, ownProps);
     assert.isTrue(props.publicSelected);
   });
 });

@@ -198,18 +198,6 @@ describe('Selectors', () => {
       assert.equal(Selectors.currentOutputSchema(entities), undefined);
     });
 
-    it('defaults to latest output schema if there is no output_schema_id on the revision', () => {
-      const entities = {
-        revisions: {
-          0: { id: 0 }
-        },
-        output_schemas: {
-          1: { id: 1 }
-        }
-      };
-      assert.deepEqual(Selectors.currentOutputSchema(entities), { id: 1 });
-    });
-
     it('returns undefined if theRevision.output_schema_id is null', () => {
       const entities = {
         revisions: {

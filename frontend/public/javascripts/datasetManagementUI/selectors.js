@@ -17,7 +17,7 @@ export function rowsUpserted(entities, taskSetId) {
   if (!taskSet || !taskSet.log) {
     return 0;
   }
-  // TODO: upate status here to reflect new DSMAPI changes
+  // TODO: update status here to reflect new DSMAPI changes
   const rowItems = taskSet.log
     .filter(logItem => logItem.stage === 'rows_upserted')
     .map(logItem => logItem.details.count);
@@ -33,8 +33,12 @@ export function currentOutputSchema(entities, revisionSeq) {
   return entities.output_schemas[revision.output_schema_id];
 }
 
-export function latestSource(entities) {
-  return _.maxBy(_.values(entities.sources), 'id');
+// TODO: prob do some backend work to put sourceId on the revision
+// need to discuss when we link the two (e.g. on upload vs on save)
+export function currentSource(entities, revisionSeq) {
+  const os = currentOutputSchema(entities, revisionSeq);
+  const is = entities.input_schemas[os.input_schema_id];
+  return entities.sources[is.source_id];
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {

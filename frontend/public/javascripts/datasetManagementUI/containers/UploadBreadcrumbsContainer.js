@@ -5,8 +5,9 @@ import UploadBreadcrumbs from 'components/UploadBreadcrumbs/UploadBreadcrumbs';
 import * as Selectors from 'selectors';
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload, params }) => {
-  const source = Selectors.latestSource(entities);
-  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
+  const rseq = _.toNumber(params.revisionSeq);
+  const source = Selectors.currentSource(entities, rseq);
+  const revision = Selectors.currentRevision(entities, rseq);
   let currentOutputSchema = { id: null };
   let currentInputSchema = { id: null };
   let sourceId = null;

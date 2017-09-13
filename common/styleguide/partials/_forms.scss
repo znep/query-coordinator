@@ -70,7 +70,7 @@
     font-family: "Open Sans", "Helvetica", Arial, sans-serif;
     padding: ms(-6);
     margin-bottom: ms(-1);
-    line-height: 1;
+    line-height: normal;
 
     &:focus {
       outline: auto 5px -webkit-focus-ring-color;

@@ -339,7 +339,7 @@ describe('GroupedCategoricalDataManager', () => {
     });
   });
 
-  describe.only('when aggregating by sum', () => {
+  describe('when aggregating by sum', () => {
 
     it('aggregates by sum, not count', () => {
       const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);

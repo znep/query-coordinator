@@ -3582,7 +3582,7 @@ en:
         connectors_description: Manage data and metadata connections with third-party providers
         dataset_routing_and_approval: Routing and Approval
         dataset_routing_and_approval_description: Define the dataset approval process and manage a queue of submitted assets
-        datasets: Asset Inventory
+        datasets: Assets
         datasets_description: Create, review, and manage all assets on your Socrata site
         dataslate_pages: DataSlate Pages
         dataslate_pages_description: Manage DataSlate reports and pages

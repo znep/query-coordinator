@@ -164,7 +164,7 @@ module InternalAssetManagerHelper
   end
 
   def current_tab_is_my_assets
-    params.fetch(:tab, 'myAssets') == 'myAssets'
+    params.fetch(:tab, 'allAssets') == 'myAssets'
   end
 
 end

@@ -1,9 +1,6 @@
 import _ from 'lodash';
-import { FeatureFlags } from 'common/feature_flags';
 
-const defaultTab = () => (
-  FeatureFlags.value('enable_internal_asset_manager_my_assets') ? 'myAssets' : 'allAssets'
-);
+const defaultTab = () => 'allAssets';
 
 const getInitialState = () => ({
   activeTab: _.get(window, 'initialState.initialFilters.tab') || defaultTab()

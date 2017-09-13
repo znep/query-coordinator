@@ -72,15 +72,6 @@ export function treeForOutputSchema(entities, outputSchemaId) {
   };
 }
 
-// TODO: delete this once DSMAPI websocket change goes in
-export function allTransformsDoneOld(columnsWithTransforms, inputSchema) {
-  return columnsWithTransforms.every(
-    column =>
-      !_.isUndefined(column.transform.contiguous_rows_processed) &&
-      column.transform.contiguous_rows_processed === inputSchema.total_rows
-  );
-}
-
 export function allTransformsDone(columnsWithTransforms = []) {
   return columnsWithTransforms
     .map(col => !!col.transform.completed_at)

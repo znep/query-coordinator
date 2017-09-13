@@ -593,15 +593,6 @@ module.exports = _.defaultsDeep({
     'internal-metrics': [
       './screens/internal-metrics.js'
     ],
-    'screen-login-signup': [
-      './plugins/lab.js',
-      './util/asset-loading.js',
-      './screens/login-shared.js',
-      './screens/signup-screen.js'
-    ],
-    'screen-login-auth0': [
-      './screens/login-auth0.js'
-    ],
     'screen-forgot-password': [
       './screens/forgot-password-screen.js'
     ],

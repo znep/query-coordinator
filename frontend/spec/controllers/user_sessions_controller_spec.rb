@@ -23,6 +23,8 @@ describe UserSessionsController do
   describe 'POST /login' do
     before do
       allow(subject).to receive(:current_user_session).and_return(nil)
+      allow(CurrentDomain).to receive(:configuration).with('auth0').and_return(nil)
+      allow(CurrentDomain).to receive(:default_locale).and_return('en')
     end
 
     it 'redirects to profile normally' do
@@ -69,7 +71,6 @@ describe UserSessionsController do
 
     describe 'with Auth0' do
       before do
-        allow(subject).to receive(:use_auth0?).and_return(true)
         allow(subject).to receive(:should_auth0_redirect?).and_return(false)
       end
 
@@ -91,7 +92,6 @@ describe UserSessionsController do
     describe 'with referer' do
       before do
         allow(subject).to receive(:current_user_session).and_return(nil)
-        allow(subject).to receive(:use_auth0?).and_return(false)
         allow(CurrentDomain).to receive(:configuration).with('auth0').and_return(nil)
         allow(CurrentDomain).to receive(:default_locale).and_return('en')
       end

@@ -14,12 +14,8 @@ function isDataSatisfied({ entities }, params) {
   const revisionSeq = _.toNumber(params.revisionSeq);
   const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   if (outputSchema) {
-    // TODO: delete old stuff once dsmapi websocket change goes in
-    const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-
     const columns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
-    dataSatisfied =
-      Selectors.allTransformsDone(columns) || Selectors.allTransformsDoneOld(columns, inputSchema);
+    dataSatisfied = Selectors.allTransformsDone(columns);
   } else {
     dataSatisfied = false;
   }

@@ -177,11 +177,6 @@ module Auth0Helper
     render :json => connections.to_json
   end
 
-  def use_auth0_component(view, request)
-    flags = FeatureFlags.derive(view, request)
-    flags.use_auth0 && flags.use_auth0_component
-  end
-
   def transform_connections(source)
     source.map do |connection|
       domain_aliases = connection.fetch('options', {}).fetch('domain_aliases', [])
@@ -237,8 +232,6 @@ module Auth0Helper
   end
 
   def process_auth0_config
-    return unless use_auth0?
-
     set_auth0_variables_from_config(CurrentDomain.configuration('auth0').try(:properties))
   end
 
@@ -257,19 +250,15 @@ module Auth0Helper
 
   def get_database_connection
     # we only care about the database connection in production
-    if AUTH0_DATABASE_CONNECTION.nil?
-      if Rails.env.production?
-        throw 'AUTH0_DATABASE_CONNECTION environment variable is not set! It should be set to the proper custom database connection to use for username/password logins.'
-      elsif Rails.env.development?
-        'not_applicable'
-      end
+    if AUTH0_DATABASE_CONNECTION.nil? && Rails.env.production?
+      throw 'AUTH0_DATABASE_CONNECTION environment variable is not set! It should be set to the proper custom database connection to use for username/password logins.'
     else
       AUTH0_DATABASE_CONNECTION
     end
   end
 
   def username_password_login?
-    Rails.env.development? || feature?('username_password_login') == true
+    FeatureFlags.derive(nil, request).use_auth0 == false || feature?('username_password_login') == true
   end
 
   def sanitized_email_and_screen_name

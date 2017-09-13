@@ -481,9 +481,6 @@
     "name" : "govstat_progress_settings",
     "value" : "true"
   }, {
-    "name" : "use_auth0",
-    "value" : "false"
-  }, {
     "name" : "feature_map_disable_pan_zoom",
     "value" : "false"
   }, {

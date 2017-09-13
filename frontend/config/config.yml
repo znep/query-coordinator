@@ -132,6 +132,7 @@ development: &development
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
+  auth0_database_connection: Username-Password-Staging
 
   roles_admin_faq_url: https://google.com
 

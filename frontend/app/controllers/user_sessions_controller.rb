@@ -156,16 +156,10 @@ class UserSessionsController < ApplicationController
     # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
     # superset of superadmins.
     # This is enforced in the javascript but we have to enforce it here as well.
-    if Rails.env.production? && params[:user_session][:login].include?('@socrata.com')
-      if feature?('fedramp')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
-        redirect_to login_url and return
-      end
-
-      unless feature?('socrata_emails_bypass_auth0')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
-        redirect_to login_url and return
-      end
+    # TODO figure out if this is ACTUALLY needed EN-18829
+    if params[:user_session][:login].include?('@socrata.com') && feature?('fedramp')
+      flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
+      redirect_to login_url and return
     end
   end
 

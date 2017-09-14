@@ -1,13 +1,16 @@
 import _ from 'lodash';
-import React from 'react';
-import { CustomizationTab } from './CustomizationTab';
+import React, { Component, PropTypes } from 'react';
+import CustomizationTab from './CustomizationTab';
 
-export var CustomizationTabs = React.createClass({
-  propTypes: {
-    tabs: React.PropTypes.array,
-    selection: React.PropTypes.string,
-    onTabNavigation: React.PropTypes.func
-  },
+export class CustomizationTabs extends React.Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'tabAttributes',
+      'tab'
+    ]);
+  }
 
   tabAttributes(tab) {
     return {
@@ -18,11 +21,11 @@ export var CustomizationTabs = React.createClass({
       selected: this.props.selection === tab.id,
       onTabNavigation: this.props.onTabNavigation
     };
-  },
+  }
 
-  tab(tab) {
+  tab (tab) {
     return <CustomizationTab {...this.tabAttributes(tab)} />;
-  },
+  }
 
   render() {
     return (
@@ -31,6 +34,12 @@ export var CustomizationTabs = React.createClass({
       </ul>
     );
   }
-});
+}
+
+CustomizationTabs.propTypes = {
+  tabs: PropTypes.array,
+  selection: PropTypes.string,
+  onTabNavigation: PropTypes.func
+};
 
 export default CustomizationTabs;

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 
@@ -28,12 +28,17 @@ import {
   hasRegions
 } from '../selectors/metadata';
 
-export var RegionSelector = React.createClass({
-  propTypes: {
-    vifAuthoring: PropTypes.object,
-    metadata: PropTypes.object,
-    onSelectRegion: PropTypes.func
-  },
+export class RegionSelector extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'onSelectRegion',
+      'renderRegionProcessingMessage',
+      'renderRegionProcessingError',
+      'renderSelector'
+    ]);
+  }
 
   onSelectRegion({computedColumn, curatedRegion, domain}) {
     var {
@@ -54,7 +59,7 @@ export var RegionSelector = React.createClass({
         curatedRegion
       );
     }
-  },
+  }
 
   renderRegionProcessingMessage() {
     var {
@@ -78,7 +83,7 @@ export var RegionSelector = React.createClass({
         </div>
       );
     }
-  },
+  }
 
   renderRegionProcessingError() {
     var { regionCodingError } = this.props.vifAuthoring.authoring;
@@ -90,7 +95,7 @@ export var RegionSelector = React.createClass({
         </div>
       );
     }
-  },
+  }
 
   renderSelector() {
     var { metadata, vifAuthoring } = this.props;
@@ -137,7 +142,7 @@ export var RegionSelector = React.createClass({
         {this.renderRegionProcessingError()}
       </div>
     );
-  },
+  }
 
   render() {
     var { metadata, vifAuthoring } = this.props;
@@ -149,7 +154,13 @@ export var RegionSelector = React.createClass({
       this.renderSelector() :
       null;
   }
-});
+}
+
+RegionSelector.propTypes = {
+  vifAuthoring: PropTypes.object,
+  metadata: PropTypes.object,
+  onSelectRegion: PropTypes.func
+};
 
 
 function mapStateToProps(state) {

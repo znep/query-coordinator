@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { components } from 'common/visualizations';
 
@@ -27,25 +27,31 @@ import {
   isInsertableVisualization
 } from '../selectors/vifAuthoring';
 
-export var VisualizationPreview = React.createClass({
-  propTypes: {
-    vif: React.PropTypes.object,
-    vifAuthoring: React.PropTypes.object
-  },
+export class VisualizationPreview extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'onCenterAndZoomChanged',
+      'onDimensionLabelAreaSizeChanged',
+      'isVifValid',
+      'renderVisualization'
+    ]);
+  }
 
   componentDidMount() {
     $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
-  },
+  }
 
   componentWillUnmount() {
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
-  },
+  }
 
   shouldComponentUpdate(nextProps) {
     const { vif } = this.props;
@@ -63,19 +69,19 @@ export var VisualizationPreview = React.createClass({
     } else {
       return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
     }
-  },
+  }
 
   onCenterAndZoomChanged(event) {
     const centerAndZoom = _.get(event, 'originalEvent.detail');
     this.props.onCenterAndZoomChanged(centerAndZoom);
-  },
+  }
 
   onDimensionLabelAreaSizeChanged(event) {
     const width = _.get(event, 'originalEvent.detail');
     if (_.isFinite(width)) {
       this.props.onDimensionLabelAreaSizeChanged(width);
     }
-  },
+  }
 
   isVifValid() {
     const { vifAuthoring } = this.props;
@@ -95,7 +101,7 @@ export var VisualizationPreview = React.createClass({
       isValidFeatureMap ||
       isValidRegionMap ||
       isValidHistogram;
-  },
+  }
 
   renderVisualization() {
     const { vif, vifAuthoring } = this.props;
@@ -105,7 +111,7 @@ export var VisualizationPreview = React.createClass({
     return hasType && hasDimension && this.isVifValid() ?
       <components.Visualization vif={vif} /> :
       null;
-  },
+  }
 
   render() {
     const previewClasses = classNames('visualization-preview', {
@@ -118,7 +124,12 @@ export var VisualizationPreview = React.createClass({
       </div>
     );
   }
-});
+}
+
+VisualizationPreview.propTypes = {
+  vif: PropTypes.object,
+  vifAuthoring: PropTypes.object
+};
 
 function mapStateToProps(state) {
   return {

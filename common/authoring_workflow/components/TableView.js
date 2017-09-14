@@ -1,14 +1,21 @@
+import _ from 'lodash';
 import $ from 'jquery';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { getDatasetLink, getDatasetName, hasData } from '../selectors/metadata';
 import { VisualizationRenderer } from 'common/visualizations';
 import I18n from 'common/i18n';
 
-export var TableView = React.createClass({
-  propTypes: {
-    metadata: React.PropTypes.object
-  },
+export class TableView extends React.Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderBasedOn',
+      'renderTableView',
+
+    ]);
+  }
 
   componentDidMount() {
     var { metadata } = this.props;
@@ -16,7 +23,7 @@ export var TableView = React.createClass({
     if (hasData(metadata)) {
       this.renderTableView();
     }
-  },
+  }
 
   componentDidUpdate() {
     var { metadata } = this.props;
@@ -24,7 +31,7 @@ export var TableView = React.createClass({
     if (hasData(metadata)) {
       this.renderTableView();
     }
-  },
+  }
 
   renderBasedOn() {
     var { metadata } = this.props;
@@ -34,7 +41,7 @@ export var TableView = React.createClass({
         <a href={getDatasetLink(metadata)} target="_blank">{getDatasetName(metadata)}</a>
       </span>
     );
-  },
+  }
 
   renderTableView() {
     var { vif } = this.props;
@@ -44,7 +51,7 @@ export var TableView = React.createClass({
     } else {
       this.tableRenderer = new VisualizationRenderer(vif, this.tableView);
     }
-  },
+  }
 
   render() {
     var { metadata } = this.props;
@@ -59,7 +66,11 @@ export var TableView = React.createClass({
       </div>
     );
   }
-});
+}
+
+TableView.propTypes = {
+  metadata: PropTypes.object
+};
 
 function mapStateToProps(state) {
   return {

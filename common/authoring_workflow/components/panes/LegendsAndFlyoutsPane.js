@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
@@ -35,12 +35,25 @@ import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
 
-export const LegendsAndFlyoutsPane = React.createClass({
-  propTypes: {
-    onChangeUnitOne: React.PropTypes.func,
-    onChangeUnitOther: React.PropTypes.func,
-    vifAuthoring: React.PropTypes.object
-  },
+export class LegendsAndFlyoutsPane extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderUnits',
+      'renderUnitsForSeries',
+      'renderLegends',
+      'renderRegionMapControls',
+      'renderBarChartControls',
+      'renderColumnChartControls',
+      'renderPieChartControls',
+      'renderHistogramControls',
+      'renderTimelineChartControls',
+      'renderFeatureMapControls',
+      'renderRowInspectorTitleColumnOption',
+      'renderEmptyPane'
+    ]);
+  }
 
   renderUnits() {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
@@ -86,7 +99,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         {unitControls}
       </AccordionPane>
     );
-  },
+  }
 
   renderUnitsForSeries(seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) {
     const containerAttributes = {
@@ -118,7 +131,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
@@ -147,31 +160,31 @@ export const LegendsAndFlyoutsPane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   renderRegionMapControls() {
     return this.renderUnits();
-  },
+  }
 
   renderBarChartControls() {
     return [this.renderUnits(), this.renderLegends()];
-  },
+  }
 
   renderColumnChartControls() {
     return [this.renderUnits(), this.renderLegends()];
-  },
+  }
 
   renderPieChartControls() {
     return [this.renderUnits(), this.renderLegends()];
-  },
+  }
 
   renderHistogramControls() {
     return [this.renderUnits(), this.renderLegends()];
-  },
+  }
 
   renderTimelineChartControls() {
     return [this.renderUnits(), this.renderLegends()];
-  },
+  }
 
   renderFeatureMapControls() {
     const { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
@@ -201,7 +214,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     );
 
     return [this.renderUnits(), rowInspector];
-  },
+  }
 
   renderRowInspectorTitleColumnOption(option) {
     const columnType = _.find(COLUMN_TYPES, {type: option.type});
@@ -212,11 +225,11 @@ export const LegendsAndFlyoutsPane = React.createClass({
         <span className={icon}></span> {option.title}
       </div>
     );
-  },
+  }
 
   renderEmptyPane() {
     return <EmptyPane />;
-  },
+  }
 
   render() {
     let configuration;
@@ -252,7 +265,13 @@ export const LegendsAndFlyoutsPane = React.createClass({
       return null;
     }
   }
-});
+}
+
+LegendsAndFlyoutsPane.propTypes = {
+  onChangeUnitOne: PropTypes.func,
+  onChangeUnitOther: PropTypes.func,
+  vifAuthoring: PropTypes.object
+};
 
 function mapStateToProps(state) {
   return {

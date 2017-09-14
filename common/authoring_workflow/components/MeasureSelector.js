@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { factories, Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
@@ -24,34 +24,37 @@ import {
 import { hasData, getValidMeasures } from '../selectors/metadata';
 import BlockLabel from './shared/BlockLabel';
 
-export const MeasureSelector = React.createClass({
-  propTypes: {
-    vifAuthoring: PropTypes.object,
-    metadata: PropTypes.object,
-    onAddMeasure: PropTypes.func,
-    onRemoveMeasure: PropTypes.func,
-    onSetMeasureColumn: PropTypes.func,
-    onSetMeasureAggregation: PropTypes.func,
-  },
+export class MeasureSelector extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return { aggregationTypes: AGGREGATION_TYPES };
-  },
+    this.state = { isSeriesPending:  false };
 
-  getInitialState() {
-    return { isSeriesPending:  false };
-  },
+    _.bindAll(this, [
+      'renderMeasureSelectors',
+      'renderPendingMeasureSelector',
+      'renderMeasureSelector',
+      'renderMeasureAggregationSelector',
+      'renderMeasureOption',
+      'renderDeleteMeasureLink',
+      'renderAddMeasureLink',
+      'handleOnClickAddMeasure',
+      'handleOnClickDeleteMeasure',
+      'handleOnSelectionMeasureColumn',
+      'handleOnSelectionMeasureAggregation'
+    ]);
+  }
 
   componentDidUpdate() {
     if (this.selector) {
       new factories.FlyoutFactory(this.selector);
     }
-  },
+  }
 
   render() {
     const { metadata } = this.props;
     return hasData(metadata) ? this.renderMeasureSelectors() : null;
-  },
+  }
 
   renderMeasureSelectors() {
     const { metadata, vifAuthoring } = this.props;
@@ -91,7 +94,7 @@ export const MeasureSelector = React.createClass({
         {addMeasureLink}
       </div>
     );
-  },
+  }
 
   renderPendingMeasureSelector(seriesIndex, options) {
     const { vifAuthoring } = this.props;
@@ -119,7 +122,7 @@ export const MeasureSelector = React.createClass({
         {deleteMeasureLink}
       </li>
     );
-  },
+  }
 
   renderMeasureSelector(measure, seriesIndex, options) {
     const { vifAuthoring } = this.props;
@@ -149,7 +152,7 @@ export const MeasureSelector = React.createClass({
         {deleteMeasureLink}
       </li>
     );
-  },
+  }
 
   renderMeasureAggregationSelector(measure, seriesIndex) {
     const { aggregationTypes, vifAuthoring } = this.props;
@@ -176,7 +179,7 @@ export const MeasureSelector = React.createClass({
         <Dropdown {...measureAggregationAttributes} />
       </div>
     );
-  },
+  }
 
   renderMeasureOption(option) {
     const columnType = _.find(COLUMN_TYPES, { type: option.type });
@@ -187,7 +190,7 @@ export const MeasureSelector = React.createClass({
         <span className={icon}></span> {option.title}
       </div>
     );
-  },
+  }
 
   renderDeleteMeasureLink(seriesIndex) {
     const { vifAuthoring } = this.props;
@@ -206,7 +209,7 @@ export const MeasureSelector = React.createClass({
         </a>
       </div>) : 
       null;
-  },
+  }
 
   renderAddMeasureLink() {
     const { vifAuthoring } = this.props;
@@ -234,12 +237,12 @@ export const MeasureSelector = React.createClass({
         </a>
       </div>) :
       null;
-  },
+  }
 
   handleOnClickAddMeasure() {
     this.setState({ isSeriesPending: true });
-  },
-  
+  }
+
   handleOnClickDeleteMeasure(seriesIndex) {
     const { onRemoveMeasure } = this.props;
     const { isSeriesPending } = this.state;
@@ -250,7 +253,7 @@ export const MeasureSelector = React.createClass({
     else {
       onRemoveMeasure(seriesIndex);
     }
-  },
+  }
 
   handleOnSelectionMeasureColumn(seriesIndex, option) {
     const { onAddMeasure, onSetMeasureColumn, vifAuthoring } = this.props;
@@ -267,13 +270,24 @@ export const MeasureSelector = React.createClass({
 
       onSetMeasureColumn(seriesIndex, option.value);
     }
-  },
+  }
 
   handleOnSelectionMeasureAggregation(seriesIndex, option) {
     const { onSetMeasureAggregation } = this.props;
     onSetMeasureAggregation(seriesIndex, option.value);
-  },
-});
+  }
+}
+
+MeasureSelector.propTypes = {
+  vifAuthoring: PropTypes.object,
+  metadata: PropTypes.object,
+  onAddMeasure: PropTypes.func,
+  onRemoveMeasure: PropTypes.func,
+  onSetMeasureColumn: PropTypes.func,
+  onSetMeasureAggregation: PropTypes.func,
+};
+
+MeasureSelector.defaultProps = { aggregationTypes: AGGREGATION_TYPES };
 
 function mapStateToProps(state) {
   const { vifAuthoring, metadata } = state;

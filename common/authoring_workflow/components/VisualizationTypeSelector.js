@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { factories } from 'common/components';
 import I18n from 'common/i18n';
 
@@ -22,24 +22,24 @@ import {
   hasRegions
 } from '../selectors/metadata';
 
-export const VisualizationTypeSelector = React.createClass({
-  propTypes: {
-    vifAuthoring: PropTypes.object,
-    metadata: PropTypes.object,
-    onSelectVisualizationType: PropTypes.func
-  },
+export class VisualizationTypeSelector extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      visualizationTypes: VISUALIZATION_TYPES
-    }
-  },
+    _.bindAll(this, [
+      'onClickVisualizationType',
+      'renderVisualizationTypeFlyout',
+      'renderEmptyRegionAlert',
+      'renderVisualizationTypeButton',
+      'renderVisualizationTypeSelector'
+    ]);
+  }
 
   componentDidUpdate() {
     if (this.selector) {
       new factories.FlyoutFactory(this.selector);
     }
-  },
+  }
 
   onClickVisualizationType(visualizationType) {
     return () => {
@@ -61,7 +61,7 @@ export const VisualizationTypeSelector = React.createClass({
         setDimensionToLocation(_.get(getAnyLocationColumn(metadata), 'fieldName', null));
       }
     };
-  },
+  }
 
   renderVisualizationTypeFlyout(visualizationType, isRecommended) {
     const recommendedLabel = (
@@ -96,7 +96,7 @@ export const VisualizationTypeSelector = React.createClass({
         </section>
       </div>
     );
-  },
+  }
 
   renderEmptyRegionAlert() {
     const { metadata, vifAuthoring } = this.props;
@@ -116,10 +116,9 @@ export const VisualizationTypeSelector = React.createClass({
         </div>
       </div>
     ) : null;
-  },
+  }
 
   renderVisualizationTypeButton(visualizationType) {
-
     const { metadata, vifAuthoring } = this.props;
     const recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
     const isRecommended = _.some(recommendedVisualizationTypes, {type: visualizationType});
@@ -144,7 +143,7 @@ export const VisualizationTypeSelector = React.createClass({
         {flyout}
       </button>
     );
-  },
+  }
 
   renderVisualizationTypeSelector() {
     const attributes = {
@@ -168,7 +167,7 @@ export const VisualizationTypeSelector = React.createClass({
         <div className="visualization-type-gutter" />
       </div>
     );
-  },
+  }
 
   render() {
     const { metadata } = this.props;
@@ -184,7 +183,17 @@ export const VisualizationTypeSelector = React.createClass({
       return null;
     }
   }
-});
+}
+
+VisualizationTypeSelector.propTypes = {
+  vifAuthoring: PropTypes.object,
+  metadata: PropTypes.object,
+  onSelectVisualizationType: PropTypes.func
+};
+
+VisualizationTypeSelector.defaultProps = {
+  visualizationTypes: VISUALIZATION_TYPES
+};
 
 function mapStateToProps(state) {
   const { vifAuthoring, metadata } = state;

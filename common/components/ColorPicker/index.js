@@ -1,44 +1,36 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import classNames from 'classnames';
-import React from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import I18n from 'common/i18n';
 import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from 'common/keycodes';
 
-export const ColorPicker = React.createClass({
-  propTypes: {
-    id: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.array,
-      React.PropTypes.object
-    ]),
-    palette: React.PropTypes.array,
-    handleColorChange: React.PropTypes.func,
-    bucketRevealDirection: React.PropTypes.string
-  },
+export class ColorPicker extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      type: 'single',
-      value: '#204490',
-      palette: [
-        '#204490', '#9A2600', '#B26B00', '#006A01', '#6B176C', '#006A8B', '#9B2D52', '#457800',
-        '#2F62CF', '#DE3700', '#FF9A00', '#009802', '#9A229B', '#0098C8', '#DF4176', '#64AC00',
-        '#6D91DD', '#E7734D', '#FFB84D', '#4DB74E', '#B864B9', '#4DB7D8', '#E87A9F', '#92C54D'
-      ],
-      handleColorChange: _.noop
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       selectedColor: this.props.value,
       showingBuckets: false
     };
-  },
+
+    _.bindAll(this, [
+      'componentWillReceiveProps',
+      'componentDidUpdate',
+      'onClickColorFrame',
+      'onClickBucket',
+      'onClose',
+      'onChangeInputColor',
+      'onKeyDownColorPicker',
+      'onKeyUpColorPicker',
+      'onKeyUpColorBucket',
+      'onKeyDownColorBucket',
+      'onKeyUpHexInput',
+      'renderColorBucket',
+      'renderColorBuckets',
+      'renderColorFrame',
+      'renderColorPickerOverlay'
+    ]);
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
@@ -46,19 +38,19 @@ export const ColorPicker = React.createClass({
         selectedColor: nextProps.value
       });
     }
-  },
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.showingBuckets && this.state.showingBuckets) {
       this.colorBucketsRef.focus();
     }
-  },
+  }
 
   onClickColorFrame() {
     this.setState({
       showingBuckets: !this.state.showingBuckets
     });
-  },
+  }
 
   onClickBucket(selectedColor) {
     this.setState({
@@ -68,13 +60,13 @@ export const ColorPicker = React.createClass({
 
     this.props.handleColorChange(selectedColor);
     this.colorPickerRef.focus();
-  },
+  }
 
   onClose() {
     this.setState({
       showingBuckets: false
     });
-  },
+  }
 
   onChangeInputColor(e) {
     const selectedColor = e.target.value;
@@ -85,11 +77,11 @@ export const ColorPicker = React.createClass({
     }
 
     this.setState({ selectedColor });
-  },
+  }
 
   onKeyDownColorPicker(event) {
     isolateEventByKeys(event, [DOWN]);
-  },
+  }
 
   onKeyUpColorPicker(event) {
     const { keyCode } = event;
@@ -100,7 +92,7 @@ export const ColorPicker = React.createClass({
     } else if (keyCode === ESCAPE) {
       this.onClose();
     }
-  },
+  }
 
   onKeyUpColorBucket(color, event) {
     const { keyCode } = event;
@@ -111,11 +103,11 @@ export const ColorPicker = React.createClass({
     } else if (keyCode === ESCAPE) {
       this.onClose();
     }
-  },
+  }
 
   onKeyDownColorBucket(event) {
     isolateEventByKeys(event, [ENTER, SPACE]);
-  },
+  }
 
   onKeyUpHexInput(event) {
     const { keyCode } = event;
@@ -128,7 +120,7 @@ export const ColorPicker = React.createClass({
     } else if (keyCode === ESCAPE) {
       this.onClose();
     }
-  },
+  }
 
   renderColorBucket(color, key) {
     const isSelectedColor = color === this.state.selectedColor;
@@ -149,7 +141,7 @@ export const ColorPicker = React.createClass({
     };
 
     return <div {...attributes}></div>;
-  },
+  }
 
   renderColorBuckets() {
     const { palette, bucketRevealDirection } = this.props;
@@ -182,7 +174,7 @@ export const ColorPicker = React.createClass({
         <input {...hexInputAttributes} />
       </div>
     );
-  },
+  }
 
   renderColorFrame() {
     const { selectedColor } = this.state;
@@ -214,7 +206,7 @@ export const ColorPicker = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderColorPickerOverlay() {
     const colorOverlayClassName = classNames('color-picker-overlay', {
@@ -222,7 +214,7 @@ export const ColorPicker = React.createClass({
     });
 
     return <div className={colorOverlayClassName} onClick={this.onClose} role="button" />;
-  },
+  }
 
   render() {
     const colorPickerAttributes = {
@@ -238,6 +230,29 @@ export const ColorPicker = React.createClass({
       </div>
     );
   }
-});
+}
+
+ColorPicker.propTypes = {
+  id: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object
+  ]),
+  palette: PropTypes.array,
+  handleColorChange: PropTypes.func,
+  bucketRevealDirection: PropTypes.string
+};
+
+ColorPicker.defaultProps = {
+  type: 'single',
+  value: '#204490',
+  palette: [
+    '#204490', '#9A2600', '#B26B00', '#006A01', '#6B176C', '#006A8B', '#9B2D52', '#457800',
+    '#2F62CF', '#DE3700', '#FF9A00', '#009802', '#9A229B', '#0098C8', '#DF4176', '#64AC00',
+    '#6D91DD', '#E7734D', '#FFB84D', '#4DB74E', '#B864B9', '#4DB7D8', '#E87A9F', '#92C54D'
+  ],
+  handleColorChange: _.noop
+};
 
 export default ColorPicker;

@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import I18n from 'common/i18n';
 import {
   hasDimensionGroupingColumnName,
@@ -11,14 +12,16 @@ import {
     setStacked
 } from '../actions';
 
-export const GroupedStackedSelector = React.createClass({
-  propTypes: {
-    metadata: PropTypes.object
-  },
+export class GroupedStackedSelector extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {};
-  },
+    _.bindAll(this, [
+      'renderGroupedContainer',
+      'renderStackedContainer',
+      'renderOneHundredPercentStackedContainer'
+    ]);
+  }
 
   render() {
     const { vifAuthoring } = this.props;
@@ -43,7 +46,7 @@ export const GroupedStackedSelector = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderGroupedContainer({ checked, disabled }) {
 
@@ -70,7 +73,7 @@ export const GroupedStackedSelector = React.createClass({
         {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.grouped`)}
       </div>
     );
-  },
+  }
 
   renderStackedContainer({ checked, disabled }) {
 
@@ -97,7 +100,7 @@ export const GroupedStackedSelector = React.createClass({
         {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.stacked`)}
       </div>
     );
-  },
+  }
 
   renderOneHundredPercentStackedContainer({ checked, disabled }) {
     const containerAttributes = {
@@ -124,7 +127,11 @@ export const GroupedStackedSelector = React.createClass({
       </div>
     );
   }
-});
+}
+
+GroupedStackedSelector.propTypes = {
+  metadata: PropTypes.object
+};
 
 const mapStateToProps = state => {
   const { vifAuthoring, metadata } = state;

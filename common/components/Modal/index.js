@@ -1,8 +1,6 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
-import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-
 import { ESCAPE, TAB, isolateEventByKeys, isOneOfKeys } from 'common/keycodes';
 import {
   focusFirstActionableElement,
@@ -12,28 +10,20 @@ import {
 
 const MOBILE_BREAKPOINT = 420;
 
-export const Modal = React.createClass({
-  propTypes: {
-    children: PropTypes.arrayOf(PropTypes.element),
-    className: PropTypes.string,
-    containerStyle: PropTypes.object,
-    fullScreen: PropTypes.bool,
-    onDismiss: PropTypes.func.isRequired,
-    overlay: PropTypes.bool,
-    overlayStyle: PropTypes.object
-  },
+export class Modal extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      className: null,
-      fullScreen: false,
-      overlay: true
-    };
-  },
+    _.bindAll(this, [
+      'computeState',
+      'checkDimensions',
+      'tryFocusTrap',
+      'tryEscDismiss',
+      'tryOverlayClickDismiss'
+    ]);
 
-  getInitialState() {
-    return this.computeState();
-  },
+    this.state = this.computeState();
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this.checkDimensions);
@@ -42,7 +32,7 @@ export const Modal = React.createClass({
     // Handle a11y focusing concerns
     this.previouslyFocusedElement = document.activeElement;
     focusFirstActionableElement(this.modalContainer);
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.checkDimensions);
@@ -52,17 +42,17 @@ export const Modal = React.createClass({
     if (this.previouslyFocusedElement) {
       this.previouslyFocusedElement.focus();
     }
-  },
+  }
 
   computeState() {
     return {
       forceFullScreen: window.innerWidth <= MOBILE_BREAKPOINT
     };
-  },
+  }
 
   checkDimensions() {
     this.setState(this.computeState());
-  },
+  }
 
   tryFocusTrap(event) {
     if (isOneOfKeys(event, [TAB])) {
@@ -79,7 +69,7 @@ export const Modal = React.createClass({
         firstActionableElement.focus();
       }
     }
-  },
+  }
 
   tryEscDismiss(event) {
     const { onDismiss } = this.props;
@@ -88,7 +78,7 @@ export const Modal = React.createClass({
     if (isOneOfKeys(event, [ESCAPE])) {
       onDismiss();
     }
-  },
+  }
 
   tryOverlayClickDismiss(event) {
     const { onDismiss } = this.props;
@@ -96,7 +86,7 @@ export const Modal = React.createClass({
     if (event.target === this.modalElement) {
       onDismiss();
     }
-  },
+  }
 
   render() {
     const { children, className, containerStyle, fullScreen, overlay, overlayStyle } = this.props;
@@ -124,7 +114,23 @@ export const Modal = React.createClass({
       </div>
     );
   }
-});
+}
+
+Modal.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element),
+  className: PropTypes.string,
+  containerStyle: PropTypes.object,
+  fullScreen: PropTypes.bool,
+  onDismiss: PropTypes.func.isRequired,
+  overlay: PropTypes.bool,
+  overlayStyle: PropTypes.object
+};
+
+Modal.defaultProps = {
+  className: null,
+  fullScreen: false,
+  overlay: true
+};
 
 export { default as ModalHeader } from './Header';
 export { default as ModalContent } from './Content';

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -28,64 +28,32 @@ import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import VisualizationTypeSelector from './VisualizationTypeSelector';
 import FilterBar from './FilterBar';
 
-export const AuthoringWorkflow = React.createClass({
-  propTypes: {
-    enableFiltering: React.PropTypes.bool,
-    vif: React.PropTypes.object,
-    onComplete: React.PropTypes.func,
-    onBack: React.PropTypes.func,
-    onReset: React.PropTypes.func,
-    onCancel: React.PropTypes.func,
-    tabs: React.PropTypes.array
-  },
+export class AuthoringWorkflow extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       currentTabSelection: 'authoring-data'
-    };
-  },
+    }
 
-  getDefaultProps() {
-    return {
-      enableFiltering: true,
-      onComplete: _.noop,
-      onBack: _.noop,
-      onReset: _.noop,
-      onCancel: _.noop,
-      tabs: [
-        {
-          id: 'authoring-data',
-          title: I18n.t('shared.visualizations.panes.data.title'),
-          paneComponent: DataPane,
-          icon: 'data'
-        },
-        {
-          id: 'authoring-axis-and-scale',
-          title: I18n.t('shared.visualizations.panes.axis_and_scale.title'),
-          paneComponent: AxisAndScalePane,
-          icon: 'axis-scale',
-        },
-        {
-          id: 'authoring-colors-and-style',
-          title: I18n.t('shared.visualizations.panes.presentation.title'),
-          paneComponent: PresentationPane,
-          icon: 'color'
-        },
-        {
-          id: 'authoring-legends-and-flyouts',
-          title: I18n.t('shared.visualizations.panes.legends_and_flyouts.title'),
-          paneComponent: LegendsAndFlyoutsPane,
-          icon: 'flyout-options'
-        }
-      ]
-    };
-  },
+    _.bindAll(this, [
+      'onComplete',
+      'confirmUserCanEscape',
+      'onCancel',
+      'onBack',
+      'onTabNavigation',
+      'scalingMode',
+      'renderFilterBar',
+      'renderBackButton',
+      'renderResetButton'
+    ]);
+  }
 
   componentDidMount() {
     const modalElement = ReactDOM.findDOMNode(this.modal);
     // Prevents the form from submitting and refreshing the page.
     $(modalElement).on('submit', _.constant(false));
-  },
+  }
 
   onComplete() {
     const { vifAuthoring, vif } = this.props;
@@ -94,14 +62,14 @@ export const AuthoringWorkflow = React.createClass({
       vif,
       filters: vifAuthoring.authoring.filters
     });
-  },
+  }
 
   confirmUserCanEscape() {
     const { vifAuthoring } = this.props;
     const message = I18n.t('shared.visualizations.modal.changes_made_confirmation');
     const changesMade = hasMadeChangesToVifs(vifAuthoring);
     return !changesMade || window.confirm(message);
-  },
+  }
 
   onCancel() {
     const { onCancel } = this.props;
@@ -109,7 +77,7 @@ export const AuthoringWorkflow = React.createClass({
     if (this.confirmUserCanEscape()) {
       onCancel();
     }
-  },
+  }
 
   onBack() {
     const { onBack } = this.props;
@@ -117,7 +85,7 @@ export const AuthoringWorkflow = React.createClass({
     if (this.confirmUserCanEscape()) {
       onBack();
     }
-  },
+  }
 
   onTabNavigation(event) {
     const href = event.target.getAttribute('href');
@@ -126,7 +94,7 @@ export const AuthoringWorkflow = React.createClass({
       event.preventDefault();
       this.setState({currentTabSelection: href.slice(1)});
     }
-  },
+  }
 
   scalingMode() {
     const checkboxAttributes = {
@@ -149,11 +117,11 @@ export const AuthoringWorkflow = React.createClass({
         </div>
       </form>
     );
-  },
+  }
 
   renderFilterBar() {
     return this.props.enableFiltering ? <FilterBar /> : null;
-  },
+  }
 
   renderBackButton() {
     const { backButtonText } = this.props;
@@ -164,7 +132,7 @@ export const AuthoringWorkflow = React.createClass({
           {backButtonText}
         </button>
       ) : null;
-  },
+  }
 
   renderResetButton() {
     const { backButtonText, onReset } = this.props;
@@ -182,7 +150,7 @@ export const AuthoringWorkflow = React.createClass({
         {I18n.t('shared.visualizations.common.reset_button_label')}
       </button>
     );
-  },
+  }
 
   render() {
     const { metadata, vifAuthoring, backButtonText } = this.props;
@@ -224,7 +192,7 @@ export const AuthoringWorkflow = React.createClass({
       </Modal>
     );
   }
-});
+}
 
 function mapStateToProps(state) {
   return {
@@ -243,5 +211,49 @@ function mapDispatchToProps(dispatch) {
     onReset: () => dispatch(resetState())
   };
 }
+
+AuthoringWorkflow.propTypes = {
+  enableFiltering: React.PropTypes.bool,
+  vif: React.PropTypes.object,
+  onComplete: React.PropTypes.func,
+  onBack: React.PropTypes.func,
+  onReset: React.PropTypes.func,
+  onCancel: React.PropTypes.func,
+  tabs: React.PropTypes.array
+};
+
+AuthoringWorkflow.defaultProps = {
+  enableFiltering: true,
+  onComplete: _.noop,
+  onBack: _.noop,
+  onReset: _.noop,
+  onCancel: _.noop,
+  tabs: [
+    {
+      id: 'authoring-data',
+      title: I18n.t('shared.visualizations.panes.data.title'),
+      paneComponent: DataPane,
+      icon: 'data'
+    },
+    {
+      id: 'authoring-axis-and-scale',
+      title: I18n.t('shared.visualizations.panes.axis_and_scale.title'),
+      paneComponent: AxisAndScalePane,
+      icon: 'axis-scale',
+    },
+    {
+      id: 'authoring-colors-and-style',
+      title: I18n.t('shared.visualizations.panes.presentation.title'),
+      paneComponent: PresentationPane,
+      icon: 'color'
+    },
+    {
+      id: 'authoring-legends-and-flyouts',
+      title: I18n.t('shared.visualizations.panes.legends_and_flyouts.title'),
+      paneComponent: LegendsAndFlyoutsPane,
+      icon: 'flyout-options'
+    }
+  ]
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflow);

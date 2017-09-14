@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Picklist from '../Picklist';
 import SocrataIcon from '../SocrataIcon';
@@ -9,18 +7,26 @@ import { getIconForDataType } from 'common/icons';
 import I18n from 'common/i18n';
 import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from 'common/keycodes';
 
-export const AddFilter = React.createClass({
-  propTypes: {
-    columns: PropTypes.arrayOf(PropTypes.object),
-    onClickColumn: PropTypes.func.isRequired
-  },
+export class AddFilter extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       isChoosingColumn: false,
       searchTerm: ''
     };
-  },
+
+    _.bindAll(this, [
+      'onChangeSearchTerm',
+      'onClickColumn',
+      'onKeyDownAddFilterButton',
+      'toggleColumnPicklist',
+      'renderColumnOption',
+      'renderColumnContainer',
+      'renderPicklist',
+      'renderSearch'
+    ]);
+  }
 
   componentDidMount() {
     this.bodyClickHandler = (event) => {
@@ -39,21 +45,21 @@ export const AddFilter = React.createClass({
 
     document.body.addEventListener('click', this.bodyClickHandler);
     document.body.addEventListener('keyup', this.bodyEscapeHandler);
-  },
+  }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.bodyClickHandler);
     document.body.removeEventListener('keyup', this.bodyEscapeHandler);
-  },
+  }
 
   onChangeSearchTerm(event) {
     this.setState({ searchTerm: event.target.value });
-  },
+  }
 
   onClickColumn(column) {
     this.props.onClickColumn(column);
     this.toggleColumnPicklist();
-  },
+  }
 
   onKeyDownAddFilterButton(event) {
     isolateEventByKeys(event, [ENTER, SPACE]);
@@ -61,7 +67,7 @@ export const AddFilter = React.createClass({
     if (isOneOfKeys(event, [ENTER, SPACE])) {
       this.toggleColumnPicklist(event);
     }
-  },
+  }
 
   toggleColumnPicklist(event) {
     if (event) {
@@ -69,7 +75,7 @@ export const AddFilter = React.createClass({
     }
 
     this.setState({ isChoosingColumn: !this.state.isChoosingColumn });
-  },
+  }
 
   renderColumnOption(column) {
     return (option) => (
@@ -78,7 +84,7 @@ export const AddFilter = React.createClass({
         <span>{option.title}</span>
       </div>
     );
-  },
+  }
 
   renderColumnContainer() {
     const { isChoosingColumn } = this.state;
@@ -97,7 +103,7 @@ export const AddFilter = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderPicklist() {
     const { columns } = this.props;
@@ -135,7 +141,7 @@ export const AddFilter = React.createClass({
         </div>
       );
     }
-  },
+  }
 
   renderSearch() {
     const { searchTerm } = this.state;
@@ -152,7 +158,7 @@ export const AddFilter = React.createClass({
           onChange={this.onChangeSearchTerm} />
       </div>
     );
-  },
+  }
 
   render() {
     const button = (
@@ -172,6 +178,11 @@ export const AddFilter = React.createClass({
       </div>
     );
   }
-});
+}
+
+AddFilter.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.object),
+  onClickColumn: PropTypes.func.isRequired
+};
 
 export default AddFilter;

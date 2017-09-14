@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import CalendarDateFilter from './CalendarDateFilter';
@@ -14,36 +12,30 @@ import I18n from 'common/i18n';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/keycodes';
 import { getFilterToggleText } from './filters';
 
-export const FilterItem = React.createClass({
-  propTypes: {
-    filter: PropTypes.shape({
-      'function': PropTypes.string.isRequired,
-      columnName: PropTypes.string.isRequired,
-      arguments: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.arrayOf(PropTypes.object)
-      ]),
-      isHidden: PropTypes.bool
-    }).isRequired,
-    column: PropTypes.shape({
-      dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
-      name: PropTypes.string.isRequired
-    }).isRequired,
-    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
-    isReadOnly: PropTypes.bool.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    onClear: PropTypes.func,
-    isValidTextFilterColumnValue: PropTypes.func
-  },
+export class FilterItem extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       isControlOpen: false,
       isConfigOpen: false,
       isLeftAligned: false
     };
-  },
+
+    _.bindAll(this, [
+      'onKeyDownControl',
+      'onKeyDownConfig',
+      'onUpdate',
+      'onRemove',
+      'toggleControl',
+      'toggleConfig',
+      'closeAll',
+      'renderFilterConfig',
+      'renderFilterConfigToggle',
+      'renderFilterControl',
+      'renderFilterControlToggle'
+    ]);
+  }
 
   componentDidMount() {
     this.bodyClickHandler = (event) => {
@@ -93,12 +85,12 @@ export const FilterItem = React.createClass({
 
     document.body.addEventListener('click', this.bodyClickHandler);
     document.body.addEventListener('keyup', this.bodyEscapeHandler);
-  },
+  }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.bodyClickHandler);
     document.body.removeEventListener('keyup', this.bodyEscapeHandler);
-  },
+  }
 
   onKeyDownControl(event) {
     if (isOneOfKeys(event, [ENTER, SPACE])) {
@@ -106,7 +98,7 @@ export const FilterItem = React.createClass({
       event.preventDefault();
       this.toggleControl();
     }
-  },
+  }
 
   onKeyDownConfig(event) {
     if (isOneOfKeys(event, [ENTER, SPACE])) {
@@ -114,18 +106,18 @@ export const FilterItem = React.createClass({
       event.preventDefault();
       this.toggleConfig();
     }
-  },
+  }
 
   onUpdate(newFilter) {
     this.props.onUpdate(newFilter);
     this.closeAll();
     this.filterControlToggle.focus();
-  },
+  }
 
   onRemove(filter) {
     this.props.onRemove(filter);
     this.closeAll();
-  },
+  }
 
   toggleControl() {
     this.setState({
@@ -133,7 +125,7 @@ export const FilterItem = React.createClass({
       isConfigOpen: false,
       isLeftAligned: this.filterControlToggle.getBoundingClientRect().right < window.innerWidth / 2
     });
-  },
+  }
 
   toggleConfig() {
     this.setState({
@@ -141,14 +133,14 @@ export const FilterItem = React.createClass({
       isConfigOpen: !this.state.isConfigOpen,
       isLeftAligned: this.filterConfigToggle.getBoundingClientRect().right < window.innerWidth / 2
     });
-  },
+  }
 
   closeAll() {
     this.setState({
       isControlOpen: false,
       isConfigOpen: false
     });
-  },
+  }
 
   renderFilterConfig() {
     const { filter, onUpdate } = this.props;
@@ -165,7 +157,7 @@ export const FilterItem = React.createClass({
     };
 
     return <FilterConfig {...configProps} />;
-  },
+  }
 
   renderFilterConfigToggle() {
     const { isReadOnly } = this.props;
@@ -196,7 +188,7 @@ export const FilterItem = React.createClass({
         </span>
       </div>
     );
-  },
+  }
 
   renderFilterControl() {
     const { isControlOpen } = this.state;
@@ -242,7 +234,7 @@ export const FilterItem = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   renderFilterControlToggle() {
     const { filter, column } = this.props;
@@ -270,7 +262,7 @@ export const FilterItem = React.createClass({
         </span>
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -287,6 +279,28 @@ export const FilterItem = React.createClass({
       </div>
     );
   }
-});
+}
+
+FilterItem.propTypes = {
+  filter: PropTypes.shape({
+    'function': PropTypes.string.isRequired,
+    columnName: PropTypes.string.isRequired,
+    arguments: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
+    isHidden: PropTypes.bool
+  }).isRequired,
+  column: PropTypes.shape({
+    dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+  isReadOnly: PropTypes.bool.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onClear: PropTypes.func,
+  isValidTextFilterColumnValue: PropTypes.func
+};
 
 export default FilterItem;

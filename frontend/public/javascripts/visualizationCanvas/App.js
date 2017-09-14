@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
@@ -20,20 +20,27 @@ const SHARE_BUTTON_ENABLED = {
   edit: FeatureFlags.value('visualization_canvas_embed_button') !== 'never'
 };
 
-export const App = React.createClass({
-  propTypes: {
-    mode: PropTypes.oneOf([ModeStates.EDIT, ModeStates.PREVIEW, ModeStates.VIEW]).isRequired
-  },
+export class App extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'setSiteChromeVisibility',
+      'renderEditMode',
+      'renderPreviewMode',
+      'renderViewMode'
+    ]);
+  }
 
   componentDidMount() {
     this.setSiteChromeVisibility();
-  },
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.mode !== this.props.mode) {
       this.setSiteChromeVisibility();
     }
-  },
+  }
 
   setSiteChromeVisibility() {
     const { mode } = this.props;
@@ -61,7 +68,7 @@ export const App = React.createClass({
       default:
         return;
     }
-  },
+  }
 
   renderEditMode() {
     return (
@@ -79,7 +86,7 @@ export const App = React.createClass({
         <FeedbackPanel {...window.serverConfig} />
       </div>
     );
-  },
+  }
 
   renderPreviewMode() {
     return (
@@ -95,7 +102,7 @@ export const App = React.createClass({
         <ShareVisualizationModal />
       </div>
     );
-  },
+  }
 
   renderViewMode() {
     return (
@@ -110,7 +117,7 @@ export const App = React.createClass({
         <ShareVisualizationModal />
       </div>
     );
-  },
+  }
 
   render() {
     const { mode } = this.props;
@@ -124,7 +131,11 @@ export const App = React.createClass({
         throw new Error(`invalid mode: ${mode}`);
     }
   }
-});
+}
+
+App.propTypes = {
+  mode: PropTypes.oneOf([ModeStates.EDIT, ModeStates.PREVIEW, ModeStates.VIEW]).isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'mode');

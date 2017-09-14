@@ -1,66 +1,41 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-
 import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from 'common/keycodes';
 
-export const Picklist = React.createClass({
-  propTypes: {
-    // A top-level HTML id attribute for easier selection.
-    id: React.PropTypes.string,
-    // Disables option selection.
-    disabled: React.PropTypes.bool,
-    // Sets the initial value when provided.
-    value: React.PropTypes.string,
-    options: React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        // Used to render the option title.
-        title: React.PropTypes.string,
-        // Used for value comparisons during selection.
-        value: React.PropTypes.string,
-        // Used to visually group similar options.
-        // This value is UI text and should be human-friendly.
-        group: React.PropTypes.string,
-        // Receives the relevant option and
-        // must return a DOM-renderable value.
-        render: React.PropTypes.func
-      })
-    ),
-    // Calls a function after user selection.
-    onSelection: React.PropTypes.func,
-    // Calls a function after user navigation.
-    onChange: React.PropTypes.func,
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func,
-    size: React.PropTypes.oneOf(['small', 'medium', 'large'])
-  },
+export class Picklist extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      disabled: false,
-      options: [],
-      onSelection: _.noop,
-      onChange: _.noop,
-      onFocus: _.noop,
-      onBlur: _.noop,
-      size: 'large',
-      value: null
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       selectedIndex: -1,
       selectedOption: null,
       focused: false
     };
-  },
+
+    _.bindAll(this, [
+      'onClickOption',
+      'onKeyUpSelection',
+      'onKeyUpBlur',
+      'onKeyUp',
+      'onKeyDown',
+      'onMouseDownOption',
+      'onFocus',
+      'onBlur',
+      'setNavigationPointer',
+      'setSelectedOptionBasedOnValue',
+      'setSelectedOption',
+      'setChangedOption',
+      'setScrollPositionToOption',
+      'blur',
+      'move',
+      'renderOption'
+    ]);
+  }
 
   componentWillMount() {
     this.setSelectedOptionBasedOnValue(this.props);
-  },
+  }
 
   componentDidMount() {
     if (this.state.selectedOption) {
@@ -71,13 +46,13 @@ export const Picklist = React.createClass({
       this.setScrollPositionToOption(index);
       this.setNavigationPointer(index);
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
       this.setSelectedOptionBasedOnValue(nextProps);
     }
-  },
+  }
 
   onClickOption(selectedOption, event) {
     const optionElements = this.picklist.querySelectorAll('.picklist-option');
@@ -98,7 +73,7 @@ export const Picklist = React.createClass({
 
     this.setNavigationPointer(index);
     this.setSelectedOption(selectedOption);
-  },
+  }
 
   onKeyUpSelection(event) {
     const { disabled, onSelection } = this.props;
@@ -123,42 +98,42 @@ export const Picklist = React.createClass({
       default:
         break;
     }
-  },
+  }
 
   onKeyUpBlur(event) {
     if (event.keyCode === ESCAPE) {
       this.picklist.blur();
     }
-  },
+  }
 
   onKeyUp(event) {
     isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
 
     this.onKeyUpSelection(event);
     this.onKeyUpBlur(event);
-  },
+  }
 
   onKeyDown(event) {
     isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
-  },
+  }
 
   onMouseDownOption(event) {
     event.preventDefault();
-  },
+  }
 
   onFocus() {
     this.props.onFocus();
     this.setState({ focused: true });
-  },
+  }
 
   onBlur() {
     this.props.onBlur();
     this.setState({ focused: false });
-  },
+  }
 
   setNavigationPointer(selectedIndex) {
     this.setState({ selectedIndex });
-  },
+  }
 
   setSelectedOptionBasedOnValue(props) {
     const { options, value } = props;
@@ -168,17 +143,17 @@ export const Picklist = React.createClass({
       selectedOption: props.options[selectedOptionIndex],
       selectedIndex: selectedOptionIndex
     });
-  },
+  }
 
   setSelectedOption(selectedOption) {
     this.setState({ selectedOption });
     this.props.onSelection(selectedOption);
-  },
+  }
 
   setChangedOption(selectedOption) {
     this.setState({ selectedOption });
     this.props.onChange(selectedOption);
-  },
+  }
 
   setScrollPositionToOption(picklistOptionIndex) {
     const picklist = this.picklist;
@@ -189,11 +164,11 @@ export const Picklist = React.createClass({
     const picklistOptionTop = picklistOption.getBoundingClientRect().top;
 
     this.picklist.scrollTop = (picklistOptionTop - picklistTop) - picklistCenter;
-  },
+  }
 
   blur() {
     this.picklist.blur();
-  },
+  };
 
   move(upOrDown) {
     let newIndex;
@@ -222,7 +197,7 @@ export const Picklist = React.createClass({
     this.setNavigationPointer(newIndex);
     this.setChangedOption(newSelectedOption);
     this.setScrollPositionToOption(newIndex);
-  },
+  }
 
   renderOption(option, index) {
     const { selectedOption } = this.state;
@@ -256,7 +231,7 @@ export const Picklist = React.createClass({
         {content}
       </div>
     );
-  },
+  }
 
   render() {
     const renderedOptions = [];
@@ -314,6 +289,47 @@ export const Picklist = React.createClass({
       </div>
     );
   }
-});
+}
+
+Picklist.propTypes = {
+  // A top-level HTML id attribute for easier selection.
+  id: PropTypes.string,
+  // Disables option selection.
+  disabled: PropTypes.bool,
+  // Sets the initial value when provided.
+  value: PropTypes.string,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      // Used to render the option title.
+      title: PropTypes.string,
+      // Used for value comparisons during selection.
+      value: PropTypes.string,
+      // Used to visually group similar options.
+      // This value is UI text and should be human-friendly.
+      group: PropTypes.string,
+      // Receives the relevant option and
+      // must return a DOM-renderable value.
+      render: PropTypes.func
+    })
+  ),
+  // Calls a function after user selection.
+  onSelection: PropTypes.func,
+  // Calls a function after user navigation.
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  size: PropTypes.oneOf(['small', 'medium', 'large'])
+};
+
+Picklist.defaultProps = {
+  disabled: false,
+  options: [],
+  onSelection: _.noop,
+  onChange: _.noop,
+  onFocus: _.noop,
+  onBlur: _.noop,
+  size: 'large',
+  value: null
+};
 
 export default Picklist;

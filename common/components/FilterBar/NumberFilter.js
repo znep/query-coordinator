@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Slider from '../Slider';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
@@ -10,18 +8,30 @@ import { ENTER, isolateEventByKeys } from 'common/keycodes';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 import { getDefaultFilterForColumn } from './filters';
 
-export const NumberFilter = React.createClass({
-  propTypes: {
-    filter: PropTypes.object.isRequired,
-    column: PropTypes.shape({
-      rangeMin: PropTypes.number.isRequired,
-      rangeMax: PropTypes.number.isRequired
-    }),
-    isReadOnly: PropTypes.bool,
-    onClickConfig: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired
-  },
+class NumberFilter extends Component {
+  constructor(props) {
+    super(props);
+
+    const { column, filter } = props;
+
+    _.bindAll(this, [
+      'getInitialState',
+      'onInputChange',
+      'onKeyUp',
+      'onSliderChange',
+      'onCheckboxChange',
+      'getStepInterval',
+      'updateValueState',
+      'shouldDisableApply',
+      'resetFilter',
+      'updateFilter',
+      'renderInputFields',
+      'renderSlider',
+      'renderNullValueCheckbox'
+    ]);
+
+    this.state = this.getInitialState();
+  }
 
   getInitialState() {
     const { column, filter } = this.props;
@@ -33,19 +43,19 @@ export const NumberFilter = React.createClass({
         includeNullValues: true
       })
     };
-  },
+  }
 
   componentDidMount() {
     if (this.firstInput) {
       this.firstInput.focus();
     }
-  },
+  }
 
   onInputChange({ target }) {
     this.updateValueState({
       [target.id]: _.toNumber(target.value)
     });
-  },
+  }
 
   onKeyUp(event) {
     isolateEventByKeys(event, [ENTER]);
@@ -53,23 +63,23 @@ export const NumberFilter = React.createClass({
     if (event.keyCode === ENTER && !this.shouldDisableApply()) {
       this.updateFilter();
     }
-  },
+  }
 
   onSliderChange(newValue) {
     this.updateValueState(newValue);
-  },
+  }
 
   onCheckboxChange(event) {
     this.updateValueState({
       includeNullValues: event.target.checked
     });
-  },
+  }
 
   getStepInterval() {
     const { rangeMin, rangeMax } = this.props.column;
 
     return _.min(_.map([rangeMin, rangeMax], getPrecision));
-  },
+  }
 
   updateValueState(updates) {
     this.setState({
@@ -78,13 +88,13 @@ export const NumberFilter = React.createClass({
         ...updates
       }
     });
-  },
+  }
 
   shouldDisableApply() {
     const { value } = this.state;
 
     return _.isEqual(value, this.getInitialState().value);
-  },
+  }
 
   resetFilter() {
     const { rangeMin, rangeMax } = this.props.column;
@@ -94,7 +104,7 @@ export const NumberFilter = React.createClass({
       end: rangeMax,
       includeNullValues: true
     });
-  },
+  }
 
   updateFilter() {
     const { column, filter, onUpdate } = this.props;
@@ -127,7 +137,7 @@ export const NumberFilter = React.createClass({
         }
       }));
     }
-  },
+  }
 
   renderInputFields() {
     const { value } = this.state;
@@ -160,7 +170,7 @@ export const NumberFilter = React.createClass({
           placeholder={I18n.t('shared.components.filter_bar.to')} />
       </div>
     );
-  },
+  }
 
   renderSlider() {
     const { column } = this.props;
@@ -181,7 +191,7 @@ export const NumberFilter = React.createClass({
     };
 
     return <Slider {...sliderProps} />;
-  },
+  }
 
   renderNullValueCheckbox() {
     const { value } = this.state;
@@ -207,7 +217,7 @@ export const NumberFilter = React.createClass({
         </div>
       </form>
     );
-  },
+  }
 
   render() {
     const { column, isReadOnly, onClickConfig, onRemove } = this.props;
@@ -238,6 +248,18 @@ export const NumberFilter = React.createClass({
       </div>
     );
   }
-});
+}
+
+NumberFilter.propTypes = {
+  filter: PropTypes.object.isRequired,
+  column: PropTypes.shape({
+    rangeMin: PropTypes.number.isRequired,
+    rangeMax: PropTypes.number.isRequired
+  }),
+  isReadOnly: PropTypes.bool,
+  onClickConfig: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
+}
 
 export default NumberFilter;

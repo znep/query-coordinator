@@ -1,76 +1,72 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import $ from 'jquery';
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import SocrataUtils from 'common/js_utils';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/keycodes';
 
-export default React.createClass({
-  propTypes: {
-    disabled: React.PropTypes.bool,
-    displayTrueWidthOptions: React.PropTypes.bool,
-    id: React.PropTypes.string,
-    onSelection: React.PropTypes.func,
-    options: React.PropTypes.arrayOf(React.PropTypes.object),
-    placeholder: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.func
-    ]),
-    size: React.PropTypes.oneOf(['small', 'medium', 'large']),
-    value: React.PropTypes.string
-  },
+class Dropdown extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      disabled: false,
-      onSelection: _.noop,
-      options: [],
-      placeholder: null,
-      size: 'large'
-    };
-  },
-
-  getInitialState() {
-    return {
-      selectedOption: this.getSelectedOption(this.props),
+    this.state = {
+      selectedOption: this.getSelectedOption(props),
       focused: false,
       opened: false,
       mousedDownOnOptions: false,
       keyupOnOptions: false
     };
-  },
+
+    _.bindAll(this, [
+      'onMouseDown',
+      'onAnyScroll',
+      'onClickPlaceholder',
+      'onFocusPlaceholder',
+      'onBlurPlaceholder',
+      'onKeyDownPlaceholder',
+      'onKeyUpPlaceholder',
+      'onFocusPicklist',
+      'onBlurPicklist',
+      'onClickOption',
+      'getSelectedOption',
+      'openPicklist',
+      'positionPicklist',
+      'toggleDocumentMouseDown',
+      'toggleIsolateScrolling',
+      'toggleScrollEvents',
+      'renderPlaceholder'
+    ]);
+  }
 
   componentDidMount() {
     this.toggleScrollEvents(true);
     this.toggleIsolateScrolling(true);
     this.toggleDocumentMouseDown(true);
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       selectedOption: this.getSelectedOption(nextProps)
     });
-  },
+  }
 
   componentWillUpdate() {
     this.positionPicklist();
-  },
+  }
 
   componentDidUpdate() {
     if (this.state.opened) {
       this.picklistRef.picklist.focus();
     }
-  },
+  }
 
   componentWillUnmount() {
     this.toggleScrollEvents(false);
     this.toggleIsolateScrolling(false);
     this.toggleDocumentMouseDown(false);
-  },
+  }
 
   /**
    * Safari and IE blur when the scrollbar is clicked to initiate
@@ -85,7 +81,7 @@ export default React.createClass({
     }
 
     this.setState({ mousedDownOnOptions });
-  },
+  }
 
   /**
    * Looks up the DOM tree from the target and determine if the
@@ -101,16 +97,16 @@ export default React.createClass({
         this.setState({ opened: false });
       }
     }
-  },
+  }
 
   onClickPlaceholder() {
     this.onAnyScroll();
     this.setState({ opened: !this.state.opened });
-  },
+  }
 
   onFocusPlaceholder() {
     this.setState({ focused: true });
-  },
+  }
 
   /**
    * The state variable mousedDownOnOptions determines
@@ -127,11 +123,11 @@ export default React.createClass({
     }
 
     this.setState({ mousedDownOnOptions: false });
-  },
+  }
 
   onKeyDownPlaceholder(event) {
     isolateEventByKeys(event, [DOWN, SPACE]);
-  },
+  }
 
   onKeyUpPlaceholder(event) {
     isolateEventByKeys(event, [DOWN, SPACE]);
@@ -141,28 +137,28 @@ export default React.createClass({
     } else if (isOneOfKeys(event, [DOWN, SPACE])) {
       this.openPicklist();
     }
-  },
+  }
 
   onFocusPicklist() {
     this.setState({ focused: false });
-  },
+  }
 
   onBlurPicklist() {
     this.setState({ focused: true, opened: false });
     if (this.placeholderRef) {
       this.placeholderRef.focus();
     }
-  },
+  }
 
   onClickOption(selectedOption) {
     this.props.onSelection(selectedOption);
     this.setState({ selectedOption, focused: true, opened: false });
-  },
+  }
 
   getSelectedOption(props) {
     const { value, options } = props;
     return _.find(options, { value }) || null;
-  },
+  }
 
   openPicklist() {
     const { options } = this.props;
@@ -172,7 +168,7 @@ export default React.createClass({
       opened: true,
       selectedOption
     });
-  },
+  }
 
   positionPicklist() {
     const hasOptions = this.optionsRef &&
@@ -208,11 +204,11 @@ export default React.createClass({
         this.optionsRef.style.width = `${containerDimensions.width}px`;
       }
     }
-  },
+  }
 
   toggleDocumentMouseDown(onOrOff) {
     document[onOrOff ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
-  },
+  }
 
   /**
    * When scrolling the options, we don't want the outer containers
@@ -221,7 +217,7 @@ export default React.createClass({
    */
   toggleIsolateScrolling(onOrOff) {
     SocrataUtils.isolateScrolling($(this.optionsRef), onOrOff);
-  },
+  }
 
   /**
    * Places scrolling event listeners on all ancestors that are scrollable.
@@ -261,7 +257,7 @@ export default React.createClass({
 
     // Apply/remove scrolling events on the window as well.
     toggleEvents(window);
-  },
+  }
 
   renderPlaceholder() {
     let { placeholder } = this.props;
@@ -305,7 +301,7 @@ export default React.createClass({
     };
 
     return <div {...attributes}>{icon}{placeholder}</div>;
-  },
+  }
 
   render() {
     const { disabled, id, options, size } = this.props;
@@ -351,4 +347,28 @@ export default React.createClass({
       </div>
     );
   }
-});
+}
+
+Dropdown.propTypes = {
+  disabled: PropTypes.bool,
+  displayTrueWidthOptions: PropTypes.bool,
+  id: PropTypes.string,
+  onSelection: PropTypes.func,
+  options: PropTypes.arrayOf(PropTypes.object),
+  placeholder: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  value: PropTypes.string
+};
+
+Dropdown.defaultProps = {
+  disabled: false,
+  onSelection: _.noop,
+  options: [],
+  placeholder: null,
+  size: 'large'
+};
+
+export default Dropdown;

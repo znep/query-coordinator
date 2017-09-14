@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import I18n from 'common/i18n';
 
 import {
@@ -25,18 +25,24 @@ import DebouncedInput from './shared/DebouncedInput';
 import GroupedStackedSelector from './GroupedStackedSelector';
 import TimelinePrecisionSelector from './TimelinePrecisionSelector';
 
-export const DisplayOptions = React.createClass({
-  propTypes: {
-    metadata: PropTypes.object,
-    vifAuthoring: PropTypes.object
-  },
+export class DisplayOptions extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderGroupedStackedSelector',
+      'renderTimelinePrecisionSelector',
+      'renderPieChartDescription',
+      'renderLimitCountSelector'
+    ]);
+  }
 
   renderGroupedStackedSelector() {
     const { vifAuthoring } = this.props;
     const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring));
 
     return shouldRender ? <GroupedStackedSelector /> : null;
-  },
+  }
 
   renderTimelinePrecisionSelector() {
     const { metadata, vifAuthoring } = this.props;
@@ -44,7 +50,7 @@ export const DisplayOptions = React.createClass({
     const shouldRender = isDimensionTypeCalendarDate(metadata, column);
 
     return shouldRender ? <TimelinePrecisionSelector /> : null;
-  },
+  }
 
   renderPieChartDescription() {
     const { vifAuthoring } = this.props;
@@ -56,7 +62,7 @@ export const DisplayOptions = React.createClass({
         </p>
       ) : 
       null;
-  },
+  }
 
   renderLimitCountSelector() {
     const { metadata, onChangeLimitCount, onSelectLimitCount, vifAuthoring } = this.props;
@@ -186,7 +192,7 @@ export const DisplayOptions = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -198,7 +204,12 @@ export const DisplayOptions = React.createClass({
       </div>
     );
   }
-});
+}
+
+DisplayOptions.propTypes = {
+  metadata: PropTypes.object,
+  vifAuthoring: PropTypes.object
+}
 
 function mapStateToProps(state) {
   return _.pick(state, ['metadata', 'vifAuthoring']);

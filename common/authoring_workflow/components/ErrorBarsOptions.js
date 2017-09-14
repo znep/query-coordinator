@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { ColorPicker, Dropdown } from 'common/components';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import I18n from 'common/i18n';
 
 import {
@@ -25,15 +25,20 @@ import {
   getErrorBarsUpperBoundColumnName,
 } from '../selectors/vifAuthoring';
 
-export const ErrorBarsOptions = React.createClass({
-  propTypes: {
-    vifAuthoring: PropTypes.object,
-  },
+export class ErrorBarsOptions extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderErrorBarsSelector',
+      'renderErrorBarsDropdown'
+    ]);
+  }
 
   render() {
     const { metadata } = this.props;
     return hasData(metadata) ? this.renderErrorBarsSelector() : null;
-  },
+  }
 
   renderErrorBarsSelector() {
     const { 
@@ -91,7 +96,7 @@ export const ErrorBarsOptions = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderErrorBarsDropdown(id, value, onSelection) {
     const { metadata } = this.props;
@@ -115,8 +120,12 @@ export const ErrorBarsOptions = React.createClass({
     return (
       <Dropdown {...attributes} />
     );
-  }
-});
+  };
+}
+
+ErrorBarsOptions.propTypes = {
+  vifAuthoring: PropTypes.object,
+};
 
 function mapStateToProps(state) {
   const { vifAuthoring, metadata } = state;

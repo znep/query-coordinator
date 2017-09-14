@@ -1,19 +1,37 @@
-var _ = require('lodash');
-var React = require('react');
-var utils = require('common/js_utils');
-var constants = require('./DistributionChartConstants');
-var helpers = require('./DistributionChartHelpers');
+import _ from 'lodash';
+import React, { Component } from 'react';
+import utils from 'common/js_utils';
+import constants from './DistributionChartConstants';
+import helpers from './DistributionChartHelpers';
 
-module.exports = React.createClass({
-  getInitialState: function() {
-    return {
+class Brush extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
       dragContext: null,
       hover: null
-    };
-  },
+    }
+
+    _.bindAll(this, [
+      'getClipPath',
+      'getHover',
+      'getFilterIndicator',
+      'getFilterRangeTarget',
+      'getClickTarget',
+      'getDragHandles',
+      'onMouseDown',
+      'onMouseUp',
+      'onMouseMove',
+      'onMouseOut',
+      'updateFilter',
+      'updateFlyout',
+      
+    ]);
+  }
 
   // Returns a <defs> element containing a <clipPath> used to clip the selected plots.
-  getClipPath: function() {
+  getClipPath() {
     if (!_.isObject(this.props.filter)) {
       return null;
     }
@@ -34,11 +52,11 @@ module.exports = React.createClass({
     return React.DOM.defs(null, React.DOM.clipPath({
       id: constants.clipPathID
     }, clipRect));
-  },
+  }
 
   // Return a transparent rectangle positioned at the bucket under the mouse, or nothing if the
   // mouse is not hovering over the chart.
-  getHover: function() {
+  getHover() {
     var scale = this.props.scale;
 
     if (!_.isObject(this.state.hover)) {
@@ -57,9 +75,9 @@ module.exports = React.createClass({
       height: this.props.height,
       fill: constants.colors.hover
     });
-  },
+  }
 
-  getFilterIndicator: function() {
+  getFilterIndicator() {
     var filter = this.props.filter;
     var scale = this.props.scale;
 
@@ -104,9 +122,9 @@ module.exports = React.createClass({
         fontWeight: 'bold'
       }
     }, filterIcon, label, clearFilter);
-  },
+  }
 
-  getFilterRangeTarget: function() {
+  getFilterRangeTarget() {
     var filter = this.props.filter;
     var scale = this.props.scale;
 
@@ -122,9 +140,9 @@ module.exports = React.createClass({
       height: this.props.height - scale.y(0),
       fill: 'transparent'
     });
-  },
+  }
 
-  getClickTarget: function() {
+  getClickTarget() {
     return React.DOM.rect({
       ref: 'clickTarget',
       x: 0,
@@ -133,9 +151,9 @@ module.exports = React.createClass({
       height: this.props.height,
       fill: 'transparent'
     });
-  },
+  }
 
-  getDragHandles: function() {
+  getDragHandles() {
     if (!_.isObject(this.props.filter)) {
       return null;
     }
@@ -205,10 +223,10 @@ module.exports = React.createClass({
     }, rightEdge, rightHandle, rightHitbox);
 
     return [ left, right ];
-  },
+  }
 
   // Start dragging.
-  onMouseDown: function(event) {
+  onMouseDown(event) {
     event.preventDefault();
 
     var mouseX = helpers.getMouseOffsetPosition(event, this.props);
@@ -244,10 +262,10 @@ module.exports = React.createClass({
         this.updateFilter(mouseX);
       }
     });
-  },
+  }
 
   // Stop dragging.
-  onMouseUp: function(event) {
+  onMouseUp(event) {
     event.preventDefault();
 
     var filter = this.props.filter;
@@ -276,10 +294,10 @@ module.exports = React.createClass({
     this.props.onFilterSet(filter);
 
     this.props.onFlyout(null);
-  },
+  }
 
   // If the mouse is down, update the filter.  Update the hover highglight and flyout.
-  onMouseMove: function(event) {
+  onMouseMove(event) {
     event.preventDefault();
 
     if (_.isObject(this.state.dragContext)) {
@@ -288,16 +306,16 @@ module.exports = React.createClass({
     }
 
     this.updateFlyout(event);
-  },
+  }
 
-  onMouseOut: function(event) {
+  onMouseOut(event) {
     event.preventDefault();
 
     this.setState({ hover: null });
     this.props.onFlyout(null);
-  },
+  }
 
-  updateFilter: function(mouseX) {
+  updateFilter(mouseX) {
     var context = this.state.dragContext;
     var scale = this.props.scale;
     var bucketWidth = scale.x.rangeBand();
@@ -314,11 +332,11 @@ module.exports = React.createClass({
     }
 
     this.props.onFilterChanged(filter);
-  },
+  }
 
   // Determines the bucket under the mouse and updates hoverBucket so it renders higlighted.  Also
   // calls the onFlyout function to show a flyout.
-  updateFlyout: function(event) {
+  updateFlyout(event) {
     var props = this.props;
     var scale = props.scale;
     var data = props.data;
@@ -369,9 +387,9 @@ module.exports = React.createClass({
       this.props.onFlyout(null);
       this.setState({ hover: null });
     }
-  },
+  }
 
-  render: function() {
+  render() {
     var elementProps;
 
     if (_.get(this.props.vif, 'configuration.isMobile')) {
@@ -398,4 +416,6 @@ module.exports = React.createClass({
       this.getDragHandles()
     );
   }
-});
+}
+
+export default Brush;

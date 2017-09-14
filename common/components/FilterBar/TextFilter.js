@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Dropdown from '../Dropdown';
 import SocrataIcon from '../SocrataIcon';
 import SearchablePicklist from './SearchablePicklist';
@@ -10,28 +8,12 @@ import FilterHeader from './FilterHeader';
 import { getTextFilter } from './filters';
 import I18n from 'common/i18n';
 
-export const TextFilter = React.createClass({
-  propTypes: {
-    filter: PropTypes.object.isRequired,
-    column: PropTypes.object.isRequired,
-    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
-    isReadOnly: PropTypes.bool,
-    isValidTextFilterColumnValue: PropTypes.func,
-    onClickConfig: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    value: PropTypes.string
-  },
+class TextFilter extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      isValidTextFilterColumnValue: (column, value) => Promise.reject(value)
-    };
-  },
-
-  getInitialState() {
-    const { filter } = this.props;
-
+    const { filter } = props;
+    
     const selectedValues = _.map(filter.arguments, (argument) => {
       if (_.includes(['IS NULL', 'IS NOT NULL'], argument.operator)) {
         return null;
@@ -40,39 +22,53 @@ export const TextFilter = React.createClass({
       return argument.operand;
     });
 
-    return {
+    this.state = {
       value: '',
       selectedValues,
       isNegated: _.toLower(filter.joinOn) === 'and',
       isValidating: false
     };
-  },
+
+    _.bindAll(this, [
+      'onChangeSearchTerm',
+      'onSelectOption',
+      'onUnselectOption',
+      'updateSelectedValues',
+      'resetFilter',
+      'updateFilter',
+      'isDirty',
+      'canAddSearchTerm',
+      'renderHeader',
+      'renderSelectedOption',
+      'renderSuggestedOption'
+    ]);
+  }
 
   componentDidMount() {
-    this.isMounted = true;
-  },
+    this.mounted = true;
+  }
 
   componentWillUnmount() {
-    this.isMounted = false;
-  },
+    this.mounted = false;
+  }
 
   onChangeSearchTerm(searchTerm) {
     this.setState({ value: searchTerm });
-  },
+  }
 
   onSelectOption(option) {
     this.updateSelectedValues(_.union(this.state.selectedValues, [option.value]));
-  },
+  }
 
   onUnselectOption(option) {
     this.updateSelectedValues(_.without(this.state.selectedValues, option.value));
-  },
+  }
 
   updateSelectedValues(nextSelectedValues) {
     this.setState({
       selectedValues: _.uniq(nextSelectedValues)
     });
-  },
+  }
 
   // Remove existing selected values and clear the search term.
   resetFilter() {
@@ -81,21 +77,21 @@ export const TextFilter = React.createClass({
     if (this.state.value !== '') {
       this.setState({ value: '' });
     }
-  },
+  }
 
   updateFilter() {
     const { column, filter, onUpdate } = this.props;
     const { selectedValues, isNegated } = this.state;
 
     onUpdate(getTextFilter(column, filter, selectedValues, isNegated));
-  },
+  }
 
   isDirty() {
     const { column, filter } = this.props;
     const { isNegated, selectedValues } = this.state;
 
     return !_.isEqual(getTextFilter(column, filter, selectedValues, isNegated), filter);
-  },
+  }
 
   canAddSearchTerm(term) {
     const { column, isValidTextFilterColumnValue } = this.props;
@@ -109,7 +105,7 @@ export const TextFilter = React.createClass({
 
     return isValidTextFilterColumnValue(column, trimmedTerm).
       then(() => {
-        if (this.isMounted) {
+        if (this.mounted) {
           this.setState({ isValidating: false, value: '' });
           this.onSelectOption({ name: trimmedTerm, value: trimmedTerm });
 
@@ -124,13 +120,13 @@ export const TextFilter = React.createClass({
         }
       }).
       catch(() => { // eslint-disable-line dot-notation
-        if (this.isMounted) {
+        if (this.mounted) {
           this.setState({ isValidating: false });
         }
 
         return Promise.reject();
       });
-  },
+  }
 
   renderHeader() {
     const { column, controlSize, isReadOnly, onClickConfig } = this.props;
@@ -162,7 +158,7 @@ export const TextFilter = React.createClass({
         <Dropdown {...dropdownProps} />
       </FilterHeader>
     );
-  },
+  }
 
   renderSelectedOption(option) {
     const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
@@ -174,7 +170,7 @@ export const TextFilter = React.createClass({
         <SocrataIcon name="close-2" />
       </div>
     );
-  },
+  }
 
   renderSuggestedOption(option) {
     const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
@@ -184,7 +180,7 @@ export const TextFilter = React.createClass({
         {title}
       </div>
     );
-  },
+  }
 
   render() {
     const { column, controlSize, isReadOnly, onRemove } = this.props;
@@ -253,6 +249,22 @@ export const TextFilter = React.createClass({
       </div>
     );
   }
-});
+}
+
+TextFilter.propTypes = {
+  filter: PropTypes.object.isRequired,
+  column: PropTypes.object.isRequired,
+  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+  isReadOnly: PropTypes.bool,
+  isValidTextFilterColumnValue: PropTypes.func,
+  onClickConfig: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  value: PropTypes.string
+};
+
+TextFilter.defaultProps = {
+  isValidTextFilterColumnValue: (column, value) => Promise.reject(value)
+}
 
 export default TextFilter;

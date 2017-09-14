@@ -1,19 +1,24 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import CustomizationTabPane from './CustomizationTabPane';
 import ScrollView from './shared/ScrollView';
 
-export var CustomizationTabPanes = React.createClass({
-  propTypes: {
-    tabs: React.PropTypes.array,
-    selection: React.PropTypes.string
-  },
+export class CustomizationTabPanes extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'focusFirstTabPaneAccordion',
+      'paneAttributes',
+      'pane'
+    ]);
+  }
 
   componentWillUpdate(nextProps) {
     if (this.props.selection !== nextProps.selection) {
       this.focusFirstTabPaneAccordion();
     }
-  },
+  }
 
   focusFirstTabPaneAccordion() {
     const MAX_TIMEOUT = 3000;
@@ -35,7 +40,7 @@ export var CustomizationTabPanes = React.createClass({
         accumulatedTime += accumulator;
       }
     }, accumulator);
-  },
+  }
 
   paneAttributes(tab) {
     return {
@@ -43,7 +48,7 @@ export var CustomizationTabPanes = React.createClass({
       id: tab.id,
       show: tab.id === this.props.selection
     };
-  },
+  }
 
   pane(tab) {
     return (
@@ -51,7 +56,7 @@ export var CustomizationTabPanes = React.createClass({
         {React.createElement(tab.paneComponent)}
       </CustomizationTabPane>
     );
-  },
+  }
 
   render() {
     return (
@@ -60,6 +65,11 @@ export var CustomizationTabPanes = React.createClass({
       </ScrollView>
     );
   }
-});
+}
+
+CustomizationTabPanes.propTypes = {
+  tabs: PropTypes.array,
+  selection: PropTypes.string
+};
 
 export default CustomizationTabPanes;

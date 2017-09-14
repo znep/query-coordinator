@@ -1,28 +1,21 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
-import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import SocrataIcon from '../SocrataIcon';
 import { formatToInclusiveSoqlDateRange } from 'common/dates';
 
-export const DateRangePicker = React.createClass({
-  propTypes: {
-    /**
-    * Contains two values:
-    * start: default value used as startDate
-    * end: default value used as endDate
-    */
-    value: PropTypes.shape({
-      start: PropTypes.string.isRequired,
-      end: PropTypes.string.isRequired
-    }),
+export class DateRangePicker extends Component {
+  constructor(props) {
+    super(props);
 
-    /**
-    * The onChange handler is fired when a date is selected in the calendar
-    */
-    onChange: PropTypes.func.isRequired
-  },
+    _.bindAll(this, [
+      'onChangeStartDate',
+      'onChangeEndDate',
+      'renderDatePickerStart',
+      'renderDatePickerEnd'
+    ]);
+  }
 
   onChangeStartDate(date) {
     const { value, onChange } = this.props;
@@ -33,7 +26,7 @@ export const DateRangePicker = React.createClass({
     });
 
     onChange(formattedDateRange);
-  },
+  }
 
   onChangeEndDate(date) {
     const { value, onChange } = this.props;
@@ -43,7 +36,7 @@ export const DateRangePicker = React.createClass({
       end: date || value.end
     });
     onChange(formattedDateRange);
-  },
+  }
 
   renderDatePickerStart(startDate, endDate) {
     const props = {
@@ -63,7 +56,7 @@ export const DateRangePicker = React.createClass({
         <DatePicker {...props} />
       </div>
     );
-  },
+  }
 
   renderDatePickerEnd(startDate, endDate) {
     const props = {
@@ -83,7 +76,7 @@ export const DateRangePicker = React.createClass({
         <DatePicker {...props} />
       </div>
     );
-  },
+  }
 
   render() {
     // The third party library requires moment objects
@@ -98,6 +91,23 @@ export const DateRangePicker = React.createClass({
       </div>
     );
   }
-});
+}
+
+DateRangePicker.propTypes = {
+  /**
+  * Contains two values:
+  * start: default value used as startDate
+  * end: default value used as endDate
+  */
+  value: PropTypes.shape({
+    start: PropTypes.string.isRequired,
+    end: PropTypes.string.isRequired
+  }),
+
+  /**
+  * The onChange handler is fired when a date is selected in the calendar
+  */
+  onChange: PropTypes.func.isRequired
+};
 
 export default DateRangePicker;

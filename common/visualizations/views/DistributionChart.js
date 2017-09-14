@@ -1,79 +1,47 @@
-var React = require('react');
-var _ = require('lodash');
-var utils = require('common/js_utils');
-var Brush = require('./Brush');
-var helpers = require('./DistributionChartHelpers');
-var constants = require('./DistributionChartConstants');
+import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
+import utils from 'common/js_utils';
+import Brush from './Brush';
+import helpers from './DistributionChartHelpers';
+import constants from './DistributionChartConstants';
 
-module.exports = React.createClass({
-  propTypes: {
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
+export class DistributionChart extends Component {
+  constructor(props) {
+    super(props);
 
-    margin: React.PropTypes.shape({
-      top: React.PropTypes.number,
-      right: React.PropTypes.number,
-      bottom: React.PropTypes.number,
-      left: React.PropTypes.number
-    }),
-
-    data: React.PropTypes.shape({
-      unfiltered: React.PropTypes.array,
-      filtered: React.PropTypes.array
-    }),
-
-    scale: React.PropTypes.any,
-
-    onFlyout: React.PropTypes.func,
-    onFilter: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      width: 800,
-      height: 600,
-
-      margin: {
-        top: 5,
-        right: 10,
-        bottom: 30,
-        left: 10
-      },
-
-      data: null,
-      scale: null,
-      filter: null,
-
-      onFlyout: _.noop,
-      onFilter: _.noop
-    };
-  },
-
-  getInitialState: function() {
-    return {
-
+    this.state = {
       // An object with 'start' and 'end' keys representing buckets, or null if the chart is not
       // filtered.  The buckets in this range will be highlighted yellow.  The filter can be changed
       // by clicking and dragging with the mouse.
-      filter: this.props.filter
-    };
-  },
+      filter: props.filter
+    }
 
-  componentWillReceiveProps: function(newProps) {
+    _.bindAll(this, [
+      'updateScaleRange',
+      'getSVG',
+      'getPlots',
+      'getFilterPlots',
+      'getTicks',
+      'getLabels',
+      'getBrush'
+    ]);
+  }
+
+  componentWillReceiveProps(newProps) {
     this.setState({ filter: newProps.filter });
-  },
+  }
 
   // Set the output range for each scale, which is, in general, the dimensions of the chart.
-  updateScaleRange: function() {
+  updateScaleRange() {
     var props = this.props;
     props.scale.x.rangeBands([props.margin.left, props.width - props.margin.right], 0, -0.5);
     props.scale.y.range([props.height - props.margin.top - props.margin.bottom, 0]);
-  },
+  }
 
   // Set up path generators using d3.svg.  The renderers accept an array of buckets and return a
   // 'd' attribute to be used with SVG <path> elements.  There are two special buckets 'start' and
   // 'end' that will evaluate to points at the left and right edge of the chart, respectively.
-  getSVG: function() {
+  getSVG() {
     var props = this.props;
     var scale = props.scale;
     var origin = scale.y(0);
@@ -101,12 +69,12 @@ module.exports = React.createClass({
     });
 
     return svg;
-  },
+  }
 
   // Return an array of <path> elements for the unfiltered and filtered portion of the chart.
   // Artificial 'start' and 'end' data are added to the svg renderer input so that the plots extend
   // to the edges of the chart.
-  getPlots: function(svg) {
+  getPlots(svg) {
     var props = this.props;
 
     var plots = _.isObject(this.state.filter) ? [ 'unfiltered' ] : [ 'unfiltered', 'filtered' ];
@@ -140,11 +108,11 @@ module.exports = React.createClass({
       }).
       flatten().
       value();
-  },
+  }
 
   // Return an array of <path> elements for the selected portion of the chart, or nothing if the
   // chart is not filtered.  The paths are clipped based on the current filter.
-  getFilterPlots: function(svg) {
+  getFilterPlots(svg) {
     var props = this.props;
     var state = this.state;
 
@@ -182,11 +150,11 @@ module.exports = React.createClass({
       }).
       flatten().
       value();
-  },
+  }
 
   // Returns all tick marks for the chart as <line> elements.  The y ticks are grid lines that
   // span the width of the chart.  Ticks with a value of 0 are bold.
-  getTicks: function() {
+  getTicks() {
     var props = this.props;
     var scale = props.scale;
     var origin = scale.y(0);
@@ -221,10 +189,10 @@ module.exports = React.createClass({
     });
 
     return [ xTicks, yTicks ];
-  },
+  }
 
   // Return all x and y labels for the chart as <text> elements.
-  getLabels: function() {
+  getLabels() {
     var filter = this.state.filter;
     var props = this.props;
     var scale = props.scale;
@@ -281,9 +249,9 @@ module.exports = React.createClass({
     });
 
     return [ x, y ];
-  },
+  }
 
-  getBrush: function() {
+  getBrush() {
     var self = this;
 
     var props = _.extend({}, self.props, {
@@ -297,9 +265,9 @@ module.exports = React.createClass({
     });
 
     return React.createElement(Brush, props);
-  },
+  }
 
-  render: function() {
+  render() {
     var props = this.props;
 
     if (!_.isObject(props.data)) {
@@ -329,4 +297,47 @@ module.exports = React.createClass({
 
     return React.DOM.svg(svgAttributes, chart);
   }
-});
+}
+
+DistributionChart.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+
+  margin: PropTypes.shape({
+    top: PropTypes.number,
+    right: PropTypes.number,
+    bottom: PropTypes.number,
+    left: PropTypes.number
+  }),
+
+  data: PropTypes.shape({
+    unfiltered: PropTypes.array,
+    filtered: PropTypes.array
+  }),
+
+  scale: PropTypes.any,
+
+  onFlyout: PropTypes.func,
+  onFilter: PropTypes.func
+};
+
+DistributionChart.defaultProps = {
+  width: 800,
+  height: 600,
+
+  margin: {
+    top: 5,
+    right: 10,
+    bottom: 30,
+    left: 10
+  },
+
+  data: null,
+  scale: null,
+  filter: null,
+
+  onFlyout: _.noop,
+  onFilter: _.noop
+};
+
+export default DistributionChart;

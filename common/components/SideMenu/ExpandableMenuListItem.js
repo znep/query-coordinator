@@ -1,27 +1,10 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React,  { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import SocrataIcon from '../SocrataIcon';
 import { getFirstActionableElement } from 'common/a11y';
 
-export const ExpandableMenuListItem = React.createClass({
-  propTypes: {
-    iconName: PropTypes.string,
-    isOpen: PropTypes.bool,
-    onClick: PropTypes.func,
-    text: PropTypes.string.isRequired,
-    children: PropTypes.node
-  },
-
-  getDefaultProps() {
-    return {
-      onClick: _.noop,
-      isOpen: false
-    };
-  },
-
+export class ExpandableMenuListItem extends Component {
   componentDidUpdate(prevProps) {
     const { children, isOpen } = this.props;
 
@@ -35,7 +18,7 @@ export const ExpandableMenuListItem = React.createClass({
         this.buttonElement.focus();
       }
     }
-  },
+  }
 
   render() {
     const { iconName, isOpen, onClick, text, children } = this.props;
@@ -74,6 +57,19 @@ export const ExpandableMenuListItem = React.createClass({
       </li>
     );
   }
-});
+}
+
+ExpandableMenuListItem.propTypes = {
+  iconName: PropTypes.string,
+  isOpen: PropTypes.bool,
+  onClick: PropTypes.func,
+  text: PropTypes.string.isRequired,
+  children: PropTypes.node
+};
+
+ExpandableMenuListItem.defaultProps = {
+  onClick: _.noop,
+  isOpen: false
+};
 
 export default ExpandableMenuListItem;

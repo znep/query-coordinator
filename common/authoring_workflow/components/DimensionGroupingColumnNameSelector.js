@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Dropdown } from 'common/components';
 import BlockLabel from './shared/BlockLabel';
 import {
@@ -11,15 +11,7 @@ import { getValidDimensions } from '../selectors/metadata';
 import { setDimensionGroupingColumnName } from '../actions';
 import I18n from 'common/i18n';
 
-export const DimensionGroupingColumnNameSelector = React.createClass({
-  propTypes: {
-    metadata: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {};
-  },
-
+export class DimensionGroupingColumnNameSelector extends Component {
   render() {
     const {
       metadata,
@@ -70,7 +62,7 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
       </div>
     );
   }
-});
+}
 
 const mapStateToProps = state => {
   const { vifAuthoring, metadata } = state;
@@ -82,10 +74,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-
   onSelectDimensionGroupingColumnName(selected) {
     dispatch(setDimensionGroupingColumnName(selected.value));
   }
 });
+
+DimensionGroupingColumnNameSelector.propTypes = {
+  metadata: PropTypes.object
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DimensionGroupingColumnNameSelector);

@@ -1,57 +1,57 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { ENTER, isolateEventByKeys } from 'common/keycodes';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 
-export const SearchablePicklist = React.createClass({
-  propTypes: {
-    options: PropTypes.arrayOf(PropTypes.object),
-    size: PropTypes.oneOf(['small', 'medium', 'large']),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    selectedOptions: PropTypes.arrayOf(PropTypes.object),
-    onChangeSearchTerm: PropTypes.func.isRequired,
-    onSelection: PropTypes.func.isRequired,
-    onBlur: PropTypes.func.isRequired,
-    onClickSelectedOption: PropTypes.func,
-    canAddSearchTerm: PropTypes.func,
-    hideSearchInput: PropTypes.bool
-  },
+export class SearchablePicklist extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       isValidating: false,
       isError: false,
       textEntered: false
     };
-  },
+
+    _.bindAll(this, [
+      'onChangeSearchTerm',
+      'onClickSelectedOption',
+      'onKeyPressSearch',
+      'onSearch',
+      'focusAndSelectSearchInput',
+      'renderSearch',
+      'renderSelectedOptionsPicklist',
+      'renderPicklist',
+      'renderError',
+      'renderPrompt'
+    ]);
+  }
 
   componentDidMount() {
-    this.isMounted = true;
+    this.mounted = true;
 
     if (this.search) {
       this.search.focus();
     }
-  },
+  }
 
   componentWillUnmount() {
-    this.isMounted = false;
-  },
+    this.mounted = false;
+  }
 
   onChangeSearchTerm(event) {
     this.props.onChangeSearchTerm(event.target.value);
     this.setState({ isError: false });
     const textEntered = event.target.value !== '';
     this.setState({ textEntered });
-  },
+  }
 
   onClickSelectedOption(selectedOption) {
     this.props.onClickSelectedOption(selectedOption);
-  },
+  }
 
   onKeyPressSearch(event) {
     isolateEventByKeys(event, [ENTER]);
@@ -59,7 +59,7 @@ export const SearchablePicklist = React.createClass({
     if (event.keyCode === ENTER) {
       this.onSearch(event);
     }
-  },
+  }
 
   onSearch(event) {
     const { canAddSearchTerm } = this.props;
@@ -73,25 +73,25 @@ export const SearchablePicklist = React.createClass({
       // mounted.
       canAddSearchTerm(this.search.value).
         then(() => {
-          if (this.isMounted) {
+          if (this.mounted) {
             this.setState({ isValidating: false, textEntered: false });
           }
         }).
         catch(() => { // eslint-disable-line dot-notation
-          if (this.isMounted) {
+          if (this.mounted) {
             _.defer(this.focusAndSelectSearchInput);
             this.setState({ isError: true, isValidating: false });
           }
         });
     }
-  },
+  }
 
   focusAndSelectSearchInput() {
     if (this.search) {
       this.search.focus();
       this.search.setSelectionRange(0, this.search.value.length);
     }
-  },
+  }
 
   renderSearch() {
     const { hideSearchInput, value } = this.props;
@@ -134,7 +134,7 @@ export const SearchablePicklist = React.createClass({
         </form>
       </div>
     );
-  },
+  }
 
   renderSelectedOptionsPicklist() {
     const { selectedOptions, onBlur, size, value } = this.props;
@@ -163,7 +163,7 @@ export const SearchablePicklist = React.createClass({
         <Picklist {...picklistProps} />
       </div>
     );
-  },
+  }
 
   renderPicklist() {
     const { options, size, value, onSelection, onBlur } = this.props;
@@ -191,13 +191,13 @@ export const SearchablePicklist = React.createClass({
         <Picklist {...picklistProps} />
       </div>
     );
-  },
+  }
 
   renderError() {
     return this.state.isError ?
       <div className="alert warning">{I18n.t('shared.components.filter_bar.text_filter.keyword_not_found')}</div> :
       null;
-  },
+  }
 
   renderPrompt() {
     return (this.state.textEntered && !this.state.isError) ?
@@ -208,7 +208,7 @@ export const SearchablePicklist = React.createClass({
         </a>
       </div> :
       null;
-  },
+  }
 
   render() {
     return (
@@ -223,6 +223,19 @@ export const SearchablePicklist = React.createClass({
       </div>
     );
   }
-});
+}
+
+SearchablePicklist.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.object),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  selectedOptions: PropTypes.arrayOf(PropTypes.object),
+  onChangeSearchTerm: PropTypes.func.isRequired,
+  onSelection: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  onClickSelectedOption: PropTypes.func,
+  canAddSearchTerm: PropTypes.func,
+  hideSearchInput: PropTypes.bool
+};
 
 export default SearchablePicklist;

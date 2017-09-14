@@ -1,30 +1,35 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import Dropdown from '../Dropdown';
 import FilterFooter from './FilterFooter';
 import FilterHeader from './FilterHeader';
 import I18n from 'common/i18n';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import SearchablePicklist from './SearchablePicklist';
 import SocrataIcon from '../SocrataIcon';
 import { getCheckboxFilter } from './filters';
 
-export const CheckboxFilter = React.createClass({
-  propTypes: {
-    filter: PropTypes.object.isRequired,
-    column: PropTypes.object.isRequired,
-    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
-    isReadOnly: PropTypes.bool,
-    onClickConfig: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    value: PropTypes.string
-  },
+export class CheckboxFilter extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    const { filter } = this.props;
+    _.bindAll(this, [
+      'onSelectOption',
+      'onUnselectOption',
+      'booleanToLocalizedString',
+      'booleanToString',
+      'stringToBoolean',
+      'resetFilter',
+      'updateFilter',
+      'updateSelectedValues',
+      'isDirty',
+      'renderHeader',
+      'renderSelectedOption',
+      'renderSuggestedOption'
+    ]);
 
+    // get the initial state from props
+    const { filter } = props;
+    
     const selectedValues = _.map(filter.arguments, (argument) => {
       if (_.includes(['IS NULL', 'IS NOT NULL'], argument.operator)) {
         return null;
@@ -33,21 +38,21 @@ export const CheckboxFilter = React.createClass({
       return argument.operand;
     });
 
-    return {
+    this.state = {
       selectedValues,
       value: ''
     };
-  },
+  }
 
   onSelectOption(option) {
     const value = this.stringToBoolean(option.value);
     this.updateSelectedValues(_.union(this.state.selectedValues, [value]));
-  },
+  }
 
   onUnselectOption(option) {
     const value = this.stringToBoolean(option.value);
     this.updateSelectedValues(_.without(this.state.selectedValues, value));
-  },
+  }
 
   booleanToLocalizedString(value) {
     if (value === true) {
@@ -57,7 +62,7 @@ export const CheckboxFilter = React.createClass({
     } else {
       return I18n.t('shared.components.filter_bar.checkbox_filter.no_value');
     }
-  },
+  }
 
   booleanToString(value) {
     if (value === true) {
@@ -67,7 +72,7 @@ export const CheckboxFilter = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   stringToBoolean(value) {
     if (value === 'true') {
@@ -77,7 +82,7 @@ export const CheckboxFilter = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   resetFilter() {
     this.updateSelectedValues([]);
@@ -85,27 +90,27 @@ export const CheckboxFilter = React.createClass({
     if (this.state.value !== '') {
       this.setState({ value: '' });
     }
-  },
+  }
 
   updateFilter() {
     const { column, filter, onUpdate } = this.props;
     const { selectedValues } = this.state;
 
     onUpdate(getCheckboxFilter(column, filter, selectedValues));
-  },
+  }
 
   updateSelectedValues(nextSelectedValues) {
     this.setState({
       selectedValues: _.uniq(nextSelectedValues)
     });
-  },
+  }
 
   isDirty() {
     const { column, filter } = this.props;
     const { selectedValues } = this.state;
 
     return !_.isEqual(getCheckboxFilter(column, filter, selectedValues), filter);
-  },
+  }
 
   renderHeader() {
     const { column, isReadOnly, onClickConfig } = this.props;
@@ -117,7 +122,7 @@ export const CheckboxFilter = React.createClass({
     };
 
     return <FilterHeader {...attributes} />;
-  },
+  }
 
   renderSelectedOption(option) {
     const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
@@ -129,7 +134,7 @@ export const CheckboxFilter = React.createClass({
         <SocrataIcon name="close-2" />
       </div>
     );
-  },
+  }
 
   renderSuggestedOption(option) {
     const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
@@ -139,7 +144,7 @@ export const CheckboxFilter = React.createClass({
         {title}
       </div>
     );
-  },
+  }
 
   render() {
     const { controlSize, isReadOnly, onRemove } = this.props;
@@ -210,6 +215,17 @@ export const CheckboxFilter = React.createClass({
       </div>
     );
   }
-});
+}
+
+CheckboxFilter.propTypes = {
+  filter: PropTypes.object.isRequired,
+  column: PropTypes.object.isRequired,
+  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+  isReadOnly: PropTypes.bool,
+  onClickConfig: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  value: PropTypes.string
+};
 
 export default CheckboxFilter;

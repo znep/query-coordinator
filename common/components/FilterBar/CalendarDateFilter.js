@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import DateRangePicker from '../DateRangePicker';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
@@ -9,16 +7,33 @@ import { ENTER, isolateEventByKeys } from 'common/keycodes';
 import { getDefaultFilterForColumn } from './filters';
 import moment from 'moment';
 
-export const CalendarDateFilter = React.createClass({
-  propTypes: {
-    filter: PropTypes.object.isRequired,
-    column: PropTypes.object.isRequired,
-    isReadOnly: PropTypes.bool,
-    onClickConfig: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-    onClear: PropTypes.func
-  },
+class CalendarDateFilter extends Component {
+  constructor(props) {
+    super(props);
+    
+    const { filter, column } = props;
+    const values = _.defaultTo(filter.arguments, {
+      start: column.rangeMin,
+      end: column.rangeMax
+    });
+    const start = this.setDate(values.start);
+    const end = this.setDate(values.end);
+
+    _.bindAll(this, [
+      'getInitialState',
+      'onDatePickerChange',
+      'onEnterUpdateFilter',
+      'setDate',
+      'isValidRange',
+      'updateValueState',
+      'shouldDisableApply',
+      'resetFilter',
+      'updateFilter',
+      'renderDateRangePicker',
+    ]);
+
+    this.state = this.getInitialState();
+  }
 
   getInitialState() {
     const { filter, column } = this.props;
@@ -32,24 +47,24 @@ export const CalendarDateFilter = React.createClass({
     return {
       value: { start, end }
     };
-  },
+  }
 
   componentDidMount() {
     if (this.dateFilter) {
       this.inputs = this.dateFilter.querySelectorAll('.date-picker-input');
       _.each(this.inputs, (input) => input.addEventListener('keyup', this.onEnterUpdateFilter));
     }
-  },
+  }
 
   componentWillUnmount() {
     if (this.inputs) {
       _.each(this.inputs, (input) => input.removeEventListener('keyup', this.onEnterUpdateFilter));
     }
-  },
+  }
 
   onDatePickerChange(newDateRange) {
     this.updateValueState(newDateRange);
-  },
+  }
 
   onEnterUpdateFilter(event) {
     isolateEventByKeys(event, [ENTER]);
@@ -57,7 +72,7 @@ export const CalendarDateFilter = React.createClass({
     if (event.keyCode === ENTER && !this.shouldDisableApply()) {
       this.updateFilter();
     }
-  },
+  }
 
   setDate(date) {
     // Checking if undefined because;
@@ -67,11 +82,11 @@ export const CalendarDateFilter = React.createClass({
       // Getting default date without time to be able to compare
       // and find out if we should disable apply button.
       date : moment().format('YYYY-MM-DD');
-  },
+  }
 
   isValidRange(value) {
     return moment(value.start).isBefore(value.end);
-  },
+  }
 
   updateValueState(newValue) {
     const start = this.setDate(newValue.start);
@@ -82,7 +97,7 @@ export const CalendarDateFilter = React.createClass({
         value: { start, end }
       });
     }
-  },
+  }
 
   shouldDisableApply() {
     const { value } = this.state;
@@ -92,7 +107,7 @@ export const CalendarDateFilter = React.createClass({
     const initialValue = this.getInitialState().value;
 
     return _.isEqual(initialValue, value);
-  },
+  }
 
   resetFilter() {
     const { column } = this.props;
@@ -110,7 +125,7 @@ export const CalendarDateFilter = React.createClass({
     if (typeof this.props.onClear === 'function') {
       this.props.onClear();
     }
-  },
+  }
 
   updateFilter() {
     const { filter, onUpdate, column } = this.props;
@@ -125,7 +140,7 @@ export const CalendarDateFilter = React.createClass({
         arguments: value
       }));
     }
-  },
+  }
 
   renderDateRangePicker() {
     const calendarDatePickerProps = {
@@ -133,7 +148,7 @@ export const CalendarDateFilter = React.createClass({
       onChange: this.onDatePickerChange
     };
     return <DateRangePicker {...calendarDatePickerProps} />;
-  },
+  }
 
   render() {
     const { column, isReadOnly, onClickConfig, onRemove } = this.props;
@@ -162,6 +177,16 @@ export const CalendarDateFilter = React.createClass({
       </div>
     );
   }
-});
+}
+
+CalendarDateFilter.propTypes = {
+  filter: PropTypes.object.isRequired,
+  column: PropTypes.object.isRequired,
+  isReadOnly: PropTypes.bool,
+  onClickConfig: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onClear: PropTypes.func
+};
 
 export default CalendarDateFilter;

@@ -1,7 +1,5 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import $ from 'jquery';
 import classNames from 'classnames';
 import collapsible from 'common/collapsible';
@@ -16,132 +14,54 @@ import SocrataIcon from '../SocrataIcon';
  * of the asset, several areas for custom metadata to be displayed, and an area meant to be used
  * for buttons.
  */
-const InfoPane = React.createClass({
-  propTypes: {
-    /**
-     * An optional string representing the category of the asset.
-     */
-    category: PropTypes.string,
+class InfoPane extends Component {
+  constructor(props) {
+    super(props);
 
-    /**
-     * A string containing the description of the asset.  It will be ellipsified using dotdotdot,
-     * and will have a control for expanding and collapsing the full description.  HTML is allowed
-     * in the description; it will be sanitized to prevent security vulnerabilities.
-     */
-    description: PropTypes.string,
+    this.state = {
+      paneCollapsed: props.isPaneCollapsible
+    }
 
-    /**
-     * The number of lines to truncate the description to.  If unspecified, defaults to 4.
-     */
-    descriptionLines: PropTypes.number,
-
-    /**
-     * The optional footer prop can be a string or an HTML element.  It is rendered below the
-     * description.  HTML is allowed in the footer; it will be sanitized to prevent security
-     * vulnerabilities.
-     */
-    footer: PropTypes.node,
-
-    /**
-     * The provenance is used to display an authority badge icon and text.
-     */
-    provenance: PropTypes.oneOf(['official', 'community', null]),
-
-    /**
-     * The provenanceIcon is used to display the appropriate icon for the authority badge
-     */
-    provenanceIcon: PropTypes.oneOf(['official2', 'community', null]),
-
-    /**
-     * The hideProvenance is used to conditionally hide the authority badge depending on feature flags.
-     */
-    hideProvenance: PropTypes.bool,
-
-    /**
-     * If the isPrivate prop is true, a badge indicating the asset's visibility is displayed.
-     */
-    isPrivate: PropTypes.bool,
-
-    /**
-     * The metadata prop is an object meant to contain two arbitrary pieces of metadata about the
-     * asset.  The two sections are named "first" and "second" and should be objects, each
-     * containing a "label" and "content" key.  They are rendered to the right of the description.
-     */
-    metadata: PropTypes.shape({
-      first: PropTypes.shape({
-        label: PropTypes.node.isRequired,
-        content: PropTypes.node.isRequired
-      }),
-      second: PropTypes.shape({
-        label: PropTypes.node.isRequired,
-        content: PropTypes.node.isRequired
-      })
-    }),
-
-    /**
-     * The title of the asset, displayed in an h1 tag.
-     */
-    name: PropTypes.string,
-
-    /**
-     * A function that is called when the full description is expanded.
-     */
-    onExpandDescription: PropTypes.func,
-
-    /**
-     * An optional function that should return content to be rendered in the upper-right hand corner
-     * of the info pane.
-     */
-    renderButtons: PropTypes.func,
-
-    /**
-     * If the isPaneCollapsible prop is true, only the the InfoPane header is initially visible
-     * and a More Info/Less Info toggle allows the InfoPane content to be shown
-     */
-    isPaneCollapsible: PropTypes.bool
-  },
-
-  getDefaultProps() {
-    return {
-      descriptionLines: 4,
-      onExpandDescription: _.noop,
-      isPaneCollapsible: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      paneCollapsed: this.props.isPaneCollapsible
-    };
-  },
+    _.bindAll(this, [
+      'resetParentHeight',
+      'shouldEllipsify',
+      'ellipsify',
+      'toggleInfoPaneVisibility',
+      'renderCollapsePaneToggle',
+      'renderDescription',
+      'renderFooter',
+      'renderMetadata',
+      'renderContent'
+    ]);
+  }
 
   componentDidMount() {
     this.$description = $(this.description);
     if (!this.props.isPaneCollapsible) {
       this.ellipsify();
     }
-  },
+  }
 
   componentWillUpdate(nextProps) {
     if (this.shouldEllipsify(this.props, nextProps)) {
       this.$description.trigger('destroy.dot');
       this.resetParentHeight();
     }
-  },
+  }
 
   componentDidUpdate(prevProps) {
     if (this.shouldEllipsify(prevProps, this.props)) {
       this.ellipsify();
     }
-  },
+  }
 
   resetParentHeight() {
     this.description.parentElement.style.height = 'auto';
-  },
+  }
 
   shouldEllipsify(prevProps, nextProps) {
     return (prevProps.description !== nextProps.description) && !this.props.isPaneCollapsible;
-  },
+  }
 
   ellipsify() {
     if (_.isEmpty(this.description)) {
@@ -166,7 +86,7 @@ const InfoPane = React.createClass({
       height,
       expandedCallback: onExpandDescription
     });
-  },
+  }
 
   toggleInfoPaneVisibility() {
     this.togglePaneButton.blur();
@@ -174,7 +94,7 @@ const InfoPane = React.createClass({
     this.setState({
       paneCollapsed: !this.state.paneCollapsed
     });
-  },
+  }
 
   renderCollapsePaneToggle() {
     const { paneCollapsed } = this.state;
@@ -201,7 +121,7 @@ const InfoPane = React.createClass({
         </button>
       </div>
     );
-  },
+  }
 
   renderDescription() {
     const { description, isPaneCollapsible } = this.props;
@@ -233,7 +153,7 @@ const InfoPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderFooter() {
     const { footer } = this.props;
@@ -249,7 +169,7 @@ const InfoPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderMetadata() {
     const { metadata } = this.props;
@@ -278,7 +198,7 @@ const InfoPane = React.createClass({
         {metadataRight}
       </div>
     );
-  },
+  }
 
   renderContent() {
     const { isPaneCollapsible } = this.props;
@@ -306,7 +226,7 @@ const InfoPane = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   render() {
     const {
@@ -360,6 +280,96 @@ const InfoPane = React.createClass({
       </div>
     );
   }
-});
+}
+
+InfoPane.propTypes = {
+  /**
+   * An optional string representing the category of the asset.
+   */
+  category: PropTypes.string,
+
+  /**
+   * A string containing the description of the asset.  It will be ellipsified using dotdotdot,
+   * and will have a control for expanding and collapsing the full description.  HTML is allowed
+   * in the description; it will be sanitized to prevent security vulnerabilities.
+   */
+  description: PropTypes.string,
+
+  /**
+   * The number of lines to truncate the description to.  If unspecified, defaults to 4.
+   */
+  descriptionLines: PropTypes.number,
+
+  /**
+   * The optional footer prop can be a string or an HTML element.  It is rendered below the
+   * description.  HTML is allowed in the footer; it will be sanitized to prevent security
+   * vulnerabilities.
+   */
+  footer: PropTypes.node,
+
+  /**
+   * The provenance is used to display an authority badge icon and text.
+   */
+  provenance: PropTypes.oneOf(['official', 'community', null]),
+
+  /**
+   * The provenanceIcon is used to display the appropriate icon for the authority badge
+   */
+  provenanceIcon: PropTypes.oneOf(['official2', 'community', null]),
+
+  /**
+   * The hideProvenance is used to conditionally hide the authority badge depending on feature flags.
+   */
+  hideProvenance: PropTypes.bool,
+
+  /**
+   * If the isPrivate prop is true, a badge indicating the asset's visibility is displayed.
+   */
+  isPrivate: PropTypes.bool,
+
+  /**
+   * The metadata prop is an object meant to contain two arbitrary pieces of metadata about the
+   * asset.  The two sections are named "first" and "second" and should be objects, each
+   * containing a "label" and "content" key.  They are rendered to the right of the description.
+   */
+  metadata: PropTypes.shape({
+    first: PropTypes.shape({
+      label: PropTypes.node.isRequired,
+      content: PropTypes.node.isRequired
+    }),
+    second: PropTypes.shape({
+      label: PropTypes.node.isRequired,
+      content: PropTypes.node.isRequired
+    })
+  }),
+
+  /**
+   * The title of the asset, displayed in an h1 tag.
+   */
+  name: PropTypes.string,
+
+  /**
+   * A function that is called when the full description is expanded.
+   */
+  onExpandDescription: PropTypes.func,
+
+  /**
+   * An optional function that should return content to be rendered in the upper-right hand corner
+   * of the info pane.
+   */
+  renderButtons: PropTypes.func,
+
+  /**
+   * If the isPaneCollapsible prop is true, only the the InfoPane header is initially visible
+   * and a More Info/Less Info toggle allows the InfoPane content to be shown
+   */
+  isPaneCollapsible: PropTypes.bool
+};
+
+InfoPane.defaultProps = {
+  descriptionLines: 4,
+  onExpandDescription: _.noop,
+  isPaneCollapsible: false
+};
 
 export default InfoPane;

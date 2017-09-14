@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import { 
@@ -35,11 +35,20 @@ import RegionSelector from '../RegionSelector';
 import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
 import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
 
-export var DataPane = React.createClass({
-  propTypes: {
-    metadata: React.PropTypes.object,
-    vifAuthoring: React.PropTypes.object
-  },
+export class DataPane extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderMetadataLoading',
+      'renderMetadataError',
+      'renderTreatNullValuesAsZero',
+      'renderGroupingOptions',
+      'renderTimelineOptions',
+      'renderDisplayOptions',
+      'renderErrorBarsOptions'
+    ]);
+  }
 
   renderMetadataLoading() {
     return (
@@ -49,7 +58,7 @@ export var DataPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderMetadataError() {
     return (
@@ -57,7 +66,7 @@ export var DataPane = React.createClass({
         <strong>{I18n.t('shared.visualizations.panes.data.uhoh')}</strong> {I18n.t('shared.visualizations.panes.data.loading_metadata_error')}
       </div>
     );
-  },
+  }
 
   renderTreatNullValuesAsZero() {
     const { vifAuthoring } = this.props;
@@ -79,7 +88,7 @@ export var DataPane = React.createClass({
         </label>
       </div>
     );
-  },
+  }
 
   renderGroupingOptions() {
     const { vifAuthoring } = this.props;
@@ -93,7 +102,7 @@ export var DataPane = React.createClass({
         </AccordionPane>
       ) :
       null;
-  },
+  }
 
   renderTimelineOptions() {
     const { vifAuthoring } = this.props;
@@ -106,7 +115,7 @@ export var DataPane = React.createClass({
         </AccordionPane>
       ) :
       null;
-  },
+  }
 
   renderDisplayOptions() {
     const { vifAuthoring } = this.props;
@@ -125,7 +134,7 @@ export var DataPane = React.createClass({
         </AccordionPane>
       ) : 
       null;
-  },
+  }
 
   renderErrorBarsOptions() {
     const { vifAuthoring } = this.props;
@@ -138,7 +147,7 @@ export var DataPane = React.createClass({
       </AccordionPane>
     ) :
     null;
-  },
+  }
   
   render() {
     const { metadata } = this.props;
@@ -188,7 +197,12 @@ export var DataPane = React.createClass({
       </form>
     );
   }
-});
+}
+
+DataPane.propTypes = {
+  metadata: PropTypes.object,
+  vifAuthoring: PropTypes.object
+};
 
 function mapStateToProps(state) {
   return {

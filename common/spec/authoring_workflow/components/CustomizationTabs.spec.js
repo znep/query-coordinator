@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from '../renderComponent';
-import { CustomizationTabs } from 'common/authoring_workflow/components/CustomizationTabs';
+import CustomizationTabs from 'common/authoring_workflow/components/CustomizationTabs';
 
 function defaultProps() {
   return {

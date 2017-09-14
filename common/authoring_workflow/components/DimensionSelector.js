@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Picklist } from 'common/components';
 import I18n from 'common/i18n';
 
@@ -18,12 +18,16 @@ import {
   hasData
 } from '../selectors/metadata';
 
-export const DimensionSelector = React.createClass({
-  propTypes: {
-    vifAuthoring: PropTypes.object,
-    metadata: PropTypes.object,
-    onSelectDimensionAndOrderBy: PropTypes.func
-  },
+export class DimensionSelector extends Component{
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'renderDimensionOption',
+      'renderDimensionSelector',
+      'onSelectDimension'
+    ]);
+  }
 
   renderDimensionOption(recommended, option) {
     return (
@@ -31,7 +35,7 @@ export const DimensionSelector = React.createClass({
         <Dimension type={option.type} name={option.title} recommended={recommended} />
       </div>
     );
-  },
+  }
 
   renderDimensionSelector() {
     const { metadata, vifAuthoring } = this.props;
@@ -78,19 +82,25 @@ export const DimensionSelector = React.createClass({
         <Picklist {...dimensionAttributes} />
       </div>
     );
-  },
+  }
 
   onSelectDimension(dimension) {
     const sort = (dimension.type === 'calendar_date') ? 'asc' : 'desc';
     this.props.onSelectDimensionAndOrderBy(dimension, sort);
-  },
+  }
 
   render() {
     return hasData(this.props.metadata) ?
       this.renderDimensionSelector() :
       null;
   }
-});
+}
+
+DimensionSelector.propTypes = {
+  vifAuthoring: PropTypes.object,
+  metadata: PropTypes.object,
+  onSelectDimensionAndOrderBy: PropTypes.func
+}
 
 function mapStateToProps(state) {
   return _.pick(state, ['metadata', 'vifAuthoring']);

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ColorPicker, Dropdown } from 'common/components';
 import I18n from 'common/i18n';
@@ -34,25 +34,34 @@ import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
 import TextInputButton from '../shared/TextInputButton';
 
-export var AxisAndScalePane = React.createClass({
-  propTypes: {
-    chartSorting: React.PropTypes.arrayOf(React.PropTypes.object),
-    timelinePrecision: React.PropTypes.arrayOf(React.PropTypes.object)
-  },
+export class AxisAndScalePane extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    const initialState = {
-      measureAxisScaleControl: this.props.measureAxisScaleControl || 'automatic'
+    this.state = {
+      measureAxisScaleControl: props.measureAxisScaleControl || 'automatic'
     };
 
-    return initialState;
-  },
-
-  getDefaultProps() {
-    return {
-      chartSorting: _.cloneDeep(CHART_SORTING)
-    };
-  },
+    _.bindAll(this, [
+      'renderChartSortingOption',
+      'renderChartSorting',
+      'onMeasureAxisScaleControlChange',
+      'renderMeasureAxisScaleControl',
+      'renderReferenceLinesControls',
+      'renderReferenceLinesControlsAtIndex',
+      'renderReferenceLinesLabelTextInputButton',
+      'renderReferenceLinesLabelInput',
+      'getExpandedStateKey',
+      'renderAddReferenceLineLink',
+      'renderTimelinePrecisionOption',
+      'renderBarChartControls',
+      'renderColumnChartControls',
+      'renderHistogramControls',
+      'renderTimelineChartControls',
+      'renderPieChartControls',
+      'renderEmptyPane'
+    ]);
+  }
 
   renderChartSortingOption(option) {
     return (
@@ -60,7 +69,7 @@ export var AxisAndScalePane = React.createClass({
         <span className={option.icon}></span> {option.title}
       </div>
     );
-  },
+  }
 
   renderChartSorting() {
     const { metadata, onSelectChartSorting, chartSorting, vifAuthoring } = this.props;
@@ -93,7 +102,7 @@ export var AxisAndScalePane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   onMeasureAxisScaleControlChange(event) {
     this.setState({
@@ -103,7 +112,7 @@ export var AxisAndScalePane = React.createClass({
     if (event.target.value == 'automatic') {
       this.props.onMeasureAxisControlAuto();
     }
-  },
+  }
 
   renderMeasureAxisScaleControl() {
     const {
@@ -183,7 +192,7 @@ export var AxisAndScalePane = React.createClass({
         {!isAuto ? boundariesPart : null}
       </AccordionPane>
     );
-  },
+  }
 
   renderReferenceLinesControls() {
     const { vifAuthoring } = this.props;
@@ -196,7 +205,7 @@ export var AxisAndScalePane = React.createClass({
         {link}
       </AccordionPane>
     );
-  },
+  }
 
   renderReferenceLinesControlsAtIndex(referenceLine, referenceLineIndex) {
     const {
@@ -267,7 +276,7 @@ export var AxisAndScalePane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderReferenceLinesLabelTextInputButton(referenceLine, referenceLineIndex) {
     const { onChangeReferenceLineLabel } = this.props;
@@ -279,7 +288,7 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return <TextInputButton {...attributes} />;
-  },
+  }
 
   renderReferenceLinesLabelInput(referenceLine, referenceLineIndex) {
     const key = this.getExpandedStateKey(referenceLineIndex);
@@ -298,11 +307,11 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return <DebouncedInput {...attributes} />;
-  },
+  }
 
   getExpandedStateKey(referenceLineIndex) {
     return `text-input-button-expanded-${referenceLineIndex}`;
-  },
+  }
 
   renderAddReferenceLineLink() {
     const { onClickAddReferenceLine, vifAuthoring } = this.props;
@@ -323,7 +332,7 @@ export var AxisAndScalePane = React.createClass({
           {I18n.translate('shared.visualizations.panes.reference_lines.fields.add_reference_line')}
         </a>
       </div>);
-  },
+  }
 
   renderTimelinePrecisionOption(option) {
     return (
@@ -331,7 +340,7 @@ export var AxisAndScalePane = React.createClass({
         {option.title}
       </div>
     );
-  },
+  }
 
   renderBarChartControls() {
     const chartSorting = this.renderChartSorting();
@@ -345,7 +354,7 @@ export var AxisAndScalePane = React.createClass({
         {referenceLinesControls}
       </Accordion>
     );
-  },
+  }
 
   renderColumnChartControls() {
     const chartSorting = this.renderChartSorting();
@@ -359,7 +368,7 @@ export var AxisAndScalePane = React.createClass({
         {referenceLinesControls}
       </Accordion>
     );
-  },
+  }
 
   renderHistogramControls() {
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
@@ -371,7 +380,7 @@ export var AxisAndScalePane = React.createClass({
         {referenceLinesControls}
       </Accordion>
     );
-  },
+  }
 
   renderTimelineChartControls() {
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
@@ -383,7 +392,7 @@ export var AxisAndScalePane = React.createClass({
         {referenceLinesControls}
       </Accordion>
     );
-  },
+  }
 
   renderPieChartControls() {
     const chartSorting = this.renderChartSorting();
@@ -393,11 +402,11 @@ export var AxisAndScalePane = React.createClass({
         {chartSorting}
       </Accordion>
     );
-  },
+  }
 
   renderEmptyPane() {
     return <EmptyPane />;
-  },
+  }
 
   render() {
     const { vifAuthoring } = this.props;
@@ -424,7 +433,16 @@ export var AxisAndScalePane = React.createClass({
       </form>
     );
   }
-});
+}
+
+AxisAndScalePane.propTypes = {
+  chartSorting: PropTypes.arrayOf(PropTypes.object),
+  timelinePrecision: PropTypes.arrayOf(PropTypes.object)
+};
+
+AxisAndScalePane.defaultProps = {
+  chartSorting: _.cloneDeep(CHART_SORTING)
+};
 
 function mapStateToProps(state) {
   return _.pick(state, ['datasetMetadata', 'metadata', 'vifAuthoring']);

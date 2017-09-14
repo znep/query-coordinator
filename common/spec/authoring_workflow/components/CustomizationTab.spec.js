@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from '../renderComponent';
-import { CustomizationTab } from 'common/authoring_workflow/components/CustomizationTab';
+import CustomizationTab from 'common/authoring_workflow/components/CustomizationTab';
 
 describe('CustomizationTab', () => {
   let props;

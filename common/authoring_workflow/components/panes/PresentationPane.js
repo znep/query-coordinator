@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Dropdown, ColorPicker } from 'common/components';
@@ -24,14 +24,40 @@ import DebouncedTextArea from '../shared/DebouncedTextArea';
 import * as selectors from '../../selectors/vifAuthoring';
 import * as actions from '../../actions';
 
-export var PresentationPane = React.createClass({
-  getDefaultProps() {
-    return {
-      baseLayers: BASE_LAYERS,
-      colorScales: COLOR_SCALES,
-      colorPalettes: COLOR_PALETTES
-    };
-  },
+export class PresentationPane extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, [
+      'onSelectColorScale',
+      'renderPrimaryColor',
+      'renderColorPalette',
+      'renderMultiSeriesCustomColorSelector',
+      'renderSingleSeriesCustomColorSelector',
+      'renderDimensionLabels',
+      'renderLabels',
+      'renderShowValueLabels',
+      'renderShowPercentLabels',
+      'renderBarChartVisualizationLabels',
+      'renderVisualizationLabels',
+      'renderShowSourceDataLink',
+      'renderTitleField',
+      'renderDescriptionField',
+      'renderGeneral',
+      'renderGroupedBarChartControls',
+      'renderBarChartControls',
+      'renderGroupedColumnChartControls',
+      'renderColumnChartControls',
+      'renderHistogramControls',
+      'renderTimelineChartControls',
+      'renderGroupedTimelineChartControls',
+      'renderFeatureMapControls',
+      'renderRegionMapControls',
+      'renderMapLayerControls',
+      'renderPieChartControls',
+      'renderEmptyPane'
+    ]);
+  }
 
   componentWillReceiveProps(nextProps) {
     const thisVizType = this.props.vifAuthoring.authoring.selectedVisualizationType;
@@ -46,12 +72,12 @@ export var PresentationPane = React.createClass({
     ) {
       this.props.onChangeDataSource();
     }
-  },
+  }
 
   onSelectColorScale(event) {
     const colorScale = _.find(this.props.colorScales, { value: event.target.value }).scale;
     this.props.onSelectColorScale(colorScale);
-  },
+  }
 
   renderPrimaryColor() {
     const { vifAuthoring, onChangePrimaryColor } = this.props;
@@ -72,7 +98,7 @@ export var PresentationPane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   renderColorPalette() {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
@@ -128,7 +154,7 @@ export var PresentationPane = React.createClass({
         {customColorSelector}
       </AccordionPane>
     );
-  },
+  }
 
   renderMultiSeriesCustomColorSelector() {
     const { vifAuthoring, onChangePrimaryColor, metadata } = this.props;
@@ -161,7 +187,7 @@ export var PresentationPane = React.createClass({
         {colorSelectors}
       </div>
     );
-  },
+  }
 
   renderSingleSeriesCustomColorSelector() {
     const { vifAuthoring, onChangeCustomColorPalette } = this.props;
@@ -206,7 +232,7 @@ export var PresentationPane = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   renderDimensionLabels() {
     const { vifAuthoring } = this.props;
@@ -230,7 +256,7 @@ export var PresentationPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderLabels() {
     const { vifAuthoring } = this.props;
@@ -252,7 +278,7 @@ export var PresentationPane = React.createClass({
         {valueLabelsAsPercent}
       </AccordionPane>
     );
-  },
+  }
 
   renderShowValueLabels() {
     const { vifAuthoring } = this.props;
@@ -276,7 +302,7 @@ export var PresentationPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderShowPercentLabels() {
     const { vifAuthoring } = this.props;
@@ -307,7 +333,7 @@ export var PresentationPane = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderBarChartVisualizationLabels() {
     const { vifAuthoring, onChangeLabelTop, onChangeLabelLeft } = this.props;
@@ -331,7 +357,7 @@ export var PresentationPane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   renderVisualizationLabels() {
     const { vifAuthoring, onChangeLabelLeft, onChangeLabelBottom } = this.props;
@@ -355,7 +381,7 @@ export var PresentationPane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   renderShowSourceDataLink() {
     const { vifAuthoring } = this.props;
@@ -377,7 +403,7 @@ export var PresentationPane = React.createClass({
         </label>
       </div>
     );
-  },
+  }
 
   renderTitleField() {
     const { vifAuthoring, onChangeTitle } = this.props;
@@ -389,7 +415,7 @@ export var PresentationPane = React.createClass({
         <DebouncedInput id="title" className="text-input" type="text" onChange={onChangeTitle} value={title} />
       </div>
     );
-  },
+  }
 
   renderDescriptionField() {
     const { vifAuthoring, onChangeDescription } = this.props;
@@ -401,7 +427,7 @@ export var PresentationPane = React.createClass({
         <DebouncedTextArea id="description" className="text-input text-area" onChange={onChangeDescription} value={description} />
       </div>
     );
-  },
+  }
 
   renderGeneral() {
     return (
@@ -411,7 +437,7 @@ export var PresentationPane = React.createClass({
         {this.renderShowSourceDataLink()}
       </AccordionPane>
     );
-  },
+  }
 
   renderGroupedBarChartControls() {
     return [
@@ -419,7 +445,7 @@ export var PresentationPane = React.createClass({
       this.renderLabels(),
       this.renderBarChartVisualizationLabels()
     ];
-  },
+  }
 
   renderBarChartControls() {
     return [
@@ -427,7 +453,7 @@ export var PresentationPane = React.createClass({
       this.renderLabels(),
       this.renderBarChartVisualizationLabels()
     ];
-  },
+  }
 
   renderGroupedColumnChartControls() {
     return [
@@ -435,7 +461,7 @@ export var PresentationPane = React.createClass({
       this.renderLabels(),
       this.renderVisualizationLabels()
     ];
-  },
+  }
 
   renderColumnChartControls() {
     return [
@@ -443,27 +469,27 @@ export var PresentationPane = React.createClass({
       this.renderLabels(),
       this.renderVisualizationLabels()
     ];
-  },
+  }
 
   renderHistogramControls() {
     return [
       this.renderPrimaryColor(),
       this.renderVisualizationLabels()
     ];
-  },
+  }
 
   renderTimelineChartControls() {
     return [
       this.renderPrimaryColor(),
       this.renderVisualizationLabels()
     ];
-  },
+  };
 
   renderGroupedTimelineChartControls() {
     return (
       this.renderColorPalette()
     );
-  },
+  }
 
   renderFeatureMapControls() {
     var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity, onChangePointSize } = this.props;
@@ -522,7 +548,7 @@ export var PresentationPane = React.createClass({
     );
 
     return [pointControls, this.renderMapLayerControls()];
-  },
+  }
 
   renderRegionMapControls() {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
@@ -554,7 +580,7 @@ export var PresentationPane = React.createClass({
     );
 
     return [colorControls, this.renderMapLayerControls()];
-  },
+  }
 
   renderMapLayerControls() {
     var { vifAuthoring, baseLayers, onSelectBaseLayer, onChangeBaseLayerOpacity } = this.props;
@@ -596,18 +622,18 @@ export var PresentationPane = React.createClass({
         </div>
       </AccordionPane>
     );
-  },
+  }
 
   renderPieChartControls() {
     return [
       this.renderColorPalette(),
       this.renderLabels()
     ];
-  },
+  }
 
   renderEmptyPane() {
     return <EmptyPane />;
-  },
+  }
 
   render() {
     let configuration = null;
@@ -663,7 +689,13 @@ export var PresentationPane = React.createClass({
       </form>
     );
   }
-});
+}
+
+PresentationPane.defaultProps = {
+  baseLayers: BASE_LAYERS,
+  colorScales: COLOR_SCALES,
+  colorPalettes: COLOR_PALETTES
+};
 
 function mapStateToProps(state) {
   return {

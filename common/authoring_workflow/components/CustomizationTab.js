@@ -1,16 +1,16 @@
-import React from 'react';
+import _ from 'lodash';
+import React , { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
-export var CustomizationTab = React.createClass({
-  propTypes: {
-    onTabNavigation: React.PropTypes.func.isRequired
-  },
+class CustomizationTab extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      selected: false
-    };
-  },
+    _.bindAll(this, [
+      'linkAttributes',
+      'listItemAttributes'
+    ]);
+  }
 
   linkAttributes() {
     const { id, selected, onTabNavigation, title } = this.props;
@@ -24,14 +24,14 @@ export var CustomizationTab = React.createClass({
       'aria-controls': `${id}-panel`,
       'aria-selected': selected
     };
-  },
+  }
 
   listItemAttributes() {
     return {
       key: this.props.id,
       className: classNames('tab-link', {'current': this.props.selected})
     };
-  },
+  }
 
   render() {
     const {id, title, icon} = this.props;
@@ -45,6 +45,14 @@ export var CustomizationTab = React.createClass({
       </li>
     );
   }
-});
+}
+
+CustomizationTab.propTypes = {
+  onTabNavigation: PropTypes.func.isRequired
+};
+
+CustomizationTab.defaultProps = {
+  selected: false
+};
 
 export default CustomizationTab;

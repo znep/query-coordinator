@@ -1,6 +1,4 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -21,94 +19,38 @@ const FILTER_CONFIG_TOGGLE_WIDTH = 30;
  * component has an admin or publisher role, the FilterBar will expose additional functionality,
  * allowing the user to create new filters and add restrictions on how they are used.
  */
-export const FilterBar = React.createClass({
-  propTypes: {
+export class FilterBar extends Component {
+  constructor(props) {
+    super(props);
 
-    /**
-     * The columns prop is an array of column objects.  Each column object must contain:
-     *   - fieldName (string), the internal column name to query against.
-     *   - name (string), the human-readable name of the column.
-     *   - dataTypeName (string), the name of a data type.
-     * If the dataTypeName is "money" or "number", additional fields must be present:
-     *   - rangeMin (number), the minimum value present in the column.
-     *   - rangeMax (number), the maximum value present in the column.
-     * This list will be used to construct the list of filters available for use.  Eventually,
-     * publishers and administrators are able to add at most one filter for each column.
-     */
-    columns: PropTypes.arrayOf(PropTypes.object),
-
-    /**
-     * The filters prop is an array of filter objects that will be rendered.  Each filter object is
-     * structured according to the VIF specification.  The set of rendered controls will always
-     * reflect the contents of this array.
-     */
-    filters: PropTypes.arrayOf(PropTypes.object),
-
-    /**
-     * A size string that will be inherited by child controls.
-     * See Dropdown and Picklist for examples of size-dependent controls that
-     * may exist within FilterItem components; note that explicit styles may not
-     * be specified for each size (in which case default styles will apply).
-     */
-    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
-
-    /**
-     * Whether to display the filter bar's settings, including the option to add new filters and
-     * individual filter settings. If this is set to true and none of the provided filters are
-     * visible, the FilterBar will not render anything. Defaults to true.
-     *
-     * NOTE: Even if 'isReadOnly' is set to true, the parameters of individual, non-hidden filters
-     * will still be changeable by users.
-     */
-    isReadOnly: PropTypes.bool,
-
-    /**
-     * The onUpdate prop is an optional function that will be called whenever the set of filters has
-     * changed.  This may happen when a filter is added, a filter is removed, or the parameters of a
-     * filter have changed.  The function is passed the new set of filters.  The consumer of this
-     * component is expected to respond to the event by rerendering this component with the new
-     * updated "filters" prop.  Any filters that do not have any criteria applied will have a filter
-     * function of "noop".
-     */
-    onUpdate: PropTypes.func,
-
-    /**
-     * This function is supplied a column and a String value.
-     *
-     * The downstream supplier decides whether or not the value is
-     * valid and returns a promise which eventually resolves with the response.
-     *
-     * If the value is not valid, the promise should be rejected. This will
-     * show an error to the user and request a retyping.
-     *
-     * If a function is not supplied, the UI will not allow arbitrary values.
-     */
-    isValidTextFilterColumnValue: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      filters: [],
-      controlSize: 'small',
-      isReadOnly: true,
-      onUpdate: _.noop
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       isExpanded: false,
       maxVisibleFilters: 0,
       newFilterAdded: false,
       maxFiltersToggleWidth: 0
     };
-  },
 
+    _.bindAll(this, [
+      'onFilterAdd',
+      'onFilterRemove',
+      'onFilterUpdate',
+      'onToggleCollapsedFilters',
+      'onWindowResize',
+      'getContainerWidth',
+      'getControlsWidth',
+      'setMaxVisibleFilters',
+      'renderAddFilter',
+      'renderFilterIcon',
+      'renderExpandControl',
+      'renderVisibleFilters',
+      'renderCollapsedFilters'
+    ]);
+  }
   componentDidMount() {
     this.setMaxVisibleFilters();
 
     window.addEventListener('resize', this.onWindowResize);
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     const { filters, isReadOnly } = this.props;
@@ -129,7 +71,7 @@ export const FilterBar = React.createClass({
         newFilterAdded: false
       });
     }
-  },
+  }
 
   componentDidUpdate(prevProps) {
     this.setMaxVisibleFilters();
@@ -149,11 +91,11 @@ export const FilterBar = React.createClass({
         this.addFilter.querySelector('button').focus();
       }
     }
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onWindowResize);
-  },
+  }
 
   onFilterAdd(filter) {
     const { filters, onUpdate } = this.props;
@@ -168,7 +110,7 @@ export const FilterBar = React.createClass({
         isExpanded: true
       });
     }
-  },
+  }
 
   onFilterRemove(index) {
     const { filters, onUpdate } = this.props;
@@ -177,7 +119,7 @@ export const FilterBar = React.createClass({
     newFilters.splice(index, 1);
 
     onUpdate(newFilters);
-  },
+  }
 
   onFilterUpdate(filter, index) {
     const { filters, onUpdate } = this.props;
@@ -185,13 +127,13 @@ export const FilterBar = React.createClass({
     filters.splice(index, 1, filter);
 
     onUpdate(filters);
-  },
+  }
 
   onToggleCollapsedFilters() {
     this.setState({
       isExpanded: !this.state.isExpanded
     });
-  },
+  }
 
   onWindowResize() {
     this.setMaxVisibleFilters();
@@ -201,7 +143,7 @@ export const FilterBar = React.createClass({
         newFilterAdded: false
       });
     }
-  },
+  }
 
   getContainerWidth() {
     if (!this.container) {
@@ -215,7 +157,7 @@ export const FilterBar = React.createClass({
     // have borders, but this could potentially throw our calculations off in the future if a
     // border is added.
     return this.container.clientWidth - containerPadding;
-  },
+  }
 
   getControlsWidth() {
     const { maxFiltersToggleWidth } = this.state;
@@ -234,7 +176,7 @@ export const FilterBar = React.createClass({
     }
 
     return addFilterWidth + filterIconWidth + maxWidth;
-  },
+  }
 
   setMaxVisibleFilters() {
     const { isReadOnly } = this.props;
@@ -251,7 +193,7 @@ export const FilterBar = React.createClass({
         maxVisibleFilters: newMaxVisibleFilters
       });
     }
-  },
+  }
 
   renderAddFilter() {
     const { columns, filters, isReadOnly } = this.props;
@@ -273,7 +215,7 @@ export const FilterBar = React.createClass({
       <span className="add-filter-container" ref={(ref) => this.addFilter = ref}>
         <AddFilter {...props} />
       </span>;
-  },
+  }
 
   renderFilterIcon() {
     const { isReadOnly } = this.props;
@@ -285,7 +227,7 @@ export const FilterBar = React.createClass({
     );
 
     return isReadOnly ? icon : null;
-  },
+  }
 
   renderExpandControl() {
     const { isReadOnly, filters } = this.props;
@@ -306,7 +248,7 @@ export const FilterBar = React.createClass({
         {text}
       </button>
     );
-  },
+  }
 
   renderVisibleFilters(filterItems) {
     const { maxVisibleFilters, newFilterAdded } = this.state;
@@ -324,7 +266,7 @@ export const FilterBar = React.createClass({
         </ReactCSSTransitionGroup>
       </div>
     );
-  },
+  }
 
   renderCollapsedFilters(filterItems) {
     const { maxVisibleFilters, newFilterAdded } = this.state;
@@ -342,7 +284,7 @@ export const FilterBar = React.createClass({
         </ReactCSSTransitionGroup>
       </div>
     );
-  },
+  }
 
   render() {
     const { isExpanded } = this.state;
@@ -400,6 +342,76 @@ export const FilterBar = React.createClass({
       </div>
     );
   }
-});
+}
+
+FilterBar.propTypes = {
+  /**
+   * The columns prop is an array of column objects.  Each column object must contain:
+   *   - fieldName (string), the internal column name to query against.
+   *   - name (string), the human-readable name of the column.
+   *   - dataTypeName (string), the name of a data type.
+   * If the dataTypeName is "money" or "number", additional fields must be present:
+   *   - rangeMin (number), the minimum value present in the column.
+   *   - rangeMax (number), the maximum value present in the column.
+   * This list will be used to construct the list of filters available for use.  Eventually,
+   * publishers and administrators are able to add at most one filter for each column.
+   */
+  columns: PropTypes.arrayOf(PropTypes.object),
+
+  /**
+   * The filters prop is an array of filter objects that will be rendered.  Each filter object is
+   * structured according to the VIF specification.  The set of rendered controls will always
+   * reflect the contents of this array.
+   */
+  filters: PropTypes.arrayOf(PropTypes.object),
+
+  /**
+   * A size string that will be inherited by child controls.
+   * See Dropdown and Picklist for examples of size-dependent controls that
+   * may exist within FilterItem components; note that explicit styles may not
+   * be specified for each size (in which case default styles will apply).
+   */
+  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+
+  /**
+   * Whether to display the filter bar's settings, including the option to add new filters and
+   * individual filter settings. If this is set to true and none of the provided filters are
+   * visible, the FilterBar will not render anything. Defaults to true.
+   *
+   * NOTE: Even if 'isReadOnly' is set to true, the parameters of individual, non-hidden filters
+   * will still be changeable by users.
+   */
+  isReadOnly: PropTypes.bool,
+
+  /**
+   * The onUpdate prop is an optional function that will be called whenever the set of filters has
+   * changed.  This may happen when a filter is added, a filter is removed, or the parameters of a
+   * filter have changed.  The function is passed the new set of filters.  The consumer of this
+   * component is expected to respond to the event by rerendering this component with the new
+   * updated "filters" prop.  Any filters that do not have any criteria applied will have a filter
+   * function of "noop".
+   */
+  onUpdate: PropTypes.func,
+
+  /**
+   * This function is supplied a column and a String value.
+   *
+   * The downstream supplier decides whether or not the value is
+   * valid and returns a promise which eventually resolves with the response.
+   *
+   * If the value is not valid, the promise should be rejected. This will
+   * show an error to the user and request a retyping.
+   *
+   * If a function is not supplied, the UI will not allow arbitrary values.
+   */
+  isValidTextFilterColumnValue: PropTypes.func
+};
+
+FilterBar.defaultProps = {
+  filters: [],
+  controlSize: 'small',
+  isReadOnly: true,
+  onUpdate: _.noop
+};
 
 export default FilterBar;

@@ -1,60 +1,20 @@
-// This component needs to be ported to ES6 classes, see EN-16506.
-/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import InputRange from 'react-input-range';
 
-export const Slider = React.createClass({
-  propTypes: {
+export class Slider extends Component {
+  constructor(props) {
+    super(props);
 
-    /**
-     * The minimum value selectable.
-     */
-    rangeMin: PropTypes.number.isRequired,
-
-    /**
-     * The maximum value selectable.
-     */
-    rangeMax: PropTypes.number.isRequired,
-
-    /**
-     * The increment that the user can move the handle(s).
-     */
-    step: PropTypes.number,
-
-    /**
-     * The value the slider should show. It comes in two flavors:
-     * - The object flavor lets you select two values with the
-     *   same slider. Renders two handles. (See the shape.)
-     * - The number flavor is a single selection and only renders
-     *   one handle.
-     */
-    value: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.shape({
-        start: PropTypes.number,
-        end: PropTypes.number
-      })
-    ]),
-
-    /**
-     * The change event is fired when the slider is dragged
-     * or keyboard-navigated. The callback's value depends
-     * on how props.value was set. If it was an object, you'll
-     * get an object. If it was a number, you'll get a number.
-     */
-    onChange: PropTypes.func.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      step: 5
-    };
-  },
+    _.bindAll(this, [
+      'onChange',
+      'formatLabel'
+    ]);
+  }
 
   componentWillMount() {
     this.labelId = `slider-label-${_.uniqueId()}`;
-  },
+  }
 
   onChange(inputRangeComponent, value) {
     const newValue = _.isPlainObject(value) ?
@@ -62,11 +22,11 @@ export const Slider = React.createClass({
       value;
 
     this.props.onChange(newValue);
-  },
+  }
 
   formatLabel(label) {
     return <span id={this.labelId}>{_.round(label, 1)}</span>;
-  },
+  }
 
   render() {
     let displayableValue;
@@ -99,6 +59,50 @@ export const Slider = React.createClass({
       </div>
     );
   }
-});
+}
+
+Slider.propTypes = { 
+  /**
+   * The minimum value selectable.
+   */
+  rangeMin: PropTypes.number.isRequired,
+
+  /**
+   * The maximum value selectable.
+   */
+  rangeMax: PropTypes.number.isRequired,
+
+  /**
+   * The increment that the user can move the handle(s).
+   */
+  step: PropTypes.number,
+
+  /**
+   * The value the slider should show. It comes in two flavors:
+   * - The object flavor lets you select two values with the
+   *   same slider. Renders two handles. (See the shape.)
+   * - The number flavor is a single selection and only renders
+   *   one handle.
+   */
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.shape({
+      start: PropTypes.number,
+      end: PropTypes.number
+    })
+  ]),
+
+  /**
+   * The change event is fired when the slider is dragged
+   * or keyboard-navigated. The callback's value depends
+   * on how props.value was set. If it was an object, you'll
+   * get an object. If it was a number, you'll get a number.
+   */
+  onChange: PropTypes.func.isRequired
+};
+
+Slider.defaultProps = {
+  step: 5
+};
 
 export default Slider;

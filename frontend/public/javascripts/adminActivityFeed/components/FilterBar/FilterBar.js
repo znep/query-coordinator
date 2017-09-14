@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {FilterItem, Dropdown, SocrataIcon} from 'common/components';
 import LocalizedText from 'common/i18n/components/LocalizedText';
@@ -7,7 +7,7 @@ import I18n from 'common/i18n';
 import * as actions from '../../actions';
 import './FilterBar.scss';
 
-class FilterBar extends React.Component {
+export class FilterBar extends Component {
   constructor(props) {
     super(props);
 

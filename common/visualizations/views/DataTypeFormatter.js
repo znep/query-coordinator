@@ -830,13 +830,8 @@ function _renderStandardNumber(amount, format) {
       value = value.toFixed(format.precision);
     }
 
-    if (/^-?\d{4}$/.test(value)) {
-      return value;
-    }
-
     value = utils.commaify(value, format.commaifyOptions);
 
-    // Force commaify off for four-digit numbers (workaround for year columns)
     if (format.noCommas === true || format.noCommas === "true") {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }

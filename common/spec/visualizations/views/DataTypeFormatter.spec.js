@@ -540,17 +540,6 @@ describe('DataTypeFormatter', function() {
         });
       });
 
-      it('should apply noCommas when number of digits is 4 as a special case', function() {
-        columnMetadata = {
-          renderTypeName: 'number'
-        };
-        var values = _.filter(NUMBER_DATA, function(value) { return /^\-?\d{4}$/.test(value); })
-        values.forEach(function(value) {
-          var cellContent = DataTypeFormatter.renderNumberCellHTML(value, columnMetadata);
-          assert.match(cellContent, /\d{4}/);
-        });
-      });
-
       it('should respect custom separators', function() {
         columnMetadata = {
           renderTypeName: 'number',

@@ -70,20 +70,16 @@ describe UserSessionsController do
     end
 
     describe 'with Auth0' do
-      before do
+      it 'disallows Socrata users if fedramp is enabled' do
         allow(subject).to receive(:should_auth0_redirect?).and_return(false)
-      end
-
-      it 'allows Socrata users if socrata_emails_bypass_auth0 is enabled' do
-        allow(CurrentDomain).to receive(:feature?).with('fedramp').and_return(false)
-        allow(CurrentDomain).to receive(:feature?).with('socrata_emails_bypass_auth0').and_return(true)
+        allow(CurrentDomain).to receive(:feature?).with('fedramp').and_return(true)
         allow(CurrentDomain).to receive(:feature?).with('username_password_login').and_return(true)
         allow_any_instance_of(UserSession).to receive(:user).and_return(user)
         allow(user).to receive(:is_superadmin?).and_return(true)
 
         post(:create, { user_session: { login: 'test@socrata.com' } })
 
-        expect(response.redirect_url).to include(profile_index_path)
+        expect(response.redirect_url).to include('/login')
       end
     end
   end

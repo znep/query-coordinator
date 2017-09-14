@@ -1564,14 +1564,21 @@ function SvgBarChart($element, vif, options) {
               // rules.
               // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
               // but both of those are out of reach for us at the moment.
+              //
+              // Don't use a strict equality comparison in the filter as getAttribute returns a string and 
+              // dimensionValue may not be a string.
+              //
               const dimensionGroup = d3.select(
                 _(yAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
-                filter((group) => group.getAttribute('data-dimension-value-html') === dimensionValue).
-                first()
+                  filter((group) => group.getAttribute('data-dimension-value-html') == dimensionValue).
+                  first()
               );
 
-              const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
+              if (dimensionGroup.empty()) {
+                return;
+              }
 
+              const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
               showGroupFlyout(seriesElement, dimensionGroup, dimensionValues, positions);
             }
           }

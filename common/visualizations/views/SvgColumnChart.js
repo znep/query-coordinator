@@ -1210,48 +1210,57 @@ function SvgColumnChart($element, vif, options) {
         }
       );
 
-    chartSvg.selectAll('.x.axis .tick text').
-      on(
-        'mousemove',
-        (datum, dimensionIndex, measureIndex) => {
+    chartSvg.
+      selectAll('.x.axis .tick text').
+        on(
+          'mousemove',
+          (datum, dimensionIndex, measureIndex) => {
 
-          if (!isCurrentlyPanning()) {
-            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-            let dimensionValue;
+            if (!isCurrentlyPanning()) {
+              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+              let dimensionValue;
 
-            if (_.isNil(datum[0])) {
-              dimensionValue = NO_VALUE_SENTINEL;
-            } else if (datum[0] === otherLabel) {
-              dimensionValue = otherLabel;
-            } else {
-              dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
+              if (_.isNil(datum[0])) {
+                dimensionValue = NO_VALUE_SENTINEL;
+              } else if (datum[0] === otherLabel) {
+                dimensionValue = otherLabel;
+              } else {
+                dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
+              }
+
+              // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
+              // We can't easily use a CSS selector because we lack a simple API to apply CSS-string escaping
+              // rules.
+              // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
+              // but both of those are out of reach for us at the moment.
+              //
+              // Don't use a strict equality comparison in the filter as getAttribute returns a string and 
+              // dimensionValue may not be a string.
+              //
+              const dimensionGroup = d3.select(
+                _(xAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
+                  filter((group) => group.getAttribute('data-dimension-value-html') == dimensionValue).
+                  first()
+              );
+
+              if (dimensionGroup.empty()) {
+                return;
+              }
+
+              showGroupFlyout(dimensionGroup, dimensionValues, positions);
             }
-
-            // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
-            // We can't easily use a CSS selector because we lack a simple API to apply CSS-string escaping
-            // rules.
-            // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
-            // but both of those are out of reach for us at the moment.
-            const dimensionGroup = d3.select(
-              _(xAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
-                filter((group) => group.getAttribute('data-dimension-value-html') === dimensionValue).
-                first()
-            );
-
-            showGroupFlyout(dimensionGroup, dimensionValues, positions);
           }
-        }
-      ).
-      on(
-        'mouseleave',
-        () => {
+        ).
+        on(
+          'mouseleave',
+          () => {
 
-          if (!isCurrentlyPanning()) {
-            hideFlyout();
+            if (!isCurrentlyPanning()) {
+              hideFlyout();
+            }
           }
-        }
-      );
+        );
 
     chartSvg.selectAll('.reference-line-underlay').
       // NOTE: The below function depends on this being set by d3, so it is

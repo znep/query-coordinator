@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+import classNames from 'classnames';
 import _ from 'lodash';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
@@ -156,7 +157,7 @@ class SearchBox extends React.Component {
   }
 
   render() {
-    const { collapsible, query } = this.props;
+    const { collapsible, query, adminHeaderClasses } = this.props;
     const { I18n } = this.props;
     const autocompleteSearchInputId = `autocomplete-search-input-${_.random(32768)}`
 
@@ -165,7 +166,7 @@ class SearchBox extends React.Component {
         styleName={collapsible ? 'form-collapsible' : 'form'}
         onSubmit={this.handleFormSubmit}>
         <div
-          styleName={this.getIconStyleName()}
+          styleName={classNames(this.getIconStyleName(), adminHeaderClasses)}
           onClick={() => this.domNode.focus()}>
           <SocrataIcon name="search" />
         </div>
@@ -181,7 +182,7 @@ class SearchBox extends React.Component {
           onFocus={() => this.handleFocusChanged(true)}
           placeholder={I18n.t('shared.site_chrome.header.search')}
           ref={(domNode) => this.domNode = domNode}
-          styleName={this.getInputStyleName()}
+          styleName={classNames(this.getInputStyleName(), adminHeaderClasses)}
           type="search"
           value={query || ''} />
       </form>
@@ -206,6 +207,7 @@ SearchBox.propTypes = {
   collapsible: PropTypes.bool,
   animate: PropTypes.bool,
   mobile: PropTypes.bool,
+  adminHeaderClasses: PropTypes.array,
 
   // need to know this since if it's undefined, it means on form submission and
   // we search for what's in the textbox instead of for the selected result
@@ -227,4 +229,4 @@ const mapDispatchToProps = (dispatch) => ({
   onResultVisibilityChanged: (visible) => dispatch(resultVisibilityChanged(visible))
 });
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(cssModules(SearchBox, styles)));
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(cssModules(SearchBox, styles, { allowMultiple: true })));

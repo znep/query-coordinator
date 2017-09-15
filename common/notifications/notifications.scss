@@ -2,6 +2,7 @@
 
 .container {
   @include base;
-  
+
+  position: relative;
   height: 100%;
 }

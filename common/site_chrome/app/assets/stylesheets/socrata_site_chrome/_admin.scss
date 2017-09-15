@@ -1,3 +1,6 @@
+$header_height: 46px;
+$header_height_small: 32px;
+
 #site-chrome-admin-header {
   position: fixed;
   top: 0;
@@ -7,13 +10,13 @@
   flex-direction: row;
   background-color: #636a71;
   color: #ffffff;
-  height: 46px;
+  height: $header_height;
   z-index: 9999;
   font-family: 'Open Sans', 'Helvetica', sans-serif;
   justify-content: space-between;
 
   &.site-chrome-small {
-    height: 32px;
+    height: $header_height_small;
 
     a {
       font-size: 13px;
@@ -21,7 +24,7 @@
     }
 
     .site-chrome-admin-menus {
-      height: 32px;
+      height: $header_height_small;
     }
 
     .site-chrome-admin-separator {
@@ -35,8 +38,8 @@
     }
 
     .site-chrome-admin-user {
-      padding: 5px 22px;
-      height: 32px;
+      padding: 5px 10px;
+      height: $header_height_small;
 
       > .socrata-icon-user {
         width: 16px;
@@ -45,9 +48,14 @@
       }
     }
 
+    .site-chrome-admin-search {
+      padding: 0 10px;
+      width: 34px;
+    }
+
     .site-chrome-admin-settings {
-      padding: 5px 22px 0 22px;
-      height: 32px;
+      padding: 5px 10px 0 10px;
+      height: $header_height_small;
 
       span[class^=socrata-icon] {
         width: 16px;
@@ -121,7 +129,7 @@
     display: flex;
     margin-left: 5px;
     margin-right: 5px;
-    height: 46px;
+    height: $header_height;
   }
 
   .site-chrome-admin-settings {
@@ -133,6 +141,11 @@
       height: 18px;
       font-size: 18px;
     }
+  }
+
+  .site-chrome-admin-search {
+    padding: 0 22px;
+    width: 62px;
   }
 
   .site-chrome-admin-menu,
@@ -215,7 +228,7 @@
   .site-chrome-admin-settings {
     position: relative;
     margin-right: 0;
-    height: 46px;
+    height: $header_height;
 
     &:hover {
       background-color: #3c3c3c;

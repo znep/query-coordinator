@@ -35,11 +35,13 @@ Array.from(document.querySelectorAll('[data-autocomplete="true"]')).forEach((con
   const collapsible = container.dataset.autocompleteCollapsible === 'true';
   const animate = container.dataset.autocompleteDisableAnimation !== 'true';
   const mobile = container.dataset.autocompleteMobile === 'true';
+  const adminHeaderClasses = container.dataset.adminHeaderClasses ? container.dataset.adminHeaderClasses.trim().split(' ') : [];
 
   const options = {
     collapsible,
     animate,
-    mobile
+    mobile,
+    adminHeaderClasses
   };
 
   ReactDOM.render(<StatefulAutocomplete options={options} />, container);

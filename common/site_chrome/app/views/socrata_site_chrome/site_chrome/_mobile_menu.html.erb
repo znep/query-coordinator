@@ -7,9 +7,10 @@
   <div class="menu-content">
     <%= navbar_links_div(:use_dropdown => false, :is_mobile => true) %>
 
-    <%= render 'site_chrome/mobile_user_actions' %>
-
-    <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), mobile: true %>
+    <% unless current_user_can_see_admin_link? %>
+      <%= render 'site_chrome/mobile_user_actions' %>
+      <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), mobile: true %>
+    <% end %>
 
     <div class="site-chrome-nav-links site-chrome-social-links">
       <%= render 'site_chrome/social_links', :is_mobile => true %>

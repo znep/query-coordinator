@@ -3,26 +3,67 @@
 }
 
 .collapsed-icon {
-  margin-top: -4px;
-  margin-left: -2px;
   cursor: pointer;
 
-  & > :global(.socrata-icon) {
-    display: inline-block;
-    width: 19px;
-    height: 15px;
-    position: relative;
+  &:not(.for-admin-header) {
+    margin-top: -4px;
+    margin-left: -2px;
+
+    & > :global(.socrata-icon) {
+      display: inline-block;
+      height: 15px;
+      position: relative;
+      width: 19px;
+    }
+
+    & svg {
+      height: 27px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 22px;
+
+      & path {
+        fill: white;
+      }
+    }
   }
 
-  & svg {
-    width: 22px;
-    height: 27px;
-    position: absolute;
-    top: 0;
-    left: 0;
+  &.for-admin-header {
+    height: 46px;
+    margin-right: 0;
+    padding: 13px 0;
+    position: relative;
 
-    & path {
-      fill: white;
+    & > :global(.socrata-icon) {
+      display: block;
+      height: 18px;
+      width: 18px;
+    }
+
+    & svg {
+      height: 18px;
+      width: 18px;
+
+      & path {
+        fill: #ffffff;
+      }
+    }
+
+    &.site-chrome-small {
+      height: 32px;
+      padding: 6px 0 2px;
+
+      & > :global(.socrata-icon) {
+        height: 14px;
+        margin-top: 4px;
+        width: 14px;
+      }
+
+      & svg {
+        height: 14px;
+        width: 14px;
+      }
     }
   }
 }

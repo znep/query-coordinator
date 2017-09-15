@@ -90,11 +90,33 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   position: absolute;
   width: 250px;
   height: 20px;
-  top: 10px;
   right: -22px;
   box-sizing: content-box;
   animation-name: searchBoxUncollapse;
   animation-duration: $animation-speed;
+
+  &:not(.for-admin-header) {
+    top: 10px;
+  }
+
+  &.for-admin-header {
+    &:not(.site-chrome-small) {
+      font-size: 14px;
+      height: 32px;
+      padding-bottom: 5px;
+      padding-top: 5px;
+      top: 7px;
+    }
+
+    &.site-chrome-small {
+      font-size: 13px;
+      padding-bottom: 3px;
+      padding-left: 25px !important;
+      padding-right: 5px;
+      padding-top: 3px;
+      top: 5px;
+    }
+  }
 }
 
 .search-box-static {
@@ -167,17 +189,49 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
 @keyframes iconUncollapse {
   from { left: 0px; }
-  to { left: -275px; }
+  to { left: -277px; }
+}
+
+@keyframes iconUncollapseAdminHeader {
+  from { left: 0px; }
+  to { left: -225px; }
 }
 
 .icon-container-collapsible {
   @extend .icon-container-base;
 
-  z-index: 1000;
-  left: -277px;
-  top: -12px;
-  animation-name: iconUncollapse;
   animation-duration: $animation-speed;
+  z-index: 1000;
+
+  &:not(.for-admin-header) {
+    animation-name: iconUncollapse;
+    left: -277px;
+    top: -12px;
+  }
+
+  &.for-admin-header {
+    animation-name: iconUncollapseAdminHeader;
+    left: -225px;
+    top: 2px;
+
+    & > :global(.socrata-icon) {
+      height: 18px;
+      top: 1px !important;
+      width: 18px;
+    }
+
+    &.site-chrome-small {
+      margin-left: 0;
+      text-align: center;
+      top: -6px;
+
+      & > :global(.socrata-icon) {
+        height: 14px;
+        top: 3px !important;
+        width: 14px;
+      }
+    }
+  }
 }
 
 .icon-container-static {

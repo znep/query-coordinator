@@ -44,13 +44,14 @@ class Autocomplete extends React.Component {
       getSearchResults,
       millisecondsBeforeSearch,
       mobile,
+      adminHeaderClasses,
       onChooseResult,
       onClearSearch,
       onResultVisibilityChanged
     } = this.props;
 
     if (collapsible && collapsed) {
-      return <CollapsedIcon />;
+      return <CollapsedIcon adminHeaderClasses={adminHeaderClasses} />;
     }
 
     return (
@@ -68,7 +69,8 @@ class Autocomplete extends React.Component {
           mobile={mobile}
           onChooseResult={onChooseResult}
           onClearSearch={onClearSearch}
-          query={currentQuery} />
+          query={currentQuery}
+          adminHeaderClasses={adminHeaderClasses} />
         <Results collapsible={collapsible} onChooseResult={onChooseResult} />
       </div>
     );
@@ -84,6 +86,7 @@ Autocomplete.propTypes = {
   getSearchResults: PropTypes.func.isRequired,
   millisecondsBeforeSearch: PropTypes.number.isRequired,
   mobile: PropTypes.bool,
+  adminHeaderClasses: PropTypes.array,
   onChooseResult: PropTypes.func,
   onClearSearch: PropTypes.func,
   onResultVisibilityChanged: PropTypes.func.isRequired
@@ -92,7 +95,8 @@ Autocomplete.propTypes = {
 Autocomplete.defaultProps = {
   onChooseResult: (name) => { window.location.href = getSearchUrl(name); },
   collapsible: false,
-  collapsed: false
+  collapsed: false,
+  adminHeaderClasses: ''
 }
 
 const mapStateToProps = (state) => ({ collapsed: state.autocomplete.collapsed });

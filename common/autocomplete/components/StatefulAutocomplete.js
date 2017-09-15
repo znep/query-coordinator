@@ -43,6 +43,7 @@ class StatefulAutocomplete extends React.Component {
       collapsible,
       animate,
       mobile,
+      adminHeaderClasses,
       onChooseResult,
       onClearSearch
     } = this.props.options;
@@ -67,6 +68,7 @@ class StatefulAutocomplete extends React.Component {
             collapsible={collapsible}
             animate={animate}
             mobile={mobile}
+            adminHeaderClasses={adminHeaderClasses}
             onChooseResult={onChooseResult}
             onClearSearch={onClearSearch}
             currentQuery={this.store.getState().autocomplete.query} />
@@ -87,6 +89,7 @@ StatefulAutocomplete.propTypes = {
     collapsible: PropTypes.bool,
     animate: PropTypes.bool,
     mobile: PropTypes.bool,
+    adminHeaderClasses: PropTypes.array,
     onChooseResult: PropTypes.func,
     onClearSearch: PropTypes.func
   })
@@ -98,7 +101,8 @@ StatefulAutocomplete.defaultProps = {
     getSearchResults: getCeteraResults,
     millisecondsBeforeSearch: 60,
     collapsible: false,
-    mobile: false
+    mobile: false,
+    adminHeaderClasses: ''
   }
 };
 

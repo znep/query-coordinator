@@ -1079,6 +1079,15 @@ body.grid-view-2017-refresh {
       }
     }
 
+    &.isEditable {
+
+      #unsavedTitle,
+      .save.toolbarButton,
+      .revert.toolbarButton {
+        display: none !important;
+      }
+    }
+
     &.unsavedView {
 
       #infoBox {

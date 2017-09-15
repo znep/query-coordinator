@@ -36,10 +36,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     _.isNull(series.dataSource.dimension.aggregationFunction) &&
     _.isNull(series.dataSource.measure.aggregationFunction)
   );
-  const isQueryWithInClause = _.find(
-    series.dataSource.filters,
-    (filter) => { return (filter.function === "in" || filter.function == "not in"); });
-    // We only want to follow the showOtherCategory code path if that property
+  const requireGroupingInSelect = vif.requireGroupingInSelect;
+  // We only want to follow the showOtherCategory code path if that property
   // is set to true AND there is a defined limit.
   const showOtherCategory = (
     _.get(vif, 'configuration.showOtherCategory', false) &&
@@ -86,7 +84,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       'NULL LAST',
       `LIMIT ${limit + 1}`
     ].join(' ');
-  } else if (isQueryWithInClause) {
+  } else if (requireGroupingInSelect) {
     queryString = [
       'SELECT',
         `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
@@ -117,7 +115,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       SoqlHelpers.measureAlias(),
       errorBarsLowerAlias,
       errorBarsUpperAlias,
-      (isQueryWithInClause ? SoqlHelpers.groupingAlias() : null)
+      (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
     ).
     then((queryResponse) => {
       const queryResponseRowCount = queryResponse.rows.length;
@@ -125,7 +123,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
         queryResponse.rows.map((row) => row[0])
       ).length;
 
-      if (!isQueryWithInClause &&
+      if (!requireGroupingInSelect &&
           (queryResponseRowCount !== queryResponseUniqueDimensionCount)) {
         const error = new Error();
 

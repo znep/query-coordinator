@@ -254,7 +254,7 @@ function getData(vif, options) {
         { operator: (operator === '=') ? 'IS NULL' : 'IS NOT NULL' } :
         { operator: operator, operand: operand };
     };
-    const generateGroupingVifWithFilters = (filtersForGroupingVif) => {
+    const generateGroupingVifWithFilters = (filtersForGroupingVif, extras = {}) => {
       const groupingVif = _.cloneDeep(state.vif);
 
       _.unset(groupingVif, 'configuration.showOtherCategory');
@@ -266,7 +266,7 @@ function getData(vif, options) {
         filtersForGroupingVif
       );
 
-      return groupingVif;
+      return Object.assign(groupingVif, extras);
     };
     const groupingValuesIncludeNull = _.includes(
       state.groupingValues,
@@ -291,7 +291,7 @@ function getData(vif, options) {
       arguments: _.without(state.dimensionValues, null)
     };
 
-    const nullDimensionValueFilter = {
+    const nullDimensionFilter = {
       function: 'binaryOperator',
       columnName: state.columnName,
       arguments: getBinaryOperatorFilterArguments(null)
@@ -309,10 +309,16 @@ function getData(vif, options) {
       arguments: _.without(state.groupingValues, null)
     };
 
-    const nullGroupingValueFilter = {
+    const nullGroupingFilter = {
       function: 'binaryOperator',
       columnName: state.groupingColumnName,
       arguments: getBinaryOperatorFilterArguments(null)
+    };
+
+    const nonNullGroupingFilter = {
+      function: 'binaryOperator',
+      columnName: state.groupingColumnName,
+      arguments: getBinaryOperatorFilterArguments(null, '!=')
     };
 
     /**
@@ -320,14 +326,14 @@ function getData(vif, options) {
      */
 
     groupingData.push({
-      query: "Anteater", // helpful to see while debugging
       vif: generateGroupingVifWithFilters(
         _.cloneDeep(filtersFromVif).concat([
           nonNullDimensionValuesFilter,
           nonNullGroupingValuesFilter
-        ])
-      ),
-      inClauseUsed: true
+        ]),
+        {query: "Anteater 1",
+         requireGroupingInSelect: true}
+      )
     });
 
     // XXX: NULL values are handled differently in SOQL when used in = clauses
@@ -335,40 +341,40 @@ function getData(vif, options) {
     // those results.
     if (dimensionValuesIncludeNull) {
       groupingData.push({
-        query: "Anteater (dimensionValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
-            nullDimensionValueFilter,
+            nullDimensionFilter,
             nonNullGroupingValuesFilter
-          ])
-        ),
-        inClauseUsed: true
+          ]),
+          {query: "Anteater 2",
+           requireGroupingInSelect: true}
+        )
       });
     }
 
     if (groupingValuesIncludeNull) {
       groupingData.push({
-        query: "Anteater (groupingValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
             nonNullDimensionValuesFilter,
-            nullGroupingValueFilter
-          ])
-        ),
-        inClauseUsed: true
+            nullGroupingFilter
+          ]),
+          {query: "Anteater 3",
+           requireGroupingInSelect: true}
+        )
       });
     }
 
     if (dimensionValuesIncludeNull && groupingValuesIncludeNull) {
       groupingData.push({
-        query: "Anteater (dimensionValuesIncludeNull && groupingValuesIncludeNull)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
-            nullDimensionValueFilter,
-            nullGroupingValueFilter
-          ])
-        ),
-        inClauseUsed: true
+            nullDimensionFilter,
+            nullGroupingFilter
+          ]),
+          {query: "Anteater 4",
+           requireGroupingInSelect: true}
+        )
       });
     }
 
@@ -377,26 +383,28 @@ function getData(vif, options) {
      */
 
     groupingData.push({
-      query: "Beaver", // helpful to see while debugging
       vif: generateGroupingVifWithFilters(
         _.cloneDeep(filtersFromVif).concat([
           nonNullDimensionValuesFilter,
+          nonNullGroupingFilter,
           invertedNonNullGroupingValuesFilter
-        ])
-      ),
-      inClauseUsed: true
+        ]),
+        {query: "Beaver 1",
+         requireGroupingInSelect: false}
+      )
     });
 
     if (dimensionValuesIncludeNull) {
       groupingData.push({
-        query: "Beaver (nullDimensionValueFilter)", // helpful to see while debugging
         vif: generateGroupingVifWithFilters(
           _.cloneDeep(filtersFromVif).concat([
-            nullDimensionValueFilter,
+            nullDimensionFilter,
+            nonNullGroupingFilter,
             invertedNonNullGroupingValuesFilter
-          ])
-        ),
-        inClauseUsed: true
+          ]),
+          {query: "Beaver 2",
+           requireGroupingInSelect: false}
+        )
       });
     }
 
@@ -454,7 +462,10 @@ function getData(vif, options) {
 
         groupingData.push({
           query: "Chinchilla",
-          vif: generateGroupingVifWithFilters(invertedDimensionValuesFilters),
+          vif: generateGroupingVifWithFilters(
+            invertedDimensionValuesFilters,
+            {query: "Chinchilla",
+             requireGroupingInSelect: false}),
           dimensionValue: otherCategoryName, // XXX: critical
           groupingValue
         });
@@ -540,8 +551,10 @@ function getData(vif, options) {
       }
 
       groupingData.push({
-        query: "Dingo",
-        vif: generateGroupingVifWithFilters(invertedEverythingValuesFilters),
+        vif: generateGroupingVifWithFilters(
+          invertedEverythingValuesFilters,
+          {query: "Dingo",
+           requireGroupingInSelect: false}),
         dimensionValue: otherCategoryName,
         groupingValue: otherCategoryName
       });
@@ -558,9 +571,7 @@ function getData(vif, options) {
     return new Promise((resolve, reject) => {
       Promise.all(groupingRequests).then((groupingResponses) => {
         groupingData.forEach((groupingDatum, i) => {
-          // Dingo queries only:
-          if (groupingDatum.dimensionValue === otherCategoryName &&
-              !groupingDatum.inClauseUsed) {
+          if (groupingDatum.vif.query === "Dingo") {
             const measureIndex = groupingResponses[i].columns.indexOf('measure');
             const sumOfRows = _.sumBy(groupingResponses[i].rows, measureIndex);
             groupingDatum.data = {
@@ -611,7 +622,7 @@ function getData(vif, options) {
     const table = {};
 
     state.groupingData.forEach((datum) => {
-      if (datum.inClauseUsed) {
+      if (datum.vif.requireGroupingInSelect) {
         datum.data.rows.forEach((row) => {
           const [dimension, grouping, measure] = row;
           const standardizedDimension = _.isUndefined(dimension) ? null : dimension;

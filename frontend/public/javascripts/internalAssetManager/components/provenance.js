@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { FeatureFlags } from 'common/feature_flags';
 
 export class Provenance extends React.Component {

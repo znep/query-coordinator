@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ErrorPill from 'components/ErrorPill/ErrorPill';
 import { singularOrPlural } from 'lib/util';
 import styles from './ErrorPointer.scss';

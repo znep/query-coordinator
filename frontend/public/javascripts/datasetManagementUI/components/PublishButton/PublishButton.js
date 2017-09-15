@@ -1,5 +1,7 @@
 /* eslint react/jsx-indent: 0 */
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+
+import React, { Component } from 'react';
 import styleguide from 'common/components';
 import styles from './PublishButton.scss';
 

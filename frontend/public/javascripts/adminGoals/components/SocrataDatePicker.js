@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import DatePicker from 'react-datepicker';
 
@@ -20,7 +21,7 @@ export default class SocrataDatePicker extends React.Component {
 }
 
 SocrataDatePicker.propTypes = {
-  onChange: React.PropTypes.func,
-  selected: React.PropTypes.any,
-  placeholderText: React.PropTypes.string
+  onChange: PropTypes.func,
+  selected: PropTypes.any,
+  placeholderText: PropTypes.string
 };

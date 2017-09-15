@@ -1,4 +1,5 @@
-import React, { cloneElement, Children, Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { cloneElement, Children, Component } from 'react';
 import cx from 'classnames';
 import cssModules from 'react-css-modules';
 import styles from './expandable.scss';

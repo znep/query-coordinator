@@ -1,6 +1,7 @@
 import Status from './georegion-status';
 import GeoregionAdminRow from './georegion-admin-row';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
@@ -11,7 +12,7 @@ function t(str, props) {
 const GeoregionPropType = PropTypes.shape({
   defaultFlag: PropTypes.bool.isRequired,
   enabledFlag: PropTypes.bool.isRequired,
-  id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   name: PropTypes.string.isRequired
 });
 

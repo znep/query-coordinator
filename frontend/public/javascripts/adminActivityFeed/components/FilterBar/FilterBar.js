@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {FilterItem, Dropdown, SocrataIcon} from 'common/components';
@@ -246,11 +247,11 @@ export class FilterBar extends Component {
 }
 
 FilterBar.propTypes = {
-  filter: React.PropTypes.shape({
-    event: React.PropTypes.string,
-    status: React.PropTypes.string,
-    dateFrom: React.PropTypes.string,
-    dateTo: React.PropTypes.string
+  filter: PropTypes.shape({
+    event: PropTypes.string,
+    status: PropTypes.string,
+    dateFrom: PropTypes.string,
+    dateTo: PropTypes.string
   })
 };
 

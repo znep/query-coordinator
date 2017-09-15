@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class TableRow extends React.Component {
@@ -18,11 +19,11 @@ export default class TableRow extends React.Component {
 
 TableRow.propTypes = {
   // Map like data structure
-  item: React.PropTypes.any.isRequired,
+  item: PropTypes.any.isRequired,
 
-  selected: React.PropTypes.bool.isRequired,
-  columns: React.PropTypes.array.isRequired,
-  columnComponent: React.PropTypes.func.isRequired,
+  selected: PropTypes.bool.isRequired,
+  columns: PropTypes.array.isRequired,
+  columnComponent: PropTypes.func.isRequired,
 
-  id: React.PropTypes.any.isRequired
+  id: PropTypes.any.isRequired
 };

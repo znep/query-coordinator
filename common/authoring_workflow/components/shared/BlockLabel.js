@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { factories } from 'common/components';
 
@@ -47,7 +48,7 @@ export default class BlockLabel extends React.Component {
 }
 
 BlockLabel.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  htmlFor: React.PropTypes.string,
-  description: React.PropTypes.string
+  title: PropTypes.string.isRequired,
+  htmlFor: PropTypes.string,
+  description: PropTypes.string
 };

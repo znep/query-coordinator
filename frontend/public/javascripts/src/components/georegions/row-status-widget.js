@@ -1,7 +1,8 @@
 import Status from './georegion-status';
 import FormButton from '../form-button';
 import { classNames } from '../utils';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 const georegionsNS = blist.namespace.fetch('blist.georegions');
 
@@ -115,7 +116,7 @@ RowStatusWidget.propTypes = {
   action: PropTypes.string.isRequired,
   authenticityToken: PropTypes.string.isRequired,
   disabledTitle: PropTypes.string.isRequired,
-  id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   status: PropTypes.oneOf(_.values(Status)).isRequired,
   onSuccess: PropTypes.func
 };

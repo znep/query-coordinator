@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import I18n from 'common/i18n';

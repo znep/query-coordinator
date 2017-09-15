@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -64,5 +65,5 @@ Accordion.defaultProps = {
 };
 
 Accordion.propTypes = {
-  defaultPane: React.PropTypes.string
+  defaultPane: PropTypes.string
 };

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class FormFooter extends Component {
   renderSaveButton() {

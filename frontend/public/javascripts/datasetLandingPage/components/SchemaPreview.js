@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import * as helpers from '../helpers';
 
@@ -64,7 +65,7 @@ export default class ActivityActions extends React.Component {
 }
 
 ActivityActions.propTypes = {
-  activity: React.PropTypes.object.isRequired,
-  onShowDetails: React.PropTypes.func.isRequired,
-  onRestore: React.PropTypes.func.isRequired
+  activity: PropTypes.object.isRequired,
+  onShowDetails: PropTypes.func.isRequired,
+  onRestore: PropTypes.func.isRequired
 };

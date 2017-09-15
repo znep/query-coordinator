@@ -138,6 +138,7 @@
     "moment-timezone": "0.5.13",
     "node-sass": "3.7.0",
     "normalize-scss": "4.1.0",
+    "prop-types": "15.5.10",
     "react": "15.4.2",
     "react-addons-css-transition-group": "15.4.2",
     "react-css-modules": "3.7.10",

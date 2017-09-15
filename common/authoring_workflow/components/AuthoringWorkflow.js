@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
@@ -213,13 +214,13 @@ function mapDispatchToProps(dispatch) {
 }
 
 AuthoringWorkflow.propTypes = {
-  enableFiltering: React.PropTypes.bool,
-  vif: React.PropTypes.object,
-  onComplete: React.PropTypes.func,
-  onBack: React.PropTypes.func,
-  onReset: React.PropTypes.func,
-  onCancel: React.PropTypes.func,
-  tabs: React.PropTypes.array
+  enableFiltering: PropTypes.bool,
+  vif: PropTypes.object,
+  onComplete: PropTypes.func,
+  onBack: PropTypes.func,
+  onReset: PropTypes.func,
+  onCancel: PropTypes.func,
+  tabs: PropTypes.array
 };
 
 AuthoringWorkflow.defaultProps = {

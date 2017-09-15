@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import I18nJS from 'i18n-js';
 import pluralization from '../pluralization';
@@ -54,17 +55,17 @@ Localization.defaultProps = {
 };
 
 Localization.propTypes = {
-  translations: React.PropTypes.object,
-  locale: React.PropTypes.string,
-  notFoundText: React.PropTypes.string.isRequired,
-  returnKeyForNotFound: React.PropTypes.bool.isRequired,
-  children: React.PropTypes.any,
-  localePrefix: React.PropTypes.string
+  translations: PropTypes.object,
+  locale: PropTypes.string,
+  notFoundText: PropTypes.string.isRequired,
+  returnKeyForNotFound: PropTypes.bool.isRequired,
+  children: PropTypes.any,
+  localePrefix: PropTypes.string
 };
 
 Localization.childContextTypes = {
-  I18n: React.PropTypes.object,
-  localization: React.PropTypes.shape({
-    getLocalePrefix: React.PropTypes.func
+  I18n: PropTypes.object,
+  localization: PropTypes.shape({
+    getLocalePrefix: PropTypes.func
   })
 };

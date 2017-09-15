@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import velocity from 'velocity-animate';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../dataTypeMetadata';
 import { handleKeyPress } from '../a11yHelpers';

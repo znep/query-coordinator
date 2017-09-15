@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import DebouncedInput from './DebouncedInput';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ENTER, ESCAPE, isolateEventByKeys } from 'common/keycodes';
 
 export const TextInputButton = React.createClass({

@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import collapsible from 'common/collapsible';
 import velocity from 'velocity-animate';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { formatDateWithLocale } from 'common/dates';
 import utils from 'common/js_utils';

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { SocrataIcon } from 'common/components';
@@ -83,10 +84,10 @@ AccordionPane.defaultProps = {
 };
 
 AccordionPane.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  onToggle: React.PropTypes.func.isRequired,
-  isOpen: React.PropTypes.bool,
-  paneId: React.PropTypes.string
+  title: PropTypes.string.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  paneId: PropTypes.string
 };
 
 export default Scrolls(AccordionPane);

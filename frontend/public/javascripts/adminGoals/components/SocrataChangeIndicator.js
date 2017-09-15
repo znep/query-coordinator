@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataButton from './SocrataButton';
 
@@ -23,5 +24,5 @@ export default class SocrataChangeIndicator extends React.Component {
 }
 
 SocrataChangeIndicator.propTypes = {
-  onRevert: React.PropTypes.func.isRequired
+  onRevert: PropTypes.func.isRequired
 };

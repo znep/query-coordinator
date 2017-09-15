@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { singularOrPlural } from 'lib/util';
 import { commaify } from '../../../common/formatNumber';

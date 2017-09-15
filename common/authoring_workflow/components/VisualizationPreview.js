@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { components } from 'common/visualizations';
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
@@ -46,8 +47,8 @@ export class DebouncedTextArea extends React.Component {
 }
 
 DebouncedTextArea.propTypes = {
-  value: React.PropTypes.any,
-  onChange: React.PropTypes.func.isRequired
+  value: PropTypes.any,
+  onChange: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class TableBody extends React.Component {
@@ -27,14 +28,14 @@ export default class TableBody extends React.Component {
 
 TableBody.propTypes = {
   // an array like structure, `any` choosen considering immutablejs
-  data: React.PropTypes.any.isRequired,
+  data: PropTypes.any.isRequired,
 
-  columns: React.PropTypes.array.isRequired,
-  rowIdGetter: React.PropTypes.func.isRequired,
+  columns: PropTypes.array.isRequired,
+  rowIdGetter: PropTypes.func.isRequired,
 
   // an array like structure, `any` choosen considering immutablejs
-  selectedRows: React.PropTypes.any.isRequired,
+  selectedRows: PropTypes.any.isRequired,
 
-  rowComponent: React.PropTypes.func.isRequired,
-  columnComponent: React.PropTypes.func.isRequired
+  rowComponent: PropTypes.func.isRequired,
+  columnComponent: PropTypes.func.isRequired
 };

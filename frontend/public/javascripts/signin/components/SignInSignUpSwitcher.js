@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import _ from 'lodash';
 import { get as getCookie, set as setCookie, erase as eraseCookie } from 'browser-cookies';
 import OptionsPropType from '../PropTypes/OptionsPropType';

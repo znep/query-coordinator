@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { commaify } from '../../../common/formatNumber';
 import * as dsmapiLinks from 'dsmapiLinks';
 import SocrataIcon from '../../../common/components/SocrataIcon';

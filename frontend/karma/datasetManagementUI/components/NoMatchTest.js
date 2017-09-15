@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import PropTypes from 'prop-types';
 import React from 'react';
 import NoMatch from 'pages/NoMatch/NoMatch';
 import { shallow } from 'enzyme';
@@ -31,7 +32,7 @@ describe('components/NoMatch', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object
+        store: PropTypes.object
       }
     });
 

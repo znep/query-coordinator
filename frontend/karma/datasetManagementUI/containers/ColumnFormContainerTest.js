@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { assert } from 'chai';
 import { mount } from 'enzyme';
@@ -41,8 +42,8 @@ describe('containers/ColumnFormContainer', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object,
-        router: React.PropTypes.object
+        store: PropTypes.object,
+        router: PropTypes.object
       }
     });
 

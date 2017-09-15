@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import TableHeader from './TableHeader';
@@ -53,12 +54,12 @@ DataTable.defaultProps = {
 
 DataTable.propTypes = {
   // an array like structure, `any` choosen considering immutablejs
-  data: React.PropTypes.any.isRequired,
-  rowIdGetter: React.PropTypes.func.isRequired,
-  selectedRows: React.PropTypes.any.isRequired,
-  onColumnClick: React.PropTypes.func.isRequired,
-  sorting: React.PropTypes.shape({
-    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
-    column:  React.PropTypes.object.isRequired
+  data: PropTypes.any.isRequired,
+  rowIdGetter: PropTypes.func.isRequired,
+  selectedRows: PropTypes.any.isRequired,
+  onColumnClick: PropTypes.func.isRequired,
+  sorting: PropTypes.shape({
+    direction: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    column:  PropTypes.object.isRequired
   })
 };

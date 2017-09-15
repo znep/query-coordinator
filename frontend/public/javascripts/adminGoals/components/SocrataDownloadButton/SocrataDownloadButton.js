@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataButton from '../SocrataButton';
 
@@ -48,8 +49,8 @@ SocrataDownloadButton.defaultProps = {
 };
 
 SocrataDownloadButton.propTypes = {
-  inProgress: React.PropTypes.bool,
-  fileUrl: React.PropTypes.string.isRequired,
-  fileName: React.PropTypes.string.isRequired,
-  onStartDownload: React.PropTypes.func.isRequired
+  inProgress: PropTypes.bool,
+  fileUrl: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired,
+  onStartDownload: PropTypes.func.isRequired
 };

@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import CustomizationTab from './CustomizationTab';
 
 export class CustomizationTabs extends React.Component {

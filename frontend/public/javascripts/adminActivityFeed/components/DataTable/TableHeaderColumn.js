@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class TableHeaderColumn extends React.Component {
@@ -24,10 +25,10 @@ export default class TableHeaderColumn extends React.Component {
 }
 
 TableHeaderColumn.propTypes = {
-  sorting: React.PropTypes.shape({
-    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
-    column:  React.PropTypes.object.isRequired
+  sorting: PropTypes.shape({
+    direction: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    column:  PropTypes.object.isRequired
   }),
-  column: React.PropTypes.object.isRequired,
-  onClick: React.PropTypes.func.isRequired
+  column: PropTypes.object.isRequired,
+  onClick: PropTypes.func.isRequired
 };

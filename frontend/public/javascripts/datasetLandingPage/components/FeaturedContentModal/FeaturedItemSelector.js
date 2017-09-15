@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import FeaturedViewCard from '../FeaturedViewCard';

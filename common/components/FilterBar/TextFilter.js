@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Dropdown from '../Dropdown';
 import SocrataIcon from '../SocrataIcon';
 import SearchablePicklist from './SearchablePicklist';

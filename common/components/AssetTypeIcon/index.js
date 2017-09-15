@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { getIconNameForDisplayType } from 'common/displayTypeMetadata';
 import SocrataIcon from '../SocrataIcon';
 
@@ -23,7 +24,7 @@ class AssetTypeIcon extends React.Component {
       className={`asset-type-icon ${className}`}
       otherAttributes={otherAttributes} />;
   }
-};
+}
 
 AssetTypeIcon.propTypes = {
   displayType: PropTypes.string.isRequired,

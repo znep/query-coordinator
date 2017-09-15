@@ -1,5 +1,6 @@
 import Status from './georegion-status';
-import React, { PropTypes, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import FormCheckbox from '../form-checkbox';
 
 class RowDefaultWidget extends PureComponent {
@@ -66,7 +67,7 @@ RowDefaultWidget.propTypes = {
   defaultLimit: PropTypes.number.isRequired,
   defaultStatus: PropTypes.bool.isRequired,
   enabledStatus: PropTypes.oneOf(_.values(Status)).isRequired,
-  id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onSuccess: PropTypes.func
 };
 

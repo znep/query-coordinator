@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDatasetLink, getDatasetName, hasData } from '../selectors/metadata';
 import { VisualizationRenderer } from 'common/visualizations';

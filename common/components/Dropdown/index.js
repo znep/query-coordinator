@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import SocrataUtils from 'common/js_utils';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';

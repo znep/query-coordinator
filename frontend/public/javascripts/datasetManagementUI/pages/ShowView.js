@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import * as Links from 'links';

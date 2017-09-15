@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {Map} from 'immutable';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {dismissDetailsModal} from '../actions';
@@ -151,8 +152,8 @@ class DetailsModal extends React.Component {
 }
 
 DetailsModal.propTypes = {
-  activity: React.PropTypes.object,
-  dispatchDismissDetailsModal: React.PropTypes.func.isRequired
+  activity: PropTypes.object,
+  dispatchDismissDetailsModal: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({

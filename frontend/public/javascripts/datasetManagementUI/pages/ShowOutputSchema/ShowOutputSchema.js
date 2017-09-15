@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { connect } from 'react-redux';

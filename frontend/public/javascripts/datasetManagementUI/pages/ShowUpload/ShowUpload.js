@@ -1,6 +1,9 @@
-/* eslint react/jsx-indent: 0 */
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+
+/* eslint react/jsx-indent: 0 */
+import PropTypes from 'prop-types';
+
+import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';

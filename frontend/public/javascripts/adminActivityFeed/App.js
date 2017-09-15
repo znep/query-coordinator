@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import EmptyState from './components/EmptyState';
@@ -33,7 +34,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  hasFilterBar: React.PropTypes.bool.isRequired
+  hasFilterBar: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import eq from 'lodash/fp/eq';

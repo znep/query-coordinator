@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from 'common/keycodes';
 

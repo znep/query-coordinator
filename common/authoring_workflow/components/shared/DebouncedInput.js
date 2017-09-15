@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
@@ -83,10 +84,10 @@ DebouncedInput.defaultProps = {
 };
 
 DebouncedInput.propTypes = {
-  value: React.PropTypes.any,
-  checked: React.PropTypes.bool,
-  onChange: React.PropTypes.func.isRequired,
-  type: React.PropTypes.string
+  value: PropTypes.any,
+  checked: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string
 };
 
 function mapStateToProps(state) {

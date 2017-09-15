@@ -1,6 +1,7 @@
 import FormInput from './form-input';
 import { classNames } from './utils';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class FormTextInput extends Component {
   constructor(props) {

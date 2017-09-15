@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 // Renders a short <section> that lists the number of rows, number of columns,
 // and row label of a dataset.

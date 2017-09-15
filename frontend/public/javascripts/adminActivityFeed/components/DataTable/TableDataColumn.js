@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class TableDataColumn extends React.Component {
@@ -13,6 +14,6 @@ export default class TableDataColumn extends React.Component {
 }
 
 TableDataColumn.propTypes = {
-  item: React.PropTypes.any.isRequired,
-  column: React.PropTypes.any.isRequired
+  item: PropTypes.any.isRequired,
+  column: PropTypes.any.isRequired
 };

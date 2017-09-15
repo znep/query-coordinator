@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { ColorPicker, Dropdown } from 'common/components';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import I18n from 'common/i18n';
 
 import {

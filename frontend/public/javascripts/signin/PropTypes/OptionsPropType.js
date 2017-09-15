@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import ConnectionsPropType from './ConnectionsPropType';
 import ForcedConnectionsPropType from './ForcedConnectionsPropType';
 import ModalConfigPropType from './ModalConfigPropType';

@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { defaultHeaders } from '../../common/http';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';

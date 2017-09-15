@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { SocrataIcon } from 'common/components';
 import { COLUMN_TYPES } from '../constants';
@@ -36,7 +37,7 @@ Dimension.defaultProps = {
 };
 
 Dimension.propTypes = {
-  type: React.PropTypes.string.isRequired,
-  name: React.PropTypes.string.isRequired,
-  recommended: React.PropTypes.bool
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  recommended: PropTypes.bool
 };

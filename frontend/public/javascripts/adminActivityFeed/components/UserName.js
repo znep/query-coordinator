@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import LocalizedLink from 'common/i18n/components/LocalizedLink';
@@ -16,5 +17,5 @@ export default class UserName extends React.Component {
 }
 
 UserName.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: PropTypes.object.isRequired
 };

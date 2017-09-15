@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class Localization extends React.Component {
@@ -71,19 +72,19 @@ Localization.defaultProps = {
 };
 
 Localization.propTypes = {
-  translations: React.PropTypes.object.isRequired,
-  locale: React.PropTypes.string.isRequired,
-  notFoundText: React.PropTypes.string.isRequired,
-  returnKeyForNotFound: React.PropTypes.bool.isRequired,
-  root: React.PropTypes.string,
-  children: React.PropTypes.any,
-  localePrefix: React.PropTypes.string
+  translations: PropTypes.object.isRequired,
+  locale: PropTypes.string.isRequired,
+  notFoundText: PropTypes.string.isRequired,
+  returnKeyForNotFound: PropTypes.bool.isRequired,
+  root: PropTypes.string,
+  children: PropTypes.any,
+  localePrefix: PropTypes.string
 };
 
 Localization.childContextTypes = {
-  localization: React.PropTypes.shape({
-    translate: React.PropTypes.func,
-    getLocale: React.PropTypes.func,
-    getLocalePrefix: React.PropTypes.func
+  localization: PropTypes.shape({
+    translate: PropTypes.func,
+    getLocale: PropTypes.func,
+    getLocalePrefix: PropTypes.func
   })
 };

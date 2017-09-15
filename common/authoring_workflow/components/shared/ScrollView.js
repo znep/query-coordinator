@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class ScrollView extends React.Component {
@@ -57,9 +58,9 @@ export default class ScrollView extends React.Component {
 }
 
 ScrollView.childContextTypes = {
-  scroll: React.PropTypes.shape({
-    horizontal: React.PropTypes.func,
-    vertical: React.PropTypes.func,
-    toView: React.PropTypes.func
+  scroll: PropTypes.shape({
+    horizontal: PropTypes.func,
+    vertical: PropTypes.func,
+    toView: PropTypes.func
   })
 };

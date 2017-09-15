@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { InfoPane } from 'common/components';
 import CommonMetadataTable from 'common/components/MetadataTable';
 import styles from './MetadataTable.scss';

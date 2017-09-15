@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import cssModules from 'react-css-modules';
 import styles from './edit-bar.scss';
 import { connect } from 'react-redux';

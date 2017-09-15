@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import LocalizedLink from 'common/i18n/components/LocalizedLink';
@@ -37,5 +38,5 @@ export default class AssetName extends React.Component {
 }
 
 AssetName.propTypes = {
-  activity: React.PropTypes.object.isRequired
+  activity: PropTypes.object.isRequired
 };

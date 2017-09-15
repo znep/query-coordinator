@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import TableCell from 'components/TableCell/TableCell';
 import RowError from 'components/RowError/RowError';
 import * as DisplayState from 'lib/displayState';

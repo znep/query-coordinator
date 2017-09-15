@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ExternalViewCard, ViewCard } from 'common/components';
 
 export class FeaturedContentViewCard extends React.Component {

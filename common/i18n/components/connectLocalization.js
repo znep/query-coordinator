@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default function(component) {
@@ -8,8 +9,8 @@ export default function(component) {
   }
 
   LocalizedComponent.contextTypes = {
-    localization: React.PropTypes.object,
-    I18n: React.PropTypes.object
+    localization: PropTypes.object,
+    I18n: PropTypes.object
   };
 
   return LocalizedComponent;

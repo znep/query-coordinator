@@ -1,6 +1,7 @@
 import FormInput from './form-input';
 import { classNames } from './utils';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 const FormSelectInputOptionPropType = PropTypes.shape({
   key: PropTypes.string.isRequired,

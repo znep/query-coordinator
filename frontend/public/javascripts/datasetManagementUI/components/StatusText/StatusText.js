@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './StatusText.scss';
 

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import './ActivityFeedTableHeaderColumn.scss';
@@ -23,11 +24,11 @@ export default class ActivityFeedTableHeaderColumn extends React.Component {
 }
 
 ActivityFeedTableHeaderColumn.propTypes = {
-  column: React.PropTypes.any.isRequired,
-  sorting: React.PropTypes.shape({
-    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
-    column:  React.PropTypes.object.isRequired
+  column: PropTypes.any.isRequired,
+  sorting: PropTypes.shape({
+    direction: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    column:  PropTypes.object.isRequired
   }),
-  onClick: React.PropTypes.func
+  onClick: PropTypes.func
 };
 

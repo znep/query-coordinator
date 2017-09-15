@@ -1,6 +1,7 @@
 import socrataTitleTipWrapper from './socrata-title-tip-wrapper';
 import { classNames } from './utils';
-import React, { PropTypes, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
 class LoadingButton extends PureComponent {
   render() {

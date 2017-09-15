@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import _ from 'lodash';

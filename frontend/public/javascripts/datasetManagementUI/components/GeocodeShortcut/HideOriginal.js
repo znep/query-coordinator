@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import styles from './GeocodeShortcut.scss';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;

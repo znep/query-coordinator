@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import _ from 'lodash';
 import I18n from 'common/i18n';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';

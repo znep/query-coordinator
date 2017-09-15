@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { closeShareModal, setEmbedSize } from '../actions';

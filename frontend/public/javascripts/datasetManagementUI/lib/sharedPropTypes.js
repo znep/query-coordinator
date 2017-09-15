@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 export const FieldDescriptor = PropTypes.shape({
   type: PropTypes.oneOf(['text', 'textarea', 'select', 'tagsinput']).isRequired,

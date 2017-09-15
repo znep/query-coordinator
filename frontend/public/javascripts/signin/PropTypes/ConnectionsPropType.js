@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 // this is what gets set in the internal panel to add specific buttons for choosing
 // connections to the login screen (the "ChooseConnection" component)

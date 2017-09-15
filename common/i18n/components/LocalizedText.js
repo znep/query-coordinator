@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default function LocalizedText(props, context) {
@@ -12,10 +13,10 @@ export default function LocalizedText(props, context) {
 }
 
 LocalizedText.propTypes = {
-  localeKey: React.PropTypes.string.isRequired
+  localeKey: PropTypes.string.isRequired
 };
 
 LocalizedText.contextTypes = {
-  I18n: React.PropTypes.object,
-  localization: React.PropTypes.object
+  I18n: PropTypes.object,
+  localization: PropTypes.object
 };

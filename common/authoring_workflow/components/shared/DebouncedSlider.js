@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Slider } from 'common/components';
@@ -45,7 +46,7 @@ export class DebouncedSlider extends React.Component {
 }
 
 DebouncedSlider.propTypes = {
-  onChange: React.PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {

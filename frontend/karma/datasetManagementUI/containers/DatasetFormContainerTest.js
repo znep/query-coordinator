@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { assert } from 'chai';
 import { mount } from 'enzyme';
@@ -64,7 +65,7 @@ describe('containers/DatasetFormContainer', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object
+        store: PropTypes.object
       }
     });
 
@@ -97,8 +98,8 @@ describe('containers/DatasetFormContainer', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object,
-        router: React.PropTypes.object
+        store: PropTypes.object,
+        router: PropTypes.object
       }
     });
 

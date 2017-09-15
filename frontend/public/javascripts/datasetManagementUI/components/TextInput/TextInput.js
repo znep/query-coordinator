@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import styles from './TextInput.scss';
 
 const TextInput = ({ inErrorState, handleFocus, handleBlur, handleChange, ...data }) => {

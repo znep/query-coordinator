@@ -1,7 +1,8 @@
 import Status from './georegion-status';
 import RowStatusWidget from './row-status-widget';
 import RowDefaultWidget from './row-default-widget';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import moment from 'moment';
 
 function t(str, props) {

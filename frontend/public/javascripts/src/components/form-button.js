@@ -1,5 +1,6 @@
 import LoadingButton from './loading-button';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class FormButton extends Component {
   constructor(props) {

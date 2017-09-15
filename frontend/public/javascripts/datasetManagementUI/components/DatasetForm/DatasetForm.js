@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import { validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/Fieldset/Fieldset';

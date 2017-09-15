@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import * as helpers from '../helpers';
 
@@ -25,5 +26,5 @@ export default class InitiatedBy extends React.Component {
 }
 
 InitiatedBy.propTypes = {
-  activity: React.PropTypes.object.isRequired
+  activity: PropTypes.object.isRequired
 };

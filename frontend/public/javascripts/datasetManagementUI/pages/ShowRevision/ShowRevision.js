@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import MetadataTable from 'containers/MetadataTableContainer';
 import SchemaPreview from 'containers/SchemaPreviewContainer';
 import HomePaneSidebar from 'containers/HomePaneSidebarContainer';

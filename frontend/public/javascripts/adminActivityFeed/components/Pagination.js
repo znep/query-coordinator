@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -108,21 +109,21 @@ Pagination.defaultProps = {
 };
 
 Pagination.propTypes = {
-  currentPage: React.PropTypes.number.isRequired,
-  hasNextPage: React.PropTypes.bool.isRequired,
-  hasPreviousPage: React.PropTypes.bool.isRequired,
-  totalPages: React.PropTypes.number,
-  showOtherPageNumbers: React.PropTypes.bool.isRequired,
-  showCurrentPageNumber: React.PropTypes.bool.isRequired,
-  otherPageNumbersRange: React.PropTypes.number.isRequired,
-  onGotoPage: React.PropTypes.func.isRequired,
-  nextButtonText: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.object
+  currentPage: PropTypes.number.isRequired,
+  hasNextPage: PropTypes.bool.isRequired,
+  hasPreviousPage: PropTypes.bool.isRequired,
+  totalPages: PropTypes.number,
+  showOtherPageNumbers: PropTypes.bool.isRequired,
+  showCurrentPageNumber: PropTypes.bool.isRequired,
+  otherPageNumbersRange: PropTypes.number.isRequired,
+  onGotoPage: PropTypes.func.isRequired,
+  nextButtonText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
   ]).isRequired,
-  previousButtonText: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.object
+  previousButtonText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
   ]).isRequired,
-  disabled: React.PropTypes.bool
+  disabled: PropTypes.bool
 };

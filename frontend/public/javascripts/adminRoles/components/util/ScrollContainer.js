@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { findDOMNode } from 'react-dom';
 import cssModules from 'react-css-modules';
 import styles from './scroll-container.scss';

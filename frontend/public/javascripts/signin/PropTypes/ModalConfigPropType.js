@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 // A modal that pops up, covering any forms, that must be accepted
 export default PropTypes.shape({

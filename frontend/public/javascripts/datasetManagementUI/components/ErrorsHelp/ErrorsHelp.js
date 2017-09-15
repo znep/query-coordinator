@@ -1,6 +1,9 @@
-/* eslint react/jsx-indent: 0 */
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
+
+/* eslint react/jsx-indent: 0 */
+import PropTypes from 'prop-types';
+
+import React, { Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import classNames from 'classnames';
 import styles from './ErrorsHelp.scss';

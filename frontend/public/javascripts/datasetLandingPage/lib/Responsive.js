@@ -1,4 +1,5 @@
-import React, { Children, PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Children, Component } from 'react';
 import breakpoints from './breakpoints';
 
 class Responsive extends Component {

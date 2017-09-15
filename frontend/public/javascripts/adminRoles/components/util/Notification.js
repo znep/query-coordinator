@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { SocrataIcon } from 'common/components';
 import SocrataButton from './SocrataButton';
 import cssModules from 'react-css-modules';

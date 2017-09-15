@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter, SocrataIcon } from 'common/components';
 import { changeVisibility, fetchParentVisibility } from 'actions/asset_actions';

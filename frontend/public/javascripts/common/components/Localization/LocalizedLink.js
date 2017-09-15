@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class LocalizedLink extends React.Component {
@@ -13,10 +14,10 @@ export default class LocalizedLink extends React.Component {
 }
 
 LocalizedLink.propTypes = {
-  url: React.PropTypes.any.isRequired,
-  children: React.PropTypes.any
+  url: PropTypes.any.isRequired,
+  children: PropTypes.any
 };
 
 LocalizedLink.contextTypes = {
-  localization: React.PropTypes.object
+  localization: PropTypes.object
 };

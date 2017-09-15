@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 // This is what we get back from Auth0 when getting the list of connections
 export default PropTypes.shape({

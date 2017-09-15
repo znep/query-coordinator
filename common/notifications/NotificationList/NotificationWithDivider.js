@@ -1,4 +1,5 @@
-import React, { PropTypes, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import cssModules from 'react-css-modules';
 import Notification from './Notification';
 import styles from './list.scss';

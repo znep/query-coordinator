@@ -1,5 +1,7 @@
 /* eslint react/prop-types: 0 */
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+
+import React from 'react';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import styles from './GeocodeShortcut.scss';

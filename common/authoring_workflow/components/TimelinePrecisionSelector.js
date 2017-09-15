@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import I18n from 'common/i18n';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import { getPrecision } from '../selectors/vifAuthoring';
@@ -36,7 +37,7 @@ export class TimelinePrecisionSelector extends Component {
       </div>
     );
   }
-};
+}
 
 TimelinePrecisionSelector.defaultProps = {
   timelinePrecision: _.cloneDeep(TIMELINE_PRECISION)

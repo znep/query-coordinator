@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { ESCAPE, TAB, isOneOfKeys, isolateEventByKeys } from 'common/keycodes';
 import * as a11y from 'common/a11y';
 

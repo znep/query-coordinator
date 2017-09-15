@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import CatalogResults from './components/catalog_results';
 import CatalogFilters from './components/catalog_filters';

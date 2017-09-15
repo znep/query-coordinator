@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Dropdown } from 'common/components';
 import BlockLabel from './shared/BlockLabel';
 import {

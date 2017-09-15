@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { factories } from 'common/components';
 import I18n from 'common/i18n';
 

@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'common/visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';

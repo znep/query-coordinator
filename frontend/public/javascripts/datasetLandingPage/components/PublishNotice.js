@@ -1,7 +1,8 @@
-import 'common/js_utils'; // Side effect: Set string.format, which is used by this file.
+import 'common/js_utils';
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types'; // Side effect: Set string.format, which is used by this file.
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';

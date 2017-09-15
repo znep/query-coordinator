@@ -1,5 +1,6 @@
 import { classNames } from './utils';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 class FormControls extends Component {
   renderButton(handlerName, label, disabled) {

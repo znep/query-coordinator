@@ -1,5 +1,6 @@
 import { classNames } from './utils';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const Spinner = ({className, isLoading}) => (
   <div className={classNames(className)} style={{ display: isLoading ? 'block' : 'none' }}>

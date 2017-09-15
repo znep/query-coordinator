@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -57,7 +58,7 @@ export default class Flyout extends React.Component {
 }
 
 Flyout.propTypes = {
-  children: React.PropTypes.object.isRequired,
+  children: PropTypes.object.isRequired,
   left: PropTypes.bool,
   right: PropTypes.bool,
   text: PropTypes.string.isRequired

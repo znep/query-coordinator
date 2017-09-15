@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -33,8 +34,8 @@ export default class RowsPerPageSelector extends React.Component {
 }
 
 RowsPerPageSelector.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  value: React.PropTypes.number.isRequired,
-  onChange: React.PropTypes.func.isRequired,
-  options: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+  title: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.number).isRequired
 };

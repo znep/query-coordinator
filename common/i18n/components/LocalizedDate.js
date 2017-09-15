@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment-timezone';
 import * as formats from '../config/momentjs-formats';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default function LocalizedDate(props, context) {
@@ -25,12 +26,12 @@ export default function LocalizedDate(props, context) {
 }
 
 LocalizedDate.propTypes = {
-  date: React.PropTypes.any.isRequired,
-  withTime: React.PropTypes.bool,
-  includeSeconds: React.PropTypes.bool
+  date: PropTypes.any.isRequired,
+  withTime: PropTypes.bool,
+  includeSeconds: PropTypes.bool
 };
 
 LocalizedDate.contextTypes = {
-  I18n: React.PropTypes.object,
-  localization: React.PropTypes.object
+  I18n: PropTypes.object,
+  localization: PropTypes.object
 };

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import styles from 'components/ErrorFlyout/ErrorFlyout.scss';
 
 export function getGeoFlyoutId(transform) {

@@ -1,5 +1,7 @@
 /* eslint react/jsx-indent: 0 */
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+
+import React from 'react';
 import { Link } from 'react-router';
 import * as Links from 'links';
 import MetadataEditor from 'containers/MetadataEditorContainer';

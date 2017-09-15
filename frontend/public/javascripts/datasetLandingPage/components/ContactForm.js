@@ -3,7 +3,8 @@ import velocity from 'velocity-animate';
 import recaptcha from '../lib/recaptcha';
 import classNames from 'classnames';
 import breakpoints from '../lib/breakpoints';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import {

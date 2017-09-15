@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import LocalizedText from 'common/i18n/components/LocalizedText';
 
@@ -26,5 +27,5 @@ export default class Status extends React.Component {
 }
 
 Status.propTypes = {
-  status: React.PropTypes.string.isRequired
+  status: PropTypes.string.isRequired
 };

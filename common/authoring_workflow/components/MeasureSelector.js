@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { factories, Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';

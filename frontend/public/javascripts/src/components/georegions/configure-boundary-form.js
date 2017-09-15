@@ -3,7 +3,8 @@ import FormControls from '../form-controls';
 import FormSelectInput from '../form-select-input';
 import FormTextInput from '../form-text-input';
 import Spinner from '../spinner';
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 const georegionsNS = blist.namespace.fetch('blist.georegions');
 

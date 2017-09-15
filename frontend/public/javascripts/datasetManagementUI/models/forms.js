@@ -385,7 +385,7 @@ export const classify = msg => {
     failure = {
       fieldName: 'licenseId',
       fieldset: I18n.metadata_manage.dataset_tab.titles.licenses_title,
-      message: 'bad license'
+      message: I18n.edit_metadata.validation_error_license
     };
   } else if (badEmail(msg)) {
     failure = {
@@ -397,7 +397,7 @@ export const classify = msg => {
     failure = {
       fieldName: 'categories',
       fieldset: I18n.metadata_manage.dataset_tab.titles.tags_title,
-      message: 'bad cat'
+      message: I18n.edit_metadata.validation_error_category
     };
   } else {
     failure = {};

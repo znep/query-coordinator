@@ -19,10 +19,11 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
+    let { link } = this.props;
     const {
       description,
+      isOwner,
       isPublished,
-      link,
       name,
       ownerName,
       provenance,
@@ -34,6 +35,14 @@ export class ResultListRow extends React.Component {
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
     );
+
+    if (type === 'story') {
+      const rights = _.get(window.serverConfig, 'currentUser.rights');
+      if ((isOwner && _.includes(rights, 'edit_story')) ||
+          (!isOwner && _.includes(rights, 'edit_others_stories'))) {
+        link += '/edit';
+      }
+    }
 
     switch (columnName) {
       case 'lastUpdatedDate': {
@@ -98,6 +107,7 @@ ResultListRow.propTypes = {
   isDatalensApproved: PropTypes.bool,
   isExplicitlyHidden: PropTypes.bool,
   isModerationApproved: PropTypes.bool,
+  isOwner: PropTypes.bool.isRequired,
   isPublic: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
   isRoutingApproved: PropTypes.bool,

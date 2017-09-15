@@ -35,6 +35,7 @@ export class ResultListTable extends React.Component {
         isDatalensApproved: result.metadata.is_datalens_approved,
         isExplicitlyHidden: result.metadata.is_hidden,
         isModerationApproved: result.metadata.is_moderation_approved,
+        isOwner: result.owner.id === _.get(window.serverConfig, 'currentUser.id'),
         isPublic: result.metadata.is_public,
         isPublished: result.metadata.is_published,
         isRoutingApproved: result.metadata.is_routing_approved,

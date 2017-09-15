@@ -141,7 +141,8 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
       return {
         columns: queryResponse.columns,
-        rows
+        rows,
+        precision: options.precision
       };
     });
 }
@@ -220,9 +221,8 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
   const dimensionIndex = dataTable.columns.indexOf('dimension');
   const startDate = rows[0][dimensionIndex];
   const endDate = rows[rows.length - 1][dimensionIndex];
-  const duration = moment.duration(
-    moment(endDate, moment.ISO_8601).diff(moment(startDate, moment.ISO_8601))
-  );
+  const endDateMoment = moment(endDate, moment.ISO_8601);
+  const startDateMoment = moment(startDate, moment.ISO_8601);
   const treatNullValuesAsZero = _.get(
     vif,
     'configuration.treatNullValuesAsZero',
@@ -240,17 +240,25 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
   let lastRowStartDate;
   let nextRowStartDate;
   let lastRowVisited = 0;
-
+  let duration;
+  
   switch (precision) {
     case 'year':
-      monotonicRowCount = Math.ceil(duration.asYears() + 1);
+      // Just do full year subtraction here.  If our timespan included a leap year,
+      // moment's duration.asYears() returned a fractional year (i.e. 5.002), which 
+      // we were ceil-ing and getting an extra year in our monotonicRowCount.
+      //
+      const years = endDateMoment.toDate().getFullYear() - startDateMoment.toDate().getFullYear();
+      monotonicRowCount = years + 1;
       break;
 
     case 'month':
-      monotonicRowCount = Math.ceil(duration.asMonths() + 1);
+      duration = moment.duration(endDateMoment.diff(startDateMoment));
+      monotonicRowCount = Math.ceil(duration.asMonths()) + 1;
       break;
 
     case 'day':
+      duration = moment.duration(endDateMoment.diff(startDateMoment));
       monotonicRowCount = Math.ceil(duration.asDays() + 1);
       break;
 
@@ -260,7 +268,7 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
       );
   }
 
-  while (i <= monotonicRowCount) {
+  while (i < monotonicRowCount) {
     lastRowStartDate = monotonicRows[i - 1][0];
     nextRowStartDate = incrementDateByPrecision(lastRowStartDate, precision);
 

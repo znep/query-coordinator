@@ -607,12 +607,14 @@ function SvgTimelineChart($element, vif, options) {
 
       domainStartDate = parseDate(startDate);
       domainEndDate = parseDate(endDate);
+
     } else {
 
       if ((minimumDatumWidth * dataToRender.rows.length) <= viewportWidth) {
 
         domainStartDate = parseDate(startDate);
         domainEndDate = parseDate(endDate);
+
       } else {
 
         const lastRenderableDatumIndex = Math.floor(
@@ -635,6 +637,12 @@ function SvgTimelineChart($element, vif, options) {
         );
       }
     }
+
+    // Add 1 year, month or day (depending on the precision) so that we render 
+    // the last time bucket properly.
+    //
+    domainEndDate = getIncrementedDateByPrecision(domainEndDate, dataToRender.precision);
+    endDate = domainEndDate.toISOString();
 
     const allMeasureValues = _.flatMap(
       dataToRender.rows.map((row) => {
@@ -1080,29 +1088,12 @@ function SvgTimelineChart($element, vif, options) {
       0,
       firstSeriesRows.length - 1
     );
-    const seriesDimensionIndex = 0;
 
-    let startDate;
-    let endDate;
+    const seriesDimensionIndex = 0;
     let flyoutXOffset;
 
-    if (firstSeriesIndex === firstSeriesRows.length - 1) {
-
-      startDate = parseDate(
-        firstSeriesRows[firstSeriesIndex - 1][seriesDimensionIndex]
-      );
-      endDate = parseDate(
-        firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]
-      );
-    } else {
-
-      startDate = parseDate(
-        firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]
-      );
-      endDate = parseDate(
-        firstSeriesRows[firstSeriesIndex + 1][seriesDimensionIndex]
-      );
-    }
+    const startDate = parseDate(firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]);
+    const endDate = getIncrementedDateByPrecision(startDate, dataToRender.precision);
 
     if (allSeriesAreLineVariant()) {
       flyoutXOffset = d3XScale(startDate);
@@ -1302,6 +1293,29 @@ function SvgTimelineChart($element, vif, options) {
       'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT',
       null
     );
+  }
+
+  function getIncrementedDateByPrecision(date, precision) {
+    const nextDate = _.clone(date);
+
+    switch (precision) {
+      case 'year':
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+        break;
+      
+      case 'month':
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        break;
+
+      case 'day':
+        nextDate.setDate(nextDate.getDate() + 1);
+        break;
+
+      default:
+        throw new Error(`Invalid precision: ${precision}`);
+      }
+
+    return nextDate;
   }
 }
 

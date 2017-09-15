@@ -20,7 +20,8 @@ describe('SvgTimelineChart', () => {
       ["2017-09-03T09:45:00.000", 30],
       ["2017-09-04T09:45:00.000", 40],
       ["2017-09-05T09:45:00.000", 50]
-    ]
+    ],
+    precision: 'day'
   };
 
   const multiSeriesTestData = {
@@ -42,9 +43,8 @@ describe('SvgTimelineChart', () => {
           view: 'date_time'
         }
       }
-
     },
-    precision: 'month'
+    precision: 'day'
   };
 
   let timelineChart;

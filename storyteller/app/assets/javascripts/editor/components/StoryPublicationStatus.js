@@ -1,6 +1,7 @@
 import $ from 'jquery';
+import _ from 'lodash';
 import moment from 'moment-timezone';
-import React from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import I18n from '../I18n';
@@ -10,21 +11,36 @@ import { storyPermissionsManager } from '../StoryPermissionsManager';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore} from '../stores/StorySaveStatusStore';
 
-const { STORY_UID } = Environment;
+class StoryPublicationStatus extends Component {
+  constructor(props) {
+    super(props);
 
-export const StoryPublicationStatus = React.createClass({
-  getInitialState() {
-    return {
+    this.state = {
       isLoading: false,
       hasError: false,
       isPublicationFlannelVisible: false
     };
-  },
+
+    _.bindAll(this, [
+      'togglePublicationFlannel',
+      'hidePublicationFlannel',
+      'runManager',
+      'publicize',
+      'privatize',
+      'renderErrorMessage',
+      'renderLastSavedMessage',
+      'renderPublicationMessage',
+      'renderPublishButton',
+      'renderPrivateButton',
+      'renderPublicationFlannel',
+      'renderPublicationFlannelOverlay'
+    ]);
+  }
 
   componentDidUpdate() {
     const marginLeft = this.statusElement.clientWidth / 2;
     $(this.flannelElement).css('margin-left', `${marginLeft}px`);
-  },
+  }
 
   togglePublicationFlannel() {
     const { isPublicationFlannelVisible } = this.state;
@@ -32,13 +48,13 @@ export const StoryPublicationStatus = React.createClass({
     this.setState({
       isPublicationFlannelVisible: !isPublicationFlannelVisible
     });
-  },
+  }
 
   hidePublicationFlannel() {
     this.setState({
       isPublicationFlannelVisible: false
     });
-  },
+  }
 
   runManager(action) {
     assert(
@@ -51,15 +67,15 @@ export const StoryPublicationStatus = React.createClass({
     storyPermissionsManager[action]().
       then(() => this.setState({ isLoading: false })).
       catch(() => this.setState({ isLoading: false, hasError: true }));
-  },
+  }
 
   publicize() {
     this.runManager('makePublic');
-  },
+  }
 
   privatize() {
     this.runManager('makePrivate');
-  },
+  }
 
   renderErrorMessage() {
     const message = I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated');
@@ -67,9 +83,10 @@ export const StoryPublicationStatus = React.createClass({
     return this.state.hasError ?
       <div className="alert error">{message}</div> :
       null;
-  },
+  }
 
   renderLastSavedMessage() {
+    const { STORY_UID } = Environment;
     const storyUpdatedAt = storyStore.getStoryUpdatedAt(STORY_UID);
     const humanFriendlyUpdatedAt = moment(storyUpdatedAt).calendar().toString();
 
@@ -82,9 +99,10 @@ export const StoryPublicationStatus = React.createClass({
         </button>
       </h5>
     );
-  },
+  }
 
   renderPublicationMessage() {
+    const { STORY_UID } = Environment;
     let message;
     const isPublic = storyStore.isStoryPublic(STORY_UID);
     const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
@@ -106,9 +124,10 @@ export const StoryPublicationStatus = React.createClass({
         {I18n.t(`editor.settings_panel.publishing_section.messages.${message}`)}
       </p>
     );
-  },
+  }
 
   renderPublishButton() {
+    const { STORY_UID } = Environment;
     const { isLoading } = this.state;
     const isPublic = storyStore.isStoryPublic(STORY_UID);
     const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
@@ -132,9 +151,10 @@ export const StoryPublicationStatus = React.createClass({
         <span>{I18n.t(`editor.settings_panel.publishing_section.${buttonText}`)}</span>
       </button>
     );
-  },
+  }
 
   renderPrivateButton() {
+    const { STORY_UID } = Environment;
     const isPublic =  storyStore.isStoryPublic(STORY_UID);
     const buttonAttributes = {
       className: 'btn btn-transparent',
@@ -150,7 +170,7 @@ export const StoryPublicationStatus = React.createClass({
     );
 
     return isPublic ?  button : null;
-  },
+  }
 
   renderPublicationFlannel() {
     const { isPublicationFlannelVisible } = this.state;
@@ -172,7 +192,7 @@ export const StoryPublicationStatus = React.createClass({
         {this.renderPrivateButton()}
       </div>
     );
-  },
+  }
 
   renderPublicationFlannelOverlay() {
     const { isPublicationFlannelVisible } = this.state;
@@ -184,9 +204,10 @@ export const StoryPublicationStatus = React.createClass({
     };
 
     return <div {...flannelOverlayAttributes} />;
-  },
+  }
 
   render() {
+    const { STORY_UID } = Environment;
     if (!storyStore.doesStoryExist(STORY_UID)) {
       return null; // Story not loaded yet.
     }
@@ -225,6 +246,6 @@ export const StoryPublicationStatus = React.createClass({
       </div>
     );
   }
-});
+}
 
 export default StoryPublicationStatus;

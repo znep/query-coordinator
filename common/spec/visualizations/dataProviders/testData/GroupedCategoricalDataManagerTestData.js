@@ -62,10 +62,10 @@ module.exports = {
     ]
   },
   // Beaver: `blood_alcohol_level` IS NULL AND `plausibility` NOT IN ('10', '9')
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IS NULL AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IS NULL AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      [undefined, null, 213]
+      [undefined, 213]
     ]
   },
   // Anteater: `blood_alcohol_level` IN ('0.5', '0.49') AND `plausibility` IN ('10', '9')
@@ -77,11 +77,11 @@ module.exports = {
     ]
   },
   // Beaver: `blood_alcohol_level` IN ('0.5', '0.49') AND `plausibility` NOT IN ('10', '9')
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.5\', \'0.49\') AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.5\', \'0.49\') AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      ['0.5', null, 12],
-      ['0.49', null, 9]
+      ['0.5', 12],
+      ['0.49', 9]
     ]
   },
   // Anteater: `blood_alcohol_level` IN ('0.48') AND `plausibility` IN ('10', '9')
@@ -92,10 +92,10 @@ module.exports = {
     ]
   },
   // Beaver: `blood_alcohol_level` IN ('0.48') AND `plausibility` NOT IN ('10', '9')
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.48\') AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.48\') AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      ["0.48", null, 19]
+      ["0.48", 19]
     ]
   },
   // Anteater: `blood_alcohol_level` IN ('0.01', '0.02') AND `plausibility` IN ('1', '2')
@@ -104,11 +104,11 @@ module.exports = {
     rows: []
   },
   // Beaver: `blood_alcohol_level` IN ('0.01', '0.02') AND `plausibility` NOT IN ('1', '2')
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.02\') AND `plausibility` NOT IN (\'1\', \'2\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.02\') AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'1\', \'2\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      ["0.01", null, 6],
-      ["0.02", null, 14]
+      ["0.01", 6],
+      ["0.02", 14]
     ]
   },
   // Anteater: `blood_alcohol_level` IN ('0.01', '0.12') AND `plausibility` IN ('1', '2')
@@ -119,11 +119,11 @@ module.exports = {
     ]
   },
   // Beaver: `blood_alcohol_level` IN ('0.01', '0.12') AND `plausibility` NOT IN ('1', '2')
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.12\') AND `plausibility` NOT IN (\'1\', \'2\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.12\') AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'1\', \'2\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      ["0.01", null, 6],
-      ["0.12", null, 6]
+      ["0.01", 6],
+      ["0.12", 6]
     ]
   },
   // `blood_alcohol_level` IS NULL OR `blood_alcohol_level` = '0.48' other
@@ -696,11 +696,11 @@ module.exports = {
     ]
   },
   // Beaver
-  'SELECT `blood_alcohol_level` AS __dimension_alias__, `plausibility` AS __grouping_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.05\') AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
-    columns: ['dimension', 'grouping', 'measure'],
+  'SELECT `blood_alcohol_level` AS __dimension_alias__, SUM(`plausibility`) AS __measure_alias__ WHERE `blood_alcohol_level` IN (\'0.01\', \'0.05\') AND `plausibility` IS NOT NULL AND `plausibility` NOT IN (\'10\', \'9\') GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001': {
+    columns: ['dimension', 'measure'],
     rows: [
-      ['0.01', null, 100],
-      ['0.05', null, 200],
+      ['0.01', 100],
+      ['0.05', 200],
     ]
   }
 };

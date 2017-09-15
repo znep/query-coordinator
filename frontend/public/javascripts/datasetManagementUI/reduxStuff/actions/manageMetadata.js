@@ -13,8 +13,6 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import { getLocalizedErrorMessage } from 'lib/util';
-import { classify } from 'models/moreForms';
 import {
   listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -54,11 +52,18 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
   dispatch(hideFlashMessage());
 
   if (errors.length) {
-    // console.log('errors', errors);
-    // dispatch(showFormErrors(formName));
-    // dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-    // make custom???
-    return Promise.reject(new Error('Client side validation failed'));
+    // is this cool? Trying to mimic the response shape of the api so that
+    // we handle validation failures in the catch block in one way only
+    const error = new Error('ValidationError');
+    error.response = new Response(
+      JSON.stringify({
+        name: 'ValidationError',
+        message: 'Client-side validation failed',
+        reason: 'Client-side validation failed'
+      })
+    );
+
+    return Promise.reject(error);
   }
 
   const datasetMetadata = Selectors.datasetMetadata(revision.metadata);
@@ -83,11 +88,6 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
     .then(resp => {
       const updatedRevision = resp.resource;
 
-      if (!updatedRevision.metadata) {
-        // custom???
-        throw new Error('No metadata in api response');
-      }
-
       dispatch(
         editView(updatedRevision.fourfour, {
           ..._.omit(updatedRevision.metadata, 'metadata', 'privateMetadata'),
@@ -108,16 +108,6 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
       dispatch(apiCallSucceeded(callId));
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });
-
-  // .catch(error => {
-  //   console.log('err', error);
-  //   dispatch(apiCallFailed(callId, error));
-  //
-  //   error.response.json().then(({ message }) => {
-  //     const localizedMessage = getLocalizedErrorMessage(message);
-  //     dispatch(showFlashMessage('error', localizedMessage));
-  //   });
-  // });
 };
 
 export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getState) => {

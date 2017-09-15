@@ -4,7 +4,8 @@ import {
   MARK_FORM_CLEAN,
   SHOW_FORM_ERRORS,
   HIDE_FORM_ERRORS,
-  SET_FORM_ERRORS
+  SET_FORM_ERRORS,
+  APPEND_FORM_ERROR
 } from 'reduxStuff/actions/forms';
 
 const initialState = {
@@ -36,6 +37,12 @@ const forms = (state = initialState, action) => {
 
     case SET_FORM_ERRORS:
       return dotProp.set(state, `${action.formName}.errors`, action.errors);
+
+    case APPEND_FORM_ERROR:
+      return dotProp.set(state, `${action.formName}.errors`, existingErrors => [
+        ...existingErrors,
+        action.error
+      ]);
 
     default:
       return state;

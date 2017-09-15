@@ -28,3 +28,10 @@ export const setFormErrors = (formName, errors) => ({
   formName,
   errors
 });
+
+export const APPEND_FORM_ERROR = ' APPEND_FORM_ERROR';
+export const appendFormError = (formName, error) => ({
+  type: APPEND_FORM_ERROR,
+  formName,
+  error
+});

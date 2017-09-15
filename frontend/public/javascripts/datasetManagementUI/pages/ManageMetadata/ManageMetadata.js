@@ -8,15 +8,15 @@ import {
   saveDatasetMetadata,
   saveColumnMetadata
 } from 'reduxStuff/actions/manageMetadata';
-import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
+import { hideFlashMessage, showFlashMessage } from 'reduxStuff/actions/flashMessage';
+import { markFormClean, showFormErrors, appendFormError } from 'reduxStuff/actions/forms';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'reduxStuff/actions/apiCalls';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import MetadataContent from 'components/MetadataContent/MetadataContent';
 import * as Selectors from 'selectors';
-import { markFormClean, showFormErrors } from 'reduxStuff/actions/forms';
 import * as Links from 'links';
 import { connect } from 'react-redux';
-import { getCurrentColumns } from 'models/forms';
+import { getCurrentColumns, classify } from 'models/forms';
 import styles from './ManageMetadata.scss';
 
 export class ManageMetadata extends Component {
@@ -81,21 +81,16 @@ export class ManageMetadata extends Component {
           });
         })
         .catch(error => {
-          console.log('error', error);
           // dispatch(apiCallFailed(callId, error));
           error.response.json().then(err => {
-            const thing = classify(err.reason);
+            dispatch(showFormErrors('datasetForm'));
+            dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+            const failure = classify(err.reason);
+            if (failure && failure.fieldName && failure.fieldset) {
+              dispatch(appendFormError('datasetForm', failure));
+            }
           });
         });
-      // .catch(error => {
-      //   console.log('err', error);
-      //   dispatch(apiCallFailed(callId, error));
-      //
-      //   error.response.json().then(({ message }) => {
-      //     const localizedMessage = getLocalizedErrorMessage(message);
-      //     dispatch(showFlashMessage('error', localizedMessage));
-      //   });
-      // });
     } else if (columnFormDirty) {
       dispatch(saveColumnMetadata(outputSchemaId, params))
         .then(() => {

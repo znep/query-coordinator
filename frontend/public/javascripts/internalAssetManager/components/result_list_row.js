@@ -19,7 +19,7 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    let { link } = this.props
+    let { link } = this.props;
     const {
       description,
       isOwner,
@@ -36,9 +36,9 @@ export class ResultListRow extends React.Component {
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
     );
 
-    if (type == 'story') {
+    if (type === 'story') {
       const rights = _.get(window.serverConfig, 'currentUser.rights');
-      if ((isOwner  && _.includes(rights, 'edit_story')) ||
+      if ((isOwner && _.includes(rights, 'edit_story')) ||
           (!isOwner && _.includes(rights, 'edit_others_stories'))) {
         link += '/edit';
       }

@@ -623,6 +623,7 @@ function getData(vif, options) {
 
     state.groupingData.forEach((datum) => {
       if (datum.vif.requireGroupingInSelect) {
+        // process 3-column results
         datum.data.rows.forEach((row) => {
           const [dimension, grouping, measure] = row;
           const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
@@ -631,12 +632,14 @@ function getData(vif, options) {
           _.setWith(table, path, existing + measure, Object);
         });
       } else {
-        // Otherwise, the query returned just one value to incorporate into the
-        // results table.
-        const dimension = _.get(datum, `data.rows[0][${dimensionIndex}]`, null);
-        const rowValue = _.get(datum, `data.rows[0][${measureIndex}]`, null);
-        const path = [dimension, datum.groupingValue];
-        _.setWith(table, path, rowValue, Object);
+        // process 2-column results
+        datum.data.rows.forEach((row) => {
+          const [dimension, measure] = row;
+          const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
+          const path = [standardizedDimension, datum.groupingValue];
+          const existing = _.get(table, path, 0);
+          _.setWith(table, path, existing + measure, Object);
+        });
       }
     });
 

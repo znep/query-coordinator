@@ -608,6 +608,14 @@ function getData(vif, options) {
     const dimensionColumn = 'dimension';
     const dimensionIndex = 0;
     const measureIndex = 1;
+    const dimensionLookupTable = _.reduce(
+      state.dimensionValues,
+      (res, value) => {
+        res[value] = true;
+        return res;
+      },
+      {}
+    );
     const dataToRenderColumns = [dimensionColumn].concat(state.groupingValues);
 
     const otherCategoryName = I18n.t('shared.visualizations.charts.common.other_category');
@@ -627,7 +635,12 @@ function getData(vif, options) {
         datum.data.rows.forEach((row) => {
           const [dimension, grouping, measure] = row;
           const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
-          const path = [standardizedDimension, grouping];
+          let path;
+          if (dimensionLookupTable[standardizedDimension]) {
+            path = [standardizedDimension, grouping];
+          } else {
+            path = [otherCategoryName, grouping];
+          }
           const existing = _.get(table, path, 0);
           _.setWith(table, path, existing + measure, Object);
         });
@@ -636,7 +649,12 @@ function getData(vif, options) {
         datum.data.rows.forEach((row) => {
           const [dimension, measure] = row;
           const standardizedDimension = _.isUndefined(dimension) ? null : dimension;
-          const path = [standardizedDimension, datum.groupingValue];
+          let path;
+          if (dimensionLookupTable[standardizedDimension]) {
+            path = [standardizedDimension, datum.groupingValue];
+          } else {
+            path = [otherCategoryName, datum.groupingValue];
+          }
           const existing = _.get(table, path, 0);
           _.setWith(table, path, existing + measure, Object);
         });

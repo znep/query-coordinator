@@ -63,12 +63,18 @@ var TEST_VIEW = {
 };
 var TEST_ROWS = [
   {
+    "metadata": {
+      "id": 1
+    },
     "data": {
       "id": "1",
       "plausibility": "2"
     }
   },
   {
+    "metadata": {
+      "id": 2
+    },
     "data": {
       "blood_alcohol_level": "0.99",
       "id": "2",
@@ -85,6 +91,7 @@ var EXPECTED_INLINE_DATA = {
     ['2', '0.99', '10']
   ],
   rowCount: 2,
+  rowIds: ['1', '2'],
   totalRowCount: 0,
   startIndex: 0,
   view: TEST_VIEW,

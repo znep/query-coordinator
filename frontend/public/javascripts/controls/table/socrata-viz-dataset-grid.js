@@ -48,6 +48,9 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
       var columns = _.get(serializedView, 'columns', []);
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
+      var rowIds = rows.map(function(row) {
+        return String(_.get(row, 'metadata.id', ''));
+      });
       var transformedRows = rows.map(function(row) {
 
         return columnsSortedByPosition.map(function(column) {
@@ -62,6 +65,7 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
         endIndex: endIndex,
         order: null,
         rows: transformedRows,
+        rowIds: rowIds,
         rowCount: rows.length,
         totalRowCount: totalRowCount,
         startIndex: startIndex,

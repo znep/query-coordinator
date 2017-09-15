@@ -59,8 +59,9 @@ $.fn.socrataTable = function(originalVif, locale) {
     // the metadata regarding that request (start index,
     // order, etc).
     // {
-    //   rows: <data from SoqlDataProvider>,
-    //   columns: <data from SoqlDataProvider>,
+    //   rows: <data from SoqlDataProvider or InlineDataProvider>,
+    //   rowIds: <data from SoqlDataProvider or InlineDataProvider>,
+    //   columns: <data from SoqlDataProvider or InlineDataProvider>,
     //   datasetMetadata: <data from SoqlDataProvider>,
     //   startIndex: index of first row (offset),
     //   pageSize: number of items in page (not necessarily in rows[]).
@@ -591,6 +592,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         order: null,
         pageSize: inlineDataProvider.getRowCount(),
         rows: inlineDataProvider.getRows(),
+        rowIds: inlineDataProvider.getRowIds(),
         startIndex: inlineDataProvider.getStartIndex(),
       },
       vif: vifWithInlineData
@@ -771,6 +773,7 @@ $.fn.socrataTable = function(originalVif, locale) {
             error: false,
             fetchedData: {
               rows: [],
+              rowIds: soqlData.rowIds,
               columns: columns,
               startIndex: startIndex,
               pageSize: pageSize,

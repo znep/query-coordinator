@@ -101,7 +101,8 @@ describe('Table', function() {
       table.vif,
       {
         columns: generatedColumns,
-        rows: generatedRows
+        rows: generatedRows,
+        rowIds: argv.rowIds
       }
     );
   }
@@ -511,6 +512,79 @@ describe('Table', function() {
         _.delay(function() {
           done();
         }, 10);
+      });
+    });
+
+    describe('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function() {
+
+      beforeEach(() => {
+        sinon.stub(table.table, 'isMobile', _.constant(false));
+      });
+
+      afterEach(() => {
+        table.table.isMobile.restore();
+      });
+
+      describe('when row ids are provided', function() {
+        var data = {
+          columns: [
+            { fieldName: 'hello', name: 'hello column', renderTypeName: 'text' },
+            { fieldName: 'goodbye', name: 'goodbye column', renderTypeName: 'number' }
+          ],
+          rows: [
+            ['incorrect', 3],
+            ['incorrect', 2],
+            ['correct', 1],
+            ['incorrect', 0]
+          ],
+          rowIds: ['0', '1', '2', '3']
+        };
+
+        it('emits event when double-clicking a row', function(done) {
+
+          render(table, data);
+
+          table.element.on('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function(event) {
+            var payload = event.originalEvent.detail;
+
+            assert.equal(_.get(payload, 'row.id'), data.rowIds[2]);
+            assert.equal(_.get(payload, 'row.data'), data.rows[2]);
+            done();
+          });
+
+          table.element.find('tr[data-row-id="2"]').dblclick();
+        });
+      });
+
+      describe('when row ids are not provided', function() {
+        var data = {
+          columns: [
+            { fieldName: 'hello', name: 'hello column', renderTypeName: 'text' },
+            { fieldName: 'goodbye', name: 'goodbye column', renderTypeName: 'number' }
+          ],
+          rows: [
+            ['correct', 3],
+            ['incorrect', 2],
+            ['incorrect', 1],
+            ['incorrect', 0]
+          ]
+        };
+
+        it('does not emit event when double-clicking a row', function(done) {
+
+          render(table, data);
+
+          table.element.on('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function(event) {
+            assert(false);
+          });
+
+          table.element.find('tr').dblclick();
+
+          setTimeout(
+            function() { done(); },
+            200
+          );
+        });
       });
     });
 

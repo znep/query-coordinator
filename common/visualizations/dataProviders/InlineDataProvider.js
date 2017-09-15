@@ -61,6 +61,10 @@ function InlineDataProvider(vifWithInlineData) {
     return totalRowCountOrZero;
   };
 
+  this.getRowIds = () => {
+    return _.get(seriesDataSource, 'rowIds', []).map((rowId) => `${rowId}`);
+  };
+
   // The InlineDataProvider simply reads data in the standard tabular format
   // directly from the vif. Refer to API.md for documentation on this format,
   // which is also what other data providers return (although metadata

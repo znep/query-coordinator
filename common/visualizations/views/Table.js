@@ -360,18 +360,19 @@ module.exports = function Table(element, originalVif, locale) {
 
     let body = data.
       rows.
-      map(function(row) {
+      map(function(row, i) {
 
         if (!row) {
           return '<tr class="null-row"><td></td></tr>';
         }
 
-        let rowData = filteredColumns.
+        const rowId = _.get(data, ['rowIds', i], null);
+        const rowData = filteredColumns.
           map(function(column, columnIndex) {
             return templateTableCell(column, row[columnIndex]);
           }).join('');
 
-        return `<tr>${rowData}</tr>`;
+        return `<tr data-row-id="${rowId}">${rowData}</tr>`;
       }).
       join('');
 
@@ -641,6 +642,12 @@ module.exports = function Table(element, originalVif, locale) {
     }
 
     self.$element.on(
+      'dblclick',
+      '.socrata-table tbody tr',
+      handleRowDoubleClick
+    );
+
+    self.$element.on(
       'mouseenter mousemove',
       '.socrata-table tbody td',
       showCellFlyout
@@ -690,6 +697,12 @@ module.exports = function Table(element, originalVif, locale) {
         hideSortMenuButtonFlyout
       );
     }
+
+    self.$element.off(
+      'dblclick',
+      '.socrata-table tbody tr',
+      handleRowDoubleClick
+    );
 
     self.$element.off(
       'mouseenter mousemove',
@@ -753,6 +766,37 @@ module.exports = function Table(element, originalVif, locale) {
           rightSideHint: false,
           dark: true
         }
+      );
+    }
+  }
+
+  function handleRowDoubleClick(event) {
+    const $row = $(event.target).closest('tr');
+    const rowIds = _.get(dataToRender, 'rowIds', []);
+
+    if ($row.length <= 0) {
+      return;
+    }
+
+    if (!_.isArray(rowIds)) {
+      return;
+    }
+
+    const rowId = $row.attr('data-row-id');
+    const rowIndex = rowIds.indexOf(rowId);
+
+    if (rowIndex >= 0) {
+      const payload = {
+        columns: dataToRender.columns,
+        row: {
+          id: rowId,
+          data: dataToRender.rows[rowIndex]
+        }
+      };
+
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED',
+        payload
       );
     }
   }

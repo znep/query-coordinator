@@ -178,16 +178,38 @@ function SoqlDataProvider(config, useCache = false) {
       '[0].columnName'
     );
 
-    const queryString =
-      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.
-      format(
-        columnNames.map(escapeColumnName).join(','),
-        order[0].columnName,
-        order[0].ascending ? 'ASC' : 'DESC',
-        limit,
-        offset,
-        whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
-      );
+    const readFromNbe = self.getOptionalConfigurationProperty('readFromNbe', true);
+
+    let queryString;
+
+    // NOTE: We will only have row ids if we are querying an NBE dataset. We cannot,
+    // at least at this time, construct a SoQL query that works against the OBE and
+    // includes both all the user rows and only the :id system column.
+    if (readFromNbe) {
+
+      queryString =
+        '$select=*,:id&$order=`{0}`+{1}&$limit={2}&$offset={3}{4}'.
+        format(
+          order[0].columnName,
+          order[0].ascending ? 'ASC' : 'DESC',
+          limit,
+          offset,
+          whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
+        );
+    } else {
+
+      queryString =
+        '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.
+        format(
+          columnNames.map(escapeColumnName).join(','),
+          order[0].columnName,
+          order[0].ascending ? 'ASC' : 'DESC',
+          limit,
+          offset,
+          whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
+        );
+    }
+
     const path = pathForQuery(queryString);
 
     return makeSoqlGetRequest(path).
@@ -416,38 +438,26 @@ function SoqlDataProvider(config, useCache = false) {
   function mapRowsResponseToTable(columnNames, data, errorBarColumnNames) {
     const table = {
       columns: columnNames,
-      rows: []
+      rows: _.map(data, (datum) => _.at(datum, columnNames)),
+      // NOTE: The ':id' property will only exist for queries against NBE
+      // datasets. Therefore, we can only use rowIds for the row double click
+      // event when displaying NBE datasets.
+      rowIds: _.map(data, (datum) => String(datum[':id'] || 'null'))
     };
 
-    if (data.length > 0) {
+    if (!_.isUndefined(errorBarColumnNames)) {
 
-      table.rows = data.map((datum) => {
+      table.errorBars = data.map((datum) => {
         const row = [];
 
-        for (var i = 0; i < table.columns.length; i++) {
-          const column = table.columns[i];
+        for (var i = 0; i < errorBarColumnNames.length; i++) {
+          const column = errorBarColumnNames[i];
           const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
           row.push(value);
         }
-
-        return row;
       });
-
-      if (!_.isUndefined(errorBarColumnNames)) {
-
-        table.errorBars = data.map((datum) => {
-          const row = [];
-
-          for (var i = 0; i < errorBarColumnNames.length; i++) {
-            const column = errorBarColumnNames[i];
-            const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
-            row.push(value);
-          }
-
-          return row;
-        });
-      }
     }
+
     return table;
   }
 }

@@ -453,8 +453,6 @@ Variable Name | Type | Source | Description
 `op_measure_airbrake_project_id` | String | Configuration | AirBrake project associated with OP measure assets.
 `path_info` | String | Rails | The path portion of the incoming request. Used to determine `locale` in some cases. See also `request_path` and `request_uri`. See also `RequestLoggerMiddleware`.
 `pendo_token` | String | Configuration | Pendo API token required to load pendo tracking script.
-`phidippides_address` | String | Configuration | Host name or IP address of the Phidippides service.
-`phidippides_port` | Integer | Configuration | Port to connect to on `phidippides_address`.
 `polaroid_hostname` | String | Configuration | Host name to connect to for the Polaroid page snapshot service.
 `polaroid_port` | Integer | Configuration | Port to connect to on `polaroid_host`.
 `port` | Integer | Configuration | _Deprecated_ Port to expose in Docker when running in a docker container.
@@ -500,7 +498,6 @@ Variable Name | Type | Source | Description
 `x_socrata_auth` | String | Rails | Used to tell Core that the request is from an anonymous user.
 `zk_hosts` | URI | Configuration | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.
 `zookeeper_soda_fountain_path` | String | Configuration | `Zookeeper` path to the `SodaFountain` service.
-`zookeeper_phidippides_path` | String | Configuration | `Zookeeper` path to the `Phiddipides` service.
 
 ## Translations & LocaleApp
 

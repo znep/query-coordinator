@@ -266,10 +266,6 @@ module.exports = function ChoroplethController(
     function(currentDataset, fieldName, shapefile, computedColumn) {
       var sourceColumn = fieldName;
 
-      // Phidippides returns strategy_type in its computation strategies, Core returns type in
-      // its computation strategies. As of 1/2017, the only data lenses using the Core
-      // computation strategies are data lenses created from derived views, since they can't use
-      // Phidippides
       var computationStrategy = _.get(computedColumn, 'computationStrategy.strategy_type') ||
         _.get(computedColumn, 'computationStrategy.type');
 

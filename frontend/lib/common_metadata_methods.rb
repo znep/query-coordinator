@@ -10,7 +10,7 @@ module CommonMetadataMethods
   class DatasetMetadataNotFound < RuntimeError; end
   class UnknownRequestError < RuntimeError; end
 
-  # A user's right to write to phidippides is currently determined by role.
+  # A user's right to write metadata is currently determined by role.
   # This is not sustainable but adding a right to a role involves writing a
   # migration what parses JSON. The risk associated with that was deemed worse
   # than keying off of the role.
@@ -114,7 +114,6 @@ module CommonMetadataMethods
 
   # EN-12365: This method assembles metadata data similar to what Phidippides would have returned.
   # Data lenses based on derived views have a number of limitations to keep in mind:
-  # - we cannot use Phidippides
   # - most derived views are based on the OBE version of a dataset, so the /views endpoint will
   #   return OBE columns, which makes data lens very, very unhappy
   # - we have to use the `read_from_nbe=true` flag whenever talking to Core, including the /views
@@ -133,8 +132,7 @@ module CommonMetadataMethods
       :defaultId => derived_view_dataset.nbe_view.id
     }).with_indifferent_access
 
-    # This mutates dataset_metadata with the extra things we need by looking up the view again in
-    # Core. While it's in the Phidippides class, it doesn't actually talk to Phidippides.
+    # This mutates dataset_metadata with the extra things we need by looking up the view again in Core.
     mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
 
     dataset_metadata
@@ -242,8 +240,7 @@ module CommonMetadataMethods
     nbe_metadata = nbe_view.nil? ? {} : nbe_view.data.with_indifferent_access
     core_metadata = translate_core_metadata_to_legacy_structure(nbe_metadata)
 
-    # Add dataset-level fields that phidippides is expected to return
-    # because we want to use the obe dataset's information instead of the nbe 4x4
+    # Add dataset-level fields because we want to use the obe dataset's information instead of the nbe 4x4
     core_metadata.merge!(
       domain: CurrentDomain.cname,
       id: view.id,

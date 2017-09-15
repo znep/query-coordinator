@@ -20,7 +20,6 @@ class DatasetsControllerTest < ActionController::TestCase
       }
     )
     @controller.stubs(:get_view => @view)
-    @phidippides = Phidippides.new('localhost', 2401)
     @params = { :foo => 'foo', :bar => 'bar' }
     CurrentDomain.stubs(user_can?: false, default_widget_customization_id: nil)
     default_url_options[:host] = @request.host
@@ -29,10 +28,8 @@ class DatasetsControllerTest < ActionController::TestCase
   def teardown
     @controller.unstub(:get_view)
     @controller.unstub(:current_user)
-    @controller.stubs(:phidippides)
     View.unstub(:new_backend?)
     View.unstub(:category_display)
-    Phidippides.unstub(:fetch_pages_for_dataset)
     CurrentDomain.unstub(:user_can?)
     CurrentDomain.unstub(:default_widget_customization_id)
   end
@@ -72,7 +69,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'redirect to OBE view page when the feature flag disable_obe_redirection is true and there is an OBE view' do
         setup_nbe_dataset_test(false, true)
-        Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
         View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
         mock_metadata = Metadata.new.tap do |metadata|
           metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
@@ -185,9 +181,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'no redirect for datasets that are on the NBE and user is admin' do
         setup_nbe_dataset_test(true)
-        Phidippides.any_instance.stubs(
-          fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
-        )
         mock_metadata = Metadata.new.tap do |metadata|
           metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
         end
@@ -200,21 +193,8 @@ class DatasetsControllerTest < ActionController::TestCase
         assert_response 200
       end
 
-      #
-      # See comment at the beginning of `view_redirection_url` in `datasets_controller.rb`
-      #
-      # should 'redirects to default page for NBE datasets for non-admin users' do
-      #   setup_nbe_dataset_test(false, false)
-      #   Phidippides.any_instance.stubs(
-      #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
-      #   )
-      #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-      #   assert_redirected_to '/view/page-xist'
-      # end
-
       should 'redirects to OBE view page for NBE datasets without default page for non-admin users' do
         setup_nbe_dataset_test(false, true)
-        Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
         View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
         Metadata.any_instance.stubs(:feature_flags => Hashie::Mash.new)
         get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
@@ -223,7 +203,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'redirects to home page for NBE datasets without default page for non-admin users' do
         setup_nbe_dataset_test(false, false)
-        Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
         mock_metadata = Metadata.new.tap do |metadata|
           metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
         end
@@ -237,7 +216,6 @@ class DatasetsControllerTest < ActionController::TestCase
       should 'special snowflake SF api geo datasets do not die' do
         setup_nbe_dataset_test(false, false)
         @view.stubs(is_api_geospatial?: true)
-        Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
         get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
         assert_response :success
       end
@@ -341,19 +319,6 @@ class DatasetsControllerTest < ActionController::TestCase
           end
         end
       end
-
-      #
-      # See comment at the beginning of `view_redirection_url` in `datasets_controller.rb`
-      #
-      # should 'redirects to home page for NBE datasets with inaccessible default page for non-admin users' do
-      #   setup_nbe_dataset_test(false, false)
-      #   Phidippides.any_instance.stubs(
-      #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
-      #   )
-      #   DataLensManager.any_instance.expects(:fetch).raises(DataLensManager::ViewAccessDenied)
-      #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-      #   assert_redirected_to '/'
-      # end
 
     # These tests don't work because 302 is returned for non-authoritative URLs.
     #  should 'returns 200 if changes have occurred for unsigned user' do
@@ -487,14 +452,5 @@ class DatasetsControllerTest < ActionController::TestCase
     )
     stub_user.stubs(has_right?: false)
     @controller.stubs(current_user: stub_user)
-    if has_page_metadata
-      @phidippides.stubs(
-        fetch_pages_for_dataset: { status: '200', body: { publisher: [ { pageId: 'page-xist' }, { pageId: 'last-page' } ]} }
-      )
-      @controller.stubs(phidippides: @phidippides)
-    else
-      @phidippides.stubs(fetch_pages_for_dataset: { status: '404', body: {} })
-      @controller.stubs(phidippides: @phidippides)
-    end
   end
 end

@@ -143,7 +143,7 @@ module CardTypeMapping
   private
 
   def has_georegion_computation_strategy?(column)
-    # Phidippides returns strategy_type in its computation strategies, Core returns type in
+    # Phidippides returned strategy_type in its computation strategies, Core returns type in
     # computation_strategy_type = column.dig(:computationStrategy, :type)
     # its computation strategies.
     computation_strategy_type = column.dig(:computationStrategy, :strategy_type) ||

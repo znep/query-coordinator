@@ -36,7 +36,6 @@ describe PageMetadataManager do
 
   before(:each) do
     init_feature_flag_signaller
-    rspec_stub_feature_flags_with(:phidippides_deprecation_metadata_source => 'phidippides-only')
   end
 
   describe '#page_metadata_from_vif' do

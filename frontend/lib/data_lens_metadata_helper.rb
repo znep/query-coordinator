@@ -207,8 +207,7 @@ module DataLensMetadataHelper
         nbe_column[:renderTypeName] = column.renderTypeName
         nbe_column[:hideInTable] = column.flag?('hidden')
 
-        # EN-15164: Derived views don't go through Phidippides
-        # as a result, calendar_date columns don't inherit physicalDatatype 'floating_timestamp'
+        # EN-15164: Derived views have calendar_date columns that don't inherit physicalDatatype 'floating_timestamp'
         # we are assigning 'floating_timestamp' when 'renderTypeName' is 'calendar_date'
         if nbe_column[:renderTypeName] == 'calendar_date'
           nbe_column[:physicalDatatype] = 'floating_timestamp'

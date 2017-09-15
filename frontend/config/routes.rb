@@ -577,14 +577,6 @@ Rails.application.routes.draw do
       get '/manage/site_config', :action => 'manage_config'
     end
 
-    # V1 dataset metadata endpoints
-    scope :controller => 'dataset_metadata' do
-      get '/metadata/v1/dataset/:id', :to => 'dataset_metadata#show', :constraints => { :id => Frontend::UID_REGEXP }
-      put '/metadata/v1/dataset/:id', :to => 'dataset_metadata#update', :constraints => { :id => Frontend::UID_REGEXP }
-      # This endpoint should eventually be routed to the page_metadata_controller instead
-      get '/metadata/v1/dataset/:id/pages', :to => 'dataset_metadata#index', :constraints => { :id => Frontend::UID_REGEXP }
-    end
-
     # V1 page metadata endpoints
     scope :controller => 'page_metadata' do
       post '/metadata/v1/page', :to => 'page_metadata#create'

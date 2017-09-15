@@ -3,7 +3,7 @@ require 'test_helper'
 class DataLensControllerTest < ActionController::TestCase
 
   def setup
-    init_environment(feature_flags: { :phidippides_deprecation_metadata_source => 'core-only' })
+    init_environment
 
     ::Configuration.stubs(:find_by_type => [])
 
@@ -328,7 +328,6 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'not render google analytics JS if feature flag is not set' do
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => false,
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -339,7 +338,6 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is set to true' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => true,
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -350,7 +348,6 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is an empty string' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => '',
         :site_chrome_header_and_footer_for_data_lens => false
       })
@@ -360,7 +357,6 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'render google analytics JS with explicit ga code if specified' do
       init_feature_flag_signaller(:with => {
-        :phidippides_deprecation_metadata_source => 'core-only',
         :enable_opendata_ga_tracking => 'UA-1234-567890',
         :site_chrome_header_and_footer_for_data_lens => false
       })

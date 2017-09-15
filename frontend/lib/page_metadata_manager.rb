@@ -119,7 +119,6 @@ class PageMetadataManager
 
     metadata['cards'] << table_card unless has_table_card
 
-    # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = data_lens_manager.create(dataset_category(metadata['datasetId']), metadata)
 
     metadata['pageId'] = new_page_id
@@ -192,8 +191,7 @@ class PageMetadataManager
       View.delete(id)
     rescue CoreServer::ResourceNotFound => error
       report_error(
-        "Page #{id} not found in core during delete. " +
-        'Proceeding with phidippides delete, in case it was an orphaned page.',
+        "Page #{id} not found in core during delete.",
         error
       )
     rescue CoreServer::Error => error
@@ -319,9 +317,7 @@ class PageMetadataManager
 
   # When page metadata is returned from metadb, null-valued properties may be
   # stripped out. We should ensure that properties are present by supplying nil
-  # defaults where needed. This doesn't affect the phidippides read path.
-  # See https://docs.google.com/document/d/1IE-vWpY-HzHvxwWRh6XRny10BOZXcbTpjUG4Lm8ObV8
-  # for the set of properties to check.
+  # defaults where needed.
   def ensure_page_metadata_properties(metadata)
     metadata[:primaryAggregation] ||= nil
     metadata[:primaryAmountField] ||= nil
@@ -357,8 +353,7 @@ class PageMetadataManager
     payload = { :displayFormat => { :data_lens_page_metadata => page_metadata } }
 
     # We have to fake the status code 200 because the consumer of page_metadata_manager expects
-    # a response with a body and a status (because we previously forwarded the status code from
-    # Phidippides).
+    # a response with a body and a status.
     # Since we didn't raise an exception by this point, we can assume a status of 200.
     {
       :body => CoreServer::Base.connection.update_request(url, JSON.dump(payload)),

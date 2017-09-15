@@ -89,7 +89,6 @@ describe CommonMetadataMethods do
       allow(View).to receive(:find).and_return(View.new(json_fixture('view_a83c-up9r.json')))
     end
 
-    # NOTE: This is unaffected by phidippides_deprecation_metadata_source since it never used phiddy
     context 'data lens based on derived view' do
       let(:options) do
         {
@@ -135,7 +134,6 @@ describe CommonMetadataMethods do
     context 'regular data lens' do
 
       it 'requests dataset metadata from core' do
-        expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
         expect(View).to receive(:find).exactly(3).times
         dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       end

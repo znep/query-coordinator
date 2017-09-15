@@ -1,137 +1,172 @@
 $page-top-margin: 10mm;
 $page-side-margin: 5mm;
+$portrait-width: 8in;
 
 @media print {
-
-  * {
-    -webkit-print-color-adjust: exact;
+  .print-warning {
+    display: none;
   }
+}
 
-  // Stylesheet load order makes all of this very... important.
+.print-warning {
+  text-align: center;
+}
 
-  #site-chrome-admin-header {
-    display: none !important;
+* {
+  -webkit-print-color-adjust: exact;
+}
 
-    & + #site-chrome-header {
-      margin-top: 0 !important;
+// Stylesheet load order makes all of this very... important.
+
+// Establishing a fixed width for this page is very important
+// for limiting the variables for how components (especially charts)
+// render onto the page
+html, body, .user-story-container .user-story {
+  margin: 0 auto;
+  width: $portrait-width;
+  max-width: $portrait-width;
+}
+
+.user-story-container {
+  width: auto;
+}
+
+#site-chrome-admin-header {
+  display: none !important;
+
+  & + #site-chrome-header {
+    margin-top: 0 !important;
+  }
+}
+
+#site-chrome-header {
+  &[template="evergreen"] {
+    nav {
+      display: none !important;
     }
   }
 
-  #site-chrome-header {
-    &[template="evergreen"] {
-      nav {
-        display: none !important;
-      }
+  &[template="rally"] {
+    .searchbox {
+      display: none !important
     }
+    .rally-bottom {
+      display: none !important
+    }
+  }
+}
 
-    &[template="rally"] {
-      .searchbox {
-        display: none !important
-      }
-      .rally-bottom {
-        display: none !important
-      }
+.user-story-container {
+  padding: 0 !important;
+
+  .component-socrata-visualization-classic {
+    .socrata-visualization-view-source-data {
+      display: none;
     }
   }
 
-  .user-story-container {
-    padding: 0 !important;
+  .socrata-visualization {
+    .socrata-visualization-info {
+      display: none;
+    }
+  }
 
-    .user-story {
+  .user-story {
 
-      .block {
-        margin-bottom: 12px !important;
+    .block {
+      margin: 0 !important;
+      margin-bottom: 12px !important;
+      page-break-inside: avoid;
+      page-break-after: always;
 
-        .component {
-          margin-top: 0 !important;
-          page-break-inside: avoid;
-          font-size: 1rem;
+      .component {
+        margin-top: 0 !important;
+        page-break-inside: avoid;
+        font-size: 1rem;
 
-          h1 {
-            font-size: 3.25em;
+        h1 {
+          font-size: 3.25em;
+        }
+        h2 {
+          font-size: 2.75em;
+        }
+        h3 {
+          font-size: 2.25em;
+        }
+        h4 {
+          font-size: 2em;
+        }
+        h5 {
+          font-size: 1.75em;
+        }
+        h6 {
+          font-size: 1.5em;
+        }
+
+        &.squire-formatted {
+          page-break-inside: auto;
+
+          * {
+            orphans: 3;
+            widows: 3;
           }
-          h2 {
-            font-size: 2.75em;
-          }
-          h3 {
-            font-size: 2.25em;
-          }
-          h4 {
-            font-size: 2em;
-          }
-          h5 {
-            font-size: 1.75em;
-          }
-          h6 {
-            font-size: 1.5em;
-          }
+        }
 
-          &.squire-formatted {
-            page-break-inside: auto;
+        .socrata-visualization {
 
-            * {
-              orphans: 3;
-              widows: 3;
-            }
-          }
-
-          .socrata-visualization {
-
-            .socrata-table {
-              .column-header-content {
-                .socrata-icon-arrow-down {
-                  box-shadow: none;
-                }
+          .socrata-table {
+            .column-header-content {
+              .socrata-icon-arrow-down {
+                box-shadow: none;
               }
             }
-
-            .socrata-visualization-info {
-              font-size: 12px;
-            }
           }
 
-          &.component-hero {
-            // We need to forcibly remove the height set in px on the hero's
-            // container because it does not play nicely with our hero width as
-            // specified below. In some cases it would cause the background
-            // image to render much taller than necessary (wasting space and ink
-            // on a background image), while in other cases it would result in
-            // the background image to be rendered too short to contain multi-
-            // paragraph hero text.
-            height: auto !important;
+          .socrata-visualization-info {
+            font-size: 12px;
+          }
+        }
 
-            .hero {
-              // A minimum height helps to ensure that the hero retains the feel
-              // of a "thick stripe" even if there's not a lot of text. It could
-              // be bumped up to 1in without a problem; beyond that, we'd want
-              // to think carefully.
-              min-height: 0.5in;
+        &.component-hero {
+          // We need to forcibly remove the height set in px on the hero's
+          // container because it does not play nicely with our hero width as
+          // specified below. In some cases it would cause the background
+          // image to render much taller than necessary (wasting space and ink
+          // on a background image), while in other cases it would result in
+          // the background image to be rendered too short to contain multi-
+          // paragraph hero text.
+          height: auto !important;
 
-              // There does not seem to be a good way to approximate the correct
-              // proportions for the hero image, except in the context of the
-              // margins used when printing the page. We can suggest desired
-              // margins in the @page rule below, but the user can override that
-              // margin (and it is also subject to the printer's capabilities).
-              //
-              // The calculation below is full page width (portrait orientation)
-              // minus the default side margins we suggest for the page.
-              //
-              // Note that SCSS calculations involving different units resolve
-              // by using the first unit. We don't want px for physical media.
-              width: (8.5in - (2 * $page-side-margin));
-            }
+          .hero {
+            // A minimum height helps to ensure that the hero retains the feel
+            // of a "thick stripe" even if there's not a lot of text. It could
+            // be bumped up to 1in without a problem; beyond that, we'd want
+            // to think carefully.
+            min-height: 0.5in;
+
+            // There does not seem to be a good way to approximate the correct
+            // proportions for the hero image, except in the context of the
+            // margins used when printing the page. We can suggest desired
+            // margins in the @page rule below, but the user can override that
+            // margin (and it is also subject to the printer's capabilities).
+            //
+            // The calculation below is full page width (portrait orientation)
+            // minus the default side margins we suggest for the page.
+            //
+            // Note that SCSS calculations involving different units resolve
+            // by using the first unit. We don't want px for physical media.
+            width: (8.5in - (2 * $page-side-margin));
           }
         }
       }
     }
   }
+}
 
-  .actions-bar {
-    display: none !important;
-  }
+.actions-bar {
+  display: none !important;
 }
 
 @page {
-  margin: $page-top-margin $page-side-margin;
   padding: 0;
 }

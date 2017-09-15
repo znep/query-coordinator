@@ -16,7 +16,9 @@
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
   <%= stylesheet_link_tag story_custom_theme_css_url, media: 'all' %>
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
-  <%= stylesheet_link_tag 'print', media: 'print' %>
+  <% if should_load_print_styles? %>
+    <%= stylesheet_link_tag 'print', media: 'all' %>
+  <% end %>
   <%= site_chrome_stylesheet_tag %>
 
   <%= render 'stories/partials/storyteller_environment' %>
@@ -47,18 +49,6 @@
   <a class="skip-link" title="<%= t('accessibility.skip_to_footer') %>" href="#site-chrome-footer"><%= t('accessibility.skip_to_footer') %></a>
 </div>
 
-<% if should_launch_print_dialog_on_page_load? %>
-<div id="print-overlay">
-  <span class="spinner-default spinner-large"></span>
-  <h3><%= t('print.preparing_story') %></h3>
-  <a
-    rel="external"
-    target="_blank"
-    href="https://socrata.zendesk.com/knowledge/articles/234584128"><%= t('print.help_link') %></a>
-  <div class="progress-bar"></div>
-</div>
-<% end %>
-
 <%= yield %>
 
 <% if Rails.env.test? -%>
@@ -69,27 +59,5 @@
 <%= render 'shared/google_analytics_script' %>
 <%= site_chrome_javascript_tag %>
 
-<% if should_launch_print_dialog_on_page_load? %>
-<%# We need to wait for charts, etc to load data before printing.
-  # We don't have a way to do that that will work across all embeddable
-  # chart types (and HTML embeds, etc). So, we do a blind wait. This
-  # fake progress bar gives the user something to look at.%>
-<script type="text/javascript">
-  $(function() {
-    var timeout = 10000;
-    var $overlay = $('#print-overlay');
-    $overlay.find('.progress-bar').animate(
-      {
-        'width': '100%'
-      },
-      timeout,
-      function() {
-        $overlay.remove();
-        window.print();
-      }
-    );
-  });
-</script>
-<% end %>
 </body>
 </html>

@@ -1,6 +1,15 @@
 <%== site_chrome_admin_header(request, response) if render_admin_header? && action_name != 'preview' %>
 <%== site_chrome_header(request, response) %>
 
+<% if should_load_print_styles? %>
+  <div class="print-warning alert warning"><%= t('print_mode.render_warning') %>
+    <a
+      rel="external"
+      target="_blank"
+      href="https://socrata.zendesk.com/knowledge/articles/234584128"><%= t('print_mode.help_link') %></a>
+  </div>
+<% end %>
+
 <div id="content" class="user-story-container">
 
   <div class="user-story large theme-<%= @story.theme %>" role="main">

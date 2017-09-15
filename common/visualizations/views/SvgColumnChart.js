@@ -546,7 +546,7 @@ function SvgColumnChart($element, vif, options) {
             (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             const value = position.end - position.start;
-            return Math.max(d3YScale(0) - d3YScale(value), 1);
+            return Math.max(d3YScale(0) - d3YScale(value), 0);
           }
         ).
         attr('shape-rendering', 'crispEdges').

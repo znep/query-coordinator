@@ -559,7 +559,7 @@ function SvgBarChart($element, vif, options) {
     // inline in this function below).
     function renderSeries() {
       if (!isStacked && (referenceLines.length == 0)) {
-        dimensionGroupSvgs.selectAll('rect.bar-underlay').
+        dimensionGroupSvgs.selectAll('.bar-underlay').
           attr('x', 0).
           attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('width', width).
@@ -571,7 +571,7 @@ function SvgBarChart($element, vif, options) {
             (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels));
       }
 
-      const bars = dimensionGroupSvgs.selectAll('rect.bar');
+      const bars = dimensionGroupSvgs.selectAll('.bar');
 
       bars.
         attr(
@@ -586,7 +586,7 @@ function SvgBarChart($element, vif, options) {
           (d, measureIndex, dimensionIndex) => {
             const position = positions[dimensionIndex][measureIndex];
             const value = position.end - position.start;
-            return Math.max(d3XScale(value) - d3XScale(0), 1);
+            return Math.max(d3XScale(value) - d3XScale(0), 0);
           }
         ).
         attr('shape-rendering', 'crispEdges').

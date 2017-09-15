@@ -11,31 +11,31 @@ function getDefaultState() {
   };
 }
 
-describe('vifAuthoring', function() {
-  describe('getCurrentVif', function() {
-    it('returns the selectedVisualizationType VIF', function() {
+describe('vifAuthoring', () => {
+  describe('getCurrentVif', () => {
+    it('returns the selectedVisualizationType VIF', () => {
       expect(selector.getCurrentVif(getDefaultState())).to.be.deep.equal(vifs().columnChart);
     });
   });
 
-  describe('getDatasetUid', function() {
-    it('returns the current VIF\'s datasetUid', function() {
+  describe('getDatasetUid', () => {
+    it('returns the current VIF\'s datasetUid', () => {
       expect(
         selector.getDatasetUid(getDefaultState())
       ).to.be.equal(_.get(vifs(), 'columnChart.series[0].dataSource.datasetUid'));
     });
   });
 
-  describe('getDomain', function() {
-    it('returns the current VIF\'s domain', function() {
+  describe('getDomain', () => {
+    it('returns the current VIF\'s domain', () => {
       expect(
         selector.getDomain(getDefaultState())
       ).to.be.equal(_.get(vifs(), 'columnChart.series[0].dataSource.domain'));
     });
   });
 
-  describe('getPrecision', function() {
-    it('returns the current VIF\'s precision', function() {
+  describe('getPrecision', () => {
+    it('returns the current VIF\'s precision', () => {
       const state = getDefaultState();
       state.authoring.selectedVisualizationType = 'timelineChart';
 
@@ -45,8 +45,8 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('getTreatNullValuesAsZero', function() {
-    it('returns the current VIF\'s treatNullValuesAsZero property', function() {
+  describe('getTreatNullValuesAsZero', () => {
+    it('returns the current VIF\'s treatNullValuesAsZero property', () => {
       const state = getDefaultState();
       state.authoring.selectedVisualizationType = 'timelineChart';
 
@@ -56,9 +56,9 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isRegionMap', function() {
-    describe('when it is a region map', function() {
-      it('returns true', function() {
+  describe('isRegionMap', () => {
+    describe('when it is a region map', () => {
+      it('returns true', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'regionMap';
 
@@ -68,8 +68,8 @@ describe('vifAuthoring', function() {
       });
     });
 
-    describe('when it is not a region map', function() {
-      it('returns false', function() {
+    describe('when it is not a region map', () => {
+      it('returns false', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
@@ -80,9 +80,9 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isValidRegionMapVif', function() {
-    describe('when it is valid', function() {
-      it('returns true', function() {
+  describe('isValidRegionMapVif', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'regionMap';
 
@@ -99,8 +99,8 @@ describe('vifAuthoring', function() {
       });
     });
 
-    describe('when it is invalid', function() {
-      it('returns false', function() {
+    describe('when it is invalid', () => {
+      it('returns false', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
@@ -111,9 +111,9 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isValidColumnChartVif', function() {
-    describe('when it is valid', function() {
-      it('returns true', function() {
+  describe('isValidColumnChartVif', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
@@ -128,8 +128,8 @@ describe('vifAuthoring', function() {
       });
     });
 
-    describe('when it is invalid', function() {
-      it('returns false', function() {
+    describe('when it is invalid', () => {
+      it('returns false', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
@@ -140,9 +140,9 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isValidFeatureMapVif', function() {
-    describe('when it is valid', function() {
-      it('returns true', function() {
+  describe('isValidFeatureMapVif', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
@@ -156,8 +156,8 @@ describe('vifAuthoring', function() {
       });
     });
 
-    describe('when it is invalid', function() {
-      it('returns false', function() {
+    describe('when it is invalid', () => {
+      it('returns false', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
@@ -168,9 +168,9 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isValidTimelineChartVif', function() {
-    describe('when it is valid', function() {
-      it('returns true', function() {
+  describe('isValidTimelineChartVif', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'timelineChart';
 
@@ -184,13 +184,43 @@ describe('vifAuthoring', function() {
       });
     });
 
-    describe('when it is invalid', function() {
-      it('returns false', function() {
+    describe('when it is invalid', () => {
+      it('returns false', () => {
         const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
         expect(
           selector.isValidTimelineChartVif(state)
+        ).to.be.false;
+      });
+    });
+  });
+
+  describe('isGrouping', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'timelineChart';
+
+        _.set(state, 'vifs.timelineChart.series[0].dataSource.dimension.columnName', 'example_dimension');
+        _.set(state, 'vifs.timelineChart.series[0].dataSource.dimension.grouping.columnName', 'example_grouping');
+        _.set(state, 'vifs.timelineChart.series[0].dataSource.datasetUid', 'exam-ples');
+        _.set(state, 'vifs.timelineChart.series[0].dataSource.domain', 'example.com');
+
+        expect(
+          selector.isGrouping(state)
+        ).to.be.true;
+      });
+    });
+
+    describe('when it is invalid', () => {
+      it('returns false', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'timelineChart';
+        // Not setting a grouping column.
+
+        expect(
+          selector.isGrouping(state)
         ).to.be.false;
       });
     });

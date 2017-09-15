@@ -1,5 +1,6 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
+import _ from 'lodash';
 
 import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
@@ -7,9 +8,22 @@ import vifs from 'common/authoring_workflow/vifs';
 import { PresentationPane } from 'common/authoring_workflow/components/panes/PresentationPane';
 import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
 
-function render(type) {
+function createVifAuthoring(type, groupBy) {
+  const vifAuthoring = {
+    authoring: {
+      selectedVisualizationType: type
+    },
+    vifs: {...vifs}
+  };
+
+  if(groupBy) _.set(vifAuthoring, 'vifs.timelineChart.series[0].dataSource.dimension.grouping.columnName', 'example_grouping');
+
+  return vifAuthoring;
+}
+
+function render(type, groupBy) {
   var props = defaultProps({
-    vifAuthoring: { authoring: { selectedVisualizationType: type } },
+    vifAuthoring: createVifAuthoring(type, groupBy),
     onChangeBaseColor: sinon.spy(),
     onSelectBaseLayer: sinon.spy(),
     onChangeBaseLayerOpacity: sinon.spy(),
@@ -35,13 +49,13 @@ function render(type) {
   };
 }
 
-describe('PresentationPane', function() {
+describe('PresentationPane', () => {
   var component;
   var props;
 
-  function setUpVisualization(type) {
-    return function() {
-      var renderedParts = render(type);
+  function setUpVisualization(type, groupBy) {
+    return () => {
+      var renderedParts = render(type, groupBy);
 
       component = renderedParts.component;
       props = renderedParts.props;
@@ -60,36 +74,36 @@ describe('PresentationPane', function() {
   }
 
   function rendersShowDimensionLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a show dimension labels checkbox', function() {
+    describe('rendering', () => {
+      it('renders a show dimension labels checkbox', () => {
         expect(component.querySelector('#show-dimension-labels')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the show dimension labels checkbox', function() {
+    describe('events', () => {
+      describe('when changing the show dimension labels checkbox', () => {
         emitsEvent('#show-dimension-labels', 'onChangeShowDimensionLabels');
       });
     });
   }
 
   function rendersShowValueLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a show value labels checkbox', function() {
+    describe('rendering', () => {
+      it('renders a show value labels checkbox', () => {
         expect(component.querySelector('#show-value-labels')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the show value labels checkbox', function() {
+    describe('events', () => {
+      describe('when changing the show value labels checkbox', () => {
         emitsEvent('#show-value-labels', 'onChangeShowValueLabels');
       });
     });
   }
 
   function rendersShowValueLabelsAsPercentAndEmitEvents() {
-    describe('rendering', function() {
-      it('renders a show value labels as percentage checkbox', function() {
+    describe('rendering', () => {
+      it('renders a show value labels as percentage checkbox', () => {
         expect(component.querySelector('#show-value-labels-as-percent')).to.exist;
       });
     });
@@ -102,78 +116,78 @@ describe('PresentationPane', function() {
   }
 
   function rendersTopAndLeftLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a top label input', function() {
+    describe('rendering', () => {
+      it('renders a top label input', () => {
         expect(component.querySelector('#label-top')).to.exist;
       });
 
-      it('renders a left label input', function() {
+      it('renders a left label input', () => {
         expect(component.querySelector('#label-left')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the top label', function() {
+    describe('events', () => {
+      describe('when changing the top label', () => {
         emitsEvent('#label-top', 'onChangeLabelTop');
       });
 
-      describe('when changing the left label', function() {
+      describe('when changing the left label', () => {
         emitsEvent('#label-left', 'onChangeLabelLeft');
       });
     });
   }
 
   function rendersBottomAndLeftLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a bottom label input', function() {
+    describe('rendering', () => {
+      it('renders a bottom label input', () => {
         expect(component.querySelector('#label-bottom')).to.exist;
       });
 
-      it('renders a left label input', function() {
+      it('renders a left label input', () => {
         expect(component.querySelector('#label-left')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the bottom label', function() {
+    describe('events', () => {
+      describe('when changing the bottom label', () => {
         emitsEvent('#label-bottom', 'onChangeLabelBottom');
       });
 
-      describe('when changing the left label', function() {
+      describe('when changing the left label', () => {
         emitsEvent('#label-left', 'onChangeLabelLeft');
       });
     });
   }
 
-  describe('without a visualization type', function() {
+  describe('without a visualization type', () => {
     beforeEach(setUpVisualization(null));
 
-    describe('rendering', function() {
-      it('renders an empty pane info message', function() {
+    describe('rendering', () => {
+      it('renders an empty pane info message', () => {
         expect(component.querySelector('.authoring-empty-pane')).to.exist;
       });
     });
   });
 
-  describe('with a visualization type', function() {
+  describe('with a visualization type', () => {
     beforeEach(setUpVisualization('barChart'));
 
-    describe('rendering', function() {
-      it('renders a title text input', function() {
+    describe('rendering', () => {
+      it('renders a title text input', () => {
         expect(component.querySelector('input[type="text"]')).to.exist;
       });
 
-      it('renders a description text area', function() {
+      it('renders a description text area', () => {
         expect(component.querySelector('textarea')).to.exist;
       });
 
-      it('renders a source data link checkbox', function() {
+      it('renders a source data link checkbox', () => {
         expect(component.querySelector('input[type="checkbox"]')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the title', function() {
+    describe('events', () => {
+      describe('when changing the title', () => {
         it('should emit an onChangeTitle event', function(done) {
           var input = component.querySelector('input[type="text"]');
 
@@ -186,7 +200,7 @@ describe('PresentationPane', function() {
         });
       });
 
-      describe('when changing the description', function() {
+      describe('when changing the description', () => {
         it('should emit an onChangeDescription event', function(done) {
           var textarea = component.querySelector('textarea');
 
@@ -199,8 +213,8 @@ describe('PresentationPane', function() {
         });
       });
 
-      describe('when changing the visibility of source data link', function() {
-        it('should emit an onChangeShowSourceDataLink event', function() {
+      describe('when changing the visibility of source data link', () => {
+        it('should emit an onChangeShowSourceDataLink event', () => {
           var checkbox = component.querySelector('input[type="checkbox"]');
 
           TestUtils.Simulate.change(checkbox);
@@ -210,29 +224,29 @@ describe('PresentationPane', function() {
     });
   });
 
-  describe('regionMap', function() {
+  describe('regionMap', () => {
     beforeEach(setUpVisualization('regionMap'));
 
-    describe('rendering', function() {
-      it('renders color scale', function() {
+    describe('rendering', () => {
+      it('renders color scale', () => {
         expect(component.querySelector('#color-scale')).to.exist;
       });
 
-      it('renders map type', function() {
+      it('renders map type', () => {
         expect(component.querySelector('#base-layer')).to.exist;
       });
 
-      it('renders map opacity', function() {
+      it('renders map opacity', () => {
         expect(component.querySelector('#base-layer-opacity')).to.exist;
       });
     });
 
-    describe('events', function() {
-      describe('when changing the color scale', function() {
+    describe('events', () => {
+      describe('when changing the color scale', () => {
         emitsEvent('#color-scale .picklist-option', 'onSelectColorScale', 'click');
       });
 
-      describe('when changing the map type', function() {
+      describe('when changing the map type', () => {
         emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
       });
     });
@@ -241,8 +255,8 @@ describe('PresentationPane', function() {
   describe('barChart', function () {
     beforeEach(setUpVisualization('barChart'));
 
-    describe('rendering', function() {
-      it('renders an input', function() {
+    describe('rendering', () => {
+      it('renders an input', () => {
         expect(component.querySelector('.color-picker')).to.exist;
       });
     });
@@ -252,11 +266,11 @@ describe('PresentationPane', function() {
     rendersTopAndLeftLabelsAndEmitsEvents();
   });
 
-  describe('columnChart', function() {
+  describe('columnChart', () => {
     beforeEach(setUpVisualization('columnChart'));
 
-    describe('rendering', function() {
-      it('renders an input', function() {
+    describe('rendering', () => {
+      it('renders an input', () => {
         expect(component.querySelector('.color-picker')).to.exist;
       });
     });
@@ -265,11 +279,11 @@ describe('PresentationPane', function() {
     rendersBottomAndLeftLabelsAndEmitsEvents();
   });
 
-  describe('histogram', function() {
+  describe('histogram', () => {
     beforeEach(setUpVisualization('histogram'));
 
-    describe('rendering', function() {
-      it('renders an input', function() {
+    describe('rendering', () => {
+      it('renders an input', () => {
         expect(component.querySelector('.color-picker')).to.exist;
       });
     });
@@ -277,44 +291,50 @@ describe('PresentationPane', function() {
     rendersBottomAndLeftLabelsAndEmitsEvents();
   });
 
-  describe('featureMap', function() {
+  describe('featureMap', () => {
     beforeEach(setUpVisualization('featureMap'));
 
-    describe('rendering', function() {
-      it('renders point color', function() {
+    describe('rendering', () => {
+      it('renders point color', () => {
         expect(component.querySelector('.color-picker')).to.exist;
       });
 
-      it('renders point opacity', function() {
+      it('renders point opacity', () => {
         expect(component.querySelector('#point-opacity')).to.exist;
       });
 
-      it('renders point size', function() {
+      it('renders point size', () => {
         expect(component.querySelector('#point-size')).to.exist;
       });
 
-      it('renders map type', function() {
+      it('renders map type', () => {
         expect(component.querySelector('#base-layer')).to.exist;
       });
 
-      it('renders map opacity', function() {
+      it('renders map opacity', () => {
         expect(component.querySelector('#base-layer-opacity')).to.exist;
       });
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
     });
   });
 
-  describe('timelineChart', function() {
+  describe('timelineChart', () => {
     beforeEach(setUpVisualization('timelineChart'));
 
-    describe('rendering', function() {
-      it('renders an input', function() {
+    describe('rendering', () => {
+      it('renders an input', () => {
         expect(component.querySelector('.color-picker')).to.exist;
       });
     });
+
+    rendersBottomAndLeftLabelsAndEmitsEvents();
+  });
+
+  describe('Grouped timelineChart', () => {
+    beforeEach(setUpVisualization('timelineChart', 'example_grouping'));
 
     rendersBottomAndLeftLabelsAndEmitsEvents();
   });

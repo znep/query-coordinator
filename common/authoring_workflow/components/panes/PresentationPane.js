@@ -103,7 +103,7 @@ export class PresentationPane extends Component {
   renderColorPalette() {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
     const colorPaletteFromVif = selectors.getColorPalette(vifAuthoring);
-    const isMultiSeries = selectors.isMultiSeries(vifAuthoring);    
+    const isMultiSeries = selectors.isMultiSeries(vifAuthoring);
 
     let colorPaletteValue;
     let customColorSelector;
@@ -115,7 +115,7 @@ export class PresentationPane extends Component {
       colorPaletteValue = colorPaletteFromVif;
       customColorSelector = this.renderSingleSeriesCustomColorSelector();
     }
-    // If multi-series and palette is null, set colorPaletteValue = 'custom' and render the multi-series custom color 
+    // If multi-series and palette is null, set colorPaletteValue = 'custom' and render the multi-series custom color
     // picker.
     //
     else if (isMultiSeries && (colorPaletteFromVif === null)) {
@@ -261,7 +261,7 @@ export class PresentationPane extends Component {
   renderLabels() {
     const { vifAuthoring } = this.props;
 
-    const valueLabelsVisible = (selectors.isBarChart(vifAuthoring) || selectors.isPieChart(vifAuthoring)) && 
+    const valueLabelsVisible = (selectors.isBarChart(vifAuthoring) || selectors.isPieChart(vifAuthoring)) &&
       !selectors.isStacked(vifAuthoring) &&
       !selectors.hasErrorBars(vifAuthoring);
 
@@ -483,12 +483,13 @@ export class PresentationPane extends Component {
       this.renderPrimaryColor(),
       this.renderVisualizationLabels()
     ];
-  };
+  }
 
   renderGroupedTimelineChartControls() {
-    return (
-      this.renderColorPalette()
-    );
+    return [
+      this.renderColorPalette(),
+      this.renderVisualizationLabels()
+    ];
   }
 
   renderFeatureMapControls() {

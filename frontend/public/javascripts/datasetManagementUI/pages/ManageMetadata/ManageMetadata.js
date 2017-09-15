@@ -80,7 +80,22 @@ export class ManageMetadata extends Component {
             initialDatasetMetadata: Selectors.datasetMetadata(revision.metadata)
           });
         })
-        .catch(() => console.warn('Save failed'));
+        .catch(error => {
+          console.log('error', error);
+          // dispatch(apiCallFailed(callId, error));
+          error.response.json().then(err => {
+            const thing = classify(err.reason);
+          });
+        });
+      // .catch(error => {
+      //   console.log('err', error);
+      //   dispatch(apiCallFailed(callId, error));
+      //
+      //   error.response.json().then(({ message }) => {
+      //     const localizedMessage = getLocalizedErrorMessage(message);
+      //     dispatch(showFlashMessage('error', localizedMessage));
+      //   });
+      // });
     } else if (columnFormDirty) {
       dispatch(saveColumnMetadata(outputSchemaId, params))
         .then(() => {

@@ -43,7 +43,8 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     unload_page_and_dismiss_confirmation_dialog
   end
 
-  it 'should enable/disable the controls correctly' do
+  # EN-18849 - Disabling this test for now since it is extremely flaky
+  xit 'should enable/disable the controls correctly' do
     def expect_button_disabled(button)
       expect(button[:disabled]).to eq('true')
     end

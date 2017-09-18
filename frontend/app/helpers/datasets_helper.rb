@@ -453,9 +453,12 @@ module DatasetsHelper
   def hide_redirect?
     return false if force_editable?
 
+    # After derived_view_publication is stabilized in production.  This feature check should be removed and always on.
+    dvp = CurrentDomain.configuration('feature_set').try(:properties).try(:derived_view_publication)
     [
       !view.is_published?,
-      !view.is_blist?,
+      !view.is_blist? && !dvp,
+      !view.is_tabular? && dvp,
       !view.can_edit?,
       current_user.blank?,
       view.is_immutable?

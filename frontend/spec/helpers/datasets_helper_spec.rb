@@ -105,6 +105,24 @@ describe DatasetsHelper do
         allow(view).to receive_messages(:is_published? => true, :is_blist? => true, :can_edit? => true, :is_immutable? => false)
         expect(helper.hide_redirect?).to eq(true)
       end
+
+      it 'allow edit/create working copy on derived views' do
+        allow(CurrentDomain).to receive(:configuration).and_return(
+            OpenStruct.new(:properties => OpenStruct.new(:derived_view_publication => true))
+        )
+        allow(helper).to receive_messages(:force_editable? => false, :current_user => User.new)
+        allow(view).to receive_messages(:is_published? => true, :is_blist? => false, :is_tabular? => true, :can_edit? => true, :is_immutable? => false)
+        expect(helper.hide_redirect?).to eq(false)
+      end
+
+      it 'disallow edit/create working copy on non-tabular views' do
+        allow(CurrentDomain).to receive(:configuration).and_return(
+            OpenStruct.new(:properties => OpenStruct.new(:derived_view_publication => true))
+        )
+        allow(helper).to receive_messages(:force_editable? => false, :current_user => User.new)
+        allow(view).to receive_messages(:is_published? => true, :is_blist? => false, :is_tabular? => false, :can_edit? => true, :is_immutable? => false)
+        expect(helper.hide_redirect?).to eq(true)
+      end
     end
 
     context 'hide_add_column' do

@@ -7,7 +7,10 @@ import {
   saveDatasetMetadata,
   saveColumnMetadata
 } from 'reduxStuff/actions/manageMetadata';
-import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'reduxStuff/actions/apiCalls';
+import {
+  API_CALL_STARTED,
+  SAVE_DATASET_METADATA
+} from 'reduxStuff/actions/apiCalls';
 import { SHOW_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
 import { createUpload } from 'reduxStuff/actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
@@ -123,37 +126,6 @@ describe('manageMetadata actions', () => {
         .catch(err => {
           done(err);
         });
-    });
-
-    it('shows an error message if form schema is invalid', () => {
-      store.dispatch(
-        setFormErrors('datasetForm', [{ fieldName: 'name', message: 'Is Required' }])
-      );
-
-      const fakeStore = mockStore(store.getState());
-
-      fakeStore.dispatch(saveDatasetMetadata(revision, params));
-
-      const action = fakeStore.getActions()[2];
-
-      assert.equal(action.type, SHOW_FLASH_MESSAGE);
-      assert.equal(action.kind, 'error');
-    });
-
-    it('shows field-level errors if form schema is invalid', () => {
-      store.dispatch(
-        setFormErrors('datasetForm', [{ fieldName: 'name', message: 'Is Required' }])
-      );
-
-      const fakeStore = mockStore(store.getState());
-
-      fakeStore.dispatch(saveDatasetMetadata(revision, params));
-
-      const action = fakeStore.getActions()[1];
-
-      assert.equal(action.type, 'SHOW_FORM_ERRORS');
-
-      assert.deepEqual(action.formName, 'datasetForm');
     });
   });
 

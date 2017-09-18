@@ -146,7 +146,7 @@ describe('lib/validators', () => {
 
       assert.equal(
         res,
-        "License type requires attribution. Please complete 'Data Provided By' field."
+        "License type requires attribution"
       );
     });
   });

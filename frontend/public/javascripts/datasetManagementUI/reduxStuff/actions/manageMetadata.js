@@ -13,7 +13,6 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import { getLocalizedErrorMessage } from 'lib/util';
 import {
   listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -53,9 +52,18 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
   dispatch(hideFlashMessage());
 
   if (errors.length) {
-    dispatch(showFormErrors(formName));
-    dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-    return Promise.reject();
+    // is this cool? Trying to mimic the response shape of the api so that
+    // we handle validation failures in the catch block in one way only
+    const error = new Error('ValidationError');
+    error.response = new Response(
+      JSON.stringify({
+        name: 'ValidationError',
+        message: 'Client-side validation failed',
+        reason: 'Client-side validation failed'
+      })
+    );
+
+    return Promise.reject(error);
   }
 
   const datasetMetadata = Selectors.datasetMetadata(revision.metadata);
@@ -69,42 +77,29 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
     })
   );
 
-  // TODO: remove core api call (the first one here) once validations go into
-  // dsmapi and once dsmapi revisions start overriding what's in core
-  return socrataFetch(`/api/views/${params.fourfour}`, {
+  return socrataFetch(dsmapiLinks.revisionBase(params), {
     method: 'PUT',
-    body: JSON.stringify(datasetMetadata)
+    body: JSON.stringify({
+      metadata: datasetMetadata
+    })
   })
     .then(checkStatus)
-    .then(() => {
-      return socrataFetch(dsmapiLinks.revisionBase(params), {
-        method: 'PUT',
-        body: JSON.stringify({
-          metadata: datasetMetadata
-        })
-      });
-    })
-    .then(checkStatus)
     .then(getJson)
-    .then(dsmapiResp => {
-      const dsmapi = dsmapiResp.resource;
-
-      if (!dsmapi.metadata) {
-        throw new Error('No metadata in api response');
-      }
+    .then(resp => {
+      const updatedRevision = resp.resource;
 
       dispatch(
-        editView(dsmapi.fourfour, {
-          ..._.omit(dsmapi.metadata, 'metadata', 'privateMetadata'),
-          metadata: dsmapi.metadata.metadata,
-          privateMetadata: dsmapi.metadata.privateMetadata,
+        editView(updatedRevision.fourfour, {
+          ..._.omit(updatedRevision.metadata, 'metadata', 'privateMetadata'),
+          metadata: updatedRevision.metadata.metadata,
+          privateMetadata: updatedRevision.metadata.privateMetadata,
           metadataLastUpdatedAt: Date.now()
         })
       );
 
       dispatch(
         editRevision(revision.id, {
-          metadata: dsmapi.metadata
+          metadata: updatedRevision.metadata
         })
       );
 
@@ -112,14 +107,6 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
       dispatch(markFormClean(formName));
       dispatch(apiCallSucceeded(callId));
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
-    })
-    .catch(error => {
-      dispatch(apiCallFailed(callId, error));
-
-      error.response.json().then(({ message }) => {
-        const localizedMessage = getLocalizedErrorMessage(message);
-        dispatch(showFlashMessage('error', localizedMessage));
-      });
     });
 };
 

@@ -32,7 +32,7 @@ class SignUp extends React.Component {
       auth0Client: new auth0.WebAuth({
         domain: auth0Uri,
         clientID: auth0ClientId,
-        responseType: 'token',
+        responseType: 'code',
         redirectUri: `${baseDomainUri}/auth/auth0/callback`
       })
     };

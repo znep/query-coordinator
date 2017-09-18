@@ -52,7 +52,13 @@ class LicenseConfig < ExternalConfig
   # This is for the js_enabled path; we provide a hierarchical list of all licenses.
   # This is dumped into the Javascript and consumed by edit-license.js.
   def licenses
-    @licenses.reject { |license| license[:hide_selector] }.unshift no_license
+    @licenses.
+      reject { |license| license[:hide_selector] }.
+      map { |license|
+        license[:name] = I18n.t('core.see_terms_of_use') if license[:id] == 'SEE_TERMS_OF_USE'
+        license
+      }.
+      unshift(no_license)
   end
 
   private

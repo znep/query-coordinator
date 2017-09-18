@@ -160,11 +160,16 @@ module InternalAssetManagerHelper
       options.merge!(published: true) if params[:assetTypes] == 'datasets'
       # EN-15849
       options.merge!(for_user: current_user.id) if current_tab_is_my_assets && feature_flag?(:enable_internal_asset_manager_my_assets, request)
+      options.merge!(shared_to: current_user.id) if current_tab_is_shared_to_me && feature_flag?(:enable_internal_asset_manager_my_assets, request)
     end
   end
 
   def current_tab_is_my_assets
     params.fetch(:tab, 'allAssets') == 'myAssets'
+  end
+
+  def current_tab_is_shared_to_me
+    params.fetch(:tab, 'allAssets') == 'sharedToMe'
   end
 
 end

@@ -2909,6 +2909,7 @@ en:
       asset_toggles:
         all_assets: All Assets
         my_assets: My Assets
+        shared_to_me: Shared To Me
     mobile:
       done: Done
       filters: Filters

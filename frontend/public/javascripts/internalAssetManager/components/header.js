@@ -39,10 +39,13 @@ export class Header extends React.Component {
 
     const myAssetsTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
       this.renderTab('myAssets', _.get(I18n, 'header.asset_toggles.my_assets')) : null;
+    const sharedToMeTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
+      this.renderTab('sharedToMe', _.get(I18n, 'header.asset_toggles.shared_to_me')) : null;
 
     const assetToggles = (
       <div className="asset-toggles">
         {myAssetsTab}
+          {sharedToMeTab}
         {this.renderTab('allAssets', _.get(I18n, 'header.asset_toggles.all_assets'))}
       </div>
     );

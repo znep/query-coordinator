@@ -92,6 +92,7 @@ export const ceteraUtils = (() => {
     provenance = null,
     published = null,
     q = null,
+    sharedTo = null,
     showVisibility = null,
     tags = null,
     visibility = null
@@ -111,6 +112,7 @@ export const ceteraUtils = (() => {
       provenance,
       q,
       search_context: domain,
+      shared_to: sharedTo,
       show_visibility: showVisibility,
       tags,
       visibility

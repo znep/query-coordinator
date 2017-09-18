@@ -1,18 +1,16 @@
 @import "internal-asset-manager/topbar";
 @import "internal-asset-manager/result_list_table";
-@import "common/breakpoints";
 
 .catalog-results {
-  @media screen and (min-width: $medium) {
-    width: 100%;
-  }
-
   position: relative;
 
-  div[class*=autocomplete_container] {
-    float: left;
-    width: 40rem;
-    padding-bottom: 8px;
+  &.mobile {
+    width: 100%;
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: scroll;
+    }
   }
 
   .catalog-results-spinner-container {

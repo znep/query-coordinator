@@ -64,15 +64,6 @@ describe('<ClearFilters />', () => {
     };
 
     describe('when showTitle is false', () => {
-      it('renders the expected filter count', () => {
-        const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({allFilters, showTitle: false})} />
-        );
-
-        assert.equal(1, wrapper.find('.filter-count').length);
-        assert.equal('(7)', wrapper.find('.filter-count').text());
-      });
-
       it('still renders the title', () => {
         const wrapper = shallow(
           <ClearFilters {...clearFilterProps({allFilters, showTitle: false})} />

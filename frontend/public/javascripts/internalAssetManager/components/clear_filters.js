@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import ActiveFilterCount from './active_filter_count';
+
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 // This export is used in platform-ui/frontend/karma/internalAssetManager/components/clear_filters.spec.js
@@ -82,7 +84,7 @@ export class ClearFilters extends Component {
 
     const clearFiltersControls = hasActiveFilters ?
       <span>
-        <span className="filter-count">({this.activeFilters().length})</span>
+        <ActiveFilterCount />
         <span
           className="filter-section clear-all-filters socrata-icon-close-circle"
           onClick={this.clearAllFilters}

@@ -6,6 +6,7 @@ import AssetCounts from './asset_counts';
 import { FeatureFlags } from 'common/feature_flags';
 import { handleEnter } from 'common/helpers/keyPressHelpers';
 import _ from 'lodash';
+import classNames from 'classnames';
 
 export class Header extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ export class Header extends React.Component {
   }
 
   render() {
-    const { page } = this.props;
+    const { page, isMobile } = this.props;
 
     if (page === 'profile') {
       return null; // TODO: we may want to eventually show "My Assets" and "Shared to me" tabs.. TBD
@@ -39,14 +40,22 @@ export class Header extends React.Component {
     const myAssetsTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
       this.renderTab('myAssets', _.get(I18n, 'header.asset_toggles.my_assets')) : null;
 
-    return (
-      <div className="header">
-        <div className="asset-toggles">
-          {myAssetsTab}
-          {this.renderTab('allAssets', _.get(I18n, 'header.asset_toggles.all_assets'))}
-        </div>
+    const assetToggles = (
+      <div className="asset-toggles">
+        {myAssetsTab}
+        {this.renderTab('allAssets', _.get(I18n, 'header.asset_toggles.all_assets'))}
+      </div>
+    );
 
+    const headerClassnames = classNames('header', {
+      'mobile': isMobile
+    });
+
+    return (
+      <div className={headerClassnames}>
+        {!isMobile && assetToggles}
         <AssetCounts />
+        {isMobile && assetToggles}
       </div>
     );
   }
@@ -55,11 +64,13 @@ export class Header extends React.Component {
 Header.propTypes = {
   activeTab: PropTypes.string.isRequired,
   changeTab: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
   page: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({
-  activeTab: state.header.activeTab
+  activeTab: state.header.activeTab,
+  isMobile: state.windowDimensions.isMobile
 });
 
 const mapDispatchToProps = (dispatch) => ({

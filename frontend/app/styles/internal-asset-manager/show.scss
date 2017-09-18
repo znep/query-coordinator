@@ -28,10 +28,19 @@ body {
 
   .header {
     margin: 0 $horizontal_margin;
-    height: 7.5rem;
+    min-height: 7.5rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+
+    &.mobile {
+      display: block;
+      min-height: 5.5rem;
+
+      > div {
+        display: block;
+      }
+    }
 
     .asset-toggles {
       a.asset-toggle {

@@ -7,6 +7,8 @@ import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReduc
 import catalog from './catalog';
 import filters from './filters';
 import header from './header';
+import mobile from './mobile';
+import windowDimensions from './window_dimensions';
 
 export default combineReducers({
   assetActions,
@@ -15,5 +17,7 @@ export default combineReducers({
   autocomplete,
   catalog,
   filters,
-  header
+  header,
+  mobile,
+  windowDimensions
 });

@@ -2,13 +2,16 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import classNames from 'classnames';
 
+import ActiveFilterCount from './active_filter_count';
 import ResultListTable from './result_list_table';
 import Pager from 'common/components/Pager';
 import ResultCount from './result_count';
 import AssetInventoryLink from './asset_inventory_link';
-import * as pager from '../actions/pager';
 import * as filters from '../actions/filters';
+import * as mobile from '../actions/mobile';
+import * as pager from '../actions/pager';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import { getCeteraResults } from 'common/autocomplete/Util';
 import ClearFilters from './clear_filters';
@@ -46,19 +49,20 @@ export class CatalogResults extends Component {
   }
 
   renderTopbar() {
+    const { allFilters, changeQ, clearAllFilters, clearSearch, currentQuery, isMobile, page, toggleFilters } =
+      this.props;
+
     const autocompleteOptions = {
       animate: true,
       anonymous: false,
       collapsible: false,
-      currentQuery: this.props.currentQuery,
+      currentQuery: currentQuery,
       getSearchResults: getCeteraResults,
       millisecondsBeforeSearch: 60,
-      mobile: false,
-      onChooseResult: this.props.changeQ,
-      onClearSearch: this.props.clearSearch
+      mobile: isMobile,
+      onChooseResult: changeQ,
+      onClearSearch: clearSearch
     };
-
-    const { allFilters, clearAllFilters, clearSearch } = this.props;
 
     const clearFiltersProps = {
       allFilters,
@@ -68,7 +72,7 @@ export class CatalogResults extends Component {
       showTitle: false
     };
 
-    const allAssetsButton = (this.props.page === 'profile') ? (
+    const allAssetsButton = (page === 'profile') ? (
       <a href="/admin/assets?tab=allAssets">
         <button className="btn btn-default all-assets-button">
           {_.get(I18n, 'all_assets_button')}
@@ -77,10 +81,25 @@ export class CatalogResults extends Component {
       </a>
     ) : null;
 
+    const mobileFilterToggle = isMobile ? (
+      <a href="#" className="mobile-filter-toggle" onClick={toggleFilters}>
+        {_.get(I18n, 'mobile.filters')}
+        <ActiveFilterCount />
+        <SocrataIcon name="arrow-right" />
+      </a>
+    ) : null;
+
+    const clearFiltersButton = isMobile ? null : <ClearFilters {...clearFiltersProps} />;
+
+    const topbarClassnames = classNames('topbar clearfix', {
+      'mobile': isMobile
+    });
+
     return (
-      <div className="topbar clearfix">
+      <div className={topbarClassnames}>
         <Autocomplete {...autocompleteOptions} />
-        <ClearFilters {...clearFiltersProps} />
+        {mobileFilterToggle}
+        {clearFiltersButton}
         {allAssetsButton}
       </div>
     );
@@ -98,7 +117,7 @@ export class CatalogResults extends Component {
 
     if (tableView === 'list') {
       return (
-        <div>
+        <div className="table-wrapper">
           <ResultListTable />
           {spinner}
         </div>
@@ -148,8 +167,12 @@ export class CatalogResults extends Component {
   }
 
   render() {
+    const catalogResultsClassnames = classNames('catalog-results', {
+      'mobile': this.props.isMobile
+    });
+
     return (
-      <div className="catalog-results">
+      <div className={catalogResultsClassnames}>
         {this.renderTopbar()}
         {this.renderError()}
         {this.renderTable()}
@@ -171,10 +194,12 @@ CatalogResults.propTypes = {
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   fetchingResultsErrorType: PropTypes.string,
+  isMobile: PropTypes.bool.isRequired,
   order: PropTypes.object,
   page: PropTypes.string,
   pageNumber: PropTypes.number,
-  resultSetSize: PropTypes.number.isRequired
+  resultSetSize: PropTypes.number.isRequired,
+  toggleFilters: PropTypes.func.isRequired
 };
 
 CatalogResults.defaultProps = {
@@ -192,6 +217,7 @@ const mapStateToProps = (state) => ({
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   fetchingResultsErrorType: state.catalog.fetchingResultsErrorType,
+  isMobile: state.windowDimensions.isMobile,
   order: state.catalog.order,
   pageNumber: state.catalog.pageNumber,
   resultSetSize: state.catalog.resultSetSize
@@ -201,7 +227,8 @@ const mapDispatchToProps = (dispatch) => ({
   changePage: (pageNumber) => dispatch(pager.changePage(pageNumber)),
   changeQ: (query) => dispatch(filters.changeQ(query)),
   clearAllFilters: (shouldClearSearch) => dispatch(filters.clearAllFilters(shouldClearSearch)),
-  clearSearch: () => dispatch(filters.clearSearch())
+  clearSearch: () => dispatch(filters.clearSearch()),
+  toggleFilters: () => dispatch(mobile.toggleFilters())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

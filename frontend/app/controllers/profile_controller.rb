@@ -52,7 +52,7 @@ class ProfileController < ApplicationController
         cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
         catalog_results_response = begin
-          AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options).to_h
+          AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options.merge(for_user: current_user.id)).to_h
         rescue => e
           report_siam_error("Error fetching Cetera results: #{e.inspect}")
           { 'results' => [], 'resultSetSize' => 0 }

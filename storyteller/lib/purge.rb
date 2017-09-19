@@ -19,10 +19,10 @@ module Purge
       drafts_to_purge = items_to_purge.map { |record| record[:id] }
       blocks_to_purge = items_to_purge.map { |record| record[:block_ids] }.flatten
 
-      Rails.logger.warn("[Purge] Deleting blocks #{blocks_to_purge}")
+      Rails.logger.warn("[Purge] Deleting #{blocks_to_purge.size} blocks")
       Block.where('id IN (:ids)', ids: blocks_to_purge).update_all(deleted_at: start_time)
 
-      Rails.logger.warn("[Purge] Deleting drafts #{drafts_to_purge}")
+      Rails.logger.warn("[Purge] Deleting #{drafts_to_purge.size} drafts")
       DraftStory.where('id IN (:ids)', ids: drafts_to_purge).update_all(deleted_at: start_time)
 
       job_time = Time.current - start_time

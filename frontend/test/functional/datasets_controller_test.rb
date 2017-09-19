@@ -82,6 +82,13 @@ class DatasetsControllerTest < ActionController::TestCase
     context 'with disable_obe_direction at default' do
       setup do
         init_environment
+
+        init_feature_flag_signaller(with: {
+          enable_visualization_canvas: false,
+          enable_catalog_landing_page: true,
+          disable_obe_redirection: false,
+          show_govstat_header: false
+        })
       end
 
       # https://opendata.test-socrata.com/dataset/28-Formwidtest/zwjk-24g6.json?text=1

@@ -349,7 +349,7 @@ window.socrata.featureFlags =
 
   end
 
-  describe 'using_cetera? when feature flag is set' do
+  describe 'using_cetera when feature flag is set' do
 
     let(:cetera_internal_uri) { 'http://localhost:1234' }
     let(:controller_name) { 'browse' }
@@ -357,10 +357,7 @@ window.socrata.featureFlags =
 
     before do
       init_current_domain
-      allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
-      allow(FeatureFlags).to receive(:derive).and_return(double(:flags).tap do |flags|
-        allow(flags).to receive(:cetera_search?).and_return(true)
-      end)
+      init_signaller(with: { cetera_search: true })
       allow(APP_CONFIG).to receive(:cetera_internal_uri).and_return(cetera_internal_uri)
       allow(helper).to receive(:controller_name).and_return(controller_name)
       allow(helper).to receive(:action_name).and_return(action_name)

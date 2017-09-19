@@ -328,7 +328,7 @@ GEM
     semver2 (3.4.2)
     shellany (0.0.1)
     shoulda-context (1.2.1)
-    signaller-ruby (0.6.5)
+    signaller-ruby (0.8.2)
       activesupport (~> 4.2)
       httparty (~> 0.13)
       semver2 (~> 3.4)
@@ -482,4 +482,4 @@ DEPENDENCIES
   zookeeper (~> 1.4.9)
 
 BUNDLED WITH
-   1.15.1
+   1.15.4

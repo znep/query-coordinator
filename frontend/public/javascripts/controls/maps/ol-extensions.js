@@ -1633,7 +1633,7 @@
         return;
       }
       var viewport = this.preferredViewport();
-      if (!viewport) {
+      if (!viewport || !_.isFinite(viewport.left) || !_.isFinite(viewport.right)) {
         return;
       }
       if (!this.willMove(viewport)) {

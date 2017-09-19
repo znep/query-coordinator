@@ -26,6 +26,32 @@ describe('cetera.js', () => {
   });
 
   describe('ceteraUtilsParams', () => {
+    it('does not have a sharedTo filter if activeTab is null', () => {
+      const parameters = { activeTab: null };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.sharedTo);
+    });
+
+    it('does not have a sharedTo filter if activeTab is "All Assets"', () => {
+      const parameters = { activeTab: 'allAssets' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.sharedTo);
+    });
+
+    it('does not have a sharedTo filter if activeTab is "My Assets"', () => {
+      const parameters = { activeTab: 'myAssets' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.sharedTo);
+    });
+
+    it('does have a sharedTo filter if activeTab is "Shared To Me"', () => {
+      window.serverConfig.currentUser = { 'id': 'abcd-1234' };
+
+      const parameters = { activeTab: 'sharedToMe' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.equal(result.sharedTo, 'abcd-1234');
+    });
+
     it('does not have a forUser filter if activeTab is null', () => {
       const parameters = { activeTab: null };
       const result = ceteraUtilsParams(getState, parameters);
@@ -34,6 +60,12 @@ describe('cetera.js', () => {
 
     it('does not have a forUser filter if activeTab is "All Assets"', () => {
       const parameters = { activeTab: 'allAssets' };
+      const result = ceteraUtilsParams(getState, parameters);
+      assert.isUndefined(result.forUser);
+    });
+
+    it('does not have a forUser filter if activeTab is "Shared To Me"', () => {
+      const parameters = { activeTab: 'sharedToMe' };
       const result = ceteraUtilsParams(getState, parameters);
       assert.isUndefined(result.forUser);
     });

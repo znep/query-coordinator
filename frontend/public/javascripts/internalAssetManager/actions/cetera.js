@@ -124,8 +124,11 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
   }
 
   let forUser = _.get(ownedBy, 'id');
+  let sharedTo;
   if (activeTab === 'myAssets') {
     forUser = _.get(window, 'serverConfig.currentUser.id');
+  } else if (activeTab === 'sharedToMe') {
+    sharedTo = _.get(window, 'serverConfig.currentUser.id');
   }
 
   const customMetadataFilters = (parameters.action === 'CLEAR_ALL_FILTERS') ? {} :
@@ -147,6 +150,7 @@ export const ceteraUtilsParams = (getState, parameters = {}) => {
     published,
     provenance: authority,
     q,
+    sharedTo,
     showVisibility: 'true',
     tags: tag,
     visibility

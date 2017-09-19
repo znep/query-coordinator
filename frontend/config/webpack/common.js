@@ -42,12 +42,12 @@ var jsLoaderBaseConfig = {
 
 function withHotModuleEntries(entry) {
   return _.mapValues(entry, function(v) {
-    return _.castArray(v).concat(getHotModuleEntries());
+    return getHotModuleEntries().concat(_.castArray(v));
   });
 }
 
 function getHotModuleEntries() {
-  return isProduction ? [] : [
+  return isProduction ? ['react-hot-loader/patch'] : [
     `webpack-dev-server/client?https://0.0.0.0:${packageJson.config.webpackDevServerPort}`,
     'webpack/hot/only-dev-server'
   ];
@@ -116,7 +116,7 @@ function getStyleguideIncludePaths() {
 }
 
 function getBabelLoader(extraPlugins = []) {
-  const babelPlugins = [ 'babel-plugin-transform-object-rest-spread' ].concat(extraPlugins);
+  const babelPlugins = [ 'babel-plugin-transform-object-rest-spread', 'react-hot-loader/babel' ].concat(extraPlugins);
 
   return _.extend({}, jsLoaderBaseConfig, {
     loader: 'babel',
@@ -132,18 +132,17 @@ function getBabelLoader(extraPlugins = []) {
   });
 }
 
-function getReactHotLoader() {
-  return _.extend({}, jsLoaderBaseConfig, {
-    loader: 'react-hot'
-  });
-}
+// function getReactHotLoader() {
+//   return _.extend({}, jsLoaderBaseConfig, {
+//     loader: 'react-hot'
+//   });
+// }
 
 // Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
-// bundle. Includes an ES2015 + React preset for babel, icon font loader, and React hot-loader.
+// bundle. Includes an ES2015 + React preset for babel, and icon font loader
 function getStandardLoaders(extraLoaders, options) {
   var loaders = [];
   options = _.extend({
-    reactHotLoader: true,
     babelRewirePlugin: false // Only has effect outside of production.
   }, options);
 
@@ -154,9 +153,9 @@ function getStandardLoaders(extraLoaders, options) {
     babelPlugins.push('babel-plugin-rewire');
   }
 
-  if (!isProduction && options.reactHotLoader) {
-    loaders.push(getReactHotLoader());
-  }
+  // if (!isProduction && options.reactHotLoader) {
+  //   loaders.push(getReactHotLoader());
+  // }
 
   loaders.push(getBabelLoader(babelPlugins));
   loaders = loaders.concat(getSvgAndFontLoaders());
@@ -220,7 +219,6 @@ module.exports = {
   getEslintConfig: getEslintConfig,
   withHotModuleEntries: withHotModuleEntries,
   getBabelLoader: getBabelLoader,
-  getReactHotLoader: getReactHotLoader,
   getHotModuleEntries: getHotModuleEntries,
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,

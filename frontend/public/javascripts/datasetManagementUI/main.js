@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import Perf from 'react-addons-perf';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
-import rootRoute from './routes';
 import { addLocation } from 'reduxStuff/actions/history';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 import store from 'reduxStuff/store';
+import { AppContainer } from 'react-hot-loader';
+import App from 'components/App/App';
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
@@ -22,13 +22,24 @@ browserHistory.listen(location => {
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      {rootRoute(store)}
-    </Router>
-  </Provider>,
-  document.querySelector('#app')
+  <AppContainer>
+    <App store={store} history={browserHistory} />
+  </AppContainer>,
+  document.getElementById('app')
 );
+
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('components/App/App', () => {
+    const NextApp = require('components/App/App').default; //eslint-disable-line
+    ReactDOM.render(
+      <AppContainer>
+        <NextApp store={store} history={browserHistory} />
+      </AppContainer>,
+      document.getElementById('app')
+    );
+  });
+}
 
 window.addEventListener('beforeunload', evt => {
   const sourcesInProgress = Selectors.sourcesInProgress(store.getState().ui.apiCalls);

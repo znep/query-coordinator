@@ -24,7 +24,7 @@ module.exports = _.defaultsDeep(
       common.frontendRoot,
       'public/javascripts/datasetManagementUI'
     ),
-    entry: common.withHotModuleEntries({ main: ['babel-polyfill', './main'] }),
+    entry: ['babel-polyfill'].concat(common.withHotModuleEntries({ main: './main' })),
     output: common.getOutput(identifier),
     eslint: common.getEslintConfig(
       'public/javascripts/datasetManagementUI/.eslintrc.json'

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NumberFilter from 'components/FilterBar/NumberFilter';
 import { mockValueRangeFilter, mockNumberColumn } from './data';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 import $ from 'jquery';
 

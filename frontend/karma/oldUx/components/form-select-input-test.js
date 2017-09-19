@@ -4,7 +4,8 @@ import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
   scryRenderedDOMComponentsWithTag as findAllByTag
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import FormSelectInput from 'components/form-select-input';
 import FormInput from 'components/form-input';
@@ -12,7 +13,7 @@ import FormInput from 'components/form-input';
 describe('FormSelectInput', function() {
 
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.onSuccessStub = sinon.stub();
     sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;

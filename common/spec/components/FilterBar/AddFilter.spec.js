@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 import AddFilter from 'components/FilterBar/AddFilter';
 import { SPACE } from 'common/keycodes';

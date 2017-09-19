@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.TestUtils = require('react-addons-test-utils');
+window.TestUtils = require('react-dom/test-utils');
 window.redux = require('redux');
 window.I18n = require('mockTranslations');
 window.mixpanelConfig = require('./data/mockMixpanelConfig').default;

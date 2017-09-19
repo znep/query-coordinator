@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.TestUtils = require('react-addons-test-utils');
+window.TestUtils = require('react-dom/test-utils');
 window.redux = require('redux');
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');

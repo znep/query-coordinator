@@ -4,14 +4,15 @@ import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
   scryRenderedDOMComponentsWithTag as findAllByTag
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import FormControls from 'components/form-controls';
 
 describe('FormControls', function() {
 
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });

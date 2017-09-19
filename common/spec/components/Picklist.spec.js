@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
-import TestUtils, { Simulate } from 'react-addons-test-utils';
+import TestUtils, { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../helpers';
 import Picklist from 'components/Picklist';
 import { UP, DOWN, ESCAPE, ENTER } from 'common/keycodes';

@@ -25,8 +25,7 @@ class Brush extends Component {
       'onMouseMove',
       'onMouseOut',
       'updateFilter',
-      'updateFlyout',
-      
+      'updateFlyout'
     ]);
   }
 

@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { ExternalResourceForm } from 'components/FeaturedContentModal/ExternalResourceForm';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('components/FeaturedContentModal/ExternalResourceForm', function() {
   function getProps(props) {

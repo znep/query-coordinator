@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import ProgressBar from 'components/ProgressBar/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './Notification.scss';
@@ -73,7 +73,7 @@ class Notification extends Component {
             <ProgressBar percent={percentCompleted || 0} type={status} className={styles.progressBar} />
           </div>}
         {children &&
-          <ReactCSSTransitionGroup
+          <CSSTransitionGroup
             transitionName={{
               enter: styles.enter,
               enterActive: styles.enterActive,
@@ -94,7 +94,7 @@ class Notification extends Component {
                   </a>
                 </div>
               </div>}
-          </ReactCSSTransitionGroup>}
+          </CSSTransitionGroup>}
       </div>
     );
   }

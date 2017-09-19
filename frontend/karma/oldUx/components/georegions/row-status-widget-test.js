@@ -5,7 +5,8 @@ import TestUtils, {
   scryRenderedDOMComponentsWithTag as scryByTag,
   findRenderedDOMComponentsWithTag as findByTag,
   findRenderedDOMComponentWithClass as findByClass
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import RowStatusWidget from 'components/georegions/row-status-widget';
 import Status from 'components/georegions/georegion-status';
@@ -13,7 +14,7 @@ import Status from 'components/georegions/georegion-status';
 describe('RowStatusWidget', function() {
 
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.props = {
       action: '/foo',
       authenticityToken: 'abcd',

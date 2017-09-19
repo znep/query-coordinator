@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 import { DataSourceStates } from 'lib/constants';
 import { DataPanel } from 'components/EditModal/DataPanel';

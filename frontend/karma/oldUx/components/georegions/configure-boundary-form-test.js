@@ -5,7 +5,8 @@ import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
   scryRenderedDOMComponentsWithTag as findAllByTag,
   findRenderedDOMComponentWithClass as findByClass
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import ConfigureBoundaryForm from 'components/georegions/configure-boundary-form';
 
@@ -13,7 +14,7 @@ describe('ConfigureBoundaryForm', function() {
 
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.props = {
       authenticityToken: 'authy',
       cancelLabel: 'Cancel',

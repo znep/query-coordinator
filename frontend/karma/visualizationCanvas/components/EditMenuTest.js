@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import { EditMenu } from 'components/EditMenu';
 import mockView from 'data/mockView';
-import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
+import { renderIntoDocument, Simulate } from 'react-dom/test-utils';
 
 describe('EditMenu', () => {
   const getProps = (props) => {

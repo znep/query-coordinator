@@ -3,13 +3,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, {
   scryRenderedDOMComponentsWithClass as findByClass
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import RowDefaultWidget from 'components/georegions/row-default-widget';
 
 describe('RowDefaultWidget', function() {
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.props = {
       action: 'abcd',
       allowDefaulting: true,

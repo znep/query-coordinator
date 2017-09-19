@@ -1,4 +1,4 @@
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import Notifications from 'common/notifications/Notifications';
 import { renderComponent } from '../helpers';
 import { fakeNotifications } from './data';

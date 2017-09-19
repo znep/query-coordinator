@@ -1,9 +1,10 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import FormButton from 'components/form-button';
 
@@ -11,7 +12,7 @@ describe('FormButton', function() {
 
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.onSuccessStub = sinon.stub();
     this.props = {
       action: '/foo',

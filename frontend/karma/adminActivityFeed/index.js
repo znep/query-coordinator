@@ -8,7 +8,7 @@ import mockTranslations from './mockTranslations';
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.TestUtils = require('react-addons-test-utils');
+window.TestUtils = require('react-dom/test-utils');
 window.redux = require('redux');
 window.serverConfig = { environment: 'development' };
 window.sessionData = { };

@@ -11,7 +11,7 @@ window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.TestUtils = require('react-addons-test-utils');
+window.TestUtils = require('react-dom/test-utils');
 window.I18n = require('mockTranslations');
 
 /* Temprorary: extra shit for DSLP viewCard Helpers. TODO */

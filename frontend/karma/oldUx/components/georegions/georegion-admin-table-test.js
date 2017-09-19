@@ -1,7 +1,8 @@
 import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import Status from 'components/georegions/georegion-status';
 import GeoregionAdminTable from 'components/georegions/georegion-admin-table';
@@ -10,7 +11,7 @@ import GeoregionAdminRow from 'components/georegions/georegion-admin-row';
 describe('GeoregionAdminTable', function() {
 
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.props = {
       authenticityToken: 'token',
       baseUrlPath: '/admin/geo/',

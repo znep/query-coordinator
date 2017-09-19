@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';

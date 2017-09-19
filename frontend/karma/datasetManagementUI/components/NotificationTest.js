@@ -26,7 +26,7 @@ describe('components/Notification', () => {
         <span className="details-msg">Test Message</span>
       </Notification>
     );
-    assert.isAtLeast(component.find('ReactCSSTransitionGroup').length, 1);
+    assert.isAtLeast(component.find('CSSTransitionGroup').length, 1);
   });
 
   it('correctly toggles details', () => {
@@ -74,7 +74,7 @@ describe('components/Notification', () => {
     );
 
     assert.equal(component.find('.detailsToggle').length, 1);
-    assert.equal(component.find('ReactCSSTransitionGroup').length, 1);
+    assert.equal(component.find('CSSTransitionGroup').length, 1);
     assert.equal(component.find('ProgressBar').length, 1);
   });
 });

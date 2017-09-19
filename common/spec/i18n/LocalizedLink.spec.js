@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 import Localization from 'common/i18n/components/Localization';
 import LocalizedLink from 'common/i18n/components/LocalizedLink';

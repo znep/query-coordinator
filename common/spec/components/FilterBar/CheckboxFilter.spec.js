@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 import CheckboxFilter from 'components/FilterBar/CheckboxFilter';
 import { mockBinaryOperatorFilter, mockCheckboxColumn } from './data';

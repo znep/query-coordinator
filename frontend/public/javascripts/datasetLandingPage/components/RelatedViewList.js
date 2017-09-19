@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'common/components';
@@ -21,7 +21,15 @@ export class RelatedViewList extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'onScrollList');
+    _.bindAll(this, [
+      'onScrollList',
+      'getHeight',
+      'renderEmptyListAlert',
+      'renderContents',
+      'renderLoadMoreLink',
+      'renderError',
+      'renderCollapseLink'
+    ]);
   }
 
   onScrollList(event) {
@@ -110,7 +118,7 @@ export class RelatedViewList extends Component {
     };
 
     return (
-      <ReactCSSTransitionGroup
+      <CSSTransitionGroup
         component="div"
         className="media-results related-views"
         style={style}
@@ -119,7 +127,7 @@ export class RelatedViewList extends Component {
         transitionEnterTimeout={400}
         transitionLeaveTimeout={400}>
         {relatedViews}
-      </ReactCSSTransitionGroup>
+      </CSSTransitionGroup>
     );
   }
 
@@ -148,7 +156,7 @@ export class RelatedViewList extends Component {
     const { hasError, dismissError } = this.props;
 
     if (!hasError) {
-      return;
+      return null;
     }
 
     return (
@@ -163,7 +171,7 @@ export class RelatedViewList extends Component {
     const { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
     if (hasMore || viewList.length <= RELATED_VIEWS_CHUNK_SIZE || !isDesktop) {
-      return;
+      return null;
     }
 
     return (

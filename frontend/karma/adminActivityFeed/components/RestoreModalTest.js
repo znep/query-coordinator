@@ -1,6 +1,6 @@
 import React from 'react';
 import { assert } from 'chai';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 const MockHttpClient = require('../MockHttpClient').default;
 const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;

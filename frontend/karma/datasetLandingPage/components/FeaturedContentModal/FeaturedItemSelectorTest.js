@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { FeaturedItemSelector } from 'components/FeaturedContentModal/FeaturedItemSelector';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import mockFeaturedItem from 'data/mockFeaturedItem';
 
 describe('components/FeaturedContentModal/FeaturedItemSelector', function() {

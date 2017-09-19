@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import FormFooter from 'components/FeaturedContentModal/FormFooter';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('components/FeaturedContentModal/FormFooter', function() {
   function getProps(props) {

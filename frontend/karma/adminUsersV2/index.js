@@ -4,7 +4,7 @@ import 'babel-polyfill-safe';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 import I18nJS from 'i18n-js';
 import mockTranslations from 'mockTranslations';

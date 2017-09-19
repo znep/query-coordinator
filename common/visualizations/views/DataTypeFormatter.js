@@ -579,11 +579,11 @@ function renderUrlCellHTML(cellContent) {
 
   if (_.isString(cellContent)) {
     return `<a href="${_.escape(cellContent)}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  } else {
+    const { url, description } = cellContent;
+    const text = _.escape(description || url);
+    return `<a href="${url}" target="_blank" rel="external">${text}</a>`;
   }
-
-  const { url, description } = cellContent;
-  const text = _.escape(description || url);
-  return `<a href="${url}" target="_blank" rel="external">${text}</a>`;
 }
 
 /**
@@ -605,14 +605,19 @@ function renderPhoneCellHTML(cellContent) {
     return '';
   }
 
+  // Only permit digits, spaces, and selected punctuation.
+  // This is *NOT* validated on the backend; XSS mitigation for EN-18885.
+  const filterDisallowed = (raw) => {
+    return (raw || '').replace(/[^\d\s(),.+*#-]/g, '').trim();
+  };
+
   if (_.isString(cellContent)) {
-    return `<a href="tel:${cellContent}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+    return `<a href="tel:${filterDisallowed(cellContent)}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  } else {
+    const phoneNumber = _.get(cellContent, 'phone_number', '');
+    return `<a href="tel:${filterDisallowed(phoneNumber)}" target="_blank" rel="external">${_.escape(phoneNumber)}</a>`;
   }
 
-  const phoneNumber = _.get(cellContent, 'phone_number', '');
-  const phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
-
-  return `<a href="tel:${phoneHref}" target="_blank" rel="external">${_.escape(phoneNumber)}</a>`;
 }
 
 /**

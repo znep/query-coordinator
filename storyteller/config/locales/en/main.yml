@@ -55,9 +55,6 @@ en:
     failed_to_publish: 'Failed to copy goal. Please try again later.'
     not_found_error_flash: 'Goal not found.'
   login_successful: 'Login Successful'
-  print:
-    preparing_story: 'Preparing story for printing...'
-    help_link: 'Get help with printing.'
   preview_mode:
     presentation_mode:
       next: 'Next'
@@ -87,3 +84,6 @@ en:
   tile:
     no_description_label: 'This story has no description.'
     read_more_prompt: 'Read more at '
+  print_mode:
+    render_warning: 'For best results, please wait for all visualizations to load before printing.'
+    help_link: 'Get help with printing'

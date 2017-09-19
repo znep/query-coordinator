@@ -165,7 +165,7 @@ module StoriesHelper
     classes.join(' ')
   end
 
-  def should_launch_print_dialog_on_page_load?
+  def should_load_print_styles?
     request.query_parameters['print'] == 'true'
   end
 

@@ -91,6 +91,10 @@ table.result-list-table {
       overflow: hidden;
       text-overflow: ellipsis;
 
+      span.socrata-icon {
+        line-height: normal;
+      }
+
       &.actions {
         overflow: visible; // Prevent action flyout from being cut off
       }

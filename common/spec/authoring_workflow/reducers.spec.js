@@ -6,6 +6,7 @@ import getVifTemplates from 'common/authoring_workflow/vifs';
 import * as actions from 'common/authoring_workflow/actions';
 import vifs from 'common/authoring_workflow/vifs';
 import mockFilters from './mockFilters';
+import { COLOR_PALETTE_VALUES, DEFAULT_PRIMARY_COLOR } from 'common/authoring_workflow/constants';
 
 // Note: by convention, reducers return their default state when passed undefined.
 function getDefaultState() {
@@ -148,6 +149,65 @@ describe('AuthoringWorkflow reducer', function() {
           var newState = reducer(getTestState(), action);
 
           expect(_.get(newState.vifAuthoring.vifs.featureMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+        });
+      });
+
+      describe('when a new series is appended', () => {
+        let state;
+
+        beforeEach(() => {
+          state = getDefaultState();
+        });
+
+        it('the color palette should initially be undefined', () => {
+          assert.isUndefined(state.vifAuthoring.vifs.columnChart.series[0].color.palette);
+        });
+
+        it('the primary color should initially be the DEFAULT_PRIMARY_COLOR', () => {
+          assert.equal(
+            state.vifAuthoring.vifs.columnChart.series[0].color.primary,
+            DEFAULT_PRIMARY_COLOR
+          );
+        });
+
+        it('should set the color palette to "categorical"', () => {
+          const newState = reducer(state, actions.appendSeries({ isInitialLoad: false }));
+          assert.equal(
+            newState.vifAuthoring.vifs.columnChart.series[0].color.palette,
+            'categorical'
+          );
+        });
+
+        it('should set the primary color the first color in the "categorical" color palette', () => {
+          const newState = reducer(state, actions.appendSeries({ isInitialLoad: false }));
+          assert.equal(
+            newState.vifAuthoring.vifs.columnChart.series[0].color.primary,
+            COLOR_PALETTE_VALUES.categorical[0]
+          );
+        });
+      });
+
+      describe('when a series is removed', () => {
+        let state;
+
+        beforeEach(() => {
+          state = reducer(
+            getDefaultState(),
+            actions.appendSeries({ isInitialLoad: false })
+          );
+        });
+
+        it('should reset the color palette to undefined', () => {
+          const newState = reducer(state, actions.removeSeries(0));
+          assert.isUndefined(newState.vifAuthoring.vifs.columnChart.series[0].color.palette);
+        });
+
+        it('should reset the primary color to the DEFAULT_PRIMARY_COLOR', () => {
+          const newState = reducer(state, actions.removeSeries(0));
+          assert.equal(
+            newState.vifAuthoring.vifs.columnChart.series[0].color.primary,
+            DEFAULT_PRIMARY_COLOR
+          );
         });
       });
 

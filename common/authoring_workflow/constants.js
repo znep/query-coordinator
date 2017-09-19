@@ -245,6 +245,9 @@ export const TIMELINE_PRECISION = [
   }
 ];
 
+export const DEFAULT_PRIMARY_COLOR = '#71abd9';
+export const DEFAULT_SECONDARY_COLOR = '#71abd9';
+
 export const DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY = {
   barChart: 10,
   pieChart: 12

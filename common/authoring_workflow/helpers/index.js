@@ -1,7 +1,12 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
 import I18n from 'common/i18n';
-import { AGGREGATION_TYPES, COLOR_PALETTE_VALUES } from '../constants';
+import { 
+  AGGREGATION_TYPES, 
+  COLOR_PALETTE_VALUES, 
+  DEFAULT_PRIMARY_COLOR, 
+  DEFAULT_SECONDARY_COLOR 
+} from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -127,10 +132,16 @@ export const appendSeries = (state, { isInitialLoad }) => {
   // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
   // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
   // 
-  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to 'categorical'.
+  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to 
+  // 'categorical' and set the primary and secondary colors of the first series to the first color in the 'categorical' 
+  // color palette.
   //
   if ((state.series.length == 1) && !isInitialLoad) {
-     _.set(state, 'series[0].color.palette', 'categorical');
+    const color = COLOR_PALETTE_VALUES['categorical'][0];
+
+    _.set(state, 'series[0].color.palette', 'categorical');
+    _.set(state.series[0], 'color.primary', color);
+    _.set(state.series[0], 'color.secondary', color);
   }
 
   // Now create the new series, by cloning the first series.
@@ -178,6 +189,9 @@ export const removeSeries = (state, seriesIndex) => {
     _.unset(state, 'series[0].color.palette');
     _.unset(state, 'series[0].stacked');
 
+    _.set(state, 'series[0].color.primary', DEFAULT_PRIMARY_COLOR);
+    _.set(state, 'series[0].color.secondary', DEFAULT_SECONDARY_COLOR);
+    
     tryUnsetShowLegend(state);
   }
 };

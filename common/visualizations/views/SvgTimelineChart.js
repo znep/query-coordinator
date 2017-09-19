@@ -109,14 +109,14 @@ function SvgTimelineChart($element, vif, options) {
     renderData();
   };
 
-  this.invalidateSize = function() {
+  this.invalidateSize = () => {
 
     if ($chartElement && dataToRender) {
       renderData();
     }
   };
 
-  this.destroy = function() {
+  this.destroy = () => {
     const rootElement = d3.select(this.$element[0]);
 
     rootElement.select('svg').
@@ -331,11 +331,11 @@ function SvgTimelineChart($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
       // when at the bottom edge.  All the other lines are rendered in normal positions.
       const getYPosition = (referenceLine) => {
-        if (referenceLine.value == maxYValue) { 
+        if (referenceLine.value == maxYValue) {
           return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
         } else if (referenceLine.value == minYValue) {
           return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
@@ -638,7 +638,7 @@ function SvgTimelineChart($element, vif, options) {
       }
     }
 
-    // Add 1 year, month or day (depending on the precision) so that we render 
+    // Add 1 year, month or day (depending on the precision) so that we render
     // the last time bucket properly.
     //
     domainEndDate = getIncrementedDateByPrecision(domainEndDate, dataToRender.precision);
@@ -735,6 +735,19 @@ function SvgTimelineChart($element, vif, options) {
         // This is a workaround for a bug in D3 v3.x, (fixed in v4.x): https://github.com/d3/d3/issues/1722
         return Math.abs(parseFloat(d)) < 0.00000001 ? utils.formatNumber(0) : utils.formatNumber(d);
       });
+
+
+    const vif = self.getVif();
+    const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+    if (isCount) {
+      const span = maxYValue - minYValue;
+      if (span < 10) {
+        const ticks = d3.range(minYValue, maxYValue + 1, 1);
+        d3YAxis.tickValues(ticks);
+      } else {
+        d3YAxis.ticks(10);
+      }
+    }
 
     d3AreaSeries = dataToRenderBySeries.map((series, seriesIndex) => {
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
@@ -886,7 +899,7 @@ function SvgTimelineChart($element, vif, options) {
       on('mousemove', handleMouseMove).
       on(
         'mouseleave',
-        () => {
+        function() {
 
           hideHighlight();
           hideFlyout();
@@ -1302,7 +1315,7 @@ function SvgTimelineChart($element, vif, options) {
       case 'year':
         nextDate.setFullYear(nextDate.getFullYear() + 1);
         break;
-      
+
       case 'month':
         nextDate.setMonth(nextDate.getMonth() + 1);
         break;

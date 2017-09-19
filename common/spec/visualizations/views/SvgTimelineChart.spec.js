@@ -10,7 +10,7 @@ describe('SvgTimelineChart', () => {
   const CHART_WIDTH = 800;
   const CHART_HEIGHT = 600;
 
-  // NOTE The data that the SvgTimelineChart.render function expectes is an object
+  // NOTE The data that the SvgTimelineChart.render function expects is an object
   // vs an array, which is what other charts, like Pie & Histogram expects.
   const testData = {
     columns: ['dimension', 'measure'],
@@ -56,6 +56,8 @@ describe('SvgTimelineChart', () => {
       style: `width:${CHART_WIDTH}px;height:${CHART_HEIGHT}px;`
     });
 
+    $('body').append($element);
+
     const baseVIF = {
       configuration: {
         viewSourceDataLink: true
@@ -97,6 +99,7 @@ describe('SvgTimelineChart', () => {
     return { $element, chart };
   };
 
+  // TODO: Refactor removeChart into a parent/helper, as it is also used in other test files.
   const removeChart = timelineChart => {
 
     if (timelineChart && timelineChart.chart && timelineChart.chart.hasOwnProperty('destroy')) {
@@ -153,6 +156,36 @@ describe('SvgTimelineChart', () => {
         });
 
         testHelpers.fireMouseEvent(overlay, 'mousemove');
+      });
+    });
+
+    describe('when the measure is set to "count"', () => {
+      beforeEach(() => {
+        timelineChart.chart.render(null, {
+          columns: ['dimension', 'measure'],
+          rows: [
+            ["2017-09-01T09:45:00.000", 1],
+            ["2017-09-02T09:45:00.000", 1],
+            ["2017-09-03T09:45:00.000", 2],
+            ["2017-09-04T09:45:00.000", 1],
+            ["2017-09-06T09:45:00.000", 5],
+            ["2017-09-07T09:45:00.000", 2],
+            ["2017-09-08T09:45:00.000", 2],
+            ["2017-09-09T09:45:00.000", 2],
+            ["2017-09-10T09:45:00.000", 1]
+          ],
+          precision: 'day'
+        });
+      });
+
+      it('should show integer y-axis ticks', () => {
+        const ticks = timelineChart.$element.find('.y.axis .tick text');
+
+        assert.isAtLeast(ticks.length, 1);
+
+        ticks.each((i, e) => {
+          assert.match(e.textContent, /^[0-9]+$/);
+        });
       });
     });
 

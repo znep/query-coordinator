@@ -100,14 +100,14 @@ function SvgColumnChart($element, vif, options) {
     renderData();
   };
 
-  this.invalidateSize = function() {
+  this.invalidateSize = () => {
 
     if ($chartElement && dataToRender) {
       renderData();
     }
   };
 
-  this.destroy = function() {
+  this.destroy = () => {
 
     d3.select(self.$element[0]).select('svg').
       remove();
@@ -393,13 +393,13 @@ function SvgColumnChart($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge 
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel 
+      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
+      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
       // when at the bottom edge.  All the other lines are rendered in normal positions.
       const getYPosition = (referenceLine) => {
         const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
 
-        if (value == maxYValue) { 
+        if (value == maxYValue) {
           return d3YScale(value) + 1; // shift down a pixel if at the top of chart area
         } else if (value == minYValue) {
           return d3YScale(value) - 1; // shift up a pixel if at the bottom of chart area
@@ -1155,7 +1155,7 @@ function SvgColumnChart($element, vif, options) {
         ).
         on(
           'mouseleave',
-          () => {
+          function() {
 
             if (!isCurrentlyPanning()) {
 
@@ -1200,7 +1200,7 @@ function SvgColumnChart($element, vif, options) {
       ).
       on(
         'mouseleave',
-        () => {
+        function() {
 
           if (!isCurrentlyPanning()) {
 
@@ -1235,7 +1235,7 @@ function SvgColumnChart($element, vif, options) {
               // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
               // but both of those are out of reach for us at the moment.
               //
-              // Don't use a strict equality comparison in the filter as getAttribute returns a string and 
+              // Don't use a strict equality comparison in the filter as getAttribute returns a string and
               // dimensionValue may not be a string.
               //
               const dimensionGroup = d3.select(
@@ -1254,7 +1254,7 @@ function SvgColumnChart($element, vif, options) {
         ).
         on(
           'mouseleave',
-          () => {
+          function() {
 
             if (!isCurrentlyPanning()) {
               hideFlyout();
@@ -1527,10 +1527,25 @@ function SvgColumnChart($element, vif, options) {
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
     }
 
-    return d3.svg.axis().
+    const yAxis = d3.svg.axis().
       scale(yScale).
       orient('left').
       tickFormat(formatter);
+
+    const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+    if (isCount) {
+      // If the number of possible values is small, limit number of ticks to force integer values.
+      const [ minYValue, maxYValue ] = yScale.domain();
+      const span = maxYValue - minYValue;
+      if (span < 10) {
+        const ticks = d3.range(minYValue, maxYValue + 1, 1);
+        yAxis.tickValues(ticks);
+      } else {
+        yAxis.ticks(10);
+      }
+    }
+
+    return yAxis;
   }
 
   function getSeriesIndexByMeasureIndex(measureIndex) {

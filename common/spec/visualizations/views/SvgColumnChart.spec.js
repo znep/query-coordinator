@@ -168,7 +168,7 @@ describe('SvgColumnChart', () => {
   describe('when configured to show error bars', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -201,7 +201,7 @@ describe('SvgColumnChart', () => {
   describe('when configured to not show error bars', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -220,7 +220,7 @@ describe('SvgColumnChart', () => {
   describe('when configured to show legend and "Show Legend" button is clicked', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -263,7 +263,7 @@ describe('SvgColumnChart', () => {
   describe('when configured to show legend', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -288,7 +288,7 @@ describe('SvgColumnChart', () => {
   describe('when configured to not show legend', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -313,7 +313,7 @@ describe('SvgColumnChart', () => {
   describe('when configured wrong', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 
@@ -351,10 +351,44 @@ describe('SvgColumnChart', () => {
     });
   });
 
+  describe('when the measure is set to "count"', () => {
+    let columnChart;
+
+    afterEach(() => {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show integer y-axis ticks', () => {
+      columnChart = createColumnChart(null, {});
+      columnChart.chart.render(null, {
+        columns: ['dimension', 'measure'],
+        rows: [
+          ["2017-09-01T09:45:00.000", 1],
+          ["2017-09-02T09:45:00.000", 1],
+          ["2017-09-03T09:45:00.000", 2],
+          ["2017-09-04T09:45:00.000", 1],
+          ["2017-09-06T09:45:00.000", 5],
+          ["2017-09-07T09:45:00.000", 2],
+          ["2017-09-08T09:45:00.000", 2],
+          ["2017-09-09T09:45:00.000", 2],
+          ["2017-09-10T09:45:00.000", 1]
+        ]
+      });
+
+      const ticks = columnChart.element.find('.y.axis .tick text');
+
+      assert.isAtLeast(ticks.length, 1);
+
+      ticks.each((i, e) => {
+        assert.match(e.textContent, /^[0-9]+$/);
+      });
+    });
+  });
+
   describe('when rendering multi-series', () => {
     let columnChart;
 
-    afterEach(function() {
+    afterEach(() => {
       removeColumnChart(columnChart);
     });
 

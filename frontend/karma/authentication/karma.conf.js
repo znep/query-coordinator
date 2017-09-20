@@ -1,8 +1,8 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpack = require('webpack');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'signin.config.js',
-  [ 'karma/signin' ]
+  'authentication.config.js',
+  [ 'karma/authentication' ]
 );
 webpackConfig.externals = {
   'cheerio': 'window',
@@ -23,7 +23,7 @@ webpackConfig.plugins.push(
 module.exports = function (karma) {
   karma.set(karmaConfig({
     files: [
-      'karma/signin/index.js'
+      'karma/authentication/index.js'
     ],
     webpack: webpackConfig
   }));

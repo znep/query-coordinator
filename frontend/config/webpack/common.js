@@ -48,6 +48,7 @@ function withHotModuleEntries(entry) {
 
 function getHotModuleEntries() {
   return isProduction ? ['react-hot-loader/patch'] : [
+    'react-hot-loader/patch',
     `webpack-dev-server/client?https://0.0.0.0:${packageJson.config.webpackDevServerPort}`,
     'webpack/hot/only-dev-server'
   ];

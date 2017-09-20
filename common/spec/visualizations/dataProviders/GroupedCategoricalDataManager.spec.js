@@ -364,4 +364,33 @@ describe('GroupedCategoricalDataManager', () => {
     });
 
   });
+
+  describe('array chunking behavior', () => {
+    it('chunks correctly', () => {
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["one", "two", "three"]),
+        [["one", "two", "three"]]
+      );
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["one", "two", "three"], 3),
+        [["one"], ["two"], ["three"]]
+      );
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["one", "two", "three"], 6),
+        [["one", "two"], ["three"]]
+      );
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["раз", "два", "три"], 3),
+        [["раз"], ["два"], ["три"]]
+      );
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["раз", "два", "три"], 6),
+        [["раз", "два"], ["три"]]
+      );
+      assert.deepEqual(
+        GroupedCategoricalDataManager.chunkArrayByLength(["一", "二", "三", "四", "五"], 3),
+        [["一", "二", "三"], ["四", "五"]]
+      );
+    });
+  });
 });

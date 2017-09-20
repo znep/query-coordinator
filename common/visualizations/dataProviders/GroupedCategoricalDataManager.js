@@ -281,284 +281,293 @@ function getData(vif, options) {
       'shared.visualizations.charts.common.other_category'
     );
 
-    /**
-     * Setup for Anteater, Beaver, Chinchilla, and Dingo queries
-     */
+    const chunkedDimensionValues = chunkArrayByLength(state.dimensionValues);
+    const chunkedGroupingValues = chunkArrayByLength(state.groupingValues);
 
-    const nonNullDimensionValuesFilter = {
-      function: 'in',
-      columnName: state.columnName,
-      arguments: _.without(state.dimensionValues, null)
-    };
+    chunkedDimensionValues.forEach((dimensionValuesCurrentChunk) => {
+      chunkedGroupingValues.forEach((groupingValuesCurrentChunk) => {
 
-    const nullDimensionFilter = {
-      function: 'binaryOperator',
-      columnName: state.columnName,
-      arguments: getBinaryOperatorFilterArguments(null)
-    };
+        /**
+         * Setup for Anteater, Beaver, Chinchilla, and Dingo queries
+         */
 
-    const nonNullGroupingValuesFilter = {
-      function: 'in',
-      columnName: state.groupingColumnName,
-      arguments: _.without(state.groupingValues, null)
-    };
+        const nonNullDimensionValuesFilter = {
+          function: 'in',
+          columnName: state.columnName,
+          arguments: _.without(dimensionValuesCurrentChunk, null)
+        };
 
-    const invertedNonNullGroupingValuesFilter = {
-      function: 'not in',
-      columnName: state.groupingColumnName,
-      arguments: _.without(state.groupingValues, null)
-    };
+        const nullDimensionFilter = {
+          function: 'binaryOperator',
+          columnName: state.columnName,
+          arguments: getBinaryOperatorFilterArguments(null)
+        };
 
-    const nullGroupingFilter = {
-      function: 'binaryOperator',
-      columnName: state.groupingColumnName,
-      arguments: getBinaryOperatorFilterArguments(null)
-    };
+        const nonNullGroupingValuesFilter = {
+          function: 'in',
+          columnName: state.groupingColumnName,
+          arguments: _.without(groupingValuesCurrentChunk, null)
+        };
 
-    const nonNullGroupingFilter = {
-      function: 'binaryOperator',
-      columnName: state.groupingColumnName,
-      arguments: getBinaryOperatorFilterArguments(null, '!=')
-    };
+        const invertedNonNullGroupingValuesFilter = {
+          function: 'not in',
+          columnName: state.groupingColumnName,
+          arguments: _.without(groupingValuesCurrentChunk, null)
+        };
 
-    /**
-     * Anteater queries
-     */
+        const nullGroupingFilter = {
+          function: 'binaryOperator',
+          columnName: state.groupingColumnName,
+          arguments: getBinaryOperatorFilterArguments(null)
+        };
 
-    groupingData.push({
-      vif: generateGroupingVifWithFilters(
-        _.cloneDeep(filtersFromVif).concat([
-          nonNullDimensionValuesFilter,
-          nonNullGroupingValuesFilter
-        ]),
-        {query: "Anteater 1",
-         requireGroupingInSelect: true}
-      )
-    });
+        const nonNullGroupingFilter = {
+          function: 'binaryOperator',
+          columnName: state.groupingColumnName,
+          arguments: getBinaryOperatorFilterArguments(null, '!=')
+        };
 
-    // XXX: NULL values are handled differently in SOQL when used in = clauses
-    // and IN clauses, no clue why. This means we need extra queries to retrieve
-    // those results.
-    if (dimensionValuesIncludeNull) {
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(
-          _.cloneDeep(filtersFromVif).concat([
-            nullDimensionFilter,
-            nonNullGroupingValuesFilter
-          ]),
-          {query: "Anteater 2",
-           requireGroupingInSelect: true}
-        )
-      });
-    }
+        /**
+         * Anteater queries
+         */
 
-    if (groupingValuesIncludeNull) {
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(
-          _.cloneDeep(filtersFromVif).concat([
-            nonNullDimensionValuesFilter,
-            nullGroupingFilter
-          ]),
-          {query: "Anteater 3",
-           requireGroupingInSelect: true}
-        )
-      });
-    }
+        groupingData.push({
+          vif: generateGroupingVifWithFilters(
+            _.cloneDeep(filtersFromVif).concat([
+              nonNullDimensionValuesFilter,
+              nonNullGroupingValuesFilter
+            ]),
+            {query: "Anteater 1",
+             requireGroupingInSelect: true}
+          )
+        });
 
-    if (dimensionValuesIncludeNull && groupingValuesIncludeNull) {
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(
-          _.cloneDeep(filtersFromVif).concat([
-            nullDimensionFilter,
-            nullGroupingFilter
-          ]),
-          {query: "Anteater 4",
-           requireGroupingInSelect: true}
-        )
-      });
-    }
+        // XXX: NULL values are handled differently in SOQL when used in = clauses
+        // and IN clauses, no clue why. This means we need extra queries to retrieve
+        // those results.
+        if (dimensionValuesIncludeNull) {
+          groupingData.push({
+            vif: generateGroupingVifWithFilters(
+              _.cloneDeep(filtersFromVif).concat([
+                nullDimensionFilter,
+                nonNullGroupingValuesFilter
+              ]),
+              {query: "Anteater 2",
+               requireGroupingInSelect: true}
+            )
+          });
+        }
 
-    /**
-     * Beaver queries
-     */
+        if (groupingValuesIncludeNull) {
+          groupingData.push({
+            vif: generateGroupingVifWithFilters(
+              _.cloneDeep(filtersFromVif).concat([
+                nonNullDimensionValuesFilter,
+                nullGroupingFilter
+              ]),
+              {query: "Anteater 3",
+               requireGroupingInSelect: true}
+            )
+          });
+        }
 
-    groupingData.push({
-      vif: generateGroupingVifWithFilters(
-        _.cloneDeep(filtersFromVif).concat([
-          nonNullDimensionValuesFilter,
-          nonNullGroupingFilter,
-          invertedNonNullGroupingValuesFilter
-        ]),
-        {query: "Beaver 1",
-         requireGroupingInSelect: false}
-      )
-    });
+        if (dimensionValuesIncludeNull && groupingValuesIncludeNull) {
+          groupingData.push({
+            vif: generateGroupingVifWithFilters(
+              _.cloneDeep(filtersFromVif).concat([
+                nullDimensionFilter,
+                nullGroupingFilter
+              ]),
+              {query: "Anteater 4",
+               requireGroupingInSelect: true}
+            )
+          });
+        }
 
-    if (dimensionValuesIncludeNull) {
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(
-          _.cloneDeep(filtersFromVif).concat([
-            nullDimensionFilter,
-            nonNullGroupingFilter,
-            invertedNonNullGroupingValuesFilter
-          ]),
-          {query: "Beaver 2",
-           requireGroupingInSelect: false}
-        )
-      });
-    }
+        /**
+         * Beaver queries
+         */
 
-    /**
-     * Chinchilla queries
-     */
-
-    // Third, do the same inversion we did for grouping values but this time for
-    // dimension values, in order to generate the '(Other)' dimension category
-    // (except for the '(Other) (Other)' case, which is handled by the Dingo
-    // query.
-    if (state.dimensionRequiresOtherCategory) {
-      state.groupingValues.forEach((groupingValue) => {
-        const invertedDimensionValuesFilters = _.cloneDeep(filtersFromVif);
-
-        invertedDimensionValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.groupingColumnName,
-            arguments: getBinaryOperatorFilterArguments(groupingValue)
-          }
-        );
+        groupingData.push({
+          vif: generateGroupingVifWithFilters(
+            _.cloneDeep(filtersFromVif).concat([
+              nonNullDimensionValuesFilter,
+              nonNullGroupingFilter,
+              invertedNonNullGroupingValuesFilter
+            ]),
+            {query: "Beaver 1",
+             requireGroupingInSelect: false}
+          )
+        });
 
         if (dimensionValuesIncludeNull) {
-          const invertedDimensionValuesFilterArguments = state.dimensionValues.
-            map((dimensionValue) => {
-              return getBinaryOperatorFilterArguments(dimensionValue, '!=');
-            });
+          groupingData.push({
+            vif: generateGroupingVifWithFilters(
+              _.cloneDeep(filtersFromVif).concat([
+                nullDimensionFilter,
+                nonNullGroupingFilter,
+                invertedNonNullGroupingValuesFilter
+              ]),
+              {query: "Beaver 2",
+               requireGroupingInSelect: false}
+            )
+          });
+        }
 
-          invertedDimensionValuesFilters.push(
-            {
-              'function': 'binaryOperator',
-              columnName: state.columnName,
-              arguments: invertedDimensionValuesFilterArguments,
-              joinOn: 'AND'
-            }
-          );
-        } else {
+        /**
+         * Chinchilla queries
+         */
 
-          state.dimensionValues.forEach((dimensionValue) => {
+        // Third, do the same inversion we did for grouping values but this time for
+        // dimension values, in order to generate the '(Other)' dimension category
+        // (except for the '(Other) (Other)' case, which is handled by the Dingo
+        // query.
+        if (state.dimensionRequiresOtherCategory) {
+          groupingValuesCurrentChunk.forEach((groupingValue) => {
+            const invertedDimensionValuesFilters = _.cloneDeep(filtersFromVif);
 
             invertedDimensionValuesFilters.push(
               {
                 'function': 'binaryOperator',
-                columnName: state.columnName,
-                arguments: [
-                  getBinaryOperatorFilterArguments(dimensionValue, '!='),
-                  { operator: 'IS NULL' }
-                ],
-                joinOn: 'OR'
+                columnName: state.groupingColumnName,
+                arguments: getBinaryOperatorFilterArguments(groupingValue)
               }
             );
+
+            if (dimensionValuesIncludeNull) {
+              const invertedDimensionValuesFilterArguments = dimensionValuesCurrentChunk.
+                    map((dimensionValue) => {
+                      return getBinaryOperatorFilterArguments(dimensionValue, '!=');
+                    });
+
+              invertedDimensionValuesFilters.push(
+                {
+                  'function': 'binaryOperator',
+                  columnName: state.columnName,
+                  arguments: invertedDimensionValuesFilterArguments,
+                  joinOn: 'AND'
+                }
+              );
+            } else {
+
+              dimensionValuesCurrentChunk.forEach((dimensionValue) => {
+
+                invertedDimensionValuesFilters.push(
+                  {
+                    'function': 'binaryOperator',
+                    columnName: state.columnName,
+                    arguments: [
+                      getBinaryOperatorFilterArguments(dimensionValue, '!='),
+                      { operator: 'IS NULL' }
+                    ],
+                    joinOn: 'OR'
+                  }
+                );
+              });
+            }
+
+            groupingData.push({
+              query: "Chinchilla",
+              vif: generateGroupingVifWithFilters(
+                invertedDimensionValuesFilters,
+                {query: "Chinchilla",
+                 requireGroupingInSelect: false}),
+              dimensionValue: otherCategoryName, // XXX: critical
+              groupingValue
+            });
           });
         }
 
-        groupingData.push({
-          query: "Chinchilla",
-          vif: generateGroupingVifWithFilters(
-            invertedDimensionValuesFilters,
-            {query: "Chinchilla",
-             requireGroupingInSelect: false}),
-          dimensionValue: otherCategoryName, // XXX: critical
-          groupingValue
-        });
-      });
-    }
+        /**
+         * Dingo query
+         */
 
-    /**
-     * Dingo query
-     */
+        // Finally, if both grouping and dimension values need an '(Other)' category
+        // then we need to make a final query that excludes all extant dimension and
+        // all extant grouping values, which is the '(Other) (Other)' category.
+        if (
+          state.groupingRequiresOtherCategory &&
+            state.dimensionRequiresOtherCategory
+        ) {
+          const invertedEverythingValuesFilters = _.cloneDeep(filtersFromVif);
 
-    // Finally, if both grouping and dimension values need an '(Other)' category
-    // then we need to make a final query that excludes all extant dimension and
-    // all extant grouping values, which is the '(Other) (Other)' category.
-    if (
-      state.groupingRequiresOtherCategory &&
-      state.dimensionRequiresOtherCategory
-    ) {
-      const invertedEverythingValuesFilters = _.cloneDeep(filtersFromVif);
+          if (groupingValuesIncludeNull) {
+            const invertedGroupingValuesFilterArguments = groupingValuesCurrentChunk.map(
+              (groupingValue) => {
+                return getBinaryOperatorFilterArguments(groupingValue, '!=');
+              }
+            );
 
-      if (groupingValuesIncludeNull) {
-        const invertedGroupingValuesFilterArguments = state.groupingValues.map(
-          (groupingValue) => {
-            return getBinaryOperatorFilterArguments(groupingValue, '!=');
+            invertedEverythingValuesFilters.push(
+              {
+                'function': 'binaryOperator',
+                columnName: state.groupingColumnName,
+                arguments: invertedGroupingValuesFilterArguments,
+                joinOn: 'AND'
+              }
+            );
+          } else {
+
+            groupingValuesCurrentChunk.forEach((groupingValue) => {
+
+              invertedEverythingValuesFilters.push(
+                {
+                  'function': 'binaryOperator',
+                  columnName: state.groupingColumnName,
+                  arguments: [
+                    getBinaryOperatorFilterArguments(groupingValue, '!='),
+                    { operator: 'IS NULL' }
+                  ],
+                  joinOn: 'OR'
+                }
+              );
+            });
           }
-        );
 
-        invertedEverythingValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.groupingColumnName,
-            arguments: invertedGroupingValuesFilterArguments,
-            joinOn: 'AND'
-          }
-        );
-      } else {
+          if (dimensionValuesIncludeNull) {
+            const invertedDimensionValuesFilterArguments = dimensionValuesCurrentChunk.
+                  map((dimensionValue) => {
+                    return getBinaryOperatorFilterArguments(dimensionValue, '!=');
+                  });
 
-        state.groupingValues.forEach((groupingValue) => {
-
-          invertedEverythingValuesFilters.push(
-            {
-              'function': 'binaryOperator',
-              columnName: state.groupingColumnName,
-              arguments: [
-                getBinaryOperatorFilterArguments(groupingValue, '!='),
-                { operator: 'IS NULL' }
-              ],
-              joinOn: 'OR'
-            }
-          );
-        });
-      }
-
-      if (dimensionValuesIncludeNull) {
-        const invertedDimensionValuesFilterArguments = state.dimensionValues.
-          map((dimensionValue) => {
-            return getBinaryOperatorFilterArguments(dimensionValue, '!=');
-          });
-
-        invertedEverythingValuesFilters.push(
-          {
-            'function': 'binaryOperator',
-            columnName: state.columnName,
-            arguments: invertedDimensionValuesFilterArguments,
-            joinOn: 'AND'
-          }
-        );
-      } else {
-
-        state.dimensionValues.forEach((dimensionValue) => {
-
-          invertedEverythingValuesFilters.push(
+            invertedEverythingValuesFilters.push(
               {
                 'function': 'binaryOperator',
                 columnName: state.columnName,
-                arguments: [
-                  getBinaryOperatorFilterArguments(dimensionValue, '!='),
-                  { operator: 'IS NULL' }
-                ],
-                joinOn: 'OR'
+                arguments: invertedDimensionValuesFilterArguments,
+                joinOn: 'AND'
               }
-          );
-        });
-      }
+            );
+          } else {
 
-      groupingData.push({
-        vif: generateGroupingVifWithFilters(
-          invertedEverythingValuesFilters,
-          {query: "Dingo",
-           requireGroupingInSelect: false}),
-        dimensionValue: otherCategoryName,
-        groupingValue: otherCategoryName
+            dimensionValuesCurrentChunk.forEach((dimensionValue) => {
+
+              invertedEverythingValuesFilters.push(
+                {
+                  'function': 'binaryOperator',
+                  columnName: state.columnName,
+                  arguments: [
+                    getBinaryOperatorFilterArguments(dimensionValue, '!='),
+                    { operator: 'IS NULL' }
+                  ],
+                  joinOn: 'OR'
+                }
+              );
+            });
+          }
+
+          groupingData.push({
+            vif: generateGroupingVifWithFilters(
+              invertedEverythingValuesFilters,
+              {query: "Dingo",
+               requireGroupingInSelect: false}),
+            dimensionValue: otherCategoryName,
+            groupingValue: otherCategoryName
+          });
+        }
+
       });
-    }
+    });
 
     const groupingRequests = groupingData.map((groupingDatum) => {
       return makeSocrataCategoricalDataRequest(
@@ -843,7 +852,27 @@ function makeValueComparator(direction, numeric) {
   };
 }
 
+function chunkArrayByLength(arr, maxChunkLength = 2000) {
+  let res = [];
+  let currentChunk = [];
+  let currentChunkLength = 0;
+  _.forEach(arr, (elt) => {
+    currentChunk.push(elt);
+    currentChunkLength += _.size(elt);
+    if (currentChunkLength >= maxChunkLength) {
+      res.push(currentChunk);
+      currentChunk = [];
+      currentChunkLength = 0;
+    }
+  });
+  if (currentChunkLength !== 0) {
+    res.push(currentChunk);
+  }
+  return res;
+}
+
 module.exports = {
   MAX_GROUP_COUNT,
-  getData
+  getData,
+  chunkArrayByLength
 };

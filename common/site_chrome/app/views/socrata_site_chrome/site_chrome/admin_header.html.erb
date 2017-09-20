@@ -90,12 +90,12 @@
           'DOMContentLoaded',
           function() {
             if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-              var options = {
+              var translations = {
                 productUpdatesText: "<%= t('shared.site_chrome.notifications.product_updates') %>",
                 viewOlderText: "<%= t('shared.site_chrome.notifications.view_older') %>",
                 errorText: "<%= t('shared.site_chrome.notifications.error_text_html') %>"
               };
-              window.headerNotifications('#site-chrome-header-notifications', options);
+              window.headerNotifications('#site-chrome-header-notifications', translations);
             }
           },
           false

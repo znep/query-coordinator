@@ -5,7 +5,7 @@ import 'babel-polyfill-safe';
 
 import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
-import Notifications from 'common/notifications/Notifications';
+import Notifications from 'common/notifications/components/Notifications/Notifications';
 
 /*****************************************************************************************************/
 /*

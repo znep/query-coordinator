@@ -1,23 +1,17 @@
-$default-font-path: "socrata-components/dist/fonts/";
+@import '~bourbon/app/assets/stylesheets/_bourbon.scss';
+@import '~common/styleguide/variables/_colors.scss';
+@import '~common/styleguide/variables/_typography.scss';
+@import '~common/styleguide/partials/_loader.scss';
+@import '~common/styleguide/partials/_alerts.scss';
 
-@import "~bourbon/app/assets/stylesheets/_bourbon.scss";
-@import "~common/styleguide/variables/_colors.scss";
-@import "~common/styleguide/variables/_typography.scss";
-@import "~common/styleguide/partials/_loader.scss";
-@import "~common/styleguide/partials/_alerts.scss";
-
+$default-font-path: 'socrata-components/dist/fonts/';
 $default-line-height: 1.618;
+$footerBarHeight: 46px;
+$headerBarHeight: 46px;
+$spinner-width: 64px;
+
 @mixin base {
+  color: $dark-grey-1;
   font-family: $default-font-stack;
   line-height: $default-line-height;
-  color: $dark-grey-1;
-}
-
-.unstyled-link {
-  color: $primary-text;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }

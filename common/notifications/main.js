@@ -6,10 +6,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Notifications from './Notifications';
+import Notifications from './components/Notifications/Notifications';
 
 window.headerNotifications = (container, translations) => {
   let rootNode;
+
   try {
     /* eslint-disable */
     rootNode = document.querySelector(container);

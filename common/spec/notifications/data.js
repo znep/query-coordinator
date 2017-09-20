@@ -35,3 +35,8 @@ export const fakeNotifications = {
   ],
   'viewOlderLink': 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
 };
+
+export const fakeZeroNotifications = {
+  'notifications': [],
+  'viewOlderLink': 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
+}

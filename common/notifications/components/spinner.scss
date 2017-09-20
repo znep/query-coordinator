@@ -1,0 +1,10 @@
+@import '../common.scss';
+
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  left: calc(50% - (#{$spinner-width} / 2));
+  position: absolute;
+  top: calc(50% - (#{$spinner-width} / 2));
+}

@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import { get as getCookie } from 'browser-cookies';
 
-export function getNotifications(callback) {
+export function getProductNotifications(callback) {
   fetch('/notifications', { credentials: 'same-origin' })
     .then(response => response.json())
     .then(
@@ -16,15 +16,15 @@ export function getNotifications(callback) {
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
-    return response
+    return response;
   } else {
-    var error = new Error(response.statusText)
-    error.response = response
-    throw error
+    const error = new Error(response.statusText);
+    error.response = response;
+    throw error;
   }
 }
 
-export function updateNotificationLastSeen() {
+export function updateProductNotificationLastSeen() {
   /* eslint-disable-next-line no-undef */
   const headers = new Headers();
   headers.append('X-CSRF-Token', getCookie('socrata-csrf-token'));

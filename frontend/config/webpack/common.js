@@ -133,12 +133,6 @@ function getBabelLoader(extraPlugins = []) {
   });
 }
 
-// function getReactHotLoader() {
-//   return _.extend({}, jsLoaderBaseConfig, {
-//     loader: 'react-hot'
-//   });
-// }
-
 // Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
 // bundle. Includes an ES2015 + React preset for babel, and icon font loader
 function getStandardLoaders(extraLoaders, options) {
@@ -153,10 +147,6 @@ function getStandardLoaders(extraLoaders, options) {
   if (!isProduction && options.babelRewirePlugin) {
     babelPlugins.push('babel-plugin-rewire');
   }
-
-  // if (!isProduction && options.reactHotLoader) {
-  //   loaders.push(getReactHotLoader());
-  // }
 
   loaders.push(getBabelLoader(babelPlugins));
   loaders = loaders.concat(getSvgAndFontLoaders());

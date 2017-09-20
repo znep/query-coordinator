@@ -989,6 +989,15 @@ function SvgBarChart($element, vif, options) {
     /**
      * 2. Set up the x-scale and -axis.
      */
+    let positions;
+
+    if (isOneHundredPercentStacked) {
+      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
+    } else if (isStacked) {
+      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    } else {
+      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    }
 
     try {
 
@@ -1017,8 +1026,8 @@ function SvgBarChart($element, vif, options) {
       }
 
       if (isOneHundredPercentStacked) {
-        minXValue = 0; // measure axes are not changeable for 100% stacked charts
-        maxXValue = 1;
+        minXValue = self.getMinOneHundredPercentStackedValue(positions);
+        maxXValue = self.getMaxOneHundredPercentStackedValue(positions);
       } else if (isStacked) {
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
@@ -1087,15 +1096,6 @@ function SvgBarChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
-    let positions;
-
-    if (isOneHundredPercentStacked) {
-      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
-    } else if (isStacked) {
-      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    } else {
-      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    }
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
@@ -1835,7 +1835,7 @@ function SvgBarChart($element, vif, options) {
     let formatter;
 
     if (isOneHundredPercentStacked) {
-      formatter = d3.format('p');
+      formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);

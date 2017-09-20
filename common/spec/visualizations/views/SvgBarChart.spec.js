@@ -63,6 +63,24 @@ describe('SvgBarChart', () => {
     ]
   };
 
+  const oneHundredPercentStackedTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, 10, 10]
+    ],
+  };
+
+  const oneHundredPercentNegativeStackedTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, -10, -10]
+    ],
+  };
+
   const createBarChart = (width, overrideVIF)  => {
 
     if (!width) {
@@ -209,6 +227,84 @@ describe('SvgBarChart', () => {
     });
   });
 
+  describe('when configured to show 100% stacked bars', () => {
+    let barChart;
+
+    afterEach(function() {
+      removeBarChart(barChart);
+    });
+
+    it('should render the stacked bars', () => {
+
+      barChart = createBarChart(null, { 
+        series:[{ 
+          stacked: { 
+            oneHundredPercent: true 
+          } 
+        }]
+      });
+
+      barChart.chart.render(null, oneHundredPercentStackedTestData);
+
+      // There should be 1 bar group
+      const $groups = barChart.element.find('.dimension-group');
+      assert.equal($groups.length, 1);
+
+      // There should be 4 bars in the group
+      const $bars = barChart.element.find('.bar');
+      assert.equal($bars.length, 4);
+      
+      // The sum of the absolute values of the data-percent attributes should be 100
+      const percents = [];
+      $bars.each(function() {
+        const percent = Math.abs(parseFloat($(this).attr('data-percent')));
+        percents.push(percent);
+      });
+
+      const sum = _.sum(percents);
+      assert.equal(sum, 100);
+    });
+  });
+
+  describe('when configured to show 100% stacked bars with negative values', () => {
+    let barChart;
+
+    afterEach(function() {
+      removeBarChart(barChart);
+    });
+
+    it('should render the stacked bars', () => {
+
+      barChart = createBarChart(null, { 
+        series:[{ 
+          stacked: { 
+            oneHundredPercent: true 
+          } 
+        }]
+      });
+
+      barChart.chart.render(null, oneHundredPercentNegativeStackedTestData);
+
+      // There should be 1 bar group
+      const $groups = barChart.element.find('.dimension-group');
+      assert.equal($groups.length, 1);
+
+      // There should be 4 bars in the group
+      const $bars = barChart.element.find('.bar');
+      assert.equal($bars.length, 4);
+      
+      // The sum of the absolute values of the data-percent attributes should be 100
+      const percents = [];
+      $bars.each(function() {
+        const percent = Math.abs(parseFloat($(this).attr('data-percent')));
+        percents.push(percent);
+      });
+
+      const sum = _.sum(percents);
+      assert.equal(sum, 100);
+    });
+  });
+  
   describe('when configured to show error bars', () => {
     let barChart;
 

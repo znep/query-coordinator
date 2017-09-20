@@ -923,6 +923,22 @@ function SvgVisualization($element, vif, options) {
     return adjustPositionsToFitRange(positions, minValue, maxValue);
   };
 
+  this.getMaxOneHundredPercentStackedValue = (positions) => {
+    const sumOfPositivePercents = positions.map(                  // for each row of positions
+      (row) => _.filter(row, (position) => position.percent > 0). // filter for positions with positive percents
+        reduce((sum, position) => sum + position.percent, 0));    // sum the positive percents
+
+    return d3.max(sumOfPositivePercents) / 100;
+  }
+
+  this.getMinOneHundredPercentStackedValue = (positions) => {
+    const sumOfNegativePercents = positions.map(                  // for each row of positions
+      (row) => _.filter(row, (position) => position.percent < 0). // filter for positions with negative percents
+        reduce((sum, position) => sum + position.percent, 0));    // sum the negative percents
+
+    return d3.min(sumOfNegativePercents) / 100;
+  }
+
   this.getReferenceLines = function() {
     return _.filter(
       _.get(self.getVif(), 'referenceLines', []), 
@@ -1171,18 +1187,18 @@ function SvgVisualization($element, vif, options) {
 
     return groupedDataToRender.map((row) => {
       const values = row.slice(1); // first index is the dimension name
-      const sumOfValues = values.reduce((a, b) => a + (b || 0), 0);
+      const sumOfAbsoluteValues = values.reduce((sum, value) => sum + Math.abs((value || 0)), 0);
 
       let positiveOffset = 0;
       let negativeOffset = 0;
-  
+
       return values.map((o) => {
 
-        if (sumOfValues === 0) {
+        if (sumOfAbsoluteValues === 0) {
           return { start: 0, end: 0, percent: 0 };
         }
 
-        const percent = (o || 0) / sumOfValues;
+        const percent = (o || 0) / sumOfAbsoluteValues;
         let position;
 
         if (percent >= 0) {

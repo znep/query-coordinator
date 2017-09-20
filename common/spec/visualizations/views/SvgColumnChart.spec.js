@@ -63,6 +63,24 @@ describe('SvgColumnChart', () => {
     ]
   };
 
+  const oneHundredPercentStackedTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, 10, 10]
+    ],
+  };
+
+  const oneHundredPercentNegativeStackedTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, -10, -10]
+    ],
+  };
+
   const createColumnChart = (width, overrideVIF)  => {
 
     if (!width) {
@@ -163,6 +181,84 @@ describe('SvgColumnChart', () => {
 
   afterEach(() => {
     I18n.translations = {};
+  });
+
+  describe('when configured to show 100% stacked columns', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should render the stacked columns', () => {
+
+      columnChart = createColumnChart(null, { 
+        series:[{ 
+          stacked: { 
+            oneHundredPercent: true 
+          } 
+        }]
+      });
+
+      columnChart.chart.render(null, oneHundredPercentStackedTestData);
+
+      // There should be 1 column group
+      const $groups = columnChart.element.find('.dimension-group');
+      assert.equal($groups.length, 1);
+
+      // There should be 4 columns in the group
+      const $columns = columnChart.element.find('.column');
+      assert.equal($columns.length, 4);
+      
+      // The sum of the absolute values of the data-percent attributes should be 100
+      const percents = [];
+      $columns.each(function() {
+        const percent = Math.abs(parseFloat($(this).attr('data-percent')));
+        percents.push(percent);
+      });
+
+      const sum = _.sum(percents);
+      assert.equal(sum, 100);
+    });
+  });
+
+  describe('when configured to show 100% stacked columns with negative values', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should render the stacked columns', () => {
+
+      columnChart = createColumnChart(null, { 
+        series:[{ 
+          stacked: { 
+            oneHundredPercent: true 
+          } 
+        }]
+      });
+
+      columnChart.chart.render(null, oneHundredPercentNegativeStackedTestData);
+
+      // There should be 1 column group
+      const $groups = columnChart.element.find('.dimension-group');
+      assert.equal($groups.length, 1);
+
+      // There should be 4 columns in the group
+      const $columns = columnChart.element.find('.column');
+      assert.equal($columns.length, 4);
+      
+      // The sum of the absolute values of the data-percent attributes should be 100
+      const percents = [];
+      $columns.each(function() {
+        const percent = Math.abs(parseFloat($(this).attr('data-percent')));
+        percents.push(percent);
+      });
+
+      const sum = _.sum(percents);
+      assert.equal(sum, 100);
+    });
   });
 
   describe('when configured to show error bars', () => {

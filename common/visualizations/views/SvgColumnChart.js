@@ -768,6 +768,15 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 3. Set up the y-scale and -axis.
      */
+    let positions;
+
+    if (isOneHundredPercentStacked) {
+      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
+    } else if (isStacked) {
+      positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue)
+    } else {
+      positions = self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue)
+    }
 
     try {
 
@@ -797,8 +806,8 @@ function SvgColumnChart($element, vif, options) {
 
       if (isOneHundredPercentStacked) {
 
-          minYValue = 0; // measure axes are not changeable for 100% stacked charts
-          maxYValue = 1;
+        minYValue = self.getMinOneHundredPercentStackedValue(positions);
+        maxYValue = self.getMaxOneHundredPercentStackedValue(positions);
 
       } else if (isStacked) {
 
@@ -864,17 +873,8 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
-    let positions;
 
-    if (isOneHundredPercentStacked) {
-      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
-    } else if (isStacked) {
-      positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue)
-    } else {
-      positions = self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue)
-    }
-
-    // Create the top-level <svg> element first.
+     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
       attr('width', width + leftMargin + rightMargin).
       attr('height', viewportHeight + topMargin + bottomMargin);
@@ -1521,7 +1521,7 @@ function SvgColumnChart($element, vif, options) {
     let formatter;
 
     if (isOneHundredPercentStacked) {
-      formatter = d3.format('p');
+      formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);

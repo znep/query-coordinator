@@ -3,16 +3,15 @@ window._ = _;
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import components from 'common/components';
 import { Analytics } from 'common/analytics';
-
+import { Provider } from 'react-redux';
 import * as metrics from '../common/metrics';
 import airbrake from 'common/airbrake';
 import dslpCrossOriginErrorsFilter from 'common/airbrake/filters/dslp_cross_origin_errors';
-
 import store from './store';
 import App from './App';
+import { AppContainer } from 'react-hot-loader';
 import DynamicContent from './DynamicContent';
 
 // Update the csrf cookie to match the one from serverConfig, this is necessary to properly
@@ -33,12 +32,20 @@ _.defer(() => {
 
   // Render the App, falling back to rendering an error if it fails.
   try {
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-      document.querySelector('#app')
-    );
+    ReactDOM.render(<App store={store} />, document.querySelector('#app'));
+
+    // Hot Module Replacement API
+    if (module.hot) {
+      module.hot.accept('./App', () => {
+        const NextApp = require('./App').default; //eslint-disable-line
+        ReactDOM.render(
+          <AppContainer>
+            <NextApp store={store} />
+          </AppContainer>,
+          document.querySelector('#app')
+        );
+      });
+    }
   } catch (e) {
     console.error(`Fatal error when rendering: ${e.stack}`);
 

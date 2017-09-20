@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import Responsive from './lib/Responsive';
 import PrivateNotice from './components/PrivateNotice';
 import PublishNotice from './components/PublishNotice';
@@ -75,20 +75,28 @@ export class App extends Component {
   }
 
   render() {
-    const { view } = this.props;
+    const { view, store } = this.props;
+    let contents;
 
     if (view.isBlobby) {
-      return this.renderBlobContainer();
+      contents = this.renderBlobContainer();
     } else if (view.isHref) {
-      return this.renderHrefContainer();
+      contents = this.renderHrefContainer();
     } else {
-      return this.renderDatasetContainer();
+      contents = this.renderDatasetContainer();
     }
+
+    return (
+      <Provider store={store}>
+        {contents}
+      </Provider>
+    );
   }
 }
 
 App.propTypes = {
-  view: PropTypes.object
+  view: PropTypes.object,
+  store: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

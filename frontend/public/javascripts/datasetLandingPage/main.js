@@ -32,7 +32,12 @@ _.defer(() => {
 
   // Render the App, falling back to rendering an error if it fails.
   try {
-    ReactDOM.render(<App store={store} />, document.querySelector('#app'));
+    ReactDOM.render(
+      <AppContainer>
+        <App store={store} />
+      </AppContainer>,
+      document.querySelector('#app')
+    );
 
     // Hot Module Replacement API
     if (module.hot) {

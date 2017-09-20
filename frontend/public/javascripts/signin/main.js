@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import 'whatwg-fetch';
 import 'babel-polyfill-safe';
 import SignInSignUpSwitcher from './components/SignInSignUpSwitcher';
+import { AppContainer } from 'react-hot-loader';
 
 window.auth0Login = function(container, options, signin) {
   let rootNode;
@@ -16,7 +17,22 @@ window.auth0Login = function(container, options, signin) {
   }
 
   ReactDOM.render(
-    <SignInSignUpSwitcher signin={signin} options={options} />,
+    <AppContainer>
+      <SignInSignUpSwitcher signin={signin} options={options} />
+    </AppContainer>,
     rootNode
   );
+
+  // Hot Module Replacement API
+  if (module.hot) {
+    module.hot.accept('./components/SignInSignUpSwitcher', () => {
+      const NextApp = require('./components/SignInSignUpSwitcher').default; //eslint-disable-line
+      ReactDOM.render(
+        <AppContainer>
+          <NextApp signin={signin} options={options} />
+        </AppContainer>,
+        rootNode
+      );
+    });
+  }
 };

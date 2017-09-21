@@ -16,7 +16,12 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'signaller/test/helpers'
+
 RSpec.configure do |config|
+  include Signaller::Test::Helpers
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -135,4 +140,14 @@ end
 # configurations_uri is expected to be let'd in the example
 def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
   stub_request(:get, configurations_uri).to_return(response)
+end
+
+def core_managed_session_feature_flag
+  {:core_managed_session => ENV['CORE_SESSION'] != 'frontend-generated'}
+end
+
+def init_feature_flag_signaller(args = {})
+  args[:with] = args.fetch(:with, {}).merge(core_managed_session_feature_flag)
+
+  init_signaller(args)
 end

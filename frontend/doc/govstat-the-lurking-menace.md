@@ -21,3 +21,8 @@ The key takeaways for preventing accidental regressions:
 * Be mindful when tinkering with routes.
 * Double-check when changing/removing scripts and styles whose usage you aren't 100% certain about.
   * For example, you definitely won't affect GovStat by changing JavaScript files specific to Data Lens.
+
+To enable GovStat on a domain:
+
+* Go to the internal panel, expand "Pre-built Actions", and click "Enable GovStat".
+* You then need to "bootstrap" GovStat. Go to /stat/my/goals, press ` twice, type ".bootstrap", and hit <enter>.

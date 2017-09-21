@@ -39,6 +39,10 @@ module SocrataSiteChrome
       SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat') rescue false
     end
 
+    def open_performance_catalog_path
+      use_internal_asset_manager? ? '/admin/assets' : '/stat/data'
+    end
+
     def enable_new_admin_ui?
       get_feature_flag('enable_new_admin_ui')
     end

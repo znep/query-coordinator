@@ -717,13 +717,19 @@ blist.datasetControls.hookUpPublishing = function($container) {
   }
 
   if (!blist.dataset.isPublished()) {
-    blist.dataset.getPublishedDataset(function(pub) {
+    var callback = function(pub) {
       if (!$.isBlank(pub)) {
         $container.find('#publishedLink').
         attr('href', pub.url).find('.publishedName').text(pub.name);
       } else {
         $container.find('#publishedLink').hide();
       }
-    });
+    };
+
+    if (blist.configuration.derivedViewPublication) {
+      blist.dataset.getPublishedView(callback);
+    } else {
+      blist.dataset.getPublishedDataset(callback);
+    }
   }
 };

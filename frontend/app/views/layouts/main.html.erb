@@ -251,6 +251,7 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
+    blist.configuration.derivedViewPublication = <%= CurrentDomain.configuration('feature_set').try(:properties).try(:derived_view_publication) || false %>;
     blist.requestId = '<%= request_id %>';
     blist.sessionId = '<%= safe_session_id %>';
     blist.requestIp = '<%= request_ip_address %>';

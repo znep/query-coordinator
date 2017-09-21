@@ -1,16 +1,15 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
 import reducer from './reducers';
 import App from './app';
+import FeedbackPanel from './components/feedback_panel';
 import { dateLocalize } from 'common/locale';
-import FeedbackPanel from 'common/components/FeedbackPanel';
-import Localization from 'common/i18n/components/Localization';
+import { AppContainer } from 'react-hot-loader';
 
 const middleware = [thunk];
 
@@ -27,21 +26,45 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 const store = createStore(reducer, applyMiddleware(...middleware));
 
 ReactDOM.render(
-  <Localization locale={serverConfig.locale || 'en'}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </Localization>,
+  <AppContainer>
+    <App store={store} />
+  </AppContainer>,
   document.querySelector('#internal-asset-manager-content')
 );
 
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('./app', () => {
+    const NextApp = require('./app').default; //eslint-disable-line
+    ReactDOM.render(
+      <AppContainer>
+        <NextApp store={store} />
+      </AppContainer>,
+      document.querySelector('#internal-asset-manager-content')
+    );
+  });
+}
+
 _.defer(() => {
   ReactDOM.render(
-    <Provider store={store}>
-      <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" />
-    </Provider>,
+    <AppContainer>
+      <FeedbackPanel store={store} />
+    </AppContainer>,
     document.querySelector('#dynamic-content')
   );
+
+  // Hot Module Replacement API
+  if (module.hot) {
+    module.hot.accept('./components/feedback_panel', () => {
+      const NextApp = require('./components/feedback_panel').default; //eslint-disable-line
+      ReactDOM.render(
+        <AppContainer>
+          <NextApp store={store} />
+        </AppContainer>,
+        document.querySelector('#dynamic-content')
+      );
+    });
+  }
 });
 
 // TODO: hide spinner that doesn't exist yet

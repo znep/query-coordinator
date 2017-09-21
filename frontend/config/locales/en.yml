@@ -1676,6 +1676,9 @@ en:
       explore_data: Explore Data
       odata: Access Data via OData
       share: Share
+      watch_dataset: Watch this Dataset
+      unwatch_dataset: Unwatch this Dataset
+      create_alert: Create Alert
     add: Add
     api_modal:
       canonical: Canonical ID

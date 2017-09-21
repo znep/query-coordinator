@@ -81,6 +81,25 @@
       padding-top: 0;
     }
 
+    .entry-meta {
+      .update-content {
+        display: inline-block;
+      }
+
+      .watch-dataset-flag {
+        display: none;
+        float: right;
+
+        .inline-label {
+          cursor: pointer;
+
+          .flag-icon {
+            font-size: 22px;
+          }
+        }
+      }
+    }
+    
     &.hide {
       display: none;
     }

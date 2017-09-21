@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
 import datasetLandingPage from './reducers';
-import { fetchRowCount } from './actions/view';
+import { fetchRowCount, checkSubscription } from './actions/view';
 
 const middleware = [thunk];
 
@@ -19,5 +19,6 @@ const store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
 // Fire any actions that need to occur on initial store load.
 store.dispatch(fetchRowCount());
+store.dispatch(checkSubscription());
 
 export default store;

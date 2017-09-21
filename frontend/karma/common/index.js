@@ -26,6 +26,10 @@ window.I18n.featured_content_modal = {
   external_resource_form: {}
 };
 
+window.I18n.action_buttons = {
+  watch_dataset: 'Watch Dataset'
+};
+
 window.serverConfig = require('mockServerConfig').default;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);

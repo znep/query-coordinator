@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import { isUserRoled } from '../../common/user';
 import { localizeLink } from '../../common/locale';
+import { FeatureFlags } from 'common/feature_flags';
 
 export default class InfoPaneButtons extends Component {
   componentDidMount() {
@@ -48,7 +49,7 @@ export default class InfoPaneButtons extends Component {
     const { view, onClickVisualizeAndFilter } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const vizCanvasEnabled = window.serverConfig.featureFlags.enable_visualization_canvas;
+    const vizCanvasEnabled = FeatureFlags.value('enable_visualization_canvas');
     const canCreateVisualizationCanvas = vizCanvasEnabled &&
       isUserRoled() &&
       _.isString(view.bootstrapUrl);
@@ -117,7 +118,7 @@ export default class InfoPaneButtons extends Component {
 
   renderExternalIntegrations() {
     const externalDataIntegrationsEnabled =
-      window.serverConfig.featureFlags.enable_external_data_integrations;
+      FeatureFlags.value('enable_external_data_integrations');
 
     if (!externalDataIntegrationsEnabled) {
       return [];
@@ -294,7 +295,7 @@ export default class InfoPaneButtons extends Component {
   }
 
   renderMoreActions() {
-    const { view } = this.props;
+    const { view, onWatchDatasetFlagClick } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
     const contactFormLink = !view.disableContactDatasetOwner ? (
@@ -334,11 +335,32 @@ export default class InfoPaneButtons extends Component {
         </li>
       );
     }
+    let watchDatasetLink = null;
+    const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
+
+    if (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled) {
+      const watchDatasetLinkText = view.subscribed ?
+        I18n.action_buttons.unwatch_dataset :
+        I18n.action_buttons.watch_dataset;
+
+      watchDatasetLink = (
+        <li>
+          <a
+            tabIndex="0"
+            role="button"
+            className="option watch-dataset-link"
+            onClick={(event) => onWatchDatasetFlagClick(this.props, event)}>
+            {watchDatasetLinkText}
+          </a>
+        </li>
+      );
+    }
 
     return (
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
+          {watchDatasetLink}
           {contactFormLink}
           {commentLink}
           {odataLink}
@@ -369,5 +391,7 @@ InfoPaneButtons.propTypes = {
   onClickVisualizeAndFilter: PropTypes.func,
   isDesktop: PropTypes.bool,
   isTablet: PropTypes.bool,
-  isMobile: PropTypes.bool
+  isMobile: PropTypes.bool,
+  onWatchDatasetFlagClick: PropTypes.func,
+  onSubscriptionChange: PropTypes.func
 };

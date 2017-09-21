@@ -55,22 +55,17 @@
         <div class="site-chrome-admin-separator"></div>
       <% end %>
 
-      <% if get_feature_flag('browse_autocomplete') %>
-        <div
-          class="site-chrome-admin-search"
-          data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
-          data-autocomplete-collapsible="true"
-          data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>"></div>
-      <% else %>
-        <div class="site-chrome-admin-search collapsible-search">
-          <span class="socrata-icon-search collapsible-search-toggle"
-            title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
-            onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">
-          </span>
+      <div class="site-chrome-admin-search collapsible-search"
+        data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
+        data-autocomplete-collapsible="true"
+        data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
+        <span class="socrata-icon-search collapsible-search-toggle"
+          title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
+          onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">
+        </span>
 
-          <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
-        </div>
-      <% end %>
+        <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
+      </div>
 
       <div class="site-chrome-admin-separator"></div>
 

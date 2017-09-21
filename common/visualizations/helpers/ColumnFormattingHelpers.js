@@ -2,6 +2,12 @@ import $ from 'jquery';
 import _ from 'lodash';
 const DataTypeFormatter = require('../views/DataTypeFormatter');
 
+const PRECISION_FORMATS = {
+  'year': 'date_y',
+  'month': 'date_ym',
+  'day': 'date_ymd'
+};
+
 export function getColumnFormats(columns) {
   return _.reduce(columns, (acc, column) => {
     acc[column.fieldName] = _.pick(column, [
@@ -28,8 +34,19 @@ export function formatValueHTML(value, column, dataToRender, forceHumane = false
     // add support for forcing "humane" formatting in DataTypeFormatter.
     // IMPORTANT: forceHumane is the only formatting property which is purely
     // determined by our application code (i.e. not directly set by a user).
-    formatInfo.format = formatInfo.format || {};
-    formatInfo.format.forceHumane = true;
+    _.set(formatInfo, 'format.forceHumane', true);
+  }
+
+  if (dataToRender.precision) {
+    // Having a precision ('year', 'month' or 'day') allows us to return a 
+    // format string for calendar_date that is appropriate to the precision.
+    // For instance, a precision of 'year' should only render a year like '2017'.
+    // A precision of 'month', should only render year and month like '2017/01'.
+    const precisionFormat = PRECISION_FORMATS[dataToRender.precision];
+
+    if (precisionFormat && (formatInfo.dataTypeName === 'calendar_date')) {
+      _.set(formatInfo, 'format.view', precisionFormat);
+    }
   }
 
   return DataTypeFormatter.renderCellHTML(value, formatInfo);

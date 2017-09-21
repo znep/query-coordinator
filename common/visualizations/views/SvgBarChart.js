@@ -1177,8 +1177,6 @@ function SvgBarChart($element, vif, options) {
       attr(
         'data-dimension-value-html',
         (d, dimensionIndex, measureIndex) => {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           const value = d[0];
 
           if (_.isNil(value)) {
@@ -1186,6 +1184,8 @@ function SvgBarChart($element, vif, options) {
           } else if (value === otherLabel) {
             return otherLabel;
           } else {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
 
@@ -1204,8 +1204,6 @@ function SvgBarChart($element, vif, options) {
         attr(
           'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
-            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             const value = dimensionValues[dimensionIndex];
 
             if (_.isNil(value)) {
@@ -1213,6 +1211,8 @@ function SvgBarChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
+              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
@@ -1237,13 +1237,13 @@ function SvgBarChart($element, vif, options) {
       attr(
         'data-dimension-value-html',
         (datum, measureIndex, dimensionIndex) => {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           const value = dimensionValues[dimensionIndex];
 
           if (value === otherLabel) {
             return otherLabel;
           } else {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
         }
@@ -1547,8 +1547,6 @@ function SvgBarChart($element, vif, options) {
           (datum, dimensionIndex, measureIndex) => {
 
             if (!isCurrentlyPanning()) {
-              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               let dimensionValue;
 
               if (_.isNil(datum[0])) {
@@ -1556,6 +1554,8 @@ function SvgBarChart($element, vif, options) {
               } else if (datum[0] === otherLabel) {
                 dimensionValue = otherLabel;
               } else {
+                const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+                const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
                 dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
               }
 
@@ -1699,7 +1699,6 @@ function SvgBarChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
           let label;
 
           if (_.isNil(d)) {
@@ -1707,6 +1706,7 @@ function SvgBarChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
+            const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
             label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
           }

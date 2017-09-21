@@ -1,17 +1,14 @@
 const _ = require('lodash');
 const $ = require('jquery');
 
+const I18n = require('common/i18n').default;
 const VifHelpers = require('./helpers/VifHelpers');
 const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
-const DataTypeFormatter = require('./views/DataTypeFormatter');
 const SvgColumnChart = require('./views/SvgColumnChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const CategoricalDataManager = require('./dataProviders/CategoricalDataManager');
 const TimeDataManager = require('./dataProviders/TimeDataManager');
-const I18n = require('common/i18n').default;
-const getSoqlVifValidator = require(
-  './dataProviders/SoqlVifValidator.js'
-).getSoqlVifValidator;
+const { getSoqlVifValidator } = require('./dataProviders/SoqlVifValidator.js');
 
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -136,7 +133,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
       then((columns) => {
         return Promise.all([
-          Promise.resolve(columns),
+          columns,
           datasetMetadataProvider.getDatasetMetadata()
         ]);
       }).
@@ -149,9 +146,9 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
           CategoricalDataManager.getData(newVif);
 
         return Promise.all([
-          Promise.resolve(columns),
+          columns,
           getData,
-          Promise.resolve(datasetMetadata)
+          datasetMetadata
         ]);
       }).
       then((resolutions) => {
@@ -159,7 +156,6 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
 
         const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
         newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
-        DataTypeFormatter.applyCalendarDatePrecisionFormats(newData.columnFormats, newData.precision);
 
         renderVisualization(newVif, newData, newColumns);
       }).

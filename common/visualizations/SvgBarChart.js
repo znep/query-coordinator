@@ -1,17 +1,14 @@
 const _ = require('lodash');
 const $ = require('jquery');
 
+const I18n = require('common/i18n').default;
 const VifHelpers = require('./helpers/VifHelpers');
 const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SvgBarChart = require('./views/SvgBarChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
-const CategoricalDataManager = require(
-  './dataProviders/CategoricalDataManager'
-);
-const I18n = require('common/i18n').default;
-const getSoqlVifValidator = require(
-  './dataProviders/SoqlVifValidator.js'
-).getSoqlVifValidator;
+const CategoricalDataManager = require('./dataProviders/CategoricalDataManager');
+const TimeDataManager = require('./dataProviders/TimeDataManager');
+const { getSoqlVifValidator } = require('./dataProviders/SoqlVifValidator.js');
 
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -148,6 +145,7 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
     const skipPromise = _.constant(Promise.resolve(null));
     const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+    const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
@@ -158,9 +156,22 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
       then((columns) => {
         return Promise.all([
-          Promise.resolve(columns),
-          CategoricalDataManager.getData(newVif),
+          columns,
           datasetMetadataProvider.getDatasetMetadata()
+        ]);
+      }).
+      then((resolutions) => {
+        const [ columns, datasetMetadata ] = resolutions;
+        const dimension = _.find(datasetMetadata.columns, (column) => (dimensionColumnName === column.fieldName));
+
+        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') ? 
+          TimeDataManager.getData(newVif) :
+          CategoricalDataManager.getData(newVif);
+  
+        return Promise.all([
+          columns,
+          getData,
+          datasetMetadata
         ]);
       }).
       then((resolutions) => {

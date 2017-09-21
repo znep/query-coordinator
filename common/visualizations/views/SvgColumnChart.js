@@ -936,14 +936,13 @@ function SvgColumnChart($element, vif, options) {
     dimensionGroupSvgs.
       attr('class', 'dimension-group').
       attr('data-dimension-value-html', (datum, dimensionIndex, measureIndex) => {
-        const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-
         if (_.isNil(datum[0])) {
           return NO_VALUE_SENTINEL;
         } else if (datum[0] === otherLabel) {
           return otherLabel;
         } else {
+          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           return ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
         }
       }).
@@ -961,8 +960,6 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
-            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             const value = dimensionValues[dimensionIndex];
 
             if (_.isNil(value)) {
@@ -970,6 +967,8 @@ function SvgColumnChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
+              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
@@ -994,13 +993,13 @@ function SvgColumnChart($element, vif, options) {
       attr(
         'data-dimension-value-html',
         (datum, measureIndex, dimensionIndex) => {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           const value = dimensionValues[dimensionIndex];
 
           if (value === otherLabel) {
             return otherLabel;
           } else {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
         }
@@ -1217,8 +1216,6 @@ function SvgColumnChart($element, vif, options) {
           (datum, dimensionIndex, measureIndex) => {
 
             if (!isCurrentlyPanning()) {
-              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               let dimensionValue;
 
               if (_.isNil(datum[0])) {
@@ -1226,6 +1223,8 @@ function SvgColumnChart($element, vif, options) {
               } else if (datum[0] === otherLabel) {
                 dimensionValue = otherLabel;
               } else {
+                const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+                const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
                 dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
               }
 
@@ -1385,7 +1384,6 @@ function SvgColumnChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
           let label;
 
           if (_.isNil(d)) {
@@ -1393,6 +1391,7 @@ function SvgColumnChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
+            const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
             label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender);
           }
@@ -1723,7 +1722,6 @@ function SvgColumnChart($element, vif, options) {
     if (value === null) {
       valueHTML = noValueLabel;
     } else {
-
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 

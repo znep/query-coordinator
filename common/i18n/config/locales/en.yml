@@ -374,7 +374,7 @@ en:
               automatic: Automatic
               day: Group by Day
               month: Group by Month
-              title: Grouping
+              title: Time Grouping
               year: Group by Year
             treat_null_values_as_zero:
               title: Display Missing or Null Values as Zero

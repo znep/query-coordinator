@@ -48,7 +48,8 @@ export class DisplayOptions extends Component {
   renderTimelinePrecisionSelector() {
     const { metadata, vifAuthoring } = this.props;
     const column = getAnyDimension(vifAuthoring);
-    const shouldRender = isDimensionTypeCalendarDate(metadata, column);
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) &&
+      isDimensionTypeCalendarDate(metadata, column);
 
     return shouldRender ? <TimelinePrecisionSelector /> : null;
   }

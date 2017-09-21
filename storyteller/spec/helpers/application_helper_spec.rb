@@ -94,7 +94,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       translations = current_editor_translations
 
       expect(translations.keys).to eq(%w{editor common shared})
-      expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
+      expect(translations[:editor][:story_save_error_generic]).to eq('There was an error saving.')
     end
 
     it 'falls back to English when using non-English languages', locale: :fr do |example|
@@ -102,7 +102,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       translations = current_editor_translations
 
       expect(translations.keys).to eq(%w{editor common shared})
-      expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
+      expect(translations[:editor][:story_save_error_generic]).to eq('There was an error saving.')
     end
   end
 end

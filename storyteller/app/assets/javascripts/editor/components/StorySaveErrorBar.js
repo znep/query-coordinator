@@ -5,7 +5,6 @@ import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import { assert } from 'common/js_utils';
 import { dispatcher } from '../Dispatcher';
-import { autosave } from '../Autosave';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { userSessionStore } from '../stores/UserSessionStore';
 
@@ -20,17 +19,12 @@ export default function StorySaveErrorBar() {
   const $this = $(this);
   const $container = $('<span>', { 'class': 'container' });
   const $message = $('<span>', { 'class': 'message' });
-  const $tryAgainButton = $('<a>', { 'class': 'try-again-link', 'href': '#' });
   const $spinner = $('<span>', { 'class': 'spinner-default' });
 
-  $tryAgainButton.append(
-    $('<span>').text(I18n.t('editor.story_save_error_try_again'))
-  );
 
   $container.append([
     $('<span>', { 'class': 'socrata-icon-warning' }),
     $message,
-    $tryAgainButton,
     $spinner
   ]);
 
@@ -41,14 +35,6 @@ export default function StorySaveErrorBar() {
     let saveError = storySaveStatusStore.lastSaveError();
     const hasValidUserSession = userSessionStore.hasValidSession();
     const hasError = !!saveError || !hasValidUserSession;
-
-    const showTryAgainButton =
-      hasValidUserSession && // no point to retry if no session.
-      hasError &&
-      !saveError.conflict;
-
-    $tryAgainButton.
-      toggleClass('available', showTryAgainButton);
 
     $(document.body).toggleClass('story-save-error', hasError);
 
@@ -83,14 +69,6 @@ export default function StorySaveErrorBar() {
 
     $this.toggleClass('visible', hasError);
   }
-
-  $tryAgainButton.on('click', function(e) {
-    e.preventDefault();
-
-    $container.addClass('story-save-error-bar-trying-again');
-
-    autosave.saveASAP();
-  });
 
   storySaveStatusStore.addChangeListener(render);
   userSessionStore.addChangeListener(render);

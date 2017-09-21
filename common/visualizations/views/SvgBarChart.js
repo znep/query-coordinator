@@ -444,7 +444,7 @@ function SvgBarChart($element, vif, options) {
 
     function renderReferenceLines() {
       // Because the line stroke thickness is 2px, the half of the line can be clipped on the left or right edge
-      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1 
+      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1
       // pixel when at the right edge.  All the other lines are rendered in normal positions.
       const getXPosition = (referenceLine) => {
         const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
@@ -1036,7 +1036,7 @@ function SvgBarChart($element, vif, options) {
         maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
       }
 
-      if (minXValue >= maxXValue) {
+      if (minXValue > maxXValue) {
         self.renderError(
           I18n.t(
             'shared.visualizations.charts.common.validation.errors.' +
@@ -1565,7 +1565,7 @@ function SvgBarChart($element, vif, options) {
               // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
               // but both of those are out of reach for us at the moment.
               //
-              // Don't use a strict equality comparison in the filter as getAttribute returns a string and 
+              // Don't use a strict equality comparison in the filter as getAttribute returns a string and
               // dimensionValue may not be a string.
               //
               const dimensionGroup = d3.select(

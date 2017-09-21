@@ -182,9 +182,10 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
     const allSeriesMeasureValues = dataToRender.rows.map((row) => {
       return row.slice(dimensionIndex + 1);
     });
-    const onlyNullOrZeroValues = _.chain(allSeriesMeasureValues).
+    // use _.without instead of _.compact to preserve 0 values
+    const onlyNullValues = _.chain(allSeriesMeasureValues).
       flatten().
-      compact().
+      without(null, undefined, '').
       isEmpty().
       value();
 
@@ -198,7 +199,7 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
           'shared.visualizations.charts.bar_chart.error_exceeded_max_bar_count'
         ).format(CategoricalDataManager.MAX_ROW_COUNT)
       );
-    } else if (onlyNullOrZeroValues) {
+    } else if (onlyNullValues) {
 
       visualization.renderError(
         I18n.t('shared.visualizations.charts.common.error_no_data')

@@ -846,7 +846,7 @@ function SvgColumnChart($element, vif, options) {
         }
       }
 
-      if (minYValue >= maxYValue) {
+      if (minYValue > maxYValue) {
         self.renderError(
           I18n.t(
             'shared.visualizations.charts.common.validation.errors.' +

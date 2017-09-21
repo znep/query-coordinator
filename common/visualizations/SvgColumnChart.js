@@ -144,10 +144,10 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
         const [ columns, datasetMetadata ] = resolutions;
         const dimension = _.find(datasetMetadata.columns, (column) => (dimensionColumnName === column.fieldName));
 
-        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') ? 
+        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') ?
           TimeDataManager.getData(newVif) :
           CategoricalDataManager.getData(newVif);
-  
+
         return Promise.all([
           Promise.resolve(columns),
           getData,
@@ -174,9 +174,9 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
     const allSeriesMeasureValues = dataToRender.rows.map((row) => {
       return row.slice(dimensionIndex + 1);
     });
-    const onlyNullOrZeroValues = _.chain(allSeriesMeasureValues).
+    const onlyNullValues = _.chain(allSeriesMeasureValues).
       flatten().
-      compact().
+      without(null, undefined, '').
       isEmpty().
       value();
 
@@ -190,7 +190,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
           'shared.visualizations.charts.bar_chart.error_exceeded_max_bar_count'
         ).format(CategoricalDataManager.MAX_ROW_COUNT)
       );
-    } else if (onlyNullOrZeroValues) {
+    } else if (onlyNullValues) {
 
       visualization.renderError(
         I18n.t('shared.visualizations.charts.common.error_no_data')

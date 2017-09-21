@@ -63,13 +63,24 @@ describe('SvgColumnChart', () => {
     ]
   };
 
+  const zerosTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['apples', 0],
+      ['oranges', 0],
+      ['plums', 0]
+    ]
+  };
+
   const oneHundredPercentStackedTestData = {
     columns: [
       'dimension', 'measure'
     ],
     rows: [
       ['10', 10, 10, 10, 10]
-    ],
+    ]
   };
 
   const oneHundredPercentNegativeStackedTestData = {
@@ -78,7 +89,7 @@ describe('SvgColumnChart', () => {
     ],
     rows: [
       ['10', 10, 10, -10, -10]
-    ],
+    ]
   };
 
   const createColumnChart = (width, overrideVIF)  => {
@@ -192,11 +203,11 @@ describe('SvgColumnChart', () => {
 
     it('should render the stacked columns', () => {
 
-      columnChart = createColumnChart(null, { 
-        series:[{ 
-          stacked: { 
-            oneHundredPercent: true 
-          } 
+      columnChart = createColumnChart(null, {
+        series:[{
+          stacked: {
+            oneHundredPercent: true
+          }
         }]
       });
 
@@ -209,7 +220,7 @@ describe('SvgColumnChart', () => {
       // There should be 4 columns in the group
       const $columns = columnChart.element.find('.column');
       assert.equal($columns.length, 4);
-      
+
       // The sum of the absolute values of the data-percent attributes should be 100
       const percents = [];
       $columns.each(function() {
@@ -231,11 +242,11 @@ describe('SvgColumnChart', () => {
 
     it('should render the stacked columns', () => {
 
-      columnChart = createColumnChart(null, { 
-        series:[{ 
-          stacked: { 
-            oneHundredPercent: true 
-          } 
+      columnChart = createColumnChart(null, {
+        series:[{
+          stacked: {
+            oneHundredPercent: true
+          }
         }]
       });
 
@@ -248,7 +259,7 @@ describe('SvgColumnChart', () => {
       // There should be 4 columns in the group
       const $columns = columnChart.element.find('.column');
       assert.equal($columns.length, 4);
-      
+
       // The sum of the absolute values of the data-percent attributes should be 100
       const percents = [];
       $columns.each(function() {
@@ -493,6 +504,25 @@ describe('SvgColumnChart', () => {
       columnChart.chart.render(null, multiSeriesTestData);
       const $columns = columnChart.element.find('.dimension-group:first > .column');
       assert.equal($columns.length, 3);
+    });
+  });
+
+  describe('given values of 0', () => {
+    let columnChart;
+
+    afterEach(() => {
+      removeColumnChart(columnChart);
+    });
+
+    it('renders columns with 0 values', () => {
+      columnChart = createColumnChart();
+      columnChart.chart.render(null, zerosTestData);
+
+      const $columns = columnChart.element.find('.column-chart rect.column');
+      assert.isTrue(_.every($columns, (column) => {
+        let value = _.get(column, 'attributes.height.value', null);
+        return value === '0';
+      }));
     });
   });
 });

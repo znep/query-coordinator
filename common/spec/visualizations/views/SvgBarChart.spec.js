@@ -63,13 +63,25 @@ describe('SvgBarChart', () => {
     ]
   };
 
+  const zerosTestData = {
+    columns: [
+      'dimension',
+      'measure'
+    ],
+    rows: [
+      ['apples', 0],
+      ['oranges', 0],
+      ['plums', 0]
+    ]
+  };
+
   const oneHundredPercentStackedTestData = {
     columns: [
       'dimension', 'measure'
     ],
     rows: [
       ['10', 10, 10, 10, 10]
-    ],
+    ]
   };
 
   const oneHundredPercentNegativeStackedTestData = {
@@ -78,7 +90,7 @@ describe('SvgBarChart', () => {
     ],
     rows: [
       ['10', 10, 10, -10, -10]
-    ],
+    ]
   };
 
   const createBarChart = (width, overrideVIF)  => {
@@ -236,11 +248,11 @@ describe('SvgBarChart', () => {
 
     it('should render the stacked bars', () => {
 
-      barChart = createBarChart(null, { 
-        series:[{ 
-          stacked: { 
-            oneHundredPercent: true 
-          } 
+      barChart = createBarChart(null, {
+        series:[{
+          stacked: {
+            oneHundredPercent: true
+          }
         }]
       });
 
@@ -253,7 +265,7 @@ describe('SvgBarChart', () => {
       // There should be 4 bars in the group
       const $bars = barChart.element.find('.bar');
       assert.equal($bars.length, 4);
-      
+
       // The sum of the absolute values of the data-percent attributes should be 100
       const percents = [];
       $bars.each(function() {
@@ -275,11 +287,11 @@ describe('SvgBarChart', () => {
 
     it('should render the stacked bars', () => {
 
-      barChart = createBarChart(null, { 
-        series:[{ 
-          stacked: { 
-            oneHundredPercent: true 
-          } 
+      barChart = createBarChart(null, {
+        series:[{
+          stacked: {
+            oneHundredPercent: true
+          }
         }]
       });
 
@@ -292,7 +304,7 @@ describe('SvgBarChart', () => {
       // There should be 4 bars in the group
       const $bars = barChart.element.find('.bar');
       assert.equal($bars.length, 4);
-      
+
       // The sum of the absolute values of the data-percent attributes should be 100
       const percents = [];
       $bars.each(function() {
@@ -304,7 +316,7 @@ describe('SvgBarChart', () => {
       assert.equal(sum, 100);
     });
   });
-  
+
   describe('when configured to show error bars', () => {
     let barChart;
 
@@ -368,6 +380,25 @@ describe('SvgBarChart', () => {
       barChart.chart.render(null, multiSeriesTestData);
       const $bars = barChart.element.find('.dimension-group:first > .bar');
       assert.equal($bars.length, 3);
+    });
+  });
+
+  describe('given values of 0', () => {
+    let barChart;
+
+    afterEach(function() {
+      removeBarChart(barChart);
+    });
+
+    it('renders bars with 0 values', () => {
+      barChart = createBarChart();
+      barChart.chart.render(null, zerosTestData);
+
+      const $bars = barChart.element.find('.bar-chart rect.bar');
+      assert.isTrue(_.every($bars, (bar) => {
+        let value = _.get(bar, 'attributes.width.value', null);
+        return value === '0';
+      }));
     });
   });
 });

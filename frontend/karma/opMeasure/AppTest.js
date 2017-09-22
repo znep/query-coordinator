@@ -5,9 +5,9 @@ import { ModeStates } from 'lib/constants';
 
 import { getStore } from './testStore';
 
-describe('App', () => {
+describe.only('App', () => {
   it('renders', () => {
-    const element = renderComponentWithStore(App);
+    const element = renderComponent(App, { store: getStore({}) });
     assert.ok(element);
   });
 
@@ -15,11 +15,13 @@ describe('App', () => {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         view: {
           mode: ModeStates.EDIT
         }
-      }));
+      });
+
+      element = renderComponent(App, { store });
     });
 
     it('renders an edit bar', () => {
@@ -46,11 +48,13 @@ describe('App', () => {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         view: {
           mode: ModeStates.PREVIEW
         }
-      }));
+      });
+
+      element = renderComponent(App, { store });
     });
 
     it('does not render an edit bar', () => {
@@ -77,11 +81,13 @@ describe('App', () => {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         view: {
           mode: ModeStates.VIEW
         }
-      }));
+      });
+
+      element = renderComponent(App, { store });
     });
 
     it('does not render an edit bar', () => {

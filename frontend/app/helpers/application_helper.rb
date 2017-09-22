@@ -1110,7 +1110,7 @@ module ApplicationHelper
     req = request if defined?(request)
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
-    FeatureFlags.derive(nil, req, nil).cetera_search?
+    !!FeatureFlags.derive(nil, req, nil).cetera_search
   end
 
   def using_cetera_profile_search?

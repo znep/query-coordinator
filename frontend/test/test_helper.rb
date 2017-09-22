@@ -8,6 +8,11 @@ require 'webmock/minitest'
 # Don't allow any network connections
 WebMock.disable_net_connect!
 
+# The tests expect a Hashie::Mash, not a RestrictedHash.
+# This is the fastest way to deal with it, but it WILL come back
+# to bite us someday.
+Signaller::Utils.wrapper_class = Hashie::Mash
+
 if ENV['RM_INFO']
   MiniTest::Reporters.use!
 end

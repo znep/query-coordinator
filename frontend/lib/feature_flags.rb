@@ -86,7 +86,7 @@ class FeatureFlags
         flag_set << iframe_parameters(request.referer) if is_iframe
       end
 
-      Hashie::Mash.new(Signaller::Utils.derive(*flag_set, configs: descriptions))
+      Signaller::Utils.derive(*flag_set, configs: descriptions)
     end
   end
 end

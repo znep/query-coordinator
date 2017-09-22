@@ -523,10 +523,11 @@ describe('MetadataProvider', () => {
       server.restore();
     });
 
-    it('returns only displayable and filterable columns', async function() {
-      const columns = await metadataProvider.getDisplayableFilterableColumns();
-      assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
-      assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
+    it('returns only displayable and filterable columns', () => {
+      return metadataProvider.getDisplayableFilterableColumns().then((columns) => {
+        assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
+        assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
+      });
     });
   });
 

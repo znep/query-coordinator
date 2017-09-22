@@ -1596,6 +1596,7 @@ en:
       scientific: 'Scientific: 1.0204e+3'
       standard: 'Standard: 1020.4'
     required: Required
+    see_terms_of_use: See Terms of Use
     share_types:
       contributor: Contributor
       owner: Owner

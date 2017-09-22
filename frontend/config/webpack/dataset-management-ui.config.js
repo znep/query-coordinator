@@ -8,7 +8,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
 
-const addPollyfill = () => {
+const addPolyfill = () => {
   let entry = common.withHotModuleEntries({ main: './main' });
   entry.main = ['babel-polyfill'].concat(entry.main);
   return entry;
@@ -30,7 +30,7 @@ module.exports = _.defaultsDeep(
       common.frontendRoot,
       'public/javascripts/datasetManagementUI'
     ),
-    entry: addPollyfill(),
+    entry: addPolyfill(),
     output: common.getOutput(identifier),
     eslint: common.getEslintConfig(
       'public/javascripts/datasetManagementUI/.eslintrc.json'

@@ -10,7 +10,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation">
+<div class="contentBox <%= admin_page_with_left_nav_class %>">
   <div class="adminHeader comments">
     <span class="icon"></span>
     <h1><%= I18n.t('screens.admin.comment_moderation.moderate_comments') %></h1>

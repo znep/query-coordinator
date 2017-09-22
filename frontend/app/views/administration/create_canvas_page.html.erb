@@ -21,7 +21,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div id="createCanvasPageContent" class="contentBox withLeftNavigation">
+<div id="createCanvasPageContent" class="contentBox <%= admin_page_with_left_nav_class %>">
   <div class="adminHeader contentmgmt">
     <%- if !module_enabled?(:govStat) -%>
     <span class="icon"></span>

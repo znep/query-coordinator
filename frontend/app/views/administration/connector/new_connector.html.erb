@@ -12,7 +12,7 @@
 
 <%= include_webpack_bundle 'admin/admin-new-connector.js' %>
 
-<div id="connector-content" class="contentBox withLeftNavigation">
+<div id="connector-content" class="contentBox <%= admin_page_with_left_nav_class %>">
   <div class="adminHeader connectors">
     <h1><%= t('screens.admin.connector.add_connector') %></h1>
     <div class="connector-list-go-back">

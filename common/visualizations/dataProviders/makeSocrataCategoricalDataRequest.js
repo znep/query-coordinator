@@ -116,54 +116,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       errorBarsLowerAlias,
       errorBarsUpperAlias,
       (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
-    ).
-    then((queryResponse) => {
-      const queryResponseRowCount = queryResponse.rows.length;
-      const queryResponseUniqueDimensionCount = _.uniq(
-        queryResponse.rows.map((row) => row[0])
-      ).length;
-
-      if (!requireGroupingInSelect &&
-          (queryResponseRowCount !== queryResponseUniqueDimensionCount)) {
-        const error = new Error();
-
-        error.errorMessages = [
-          I18n.t(
-            'shared.visualizations.charts.common.error_duplicated_dimension_value'
-          )
-        ];
-
-        throw error;
-      }
-
-      if (showOtherCategory) {
-
-        // This turns out to be quite involved, so it has its own function.
-        return augmentSocrataDataResponseWithOtherCategory(
-          vif,
-          seriesIndex,
-          maxRowCount,
-          queryResponse
-        );
-      } else {
-
-        // Take all but the last row since we request one more row than we
-        // actually want in order to test for the necessity of an 'other'
-        // category.
-        const actualRows = queryResponse.rows.slice(0, limit);
-        const response = {
-          columns: queryResponse.columns,
-          rows: actualRows
-        };
-
-        if (!_.isUndefined(queryResponse.errorBars)) {
-          response.errorBars = queryResponse.errorBars;
-        }
-
-        return Promise.resolve(response);
-      }
-    }).
-    then(mapQueryResponseToDataTable);
+    ).then(dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInSelect, showOtherCategory, limit))
+    .then(mapQueryResponseToDataTable);
 }
 
 /**
@@ -429,6 +383,55 @@ function augmentSocrataDataResponseWithOtherCategory(
 
       throw error;
     });
+}
+
+function dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInSelect, showOtherCategory, limit) {
+  return (queryResponse) => {
+    const queryResponseRowCount = queryResponse.rows.length;
+    const queryResponseUniqueDimensionCount = _.uniq(
+      queryResponse.rows.map((row) => row[0])
+    ).length;
+
+    if (!requireGroupingInSelect &&
+        (queryResponseRowCount !== queryResponseUniqueDimensionCount)) {
+      const error = new Error();
+
+      error.errorMessages = [
+        I18n.t(
+          'shared.visualizations.charts.common.error_duplicated_dimension_value'
+        )
+      ];
+
+      throw error;
+    }
+
+    if (showOtherCategory) {
+
+      // This turns out to be quite involved, so it has its own function.
+      return augmentSocrataDataResponseWithOtherCategory(
+        vif,
+        seriesIndex,
+        maxRowCount,
+        queryResponse
+      );
+    } else {
+
+      // Take all but the last row since we request one more row than we
+      // actually want in order to test for the necessity of an 'other'
+      // category.
+      const actualRows = queryResponse.rows.slice(0, limit);
+      const response = {
+        columns: queryResponse.columns,
+        rows: actualRows
+      };
+
+      if (!_.isUndefined(queryResponse.errorBars)) {
+        response.errorBars = queryResponse.errorBars;
+      }
+
+      return Promise.resolve(response);
+    }
+  };
 }
 
 function mapQueryResponseToDataTable(queryResponse) {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';

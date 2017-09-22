@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { FeatureFlags } from 'common/feature_flags';
 import Header from './components/Header';

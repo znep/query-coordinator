@@ -6,12 +6,15 @@ import * as http from 'common/http';
 import {
   publishView,
   fetchRowCount,
+  checkSubscription,
   // NOTE: non-thunk actions (below) are tested via the corresponding reducer test
   requestedViewPublish,
   handleViewPublishSuccess,
   handleViewPublishError,
   handleFetchRowCountSuccess,
-  handleFetchRowCountError
+  handleFetchRowCountError,
+  checkSubscriptionOnLoad,
+  handleCheckSubscriptionOnLoadError
 } from 'actions/view';
 
 describe('actions/view', () => {
@@ -111,6 +114,48 @@ describe('actions/view', () => {
         fetchRowCount()(dispatchSpy, getState);
         _.defer(() => {
           sinon.assert.calledWith(dispatchSpy, handleFetchRowCountError());
+          done();
+        });
+      });
+    });
+  });
+
+  describe('checkSubscription', () => {
+    describe('on success', () => {
+      it('dispatches subscribed id if user subscribed for notification', (done) => {
+        window.fetch.returns(Promise.resolve(
+          mockResponse({data: [{id: 123}]}, 200)
+        ));
+
+        checkSubscription()(dispatchSpy, getState);
+        _.defer(() => {
+          sinon.assert.calledWith(dispatchSpy, checkSubscriptionOnLoad(123));
+          done();
+        });
+      });
+
+      it('dispatches subscribed id as null if user not subscribed for notification', (done) => {
+        window.fetch.returns(Promise.resolve(
+          mockResponse({data: []}, 200)
+        ));
+
+        checkSubscription()(dispatchSpy, getState);
+        _.defer(() => {
+          sinon.assert.calledWith(dispatchSpy, checkSubscriptionOnLoad());
+          done();
+        });
+      });
+    });
+
+    describe('on failure', () => {
+      it('dispatches handleCheckSubscriptionOnLoadError', (done) => {
+        window.fetch.returns(Promise.resolve(
+          mockResponse({}, 500)
+        ));
+
+        checkSubscription()(dispatchSpy, getState);
+        _.defer(() => {
+          sinon.assert.calledWith(dispatchSpy, handleCheckSubscriptionOnLoadError());
           done();
         });
       });

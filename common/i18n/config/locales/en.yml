@@ -119,6 +119,10 @@ en:
         error_text_html: "<strong>Sorry!</strong> We can't fetch notifications right now."
         product_updates: Product Updates
         view_older: View Older News
+        mark_as_read: Mark As Read
+        new_label: New
+        no_unread_notifications: You have no unread notifications
+        has_unread_notifications: You have unread notifications
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.
@@ -370,7 +374,7 @@ en:
               automatic: Automatic
               day: Group by Day
               month: Group by Month
-              title: Grouping
+              title: Time Grouping
               year: Group by Year
             treat_null_values_as_zero:
               title: Display Missing or Null Values as Zero

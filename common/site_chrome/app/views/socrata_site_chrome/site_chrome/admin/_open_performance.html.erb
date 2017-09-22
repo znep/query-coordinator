@@ -11,7 +11,7 @@
   </h1>
   <ul role="menu" aria-hidden="true">
     <li role="menuitem"><%= link_to(t('shared.site_chrome.admin.open_performance.home'), site_chrome_massage_url('/stat')) %></li>
-    <li role="menuitem"><%= link_to(t('shared.site_chrome.admin.open_performance.data'), site_chrome_massage_url('/stat/data')) %></li>
+    <li role="menuitem"><%= link_to(t('shared.site_chrome.admin.open_performance.data'), site_chrome_massage_url(open_performance_catalog_path)) %></li>
     <%- if get_feature_flag('report_builder_enabled') %>
       <li role="menuitem"><%= link_to(t('shared.site_chrome.admin.open_performance.reports'), site_chrome_massage_url('/manage/reports')) %></li>
     <%- end %>

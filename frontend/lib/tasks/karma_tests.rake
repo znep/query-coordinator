@@ -45,6 +45,7 @@ namespace :test do
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
       'adminGoals' => 'update_admin_goals_translations',
       'adminUsersV2' => 'update_admin_users_v2_translations',
+      'authentication' => 'update_authentication_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
       'dataCards' => 'update_datacards_translations',
@@ -52,7 +53,6 @@ namespace :test do
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'internalAssetManager' => 'update_internal_asset_manager_translations',
       'opMeasure' => 'update_op_measure_translations',
-      'signin' => 'update_signin_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
 
       'exampleTestSuite' => nil,
@@ -71,6 +71,7 @@ namespace :test do
       'test:karma:translations:update_admin_activity_feed_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_users_v2_translations',
+      'test:karma:translations:update_authentication_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_common_translations',
       'test:karma:translations:update_datacards_translations',
@@ -78,7 +79,6 @@ namespace :test do
       'test:karma:translations:update_dataset_management_ui_translations',
       'test:karma:translations:update_internal_asset_manager_translations',
       'test:karma:translations:update_op_measure_translations',
-      'test:karma:translations:update_signin_translations',
       'test:karma:translations:update_visualization_canvas_translations'
     ]
     desc 'parallel'
@@ -262,12 +262,12 @@ namespace :test do
         )
       end
 
-      task :update_signin_translations do
+      task :update_authentication_translations do
         translation_map = {}
 
         update_translations(
           translation_map,
-          'karma/signin/mockTranslations.js',
+          'karma/authentication/mockTranslations.js',
           export = 'module.exports ='
         )
       end
@@ -286,7 +286,7 @@ namespace :test do
       'karma:internalAssetManager',
       'karma:oldUx',
       'karma:opMeasure',
-      'karma:signin',
+      'karma:authentication',
       'karma:visualizationCanvas',
       'karma:visualization_embed'
     ]

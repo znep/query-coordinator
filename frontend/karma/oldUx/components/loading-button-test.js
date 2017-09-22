@@ -5,14 +5,15 @@ import ReactDOM from 'react-dom';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
   findRenderedDOMComponentWithClass as findByClass
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import LoadingButton from 'components/loading-button';
 
 describe('LoadingButton', function() {
 
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.props = {
     };
     this.createElement = function(addProps) {

@@ -8,7 +8,10 @@ import {
   REQUESTED_VIEW_PUBLISH,
   HANDLE_VIEW_PUBLISH_SUCCESS,
   HANDLE_VIEW_PUBLISH_ERROR,
-  CLEAR_VIEW_PUBLISH_ERROR
+  CLEAR_VIEW_PUBLISH_ERROR,
+  ON_SUBSCRIPTION_CHANGE,
+  CHECK_SUBSCRIPTION_ON_LOAD,
+  HANDLE_CHECK_SUBSCRIPTION_ON_LOAD_ERROR
 } from '../actionTypes';
 
 export function requestedViewPublish() {
@@ -36,6 +39,28 @@ export function handleFetchRowCountSuccess(rowCount) {
 
 export function handleFetchRowCountError() {
   return { type: HANDLE_FETCH_ROW_COUNT_ERROR };
+}
+
+export function onSubscriptionChange(subscriptionId) {
+  return {
+    type: ON_SUBSCRIPTION_CHANGE,
+    subscriptionId,
+    subscribed: _.isNumber(subscriptionId) && !_.isNaN(subscriptionId)
+  };
+}
+
+export function checkSubscriptionOnLoad(subscriptionId) {
+  return {
+    type: CHECK_SUBSCRIPTION_ON_LOAD,
+    subscriptionId,
+    subscribed: _.isNumber(subscriptionId) && !_.isNaN(subscriptionId)
+  };
+}
+
+export function handleCheckSubscriptionOnLoadError() {
+  return {
+    type: HANDLE_CHECK_SUBSCRIPTION_ON_LOAD_ERROR
+  };
 }
 
 export function publishView() {
@@ -93,3 +118,23 @@ export function fetchRowCount() {
       catch(() => dispatch(handleFetchRowCountError()));
   };
 }
+
+export const checkSubscription = () => (dispatch, getState) => {
+  const fetchOptions = {
+    method: 'GET',
+    headers: defaultHeaders,
+    credentials: 'same-origin'
+  };
+  const viewId = getState().view.id;
+  const fetchUrl = '/api/notifications_and_alerts/subscriptions?dataset_domain=' +
+    `${window.location.host}&dataset=${viewId}&activity=WATCH_DATASET`;
+
+  fetch(fetchUrl, fetchOptions).then(checkStatus).then((response) => response.json()).then((response) => {
+    var subscriptionResponse = response.data;
+    if (_.get(subscriptionResponse[0], 'id')) {
+      dispatch(checkSubscriptionOnLoad(_.get(subscriptionResponse[0], 'id')));
+    } else {
+      dispatch(checkSubscriptionOnLoad());
+    }
+  }).catch(() => dispatch(handleCheckSubscriptionOnLoadError()));
+};

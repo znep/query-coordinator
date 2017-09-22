@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import UploadNotification from 'containers/UploadNotificationContainer';
 import styles from './NotificationList.scss';
 
@@ -20,7 +20,7 @@ const NotificationList = ({ notifications }) => {
 
   return (
     <div className={styles.list}>
-      <ReactCSSTransitionGroup
+      <CSSTransitionGroup
         transitionName={{
           enter: styles.enter,
           enterActive: styles.enterActive,
@@ -30,7 +30,7 @@ const NotificationList = ({ notifications }) => {
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500}>
         {items}
-      </ReactCSSTransitionGroup>
+      </CSSTransitionGroup>
     </div>
   );
 };

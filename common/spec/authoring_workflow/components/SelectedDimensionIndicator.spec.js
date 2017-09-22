@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 import renderComponent from '../renderComponent';
 import defaultProps from '../defaultProps';

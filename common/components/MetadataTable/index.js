@@ -11,7 +11,6 @@ import moment from 'moment-timezone';
 import I18n from 'common/i18n';
 import { ENTER, SPACE, isOneOfKeys } from 'common/keycodes';
 
-
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
   (event) => {
@@ -130,9 +129,9 @@ class MetadataTable extends Component {
 
   renderHeader() {
     let editMetadata;
-    const { editMetadataUrl, localizeLink } = this.props;
+    const { editMetadataUrl, localizeLink, renderWatchDatasetButton } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
-
+    const watchDatasetButton = renderWatchDatasetButton ? renderWatchDatasetButton() : null;
     if (editMetadataUrl) {
       editMetadata = (
         <a
@@ -149,7 +148,10 @@ class MetadataTable extends Component {
         <h2 className="landing-page-section-header">
           {I18n.t('common.metadata.title')}
         </h2>
-        {editMetadata}
+        <div className="button-group">
+          {editMetadata}
+          {watchDatasetButton}
+        </div>
       </div>
     );
   }
@@ -580,6 +582,7 @@ MetadataTable.propTypes = {
   onClickStats: PropTypes.func,
   onExpandMetadataTable: PropTypes.func,
   onExpandTags: PropTypes.func,
+  renderWatchDatasetButton: PropTypes.func,
 
   // Optional function to let containing app add a locale prefix to links generated
   // by MetadataTable. There's no standardized way of doing this for common code,
@@ -625,8 +628,7 @@ MetadataTable.propTypes = {
     viewCount: PropTypes.number,
     downloadCount: PropTypes.number
   }).isRequired,
-
-  customMetadataFieldsets: PropTypes.object
+  
 };
 
 export default MetadataTable;

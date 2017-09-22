@@ -4,13 +4,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, {
   findRenderedDOMComponentWithClass as findByClass
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import FormCheckbox from 'components/form-checkbox';
 
 describe('FormCheckbox', function() {
   beforeEach(function() {
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.shallowRenderer = createRenderer();
     this.onSuccessStub = sinon.stub();
     this.props = {
       action: '/foo',

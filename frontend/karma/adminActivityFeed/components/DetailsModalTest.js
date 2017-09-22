@@ -3,7 +3,7 @@ import {fromJS} from 'immutable';
 import moment from 'moment';
 import React from 'react';
 import { assert } from 'chai';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import I18nJS from 'i18n-js';
 
 const MockHttpClient = require('../MockHttpClient').default;

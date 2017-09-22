@@ -12,7 +12,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation">
+<div class="contentBox <%= admin_page_with_left_nav_class %>">
   <div class="publisherHeader clearfix">
     <h1><%= t('screens.admin.sdp.edit.editing', :title => @widget_customization.name) %></h1>
 

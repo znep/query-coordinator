@@ -1,4 +1,5 @@
 import * as React  from 'react';
+import PropTypes from 'prop-types';
 import * as ReactRedux from 'react-redux';
 import * as Goals from '../../sections/goals';
 import * as Components from '../../components';
@@ -20,7 +21,7 @@ function App({store}) {
 }
 
 App.propTypes = {
-  store: React.PropTypes.object.isRequired
+  store: PropTypes.object.isRequired
 };
 
 export default App;

@@ -57,7 +57,13 @@ Rails.application.routes.draw do
         get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
         get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
 
-        get '/stat/data', :as => 'govstat_data'
+        # EN-18858: Direct OP data catalog links to SIAM if it is enabled
+        get '/stat/data',
+          :to => redirect('/admin/assets'),
+          :constraints => FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
+        get '/stat/data',
+          :as => 'govstat_data',
+          :constraints => !FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
       end
     end
 

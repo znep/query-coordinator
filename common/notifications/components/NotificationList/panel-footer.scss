@@ -1,0 +1,32 @@
+@import '../../common.scss';
+
+.footer-bar {
+  background-color: $panel-footer-background-color;
+  height: $footerBarHeight;
+  padding: 8px 10px;
+  text-align: center;
+
+  .primary-button {
+    background-color: $panel-primary-button-background-color;
+    border: 0 none;
+    border-radius: 2px;
+    color: $white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 15px;
+    text-transform: capitalize;
+
+    &:hover,
+    &:focus {
+      background-color: $panel-primary-button-hover-background-color;
+    }
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}

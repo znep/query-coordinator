@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import _ from 'lodash';
 import classNames from 'classnames';
 import I18n from 'common/i18n';
@@ -257,14 +257,14 @@ export class FilterBar extends Component {
 
     return (
       <div className="visible-filters-container">
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName="filters"
           transitionEnter={newFilterAdded}
           transitionEnterTimeout={1000}
           transitionLeave={false}
           transitionLeaveTimeout={1}>
           {filters}
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }
@@ -275,14 +275,14 @@ export class FilterBar extends Component {
 
     return (
       <div className="collapsed-filters-container">
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName="filters"
           transitionEnter={newFilterAdded}
           transitionEnterTimeout={1000}
           transitionLeave={false}
           transitionLeaveTimeout={1}>
           {filters}
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }

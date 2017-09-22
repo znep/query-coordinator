@@ -48,9 +48,9 @@ builds, see the [webpack](#webpack) section.
 To build a subset of the webpack bundles, use the `FRONTEND_WEBPACK_BUNDLES` environment variable. For example
 to load only the DSLP (Data Set Landing Page) bundle run:
 
-    FRONTEND_WEBPACK_BUNDLES=signin,data-cards,dataset-landing-page npm run webpack-dev-server
+    FRONTEND_WEBPACK_BUNDLES=authentication,data-cards,dataset-landing-page npm run webpack-dev-server
 
-This loads the `signin`, `data-cards` and `dataset-landing-page` bundles. For example, if you'd like to be able
+This loads the `authentication`, `data-cards` and `dataset-landing-page` bundles. For example, if you'd like to be able
 to login, and are working on both DSLP and view Data Lenses, you'll need to ensure that all of these bundles are
 loaded, otherwise the Data Lens pages and the login page will not work.
 
@@ -59,7 +59,7 @@ in the `config/webpack/` directory. Each `.config.js` file corresponds to a load
 and `common.js`). The "legacy" Javascript bundle is called `open-data`.
 
 > Note: When making new webpack config files, please refrain from choosing a name that differs from the name of the
-feature you're working on. Having to maintain mental mapping for `data-cards` => "Data Lens", and `signin` => "Login"
+feature you're working on. Having to maintain mental mapping for `data-cards` => "Data Lens"
 is needless complexity which should be avoided.
 
 ## Running the app _without_ the local stack

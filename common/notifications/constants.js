@@ -1,0 +1,1 @@
+export const TRUNCATE_DESCRIPTION_AFTER = 150;

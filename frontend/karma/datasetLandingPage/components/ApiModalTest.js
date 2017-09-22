@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import { ApiModal } from 'components/ApiModal';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import mockView from 'data/mockView';
 
 describe('components/ApiModal', () => {

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import FilterItem from 'components/FilterBar/FilterItem';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 import {
   mockValueRangeFilter,

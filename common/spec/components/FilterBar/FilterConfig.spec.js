@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import FilterConfig from 'components/FilterBar/FilterConfig';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 import { mockTextColumn } from './data';
 

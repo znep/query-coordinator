@@ -3,7 +3,7 @@ import InfoPane from 'components/InfoPane';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import { renderComponent } from '../helpers';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('InfoPane', () => {
   beforeEach(() => {
@@ -154,5 +154,28 @@ describe('InfoPane', () => {
       const element = renderComponent(InfoPane, { name: 'Just the Title' });
       assert.isNull(getContent(element));
     });
+  });
+
+  describe('metadata watch dataset flag', () => {
+    describe('showWatchDatasetFlag is enabled', () => {
+      it('should show watch dataset flag as blocked eye icon if watching', () => {
+        const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: true, subscribed: true }));
+        assert.ok(element.querySelector('.watch-dataset-flag'));
+        assert.ok(element.querySelector('.icon-eye-blocked'));
+      });
+
+      it('should show watch dataset flag as eye icon if not watching', () => {
+        const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: true, subscribed: false }));
+        assert.ok(element.querySelector('.watch-dataset-flag'));
+        assert.ok(element.querySelector('.icon-eye'));
+      });
+    });
+
+    describe('showWatchDatasetFlag is disabled', () => {
+      it('should hide watch dataset flag', () => {
+        const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: false }));
+        assert.isNull(element.querySelector('.watch-dataset-flag'));
+      });
+    })
   });
 });

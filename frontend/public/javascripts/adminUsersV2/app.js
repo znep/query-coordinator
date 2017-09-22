@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { ConnectedUsersTable } from './components/users_table';
 import Localization from 'common/i18n/components/Localization';

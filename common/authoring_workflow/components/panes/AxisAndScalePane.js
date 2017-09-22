@@ -242,7 +242,7 @@ export class AxisAndScalePane extends Component {
 
     if (isOneHundredPercentStacked(vifAuthoring)) {
       valueInputAttributes.max = 100;
-      valueInputAttributes.min = 0;
+      valueInputAttributes.min = -100;
     }
 
     const textInputButton = this.renderReferenceLinesLabelTextInputButton(referenceLine, referenceLineIndex);

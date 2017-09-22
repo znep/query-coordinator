@@ -6,7 +6,7 @@
   Inline style on this for now since I don't want to pull in a whole stylesheet for three rules
   All the styles for the actual component get pulled in with the webpack bundle via CSS modules
 %>
-<div id="signin" style="margin-left: auto; margin-right: auto;"></div>
+<div id="auth" style="margin-left: auto; margin-right: auto;"></div>
 
 <% @suppress_flashes = true %>
 <% translations_for('screens.sign_in', 'screens.sign_up', 'account.common', 'core.validation') %>
@@ -21,9 +21,9 @@
     window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
   </script>
 
-  <%= include_webpack_bundle 'signin/main.js' %>
+  <%= include_webpack_bundle 'authentication/index.js' %>
 
   <script type="text/javascript">
-    window.auth0Login('#signin', <%= auth0_component_config_json %>, <%= login %>);
+    window.authentication('#auth', <%= auth0_component_config_json %>, <%= login %>);
   </script>
 <%- end -%>

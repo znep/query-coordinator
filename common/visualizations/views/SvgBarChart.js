@@ -444,7 +444,7 @@ function SvgBarChart($element, vif, options) {
 
     function renderReferenceLines() {
       // Because the line stroke thickness is 2px, the half of the line can be clipped on the left or right edge
-      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1 
+      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1
       // pixel when at the right edge.  All the other lines are rendered in normal positions.
       const getXPosition = (referenceLine) => {
         const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
@@ -989,6 +989,15 @@ function SvgBarChart($element, vif, options) {
     /**
      * 2. Set up the x-scale and -axis.
      */
+    let positions;
+
+    if (isOneHundredPercentStacked) {
+      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
+    } else if (isStacked) {
+      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    } else {
+      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    }
 
     try {
 
@@ -1017,8 +1026,8 @@ function SvgBarChart($element, vif, options) {
       }
 
       if (isOneHundredPercentStacked) {
-        minXValue = 0; // measure axes are not changeable for 100% stacked charts
-        maxXValue = 1;
+        minXValue = self.getMinOneHundredPercentStackedValue(positions);
+        maxXValue = self.getMaxOneHundredPercentStackedValue(positions);
       } else if (isStacked) {
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
@@ -1027,7 +1036,7 @@ function SvgBarChart($element, vif, options) {
         maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
       }
 
-      if (minXValue >= maxXValue) {
+      if (minXValue > maxXValue) {
         self.renderError(
           I18n.t(
             'shared.visualizations.charts.common.validation.errors.' +
@@ -1087,15 +1096,6 @@ function SvgBarChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
-    let positions;
-
-    if (isOneHundredPercentStacked) {
-      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
-    } else if (isStacked) {
-      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    } else {
-      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    }
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
@@ -1177,8 +1177,6 @@ function SvgBarChart($element, vif, options) {
       attr(
         'data-dimension-value-html',
         (d, dimensionIndex, measureIndex) => {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           const value = d[0];
 
           if (_.isNil(value)) {
@@ -1186,6 +1184,8 @@ function SvgBarChart($element, vif, options) {
           } else if (value === otherLabel) {
             return otherLabel;
           } else {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
 
@@ -1204,8 +1204,6 @@ function SvgBarChart($element, vif, options) {
         attr(
           'data-dimension-value-html',
           (datum, measureIndex, dimensionIndex) => {
-            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             const value = dimensionValues[dimensionIndex];
 
             if (_.isNil(value)) {
@@ -1213,6 +1211,8 @@ function SvgBarChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
+              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
             }
           }
@@ -1237,13 +1237,13 @@ function SvgBarChart($element, vif, options) {
       attr(
         'data-dimension-value-html',
         (datum, measureIndex, dimensionIndex) => {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
           const value = dimensionValues[dimensionIndex];
 
           if (value === otherLabel) {
             return otherLabel;
           } else {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
         }
@@ -1547,8 +1547,6 @@ function SvgBarChart($element, vif, options) {
           (datum, dimensionIndex, measureIndex) => {
 
             if (!isCurrentlyPanning()) {
-              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
               let dimensionValue;
 
               if (_.isNil(datum[0])) {
@@ -1556,6 +1554,8 @@ function SvgBarChart($element, vif, options) {
               } else if (datum[0] === otherLabel) {
                 dimensionValue = otherLabel;
               } else {
+                const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+                const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
                 dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
               }
 
@@ -1565,7 +1565,7 @@ function SvgBarChart($element, vif, options) {
               // There's a working draft for a CSS.escape and jQuery >= 3.0 has a $.escapeSelector,
               // but both of those are out of reach for us at the moment.
               //
-              // Don't use a strict equality comparison in the filter as getAttribute returns a string and 
+              // Don't use a strict equality comparison in the filter as getAttribute returns a string and
               // dimensionValue may not be a string.
               //
               const dimensionGroup = d3.select(
@@ -1699,7 +1699,6 @@ function SvgBarChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
           let label;
 
           if (_.isNil(d)) {
@@ -1707,6 +1706,7 @@ function SvgBarChart($element, vif, options) {
           } else if (d === otherLabel) {
             label = otherLabel;
           } else {
+            const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
             label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
           }
@@ -1835,7 +1835,7 @@ function SvgBarChart($element, vif, options) {
     let formatter;
 
     if (isOneHundredPercentStacked) {
-      formatter = d3.format('p');
+      formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);

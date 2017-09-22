@@ -15,14 +15,14 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation metadataScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> metadataScreen">
    <div class="adminHeader floating metadata">
     <span class="icon"></span>
     <h1><%= t("#{prefix}.title") %></h1>
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation metadataScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> metadataScreen">
   <%= display_standard_flashes %>
 
   <div class="customFields">
@@ -179,7 +179,7 @@
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation metadataScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> metadataScreen">
   <div class="categories">
     <h2><%= t("#{prefix}.define_categories") %></h2>
 

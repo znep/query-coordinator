@@ -153,6 +153,7 @@ describe('DataTypeFormatter', function() {
       },
       renderUrlCellHTML: {
         contents: [
+          scriptInjection,
           {
             url: scriptInjection,
             description: scriptInjection
@@ -185,6 +186,7 @@ describe('DataTypeFormatter', function() {
       },
       renderPhoneCellHTML: {
         contents: [
+          scriptInjection,
           {
             phone_number: scriptInjection
           },
@@ -234,6 +236,9 @@ describe('DataTypeFormatter', function() {
       },
       renderObeLocationHTML: {
         contents: [
+          {
+            coordinates: [scriptInjection, scriptInjection]
+          },
           {
             latitude: scriptInjection,
             longitude: scriptInjection
@@ -1086,10 +1091,16 @@ describe('DataTypeFormatter', function() {
   describe('url formatting', function() {
     it('should render a link', function() {
       var cellContent = DataTypeFormatter.renderUrlCellHTML({
-        url: 'https://socrata.com',
+        url: 'https://example.com',
         description: 'wombats'
       });
-      var expected = '<a href="https://socrata.com" target="_blank" rel="external">wombats</a>';
+      var expected = '<a href="https://example.com" target="_blank" rel="external">wombats</a>';
+      assert.equal(cellContent, expected);
+    });
+
+    it('should render a link when given a string', function() {
+      var cellContent = DataTypeFormatter.renderUrlCellHTML('https://example.com');
+      var expected = '<a href="https://example.com" target="_blank" rel="external">https://example.com</a>';
       assert.equal(cellContent, expected);
     });
 
@@ -1101,8 +1112,8 @@ describe('DataTypeFormatter', function() {
 
   describe('email formatting', function() {
     it('should render a link', function() {
-      var cellContent = DataTypeFormatter.renderEmailCellHTML('a@b.com');
-      var expected = '<a href="mailto:a@b.com" target="_blank" rel="external">a@b.com</a>';
+      var cellContent = DataTypeFormatter.renderEmailCellHTML('test@example.com');
+      var expected = '<a href="mailto:test@example.com" target="_blank" rel="external">test@example.com</a>';
       assert.equal(cellContent, expected);
     });
 
@@ -1131,6 +1142,12 @@ describe('DataTypeFormatter', function() {
         phone_number: 'Other: 555-5555'
       });
       var expected = '<a href="tel:555-5555" target="_blank" rel="external">Other: 555-5555</a>';
+      assert.equal(cellContent, expected);
+    });
+
+    it('should render a link when given a string', function() {
+      var cellContent = DataTypeFormatter.renderPhoneCellHTML('555-5555');
+      var expected = '<a href="tel:555-5555" target="_blank" rel="external">555-5555</a>';
       assert.equal(cellContent, expected);
     });
 
@@ -1245,6 +1262,10 @@ describe('DataTypeFormatter', function() {
       longitude: "-122.317664"
     };
 
+    const LOCATION_WITH_COORDINATES = {
+      coordinates: [47.615267, -122.317664]
+    };
+
     const LOCATION = {
       latitude: "47.615267",
       longitude: "-122.317664"
@@ -1267,6 +1288,12 @@ describe('DataTypeFormatter', function() {
       const address = JSON.parse(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.human_address);
       const point = `(${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.latitude}°, ${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.longitude}°)`;
       assert.equal(locationOutput, `${address.address} ${address.zip} ${point}`);
+    });
+
+    it('should render if given a coordinates array', function() {
+      const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION_WITH_COORDINATES, { renderTypeName: 'location' });
+      const point = `(${LOCATION_WITH_COORDINATES.coordinates[1]}°, ${LOCATION_WITH_COORDINATES.coordinates[0]}°)`;
+      assert.equal(locationOutput, point);
     });
 
     it('should render only the latitude and longitude if human address is not a valid json', function () {

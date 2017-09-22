@@ -105,6 +105,7 @@ export default function barChart(state, action) {
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
     case actions.SET_ORDER_BY:
+    case actions.SET_PRECISION:
     case actions.SET_PRIMARY_COLOR:
     case actions.SET_REFERENCE_LINE_COLOR:
     case actions.SET_REFERENCE_LINE_LABEL:

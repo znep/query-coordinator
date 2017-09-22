@@ -4,7 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var utils = require('common/js_utils');
 
-var DistributionChartView = require('./views/DistributionChart');
+var DistributionChartView = require('./views/DistributionChart').default;
 var DistributionChartHelpers = require('./views/DistributionChartHelpers');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 import { VisualizationPreviewContainer } from 'common/authoring_workflow/components/VisualizationPreviewContainer';
 import vifs from 'common/authoring_workflow/vifs';

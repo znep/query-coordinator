@@ -1,0 +1,11 @@
+@import '../../common.scss';
+
+.notifications-panel {
+  bottom: 0;
+  color: $white;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 320px;
+  z-index: 100;
+}

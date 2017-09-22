@@ -1981,6 +1981,31 @@
       }
     },
 
+    getPublishedView: function(callback) {
+      var ds = this;
+      if ($.isBlank(ds._publishedView)) {
+        if (!$.isBlank(ds.publishedViewUid) && $.isBlank(ds.noPublishedViewAvailable)) {
+          ds.makeRequest({
+            url: '/views/{0}.json'.format(this.publishedViewUid),
+            success: function(pv) {
+              ds._publishedView = new Dataset(pv);
+              callback(ds._publishedView);
+            },
+            error: function(xhr) {
+              if (JSON.parse(xhr.responseText).code == 'permission_denied') {
+                ds.noPublishedViewAvailable = true;
+              }
+              callback();
+            }
+          });
+        } else {
+          callback();
+        }
+      } else {
+        callback(ds._publishedView);
+      }
+    },
+
     getViewForDisplay: function(type, callback) {
       // in most cases, it's just the dataset
       var vft = this._childViewsForType(type);
@@ -2241,7 +2266,7 @@
     // Publishing
     makeUnpublishedCopy: function(successCallback, pendingCallback, errorCallback) {
       var ds = this;
-      if (ds.isDefault()) {
+      if (blist.configuration.derivedViewPublication || ds.isDefault()) {
         ds.makeRequest({
           url: '/api/views/' + ds.id + '/publication.json',
           params: {

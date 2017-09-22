@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import EditBar from 'components/EditBar';
 import Picklist from 'components/Picklist';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { renderPureComponent } from '../helpers';
 
 /* eslint-disable new-cap */

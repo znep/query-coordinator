@@ -156,12 +156,6 @@ const TIME_FORMATS = {
   default_date: 'YYYY MMM DD'
 };
 
-const PRECISION_FORMATS = {
-  'year': 'date_y',
-  'month': 'date_ym',
-  'day': 'date_ymd'
-};
-
 // Please note: Functions whose name ends with HTML
 // will return HTML ready to place into the DOM. Do
 // not process further.
@@ -175,7 +169,7 @@ const PRECISION_FORMATS = {
 module.exports = {
   // Before exporting any *UnsafePlainText functions, think
   // carefully about the potential security impact.
-  renderCellHTML: renderCellHTML,
+  renderCellHTML,
   renderBooleanCellHTML,
   renderNumberCellHTML,
   renderGeoCellHTML,
@@ -190,8 +184,7 @@ module.exports = {
   renderTimestampCellHTML,
   renderObeLocationHTML,
   renderFormattedTextHTML,
-  getCellAlignment: getCellAlignment,
-  applyCalendarDatePrecisionFormats
+  getCellAlignment
 };
 
 function renderCellHTML(cellContent, column, domain, datasetUid) {
@@ -238,7 +231,7 @@ function renderCellHTML(cellContent, column, domain, datasetUid) {
         cellHTML = renderMoneyCellHTML(cellContent, column);
         break;
       // OBE location columns are actually objects with latitude and longitude
-      // keys, so we need to handle them as a special case.
+      // keys or a coordinates key, so we need to handle them as a special case.
       case 'location':
         cellHTML = renderObeLocationHTML(cellContent);
         break;
@@ -398,7 +391,11 @@ function renderObeLocationUnsafePlainText(cellContent) {
   }
 
   if (cellContent.hasOwnProperty('latitude') && cellContent.hasOwnProperty('longitude')) {
-    return `${humanAddress ? (humanAddress + ' ') : ''}(${cellContent.latitude}°, ${cellContent.longitude}°)`;
+    const { longitude, latitude } = cellContent;
+    return `${humanAddress ? (humanAddress + ' ') : ''}(${latitude}°, ${longitude}°)`;
+  } else if (cellContent.hasOwnProperty('coordinates')) {
+    const [ longitude, latitude ] = cellContent.coordinates;
+    return `${humanAddress ? (humanAddress + ' ') : ''}(${latitude}°, ${longitude}°)`;
   } else if (humanAddress) {
     return humanAddress;
   } else {
@@ -426,20 +423,20 @@ function renderGeoCellHTML(cellContent) {
   const longitudeIndex = 0;
   const coordinates = _cellCoordinates(cellContent);
 
-  if (coordinates) {
-    const latitudeTitle = I18n.t('shared.visualizations.charts.common.latitude');
-    const longitudeTitle = I18n.t('shared.visualizations.charts.common.longitude');
-
-    const latitudeText = _.escape(`${coordinates[latitudeIndex]}`);
-    const longitudeText = _.escape(`${coordinates[longitudeIndex]}`);
-
-    const latitude = `<span title="${latitudeTitle}">${latitudeText}°</span>`;
-    const longitude = `<span title="${longitudeTitle}">${longitudeText}°</span>`;
-
-    return `(${latitude}, ${longitude})`;
-  } else {
+  if (!coordinates) {
     return '';
   }
+
+  const latitudeTitle = I18n.t('shared.visualizations.charts.common.latitude');
+  const longitudeTitle = I18n.t('shared.visualizations.charts.common.longitude');
+
+  const latitudeText = _.escape(`${coordinates[latitudeIndex]}`);
+  const longitudeText = _.escape(`${coordinates[longitudeIndex]}`);
+
+  const latitude = `<span title="${latitudeTitle}">${latitudeText}°</span>`;
+  const longitude = `<span title="${longitudeTitle}">${longitudeText}°</span>`;
+
+  return `(${latitude}, ${longitude})`;
 }
 
 /**
@@ -453,12 +450,12 @@ function renderWKTCellHTML(cellContent) {
 * Render a blob cell.
 */
 function renderBlobCellHTML(cellContent, domain, datasetUid) {
-  if (!_.isEmpty(cellContent)) {
-    const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
-    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+  return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
 }
 
 /**
@@ -569,38 +566,51 @@ function renderMoneyCellHTML(cellContent, column) {
 * Render a url cell.
 */
 function renderUrlCellHTML(cellContent) {
-  if (!_.isEmpty(cellContent)) {
+  if (_.isEmpty(cellContent)) {
+    return '';
+  }
+
+  if (_.isString(cellContent)) {
+    return `<a href="${_.escape(cellContent)}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  } else {
     const { url, description } = cellContent;
     const text = _.escape(description || url);
     return `<a href="${url}" target="_blank" rel="external">${text}</a>`;
   }
-
-  return '';
 }
 
 /**
 * Render an email cell.
 */
 function renderEmailCellHTML(cellContent) {
-  if (!_.isEmpty(cellContent)) {
-    return `<a href="mailto:${cellContent}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  return `<a href="mailto:${cellContent}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
 }
 
 /**
 * Render a phone cell.
 */
 function renderPhoneCellHTML(cellContent) {
-  if (!_.isEmpty(cellContent)) {
-    const phoneNumber = _.get(cellContent, 'phone_number', '');
-    const phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
-
-    return `<a href="tel:${phoneHref}" target="_blank" rel="external">${_.escape(phoneNumber)}</a>`;
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  // Only permit digits, spaces, and selected punctuation.
+  // This is *NOT* validated on the backend; XSS mitigation for EN-18885.
+  const filterDisallowed = (raw) => {
+    return (raw || '').replace(/[^\d\s(),.+*#-]/g, '').trim();
+  };
+
+  if (_.isString(cellContent)) {
+    return `<a href="tel:${filterDisallowed(cellContent)}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  } else {
+    const phoneNumber = _.get(cellContent, 'phone_number', '');
+    return `<a href="tel:${filterDisallowed(phoneNumber)}" target="_blank" rel="external">${_.escape(phoneNumber)}</a>`;
+  }
+
 }
 
 /**
@@ -609,12 +619,12 @@ function renderPhoneCellHTML(cellContent) {
 * TODO: Remove this function once we don't need to support OBE datasets
 */
 function renderPhotoCellHTML(cellContent, domain, datasetUid) {
-  if (!_.isEmpty(cellContent)) {
-    const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
-    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+  return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent)}</a>`;
 }
 
 /**
@@ -623,12 +633,12 @@ function renderPhotoCellHTML(cellContent, domain, datasetUid) {
 * TODO: Remove this function once we don't need to support OBE datasets
 */
 function renderDocumentCellHTML(cellContent, domain, datasetUid) {
-  if (!_.isEmpty(cellContent)) {
-    const href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
-    return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent.filename)}</a>`;
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  const href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
+  return `<a href="${href}" target="_blank" rel="external">${_.escape(cellContent.filename)}</a>`;
 }
 
 /**
@@ -637,15 +647,15 @@ function renderDocumentCellHTML(cellContent, domain, datasetUid) {
 * TODO: Remove this function once we don't need to support OBE datasets
 */
 function renderMultipleChoiceCellHTML(cellContent, column) {
-  if (!_.isEmpty(cellContent)) {
-    const selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
-      return _.isEqual(option.id, cellContent);
-    });
-
-    return _.escape(selectedOption ? selectedOption.description : '');
+  if (_.isEmpty(cellContent)) {
+    return '';
   }
 
-  return '';
+  const selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
+    return _.isEqual(option.id, cellContent);
+  });
+
+  return _.escape(selectedOption ? selectedOption.description : '');
 }
 
 /**
@@ -717,17 +727,6 @@ function getCellAlignment(column) {
     default:
       return 'left';
   }
-}
-
-function applyCalendarDatePrecisionFormats(formats, precision) {
-  const precisionFormat = PRECISION_FORMATS[precision];
-
-  if (_.isEmpty(precisionFormat)) {
-    return;
-  }
-
-  const calendarFormats = _.filter(formats, (format) => (format.dataTypeName === 'calendar_date'));
-  _.each(calendarFormats, (calendarFormat) => calendarFormat.format.view = precisionFormat);
 }
 
 /**

@@ -117,6 +117,28 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
+  describe '#open_performance_catalog_path' do
+    describe 'when use_internal_asset_manager feature flag is true' do
+      before do
+        init_feature_flag_signaller(:with => { :use_internal_asset_manager => true })
+      end
+
+      it 'returns "/admin/assets"' do
+        expect(helper.open_performance_catalog_path).to eq('/admin/assets')
+      end
+    end
+
+    describe 'when use_internal_asset_manager feature flag is false' do
+      before do
+        init_feature_flag_signaller(:with => { :use_internal_asset_manager => false })
+      end
+
+      it 'returns "/stat/data"' do
+        expect(helper.open_performance_catalog_path).to eq('/stat/data')
+      end
+    end
+  end
+
   describe '#logo' do
     it 'returns nil if there is not an image src present' do
       allow(helper).to receive(:header_title).and_return('')

@@ -173,24 +173,40 @@ class InfoPane extends Component {
   }
 
   renderMetadata() {
-    const { metadata } = this.props;
+    const { metadata, subscribed, showWatchDatasetFlag, onWatchDatasetFlagClick} = this.props;
 
     if (!metadata) {
       return null;
     }
 
+    const watchDatasetFlagIcon = classNames('flag-icon', subscribed ? 'icon-eye-blocked' : 'icon-eye');
+    const watchDatasetFlag = showWatchDatasetFlag ?
+      <div className="watch-dataset-flag">
+        <label
+          className="inline-label manage-prompt-button"
+          onClick={(event) => onWatchDatasetFlagClick(this.props, event)}>
+          <span className={watchDatasetFlagIcon}></span>
+        </label>
+      </div> : null;
+
     const metadataLeft = metadata.first ?
       <div className="entry-meta updated">
-        <span className="meta-title">{metadata.first.label}</span>
-        {' '}
-        <span className="date">{metadata.first.content}</span>
+        <div className="update-content">
+          <span className="meta-title">{metadata.first.label}</span>
+          {' '}
+          <span className="date">{metadata.first.content}</span>
+        </div>
+        {watchDatasetFlag}
       </div> : null;
 
     const metadataRight = metadata.second ?
       <div className="entry-meta views">
-        <span className="meta-title">{metadata.second.label}</span>
-        {' '}
-        <span className="date">{metadata.second.content}</span>
+        <div className="update-content">
+          <span className="meta-title">updated</span>
+          {' '}
+          <span className="date">one day</span>
+        </div>
+        {metadata.first ? null : watchDatasetFlag}
       </div> : null;
 
     return (
@@ -343,6 +359,16 @@ InfoPane.propTypes = {
       content: PropTypes.node.isRequired
     })
   }),
+  
+  /**
+   * If the showWatchDatasetFlag prop is true, only then the watch-dataset-flag will be shown
+  */
+  showWatchDatasetFlag: PropTypes.bool,
+
+  /**
+   * A function that is called when the watch dataset flag clicked.
+  */
+  onWatchDatasetFlagClick: PropTypes.func,
 
   /**
    * The title of the asset, displayed in an h1 tag.

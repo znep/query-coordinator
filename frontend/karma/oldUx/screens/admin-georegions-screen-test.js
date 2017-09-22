@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 xdescribe('admin-georegions-screen', function() {
   // File doesn't export any functionality, so it can't be tested as-is

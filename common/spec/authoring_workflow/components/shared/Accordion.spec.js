@@ -1,5 +1,5 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import renderComponent from '../../renderComponent';
 
 import Accordion from 'common/authoring_workflow/components/shared/Accordion';

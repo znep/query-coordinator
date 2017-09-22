@@ -7,7 +7,10 @@ import {
   handleViewPublishError,
   clearViewPublishError,
   handleFetchRowCountSuccess,
-  handleFetchRowCountError
+  handleFetchRowCountError,
+  onSubscriptionChange,
+  checkSubscriptionOnLoad,
+  handleCheckSubscriptionOnLoadError
 } from 'actions/view';
 
 describe('reducers/view', () => {
@@ -100,4 +103,41 @@ describe('reducers/view', () => {
       assert.isNull(state.rowCount);
     });
   });
+
+  describe('ON_SUBSCRIPTION_CHANGE', () => {
+    it('sets subscribed to false', () => {
+      state = reducer(state, onSubscriptionChange());
+      assert.isFalse(state.subscribed);
+      assert.isUndefined(state.subscriptionId);
+    });
+
+    it('sets subscribed to true', () => {
+      state = reducer(state, onSubscriptionChange(123));
+      assert.isTrue(state.subscribed);
+      assert.strictEqual(state.subscriptionId, 123);
+    });
+  });
+
+  describe('CHECK_SUBSCRIPTION_ON_LOAD', () => {
+    it('sets subscribed to false', () => {
+      state = reducer(state, checkSubscriptionOnLoad());
+      assert.isFalse(state.subscribed);
+      assert.isUndefined(state.subscriptionId);
+    });
+
+    it('sets subscribed to true', () => {
+      state = reducer(state, checkSubscriptionOnLoad(123));
+      assert.isTrue(state.subscribed);
+      assert.strictEqual(state.subscriptionId, 123);
+    });
+  });
+
+  describe('HANDLE_CHECK_SUBSCRIPTION_ON_LOAD_ERROR', () => {
+    it('sets subscribed to false', () => {
+      state = reducer(state, handleCheckSubscriptionOnLoadError());
+      assert.isFalse(state.subscribed);
+      assert.isUndefined(state.subscriptionId);
+    });
+  });
+
 });

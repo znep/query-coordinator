@@ -25,14 +25,14 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation jobsScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> jobsScreen">
   <div class="adminHeader floating jobs">
     <span class="icon"></span>
     <h1><%= t('screens.admin.jobs.index_page.page_title') %></h1>
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation jobsScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> jobsScreen">
   <%= display_standard_flashes %>
 
   <% if @alert %>

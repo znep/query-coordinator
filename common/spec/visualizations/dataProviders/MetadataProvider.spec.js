@@ -523,11 +523,10 @@ describe('MetadataProvider', () => {
       server.restore();
     });
 
-    it('returns only displayable and filterable columns', (done) => {
+    it('returns only displayable and filterable columns', () => {
       return metadataProvider.getDisplayableFilterableColumns().then((columns) => {
         assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
         assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
-        done();
       });
     });
   });

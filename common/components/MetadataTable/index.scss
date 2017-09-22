@@ -21,6 +21,19 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
       justify-content: space-between;
       flex-wrap: wrap;
 
+      .button-group {
+        display: inherit;
+
+        .watch-dataset-button {
+          cursor: pointer;
+          margin-left: 8px;
+          
+          .flag-icon {
+            font-size: 12px;
+          }
+        }
+      }
+
       .btn-default {
         margin-bottom: 8px;
         align-self: center;

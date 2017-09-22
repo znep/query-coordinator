@@ -17,7 +17,7 @@
 
 <%= render '/administration/left_nav' %>
 
-<div class="contentBox withLeftNavigation georegionsScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> georegionsScreen">
   <div id="flash-container"><%= display_standard_flashes %></div>
   <div class="adminHeader floating georegions">
     <span class="icon"></span>
@@ -29,7 +29,7 @@
 </div>
 
 
-<div class="contentBox withLeftNavigation georegionsScreen">
+<div class="contentBox <%= admin_page_with_left_nav_class %> georegionsScreen">
   <div class="georegions-custom">
     <div class="clearfix">
       <h1 class="georegions-title-custom"><%= t("#{prefix}.custom_georegions") %></h1>

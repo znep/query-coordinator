@@ -1,5 +1,5 @@
-// import PropTypes from 'prop-types';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Provider } from 'react-redux';
 import Header from './components/header';
 import ResultsAndFilters from './components/results_and_filters';

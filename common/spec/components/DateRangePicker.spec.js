@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { renderComponent } from '../helpers';
 import DateRangePicker from 'components/DateRangePicker';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('DateRangePicker', () => {
   function getProps(props) {

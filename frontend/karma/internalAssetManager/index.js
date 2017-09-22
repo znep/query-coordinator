@@ -9,7 +9,7 @@ import mockTranslations from 'mockTranslations';
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.TestUtils = require('react-addons-test-utils');
+window.TestUtils = require('react-dom/test-utils');
 window.redux = require('redux');
 window.I18n = require('mockTranslations');
 window.translations = { internal_asset_manager: require('mockTranslations') };

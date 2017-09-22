@@ -25,6 +25,17 @@ export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 // to catch up even on slower machines
 const PROGRESS_THROTTLE_TIME = 250;
 
+function getContentType(fileType) {
+  // Substitute .json for .geojson content type
+  // because that's the only json variant we support -
+  // if the user has a file `foo.json`, we'll translate
+  // the content type to geojson for them
+  if (fileType.indexOf('application/json') > -1) {
+    return 'application/vnd.geo+json';
+  }
+  return fileType;
+}
+
 function xhrPromise(method, url, file, sourceId, dispatch) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -58,7 +69,7 @@ function xhrPromise(method, url, file, sourceId, dispatch) {
       reject(error);
     };
 
-    xhr.setRequestHeader('Content-type', file.type);
+    xhr.setRequestHeader('Content-type', getContentType(file.type));
 
     xhr.send(file);
   });

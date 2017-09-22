@@ -1,0 +1,55 @@
+@import '../../common.scss';
+
+.list-wrapper {
+  background-color: $panel-body-background-color;
+  height: calc(100% - #{$headerBarHeight} - #{$footerBarHeight});
+  list-style: none;
+  margin: 0;
+  padding: 0 5px;
+  overflow: hidden;
+
+  &.has-no-footer-bar {
+    height: calc(100% - #{$headerBarHeight});
+  }
+}
+
+.list {
+  max-height: calc(100% - #{$footerBarHeight});
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &.has-no-view-older-link {
+    max-height: 100%;
+  }
+}
+
+.notifications-message {
+  padding: 80px 25px 20px;
+  text-align: center;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.543;
+    margin: 0;
+  }
+}
+
+.view-older-links-wrapper {
+  display: block;
+  height: $footerBarHeight;
+  padding: 8px 0;
+}
+
+.view-older-link {
+  color: $view-older-notifications-link-color;
+  display: block;
+  font-size: 13px;
+  height: 30px;
+  padding: 5px 0;
+  text-align: center;
+
+  &:visited {
+    color: $view-older-notifications-link-color;
+  }
+}

@@ -1,6 +1,7 @@
 import { expect, assert } from 'chai';
 import InfoPaneButtons from 'components/InfoPaneButtons';
 import mockView from 'data/mockView';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/InfoPaneButtons', () => {
   function getProps(props) {
@@ -10,6 +11,18 @@ describe('components/InfoPaneButtons', () => {
       onClickGrid: _.noop
     });
   }
+
+  beforeEach(() => {
+    FeatureFlags.useTestFixture({
+      enable_visualization_canvas: true,
+      enable_external_data_integrations: true,
+      enable_user_notifications: true,
+    });
+  });
+
+  afterEach(() => {
+    FeatureFlags.useTestFixture({});
+  });
 
   describe('explore data button', () => {
     describe('exists', () => {
@@ -28,12 +41,12 @@ describe('components/InfoPaneButtons', () => {
     describe('visualize link', () => {
       beforeEach(() =>  {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enable_visualization_canvas = true;
+        FeatureFlags.updateTestFixture({ enable_visualization_canvas: true });
       });
 
       afterEach(() => {
         window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enable_visualization_canvas = false;
+        FeatureFlags.updateTestFixture({ enable_visualization_canvas: false });
       });
 
       it('exists if the bootstrapUrl is defined', () => {
@@ -52,7 +65,7 @@ describe('components/InfoPaneButtons', () => {
       });
 
       it('does not exist if the feature flag is disabled', () => {
-        window.serverConfig.featureFlags.enable_visualization_canvas = false;
+        FeatureFlags.updateTestFixture({ enable_visualization_canvas: false });
         const element = renderComponent(InfoPaneButtons, getProps());
         assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
@@ -92,21 +105,21 @@ describe('components/InfoPaneButtons', () => {
     describe('external integrations section', () => {
       describe('carto modal button', () => {
         it('not exists if no carto url present', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = true;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: true });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
         });
 
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = false;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: false });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
         });
 
         it('exists if a carto url present', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = true;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: true });
 
           const element = renderComponent(InfoPaneButtons, getProps({
             view: {
@@ -119,14 +132,14 @@ describe('components/InfoPaneButtons', () => {
 
       describe('plot.ly modal button', () => {
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = false;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: false });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=plotly-modal]'));
         });
 
         it('includes a plot.ly modal button', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = true;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: true });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.ok(element.querySelector('a[data-modal=plotly-modal]'));
@@ -135,14 +148,14 @@ describe('components/InfoPaneButtons', () => {
 
       describe('more button', () => {
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = false;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: false });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('.explore-dropdown .more-options-button'));
         });
 
         it('should include a more button', () => {
-          window.serverConfig.featureFlags.enable_external_data_integrations = true;
+          FeatureFlags.updateTestFixture({ enable_external_data_integrations: true });
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.ok(element.querySelector('.explore-dropdown .more-options-button'));
@@ -344,6 +357,37 @@ describe('components/InfoPaneButtons', () => {
         }));
         assert.isNull(element.querySelector('a[data-modal="contact-form"]'));
       });
+    });
+
+    describe('watch dataset link', () => {
+      beforeEach(() =>  {
+        window.sessionData.email = 'test@mail.com';
+        FeatureFlags.updateTestFixture({ enable_user_notifications: true });
+      });
+
+      afterEach(() => {
+        window.sessionData.email = '';
+        FeatureFlags.updateTestFixture({ enable_user_notifications: false });
+      });
+
+      it('show if user logged in and enabled user notifications feature flag', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({}));
+        assert.ok(element.querySelector('.watch-dataset-link'));
+      });
+
+      it('hide if user notification feature flag not enabled', () => {
+        FeatureFlags.updateTestFixture({ enable_user_notifications: false });
+        const element = renderComponent(InfoPaneButtons, getProps({}));
+
+        assert.isNull(element.querySelector('.watch-dataset-link'));
+      });
+
+      it('hide if user not logged in', () => {
+        window.sessionData.email = '';
+        const element = renderComponent(InfoPaneButtons, getProps({}));
+        assert.isNull(element.querySelector('.watch-dataset-link'));
+      });
+
     });
   });
 });

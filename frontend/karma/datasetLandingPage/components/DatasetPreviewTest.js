@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { DatasetPreview } from 'components/DatasetPreview';
 import mockView from 'data/mockView';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('components/DatasetPreview', function() {
   function getProps(props) {

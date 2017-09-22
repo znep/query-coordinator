@@ -1,0 +1,43 @@
+@import '../../common.scss';
+
+.notification-item {
+  background-color: $white;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  font-weight: 400;
+  margin-top: 5px;
+  padding: 10px;
+  text-align: left;
+  white-space: normal;
+
+  &.unread {
+    .notification-link {
+      font-weight: 600;
+    }
+  }
+}
+
+.notification-link {
+  color: $primary-text;
+  font-size: 13px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: $primary-text;
+  }
+}
+
+.body-text {
+  color: $notification-item-text-color;
+  font-size: 11px;
+  line-height: $default-line-height;
+  margin: 8px 0;
+}
+
+.timestamp {
+  color: $notification-item-text-color;
+  font-size: 11px;
+}

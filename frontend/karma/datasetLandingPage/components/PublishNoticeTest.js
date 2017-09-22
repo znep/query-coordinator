@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { PublishNotice } from 'components/PublishNotice';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import mockView from 'data/mockView';
 
 describe('components/PublishNotice', () => {

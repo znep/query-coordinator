@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
 import { localizeLink } from '../../common/locale';
+import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
+import { FeatureFlags } from 'common/feature_flags';
 
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
@@ -13,6 +15,7 @@ function mapStateToProps(state) {
   const { coreView } = view;
 
   const customFieldsets = view.customMetadataFieldsets || [];
+  const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
 
   // TODO - move to common implementation.
   const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
@@ -37,7 +40,15 @@ function mapStateToProps(state) {
     customMetadataFieldsets,
     disableContactDatasetOwner: view.disableContactDatasetOwner,
     editMetadataUrl: view.editMetadataUrl,
-    statsUrl: view.statsUrl
+    statsUrl: view.statsUrl,
+    view: view,
+    renderWatchDatasetButton() {
+      if (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled) {
+        return (<WatchDatasetButton view={view} />);
+      } else {
+        return null;
+      }
+    }
   });
 }
 

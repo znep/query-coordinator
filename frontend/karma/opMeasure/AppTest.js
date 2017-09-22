@@ -5,7 +5,7 @@ import { ModeStates } from 'lib/constants';
 
 import { getStore } from './testStore';
 
-describe.only('App', () => {
+describe('App', () => {
   it('renders', () => {
     const element = renderComponent(App, { store: getStore({}) });
     assert.ok(element);

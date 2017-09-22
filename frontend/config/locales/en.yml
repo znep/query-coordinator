@@ -1596,6 +1596,7 @@ en:
       scientific: 'Scientific: 1.0204e+3'
       standard: 'Standard: 1020.4'
     required: Required
+    see_terms_of_use: See Terms of Use
     share_types:
       contributor: Contributor
       owner: Owner
@@ -1676,6 +1677,9 @@ en:
       explore_data: Explore Data
       odata: Access Data via OData
       share: Share
+      watch_dataset: Watch this Dataset
+      unwatch_dataset: Unwatch this Dataset
+      create_alert: Create Alert
     add: Add
     api_modal:
       canonical: Canonical ID
@@ -6278,6 +6282,7 @@ en:
       select_chart_type: Select a chart type to display from the menu
       show_more: Show More
       site_analytics: Analytics
+      site_analytics_overview: Site Analytics - Overview
       snapshot_created: snapshot created
       snapshots: Snapshots
       snapshots_added: Snapshots Added

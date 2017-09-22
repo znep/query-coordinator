@@ -1,0 +1,74 @@
+@import '../../common.scss';
+
+.button {
+  background: none;
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 15px;
+  height: 46px;
+
+  /*
+   * Note that these next three lines don't actually do anything,
+   * but are needed to get proper sizing in the dev environment.
+   */
+  line-height: 1.6;
+
+  padding: 13px 22px;
+  position: relative;
+  width: 100%;
+
+  &:hover {
+    background-color: $bell-icon-hover-color;
+  }
+
+  & :global(.socrata-icon) {
+    color: $bell-icon-color;
+    fill: $bell-icon-color;
+    height: 15px;
+    margin-top: 4px;
+    width: 15px;
+
+    & svg {
+      height: 15px;
+      width: 15px;
+    }
+  }
+
+  &:after {
+    content: '';
+    background-color: $alternate-1;
+    border-radius: 50%;
+    display: none;
+    height: 8px;
+    right: 20px;
+    position: absolute;
+    top: 12px;
+    width: 8px;
+  }
+
+  &.unread:after {
+    display: block;
+  }
+
+  :global(.site-chrome-small) {
+    & .button {
+      height: 32px;
+      padding: 6px 8px 2px;
+
+      &:after {
+        left: 17px;
+        top: 8px;
+        width: 6px;
+      }
+
+      & :global(.socrata-icon) {
+        &,
+        & svg {
+          height: 12px;
+          width: 12px;
+        }
+      }
+    }
+  }
+}

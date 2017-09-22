@@ -7,4 +7,4 @@ function requireAll(context) {
   return context.keys().map(context);
 }
 
-requireAll(require.context('.', true, /Test\.js$/));
+requireAll(require.context('.', true, /spec\.js$/));

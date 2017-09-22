@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { FlannelHeader } from 'components/Flannel';
 import { renderPureComponent } from '../../helpers';
 

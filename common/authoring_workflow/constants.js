@@ -11,7 +11,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'calendar_date',
-    preferredVisualizationTypes: ['columnChart', 'timelineChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'timelineChart'],
     icon: 'icon-date'
   },
   {
@@ -70,7 +70,7 @@ export const VISUALIZATION_TYPES = [
     type: 'barChart',
     title: I18n.t('shared.visualizations.charts.bar_chart.title'),
     icon: 'icon-bar-chart-horz',
-    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
+    preferredDimensionTypes: ['calendar_date', 'money', 'number', 'percent', 'text']
   },
   {
     type: 'columnChart',

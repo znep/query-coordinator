@@ -124,3 +124,6 @@ Collapsable Search inside Admin Header:
 3 Search button
 3 Search text box
 4 Search Icon
+
+Notifications:
+100 Notifications Panel

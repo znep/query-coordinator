@@ -2,9 +2,9 @@ import 'babel-polyfill-safe';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import I18n from 'common/i18n';
 import confirmUnload from 'lib/confirmUnload';
+import { AppContainer } from 'react-hot-loader';
 
 import { Analytics } from 'common/analytics';
 
@@ -29,11 +29,24 @@ _.defer(function() {
   // Render the App, falling back to rendering an error if it fails.
   try {
     ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
+      <AppContainer>
+        <App store={store} />
+      </AppContainer>,
       document.querySelector('#app')
     );
+
+    // Hot Module Replacement API
+    if (module.hot) {
+      module.hot.accept('./App', () => {
+        const NextApp = require('./App').default; //eslint-disable-line
+        ReactDOM.render(
+          <AppContainer>
+            <NextApp store={store} />
+          </AppContainer>,
+          document.querySelector('#app')
+        );
+      });
+    }
 
     // initialize internal analytics
     const analytics = new Analytics();

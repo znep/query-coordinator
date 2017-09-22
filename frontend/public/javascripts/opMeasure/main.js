@@ -20,7 +20,7 @@ _.defer(function() {
   // Render the App, falling back to rendering an error if it fails.
   try {
     ReactDOM.render(
-      <AppContainer >
+      <AppContainer>
         <App store={store} />
       </AppContainer>,
       document.querySelector('#app')

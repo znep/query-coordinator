@@ -21,23 +21,22 @@ These steps are written under the assumption a dev is working with a designer or
 
 ### Step 1: Desiger/PM updates source assets.
 
-A. Download `socrata-icons.sketch` from this folder. Make the required edits and save.
-B. In Sketch, export the changed or added icons (export button on top-right).
-C. Send the edited `socrata-icons.sketch` and the exported icons to a dev.
+1. Send `socrata-icons.sketch` from this folder to your designer so they can make the required edits.
+2. Have them export the changed or added icons (export button on top-right) in Sketch.
 
 ### Step 2: Developer generates fonts.
 
 The fonts are generated via Gulp.
 
-A. Obtain `socrata-icons.sketch` and new/updated SVG files from your Designer/PM.
-B. Check in the new verison of `socrata-icons.sketch`.
-C. Place the new/updated SVGs in `common/resources/fonts/svg` (replace
+1. Obtain `socrata-icons.sketch` and new/updated SVG files from your Designer/PM.
+2. Check in the new verison of `socrata-icons.sketch`.
+3. Place the new/updated SVGs in `common/resources/fonts/svg` (replace
 what's there if needed).
-D. Run:
+4. Run:
 ```sh
 cd common/resources/fonts && npm i && npm run build
 ```
-E. Inspect the generated fonts (`common/resources/fonts/dist`) with a tool like
+5. Inspect the generated fonts (`common/resources/fonts/dist`) with a tool like
 [fontforge](https://fontforge.github.io/). If using fontforge, use View->Next Defined Glyph
 to help you find the icons.
-F. Check in the changes to the files and merge via PR. You're done.
+6. Check in the changes to the files and merge via PR. You're done.

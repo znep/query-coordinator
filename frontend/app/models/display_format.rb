@@ -55,6 +55,15 @@ class DisplayFormat < Model
 
         # Add the missing arguments filter to noop filters
         series[:dataSource][:filters] = restore_noop_filters(series[:dataSource][:filters])
+
+        # Restore null aggregation functions
+        if series[:dataSource][:dimension]
+          series[:dataSource][:dimension][:aggregationFunction] ||= nil
+        end
+
+        if series[:dataSource][:measure]
+          series[:dataSource][:measure][:aggregationFunction] ||= nil
+        end
       end
     end
 

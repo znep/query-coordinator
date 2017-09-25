@@ -249,7 +249,7 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def dsmui
+  def show_revision
     if dataset_management_page_enabled?
       @view = get_view(params[:id])
       return if @view.nil?

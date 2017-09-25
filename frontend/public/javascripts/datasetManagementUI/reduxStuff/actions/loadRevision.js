@@ -13,8 +13,6 @@ import { showModal } from 'reduxStuff/actions/modal';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
-import { browserHistory } from 'react-router';
-import * as Links from 'links';
 
 export function loadRevision(params) {
   return (dispatch, getState) => {
@@ -79,9 +77,12 @@ function getCurrentRevision(params) {
 }
 
 function getSources(params) {
-  return socrataFetch(dsmapiLinks.sourceIndex(params)).then(checkStatus).then(getJson).then(revisions => {
-    return revisions.map(revision => revision.resource);
-  });
+  return socrataFetch(dsmapiLinks.sourceIndex(params))
+    .then(checkStatus)
+    .then(getJson)
+    .then(revisions => {
+      return revisions.map(revision => revision.resource);
+    });
 }
 
 function makeTaskSets(revision) {
@@ -154,16 +155,5 @@ function loadRevisionSuccess(revision, taskSets, sources, metadataErrors) {
     taskSets,
     sources,
     metadataErrors
-  };
-}
-
-export function redirectToBaseIfTaskSetExists(params) {
-  return (dispatch, getState) => {
-    const entities = getState().entities;
-
-    const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
-    if (taskSet) {
-      browserHistory.push(Links.revisionBase(params));
-    }
   };
 }

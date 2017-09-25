@@ -24,8 +24,8 @@ import { showFormErrors, hideFormErrors, markFormClean } from 'reduxStuff/action
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/metadata.*/; // eslint-disable-line
-  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
+  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
   const helper = hist => {
     const location = hist[hist.length - 1];

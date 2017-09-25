@@ -7,8 +7,9 @@ export const bootstrapApp = (view, customMetadataFieldsets) => {
     id: view.id,
     name: view.name,
     columns: view.columns,
-    description: view.description,
+    displayType: view.displayType,
     rowCount: 0, // just initailizing here, will update later with soda api call
+    description: view.description,
     category: view.category,
     owner: view.owner,
     viewLastModified: view.viewLastModified,

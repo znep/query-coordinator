@@ -6,7 +6,9 @@ export const bootstrapApp = (view, customMetadataFieldsets) => {
     // TODO: Can we send the entire view unmodified?
     id: view.id,
     name: view.name,
+    columns: view.columns,
     description: view.description,
+    rowCount: 0, // just initailizing here, will update later with soda api call
     category: view.category,
     owner: view.owner,
     viewLastModified: view.viewLastModified,

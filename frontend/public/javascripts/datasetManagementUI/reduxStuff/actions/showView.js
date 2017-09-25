@@ -1,5 +1,8 @@
+import _ from 'lodash';
 import { socrataFetch, getJson, checkStatus } from 'lib/http';
 import * as dsmapiLinks from 'dsmapiLinks';
+import * as sodaLinks from 'sodaLinks';
+import { editView } from 'reduxStuff/actions/views';
 import { editRevision } from 'reduxStuff/actions/revisions';
 
 export function loadRevisionsList() {
@@ -36,4 +39,22 @@ export function createRevision() {
         console.warn('failed to create revision', err);
       });
   };
+}
+
+export function getRowCount(fourfour) {
+  return dispatch =>
+    socrataFetch(sodaLinks.rowCount(fourfour))
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        let rowCount;
+
+        if (resp && resp[0] && resp[0].count) {
+          rowCount = _.toNumber(resp[0].count);
+        }
+
+        rowCount = _.isNumber(rowCount) ? rowCount : 0;
+
+        dispatch(editView(fourfour, { rowCount }));
+      });
 }

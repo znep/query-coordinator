@@ -40,14 +40,9 @@ describe CatalogLandingPage do
 
   describe '.may_activate?' do
     let(:path) { '/browse' }
-    let(:max_param_overlap) { 1 }
 
     let(:request) do
       double(:request, params: ActionController::Parameters.new(params), query_parameters: params, path: path)
-    end
-
-    before(:each) do
-      init_feature_flag_signaller(with: {catalog_landing_page_allows_multiple_params: max_param_overlap})
     end
 
     context 'when it is just /browse' do
@@ -106,27 +101,13 @@ describe CatalogLandingPage do
         expect(CatalogLandingPage.may_activate?(request)).to eq(false)
       end
     end
-
-    context 'when we get multiple parameters but overlap is allowed' do
-      let(:params) { { category: 'Whatever', limitTo: 'charts' } }
-      let(:max_param_overlap) { 2 }
-
-      it 'should return true' do
-        expect(CatalogLandingPage.may_activate?(request)).to eq(true)
-      end
-    end
   end
 
   describe '.should_route?' do
     let(:path) { '/browse' }
-    let(:max_param_overlap) { 1 }
 
     let(:request) do
       double(:request, params: ActionController::Parameters.new(params), query_parameters: params, path: path)
-    end
-
-    before(:each) do
-      init_feature_flag_signaller(with: {catalog_landing_page_allows_multiple_params: max_param_overlap})
     end
 
     context 'when there is a blacklisted paramenter with invalid UTF-8 characters' do

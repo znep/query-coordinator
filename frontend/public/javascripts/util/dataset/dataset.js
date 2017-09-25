@@ -2353,6 +2353,32 @@
         callback(ds._unpublishedView);
       }
     },
+
+    getUnpublishedView: function(callback) {
+      var ds = this;
+      if ($.isBlank(ds._unpublishedView) && $.isBlank(ds.noUnpublishedViewAvailable)) {
+        ds.makeRequest({
+          url: '/views/{0}.json'.format(this.publishedViewUid),
+          params: {
+            method: 'getPublicationGroup',
+            stage: 'unpublished'
+          },
+          success: function(pv) {
+            ds._unpublishedView = new Dataset(pv);
+            callback(ds._unpublishedView);
+          },
+          error: function(xhr) {
+            if (JSON.parse(xhr.responseText).code == 'permission_denied') {
+              ds.noUnpublishedViewAvailable = true;
+            }
+            callback(ds._unpublishedView);
+          }
+        });
+      } else {
+        callback(ds._unpublishedView);
+      }
+    },
+
     isPublicationStageChangeAvailable: function(isPublished, resultCallback) {
       var ds = this;
       var controlsGridStatusKey = 'controls.grid.{0}'.format(isPublished ? 'published' : 'unpublished');

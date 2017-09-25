@@ -450,15 +450,18 @@ module DatasetsHelper
 
   # All of the hide_* methods are invoked only by sidebar_hidden. There _were_ private, but are no longer.
 
+  # After derived_view_publication is stabilized in production.  This feature check should be removed and always on.
+  def derived_view_publication_enabled?
+    CurrentDomain.configuration('feature_set').try(:properties).try(:derived_view_publication)
+  end
+
   def hide_redirect?
     return false if force_editable?
 
-    # After derived_view_publication is stabilized in production.  This feature check should be removed and always on.
-    dvp = CurrentDomain.configuration('feature_set').try(:properties).try(:derived_view_publication)
     [
       !view.is_published?,
-      !view.is_blist? && !dvp,
-      !view.is_tabular? && dvp,
+      !view.is_blist? && !derived_view_publication_enabled?,
+      !view.is_tabular? && derived_view_publication_enabled?,
       !view.can_edit?,
       current_user.blank?,
       view.is_immutable?
@@ -535,7 +538,7 @@ module DatasetsHelper
 
   def hide_conditional_formatting?
     [
-      view.is_unpublished?,
+      view.is_unpublished? && !derived_view_publication_enabled?,
       view.non_tabular?,
       view.is_form?,
       view.is_api?,
@@ -625,7 +628,8 @@ module DatasetsHelper
 
   def hide_calendar_create?
     [
-      view.is_unpublished?,
+      view.is_unpublished? && !derived_view_publication_enabled?,
+      # !view.is_unpublished? && derived_view_publication_enabled?, # uncomment to disallow editing on published copy.
       view.is_alt_view? && !view.available_display_types.include?('calendar'),
       view.geoParent.present?,
       view.is_api_geospatial?
@@ -634,7 +638,8 @@ module DatasetsHelper
 
   def hide_chart_create?
     [
-      view.is_unpublished?,
+      view.is_unpublished? && !derived_view_publication_enabled?,
+      # !view.is_unpublished? && derived_view_publication_enabled?, # uncomment to disallow editing on published copy.
       view.is_alt_view? && !view.available_display_types.include?('chart'),
       view.geoParent.present?,
       view.is_api_geospatial?
@@ -643,7 +648,7 @@ module DatasetsHelper
 
   def hide_map_create?
     [
-      view.is_unpublished?,
+      view.is_unpublished? && !derived_view_publication_enabled?,
       view.is_alt_view? && !view.available_display_types.include?('map'),
       view.is_grouped?,
       view.geoParent.present?

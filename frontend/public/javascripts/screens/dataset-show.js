@@ -1328,7 +1328,7 @@ $(function() {
       // EN-10110/EN-16621 - Disable cell-level editing for NBE-only datasets
       !blist.feature_flags.enable_2017_grid_refresh &&
       !blist.dataset.isImmutable() &&
-      (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular')
+      ((blist.dataset.isUnpublished() && blist.dataset.isDefault()) || blist.dataset.viewType != 'tabular')
     ),
     columnEditEnabled: !blist.dataset.isImmutable(),
     common: {
@@ -1669,7 +1669,7 @@ $(function() {
       $t.closest('.bt-wrapper').data('socrataTip-$element').socrataTip().hide();
     }
 
-    blist.dataset.getUnpublishedDataset(function(unpub) {
+    var getUnpublishedDatasetCallback = function(unpub) {
       if (!$.isBlank(unpub)) {
         unpub.redirectTo();
       } else {
@@ -1742,7 +1742,13 @@ $(function() {
           }
         });
       }
-    });
+    };
+
+    if (blist.configuration.derivedViewPublication && !blist.dataset.isDefault()) {
+      blist.dataset.getUnpublishedView(getUnpublishedDatasetCallback);
+    } else {
+      blist.dataset.getUnpublishedDataset(getUnpublishedDatasetCallback);
+    }
   });
 
   // If this is a newly unpublished dataset on the first run, show a warning

@@ -621,7 +621,7 @@ blist.datasetControls.editPublishedMessage = function() {
     });
   };
 
-  blist.dataset.getUnpublishedDataset(function(workingCopy) {
+  var getUnpublishedDatasetCallback = function(workingCopy) {
     if ($.isBlank(workingCopy)) {
       updateOperationStatus();
     } else {
@@ -629,7 +629,13 @@ blist.datasetControls.editPublishedMessage = function() {
         status: 'available'
       }, false);
     }
-  });
+  };
+
+  if (blist.configuration.derivedViewPublication && !blist.dataset.isDefault()) {
+    blist.dataset.getUnpublishedView(getUnpublishedDatasetCallback);
+  } else {
+    blist.dataset.getUnpublishedDataset(getUnpublishedDatasetCallback);
+  }
 
   return $container;
 };

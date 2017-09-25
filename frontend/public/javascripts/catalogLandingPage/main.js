@@ -1,15 +1,15 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
 import reducer from './reducers';
 import App from './App';
-import Search from './components/Search';
+import SearchApp from './SearchApp';
 import { dateLocalize } from '../common/locale';
+import { AppContainer } from 'react-hot-loader';
 
 const middleware = [thunk];
 
@@ -30,19 +30,45 @@ const store = createStore(reducer, applyMiddleware(...middleware));
 // TODO: re-implement the autocomplete search behavior in the Search react component.
 if (document.querySelector('#search-content')) {
   ReactDOM.render(
-    <Provider store={store}>
-      <Search />
-    </Provider>,
+    <AppContainer>
+      <SearchApp store={store} />
+    </AppContainer>,
     document.querySelector('#search-content')
   );
 }
 
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('./SearchApp', () => {
+    const NextApp = require('./SearchApp').default; //eslint-disable-line
+    ReactDOM.render(
+      <AppContainer>
+        <NextApp store={store} />
+      </AppContainer>,
+      document.querySelector('#search-content')
+    );
+  });
+}
+
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <AppContainer>
+    <App store={store} />
+  </AppContainer>,
   document.querySelector('#catalog-landing-page')
 );
+
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default; //eslint-disable-line
+    ReactDOM.render(
+      <AppContainer>
+        <NextApp store={store} />
+      </AppContainer>,
+      document.querySelector('#catalog-landing-page')
+    );
+  });
+}
 
 // Show the footer
 const footer = document.querySelector('#site-chrome-footer');

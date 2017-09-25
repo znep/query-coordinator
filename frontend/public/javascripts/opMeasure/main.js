@@ -2,7 +2,7 @@ import 'babel-polyfill-safe';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { AppContainer } from 'react-hot-loader';
 
 import airbrake from 'common/airbrake';
 
@@ -20,11 +20,24 @@ _.defer(function() {
   // Render the App, falling back to rendering an error if it fails.
   try {
     ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
+      <AppContainer>
+        <App store={store} />
+      </AppContainer>,
       document.querySelector('#app')
     );
+
+    // Hot Module Replacement API
+    if (module.hot) {
+      module.hot.accept('./App', () => {
+        const NextApp = require('./App').default; //eslint-disable-line
+        ReactDOM.render(
+          <AppContainer>
+            <NextApp store={store} />
+          </AppContainer>,
+          document.querySelector('#app')
+        );
+      });
+    }
   } catch (e) {
     // TODO: Catching-all makes stack traces hard to parse in a development context. The links
     // in the console don't take you to the code that threw. Instead, they take you to the

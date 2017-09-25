@@ -23,7 +23,16 @@ describe('App', function() {
   });
 
   it('renders', function() {
-    const element = renderComponentWithStore(App);
+    const element = renderComponent(App, {
+      store: getStore({
+        shareModal: {
+          isActive: false
+        },
+        authoringWorkflow: {
+          isActive: false
+        }
+      })
+    });
     assert.ok(element);
   });
 
@@ -31,12 +40,17 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         mode: ModeStates.EDIT,
+        shareModal: {
+          isActive: false
+        },
         authoringWorkflow: {
           isActive: false
         }
-      }));
+      })
+
+      element = renderComponent(App, { store });
     });
 
     it('renders an edit bar', () => {
@@ -66,27 +80,32 @@ describe('App', function() {
     });
 
     it('renders any visualizations', () => {
-      element = renderComponentWithStore(App, {}, getStore({
-          mode: ModeStates.EDIT,
-          authoringWorkflow: {
-            isActive: false
-          },
-          vifs: [mockVif]
-        }
-      ));
+      const store =  getStore({
+        mode: ModeStates.EDIT,
+        shareModal: {
+          isActive: false
+        },
+        authoringWorkflow: {
+          isActive: false
+        },
+        vifs: [mockVif]
+      });
+      element = renderComponent(App, { store });
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('renders edit visualization buttons', () => {
-      element = renderComponentWithStore(App, {}, getStore(
-        {
-          mode: ModeStates.EDIT,
-          authoringWorkflow: {
-            isActive: false
-          },
-          vifs: [mockVif, mockVif]
-        }
-      ));
+      const store = getStore({
+        mode: ModeStates.EDIT,
+        authoringWorkflow: {
+          isActive: false
+        },
+        shareModal: {
+          isActive: false
+        },
+        vifs: [mockVif, mockVif]
+      });
+      element = renderComponent(App, { store });
       const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
       assert.equal(editVisualizationButtons.length, 2);
     });
@@ -102,12 +121,16 @@ describe('App', function() {
     it('renders an AuthoringWorkflow', () => {
       const store = getStore({
         mode: ModeStates.EDIT,
+        shareModal: {
+          isActive: false
+        },
         authoringWorkflow: {
           isActive: true,
           vif: mockVif
         }
       });
-      element = renderComponentWithStore(App, {}, store);
+
+      element = renderComponent(App, { store });
       assert.ok(element.querySelector('.authoring-workflow-modal'));
     });
   });
@@ -116,11 +139,19 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         mode: ModeStates.PREVIEW,
+        shareModal: {
+          isActive: false
+        },
+        authoringWorkflow: {
+          isActive: false
+        },
         view: mockView,
         filters: [mockFilter]
-      }));
+      });
+
+      element = renderComponent(App, { store });
     });
 
     it('renders a preview bar', () => {
@@ -154,12 +185,28 @@ describe('App', function() {
     });
 
     it('renders any visualizations', () => {
-      element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.PREVIEW, vifs: [mockVif] }));
+      const store = getStore({
+        mode: ModeStates.PREVIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      });
+
+      element = renderComponent(App, { store });
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
-      element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.PREVIEW, vifs: [mockVif] }));
+      const store = getStore({
+        mode: ModeStates.PREVIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      });
+
+      element = renderComponent(App, { store });
       assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
@@ -172,11 +219,16 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = renderComponentWithStore(App, {}, getStore({
+      const store = getStore({
         mode: ModeStates.VIEW,
         view: mockView,
-        filters: [mockFilter]
-      }));
+        filters: [mockFilter],
+        shareModal: {
+          isActive: false
+        }
+      })
+
+      element = renderComponent(App, { store });
     });
 
     it('does not render a preview bar', () => {
@@ -210,12 +262,27 @@ describe('App', function() {
     });
 
     it('renders any visualizations', () => {
-      element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.VIEW, vifs: [mockVif] }));
+      const store = getStore({
+        mode: ModeStates.VIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      })
+      element = renderComponent(App, { store });
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
-      element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.VIEW, vifs: [mockVif] }));
+      const store = getStore({
+        mode: ModeStates.VIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      });
+
+      element = renderComponent(App, { store });
       assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 

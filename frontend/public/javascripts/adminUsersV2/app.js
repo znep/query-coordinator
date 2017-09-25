@@ -1,13 +1,23 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Provider } from 'react-redux';
 import { ConnectedUsersTable } from './components/users_table';
+import Localization from 'common/i18n/components/Localization';
 
-export const App = () => {
+export const App = ({ store }) => {
   return (
-    <div className="admin-users-app" >
-      <ConnectedUsersTable />
-    </div>
+    <Localization locale={serverConfig.locale || 'en'}>
+      <Provider store={store}>
+        <div className="admin-users-app">
+          <ConnectedUsersTable />
+        </div>
+      </Provider>
+    </Localization>
   );
 };
 
-export default connect()(App);
+App.propTypes = {
+  store: PropTypes.object.isRequired
+};
+
+export default App;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as Redux from 'redux';
-import * as ReactRedux from 'react-redux';
+import * as ReactHotLoader from 'react-hot-loader';
 
 import * as Middlewares from './middlewares';
 import rootReducer from './reducers';
@@ -31,8 +31,24 @@ let store = Redux.createStore(rootReducer, Redux.compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 
+const translations = store.getState().get('translations');
+
 ReactDOM.render(
-  <ReactRedux.Provider store={store}>
-    <App />
-  </ReactRedux.Provider>,
-  document.querySelector('#app'));
+  <ReactHotLoader.AppContainer>
+    <App store={store} translations={translations} />
+  </ReactHotLoader.AppContainer>,
+  document.querySelector('#app')
+);
+
+// Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('./containers/App/App', () => {
+    const NextApp = require('./containers/App/App').default; //eslint-disable-line
+    ReactDOM.render(
+      <ReactHotLoader.AppContainer>
+        <NextApp store={store} translations={translations} />
+      </ReactHotLoader.AppContainer>,
+      document.querySelector('#app')
+    );
+  });
+}

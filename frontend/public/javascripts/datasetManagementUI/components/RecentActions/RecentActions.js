@@ -22,11 +22,7 @@ const RecentActions = ({ activities, params }) => {
     })
   );
 
-  return (
-    <div>
-      {items}
-    </div>
-  );
+  return <div>{items}</div>;
 };
 
 RecentActions.propTypes = {

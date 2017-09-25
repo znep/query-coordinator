@@ -340,6 +340,18 @@
       var vizIds = $.isBlank(ds.visibleColumns) ? null :
         _.pluck(ds.visibleColumns, 'id');
       var dsSaved = function(newDS) {
+        switch (blist.feature_flags.ignore_metadata_jsonquery_property_in_view) {
+          case 'frontend':
+          case 'backend':
+          case 'all':
+            var nds = new Dataset(newDS);
+            var originalQuery = nds._getQueryGrouping();
+            nds._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
+            break;
+          case 'none':
+            // no need to sync queries
+            break;
+        }
         ds._savedRowSet = ds._activeRowSet;
         ds._update(newDS, true, false, true);
         if (!$.isBlank(vizIds) &&

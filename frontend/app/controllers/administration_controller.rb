@@ -1165,11 +1165,9 @@ class AdministrationController < ApplicationController
     run_access_check { feature_flag?(feature_flag, request) }
   end
 
-  # TODO EN-17760 replace this with a REAL right i.e. "manage_goals"
-  # manage_users is a placeholder for what used to be a role name check for "administrator"
   def check_can_see_goals
     run_access_check do
-      current_user.present? && (current_user.is_superadmin? || current_user.has_right?(UserRights::MANAGE_USERS))
+      current_user.present? && current_user.has_right?(UserRights::EDIT_GOALS)
     end
   end
 

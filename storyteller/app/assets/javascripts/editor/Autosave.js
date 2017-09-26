@@ -61,15 +61,23 @@ export default function Autosave(storyUid) {
 
   saveOnceSettled = _.debounce(saveASAP, autosaveDebounceMsec);
 
-  storyStore.addChangeListener(saveOnceSettled);
-  userSessionStore.addChangeListener(function() {
+  /**
+   * Subscriptions to stores and global events
+   */
+
+  function onReconnect() {
     // When the user session is re-established, reset the disabled flag and
     // trigger autosave.
     if (userSessionStore.hasValidSession()) {
       disabled = storySaveStatusStore.autosaveDisabled();
       saveOnceSettled();
     }
-  });
+  }
+
+  storyStore.addChangeListener(saveOnceSettled);
+
+  userSessionStore.addChangeListener(onReconnect);
+  window.addEventListener('online', onReconnect);
 
   // NOTE: This method was previously exposed so that other components could
   // trigger a save; however, changes to autosave behavior may have caused this

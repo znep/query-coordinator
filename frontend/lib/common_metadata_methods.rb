@@ -10,24 +10,11 @@ module CommonMetadataMethods
   class DatasetMetadataNotFound < RuntimeError; end
   class UnknownRequestError < RuntimeError; end
 
-  # A user's right to write metadata is currently determined by role.
-  # This is not sustainable but adding a right to a role involves writing a
-  # migration what parses JSON. The risk associated with that was deemed worse
-  # than keying off of the role.
-  # Note that bootstrapping old backend datasets is controlled by this as well.
-  ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer publisher_stories editor_stories)
-
-  #EN-18397: Leaving this role name check because we do not have a good way to represent this with rights currently
-  def role_allows_data_lens_creation?(role)
-    ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES.include?(role)
-  end
-
   def can_create_metadata?
     return false unless current_user
 
-    role_allows_data_lens_creation?(current_user.roleName) ||
-    current_user.is_owner?(dataset) ||
-    current_user.is_superadmin?
+    current_user.has_right?(UserRights::CREATE_DATA_LENS) ||
+    current_user.is_owner?(dataset)
   end
 
   def page_metadata_manager

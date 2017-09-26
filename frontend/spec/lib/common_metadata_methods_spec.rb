@@ -6,15 +6,21 @@ describe CommonMetadataMethods do
 
   class DummyClass
     include CommonMetadataMethods
+
+    def current_user ; end
+    def dataset ; end
   end
 
   let(:dummy_class_instance) { DummyClass.new }
+  let(:user) { double('User') }
 
   before do
     init_current_domain
     init_feature_flag_signaller
 
     allow(dummy_class_instance).to receive(:get_dataset_size).and_return(1)
+    allow(dummy_class_instance).to receive(:current_user).and_return(user)
+    allow(dummy_class_instance).to receive(:dataset).and_return({})
   end
 
   describe '#flag_subcolumns!' do
@@ -277,6 +283,33 @@ describe CommonMetadataMethods do
       dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
     end
 
+  end
+
+  describe 'can_create_metadata?' do
+    it 'should return false for no user' do
+      allow(dummy_class_instance).to receive(:current_user).and_return(nil)
+      expect(dummy_class_instance.can_create_metadata?).to eq(false)
+    end
+
+    it 'should return false for non-owner user without create_data_lens right' do
+      expect(user).to receive(:has_right?).with(UserRights::CREATE_DATA_LENS).and_return(false)
+      expect(user).to receive(:is_owner?).and_return(false)
+
+      expect(dummy_class_instance.can_create_metadata?).to eq(false)
+    end
+
+    it 'should return true for user with create_data_lens right' do
+      expect(user).to receive(:has_right?).with(UserRights::CREATE_DATA_LENS).and_return(true)
+
+      expect(dummy_class_instance.can_create_metadata?).to eq(true)
+    end
+
+    it 'should return true for owner user without create_data_lens right' do
+      expect(user).to receive(:has_right?).with(UserRights::CREATE_DATA_LENS).and_return(false)
+      expect(user).to receive(:is_owner?).and_return(true)
+
+      expect(dummy_class_instance.can_create_metadata?).to eq(true)
+    end
   end
 
 end

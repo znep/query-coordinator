@@ -481,5 +481,8 @@ DEPENDENCIES
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
 
+RUBY VERSION
+   ruby 2.3.5p376
+
 BUNDLED WITH
    1.15.4

@@ -945,7 +945,7 @@ function SvgVisualization($element, vif, options) {
       (referenceLine) => _.isFinite(referenceLine.value));
   }
 
-  this.showReferenceLineFlyout = function(element, referenceLines, isPercent) {
+  this.showReferenceLineFlyout = function(element, referenceLines, isPercent, flyoutOffset) {
     const index = parseInt(element.getAttribute('data-reference-line-index'), 10);
     const referenceLine = referenceLines[index];
 
@@ -976,7 +976,8 @@ function SvgVisualization($element, vif, options) {
       content: $table,
       rightSideHint: false,
       belowTarget: false,
-      dark: true
+      dark: true,
+      flyoutOffset
     };
 
     this.emitEvent(

@@ -872,7 +872,13 @@ function SvgHistogram($element, vif, options) {
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
         if (!isCurrentlyPanning()) {
-          self.showReferenceLineFlyout(this, referenceLines, false);
+          const underlayHeight = parseInt($(this).attr('height'), 10);
+          const flyoutOffset = {
+            left: d3.event.pageX,
+            top: $(this).offset().top +  (underlayHeight / 2)
+          };
+
+          self.showReferenceLineFlyout(this, referenceLines, false, flyoutOffset);
           $(this).attr('fill-opacity', 1);
         }
       }).

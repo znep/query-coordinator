@@ -1266,7 +1266,13 @@ function SvgColumnChart($element, vif, options) {
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
         if (!isCurrentlyPanning()) {
-          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked);
+          const underlayHeight = parseInt($(this).attr('height'), 10);
+          const flyoutOffset = {
+            left: d3.event.pageX,
+            top: $(this).offset().top +  (underlayHeight / 2)
+          };
+
+          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked, flyoutOffset);
           $(this).attr('fill-opacity', 1);
         }
       }).

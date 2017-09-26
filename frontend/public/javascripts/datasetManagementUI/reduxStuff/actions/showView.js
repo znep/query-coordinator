@@ -58,3 +58,19 @@ export function getRowCount(fourfour) {
         dispatch(editView(fourfour, { rowCount }));
       });
 }
+
+export function createSource(params) {
+  return () => {
+    return socrataFetch(dsmapiLinks.sourceCreate(params), {
+      method: 'POST',
+      body: JSON.stringify({
+        source_type: { type: 'view' }
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        console.log('resp', resp);
+      });
+  };
+}

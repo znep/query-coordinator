@@ -83,9 +83,10 @@ function createDataset() {
         headers: headers,
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
+        data: JSON.stringify({ action: {type: 'replace'} }),
         success: function() {
           document.location =
-            (locale ? locale[0] : '/') + 'd/' + newView.id + '/manage/revisions/0';
+            (locale ? locale[0] : '/') + 'd/' + newView.id + '/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
           handleRevisionError(

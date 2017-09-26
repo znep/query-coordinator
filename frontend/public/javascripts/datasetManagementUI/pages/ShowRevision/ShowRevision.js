@@ -3,7 +3,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import MetadataTable from 'containers/MetadataTableContainer';
-import SchemaPreview from 'containers/SchemaPreviewContainer';
+import SchemaPreview from 'components/SchemaPreview/SchemaPreview';
 import HomePaneSidebar from 'containers/HomePaneSidebarContainer';
 import TablePreview from 'containers/TablePreviewContainer';
 import RowDetails from 'components/RowDetails/RowDetails';
@@ -15,7 +15,7 @@ export function ShowRevision({ params, isPublishedDataset }) {
       <div className={styles.homeContent}>
         <MetadataTable />
         <div className={styles.schemaPreviewContainer}>
-          <SchemaPreview />
+          <SchemaPreview isPublishedDataset={isPublishedDataset} />
           <RowDetails
             fourfour={params.fourfour}
             revisionSeq={_.toNumber(params.revisionSeq)}

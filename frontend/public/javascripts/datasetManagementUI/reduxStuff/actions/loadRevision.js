@@ -64,6 +64,7 @@ function getCurrentRevision(params) {
     .then(({ resource }) => {
       return {
         id: resource.id,
+        action: resource.action,
         fourfour: resource.fourfour,
         metadata: resource.metadata,
         output_schema_id: resource.output_schema_id,

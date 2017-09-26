@@ -7,9 +7,9 @@ import NotificationList from 'containers/NotificationListContainer';
 import Modal from 'containers/ModalContainer';
 import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import { loadRevision } from 'reduxStuff/actions/loadRevision';
-import styles from './App.scss';
+import styles from './Home.scss';
 
-class App extends Component {
+class Home extends Component {
   constructor() {
     super();
     this.state = {
@@ -52,10 +52,10 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
+Home.propTypes = {
   children: PropTypes.element.isRequired,
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired
 };
 
-export default connect()(App);
+export default connect()(Home);

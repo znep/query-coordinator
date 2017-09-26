@@ -110,18 +110,21 @@ const RolesAdmin = connectLocalization(
   connect(mapStateToProps, mapDispatchToProps)(cssModules(UnstyledRolesAdmin, styles))
 );
 
-const createRolesAdmin = (serverConfig = {}) => {
+const createRolesAdminStore = (serverConfig = {}) => {
   const initialState = getInitialState(serverConfig);
-
   const middleware = [thunk];
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  const store = createStore(reducer(noop), initialState, composeEnhancers(applyMiddleware(...middleware)));
-  return renderWithLocalization(
+  return createStore(reducer(noop), initialState, composeEnhancers(applyMiddleware(...middleware)));
+};
+
+const App = ({store, serverConfig = {}}) =>
+  renderWithLocalization(
     serverConfig,
     <Provider store={store}>
       <RolesAdmin />
     </Provider>
   );
-};
 
-export { UnstyledRolesAdmin, RolesAdmin, createRolesAdmin };
+export { UnstyledRolesAdmin, RolesAdmin, createRolesAdminStore };
+
+export default App;

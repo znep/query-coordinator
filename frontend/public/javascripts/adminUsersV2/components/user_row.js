@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import { Dropdown, SocrataIcon } from 'common/components';
 import _ from 'lodash';
 import moment from 'moment';
@@ -7,22 +8,11 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class UserRow extends React.Component {
 
-  renderCheckbox() {
-    return (
-      <td>
-        <input
-          type="checkbox"
-          checked={this.props.isSelected}
-          onChange={this.props.onSelectionChange} />
-      </td>
-    );
-  }
-
   renderDisplayName() {
     return (
       <td>
         <SocrataIcon name="user" />
-        <a href={`/profile/${this.props.userId}`}>
+        <a href={`/profile/${this.props.id}`}>
           {this.props.screenName}
         </a>
       </td>
@@ -36,17 +26,17 @@ export class UserRow extends React.Component {
   }
 
   renderLastActive() {
-    const { I18n, lastActive } = this.props;
+    const { I18n, lastAuthenticatedAt } = this.props;
     let lastActiveText;
 
-    if (_.isUndefined(lastActive)) {
+    if (_.isUndefined(lastAuthenticatedAt)) {
       // users that have not logged in since we started tracking this
       lastActiveText = I18n.t('users.last_active.unknown');
-    } else if (moment(lastActive, 'X').isSame(moment(), 'day')) {
+    } else if (moment(lastAuthenticatedAt, 'X').isSame(moment(), 'day')) {
       // we only update once a day, no point in showing more granular than that
       lastActiveText = I18n.t('users.last_active.today');
     } else {
-      lastActiveText = moment(lastActive, 'X').fromNow();
+      lastActiveText = moment(lastAuthenticatedAt, 'X').fromNow();
     }
 
     return (<td>{lastActiveText}</td>);
@@ -65,51 +55,63 @@ export class UserRow extends React.Component {
   }
 
   renderRolePicker() {
+    const { availableRoles, I18n } = this.props;
+
+    const options = availableRoles.map((role) => {
+      const title = role.isDefault ?
+        I18n.t(`roles.default_roles.${role.name}.name`) :
+        role.name;
+      return {
+        title,
+        value: role.id
+      };
+    });
+
+
     return (
       <td className="role-picker-cell">
         <Dropdown
           onSelection={(selection) => this.props.onRoleChange(selection.value)}
-          options={this.props.availableRoles}
+          options={options}
           size="medium"
           value={_.isUndefined(this.props.pendingRole) ?
-            this.props.currentRole : this.props.pendingRole} />
+            this.props.roleId : this.props.pendingRole} />
             {this.renderPendingActionStatus()}
       </td>
     );
   }
 
-  renderActionMenu() {
-    return (
-      <td>...</td>
-    );
-  }
-
   render() {
     return (
-      <tr key={this.props.userId} className="result-list-row" >
-        {this.renderCheckbox()}
+      <tr key={this.props.id} className="result-list-row" >
         {this.renderDisplayName()}
         {this.renderEmail()}
         {this.renderLastActive()}
         {this.renderRolePicker()}
-        {this.renderActionMenu()}
       </tr>
     );
   }
 }
 
 UserRow.propTypes = {
-  isSelected: PropTypes.bool.isRequired,
-  onSelectionChange: PropTypes.func.isRequired,
   screenName: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  lastActive: PropTypes.number,
+  lastAuthenticatedAt: PropTypes.number,
   availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
-  currentRole: PropTypes.string.isRequired,
+  roleName: PropTypes.string.isRequired,
+  roleId: PropTypes.string.isRequired,
   pendingRole: PropTypes.string,
   onRoleChange: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 
-export const LocalizedUserRow = connectLocalization(UserRow);
+const mapStateToProps = (state) => {
+  return {
+    availableRoles: state.roles
+  };
+};
+
+export const LocalizedUserRow = connectLocalization(
+  connect(mapStateToProps)(UserRow)
+);

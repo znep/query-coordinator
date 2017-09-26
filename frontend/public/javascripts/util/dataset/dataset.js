@@ -340,6 +340,18 @@
       var vizIds = $.isBlank(ds.visibleColumns) ? null :
         _.pluck(ds.visibleColumns, 'id');
       var dsSaved = function(newDS) {
+        switch (blist.feature_flags.ignore_metadata_jsonquery_property_in_view) {
+          case 'frontend':
+          case 'backend':
+          case 'all':
+            var nds = new Dataset(newDS);
+            var originalQuery = nds._getQueryGrouping();
+            nds._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
+            break;
+          case 'none':
+            // no need to sync queries
+            break;
+        }
         ds._savedRowSet = ds._activeRowSet;
         ds._update(newDS, true, false, true);
         if (!$.isBlank(vizIds) &&
@@ -2341,6 +2353,32 @@
         callback(ds._unpublishedView);
       }
     },
+
+    getUnpublishedView: function(callback) {
+      var ds = this;
+      if ($.isBlank(ds._unpublishedView) && $.isBlank(ds.noUnpublishedViewAvailable)) {
+        ds.makeRequest({
+          url: '/views/{0}.json'.format(this.publishedViewUid),
+          params: {
+            method: 'getPublicationGroup',
+            stage: 'unpublished'
+          },
+          success: function(pv) {
+            ds._unpublishedView = new Dataset(pv);
+            callback(ds._unpublishedView);
+          },
+          error: function(xhr) {
+            if (JSON.parse(xhr.responseText).code == 'permission_denied') {
+              ds.noUnpublishedViewAvailable = true;
+            }
+            callback(ds._unpublishedView);
+          }
+        });
+      } else {
+        callback(ds._unpublishedView);
+      }
+    },
+
     isPublicationStageChangeAvailable: function(isPublished, resultCallback) {
       var ds = this;
       var controlsGridStatusKey = 'controls.grid.{0}'.format(isPublished ? 'published' : 'unpublished');

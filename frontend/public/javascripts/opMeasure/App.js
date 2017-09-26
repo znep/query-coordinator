@@ -1,7 +1,6 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { Provider } from 'react-redux';
 
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
@@ -22,13 +21,21 @@ export class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.mode !== this.props.mode) {
+    const { store } = this.props;
+    const { store: prevStore } = prevProps;
+    const { mode } = store.getState().view;
+    const { mode: prevMode } = prevStore.getState().view;
+
+    if (prevMode !== mode) {
       this.setSiteChromeVisibility();
     }
   }
 
   setSiteChromeVisibility() {
-    switch (this.props.mode) {
+    const { store } = this.props;
+    const { mode } = store.getState().view;
+
+    switch (mode) {
       case ModeStates.EDIT:
         document.body.classList.add('hide-site-chrome');
         document.body.classList.remove('preview-mode');
@@ -50,73 +57,86 @@ export class App extends Component {
   }
 
   renderEditMode() {
-    return (
-      <div className="measure-body edit-mode">
-        <EditBar />
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
+    const { store } = this.props;
 
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <MetricCard />
+    return (
+      <Provider store={store} >
+        <div className="measure-body edit-mode">
+          <EditBar />
+          <InfoPane />
+          <div className="measure-content">
+            <div className="measure-panes">
+              <PaneTabs />
+              <SummaryPane />
+              <MetadataPane />
+            </div>
+
+            <div className="measure-sidebar">
+              <ReportingPeriodSelector />
+              <MetricCard />
+            </div>
           </div>
+          <FeedbackPanel {...window.serverConfig} />
+          <EditModal />
         </div>
-        <FeedbackPanel {...window.serverConfig} />
-        <EditModal />
-      </div>
+      </Provider>
     );
   }
 
   renderPreviewMode() {
-    return (
-      <div className="measure-body preview-mode">
-        <PreviewBar />
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
+    const { store } = this.props;
 
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <MetricCard />
+    return (
+      <Provider store={store}>
+        <div className="measure-body preview-mode">
+          <PreviewBar />
+          <InfoPane />
+          <div className="measure-content">
+            <div className="measure-panes">
+              <PaneTabs />
+              <SummaryPane />
+              <MetadataPane />
+            </div>
+
+            <div className="measure-sidebar">
+              <ReportingPeriodSelector />
+              <MetricCard />
+            </div>
           </div>
+          <FeedbackPanel {...window.serverConfig} />
         </div>
-        <FeedbackPanel {...window.serverConfig} />
-      </div>
+      </Provider>
     );
   }
 
   renderViewMode() {
-    return (
-      <div className="measure-body">
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
+    const { store } = this.props;
 
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <MetricCard />
+    return (
+      <Provider store={store}>
+        <div className="measure-body">
+          <InfoPane />
+          <div className="measure-content">
+            <div className="measure-panes">
+              <PaneTabs />
+              <SummaryPane />
+              <MetadataPane />
+            </div>
+
+            <div className="measure-sidebar">
+              <ReportingPeriodSelector />
+              <MetricCard />
+            </div>
           </div>
+          <FeedbackPanel {...window.serverConfig} />
         </div>
-        <FeedbackPanel {...window.serverConfig} />
-      </div>
+      </Provider>
     );
   }
 
   render() {
-    const { mode } = this.props;
+    const { store } = this.props;
+    const { mode } = store.getState().view;
 
     switch (mode) {
       case ModeStates.EDIT: return this.renderEditMode();
@@ -130,11 +150,7 @@ export class App extends Component {
 }
 
 App.propTypes = {
-  mode: PropTypes.oneOf(_.values(ModeStates))
+  store: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return state.view;
-}
-
-export default connect(mapStateToProps)(App);
+export default App;

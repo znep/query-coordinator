@@ -32,10 +32,7 @@ class CatalogLandingPage
   end
 
   def self.may_activate?(request)
-    max_params_to_accept = [
-      FeatureFlags.value_for(:catalog_landing_page_allows_multiple_params, request: request).to_i,
-      1
-    ].max
+    max_params_to_accept = 1 # Original design wanted this configurable; maybe someday?
 
     return false if blacklisted_param_present?(request)
 

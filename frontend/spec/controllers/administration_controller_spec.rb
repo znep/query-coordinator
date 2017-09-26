@@ -115,27 +115,44 @@ describe AdministrationController do
 
   describe 'goals', :verify_stubs => false do
     describe 'GET /admin/goals' do
-      before(:each) do
-        init_environment
-        stub_administrator_user(subject)
-        allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
-      end
-
-      describe 'when govstat is enabled' do
-        let(:govstat_enabled) { true }
-
-        it 'renders' do
-          get :goals
-          expect(response).to have_http_status(:ok)
+      describe 'with edit_goals right' do
+        before(:each) do
+          init_environment
+          stub_user(subject, ['edit_goals'])
+          allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
+        end
+  
+        describe 'when govstat is enabled' do
+          let(:govstat_enabled) { true }
+  
+          it 'renders' do
+            get :goals
+            expect(response).to have_http_status(:ok)
+          end
+        end
+  
+        describe 'when govstat is disabled' do
+          let(:govstat_enabled) { false }
+  
+          it '404s' do
+            get :goals
+            expect(response).to have_http_status(:not_found)
+          end
         end
       end
+      
+      describe 'without view_goals right' do
+        before(:each) do
+          init_environment
+          stub_user(subject, [])
+          allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(true)
+        end
 
-      describe 'when govstat is disabled' do
-        let(:govstat_enabled) { false }
-
-        it '404s' do
-          get :goals
-          expect(response).to have_http_status(:not_found)
+        describe 'cannot see goals' do
+          it '403s' do
+            get :goals
+            expect(response).to have_http_status(:forbidden)
+          end
         end
       end
     end

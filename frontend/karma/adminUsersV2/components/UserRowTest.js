@@ -13,22 +13,13 @@ import moment from 'moment';
 describe('components/UserRow', () => {
   const defaultProps = {
     ...singleRowState,
-    onSelectionChange: sinon.spy(),
     onRoleChange: sinon.spy(),
     I18n: I18nJS
   };
 
-  it('renders a row with 6 columns when passed default props', () => {
+  it('renders a row with 4 columns when passed default props', () => {
     const component = shallow(<UserRow {...defaultProps} />);
-    expect(component.find('td')).to.have.length(6);
-  });
-
-  it('calls the onSelectionChange function when the checkbox is checked', () => {
-    const component = shallow(<UserRow {...defaultProps} />);
-    const checkbox = component.find('input');
-    checkbox.simulate('change');
-
-    expect(defaultProps.onSelectionChange.calledOnce).to.be.true;
+    expect(component.find('td')).to.have.length(4);
   });
 
   it('passes the onRoleChange function to the dropdown', () => {
@@ -41,7 +32,7 @@ describe('components/UserRow', () => {
 
   it('sets last active to unknown when nothing is passed in', () => {
     const component = shallow(<UserRow {...defaultProps} />);
-    const lastActive = component.find("td").at(3);
+    const lastActive = component.find("td").at(2);
 
     expect(lastActive.text()).to.eq('unknown');
   });
@@ -49,10 +40,10 @@ describe('components/UserRow', () => {
   it('sets last active to today when a recent time is passed in', () => {
     const props = {
       ...defaultProps,
-      lastActive: moment().hour(12).format('X')
+      lastAuthenticatedAt: parseInt(moment().hour(12).format('X'))
     };
     const component = shallow(<UserRow {...props} />);
-    const lastActive = component.find("td").at(3);
+    const lastActive = component.find("td").at(2);
 
     expect(lastActive.text()).to.eq('today');
   });
@@ -60,10 +51,10 @@ describe('components/UserRow', () => {
   it('sets last active to 7 days ago when a date of a week ago is passed in', () => {
     const props = {
       ...defaultProps,
-      lastActive: moment().subtract(1, 'week').format('X')
+      lastAuthenticatedAt: parseInt(moment().subtract(1, 'week').format('X'))
     };
     const component = shallow(<UserRow {...props} />);
-    const lastActive = component.find("td").at(3);
+    const lastActive = component.find("td").at(2);
 
     expect(lastActive.text()).to.eq('7 days ago');
   });

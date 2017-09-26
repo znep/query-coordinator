@@ -61,7 +61,8 @@ export class CatalogResults extends Component {
       millisecondsBeforeSearch: 60,
       mobile: isMobile,
       onChooseResult: changeQ,
-      onClearSearch: clearSearch
+      onClearSearch: clearSearch,
+      adminHeaderClasses: []
     };
 
     const clearFiltersProps = {

@@ -1,24 +1,27 @@
 import * as React  from 'react';
+import PropTypes from 'prop-types';
 import * as ReactRedux from 'react-redux';
 import * as Goals from '../../sections/goals';
 import * as Components from '../../components';
 
 import './App.scss';
 
-function App() {
+function App({store}) {
   return (
-    <div className="app-container admin-goals-page">
-      <Components.PreviewBar />
-      <div className="main-section" role="main">
-        <Components.HeaderBar />
-        <Goals.Page />
+    <ReactRedux.Provider store={store}>
+      <div className="app-container admin-goals-page">
+        <Components.PreviewBar />
+        <div className="main-section" role="main">
+          <Components.HeaderBar />
+          <Goals.Page />
+        </div>
       </div>
-    </div>
+    </ReactRedux.Provider>
   );
 }
 
-const mapStateToProps = state => ({
-  translations: state.get('translations')
-});
+App.propTypes = {
+  store: PropTypes.object.isRequired
+};
 
-export default ReactRedux.connect(mapStateToProps, null)(App);
+export default App;

@@ -8,6 +8,12 @@ var identifier = path.basename(__filename, '.config.js');
 
 var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
 
+const addPolyfill = () => {
+  let entry = common.withHotModuleEntries({ main: './main' });
+  entry.main = ['babel-polyfill'].concat(entry.main);
+  return entry;
+};
+
 if (!common.isProduction) {
   // mock-fetch apparently thinks it should run in node and so includes the
   // node-fetch version of fetch in the bundle. It tries to require this module,
@@ -24,7 +30,7 @@ module.exports = _.defaultsDeep(
       common.frontendRoot,
       'public/javascripts/datasetManagementUI'
     ),
-    entry: common.withHotModuleEntries({ main: ['babel-polyfill', './main'] }),
+    entry: addPolyfill(),
     output: common.getOutput(identifier),
     eslint: common.getEslintConfig(
       'public/javascripts/datasetManagementUI/.eslintrc.json'

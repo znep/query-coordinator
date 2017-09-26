@@ -30,10 +30,6 @@ module AdministrationHelper
   end
 
   def render_admin_users_v2_data
-    roled_users = Cetera::Utils.user_search_client.find_all_with_roles(request_id, forwardable_session_cookies)
-    user_results = Cetera::Results::UserSearchResult.new(roled_users).results
-    users_list = user_results.sort_by(&:sort_key)
-    initial_state = { users: users_list }
 
     server_config = {
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
@@ -46,9 +42,9 @@ module AdministrationHelper
     }
 
     translations = LocaleCache.render_partial_translations(:users)
+    translations.deep_merge!(LocaleCache.render_partial_translations(:roles))
 
     javascript_tag(%Q(
-      window.initialState = #{json_escape(initial_state.to_json)};
       window.serverConfig = #{json_escape(server_config.to_json)};
       window.translations = #{json_escape(translations.to_json)};
     ))

@@ -1,79 +1,100 @@
 export const initialState = {
   users: [
     {
+      "id": "beft-u67k",
+      "screenName": "Charlotte West",
+      "email": "charlotte.west@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1,
+      "lastAuthenticatedAt": 1504820409,
+      "flags": [
+        "admin"
+      ],
+      "profileImageUrlLarge": "/api/users/beft-u67k/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/beft-u67k/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/beft-u67k/profile_images/TINY"
+    },
+    {
       "id": "nm8x-zke6",
       "screenName": "Publisher",
       "email": "publisher@test-socrata.com",
-      "roleName": "publisher"
+      "roleName": "publisher",
+      "roleId": 5,
+      "lastAuthenticatedAt": 1506318420
     },
     {
       "id": "mhkx-8kwy",
       "screenName": "Test Admin",
       "email": "test-admin@socrata.com",
       "roleName": "administrator",
-      "profile_image_url_large": "/api/users/mhkx-8kwy/profile_images/LARGE",
-      "profile_image_url_medium": "/api/users/mhkx-8kwy/profile_images/THUMB",
-      "profile_image_url_small": "/api/users/mhkx-8kwy/profile_images/TINY"
-    },
-    {
-      "id": "beft-u67k",
-      "screenName": "Charlotte West",
-      "email": "charlotte.west@socrata.com",
-      "roleName": "administrator",
-      "flags": [
-        "admin"
-      ],
-      "profile_image_url_large": "/api/users/beft-u67k/profile_images/LARGE",
-      "profile_image_url_medium": "/api/users/beft-u67k/profile_images/THUMB",
-      "profile_image_url_small": "/api/users/beft-u67k/profile_images/TINY"
-    },
-    {
-      "id": "9897-w5yb",
-      "screenName": "Ahmad",
-      "email": "ahmadm@solutionsiq.com",
-      "roleName": "administrator"
+      "roleId": 1,
+      "lastAuthenticatedAt": 1506369346,
+      "profileImageUrlLarge": "/api/users/mhkx-8kwy/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/mhkx-8kwy/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/mhkx-8kwy/profile_images/TINY"
     },
     {
       "id": "w479-v6x6",
       "screenName": "Nithya Chandrasekaran",
       "email": "nithya.chandrasekaran@socrata.com",
-      "roleName": "administrator"
+      "roleName": "administrator",
+      "roleId": 1
+    },
+    {
+      "id": "9897-w5yb",
+      "screenName": "Ahmad",
+      "email": "ahmadm@solutionsiq.com",
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "tb3n-eazg",
       "screenName": "Daan Lindhout",
       "email": "daan.lindhout@socrata.com",
-      "roleName": "administrator"
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "r92r-7bgd",
       "screenName": "GiacomoSecondary",
       "email": "giacomo.ferrari+secondary@socrata.com",
-      "roleName": "publisher"
-    },
-    {
-      "id": "7se7-szq3",
-      "screenName": "Alicia Brown",
-      "email": "alicia.brown@socrata.com",
-      "roleName": "publisher"
-    },
-    {
-      "id": "rzq4-6p3n",
-      "screenName": "Amy",
-      "email": "amruta.ghate@socrata.com",
-      "roleName": "administrator"
+      "roleName": "publisher",
+      "roleId": 5
     },
     {
       "id": "xn3w-p8iw",
       "screenName": "marc slemko normal admin",
       "email": "marc.slemko+normal+admin@socrata.com",
-      "roleName": "administrator"
+      "roleName": "administrator",
+      "roleId": 1
+    },
+    {
+      "id": "hkif-c2th",
+      "screenName": "anuaug01!",
+      "email": "anu+aug01!@socrata.com",
+      "roleName": "publisher",
+      "roleId": 5
+    },
+    {
+      "id": "rzq4-6p3n",
+      "screenName": "Amy",
+      "email": "amruta.ghate@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1
+    },
+    {
+      "id": "7se7-szq3",
+      "screenName": "Alicia Brown",
+      "email": "alicia.brown@socrata.com",
+      "roleName": "publisher",
+      "roleId": 5
     },
     {
       "id": "6ber-7nvz",
       "screenName": "Megan Schneider",
       "email": "megan.schneider@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ]
@@ -83,33 +104,40 @@ export const initialState = {
       "screenName": "Christian Hoogerheyde",
       "email": "christian.hoogerheyde@socrata.com",
       "roleName": "publisher",
+      "roleId": 5,
       "flags": [
         "admin"
-      ]
+      ],
+      "profileImageUrlLarge": "/api/users/7fnw-cap2/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/7fnw-cap2/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/7fnw-cap2/profile_images/TINY"
+    },
+    {
+      "id": "e3ry-67d9",
+      "screenName": "admin",
+      "email": "admin1@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "sueu-b2kk",
       "screenName": "Joe Nunnelley",
       "email": "joe.nunnelley@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ],
-      "profile_image_url_large": "/api/users/sueu-b2kk/profile_images/LARGE",
-      "profile_image_url_medium": "/api/users/sueu-b2kk/profile_images/THUMB",
-      "profile_image_url_small": "/api/users/sueu-b2kk/profile_images/TINY"
-    },
-    {
-      "id": "e3ry-67d9",
-      "screenName": "admin",
-      "email": "admin1@socrata.com",
-      "roleName": "administrator"
+      "profileImageUrlLarge": "/api/users/sueu-b2kk/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/sueu-b2kk/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/sueu-b2kk/profile_images/TINY"
     },
     {
       "id": "83j2-86si",
       "screenName": "Justin Haynes",
       "email": "justin.haynes@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ]
@@ -118,55 +146,73 @@ export const initialState = {
       "id": "44dt-4qun",
       "screenName": "Test Publisher",
       "email": "test-publisher@test-socrata.com",
-      "roleName": "publisher"
-    },
-    {
-      "id": "wuxv-kab2",
-      "screenName": "Anna Sapek",
-      "email": "anna.sapek@socrata.com",
-      "roleName": "viewer"
+      "roleName": "publisher",
+      "roleId": 5
     },
     {
       "id": "758t-wwms",
       "screenName": "Anu Hiremat",
       "email": "anu+1@socrata.com",
-      "roleName": "editor"
+      "roleName": "editor",
+      "roleId": 3
+    },
+    {
+      "id": "wuxv-kab2",
+      "screenName": "Anna Sapek",
+      "email": "anna.sapek@socrata.com",
+      "roleName": "viewer",
+      "roleId": 7
     },
     {
       "id": "fnnt-g3t5",
       "screenName": "Thomas Engstrom",
       "email": "thomas.engstrom@socrata.com",
-      "roleName": "viewer"
-    },
-    {
-      "id": "evxj-z4fi",
-      "screenName": "Dylan gmail",
-      "email": "dylanbussone@gmail.com",
-      "roleName": "designer"
-    },
-    {
-      "id": "ps4y-dzza",
-      "screenName": "Bjorn Swenson",
-      "email": "bjorn.swenson@socrata.com",
-      "roleName": "administrator",
-      "flags": [
-        "admin"
-      ]
+      "roleName": "viewer",
+      "roleId": 7
     },
     {
       "id": "bwqe-heg7",
       "screenName": "Ori Pleban",
       "email": "ori.pleban@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ]
+    },
+    {
+      "id": "ps4y-dzza",
+      "screenName": "Bjorn Swenson",
+      "email": "bjorn.swenson@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1,
+      "flags": [
+        "admin"
+      ]
+    },
+    {
+      "id": "evxj-z4fi",
+      "screenName": "Dylan gmail",
+      "email": "dylanbussone@gmail.com",
+      "roleName": "designer",
+      "roleId": 2
     },
     {
       "id": "m5rm-upnh",
       "screenName": "Courtney Spurgeon",
       "email": "courtney.spurgeon@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
+      "flags": [
+        "admin"
+      ]
+    },
+    {
+      "id": "4nr6-5nbk",
+      "screenName": "George Matter",
+      "email": "george.matter@socrata.com",
+      "roleName": "viewer",
+      "roleId": 7,
       "flags": [
         "admin"
       ]
@@ -175,13 +221,15 @@ export const initialState = {
       "id": "7j4s-zrf6",
       "screenName": "Abhay",
       "email": "asadadekar@solutionsiq.com",
-      "roleName": "publisher"
+      "roleName": "publisher",
+      "roleId": 5
     },
     {
-      "id": "4nr6-5nbk",
-      "screenName": "George Matter",
-      "email": "george.matter@socrata.com",
-      "roleName": "viewer",
+      "id": "mx6q-6sef",
+      "screenName": "Cam Caldwell",
+      "email": "cam@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ]
@@ -191,136 +239,181 @@ export const initialState = {
       "screenName": "Stuart Gano",
       "email": "stuart.gano@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
       "flags": [
         "admin"
       ]
     },
     {
-      "id": "mx6q-6sef",
-      "screenName": "Cam Caldwell",
-      "email": "cam@socrata.com",
-      "roleName": "administrator",
-      "flags": [
-        "admin"
-      ]
-    },
-    {
-      "id": "qsxn-jk7u",
-      "screenName": "test editor",
-      "email": "test-editor@socrata.com",
-      "roleName": "editor"
+      "id": "t5x7-43cq",
+      "screenName": "William Connelly",
+      "email": "bill.connelly@socrata.com",
+      "roleName": "publisher_stories",
+      "roleId": 6
     },
     {
       "id": "fehv-7579",
       "screenName": "dataspace-demo@test-socrata.com",
       "email": "dataspace-demo@test-socrata.com",
-      "roleName": "administrator"
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "r835-cp5n",
       "screenName": "Mustafa Simav",
       "email": "mustafa@vngrs.com",
       "roleName": "administrator",
-      "profile_image_url_large": "/api/users/r835-cp5n/profile_images/LARGE",
-      "profile_image_url_medium": "/api/users/r835-cp5n/profile_images/THUMB",
-      "profile_image_url_small": "/api/users/r835-cp5n/profile_images/TINY"
+      "roleId": 1,
+      "profileImageUrlLarge": "/api/users/r835-cp5n/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/r835-cp5n/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/r835-cp5n/profile_images/TINY"
     },
     {
-      "id": "t5x7-43cq",
-      "screenName": "William Connelly",
-      "email": "bill.connelly@socrata.com",
-      "roleName": "publisher_stories"
+      "id": "qsxn-jk7u",
+      "screenName": "test editor",
+      "email": "test-editor@socrata.com",
+      "roleName": "editor",
+      "roleId": 3,
+      "lastAuthenticatedAt": 1505813764
+    },
+    {
+      "id": "d5ic-m386",
+      "screenName": "Colin Spikes",
+      "email": "colin.spikes@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "qydr-ybr9",
       "screenName": "Anu Hiremath",
       "email": "anu2629@gmail.com",
-      "roleName": "viewer"
+      "roleName": "viewer",
+      "roleId": 7
+    },
+    {
+      "id": "qgwu-xikr",
+      "screenName": "Adrienne Greenberg",
+      "email": "adrienne.greenberg@socrata.com",
+      "roleName": "administrator",
+      "roleId": 1
+    },
+    {
+      "id": "m8iv-9z9t",
+      "screenName": "Test Editor",
+      "email": "test-editor@test-socrata.com",
+      "roleName": "editor",
+      "roleId": 3
     },
     {
       "id": "t838-awjh",
       "screenName": "Mission Control User",
       "email": "mission-control-l@socrata.com",
       "roleName": "administrator",
+      "roleId": 1,
+      "lastAuthenticatedAt": 1506339698,
       "flags": [
         "admin"
       ],
-      "profile_image_url_large": "/api/users/t838-awjh/profile_images/LARGE",
-      "profile_image_url_medium": "/api/users/t838-awjh/profile_images/THUMB",
-      "profile_image_url_small": "/api/users/t838-awjh/profile_images/TINY"
-    },
-    {
-      "id": "m8iv-9z9t",
-      "screenName": "Test Editor",
-      "email": "test-editor@test-socrata.com",
-      "roleName": "editor"
-    },
-    {
-      "id": "qgwu-xikr",
-      "screenName": "Adrienne Greenberg",
-      "email": "adrienne.greenberg@socrata.com",
-      "roleName": "administrator"
-    },
-    {
-      "id": "d5ic-m386",
-      "screenName": "Colin Spikes",
-      "email": "colin.spikes@socrata.com",
-      "roleName": "administrator"
+      "profileImageUrlLarge": "/api/users/t838-awjh/profile_images/LARGE",
+      "profileImageUrlMedium": "/api/users/t838-awjh/profile_images/THUMB",
+      "profileImageUrlSmall": "/api/users/t838-awjh/profile_images/TINY"
     },
     {
       "id": "68ep-3ucj",
       "screenName": "Test Publisher",
       "email": "test-publisher@socrata.com",
-      "roleName": "publisher"
+      "roleName": "publisher",
+      "roleId": 5,
+      "lastAuthenticatedAt": 1505972051
     },
     {
       "id": "ewtx-ud7m",
       "screenName": "Administrator",
       "email": "admin@test-socrata.com",
-      "roleName": "administrator"
+      "roleName": "administrator",
+      "roleId": 1
     },
     {
       "id": "invj-skv9",
       "screenName": "anuapr18!",
       "email": "anu+apr18!@socrata.com",
-      "roleName": "editor"
+      "roleName": "editor",
+      "roleId": 3
     },
     {
       "id": "cr53-8rh5",
       "screenName": "Test Viewer",
       "email": "test-viewer@test-socrata.com",
-      "roleName": "viewer"
+      "roleName": "viewer",
+      "roleId": 7
     }
   ],
-  selectAll: false
+  roles: [
+    {
+      "id": "2",
+      "name": "designer"
+    },
+    {
+      "id": "3",
+      "name": "editor"
+    },
+    {
+      "id": "5",
+      "name": "publisher"
+    },
+    {
+      "id": "7",
+      "name": "viewer"
+    },
+    {
+      "id": "4",
+      "name": "editor_stories"
+    },
+    {
+      "id": "6",
+      "name": "publisher_stories"
+    },
+    {
+      "id": "1",
+      "name": "administrator"
+    }
+  ]
 };
 
 export const singleRowState = {
-  isSelected: false,
   screenName: 'Justin Bieber',
-  userId: 'abcd-1234',
+  id: 'abcd-1234',
   email: 'burrito@despacito.com',
-  currentRole: 'administrator',
+  roleName: 'administrator',
+  roleId: '1',
   availableRoles: [
     {
-      title: 'Administrator',
-      value: 'administrator'
+      "id": 2,
+      "name": "designer"
     },
     {
-      title: 'Designer',
-      value: 'designer'
+      "id": 3,
+      "name": "editor"
     },
     {
-      title: 'Editor',
-      value: 'editor'
+      "id": 5,
+      "name": "publisher"
     },
     {
-      title: 'Publisher',
-      value: 'publisher'
+      "id": 7,
+      "name": "viewer"
     },
     {
-      title: 'Viewer',
-      value: 'viewer'
+      "id": 4,
+      "name": "editor_stories"
+    },
+    {
+      "id": 6,
+      "name": "publisher_stories"
+    },
+    {
+      "id": 1,
+      "name": "administrator"
     }
   ]
 };

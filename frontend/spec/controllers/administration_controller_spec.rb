@@ -115,10 +115,10 @@ describe AdministrationController do
 
   describe 'goals', :verify_stubs => false do
     describe 'GET /admin/goals' do
-      describe 'with edit_goals right' do
+      describe 'with manage_goals right' do
         before(:each) do
           init_environment
-          stub_user(subject, ['edit_goals'])
+          stub_user(subject, [UserRights::MANAGE_GOALS])
           allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
         end
   

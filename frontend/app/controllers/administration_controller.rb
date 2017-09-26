@@ -1167,7 +1167,7 @@ class AdministrationController < ApplicationController
 
   def check_can_see_goals
     run_access_check do
-      current_user.present? && current_user.has_right?(UserRights::EDIT_GOALS)
+      current_user.present? && current_user.has_right?(UserRights::MANAGE_GOALS)
     end
   end
 

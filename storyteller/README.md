@@ -210,6 +210,19 @@ And migrating a different region might look like this:
 
     bundle exec rake aws:migrate[eu-west-1,eu-west-1-prod]
 
+### Asset purging
+
+Due to the fact that Storyteller creates immutable data — that is, neither draft stories
+nor published stories nor blocks are modified by normal user operations — we end up creating
+a bunch of data that is effectively unreachable. In rare cases, the accumulated cruft can cause
+system operations to take a long time. A purge script is provided to mark a subset of cruft as
+deleted, which can restore system operations to normal running time.
+
+    # see purge.rb for details
+    bin/rake purge
+
+Purging of unreachable S3 assets has not yet been implemented.
+
 ### Profiling
 
 The `rack_mini_profiler` and `flamegraph` gems have been installed and are automatically

@@ -2,10 +2,10 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import App, { App as PureApp } from 'App';
 import { ModeStates } from 'lib/constants';
-import { getStore } from '../testStore';
-import mockFilter from '../data/mockFilter';
-import mockView from '../data/mockView';
-import mockVif from '../data/mockVif';
+import { getStore } from './testStore';
+import mockFilter from './data/mockFilter';
+import mockView from './data/mockView';
+import mockVif from './data/mockVif';
 
 describe('App', function() {
   let server;
@@ -23,16 +23,7 @@ describe('App', function() {
   });
 
   it('renders', function() {
-    const element = renderComponent(App, {
-      store: getStore({
-        shareModal: {
-          isActive: false
-        },
-        authoringWorkflow: {
-          isActive: false
-        }
-      })
-    });
+    const element = renderComponentWithStore(App);
     assert.ok(element);
   });
 
@@ -50,7 +41,7 @@ describe('App', function() {
         }
       })
 
-      element = renderComponent(App, { store });
+      element = element = renderComponentWithStore(App, {}, store)
     });
 
     it('renders an edit bar', () => {
@@ -90,7 +81,7 @@ describe('App', function() {
         },
         vifs: [mockVif]
       });
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
@@ -105,7 +96,7 @@ describe('App', function() {
         },
         vifs: [mockVif, mockVif]
       });
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
       assert.equal(editVisualizationButtons.length, 2);
     });
@@ -130,7 +121,7 @@ describe('App', function() {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.ok(element.querySelector('.authoring-workflow-modal'));
     });
   });
@@ -151,7 +142,7 @@ describe('App', function() {
         filters: [mockFilter]
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
     });
 
     it('renders a preview bar', () => {
@@ -193,7 +184,7 @@ describe('App', function() {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
@@ -206,7 +197,7 @@ describe('App', function() {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
@@ -228,7 +219,7 @@ describe('App', function() {
         }
       })
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
     });
 
     it('does not render a preview bar', () => {
@@ -269,7 +260,7 @@ describe('App', function() {
           isActive: false
         }
       })
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
@@ -282,7 +273,7 @@ describe('App', function() {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
       assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 

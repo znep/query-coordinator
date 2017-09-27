@@ -9,7 +9,7 @@ import airbrake from 'common/airbrake';
 import I18n from 'common/i18n';
 
 import store from './store';
-import App from './App';
+import Root from './root';
 
 if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
@@ -21,18 +21,18 @@ _.defer(function() {
   try {
     ReactDOM.render(
       <AppContainer>
-        <App store={store} />
+        <Root store={store} />
       </AppContainer>,
       document.querySelector('#app')
     );
 
     // Hot Module Replacement API
     if (module.hot) {
-      module.hot.accept('./App', () => {
-        const NextApp = require('./App').default; //eslint-disable-line
+      module.hot.accept('./root', () => {
+        const NextRoot = require('./root').default; //eslint-disable-line
         ReactDOM.render(
           <AppContainer>
-            <NextApp store={store} />
+            <NextRoot store={store} />
           </AppContainer>,
           document.querySelector('#app')
         );

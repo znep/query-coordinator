@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
+import { connect } from 'react-redux';
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
 import EditBar from './components/EditBar';
@@ -25,12 +25,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, [
-      'setSiteChromeVisibility',
-      'renderEditMode',
-      'renderPreviewMode',
-      'renderViewMode'
-    ]);
+    _.bindAll(this, ['setSiteChromeVisibility', 'renderEditMode', 'renderPreviewMode', 'renderViewMode']);
   }
 
   componentDidMount() {
@@ -38,19 +33,13 @@ export class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { store } = this.props;
-    const { store: prevStore } = prevProps;
-    const { mode } = store.getState();
-    const { mode: prevMode } = prevStore.getState();
-
-    if (prevMode !== mode) {
+    if (prevProps.mode !== this.props.mode) {
       this.setSiteChromeVisibility();
     }
   }
 
   setSiteChromeVisibility() {
-    const { store } = this.props;
-    const { mode } = store.getState();
+    const { mode } = this.props;
 
     const adminHeader = document.body.querySelector('#site-chrome-admin-header');
 
@@ -79,74 +68,64 @@ export class App extends Component {
   }
 
   renderEditMode() {
-    const { store } = this.props;
-
     return (
-      <Provider store={store} >
-        <div>
-          <EditBar />
-          <div className="visualization-canvas-body edit-mode">
-            <InfoPane />
-            <FilterBar isReadOnly={false} />
-            <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
-            <Table />
-          </div>
-          <AuthoringWorkflowModal />
-          <ShareVisualizationModal />
-          <EditMenu />
-          <FeedbackPanel {...window.serverConfig} />
+      <div>
+        <EditBar />
+        <div className="visualization-canvas-body edit-mode">
+          <InfoPane />
+          <FilterBar isReadOnly={false} />
+          <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
+          <Table />
         </div>
-      </Provider>
+        <AuthoringWorkflowModal />
+        <ShareVisualizationModal />
+        <EditMenu />
+        <FeedbackPanel {...window.serverConfig} />
+      </div>
     );
   }
 
   renderPreviewMode() {
-    const { store } = this.props;
-
     return (
-      <Provider store={store} >
-        <div>
-          <PreviewBar />
-          <div className="visualization-canvas-body preview-mode">
-            <InfoPane />
-            <FilterBar />
-            <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.preview} />
-            <Table />
-            <FeedbackPanel {...window.serverConfig} />
-          </div>
-          <ShareVisualizationModal />
+      <div>
+        <PreviewBar />
+        <div className="visualization-canvas-body preview-mode">
+          <InfoPane />
+          <FilterBar />
+          <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.preview} />
+          <Table />
+          <FeedbackPanel {...window.serverConfig} />
         </div>
-      </Provider>
+        <ShareVisualizationModal />
+      </div>
     );
   }
 
   renderViewMode() {
-    const { store } = this.props;
-
     return (
-      <Provider store={store} >
-        <div>
-          <div className="visualization-canvas-body">
-            <InfoPane />
-            <FilterBar />
-            <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.view} />
-            <Table />
-            <FeedbackPanel {...window.serverConfig} />
-          </div>
-          <ShareVisualizationModal />
+      <div>
+        <div className="visualization-canvas-body">
+          <InfoPane />
+          <FilterBar />
+          <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.view} />
+          <Table />
+          <FeedbackPanel {...window.serverConfig} />
         </div>
-      </Provider>
+        <ShareVisualizationModal />
+      </div>
     );
   }
 
   render() {
-    const { store } = this.props;
-    const { mode } = store.getState();
+    const { mode } = this.props;
 
     switch (mode) {
-      case ModeStates.EDIT: return this.renderEditMode();
-      case ModeStates.PREVIEW: return this.renderPreviewMode();
-      case ModeStates.VIEW: return this.renderViewMode();
+      case ModeStates.EDIT:
+        return this.renderEditMode();
+      case ModeStates.PREVIEW:
+        return this.renderPreviewMode();
+      case ModeStates.VIEW:
+        return this.renderViewMode();
 
       default:
         throw new Error(`invalid mode: ${mode}`);
@@ -155,7 +134,11 @@ export class App extends Component {
 }
 
 App.propTypes = {
-  store: PropTypes.object.isRequired
+  mode: PropTypes.oneOf(_.values(ModeStates)).isRequired
 };
 
-export default App;
+function mapStateToProps(state) {
+  return _.pick(state, 'mode');
+}
+
+export default connect(mapStateToProps)(App);

@@ -21,6 +21,7 @@ sudo chown jenkins ${HOME}/.bundle/config
 cp frontend/Gemfile ${HOME}
 cp frontend/Gemfile.lock ${HOME}
 cp frontend/package.json ${HOME}
+cp .ruby-version ${HOME}
 sudo mkdir /home/common
 sudo cp -R common/site_chrome /home/common/site_chrome
 

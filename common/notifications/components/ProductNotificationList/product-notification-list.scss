@@ -14,9 +14,11 @@
 }
 
 .list {
+  margin: 0;
   max-height: calc(100% - #{$footerBarHeight});
   overflow-x: hidden;
   overflow-y: auto;
+  padding: 0;
 
   &.has-no-view-older-link {
     max-height: 100%;

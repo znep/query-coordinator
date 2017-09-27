@@ -25,6 +25,8 @@ module VisualizationCanvasHelper
       :customConfigurations => visualization_canvas_configurations,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
+      :locale => I18n.locale.to_s,
+      :localePrefix => locale_prefix,
       :usersnapProjectID => 'e4969b77-3ec6-4628-a022-6c12ba02cbea'
     }
 

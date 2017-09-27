@@ -1,5 +1,7 @@
 source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual'
 
+ruby File.read('.ruby-version').strip
+
 # Declare your gem's dependencies in socrata_site_chrome.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.

@@ -89,7 +89,7 @@ if [ -f ${HOME}/.ruby-version ]; then
 elif [ -f .ruby-version ]; then
   RUBY_VERSION=`cat .ruby-version`
 else
-  RUBY_VERSION=2.3.4 # Current as of May 17th, 2017
+  RUBY_VERSION=2.3.5 # Current as of Sep 26th, 2017
 fi
 
 # (StanR) - removing this temporarily
@@ -98,7 +98,7 @@ rbenv install -f ${RUBY_VERSION}
 rbenv global ${RUBY_VERSION}
 gem install bundler
 
-bundle install --without development common --deployment  
+bundle install --without development common --deployment
 rbenv rehash
 
 ###########################################

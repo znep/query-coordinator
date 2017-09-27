@@ -159,6 +159,7 @@
     "style-loader": "0.13.0",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",
+    "text-encoding": "^0.6.4",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0",
     "uuid": "3.1.0",

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import encoding from 'text-encoding';
 import utils from 'common/js_utils';
 import SoqlDataProvider from './SoqlDataProvider';
 import SoqlHelpers from './SoqlHelpers';
@@ -852,13 +853,16 @@ function makeValueComparator(direction, numeric) {
   };
 }
 
-function chunkArrayByLength(arr, maxChunkLength = 2000) {
+function chunkArrayByLength(arr, maxChunkLength = 1400, chunkByBytes = true) {
+  const chunkFn = (chunkByBytes
+                   ? (str) => (new encoding.TextEncoder('utf-8').encode(str)).length
+                   : (str) => _.size(str));
   let res = [];
   let currentChunk = [];
   let currentChunkLength = 0;
   _.forEach(arr, (elt) => {
     currentChunk.push(elt);
-    currentChunkLength += _.size(elt);
+    currentChunkLength += chunkFn(elt);
     if (currentChunkLength >= maxChunkLength) {
       res.push(currentChunk);
       currentChunk = [];

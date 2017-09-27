@@ -50,24 +50,24 @@
   &.unread:after {
     display: block;
   }
+}
 
-  :global(.site-chrome-small) {
-    & .button {
-      height: 32px;
-      padding: 6px 8px 2px;
+:global(.site-chrome-small) {
+  & .button {
+    height: 32px;
+    padding: 6px 12px 2px;
 
-      &:after {
-        left: 17px;
-        top: 8px;
-        width: 6px;
-      }
+    &:after {
+      left: 17px;
+      top: 8px;
+      width: 6px;
+    }
 
-      & :global(.socrata-icon) {
-        &,
-        & svg {
-          height: 12px;
-          width: 12px;
-        }
+    & :global(.socrata-icon) {
+      &,
+      & svg {
+        height: 14px;
+        width: 14px;
       }
     }
   }

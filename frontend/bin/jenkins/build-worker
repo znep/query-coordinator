@@ -93,6 +93,11 @@ else
   RUBY_VERSION=2.3.5 # Current as of Sep 26th, 2017
 fi
 
+# Install the OLDS - Temporary Hack. Randy and I are co-conspirators
+rbenv install -f 2.3.4
+rbenv global 2.3.4
+gem install bundler
+
 # (StanR) - removing this temporarily
 #RUBY_CONFIGURE_OPTS=--enable-shared rbenv install -f ${RUBY_VERSION}
 rbenv install -f ${RUBY_VERSION}

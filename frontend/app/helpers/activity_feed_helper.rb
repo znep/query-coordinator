@@ -5,6 +5,21 @@ module ActivityFeedHelper
     javascript_tag("var initialData = {activities: #{activities_json}, pager_info: #{pager_info_json}}")
   end
 
+  def activity_feed_translations
+    parts = [
+      LocalePart.screens.admin.jobs,
+      LocalePart.plugins.daterangepicker,
+      LocalePart.table,
+      LocalePart.shared.components.filter_bar
+    ]
+
+    LocaleCache.render_translations parts
+  end
+
+  def render_activity_feed_translations
+    javascript_tag "window.translations = #{activity_feed_translations.to_json}"
+  end
+
   def date_and_relative_day(time)
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"
   end

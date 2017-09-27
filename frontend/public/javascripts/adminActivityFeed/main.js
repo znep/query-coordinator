@@ -57,7 +57,7 @@ const enhancer = composer(
 const store = createStore(reducer, initialState, enhancer);
 
 document.addEventListener('DOMContentLoaded', () => {
-  const translations = (blist || {}).translations || {};
+  const translations = (window || {}).translations || {};
   const hasFilterBar = headerContainerElement === null;
   const onRender = () => {
     const initialData = window.initialData;

@@ -1,25 +1,22 @@
 <% content_for :head do %>
-    <%= render_feature_flags_for_javascript %>
-    <%= rendered_stylesheet_tag 'styleguide' %>
-    <%= google_font_link %>
-    <%= rendered_stylesheet_tag 'administration-screen' %>
-    <title><%= t("screens.admin.jobs.index_page.title") %> | <%= get_site_title %></title>
-    <%= render_admin_session_data %>
-    <%= render_admin_server_config %>
-    <%= render_admin_activity_feed_initial_data %>
-    <%= render_mixpanel_config %>
-    <% translations = json_escape(LocaleCache.render_partial_translations('shared.components.filter_bar').to_json) %>
-    <%= javascript_tag("window.translations = #{translations};") %>
+  <%= render_feature_flags_for_javascript %>
+  <%= rendered_stylesheet_tag 'styleguide' %>
+  <%= google_font_link %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <title><%= t('screens.admin.jobs.index_page.title') %> | <%= get_site_title %></title>
+  <%= render_admin_session_data %>
+  <%= render_admin_server_config %>
+  <%= render_admin_activity_feed_initial_data %>
+  <%= render_mixpanel_config %>
+  <%= render_activity_feed_translations %>
 <% end %>
 
 <% content_for :translations do %>
-  <%= render_translations LocalePart.screens.admin.jobs %>
-  <%= render_translations LocalePart.plugins.daterangepicker %>
-  <%= render_translations LocalePart.table %>
+
 <% end %>
 
 <% content_for :breadcrumb do %>
-  <%= t("screens.admin.jobs.index_page.title") %>
+  <%= t('screens.admin.jobs.index_page.title') %>
 <% end %>
 
 <% content_for :admin_header do %>

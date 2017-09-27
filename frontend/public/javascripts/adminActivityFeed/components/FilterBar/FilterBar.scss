@@ -93,6 +93,16 @@
         top: 8px;
         right: 6px;
       }
+
+      .dropdown-options-list {
+        .socrata-icon {
+          position: inherit;
+          line-height: 15px;
+        }
+        .picklist-label {
+          vertical-align: middle;
+        }
+      }
     }
 
     .dropdown-options-list .picklist-option {

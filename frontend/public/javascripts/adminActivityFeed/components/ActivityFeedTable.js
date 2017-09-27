@@ -61,7 +61,7 @@ class ActivityFeedTable extends React.Component {
           return <ActivityActions
             activity={activity}
             onShowDetails={this.props.onShowActivityDetails}
-            onRestore={this.props.onRestoreActivity}  />;
+            onRestore={this.props.onRestoreActivity}/>;
         }
       }
     ];

@@ -8,6 +8,21 @@
 <% content_for :scripts do %>
   <script type="text/javascript">
     $(function() {
+      // Horrible hacky way of generating enough divs for the colors list. The colors are defined
+      // in SCSS and are therefore only vaguely accessible to JS.
+      // Add divs until the pseudo-element no longer has text in it.
+      var colorsSection = $('section.colors');
+      var pseudoContent;
+      var safetyIterationLimit = 1000;
+      do {
+        var newDiv = $('<div>');
+        colorsSection.append(newDiv);
+        // When the content is empty, Firefox returns the string 'none', chrome a zero-length string.
+        pseudoContent = window.getComputedStyle(newDiv[0], ':after').getPropertyValue('content');
+        safetyIterationLimit --;
+      } while(pseudoContent.length > 0 && pseudoContent !== 'none' && safetyIterationLimit > 0);
+
+
       // This is just a toy implementation.
       var flyout = $('#socrata-flyout');
       var trigger = $('#example-flyout-trigger');
@@ -28,6 +43,11 @@
 <p>
   <a href='/internal/demos' class="btn btn-default"><span class="icon-arrow-left"></span> Demos</a>
 </p>
+<h4>Colors</h4>
+<section class="styleguide-section colors">
+  <!-- See hacky javascript above -->
+  <p>If using in a stylesheet, use the variable name instead of hardcoding the color.</p>
+</section>
 <h4>Specimens</h4>
 <section class="styleguide-section">
   <p>

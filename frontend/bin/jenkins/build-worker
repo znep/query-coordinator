@@ -89,6 +89,7 @@ source ~/.profile
 rbenv install -f 2.3.4
 rbenv global 2.3.4
 gem install bundler
+rbenv shell $(rbenv global)
 
 if [ -f ${HOME}/.ruby-version ]; then
   RUBY_VERSION=`cat ${HOME}/.ruby-version`

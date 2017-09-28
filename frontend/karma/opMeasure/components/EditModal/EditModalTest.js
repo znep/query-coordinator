@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 
 import { ESCAPE_KEY_CODE } from 'common/constants';
-import { closeEditModal, completeEditModal } from 'actions/editor';
+import { cancelEditModal, acceptEditModalChanges } from 'actions/editor';
 import EditModal from 'components/EditModal/EditModal';
 
 import { getStore } from '../../testStore';
@@ -53,7 +53,7 @@ describe('EditModal', () => {
   describe('actions', () => {
     it('invokes the cancel callback on all affordances for closing', () => {
       const store = getStore();
-      const stub = sinon.stub(store, 'dispatch');
+      const dispatchStub = sinon.stub(store, 'dispatch');
       const element = renderComponentWithStore(EditModal, {}, store);
 
       store.dispatch.reset();
@@ -61,21 +61,21 @@ describe('EditModal', () => {
       Simulate.click(element.querySelector('.modal-header-dismiss'));
       Simulate.click(element.querySelector('.modal-footer-actions .cancel'));
       Simulate.keyUp(element, { keyCode: ESCAPE_KEY_CODE });
-      sinon.assert.calledThrice(stub);
-      sinon.assert.alwaysCalledWithMatch(stub, closeEditModal());
+      sinon.assert.calledThrice(dispatchStub);
+      sinon.assert.alwaysCalledWithMatch(dispatchStub, cancelEditModal());
     });
 
     it('invokes the complete callback on the accept button', () => {
       const store = getStore();
-      const stub = sinon.stub(store, 'dispatch');
+      const dispatchStub = sinon.stub(store, 'dispatch');
       const element = renderComponentWithStore(EditModal, {}, store);
 
       store.dispatch.reset();
 
       Simulate.click(element.querySelector('.modal-footer-actions .done'));
-      sinon.assert.calledOnce(stub);
+      sinon.assert.calledOnce(dispatchStub);
       // NOTE: can't use sinon.assert.calledWithMatch for function arguments!
-      sinon.assert.match(stub.firstCall.args[0].toString(), completeEditModal().toString());
+      sinon.assert.match(dispatchStub.firstCall.args[0].toString(), acceptEditModalChanges().toString());
     });
   });
 });

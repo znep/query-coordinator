@@ -35,6 +35,7 @@ import Modal, { ModalHeader, ModalContent, ModalFooter } from './Modal';
 import SideMenu, { MenuListItem, ExpandableMenuListItem } from './SideMenu';
 import { Flannel, FlannelHeader, FlannelContent, FlannelFooter } from './Flannel';
 import MetadataTable from './MetadataTable';
+import Checkbox from './Checkbox';
 
 module.exports = {
   attachTo: function(element) {
@@ -55,28 +56,29 @@ module.exports = {
   },
 
   AssetTypeIcon,
+  Checkbox,
   ColorPicker,
+  DateRangePicker,
   Dropdown,
-  Picklist,
-  ViewCard,
   EditBar,
+  ExpandableMenuListItem,
   ExternalViewCard,
   FilterBar,
   FilterItem,
-  InfoPane,
-  Slider,
-  DateRangePicker,
-  Modal,
-  ModalHeader,
-  ModalContent,
-  ModalFooter,
-  SocrataIcon,
-  SideMenu,
-  MenuListItem,
-  ExpandableMenuListItem,
   Flannel,
-  FlannelHeader,
   FlannelContent,
   FlannelFooter,
-  MetadataTable
+  FlannelHeader,
+  InfoPane,
+  MenuListItem,
+  MetadataTable,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Picklist,
+  SideMenu,
+  Slider,
+  SocrataIcon,
+  ViewCard
 };

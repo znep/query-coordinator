@@ -13,7 +13,7 @@ import PaneTabs from './components/PaneTabs';
 import SummaryPane from './components/SummaryPane';
 import MetadataPane from './components/MetadataPane';
 import ReportingPeriodSelector from './components/ReportingPeriodSelector';
-import MetricCard from './components/MetricCard';
+import SavedMeasureResultCard from './components/SavedMeasureResultCard';
 
 // Outermost component for the page.
 export class App extends Component {
@@ -65,7 +65,7 @@ export class App extends Component {
 
           <div className="measure-sidebar">
             <ReportingPeriodSelector />
-            <MetricCard />
+            <SavedMeasureResultCard />
           </div>
         </div>
         <FeedbackPanel {...window.serverConfig} />
@@ -88,7 +88,7 @@ export class App extends Component {
 
           <div className="measure-sidebar">
             <ReportingPeriodSelector />
-            <MetricCard />
+            <SavedMeasureResultCard />
           </div>
         </div>
         <FeedbackPanel {...window.serverConfig} />
@@ -109,7 +109,7 @@ export class App extends Component {
 
           <div className="measure-sidebar">
             <ReportingPeriodSelector />
-            <MetricCard />
+            <SavedMeasureResultCard />
           </div>
         </div>
         <FeedbackPanel {...window.serverConfig} />

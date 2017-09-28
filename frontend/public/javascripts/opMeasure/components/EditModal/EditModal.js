@@ -7,12 +7,13 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
 
-import { closeEditModal, completeEditModal } from '../../actions/editor';
+import { cancelEditModal, acceptEditModalChanges } from '../../actions/editor';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
 import GeneralPanel from './GeneralPanel';
 import DataPanel from './DataPanel';
 import MethodsPanel from './MethodsPanel';
+import CalculationPanel from './CalculationPanel';
 
 // Modal for editing several aspects of the measure, grouped into tabs/panels.
 export class EditModal extends Component {
@@ -126,19 +127,24 @@ EditModal.defaultProps = {
   isEditing: false,
   tabs: [{
     id: 'general-info',
-    title: 'General Info',
+    title: I18n.t('open_performance.measure.edit_modal.general_info.tab_title'),
     icon: 'info-inverse',
     panelComponent: GeneralPanel
   }, {
     id: 'data-source',
-    title: 'Data Source',
+    title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
     icon: 'data',
     panelComponent: DataPanel
   }, {
     id: 'methods-and-analysis',
-    title: 'Methods and Analysis',
+    title: I18n.t('open_performance.measure.edit_modal.methods_and_analysis.tab_title'),
     icon: 'story',
     panelComponent: MethodsPanel
+  }, {
+    id: 'calculation',
+    title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
+    icon: 'puzzle',
+    panelComponent: CalculationPanel
   }],
   onCancel: _.noop,
   onComplete: _.noop
@@ -150,8 +156,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onCancel: closeEditModal,
-    onComplete: completeEditModal
+    onCancel: cancelEditModal,
+    onComplete: acceptEditModalChanges
   }, dispatch);
 }
 

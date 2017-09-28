@@ -3028,11 +3028,41 @@ en:
     edit: Edit
     edit_menu_label: Menu
     exit_preview_mode: Exit Preview Mode
+    calculation_types:
+      count: Count
+      sum: Sum
+      rate: Rate
+      recent_value: Recent Value
     measure:
       edit_modal:
         accept: Accept
         cancel: Cancel
         title: Configure Measure
+        calculation:
+          column_placeholder: column
+          data_source_needed: A data source is required for this calculation.
+          display_options:
+            decimal_places: Decimal Places
+            title: Display Options
+            unit_label: Unit Label
+            unit_label_placeholder: Per ...
+          formula: Formula
+          sample_result: Sample Result
+          subtitle: Choose a calculation type and configure math options.
+          tab_title: Calculation
+          title: Metric Calculation
+          types:
+            count:
+              exclude_nulls: Exclude Null Values
+              help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
+              help_title: Help with Count
+              title: Count Options
+        data_source:
+          tab_title: Data Source
+        general_info:
+          tab_title: General Info
+        methods_and_analysis:
+          tab_title: Methods and Analysis
       reporting_period: Reporting Period
     preview: Preview
     render_error: There was a problem rendering this page.

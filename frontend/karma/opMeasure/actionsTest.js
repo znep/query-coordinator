@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { DataSourceStates } from 'lib/constants';
 import * as editorActions from 'actions/editor';
 import * as viewActions from 'actions/view';
 
@@ -18,19 +17,18 @@ describe('thunk actions', () => {
     mockStore = configureStore([thunk]);
   });
 
-  describe('launchEditModal', () => {
+  describe('openEditModal', () => {
     it('clones the view measure and opens the edit modal', (done) => {
       const measure = { test: 'foo' };
       const expectedActions = [
-        { type: editorActions.CLONE_MEASURE, measure },
-        { type: editorActions.OPEN_EDIT_MODAL }
+        { type: editorActions.OPEN_EDIT_MODAL, measure }
       ];
 
       const store = mockStore({
         view: { measure },
         editor: { isEditing: false, measure: null }
       });
-      store.dispatch(editorActions.launchEditModal());
+      store.dispatch(editorActions.openEditModal());
 
       _.defer(() => {
         assert.deepEqual(store.getActions(), expectedActions);
@@ -39,19 +37,18 @@ describe('thunk actions', () => {
     });
   });
 
-  describe('completeEditModal', () => {
+  describe('acceptEditModalChanges', () => {
     it('updates the view measure and closes the edit modal', (done) => {
       const measure = { test: 'foo' };
       const expectedActions = [
-        { type: viewActions.UPDATE_MEASURE, measure },
-        { type: editorActions.CLOSE_EDIT_MODAL }
+        { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure }
       ];
 
       const store = mockStore({
         view: { measure: null },
         editor: { isEditing: true, measure }
       });
-      store.dispatch(editorActions.completeEditModal());
+      store.dispatch(editorActions.acceptEditModalChanges());
 
       _.defer(() => {
         assert.deepEqual(store.getActions(), expectedActions);
@@ -77,10 +74,9 @@ describe('thunk actions', () => {
         });
       });
 
-      it('unsets status', (done) => {
-        const dataSource = { status: null, uid: undefined };
+      it('dispatches setDataSource(undefined)', (done) => {
         const expectedActions = [
-          { type: editorActions.RECEIVE_DATA_SOURCE, dataSource }
+          { type: editorActions.SET_DATA_SOURCE_UID, uid: undefined }
         ];
 
         const store = mockStore();
@@ -94,74 +90,19 @@ describe('thunk actions', () => {
       });
     });
 
-    describe('when a 4x4 to a dataset with rows has been provided', () => {
+    describe('a valid 4x4 is provided', () => {
       beforeEach(() => {
-        getRowCountStub = sinon.stub().resolves(1);
+        getRowCountStub = sinon.stub().resolves(12345);
 
         EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
           this.getRowCount = getRowCountStub;
         });
       });
 
-      it('sets status to VALID', (done) => {
-        const dataSource = { status: DataSourceStates.VALID, uid };
+      it('dispatches receiveDataSourceRowCount', (done) => {
         const expectedActions = [
-          { type: editorActions.REQUEST_DATA_SOURCE },
-          { type: editorActions.RECEIVE_DATA_SOURCE, dataSource }
-        ];
-
-        const store = mockStore();
-        store.dispatch(editorActions.setDataSource(uid));
-
-        _.defer(() => {
-          assert.deepEqual(store.getActions(), expectedActions);
-          sinon.assert.calledOnce(getRowCountStub);
-          done();
-        });
-      });
-    });
-
-    describe('when a 4x4 to a dataset with no rows has been provided', () => {
-      beforeEach(() => {
-        getRowCountStub = sinon.stub().resolves(0);
-
-        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
-          this.getRowCount = getRowCountStub;
-        });
-      });
-
-      it('sets status to NO_ROWS', (done) => {
-        const dataSource = { status: DataSourceStates.NO_ROWS, uid };
-        const expectedActions = [
-          { type: editorActions.REQUEST_DATA_SOURCE },
-          { type: editorActions.RECEIVE_DATA_SOURCE, dataSource }
-        ];
-
-        const store = mockStore();
-        store.dispatch(editorActions.setDataSource(uid));
-
-        _.defer(() => {
-          assert.deepEqual(store.getActions(), expectedActions);
-          sinon.assert.calledOnce(getRowCountStub);
-          done();
-        });
-      });
-    });
-
-    describe('when a 4x4 has been provided but does not resolve to a dataset', () => {
-      beforeEach(() => {
-        getRowCountStub = sinon.stub().rejects('NOT FOUND!');
-
-        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
-          this.getRowCount = getRowCountStub;
-        });
-      });
-
-      it('sets status to INVALID', (done) => {
-        const dataSource = { status: DataSourceStates.INVALID, uid };
-        const expectedActions = [
-          { type: editorActions.REQUEST_DATA_SOURCE },
-          { type: editorActions.RECEIVE_DATA_SOURCE, dataSource }
+          { type: editorActions.SET_DATA_SOURCE_UID, uid },
+          { type: editorActions.RECEIVE_DATA_SOURCE_ROW_COUNT, rowCount: 12345 }
         ];
 
         const store = mockStore();

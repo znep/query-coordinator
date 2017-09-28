@@ -44,18 +44,18 @@ $black: #2c2c2c;
 /* Shades of Grey */
 $light-grey-0: tint($grey, 10%);
 $light-grey-1: tint($grey, 20%);
-$light-grey-2: tint($grey, 40%);
-$light-grey-3: tint($grey, 60%);
-$light-grey-4: tint($grey, 80%);
-$light-grey-5: tint($grey, 90%);
-$light-grey-6: tint($grey, 93.3%);
+$light-grey-2: tint($grey, 40%);   // #c2c2c2
+$light-grey-3: tint($grey, 60%);   // #d6d6d6
+$light-grey-4: tint($grey, 80%);   // #ebebeb
+$light-grey-5: tint($grey, 90%);   // #f5f5f5
+$light-grey-6: tint($grey, 93.3%); // #f8f8f8
 $light-grey-7: tint($grey, 95%);
 $light-grey-8: tint($grey, 97%);
 
 $dark-grey-0: shade($grey, 10%);
-$dark-grey-1: shade($grey, 20%);
-$dark-grey-2: shade($grey, 40%);
-$dark-grey-3: shade($grey, 60%);
+$dark-grey-1: shade($grey, 20%); // #7a7a7a
+$dark-grey-2: shade($grey, 40%); // #5c5c5c
+$dark-grey-3: shade($grey, 60%); // #3d3d3d
 
 /* Color Vars */
 $default-text-color: $dark-grey-1;

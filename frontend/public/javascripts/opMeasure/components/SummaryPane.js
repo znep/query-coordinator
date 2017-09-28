@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 
-import { launchEditModal } from '../actions/editor';
+import { openEditModal } from '../actions/editor';
 import { ModeStates } from '../lib/constants';
 
 import moment from 'moment-timezone';
@@ -114,14 +114,15 @@ export class SummaryPane extends Component {
 
 SummaryPane.propTypes = {
   activePane: PropTypes.string,
-  measure: PropTypes.object,
+  measure: PropTypes.shape({
+    coreView: PropTypes.shape({
+      rowsUpdatedAt: PropTypes.number,
+      viewLastModified: PropTypes.number,
+      createdAt: PropTypes.number
+    }).isRequired
+  }).isRequired,
   mode: PropTypes.oneOf(_.values(ModeStates)),
-  onClickEdit: PropTypes.func,
-  coreView: PropTypes.shape({
-    rowsUpdatedAt: PropTypes.number,
-    viewLastModified: PropTypes.number,
-    createdAt: PropTypes.number
-  }).isRequired
+  onClickEdit: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -130,7 +131,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onClickEdit: launchEditModal
+    onClickEdit: openEditModal
   }, dispatch);
 }
 

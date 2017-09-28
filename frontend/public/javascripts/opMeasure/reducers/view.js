@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import * as actions from '../actions/view';
+import actions from '../actions';
 import { ModeStates, SaveStates } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
@@ -24,27 +24,27 @@ export default (state = initialState(), action) => {
   }
 
   switch (action.type) {
-    case actions.SET_ACTIVE_PANE:
+    case actions.view.SET_ACTIVE_PANE:
       return {
         ...state,
         activePane: action.activePane
       };
 
-    case actions.UPDATE_MEASURE:
+    case actions.editor.ACCEPT_EDIT_MODAL_CHANGES:
       return {
         ...state,
         isDirty: true,
         measure: action.measure
       };
 
-    case actions.ENTER_EDIT_MODE: {
+    case actions.view.ENTER_EDIT_MODE: {
       return {
         ...state,
         mode: ModeStates.EDIT
       };
     }
 
-    case actions.ENTER_PREVIEW_MODE:
+    case actions.view.ENTER_PREVIEW_MODE:
       return {
         ...state,
         mode: ModeStates.PREVIEW

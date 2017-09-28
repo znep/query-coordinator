@@ -3,28 +3,24 @@ import _ from 'lodash';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import { TRAILING_UID_REGEX } from 'common/constants';
 
-import { DataSourceStates } from '../lib/constants';
-import { updateMeasure } from './view';
-
-export const REQUEST_DATA_SOURCE = 'REQUEST_DATA_SOURCE';
-export const requestDataSource = () => ({
-  type: REQUEST_DATA_SOURCE
+export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
+export const setDataSourceUid = (uid) => ({
+  type: SET_DATA_SOURCE_UID,
+  uid
 });
 
-export const RECEIVE_DATA_SOURCE = 'RECEIVE_DATA_SOURCE';
-export const receiveDataSource = (dataSource) => ({
-  type: RECEIVE_DATA_SOURCE,
-  dataSource
+export const RECEIVE_DATA_SOURCE_ROW_COUNT = 'RECEIVE_DATA_SOURCE_ROW_COUNT';
+export const receiveDataSourceRowCount = (rowCount) => ({
+  type: RECEIVE_DATA_SOURCE_ROW_COUNT,
+  rowCount
 });
 
 export const setDataSource = (dataSourceString) => {
   return (dispatch) => {
     const uid = _.get(dataSourceString.match(TRAILING_UID_REGEX), '1');
+    dispatch(setDataSourceUid(uid));
+
     if (!uid) {
-      dispatch(receiveDataSource({
-        status: null,
-        uid
-      }));
       return;
     }
 
@@ -33,20 +29,9 @@ export const setDataSource = (dataSourceString) => {
       datasetUid: uid
     });
 
-    dispatch(requestDataSource());
-
     soqlDataProvider.getRowCount().then(
       (rowCount) => {
-        dispatch(receiveDataSource({
-          status: rowCount === 0 ? DataSourceStates.NO_ROWS : DataSourceStates.VALID,
-          uid
-        }));
-      },
-      () => {
-        dispatch(receiveDataSource({
-          status: DataSourceStates.INVALID,
-          uid
-        }));
+        dispatch(receiveDataSourceRowCount(rowCount));
       }
     );
   };
@@ -58,40 +43,55 @@ export const setAnalysis = (analysis) => ({
   analysis
 });
 
+export const SET_CALCULATION_TYPE = 'SET_CALCULATION_TYPE';
+export const setCalculationType = (calculationType) => ({
+  type: SET_CALCULATION_TYPE,
+  calculationType
+});
+
+export const TOGGLE_EXCLUDE_NULL_VALUES = 'TOGGLE_EXCLUDE_NULL_VALUES';
+export const toggleExcludeNullValues = (excludeNullValues) => ({
+  type: TOGGLE_EXCLUDE_NULL_VALUES,
+  excludeNullValues
+});
+
+export const SET_DECIMAL_PLACES = 'SET_DECIMAL_PLACES';
+export const setDecimalPlaces = (places) => ({
+  type: SET_DECIMAL_PLACES,
+  places
+});
+
+export const SET_UNIT_LABEL = 'SET_UNIT_LABEL';
+export const setUnitLabel = (label) => ({
+  type: SET_UNIT_LABEL,
+  label
+});
+
 export const SET_METHODS = 'SET_METHODS';
 export const setMethods = (methods) => ({
   type: SET_METHODS,
   methods
 });
 
-export const CLONE_MEASURE = 'CLONE_MEASURE';
-export const cloneMeasure = (measure) => ({
-  type: CLONE_MEASURE,
-  measure
-});
-
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
-export const openEditModal = () => ({
-  type: OPEN_EDIT_MODAL
-});
-
-export const CLOSE_EDIT_MODAL = 'CLOSE_EDIT_MODAL';
-export const closeEditModal = () => ({
-  type: CLOSE_EDIT_MODAL
-});
-
-// Clone the view's measure into the editor's state, then open the edit modal.
-export const launchEditModal = () => {
-  return (dispatch, getState) => {
-    dispatch(cloneMeasure(getState().view.measure));
-    dispatch(openEditModal());
-  };
+export const openEditModal = () => (dispatch, getState) => {
+  const measure = getState().view.measure;
+  dispatch({
+    type: OPEN_EDIT_MODAL,
+    measure
+  });
 };
 
-// Clone the editor's measure into the view's state, then close the edit modal.
-export const completeEditModal = () => {
-  return (dispatch, getState) => {
-    dispatch(updateMeasure(getState().editor.measure));
-    dispatch(closeEditModal());
-  };
+export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';
+export const acceptEditModalChanges = () => (dispatch, getState) => {
+  const measure = getState().editor.measure;
+  dispatch({
+    type: ACCEPT_EDIT_MODAL_CHANGES,
+    measure
+  });
 };
+
+export const CANCEL_EDIT_MODAL = 'CANCEL_EDIT_MODAL';
+export const cancelEditModal = () => ({
+  type: CANCEL_EDIT_MODAL
+});

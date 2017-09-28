@@ -84,6 +84,12 @@ echo 'export RBENV_ROOT="${HOME}/.rbenv"' >> ~/.profile
 echo 'eval "$(rbenv init -)"' >> ~/.profile
 source ~/.profile
 
+rbenv install -f 2.3.4
+rbenv global 2.3.4
+rbenv shell $(rbenv global)
+ruby -v
+gem install bundler
+
 if [ -f ${HOME}/.ruby-version ]; then
   RUBY_VERSION=`cat ${HOME}/.ruby-version`
 elif [ -f .ruby-version ]; then
@@ -96,6 +102,8 @@ fi
 #RUBY_CONFIGURE_OPTS=--enable-shared rbenv install -f ${RUBY_VERSION}
 rbenv install -f ${RUBY_VERSION}
 rbenv global ${RUBY_VERSION}
+rbenv shell $(rbenv global)
+ruby -v
 gem install bundler
 
 bundle install --without development common --deployment  

@@ -123,6 +123,8 @@ class Notifications extends Component {
     if (showNotificationPanel) {
       const {
         errorText,
+        newNotificationsLabelText,
+        markAsReadText,
         productUpdatesText,
         viewOlderText
       } = this.props.translations;
@@ -142,6 +144,8 @@ class Notifications extends Component {
             hasError={hasError}
             markAllAsRead={this.markAllAsRead}
             notifications={notifications}
+            newNotificationsLabelText={newNotificationsLabelText}
+            markAsReadText={markAsReadText}
             panelHeaderText={productUpdatesText}
             toggleNotificationPanel={this.toggleNotificationPanel}
             unreadNotificationCount={unreadNotificationCount}
@@ -158,12 +162,18 @@ class Notifications extends Component {
   render() {
     const { unreadNotificationCount } = this.state;
 
+    const {
+      hasUnreadNotificationsText,
+      noUnreadNotificationsText
+    } = this.props.translations;
+
     return (
       <div styleName='container'>
         <div id='socrata-notifications-container'>
-          <Bell
-            unreadNotificationCount={unreadNotificationCount}
-            toggleNotificationPanel={this.toggleNotificationPanel} />
+          <Bell unreadNotificationCount={unreadNotificationCount}
+            toggleNotificationPanel={this.toggleNotificationPanel}
+            hasUnreadNotificationsText={hasUnreadNotificationsText}
+            noUnreadNotificationsText={noUnreadNotificationsText} />
 
           {this.renderNotificationPanel()}
         </div>
@@ -175,6 +185,10 @@ class Notifications extends Component {
 Notifications.propTypes = {
   translations: PropTypes.shape({
     errorText: PropTypes.string.isRequired,
+    hasUnreadNotificationsText: PropTypes.string.isRequired,
+    newNotificationsLabelText: PropTypes.string.isRequired,
+    markAsReadText: PropTypes.string.isRequired,
+    noUnreadNotificationsText: PropTypes.string.isRequired,
     productUpdatesText: PropTypes.string.isRequired,
     viewOlderText: PropTypes.string.isRequired
   }).isRequired

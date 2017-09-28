@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import styles from './panel-footer.scss';
-import I18n from 'common/i18n';
 
 class PanelFooter extends Component {
   render() {
     const {
       markAllAsRead,
+      markAsReadText,
       hasUnreadNotifications
     } = this.props;
 
@@ -17,7 +17,7 @@ class PanelFooter extends Component {
           className='mark-all-as-read-button'
           disabled={!hasUnreadNotifications}
           onClick={markAllAsRead}>
-          {I18n.t('shared.site_chrome.notifications.mark_as_read')}
+          {markAsReadText}
         </button>
       </div>
     );
@@ -26,7 +26,8 @@ class PanelFooter extends Component {
 
 PanelFooter.propTypes = {
   hasUnreadNotifications: PropTypes.bool.isRequired,
-  markAllAsRead: PropTypes.func.isRequired
+  markAllAsRead: PropTypes.func.isRequired,
+  markAsReadText: PropTypes.string.isRequired
 };
 
 export default cssModules(PanelFooter, styles);

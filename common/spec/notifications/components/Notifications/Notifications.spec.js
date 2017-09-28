@@ -9,7 +9,11 @@ import 'intl/locale-data/jsonp/en.js';
 const translations = {
   errorText: 'Couldn\'t fetch product notifications.',
   productUpdatesText: 'Product Updates',
-  viewOlderText: 'View Older Updates...'
+  viewOlderText: 'View Older Updates...',
+  markAsReadText: 'Mark As Read',
+  newNotificationsLabelText: 'New',
+  hasUnreadNotificationsText: 'You have unread notifications',
+  noUnreadNotificationsText: 'You have no unread notifications'
 };
 
 describe('Notifications', () => {

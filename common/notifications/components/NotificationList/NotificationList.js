@@ -11,12 +11,14 @@ class NotificationList extends Component {
   renderPanelHeader() {
     const {
       panelHeaderText,
+      newNotificationsLabelText,
       toggleNotificationPanel,
       unreadNotificationCount
     } = this.props;
 
     return (
       <PanelHeader panelHeaderText={panelHeaderText}
+        newNotificationsLabelText={newNotificationsLabelText}
         onClosePanel={toggleNotificationPanel}
         unreadCount={unreadNotificationCount} />
     );
@@ -26,13 +28,16 @@ class NotificationList extends Component {
     const {
       notifications,
       markAllAsRead,
+      markAsReadText,
       unreadNotificationCount
     } = this.props;
 
     let hasUnreadNotifications = unreadNotificationCount > 0;
 
     if (!_.isEmpty(notifications)) {
-      return <PanelFooter markAllAsRead={markAllAsRead} hasUnreadNotifications={hasUnreadNotifications} />;
+      return <PanelFooter markAllAsRead={markAllAsRead}
+        hasUnreadNotifications={hasUnreadNotifications}
+        markAsReadText={markAsReadText} />;
     }
   }
 
@@ -69,6 +74,8 @@ NotificationList.propTypes = {
   errorText: PropTypes.string.isRequired,
   hasError: PropTypes.bool.isRequired,
   markAllAsRead: PropTypes.func.isRequired,
+  markAsReadText: PropTypes.string.isRequired,
+  newNotificationsLabelText: PropTypes.string.isRequired,
   notifications: PropTypes.array.isRequired,
   panelHeaderText: PropTypes.string.isRequired,
   toggleNotificationPanel: PropTypes.func.isRequired,

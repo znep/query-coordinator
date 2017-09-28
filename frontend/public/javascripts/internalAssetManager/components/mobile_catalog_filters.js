@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import SocrataIcon from 'common/components/SocrataIcon';

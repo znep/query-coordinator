@@ -8,6 +8,15 @@ const performingActionFailure = (actionType, response) => (
   { type: 'PERFORMING_ACTION_FAILURE', actionType, response }
 );
 
+export const showAlert = (titleLocaleKey, bodyLocaleKey, time = 7000) => ( // Time to display alert is in ms
+  { type: 'SHOW_ALERT', titleLocaleKey, bodyLocaleKey, time }
+);
+
+export const hideAlert = () => (
+  { type: 'HIDE_ALERT' }
+);
+
+export const showModal = (modalType, uid) => ({ type: 'SHOW_MODAL', modalType, uid });
 export const closeModal = () => ({ type: 'CLOSE_MODAL' });
 
 export const fetchChildAssets = (uid) => () => ceteraUtils.query({ derivedFrom: uid });
@@ -38,25 +47,26 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
 
   let apiPath;
   let method;
+  let visibilityValue;
 
   if (assetType === 'story') {
     // TODO
   } else if (assetType === 'datalens') {
     // NOTE: this will treat "private" and "hidden" as the same thing for data lenses.
     // We probably want to do something better.
-    const visibilityValue = newVisibility === 'open' ? 'yes' : 'no'; // srsly
+    visibilityValue = newVisibility === 'open' ? 'yes' : 'no'; // srsly
 
     apiPath = `/admin/views/${uid}/set/${visibilityValue}?skip_redirect=true`;
     method = 'POST';
   } else {
-    let visibilityValue = newVisibility;
+    visibilityValue = newVisibility;
     if (visibilityValue === 'open') {
       // TODO: public.read vs public.add or public.write if asset is a form
       visibilityValue = 'public.read';
     }
 
     const validVisibilityValues = ['private', 'public.read', 'public.add'];
-    if (!_.include(validVisibilityValues, visibilityValue)) {
+    if (validVisibilityValues.indexOf(visibilityValue) === -1) {
       throw new Error(
         `Invalid visibilityValue: '${visibilityValue}'. Must be one of ${validVisibilityValues.join(', ')}`
       );
@@ -73,9 +83,16 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
 
   dispatch(performingAction(ACTION_TYPE));
 
+  const alertBodyLocaleKey = 'internal_asset_manager.alert_messages.visibility_changed.body';
+  const alertTitleLocaleKey = (visibilityValue === 'yes' || visibilityValue.indexOf('public') > -1) ?
+    'internal_asset_manager.alert_messages.visibility_changed.title_public' :
+    'internal_asset_manager.alert_messages.visibility_changed.title_private';
+
   return fetch(apiPath, fetchOptions).
     then(checkStatus).
+    then(() => dispatch(showAlert(alertTitleLocaleKey, alertBodyLocaleKey))).
+    then(() => dispatch(closeModal())).
+    then(() => { document.body.click(); }). // Close action dropdown menu
     then(() => dispatch(performingActionSuccess(ACTION_TYPE))).
-    then(reload).
     catch(() => dispatch(performingActionFailure(ACTION_TYPE)));
 };

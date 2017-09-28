@@ -53,4 +53,41 @@ describe('actions/assetActions', () => {
     });
   });
 
+  describe('changeVisibility', () => {
+    beforeEach(() => {
+      sinon.stub(window, 'fetch');
+    });
+
+    afterEach(() => {
+      window.fetch.restore();
+    });
+
+    it('dispatches the correct actions on a successful visibility change', () => {
+      window.fetch.returns(Promise.resolve(
+        mockResponse(null, 200)
+      ));
+
+      const store = mockStore();
+      const expectedActions = [
+        { type: 'PERFORMING_ACTION', actionType: 'changeVisibility' },
+        {
+          type: 'SHOW_ALERT',
+          bodyLocaleKey: 'internal_asset_manager.alert_messages.visibility_changed.body',
+          titleLocaleKey: 'internal_asset_manager.alert_messages.visibility_changed.title_public',
+          time: 7000
+        },
+        { type: 'CLOSE_MODAL' },
+        { type: 'PERFORMING_ACTION_SUCCESS', actionType: 'changeVisibility' }
+      ];
+
+      const uid = 'abcd-1234';
+      const assetType = 'dataset';
+      const newVisibility = 'public.read';
+
+      return store.dispatch(actions.changeVisibility(uid, assetType, newVisibility)).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
+
 });

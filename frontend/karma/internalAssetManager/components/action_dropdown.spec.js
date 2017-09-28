@@ -8,6 +8,7 @@ describe('components/ActionDropdown', () => {
     assetType: 'dataset',
     closeModal: () => undefined,
     deleteAsset: () => undefined,
+    showModal: () => undefined,
     uid: 'abcd-1234',
     ...options
   });

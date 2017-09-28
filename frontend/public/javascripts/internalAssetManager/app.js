@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Provider } from 'react-redux';
+import AlertWrapper from './components/alert_wrapper';
 import Header from './components/header';
 import ResultsAndFilters from './components/results_and_filters';
 import WindowDimensions from './components/window_dimensions';
@@ -13,6 +14,7 @@ const App = ({ store, page }) => {
         <div>
           <Header page={page} />
           <ResultsAndFilters page={page} />
+          <AlertWrapper />
           <WindowDimensions />
         </div>
       </Provider>

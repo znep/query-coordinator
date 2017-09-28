@@ -17,7 +17,8 @@
     "airbrake-js": "0.5.9",
     "es6-promise-polyfill": "1.2.0",
     "jstz": "1.0.10",
-    "moment-timezone": "0.5.13"
+    "moment-timezone": "0.5.13",
+    "text-encoding": "0.6.4"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",

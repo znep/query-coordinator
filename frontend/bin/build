@@ -33,9 +33,18 @@ cd $WORKSPACE/frontend
 
 ###########################################
 # Install rbenv and ruby
-echo "Cloning rbenv and ruby-build into jenkins home directory."
-git clone --depth 1 https://github.com/sstephenson/rbenv.git ~/.rbenv
-git clone --depth 1 https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+if [ -d ~/.rbenv ]; then
+  echo "Cloning rbenv and ruby-build into jenkins home directory."
+  git clone --depth 1 https://github.com/sstephenson/rbenv.git ~/.rbenv
+else
+  echo 'RBENV install exists'
+fi
+
+if [ -d ~/.rbenv/plugins/ruby-build ]; then
+  git clone --depth 1 https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+else
+  echo 'RUBY-BUILD install exists'
+fi
 
 echo "Setting up profile to use rbenv."
 echo 'export PATH="~/.rbenv/bin:${PATH}"' >> ~/.profile

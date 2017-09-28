@@ -33,19 +33,25 @@ cd $WORKSPACE/frontend
 
 ###########################################
 # Install rbenv and ruby
-rm -rf ~/.rbenv
+rm -rf ~root/.rbenv
 echo "Cloning rbenv and ruby-build into jenkins home directory."
-git clone --depth 1 https://github.com/sstephenson/rbenv.git ~/.rbenv
-git clone --depth 1 https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+git clone --depth 1 https://github.com/sstephenson/rbenv.git ~root/.rbenv
+mkdir -p ~root/.rbenv/plugins
+git clone --depth 1 https://github.com/sstephenson/ruby-build.git ~root/.rbenv/plugins/ruby-build
 
 echo "Setting up profile to use rbenv."
-echo 'export PATH="~/.rbenv/bin:${PATH}"' >> ~/.profile
-echo 'export RBENV_ROOT="~/.rbenv"' >> ~/.profile
-echo 'eval "$(rbenv init -)"' >> ~/.profile
-source ~/.profile
+echo 'export PATH="~root/.rbenv/bin:${PATH}"' >> ~root/.profile
+echo 'export RBENV_ROOT="~root/.rbenv"' >> ~root/.profile
+echo 'eval "$(rbenv init -)"' >> ~root/.profile
+source ~root/.profile
+
+echo '<RBENV commands'
+rbenv
+echo 'RBENV commands>'
+
 
 if [ -f ~/.ruby-version ]; then
-  RUBY_VERSION=`cat ~/.ruby-version`
+  RUBY_VERSION=`cat ~root/.ruby-version`
 elif [ -f .ruby-version ]; then
   RUBY_VERSION=`cat .ruby-version`
 else

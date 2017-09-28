@@ -90,6 +90,7 @@ rbenv global 2.3.4
 rbenv shell $(rbenv global)
 ruby -v
 gem install bundler
+rbenv rehash
 
 if [ -f ${HOME}/.ruby-version ]; then
   RUBY_VERSION=`cat ${HOME}/.ruby-version`
@@ -106,9 +107,9 @@ rbenv global ${RUBY_VERSION}
 rbenv shell $(rbenv global)
 ruby -v
 gem install bundler
+rbenv rehash
 
 bundle install --without development common --deployment
-rbenv rehash
 
 ###########################################
 # Install node

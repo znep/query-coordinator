@@ -31,6 +31,31 @@ set -x
 
 cd $WORKSPACE/frontend
 
+###########################################
+# Install rbenv and ruby
+echo "Cloning rbenv and ruby-build into jenkins home directory."
+git clone --depth 1 https://github.com/sstephenson/rbenv.git ~/.rbenv
+git clone --depth 1 https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+echo "Setting up profile to use rbenv."
+echo 'export PATH="~/.rbenv/bin:${PATH}"' >> ~/.profile
+echo 'export RBENV_ROOT="~/.rbenv"' >> ~/.profile
+echo 'eval "$(rbenv init -)"' >> ~/.profile
+source ~/.profile
+
+if [ -f ~/.ruby-version ]; then
+  RUBY_VERSION=`cat ~/.ruby-version`
+elif [ -f .ruby-version ]; then
+  RUBY_VERSION=`cat .ruby-version`
+else
+  RUBY_VERSION=2.3.5 # Current as of Sep 26th, 2017
+fi
+
+# (StanR) - removing this temporarily
+#RUBY_CONFIGURE_OPTS=--enable-shared rbenv install -f ${RUBY_VERSION}
+rbenv install -f ${RUBY_VERSION}
+rbenv global ${RUBY_VERSION}
+
 echo "Configuring bundle to connect to repo.socrata.com with credentials..."
 set +x
 bundle config repo.socrata.com ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD}

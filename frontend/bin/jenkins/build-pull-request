@@ -29,6 +29,7 @@ sudo chown jenkins ${HOME}/.npmrc
 cp Gemfile ${HOME}
 cp Gemfile.lock ${HOME}
 cp package.json ${HOME}
+cp .ruby-version ${HOME}
 
 # TODO: fix this, `n` is not installed on the docker image that runs this build
 # n $(cat .node-version)

@@ -4,28 +4,35 @@ import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/acti
 import * as dsmapiLinks from 'dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
+import {
+  createUploadSuccess,
+  uploadFile,
+  subscribeToRowErrors,
+  subscribeToInputColumns,
+  subscribeToTotalRows,
+  subscribeToOutputSchema,
+  subscribeToTransforms
+} from 'reduxStuff/actions/manageUploads';
+import { browserHistory } from 'react-router';
+import * as Links from 'links';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
 export const CREATE_SOURCE_SUCCESS = 'CREATE_SOURCE_SUCCESS';
 
-function createSource(sourceType, params) {
+function createSource(sourceType, params, callParams) {
   return dispatch => {
     const callId = uuid();
 
     const call = {
       operation: CREATE_SOURCE,
-      callParams: {
-        source_type: sourceType
-      }
+      callParams
     };
 
     dispatch(apiCallStarted(callId, call));
 
     return socrataFetch(dsmapiLinks.sourceCreate(params), {
       method: 'POST',
-      body: JSON.stringify({
-        source_type: { type: sourceType }
-      })
+      body: JSON.stringify(callParams)
     })
       .then(checkStatus)
       .then(getJson)
@@ -44,11 +51,61 @@ function createSource(sourceType, params) {
 }
 
 export function createViewSource(params) {
+  const callParams = {
+    source_type: { type: 'view' }
+  };
   // TODO: handle error
   return dispatch => {
-    dispatch(createSource('view', params))
+    dispatch(createSource('view', params, callParams))
       .then(normalizeCreateSourceResponse)
       .then(resp => dispatch(createSourceSuccess(resp)));
+  };
+}
+
+export function createUploadSource(file, params) {
+  const callParams = {
+    source_type: { type: 'upload', filename: file.name }
+  };
+  return dispatch => {
+    dispatch(createSource('upload', params, callParams)).then(resource => {
+      // put source in store
+      dispatch(
+        createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
+      );
+
+      // listen on source channel, which puts other stuff into store
+      dispatch(listenForOutputSchema(resource.id, params));
+
+      // send bytes to created upload
+      return dispatch(uploadFile(resource.id, file));
+    });
+  };
+}
+
+function listenForOutputSchema(sourceId, params) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`source:${sourceId}`);
+
+    channel.on('insert_input_schema', is => {
+      const [os] = is.output_schemas;
+
+      const resource = {
+        id: sourceId,
+        type: 'fake',
+        created_by: is.created_by,
+        schemas: [is]
+      };
+
+      const payload = normalizeCreateSourceResponse(resource);
+
+      dispatch(createSourceSuccess(payload));
+
+      dispatch(subscribeToAllTheThings(is));
+
+      browserHistory.push(Links.showOutputSchema(params, sourceId, is.id, os.id));
+    });
+
+    channel.join();
   };
 }
 
@@ -56,6 +113,17 @@ function createSourceSuccess(payload) {
   return {
     type: CREATE_SOURCE_SUCCESS,
     ...payload
+  };
+}
+
+function subscribeToAllTheThings(is) {
+  return dispatch => {
+    const [os] = is.output_schemas;
+    dispatch(subscribeToRowErrors(is));
+    dispatch(subscribeToInputColumns(is));
+    dispatch(subscribeToTotalRows(is));
+    dispatch(subscribeToOutputSchema(os));
+    dispatch(subscribeToTransforms(os));
   };
 }
 
@@ -72,6 +140,10 @@ function normalizeCreateSourceResponse(resource) {
 }
 
 function getNormalizedSource(resource) {
+  if (resource.type === 'fake') {
+    return {};
+  }
+
   return {
     [resource.id]: {
       ..._.omit(resource, 'schemas'),
@@ -112,14 +184,14 @@ function getNormalizedInputColumns(resource) {
 }
 
 function getNormalizedOutputSchemas(resource) {
-  // TODO: ok to grab created_by from the input schema? the one on the output schema
-  // always seems to be null
+  // TODO: ok to grab created_by from the source? the one on the output schema
+  // seems to be null on view sources
 
-  return _.flatMap(resource.schemas, is => is.input_columns).reduce(
+  return _.flatMap(resource.schemas, is => is.output_schemas).reduce(
     (acc, os) => ({
       [os.id]: {
-        ...os,
-        created_by: resource.schemas.created_by
+        ..._.omit(os, 'output_columns'),
+        created_by: resource.created_by
       }
     }),
     {}
@@ -133,8 +205,8 @@ function getNormalizedOutputColumns(resource) {
     .reduce(
       (acc, oc) => ({
         [oc.id]: {
-          ...oc,
-          transform: oc.transform.id
+          ..._.omit(oc, 'transform'),
+          transform_id: oc.transform.id
         },
         ...acc
       }),
@@ -168,13 +240,22 @@ function getNormalizedOutputSchemaColumns(resource) {
 }
 
 function getNormalizedTransforms(resource) {
+  let totalRows;
+
   return _.chain(resource.schemas)
-    .flatMap(is => is.output_schemas)
+    .flatMap(is => {
+      totalRows = is.total_rows;
+      return is.output_schemas;
+    })
     .flatMap(os => os.output_columns)
     .map(oc => oc.transform)
     .reduce(
       (acc, transform) => ({
-        [transform.id]: transform,
+        [transform.id]: {
+          ...transform,
+          error_indicies: [],
+          contiguous_rows_processed: transform.completed_at ? totalRows : 0
+        },
         ...acc
       }),
       {}

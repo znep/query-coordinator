@@ -131,7 +131,7 @@ export function createUpload(file, params) {
   };
 }
 
-function createUploadSuccess(id, createdBy, createdAt, sourceType) {
+export function createUploadSuccess(id, createdBy, createdAt, sourceType) {
   return {
     type: CREATE_UPLOAD_SUCCESS,
     id,

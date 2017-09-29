@@ -137,27 +137,19 @@ export class ShowOutputSchema extends Component {
           <ModalContent>
             <div className={styles.dataPreview}>
               <div className={styles.titleWrapper}>
-                <h2 className={styles.previewHeader}>
-                  {I18n.data_preview.title}
-                </h2>
+                <h2 className={styles.previewHeader}>{I18n.data_preview.title}</h2>
                 {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
               </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
-                  <p>
-                    {I18n.data_preview.rows}
-                  </p>
+                  <p>{I18n.data_preview.rows}</p>
                   <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
                     {commaify(rowsTransformed)}
                   </p>
                 </div>
                 <div className={styles.datasetAttribute}>
-                  <p>
-                    {I18n.data_preview.columns}
-                  </p>
-                  <p className={styles.attribute}>
-                    {columns.length}
-                  </p>
+                  <p>{I18n.data_preview.columns}</p>
+                  <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
             </div>
@@ -176,16 +168,18 @@ export class ShowOutputSchema extends Component {
                   outputSchema={outputSchema}
                   displayState={displayState} />
               </div>
-              {errorsNotInView.toLeft.errorSum > 0 &&
+              {errorsNotInView.toLeft.errorSum > 0 && (
                 <ErrorPointer
                   errorInfo={errorsNotInView.toLeft}
                   direction="left"
-                  scrollToColIdx={this.scrollToColIdx} />}
-              {errorsNotInView.toRight.errorSum > 0 &&
+                  scrollToColIdx={this.scrollToColIdx} />
+              )}
+              {errorsNotInView.toRight.errorSum > 0 && (
                 <ErrorPointer
                   errorInfo={errorsNotInView.toRight}
                   direction="right"
-                  scrollToColIdx={this.scrollToColIdx} />}
+                  scrollToColIdx={this.scrollToColIdx} />
+              )}
             </div>
             <PagerBar path={path} displayState={displayState} />
           </ModalContent>

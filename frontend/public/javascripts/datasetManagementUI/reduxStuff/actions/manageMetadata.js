@@ -14,6 +14,7 @@ import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { createNewOutputSchemaSuccess } from 'reduxStuff/actions/showOutputSchema';
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { editView } from 'reduxStuff/actions/views';
@@ -128,7 +129,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
     return Promise.reject();
   }
 
-  const payload = {
+  const body = {
     output_columns: Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
   };
 
@@ -145,9 +146,11 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
     })
   );
 
+  // TODO: prob can swap this whole thing for the createNewOutputSchema thunk
+  // in actions/showOutputSchema
   return socrataFetch(dsmapiLinks.newOutputSchema(source.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(body)
   })
     .then(checkStatus)
     .then(getJson)
@@ -186,7 +189,8 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
     .then(resp => {
       const { resource: os } = resp;
 
-      dispatch(makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows));
+      const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows);
+      dispatch(createNewOutputSchemaSuccess(payload));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
 

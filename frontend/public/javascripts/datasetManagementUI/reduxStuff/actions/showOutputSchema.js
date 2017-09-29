@@ -24,6 +24,8 @@ import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actio
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
+export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
+
 function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
     const callId = uuid();
@@ -49,7 +51,8 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         const { resource: os } = resp;
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows));
+        const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows);
+        dispatch(createNewOutputSchemaSuccess(payload));
         dispatch(subscribeToOutputSchema(os));
         dispatch(subscribeToTransforms(os));
 
@@ -59,6 +62,13 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(apiCallFailed(callId, err));
         throw err;
       });
+  };
+}
+
+export function createNewOutputSchemaSuccess(payload) {
+  return {
+    type: CREATE_NEW_OUTPUT_SCHEMA_SUCCESS,
+    ...payload
   };
 }
 

@@ -66,7 +66,8 @@ function getNormalizedOutputSchemas(resource) {
     (acc, os) => ({
       [os.id]: {
         ..._.omit(os, 'output_columns'),
-        created_by: resource.created_by
+        created_by: resource.created_by,
+        created_at: os.created_at ? parseDate(os.created_at) : null
       }
     }),
     {}
@@ -185,7 +186,8 @@ function makeOutputSchemaColumns(os) {
 function makeOutputSchema(os) {
   return {
     [os.id]: {
-      ..._.omit(os, 'output_columns')
+      ..._.omit(os, 'output_columns'),
+      created_at: os.created_at ? parseDate(os.created_at) : null
     }
   };
 }

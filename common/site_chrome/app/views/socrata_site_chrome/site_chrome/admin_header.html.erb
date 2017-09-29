@@ -60,8 +60,7 @@
         data-autocomplete-collapsible="true"
         data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
         <span class="socrata-icon-search collapsible-search-toggle"
-          title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
-          onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">
+          title="<%= t('shared.site_chrome.header.search') %>" role="button" tabindex="0">
         </span>
 
         <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>

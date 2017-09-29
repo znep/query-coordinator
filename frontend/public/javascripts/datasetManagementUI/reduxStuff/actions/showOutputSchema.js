@@ -20,11 +20,8 @@ import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms
-} from 'reduxStuff/actions/manageUploads';
+import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
@@ -49,11 +46,12 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
       .then(getJson)
       .catch(getError)
       .then(resp => {
+        const { resource: os } = resp;
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
-        dispatch(subscribeToOutputSchema(resp.resource));
-        dispatch(subscribeToTransforms(resp.resource));
+        dispatch(makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows));
+        dispatch(subscribeToOutputSchema(os));
+        dispatch(subscribeToTransforms(os));
 
         return resp;
       })

@@ -1,7 +1,7 @@
 import { parseDate } from 'lib/parseDate';
 import _ from 'lodash';
 
-// POST to dsmapLinks.sourceCreate  decoders
+// POST to dsmapLinks.sourceCreate
 export function normalizeCreateSourceResponse(resource) {
   return {
     source: getNormalizedSource(resource),
@@ -136,4 +136,65 @@ function getNormalizedTransforms(resource) {
       {}
     )
     .value();
+}
+
+// POST to dsmapiLinks.newOutputSchema
+function makeTransforms(os, totalRows) {
+  return os.output_columns.map(oc => oc.transform).reduce(
+    (acc, transform) => ({
+      [transform.id]: {
+        ...transform,
+        error_indicies: [],
+        contiguous_rows_processed: transform.completed_at ? totalRows : 0
+      },
+      ...acc
+    }),
+    {}
+  );
+}
+
+function makeOutputColumns(os) {
+  return os.output_columns.reduce(
+    (acc, oc) => ({
+      [oc.id]: {
+        ..._.omit(oc, 'transform'),
+        transform_id: oc.transform.id
+      },
+      ...acc
+    }),
+    {}
+  );
+}
+
+function makeOutputSchemaColumns(os) {
+  return os.output_columns.reduce(
+    (acc, oc) => ({
+      [`${os.id}-${oc.id}`]: {
+        id: `${os.id}-${oc.id}`,
+        output_schema_id: os.id,
+        output_column_id: oc.id,
+        is_primary_key: oc.is_primary_key
+      },
+      ...acc
+    }),
+    {}
+  );
+}
+
+// createdBy?
+function makeOutputSchema(os) {
+  return {
+    [os.id]: {
+      ..._.omit(os, 'output_columns')
+    }
+  };
+}
+
+export function makeNormalizedCreateOutputSchemaResponse(os, totalRows) {
+  return {
+    outputSchema: makeOutputSchema(os),
+    outputColumns: makeOutputColumns(os),
+    transforms: makeTransforms(os, totalRows),
+    outputSchemaColumns: makeOutputSchemaColumns(os)
+  };
 }

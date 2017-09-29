@@ -13,11 +13,8 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms
-} from 'reduxStuff/actions/manageUploads';
+import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { editView } from 'reduxStuff/actions/views';
 import { showFormErrors, hideFormErrors, markFormClean } from 'reduxStuff/actions/forms';
@@ -187,9 +184,12 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
       });
     })
     .then(resp => {
-      dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
-      dispatch(subscribeToOutputSchema(resp.resource));
-      dispatch(subscribeToTransforms(resp.resource));
+      const { resource: os } = resp;
+
+      dispatch(makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows));
+      dispatch(subscribeToOutputSchema(os));
+      dispatch(subscribeToTransforms(os));
+
       return resp;
     })
     .then(({ resource: { id: newOutputSchemaId } }) => {

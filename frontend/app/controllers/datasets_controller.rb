@@ -274,7 +274,7 @@ class DatasetsController < ApplicationController
       if open_revisions.length > 0
         # get the first one and redirect to that path
         revision_seq = open_revisions.first['revision_seq']
-        return redirect_to :action => 'dsmui', :rest_of_path => "/revisions/#{revision_seq}#{params[:rest_of_path]}"
+        return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
       end
     end
     return render_404

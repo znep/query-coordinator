@@ -320,6 +320,23 @@ describe('Reducer', () => {
       });
     });
 
+    describe('UPDATE_NAME', () => {
+      beforeEach(() => {
+        state = reducer(state, actions.clearSaveState());
+        state = reducer(state, actions.updateName({
+          name: 'some name'
+        }));
+      });
+
+      it('sets the name to a new value', () => {
+        assert.equal(state.view.name, 'some name');
+      });
+
+      it('sets isDirty to true', () => {
+        assert.isTrue(state.isDirty);
+      });
+    });
+
     describe('UPDATE_NAME_AND_DESCRIPTION', () => {
       beforeEach(() => {
         state = reducer(state, actions.clearSaveState());

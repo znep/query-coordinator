@@ -24,6 +24,7 @@ import Dropdown from './Dropdown';
 import Picklist from './Picklist';
 import ViewCard from './ViewCard';
 import EditBar from './EditBar';
+import EditableText from './EditableText';
 import ExternalViewCard from './ViewCard/ExternalViewCard';
 import FilterBar from './FilterBar';
 import InfoPane from './InfoPane';
@@ -61,6 +62,7 @@ module.exports = {
   DateRangePicker,
   Dropdown,
   EditBar,
+  EditableText,
   ExpandableMenuListItem,
   ExternalViewCard,
   FilterBar,

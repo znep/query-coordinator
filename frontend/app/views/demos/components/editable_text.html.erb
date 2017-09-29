@@ -1,0 +1,58 @@
+<% content_for :head do %>
+  <title>Example Usage: Editable Text</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Editable Text</h2>
+
+  <div class="styleguide-example">
+    <div id="editable-text-container-1" style="display: inline-block"></div>
+    <div id="editable-text-container-2" style="display: inline-block"></div>
+  </div>
+</section>
+
+<% content_for :scripts do %>
+
+<%= render_demos_javascript_environment %>
+<%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+<script type="text/javascript" id="example-1">
+  $(() => {
+    const props1 = {
+      text: 'Example Text',
+      onTextChanged: (newText) => {
+        props1.text = newText;
+        render();
+      }
+    };
+
+    const props2 = {
+      text: 'Second Example',
+      onTextChanged: (newText) => {
+        props2.text = newText;
+        render();
+      }
+    }
+
+    function render() {
+      ReactDOM.render(
+        React.createElement(components.EditableText, props1),
+        document.getElementById('editable-text-container-1')
+      );
+
+      ReactDOM.render(
+        React.createElement(components.EditableText, props2),
+        document.getElementById('editable-text-container-2')
+      );
+    }
+
+    render();
+  });
+</script>
+
+<% end %>

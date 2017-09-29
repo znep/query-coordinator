@@ -14,6 +14,7 @@ import Visualizations from './components/Visualizations';
 import Table from './components/Table';
 import FilterBar from './components/FilterBar';
 import { FeatureFlags } from 'common/feature_flags';
+import { updateName } from './actions';
 
 const SHARE_BUTTON_ENABLED = {
   view: FeatureFlags.value('visualization_canvas_embed_button') === 'always',
@@ -68,19 +69,20 @@ export class App extends Component {
   }
 
   renderEditMode() {
+    const { onNameChanged } = this.props;
     return (
       <div>
         <EditBar />
         <div className="visualization-canvas-body edit-mode">
-          <InfoPane />
+          <InfoPane onNameChanged={onNameChanged} />
           <FilterBar isReadOnly={false} />
           <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
           <Table />
+          <FeedbackPanel {...window.serverConfig} />
         </div>
         <AuthoringWorkflowModal />
         <ShareVisualizationModal />
         <EditMenu />
-        <FeedbackPanel {...window.serverConfig} />
       </div>
     );
   }
@@ -134,11 +136,18 @@ export class App extends Component {
 }
 
 App.propTypes = {
-  mode: PropTypes.oneOf(_.values(ModeStates)).isRequired
+  mode: PropTypes.oneOf(_.values(ModeStates)).isRequired,
+  onNameChanged: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   return _.pick(state, 'mode');
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    onNameChanged: name => dispatch(updateName({ name }))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,0 +1,55 @@
+@import "variables/colors";
+@import "variables/layout";
+
+$editable-text-border: $light-grey-3 1px solid;
+
+.editable-text {
+  display: inline-block;
+  width: 100%;
+
+  form {
+    margin: 1px 0px;
+  }
+
+  input {
+    padding: 0px 7px 0px 6px;
+    width: 100%;
+    letter-spacing: inherit;
+  }
+
+}
+
+.editable-text-display {
+  padding: 0px;
+  border: transparent 1px solid;
+  display: inline-block;
+
+  &.highlight {
+    border: $editable-text-border;
+    border-radius: $btn-border-radius;
+
+    .editable-text-btn {
+      visibility: visible;
+    }
+  }
+
+  .editable-text-value {
+    padding: 2px 7px;
+    transition: all 350ms; // FIXME, probably need to move this
+  }
+
+  // TODO Consider using em units to adjust to inherited font-size
+  .editable-text-btn {
+    display: inline-block;
+    height: 100%;
+    padding: 0px 7px;
+    color: $grey;
+    border-left: $editable-text-border;
+    background-color: $light-grey-7;
+    visibility: hidden;
+
+    .socrata-icon-edit {
+      font-size: 0.8em;
+    }
+  }
+}

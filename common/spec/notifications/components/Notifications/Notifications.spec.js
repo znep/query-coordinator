@@ -1,10 +1,10 @@
 
 import { Simulate } from 'react-dom/test-utils';
-import { renderComponent } from '../../helpers';
 import { mockResponse } from '../../helpers';
 import { fakeNotifications, fakeZeroNotifications } from '../../data';
 import Notifications from 'common/notifications/components/Notifications/Notifications';
 import 'intl/locale-data/jsonp/en.js';
+import renderLocalizationElement from '../../renderLocalizationComponent';
 
 const translations = {
   errorText: 'Couldn\'t fetch product notifications.',
@@ -30,7 +30,7 @@ describe('Notifications', () => {
   		mockResponse(fakeNotifications, 200)
 		));
 
-    const component = renderComponent(Notifications, {translations});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
 	    expect(component).to.exist;
@@ -72,7 +72,7 @@ describe('Notifications', () => {
       mockResponse(fakeNotifications, 200)
     ));
 
-    const component = renderComponent(Notifications, {translations});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;
@@ -127,7 +127,7 @@ describe('Notifications', () => {
       mockResponse(fakeZeroNotifications, 200)
     ));
 
-    const component = renderComponent(Notifications, {translations});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;
@@ -168,7 +168,7 @@ describe('Notifications', () => {
       mockResponse('Error', 500)
     ));
 
-    const component = renderComponent(Notifications, {translations});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;

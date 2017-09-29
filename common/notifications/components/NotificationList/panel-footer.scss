@@ -29,4 +29,17 @@
       opacity: 0.5;
     }
   }
+
+  .setting-btn {
+    color:#e4e4e4;
+    cursor:pointer;
+    float: right;
+    font-size: 13px;
+    padding: 2px 4px 5px 0px;
+    text-decoration: none;
+
+    span {
+      padding: 3px;
+    }
+  }
 }

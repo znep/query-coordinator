@@ -27,17 +27,22 @@ class NotificationList extends Component {
   renderPanelFooter() {
     const {
       notifications,
+      unreadNotificationCount,
       markAllAsRead,
-      markAsReadText,
-      unreadNotificationCount
+      currentUserRole,
+      isAdmin
     } = this.props;
 
     let hasUnreadNotifications = unreadNotificationCount > 0;
 
     if (!_.isEmpty(notifications)) {
-      return <PanelFooter markAllAsRead={markAllAsRead}
-        hasUnreadNotifications={hasUnreadNotifications}
-        markAsReadText={markAsReadText} />;
+      return (
+        <PanelFooter
+          currentUserRole={currentUserRole}
+          isAdmin={isAdmin}
+          markAllAsRead={markAllAsRead}
+          hasUnreadNotifications={hasUnreadNotifications} />
+      );
     }
   }
 
@@ -74,8 +79,6 @@ NotificationList.propTypes = {
   errorText: PropTypes.string.isRequired,
   hasError: PropTypes.bool.isRequired,
   markAllAsRead: PropTypes.func.isRequired,
-  markAsReadText: PropTypes.string.isRequired,
-  newNotificationsLabelText: PropTypes.string.isRequired,
   notifications: PropTypes.array.isRequired,
   panelHeaderText: PropTypes.string.isRequired,
   toggleNotificationPanel: PropTypes.func.isRequired,

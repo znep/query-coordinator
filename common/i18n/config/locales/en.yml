@@ -121,8 +121,40 @@ en:
         view_older: View Older News
         mark_as_read: Mark As Read
         new_label: New
+        setting: Settings
         no_unread_notifications: You have no unread notifications
         has_unread_notifications: You have unread notifications
+        alert_setting_modal:
+          subscribe_email: Subscribe to email notifications
+          tab:
+            notification: Notifications & Alerts
+          table_header:
+            feature: FEATURE
+            product_alerts: IN-PRODUCT ALERTS
+            email_notifications: EMAIL NOTIFICATIONS
+          watch_list:
+            title: Watch List
+            description: "Notify me when updates are made to my Watched assets; manage these items in the Watch List"
+          all_assets:
+            title: All Assets
+            description: Notify me when any assets are modified
+            meta_data_change: Metadata changes
+            schema_change: Schema changes
+            data_change: Data changes
+            permission_change: Changes to asset permissions
+            collaborators_change: Changes to asset collaborators
+          user_accounts:
+            title: User Accounts
+            description: "Notify me of any user account activity: created, deleted, role modified"
+          delete_assets:
+            title: Delete Assets
+            description: Notify me when my asset is deleted
+          my_assets:
+            title: My Assets
+            description: "Notify me when my assets are modified: published, deleted, or updated"
+          routing_and_approval:
+            title: "Routing & Approval"
+            description: Notify me when any asset is published and submitted for review
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

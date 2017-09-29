@@ -84,18 +84,20 @@
           'DOMContentLoaded',
           function() {
             if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-              var translations = {
+              var options = {
                 productUpdatesText: "<%= t('shared.site_chrome.notifications.product_updates') %>",
                 viewOlderText: "<%= t('shared.site_chrome.notifications.view_older') %>",
                 errorText: "<%= t('shared.site_chrome.notifications.error_text_html') %>",
-                markAsReadText: "<%= t('shared.site_chrome.notifications.mark_as_read') %>",
                 newNotificationsLabelText: "<%= t('shared.site_chrome.notifications.new_label') %>",
                 hasUnreadNotificationsText: "<%= t('shared.site_chrome.notifications.has_unread_notifications') %>",
-                noUnreadNotificationsText: "<%= t('shared.site_chrome.notifications.no_unread_notifications') %>"
+                noUnreadNotificationsText: "<%= t('shared.site_chrome.notifications.no_unread_notifications') %>",
+                currentUserRole: <%= raw current_user_role.to_json %>,
+                isAdmin: <%= is_admin?.to_json %>
               };
-
-              window.headerNotifications('#site-chrome-header-notifications', translations);
-            }
+              window.headerNotifications('#site-chrome-header-notifications', options,
+                  <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
+                  <%== json_escape I18n.locale.to_json %>);
+              };
           },
           false
         );

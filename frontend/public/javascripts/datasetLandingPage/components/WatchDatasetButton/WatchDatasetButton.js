@@ -15,9 +15,9 @@ export class WatchDatasetButton extends Component {
       subscriptionStore.subscribe(view.id);
 
     promise.then((subscribedResult) => {
-      onSubscriptionChange(_.get(subscribedResult, 'id'));
+      onSubscriptionChange(_.get(subscribedResult, 'id', null));
     }).
-    catch(() => onSubscriptionChange());
+    catch(() => onSubscriptionChange(null));
     event.preventDefault();
   }
 
@@ -29,7 +29,7 @@ export class WatchDatasetButton extends Component {
     };
     const { subscribed } = this.props.view;
     const watchDatasetFlagIcon = classNames('flag-icon',
-      subscribed ? 'icon-eye-blocked' : 'icon-eye'
+      subscribed ? 'socrata-icon-watched' : 'socrata-icon-watch'
     );
     const watchDatasetButtonText = I18n.action_buttons[
       subscribed ? 'unwatch_dataset' : 'watch_dataset'
@@ -42,7 +42,7 @@ export class WatchDatasetButton extends Component {
           className="inline-label manage-prompt-button"
           htmlFor={inputAttributes.id}>
           <span className={watchDatasetFlagIcon}></span>
-          <em className="checkbox-with-icon-label">{watchDatasetButtonText}</em>
+          <span className="checkbox-with-icon-label">{watchDatasetButtonText}</span>
         </label>
       </div>
     );

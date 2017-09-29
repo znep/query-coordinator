@@ -141,7 +141,7 @@ describe('actions/view', () => {
 
         checkSubscription()(dispatchSpy, getState);
         _.defer(() => {
-          sinon.assert.calledWith(dispatchSpy, checkSubscriptionOnLoad());
+          sinon.assert.calledWith(dispatchSpy, checkSubscriptionOnLoad(null));
           done();
         });
       });

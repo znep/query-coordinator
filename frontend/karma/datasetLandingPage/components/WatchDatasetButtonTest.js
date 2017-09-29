@@ -28,7 +28,7 @@ describe('WatchDatasetButton', () => {
 
       TestUtils.Simulate.click(element.querySelector('label'));
 
-      assert.ok(element.querySelector('.icon-eye'));
+      assert.ok(element.querySelector('.socrata-icon-watch'));
       sinon.assert.calledOnce(subscribe);
       return subscribe({ id: 102 }).then(() => {
         sinon.assert.calledOnce(spy);
@@ -43,7 +43,7 @@ describe('WatchDatasetButton', () => {
 
       TestUtils.Simulate.click(element.querySelector('label'));
 
-      assert.ok(element.querySelector('.icon-eye-blocked'));
+      assert.ok(element.querySelector('.socrata-icon-watched'));
       sinon.assert.calledOnce(unsubscribe);
       return unsubscribe({ id: 102 }).then(() => {
         sinon.assert.calledOnce(spy);

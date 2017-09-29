@@ -39,10 +39,10 @@ function mapStateToProps(state) {
       const promise = view.subscribed ?
         subscriptionStore.unsubscribe(view.subscriptionId) : subscriptionStore.subscribe(view.id);
       promise.then((subscribedResult) => {
-        ownProps.onSubscriptionChange(_.get(subscribedResult, 'id'));
+        ownProps.onSubscriptionChange(_.get(subscribedResult, 'id', null));
       }).
       catch(() => {
-        ownProps.onSubscriptionChange();
+        ownProps.onSubscriptionChange(null);
       });
       event.preventDefault();
     },

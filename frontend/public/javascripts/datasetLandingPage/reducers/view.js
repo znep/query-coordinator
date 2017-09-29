@@ -69,7 +69,8 @@ export default function(state, action) {
     case HANDLE_CHECK_SUBSCRIPTION_ON_LOAD_ERROR:
       return {
         ...state,
-        subscribed: false
+        subscribed: false,
+        subscriptionId: null
       };
     case HANDLE_FETCH_ROW_COUNT_SUCCESS:
       return {

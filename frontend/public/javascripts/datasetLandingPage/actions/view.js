@@ -131,10 +131,6 @@ export const checkSubscription = () => (dispatch, getState) => {
 
   fetch(fetchUrl, fetchOptions).then(checkStatus).then((response) => response.json()).then((response) => {
     var subscriptionResponse = response.data;
-    if (_.get(subscriptionResponse[0], 'id')) {
-      dispatch(checkSubscriptionOnLoad(_.get(subscriptionResponse[0], 'id')));
-    } else {
-      dispatch(checkSubscriptionOnLoad());
-    }
+    dispatch(checkSubscriptionOnLoad(_.get(subscriptionResponse[0], 'id', null)));
   }).catch(() => dispatch(handleCheckSubscriptionOnLoadError()));
 };

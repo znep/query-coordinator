@@ -179,7 +179,7 @@ class InfoPane extends Component {
       return null;
     }
 
-    const watchDatasetFlagIcon = classNames('flag-icon', subscribed ? 'icon-eye-blocked' : 'icon-eye');
+    const watchDatasetFlagIcon = classNames('flag-icon', subscribed ? 'socrata-icon-watched' : 'socrata-icon-watch');
     const watchDatasetFlag = showWatchDatasetFlag ?
       <div className="watch-dataset-flag">
         <label

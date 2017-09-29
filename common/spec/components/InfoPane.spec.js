@@ -161,13 +161,13 @@ describe('InfoPane', () => {
       it('should show watch dataset flag as blocked eye icon if watching', () => {
         const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: true, subscribed: true }));
         assert.ok(element.querySelector('.watch-dataset-flag'));
-        assert.ok(element.querySelector('.icon-eye-blocked'));
+        assert.ok(element.querySelector('.socrata-icon-watched'));
       });
 
       it('should show watch dataset flag as eye icon if not watching', () => {
         const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: true, subscribed: false }));
         assert.ok(element.querySelector('.watch-dataset-flag'));
-        assert.ok(element.querySelector('.icon-eye'));
+        assert.ok(element.querySelector('.socrata-icon-watch'));
       });
     });
 

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
-import { CREATE_UPLOAD } from 'reduxStuff/actions/manageUploads';
+import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
 import { stripToTextAst, stripToNumberAst, stripToBooleanAst, stripToDatetimeAst } from 'lib/ast';
 
 export function rowsToBeImported(entities, outputSchemaId) {
@@ -81,7 +81,7 @@ export function allTransformsDone(columnsWithTransforms = []) {
 export function sourcesInProgress(apiCalls) {
   return _.filter(
     apiCalls,
-    apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
+    apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_SOURCE
   );
 }
 

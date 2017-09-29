@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as Links from 'links';
 import _ from 'lodash';
 import { Link, browserHistory, withRouter } from 'react-router';
-import { createViewSource } from 'reduxStuff/actions/sources';
+import { createViewSource } from 'reduxStuff/actions/createSource';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';
 

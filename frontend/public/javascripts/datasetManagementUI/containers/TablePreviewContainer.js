@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import TablePreview from 'components/TablePreview/TablePreview';
-import * as Actions from 'reduxStuff/actions/sources';
+import * as Actions from 'reduxStuff/actions/createSource';
 
 function mapStateToProps({ entities }, { params }) {
   return {

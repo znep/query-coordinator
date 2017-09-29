@@ -17,6 +17,16 @@ export function subscribeToAllTheThings(is) {
   };
 }
 
+export function subscribeToOutputSchemaThings(is) {
+  return dispatch => {
+    dispatch(subscribeToRowErrors(is));
+    is.output_schemas.forEach(os => {
+      dispatch(subscribeToOutputSchema(os));
+      dispatch(subscribeToTransforms(os));
+    });
+  };
+}
+
 export function subscribeToRowErrors(is) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`row_errors:${is.id}`);

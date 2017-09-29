@@ -45,7 +45,7 @@ function createSource(sourceType, params, callParams) {
   };
 }
 
-function createSourceSuccess(payload) {
+export function createSourceSuccess(payload) {
   return {
     type: CREATE_SOURCE_SUCCESS,
     ...payload

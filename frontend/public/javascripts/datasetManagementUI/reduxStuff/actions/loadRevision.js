@@ -1,51 +1,91 @@
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
-import * as dsmapiLinks from 'dsmapiLinks';
 import _ from 'lodash';
-import { parseDate } from 'lib/parseDate';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms,
-  insertInputSchema,
-  subscribeToRowErrors
-} from 'reduxStuff/actions/manageUploads';
+import * as dsmapiLinks from 'dsmapiLinks';
 import { showModal } from 'reduxStuff/actions/modal';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';
+import { createSourceSuccess } from 'reduxStuff/actions/createSource';
+import { subscribeToOutputSchemaThings } from 'reduxStuff/actions/subscriptions';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
+import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { parseDate } from 'lib/parseDate';
+
+export const LOAD_REVISION_SUCCESS = 'LOAD_REVISION_SUCCESS';
 
 export function loadRevision(params) {
   return (dispatch, getState) => {
     const { views } = getState().entities;
 
-    return Promise.all([getCurrentRevision(params), getSources(params)]).then(([revision, sources]) => {
-      const initialTaskSets = makeTaskSets(revision);
-
+    return Promise.all([getCurrentRevision(params), getSources(params)]).then(([revision, srcs]) => {
+      // calc md errors
       const view = views[revision.fourfour];
-
       const { customMetadataFieldsets } = view;
-
-      const initialSources = sources.reduce(
-        (acc, source) => ({
-          ...acc,
-          [source.id]: {
-            ...source,
-            created_at: parseDate(source.created_at),
-            finished_at: source.finished_at ? parseDate(source.finished_at) : null,
-            failed_at: source.failed_at ? parseDate(source.failed_at) : null,
-            created_by: source.created_by
-          }
-        }),
-        {}
-      );
-
       const metadataErrors = getMetadataErrors(revision, customMetadataFieldsets);
 
-      dispatch(loadRevisionSuccess(revision, initialTaskSets, initialSources, metadataErrors));
+      // make taskSets to instert into store
+      const taskSets = makeTaskSets(revision);
 
-      dispatch(sideEffectyStuff(revision, initialSources, params));
+      // show toast for any faild notifications
+      const [failed, succeeded] = _.partition(srcs, source => source.failed_at);
+      failed.forEach(source => dispatch(addNotification('source', null, source.id)));
+
+      // subscribe to sockets for input / output schemas
+      _.flatMap(succeeded, source =>
+        source.schemas.map(schema => ({
+          ...schema,
+          source_id: source.id
+        }))
+      ).forEach(subscribeToOutputSchemaThings);
+
+      // insert new transforms, input schemas, etc into store; we parse this
+      // stuff using the same code that we use when we create a new source
+      succeeded.forEach(src => {
+        const payload = normalizeCreateSourceResponse(src);
+        dispatch(createSourceSuccess(payload));
+      });
+
+      // insert other stuff into store
+      dispatch(loadRevisionSuccess(revision, taskSets, metadataErrors));
+
+      // poll
+      revision.task_sets.forEach(taskSet => {
+        if (
+          taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
+          taskSet.status !== ApplyRevision.TASK_SET_FAILURE
+        ) {
+          dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id, params));
+        }
+      });
+
+      if (revision.task_sets.length) {
+        dispatch(showModal('Publishing'));
+      }
     });
   };
+}
+
+function loadRevisionSuccess(revision, taskSets, metadataErrors) {
+  return {
+    type: LOAD_REVISION_SUCCESS,
+    revision,
+    taskSets,
+    metadataErrors
+  };
+}
+
+function makeTaskSets(revision) {
+  return revision.task_sets.reduce(
+    (acc, taskSet) => ({
+      ...acc,
+      [taskSet.id]: {
+        ...taskSet,
+        created_at: parseDate(taskSet.created_at),
+        finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null,
+        created_by: taskSet.created_by
+      }
+    }),
+    {}
+  );
 }
 
 function getMetadataErrors(revision, customFieldests) {
@@ -84,77 +124,4 @@ function getSources(params) {
     .then(revisions => {
       return revisions.map(revision => revision.resource);
     });
-}
-
-function makeTaskSets(revision) {
-  return revision.task_sets.reduce(
-    (acc, taskSet) => ({
-      ...acc,
-      [taskSet.id]: {
-        ...taskSet,
-        created_at: parseDate(taskSet.created_at),
-        finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null,
-        created_by: taskSet.created_by
-      }
-    }),
-    {}
-  );
-}
-
-function sideEffectyStuff(revision, sources, params) {
-  return dispatch => {
-    // partition failed and successful sources (ie uploads) since we only want
-    // to insert into store and subscribe to row errors if it succeeded
-    const [failed, succeeded] = _.partition(sources, source => source.failed_at);
-
-    failed.forEach(source => dispatch(addNotification('source', null, source.id)));
-
-    const inputSchemas = _.flatMap(succeeded, source =>
-      source.schemas.map(schema => ({
-        ...schema,
-        source_id: source.id
-      }))
-    );
-
-    const outputSchemas = _.flatMap(inputSchemas, is => is.output_schemas);
-
-    inputSchemas.forEach(is => {
-      dispatch(insertInputSchema(is, is.source_id));
-      dispatch(subscribeToRowErrors(is));
-    });
-
-    outputSchemas.forEach(os => {
-      const is = inputSchemas.find(schema => schema.id === os.input_schema_id);
-      dispatch(listenForOutputSchemaSuccess(os, is));
-    });
-
-    outputSchemas.forEach(os => {
-      dispatch(subscribeToOutputSchema(os));
-      dispatch(subscribeToTransforms(os));
-    });
-
-    revision.task_sets.forEach(taskSet => {
-      if (
-        taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
-        taskSet.status !== ApplyRevision.TASK_SET_FAILURE
-      ) {
-        dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id, params));
-      }
-    });
-
-    if (revision.task_sets.length) {
-      dispatch(showModal('Publishing'));
-    }
-  };
-}
-
-export const LOAD_REVISION_SUCCESS = 'LOAD_REVISION_SUCCESS';
-function loadRevisionSuccess(revision, taskSets, sources, metadataErrors) {
-  return {
-    type: LOAD_REVISION_SUCCESS,
-    revision,
-    taskSets,
-    sources,
-    metadataErrors
-  };
 }

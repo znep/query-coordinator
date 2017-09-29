@@ -75,11 +75,6 @@ export class AxisAndScalePane extends Component {
   renderChartSorting() {
     const { metadata, onSelectChartSorting, chartSorting, vifAuthoring } = this.props;
     const column = getAnyDimension(vifAuthoring);
-    const shouldRender = !isDimensionTypeCalendarDate(metadata, column);
-    
-    if (!shouldRender) {
-      return;
-    }
 
     const defaultChartSort = getOrderBy(vifAuthoring) || { parameter: 'measure', sort: 'desc' };
     const options = _.map(chartSorting, (option) => {

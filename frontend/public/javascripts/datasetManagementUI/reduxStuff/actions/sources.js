@@ -5,7 +5,8 @@ import * as dsmapiLinks from 'dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
 
-const CREATE_SOURCE = 'CREATE_SOURCE';
+export const CREATE_SOURCE = 'CREATE_SOURCE';
+export const CREATE_SOURCE_SUCCESS = 'CREATE_SOURCE_SUCCESS';
 
 function createSource(sourceType, params) {
   return dispatch => {
@@ -43,8 +44,18 @@ function createSource(sourceType, params) {
 }
 
 export function createViewSource(params) {
+  // TODO: handle error
   return dispatch => {
-    dispatch(createSource('view', params)).then(normalizeCreateSourceResponse);
+    dispatch(createSource('view', params))
+      .then(normalizeCreateSourceResponse)
+      .then(resp => dispatch(createSourceSuccess(resp)));
+  };
+}
+
+function createSourceSuccess(payload) {
+  return {
+    type: CREATE_SOURCE_SUCCESS,
+    ...payload
   };
 }
 
@@ -101,14 +112,14 @@ function getNormalizedInputColumns(resource) {
 }
 
 function getNormalizedOutputSchemas(resource) {
-  // TODO: ok to grab created_by from the source? the one on the output schema
+  // TODO: ok to grab created_by from the input schema? the one on the output schema
   // always seems to be null
 
   return _.flatMap(resource.schemas, is => is.input_columns).reduce(
     (acc, os) => ({
       [os.id]: {
         ...os,
-        created_by: resource.created_by
+        created_by: resource.schemas.created_by
       }
     }),
     {}

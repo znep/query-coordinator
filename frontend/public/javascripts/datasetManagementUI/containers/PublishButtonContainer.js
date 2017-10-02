@@ -7,7 +7,10 @@ import { showModal } from 'reduxStuff/actions/modal';
 import { withRouter } from 'react-router';
 
 function isDataSatisfied({ entities }, params) {
-  if (window.serverConfig.featureFlags.usaid_features_enabled) {
+  const isUSAID = window.serverConfig.featureFlags.usaid_features_enabled;
+  const isPublishedDataset = entities.views[params.fourfour].displayType !== 'draft';
+
+  if (isUSAID || isPublishedDataset) {
     return true;
   }
   let dataSatisfied;
@@ -22,21 +25,21 @@ function isDataSatisfied({ entities }, params) {
   return dataSatisfied;
 }
 
+function isPublishing(taskSets) {
+  return !!_.chain(taskSets)
+    .filter(set => set.status === ApplyRevision.TASK_SET_IN_PROGRESS)
+    .size()
+    .value();
+}
+
 function mapStateToProps(state, { params }) {
   const dataSatisfied = isDataSatisfied(state, params);
+  const publishing = isPublishing(state.entities.task_sets);
 
   return {
     metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
     dataSatisfied,
-    publishedOrPublishing:
-      _.size(
-        _.filter(
-          state.entities.task_sets,
-          set =>
-            set.status === ApplyRevision.TASK_SET_SUCCESSFUL ||
-            set.status === ApplyRevision.TASK_SET_IN_PROGRESS
-        )
-      ) > 0
+    publishing
   };
 }
 

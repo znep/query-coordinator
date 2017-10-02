@@ -77,7 +77,7 @@ export function subscribeToTotalRows(is) {
   };
 }
 
-// Called on loadRevision path, upload path, manageColMetadata and showOutputSchema
+// Called on app load path, upload path, manageColMetadata and showOutputSchema
 // actions (e.g. addColumn, dropColumn, which create a new OS). The point of the
 // channel is to inform us of DMAPI's progress on processing a column of data.
 // The 'update' message will let us know if the processing is done or not. The

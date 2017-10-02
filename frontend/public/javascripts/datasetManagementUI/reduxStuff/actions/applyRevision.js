@@ -173,7 +173,6 @@ export function pollForTaskSetProgress(taskSetId, params) {
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
           } else {
             dispatch(getView(params.fourfour));
-            // dispatch(editView(params.fourfour, { displayType: 'published' }));
           }
         } else {
           console.warn('Backend service appears to be down presently.');

@@ -84,7 +84,6 @@ class SocrataCookieStore
     :httponly     => true
   }.freeze
 
-  CORE_SESSION_KEY = "socrata.core-session".freeze
   ENV_SESSION_KEY = "rack.session".freeze
   ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
 
@@ -131,7 +130,6 @@ class SocrataCookieStore
     status, headers, body = @app.call(env)
 
     if status >= 200 && status < 400
-      core_data = env[CORE_SESSION_KEY]
       session_data = env[ENV_SESSION_KEY]
       options = env[ENV_SESSION_OPTIONS_KEY]
       request = ActionDispatch::Request.new(env)
@@ -148,15 +146,9 @@ class SocrataCookieStore
         save_cookie = true
       end
 
-      if !core_data.is_a?(CoreSession) || core_data.send(:loaded?) || options[:expire_after]
-        save_core_cookie = true
-      end
-
       cookies = [
         [save_cookie, session_data, @key]
       ]
-
-      cookies << [save_core_cookie, core_data, @core_key] unless FeatureFlags.derive[:core_managed_session]
 
       cookies.each do |persist|
         if persist.first
@@ -187,21 +179,12 @@ class SocrataCookieStore
     def prepare!(env)
       env[ENV_SESSION_KEY] = Rack::Session::Abstract::SessionHash.new(self, env)
       env[ENV_SESSION_OPTIONS_KEY] = SocrataSessionHash.new(self, env, @default_options)
-
-      # Remove for EN-15695
-      env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
     end
 
     def load_session(env)
       data = unpacked_cookie_data(env)
       data = persistent_session_id!(data)
       [data[:session_id], data]
-    end
-
-    def load_core_session(env)
-      request = ActionDispatch::Request.new(env)
-      cookie_data = request.cookie_jar[@core_key]
-      return ::CoreSession.unmangle_core_session_from_cookie(cookie_data)
     end
 
     def extract_session_id(env)

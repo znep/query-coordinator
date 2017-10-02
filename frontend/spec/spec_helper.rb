@@ -115,16 +115,10 @@ RSpec.configure do |config|
 =end
 end
 
-# Similar method also defined in TestHelperMethods#core_managed_session_feature_flag
-def core_managed_session_feature_flag
-  {:core_managed_session => ENV['CORE_SESSION'] != 'frontend-generated'}
-end
-
 # Similar method also defined in TestHelperMethods#stub_feature_flags_with
 def rspec_stub_feature_flags_with(options)
   @feature_flags ||= Hashie::Mash.new(options)
   @feature_flags.merge!(options)
-  @feature_flags.merge!(core_managed_session_feature_flag)
   allow(CurrentDomain).to receive(:feature_flags).and_return(@feature_flags)
   allow(FeatureFlags).to receive(:derive).and_return(@feature_flags)
 end

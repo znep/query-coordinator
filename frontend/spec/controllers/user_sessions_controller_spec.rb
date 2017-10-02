@@ -16,8 +16,8 @@ describe UserSessionsController do
   before do
     init_environment
 
-    allow_any_instance_of(UserSession).to receive(:save).with(true).and_return(Net::HTTPSuccess.new(1.1, 200, 'Success'))
-    allow_any_instance_of(UserSession).to receive(:find_token).and_return(true)
+    allow_any_instance_of(CoreManagedUserSession).to receive(:save).with(true).and_return(Net::HTTPSuccess.new(1.1, 200, 'Success'))
+    allow_any_instance_of(CoreManagedUserSession).to receive(:auth_cookie_string).and_return('Have a cookie')
   end
 
   describe 'POST /login' do
@@ -74,7 +74,7 @@ describe UserSessionsController do
         allow(subject).to receive(:should_auth0_redirect?).and_return(false)
         allow(CurrentDomain).to receive(:feature?).with('fedramp').and_return(true)
         allow(CurrentDomain).to receive(:feature?).with('username_password_login').and_return(true)
-        allow_any_instance_of(UserSession).to receive(:user).and_return(user)
+        allow_any_instance_of(CoreManagedUserSession).to receive(:user).and_return(user)
         allow(user).to receive(:is_superadmin?).and_return(true)
 
         post(:create, { user_session: { login: 'test@socrata.com' } })

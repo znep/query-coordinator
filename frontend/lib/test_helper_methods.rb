@@ -5,14 +5,8 @@ module TestHelperMethods
   include Signaller::Test::Helpers
   include SocrataSiteChrome::Test::Helpers
 
-  def core_managed_session_feature_flag
-    {:core_managed_session => ENV['CORE_SESSION'] != 'frontend-generated'}
-  end
-
   # TODO Change this method name in feature flag signaller gem
   def init_feature_flag_signaller(args = {})
-    args[:with] = args.fetch(:with, {}).merge(core_managed_session_feature_flag)
-
     init_signaller(args)
   end
 
@@ -65,15 +59,9 @@ module TestHelperMethods
   NON_ROLED = 'non roled'
 
   def init_environment(test_user: TestHelperMethods::ADMIN, site_chrome: true, feature_flags: {})
-    if respond_to? :stubs
-      stubs(:load_core_session => 'fake')
-    end
-
     init_current_domain
     init_feature_flag_signaller(:with => feature_flags)
     UserSessionProvider.klass.controller = @controller
-
-    init_core_session
 
     if site_chrome
       stub_site_chrome
@@ -97,14 +85,6 @@ module TestHelperMethods
 
   def init_anonymous_environment
     init_environment(test_user: TestHelperMethods::ANONYMOUS, site_chrome: false)
-  end
-
-  def init_core_session
-    unless FeatureFlags.derive[:core_managed_session]
-      fake_core_session = CoreSession.new(self, @env)
-      fake_core_session.pretend_loaded
-      @controller.request.core_session = fake_core_session
-    end
   end
 
   def load_sample_data(file)
@@ -131,7 +111,6 @@ module TestHelperMethods
   def stub_feature_flags_with(options)
     @feature_flags ||= Hashie::Mash.new(options)
     @feature_flags.merge!(options)
-    @feature_flags.merge!(core_managed_session_feature_flag)
     CurrentDomain.stubs(:feature_flags => @feature_flags)
     FeatureFlags.stubs(:derive => @feature_flags)
   end
@@ -350,14 +329,9 @@ module TestHelperMethods
     }
   end
 
-  def load_core_session(env)
-    'fake'
-  end
-
   def stub_user_session
     UserSessionProvider.klass.any_instance.stubs(:save).with(true).returns(Net::HTTPSuccess.new(1.1, 200, 'Success'))
     User.stubs(current_user: User.new(some_user))
-    UserSession.any_instance.stubs(:find_token).returns(true)
     CoreManagedUserSession.any_instance.stubs(:auth_cookie_string).returns('Have a cookie')
   end
 

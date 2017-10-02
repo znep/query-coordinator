@@ -42,13 +42,13 @@ describe('components/MetadataTable', () => {
 
   it('renders InfoPane', () => {
     const component = shallow(<MetadataTable {...withView} />);
-    const infoPane = !component.find(InfoPane).isEmpty();
-    assert.isTrue(infoPane);
+    const infoPane = !component.find(InfoPane).exists();
+    assert.isFalse(infoPane);
   });
 
   it('renders the common MetadataTable component', () => {
     const component = shallow(<MetadataTable {...withView} />);
-    const mdTable = !component.find(CommonMetadataTable).isEmpty();
-    assert.isTrue(mdTable);
+    const mdTable = !component.find(CommonMetadataTable).exists();
+    assert.isFalse(mdTable);
   });
 });

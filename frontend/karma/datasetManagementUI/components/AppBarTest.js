@@ -12,7 +12,7 @@ describe('components/AppBar', () => {
   const component = shallow(<AppBar {...defaultProps} />);
 
   it('renders without errors', () => {
-    assert.isFalse(component.isEmpty());
+    assert.isTrue(component.exists());
   });
 
   it('renders a link to primer', () => {

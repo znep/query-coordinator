@@ -36,6 +36,6 @@ describe('components/NoMatch', () => {
       }
     });
 
-    assert.isFalse(element.isEmpty());
+    assert.isTrue(element.exists());
   });
 });

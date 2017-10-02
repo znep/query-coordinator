@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import state from '../data/initialState';
-import { mapStateToProps } from 'containers/RowDetailsContainer';
+import { mapStateToProps } from 'containers/RevisionRowDetailsContainer';
 import dotProp from 'dot-prop-immutable';
 
-describe('containers/RowDetailsContainer', () => {
+describe('containers/RevisionRowDetailsContainerTest', () => {
   describe('mapStateToProps', () => {
     it('renders when there is no output schema', () => {
       const stateWithoutOS = dotProp.set(state, 'entities.output_schemas', {});

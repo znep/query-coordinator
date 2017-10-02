@@ -74,7 +74,7 @@ export function createUploadSource(file, params) {
     source_type: { type: 'upload', filename: file.name }
   };
   return dispatch => {
-    dispatch(createSource('upload', params, callParams)).then(resource => {
+    return dispatch(createSource('upload', params, callParams)).then(resource => {
       // put source in store
       dispatch(
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)

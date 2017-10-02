@@ -59,14 +59,13 @@ describe('loadRevision actions', () => {
 
   describe('loadRevision', () => {
 
-    it('makes calls to DSMAPI, dispatches sideEffectyStuff, and inserts revision into store', (done) => {
+    it('updates store tables', (done) => {
       fakeStore.dispatch(loadRevision({ revisionSeq: 0 }))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [
+            'CREATE_SOURCE_SUCCESS',
             'LOAD_REVISION_SUCCESS',
-            'INSERT_INPUT_SCHEMA',
-            'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS',
             'SHOW_MODAL'
           ]);
 

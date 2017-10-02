@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
-import { createUpload } from 'reduxStuff/actions/manageUploads';
+import { createUploadSource } from 'reduxStuff/actions/createSource';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
@@ -35,8 +35,8 @@ const params = {
   outputSchemaId: '144'
 };
 
-describe('manageUploads actions', () => {
-  describe('createUpload', () => {
+describe('createSource actions', () => {
+  describe('createUploadSource', () => {
     let unmock;
     let store;
 
@@ -56,7 +56,6 @@ describe('manageUploads actions', () => {
       store.dispatch(
         bootstrapApp(
           window.initialState.view,
-          window.initialState.revision,
           window.initialState.customMetadataFieldsets
         )
       );
@@ -78,7 +77,7 @@ describe('manageUploads actions', () => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
@@ -94,16 +93,16 @@ describe('manageUploads actions', () => {
         });
     });
 
-    it('dispatches a CREATE_UPLOAD_SUCCESS action with the correct sourceId', done => {
+    it('dispatches a CREATE_UPLOAD_SOURCE_SUCCESS action with the correct sourceId', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(
             action =>
-              action.type === 'CREATE_UPLOAD_SUCCESS' && action.id === 823
+              action.type === 'CREATE_UPLOAD_SOURCE_SUCCESS' && action.source.id === 823
           );
 
           assert.isAtLeast(expectedAction.length, 1);

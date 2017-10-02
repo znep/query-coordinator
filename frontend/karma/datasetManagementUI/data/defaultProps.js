@@ -1221,6 +1221,7 @@ export const ShowRevisionProps = {
   view: {
     id: 'nn5w-zj56',
     name: 'okokokokokok',
+    displayType: 'draft',
     owner: {
       id: 'tugg-ikce',
       displayName: 'branweb',

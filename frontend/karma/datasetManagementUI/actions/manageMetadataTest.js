@@ -12,7 +12,7 @@ import {
   SAVE_DATASET_METADATA
 } from 'reduxStuff/actions/apiCalls';
 import { SHOW_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
-import { createUpload } from 'reduxStuff/actions/manageUploads';
+import { createUploadSource } from 'reduxStuff/actions/createSource';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reduxStuff/reducers/rootReducer';
 import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
@@ -132,7 +132,7 @@ describe('manageMetadata actions', () => {
   describe('saveColumnMetadata', () => {
     beforeEach(done => {
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
         .then(() => done());
     });
 
@@ -159,9 +159,8 @@ describe('manageMetadata actions', () => {
         });
     });
 
-    it('dispatches a LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
+    it('dispatches a CREATE_NEW_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
-
       const osid = Number(
         Object.keys(store.getState().entities.output_schemas)[0]
       );
@@ -170,13 +169,8 @@ describe('manageMetadata actions', () => {
         .dispatch(saveColumnMetadata(osid, params))
         .then(() => {
           const action = fakeStore.getActions()[2];
-
-          assert.equal(action.type, 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS');
-          assert.isTrue(_.has(action, 'outputSchema'));
-          assert.isTrue(_.has(action, 'transforms'));
-          assert.isTrue(_.has(action, 'outputColumns'));
-          assert.isTrue(_.has(action, 'outputSchemaColumns'));
-
+          assert.equal(action.type, 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS');
+          assert.containsAllKeys(action, ['outputSchema', 'transforms', 'outputColumns', 'outputSchemaColumns'])
           done();
         })
         .catch(err => {

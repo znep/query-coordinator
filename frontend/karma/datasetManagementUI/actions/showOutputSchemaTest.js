@@ -10,7 +10,6 @@ import {
   dropColumn
 } from 'reduxStuff/actions/showOutputSchema';
 import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
-import { createUpload } from 'reduxStuff/actions/manageUploads';
 import { currentOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reduxStuff/reducers/rootReducer';
@@ -77,7 +76,7 @@ describe('showOutputSchema actions', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
@@ -87,7 +86,7 @@ describe('showOutputSchema actions', () => {
     it('adds the added column to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputColumns')
       );
 
@@ -138,7 +137,7 @@ describe('showOutputSchema actions', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
@@ -149,7 +148,7 @@ describe('showOutputSchema actions', () => {
       const expectedAction = recordedActions
         .filter(
           action =>
-            action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+            action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
             _.has(action, 'outputColumns')
         )
         .filter(action =>
@@ -203,45 +202,12 @@ describe('showOutputSchema actions', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
       assert.isAtLeast(expectedAction.length, 1);
     });
-
-    // it.only('adds new output column / transform to the store', () => {
-    //   const expectedColumn = recordedActions
-    //     .filter(action => action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS')
-    //     .map(action => action.outputColumns)
-    //     .reduce((acc, outputColumns) => {
-    //       return [
-    //         ...acc,
-    //         ...Object.keys(outputColumns).map(key => outputColumns[key])
-    //       ];
-    //     }, [])
-    //     .filter(
-    //       outputColumn =>
-    //         outputColumn.position === column.position &&
-    //         outputColumn.field_name === column.field_name
-    //     );
-    //
-    //   const newTransformId = expectedColumn[0].transform_id;
-    //
-    //   const expectedTransform = recordedActions
-    //     .filter(action => action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS')
-    //     .map(action => action.transforms)
-    //     .reduce((acc, transforms) => {
-    //       return [
-    //         ...acc,
-    //         ...Object.keys(transforms).map(key => transforms[key])
-    //       ];
-    //     }, [])
-    //     .filter(transform => transform.id === newTransformId);
-    //
-    //   assert.isAtLeast(expectedColumn.length, 1);
-    //   assert.isAtLeast(expectedTransform.length, 1);
-    // });
   });
 
   describe('outputColumnsWithChangedType', () => {

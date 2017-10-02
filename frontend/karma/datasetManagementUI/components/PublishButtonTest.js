@@ -7,7 +7,7 @@ import PublishButton from 'components/PublishButton/PublishButton';
 const defaultProps = {
   dataSatisfied: false,
   metadataSatisfied: false,
-  publishedOrPublishing: false,
+  publishing: false,
   publishDataset: _.noop
 };
 
@@ -22,7 +22,7 @@ describe('"Publish Dataset" button and flyout', () => {
       ...defaultProps,
       dataSatisfied: true,
       metadataSatisfied: true,
-      publishedOrPublishing: true
+      publishing: true
     };
 
     const component = shallow(<PublishButton {...updatedProps} />);
@@ -34,7 +34,7 @@ describe('"Publish Dataset" button and flyout', () => {
       ...defaultProps,
       dataSatisfied: true,
       metadataSatisfied: false,
-      publishedOrPublishing: false
+      publishing: false
     };
 
     const component = shallow(<PublishButton {...updatedProps} />);

@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 
 describe('dsmapi links', () => {
 

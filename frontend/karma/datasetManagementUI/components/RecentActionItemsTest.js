@@ -99,7 +99,7 @@ describe('components/RecentActionItems', () => {
       const linkPath = component.find('Link').prop('to');
       assert.equal(
         linkPath,
-        '/dataset/test dataset/abcd-1234/manage/revisions/undefined/sources/10/schemas/11/output/12'
+        '/dataset/test dataset/abcd-1234/revisions/undefined/sources/10/schemas/11/output/12'
       );
     });
 

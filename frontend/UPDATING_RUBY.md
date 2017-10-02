@@ -1,12 +1,13 @@
 
 ### Ruby Version Driven Updates to The Build Deploy Pipeline for Frontend
 
-Hear Ye, Hear Ye. So at long last the time has come to undertake the dreaded task of updating the frontend ruby version. The task has fallen to you oh unfortunate one. Here is a concise guide to making the updates you need to make.
+Hear Ye, Hear Ye. So at long last the time has come to undertake the dreaded task of updating the frontend ruby version. The task has fallen to you O Unfortunate One. Here is a concise guide to making the updates you need to make.
 
 #### Assumptions
 - We assume that the ubuntu base image has changed in such a way that we are required to update ruby. (Deprecation, security fixes, etc)
 
 #### Things to Change
+
 - __Jenkins__ : _Build and Test Server cookbooks_
     - update the file `metachef/cookbooks/socrata-jenkins/recipes/_ruby.rb`. Change the list of ruby versions to be current-2, current-1, current
       - eg: ```['2.3.1', '2.3.3', '2.3.4'] => ['2.3.3', '2.3.4', '2.3.5']```
@@ -30,6 +31,8 @@ Hear Ye, Hear Ye. So at long last the time has come to undertake the dreaded tas
   - _The rails4-deps docker image_
     - Go to docker hub : https://hub.docker.com/r/socrata/rails4-deps/ and trigger build manually after step 1 build completes (can take 10-30 minutes)
 
+- __Projects__: 
+    - update the `.ruby-version` files to the new version of ruby (eg 2.3.5), build locally and push those updates with your project changes
 
 - __Verify Functionality__
   - build frontend to ensure that it deploys successfully to staging and RC

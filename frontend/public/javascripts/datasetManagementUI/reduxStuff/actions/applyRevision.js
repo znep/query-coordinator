@@ -13,6 +13,7 @@ import {
 import { showModal } from 'reduxStuff/actions/modal';
 import { addTaskSet } from 'reduxStuff/actions/taskSets';
 import { editRevision } from 'reduxStuff/actions/revisions';
+import { getView } from 'reduxStuff/actions/views';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
 import { parseDate } from 'lib/parseDate';
@@ -170,6 +171,9 @@ export function pollForTaskSetProgress(taskSetId, params) {
             setTimeout(() => {
               dispatch(pollForTaskSetProgress(taskSetId, params));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
+          } else {
+            dispatch(getView(params.fourfour));
+            // dispatch(editView(params.fourfour, { displayType: 'published' }));
           }
         } else {
           console.warn('Backend service appears to be down presently.');

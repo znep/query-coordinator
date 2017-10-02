@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { CREATE_SOURCE_SUCCESS } from 'reduxStuff/actions/createSource';
+import { CREATE_SOURCE_SUCCESS, CREATE_UPLOAD_SOURCE_SUCCESS } from 'reduxStuff/actions/createSource';
 
 const createSource = (state, action) => {
   switch (action.type) {
@@ -58,6 +58,10 @@ const createSource = (state, action) => {
         ...existingRecords,
         ...action.transforms
       }));
+    }
+
+    case CREATE_UPLOAD_SOURCE_SUCCESS: {
+      return dotProp.set(state, `entities.sources.${action.source.id}`, action.source);
     }
 
     default:

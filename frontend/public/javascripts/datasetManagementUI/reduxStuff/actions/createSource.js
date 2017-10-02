@@ -89,11 +89,13 @@ export function createUploadSource(file, params) {
 export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) {
   return {
     type: CREATE_UPLOAD_SOURCE_SUCCESS,
-    id,
-    source_type: sourceType,
-    created_by: createdBy,
-    created_at: parseDate(createdAt),
-    percentCompleted: 0
+    source: {
+      id,
+      source_type: sourceType,
+      created_by: createdBy,
+      created_at: parseDate(createdAt),
+      percentCompleted: 0
+    }
   };
 }
 

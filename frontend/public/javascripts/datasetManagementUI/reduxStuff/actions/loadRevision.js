@@ -25,7 +25,7 @@ export function loadRevision(params) {
       // make taskSets to instert into store
       const taskSets = makeTaskSets(revision);
 
-      // show toast for any faild notifications
+      // show toast for any failed notifications
       const [failed, succeeded] = _.partition(srcs, source => source.failed_at);
       failed.forEach(source => dispatch(addNotification('source', null, source.id)));
 

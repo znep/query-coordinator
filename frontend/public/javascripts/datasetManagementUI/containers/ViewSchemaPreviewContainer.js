@@ -17,12 +17,10 @@ const mergeProps = (stateProps, { dispatch }, { params }) => {
   const clickHandler = e => {
     e.preventDefault();
 
-    dispatch(createViewSource(params));
-
-    // dispatch(createRevisionThenSource(params)).then(({ resource, params: newParams }) => {
-    //   const osid = resource.schemas[0].output_schemas[0].id;
-    //   browserHistory.push(Links.columnMetadataForm(newParams, osid));
-    // });
+    dispatch(createViewSource(params)).then(source => {
+      const osid = Math.max(...Object.keys(source.outputSchemas));
+      browserHistory.push(Links.columnMetadataForm(params, osid));
+    });
   };
 
   return {

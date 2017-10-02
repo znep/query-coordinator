@@ -59,9 +59,12 @@ export function createViewSource(params) {
   };
   // TODO: handle error
   return dispatch => {
-    dispatch(createSource('view', params, callParams))
+    return dispatch(createSource('view', params, callParams))
       .then(normalizeCreateSourceResponse)
-      .then(resp => dispatch(createSourceSuccess(resp)));
+      .then(resp => {
+        dispatch(createSourceSuccess(resp));
+        return resp;
+      });
   };
 }
 

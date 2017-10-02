@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import uuid from 'uuid';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import { checkStatus, getJson, socrataFetch } from 'lib/http';
 import {
   apiCallStarted,
@@ -11,7 +11,7 @@ import {
   SAVE_DATASET_METADATA
 } from 'reduxStuff/actions/apiCalls';
 import * as Selectors from 'selectors';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
 import { createNewOutputSchemaSuccess } from 'reduxStuff/actions/showOutputSchema';

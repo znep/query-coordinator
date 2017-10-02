@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 

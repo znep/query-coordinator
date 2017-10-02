@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { socrataFetch, getJson, checkStatus } from 'lib/http';
-import * as sodaLinks from 'sodaLinks';
-import * as coreLinks from 'coreLinks';
+import * as sodaLinks from 'links/sodaLinks';
+import * as coreLinks from 'links/coreLinks';
 
 export const EDIT_VIEW = 'EDIT_VIEW';
 export const editView = (id, payload) => ({

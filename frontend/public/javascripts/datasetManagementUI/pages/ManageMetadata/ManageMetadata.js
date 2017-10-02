@@ -15,7 +15,7 @@ import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'reduxStuff/actions/
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import MetadataContent from 'components/MetadataContent/MetadataContent';
 import * as Selectors from 'selectors';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import { connect } from 'react-redux';
 import { getCurrentColumns, classify } from 'models/forms';
 import styles from './ManageMetadata.scss';

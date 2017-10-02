@@ -1,6 +1,6 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import _ from 'lodash';
 import { Link, browserHistory, withRouter } from 'react-router';
 import { createViewSource } from 'reduxStuff/actions/createSource';

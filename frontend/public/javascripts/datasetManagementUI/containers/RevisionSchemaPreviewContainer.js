@@ -2,7 +2,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';

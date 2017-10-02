@@ -3,19 +3,18 @@ import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import styles from './RecentActionItems.scss';
 
-const RecentActionsTimestamp = ({ date }) =>
-  <span className={styles.timestamp}>
-    {moment.utc(date).fromNow()}
-  </span>;
+const RecentActionsTimestamp = ({ date }) => (
+  <span className={styles.timestamp}>{moment.utc(date).fromNow()}</span>
+);
 
 RecentActionsTimestamp.propTypes = {
   date: PropTypes.object.isRequired
 };
 
-export const RevisionActivity = ({ details }) =>
+export const RevisionActivity = ({ details }) => (
   <div className={styles.activity} data-activity-type="update">
     <div className={styles.timeline}>
       <SocrataIcon name="plus2" className={styles.icon} />
@@ -29,7 +28,8 @@ export const RevisionActivity = ({ details }) =>
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 RevisionActivity.propTypes = {
   details: PropTypes.shape({
@@ -38,7 +38,7 @@ RevisionActivity.propTypes = {
   }).isRequired
 };
 
-export const SourceActivity = ({ details }) =>
+export const SourceActivity = ({ details }) => (
   <div className={styles.activity} data-activity-type="source">
     <div className={styles.timeline}>
       <SocrataIcon name="data" className={styles.icon} />
@@ -52,7 +52,8 @@ export const SourceActivity = ({ details }) =>
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 SourceActivity.propTypes = {
   details: PropTypes.shape({
@@ -61,7 +62,7 @@ SourceActivity.propTypes = {
   }).isRequired
 };
 
-export const OutputSchemaActivity = ({ details, params }) =>
+export const OutputSchemaActivity = ({ details, params }) => (
   <div className={styles.activity} data-activity-type="outputschema">
     <div className={styles.timeline}>
       <SocrataIcon name="edit" className={styles.icon} />
@@ -76,7 +77,8 @@ export const OutputSchemaActivity = ({ details, params }) =>
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 OutputSchemaActivity.propTypes = {
   details: PropTypes.shape({
@@ -89,7 +91,7 @@ OutputSchemaActivity.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export const TaskSetActivity = ({ details }) =>
+export const TaskSetActivity = ({ details }) => (
   <div className={styles.activity} data-activity-type="taskSet">
     <div className={styles.timeline}>
       <SocrataIcon name="dataset" className={styles.icon} />
@@ -103,7 +105,8 @@ export const TaskSetActivity = ({ details }) =>
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 TaskSetActivity.propTypes = {
   details: PropTypes.shape({
@@ -112,7 +115,7 @@ TaskSetActivity.propTypes = {
   }).isRequired
 };
 
-export const TaskSetFinishedActivity = ({ details }) =>
+export const TaskSetFinishedActivity = ({ details }) => (
   <div className={styles.activity} data-activity-type="taskSetcompleted">
     <div className={styles.timeline}>
       <SocrataIcon name="checkmark3" className={styles.icon} />
@@ -121,7 +124,8 @@ export const TaskSetFinishedActivity = ({ details }) =>
       <p>Data processing successfully finished</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 TaskSetFinishedActivity.propTypes = {
   details: PropTypes.shape({
@@ -130,7 +134,7 @@ TaskSetFinishedActivity.propTypes = {
   }).isRequired
 };
 
-export const TaskSetFailedActivity = ({ details }) =>
+export const TaskSetFailedActivity = ({ details }) => (
   <div className={styles.activity} data-activity-type="taskSetfailed">
     <div className={styles.timeline}>
       <SocrataIcon name="failed" className={styles.icon} />
@@ -139,7 +143,8 @@ export const TaskSetFailedActivity = ({ details }) =>
       <p>Data processing failed</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
-  </div>;
+  </div>
+);
 
 TaskSetFailedActivity.propTypes = {
   details: PropTypes.shape({

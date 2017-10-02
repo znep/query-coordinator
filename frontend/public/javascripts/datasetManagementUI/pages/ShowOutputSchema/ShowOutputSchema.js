@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components
 import { connect } from 'react-redux';
 import { interpolate, easeInOutQuad } from 'lib/interpolate';
 import { commaify } from '../../../common/formatNumber';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import * as Actions from 'reduxStuff/actions/showOutputSchema';
 import { SAVE_CURRENT_OUTPUT_SCHEMA } from 'reduxStuff/actions/apiCalls';

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import * as dsmapiLinks from 'dsmapiLinks';
-import * as Links from 'links';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as Links from 'links/links';
 import { browserHistory } from 'react-router';
 import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import {

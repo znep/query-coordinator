@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import { showModal } from 'reduxStuff/actions/modal';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';

@@ -1,7 +1,7 @@
 import React from 'react';
 // import _ from 'lodash';
 import { Route, Redirect, IndexRoute } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';

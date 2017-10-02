@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
 import NotifyButton from 'containers/NotifyButtonContainer';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import DatasetPreview from 'containers/DatasetPreviewContainer';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import * as Selectors from 'selectors';
@@ -11,14 +11,10 @@ import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './TablePreview.scss';
 
 // COMPONENT VIEWS
-const NoDataYetView = ({ createUpload, params }) =>
+const NoDataYetView = ({ createUpload, params }) => (
   <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>
-      {I18n.home_pane.no_data_yet}
-    </h3>
-    <p>
-      {I18n.home_pane.adding_data_is_easy_and_fun}
-    </p>
+    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
+    <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
     <label id="source-label" className={styles.sourceButton} htmlFor="file">
       {I18n.manage_uploads.new_file}&nbsp;
     </label>
@@ -32,7 +28,8 @@ const NoDataYetView = ({ createUpload, params }) =>
     <p className={styles.fileTypes}>
       {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
     </p>
-  </div>;
+  </div>
+);
 
 NoDataYetView.propTypes = {
   createUpload: PropTypes.func.isRequired,
@@ -44,12 +41,8 @@ const OutputSchemaView = ({ entities, outputSchema, params }) => {
   if (!inputSchema) return;
   return (
     <div className={styles.tableInfo}>
-      <h3 className={styles.previewAreaHeader}>
-        {I18n.home_pane.data_uploaded}
-      </h3>
-      <p>
-        {I18n.home_pane.data_uploaded_blurb}
-      </p>
+      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
+      <p>{I18n.home_pane.data_uploaded_blurb}</p>
       <p>
         <Link to={Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id)}>
           <button className={styles.reviewBtn} tabIndex="-1">
@@ -67,23 +60,21 @@ OutputSchemaView.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const UpsertInProgressView = () =>
+const UpsertInProgressView = () => (
   <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>
-      {I18n.home_pane.being_processed}
-    </h3>
-    <p>
-      {I18n.home_pane.being_processed_detail}
-    </p>
+    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
+    <p>{I18n.home_pane.being_processed_detail}</p>
     <div>
       <NotifyButton />
     </div>
-  </div>;
+  </div>
+);
 
-const UpsertCompleteView = ({ view, outputSchema }) =>
+const UpsertCompleteView = ({ view, outputSchema }) => (
   <div key="upsertCompleteView">
     <DatasetPreview view={view} outputSchema={outputSchema} />
-  </div>;
+  </div>
+);
 
 UpsertCompleteView.propTypes = {
   view: PropTypes.object.isRequired,
@@ -120,11 +111,7 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
     child = <NoDataYetView createUpload={createUpload} params={params} />;
   }
 
-  return (
-    <div className={styles.resultCard}>
-      {child}
-    </div>
-  );
+  return <div className={styles.resultCard}>{child}</div>;
 };
 
 TablePreview.propTypes = {

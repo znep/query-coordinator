@@ -14,8 +14,8 @@ import { showModal } from 'reduxStuff/actions/modal';
 import { addTaskSet } from 'reduxStuff/actions/taskSets';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { getView } from 'reduxStuff/actions/views';
-import * as dsmapiLinks from 'dsmapiLinks';
-import * as Links from 'links';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as Links from 'links/links';
 import { parseDate } from 'lib/parseDate';
 
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35

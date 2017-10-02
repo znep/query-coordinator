@@ -1,11 +1,11 @@
 import uuid from 'uuid';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
 import { uploadFile } from 'reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
 import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
 

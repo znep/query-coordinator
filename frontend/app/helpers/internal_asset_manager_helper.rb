@@ -28,7 +28,6 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_server_config
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :disable_authority_badge,
-      :enable_internal_asset_manager_my_assets,
       :stories_enabled
     )
 
@@ -159,17 +158,21 @@ module InternalAssetManagerHelper
       options.merge!(published: false, only: 'datasets') if params[:assetTypes] == 'workingCopies'
       options.merge!(published: true) if params[:assetTypes] == 'datasets'
       # EN-15849
-      options.merge!(for_user: current_user.id) if current_tab_is_my_assets && feature_flag?(:enable_internal_asset_manager_my_assets, request)
-      options.merge!(shared_to: current_user.id) if current_tab_is_shared_to_me && feature_flag?(:enable_internal_asset_manager_my_assets, request)
+      options.merge!(for_user: current_user.id) if current_tab_is_my_assets
+      options.merge!(shared_to: current_user.id) if current_tab_is_shared_to_me
     end
   end
 
+  def default_tab_for_siam
+    current_user.has_right?(UserRights::CAN_SEE_ALL_ASSETS_TAB_SIAM) ? 'allAssets' : 'myAssets'
+  end
+
   def current_tab_is_my_assets
-    params.fetch(:tab, 'allAssets') == 'myAssets'
+    params.fetch(:tab, default_tab_for_siam) == 'myAssets'
   end
 
   def current_tab_is_shared_to_me
-    params.fetch(:tab, 'allAssets') == 'sharedToMe'
+    params.fetch(:tab, default_tab_for_siam) == 'sharedToMe'
   end
 
 end

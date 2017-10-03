@@ -1,6 +1,15 @@
 import _ from 'lodash';
 
-const defaultTab = () => 'allAssets';
+const defaultTab = () => {
+  if (_.includes(
+        _.get(window.serverConfig, 'currentUser.rights', []),
+        'can_see_all_assets_tab_siam'
+  )) {
+    return 'allAssets';
+  } else {
+    return 'myAssets';
+  }
+};
 
 const getInitialState = () => ({
   activeTab: _.get(window, 'initialState.initialFilters.tab') || defaultTab()

@@ -4,6 +4,7 @@ import * as Links from 'links/links';
 import _ from 'lodash';
 import { Link, browserHistory, withRouter } from 'react-router';
 import { createViewSource } from 'reduxStuff/actions/createSource';
+import { getRevision } from 'reduxStuff/actions/loadRevision';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';
 
@@ -17,10 +18,15 @@ const mergeProps = (stateProps, { dispatch }, { params }) => {
   const clickHandler = e => {
     e.preventDefault();
 
-    dispatch(createViewSource(params)).then(source => {
-      const osid = Math.max(...Object.keys(source.outputSchemas));
-      browserHistory.push(Links.columnMetadataForm(params, osid));
-    });
+    dispatch(createViewSource(params))
+      .then(source => {
+        const osid = Math.max(...Object.keys(source.outputSchemas));
+        browserHistory.push(Links.columnMetadataForm(params, osid));
+        return source;
+      })
+      .then(() => {
+        dispatch(getRevision(params));
+      });
   };
 
   return {

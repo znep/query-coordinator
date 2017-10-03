@@ -58,6 +58,8 @@ export function createViewSource(params) {
     source_type: { type: 'view' }
   };
   // TODO: handle error
+  // TODO: create revision channel and subscribe to it here or above to catch
+  // os id updates
   return dispatch => {
     return dispatch(createSource('view', params, callParams))
       .then(normalizeCreateSourceResponse)

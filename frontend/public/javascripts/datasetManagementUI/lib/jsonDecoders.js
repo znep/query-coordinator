@@ -97,7 +97,7 @@ function normalizeOutputColumns(ocs) {
 }
 
 function normalizeOutputSchemaColumns(ocs) {
-  ocs.reduce(
+  return ocs.reduce(
     (acc, oc) => ({
       [`${oc.os_id}-${oc.id}`]: {
         id: `${oc.os_id}-${oc.id}`,

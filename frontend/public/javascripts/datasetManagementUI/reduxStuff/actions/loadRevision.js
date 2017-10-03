@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as dsmapiLinks from 'links/dsmapiLinks';
+import { editRevision } from 'reduxStuff/actions/revisions';
 import { showModal } from 'reduxStuff/actions/modal';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';
@@ -120,6 +121,14 @@ function getCurrentRevision(params) {
         closed_at: resource.closed_at ? parseDate(resource.closed_at) : null
       };
     });
+}
+
+export function getRevision(params) {
+  return dispatch => {
+    return getCurrentRevision(params)
+      .then(rev => dispatch(editRevision(rev.id, rev)))
+      .catch(() => console.warn('Revision fetch failed'));
+  };
 }
 
 function getSources(params) {

@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import * as Links from 'links';
 import * as dsmapiLinks from 'dsmapiLinks';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
 import { editOutputSchema } from 'reduxStuff/actions/outputSchemas';
 import { editTransform } from 'reduxStuff/actions/transforms';
@@ -20,7 +20,7 @@ export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
 export const CREATE_UPLOAD = 'CREATE_UPLOAD';
 export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
-
+export const SOURCE_UPDATE = 'SOURCE_UPDATE';
 // Each render takes approx 10ms, so this should be plenty slow to allow rendering
 // to catch up even on slower machines
 const PROGRESS_THROTTLE_TIME = 250;
@@ -83,52 +83,66 @@ function updateProgress(sourceId, percentCompleted) {
   };
 }
 
+const createSource = (sourceType, params, onSuccess) => (dispatch) => {
+  const callId = uuid();
+
+  const call = {
+    operation: CREATE_UPLOAD,
+    callParams: {
+      source_type: sourceType
+    }
+  };
+
+  dispatch(apiCallStarted(callId, call));
+
+  return socrataFetch(dsmapiLinks.sourceCreate(params), {
+    method: 'POST',
+    body: JSON.stringify({
+      source_type: sourceType
+    })
+  })
+  .then(checkStatus)
+  .then(getJson)
+  .catch(getError)
+  .then((resp) => {
+    const { resource } = resp;
+
+    dispatch(apiCallSucceeded(callId));
+    dispatch(
+      createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
+    );
+
+    onSuccess(resp, dispatch);
+  })
+  .catch(err => {
+    dispatch(apiCallFailed(callId, err));
+    throw err;
+  });
+};
+
 // convention should be:
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
 // verbNoun for ui action creators
 export function createUpload(file, params) {
-  return dispatch => {
-    const callId = uuid();
-
-    const sourceType = {
-      type: 'upload',
-      filename: file.name
-    };
-
-    const call = {
-      operation: CREATE_UPLOAD,
-      callParams: {
-        source_type: sourceType
-      }
-    };
-
-    dispatch(apiCallStarted(callId, call));
-
-    return socrataFetch(dsmapiLinks.sourceCreate(params), {
-      method: 'POST',
-      body: JSON.stringify({
-        source_type: sourceType
-      })
-    })
-      .then(checkStatus)
-      .then(getJson)
-      .then(resp => {
-        const { resource } = resp;
-
-        dispatch(apiCallSucceeded(callId));
-        dispatch(
-          createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
-        );
-
-        dispatch(listenForOutputSchema(resource.id, params));
-
-        return dispatch(uploadFile(resource.id, file));
-      })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-      });
+  const sourceType = {
+    type: 'upload',
+    filename: file.name
   };
+
+  return createSource(sourceType, params, (resp, dispatch) => {
+    dispatch(listenForOutputSchema(resp.resource.id, params));
+    return dispatch(uploadFile(resp.resource.id, file));
+  });
+}
+
+export function createURLSource(sourceType, params) {
+  return createSource(sourceType, params, (resp, dispatch) => {
+    const sourceId = resp.resource.id;
+    dispatch(addNotification('source', sourceId));
+
+    return dispatch(listenForOutputSchema(sourceId, params));
+  });
 }
 
 function createUploadSuccess(id, createdBy, createdAt, sourceType) {
@@ -142,7 +156,7 @@ function createUploadSuccess(id, createdBy, createdAt, sourceType) {
 }
 
 export function uploadFile(sourceId, file) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const uploadUpdate = {
       id: sourceId
     };
@@ -155,20 +169,14 @@ export function uploadFile(sourceId, file) {
     };
 
     dispatch(apiCallStarted(callId, call));
-    dispatch(addNotification('upload', callId, sourceId));
+    dispatch(addNotification('source', sourceId));
 
     return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
         dispatch(uploadFileSuccess(sourceId, new Date()));
-
         dispatch(apiCallSucceeded(callId));
-
-        const notificationId = getState().ui.notifications.filter(
-          notification => notification.callId === callId
-        )[0].id;
-
-        dispatch(removeNotificationAfterTimeout(notificationId));
+        dispatch(removeNotificationAfterTimeout(sourceId));
 
         return resp;
       })
@@ -195,6 +203,22 @@ function uploadFileFailure(sourceId) {
   };
 }
 
+function sourceUpdate(sourceId, changes) {
+  // oh ffs....we did this to ourselves.
+  // TODO: fix this garbage
+  if (changes.created_at) {
+    changes.created_at = parseDate(changes.created_at);
+  }
+  if (changes.finished_at) {
+    changes.finished_at = parseDate(changes.finished_at);
+  }
+  return {
+    type: SOURCE_UPDATE,
+    sourceId,
+    changes
+  };
+}
+
 function listenForOutputSchema(sourceId, params) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
@@ -211,6 +235,16 @@ function listenForOutputSchema(sourceId, params) {
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
       browserHistory.push(Links.showOutputSchema(params, sourceId, is.id, os.id));
+    });
+
+    channel.on('update', changes => {
+      dispatch(sourceUpdate(sourceId, changes));
+
+      // This isn't a great place to do this - figure out a nicer way
+      // TODO: aaurhgghiguhuhgghghgh
+      if (changes.finished_at) {
+        dispatch(removeNotificationAfterTimeout(sourceId));
+      }
     });
 
     channel.join();

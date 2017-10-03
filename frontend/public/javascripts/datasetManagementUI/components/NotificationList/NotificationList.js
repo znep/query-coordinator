@@ -9,10 +9,10 @@ import styles from './NotificationList.scss';
 // Displaying status (success, error, inProgress) and all the logic needed to figure
 // that status out are handled farther down the component tree.
 const NotificationList = ({ notifications }) => {
-  const items = notifications.map(notification => {
+  const items = notifications.map((notification, i) => {
     switch (notification.kind) {
-      case 'upload':
-        return <UploadNotification notification={notification} key={notification.id} />;
+      case 'source':
+        return <UploadNotification notification={notification} key={i} />;
       default:
         return null;
     }

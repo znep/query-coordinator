@@ -44,8 +44,14 @@
 }
 
 .sourceButton {
+  display: inline-block;
+  margin: 0px 4px;
+}
+
+.uploadButton {
   composes: btn from global;
   composes: btn-primary from global;
+  composes: sourceButton;
 }
 
 // OUPUT SCHEMA

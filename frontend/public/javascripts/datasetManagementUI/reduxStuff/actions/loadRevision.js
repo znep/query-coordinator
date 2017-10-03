@@ -105,7 +105,7 @@ function sideEffectyStuff(revision, sources, params) {
     // to insert into store and subscribe to row errors if it succeeded
     const [failed, succeeded] = _.partition(sources, source => source.failed_at);
 
-    failed.forEach(source => dispatch(addNotification('source', null, source.id)));
+    failed.forEach(source => dispatch(addNotification('source', source.id)));
 
     const inputSchemas = _.flatMap(succeeded, source =>
       source.schemas.map(schema => ({

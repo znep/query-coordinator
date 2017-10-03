@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
 import UploadNotification from 'components/UploadNotification/UploadNotification';
+import moment from 'moment';
 
 describe('components/UploadNotification', () => {
   const defaultProps = {
@@ -31,15 +32,16 @@ describe('components/UploadNotification', () => {
     }
   };
 
-  it('renders the correct kind of notification depending on callStatus', () => {
+  it('renders the correct kind of notification', () => {
     let component = shallow(<UploadNotification {...defaultProps} />);
 
     assert.equal(component.prop('status'), 'inProgress');
 
     const newProps = {
       ...defaultProps,
-      apiCall: {
-        status: 'STATUS_CALL_SUCCEEDED'
+      source: {
+        ...defaultProps.source,
+        finished_at: moment()
       }
     };
 
@@ -51,26 +53,28 @@ describe('components/UploadNotification', () => {
   it('renders a "lost connection" error if we don\'t have a specific error message', () => {
     const newProps = {
       ...defaultProps,
-      apiCall: {
-        ...defaultProps.apiCall,
-        status: 'STATUS_CALL_FAILED'
+      source: {
+        ...defaultProps.source,
+        failed_at: moment(),
+        failure_details: {
+          message: 'internal error'
+        }
       }
     };
 
     const component = shallow(<UploadNotification {...newProps} />);
     assert.equal(component.prop('status'), 'error');
-    assert.include(component.find('.msgContainer').text(), 'Lost Connection');
+    assert.include(component.find('.msgContainer h6').text(), 'Lost Connection');
   });
 
   it('renders a specific error message when the API gives it', () => {
     const newProps = {
       ...defaultProps,
-      apiCall: {
-        ...defaultProps.apiCall,
-        status: 'STATUS_CALL_FAILED',
-        error: {
-          reason: 'Multilayer shapefiles are not supported.',
-          message: 'your request had invalid values'
+      source: {
+        ...defaultProps.source,
+        failed_at: moment(),
+        failure_details: {
+          message: 'Multilayer shapefiles are not supported.'
         }
       }
     };

@@ -1993,6 +1993,12 @@ en:
       home_pane_sidebar:
         manage: Manage
         recent_actions: Recent Actions
+        added_a_url_source: added a URL source
+        added_an_upload: uploaded a file
+        processing_failed: Data processing failed
+        processing_succeeded: Data processing successfully finished
+        started_processing: started data processing
+        opened_revision: opened a revision
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2068,6 +2074,7 @@ en:
     manage_uploads:
       failed: "{filename} (failed: {status})"
       new_file: Upload a New File
+      new_url_source: Import from a URL
       previous: Previous uploads
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
@@ -2110,8 +2117,10 @@ en:
       title: Not Found
     notifications:
       connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
-      connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
-      connection_error_body_description: Something went wrong when trying to upload the file {0}.
+      connection_error_body_advice_upload: Check your internet connection and make sure to keep your browser window open while the file is uploading.
+      connection_error_body_advice_url: Check that the file is publicly accessible on the internet.
+      connection_error_body_description_upload: Something went wrong when trying to upload the file {0}.
+      connection_error_body_description_url: Something went wrong when trying to fetch the file {0}.
       connection_error_title: Lost Connection
       error: Error
       hide_details: Hide Details
@@ -2121,7 +2130,14 @@ en:
       show_details: View Details
       success: Success!
       upload_failed: Upload Failed
+      url_failed: Fetching URL Failed
       uploading: Uploading
+      fetching: Fetching
+    import_from_url:
+      title: Import From URL
+      unknown_error: An unknown error occurred
+      url_prompt: Enter the URL of a data file hosted by an external service.
+      start_import: Start Import
     show_output_schema:
       additional_errors:
         singular: Additional error
@@ -2233,11 +2249,12 @@ en:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
-      no_uploads: No uploads yet
-      noncurrent: Other Uploads
+      no_uploads: No data sources yet
+      noncurrent: Other data sources
       submessage: ...or click Browse to choose a file from your computer
-      uploads: Uploads
+      uploads: Data Sources
       title: Replace Data
+      from_url: URL Source
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.

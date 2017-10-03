@@ -6,7 +6,7 @@ export default function notificationReducer(state = [], action) {
       return [...state, action.notification];
 
     case REMOVE_NOTIFICATION:
-      return state.filter(notification => notification.id !== action.id);
+      return state.filter(notification => notification.subject !== action.subject);
 
     default:
       return state;

@@ -9,6 +9,7 @@ import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import * as Selectors from 'selectors';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './TablePreview.scss';
+import ImportFromURLButton from 'containers/ImportFromURLButtonContainer';
 
 // COMPONENT VIEWS
 const NoDataYetView = ({ createUpload, params }) =>
@@ -19,16 +20,20 @@ const NoDataYetView = ({ createUpload, params }) =>
     <p>
       {I18n.home_pane.adding_data_is_easy_and_fun}
     </p>
-    <label id="source-label" className={styles.sourceButton} htmlFor="file">
-      {I18n.manage_uploads.new_file}&nbsp;
-    </label>
-    <input
-      id="file"
-      name="file"
-      type="file"
-      accept={enabledFileExtensions.join(',')}
-      aria-labelledby="source-label"
-      onChange={evt => createUpload(evt.target.files[0], params)} />
+    <div>
+      <label id="source-label" className={styles.uploadButton} htmlFor="file">
+        {I18n.manage_uploads.new_file}&nbsp;
+      </label>
+      <ImportFromURLButton params={params} />
+      <input
+        id="file"
+        name="file"
+        type="file"
+        accept={enabledFileExtensions.join(',')}
+        aria-labelledby="source-label"
+        onChange={evt => createUpload(evt.target.files[0], params)} />
+    </div>
+
     <p className={styles.fileTypes}>
       {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
     </p>
@@ -109,7 +114,6 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);
   const os = Selectors.currentOutputSchema(entities, revisionSeq);
-
   if (tasksExist && allTasksSucceeded && os) {
     child = <UpsertCompleteView view={view} outputSchema={os} />;
   } else if (tasksExist && !allTasksSucceeded && os) {
@@ -117,7 +121,9 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
   } else if (!tasksExist && os) {
     child = <OutputSchemaView entities={entities} outputSchema={os} params={params} />;
   } else {
-    child = <NoDataYetView createUpload={createUpload} params={params} />;
+    child = (<NoDataYetView
+      createUpload={createUpload}
+      params={params} />);
   }
 
   return (

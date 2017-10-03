@@ -12,9 +12,7 @@ function mapStateToProps({ entities }, { params }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: (file, params) => {
-      dispatch(Actions.createUpload(file, params));
-    }
+    createUpload: (file, params) => dispatch(Actions.createUpload(file, params))
   };
 }
 

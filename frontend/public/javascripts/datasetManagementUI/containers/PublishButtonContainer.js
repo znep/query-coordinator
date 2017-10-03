@@ -14,8 +14,7 @@ function isDataSatisfied({ entities }, params) {
   const revisionSeq = _.toNumber(params.revisionSeq);
   const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   if (outputSchema) {
-    const columns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
-    dataSatisfied = Selectors.allTransformsDone(columns);
+    dataSatisfied = !!outputSchema.completed_at;
   } else {
     dataSatisfied = false;
   }

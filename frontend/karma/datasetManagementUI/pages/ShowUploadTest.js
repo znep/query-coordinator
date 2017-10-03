@@ -51,12 +51,10 @@ describe('ShowUpload page', () => {
 
   it('sets inProgress to true if there is an UPLOAD_FILE api call in progress', () => {
     const sourceId = Number(Object.keys(state.entities.sources)[0]);
-    const newState = dotProp.set(state, 'ui.apiCalls', {
-      '1234abcd': {
-        operation: 'UPLOAD_FILE',
-        status: 'STATUS_CALL_IN_PROGRESS',
-        callParams: { id: sourceId }
-      }
+
+    const newState = dotProp.set(state, `entities.sources.${sourceId}`, {
+      finished_at: null,
+      failed_at: null
     });
     const { inProgress } = mapStateToProps(newState, ownProps);
     assert.isTrue(inProgress);

@@ -6,6 +6,8 @@ import SocrataIcon from '../../../common/components/SocrataIcon';
 import * as Links from 'links';
 import styles from './RecentActionItems.scss';
 
+const SubI18n = I18n.home_pane.home_pane_sidebar;
+
 const RecentActionsTimestamp = ({ date }) =>
   <span className={styles.timestamp}>
     {moment.utc(date).fromNow()}
@@ -25,7 +27,7 @@ export const RevisionActivity = ({ details }) =>
         <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
-        opened a revision
+        {SubI18n.opened_revision}
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
@@ -38,7 +40,13 @@ RevisionActivity.propTypes = {
   }).isRequired
 };
 
-export const SourceActivity = ({ details }) =>
+
+const sourceActionLabel = (source) => {
+  if (source.source_type && source.source_type.type === 'url') return SubI18n.added_a_url_source;
+  if (source.source_type && source.source_type.type === 'upload') return SubI18n.added_an_upload;
+};
+
+export const SourceActivity = ({ details: source }) =>
   <div className={styles.activity} data-activity-type="source">
     <div className={styles.timeline}>
       <SocrataIcon name="data" className={styles.icon} />
@@ -46,11 +54,11 @@ export const SourceActivity = ({ details }) =>
     <div>
       <p>
         <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
-          {details.createdBy}
+          {source.createdBy}
         </a>{' '}
-        uploaded a file
+        {sourceActionLabel(source)}
       </p>
-      <RecentActionsTimestamp date={details.createdAt} />
+      <RecentActionsTimestamp date={source.createdAt} />
     </div>
   </div>;
 
@@ -99,7 +107,7 @@ export const TaskSetActivity = ({ details }) =>
         <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
-        started data processing
+        {SubI18n.started_processing}
       </p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
@@ -118,7 +126,7 @@ export const TaskSetFinishedActivity = ({ details }) =>
       <SocrataIcon name="checkmark3" className={styles.icon} />
     </div>
     <div>
-      <p>Data processing successfully finished</p>
+      <p>{SubI18n.processing_succeeded}</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
   </div>;
@@ -136,7 +144,7 @@ export const TaskSetFailedActivity = ({ details }) =>
       <SocrataIcon name="failed" className={styles.icon} />
     </div>
     <div>
-      <p>Data processing failed</p>
+      <p>{SubI18n.processing_failed}</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
   </div>;

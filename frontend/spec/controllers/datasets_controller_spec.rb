@@ -458,7 +458,7 @@ describe DatasetsController do
       allow(subject).to receive(:dataset_management_page_enabled?).and_return(true)
     end
 
-    context 'GET /:category/:view_name/:id/revisions/manage' do
+    context 'GET /:category/:view_name/:id/revisions/revision_seq' do
       before do
         stub_request(:get, 'http://localhost:8080/views/test-data.json').
           with(:headers => request_headers).
@@ -480,7 +480,7 @@ describe DatasetsController do
         login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
-        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
+        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:success)
       end
 
@@ -489,7 +489,7 @@ describe DatasetsController do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new('response'))
-        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
+        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:not_found)
       end
 
@@ -499,7 +499,7 @@ describe DatasetsController do
         login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => false)
-        get :dsmui, :view_name => 'Test-Data', :id => 'test-data'
+        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -521,7 +521,7 @@ describe DatasetsController do
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
-        get :dsmui, :view_name => 'Test-Data', :id => 'test-data', :rest_of_path => '/revisions/0'
+        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:redirect)
         expect(response['Location']).to end_with('/manage/revisions/0')
       end
@@ -530,7 +530,7 @@ describe DatasetsController do
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
-        get :dsmui, :view_name => 'Test-Data', :id => 'test-data', :rest_of_path => '/revisions/0/metadata/columns'
+        get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0', :rest_of_path => '/metadata/columns'
         expect(response).to have_http_status(:redirect)
         expect(response['Location']).to end_with('/manage/revisions/0/metadata/columns')
       end

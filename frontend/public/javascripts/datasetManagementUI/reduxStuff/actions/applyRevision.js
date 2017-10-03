@@ -172,6 +172,9 @@ export function pollForTaskSetProgress(taskSetId, params) {
               dispatch(pollForTaskSetProgress(taskSetId, params));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
           } else {
+            // If the task set is done processing, then go get the view and update
+            // it in the store. We mainly care about displaying displayType since
+            // that is what we use to determine if we have a published dataset
             dispatch(getView(params.fourfour));
           }
         } else {

@@ -31,12 +31,10 @@
 //      * common/styleguide/partials/_modal.scss
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import Notifications from './components/Notifications/Notifications';
 import Localization from 'common/i18n/components/Localization';
 
-import Notifications from './components/Notifications/Notifications';
-
-window.headerNotifications = (container, options, userid, translations, locale) => {
+window.headerNotifications = (container, options, translations, locale) => {
   let rootNode;
 
   try {
@@ -49,7 +47,7 @@ window.headerNotifications = (container, options, userid, translations, locale) 
 
   ReactDOM.render(
     <Localization translations={translations || {}} locale={locale || 'en'}>
-      <Notifications options={options} userid={userid} />
+       <Notifications translations={options} />
     </Localization>,
     rootNode
   );

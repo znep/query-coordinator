@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
-
-import connectLocalization from 'common/i18n/components/connectLocalization';
-
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './bell.scss';
 
@@ -12,16 +9,14 @@ class Bell extends Component {
   render() {
     const {
       toggleNotificationPanel,
-      hasUnreadNotifications,
-      I18n
+      unreadNotificationCount,
+      hasUnreadNotificationsText,
+      noUnreadNotificationsText
     } = this.props;
-    let tipsyText;
 
-    if (hasUnreadNotifications) {
-      tipsyText = I18n.t('has_unread_notifications');
-    } else {
-      tipsyText = I18n.t('no_unread_notifications');
-    }
+    const hasUnreadNotifications = unreadNotificationCount > 0;
+
+    const tipsyText = hasUnreadNotifications ? hasUnreadNotificationsText : noUnreadNotificationsText;
 
     return (
       <button
@@ -40,7 +35,9 @@ class Bell extends Component {
 
 Bell.propTypes = {
   toggleNotificationPanel: PropTypes.func.isRequired,
-  hasUnreadNotifications: PropTypes.bool.isRequired
+  unreadNotificationCount: PropTypes.number.isRequired,
+  hasUnreadNotificationsText: PropTypes.string.isRequired,
+  noUnreadNotificationsText: PropTypes.string.isRequired
 };
 
-export default connectLocalization(cssModules(Bell, styles, { allowMultiple: true }));
+export default cssModules(Bell, styles, { allowMultiple: true });

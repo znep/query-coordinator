@@ -137,7 +137,6 @@
     "moment-timezone": "0.5.13",
     "node-sass": "3.7.0",
     "normalize-scss": "4.1.0",
-    "phoenix": "1.2.1",
     "prop-types": "15.5.10",
     "react": "15.6.1",
     "react-addons-css-transition-group": "15.4.2",

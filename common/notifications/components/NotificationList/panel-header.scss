@@ -53,30 +53,3 @@
     }
   }
 }
-
-:global(.site-chrome-small) {
-  .header {
-    height: $headerHeightSmall;
-
-    h3 {
-      font-size: 13px;
-      height: $headerHeightSmall;
-      padding: 6px 30px;
-    }
-
-    .header-icon,
-    .close-panel-link {
-      height: $headerHeightSmall;
-      line-height: $headerHeightSmall !important;
-      width: 30px;
-    }
-
-    .header-icon {
-      font-size: 15px;
-    }
-
-    .close-panel-link {
-      font-size: 10px;
-    }
-  }
-}

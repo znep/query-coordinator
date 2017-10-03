@@ -118,24 +118,12 @@ en:
       notifications:
         error_text_html: "<strong>Sorry!</strong> We can't fetch notifications right now."
         product_updates: Product Updates
-        user_notifications: Notifications
         view_older: View Older News
-        mark_as_read: Mark as read
-        mark_as_unread: Mark as unread
-        clear_notification_text: Clear this notification
-        clear_all_text: Clear All
-        clear_all_confirm: Are you sure you want to Clear All? This removes all the items from the list.
-        clear_all_confirm_no: "No"
-        clear_all_confirm_yes: "Yes"
+        mark_as_read: Mark As Read
         new_label: New
-        by_label: by
-        no_filtered_notifications: No notifications to show
         setting: Settings
         no_unread_notifications: You have no unread notifications
         has_unread_notifications: You have unread notifications
-        filter_all_notifications_tab_text: all
-        filter_status_notifications_tab_text: status
-        filter_alert_notifications_tab_text: alert
         alert_setting_modal:
           subscribe_email: Subscribe to email notifications
           tab:

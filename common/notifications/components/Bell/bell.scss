@@ -33,35 +33,22 @@
       height: 15px;
       width: 15px;
     }
-
-    &:before {
-      display: none;
-    }
   }
 
   &:after {
+    content: '';
     background-color: $alternate-1;
     border-radius: 50%;
-    content: '';
     display: none;
     height: 8px;
-    right: 22px;
+    right: 20px;
     position: absolute;
-    top: 17px;
+    top: 12px;
     width: 8px;
   }
 
   &.unread:after {
     display: block;
-  }
-}
-
-:global(.for-user-header) {
-  .button {
-    &:after {
-      right: 0;
-      top: 16px;
-    }
   }
 }
 
@@ -71,10 +58,9 @@
     padding: 6px 12px 2px;
 
     &:after {
-      height: 7px;
-      left: 19px;
-      top: 10px;
-      width: 7px;
+      left: 17px;
+      top: 8px;
+      width: 6px;
     }
 
     & :global(.socrata-icon) {

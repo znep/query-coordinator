@@ -1,19 +1,22 @@
-import _ from 'lodash';
+
 import { Simulate } from 'react-dom/test-utils';
 import { mockResponse } from '../../helpers';
-import { fakeNotifications, fakeZeroNotifications, fakeUserNotifications } from '../../data';
-import renderLocalizationElement from '../../renderLocalizationComponent'
+import { fakeNotifications, fakeZeroNotifications } from '../../data';
 import Notifications from 'common/notifications/components/Notifications/Notifications';
 import 'intl/locale-data/jsonp/en.js';
+import renderLocalizationElement from '../../renderLocalizationComponent';
 
-describe('Product Notifications', () => {
-  const options = {
-    lockScrollbar: false,
-    scrollTop: 0,
-    showProductNotifications: true,
-    showUserNotifications: false
-  }
+const translations = {
+  errorText: 'Couldn\'t fetch product notifications.',
+  productUpdatesText: 'Product Updates',
+  viewOlderText: 'View Older Updates...',
+  markAsReadText: 'Mark As Read',
+  newNotificationsLabelText: 'New',
+  hasUnreadNotificationsText: 'You have unread notifications',
+  noUnreadNotificationsText: 'You have no unread notifications'
+};
 
+describe('Notifications', () => {
 	beforeEach(() => {
 		sinon.stub(window, 'fetch');
 	});
@@ -22,12 +25,12 @@ describe('Product Notifications', () => {
     window.fetch.restore();
   });
 
-  it('should open notifications panel, show unread indicator, list all product notifications and close the panel when clicked on "X" link', (done) => {
+  it('should open notifications panel, show unread indicator, list all notifications and close the panel when clicked on "X" link', (done) => {
   	window.fetch.returns(Promise.resolve(
   		mockResponse(fakeNotifications, 200)
 		));
 
-    const component = renderLocalizationElement(Notifications, {options});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
 	    expect(component).to.exist;
@@ -64,12 +67,12 @@ describe('Product Notifications', () => {
 	  });
   });
 
-  it('should open notifications panel, check for unread product notifications, show "N New" label, and mark all the product notifications as read when clicked on "Mark As Read" button and hide "N New" label', (done) => {
+  it('should open notifications panel, check for unread notifications, show "N New" label, and mark all the notifications as read when clicked on "Mark As Read" button and hide "N New" label', (done) => {
     window.fetch.returns(Promise.resolve(
       mockResponse(fakeNotifications, 200)
     ));
 
-    const component = renderLocalizationElement(Notifications, {options});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;
@@ -119,12 +122,12 @@ describe('Product Notifications', () => {
     });
   });
 
-  it('should sill render notifications panel on empty product notifications fetch, and show no notificaitons message', (done) => {
+  it('should sill render notifications panle on empty notifications fetch, and show no notificaitons message', (done) => {
     window.fetch.returns(Promise.resolve(
       mockResponse(fakeZeroNotifications, 200)
     ));
 
-    const component = renderLocalizationElement(Notifications, {options});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;
@@ -165,7 +168,7 @@ describe('Product Notifications', () => {
       mockResponse('Error', 500)
     ));
 
-    const component = renderLocalizationElement(Notifications, {options});
+    const component = renderLocalizationElement(Notifications, {translations});
 
     _.defer(() => {
       expect(component).to.exist;
@@ -189,66 +192,6 @@ describe('Product Notifications', () => {
       expect(emptyNotificationMessage).to.exist;
 
       // find colse notifications button, expect panel to close after clicking close notificaiton button
-      let closeNotificationPanelLink = component.querySelector('.close-notifications-panel-link');
-      expect(closeNotificationPanelLink).to.exist;
-
-      // after clicking the close notifications panel link panel shold be closed
-      Simulate.click(closeNotificationPanelLink);
-      panel = component.querySelector('.notifications-panel-wrapper');
-      expect(panel).to.not.exist;
-
-      done();
-    });
-  });
-});
-
-describe('User Notifications', () => {
-  const options = {
-    lockScrollbar: false,
-    scrollTop: 0,
-    showProductNotifications: false,
-    showUserNotifications: true
-  }
-
-  const userid = 'tugg-ikce';
-
-  beforeEach(() => {
-    sinon.stub(window, 'fetch');
-  });
-
-  afterEach(() => {
-    window.fetch.restore();
-  });
-
-  it('should open notifications panel, show unread indicator, list all user notifications and close the panel when clicked on "X" link', (done) => {
-    window.fetch.returns(Promise.resolve(
-      mockResponse(fakeUserNotifications, 200)
-    ));
-
-    const component = renderLocalizationElement(Notifications, _.merge({}, {options}, {userid}));
-
-    _.defer(() => {
-      expect(component).to.exist;
-
-      // expect panel should be closed by default
-      let panel = component.querySelector('.notifications-panel-wrapper');
-      expect(panel).to.not.exist;
-
-      // find the bell, make sure it has the unread indicator, and click to open the panel
-      let bell = component.querySelector('.notifications-bell');
-      expect(bell).to.exist;
-      expect(bell).to.have.class('has-unread-notifications');
-
-      // Notifications header should have new notification count label
-      Simulate.click(bell);
-
-      // after clicking the bell, the panel should open
-      panel = component.querySelector('.notifications-panel-wrapper');
-      expect(panel).to.exist;
-
-      // there should be as many notifications as there are in our test data
-      expect(panel.querySelectorAll('.user-notification-item').length).to.eq(fakeUserNotifications.data.length);
-
       let closeNotificationPanelLink = component.querySelector('.close-notifications-panel-link');
       expect(closeNotificationPanelLink).to.exist;
 

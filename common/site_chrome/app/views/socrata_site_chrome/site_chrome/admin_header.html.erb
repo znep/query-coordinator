@@ -4,7 +4,6 @@
     window.socrata.siteChrome = window.socrata.siteChrome || {};
     <%= raw "window.socrata.siteChrome.appToken = '#{app_token}';" if app_token %>
   </script>
-
   <section
     id="site-chrome-admin-header"
     role="navigation"
@@ -33,7 +32,7 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
+      <% if get_feature_flag('enable_header_notifications') %>
         <div
           id="site-chrome-header-notifications"
           tabIndex="-1"
@@ -79,28 +78,26 @@
       </div>
     </div>
 
-    <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
+    <% if get_feature_flag('enable_header_notifications') %>
       <script type="text/javascript">
         document.addEventListener(
           'DOMContentLoaded',
           function() {
             if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-              const options = {
-                lockScrollbar: false,
-                scrollTop: 0,
-                showProductNotifications: true,
-                showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>,
-                currentUserRole: <%== current_user_role.to_json %>,
-                isAdmin: <%== is_admin?.to_json %>
+              var options = {
+                productUpdatesText: "<%= t('shared.site_chrome.notifications.product_updates') %>",
+                viewOlderText: "<%= t('shared.site_chrome.notifications.view_older') %>",
+                errorText: "<%= t('shared.site_chrome.notifications.error_text_html') %>",
+                newNotificationsLabelText: "<%= t('shared.site_chrome.notifications.new_label') %>",
+                hasUnreadNotificationsText: "<%= t('shared.site_chrome.notifications.has_unread_notifications') %>",
+                noUnreadNotificationsText: "<%= t('shared.site_chrome.notifications.no_unread_notifications') %>",
+                currentUserRole: <%= raw current_user_role.to_json %>,
+                isAdmin: <%= is_admin?.to_json %>
               };
-
-              window.headerNotifications('#site-chrome-header-notifications',
-                options,
-                <%== json_escape current_user_id.to_json %>,
-                <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
-                <%== json_escape I18n.locale.to_json %>
-              );
-            }
+              window.headerNotifications('#site-chrome-header-notifications', options,
+                  <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
+                  <%== json_escape I18n.locale.to_json %>);
+              };
           },
           false
         );

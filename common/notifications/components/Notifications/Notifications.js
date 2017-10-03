@@ -3,12 +3,8 @@ import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import 'babel-polyfill-safe';
 import _ from 'lodash';
-
-import connectLocalization from 'common/i18n/components/connectLocalization';
-
 import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/store/ProductNotificationStore';
 import NotificationList from 'common/notifications/components/NotificationList/NotificationList';
-import UserNotificationStore from 'common/notifications/store/UserNotificationStore';
 import Bell from 'common/notifications/components/Bell/Bell';
 import styles from './notifications.scss';
 
@@ -18,75 +14,41 @@ class Notifications extends Component {
 
     this.state = {
       areNotificationsLoading: false,
-      filterUserNotificationsBy: null,
       hasError: false,
-      productNotifications: [],
+      notifications: [],
       showNotificationPanel: false,
-      showProductNotificationsAsSecondaryPanel: false,
-      openClearAllUserNotificationsPrompt: false,
-      unreadProductNotificationCount: 0,
-      unreadUserNotificationCount: 0,
-      userNotifications: [],
-      isSecondaryPanelOpen: false
+      unreadNotificationCount: 0
     }
 
-    if (props.options.showUserNotifications && props.userid) {
-      this.userNotificationStore = new UserNotificationStore(props.userid, this.onNotificationsUpdate.bind(this));
-    }
-
-    _.bindAll(this,
-      'filterUserNotifications',
-      'onToggleReadUserNotification',
-      'toggleClearAllUserNotificationsPrompt',
-      'toggleProductNotificationsSecondaryPanel',
-      'addKeyboardEvents',
-      'removeKeyboardEvents',
-      'hidePanelOnOutsideClick',
-      'hidePanelOnEscapeKeypress',
-      'toggleNotificationPanel',
-      'hasUnreadNotifications',
-      'hasUnreadProductNotifications',
-      'getUnreadProductNotificationsCount',
-      'markAllProductNotificationsAsRead',
-      'clearAllUserNotifications',
-      'onClearUserNotification',
-      'renderNotificationPanel'
-    );
+    this.addKeyboardEvents = this.addKeyboardEvents.bind(this);
+    this.removeKeyboardEvents = this.removeKeyboardEvents.bind(this);
+    this.hidePanelOnOutsideClick = this.hidePanelOnOutsideClick.bind(this);
+    this.hidePanelOnEscapeKeypress = this.hidePanelOnEscapeKeypress.bind(this);
+    this.toggleNotificationPanel = this.toggleNotificationPanel.bind(this);
+    this.hasUnreadNotifications = this.hasUnreadNotifications.bind(this);
+    this.getUnreadNotificationsCount = this.getUnreadNotificationsCount.bind(this);
+    this.markAllAsRead = this.markAllAsRead.bind(this);
+    this.renderNotificationPanel = this.renderNotificationPanel.bind(this);
   }
 
   componentDidMount() {
-    const {
-      showProductNotifications,
-      showUserNotifications
-    } = this.props.options;
-    const { I18n } = this.props;
+    this.setState({ areNotificationsLoading: true });
 
-    if (showProductNotifications) {
-      if (showUserNotifications) {
+    getProductNotifications((response) => {
+      if (response.notifications && response.viewOlderLink) {
         this.setState({
-          showProductNotificationsAsSecondaryPanel: true,
-          filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text')
+          notifications: response.notifications,
+          viewOlderLink: response.viewOlderLink || null,
+          areNotificationsLoading: false,
+          unreadNotificationCount: this.getUnreadNotificationsCount(response.notifications)
+        });
+      } else {
+        this.setState({
+          hasError: true,
+          areNotificationsLoading: false
         });
       }
-
-      this.setState({ areNotificationsLoading: true });
-
-      getProductNotifications((response) => {
-        if (response.notifications && response.viewOlderLink) {
-          this.setState({
-            productNotifications: response.notifications,
-            viewOlderLink: response.viewOlderLink || null,
-            areNotificationsLoading: false,
-            unreadProductNotificationCount: this.getUnreadProductNotificationsCount(response.notifications)
-          });
-        } else {
-          this.setState({
-            hasError: true,
-            areNotificationsLoading: false
-          });
-        }
-      });
-    }
+    });
   }
 
   componentWillUnmount() {
@@ -120,123 +82,38 @@ class Notifications extends Component {
     }
   }
 
-  onNotificationsUpdate(notifications) {
-    const unReadNotificationsCount = _.isEmpty(notifications) ? 0 : notifications.filter(notification => {
-        return _.isUndefined(notification.read) || notification.read === false;
-      }).length;
-
-    this.setState({
-      userNotifications: notifications,
-      unreadUserNotificationCount: unReadNotificationsCount
-    })
-  }
-
-  filterUserNotifications(filterUserNotificationsBy) {
-    this.setState({filterUserNotificationsBy});
-  }
-
-  clearAllUserNotifications() {
-    this.userNotificationStore.deleteAllNotifications();
-    this.setState({ openClearAllUserNotificationsPrompt: false });
-  }
-
-  toggleClearAllUserNotificationsPrompt(toggle) {
-    this.setState({ openClearAllUserNotificationsPrompt: toggle });
-  }
-
-  onClearUserNotification(notification_id) {
-    this.userNotificationStore.deleteNotification(notification_id);
-  }
-
-  onToggleReadUserNotification(notification_id, toggle) {
-    if (toggle) {
-      this.userNotificationStore.markNotificationAsRead(notification_id);
-    } else {
-      this.userNotificationStore.markNotificationAsUnRead(notification_id);
-    }
-  }
-
   toggleNotificationPanel() {
     const showNotificationPanel = !this.state.showNotificationPanel;
-    const { I18n } = this.props;
-    const {
-      lockScrollbar,
-      scrollTop
-    } = this.props.options;
 
     if (showNotificationPanel) {
       this.addKeyboardEvents();
-
-      if (lockScrollbar) {
-        document.querySelector('body').scrollTop = scrollTop;
-        document.querySelector('body').style.overflow = 'hidden';
-      }
-
-      this.setState({showNotificationPanel});
     } else {
       this.removeKeyboardEvents();
-
-      if (lockScrollbar) {
-        document.querySelector('body').style.overflow = '';
-      }
-
-      this.setState({
-        showNotificationPanel,
-        openClearAllUserNotificationsPrompt: false,
-        isSecondaryPanelOpen: false,
-        filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text')
-      });
     }
 
+    this.setState({showNotificationPanel});
   }
 
   hasUnreadNotifications() {
-    return (this.state.unreadProductNotificationCount + this.state.unreadUserNotificationCount) > 0;
+    return this.state.unreadNotificationCount > 0;
   }
 
-  hasUnreadProductNotifications() {
-    return this.state.unreadProductNotificationCount > 0;
-  }
-
-  getUnreadProductNotificationsCount(notifications) {
+  getUnreadNotificationsCount(notifications) {
     return notifications.filter((notification) => {
       return _.isUndefined(notification.isUnread) || notification.isUnread == true;
     }).length;
   }
 
-  markAllProductNotificationsAsRead() {
-    if (this.hasUnreadProductNotifications()) {
-      const readNotifications = this.state.productNotifications.map((notification) => ({
+  markAllAsRead() {
+    if (this.hasUnreadNotifications()) {
+      const readNotifications = this.state.notifications.map((notification) => ({
         ...notification,
         isUnread: false
       }));
 
-      this.setState({ productNotifications: readNotifications, unreadProductNotificationCount: 0 });
+      this.setState({ notifications: readNotifications, unreadNotificationCount: 0 });
+
       updateProductNotificationLastSeen(new Date());
-    }
-  }
-
-  toggleProductNotificationsSecondaryPanel() {
-    const isSecondaryPanelOpen = !this.state.isSecondaryPanelOpen;
-
-    if (isSecondaryPanelOpen) {
-      this.setState({
-        isSecondaryPanelOpen,
-        openClearAllUserNotificationsPrompt: false
-      });
-    } else {
-      this.setState({isSecondaryPanelOpen});
-    }
-
-  }
-
-  renderSidebarOverlay() {
-    const { showProductNotifications } = this.props.options;
-
-    if (!showProductNotifications) {
-      return <span className="sidebar-overlay"
-        aria-hidden="true"
-        onClick={this.toggleNotificationPanel}></span>;
     }
   }
 
@@ -245,69 +122,61 @@ class Notifications extends Component {
 
     if (showNotificationPanel) {
       const {
-        showProductNotifications,
-        showUserNotifications,
+        errorText,
+        newNotificationsLabelText,
+        markAsReadText,
+        productUpdatesText,
+        viewOlderText,
         currentUserRole,
         isAdmin
-      } = this.props.options;
+      } = this.props.translations;
+
       const {
         areNotificationsLoading,
-        filterUserNotificationsBy,
         hasError,
-        isSecondaryPanelOpen,
-        openClearAllUserNotificationsPrompt,
-        productNotifications,
-        userNotifications,
-        showProductNotificationsAsSecondaryPanel,
-        unreadProductNotificationCount,
-        unreadUserNotificationCount,
+        notifications,
+        unreadNotificationCount,
         viewOlderLink
       } = this.state;
 
       return (
         <div className='notifications-panel-wrapper'>
-          {this.renderSidebarOverlay()}
-
           <NotificationList
-            areNotificationsLoading={areNotificationsLoading}
-            clearAllUserNotifications={this.clearAllUserNotifications}
-            currentUserRole={currentUserRole}
-            filterUserNotifications={this.filterUserNotifications}
-            filterUserNotificationsBy={filterUserNotificationsBy}
+            errorText={errorText}
             hasError={hasError}
-            isAdmin={isAdmin}
-            isSecondaryPanelOpen={isSecondaryPanelOpen}
-            markAllProductNotificationsAsRead={this.markAllProductNotificationsAsRead}
-            onClearUserNotification={this.onClearUserNotification}
-            onToggleReadUserNotification={this.onToggleReadUserNotification}
-            openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
-            productNotifications={productNotifications}
-            showProductNotifications={showProductNotifications}
-            showProductNotificationsAsSecondaryPanel={showProductNotificationsAsSecondaryPanel}
-            showUserNotifications={showUserNotifications}
-            toggleClearAllUserNotificationsPrompt={this.toggleClearAllUserNotificationsPrompt}
+            markAllAsRead={this.markAllAsRead}
+            notifications={notifications}
+            newNotificationsLabelText={newNotificationsLabelText}
+            panelHeaderText={productUpdatesText}
             toggleNotificationPanel={this.toggleNotificationPanel}
-            toggleProductNotificationsSecondaryPanel={this.toggleProductNotificationsSecondaryPanel}
-            userNotifications={userNotifications}
-            unreadProductNotificationCount={unreadProductNotificationCount}
-            unreadUserNotificationCount={unreadUserNotificationCount}
-            viewOlderLink={viewOlderLink} />
+            unreadNotificationCount={unreadNotificationCount}
+            viewOlderLink={viewOlderLink}
+            viewOlderText={viewOlderText}
+            currentUserRole={currentUserRole}
+            isAdmin={isAdmin}
+            areNotificationsLoading={areNotificationsLoading} />
         </div>
       );
     }
+
+    return null;
   }
 
   render() {
+    const { unreadNotificationCount } = this.state;
+
     const {
-      unreadProductNotificationCount,
-      unreadUserNotificationCount
-    } = this.state;
+      hasUnreadNotificationsText,
+      noUnreadNotificationsText
+    } = this.props.translations;
 
     return (
       <div styleName='container'>
         <div id='socrata-notifications-container'>
-          <Bell hasUnreadNotifications={this.hasUnreadNotifications()}
-            toggleNotificationPanel={this.toggleNotificationPanel} />
+          <Bell unreadNotificationCount={unreadNotificationCount}
+            toggleNotificationPanel={this.toggleNotificationPanel}
+            hasUnreadNotificationsText={hasUnreadNotificationsText}
+            noUnreadNotificationsText={noUnreadNotificationsText} />
 
           {this.renderNotificationPanel()}
         </div>
@@ -317,21 +186,14 @@ class Notifications extends Component {
 }
 
 Notifications.propTypes = {
-  options: PropTypes.shape({
-    currentUserRole: PropTypes.string,
-    isAdmin: PropTypes.bool.isRequired,
-    lockScrollbar: PropTypes.bool,
-    scrollTop: PropTypes.number,
-    showProductNotifications: PropTypes.bool.isRequired,
-    showUserNotifications: PropTypes.bool.isRequired
+  translations: PropTypes.shape({
+    errorText: PropTypes.string.isRequired,
+    hasUnreadNotificationsText: PropTypes.string.isRequired,
+    newNotificationsLabelText: PropTypes.string.isRequired,
+    noUnreadNotificationsText: PropTypes.string.isRequired,
+    productUpdatesText: PropTypes.string.isRequired,
+    viewOlderText: PropTypes.string.isRequired
   }).isRequired
 };
 
-Notifications.defaultProps = {
-  options: {
-    lockScrollbar: PropTypes.false,
-    scrollTop: 0,
-  }
-};
-
-export default connectLocalization(cssModules(Notifications, styles));
+export default cssModules(Notifications, styles);

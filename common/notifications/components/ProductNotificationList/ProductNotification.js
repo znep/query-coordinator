@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
 import moment from 'moment-timezone';
-import _ from 'lodash';
-
 import { formatDateWithLocale } from 'common/dates';
-
+import _ from 'lodash';
 import { TRUNCATE_DESCRIPTION_AFTER } from 'common/notifications/constants';
 import styles from './product-notification.scss';
 
@@ -35,19 +33,15 @@ class ProductNotification extends Component {
       <li styleName={classNames('notification-item', { 'unread': isUnread })}
         className={classNames('notification-item', { 'is-unread-notification': isUnread })}>
         <a styleName='notification-link'
-           className="notification-title"
-           href={titleLink}
-           target='_blank'>
+          href={titleLink}
+          target='_blank'
+          className='dont-inherit-admin-styles'>
           {title}
         </a>
 
-        <p styleName='body-text' className="notification-body">
-          {this.truncateBodyText()}
-        </p>
+        <p styleName='body-text'>{this.truncateBodyText()}</p>
 
-        <p styleName='timestamp' className="notification-timestamp">
-          {formatDateWithLocale(moment.unix(dateTime))}
-        </p>
+        <p styleName='timestamp'>{formatDateWithLocale(moment.unix(dateTime))}</p>
       </li>
     );
   }
@@ -64,6 +58,6 @@ ProductNotification.propTypes = {
 
 ProductNotification.defaultProps = {
   isUnread: true
-};
+}
 
 export default cssModules(ProductNotification, styles, { allowMultiple: true });

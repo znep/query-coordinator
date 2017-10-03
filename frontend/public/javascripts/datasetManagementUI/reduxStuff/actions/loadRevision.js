@@ -12,6 +12,8 @@ import { parseDate } from 'lib/parseDate';
 
 export const LOAD_REVISION_SUCCESS = 'LOAD_REVISION_SUCCESS';
 
+// loadRevision is called every time the app root (ie the Home component) mounts.
+// It controls the modal of absolution
 export function loadRevision(params) {
   return (dispatch, getState) => {
     const { views } = getState().entities;
@@ -57,7 +59,9 @@ export function loadRevision(params) {
         }
       });
 
-      if (revision.task_sets.length) {
+      // if revision is closed, show the modal of absolution that blocks further
+      // action
+      if (revision.closed_at) {
         dispatch(showModal('Publishing'));
       }
     });
@@ -112,7 +116,8 @@ function getCurrentRevision(params) {
         task_sets: resource.task_sets,
         revision_seq: _.toNumber(resource.revision_seq),
         created_at: parseDate(resource.created_at),
-        created_by: resource.created_by
+        created_by: resource.created_by,
+        closed_at: resource.closed_at ? parseDate(resource.closed_at) : null
       };
     });
 }

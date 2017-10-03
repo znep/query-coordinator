@@ -49,6 +49,7 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
+    if (this.isInProgress()) return;
     this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.outputColumn);
   }
 
@@ -56,8 +57,13 @@ export class ColumnHeader extends Component {
     this.props.showShortcut('geocode');
   }
 
+  isInProgress() {
+    return !this.props.outputColumn.finished_at;
+  }
+
   optionsFor() {
-    if (this.props.outputColumn.ignored) {
+    const column = this.props.outputColumn;
+    if (column.ignored) {
       return [
         {
           title: 'import_column',
@@ -79,14 +85,14 @@ export class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
-        disabled: this.props.outputColumn.is_primary_key,
+        disabled: column.is_primary_key,
         render: DropdownWithIcon
       },
       {
         title: 'set_row_id',
         value: 'onRowId',
         icon: 'socrata-icon-question',
-        disabled: this.props.outputColumn.is_primary_key,
+        disabled: column.is_primary_key || this.isInProgress(),
         render: DropdownWithIcon
       },
       {

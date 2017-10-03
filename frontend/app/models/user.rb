@@ -23,7 +23,14 @@ class User < Model
 
     if FeatureFlags.derive[:enable_new_account_verification_email]
       opts[:email_verification] = true
+
+      # if an authToken is present, it means the user is finishing the creation of a future account
+      if authToken.present?
+        opts[:token] = authToken
+        opts[:method] = 'finishFutureAccountCreate'
+      end
     end
+
     path = "/users.json?#{opts.to_param}"
     parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end

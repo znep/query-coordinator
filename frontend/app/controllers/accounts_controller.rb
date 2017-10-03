@@ -61,18 +61,20 @@ class AccountsController < ApplicationController
       end
 
       if @signup.create
-        Rails.logger.info('Somebody used inline login to create an account!') if params[:inline]
-        if FeatureFlags.derive[:enable_new_account_verification_email]
+        # if email verification is off, the user is just logged in
+        # if email verification is on BUT we have an authToken, it means they are creating a future account,
+        # in which case they can just be logged in as we already know they have access to their email
+        if !FeatureFlags.derive[:enable_new_account_verification_email] || params[:signup][:authToken]
+          format.html { redirect_to(login_redirect_url) }
+          format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
+          format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
+        else
           flash[:notice] = t('screens.sign_up.email_verification.sent',
             :email => params.fetch(:signup, {}).fetch(:email, ''))
           format.html { redirect_to(login_url) }
           body = { :notice => flash[:notice], :promptLogin => false }
           format.data { render :json => body, :callback => params[:callback] }
           format.json { render :json => body, :callback => params[:callback] }
-        else
-          format.html { redirect_to(login_redirect_url) }
-          format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
-          format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         end
       else
         error = @signup.errors.values.flatten.join(', ')

@@ -498,6 +498,12 @@ class AdministrationController < ApplicationController
     end
 
     view.moderationStatus = params[:approved] == 'yes'
+    # if this is a datalens, also set hideFromDataJson and hideFromCatalog
+    # to the opposite of whatever moderation status is
+    if view.data_lens?
+      view.hideFromCatalog = !view.moderationStatus
+      view.hideFromDataJson = !view.moderationStatus
+    end
     view.save!
 
     unless request.format.json?

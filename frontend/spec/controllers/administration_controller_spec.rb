@@ -121,26 +121,26 @@ describe AdministrationController do
           stub_user(subject, [UserRights::MANAGE_GOALS])
           allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
         end
-  
+
         describe 'when govstat is enabled' do
           let(:govstat_enabled) { true }
-  
+
           it 'renders' do
             get :goals
             expect(response).to have_http_status(:ok)
           end
         end
-  
+
         describe 'when govstat is disabled' do
           let(:govstat_enabled) { false }
-  
+
           it '404s' do
             get :goals
             expect(response).to have_http_status(:not_found)
           end
         end
       end
-      
+
       describe 'without view_goals right' do
         before(:each) do
           init_environment
@@ -648,9 +648,13 @@ describe AdministrationController do
 
     it 'should set a flash[:notice] unless request is JSON' do
       double(View).tap do |view_double|
-        allow(view_double).to receive(:moderationStatus=)
+        allow(view_double).to receive(:moderationStatus=).and_return(true)
+        allow(view_double).to receive(:hideFromCatalog=).and_return(false)
+        allow(view_double).to receive(:hideFromDataJson=).and_return(false)
         allow(view_double).to receive(:save!)
         allow(view_double).to receive(:name).and_return('view name')
+        allow(view_double).to receive(:data_lens?).and_return(true)
+        allow(view_double).to receive(:moderationStatus).and_return(true)
         allow(view_double).to receive(:moderation_status).and_return('APPROVED')
         allow(View).to receive(:find).and_return(view_double)
       end

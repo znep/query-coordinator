@@ -36,6 +36,8 @@ module.exports = function Mockumentary(Page, Dataset, Card) {
       name: 'Name',
       pageId: 'page-page',
       moderationStatus: true,
+      hideFromCatalog: false,
+      hideFromDataJson: false,
       permissions: {
         isPublic: true
       },

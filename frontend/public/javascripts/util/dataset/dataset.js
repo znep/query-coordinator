@@ -4134,6 +4134,8 @@
       displayFormat: true,
       displayType: true,
       flags: true,
+      hideFromCatalog: true,
+      hideFromDataJson: true,
       iconUrl: true,
       id: true,
       licenseId: true,

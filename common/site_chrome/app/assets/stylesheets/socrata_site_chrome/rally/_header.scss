@@ -1,5 +1,6 @@
 $banner_height: 58px;
 $divider_height: 14px;
+$default-line-height: 1.618;
 $rally_top_min_height: 36px;
 
 header#site-chrome-header[template="rally"] {
@@ -161,6 +162,49 @@ header#site-chrome-header[template="rally"] {
               }
               &:hover, &:focus, &:active {
                 text-decoration: underline;
+              }
+            }
+
+            .site-chrome-user-header-notifications {
+              float: left;
+              padding: 5px 0;
+
+              #socrata-notifications-container {
+                z-index: 101;
+                position: relative;
+              }
+
+              .notifications-bell {
+                padding-left: 0;
+                padding-right: 0;
+                z-index: 2;
+
+                &:hover {
+                  background-color: transparent;
+                }
+              }
+
+              .sidebar-overlay {
+                content: '';
+                position: fixed;
+                z-index: 0;
+                background-color: rgba(0, 0, 0, 0.15);
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+              }
+
+              .socrata-notifications-sidebar {
+                top: $banner_height;
+                bottom: 0;
+                z-index: 1;
+                height: auto;
+
+                * {
+                  box-sizing: border-box;
+                  line-height: $default-line-height;
+                }
               }
             }
           }

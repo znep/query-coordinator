@@ -31,8 +31,13 @@ Hear Ye, Hear Ye. So at long last the time has come to undertake the dreaded tas
   - _The rails4-deps docker image_
     - Go to docker hub : https://hub.docker.com/r/socrata/rails4-deps/ and trigger build manually after step 1 build completes (can take 10-30 minutes)
 
-- __Projects__: 
-    - update the `.ruby-version` files to the new version of ruby (eg 2.3.5), build locally and push those updates with your project changes
+- __Projects__:
+    - update the `.ruby-version` files to the new version of ruby (eg 2.3.5), build locally and push those updates with your project changes. As of this writing the .ruby-version files under the project platform-ui are as follows:
+      - ./.ruby-version
+      - ./common/site_chrome/.ruby-version
+      - ./frontend/.ruby-version
+      - ./storyteller/.ruby-version
 
-- __Verify Functionality__
-  - build frontend to ensure that it deploys successfully to staging and RC
+
+- __Verify Functionality__:
+  - build frontend and storyteller and ensure that they deploy successfully to staging

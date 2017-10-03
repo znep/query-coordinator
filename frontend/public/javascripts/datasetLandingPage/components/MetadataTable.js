@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
+import { createDSMAPIRevision } from '../actions/metadataTable';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
 import { localizeLink } from '../../common/locale';
 import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
@@ -34,12 +35,13 @@ function mapStateToProps(state) {
     };
   }, {});
 
+  // view.editMetadataUrl
   return ({
     localizeLink,
     coreView,
     customMetadataFieldsets,
     disableContactDatasetOwner: view.disableContactDatasetOwner,
-    editMetadataUrl: view.editMetadataUrl,
+    editMetadataUrl: '#',
     statsUrl: view.statsUrl,
     view: view,
     renderWatchDatasetButton() {
@@ -52,9 +54,12 @@ function mapStateToProps(state) {
   });
 }
 
-function mapDispatchToProps(dispatch) {
+function mergeProps(stateProps, { dispatch }) {
   return {
-    onClickEditMetadata() {
+    ...stateProps,
+    onClickEditMetadata: e => {
+      e.preventDefault();
+
       const payload = {
         name: 'Edited Metadata',
         properties: {
@@ -63,9 +68,10 @@ function mapDispatchToProps(dispatch) {
       };
 
       dispatch(emitMixpanelEvent(payload));
-    },
 
-    onClickStats() {
+      dispatch(createDSMAPIRevision(stateProps.view.id));
+    },
+    onClickStats: () => {
       const payload = {
         name: 'Viewed Dataset Statistics',
         properties: {
@@ -76,7 +82,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandTags() {
+    onExpandTags: () => {
       const payload = {
         name: 'Expanded Details',
         properties: {
@@ -87,7 +93,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandMetadataTable() {
+    onExpandMetadataTable: () => {
       const payload = {
         name: 'Expanded Details',
         properties: {
@@ -99,5 +105,4 @@ function mapDispatchToProps(dispatch) {
     }
   };
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(CommonMetadataTable);
+export default connect(mapStateToProps, null, mergeProps)(CommonMetadataTable);

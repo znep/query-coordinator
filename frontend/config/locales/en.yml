@@ -3219,7 +3219,7 @@ en:
       create_story:
         name: Create new stories
       create_story_copy:
-        name: Make a copy of an exisitng story
+        name: Make a copy of an existing story
       delete_story:
         name: Delete stories from site
       edit_dashboards:

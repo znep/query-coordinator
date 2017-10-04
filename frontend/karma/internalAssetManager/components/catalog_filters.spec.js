@@ -33,7 +33,7 @@ const getStore = (filters = {}) => (
 
 describe('components/CatalogFilters', () => {
   before(() => {
-    FeatureFlags.updateTestFixture({ stories_enabled: true, enable_internal_asset_manager_my_assets: true });
+    FeatureFlags.updateTestFixture({ stories_enabled: true });
   });
 
   it('renders a filterHeader', () => {
@@ -43,11 +43,6 @@ describe('components/CatalogFilters', () => {
   });
 
   describe('when on myAssets tab', () => {
-    before(() => {
-      // This feature flag being true, sets the default tab to "myAssets"
-      FeatureFlags.updateTestFixture({ enable_internal_asset_manager_my_assets: true });
-    });
-
     it('renders the relevant filter sections', () => {
       const props = catalogFiltersProps({
         activeTab: 'myAssets'
@@ -62,11 +57,6 @@ describe('components/CatalogFilters', () => {
   })
 
   describe('when on allAssets tab', () => {
-    before(() => {
-      // This feature flag being false, sets the default tab to "allAssets"
-      FeatureFlags.updateTestFixture({ enable_internal_asset_manager_my_assets: false });
-    });
-
     it('renders the relevant filter sections', () => {
       const props = catalogFiltersProps({
         activeTab: 'allAssets'

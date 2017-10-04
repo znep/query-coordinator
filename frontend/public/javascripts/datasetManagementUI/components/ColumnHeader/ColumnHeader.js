@@ -58,7 +58,11 @@ export class ColumnHeader extends Component {
   }
 
   isInProgress() {
-    return !this.props.outputColumn.finished_at;
+    const transform = this.props.outputColumn.transform;
+    if (transform) {
+      return !transform.completed_at;
+    }
+    return false;
   }
 
   optionsFor() {
@@ -74,7 +78,7 @@ export class ColumnHeader extends Component {
         {
           title: 'set_row_id',
           value: 'onRowId',
-          icon: 'socrata-icon-question',
+          icon: 'socrata-icon-id',
           disabled: true,
           render: DropdownWithIcon
         }
@@ -91,7 +95,7 @@ export class ColumnHeader extends Component {
       {
         title: 'set_row_id',
         value: 'onRowId',
-        icon: 'socrata-icon-question',
+        icon: 'socrata-icon-id',
         disabled: column.is_primary_key || this.isInProgress(),
         render: DropdownWithIcon
       },

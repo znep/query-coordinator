@@ -16,9 +16,11 @@ class Notifications extends Component {
   constructor(props) {
     super(props);
 
+    const { I18n } = props;
+
     this.state = {
       areNotificationsLoading: false,
-      filterUserNotificationsBy: null,
+      filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text'),
       hasError: false,
       productNotifications: [],
       showNotificationPanel: false,
@@ -63,10 +65,7 @@ class Notifications extends Component {
 
     if (showProductNotifications) {
       if (showUserNotifications) {
-        this.setState({
-          showProductNotificationsAsSecondaryPanel: true,
-          filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text')
-        });
+        this.setState({showProductNotificationsAsSecondaryPanel: true});
       }
 
       this.setState({ areNotificationsLoading: true });

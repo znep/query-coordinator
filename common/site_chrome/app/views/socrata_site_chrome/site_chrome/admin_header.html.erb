@@ -88,7 +88,7 @@
               const options = {
                 lockScrollbar: false,
                 scrollTop: 0,
-                showProductNotifications: true,
+                showProductNotifications: <%= get_feature_flag('enable_header_notifications') %>,
                 showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>,
                 currentUserRole: <%== current_user_role.to_json %>,
                 isAdmin: <%== is_admin?.to_json %>

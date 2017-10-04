@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
 import moment from 'moment';
+import _ from 'lodash';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 

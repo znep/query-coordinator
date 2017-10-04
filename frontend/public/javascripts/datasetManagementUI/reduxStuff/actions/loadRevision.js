@@ -25,7 +25,7 @@ export function loadRevision(params) {
       const { customMetadataFieldsets } = view;
       const metadataErrors = getMetadataErrors(revision, customMetadataFieldsets);
 
-      // make taskSets to instert into store
+      // make taskSets to insert into store
       const taskSets = makeTaskSets(revision);
 
       // show toast for any failed notifications

@@ -32,7 +32,7 @@ function isPublishing(taskSets) {
     .value();
 }
 
-function mapStateToProps(state, { params }) {
+export function mapStateToProps(state, { params }) {
   const dataSatisfied = isDataSatisfied(state, params);
   const publishing = isPublishing(state.entities.task_sets);
 

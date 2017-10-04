@@ -154,8 +154,7 @@ describe('loadRevision actions', () => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [
             'CREATE_SOURCE_SUCCESS',
-            'LOAD_REVISION_SUCCESS',
-            'SHOW_MODAL'
+            'LOAD_REVISION_SUCCESS'
           ]);
 
           done();

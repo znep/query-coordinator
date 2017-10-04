@@ -523,7 +523,7 @@ describe DatasetsController do
         expect(subject).to receive(:using_canonical_url?).and_return(false)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:redirect)
-        expect(response['Location']).to end_with('/manage/revisions/0')
+        expect(response['Location']).to end_with('/revisions/0')
       end
 
       it 'redirects to the canonical address, preserving the full path' do
@@ -532,7 +532,7 @@ describe DatasetsController do
         expect(subject).to receive(:using_canonical_url?).and_return(false)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0', :rest_of_path => '/metadata/columns'
         expect(response).to have_http_status(:redirect)
-        expect(response['Location']).to end_with('/manage/revisions/0/metadata/columns')
+        expect(response['Location']).to end_with('/revisions/0/metadata/columns')
       end
     end
 

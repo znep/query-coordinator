@@ -193,7 +193,6 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
       dispatch(createNewOutputSchemaSuccess(payload));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
-
       return resp;
     })
     .then(({ resource: { id: newOutputSchemaId } }) => {
@@ -201,6 +200,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
 
       dispatch(hideFormErrors(formName));
 
+      // TODO: need to add Revision channel in dsmapi and swap this out
       const revision = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
 
       dispatch(

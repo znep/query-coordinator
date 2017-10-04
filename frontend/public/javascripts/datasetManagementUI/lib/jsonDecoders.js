@@ -200,10 +200,13 @@ export function normalizeCreateSourceResponse(resource) {
 
 // POST to dsmapiLinks.newOutputSchema
 export function makeNormalizedCreateOutputSchemaResponse(os, totalRows) {
+  // have to add output schema id to the output col for normalizeOutputSchemaColumns
+  // to work
+  const ocs = os.output_columns.map(oc => ({ ...oc, os_id: os.id }));
   return {
     outputSchema: normalizeOutputSchema(os),
     outputColumns: normalizeOutputColumns(os.output_columns),
     transforms: normalizeTransforms(os, totalRows),
-    outputSchemaColumns: normalizeOutputSchemaColumns(os.output_columns)
+    outputSchemaColumns: normalizeOutputSchemaColumns(ocs)
   };
 }

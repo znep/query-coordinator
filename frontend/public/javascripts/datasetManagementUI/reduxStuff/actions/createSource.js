@@ -6,7 +6,7 @@ import { parseDate } from 'lib/parseDate';
 import { uploadFile } from 'reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
 import * as Links from 'links/links';
-import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
+import { normalizeCreateSourceResponse, normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
 import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
@@ -111,18 +111,7 @@ function listenForOutputSchema(sourceId, params) {
     channel.on('insert_input_schema', is => {
       const [os] = is.output_schemas;
 
-      // A little janky, but just mimicking the structure of the create source
-      // http response from dsmapi so we can use all the same json parsing functions
-      // The 'schemas' part of that response is an array of objects with the exact
-      // same structure as the 'is' payload of this channel message
-      const resource = {
-        id: sourceId,
-        type: 'fake',
-        created_by: is.created_by,
-        schemas: [is]
-      };
-
-      const payload = normalizeCreateSourceResponse(resource);
+      const payload = normalizeInsertInputSchemaEvent(is, sourceId);
 
       dispatch(createSourceSuccess(payload));
 

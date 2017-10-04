@@ -136,10 +136,6 @@ function normalizeOutputSchema(os) {
 }
 
 function normalizeSource(resource) {
-  if (resource.type === 'fake') {
-    return {};
-  }
-
   return {
     [resource.id]: {
       ..._.omit(resource, 'schemas'),
@@ -189,6 +185,31 @@ const getNormalizedOutputSchemaColumns = _.flowRight(
 export function normalizeCreateSourceResponse(resource) {
   return {
     source: normalizeSource(resource),
+    inputSchemas: getNormalizedInputSchemas(resource),
+    inputColumns: getNormalizedInputColumns(resource),
+    outputSchemas: getNormalizedOutputSchemas(resource),
+    outputColumns: getNormalizedOutputColumns(resource),
+    outputSchemaColumns: getNormalizedOutputSchemaColumns(resource),
+    transforms: getNormalizedTransforms(resource)
+  };
+}
+
+// insert_input_schema event on source<id> channel
+export function normalizeInsertInputSchemaEvent(is, sourceId) {
+  // A little janky, but just mimicking the structure of the create source
+  // http response from dsmapi so we can use all the same json parsing functions
+  // and the same reducer action. The 'schemas' part of that response is an
+  // array of objects with the exact same structure as the payload of this
+  // channel message. We don't want to update the source in the redux store though
+  // so we just give it an empty object here.
+  const resource = {
+    id: sourceId,
+    created_by: is.created_by,
+    schemas: [is]
+  };
+
+  return {
+    source: {},
     inputSchemas: getNormalizedInputSchemas(resource),
     inputColumns: getNormalizedInputColumns(resource),
     outputSchemas: getNormalizedOutputSchemas(resource),

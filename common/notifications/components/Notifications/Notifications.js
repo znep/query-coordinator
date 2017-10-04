@@ -30,7 +30,7 @@ class Notifications extends Component {
       unreadUserNotificationCount: 0,
       userNotifications: [],
       isSecondaryPanelOpen: false
-    }
+    };
 
     if (props.options.showUserNotifications && props.userid) {
       this.userNotificationStore = new UserNotificationStore(props.userid, this.onNotificationsUpdate.bind(this));

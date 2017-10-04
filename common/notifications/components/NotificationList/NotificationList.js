@@ -121,6 +121,7 @@ class NotificationList extends Component {
         hasUnreadNotifications={unreadProductNotificationCount > 0}
         forUserNotifications={false}
         currentUserRole={currentUserRole}
+        showUserNotifications={showUserNotifications}
         isAdmin={isAdmin} />;
     } else if (showUserNotifications) {
       const {
@@ -135,6 +136,7 @@ class NotificationList extends Component {
         hasUserNotifications={userNotifications.length > 0}
         openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
         toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
+        showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
         isAdmin={isAdmin} />;
     }

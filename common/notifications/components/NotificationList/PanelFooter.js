@@ -85,14 +85,16 @@ class PanelFooter extends Component {
   }
 
   renderSettingsButton() {
-    const { I18n } = this.props;
+    const { I18n, showUserNotifications } = this.props;
 
-    return (
-      <a className="btn" styleName="setting-btn" onClick={this.toggleSubscription}>
-        <span className="socrata-icon-settings"></span>
-        {I18n.t('setting')}
-      </a>
-    );
+    if (showUserNotifications) {
+      return (
+        <a className="btn" styleName="setting-btn" onClick={this.toggleSubscription}>
+          <span className="socrata-icon-settings"></span>
+          {I18n.t('setting')}
+        </a>
+      );
+    }
   }
 
   renderFooter() {
@@ -157,6 +159,7 @@ class PanelFooter extends Component {
 PanelFooter.propTypes = {
   clearAllUserNotifications: PropTypes.func,
   forUserNotifications: PropTypes.bool.isRequired,
+  showUserNotifications: PropTypes.bool.isRequired,
   hasUnreadNotifications: PropTypes.bool,
   hasUserNotifications: PropTypes.bool,
   markAllProductNotificationsAsRead: PropTypes.func,
@@ -167,6 +170,7 @@ PanelFooter.propTypes = {
 PanelFooter.defaultProp = {
   clearAllUserNotifications: () => {},
   hasUnreadNotifications: false,
+  showUserNotifications: true,
   hasUserNotifications: false,
   markAllProductNotificationsAsRead: () => {},
   openClearAllUserNotificationsPrompt: false,

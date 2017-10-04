@@ -3232,6 +3232,8 @@ en:
         name: Update a site's internal configurations (proceed with caution)
       create_dashboards:
         name: Create performance dashboards
+      create_data_lens:
+        name: Create Data Lens pages
       create_datasets:
         name: Create new datasets, charts, maps, and other views
       create_pages:
@@ -3270,8 +3272,10 @@ en:
         name: Review and approve assets submitted for 'open' release
       manage_provenance:
         name: Update an asset's provenance (community/official) via API
+      manage_spatial_lens:
+        name: Configure custom map boundaries for Data Lens maps
       manage_stories:
-        name: Manage Stories
+        name: Manage stories
       manage_story_public_version:
         name: Manage publishing status of stories
       manage_story_collaborators:
@@ -3283,11 +3287,11 @@ en:
       moderate_comments:
         name: Approve or reject community comments on assets
       short_session:
-        name: Require users to be signed out after 15 minutes of inactivity
+        name: Users automatically signed out after 15 minutes of inactivity
       use_data_connectors:
         name: Add, remove, and manage external data connectors and federations
       view_all_dataset_status_logs:
-        name: View log of data updates
+        name: View activity log of site events
       view_dashboards:
         name: View performance dashboards
       view_domain:
@@ -3299,7 +3303,7 @@ en:
       view_story:
         name: View all published stories
       view_stories_stats:
-        name: View stats around stories
+        name: View usage statistics for stories
       view_unpublished_story:
         name: View 'draft' versions of all existing stories
   screens:
@@ -4069,7 +4073,7 @@ en:
                 default: Default
           description:
             title: Platform User Roles
-            content: There are five standard user roles on the Socrata platform. In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package.
+            content: This table summarizes who can do what on your site. You can review your site's default user roles here or create new custom roles to define which actions specific roles can take.
           edit_controls:
             rename_role: Rename Role
             edit_role: Edit Role

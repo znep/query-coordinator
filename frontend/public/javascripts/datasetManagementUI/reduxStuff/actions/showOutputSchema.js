@@ -166,7 +166,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
     }))
     .map(oc => buildNewOutputColumn(oc, sameTransform(entities)));
 
-  dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
 export function buildNewOutputColumn(outputColumn, genTransform) {
@@ -219,37 +219,35 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
   return oldOutputColumns.map(c => buildNewOutputColumn(c, genTransform));
 }
 
-export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
-  return (dispatch, getState) => {
-    const { source } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
-    const transformId = outputColumn.transform_id;
-    const call = {
-      operation: VALIDATE_ROW_IDENTIFIER,
-      callParams: {
-        outputSchemaId: outputSchema.id,
-        outputColumnId: outputColumn.id
-      }
-    };
-    const callId = uuid();
-
-    dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.validateRowIdentifier(source.id, transformId);
-    socrataFetch(url)
-      .then(checkStatus)
-      .then(getJson)
-      .then(result => {
-        dispatch(apiCallSucceeded(callId));
-        if (!result.valid) {
-          dispatch(showModal('RowIdentifierError', result));
-        } else {
-          dispatch(setRowIdentifier(outputSchema, outputColumn));
-        }
-      })
-      .catch(error => {
-        dispatch(apiCallFailed(callId, error));
-      });
+export const validateThenSetRowIdentifier = (outputSchema, outputColumn) => (dispatch, getState) => {
+  const { source } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
+  const transformId = outputColumn.transform_id;
+  const call = {
+    operation: VALIDATE_ROW_IDENTIFIER,
+    callParams: {
+      outputSchemaId: outputSchema.id,
+      outputColumnId: outputColumn.id
+    }
   };
-}
+  const callId = uuid();
+
+  dispatch(apiCallStarted(callId, call));
+  const url = dsmapiLinks.validateRowIdentifier(source.id, transformId);
+  return socrataFetch(url)
+    .then(checkStatus)
+    .then(getJson)
+    .then(result => {
+      dispatch(apiCallSucceeded(callId));
+      if (!result.valid) {
+        dispatch(showModal('RowIdentifierError', result));
+      } else {
+        return dispatch(setRowIdentifier(outputSchema, outputColumn));
+      }
+    })
+    .catch(error => {
+      dispatch(apiCallFailed(callId, error));
+    });
+};
 
 export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
   return dispatch => {

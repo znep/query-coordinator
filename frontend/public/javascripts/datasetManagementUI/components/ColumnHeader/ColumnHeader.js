@@ -49,8 +49,12 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
+
     if (this.isInProgress()) return;
-    this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.outputColumn);
+    this.props.validateThenSetRowIdentifier(
+      this.props.outputSchema,
+      this.props.outputColumn
+    );
   }
 
   onGeocode() {

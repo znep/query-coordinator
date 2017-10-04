@@ -2847,7 +2847,7 @@ en:
           calendars: Calendars
           charts: Charts
           datasets: Datasets
-          datalenses: Data Lens Pages
+          'datalenses,visualizations': Data Lens Pages
           external: External Datasets
           files: Files and Documents
           filtered: Filtered Views
@@ -2908,6 +2908,9 @@ en:
           one: Chart
           other: Charts
         datalenses:
+          one: Data Lens
+          other: Data Lenses
+        'datalenses,visualizations':
           one: Data Lens
           other: Data Lenses
         datasets:

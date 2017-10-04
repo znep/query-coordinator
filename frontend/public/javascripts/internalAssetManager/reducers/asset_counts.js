@@ -30,7 +30,8 @@ export default (state, action) => {
       ...state,
       values: {
         charts: getCountForAssetType('chart'),
-        datalenses: getCountForAssetType('datalens'),
+        // EN-18691: Treat datalenses and visualizations as a single asset type
+        'datalenses,visualizations': getCountForAssetType('datalens') + getCountForAssetType('visualization'),
         datasets: getCountForAssetType('dataset'),
         files: getCountForAssetType('file'),
         filters: getCountForAssetType('filter'),

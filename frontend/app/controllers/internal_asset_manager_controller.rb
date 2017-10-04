@@ -47,7 +47,7 @@ class InternalAssetManagerController < ApplicationController
       asset_types = [params[:assetTypes]]
     else
       # Note: these asset_types should match those listed in the `asset_counts` component and reducer
-      asset_types = %w(charts datalenses datasets files filters hrefs maps stories)
+      asset_types = %w(charts datalenses,visualizations datasets files filters hrefs maps stories)
     end
 
     @asset_counts = begin

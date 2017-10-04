@@ -38,8 +38,13 @@ export class AssetCounts extends React.Component {
         );
       }
 
+      const assetCountsItemClass = classNames('asset-counts-item', {
+        'datalensesAndVisualizations': assetType === 'datalenses,visualizations',
+        [assetType]: assetType !== 'datalenses,visualizations'
+      });
+
       return (
-        <div className={`asset-counts-item ${assetType}`} key={assetType}>
+        <div className={assetCountsItemClass} key={assetType}>
           <div className="item-count">{assetCountLink}</div>
           <div className="item-name">{assetTypeName}</div>
         </div>
@@ -62,7 +67,7 @@ export class AssetCounts extends React.Component {
 AssetCounts.propTypes = {
   assetCounts: PropTypes.shape({
     charts: PropTypes.number,
-    datalenses: PropTypes.number,
+    'datalenses,visualizations': PropTypes.number,
     datasets: PropTypes.number,
     files: PropTypes.number,
     filters: PropTypes.number,

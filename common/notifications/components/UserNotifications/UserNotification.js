@@ -8,22 +8,17 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 import styles from './user-notification.scss';
 
 class UserNotification extends React.Component {
-  renderTitle() {
-    const { activity_type } = this.props;
+  renderAlertLabel() {
+    const {
+      type,
+      I18n
+    } = this.props;
 
-    if (_.includes(STATUS_ACTIVITY_TYPES, activity_type)) {
-      return <strong>{activity_type}</strong>;
-    } else {
-      return (
-        <strong className="user-notification-title">
-          <em>Alert</em>
-          {activity_type}
-        </strong>
-      );
+    if (_.isEqual(type, 'alert')) {
+      return <em>{I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')}</em>;
     }
   }
 
@@ -47,7 +42,7 @@ class UserNotification extends React.Component {
         className="toggle-notification-read-state"
         href="javascript:void(0)"
         title={linkTitle}
-        onClick={() => { onToggleReadUserNotification(id, !is_read) }}>
+        onClick={() => {onToggleReadUserNotification(id, !is_read)}}>
         <SocrataIcon name="checkmark3" />
       </a>
     );
@@ -65,47 +60,22 @@ class UserNotification extends React.Component {
          className="user-notification-clear-icon"
          href="javascript:void(0)"
          title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
-         onClick={() => { onClearUserNotification(id) }}>
+         onClick={() => {onClearUserNotification(id)}}>
         <SocrataIcon name="close-2" />
       </a>
     );
   }
 
-  convertToUrlComponent(text) {
-    let output = text.
-      replace(/\s+/g, '-').
-      replace(/[^a-zA-Z0-9_\-]/g, '-').
-      replace(/\-+/g, '-');
-
-    if (output.length < 1) {
-      output = '-';
-    }
-
-    return output.slice(0, 50);
-  }
-
-  getUserProfileLink(domain, user_name, user_id) {
-    return '//' + domain + '/profile/' + this.convertToUrlComponent(user_name) + '/' + user_id;
-  }
-
-  getDatasetPrimerLink(domain, dataset_name, dataset_uid) {
-    return '//' + domain + '/dataset/' + this.convertToUrlComponent(dataset_name) + '/' + dataset_uid;
-  }
-
   renderUserLink() {
     const {
-      acting_user_id,
-      domain_cname,
-      acting_user_name
+      user_name,
+      user_profile_link
     } = this.props;
 
-    if (acting_user_id && domain_cname && acting_user_name) {
-      return <a href={this.getUserProfileLink(domain_cname, acting_user_name, acting_user_id)}
-        target="_blank">
-        {acting_user_name}
-      </a>;
+    if (_.isNull(user_profile_link)) {
+      return <span styleName="user-name">{user_name}</span>;
     } else {
-      return <span styleName="user-name">{acting_user_name}</span>;
+      return <a href={user_profile_link} target="_blank">{user_name}</a>;
     }
   }
 
@@ -113,40 +83,35 @@ class UserNotification extends React.Component {
     const {
       id,
       is_read,
-      activity_type,
-      dataset_name,
-      dataset_uid,
-      domain_cname,
-      acting_user_name,
+      link,
+      title,
+      type,
       message_body,
       created_at,
       I18n
     } = this.props;
-    const notificationStyleNames = classNames("notification-item", {
-      'alert': !_.includes(STATUS_ACTIVITY_TYPES, activity_type),
-      'status': _.includes(STATUS_ACTIVITY_TYPES, activity_type),
-      'unread': !is_read
-    });
+    const isUnread = !is_read;
+    const notificationLink = _.isNull(link) ? 'javascript:void(0)' : link;
 
     return (
-      <li styleName={notificationStyleNames}
-        className={classNames("user-notification-item clearfix", { 'unread': !is_read })}
+      <li styleName={classNames("notification-item", type, { 'unread': isUnread })}
+        className={classNames("user-notification-item clearfix", { 'unread': isUnread })}
         data-notification-id={id}>
         <div styleName="notification-info">
           <a styleName="title"
             target="_blank"
-            href={this.getDatasetPrimerLink(domain_cname, dataset_name, dataset_uid)}>
-            {this.renderTitle()}
-            <span className="notification-body">{dataset_name || message_body}</span>
+            href={notificationLink}>
+            <strong className="user-notification-title">
+              {this.renderAlertLabel()}
+              {title}
+            </strong>
+
+            <span className="notification-body">{message_body}</span>
           </a>
 
           <p styleName="timestamp" className="notification-timestamp">
-            <em>
-              {moment.utc(created_at).fromNow()}
-              &nbsp;
-              {I18n.t('shared_site_chrome_notifications.by_label')}
-            </em>
-            &nbsp;
+            <span>{moment.utc(created_at).fromNow()}</span>
+            <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
             {this.renderUserLink()}
           </p>
         </div>
@@ -161,19 +126,18 @@ class UserNotification extends React.Component {
 }
 
 UserNotification.propTypes = {
-  id: PropTypes.number.isRequired,
-  is_read: PropTypes.bool,
   activity_type: PropTypes.string.isRequired,
-  dataset_name: PropTypes.string.isRequired,
-  dataset_uid: PropTypes.string.isRequired,
-  created_at: PropTypes.string.isRequired,
   message_body: PropTypes.string.isRequired,
+  created_at: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  is_read: PropTypes.bool.isRequired,
+  link: PropTypes.string,
   onClearUserNotification: PropTypes.func.isRequired,
-  onToggleReadUserNotification: PropTypes.func.isRequired
-};
-
-UserNotification.defaultProps = {
-  is_read: false
+  onToggleReadUserNotification: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  user_name: PropTypes.string.isRequired,
+  user_profile_link: PropTypes.string.isRequired
 };
 
 export default connectLocalization(cssModules(UserNotification, styles, { allowMultiple: true }));

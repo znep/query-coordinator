@@ -12,7 +12,7 @@ describe('Tabs', () => {
 
   it('should render user notifications filter tabs', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(Tabs, getProps({ tablist: [] }));
+    const element = renderLocalizationElement(Tabs, getProps({ tabs: [] }));
 
     assert.isNotNull(element);
   });
@@ -21,7 +21,7 @@ describe('Tabs', () => {
     const spy = sinon.spy();
     const element = renderLocalizationElement(Tabs,
       getProps({
-        tablist: ['product'],
+        tabs: ['alert'],
         filterNotifications: spy
       })
     );

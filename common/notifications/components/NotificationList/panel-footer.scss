@@ -58,7 +58,7 @@
   background-color: $white;
   border-radius: 5px;
   bottom: $footerBarHeight + 10px;
-  box-shadow: 0 0 3px rgba($black, 0.25);
+  box-shadow: 0 0 1px 1px rgba($panel-footer-prompt-shadow-color, 0.25);
   color: $notification-item-text-color;
   left: 0;
   padding: 10px;
@@ -76,7 +76,7 @@
   }
 
   &:before {
-    border-top-color: rgba($white, 0.25);
+    border-top-color: rgba($panel-footer-prompt-shadow-color, 0.15);
     border-width: 17px 12px 0;
     bottom: -17px;
     left: 24px;

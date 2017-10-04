@@ -10,17 +10,16 @@ import { getProductNotifications, updateProductNotificationLastSeen } from 'comm
 import NotificationList from 'common/notifications/components/NotificationList/NotificationList';
 import UserNotificationStore from 'common/notifications/store/UserNotificationStore';
 import Bell from 'common/notifications/components/Bell/Bell';
+import { DEFAULT_FILTER_TAB } from 'common/notifications/constants';
 import styles from './notifications.scss';
 
 class Notifications extends Component {
   constructor(props) {
     super(props);
 
-    const { I18n } = props;
-
     this.state = {
       areNotificationsLoading: false,
-      filterUserNotificationsBy: I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text'),
+      filterUserNotificationsBy: DEFAULT_FILTER_TAB,
       hasError: false,
       productNotifications: [],
       showNotificationPanel: false,
@@ -157,7 +156,6 @@ class Notifications extends Component {
 
   toggleNotificationPanel() {
     const showNotificationPanel = !this.state.showNotificationPanel;
-    const { I18n } = this.props;
     const {
       lockScrollbar,
       scrollTop
@@ -183,8 +181,7 @@ class Notifications extends Component {
         showNotificationPanel,
         openClearAllUserNotificationsPrompt: false,
         isSecondaryPanelOpen: false,
-        filterUserNotificationsBy: I18n.t(
-          'shared_site_chrome_notifications.filter_all_notifications_tab_text')
+        filterUserNotificationsBy: DEFAULT_FILTER_TAB
       });
     }
 

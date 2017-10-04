@@ -9,36 +9,26 @@ import styles from './tabs.scss';
 
 class Tabs extends React.Component {
   renderIndicator(tab) {
-    const { I18n } = this.props;
-    const filterAllText = I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text');
-    const filterStatusText = I18n.t('shared_site_chrome_notifications.filter_status_notifications_tab_text');
-    const filterAlertText = I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text');
-
-    if (tab !== filterAllText) {
-      const indicatorStyleName = classNames('type-indicator', {
-        'alert-dot': tab == filterAlertText,
-        'status-dot': tab == filterStatusText
-      });
-
-      return <span styleName={indicatorStyleName} />;
+    if (tab !== 'all') {
+      return <span styleName={classNames('type-indicator', `${tab}-dot`)} />;
     }
   }
 
   renderTabs() {
     const {
-      tablist,
+      tabs,
       selectedTab,
-      filterNotifications
+      filterNotifications,
+      I18n
     } = this.props;
 
-    return tablist.map((tab, index) =>
-      <li key={index}>
-        <button
+    return tabs.map((tab, index) =>
+      <li key={index} styleName="tab">
+        <button styleName={classNames({ 'selected': tab === selectedTab })}
           className="notification-tab"
-          styleName={classNames({ 'selected': tab === selectedTab })}
-          onClick={() => { filterNotifications(tab) }}>
+          onClick={() => {filterNotifications(tab)}}>
           {this.renderIndicator(tab)}
-          {tab}
+          {I18n.t(`shared_site_chrome_notifications.filter_${tab}_notifications_tab_text`)}
         </button>
       </li>
     );
@@ -49,6 +39,9 @@ class Tabs extends React.Component {
       children,
       hasSecondaryPanel
     } = this.props;
+    const notificationItemsClassName = classNames("notification-items-wrapper", {
+      "has-secondary-panel": hasSecondaryPanel
+    });
 
     return (
       <div styleName="notification-panel">
@@ -56,7 +49,7 @@ class Tabs extends React.Component {
           {this.renderTabs()}
         </ul>
 
-        <div styleName={classNames("notification-items-wrapper", { "has-secondary-panel": hasSecondaryPanel })}>
+        <div styleName={notificationItemsClassName}>
           <ul styleName="notification-items">
             {children}
           </ul>
@@ -67,7 +60,7 @@ class Tabs extends React.Component {
 }
 
 Tabs.propTypes = {
-  tablist: PropTypes.array.isRequired,
+  tabs: PropTypes.array.isRequired,
   selectedTab: PropTypes.string.isRequired,
   filterNotifications: PropTypes.func.isRequired,
   children: React.PropTypes.element.isRequired,

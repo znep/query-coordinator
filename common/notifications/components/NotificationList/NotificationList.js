@@ -10,6 +10,7 @@ import ProductNotificationList from 'common/notifications/components/ProductNoti
 import PanelFooter from './PanelFooter';
 import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
 import Tabs from 'common/notifications/components/Tabs/Tabs';
+import { FILTER_TABS } from 'common/notifications/constants';
 import styles from './notification-list.scss';
 
 class NotificationList extends Component {
@@ -48,23 +49,17 @@ class NotificationList extends Component {
       const {
         filterUserNotifications,
         filterUserNotificationsBy,
-        I18n,
         onClearUserNotification,
         onToggleReadUserNotification,
         userNotifications,
         showProductNotifications
       } = this.props;
-      const filterTabs = [
-        I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text'),
-        I18n.t('shared_site_chrome_notifications.filter_status_notifications_tab_text'),
-        I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')
-      ];
 
       return (
         <Tabs filterNotifications={filterUserNotifications}
           hasSecondaryPanel={showProductNotifications}
           selectedTab={filterUserNotificationsBy}
-          tablist={filterTabs}>
+          tabs={FILTER_TABS}>
           <UserNotificationList filterNotificationsBy={filterUserNotificationsBy}
             onClearUserNotification={onClearUserNotification}
             onToggleReadUserNotification={onToggleReadUserNotification}

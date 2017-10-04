@@ -6,7 +6,6 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import UserNotification from './UserNotification';
-import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 import styles from './user-notification-list.scss';
 
 class UserNotificationList extends Component {
@@ -19,13 +18,9 @@ class UserNotificationList extends Component {
       I18n
     } = this.props;
 
-    const filterAllTabText = I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text');
-    const notifications = _.isEmpty(userNotifications) ? [] : userNotifications.filter(notification => {
-      return filterNotificationsBy === filterAllTabText ||
-        (filterNotificationsBy === 'alert' ?
-          !_.includes(STATUS_ACTIVITY_TYPES, notification.activity.activity_type) :
-          _.includes(STATUS_ACTIVITY_TYPES, notification.activity.activity_type));
-    }) || {};
+    const notifications = userNotifications.filter(notification => {
+      return _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy);
+    });
 
     if (_.isEmpty(notifications)) {
       return (
@@ -39,15 +34,15 @@ class UserNotificationList extends Component {
         <UserNotification
           key={notification.id}
           id={notification.id}
-          is_read={_.isUndefined(notification.read) ? false : notification.read}
-          activity_type={_.get(notification, 'activity.activity_type', '')}
-          dataset_name={_.get(notification, 'activity.dataset_name', '')}
-          dataset_uid={_.get(notification, 'activity.dataset_uid', '')}
-          created_at={_.get(notification, 'activity.created_at', '')}
-          acting_user_name={_.get(notification, 'activity.acting_user_name', '')}
-          acting_user_id={_.get(notification, 'activity.acting_user_id', '')}
-          domain_cname={_.get(notification, 'activity.domain_cname', '')}
-          message_body={_.get(JSON.parse(_.get(notification, 'activity.details', '')), 'summary', '')}
+          is_read={notification.read}
+          activity_type={notification.activity_type}
+          created_at={notification.created_at}
+          type={notification.type}
+          title={notification.title}
+          message_body={notification.message_body}
+          link={notification.link}
+          user_name={notification.user_name}
+          user_profile_link={notification.user_profile_link}
           onClearUserNotification={onClearUserNotification}
           onToggleReadUserNotification={onToggleReadUserNotification} />
       );

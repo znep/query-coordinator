@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import { Socket } from 'phoenix';
+import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 
 class NotificationStore {
   constructor(user_id, callback) {
@@ -20,7 +21,7 @@ class NotificationStore {
 
     let that = this;
     this._getExistingNotifications().then(function(response) {
-      that._notifications = response.data || [];
+      that._notifications = that._transformNotifications(_.get(response, 'data', []));
       that.update();
       that._channel.join().
         receive('ok', (resp) => {
@@ -45,7 +46,7 @@ class NotificationStore {
   };
 
   _onNewNotification(notification) {
-    this._notifications.push(notification);
+    this._notifications.push(this._transformNotification(notification));
     this.update();
   }
 
@@ -108,6 +109,91 @@ class NotificationStore {
         }
       })
     });
+  }
+
+  _convertToUrlComponent(text) {
+    let output = text.
+      replace(/\s+/g, '-').
+      replace(/[^a-zA-Z0-9_\-]/g, '-').
+      replace(/\-+/g, '-');
+
+    if (output.length < 1) {
+      output = '-';
+    }
+
+    return output.slice(0, 50);
+  }
+
+  _getUserProfileLink(domain_cname, user_name, user_id) {
+    if(_.isEmpty(domain_cname) || _.isEmpty(user_name) || _.isEmpty(user_id)) {
+      return null;
+    } else {
+      return '//' + domain_cname + '/profile/' + this._convertToUrlComponent(user_name) + '/' + user_id;
+    }
+  }
+
+  _getDatasetLink(domain_cname, name, uid) {
+    if(_.isEmpty(domain_cname) || _.isEmpty(name) || _.isEmpty(uid)) {
+      return null;
+    } else {
+      return '//' + domain_cname + '/dataset/' + this._convertToUrlComponent(name) + '/' + uid;
+    }
+  }
+
+  _transformNotification(notification) {
+    const transformedNotification = {};
+    const userActivityTypes = ['UserAdded', 'UserRemoved', 'UserRoleChanged'];
+    const activityType = _.get(notification, 'activity.activity_type', '');
+    const domainCname = _.get(notification, 'activity.domain_cname', '');
+    const userName = _.get(notification, 'activity.acting_user_name', '');
+    const userId = _.get(notification, 'activity.acting_user_id', '');
+
+    transformedNotification.id = _.get(notification, 'id', '');
+    transformedNotification.read = _.get(notification, 'read', false);
+    transformedNotification.activity_type = activityType;
+    transformedNotification.created_at = _.get(notification, 'activity.created_at', '');
+    transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status': 'alert';
+    transformedNotification.title = _.startCase(activityType);
+
+    transformedNotification.user_name = userName;
+    transformedNotification.user_profile_link = this._getUserProfileLink(domainCname, userName, userId);
+
+    if (activityType === 'ViewMetadataChanged') {
+      const viewId = _.get(notification, 'activity.view_uid', '');
+      const viewName = _.get(notification, 'activity.view_name', '');
+
+      transformedNotification.link = this._getDatasetLink(domainCname, viewName, viewId);
+      transformedNotification.message_body = viewName;
+    } else if (_.includes(userActivityTypes, activityType)) {
+      transformedNotification.link = null;
+      transformedNotification.message_body = _.get(
+        JSON.parse(_.get(notification, 'activity.details', '')),
+        'summary',
+        ''
+      );
+    } else {
+      const datasetId = _.get(notification, 'activity.dataset_uid', '');
+      const datasetName = _.get(notification, 'activity.dataset_name', '');
+
+      transformedNotification.link = this._getDatasetLink(domainCname, datasetName, datasetId);
+      transformedNotification.message_body = datasetName;
+    }
+
+    return transformedNotification;
+  }
+
+  _transformNotifications(notifications) {
+    if (_.isEmpty(notifications)) {
+      return notifications;
+    } else {
+      const transformedNotifications = [];
+
+      _.each(notifications, (notification) => {
+        transformedNotifications.push(this._transformNotification(notification));
+      });
+
+      return transformedNotifications;
+    }
   }
 
   update() {

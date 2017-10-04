@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'babel-polyfill-safe';
-
 import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 import 'common/notifications/main';

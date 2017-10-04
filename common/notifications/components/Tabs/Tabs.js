@@ -10,9 +10,9 @@ import styles from './tabs.scss';
 class Tabs extends React.Component {
   renderIndicator(tab) {
     const { I18n } = this.props;
-    const filterAllText = I18n.t('filter_all_notifications_tab_text');
-    const filterStatusText = I18n.t('filter_status_notifications_tab_text');
-    const filterAlertText = I18n.t('filter_alert_notifications_tab_text');
+    const filterAllText = I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text');
+    const filterStatusText = I18n.t('shared_site_chrome_notifications.filter_status_notifications_tab_text');
+    const filterAlertText = I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text');
 
     if (tab !== filterAllText) {
       const indicatorStyleName = classNames('type-indicator', {

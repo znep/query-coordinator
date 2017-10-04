@@ -19,7 +19,7 @@ class PanelHeader extends Component {
           className='new-notifications-label'>
           {unreadCount}
           &nbsp;
-          {I18n.t('new_label')}
+          {I18n.t('shared_site_chrome_notifications.new_label')}
         </em>
       );
     }

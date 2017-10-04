@@ -19,8 +19,9 @@ class UserNotificationList extends Component {
       I18n
     } = this.props;
 
+    const filterAllTabText = I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text');
     const notifications = _.isEmpty(userNotifications) ? [] : userNotifications.filter(notification => {
-      return filterNotificationsBy === I18n.t('filter_all_notifications_tab_text') ||
+      return filterNotificationsBy === filterAllTabText ||
         (filterNotificationsBy === 'alert' ?
           !_.includes(STATUS_ACTIVITY_TYPES, notification.activity.activity_type) :
           _.includes(STATUS_ACTIVITY_TYPES, notification.activity.activity_type));
@@ -30,7 +31,7 @@ class UserNotificationList extends Component {
       return (
         <div styleName="no-notifications-message"
              className="no-user-notifications-message">
-          <h3>{I18n.t('no_filtered_notifications')}</h3>
+          <h3>{I18n.t('shared_site_chrome_notifications.no_filtered_notifications')}</h3>
         </div>
       );
     } else {

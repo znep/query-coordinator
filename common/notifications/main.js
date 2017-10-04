@@ -38,6 +38,9 @@ import Notifications from './components/Notifications/Notifications';
 
 window.headerNotifications = (container, options, userid, translations, locale) => {
   let rootNode;
+  const sharedTranslations = {
+    shared_site_chrome_notifications: translations || {}
+  };
 
   try {
     /* eslint-disable */
@@ -48,8 +51,11 @@ window.headerNotifications = (container, options, userid, translations, locale) 
   }
 
   ReactDOM.render(
-    <Localization translations={translations || {}} locale={locale || 'en'}>
-      <Notifications options={options} userid={userid} />
+    <Localization
+      translations={sharedTranslations}
+      locale={locale || 'en'}
+      shareTranslations={true}>
+      <Notifications options={options} userid={userid}/>
     </Localization>,
     rootNode
   );

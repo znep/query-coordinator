@@ -20,7 +20,7 @@ class Notifications extends Component {
 
     this.state = {
       areNotificationsLoading: false,
-      filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text'),
+      filterUserNotificationsBy: I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text'),
       hasError: false,
       productNotifications: [],
       showNotificationPanel: false,
@@ -183,7 +183,8 @@ class Notifications extends Component {
         showNotificationPanel,
         openClearAllUserNotificationsPrompt: false,
         isSecondaryPanelOpen: false,
-        filterUserNotificationsBy: I18n.t('filter_all_notifications_tab_text')
+        filterUserNotificationsBy: I18n.t(
+          'shared_site_chrome_notifications.filter_all_notifications_tab_text')
       });
     }
 

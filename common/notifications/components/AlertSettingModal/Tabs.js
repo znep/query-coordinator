@@ -13,7 +13,7 @@ class Tabs extends Component {
           <li
             styleName={classNames({ 'active': selectedTab == 'notification' })}>
             <a className="nav-link">
-              {I18n.t('alert_setting_modal.tab.notification')}
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.tab.notification')}
             </a>
           </li>
         </ul>

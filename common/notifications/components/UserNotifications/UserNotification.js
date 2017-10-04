@@ -37,9 +37,9 @@ class UserNotification extends React.Component {
     let linkTitle;
 
     if (is_read) {
-      linkTitle = I18n.t('mark_as_unread');
+      linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_unread');
     } else {
-      linkTitle = I18n.t('mark_as_read');
+      linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_read');
     }
 
     return (
@@ -64,7 +64,7 @@ class UserNotification extends React.Component {
       <a styleName="link-icon"
          className="user-notification-clear-icon"
          href="javascript:void(0)"
-         title={I18n.t('clear_notification_text')}
+         title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
          onClick={() => { onClearUserNotification(id) }}>
         <SocrataIcon name="close-2" />
       </a>
@@ -144,7 +144,7 @@ class UserNotification extends React.Component {
             <em>
               {moment.utc(created_at).fromNow()}
               &nbsp;
-              {I18n.t('by_label')}
+              {I18n.t('shared_site_chrome_notifications.by_label')}
             </em>
             &nbsp;
             {this.renderUserLink()}

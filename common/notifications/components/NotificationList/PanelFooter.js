@@ -64,19 +64,20 @@ class PanelFooter extends Component {
     if (openClearAllUserNotificationsPrompt) {
       return (
         <div styleName="inline-prompt">
-          <p styleName="heading-text">{I18n.t('clear_all_text')}</p>
+          <p styleName="heading-text">
+            {I18n.t('shared_site_chrome_notifications.clear_all_text')}</p>
 
-          <p>{I18n.t('clear_all_confirm')}</p>
+          <p>{I18n.t('shared_site_chrome_notifications.clear_all_confirm')}</p>
 
           <div styleName="prompt-buttons-wrapper" className="clearfix">
             <button styleName="cancle-button"
               className="btn btn-default"
               onClick={() => { toggleClearAllUserNotificationsPrompt(false) }}>
-              {I18n.t('clear_all_confirm_no')}
+              {I18n.t('shared_site_chrome_notifications.clear_all_confirm_no')}
             </button>
 
             <button styleName="primary-button" onClick={clearAllUserNotifications}>
-              {I18n.t('clear_all_confirm_yes')}
+              {I18n.t('shared_site_chrome_notifications.clear_all_confirm_yes')}
             </button>
           </div>
         </div>
@@ -91,7 +92,7 @@ class PanelFooter extends Component {
       return (
         <a className="btn" styleName="setting-btn" onClick={this.toggleSubscription}>
           <span className="socrata-icon-settings"></span>
-          {I18n.t('setting')}
+          {I18n.t('shared_site_chrome_notifications.setting')}
         </a>
       );
     }
@@ -119,7 +120,7 @@ class PanelFooter extends Component {
             className="clear-all-button"
             onClick={() => { toggleClearAllUserNotificationsPrompt(!openClearAllUserNotificationsPrompt) }}
             disabled={!hasUserNotifications}>
-            {I18n.t('clear_all_text')}
+            {I18n.t('shared_site_chrome_notifications.clear_all_text')}
           </button>
 
           {this.renderSettingsButton()}
@@ -137,7 +138,7 @@ class PanelFooter extends Component {
             className='mark-all-as-read-button'
             disabled={!hasUnreadNotifications}
             onClick={markAllProductNotificationsAsRead}>
-            {I18n.t('mark_as_read')}
+            {I18n.t('shared_site_chrome_notifications.mark_as_read')}
           </button>
 
           {this.renderSettingsButton()}

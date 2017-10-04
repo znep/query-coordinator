@@ -18,9 +18,9 @@ class Bell extends Component {
     let tipsyText;
 
     if (hasUnreadNotifications) {
-      tipsyText = I18n.t('has_unread_notifications');
+      tipsyText = I18n.t('shared_site_chrome_notifications.has_unread_notifications');
     } else {
-      tipsyText = I18n.t('no_unread_notifications');
+      tipsyText = I18n.t('shared_site_chrome_notifications.no_unread_notifications');
     }
 
     return (

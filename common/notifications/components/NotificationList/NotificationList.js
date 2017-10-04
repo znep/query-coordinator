@@ -22,7 +22,7 @@ class NotificationList extends Component {
 
     if (showUserNotifications) {
       const { unreadUserNotificationCount } = this.props;
-      const panelHeaderText = I18n.t('user_notifications');
+      const panelHeaderText = I18n.t('shared_site_chrome_notifications.user_notifications');
 
       return (
         <PanelHeader panelHeaderText={panelHeaderText}
@@ -31,7 +31,7 @@ class NotificationList extends Component {
       );
     } else {
       const { unreadProductNotificationCount } = this.props;
-      const panelHeaderText = I18n.t('product_updates');
+      const panelHeaderText = I18n.t('shared_site_chrome_notifications.product_updates');
 
       return (
         <PanelHeader panelHeaderText={panelHeaderText}
@@ -55,9 +55,9 @@ class NotificationList extends Component {
         showProductNotifications
       } = this.props;
       const filterTabs = [
-        I18n.t('filter_all_notifications_tab_text'),
-        I18n.t('filter_status_notifications_tab_text'),
-        I18n.t('filter_alert_notifications_tab_text')
+        I18n.t('shared_site_chrome_notifications.filter_all_notifications_tab_text'),
+        I18n.t('shared_site_chrome_notifications.filter_status_notifications_tab_text'),
+        I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')
       ];
 
       return (

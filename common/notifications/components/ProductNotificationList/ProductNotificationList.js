@@ -23,7 +23,7 @@ class ProductNotificationList extends Component {
         <em styleName="unread-count-label">
           {unreadProductNotificationCount}
           &nbsp;
-          {I18n.t('new_label')}
+          {I18n.t('shared_site_chrome_notifications.new_label')}
         </em>
       );
     }
@@ -56,7 +56,7 @@ class ProductNotificationList extends Component {
         <div styleName="accordion-header" className="secondary-panel">
           <h3 styleName={classNames('panel-header-text', { unread: unreadProductNotificationCount > 0 })}
             onClick={toggleProductNotificationsSecondaryPanel}>
-            {I18n.t('product_updates')}
+            {I18n.t('shared_site_chrome_notifications.product_updates')}
             {this.renderUnreadNewCountLabel()}
             {this.renderAccordionIcon()}
           </h3>
@@ -74,7 +74,7 @@ class ProductNotificationList extends Component {
       showProductNotificationsAsSecondaryPanel,
       I18n
     } = this.props;
-    const errorText = I18n.t('error_text_html');
+    const errorText = I18n.t('shared_site_chrome_notifications.error_text_html');
 
     if (!showProductNotificationsAsSecondaryPanel || isSecondaryPanelOpen) {
       if (areNotificationsLoading) {
@@ -95,7 +95,7 @@ class ProductNotificationList extends Component {
           return (
             <div styleName='notifications-message'
               className='no-notifications-message-wrapper'>
-              <h3>{I18n.t('no_unread_notifications')}</h3>
+              <h3>{I18n.t('shared_site_chrome_notifications.no_unread_notifications')}</h3>
             </div>
           );
         }
@@ -117,7 +117,7 @@ class ProductNotificationList extends Component {
           <a href={viewOlderLink}
             styleName='view-older-link'
             target='_blank'>
-            {I18n.t('view_older')}
+            {I18n.t('shared_site_chrome_notifications.view_older')}
           </a>
         </div>
       );

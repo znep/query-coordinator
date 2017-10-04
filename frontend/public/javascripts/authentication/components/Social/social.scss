@@ -58,7 +58,7 @@ $yahoo-fill: #a200c2;
 .social-button-google {
   @extend .social-button;
 
-  & svg path {
+  & svg use, & svg path {
     fill: $google-fill !important;
   }
 }

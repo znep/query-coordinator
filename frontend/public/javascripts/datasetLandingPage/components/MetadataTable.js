@@ -11,6 +11,8 @@ import { FeatureFlags } from 'common/feature_flags';
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
 
+const editThruDSMUI = window.serverConfig.featureFlags.enable_dsmui_edit_metadata;
+
 function mapStateToProps(state) {
   const view = state.view || {};
   const { coreView } = view;
@@ -35,13 +37,12 @@ function mapStateToProps(state) {
     };
   }, {});
 
-  // view.editMetadataUrl
   return ({
     localizeLink,
     coreView,
     customMetadataFieldsets,
     disableContactDatasetOwner: view.disableContactDatasetOwner,
-    editMetadataUrl: '#',
+    editMetadataUrl: editThruDSMUI ? '#' : view.editMetadataUrl,
     statsUrl: view.statsUrl,
     view: view,
     renderWatchDatasetButton() {
@@ -58,7 +59,10 @@ function mergeProps(stateProps, { dispatch }) {
   return {
     ...stateProps,
     onClickEditMetadata: e => {
-      e.preventDefault();
+      if (editThruDSMUI) {
+        e.preventDefault();
+        dispatch(createDSMAPIRevision(stateProps.view.id));
+      }
 
       const payload = {
         name: 'Edited Metadata',
@@ -68,8 +72,6 @@ function mergeProps(stateProps, { dispatch }) {
       };
 
       dispatch(emitMixpanelEvent(payload));
-
-      dispatch(createDSMAPIRevision(stateProps.view.id));
     },
     onClickStats: () => {
       const payload = {
@@ -105,4 +107,13 @@ function mergeProps(stateProps, { dispatch }) {
     }
   };
 }
+
+// function chooseEditMetadataURL(flagOn, url) {
+//   return flagOn ? '#' : url
+// }
+//
+// function chooseEditMetadataAction(flagOn, fourfour) {
+//
+// }
+
 export default connect(mapStateToProps, null, mergeProps)(CommonMetadataTable);

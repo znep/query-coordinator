@@ -14,6 +14,9 @@ export const getView = (fourfour, views) =>
 
 // shapeRevisionForProps :: Revision -> ViewlikeObj
 const shapeRevisionForProps = revision => ({
+  name: revision.metadata.name,
+  description: revision.metadata.description,
+  category: revision.metadata.category,
   tags: revision.metadata.tags,
   attribution: revision.metadata.attribution,
   attributionLink: revision.metadata.attributionLink || '',

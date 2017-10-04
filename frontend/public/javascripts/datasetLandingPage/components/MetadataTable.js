@@ -108,12 +108,4 @@ function mergeProps(stateProps, { dispatch }) {
   };
 }
 
-// function chooseEditMetadataURL(flagOn, url) {
-//   return flagOn ? '#' : url
-// }
-//
-// function chooseEditMetadataAction(flagOn, fourfour) {
-//
-// }
-
 export default connect(mapStateToProps, null, mergeProps)(CommonMetadataTable);

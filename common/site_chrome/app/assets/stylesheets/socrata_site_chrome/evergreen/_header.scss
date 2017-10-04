@@ -1,5 +1,6 @@
 $banner_padding: 20px;
 $banner_height: calc(#{max($header_logo_height, $header_display_name_size)} + #{$banner_padding});
+$default-line-height: 1.618;
 $searchbox-height: 36px;
 
 header#site-chrome-header[template="evergreen"] {
@@ -63,6 +64,49 @@ header#site-chrome-header[template="evergreen"] {
             position: relative;
           }
 
+          .site-chrome-user-header-notifications {
+            float: right;
+            padding: 5px 0;
+
+            #socrata-notifications-container {
+              z-index: 101;
+              position: relative;
+            }
+
+            .notifications-bell {
+              padding-left: 0;
+              padding-right: 0;
+              z-index: 2;
+
+              &:hover {
+                background-color: transparent;
+              }
+            }
+
+            .sidebar-overlay {
+              content: '';
+              position: fixed;
+              z-index: 0;
+              background-color: rgba(0, 0, 0, 0.15);
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+            }
+
+            .socrata-notifications-sidebar {
+              top: $banner_height;
+              bottom: 0;
+              z-index: 1;
+              height: auto;
+              text-align: left;
+
+              * {
+                box-sizing: border-box;
+                line-height: $default-line-height;
+              }
+            }
+          }
           .user-actions {
             float: right;
           }

@@ -3,9 +3,10 @@
 .notification-item {
   background-color: $white;
   -webkit-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   font-weight: 400;
-  margin-top: 5px;
+  margin-bottom: 5px;
   padding: 10px;
   text-align: left;
   white-space: normal;
@@ -21,6 +22,7 @@
   color: $primary-text;
   display: block;
   font-size: 13px;
+  text-decoration: none;
 
   &:hover {
     text-decoration: underline;

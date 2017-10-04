@@ -248,7 +248,7 @@ class Notifications extends Component {
         showProductNotifications,
         showUserNotifications,
         currentUserRole,
-        isAdmin
+        isSuperAdmin
       } = this.props.options;
       const {
         areNotificationsLoading,
@@ -275,7 +275,7 @@ class Notifications extends Component {
             filterUserNotifications={this.filterUserNotifications}
             filterUserNotificationsBy={filterUserNotificationsBy}
             hasError={hasError}
-            isAdmin={isAdmin}
+            isSuperAdmin={isSuperAdmin}
             isSecondaryPanelOpen={isSecondaryPanelOpen}
             markAllProductNotificationsAsRead={this.markAllProductNotificationsAsRead}
             onClearUserNotification={this.onClearUserNotification}
@@ -319,7 +319,7 @@ class Notifications extends Component {
 Notifications.propTypes = {
   options: PropTypes.shape({
     currentUserRole: PropTypes.string,
-    isAdmin: PropTypes.bool.isRequired,
+    isSuperAdmin: PropTypes.bool.isRequired,
     lockScrollbar: PropTypes.bool,
     scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,

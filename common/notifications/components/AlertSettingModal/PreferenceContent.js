@@ -7,20 +7,20 @@ import OnOffSwitch from './OnOffSwitch';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 class PreferenceContent extends Component {
-
   renderAllAssets() {
     const {
       onAlertNotificationChange,
       preferences,
       I18n,
-      currentUserRole
+      currentUserRole,
+      isSuperAdmin
     } = this.props;
     const category = 'all_assets';
     const categoryData = _.get(preferences, category, {});
     const subCategoryData = _.get(categoryData, 'sub_categories', {});
     let collaboratorsTag = null;
 
-    if (!_.isEmpty(currentUserRole)) {
+    if (!_.isEmpty(currentUserRole) || isSuperAdmin) {
       const collaboratorsKey = 'collaborators_changes';
       collaboratorsTag = (
         <label className="inline-label" styleName="email-option" htmlFor="collaborators-changes">
@@ -98,20 +98,52 @@ class PreferenceContent extends Component {
 
   renderRotingAndApproval() {
     // only for admin
-    const { onAlertNotificationChange, preferences, I18n, isAdmin } = this.props;
+    const {
+      onAlertNotificationChange,
+      preferences,
+      I18n,
+      isSuperAdmin,
+      currentUserRole
+    } = this.props;
     const category = 'routing_and_approval';
     const categoryData = _.get(preferences, category, {});
+    const subCategoryData = _.get(categoryData, 'sub_categories', {});
     let routingAndApprovalRow = null;
-    if (isAdmin) {
+
+    if (isSuperAdmin || currentUserRole === 'administrator') {
       routingAndApprovalRow = (
         <tr>
           <td>
             <div styleName="preference-name">
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.title')}
             </div>
-            <div styleName="preference-description">
-              {I18n.t(
-                'shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.description')}
+            <div styleName="preference-types">
+              <label className="inline-label" styleName="email-option" htmlFor="asset-review">
+                <input
+                  id="asset-review"
+                  type="checkbox"
+                  checked={_.get(subCategoryData, ['asset_review', 'enable'], false)}
+                  onChange={(event) => onAlertNotificationChange(category, null, 'asset_review')}/>
+                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_review')}
+              </label>
+
+              <label className="inline-label" styleName="email-option" htmlFor="asset-approved">
+                <input
+                  checked={_.get(subCategoryData, ['asset_approved', 'enable'], false)}
+                  onChange={() => onAlertNotificationChange(category, null, 'asset_approved')}
+                  id="asset-approved"
+                  type="checkbox"/>
+                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_approved')}
+              </label>
+
+              <label className="inline-label" styleName="email-option" htmlFor="asset-rejected">
+                <input
+                  checked={_.get(subCategoryData, ['asset_rejected', 'enable'], false)}
+                  onChange={() => onAlertNotificationChange(category, null, 'asset_rejected')}
+                  id="asset-rejected"
+                  type="checkbox"/>
+                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_rejected')}
+              </label>
             </div>
           </td>
           <td className="column-description">
@@ -137,43 +169,52 @@ class PreferenceContent extends Component {
         </tr>
       )
     }
-    return (routingAndApprovalRow)
+    return routingAndApprovalRow;
   }
 
   renderUserAccounts() {
     // only for admin
-    const { onAlertNotificationChange, preferences, I18n } = this.props;
+    const {
+      onAlertNotificationChange,
+      preferences,
+      I18n,
+      currentUserRole,
+      isSuperAdmin
+    } = this.props;
     const category = 'user_accounts';
     const categoryData = _.get(preferences, category, {});
-    return (
-      <tr>
-        <td>
-          <div styleName="preference-name">
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.user_accounts.title')}
-          </div>
-          <div styleName="preference-description">
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.user_accounts.description')}
-          </div>
-        </td>
-        <td className="column-description">
-          <OnOffSwitch
-            enableSwitch={categoryData.enable_email}
-            onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
-          </OnOffSwitch>
-        </td>
 
-        <td>
-          <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-user-accounts">
-            <input
-              checked={categoryData.enable_product_notification}
-              id="notify-subscribe-user-accounts"
-              type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'product')}/>
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
-          </label>
-        </td>
-      </tr>
-    )
+    if (isSuperAdmin || currentUserRole === 'administrator') {
+      return (
+        <tr>
+          <td>
+            <div styleName="preference-name">
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.user_accounts.title')}
+            </div>
+            <div styleName="preference-description">
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.user_accounts.description')}
+            </div>
+          </td>
+          <td className="column-description">
+            <OnOffSwitch
+              enableSwitch={categoryData.enable_email}
+              onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+            </OnOffSwitch>
+          </td>
+
+          <td>
+            <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-user-accounts">
+              <input
+                checked={categoryData.enable_product_notification}
+                id="notify-subscribe-user-accounts"
+                type="checkbox"
+                onChange={() => onAlertNotificationChange(category, 'product')}/>
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            </label>
+          </td>
+        </tr>
+      )
+    }
   }
 
   renderDeleteAssets() {
@@ -210,6 +251,7 @@ class PreferenceContent extends Component {
       </tr>
     )
   }
+
   renderMyAssets() {
     const { onAlertNotificationChange, preferences, I18n } = this.props;
     const category = 'my_assets';

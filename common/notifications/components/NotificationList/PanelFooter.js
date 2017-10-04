@@ -33,13 +33,13 @@ class PanelFooter extends Component {
     const { showAlertSettingModal } = this.state;
     const {
       currentUserRole,
-      isAdmin
+      isSuperAdmin
     } = this.props;
 
     if (showAlertSettingModal) {
       return (
         <AlertSettingModal onClose={this.closeModal}
-          isAdmin={isAdmin}
+          isSuperAdmin={isSuperAdmin}
           currentUserRole={currentUserRole} />
       )
     } else {

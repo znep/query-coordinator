@@ -75,7 +75,7 @@
               showProductNotifications: false,
               showUserNotifications: true,
               currentUserRole: <%== current_user_role.to_json %>,
-              isAdmin: <%== is_admin?.to_json %>
+              isSuperAdmin: <%== is_superadmin? %>
             };
 
             window.headerNotifications('#site-chrome-header-notifications',

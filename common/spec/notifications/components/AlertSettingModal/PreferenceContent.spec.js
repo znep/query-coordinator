@@ -19,7 +19,7 @@ describe('PreferenceContent', () => {
       assert.isNotNull(element.querySelector('#permission-change'));
     });
 
-    it('should update preference when subscription value changes',() => {
+    it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
       const element = renderLocalizationElement(PreferenceContent, {onAlertNotificationChange: onAlertNotificationChange});
       var subscribeAllAsset = element.querySelector('#notify-subscribe-all-assets');
@@ -31,14 +31,20 @@ describe('PreferenceContent', () => {
 
   describe('UserAccounts', () => {
 
-    it('should renders UserAccounts contents', () => {
-      const element = renderLocalizationElement(PreferenceContent, {});
+    it('should render UserAccounts contents', () => {
+      const element = renderLocalizationElement(PreferenceContent, {isSuperAdmin: true});
       assert.isNotNull(element.querySelector('#notify-subscribe-user-accounts'));
     });
 
-    it('should update preference when subscription value changes',() => {
+    it('should not render UserAccounts contents if user is not admin', () => {
+      const element = renderLocalizationElement(PreferenceContent, {isSuperAdmin: false});
+      assert.isNull(element.querySelector('#notify-subscribe-user-accounts'));
+    });
+
+    it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
-      const element = renderLocalizationElement(PreferenceContent, {onAlertNotificationChange: onAlertNotificationChange});
+      const element = renderLocalizationElement(PreferenceContent,
+        {onAlertNotificationChange: onAlertNotificationChange, isSuperAdmin: true});
       var subscribeAllAsset = element.querySelector('#notify-subscribe-user-accounts');
       TestUtils.Simulate.change(subscribeAllAsset);
       sinon.assert.calledOnce(onAlertNotificationChange);
@@ -53,7 +59,7 @@ describe('PreferenceContent', () => {
       assert.isNotNull(element.querySelector('#notify-subscribe-delete-assets'));
     });
 
-    it('should update preference when subscription value changes',() => {
+    it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
       const element = renderLocalizationElement(PreferenceContent, {onAlertNotificationChange: onAlertNotificationChange});
       var subscribeAllAsset = element.querySelector('#notify-subscribe-delete-assets');
@@ -69,7 +75,7 @@ describe('PreferenceContent', () => {
       assert.isNotNull(element.querySelector('#notify-subscribe-my-assets'));
     });
 
-    it('should update preference when subscription value changes',() => {
+    it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
       const element = renderLocalizationElement(PreferenceContent, {onAlertNotificationChange: onAlertNotificationChange});
       var subscribeAllAsset = element.querySelector('#notify-subscribe-my-assets');
@@ -85,7 +91,7 @@ describe('PreferenceContent', () => {
       assert.isNotNull(element.querySelector('#notify-subscribe-my-assets'));
     });
 
-    it('should update preference when subscription value changes',() => {
+    it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
       const element = renderLocalizationElement(PreferenceContent, {onAlertNotificationChange: onAlertNotificationChange});
       var subscribeAllAsset = element.querySelector('#notify-subscribe-my-assets');
@@ -93,5 +99,29 @@ describe('PreferenceContent', () => {
       sinon.assert.calledOnce(onAlertNotificationChange);
     });
   });
+
+  describe('Routing & Approval', () => {
+
+    it('should render Routing & Approval contents', () => {
+      const element = renderLocalizationElement(PreferenceContent, {isSuperAdmin: true});
+      assert.isNotNull(element.querySelector('#notify-subscribe-routing-approval'));
+    });
+
+    it('should not render Routing & Approval contents if user is not admin', () => {
+      const element = renderLocalizationElement(PreferenceContent, {isSuperAdmin: false});
+      assert.isNull(element.querySelector('#notify-subscribe-routing-approval'));
+    });
+
+    it('should update preference when subscription value changes', () => {
+      var onAlertNotificationChange = sinon.spy();
+      const element = renderLocalizationElement(PreferenceContent,
+        {onAlertNotificationChange: onAlertNotificationChange, isSuperAdmin: true});
+      var subscribeAllAsset = element.querySelector('#notify-subscribe-routing-approval');
+      TestUtils.Simulate.change(subscribeAllAsset);
+      sinon.assert.calledOnce(onAlertNotificationChange);
+    });
+
+  });
+
 
 });

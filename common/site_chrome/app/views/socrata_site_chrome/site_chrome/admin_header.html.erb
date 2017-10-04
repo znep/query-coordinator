@@ -91,7 +91,7 @@
                 showProductNotifications: <%= get_feature_flag('enable_header_notifications') %>,
                 showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>,
                 currentUserRole: <%== current_user_role.to_json %>,
-                isAdmin: <%== is_admin?.to_json %>
+                isSuperAdmin: <%== is_superadmin? %>
               };
 
               window.headerNotifications('#site-chrome-header-notifications',

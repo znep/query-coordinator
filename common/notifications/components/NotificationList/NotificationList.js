@@ -104,7 +104,7 @@ class NotificationList extends Component {
   renderPanelFooter() {
     const {
       currentUserRole,
-      isAdmin,
+      isSuperAdmin,
       isSecondaryPanelOpen,
       showProductNotificationsAsSecondaryPanel,
       showProductNotifications,
@@ -122,7 +122,7 @@ class NotificationList extends Component {
         forUserNotifications={false}
         currentUserRole={currentUserRole}
         showUserNotifications={showUserNotifications}
-        isAdmin={isAdmin} />;
+        isSuperAdmin={isSuperAdmin} />;
     } else if (showUserNotifications) {
       const {
         clearAllUserNotifications,
@@ -138,7 +138,7 @@ class NotificationList extends Component {
         toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
         showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
-        isAdmin={isAdmin} />;
+        isSuperAdmin={isSuperAdmin} />;
     }
   }
 
@@ -163,7 +163,7 @@ NotificationList.propTypes = {
   currentUserRole: PropTypes.string,
   filterUserNotificationsBy: PropTypes.string.isRequired,
   hasError: PropTypes.bool.isRequired,
-  isAdmin: PropTypes.bool.isRequired,
+  isSuperAdmin: PropTypes.bool.isRequired,
   isSecondaryPanelOpen: PropTypes.bool.isRequired,
   markAllProductNotificationsAsRead: PropTypes.func.isRequired,
   onClearUserNotification: PropTypes.func.isRequired,

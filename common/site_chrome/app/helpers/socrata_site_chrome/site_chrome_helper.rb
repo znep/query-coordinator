@@ -109,7 +109,7 @@ module SocrataSiteChrome
       site_chrome_current_user.role_name
     end
 
-    def is_admin?
+    def is_superadmin?
       site_chrome_current_user.is_superadmin?
     end
 

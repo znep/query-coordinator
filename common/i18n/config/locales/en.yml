@@ -166,7 +166,9 @@ en:
             description: "Notify me when my assets are modified: published, deleted, or updated"
           routing_and_approval:
             title: "Routing & Approval"
-            description: Notify me when any asset is published and submitted for review
+            asset_review: Notify me when any asset is published and submitted for review
+            asset_approved: Notify me when any asset is approved
+            asset_rejected: Notify me when any asset is rejected
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

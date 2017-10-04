@@ -59,11 +59,11 @@ class AlertSettingModal extends Component {
   }
 
   renderNotificationTabContent() {
-    const { currentUserRole, isAdmin } = this.props;
+    const { currentUserRole, isSuperAdmin } = this.props;
     return (
       <PreferenceContent
         currentUserRole={currentUserRole}
-        isAdmin={isAdmin}
+        isSuperAdmin={isSuperAdmin}
         onAlertNotificationChange={this.onAlertNotificationChange}
         preferences={this.state.preferences}>
       </PreferenceContent>)

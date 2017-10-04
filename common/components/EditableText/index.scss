@@ -1,7 +1,7 @@
 @import "variables/colors";
 @import "variables/layout";
 
-$editable-text-border: $light-grey-3 1px solid;
+$editable-text-transition: all 250ms;
 
 .editable-text {
   display: inline-block;
@@ -9,10 +9,10 @@ $editable-text-border: $light-grey-3 1px solid;
 
   form {
     margin: 1px 0px;
+    margin-left: -2px;
   }
 
   input {
-    padding: 0px 7px 0px 6px;
     width: 100%;
     letter-spacing: inherit;
   }
@@ -23,19 +23,15 @@ $editable-text-border: $light-grey-3 1px solid;
   padding: 0px;
   border: transparent 1px solid;
   display: inline-block;
+  transition: $editable-text-transition;
 
   &.highlight {
-    border: $editable-text-border;
+    border: $light-grey-3 1px solid;
     border-radius: $btn-border-radius;
 
     .editable-text-btn {
-      visibility: visible;
+      opacity: 1;
     }
-  }
-
-  .editable-text-value {
-    padding: 2px 7px;
-    transition: all 350ms; // FIXME, probably need to move this
   }
 
   // TODO Consider using em units to adjust to inherited font-size
@@ -44,9 +40,8 @@ $editable-text-border: $light-grey-3 1px solid;
     height: 100%;
     padding: 0px 7px;
     color: $grey;
-    border-left: $editable-text-border;
-    background-color: $light-grey-7;
-    visibility: hidden;
+    opacity: 0;
+    transition: $editable-text-transition;
 
     .socrata-icon-edit {
       font-size: 0.8em;

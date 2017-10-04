@@ -6,7 +6,7 @@ import 'babel-polyfill-safe';
 import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 import Notifications from 'common/notifications/components/Notifications/Notifications';
-import Localization from 'common/i18n/components/Localization';
+
 /*****************************************************************************************************/
 /*
  * This adds a "lastAccessed" objecdt on window that is used for keeping track when users access a dataset
@@ -67,7 +67,7 @@ window.autocomplete = function(containerSelector, options, defaultState) {
  */
 /*****************************************************************************************************/
 
-window.headerNotifications = (containerSelector, options, translations, locale) => {
+window.headerNotifications = (containerSelector, translations) => {
   const rootNode = document.querySelector(containerSelector);
 
   if (!rootNode) {
@@ -75,9 +75,5 @@ window.headerNotifications = (containerSelector, options, translations, locale) 
     return;
   }
 
-  ReactDOM.render(
-    <Localization translations={translations || {}} locale={locale || 'en'}>
-      <Notifications translations={options} />
-    </Localization>,
-    rootNode);
+  ReactDOM.render(<Notifications translations={translations} />, rootNode);
 };

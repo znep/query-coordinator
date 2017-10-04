@@ -126,9 +126,7 @@ class Notifications extends Component {
         newNotificationsLabelText,
         markAsReadText,
         productUpdatesText,
-        viewOlderText,
-        currentUserRole,
-        isAdmin
+        viewOlderText
       } = this.props.translations;
 
       const {
@@ -147,13 +145,12 @@ class Notifications extends Component {
             markAllAsRead={this.markAllAsRead}
             notifications={notifications}
             newNotificationsLabelText={newNotificationsLabelText}
+            markAsReadText={markAsReadText}
             panelHeaderText={productUpdatesText}
             toggleNotificationPanel={this.toggleNotificationPanel}
             unreadNotificationCount={unreadNotificationCount}
             viewOlderLink={viewOlderLink}
             viewOlderText={viewOlderText}
-            currentUserRole={currentUserRole}
-            isAdmin={isAdmin}
             areNotificationsLoading={areNotificationsLoading} />
         </div>
       );
@@ -190,6 +187,7 @@ Notifications.propTypes = {
     errorText: PropTypes.string.isRequired,
     hasUnreadNotificationsText: PropTypes.string.isRequired,
     newNotificationsLabelText: PropTypes.string.isRequired,
+    markAsReadText: PropTypes.string.isRequired,
     noUnreadNotificationsText: PropTypes.string.isRequired,
     productUpdatesText: PropTypes.string.isRequired,
     viewOlderText: PropTypes.string.isRequired

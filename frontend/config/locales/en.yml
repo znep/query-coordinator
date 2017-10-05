@@ -2133,6 +2133,7 @@ en:
       url_failed: Fetching URL Failed
       uploading: Uploading
       fetching: Fetching
+      non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:
       title: Import From URL
       unknown_error: An unknown error occurred

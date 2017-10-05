@@ -19,6 +19,11 @@ export function createDSMAPIRevision(fourfour) {
       .then(resp => resp.json())
       .then(({ resource }) => {
         window.location.href = `/d/${fourfour}/revisions/${resource.revision_seq}`;
+      })
+      .catch(err => {
+        if (err.response.status === 401) {
+          window.location.href = '/login';
+        }
       });
   };
 }

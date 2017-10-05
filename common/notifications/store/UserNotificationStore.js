@@ -1,5 +1,7 @@
 import 'whatwg-fetch';
 import { Socket } from 'phoenix';
+import _ from 'lodash';
+
 import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 
 class NotificationStore {
@@ -46,7 +48,7 @@ class NotificationStore {
   };
 
   _onNewNotification(notification) {
-    this._notifications.push(this._transformNotification(notification));
+    this._notifications.unshift(this._transformNotification(notification));
     this.update();
   }
 

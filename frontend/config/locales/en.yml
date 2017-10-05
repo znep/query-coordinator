@@ -3183,12 +3183,14 @@ en:
           column_placeholder: column
           choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
+          date_column: Date Column
           display_options:
             decimal_places: Decimal Places
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
           formula: Formula
+          row_placeholder: row
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
@@ -3199,11 +3201,19 @@ en:
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
               help_title: Help with Count
               title: Count Options
+            recent_value:
+              column_condition: Column Condition
+              date_column: Date Column
+              help_body: Chooses the most recent value of a column, given the condition and date column selected.
+              help_title: Help with Exact Values
+              title: Select an Exact Value by Date
+              value_column: Value Column
             sum:
               column_condition: Column Condition
               help_body: Sums the selected column.
               help_title: Help with Sum
               title: Sum Options
+          value_column: Value Column
         data_source:
           tab_title: Data Source
         general_info:

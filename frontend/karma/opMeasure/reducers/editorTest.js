@@ -101,6 +101,44 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('SET_VALUE_COLUMN', () => {
+    it('updates the valueColumn in metric arguments with the column field name', () => {
+      const columnFieldName = 'some value column';
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+
+      state = reducer(state, actions.editor.setValueColumn(columnFieldName));
+      assert.equal(state.measure.metric.arguments.valueColumn, columnFieldName);
+    });
+
+    it('throws if not given a string for fieldName', () => {
+      const notAString = 42;
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+
+      assert.throws(() => reducer(state, actions.editor.setValueColumn(notAString)));
+    });
+  });
+
+  describe('SET_DATE_COLUMN', () => {
+    it('updates the dateColumn in metric arguments with the column field name', () => {
+      const columnFieldName = 'some date column';
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+
+      state = reducer(state, actions.editor.setDateColumn(columnFieldName));
+      assert.equal(state.measure.metric.arguments.dateColumn, columnFieldName);
+    });
+
+    it('throws if not given a string for fieldName', () => {
+      const notAString = 42;
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+
+      assert.throws(() => reducer(state, actions.editor.setDateColumn(notAString)));
+    });
+  });
+
   describe('SET_ANALYSIS', () => {
     it('updates the analysis description in the measure metadata', () => {
       assert.notNestedProperty(state.measure, 'metadata.analysis');
@@ -118,6 +156,16 @@ describe('Edit modal reducer', () => {
       state = reducer(state, actions.editor.setCalculationType('count'));
 
       assert.nestedPropertyVal(state, 'measure.metric.type', 'count' );
+    });
+
+    it('removes all values in "measure.metric" except for dataSource uid', () => {
+      state = reducer(state, actions.editor.setCalculationType('sum'));
+      _.set(state, 'measure.metric.arguments.column', 'some column');
+      _.set(state, 'measure.metric.dataSource.uid', 'test-test');
+
+      state = reducer(state, actions.editor.setCalculationType('count'));
+      assert.notNestedProperty(state, 'measure.metric.arguments');
+      assert.equal(state.measure.metric.dataSource.uid, 'test-test');
     });
   });
 

@@ -22,14 +22,24 @@ export class CalculationPanel extends Component {
     const countButtonClassName = classNames({
       'btn': true,
       'btn-default': true,
-      'btn-primary': isCount
+      'btn-primary': isCount,
+      'count-calculation': true
     });
 
     const isSum = calculationType === CalculationTypeNames.SUM;
     const sumButtonClassName = classNames({
       'btn': true,
       'btn-default': true,
-      'btn-primary': isSum
+      'btn-primary': isSum,
+      'sum-calculation': true
+    });
+
+    const isRecentValue = calculationType === CalculationTypeNames.RECENT_VALUE;
+    const recentValueButtonClassName = classNames({
+      'btn': true,
+      'btn-default': true,
+      'btn-primary': isRecentValue,
+      'recent-calculation': true
     });
 
     const calculationTypeButtonConfigs = [
@@ -44,6 +54,12 @@ export class CalculationPanel extends Component {
         disabled: !hasDataSource,
         onClick: () => this.props.onSetCalculationType(CalculationTypeNames.SUM),
         label: I18n.t('open_performance.calculation_types.sum')
+      },
+      {
+        classNames: recentValueButtonClassName,
+        disabled: !hasDataSource,
+        onClick: () => this.props.onSetCalculationType(CalculationTypeNames.RECENT_VALUE),
+        label: I18n.t('open_performance.calculation_types.recent_value')
       }
     ];
 
@@ -67,6 +83,8 @@ export class CalculationPanel extends Component {
           return (<calculationTypes.Count />);
         case CalculationTypeNames.SUM:
           return (<calculationTypes.Sum />);
+        case CalculationTypeNames.RECENT_VALUE:
+          return (<calculationTypes.RecentValue />);
         default:
           throw new Error(`Unknown calculation type: ${calculationType}`);
       }

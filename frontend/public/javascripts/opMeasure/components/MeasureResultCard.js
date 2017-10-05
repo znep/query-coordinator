@@ -55,11 +55,26 @@ export class MeasureResultCard extends Component {
       return false;
     }
 
+    const allNotNil = (keyPaths) => {
+      return _.every(keyPaths, (attr) => {
+        return !_.isNil(_.get(measure, attr));
+      });
+    };
+
     switch (calculationType) {
       case CalculationTypeNames.COUNT:
-        return _.has(measure, 'metric.dataSource.uid');
+        return allNotNil(['metric.dataSource.uid']);
       case CalculationTypeNames.SUM:
-        return _.has(measure, 'metric.dataSource.uid') && _.has(measure, 'metric.arguments.column');
+        return allNotNil([
+          'metric.dataSource.uid',
+          'metric.arguments.column'
+        ]);
+      case CalculationTypeNames.RECENT_VALUE:
+        return allNotNil([
+          'metric.dataSource.uid',
+          'metric.arguments.valueColumn',
+          'metric.arguments.dateColumn'
+        ]);
       default:
         throw new Error(`Unknown calculation type: ${calculationType}`);
     }
@@ -67,7 +82,6 @@ export class MeasureResultCard extends Component {
 
   makeRequest() {
     const { measure } = this.props;
-
     if (this.isReadyToCalculate(measure)) {
       this.props.calculateMeasure(measure).then(
         (result) => {

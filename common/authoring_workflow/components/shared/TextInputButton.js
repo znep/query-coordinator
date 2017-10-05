@@ -1,22 +1,17 @@
 import classNames from 'classnames';
 import DebouncedInput from './DebouncedInput';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { ENTER, ESCAPE, isolateEventByKeys } from 'common/keycodes';
 
-export const TextInputButton = React.createClass({
-  propTypes: {
-    onChange: PropTypes.func,
-    placeholder: PropTypes.string,
-    textInputId: PropTypes.string,
-    textInputValue: PropTypes.string
-  },
+class TextInputButton extends Component {
+  constructor() {
+    super();
 
-  getInitialState() {
-    return {
+    this.state = {
       isPopupOpen: false
     };
-  },
+  }
 
   onKeyUpInput(event) {
     const { keyCode } = event;
@@ -25,7 +20,7 @@ export const TextInputButton = React.createClass({
     if ((keyCode === ENTER) || (keyCode === ESCAPE)) {
       this.setState({ isPopupOpen: false })
     }
-  },
+  }
 
   renderOverlay() {
     const { isPopupOpen } = this.state;
@@ -40,7 +35,7 @@ export const TextInputButton = React.createClass({
     };
 
     return <div {...attributes} />;
-  },
+  }
 
   renderButton() {
     const { isPopupOpen } = this.state;
@@ -59,13 +54,13 @@ export const TextInputButton = React.createClass({
         <span className="socrata-icon-flyout-options" />
       </button>
     );
-  },
+  }
 
   renderPopup() {
     const { onChange, placeholder, textInputId, textInputValue } = this.props;
     const { isPopupOpen } = this.state;
-    const className = classNames('text-input-button-popup', { 
-      'hidden': !isPopupOpen 
+    const className = classNames('text-input-button-popup', {
+      'hidden': !isPopupOpen
     });
 
     const attributes = {
@@ -83,7 +78,7 @@ export const TextInputButton = React.createClass({
         <DebouncedInput {...attributes} />
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -93,7 +88,14 @@ export const TextInputButton = React.createClass({
         {this.renderPopup()}
       </div>
     );
-  },
-});
+  }
+};
+
+TextInputButton.propTypes = {
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  textInputId: PropTypes.string,
+  textInputValue: PropTypes.string
+};
 
 export default TextInputButton;

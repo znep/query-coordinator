@@ -15,5 +15,6 @@ export const SaveStates = Object.freeze({
 // We decided to have slightly awkward enums here instead of awkward `toUpperCase()` everywhere we are comparing values
 export const CalculationTypeNames = Object.freeze({
   COUNT: 'count',
+  RECENT_VALUE: 'recent_value',
   SUM: 'sum'
 });

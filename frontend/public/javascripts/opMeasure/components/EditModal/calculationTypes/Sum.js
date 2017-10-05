@@ -25,7 +25,8 @@ export class Sum extends Component {
         value: numberCol.fieldName,
         icon: <SocrataIcon name="number" />
       })),
-      value: this.props.columnFieldName
+      value: this.props.columnFieldName,
+      id: 'sum-column'
     };
 
     return (
@@ -68,16 +69,12 @@ export class Sum extends Component {
 
 Sum.propTypes = {
   columnFieldName: PropTypes.string,
-  dataSourceViewMetadata: PropTypes.shape({
-    columns: PropTypes.arrayOf(
-      PropTypes.shape({
-        renderTypeName: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      }).isRequired
-    )
-  }),
+  displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
+    renderTypeName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    fieldName: PropTypes.string.isRequired
+  })),
   decimalPlaces: PropTypes.number,
-  displayableFilterableColumns: PropTypes.array,
   onChangeDecimalPlaces: PropTypes.func.isRequired,
   onChangeUnitLabel: PropTypes.func.isRequired,
   onSelectColumn: PropTypes.func.isRequired,
@@ -86,14 +83,12 @@ Sum.propTypes = {
 
 function mapStateToProps(state) {
   const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
-  const dataSourceViewMetadata = _.get(state, 'editor.dataSourceViewMetadata');
   const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
   const unitLabel = _.get(state, 'editor.measure.metric.label', '');
 
   return {
     columnFieldName,
-    dataSourceViewMetadata,
     decimalPlaces,
     displayableFilterableColumns,
     unitLabel

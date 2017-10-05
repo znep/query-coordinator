@@ -60,10 +60,12 @@ module OpMeasureHelper
         # proposed structure
         #:metric => {
           #:type => '',
-          #:label => '',
           #:dataSource => {
           #  :uid => ''
           #},
+        #:display => {
+        #
+        #},
           #:arguments => {
 
           #}

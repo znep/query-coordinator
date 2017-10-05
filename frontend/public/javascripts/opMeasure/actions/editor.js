@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+import { SoqlDataProvider, MetadataProvider } from 'common/visualizations/dataProviders';
 import { TRAILING_UID_REGEX } from 'common/constants';
 
 export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
@@ -9,11 +9,15 @@ export const setDataSourceUid = (uid) => ({
   uid
 });
 
-export const RECEIVE_DATA_SOURCE_ROW_COUNT = 'RECEIVE_DATA_SOURCE_ROW_COUNT';
-export const receiveDataSourceRowCount = (rowCount) => ({
-  type: RECEIVE_DATA_SOURCE_ROW_COUNT,
-  rowCount
-});
+export const RECEIVE_DATA_SOURCE_METADATA = 'RECEIVE_DATA_SOURCE_METADATA';
+export const receiveDataSourceMetadata = (rowCount, dataSourceViewMetadata, displayableFilterableColumns) => (
+  {
+    type: RECEIVE_DATA_SOURCE_METADATA,
+    rowCount,
+    dataSourceViewMetadata,
+    displayableFilterableColumns
+  }
+);
 
 export const setDataSource = (dataSourceString) => {
   return (dispatch) => {
@@ -29,11 +33,24 @@ export const setDataSource = (dataSourceString) => {
       datasetUid: uid
     });
 
-    soqlDataProvider.getRowCount().then(
-      (rowCount) => {
-        dispatch(receiveDataSourceRowCount(rowCount));
-      }
-    );
+    const metadataProvider = new MetadataProvider({
+      domain: window.location.hostname,
+      datasetUid: uid
+    });
+
+    const metadataPromise = metadataProvider.getDatasetMetadata();
+    const rowCountPromise = soqlDataProvider.getRowCount();
+
+    return Promise.all([
+      metadataPromise,
+      rowCountPromise
+    ]).then(([dataSourceViewMetadata, rowCount]) => {
+      return metadataProvider.getDisplayableFilterableColumns(dataSourceViewMetadata).
+        then((displayableFilterableColumns) => {
+          dispatch(
+            receiveDataSourceMetadata(rowCount, dataSourceViewMetadata, displayableFilterableColumns));
+        });
+    });
   };
 };
 
@@ -47,6 +64,12 @@ export const SET_CALCULATION_TYPE = 'SET_CALCULATION_TYPE';
 export const setCalculationType = (calculationType) => ({
   type: SET_CALCULATION_TYPE,
   calculationType
+});
+
+export const SET_COLUMN = 'SET_COLUMN';
+export const setColumn = (fieldName) => ({
+  type: SET_COLUMN,
+  fieldName
 });
 
 export const TOGGLE_EXCLUDE_NULL_VALUES = 'TOGGLE_EXCLUDE_NULL_VALUES';
@@ -95,3 +118,4 @@ export const CANCEL_EDIT_MODAL = 'CANCEL_EDIT_MODAL';
 export const cancelEditModal = () => ({
   type: CANCEL_EDIT_MODAL
 });
+

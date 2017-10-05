@@ -3069,6 +3069,7 @@ en:
         title: Configure Measure
         calculation:
           column_placeholder: column
+          choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
           display_options:
             decimal_places: Decimal Places
@@ -3086,6 +3087,11 @@ en:
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
               help_title: Help with Count
               title: Count Options
+            sum:
+              column_condition: Column Condition
+              help_body: Sums the selected column.
+              help_title: Help with Sum
+              title: Sum Options
         data_source:
           tab_title: Data Source
         general_info:

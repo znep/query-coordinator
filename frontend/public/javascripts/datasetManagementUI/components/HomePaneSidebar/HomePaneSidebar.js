@@ -1,16 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import ManageData from 'components/ManageData/ManageData';
 import RecentActions from 'containers/RecentActionsContainer';
 import styles from './HomePaneSidebar.scss';
 
 function HomePaneSidebar({ params, entities, columnsExist }) {
   const showManageTab = params.sidebarSelection === 'manageTab';
-  const contents = showManageTab
-    ? <ManageData entities={entities} columnsExist={columnsExist} params={params} />
-    : <RecentActions />;
+  const contents = showManageTab ? (
+    <ManageData entities={entities} columnsExist={columnsExist} params={params} />
+  ) : (
+    <RecentActions />
+  );
 
   return (
     <div className={styles.sidebar}>

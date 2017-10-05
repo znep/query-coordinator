@@ -2,29 +2,94 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import { applyRevision, updateRevision } from 'reduxStuff/actions/applyRevision';
+import {
+  applyRevision,
+  updateRevision
+} from 'reduxStuff/actions/applyRevision';
 import state from '../data/stateWithRevision';
-import mockAPI from '../testHelpers/mockAPI';
+import fetchMock from 'fetch-mock';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as coreLinks from 'links/coreLinks';
 
 const mockStore = configureStore([thunk]);
 
+const API_RESPONSES = {
+  updateRevision: {
+    resource: {
+      id: 1,
+      action: {
+        permission: 'public'
+      },
+      created_at: '2017-10-03T16:14:01.869151Z'
+    }
+  },
+  applyRevision: {
+    resource: {
+      id: 2,
+      task_sets: [
+        {
+          updated_at: '2017-10-03T16:14:01.869151Z',
+          status: 'successful',
+          output_schema_id: 874,
+          id: 145,
+          finished_at: '2017-10-03T16:14:01',
+          created_by: {
+            user_id: 'tugg-ikce',
+            email: 'brandon.webster@socrata.com',
+            display_name: 'Brandon Webster'
+          },
+          created_at: '2017-10-03T16:14:00.392877Z'
+        }
+      ]
+    }
+  },
+  getView: {
+    columns: [],
+    dispayType: 'table'
+  }
+};
+
 describe('applyRevision actions', () => {
-  let unmock;
   let fakeStore;
+
+  const params = {
+    fourfour: 'ww72-hpm3',
+    revisionSeq: '0'
+  };
 
   beforeEach(() => {
     fakeStore = mockStore(state);
   });
 
   before(() => {
-    unmock = mockAPI();
+    fetchMock.put(dsmapiLinks.revisionBase(params), {
+      body: JSON.stringify(API_RESPONSES.updateRevision),
+      status: 200,
+      statusText: 'OK'
+    });
+
+    fetchMock.put(dsmapiLinks.applyRevision(params), {
+      body: JSON.stringify(API_RESPONSES.applyRevision),
+      status: 200,
+      statusText: 'OK'
+    });
+
+    fetchMock.get(dsmapiLinks.revisionBase(params), {
+      body: JSON.stringify(API_RESPONSES.applyRevision),
+      status: 200,
+      statusText: 'OK'
+    });
+
+    fetchMock.get(coreLinks.view(params.fourfour), {
+      body: JSON.stringify(API_RESPONSES.getView),
+      status: 200,
+      statusText: 'OK'
+    });
   });
 
   after(() => {
-    unmock();
+    fetchMock.restore();
   });
-
-  const params = { revisionSeq: 0 };
 
   describe('updateRevision', () => {
     it('launches an UPDATE_REVISION api call', done => {
@@ -62,13 +127,6 @@ describe('applyRevision actions', () => {
   });
 
   describe('applyRevision', () => {
-    const params = {
-      category: 'dataset',
-      name: 'mm',
-      fourfour: 'kp42-jdvd',
-      revisionSeq: '0'
-    };
-
     it('works when an output schema is supplied', done => {
       fakeStore
         .dispatch(applyRevision(params))

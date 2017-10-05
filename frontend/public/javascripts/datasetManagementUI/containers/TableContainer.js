@@ -7,7 +7,7 @@ import { currentAndIgnoredOutputColumns } from 'selectors';
 import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as DisplayState from 'lib/displayState';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import Table from 'components/Table/Table';
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import * as dsmapiLinks from 'dsmapiLinks';
-import * as Links from 'links';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as Links from 'links/links';
 import { browserHistory } from 'react-router';
 import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import {
@@ -20,12 +20,11 @@ import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms
-} from 'reduxStuff/actions/manageUploads';
+import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
+
+export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
 function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
@@ -49,11 +48,13 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
       .then(getJson)
       .catch(getError)
       .then(resp => {
+        const { resource: os } = resp;
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
-        dispatch(subscribeToOutputSchema(resp.resource));
-        dispatch(subscribeToTransforms(resp.resource));
+        const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows);
+        dispatch(createNewOutputSchemaSuccess(payload));
+        dispatch(subscribeToOutputSchema(os));
+        dispatch(subscribeToTransforms(os));
 
         return resp;
       })
@@ -61,6 +62,13 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(apiCallFailed(callId, err));
         throw err;
       });
+  };
+}
+
+export function createNewOutputSchemaSuccess(payload) {
+  return {
+    type: CREATE_NEW_OUTPUT_SCHEMA_SUCCESS,
+    ...payload
   };
 }
 

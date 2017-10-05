@@ -7,7 +7,8 @@ import { EDIT_OUTPUT_SCHEMA } from 'reduxStuff/actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'reduxStuff/actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'reduxStuff/actions/inputSchemas';
 import { EDIT_INPUT_COLUMN } from 'reduxStuff/actions/inputColumns';
-import { UPDATE_PROGRESS } from 'reduxStuff/actions/manageUploads';
+import { UPDATE_PROGRESS } from 'reduxStuff/actions/uploadFile';
+import { SOURCE_UPDATE } from 'reduxStuff/actions/createSource';
 import { EDIT_REVISION, SET_REVISION_VALUE } from 'reduxStuff/actions/revisions';
 
 const views = (state = {}, action) => {
@@ -49,6 +50,13 @@ const sources = (state = {}, action) => {
         ...record,
         percentCompleted: action.percentCompleted
       }));
+
+    case SOURCE_UPDATE:
+      return dotProp.set(state, action.sourceId, record => ({
+        ...record,
+        ...action.changes
+      }));
+
     default:
       return state;
   }

@@ -7,7 +7,7 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
 import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
@@ -15,7 +15,7 @@ import UploadSidebar from 'containers/UploadSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
 import styles from './ShowUpload.scss';
 
-export const ShowUpload = ({ inProgress, goHome }) =>
+export const ShowUpload = ({ inProgress, goHome }) => (
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
@@ -23,17 +23,20 @@ export const ShowUpload = ({ inProgress, goHome }) =>
       </ModalHeader>
       <ModalContent className={styles.modalContent}>
         <FlashMessage />
-        {inProgress
-          ? <div className={styles.centeredContainer}>
-              <span className={styles.spinner} />
-            </div>
-          : <div className={styles.sourceContainer}>
-              <DragDropUpload />
-              <UploadSidebar />
-            </div>}
+        {inProgress ? (
+          <div className={styles.centeredContainer}>
+            <span className={styles.spinner} />
+          </div>
+        ) : (
+          <div className={styles.sourceContainer}>
+            <DragDropUpload />
+            <UploadSidebar />
+          </div>
+        )}
       </ModalContent>
     </Modal>
-  </div>;
+  </div>
+);
 
 export const mapStateToProps = ({ entities, ui }, { params }) => {
   // selector returns undefined if there are no sources

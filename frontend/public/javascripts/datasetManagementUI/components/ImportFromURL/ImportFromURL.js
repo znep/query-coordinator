@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import styles from './ImportFromURL.scss';
 import TextInput from 'components/TextInput/TextInput';
-import * as Actions from 'reduxStuff/actions/manageUploads';
+import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
 
 const SubI18n = I18n.import_from_url;
 
@@ -28,12 +28,12 @@ class ImportFromURL extends Component {
     });
   }
 
-  onError({ body: { reason, message } }) {
+  onError({ reason, message }) {
     let fieldError;
     if (_.isString(reason)) {
       fieldError = reason;
     } else {
-      const [urlError] = _.flatMap(reason, (value) => value);
+      const [urlError] = _.flatMap(reason, value => value);
       fieldError = urlError;
     }
     this.props.showError(fieldError || message || SubI18n.unknown_error);
@@ -56,9 +56,10 @@ class ImportFromURL extends Component {
       source_type: sourceType
     };
 
-    const doImport = () => (createURLSource(sourceType, params)
-      .then(onDismiss)
-      .catch(this.onError));
+    const doImport = () =>
+      createURLSource(this.state.url, params)
+        .then(onDismiss)
+        .catch(this.onError);
 
     return (
       <div>
@@ -66,9 +67,7 @@ class ImportFromURL extends Component {
         <ModalContent className={styles.modalContent}>
           <FlashMessage />
           <form>
-            <label htmlFor="import-url">
-              {SubI18n.url_prompt}
-            </label>
+            <label htmlFor="import-url">{SubI18n.url_prompt}</label>
             <TextInput
               handleChange={this.onURLChanged}
               value={this.state.url}
@@ -79,7 +78,7 @@ class ImportFromURL extends Component {
         <ModalFooter className={styles.modalFooter}>
           <ApiCallButton
             onClick={doImport}
-            operation={Actions.CREATE_UPLOAD}
+            operation={CREATE_SOURCE}
             callParams={callParams}
             className={styles.doImportButton}>
             {SubI18n.start_import}

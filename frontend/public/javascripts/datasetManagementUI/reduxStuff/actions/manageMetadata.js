@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import uuid from 'uuid';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import { checkStatus, getJson, socrataFetch } from 'lib/http';
 import {
   apiCallStarted,
@@ -11,21 +11,19 @@ import {
   SAVE_DATASET_METADATA
 } from 'reduxStuff/actions/apiCalls';
 import * as Selectors from 'selectors';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms
-} from 'reduxStuff/actions/manageUploads';
+import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { createNewOutputSchemaSuccess } from 'reduxStuff/actions/showOutputSchema';
+import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { editView } from 'reduxStuff/actions/views';
 import { showFormErrors, hideFormErrors, markFormClean } from 'reduxStuff/actions/forms';
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/metadata.*/; // eslint-disable-line
-  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/manage\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
+  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
   const helper = hist => {
     const location = hist[hist.length - 1];
@@ -131,7 +129,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
     return Promise.reject();
   }
 
-  const payload = {
+  const body = {
     output_columns: Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
   };
 
@@ -148,9 +146,11 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
     })
   );
 
+  // TODO: prob can swap this whole thing for the createNewOutputSchema thunk
+  // in actions/showOutputSchema
   return socrataFetch(dsmapiLinks.newOutputSchema(source.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(body)
   })
     .then(checkStatus)
     .then(getJson)
@@ -187,9 +187,12 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
       });
     })
     .then(resp => {
-      dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
-      dispatch(subscribeToOutputSchema(resp.resource));
-      dispatch(subscribeToTransforms(resp.resource));
+      const { resource: os } = resp;
+
+      const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows);
+      dispatch(createNewOutputSchemaSuccess(payload));
+      dispatch(subscribeToOutputSchema(os));
+      dispatch(subscribeToTransforms(os));
       return resp;
     })
     .then(({ resource: { id: newOutputSchemaId } }) => {
@@ -197,6 +200,7 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
 
       dispatch(hideFormErrors(formName));
 
+      // TODO: need to add Revision channel in dsmapi and swap this out
       const revision = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
 
       dispatch(

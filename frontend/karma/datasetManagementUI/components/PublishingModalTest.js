@@ -107,7 +107,7 @@ describe('components/Publishing', () => {
         'successful'
       );
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isFalse(component.isEmpty());
+      assert.isTrue(component.exists());
     });
 
     it('renders without errors in failure state', () => {
@@ -117,7 +117,7 @@ describe('components/Publishing', () => {
         'failure'
       );
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isFalse(component.isEmpty());
+      assert.isTrue(component.exists());
     });
 
     it('renders without errors in in_progress state', () => {
@@ -127,7 +127,7 @@ describe('components/Publishing', () => {
         'in_progress'
       );
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isFalse(component.isEmpty());
+      assert.isTrue(component.exists());
     });
 
     it('renders without errors when there is no output schema', () => {
@@ -137,7 +137,7 @@ describe('components/Publishing', () => {
         null
       );
       const component = shallow(<Publishing {...withNoRowsToBeUpserted} />);
-      assert.isFalse(component.isEmpty());
+      assert.isTrue(component.exists());
     });
 
     describe('with progress statuses', () => {
@@ -152,7 +152,7 @@ describe('components/Publishing', () => {
 
       it('renders upsert progress numbers', () => {
         const component = shallow(<Publishing {...propsWithSetLog} />);
-        assert.isFalse(component.isEmpty());
+        assert.isTrue(component.exists());
         assert.equal(
           component.find('.statusMessage').text(),
           'Importing data (500 / 1,000 rows)'
@@ -171,7 +171,7 @@ describe('components/Publishing', () => {
           null
         );
         const component = shallow(<Publishing {...propsWithNoRowCount} />);
-        assert.isFalse(component.isEmpty());
+        assert.isTrue(component.exists());
       });
 
       it("says your dataset will be public if revision's permission is public", () => {

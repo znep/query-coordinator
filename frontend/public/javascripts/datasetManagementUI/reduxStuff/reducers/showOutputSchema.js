@@ -1,27 +1,20 @@
 import dotProp from 'dot-prop-immutable';
-import { LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS } from 'reduxStuff/actions/manageUploads';
-import { mergeRecords } from 'lib/util';
+import { CREATE_NEW_OUTPUT_SCHEMA_SUCCESS } from 'reduxStuff/actions/showOutputSchema';
 
-const listenForOutputSchema = (state, action) => {
+const showOutputSchema = (state, action) => {
   switch (action.type) {
-    case LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS: {
+    case CREATE_NEW_OUTPUT_SCHEMA_SUCCESS: {
       const stateWithUpdatedOutputSchemas = dotProp.set(
         state,
         'entities.output_schemas',
         existingRecords => ({
           ...existingRecords,
-          [action.outputSchema.id]: action.outputSchema
+          ...action.outputSchema
         })
       );
 
-      const stateWithUpdatedTransforms = dotProp.set(
-        stateWithUpdatedOutputSchemas,
-        'entities.transforms',
-        existingRecords => mergeRecords(existingRecords, action.transforms)
-      );
-
       const stateWithUpdatedOutputColumns = dotProp.set(
-        stateWithUpdatedTransforms,
+        stateWithUpdatedOutputSchemas,
         'entities.output_columns',
         existingRecords => ({
           ...existingRecords,
@@ -29,7 +22,7 @@ const listenForOutputSchema = (state, action) => {
         })
       );
 
-      return dotProp.set(
+      const stateWithUpdatedOutputSchemaColumns = dotProp.set(
         stateWithUpdatedOutputColumns,
         'entities.output_schema_columns',
         existingRecords => ({
@@ -37,6 +30,11 @@ const listenForOutputSchema = (state, action) => {
           ...action.outputSchemaColumns
         })
       );
+
+      return dotProp.set(stateWithUpdatedOutputSchemaColumns, 'entities.transforms', existingRecords => ({
+        ...existingRecords,
+        ...action.transforms
+      }));
     }
 
     default:
@@ -44,4 +42,4 @@ const listenForOutputSchema = (state, action) => {
   }
 };
 
-export default listenForOutputSchema;
+export default showOutputSchema;

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import * as Selectors from 'selectors';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Link } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import styles from './ManageData.scss';
 
 const ManageData = ({ entities, columnsExist, params }) => {
@@ -31,12 +31,8 @@ const ManageData = ({ entities, columnsExist, params }) => {
         <SocrataIcon name="column-info" className={styles.icon} />
         {columnDescriptionCheckmark}
 
-        <h3>
-          {I18n.home_pane.sidebar.column_descriptions}
-        </h3>
-        <p>
-          {' '}{I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
-        </p>
+        <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
+        <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
         <Link to={columnDescriptionLink}>
           <button
             className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
@@ -51,12 +47,8 @@ const ManageData = ({ entities, columnsExist, params }) => {
       <div>
         <SocrataIcon name="cards" className={styles.icon} />
         {visualizationDoneCheckmark}
-        <h3>
-          {I18n.home_pane.sidebar.visualize}
-        </h3>
-        <p>
-          {I18n.home_pane.sidebar.visualize_blurb}
-        </p>
+        <h3>{I18n.home_pane.sidebar.visualize}</h3>
+        <p>{I18n.home_pane.sidebar.visualize_blurb}</p>
         <button className={styles.sidebarBtnDisabled} disabled tabIndex="-1">
           {I18n.home_pane.sidebar.visualize_button}
         </button>
@@ -65,12 +57,8 @@ const ManageData = ({ entities, columnsExist, params }) => {
       <div>
         <SocrataIcon name="featured" className={styles.icon} />
         {featuredDoneCheckmark}
-        <h3>
-          {I18n.home_pane.sidebar.feature}
-        </h3>
-        <p>
-          {I18n.home_pane.sidebar.feature_blurb}
-        </p>
+        <h3>{I18n.home_pane.sidebar.feature}</h3>
+        <p>{I18n.home_pane.sidebar.feature_blurb}</p>
 
         <button className={styles.sidebarBtnDisabled} disabled tabIndex="-1">
           {I18n.home_pane.sidebar.feature_button}

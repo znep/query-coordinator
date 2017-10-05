@@ -149,7 +149,7 @@ describe('Selectors', () => {
         'f992f394-4785-4337-a3f8-c912813e10d7': {
           id: 'f992f394-4785-4337-a3f8-c912813e10d7',
           status: 'STATUS_CALL_IN_PROGRESS',
-          operation: 'CREATE_UPLOAD',
+          operation: 'CREATE_SOURCE',
           params: {
             source_type: {
               type: 'upload',
@@ -279,27 +279,6 @@ describe('Selectors', () => {
         assert.notInclude(withoutCurrent, tid);
       });
     });
-
-    // This never actually tests anything?? this is just testing that our fixtures are right
-    // it('returns only output columns derived for the current input schema', () => {
-    //   const outputSchemaIds = Object.keys(entities.output_schemas)
-    //     .map(_.toNumber)
-    //     .filter(key => !!key);
-
-    //   const currentOutputSchemaId = Math.max(...outputSchemaIds);
-
-    //   const currentInputSchemaId =
-    //     entities.output_schemas[currentOutputSchemaId].input_schema_id;
-
-    //   const currentInputColumns = Object.keys(entities.input_columns).filter(
-    //     icid =>
-    //       entities.input_columns[icid].input_schema_id === currentInputSchemaId
-    //   );
-
-    //   const returnedColumns = [...output.current, ...output.ignored];
-
-    //   assert.isAtMost(returnedColumns.length, currentInputColumns.length);
-    // });
   });
 
   describe('allTransformsDone', () => {

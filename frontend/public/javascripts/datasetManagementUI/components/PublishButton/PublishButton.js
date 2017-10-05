@@ -22,9 +22,7 @@ function LabelledCheckmark({ checked, text }) {
   return (
     <div>
       {checkmark}
-      <span className={styles.checkmarkLabel}>
-        {text}
-      </span>
+      <span className={styles.checkmarkLabel}>{text}</span>
     </div>
   );
 }
@@ -38,19 +36,21 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
   return (
     <div id={FLYOUT_ID} className={styles.flyout}>
       <section className={styles.flyoutContent}>
-        {metadataSatisfied && dataSatisfied
-          ? SubI18n.make_accessible
-          : <div>
-              {SubI18n.cant_publish_until}
-              <ul>
-                <li>
-                  <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
-                </li>
-                <li>
-                  <LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} />
-                </li>
-              </ul>
-            </div>}
+        {metadataSatisfied && dataSatisfied ? (
+          SubI18n.make_accessible
+        ) : (
+          <div>
+            {SubI18n.cant_publish_until}
+            <ul>
+              <li>
+                <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
+              </li>
+              <li>
+                <LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} />
+              </li>
+            </ul>
+          </div>
+        )}
       </section>
     </div>
   );
@@ -77,7 +77,7 @@ class PublishButton extends Component {
   }
 
   render() {
-    const { publishDataset, metadataSatisfied, dataSatisfied, publishedOrPublishing } = this.props;
+    const { publishDataset, metadataSatisfied, dataSatisfied, publishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
     const modalName = window.serverConfig.featureFlags.usaid_features_enabled
       ? 'PublishConfirmationUSAID'
@@ -92,14 +92,14 @@ class PublishButton extends Component {
           <button
             className={styles.publishButton}
             onClick={() => publishDataset(modalName)}
-            disabled={!readyToPublish || publishedOrPublishing}>
+            disabled={!readyToPublish || publishing}>
             {SubI18n.publish_dataset}
           </button>
         </div>
         <PublishReadinessFlyout
           dataSatisfied={dataSatisfied}
           metadataSatisfied={metadataSatisfied}
-          hide={publishedOrPublishing} />
+          hide={publishing} />
       </div>
     );
   }
@@ -108,7 +108,7 @@ class PublishButton extends Component {
 PublishButton.propTypes = {
   metadataSatisfied: PropTypes.bool.isRequired,
   dataSatisfied: PropTypes.bool.isRequired,
-  publishedOrPublishing: PropTypes.bool.isRequired,
+  publishing: PropTypes.bool.isRequired,
   publishDataset: PropTypes.func.isRequired
 };
 

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import * as Links from 'links';
+import * as Links from 'links/links';
 
 describe('Links', () => {
   const params = {
@@ -9,13 +9,13 @@ describe('Links', () => {
     revisionSeq: '0'
   };
 
-  const expectedBase = '/dataset/mm/kp42-jdvd/manage';
+  const expectedBase = '/dataset/mm/kp42-jdvd';
   const revisionBase = `${expectedBase}/revisions/0`;
 
   it('creates a home link', () => {
     const link = Links.home(params);
 
-    assert.equal(link, expectedBase);
+    assert.equal(link, revisionBase);
   });
 
   it('creates a revisionBase link', () => {

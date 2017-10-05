@@ -1,14 +1,16 @@
-export const home = params => {
+const base = params => {
   let prefix = '';
 
   if (params.locale) {
     prefix = `/${params.locale}`;
   }
 
-  return `${prefix}/${params.category}/${params.name}/${params.fourfour}/manage`;
+  return `${prefix}/${params.category}/${params.name}/${params.fourfour}`;
 };
 
-export const revisionBase = params => `${home(params)}/revisions/${params.revisionSeq}`;
+export const revisionBase = params => `${base(params)}/revisions/${params.revisionSeq}`;
+
+export const home = revisionBase;
 
 export const manageTab = params => `${revisionBase(params)}/manageTab`;
 
@@ -24,10 +26,6 @@ export const sources = params => `${revisionBase(params)}/sources`;
 export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
-
-// TODO: delete?
-// export const showOutputSchemaShortcut = (sourceId, inputSchemaId, outputSchemaId, name) => routing =>
-//   `${home(routing)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}/shortcut/${name}`;
 
 export const showColumnErrors = (
   params,

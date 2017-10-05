@@ -16,13 +16,7 @@ const loadRevision = (state, action) => {
         action.taskSets
       );
 
-      const stateWithUpdatedSources = dotProp.set(
-        stateWithUpdatedTaskSets,
-        'entities.sources',
-        action.sources
-      );
-
-      return dotProp.set(stateWithUpdatedSources, 'ui.forms.datasetForm.errors', action.metadataErrors);
+      return dotProp.set(stateWithUpdatedTaskSets, 'ui.forms.datasetForm.errors', action.metadataErrors);
     }
 
     default:

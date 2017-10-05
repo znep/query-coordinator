@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { Link, withRouter } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
 import styles from './ColumnHeader.scss';
@@ -155,7 +155,7 @@ export class ColumnHeader extends Component {
 
     const orderedTypes = _.sortBy(types, 'humanName');
 
-    const isSelectorDisabled = isDisabled || (orderedTypes.length === 0);
+    const isSelectorDisabled = isDisabled || orderedTypes.length === 0;
 
     const dropdownProps = {
       onSelection: e => this[e.value](outputColumn),
@@ -167,23 +167,25 @@ export class ColumnHeader extends Component {
     };
 
     const header =
-      !outputColumn.transform || outputColumn.ignored
-        ? <span
+      !outputColumn.transform || outputColumn.ignored ? (
+        <span
           className={styles.colName}
           id={`column-field-name-${outputColumn.id}`}
           title={outputColumn.display_name}>
+          {outputColumn.display_name}
+        </span>
+      ) : (
+        <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
+          <span
+            className={styles.colName}
+            data-cheetah-hook="col-name"
+            id={`column-display-name-${outputColumn.id}`}
+            title={outputColumn.display_name}>
             {outputColumn.display_name}
+            <SocrataIcon name="edit" className={styles.icon} />
           </span>
-        : <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
-            <span
-              className={styles.colName}
-              data-cheetah-hook="col-name"
-              id={`column-display-name-${outputColumn.id}`}
-              title={outputColumn.display_name}>
-              {outputColumn.display_name}
-              <SocrataIcon name="edit" className={styles.icon} />
-            </span>
-          </Link>;
+        </Link>
+      );
 
     const className = classNames(styles.columnHeader, {
       [styles.columnHeaderDisabled]: isDisabled
@@ -203,11 +205,11 @@ export class ColumnHeader extends Component {
           value={this.columnType()}
           aria-label={`col-type-${outputColumn.field_name}`}
           onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, params)}>
-          {orderedTypes.map(type =>
+          {orderedTypes.map(type => (
             <option key={type.systemName} value={type.systemName}>
               {type.humanName}
             </option>
-          )}
+          ))}
         </select>
       </th>
     );

@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import styles from './NoMatch.scss';
 
 export function NoMatch({ params }) {
   return (
     <div className={styles.noMatch}>
-      <h1>
-        {I18n.no_match.title}
-      </h1>
+      <h1>{I18n.no_match.title}</h1>
+      <p>{I18n.no_match.subtitle}</p>
       <p>
-        {I18n.no_match.subtitle}
-      </p>
-      <p>
-        <Link to={Links.home(params)}>
-          {I18n.no_match.suggestion}
-        </Link>
+        <Link to={Links.home(params)}>{I18n.no_match.suggestion}</Link>
       </p>
     </div>
   );

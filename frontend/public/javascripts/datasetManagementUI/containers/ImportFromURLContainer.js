@@ -1,8 +1,8 @@
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
 import ImportFromURL from 'components/ImportFromURL/ImportFromURL';
-import * as Actions from 'reduxStuff/actions/manageUploads';
+import * as ModalActions from 'reduxStuff/actions/modal';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
+import * as Actions from 'reduxStuff/actions/createSource';
 
 const mapStateToProps = (state, { payload }) => {
   return {
@@ -11,8 +11,8 @@ const mapStateToProps = (state, { payload }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(hideModal()),
-  createURLSource: (sourceType, params) => dispatch(Actions.createURLSource(sourceType, params)),
+  onDismiss: () => dispatch(ModalActions.hideModal()),
+  createURLSource: (url, params) => dispatch(Actions.createURLSource(url, params)),
   showError: message => dispatch(FlashActions.showFlashMessage('error', message, 3500))
 });
 

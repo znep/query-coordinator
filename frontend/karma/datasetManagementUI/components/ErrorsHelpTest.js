@@ -13,7 +13,7 @@ describe('components/Modals/ErrorsHelp', () => {
   it('renders <WhyWontTheyImport/> as first page', () => {
     const component = shallow(<ErrorsHelp {...defaultProps} />);
 
-    assert.isFalse(component.find('WhyWontTheyImport').isEmpty());
+    assert.isTrue(component.find('WhyWontTheyImport').exists());
   });
 
   it('renders <WhatCanIDoAboutIt/> as second page', () => {
@@ -23,7 +23,7 @@ describe('components/Modals/ErrorsHelp', () => {
       modalPage: 1
     });
 
-    assert.isFalse(component.find('WhatCanIDoAboutIt').isEmpty());
+    assert.isTrue(component.find('WhatCanIDoAboutIt').exists());
   });
 
   it('renders <HowToGetRowsBackInDataset/> as third page', () => {
@@ -33,7 +33,7 @@ describe('components/Modals/ErrorsHelp', () => {
       modalPage: 2
     });
 
-    assert.isFalse(component.find('HowToGetRowsBackInDataset').isEmpty());
+    assert.isTrue(component.find('HowToGetRowsBackInDataset').exists());
   });
 
   it('renders only a next button on first page', () => {
@@ -43,9 +43,9 @@ describe('components/Modals/ErrorsHelp', () => {
 
     const prevButton = component.find('.previousButton');
 
-    assert.isFalse(nextButton.isEmpty());
+    assert.isTrue(nextButton.exists());
 
-    assert.isTrue(prevButton.isEmpty());
+    assert.isFalse(prevButton.exists());
   });
 
   it('renders a prev button when not on first page', () => {
@@ -57,7 +57,7 @@ describe('components/Modals/ErrorsHelp', () => {
 
     const prevButton = component.find('.previousButton');
 
-    assert.isFalse(prevButton.isEmpty());
+    assert.isTrue(prevButton.exists());
   });
 
   it('changes state correctly when next button clicked', () => {

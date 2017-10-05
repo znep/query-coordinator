@@ -46,7 +46,7 @@ describe('components/DragDropUpload', () => {
       const actions = fakeStore.getActions();
       const expectedAction = actions.filter(
         action =>
-          action.operation === 'CREATE_UPLOAD' &&
+          action.operation === 'CREATE_SOURCE' &&
           action.callParams.source_type.filename === 'testfile.csv'
       );
       assert.equal(expectedAction.length, 1);

@@ -3,28 +3,27 @@ import PropTypes from 'prop-types';
 
 import React from 'react';
 import { Link } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './UploadBreadcrumbs.scss';
 
-const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, params }) =>
+const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, params }) => (
   <ol className={styles.list}>
     <li className={atShowUpload ? styles.active : null}>
-      {atShowUpload
-        ? I18n.home_pane.data
-        : <Link to={Links.sources(params)}>
-            {I18n.home_pane.data}
-          </Link>}
+      {atShowUpload ? I18n.home_pane.data : <Link to={Links.sources(params)}>{I18n.home_pane.data}</Link>}
       <SocrataIcon name="arrow-right" className={styles.icon} />
     </li>
     <li className={!atShowUpload ? styles.active : null}>
-      {!atShowUpload || !sourceId || !inputSchemaId || !outputSchemaId
-        ? I18n.home_pane.preview
-        : <Link to={Links.showOutputSchema(params, sourceId, inputSchemaId, outputSchemaId)}>
-            {I18n.home_pane.preview}
-          </Link>}
+      {!atShowUpload || !sourceId || !inputSchemaId || !outputSchemaId ? (
+        I18n.home_pane.preview
+      ) : (
+        <Link to={Links.showOutputSchema(params, sourceId, inputSchemaId, outputSchemaId)}>
+          {I18n.home_pane.preview}
+        </Link>
+      )}
     </li>
-  </ol>;
+  </ol>
+);
 
 UploadBreadcrumbs.propTypes = {
   atShowUpload: PropTypes.bool,

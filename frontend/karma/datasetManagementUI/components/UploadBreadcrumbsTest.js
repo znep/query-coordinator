@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import UploadBreadcrumbs from 'components/UploadBreadcrumbs/UploadBreadcrumbs';
 
-describe('components/Uploads/UploadBreadcrumbs', () => {
+describe('components/UploadBreadcrumbs', () => {
   const defaultProps = {
     atShowUpload: true,
     sourceId: 178,

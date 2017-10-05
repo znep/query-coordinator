@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { createUpload } from 'reduxStuff/actions/manageUploads';
+import { createUploadSource } from 'reduxStuff/actions/createSource';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import ImportFromURLButton from 'containers/ImportFromURLButtonContainer';
@@ -49,7 +49,7 @@ export class DragDropUpload extends Component {
 
     if (file && this.isValidFile(file)) {
       dispatch(hideFlashMessage());
-      dispatch(createUpload(file, this.props.params));
+      dispatch(createUploadSource(file, this.props.params));
     } else {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     }
@@ -77,9 +77,7 @@ export class DragDropUpload extends Component {
 
     return (
       <section className={styles.container}>
-        <h2>
-          {I18n.show_uploads.title}
-        </h2>
+        <h2>{I18n.show_uploads.title}</h2>
         <div
           onDrop={this.handleDrop}
           onDragOver={this.handleDragOver}
@@ -90,12 +88,8 @@ export class DragDropUpload extends Component {
           </div>
           <div className={styles.textContainer}>
             <div className={styles.content}>
-              <h2>
-                {I18n.show_uploads.message}
-              </h2>
-              <div className={styles.browseMsg}>
-                {I18n.show_uploads.submessage}
-              </div>
+              <h2>{I18n.show_uploads.message}</h2>
+              <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
               <div className={styles.fileTypes}>
                 {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
               </div>
@@ -109,7 +103,7 @@ export class DragDropUpload extends Component {
                 accept={enabledFileExtensions.join(',')}
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
-                onChange={e => dispatch(createUpload(e.target.files[0], params))} />
+                onChange={e => dispatch(createUploadSource(e.target.files[0], params))} />
 
               <ImportFromURLButton params={params} />
             </div>

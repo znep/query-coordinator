@@ -86,9 +86,13 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)
-        ? Links.showOutputSchema(params, path.sourceId, path.inputSchemaId, path.outputSchemaId)
-        : Links.showColumnErrors(
-            params,
+        ? Links.showOutputSchema(
+          path,
+          path.sourceId,
+          path.inputSchemaId,
+          path.outputSchemaId
+        ) : Links.showColumnErrors(
+            path,
             path.sourceId,
             path.inputSchemaId,
             path.outputSchemaId,

@@ -67,7 +67,7 @@ function updateProgress(sourceId, percentCompleted) {
 }
 
 export function uploadFile(sourceId, file) {
-  return (dispatch, getState) => {
+  return dispatch => {
     const uploadUpdate = {
       id: sourceId
     };
@@ -80,7 +80,7 @@ export function uploadFile(sourceId, file) {
     };
 
     dispatch(apiCallStarted(callId, call));
-    dispatch(addNotification('upload', callId, sourceId));
+    dispatch(addNotification('source', sourceId));
 
     return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
@@ -89,11 +89,7 @@ export function uploadFile(sourceId, file) {
 
         dispatch(apiCallSucceeded(callId));
 
-        const notificationId = getState().ui.notifications.filter(
-          notification => notification.callId === callId
-        )[0].id;
-
-        dispatch(removeNotificationAfterTimeout(notificationId));
+        dispatch(removeNotificationAfterTimeout(sourceId));
 
         return resp;
       })

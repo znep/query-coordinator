@@ -380,6 +380,68 @@ describe('SoqlDataProvider', () => {
     });
   });
 
+  describe('.rawQuery()', () => {
+    const soqlDataProviderOptions = {
+      domain: VALID_DOMAIN,
+      datasetUid: VALID_DATASET_UID
+    };
+    let soqlDataProvider;
+
+    beforeEach(() => {
+      server = sinon.fakeServer.create();
+      soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+    });
+
+    afterEach(() => {
+      server.restore();
+    });
+
+    describe('on request error', () => {
+      it('should include the correct request error status and message', (done) => {
+        soqlDataProvider.
+          rawQuery(QUERY_STRING).
+          then(
+            (data) => {
+
+              // Fail the test since we expected an error response.
+              assert.isTrue(undefined);
+              done();
+            },
+            (error) => {
+              assert.equal(error.status, ERROR_STATUS);
+              assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
+      });
+    });
+
+    describe('on request success', () => {
+      it('should return the raw data', (done) => {
+        soqlDataProvider.
+          rawQuery(QUERY_STRING).
+          then(
+            (data) => {
+              assert.deepEqual(JSON.stringify(data), SAMPLE_QUERY_REQUEST_RESPONSE);
+              done();
+            },
+            (error) => {
+              assert.isTrue(undefined);
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
+      });
+    });
+  });
+
   describe('`.getRows()`', () => {
     describe('on request error', () => {
       const soqlDataProviderOptions = {

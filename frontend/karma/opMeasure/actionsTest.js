@@ -60,6 +60,9 @@ describe('thunk actions', () => {
   describe('setDataSource', () => {
     const uid = 'test-test';
     let getRowCountStub;
+    let getDatasetMetadataStub;
+    let getDisplayableFilterableColumnsStub;
+    let viewMetadata;
 
     afterEach(() => {
       EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
@@ -92,17 +95,33 @@ describe('thunk actions', () => {
 
     describe('a valid 4x4 is provided', () => {
       beforeEach(() => {
+        viewMetadata = { id: 'test-test', columns: [] };
         getRowCountStub = sinon.stub().resolves(12345);
+        getDatasetMetadataStub = sinon.stub().resolves(viewMetadata);
+        getDisplayableFilterableColumnsStub = sinon.stub().resolves('displayable filterable');
 
         EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
           this.getRowCount = getRowCountStub;
         });
+
+        EditorActionsAPI.__Rewire__('MetadataProvider', function() {
+          this.getDatasetMetadata = getDatasetMetadataStub;
+          this.getDisplayableFilterableColumns = getDisplayableFilterableColumnsStub;
+        });
       });
 
-      it('dispatches receiveDataSourceRowCount', (done) => {
+      it('dispatches receiveDataSourceMetadata', (done) => {
         const expectedActions = [
-          { type: editorActions.SET_DATA_SOURCE_UID, uid },
-          { type: editorActions.RECEIVE_DATA_SOURCE_ROW_COUNT, rowCount: 12345 }
+          {
+            type: editorActions.SET_DATA_SOURCE_UID,
+            uid
+          },
+          {
+            type: editorActions.RECEIVE_DATA_SOURCE_METADATA,
+            rowCount: 12345,
+            dataSourceViewMetadata: viewMetadata,
+            displayableFilterableColumns: 'displayable filterable'
+          }
         ];
 
         const store = mockStore();
@@ -111,6 +130,7 @@ describe('thunk actions', () => {
         _.defer(() => {
           assert.deepEqual(store.getActions(), expectedActions);
           sinon.assert.calledOnce(getRowCountStub);
+          sinon.assert.calledOnce(getDatasetMetadataStub);
           done();
         });
       });

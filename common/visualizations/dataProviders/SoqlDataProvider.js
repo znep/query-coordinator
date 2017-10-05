@@ -87,6 +87,21 @@ function SoqlDataProvider(config, useCache = false) {
     });
   };
 
+  /**
+   * `.rawQuery()` is basically `.query()` withouot any of the nonsense that ties it to visualizations.
+   * It allows you to execute SoQL without worrying about path or request configurations
+   *
+   * @param {String} queryString - A valid, non-URI-encoded SoQL query.
+   *
+   * @return {Promise}
+   */
+  this.rawQuery = function(queryString) {
+    const path = pathForQuery(`$query=${encodeURIComponent(queryString)}`);
+
+    return makeSoqlGetRequest(path);
+  };
+
+
   this.getRowCount = function(whereClauseComponents) {
     const alias = '__count_alias__'; // lowercase in order to deal with OBE norms
     const whereClause = whereClauseComponents ?
@@ -272,6 +287,7 @@ function SoqlDataProvider(config, useCache = false) {
   //   soqlError: response JSON
   // }
   const soqlGetRequestPromiseCache = {};
+
   const makeSoqlGetRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;

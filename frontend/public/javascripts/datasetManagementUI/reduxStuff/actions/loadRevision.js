@@ -29,20 +29,25 @@ export function loadRevision(params) {
       const taskSets = makeTaskSets(revision);
 
       // show toast for any failed notifications
-      const [failed, succeeded] = _.partition(srcs, source => source.failed_at);
-      failed.forEach(source => dispatch(addNotification('source', null, source.id)));
+      // const [failed, succeeded] = _.partition(srcs, source => source.failed_at);
+      // failed.forEach(source => dispatch(addNotification('source', null, source.id)));
+      srcs
+        .filter(source => !!source.failed_at)
+        .forEach(source => dispatch(addNotification('source', source.id)));
 
       // subscribe to sockets for input / output schemas
-      _.flatMap(succeeded, source =>
+      _.flatMap(srcs, source =>
         source.schemas.map(schema => ({
           ...schema,
           source_id: source.id
         }))
-      ).forEach(subscribeToOutputSchemaThings);
+      )
+        .filter(source => !source.failed_at)
+        .forEach(subscribeToOutputSchemaThings);
 
       // insert new transforms, input schemas, etc into store; we parse this
       // stuff using the same code that we use when we create a new source
-      succeeded.forEach(src => {
+      srcs.forEach(src => {
         const payload = normalizeCreateSourceResponse(src);
         dispatch(createSourceSuccess(payload));
       });

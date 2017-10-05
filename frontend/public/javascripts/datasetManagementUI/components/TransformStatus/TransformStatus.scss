@@ -33,6 +33,12 @@
   background-color: #f6f6f6 !important; //lol
 }
 
+.failedColumn {
+  composes: colErrors;
+  color: $error-text;
+  font-style: italic;
+}
+
 .transformStatusSelected {
   box-shadow: inset 0 0 10px -2px $dark-grey-1;
 }
@@ -43,11 +49,12 @@
   display: relative;
   z-index: 100;
   text-align: left;
+  width: 100% !important;
+
 }
 
 .statusText {
   composes: statusItem;
-  flex-grow: 1;
 }
 
 .geoBadge {

@@ -25,7 +25,7 @@ describe('DataPanel', () => {
       });
 
       it('is set to INVALID if rowCount is negative', () => {
-        const state = _.set({}, 'editor.measure.metric.dataSource.rowCount', -1);
+        const state = _.set({}, 'editor.cachedRowCount', -1);
         assert.propertyVal(
           mapStateToProps(state),
           'dataSourceState',
@@ -34,7 +34,7 @@ describe('DataPanel', () => {
       });
 
       it('is set to INVALID if rowCount is NaN', () => {
-        const state = _.set({}, 'editor.measure.metric.dataSource.rowCount', NaN);
+        const state = _.set({}, 'editor.cachedRowCount', NaN);
         assert.propertyVal(
           mapStateToProps(state),
           'dataSourceState',
@@ -43,7 +43,7 @@ describe('DataPanel', () => {
       });
 
       it('is set to NO_ROWS if rowCount is 0', () => {
-        const state = _.set({}, 'editor.measure.metric.dataSource.rowCount', 0);
+        const state = _.set({}, 'editor.cachedRowCount', 0);
         assert.propertyVal(
           mapStateToProps(state),
           'dataSourceState',
@@ -52,7 +52,7 @@ describe('DataPanel', () => {
       });
 
       it('is set to VALID if rowCount is > 0', () => {
-        const state = _.set({}, 'editor.measure.metric.dataSource.rowCount', 10);
+        const state = _.set({}, 'editor.cachedRowCount', 10);
         assert.propertyVal(
           mapStateToProps(state),
           'dataSourceState',

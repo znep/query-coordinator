@@ -14,6 +14,7 @@ import * as DisplayState from 'lib/displayState';
 import Table from 'containers/TableContainer';
 import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
+import FatalError from 'containers/FatalErrorContainer';
 import PagerBar from 'containers/PagerBarContainer';
 import ErrorPointer from 'components/ErrorPointer/ErrorPointer';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
@@ -50,15 +51,6 @@ export class ShowOutputSchema extends Component {
       scrollLeft: this.tableWrap.scrollLeft,
       viewportWidth: this.tableWrap.offsetWidth
     });
-  }
-
-  getPath() {
-    const { source, inputSchema, outputSchema } = this.props;
-    return {
-      sourceId: source.id,
-      inputSchemaId: inputSchema.id,
-      outputSchemaId: outputSchema.id
-    };
   }
 
   errorsNotInView() {
@@ -116,13 +108,12 @@ export class ShowOutputSchema extends Component {
       columns,
       displayState,
       canApplyRevision,
+      fatalError,
       numLoadsInProgress,
       saveCurrentOutputSchema,
       goToRevisionBase,
       params
     } = this.props;
-
-    const path = this.getPath();
 
     const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 
@@ -162,7 +153,7 @@ export class ShowOutputSchema extends Component {
                   this.tableWrap = tableWrap;
                 }}>
                 <Table
-                  path={path}
+                  path={params}
                   columns={columns}
                   inputSchema={inputSchema}
                   outputSchema={outputSchema}
@@ -181,20 +172,21 @@ export class ShowOutputSchema extends Component {
                   scrollToColIdx={this.scrollToColIdx} />
               )}
             </div>
-            <PagerBar path={path} displayState={displayState} />
+            <PagerBar path={params} displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>
-            {canApplyRevision ? <ReadyToImport /> : <div />}
+            {canApplyRevision ? <ReadyToImport /> : null}
+            {fatalError ? <FatalError /> : null}
 
-            <div>
+            {!fatalError ? (<div>
               <ApiCallButton
                 onClick={() => saveCurrentOutputSchema(revision, outputSchema.id, params)}
                 operation={SAVE_CURRENT_OUTPUT_SCHEMA}
                 params={{ outputSchemaId: outputSchema.id }}>
                 {I18n.home_pane.save_for_later}
               </ApiCallButton>
-            </div>
+            </div>) : null}
           </ModalFooter>
         </Modal>
       </div>
@@ -210,6 +202,7 @@ ShowOutputSchema.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired,
   canApplyRevision: PropTypes.bool.isRequired,
+  fatalError: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
@@ -234,6 +227,8 @@ export function mapStateToProps(state, ownProps) {
   const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   const canApplyRevision = Selectors.allTransformsDone(columns);
 
+  const fatalError = !!source.failed_at || _.some(columns.map(c => c.transform.failed_at));
+
   return {
     revision,
     source,
@@ -241,6 +236,7 @@ export function mapStateToProps(state, ownProps) {
     outputSchema,
     columns,
     canApplyRevision,
+    fatalError,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     params

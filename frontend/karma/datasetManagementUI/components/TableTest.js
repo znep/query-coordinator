@@ -6,7 +6,11 @@ import React from 'react';
 import dotProp from 'dot-prop-immutable';
 
 const defaultProps = {
-  entities: {},
+  entities: {
+    sources: {
+      312: {}
+    }
+  },
   params: {
     category: 'dataset',
     name: 'dfsdfdsf',

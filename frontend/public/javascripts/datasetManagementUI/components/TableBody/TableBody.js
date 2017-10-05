@@ -90,6 +90,7 @@ class TableBody extends Component {
           return (<TableCell
             key={`${row.rowIdx}-${offset}`}
             cell={transform.cell}
+            failed={!!t.failed_at}
             type={type} />);
         })}
       </tr>

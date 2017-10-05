@@ -71,6 +71,10 @@ export class ColumnHeader extends Component {
 
   optionsFor() {
     const column = this.props.outputColumn;
+    if (column.transform && column.transform.failed_at) {
+      return [];
+    }
+
     if (column.ignored) {
       return [
         {
@@ -126,8 +130,15 @@ export class ColumnHeader extends Component {
   }
 
   render() {
-    const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis, params } = this.props;
-    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis;
+    const {
+      outputSchema,
+      outputColumn,
+      updateColumnType,
+      activeApiCallInvolvingThis,
+      params,
+      canTransform
+    } = this.props;
+    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis || !canTransform;
 
     let convertibleTo = [];
     if (outputColumn.inputColumns.length === 1) {
@@ -209,6 +220,7 @@ ColumnHeader.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
+  canTransform: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,

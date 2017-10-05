@@ -35,6 +35,11 @@ describe('components/TableCell', () => {
     assert.equal(element.find('div').text(), '42');
   });
 
+  it('adds an error class when there is one', () => {
+    const element = shallow(<TableCell failed={true} cell={{ ok: true }} />);
+    assert.isTrue(element.hasClass('transformFailed'));
+  });
+
   describe('geo values', () => {
 
     it('renders a point as WKT', () => {

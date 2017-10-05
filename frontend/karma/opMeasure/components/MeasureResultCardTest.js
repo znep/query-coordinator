@@ -13,7 +13,7 @@ describe('MeasureResultCard', () => {
   const getProps = (props) => {
     return {
       measure: {},
-      calculator: sinon.stub().returns(unresolvedPromise),
+      calculateMeasure: sinon.stub().returns(unresolvedPromise),
       ...props
     };
   };
@@ -25,18 +25,22 @@ describe('MeasureResultCard', () => {
 
   it('only accepts 1 request at a time', (done) => {
     let props = getProps();
+
     _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+    _.set(props, 'measure.metric.type', 'count');
+
     let resolvedRequest = null;
 
-    props.calculator = sinon.stub().returns(new Promise((resolve, reject) => {
+    props.calculateMeasure = sinon.stub().returns(new Promise((resolve, reject) => {
       resolvedRequest = resolve;
     }));
 
     const element = shallow(<MeasureResultCard {...props} />);
 
     // Simulate an 'in-flight' request with an unresolved promise
-    sinon.assert.calledOnce(props.calculator);
+    sinon.assert.calledOnce(props.calculateMeasure);
 
+    // Changed from 'count' to 'sum'
     element.setProps({
       ...props,
       measure: {
@@ -44,18 +48,21 @@ describe('MeasureResultCard', () => {
           dataSource: {
             uid: 'test-test'
           },
-          type: 'something else'
+          type: 'sum',
+          arguments: {
+            column: 'foo'
+          }
         }
       }
     });
 
     // Promise is still unresolved even after a state change
-    sinon.assert.calledOnce(props.calculator);
+    sinon.assert.calledOnce(props.calculateMeasure);
 
     resolvedRequest(12345);
 
     _.defer(() => {
-      sinon.assert.calledTwice(props.calculator);
+      sinon.assert.calledTwice(props.calculateMeasure);
       done();
     });
   });
@@ -78,6 +85,63 @@ describe('MeasureResultCard', () => {
       });
 
       sinon.assert.calledOnce(spy);
+    });
+  });
+
+  describe('isReadyToCalculate', () => {
+    describe('for count calculations', () => {
+      let props;
+
+      beforeEach(() => {
+        props = getProps();
+        _.set(props, 'measure.metric.type', 'count');
+      });
+
+      it('returns true if dataSource uid is present', () => {
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isTrue(element.instance().isReadyToCalculate(props.measure));
+      });
+
+      it('returns false without dataSource uid', () => {
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+      });
+    });
+
+    describe('for sum calculations', () => {
+      let props;
+
+      beforeEach(() => {
+        props = getProps();
+        _.set(props, 'measure.metric.type', 'sum');
+      });
+
+      it('returns true if dataSource uid AND column are present', () => {
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+        _.set(props, 'measure.metric.arguments.column', 'some column name');
+
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isTrue(element.instance().isReadyToCalculate(props.measure));
+      });
+
+      it('returns false without dataSource uid AND column', () => {
+        let element;
+
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+
+        element = shallow(<MeasureResultCard {...props} />);
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+
+        _.unset(props, 'measure.metric.dataSource.uid');
+        _.set(props, 'measure.metric.arguments.column', 'some column name');
+
+        element = shallow(<MeasureResultCard {...props} />);
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+      });
     });
   });
 });

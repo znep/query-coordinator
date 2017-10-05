@@ -1,0 +1,18 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.fatalError {
+  padding: 1em 0px;
+  text-align: left;
+  color: $error-text;
+}
+
+.errorMessage {
+  margin-left: 0.5em;
+}
+
+.errorDetails {
+  padding: 0px 0.5em;
+  color: $alternate-4-base;
+}

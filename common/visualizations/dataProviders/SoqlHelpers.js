@@ -250,7 +250,7 @@ function whereClauseFilteringOwnColumn(vif, seriesIndex) {
 /**
  * @param {object} filter
  *
- * Returns a where clause component representing the individual vif filter.
+ * Returns a where clause component (string) representing the individual vif filter.
  */
 function filterToWhereClauseComponent(filter) {
   utils.assertHasProperties(

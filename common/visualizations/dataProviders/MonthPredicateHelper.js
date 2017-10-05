@@ -30,6 +30,9 @@ const languages = {
 
 
 function monthIndex(candidateMonth, language = null) {
+  if (_.isNull(candidateMonth)) {
+    return undefined;
+  }
   const candidate = _.trim(_.lowerCase(candidateMonth));
   const checkLanguageMonth = (language, candidate) => {
     const res = _.findIndex(languages[language], (month) => month.test(candidate));
@@ -62,30 +65,7 @@ function detectLanguage(candidate) {
 }
 
 
-// rows is an array of arrays like this:
-// [['one', 1, 'december'],
-//  ['two', 2, 'march']]
-// This function reorders the rows by the given column index, which must
-// correspond to a month column in a supported language.
-function sortByMonthCol(rows, monthColIdx, order = 'asc') {
-  const language = detectLanguage(rows[0][monthColIdx]);
-  for (const rowIdx in rows) {
-    const row = rows[rowIdx];
-    if (_.isUndefined(monthIndex(row[monthColIdx], language))) {
-      return rows;
-    }
-  }
-  const sortedRows = _.cloneDeep(rows);
-  const sortFn = (order === 'asc'
-                  ? (a, b) => monthIndex(a[monthColIdx], language) - monthIndex(b[monthColIdx], language)
-                  : (a, b) => monthIndex(b[monthColIdx], language) - monthIndex(a[monthColIdx], language));
-  sortedRows.sort(sortFn);
-  return sortedRows;
-}
-
-
 module.exports = {
   monthIndex,
-  detectLanguage,
-  sortByMonthCol
+  detectLanguage
 };

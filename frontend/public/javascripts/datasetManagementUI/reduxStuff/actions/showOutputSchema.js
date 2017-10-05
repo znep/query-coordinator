@@ -51,7 +51,7 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         const { resource: os } = resp;
         dispatch(apiCallSucceeded(callId));
 
-        const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.totalRows);
+        const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.total_rows);
         dispatch(createNewOutputSchemaSuccess(payload));
         dispatch(subscribeToOutputSchema(os));
         dispatch(subscribeToTransforms(os));

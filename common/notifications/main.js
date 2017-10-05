@@ -53,8 +53,7 @@ window.headerNotifications = (container, options, userid, translations, locale) 
   ReactDOM.render(
     <Localization
       translations={sharedTranslations}
-      locale={locale || 'en'}
-      shareTranslations={true}>
+      locale={locale || 'en'}>
       <Notifications options={options} userid={userid}/>
     </Localization>,
     rootNode

@@ -3406,7 +3406,7 @@ en:
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps
-        data_json: Data.JSON URL (ArcGIS Open Data, CKAN, etc)
+        data_json: Data.JSON URL (ArcGIS Open Data, CKAN, etc.)
         data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
         dataset: Dataset

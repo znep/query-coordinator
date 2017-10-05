@@ -83,6 +83,7 @@ class Auth0Controller < ApplicationController
         end
         if signup_params.present?
           signup_params[:auth0Identifier] = auth0_identifier
+          signup_params[:auth0Token] = auth0_token
         end
         @signup = SignupPresenter.new(signup_params || {})
         @body_id = 'signup'

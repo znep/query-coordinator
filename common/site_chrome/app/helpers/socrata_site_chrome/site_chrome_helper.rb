@@ -101,6 +101,18 @@ module SocrataSiteChrome
       site_chrome_current_user.try(:display_name).presence || t('shared.site_chrome.header.profile')
     end
 
+    def current_user_id
+      site_chrome_current_user.try("id") || ""
+    end
+
+    def current_user_role
+      site_chrome_current_user.role_name
+    end
+
+    def is_superadmin?
+      site_chrome_current_user.is_superadmin?
+    end
+
     def user_has_right?(activity)
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? || site_chrome_current_user.has_right?(activity)

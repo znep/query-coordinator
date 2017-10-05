@@ -52,7 +52,10 @@ describe('components/RecentActionItems', () => {
   describe('SourceActivity', () => {
     const props = {
       createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user'
+      createdBy: 'user',
+      source_type: {
+        type: 'upload'
+      }
     };
 
     const component = shallow(<SourceActivity details={props} />);

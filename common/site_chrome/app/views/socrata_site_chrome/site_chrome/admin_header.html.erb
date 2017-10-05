@@ -4,6 +4,7 @@
     window.socrata.siteChrome = window.socrata.siteChrome || {};
     <%= raw "window.socrata.siteChrome.appToken = '#{app_token}';" if app_token %>
   </script>
+
   <section
     id="site-chrome-admin-header"
     role="navigation"
@@ -32,7 +33,7 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <% if get_feature_flag('enable_header_notifications') %>
+      <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
         <div
           id="site-chrome-header-notifications"
           tabIndex="-1"
@@ -60,8 +61,7 @@
         data-autocomplete-collapsible="true"
         data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
         <span class="socrata-icon-search collapsible-search-toggle"
-          title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
-          onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">
+          title="<%= t('shared.site_chrome.header.search') %>" role="button" tabindex="0">
         </span>
 
         <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
@@ -79,18 +79,27 @@
       </div>
     </div>
 
-    <% if get_feature_flag('enable_header_notifications') %>
+    <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
       <script type="text/javascript">
         document.addEventListener(
           'DOMContentLoaded',
           function() {
             if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-              var translations = {
-                productUpdatesText: "<%= t('shared.site_chrome.notifications.product_updates') %>",
-                viewOlderText: "<%= t('shared.site_chrome.notifications.view_older') %>",
-                errorText: "<%= t('shared.site_chrome.notifications.error_text_html') %>"
+              const options = {
+                lockScrollbar: false,
+                scrollTop: 0,
+                showProductNotifications: <%= get_feature_flag('enable_header_notifications') %>,
+                showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>,
+                currentUserRole: <%== current_user_role.to_json %>,
+                isSuperAdmin: <%== is_superadmin? %>
               };
-              window.headerNotifications('#site-chrome-header-notifications', translations);
+
+              window.headerNotifications('#site-chrome-header-notifications',
+                options,
+                <%== json_escape current_user_id.to_json %>,
+                <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
+                <%== json_escape I18n.locale.to_json %>
+              );
             }
           },
           false

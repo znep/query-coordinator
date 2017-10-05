@@ -2,25 +2,25 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
+
+import connectLocalization from 'common/i18n/components/connectLocalization';
+
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './bell.scss';
-import I18n from 'common/i18n';
 
 class Bell extends Component {
   render() {
     const {
       toggleNotificationPanel,
-      unreadNotificationCount
+      hasUnreadNotifications,
+      I18n
     } = this.props;
-
     let tipsyText;
 
-    let hasUnreadNotifications = unreadNotificationCount > 0;
-
     if (hasUnreadNotifications) {
-      tipsyText = I18n.t('shared.site_chrome.notifications.has_unread_notifications');
+      tipsyText = I18n.t('shared_site_chrome_notifications.has_unread_notifications');
     } else {
-      tipsyText = I18n.t('shared.site_chrome.notifications.no_unread_notifications');
+      tipsyText = I18n.t('shared_site_chrome_notifications.no_unread_notifications');
     }
 
     return (
@@ -40,7 +40,7 @@ class Bell extends Component {
 
 Bell.propTypes = {
   toggleNotificationPanel: PropTypes.func.isRequired,
-  unreadNotificationCount: PropTypes.number.isRequired
+  hasUnreadNotifications: PropTypes.bool.isRequired
 };
 
-export default cssModules(Bell, styles, { allowMultiple: true });
+export default connectLocalization(cssModules(Bell, styles, { allowMultiple: true }));

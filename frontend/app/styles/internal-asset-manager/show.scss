@@ -26,6 +26,27 @@ body {
 .internal-asset-manager {
   margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom
 
+  .alert-wrapper {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 2rem;
+    z-index: 10000;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .socrata-icon {
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+  }
+
   .header {
     margin: 0 $horizontal_margin;
     min-height: 7.5rem;

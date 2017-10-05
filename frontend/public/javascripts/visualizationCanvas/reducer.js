@@ -170,6 +170,17 @@ export default (state = initialState(), action) => {
         isEditMenuActive: false
       };
 
+    case actions.UPDATE_NAME:
+      return {
+        ...state,
+        view: {
+          ...state.view,
+          name: action.data.name
+        },
+        isDirty: true,
+        isEditMenuActive: false
+      };
+
     case actions.UPDATE_NAME_AND_DESCRIPTION:
       return {
         ...state,

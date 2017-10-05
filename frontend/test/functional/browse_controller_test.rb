@@ -5,7 +5,6 @@ class BrowseControllerTest < ActionController::TestCase
   def setup
     init_current_domain
     init_feature_flag_signaller
-    init_core_session
     @user = login
     init_stubs
     stub_site_chrome

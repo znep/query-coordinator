@@ -7,7 +7,6 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
-import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
@@ -42,26 +41,12 @@ export const ShowUpload = ({ inProgress, goHome }) => (
 export const mapStateToProps = ({ entities, ui }, { params }) => {
   // selector returns undefined if there are no sources
   const source = Selectors.currentSource(entities, _.toNumber(params.revisionSeq));
-  let apiCall = [];
-
-  if (source && source.id) {
-    const { id: sourceId } = source;
-    const apiCallList = Object.keys(ui.apiCalls).map(callId => ui.apiCalls[callId]);
-
-    apiCall = apiCallList.filter(
-      call =>
-        call.operation === 'UPLOAD_FILE' &&
-        call.status === STATUS_CALL_IN_PROGRESS &&
-        call.callParams &&
-        call.callParams.id === sourceId
-    );
-  }
 
   // Include source in the definition of inProgress because if there is no source,
   // we don't want to show the spinner, we want to show the actual component so the
   // user can source something
   return {
-    inProgress: !!source && !!apiCall.length
+    inProgress: !!source && (!source.finished_at && !source.failed_at)
   };
 };
 

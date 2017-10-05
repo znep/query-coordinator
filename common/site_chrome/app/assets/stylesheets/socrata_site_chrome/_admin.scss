@@ -18,9 +18,15 @@ $header_height_small: 32px;
   &.site-chrome-small {
     height: $header_height_small;
 
-    a {
-      font-size: 13px;
-      padding: 6px 12px;
+    .site-chrome-admin-title,
+    .site-chrome-admin-menus,
+    .site-chrome-admin-settings,
+    .site-chrome-admin-search,
+    .site-chrome-admin-user {
+      a {
+        font-size: 13px;
+        padding: 6px 12px;
+      }
     }
 
     .site-chrome-admin-menus {
@@ -93,6 +99,7 @@ $header_height_small: 32px;
       padding: 11px 16px;
       font-weight: lighter;
       font-size: 15px;
+      white-space: nowrap;
     }
 
     a,

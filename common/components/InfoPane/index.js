@@ -7,6 +7,7 @@ import collapsible from 'common/collapsible';
 import purify from 'common/purify';
 import I18n from 'common/i18n';
 import SocrataIcon from '../SocrataIcon';
+import EditableText from '../EditableText';
 
 /**
  * The InfoPane is a component that is designed to render a hero element with useful information
@@ -179,7 +180,7 @@ class InfoPane extends Component {
       return null;
     }
 
-    const watchDatasetFlagIcon = classNames('flag-icon', subscribed ? 'icon-eye-blocked' : 'icon-eye');
+    const watchDatasetFlagIcon = classNames('flag-icon', subscribed ? 'socrata-icon-watched' : 'socrata-icon-watch');
     const watchDatasetFlag = showWatchDatasetFlag ?
       <div className="watch-dataset-flag">
         <label
@@ -250,6 +251,7 @@ class InfoPane extends Component {
       category,
       isPrivate,
       name,
+      onNameChanged,
       renderButtons,
       provenance,
       provenanceIcon,
@@ -272,6 +274,10 @@ class InfoPane extends Component {
         {I18n.t(`shared.components.info_pane.${provenance}`)}
       </span>;
 
+    const nameElement = onNameChanged ?
+      <EditableText onTextChanged={onNameChanged} text={name} /> :
+      <span>{name}</span>;
+
     return (
       <div className="info-pane result-card">
         <div className="container">
@@ -280,7 +286,7 @@ class InfoPane extends Component {
               <div className="entry-title">
                 <h1 className="info-pane-name">
                   {privateIcon}
-                  {name}
+                  {nameElement}
                 </h1>
 
                 {provenanceBadge}
@@ -316,6 +322,9 @@ InfoPane.propTypes = {
    * The number of lines to truncate the description to.  If unspecified, defaults to 4.
    */
   descriptionLines: PropTypes.number,
+
+  // TODO: Decide if description should also be optionally editable.
+  //       If yes, we need to update EditableText to allow multiple lines.
 
   /**
    * The optional footer prop can be a string or an HTML element.  It is rendered below the
@@ -359,7 +368,7 @@ InfoPane.propTypes = {
       content: PropTypes.node.isRequired
     })
   }),
-  
+
   /**
    * If the showWatchDatasetFlag prop is true, only then the watch-dataset-flag will be shown
   */
@@ -374,6 +383,11 @@ InfoPane.propTypes = {
    * The title of the asset, displayed in an h1 tag.
    */
   name: PropTypes.string,
+
+  /**
+   * Optional handler to enable editable name.
+   */
+  onNameChanged: PropTypes.func,
 
   /**
    * A function that is called when the full description is expanded.

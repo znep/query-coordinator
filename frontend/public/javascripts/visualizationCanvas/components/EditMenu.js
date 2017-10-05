@@ -32,6 +32,14 @@ export class EditMenu extends Component {
   componentWillReceiveProps(nextProps) {
     const { isActive } = this.props;
 
+    if (nextProps.name && nextProps.name.length > 0) {
+      this.setState({
+        name: nextProps.name
+      });
+    }
+
+    // TODO: Decide if we also want to update description on nextProps.
+
     if (!isActive && nextProps.isActive) {
       this.setState({
         isMetadataMenuOpen: true

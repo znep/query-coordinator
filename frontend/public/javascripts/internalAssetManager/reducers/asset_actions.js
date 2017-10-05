@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
 const getInitialState = () => ({
+  activeActionModalType: null,
+  activeActionForUid: null,
+  alert: {},
   performingAction: false,
   performingActionSuccess: false,
   performingActionFailure: false
@@ -11,12 +14,19 @@ export default (state, action) => {
     return getInitialState();
   }
 
+  if (action.type === 'SHOW_MODAL') {
+    return {
+      ...state,
+      activeActionModalType: action.modalType,
+      activeActionForUid: action.uid
+    };
+  }
+
   if (action.type === 'CLOSE_MODAL') {
     return {
       ...state,
-      performingAction: false,
-      performingActionSuccess: false,
-      performingActionFailure: false
+      activeActionModalType: null,
+      activeActionForUid: null
     };
   }
 
@@ -45,6 +55,24 @@ export default (state, action) => {
       performingActionSuccess: false,
       performingActionFailure: true,
       actionResponse: action.response
+    };
+  }
+
+  if (action.type === 'SHOW_ALERT') {
+    return {
+      ...state,
+      alert: {
+        titleLocaleKey: action.titleLocaleKey,
+        bodyLocaleKey: action.bodyLocaleKey,
+        time: action.time
+      }
+    };
+  }
+
+  if (action.type === 'HIDE_ALERT') {
+    return {
+      ...state,
+      alert: {}
     };
   }
 

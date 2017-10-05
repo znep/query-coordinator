@@ -29,6 +29,8 @@ describe InternalAssetManagerController do
         user_double = double(User)
         expect(user_double).to receive(:is_superadmin?).and_return(true)
         allow(user_double).to receive(:is_roled_user?).and_return(true)
+        allow(user_double).to receive(:has_right?).
+          with(UserRights::CAN_SEE_ALL_ASSETS_TAB_SIAM).and_return(true)
         allow(subject).to receive(:current_user).and_return(user_double)
       end
 
@@ -62,6 +64,8 @@ describe InternalAssetManagerController do
         init_environment(test_user: TestHelperMethods::NON_ROLED)
         login(init_current_user(subject, 'tugg-ikce'))
         user_double = double(User)
+        allow(user_double).to receive(:has_right?).
+          with(UserRights::CAN_SEE_ALL_ASSETS_TAB_SIAM).and_return(false)
         expect(user_double).to receive(:is_superadmin?).and_return(false)
         expect(user_double).to receive(:is_roled_user?).and_return(false)
         allow(subject).to receive(:current_user).and_return(user_double)

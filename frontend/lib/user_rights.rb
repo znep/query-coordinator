@@ -7,6 +7,7 @@ module UserRights
     # frontend/public/javascript/common/rights.js
     SOURCE_ARRAY = %w{
       approve_nominations
+      can_see_all_assets_tab_siam
       change_configurations
       chown_datasets
       create_dashboards

@@ -113,4 +113,73 @@
   #methods-and-analysis-panel {
 
   }
+
+  #calculation-panel {
+    $column-width: 750px;
+    $metric-definition-margin: 32px;
+
+    .calculation-type-selector {
+      margin-bottom: 16px;
+    }
+
+    .no-data-source {
+      $box-height: 300px;
+
+      color: $dark-grey-2;
+      width: 100%;
+      height: $box-height;
+      background: $light-grey-6;
+      line-height: $box-height;
+      text-align: center;
+    }
+
+    .metric-container {
+      width: $column-width;
+    }
+
+    .metric-config {
+      float: left;
+      width: $column-width / 2;
+      margin-bottom: $metric-definition-margin;
+    }
+
+    .metric-preview {
+      float: right;
+      width: $column-width / 2;
+      margin-bottom: $metric-definition-margin;
+
+      .measure-result-card {
+        margin-top: 4px;
+        margin-bottom: 24px;
+
+        box-shadow: 0 0 8px $light-grey-1;
+      }
+
+      label {
+        display: block;
+      }
+    }
+
+    .metric-definition-text {
+      clear: both;
+      width: 100%;
+      background: $light-grey-6;
+      padding: 18px 16px;
+
+      h5 {
+        margin-bottom: 4px;
+      }
+
+      code {
+        margin-top: 8px;
+        padding: 8px 6px;
+        border: 1px solid $light-grey-2;
+        background-color: $light-grey-5;
+        color: $dark-grey-2;
+        .column {
+          color: $alternate-1-text
+        }
+      }
+    }
+  }
 }

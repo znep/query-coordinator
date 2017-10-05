@@ -37,12 +37,12 @@ export class CatalogResults extends Component {
 
   renderError() {
     if (this.props.fetchingResultsError) {
-      const subkey = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
-      const errorMessageTranslationKey = `errors.${subkey}`;
+      const errorDetails = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
+      console.error(errorDetails);
 
       return (
         <div className="alert error">
-          {_.get(I18n, errorMessageTranslationKey)}
+          {_.get(I18n, 'errors.fetching_results')}
         </div>
       );
     }

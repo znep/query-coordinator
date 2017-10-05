@@ -1,32 +1,78 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
 import Notification from 'containers/NotificationContainer';
 import styles from './UploadNotification.scss';
+import moment from 'moment';
 
-const callStatusToNotificationStatus = callStatus => {
-  switch (callStatus) {
-    case STATUS_CALL_IN_PROGRESS:
-      return 'inProgress';
-    case STATUS_CALL_SUCCEEDED:
-      return 'success';
-    default:
-      return 'error';
+const isURL = (source) => source.source_type.type === 'url';
+
+function getAdvice(source) {
+  if (isURL(source)) return I18n.notifications.connection_error_body_advice_url;
+  return I18n.notifications.connection_error_body_advice_upload;
+}
+
+function getDescription(source) {
+  if (isURL(source)) return I18n.notifications.connection_error_body_description_url;
+  return I18n.notifications.connection_error_body_description_upload;
+}
+
+function getFailureTitle(source) {
+  if (isURL(source)) return I18n.notifications.url_failed;
+  return I18n.notifications.upload_failed;
+}
+
+function getProgressTitle(source) {
+  if (isURL(source)) return I18n.notifications.fetching;
+  return I18n.notifications.uploading;
+}
+
+function getPercentage(source) {
+  if (isURL(source)) return 100;
+  return source.percentCompleted;
+}
+
+const streamableContentTypes = [
+  'text/csv',
+  'text/tab-separated-values',
+  'application/vnd.google-earth.kml+xml',
+  'application/vnd.geo+json'
+];
+
+function isSourceStreamable(source) {
+  // don't show a scary message until we know for sure
+  if (!source.content_type) return true;
+  return streamableContentTypes.indexOf(source.content_type) !== -1;
+}
+
+function getStreamyWarning(source) {
+  if (!source.finished_at && !source.failed_at && !isSourceStreamable(source)) {
+    return (<p className={styles.message}>
+      {I18n.notifications.non_streamable_source}
+    </p>);
   }
-};
+}
 
-const errorMessage = (apiCall, source) => {
-  if (_.get(apiCall, 'error.reason', null)) {
+function failureDetailsMessage(source) {
+  if (!_.isEmpty(source.failure_details) &&
+      source.failure_details.message &&
+      source.failure_details.message !== 'internal error'
+    ) {
+    return source.failure_details.message;
+  }
+}
+
+const errorMessage = (source) => {
+  if (failureDetailsMessage(source)) {
     return (
       <div className={styles.msgContainer}>
-        {apiCall.error.reason}
+        {failureDetailsMessage(source)}
       </div>
     );
   }
 
   const badConnectionBodyDescription = {
-    __html: I18n.notifications.connection_error_body_description.format(
+    __html: getDescription(source).format(
       `<span class="filename">${getFilename(source)}</span>`
     )
   };
@@ -38,7 +84,7 @@ const errorMessage = (apiCall, source) => {
       </h6>
       <p dangerouslySetInnerHTML={badConnectionBodyDescription} />
       <p>
-        {I18n.notifications.connection_error_body_advice}
+        {getAdvice(source)}
       </p>
     </div>
   );
@@ -48,45 +94,58 @@ const errorMessage = (apiCall, source) => {
 
 function getFilename(source) {
   if (source.source_type.type === 'upload') return source.source_type.filename;
+  if (source.source_type.type === 'url') return source.source_type.url;
   return 'Unknown';
+}
+
+function isTooOld(ts) {
+  return moment().diff(ts, 'minutes') > 1;
 }
 
 // This component is called by the NotificationList component. Its main purpose
 // is to translate source-specific logic into props that the generic Notification
 // component can understand.
-const UploadNotification = ({ source, apiCall, notificationId }) => {
+const UploadNotification = ({ source }) => {
   let message;
   let details;
-  const callStatus = apiCall.status;
-  let notificationStatus = callStatusToNotificationStatus(callStatus);
+  let notificationStatus;
 
-  switch (callStatus) {
-    case STATUS_CALL_IN_PROGRESS:
-    case STATUS_CALL_SUCCEEDED:
-      message = (
-        <span className={styles.message}>
-          {I18n.notifications.uploading}
-          <span className={styles.subMessage}>
-            {getFilename(source)}
-          </span>
+  if (source.failed_at) {
+    message = (
+      <span className={styles.message}>
+        {getFailureTitle(source)}
+      </span>
+    );
+    details = errorMessage(source);
+    notificationStatus = 'error';
+  } else {
+
+    message = (
+      <span className={styles.message}>
+        {getProgressTitle(source)}
+        <span className={styles.subMessage}>
+          {getFilename(source)}
+          {getStreamyWarning(source)}
         </span>
-      );
-      break;
-    default:
-      message = (
-        <span className={styles.message}>
-          {I18n.notifications.upload_failed}
-        </span>
-      );
-      details = errorMessage(apiCall, source);
+      </span>
+    );
+    if (source.finished_at) {
+      notificationStatus = 'success';
+    } else {
+      notificationStatus = 'inProgress';
+    }
   }
+
+  if (notificationStatus === 'error' && isTooOld(source.failed_at)) return null;
+  if (notificationStatus === 'success' && isTooOld(source.finished_at)) return null;
 
   return (
     <Notification
       status={notificationStatus}
-      id={notificationId}
+      id={source.id}
       progressBar
-      percentCompleted={source.percentCompleted}
+      percentCompleted={getPercentage(source)}
+      isInfinite={isURL(source)}
       message={message}>
       {details}
     </Notification>
@@ -96,15 +155,8 @@ const UploadNotification = ({ source, apiCall, notificationId }) => {
 UploadNotification.propTypes = {
   source: PropTypes.shape({
     source_type: PropTypes.shape({})
-  }),
-  apiCall: PropTypes.shape({
-    status: PropTypes.string.isRequired,
-    error: PropTypes.shape({
-      reason: PropTypes.string.isRequired
-    })
   }).isRequired,
-  showDetails: PropTypes.bool,
-  notificationId: PropTypes.string
+  showDetails: PropTypes.bool
 };
 
 export default UploadNotification;

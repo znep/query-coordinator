@@ -3,7 +3,7 @@ require 'rails_helper'
 describe PageMetadataController do
   include TestHelperMethods
 
-  let(:user) { User.new({ 'roleName' => 'publisher' }) }
+  let(:user) { User.new({ 'rights' => ['create_data_lens'] }) }
   let(:page_metadata) do
     json_fixture('v2-page-metadata.ported-from-minitest.json')['displayFormat']['data_lens_page_metadata']
   end

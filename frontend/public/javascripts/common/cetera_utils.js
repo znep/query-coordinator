@@ -66,7 +66,7 @@ function handleError(error) {
 export const ceteraUtils = (() => {
   const domain = serverConfig.domain; // TODO: federation?
 
-  const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
+  const assetTypeMapping = (assetType) => (assetType === 'new_view' ? 'datalenses' : assetType);
 
   const mapIdFiltersToParam = (idFilters) => _.map(idFilters, (id) => `ids=${id}`).join('&');
 

@@ -10,9 +10,3 @@ export const SaveStates = Object.freeze({
   SAVED: 'SAVED',
   ERRORED: 'ERRORED'
 });
-
-export const DataSourceStates = Object.freeze({
-  VALID: 'VALID',
-  INVALID: 'INVALID',
-  NO_ROWS: 'NO_ROWS'
-});

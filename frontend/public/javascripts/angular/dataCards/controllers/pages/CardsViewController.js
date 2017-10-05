@@ -339,7 +339,9 @@ module.exports = function CardsViewController(
         var serializedBlob = $.extend(
           page.serialize(),
           {
-            pageId: page.id
+            pageId: page.id,
+            hideFromCatalog: !page.getCurrentValue('moderationStatus'),
+            hideFromDataJson: !page.getCurrentValue('moderationStatus')
           }
         );
         savePromise = PageDataService.save(serializedBlob, page.id);
@@ -376,6 +378,11 @@ module.exports = function CardsViewController(
       });
       if (!_.isUndefined(moderationStatus)) {
         newPageSerializedBlob.moderationStatus = moderationStatus;
+        newPageSerializedBlob.hideFromCatalog = !moderationStatus;
+        newPageSerializedBlob.hideFromDataJson = !moderationStatus;
+      } else {
+        newPageSerializedBlob.hideFromCatalog = true;
+        newPageSerializedBlob.hideFromDataJson = true;
       }
 
       newPageSerializedBlob.parentLensId = newPageSerializedBlob.pageId;

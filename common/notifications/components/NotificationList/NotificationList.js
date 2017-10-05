@@ -1,63 +1,151 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
+import classNames from 'classnames';
+
+import connectLocalization from 'common/i18n/components/connectLocalization';
+
 import PanelHeader from './PanelHeader';
 import ProductNotificationList from 'common/notifications/components/ProductNotificationList/ProductNotificationList';
 import PanelFooter from './PanelFooter';
+import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
+import Tabs from 'common/notifications/components/Tabs/Tabs';
+import { FILTER_TABS } from 'common/notifications/constants';
 import styles from './notification-list.scss';
 
 class NotificationList extends Component {
   renderPanelHeader() {
     const {
-      panelHeaderText,
+      showUserNotifications,
       toggleNotificationPanel,
-      unreadNotificationCount
+      I18n
     } = this.props;
 
-    return (
-      <PanelHeader panelHeaderText={panelHeaderText}
-        onClosePanel={toggleNotificationPanel}
-        unreadCount={unreadNotificationCount} />
-    );
+    if (showUserNotifications) {
+      const { unreadUserNotificationCount } = this.props;
+      const panelHeaderText = I18n.t('shared_site_chrome_notifications.user_notifications');
+
+      return (
+        <PanelHeader panelHeaderText={panelHeaderText}
+          onClosePanel={toggleNotificationPanel}
+          unreadCount={unreadUserNotificationCount} />
+      );
+    } else {
+      const { unreadProductNotificationCount } = this.props;
+      const panelHeaderText = I18n.t('shared_site_chrome_notifications.product_updates');
+
+      return (
+        <PanelHeader panelHeaderText={panelHeaderText}
+          onClosePanel={toggleNotificationPanel}
+          unreadCount={unreadProductNotificationCount} />
+      );
+    }
+  }
+
+  renderUserNotifications() {
+    const { showUserNotifications } = this.props;
+
+    if (showUserNotifications) {
+      const {
+        filterUserNotifications,
+        filterUserNotificationsBy,
+        onClearUserNotification,
+        onToggleReadUserNotification,
+        userNotifications,
+        showProductNotifications
+      } = this.props;
+
+      return (
+        <Tabs filterNotifications={filterUserNotifications}
+          hasSecondaryPanel={showProductNotifications}
+          selectedTab={filterUserNotificationsBy}
+          tabs={FILTER_TABS}>
+          <UserNotificationList filterNotificationsBy={filterUserNotificationsBy}
+            onClearUserNotification={onClearUserNotification}
+            onToggleReadUserNotification={onToggleReadUserNotification}
+            userNotifications={userNotifications} />
+        </Tabs>
+      );
+    }
+  }
+
+  renderProductNotifications() {
+    const {
+      areNotificationsLoading,
+      hasError,
+      isSecondaryPanelOpen,
+      productNotifications,
+      showProductNotificationsAsSecondaryPanel,
+      showProductNotifications,
+      unreadProductNotificationCount,
+      toggleProductNotificationsSecondaryPanel,
+      viewOlderLink
+    } = this.props;
+
+    if (showProductNotifications) {
+      return (
+        <ProductNotificationList areNotificationsLoading={areNotificationsLoading}
+          hasError={hasError}
+          isSecondaryPanelOpen={isSecondaryPanelOpen}
+          notifications={productNotifications}
+          showProductNotificationsAsSecondaryPanel={showProductNotificationsAsSecondaryPanel}
+          toggleProductNotificationsSecondaryPanel={toggleProductNotificationsSecondaryPanel}
+          unreadProductNotificationCount={unreadProductNotificationCount}
+          viewOlderLink={viewOlderLink} />
+      );
+    }
   }
 
   renderPanelFooter() {
     const {
-      notifications,
-      markAllAsRead,
-      unreadNotificationCount
+      currentUserRole,
+      isSuperAdmin,
+      isSecondaryPanelOpen,
+      showProductNotificationsAsSecondaryPanel,
+      showProductNotifications,
+      showUserNotifications
     } = this.props;
 
-    let hasUnreadNotifications = unreadNotificationCount > 0;
+    if ((showProductNotifications && !showUserNotifications) || (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
+      const {
+        markAllProductNotificationsAsRead,
+        unreadProductNotificationCount
+      } = this.props;
 
-    if (!_.isEmpty(notifications)) {
-      return <PanelFooter markAllAsRead={markAllAsRead} hasUnreadNotifications={hasUnreadNotifications} />;
+      return <PanelFooter markAllProductNotificationsAsRead={markAllProductNotificationsAsRead}
+        hasUnreadNotifications={unreadProductNotificationCount > 0}
+        forUserNotifications={false}
+        currentUserRole={currentUserRole}
+        showUserNotifications={showUserNotifications}
+        isSuperAdmin={isSuperAdmin} />;
+    } else if (showUserNotifications) {
+      const {
+        clearAllUserNotifications,
+        openClearAllUserNotificationsPrompt,
+        toggleClearAllUserNotificationsPrompt,
+        userNotifications
+      } = this.props;
+
+      return <PanelFooter clearAllUserNotifications={clearAllUserNotifications}
+        forUserNotifications={true}
+        hasUserNotifications={userNotifications.length > 0}
+        openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
+        toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
+        showUserNotifications={showUserNotifications}
+        currentUserRole={currentUserRole}
+        isSuperAdmin={isSuperAdmin} />;
     }
   }
 
   render() {
-    const {
-      areNotificationsLoading,
-      errorText,
-      hasError,
-      notifications,
-      viewOlderLink,
-      viewOlderText
-    } = this.props;
+    const { showUserNotifications } = this.props;
 
     return (
-      <div styleName='notifications-panel' className='clearfix'>
+      <div styleName='notifications-panel'
+        className={classNames('clearfix', { 'socrata-notifications-sidebar': showUserNotifications })}>
         {this.renderPanelHeader()}
-
-        <ProductNotificationList
-          notifications={notifications}
-          hasError={hasError}
-          errorText={errorText}
-          viewOlderLink={viewOlderLink}
-          viewOlderText={viewOlderText}
-          areNotificationsLoading={areNotificationsLoading} />
-
+        {this.renderUserNotifications()}
+        {this.renderProductNotifications()}
         {this.renderPanelFooter()}
       </div>
     );
@@ -66,15 +154,27 @@ class NotificationList extends Component {
 
 NotificationList.propTypes = {
   areNotificationsLoading: PropTypes.bool.isRequired,
-  errorText: PropTypes.string.isRequired,
+  clearAllUserNotifications: PropTypes.func.isRequired,
+  currentUserRole: PropTypes.string,
+  filterUserNotificationsBy: PropTypes.string.isRequired,
   hasError: PropTypes.bool.isRequired,
-  markAllAsRead: PropTypes.func.isRequired,
-  notifications: PropTypes.array.isRequired,
-  panelHeaderText: PropTypes.string.isRequired,
+  isSuperAdmin: PropTypes.bool.isRequired,
+  isSecondaryPanelOpen: PropTypes.bool.isRequired,
+  markAllProductNotificationsAsRead: PropTypes.func.isRequired,
+  onClearUserNotification: PropTypes.func.isRequired,
+  onToggleReadUserNotification: PropTypes.func.isRequired,
+  openClearAllUserNotificationsPrompt: PropTypes.bool.isRequired,
+  productNotifications: PropTypes.array.isRequired,
+  showProductNotifications: PropTypes.bool.isRequired,
+  showUserNotifications: PropTypes.bool.isRequired,
+  showProductNotificationsAsSecondaryPanel: PropTypes.bool.isRequired,
   toggleNotificationPanel: PropTypes.func.isRequired,
-  unreadNotificationCount: PropTypes.number.isRequired,
-  viewOlderLink: PropTypes.string,
-  viewOlderText: PropTypes.string.isRequired
+  toggleClearAllUserNotificationsPrompt: PropTypes.func.isRequired,
+  toggleProductNotificationsSecondaryPanel: PropTypes.func.isRequired,
+  userNotifications: PropTypes.array.isRequired,
+  unreadProductNotificationCount: PropTypes.number.isRequired,
+  unreadUserNotificationCount: PropTypes.number.isRequired,
+  viewOlderLink: PropTypes.string
 };
 
-export default cssModules(NotificationList, styles, { allowMultiple: true });
+export default connectLocalization(cssModules(NotificationList, styles, { allowMultiple: true }));

@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import WithLocalization from './WithLocalization';
 import FilterBar from './FilterBar/FilterBar';
 
-const HeaderApp = ({ translations, reduxStore }) => (
+const HeaderApp = ({ translations, store }) => (
   <WithLocalization translations={translations}>
-    <Provider store={reduxStore}>
+    <Provider store={store}>
       <FilterBar />
     </Provider>
   </WithLocalization>

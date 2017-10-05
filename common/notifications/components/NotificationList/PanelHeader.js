@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
+
+import connectLocalization from 'common/i18n/components/connectLocalization';
+
 import styles from './panel-header.scss';
-import I18n from 'common/i18n';
 
 class PanelHeader extends Component {
   renderNewNotificationsLabel() {
-    const { unreadCount } = this.props;
+    const {
+      unreadCount,
+      I18n
+    } = this.props;
 
     if (unreadCount > 0) {
       return (
         <em styleName='new-notifications-label'
           className='new-notifications-label'>
           {unreadCount}
-          {I18n.t('shared.site_chrome.notifications.new_label')}
+          &nbsp;
+          {I18n.t('shared_site_chrome_notifications.new_label')}
         </em>
       );
     }
@@ -36,6 +41,7 @@ class PanelHeader extends Component {
 
         <h3>
           {panelHeaderText}
+          &nbsp;
           {this.renderNewNotificationsLabel()}
         </h3>
 
@@ -56,4 +62,4 @@ PanelHeader.propTypes = {
   unreadCount: PropTypes.number.isRequired
 };
 
-export default cssModules(PanelHeader, styles);
+export default connectLocalization(cssModules(PanelHeader, styles));

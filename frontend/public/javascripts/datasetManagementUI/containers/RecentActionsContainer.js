@@ -46,7 +46,8 @@ export const shapeSources = sources =>
     : sources.map(source =>
         Activity.Source({
           createdAt: source.created_at || CREATED_AT_FALLBACK,
-          createdBy: source.created_by.display_name || CREATED_BY_FALLBACK
+          createdBy: source.created_by.display_name || CREATED_BY_FALLBACK,
+          ...source
         })
       );
 

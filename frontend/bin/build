@@ -76,7 +76,6 @@ if [ ! -f ${WORKSPACE}/frontend/config/locales/es.yml ]; then
 fi
 
 # Run tests (just running rake _should_ run all the tests, but this often fails)
-export CORE_SESSION=${CORE_SESSION:-'frontend-generated'}
 bundle exec rake test:units
 bundle exec rake test:functionals
 bundle exec rspec --no-color

@@ -1,0 +1,18 @@
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+}
+
+// Localing the modal css import into just these two selectors.
+#site-chrome-header, #site-chrome-admin-header {
+  @import '../../../../styleguide/variables/colors';
+  @import '../../../../styleguide/variables/grid';
+
+  // modal partial extends .h5 from partials/typography,
+  // instead of including everything from typography, just creating it
+  .h5 {
+    /*! keep */
+  }
+
+  @import '../../../../styleguide/partials/modal';
+}

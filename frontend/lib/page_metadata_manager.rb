@@ -91,6 +91,8 @@ class PageMetadataManager
 
     page_metadata[:permissions] = permissions.stringify_keys!
     page_metadata[:moderationStatus] = result[:moderationStatus]
+    page_metadata[:hideFromCatalog] = result[:hideFromCatalog]
+    page_metadata[:hideFromDataJson] = result[:hideFromDataJson]
     page_metadata[:shares] = View.new(result).shares
     page_metadata[:rights] = result[:rights]
     page_metadata[:provenance] = result[:provenance]
@@ -293,7 +295,7 @@ class PageMetadataManager
 
   # Page metadata keys we don't want in the inner page_metadata
   def self.keys_to_skip
-    %w(permissions moderationStatus shares rights displayType provenance ownerId parentLensId)
+    %w(permissions moderationStatus hideFromCatalog hideFromDataJson shares rights displayType provenance ownerId parentLensId)
   end
 
   def page_metadata_from_vif(vif, vif_lens_id, permissions)

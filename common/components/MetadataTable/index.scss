@@ -29,7 +29,8 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
           margin-left: 8px;
           
           .flag-icon {
-            font-size: 12px;
+            font-size: 15px;
+            line-height: 1.5;
           }
         }
       }

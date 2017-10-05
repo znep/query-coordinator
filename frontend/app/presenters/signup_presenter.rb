@@ -34,6 +34,13 @@ class SignupPresenter < Presenter
       if FeatureFlags.derive[:enable_new_account_verification_email]
         begin
           user.create(inviteToken, authToken)
+
+          # if authToken is present, they are coming from a future account
+          # this means that they don't need to verify their email and can just be logged in
+          if authToken
+            login!
+          end
+
           return true
         rescue CoreServer::CoreServerError => e
           @errors[:core] << e.error_message

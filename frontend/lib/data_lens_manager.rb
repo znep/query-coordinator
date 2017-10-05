@@ -100,7 +100,8 @@ class DataLensManager
   # Saves page metadata.
   def persist_data_lens(category, page_metadata)
     # NOTE: Category is not validated. If category is not present in the
-    # domain's defined categories, the category will be ignored by core.
+    # domain's defined categories, core _will_ allow this invalid category
+    # to be persisted.
     url = '/views.json?accessType=WEBSITE'
     payload = {
       :name => page_metadata[:name],
@@ -140,8 +141,17 @@ class DataLensManager
     new_page_id = payload_with_id[:id]
     payload_with_id[:displayFormat][:data_lens_page_metadata][:pageId] = new_page_id
 
-    if page_metadata.has_key?(:moderationStatus)
+    if page_metadata.key?(:moderationStatus)
       payload_with_id[:moderationStatus] = page_metadata[:moderationStatus]
+      payload_with_id[:hideFromCatalog] = !page_metadata[:moderationStatus]
+      payload_with_id[:hideFromDataJson] = !page_metadata[:moderationStatus]
+    elsif page_metadata.key?(:hideFromCatalog) && page_metadata.key?(:hideFromDataJson)
+      payload_with_id[:hideFromCatalog] = page_metadata[:hideFromCatalog]
+      payload_with_id[:hideFromDataJson] = page_metadata[:hideFromDataJson]
+    else
+      # If there's no moderationStatus, that means it's pending, and should be hidden
+      payload_with_id[:hideFromCatalog] = true
+      payload_with_id[:hideFromDataJson] = true
     end
 
     update(new_page_id, payload_with_id)

@@ -59,19 +59,19 @@ describe('components/UploadSidebar', () => {
   });
 
   it('shows previous sources', () => {
-    assert.equal(component.find('h2').last().text(), 'Other Uploads');
+    assert.equal(component.find('h2').last().text(), 'Other data sources');
     assert.equal(component.find('ul').last().length, 1);
   });
 
   it("hides previous sources if there aren't any", () => {
     const newProps = dotProp.set(defaultProps, 'otherUploads', []);
     const component = shallow(<UploadSidebar {...newProps} />);
-    assert.isFalse(component.find('h2').last.text === 'Other Uploads');
+    assert.isFalse(component.find('h2').last.text === 'Other data sources');
   });
 
   it('shows no sources message if there are no sources', () => {
     const newProps = { entities: {}, params: {}, currentUpload: null, otherUploads: [] };
     const component = shallow(<UploadSidebar {...newProps} />);
-    assert.equal(component.find('span').text(), 'No uploads yet');
+    assert.equal(component.find('span').text(), 'No data sources yet');
   });
 });

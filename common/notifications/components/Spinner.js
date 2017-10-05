@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import cssModules from 'react-css-modules';
+
 import styles from './spinner.scss';
 
 class Spinner extends PureComponent {

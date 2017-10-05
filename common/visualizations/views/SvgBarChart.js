@@ -1477,7 +1477,13 @@ function SvgBarChart($element, vif, options) {
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
         if (!isCurrentlyPanning()) {
-          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked);
+          const underlayWidth = parseInt($(this).attr('width'), 10);
+          const flyoutOffset = {
+            left: $(this).offset().left + (underlayWidth / 2),
+            top: d3.event.pageY
+          };
+
+          self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked, flyoutOffset);
           $(this).attr('fill-opacity', 1);
         }
       }).

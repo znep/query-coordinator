@@ -65,6 +65,12 @@ export const closeEditMenu = () => ({
   type: CLOSE_EDIT_MENU
 });
 
+export const UPDATE_NAME = 'UPDATE_NAME';
+export const updateName = (data) => ({
+  type: UPDATE_NAME,
+  data
+});
+
 export const UPDATE_NAME_AND_DESCRIPTION = 'UPDATE_NAME_AND_DESCRIPTION';
 export const updateNameAndDescription = (data) => ({
   type: UPDATE_NAME_AND_DESCRIPTION,

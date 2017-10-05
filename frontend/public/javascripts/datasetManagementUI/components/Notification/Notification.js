@@ -24,7 +24,16 @@ class Notification extends Component {
   }
 
   render() {
-    const { status, progressBar, percentCompleted, message, children, removeNotification, id } = this.props;
+    const {
+      status,
+      progressBar,
+      percentCompleted,
+      message,
+      children,
+      removeNotification,
+      id,
+      isInfinite
+    } = this.props;
     const { detailsOpen } = this.state;
     let classNames = [styles.notification];
     let statusIcon;
@@ -42,7 +51,12 @@ class Notification extends Component {
         break;
       case 'inProgress':
         classNames = [...classNames, styles.inProgress].join(' ');
-        statusIcon = <span className={styles.progressIcon}>{`${Math.round(percentCompleted)}%`}</span>;
+        if (isInfinite) {
+          statusIcon = <span className={styles.progressIcon}></span>;
+        } else {
+          statusIcon = <span className={styles.progressIcon}>{`${Math.round(percentCompleted)}%`}</span>;
+        }
+
         break;
       case 'error':
         classNames = [...classNames, styles.error].join(' ');
@@ -106,8 +120,9 @@ Notification.propTypes = {
   percentCompleted: PropTypes.number,
   children: PropTypes.object,
   message: PropTypes.object.isRequired,
-  id: PropTypes.string,
-  removeNotification: PropTypes.func.isRequired
+  id: PropTypes.number,
+  removeNotification: PropTypes.func.isRequired,
+  isInfinite: PropTypes.bool
 };
 
 export default Notification;

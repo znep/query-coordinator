@@ -106,9 +106,9 @@ describe('reducers/view', () => {
 
   describe('ON_SUBSCRIPTION_CHANGE', () => {
     it('sets subscribed to false', () => {
-      state = reducer(state, onSubscriptionChange());
+      state = reducer(state, onSubscriptionChange(null));
       assert.isFalse(state.subscribed);
-      assert.isUndefined(state.subscriptionId);
+      assert.isNull(state.subscriptionId);
     });
 
     it('sets subscribed to true', () => {
@@ -120,9 +120,9 @@ describe('reducers/view', () => {
 
   describe('CHECK_SUBSCRIPTION_ON_LOAD', () => {
     it('sets subscribed to false', () => {
-      state = reducer(state, checkSubscriptionOnLoad());
+      state = reducer(state, checkSubscriptionOnLoad(null));
       assert.isFalse(state.subscribed);
-      assert.isUndefined(state.subscriptionId);
+      assert.isNull(state.subscriptionId);
     });
 
     it('sets subscribed to true', () => {
@@ -136,7 +136,7 @@ describe('reducers/view', () => {
     it('sets subscribed to false', () => {
       state = reducer(state, handleCheckSubscriptionOnLoadError());
       assert.isFalse(state.subscribed);
-      assert.isUndefined(state.subscriptionId);
+      assert.isNull(state.subscriptionId);
     });
   });
 

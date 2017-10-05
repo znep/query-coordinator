@@ -8,6 +8,15 @@ import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './UploadSidebar.scss';
 
+function titleOf(source) {
+  if (source.source_type.type === 'url') return source.source_type.url;
+  return source.source_type.filename;
+}
+
+function descriptionOf(source) {
+  return source.content_type;
+}
+
 const UploadItem = ({ entities, source, params }) => {
   const outputSchema = Selectors.latestOutputSchemaForSource(entities, source.id);
 
@@ -17,7 +26,8 @@ const UploadItem = ({ entities, source, params }) => {
 
   return (
     <li>
-      <Link to={linkTarget}>{source.source_type && source.source_type.filename}</Link>
+      <Link to={linkTarget}>{titleOf(source)}</Link>
+      <p>{descriptionOf(source)}</p>
       <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
     </li>
   );

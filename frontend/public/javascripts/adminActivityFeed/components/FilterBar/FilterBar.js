@@ -151,7 +151,7 @@ export class FilterBar extends Component {
       return (
         <span className="picklist-title" key={index}>
           {icon}
-          {option.title}
+          <span className="picklist-label">{option.title}</span>
         </span>
       );
     };

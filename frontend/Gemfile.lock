@@ -10,6 +10,7 @@ PATH
       rails (~> 4.2.6, ~> 4.2)
       request_store
       sass
+      signaller-ruby (~> 0.8.2)
 
 GEM
   remote: https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/
@@ -79,7 +80,7 @@ GEM
     cetera-ruby (0.5.2)
       addressable (~> 2.3)
       httparty (~> 0.13)
-    chroma (0.1.0)
+    chroma (0.2.0)
     cistern (2.7.2)
     clipboard (1.1.1)
     codeclimate-engine-rb (0.4.0)
@@ -480,6 +481,9 @@ DEPENDENCIES
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
+
+RUBY VERSION
+   ruby 2.3.5p376
 
 BUNDLED WITH
    1.15.4

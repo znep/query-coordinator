@@ -50,18 +50,10 @@ class CoreManagedUserSession
     end
 
     def expiration_from_core_cookie(cookie_header)
-      cookie_value = cookie_value_from_cookie(::CoreServer::Connection::COOKIE_NAME, cookie_header)
-      core_data = ::CoreSession.unmangle_core_session_from_cookie(cookie_value)
-
-      if core_data.nil?
-        CGI::Cookie.parse(cookie_header).each do |key, value|
-          if key == ::CoreServer::Connection::COOKIE_NAME
-            return value.expires
-          end
+      CGI::Cookie.parse(cookie_header).each do |key, value|
+        if key == ::CoreServer::Connection::COOKIE_NAME
+          return value.expires
         end
-      else
-        expiration = core_data.to_s.split.fetch(1, -1).to_i # -1 returned if item at index 1 unavailable
-        expiration < 0 ? expiration : expiration - Time.now.to_i
       end
     end
 

@@ -2033,7 +2033,7 @@ class View < Model
       :name => name,
       :rowLabel => {
         :one => canvas_row_label,
-        :other => canvas_row_label.pluralize(2)
+        :other => canvas_row_label.pluralize(I18n.locale)
       },
       :path => Rails.application.routes.url_helpers.view_path(self)
     }

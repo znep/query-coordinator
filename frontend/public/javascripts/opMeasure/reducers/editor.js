@@ -1,8 +1,11 @@
 import _ from 'lodash';
 
-import * as actions from '../actions/editor';
+import { assertIsNumber } from 'common/js_utils';
+import actions from '../actions';
 
 // Convenience mutator for the measure being edited.
+// warning: _.merge will ignore undefined values so in the scenario where a value is
+// 'unset', it is best to explicitly pass in null which _is_ handled by _.merge
 const updateMeasureProperty = (state, propertyPath, value) => ({
   ...state,
   measure: _.merge({}, state.measure, _.set({}, propertyPath, value))
@@ -23,29 +26,58 @@ export default (state = initialState(), action) => {
   }
 
   switch (action.type) {
-    case actions.RECEIVE_DATA_SOURCE:
-      return updateMeasureProperty(state, 'metric.dataSource', action.dataSource);
+    case actions.editor.SET_DATA_SOURCE_UID: {
+      const newState = { ...state };
+      _.set(newState, 'measure.metric.dataSource', {
+        uid: action.uid
+      });
+      return newState;
+    }
+    case actions.editor.RECEIVE_DATA_SOURCE_ROW_COUNT:
+      assertIsNumber(action.rowCount);
+      return updateMeasureProperty(state, 'metric.dataSource.rowCount', action.rowCount);
 
-    case actions.SET_ANALYSIS:
+    case actions.editor.SET_CALCULATION_TYPE:
+      // Changing type clears everything other than the data source -
+      // should we revisit this when we have more than one calculation type implemented?
+      return updateMeasureProperty(state, 'metric', {
+        type: action.calculationType,
+        dataSource: _.get(state, 'measure.metric.dataSource')
+      });
+
+    case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);
 
-    case actions.SET_METHODS:
+    case actions.editor.TOGGLE_EXCLUDE_NULL_VALUES: {
+      const currentValue = _.get(state, 'measure.metric.arguments.excludeNullValues');
+      return updateMeasureProperty(state, 'metric.arguments.excludeNullValues', !currentValue);
+    }
+    case actions.editor.SET_DECIMAL_PLACES:
+      return updateMeasureProperty(state, 'metric.display.decimalPlaces', action.places);
+
+    case actions.editor.SET_UNIT_LABEL:
+      return updateMeasureProperty(state, 'metric.label', action.label);
+
+    case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 
-    case actions.CLONE_MEASURE:
-      return {
+    case actions.editor.OPEN_EDIT_MODAL: {
+      let nextState = {
         ...state,
+        isEditing: true,
         measure: action.measure,
         pristineMeasure: action.measure
       };
 
-    case actions.OPEN_EDIT_MODAL:
-      return {
-        ...state,
-        isEditing: true
-      };
+      const currentType = _.get(nextState, 'measure.metric.type');
+      if (_.isEmpty(currentType)) {
+        nextState = updateMeasureProperty(nextState, 'metric.type', 'count');
+      }
 
-    case actions.CLOSE_EDIT_MODAL:
+      return nextState;
+    }
+    case actions.editor.CANCEL_EDIT_MODAL:
+    case actions.editor.ACCEPT_EDIT_MODAL_CHANGES:
       return {
         ...state,
         isEditing: false

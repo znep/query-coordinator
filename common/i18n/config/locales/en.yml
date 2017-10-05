@@ -118,11 +118,57 @@ en:
       notifications:
         error_text_html: "<strong>Sorry!</strong> We can't fetch notifications right now."
         product_updates: Product Updates
+        user_notifications: Notifications
         view_older: View Older News
-        mark_as_read: Mark As Read
+        mark_as_read: Mark as read
+        mark_as_unread: Mark as unread
+        clear_notification_text: Clear this notification
+        clear_all_text: Clear All
+        clear_all_confirm: Are you sure you want to Clear All? This removes all the items from the list.
+        clear_all_confirm_no: "No"
+        clear_all_confirm_yes: "Yes"
         new_label: New
+        by_label: by
+        no_filtered_notifications: No notifications to show
+        setting: Settings
         no_unread_notifications: You have no unread notifications
         has_unread_notifications: You have unread notifications
+        filter_all_notifications_tab_text: all
+        filter_status_notifications_tab_text: status
+        filter_alert_notifications_tab_text: alert
+        alert_setting_modal:
+          subscribe_email: Subscribe to email notifications
+          tab:
+            notification: Notifications & Alerts
+          table_header:
+            feature: FEATURE
+            product_alerts: IN-PRODUCT ALERTS
+            email_notifications: EMAIL NOTIFICATIONS
+          watch_list:
+            title: Watch List
+            description: "Notify me when updates are made to my Watched assets; manage these items in the Watch List"
+          all_assets:
+            title: All Assets
+            description: Notify me when any assets are modified
+            meta_data_change: Metadata changes
+            schema_change: Schema changes
+            data_change: Data changes
+            permission_change: Changes to asset permissions
+            collaborators_change: Changes to asset collaborators
+          user_accounts:
+            title: User Accounts
+            description: "Notify me of any user account activity: created, deleted, role modified"
+          delete_assets:
+            title: Delete Assets
+            description: Notify me when my asset is deleted
+          my_assets:
+            title: My Assets
+            description: "Notify me when my assets are modified: published, deleted, or updated"
+          routing_and_approval:
+            title: "Routing & Approval"
+            asset_review: Notify me when any asset is published and submitted for review
+            asset_approved: Notify me when any asset is approved
+            asset_rejected: Notify me when any asset is rejected
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

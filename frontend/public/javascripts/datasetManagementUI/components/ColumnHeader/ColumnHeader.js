@@ -49,15 +49,29 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
-    this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.outputColumn);
+
+    if (this.isInProgress()) return;
+    this.props.validateThenSetRowIdentifier(
+      this.props.outputSchema,
+      this.props.outputColumn
+    );
   }
 
   onGeocode() {
     this.props.showShortcut('geocode');
   }
 
+  isInProgress() {
+    const transform = this.props.outputColumn.transform;
+    if (transform) {
+      return !transform.completed_at;
+    }
+    return false;
+  }
+
   optionsFor() {
-    if (this.props.outputColumn.ignored) {
+    const column = this.props.outputColumn;
+    if (column.ignored) {
       return [
         {
           title: 'import_column',
@@ -68,7 +82,7 @@ export class ColumnHeader extends Component {
         {
           title: 'set_row_id',
           value: 'onRowId',
-          icon: 'socrata-icon-question',
+          icon: 'socrata-icon-id',
           disabled: true,
           render: DropdownWithIcon
         }
@@ -79,14 +93,14 @@ export class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
-        disabled: this.props.outputColumn.is_primary_key,
+        disabled: column.is_primary_key,
         render: DropdownWithIcon
       },
       {
         title: 'set_row_id',
         value: 'onRowId',
-        icon: 'socrata-icon-question',
-        disabled: this.props.outputColumn.is_primary_key,
+        icon: 'socrata-icon-id',
+        disabled: column.is_primary_key || this.isInProgress(),
         render: DropdownWithIcon
       },
       {

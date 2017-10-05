@@ -586,7 +586,6 @@
       var grantDeleted = function() {
         ds.grants = _.reject(ds.grants || [], function(g) {
           return (!$.isBlank(grant.userId) && grant.userId == g.userId) ||
-            (!$.isBlank(grant.groupUid) && grant.groupUid == g.groupUid) ||
             (!$.isBlank(grant.userEmail) && grant.userEmail == g.userEmail);
         });
         if (_.isFunction(successCallback)) {
@@ -4135,6 +4134,8 @@
       displayFormat: true,
       displayType: true,
       flags: true,
+      hideFromCatalog: true,
+      hideFromDataJson: true,
       iconUrl: true,
       id: true,
       licenseId: true,

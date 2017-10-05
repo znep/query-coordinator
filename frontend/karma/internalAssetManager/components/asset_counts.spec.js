@@ -42,7 +42,7 @@ describe('components/AssetCounts', () => {
     const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps({
       assetCounts: {
         charts: 1,
-        datalenses: 1,
+        'datalenses,visualizations': 1,
         datasets: 1,
         filters: 1,
         hrefs: 1,
@@ -51,7 +51,7 @@ describe('components/AssetCounts', () => {
       }
     }));
     assert.equal(element.querySelector('.asset-counts-item.charts .item-name').textContent, 'Chart');
-    assert.equal(element.querySelector('.asset-counts-item.datalenses .item-name').textContent, 'Data Lens');
+    assert.equal(element.querySelector('.asset-counts-item.datalensesAndVisualizations .item-name').textContent, 'Data Lens');
     assert.equal(element.querySelector('.asset-counts-item.datasets .item-name').textContent, 'Dataset');
     assert.equal(element.querySelector('.asset-counts-item.hrefs .item-name').textContent, 'External Dataset');
     assert.equal(element.querySelector('.asset-counts-item.filters .item-name').textContent, 'Filtered View');
@@ -63,7 +63,7 @@ describe('components/AssetCounts', () => {
     const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps({
       assetCounts: {
         charts: 3,
-        datalenses: 3,
+        'datalenses,visualizations': 3,
         datasets: 3,
         filters: 3,
         hrefs: 3,
@@ -72,7 +72,7 @@ describe('components/AssetCounts', () => {
       }
     }));
     assert.equal(element.querySelector('.asset-counts-item.charts .item-name').textContent, 'Charts');
-    assert.equal(element.querySelector('.asset-counts-item.datalenses .item-name').textContent, 'Data Lenses');
+    assert.equal(element.querySelector('.asset-counts-item.datalensesAndVisualizations .item-name').textContent, 'Data Lenses');
     assert.equal(element.querySelector('.asset-counts-item.datasets .item-name').textContent, 'Datasets');
     assert.equal(element.querySelector('.asset-counts-item.hrefs .item-name').textContent, 'External Datasets');
     assert.equal(element.querySelector('.asset-counts-item.filters .item-name').textContent, 'Filtered Views');

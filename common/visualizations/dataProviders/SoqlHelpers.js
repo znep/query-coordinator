@@ -49,6 +49,27 @@ function dimensionAlias() {
  *
  * Note: Only works with VIF versions >= 2
  */
+function grouping(vif, seriesIndex) {
+  const columnName = _.get(
+    vif.series[seriesIndex],
+    'dataSource.dimension.grouping.columnName'
+  );
+  return '`{0}`'.format(columnName);
+}
+
+/**
+ * Returns a safe alias for all grouping SoQL references.
+ */
+function groupingAlias() {
+  return '__grouping_alias__';
+}
+
+/**
+ * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * Note: Only works with VIF versions >= 2
+ */
 function measure(vif, seriesIndex) {
   var aggregationFunction = _.get(
     vif.series[seriesIndex],
@@ -250,6 +271,10 @@ function filterToWhereClauseComponent(filter) {
       return timeRangeWhereClauseComponent(filter);
     case 'valueRange':
       return valueRangeWhereClauseComponent(filter);
+    case 'in':
+      return inWhereClauseComponent(filter);
+    case 'not in':
+      return notInWhereClauseComponent(filter);
     case 'noop':
       return noopWhereClauseComponent(filter);
     default:
@@ -615,6 +640,30 @@ function valueRangeWhereClauseComponent(filter) {
   );
 }
 
+function inWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments'
+  );
+  return '{0} IN ({1})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    filter.arguments.map((arg) => { return soqlEncodeValue(arg); }).join(', ')
+  );
+}
+
+function notInWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments'
+  );
+  return '{0} NOT IN ({1})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    filter.arguments.map((arg) => { return soqlEncodeValue(arg); }).join(', ')
+  );
+}
+
 function noopWhereClauseComponent() {
   return '';
 }
@@ -622,12 +671,14 @@ function noopWhereClauseComponent() {
 module.exports = {
   dimension,
   dimensionAlias,
+  grouping,
+  groupingAlias,
+  measure,
+  measureAlias,
   errorBarsLower,
   errorBarsLowerAlias,
   errorBarsUpper,
   errorBarsUpperAlias,
-  measure,
-  measureAlias,
   aggregationClause,
   orderByClauseFromSeries,
   whereClauseNotFilteringOwnColumn,

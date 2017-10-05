@@ -7,6 +7,7 @@ import SocrataVisualizations from 'common/visualizations';
 
 import I18n from './I18n';
 import Actions from './Actions';
+import Autosave from './Autosave';
 import DragDrop from './DragDrop';
 import GoalMigrationRunner from './GoalMigrationRunner';
 import ErrorReporter from '../services/ErrorReporter';
@@ -63,6 +64,7 @@ if (!shouldMigrateGoal) {
 }
 
 (new ErrorReporter());
+(new Autosave(STORY_UID));
 
 if (!IS_GOAL) {
   // TODO: Why is this being called from index? Can the store manage it itself?

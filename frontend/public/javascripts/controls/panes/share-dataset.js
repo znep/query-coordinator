@@ -3,7 +3,6 @@
   var createGrantObject = function($line) {
     return {
       userId: $line.attr('data-uid'),
-      groupUid: $line.attr('data-gid'),
       userEmail: $line.attr('data-email'),
       type: $line.find('.type').val().toLowerCase()
     };
@@ -42,23 +41,6 @@
           shareType: grant.type,
           shareInherited: grant.inherited
         });
-        // a group, so we need to grab the group info from core
-      } else if (!$.isBlank(grant.groupUid)) {
-        $.socrataServer.makeRequest({
-          url: '/api/groups/' + grant.groupUid + '.json',
-          cache: false,
-          type: 'GET',
-          data: {},
-          batch: true,
-          success: function(response) {
-            shares.push($.extend({}, response, {
-              shareType: grant.type,
-              shareInherited: grant.inherited,
-              displayName: response.name,
-              groupUid: grant.groupUid
-            }));
-          }
-        });
       }
     });
 
@@ -74,7 +56,6 @@
           '.name': 'displayName!',
           '.name@title': 'displayName!',
           'li@data-uid': 'userId',
-          'li@data-gid': 'groupUid',
           'li@data-currtype': 'shareType',
           'li@data-email': 'userEmail',
           'li@class+': function(a) {
@@ -88,14 +69,6 @@
         if (!$.isBlank(share.profileImageUrlSmall)) {
           $li.find('.profileImage').css('background-image',
             'url(' + share.profileImageUrlSmall + ')');
-        } else if (!$.isBlank(share.groupUid)) {
-          // TODO EN-7080 replace following hack with proper group icon
-          $li.find('.profileImage').css({
-            'background-image': 'url(/stylesheets/images/icons/profile_icons.png)',
-            'background-position-y': '73px',
-            'background-size': '27px'
-          });
-          // END OF DIRTY HACK
         }
 
         $ul.append($li);

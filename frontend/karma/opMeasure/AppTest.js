@@ -7,7 +7,7 @@ import { getStore } from './testStore';
 
 describe('App', () => {
   it('renders', () => {
-    const element = renderComponent(App, { store: getStore({}) });
+    const element = renderComponentWithStore(App);
     assert.ok(element);
   });
 
@@ -21,7 +21,7 @@ describe('App', () => {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
     });
 
     it('renders an edit bar', () => {
@@ -54,7 +54,7 @@ describe('App', () => {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
     });
 
     it('does not render an edit bar', () => {
@@ -87,7 +87,7 @@ describe('App', () => {
         }
       });
 
-      element = renderComponent(App, { store });
+      element = renderComponentWithStore(App, {}, store);
     });
 
     it('does not render an edit bar', () => {

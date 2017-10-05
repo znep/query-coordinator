@@ -3,10 +3,6 @@ import { Provenance} from 'components/provenance';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/provenance', () => {
-  before(() => {
-    FeatureFlags.useTestFixture({ enable_internal_asset_manager_my_assets: true });
-  });
-
   describe('when disable_authority_badge is "none"', () => {
     beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'none' }));
 

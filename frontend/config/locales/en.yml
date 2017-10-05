@@ -1613,7 +1613,6 @@ en:
       dateISO: Please enter a valid date (ISO).
       digits: Please enter only digits.
       email: Please enter a valid email address.
-      email_recipient: Please enter a valid email address or choose a group.
       equalTo: Please enter the same value again.
       max: Please enter a value less than or equal to {0}.
       maxlength: Please enter no more than {0} characters.
@@ -1994,6 +1993,12 @@ en:
       home_pane_sidebar:
         manage: Manage
         recent_actions: Recent Actions
+        added_a_url_source: added a URL source
+        added_an_upload: uploaded a file
+        processing_failed: Data processing failed
+        processing_succeeded: Data processing successfully finished
+        started_processing: started data processing
+        opened_revision: opened a revision
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2069,6 +2074,7 @@ en:
     manage_uploads:
       failed: "{filename} (failed: {status})"
       new_file: Upload a New File
+      new_url_source: Import from a URL
       previous: Previous uploads
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
@@ -2111,8 +2117,10 @@ en:
       title: Not Found
     notifications:
       connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
-      connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
-      connection_error_body_description: Something went wrong when trying to upload the file {0}.
+      connection_error_body_advice_upload: Check your internet connection and make sure to keep your browser window open while the file is uploading.
+      connection_error_body_advice_url: Check that the file is publicly accessible on the internet.
+      connection_error_body_description_upload: Something went wrong when trying to upload the file {0}.
+      connection_error_body_description_url: Something went wrong when trying to fetch the file {0}.
       connection_error_title: Lost Connection
       error: Error
       hide_details: Hide Details
@@ -2122,7 +2130,15 @@ en:
       show_details: View Details
       success: Success!
       upload_failed: Upload Failed
+      url_failed: Fetching URL Failed
       uploading: Uploading
+      fetching: Fetching
+      non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
+    import_from_url:
+      title: Import From URL
+      unknown_error: An unknown error occurred
+      url_prompt: Enter the URL of a data file hosted by an external service.
+      start_import: Start Import
     show_output_schema:
       additional_errors:
         singular: Additional error
@@ -2234,11 +2250,12 @@ en:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
-      no_uploads: No uploads yet
-      noncurrent: Other Uploads
+      no_uploads: No data sources yet
+      noncurrent: Other data sources
       submessage: ...or click Browse to choose a file from your computer
-      uploads: Uploads
+      uploads: Data Sources
       title: Replace Data
+      from_url: URL Source
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.
@@ -2790,6 +2807,11 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
+    alert_messages:
+      visibility_changed:
+        body: This may take a few moments to take effect.
+        title_public: Visibility changed to public.
+        title_private: Visibility changed to private.
     all_assets_button: View All Assets
     asset_inventory_dataset_link:
       asset_inventory_dataset: Asset Inventory Dataset
@@ -2826,7 +2848,7 @@ en:
           calendars: Calendars
           charts: Charts
           datasets: Datasets
-          datalenses: Data Lens Pages
+          'datalenses,visualizations': Data Lens Pages
           external: External Datasets
           files: Files and Documents
           filtered: Filtered Views
@@ -2887,6 +2909,9 @@ en:
           one: Chart
           other: Charts
         datalenses:
+          one: Data Lens
+          other: Data Lenses
+        'datalenses,visualizations':
           one: Data Lens
           other: Data Lenses
         datasets:
@@ -3028,11 +3053,41 @@ en:
     edit: Edit
     edit_menu_label: Menu
     exit_preview_mode: Exit Preview Mode
+    calculation_types:
+      count: Count
+      sum: Sum
+      rate: Rate
+      recent_value: Recent Value
     measure:
       edit_modal:
         accept: Accept
         cancel: Cancel
         title: Configure Measure
+        calculation:
+          column_placeholder: column
+          data_source_needed: A data source is required for this calculation.
+          display_options:
+            decimal_places: Decimal Places
+            title: Display Options
+            unit_label: Unit Label
+            unit_label_placeholder: Per ...
+          formula: Formula
+          sample_result: Sample Result
+          subtitle: Choose a calculation type and configure math options.
+          tab_title: Calculation
+          title: Metric Calculation
+          types:
+            count:
+              exclude_nulls: Exclude Null Values
+              help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
+              help_title: Help with Count
+              title: Count Options
+        data_source:
+          tab_title: Data Source
+        general_info:
+          tab_title: General Info
+        methods_and_analysis:
+          tab_title: Methods and Analysis
       reporting_period: Reporting Period
     preview: Preview
     render_error: There was a problem rendering this page.
@@ -3178,6 +3233,8 @@ en:
         name: Update a site's internal configurations (proceed with caution)
       create_dashboards:
         name: Create performance dashboards
+      create_data_lens:
+        name: Create Data Lens pages
       create_datasets:
         name: Create new datasets, charts, maps, and other views
       create_pages:
@@ -3185,7 +3242,7 @@ en:
       create_story:
         name: Create new stories
       create_story_copy:
-        name: Make a copy of an exisitng story
+        name: Make a copy of an existing story
       delete_story:
         name: Delete stories from site
       edit_dashboards:
@@ -3216,8 +3273,10 @@ en:
         name: Review and approve assets submitted for 'open' release
       manage_provenance:
         name: Update an asset's provenance (community/official) via API
+      manage_spatial_lens:
+        name: Configure custom map boundaries for Data Lens maps
       manage_stories:
-        name: Manage Stories
+        name: Manage stories
       manage_story_public_version:
         name: Manage publishing status of stories
       manage_story_collaborators:
@@ -3229,11 +3288,11 @@ en:
       moderate_comments:
         name: Approve or reject community comments on assets
       short_session:
-        name: Require users to be signed out after 15 minutes of inactivity
+        name: Users automatically signed out after 15 minutes of inactivity
       use_data_connectors:
         name: Add, remove, and manage external data connectors and federations
       view_all_dataset_status_logs:
-        name: View log of data updates
+        name: View activity log of site events
       view_dashboards:
         name: View performance dashboards
       view_domain:
@@ -3245,7 +3304,7 @@ en:
       view_story:
         name: View all published stories
       view_stories_stats:
-        name: View stats around stories
+        name: View usage statistics for stories
       view_unpublished_story:
         name: View 'draft' versions of all existing stories
   screens:
@@ -4015,7 +4074,7 @@ en:
                 default: Default
           description:
             title: Platform User Roles
-            content: There are five standard user roles on the Socrata platform. In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package.
+            content: This table summarizes who can do what on your site. You can review your site's default user roles here or create new custom roles to define which actions specific roles can take.
           edit_controls:
             rename_role: Rename Role
             edit_role: Edit Role

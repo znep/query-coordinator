@@ -498,6 +498,12 @@ class AdministrationController < ApplicationController
     end
 
     view.moderationStatus = params[:approved] == 'yes'
+    # if this is a datalens, also set hideFromDataJson and hideFromCatalog
+    # to the opposite of whatever moderation status is
+    if view.data_lens?
+      view.hideFromCatalog = !view.moderationStatus
+      view.hideFromDataJson = !view.moderationStatus
+    end
     view.save!
 
     unless request.format.json?
@@ -1167,7 +1173,7 @@ class AdministrationController < ApplicationController
 
   def check_can_see_goals
     run_access_check do
-      current_user.present? && current_user.has_right?(UserRights::EDIT_GOALS)
+      current_user.present? && current_user.has_right?(UserRights::MANAGE_GOALS)
     end
   end
 

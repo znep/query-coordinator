@@ -7,18 +7,17 @@ import classNames from 'classnames';
 
 import { defaultHeaders, checkStatus } from 'common/http';
 
-import { closeModal } from 'actions/asset_actions';
+import * as assetActions from 'actions/asset_actions';
 import ChangeVisibility from './action_modals/change_visibility';
 import DeleteAsset from './action_modals/delete_asset';
 
 const initialReactState = (options = {}) => {
   return {
-    activeActionModal: null,
-    dropdownIsOpen: false,
-    fetchingPermissions: false,
-    failedPermissions: false,
-    verifiedPermissions: false,
     allowableActions: [],
+    dropdownIsOpen: false,
+    failedPermissions: false,
+    fetchingPermissions: false,
+    verifiedPermissions: false,
     ...options
   };
 };
@@ -115,7 +114,6 @@ export class ActionDropdown extends React.Component {
   }
 
   handleModalClose() {
-    this.setState({ activeActionModal: null });
     this.props.closeModal();
   }
 
@@ -127,8 +125,8 @@ export class ActionDropdown extends React.Component {
     }
   }
 
-  showActionModal(actionName) {
-    this.setState({ activeActionModal: actionName });
+  showActionModal(modalType, uid) {
+    this.props.showModal(modalType, uid);
   }
 
   renderDropdownOption(optionText, onClick, href = '#') {
@@ -158,6 +156,7 @@ export class ActionDropdown extends React.Component {
 
   renderChangeVisibilityMenuOption() {
     const { allowableActions } = this.state;
+    const { uid } = this.props;
 
     if (!_(allowableActions).includes('change_visibility')) {
       return null;
@@ -177,7 +176,7 @@ export class ActionDropdown extends React.Component {
       default:
         return this.renderDropdownOption(
           _.get(I18n, 'result_list_table.action_dropdown.change_visibility'),
-          () => this.showActionModal('changeVisibility')
+          () => this.showActionModal('changeVisibility', uid)
         );
     }
   }
@@ -187,7 +186,7 @@ export class ActionDropdown extends React.Component {
 
     if (_(allowableActions).includes('delete_asset')) {
       return this.renderDropdownOption(
-        this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset')
+        this.getTranslation('delete_asset'), () => this.showActionModal('deleteAsset', this.props.uid)
       );
     }
   }
@@ -261,13 +260,14 @@ export class ActionDropdown extends React.Component {
       uid
     };
 
-    // Keys must map to the name of the activeActionModal on the component state.
+    // Keys must map to the name of the activeActionModalType from the application state.
     const actionModals = {
       changeVisibility: <ChangeVisibility {...actionModalProps} />,
       deleteAsset: <DeleteAsset {...actionModalProps} />
     };
 
-    const renderedActionModal = actionModals[this.state.activeActionModal];
+    const renderedActionModal = this.props.activeActionForUid === uid ?
+      actionModals[this.props.activeActionModalType] : null;
 
     return (
       <div className="action-dropdown">
@@ -280,13 +280,22 @@ export class ActionDropdown extends React.Component {
 }
 
 ActionDropdown.propTypes = {
+  activeActionModalType: PropTypes.string,
+  activeActionForUid: PropTypes.string,
   assetType: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
+  showModal: PropTypes.func.isRequired,
   uid: PropTypes.string.isRequired
 };
 
-const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal())
+const mapStateToProps = (state) => ({
+  activeActionModalType: state.assetActions.activeActionModalType,
+  activeActionForUid: state.assetActions.activeActionForUid
 });
 
-export default connect(null, mapDispatchToProps)(ActionDropdown);
+const mapDispatchToProps = (dispatch) => ({
+  closeModal: () => dispatch(assetActions.closeModal()),
+  showModal: (modalType, uid) => dispatch(assetActions.showModal(modalType, uid))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActionDropdown);

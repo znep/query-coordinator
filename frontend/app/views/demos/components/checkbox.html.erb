@@ -1,0 +1,51 @@
+<% content_for :head do %>
+  <title>Example Usage: Checkbox</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section" id="checkbox">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Checkbox</h2>
+  <div class="styleguide-example">
+    <b>The checkbox MUST be in a &lt;form&gt; tag!</b>
+    <form id="checkbox-container"></form>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= render_demos_javascript_environment %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    let checked = false;
+    let children = [ 'Check me! ']
+
+    function onChange() {
+      checked = !checked;
+      children = [
+        checked ? 'Thanks!' : 'Hey why did you uncheck me?'
+      ];
+      go();
+    }
+
+    function go() {
+      const props = {
+        id: 'checkbox-1',
+        children,
+        checked,
+        onChange
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Checkbox, props),
+        document.getElementById('checkbox-container')
+      );
+    }
+
+    $(go);
+  </script>
+<% end %>

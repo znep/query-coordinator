@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '~> 4.2', '~> 4.2.6'
   s.add_dependency 'request_store'
   s.add_dependency 'sass'
+  s.add_dependency 'signaller-ruby', '~> 0.8.2'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

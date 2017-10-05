@@ -82,7 +82,7 @@ describe('containers/PublishingContainer', () => {
     it('returns dataSatisfied as true if dealing with a published dataset', () => {
       const newState = dotProp.set(
         state,
-        'entities.views.displayType',
+        `entities.views.${ownProps.params.fourfour}.displayType`,
         'tabular'
       );
 

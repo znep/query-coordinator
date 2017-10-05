@@ -12,12 +12,6 @@ module UserSessionsHelper
     url ||= profile_index_path # Fallback to SOMEthing
   end
 
-  def load_core_session(env)
-    fake_core_session = CoreSession.new(self, @env)
-    fake_core_session.pretend_loaded
-    controller.request.core_session = fake_core_session
-  end
-
   def password_validation_error?(error)
     /Your password must satisfy three of the following four criteria/.match(error).present?
   end

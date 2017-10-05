@@ -74,3 +74,11 @@
 div.publishing {
   z-index: 9000; // Allow interaction with the header bar.
 }
+
+.importFromURL {
+  :global {
+    .modal-container {
+      max-width: 768px;
+    }
+  }
+}

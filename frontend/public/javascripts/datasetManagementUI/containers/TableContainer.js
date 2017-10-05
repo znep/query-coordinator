@@ -48,7 +48,9 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
 };
 
 const redirectToNewOutputschema = (dispatch, params) => resp => {
-  dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
+  if (resp.resource) {
+    dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
+  }
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
@@ -78,7 +80,9 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       ),
 
     validateThenSetRowIdentifier: (outputSchema, column) =>
-      dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column)),
+      dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
 
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)

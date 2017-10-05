@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { changeTab } from '../actions/header';
 import AssetCounts from './asset_counts';
-import { FeatureFlags } from 'common/feature_flags';
 import { handleEnter } from 'common/helpers/keyPressHelpers';
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -32,21 +31,22 @@ export class Header extends React.Component {
 
   render() {
     const { page, isMobile } = this.props;
+    const rights = _.get(window.serverConfig, 'currentUser.rights');
 
     if (page === 'profile') {
       return null; // TODO: we may want to eventually show "My Assets" and "Shared to me" tabs.. TBD
     }
 
-    const myAssetsTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
-      this.renderTab('myAssets', _.get(I18n, 'header.asset_toggles.my_assets')) : null;
-    const sharedToMeTab = FeatureFlags.value('enable_internal_asset_manager_my_assets') ?
-      this.renderTab('sharedToMe', _.get(I18n, 'header.asset_toggles.shared_to_me')) : null;
+    const allAssetsTab = _.includes(rights, 'can_see_all_assets_tab_siam') ?
+      this.renderTab('allAssets', _.get(I18n, 'header.asset_toggles.all_assets')) : null;
+    const myAssetsTab = this.renderTab('myAssets', _.get(I18n, 'header.asset_toggles.my_assets'));
+    const sharedToMeTab = this.renderTab('sharedToMe', _.get(I18n, 'header.asset_toggles.shared_to_me'));
 
     const assetToggles = (
       <div className="asset-toggles">
         {myAssetsTab}
-          {sharedToMeTab}
-        {this.renderTab('allAssets', _.get(I18n, 'header.asset_toggles.all_assets'))}
+        {sharedToMeTab}
+        {allAssetsTab}
       </div>
     );
 

@@ -12,6 +12,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     domain: series.dataSource.domain
   }, true);
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
+  const grouping = SoqlHelpers.grouping(vif, seriesIndex);
   const measure = SoqlHelpers.measure(vif, seriesIndex);
   const errorBarsLower = SoqlHelpers.errorBarsLower(vif, seriesIndex);
   const errorBarsUpper = SoqlHelpers.errorBarsUpper(vif, seriesIndex);
@@ -35,6 +36,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     _.isNull(series.dataSource.dimension.aggregationFunction) &&
     _.isNull(series.dataSource.measure.aggregationFunction)
   );
+  const requireGroupingInSelect = vif.requireGroupingInSelect;
   // We only want to follow the showOtherCategory code path if that property
   // is set to true AND there is a defined limit.
   const showOtherCategory = (
@@ -71,10 +73,9 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       `${errorBarsUpper} AS ${errorBarsUpperAlias}`);
   }
 
+  // Note that we add one to the limit before making the query so that we can
+  // identify when an additional 'other' category query may be necessary.
   if (isUnaggregatedQuery) {
-
-    // Note that we add one to the limit before making the query so that we can
-    // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
       fields.join(', '),
@@ -83,10 +84,19 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       'NULL LAST',
       `LIMIT ${limit + 1}`
     ].join(' ');
+  } else if (requireGroupingInSelect) {
+    queryString = [
+      'SELECT',
+        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+        `${grouping} AS ${SoqlHelpers.groupingAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${groupByClause}, ${SoqlHelpers.groupingAlias()}`,
+      `ORDER BY ${orderByClause}`,
+      'NULL LAST',
+      `LIMIT ${limit + 1}`
+    ].join(' ');
   } else {
-
-    // Note that we add one to the limit before making the query so that we can
-    // identify when an additional 'other' category query may be necessary.
     queryString = [
       'SELECT',
       fields.join(', '),
@@ -104,54 +114,10 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias(),
       errorBarsLowerAlias,
-      errorBarsUpperAlias
-    ).
-    then((queryResponse) => {
-      const queryResponseRowCount = queryResponse.rows.length;
-      const queryResponseUniqueDimensionCount = _.uniq(
-        queryResponse.rows.map((row) => row[0])
-      ).length;
-
-      if (queryResponseRowCount !== queryResponseUniqueDimensionCount) {
-        const error = new Error();
-
-        error.errorMessages = [
-          I18n.t(
-            'shared.visualizations.charts.common.error_duplicated_dimension_value'
-          )
-        ];
-
-        throw error;
-      }
-
-      if (showOtherCategory) {
-
-        // This turns out to be quite involved, so it has its own function.
-        return augmentSocrataDataResponseWithOtherCategory(
-          vif,
-          seriesIndex,
-          maxRowCount,
-          queryResponse
-        );
-      } else {
-
-        // Take all but the last row since we request one more row than we
-        // actually want in order to test for the necessity of an 'other'
-        // category.
-        const actualRows = queryResponse.rows.slice(0, limit);
-        const response = {
-          columns: queryResponse.columns,
-          rows: actualRows
-        };
-
-        if (!_.isUndefined(queryResponse.errorBars)) {
-          response.errorBars = queryResponse.errorBars;
-        }
-
-        return Promise.resolve(response);
-      }
-    }).
-    then(mapQueryResponseToDataTable);
+      errorBarsUpperAlias,
+      (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
+    ).then(dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInSelect, showOtherCategory, limit))
+    .then(mapQueryResponseToDataTable);
 }
 
 /**
@@ -419,13 +385,66 @@ function augmentSocrataDataResponseWithOtherCategory(
     });
 }
 
+function dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInSelect, showOtherCategory, limit) {
+  return (queryResponse) => {
+    const queryResponseRowCount = queryResponse.rows.length;
+    const queryResponseUniqueDimensionCount = _.uniq(
+      queryResponse.rows.map((row) => row[0])
+    ).length;
+
+    if (!requireGroupingInSelect &&
+        (queryResponseRowCount !== queryResponseUniqueDimensionCount)) {
+      const error = new Error();
+
+      error.errorMessages = [
+        I18n.t(
+          'shared.visualizations.charts.common.error_duplicated_dimension_value'
+        )
+      ];
+
+      throw error;
+    }
+
+    if (showOtherCategory) {
+
+      // This turns out to be quite involved, so it has its own function.
+      return augmentSocrataDataResponseWithOtherCategory(
+        vif,
+        seriesIndex,
+        maxRowCount,
+        queryResponse
+      );
+    } else {
+
+      // Take all but the last row since we request one more row than we
+      // actually want in order to test for the necessity of an 'other'
+      // category.
+      const actualRows = queryResponse.rows.slice(0, limit);
+      const response = {
+        columns: queryResponse.columns,
+        rows: actualRows
+      };
+
+      if (!_.isUndefined(queryResponse.errorBars)) {
+        response.errorBars = queryResponse.errorBars;
+      }
+
+      return Promise.resolve(response);
+    }
+  };
+}
+
 function mapQueryResponseToDataTable(queryResponse) {
   const dataTable = queryResponse;
   const dimensionIndex = dataTable.columns.indexOf(SoqlHelpers.dimensionAlias());
+  const groupingIndex = dataTable.columns.indexOf(SoqlHelpers.groupingAlias());
   const measureIndex = dataTable.columns.indexOf(SoqlHelpers.measureAlias());
 
   dataTable.columns[dimensionIndex] = 'dimension';
   dataTable.columns[measureIndex] = 'measure';
+  if (groupingIndex !== -1) {
+    dataTable.columns[groupingIndex] = 'grouping';
+  }
 
   dataTable.rows.forEach((row) => {
 
@@ -433,7 +452,14 @@ function mapQueryResponseToDataTable(queryResponse) {
       row[dimensionIndex] = null;
     }
 
+    if (groupingIndex !== -1) {
+      if (_.isUndefined(row[groupingIndex])) {
+        row[groupingIndex] = null;
+      }
+    }
+
     row[measureIndex] = getNumberValue(row[measureIndex]);
+
   });
 
   if (!_.isUndefined(dataTable.errorBars)) {

@@ -96,6 +96,8 @@ module.exports = function ManageLensDialogVisibilityController($q, $scope, $wind
 
   var postSave = function() {
     $scope.page.set('moderationStatus', $scope.visibilityDropdownSelection === 'approved');
+    $scope.page.set('hideFromCatalog', $scope.visibilityDropdownSelection != 'approved');
+    $scope.page.set('hideFromDataJson', $scope.visibilityDropdownSelection != 'approved');
   };
 
   Rx.Observable.subscribeLatest(

@@ -153,6 +153,7 @@
       display: inline-block;
       cursor: pointer;
       position: relative;
+      user-select: none;
     }
 
     .fake-checkbox {

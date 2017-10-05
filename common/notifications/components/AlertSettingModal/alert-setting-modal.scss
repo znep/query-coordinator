@@ -1,0 +1,96 @@
+@import '../../common.scss';
+
+$model-content-color: #696a6a;
+$divider-color: #e8eaeb;
+
+.alert-setting-modal {
+  color: $model-content-color;
+  text-align: left;
+
+  .modal-header h5.modal-header-title {
+    font-size: 20px;
+    font-weight: normal;
+  }
+
+  .alert-setting-modal-content {
+    table {
+      width: 100%;
+
+      & :global(.column-description) {
+        text-align: center;
+      }
+
+      tr {
+        padding: 10px 0px;
+        border-bottom: 1px solid $divider-color;
+
+        th {
+          font-weight: normal;
+          font-size: 13px;
+          padding: 5px 5px 5px 0px;
+        }
+
+        th:first-child, td:first-child {
+          padding-left: 0px;
+        }
+
+        td {
+          padding: 10px 0px;
+          vertical-align: middle;
+
+          &:first-child {
+            width: 55%;
+          }
+
+          .preference-name {
+            font-size: 14px;
+          }
+
+          .preference-description {
+            font-size: 12px;
+          }
+
+          .preference-types {
+            font-size: 12px;
+            position: relative;
+            padding: 4px 0px;
+
+            label {
+              display: block;
+              margin: 0 5px 5px 0;
+            }
+          }
+
+          .email-option {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  input[type=checkbox] {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+
+  .cancel-btn {
+    @extend .btn;
+    @extend .btn-default;
+  }
+
+  .save-btn {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+
+  .cancel-btn, .save-btn {
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 5px;
+    padding: 5px 10px;
+    text-align: center;
+    width: 70px;
+  }
+}

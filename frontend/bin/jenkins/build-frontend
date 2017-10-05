@@ -34,6 +34,7 @@ sudo chown jenkins ${HOME}/.npmrc
 cp Gemfile ${HOME}
 cp Gemfile.lock ${HOME}
 cp package.json ${HOME}
+cp .ruby-version ${HOME}
 
 rm -rf public/stylesheets/socrata-visualizations # test for EN-8509
 npm install && npm install

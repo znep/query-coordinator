@@ -10,7 +10,7 @@ import * as metrics from '../common/metrics';
 import airbrake from 'common/airbrake';
 import dslpCrossOriginErrorsFilter from 'common/airbrake/filters/dslp_cross_origin_errors';
 import store from './store';
-import App from './App';
+import Root from './root';
 import { AppContainer } from 'react-hot-loader';
 import DynamicContent from './DynamicContent';
 
@@ -34,18 +34,18 @@ _.defer(() => {
   try {
     ReactDOM.render(
       <AppContainer>
-        <App store={store} />
+        <Root store={store} />
       </AppContainer>,
       document.querySelector('#app')
     );
 
     // Hot Module Replacement API
     if (module.hot) {
-      module.hot.accept('./App', () => {
-        const NextApp = require('./App').default; //eslint-disable-line
+      module.hot.accept('./root', () => {
+        const NextRoot = require('./root').default; //eslint-disable-line
         ReactDOM.render(
           <AppContainer>
-            <NextApp store={store} />
+            <NextRoot store={store} />
           </AppContainer>,
           document.querySelector('#app')
         );

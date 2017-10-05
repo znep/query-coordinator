@@ -42,6 +42,10 @@ function Table({
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const showFlyouts = true;
   const numRowErrors = inputSchema.num_row_errors;
+  const canTransform = (
+    entities.sources[inputSchema.source_id] &&
+    !entities.sources[inputSchema.source_id].failed_at
+  );
   return (
     <table className={styles.table}>
       <thead>
@@ -49,6 +53,7 @@ function Table({
           {outputColumns.map(column =>
             <ColumnHeader
               key={column.id}
+              canTransform={canTransform}
               outputSchema={outputSchema}
               outputColumn={column}
               updateColumnType={updateColumnType}

@@ -103,32 +103,36 @@ function sideEffectyStuff(revision, sources, params) {
   return dispatch => {
     // partition failed and successful sources (ie uploads) since we only want
     // to insert into store and subscribe to row errors if it succeeded
-    const [failed, succeeded] = _.partition(sources, source => source.failed_at);
+    // const [failed, succeeded] = _.partition(sources, source => source.failed_at);
+    const sourceList = _.values(sources);
 
-    failed.forEach(source => dispatch(addNotification('source', source.id)));
+    sourceList
+      .filter(source => !!source.failed_at)
+      .forEach(source => dispatch(addNotification('source', source.id)));
 
-    const inputSchemas = _.flatMap(succeeded, source =>
-      source.schemas.map(schema => ({
+    sourceList.forEach(source => {
+      const inputSchemas = source.schemas.map(schema => ({
         ...schema,
         source_id: source.id
-      }))
-    );
+      }));
 
-    const outputSchemas = _.flatMap(inputSchemas, is => is.output_schemas);
+      inputSchemas.forEach(is => {
+        dispatch(insertInputSchema(is, is.source_id));
+        if (!source.failed_at) {
+          dispatch(subscribeToRowErrors(is));
+        }
+      });
 
-    inputSchemas.forEach(is => {
-      dispatch(insertInputSchema(is, is.source_id));
-      dispatch(subscribeToRowErrors(is));
-    });
+      const outputSchemas = _.flatMap(inputSchemas, is => is.output_schemas);
 
-    outputSchemas.forEach(os => {
-      const is = inputSchemas.find(schema => schema.id === os.input_schema_id);
-      dispatch(listenForOutputSchemaSuccess(os, is));
-    });
-
-    outputSchemas.forEach(os => {
-      dispatch(subscribeToOutputSchema(os));
-      dispatch(subscribeToTransforms(os));
+      outputSchemas.forEach(os => {
+        const is = inputSchemas.find(schema => schema.id === os.input_schema_id);
+        dispatch(listenForOutputSchemaSuccess(os, is));
+        if (!source.failed_at) {
+          dispatch(subscribeToOutputSchema(os));
+          dispatch(subscribeToTransforms(os));
+        }
+      });
     });
 
     revision.task_sets.forEach(taskSet => {

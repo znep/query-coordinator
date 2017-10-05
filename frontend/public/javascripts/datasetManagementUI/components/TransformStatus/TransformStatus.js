@@ -65,8 +65,9 @@ export class TransformStatus extends Component {
   determineColStatus(isIgnored, transform, totalRows) {
     // TODO delete this when dsmapi pr goes in
     const oldDoneCheck = transform.contiguous_rows_processed === totalRows;
-
-    if (isIgnored) {
+    if (transform.failed_at) {
+      return 'failed';
+    } else if (isIgnored) {
       return 'isIgnored';
     } else if (transform.completed_at || oldDoneCheck) {
       return 'done';
@@ -113,6 +114,11 @@ export class TransformStatus extends Component {
     let extraProps = {};
 
     switch (colStatus) {
+      case 'failed':
+        thClasses = styles.failedColumn;
+        progressbarPercent = 0;
+        statusTextMessage = SubI18n.transform_failed;
+        break;
       case 'isIgnored':
         thClasses = styles.disabledColumn;
         progressbarPercent = 100;

@@ -69,3 +69,7 @@
   composes: empty from global;
   composes: base;
 }
+
+.transformFailed {
+  opacity: 0.5;
+}

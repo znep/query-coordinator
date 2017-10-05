@@ -2144,6 +2144,10 @@ en:
         singular: Additional error
         plural: Additional errors
       click_to_view: Click to view
+      fatal_error:
+        unknown_error: An unknown error occurred
+        source_error: There was an error with the data source
+        transform_error: There was an unexpected error with the following expression
       geocode_shortcut:
         title: Georeference your dataset
         none: None

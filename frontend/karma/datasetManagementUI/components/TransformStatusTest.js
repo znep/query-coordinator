@@ -63,6 +63,19 @@ describe('components/TransformStatus', () => {
       );
     });
 
+    it('has a failedColumn class when the transform has a failed_at', () => {
+      const props = {
+        ...defaultProps,
+        transform: {
+          failed_at: new Date()
+        }
+      };
+
+      const component = shallow(<TransformStatus {...props} />);
+
+      assert.isTrue(component.hasClass('failedColumn'));
+    });
+
     it('renders correctly when source is in progress, column is in progress', () => {
       const props = {
         ...defaultProps,

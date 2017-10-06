@@ -70,10 +70,8 @@ describe('ManageLensDialogOwnershipController', function() {
 
     testHelpers.TestDom.append('<input class="ownership-input">');
 
-    currentUserStub = sinon.stub(UserSessionService, 'getCurrentUser$').callsFake(_.constant(
-      Rx.Observable.of({
-        rights: ['chown_datasets']
-      })
+    currentUserStub = sinon.stub(UserSessionService, 'hasRight$').callsFake(_.constant(
+      Rx.Observable.of(true)
     ));
 
     sinon.stub(UserSearchService, 'results$').withArgs('Te').returns(
@@ -104,10 +102,8 @@ describe('ManageLensDialogOwnershipController', function() {
 
   it('disables the control if the user lacks the chown_datasets right', function(done) {
     currentUserStub.restore();
-    currentUserStub = sinon.stub(UserSessionService, 'getCurrentUser$').callsFake(_.constant(
-      Rx.Observable.of({
-        rights: ['foo', 'bar']
-      })
+    currentUserStub = sinon.stub(UserSessionService, 'hasRight$').callsFake(_.constant(
+      Rx.Observable.of(false)
     ));
 
     createController();

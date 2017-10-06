@@ -5,7 +5,7 @@ module UserRights
     # unobtainium/src/main/java/com/blist/models/account/User.java
     # and the js export list at
     # frontend/public/javascript/common/rights.js
-    SOURCE_ARRAY = %w{
+    ALL_RIGHTS = %w{
       approve_nominations
       can_see_all_assets_tab_siam
       change_configurations
@@ -53,12 +53,12 @@ module UserRights
       view_unpublished_story
     }
   
-    SOURCE_ARRAY.each do |right|
+    ALL_RIGHTS.each do |right|
       const_set(right.upcase, right)
     end
   
     def self.to_h
-      SOURCE_ARRAY.reduce({}) { |acc, right| acc[right.upcase] = right ; acc }
+      ALL_RIGHTS.reduce({}) { |acc, right| acc[right.upcase] = right ; acc }
     end
   
   end

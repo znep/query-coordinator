@@ -188,10 +188,10 @@ describe AdministrationController do
         end
       end
 
-      describe 'logged in as viewer user' do
+      describe 'logged in as user without manage_spatial_lens_right' do
         before(:each) do
           init_environment
-          stub_viewer_user(subject)
+          stub_user(subject, [])
         end
 
         it 'should be forbidden' do
@@ -200,10 +200,10 @@ describe AdministrationController do
         end
       end
 
-      describe 'logged in as admin user' do
+      describe 'logged in as user with manage_spatial_lens right' do
         before(:each) do
           init_environment
-          stub_administrator_user(subject)
+          stub_spatial_lens_admin(subject)
         end
 
         it 'responds successfully with a 200 HTTP status code' do
@@ -288,7 +288,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1) }
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
       end
 
       it 'redirects to /admin/geo' do
@@ -332,7 +332,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -428,7 +428,7 @@ describe AdministrationController do
       end
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -450,7 +450,7 @@ describe AdministrationController do
 
     describe 'DELETE /admin/geo/:id' do
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
       end
 
       it 'redirects to /admin/geo' do
@@ -463,7 +463,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_enabled).and_return([])
       end
@@ -486,7 +486,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -506,7 +506,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_administrator_user(subject)
+        stub_spatial_lens_admin(subject)
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_default).and_return([])
       end

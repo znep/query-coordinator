@@ -1,4 +1,5 @@
 import { expect, assert } from 'chai';
+import sinon from 'sinon';
 const angular = require('angular');
 
 describe('UserSessionService', function() {
@@ -116,5 +117,4 @@ describe('UserSessionService', function() {
     });
 
   });
-
 });

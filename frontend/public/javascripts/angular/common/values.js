@@ -38,6 +38,7 @@ const USER_RIGHTS = [
   'federations',
   'manage_approval',
   'manage_provenance',
+  'manage_spatial_lens',
   'manage_stories',
   'manage_story_collaborators',
   'manage_story_public_version',

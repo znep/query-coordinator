@@ -16,11 +16,6 @@
       return superAdmin || roledUser;
     },
 
-    // Recently renamed from isAdmin to avoid confusion. Renamed in the Ruby code as well.
-    isSuperadmin: function() {
-      return _.include(this.flags, 'admin');
-    },
-
     nameAndOrEmail: function() {
       var base = '';
       if (this.displayName) {

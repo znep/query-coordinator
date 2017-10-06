@@ -9,12 +9,12 @@ module.exports = function visualizationTypeSelector(
   CardDataService,
   SpatialLensService,
   UserSessionService,
+  UserRights,
   ViewRights,
   rx) {
   const Rx = rx;
 
   function initializeCuratedRegionSelector($scope, cardModel$, cardType$) {
-    var currentUser$ = Rx.Observable.returnValue($window.currentUser);
     var dataset$ = cardModel$.observeOnLatest('page.dataset');
     var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
     var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
@@ -37,13 +37,15 @@ module.exports = function visualizationTypeSelector(
     $scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
     $scope.$bindObservable('showInfoMessage', regionCodingDetails$.pluck('showInfoMessage'));
 
-    var informationMessage$ = currentUser$.map(UserSessionService.isSuperadmin).map(
-      function(isSuperadmin) {
-        return isSuperadmin ?
-          I18n.addCardDialog.choroplethAdminMessage :
-          I18n.addCardDialog.choroplethMessage;
-      }
-    );
+    var informationMessage$ =
+      UserSessionService.hasRight$(UserRights.MANAGE_SPATIAL_LENS).
+      map(
+        function(canManageSpatialLens) {
+          return canManageSpatialLens ?
+            I18n.addCardDialog.choroplethAdminMessage :
+            I18n.addCardDialog.choroplethMessage;
+        }
+      );
     $scope.$bindObservable('informationMessage', informationMessage$);
 
     // Only show the dropdown if the card is a choropleth.

@@ -417,3 +417,83 @@ export const singleRowState = {
     }
   ]
 };
+
+export const usersResponse = {
+  "results" :
+    [
+      {
+        "id" : "xwt7-dhgb",
+        "screen_name" : "Michael Brown",
+        "email" : "michael.brown@socrata.com",
+        "role_name" : "viewer",
+        "role_id" : 7,
+        "last_authenticated_at" : 1506386550,
+        "flags" : [ "admin" ]
+      },
+      {
+        "id" : "quh2-cr3g",
+        "screen_name" : "superuser superuser",
+        "email" : "engineering@socrata.com",
+        "role_name" : "publisher",
+        "role_id" : 5,
+        "flags" : [ "admin" ]
+      },
+      {
+        "id" : "25jp-5vx2",
+        "screen_name" : "Test User",
+        "email" : "test@socrata.com",
+        "role_name" : "viewer",
+        "role_id" : 7,
+        "last_authenticated_at" : 1505424452
+      },
+      {
+        "id" : "v23j-qhzg",
+        "screen_name" : "SuperAdmin Socrata",
+        "email" : "superadmin@socrata.com",
+        "role_name" : "administrator",
+        "role_id" : 1,
+        "last_authenticated_at" : 1502949228,
+        "flags" : [ "admin" ]
+      }
+    ],
+  "resultSetSize" : 4,
+  "timings" : { "serviceMillis" : 277, "searchMillis" : [ 46, 5 ] }
+};
+
+export const rolesResponse = [ {
+  "id" : 2,
+  "name" : "designer",
+  "defaultSortOrder" : 30,
+  "isDefault" : true,
+  "numberOfUsers" : 0,
+  "rights" : [ "feature_items", "create_datasets", "view_others_datasets", "edit_site_theme", "change_configurations", "view_domain", "create_pages", "create_data_lens", "edit_sdp" ]
+}, {
+  "id" : 3,
+  "name" : "editor",
+  "defaultSortOrder" : 20,
+  "isDefault" : true,
+  "numberOfUsers" : 2,
+  "rights" : [ "create_datasets", "view_domain", "create_pages", "create_data_lens" ]
+}, {
+  "id" : 5,
+  "name" : "publisher",
+  "defaultSortOrder" : 10,
+  "isDefault" : true,
+  "numberOfUsers" : 0,
+  "rights" : [ "view_all_dataset_status_logs", "feature_items", "create_datasets", "edit_others_datasets", "view_others_datasets", "manage_provenance", "use_data_connectors", "change_configurations", "view_domain", "create_pages", "create_data_lens" ]
+}, {
+  "id" : 7,
+  "name" : "viewer",
+  "defaultSortOrder" : 40,
+  "isDefault" : true,
+  "numberOfUsers" : 2,
+  "rights" : [ "view_others_datasets", "create_data_lens" ]
+}, {
+  "id" : 1,
+  "name" : "administrator",
+  "defaultSortOrder" : 0,
+  "isDefault" : true,
+  "numberOfUsers" : 0,
+  "rights" : [ "manage_users", "view_all_dataset_status_logs", "feature_items", "create_datasets", "edit_others_datasets", "view_others_datasets", "chown_datasets", "manage_provenance", "edit_site_theme", "federations", "use_data_connectors", "change_configurations", "view_domain", "create_pages", "edit_pages", "manage_spatial_lens", "view_activity_log", "create_data_lens", "edit_sdp" ]
+} ];
+

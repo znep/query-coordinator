@@ -1,6 +1,8 @@
 import { defaultHeaders, checkStatus } from 'common/http';
 import CoreApi from 'common/core-roles-api';
 
+import _ from 'lodash';
+
 // Async Stages
 export const START = 'START';
 export const COMPLETE_SUCCESS = 'COMPLETE_SUCCESS';
@@ -36,13 +38,16 @@ const convertUserListFromApi = (users) => {
   });
 };
 
-const loadUsers = () => {
+const loadUsers = (query) => {
   const fetchOptions = {
     credentials: 'same-origin',
     headers: defaultHeaders
   };
 
-  const apiPath = `/api/catalog/v1/users?domain=${window.location.hostname}`;
+  let apiPath = `/api/catalog/v1/users?domain=${serverConfig.domain}`;
+  if (!_.isEmpty(query)) {
+    apiPath = `${apiPath}&q=${query}`;
+  }
 
   return fetch(apiPath, fetchOptions)
     .then(checkStatus)
@@ -78,4 +83,46 @@ export const loadData = () => (dispatch) => {
         roles
       });
     });
+};
+
+export const USER_SEARCH = 'USER_SEARCH';
+export const userSearch = (query) => (dispatch) => {
+  const ACTION = {
+    type: USER_SEARCH,
+    query
+  };
+
+  dispatch({ ...ACTION, stage: START });
+  return loadUsers(query)
+    .then((users) => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users }));
+};
+
+export const userAutocomplete = (query, callback) => {
+  if (query === '') { return; }
+
+  const apiPath = `/api/catalog/v1/users/autocomplete?domain=${serverConfig.domain}&q=${query}`;
+
+  const fetchOptions = {
+    credentials: 'same-origin',
+    headers: defaultHeaders
+  };
+
+  fetch(apiPath, fetchOptions)
+    .then((response) => response.json())
+    .then((searchResults) => {
+      return {
+        ...searchResults,
+        results: searchResults.results.map((result) => {
+          return {
+            ...result,
+            title: result.user.screen_name
+          };
+        })
+      };
+    })
+    .then(
+      (searchResults) => callback(searchResults),
+      (error) => console.error('Failed to fetch data', error)
+    )
+    .catch((ex) => console.error('Error parsing JSON', ex));
 };

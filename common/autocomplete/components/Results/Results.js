@@ -74,17 +74,23 @@ class Results extends React.Component {
   }
 
   renderResults() {
-    const { results, focusedResult, onChooseResult } = this.props;
+    const { results, focusedResult, onChooseResult, renderResult } = this.props;
 
-    return results.map((result, index) =>
-      <Result
-        key={result.title}
-        matchOffsets={result.match_offsets}
-        name={result.title}
-        index={index}
-        focused={index === focusedResult}
-        onChooseResult={onChooseResult} />
-    );
+    if (_.isUndefined(renderResult)) {
+      return results.map((result, index) =>
+        <Result
+          key={result.title}
+          matchOffsets={result.match_offsets}
+          name={result.title}
+          index={index}
+          focused={index === focusedResult}
+          onChooseResult={onChooseResult} />
+      );
+    } else {
+      return results.map((result, index) => {
+        return renderResult(result, index, index === focusedResult, onChooseResult);
+      });
+    }
   }
 
   render() {
@@ -111,7 +117,8 @@ Results.propTypes = {
   results: PropTypes.array,
   visible: PropTypes.bool,
   focusedResult: PropTypes.number,
-  collapsible: PropTypes.bool
+  collapsible: PropTypes.bool,
+  renderResult: PropTypes.func
 };
 
 Results.defaultProps = {

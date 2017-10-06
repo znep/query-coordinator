@@ -23,6 +23,7 @@ window.serverConfig = {
   appToken: 'global-frontend-token',
   currentUserId: 'asdf-1234',
   localePrefix: 'en',
+  domain: 'localhost'
 };
 
 window.renderPureComponent = _.flow(

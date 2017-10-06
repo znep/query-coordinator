@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { LocalizedUserRow } from './user_row';
+import { LocalizedUserRow } from './UserRow';
 import _ from 'lodash';
 import * as Actions from '../actions';
 import connectLocalization from 'common/i18n/components/connectLocalization';

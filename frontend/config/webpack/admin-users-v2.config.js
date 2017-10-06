@@ -14,7 +14,17 @@ module.exports = _.defaultsDeep({
     jquery: true
   },
   module: {
-    loaders: common.getStandardLoaders()
+    loaders: common.getStandardLoaders(
+      {
+        test: /\.(css|scss)$/,
+        loaders: [
+          'style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+          'autoprefixer-loader',
+          'sass-loader'
+        ]
+      }
+    )
   },
   resolve: common.getStandardResolve([ 'public/javascripts/adminUsersV2' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

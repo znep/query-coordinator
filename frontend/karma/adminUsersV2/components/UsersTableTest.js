@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import sinon from 'sinon';
 
-import { UsersTable } from 'components/users_table';
-import { LocalizedUserRow } from 'components/user_row';
+import { UsersTable } from 'components/UsersTable';
+import { LocalizedUserRow } from 'components/UserRow';
 import I18nJS from 'i18n-js';
 
 import { initialState } from '../helpers/stateFixtures';
@@ -13,6 +13,7 @@ describe('components/UsersTable', () => {
   const defaultProps = {
     ...initialState,
     onRoleChange: sinon.spy(),
+    loadData: sinon.spy(),
     I18n: I18nJS
   };
 

@@ -58,7 +58,7 @@ $(function() {
         success: function(response) {
           if (response.expired) {
             blist.util.railsFlash($.t('core.dialogs.session_timeout.notice'));
-            window.document.location = '/login';
+            window.document.location = '/signed_out';
           } else {
             secondsUntilTimeout = parseFloat(response.seconds);
             if (secondsUntilTimeout > countdownSeconds) {

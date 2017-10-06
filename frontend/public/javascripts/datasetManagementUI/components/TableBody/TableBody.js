@@ -87,10 +87,11 @@ class TableBody extends Component {
         {row.transforms.map((transform, offset) => {
           const t = this.props.entities.transforms[transform.id];
           const type = t ? t.output_soql_type : false;
+          const hasFailed = t ? !!t.failed_at : false;
           return (<TableCell
             key={`${row.rowIdx}-${offset}`}
             cell={transform.cell}
-            failed={!!t.failed_at}
+            failed={hasFailed}
             type={type} />);
         })}
       </tr>

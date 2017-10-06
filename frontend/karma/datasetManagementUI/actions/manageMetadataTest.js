@@ -15,7 +15,6 @@ import { SHOW_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
 import { createUploadSource } from 'reduxStuff/actions/createSource';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reduxStuff/reducers/rootReducer';
-import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import { setFormErrors } from 'reduxStuff/actions/forms';
 import { addLocation } from 'reduxStuff/actions/history';
 import mockSocket from '../testHelpers/mockSocket';

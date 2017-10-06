@@ -11,7 +11,7 @@ import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 import { addLocation } from 'reduxStuff/actions/history';
 import rootReducer from 'reduxStuff/reducers/rootReducer';
-import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
+import { getInitialState } from 'reduxStuff/store';
 import fetchMock from 'fetch-mock';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 
@@ -56,13 +56,8 @@ describe('createSource actions', () => {
     beforeEach(() => {
       store = createStore(
         rootReducer,
+        getInitialState(window.initialState.view, window.initialState.customMetadataFieldsets),
         applyMiddleware(thunk.withExtraArgument(socket))
-      );
-      store.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          window.initialState.customMetadataFieldsets
-        )
       );
 
       store.dispatch(

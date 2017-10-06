@@ -9,7 +9,6 @@ import {
   addColumn,
   dropColumn
 } from 'reduxStuff/actions/showOutputSchema';
-import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import { currentOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reduxStuff/reducers/rootReducer';

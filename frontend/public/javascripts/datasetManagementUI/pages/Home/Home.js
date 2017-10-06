@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import AppBar from 'containers/AppBarContainer';
 import NotificationList from 'containers/NotificationListContainer';
 import Modal from 'containers/ModalContainer';
-import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import { loadRevision } from 'reduxStuff/actions/loadRevision';
 import styles from './Home.scss';
 
@@ -19,8 +18,6 @@ class Home extends Component {
 
   componentWillMount() {
     const { dispatch, params } = this.props;
-
-    dispatch(bootstrapApp(window.initialState.view, window.initialState.customMetadataFieldsets));
 
     dispatch(loadRevision(params)).then(() =>
       this.setState({

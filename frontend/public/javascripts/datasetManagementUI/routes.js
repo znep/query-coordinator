@@ -29,9 +29,7 @@ const checkSchemaStatus = store => (nextState, replace, cb) => {
 const checkIfPublished = store => (nextState, replace, cb) => {
   const { fourfour } = nextState.params;
   const view = store.getState().entities.views[fourfour] || {};
-  // assume unpublished if we don't have the info we need for some reason.
-  const displayType = view.displayType || 'draft';
-  const isPublishedDataset = displayType !== 'draft';
+  const isPublishedDataset = view.displayType !== 'draft';
 
   if (isPublishedDataset) {
     replace(Links.home(nextState.params));

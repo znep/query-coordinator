@@ -606,11 +606,11 @@
         break;
       case 'hide-column':
         // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
-        if (blist.feature_flags.enable_2017_grid_refresh) {
+        if (blist.feature_flags.enable_2017_grid_view_refresh) {
           var options = {
             id: cmObj.settings.column.id
           };
-          blist.datasetPage.launchNbeColumnManager(options);
+          window.blist.gridViewColumnEditor(options);
         } else {
           if (!$.isBlank(cmObj.settings.column.parentColumn)) {
             cmObj.settings.column.hide();
@@ -642,11 +642,11 @@
         break;
       case 'edit-column':
         // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
-        if (blist.feature_flags.enable_2017_grid_refresh) {
+        if (blist.feature_flags.enable_2017_grid_view_refresh) {
           var nbeColumnManagerOptions = {
             id: cmObj.settings.column.id
           };
-          blist.datasetPage.launchNbeColumnManager(nbeColumnManagerOptions);
+          window.blist.gridViewColumnEditor(nbeColumnManagerOptions);
         } else {
           cmObj.settings.editColumnCallback(cmObj.settings.column);
         }

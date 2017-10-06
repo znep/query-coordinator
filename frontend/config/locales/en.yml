@@ -688,10 +688,15 @@ en:
       one: Result
       other: Results
   controls:
-    nbe_column_manager:
+    grid_view_column_editor:
       title: Manage Columns
       error:
         save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
+        delete: There was an error deleting the specified column. Please try again. If this problem persists, contact Socrata support.
+      column_properties: Column Properties
+      column_formatting: Column Formatting
+      delete_column: Delete Column
+      delete_column_confirm: Deleting a column cannot be undone. Are you sure you want to proceed?
       controls:
         prev: Previous
         next: Next
@@ -701,13 +706,6 @@ en:
         title: API Field Name
       data_type:
         title: Data Type
-        types:
-          blob: Blob (external file)
-          boolean: True/False
-          calendar_date: Date & Time
-          location: Location
-          number: Number
-          text: Text
       column_fields:
         preview:
           title: Preview
@@ -745,6 +743,119 @@ en:
         date_formatting:
           display_format:
             title: Display format
+    grid_view_row_editor:
+      controls:
+        cancel: Cancel
+        choose_file: Choose file...
+        delete: Delete
+        delete_confirm: Deleting a row cannot be undone. Are you sure you want to proceed?
+        file_chosen: File chosen
+        file_not_chosen: No file chosen
+        filename_placeholder: Type a filename...
+        replace_file: Replace file...
+        save: Save
+      data_types:
+        blob:
+          name: File
+          validation_error: If (No value) is unchecked then a file must be chosen.
+        calendar_date:
+          name: Calendar Date
+          validation_error: This column only supports datetimes of the form "YYYY-MM-DDThh:mm:ss".
+        checkbox:
+          name: Boolean
+          validation_error: This column only supports true and false values.
+        dataset_link:
+          name: URL
+          validation_error: This column only supports URLs.
+        date:
+          name: Date
+          validation_error: This column requires a datetime of the form "YYYY-MM-DDThh:mm:ss" and a valid UTC timezone offset (e.g. "-700").
+        document:
+          name: Document
+          validation_error: If (No value) is unchecked then a filename is required and a file must be chosen.
+        drop_down_list:
+          name: Text
+          validation_error: 'This column only supports the following values: '
+        email:
+          name: Text
+          validation_error: This column only supports e-mail addresses.
+        flag:
+          name: Text
+          validation_error: 'This column only supports the following values: '
+        geospatial:
+          name: Location
+          validation_error: This column only supports geospatial data.
+        html:
+          name: Text
+          validation_error: This column only supports text.
+        line:
+          name: Line
+          validation_error: This column only supports geospatial data.
+        list:
+          name: List
+          validation_error: This column may not be edited.
+        location:
+          name: Location
+          validation_error: This column's latitude or longitude value is in an invalid format.
+          address: Street Address
+          city: City
+          state: State
+          zip: Zip Code
+          needs_recoding: Re-geocode based on updated values
+          latitude: Latitude
+          longitude: Longitude
+        money:
+          name: Money
+          validation_error: This column only supports numbers. Currency symbols can be configured at the column level.
+        multiline:
+          name: MultiLine
+          validation_error: This column only supports geospatial data.
+        multipoint:
+          name: MultiPoint
+          validation_error: This column only supports geospatial data.
+        multipolygon:
+          name: MultiPolygon
+          validation_error: This column only supports geospatial data.
+        nested_table:
+          name: Nested Table
+          validation_error: This column may not be edited.
+        number:
+          name: Number
+          validation_error: This column only supports numbers.
+        object:
+          name: Object
+          validation_error: This column may not be edited.
+        percent:
+          name: Number
+          validation_error: This column only supports numbers. The percent sign will be shown automatically.
+        phone:
+          name: Text
+          validation_error: This column only supports text.
+        photo:
+          name: Photo
+          validation_error: If (No value) is unchecked then a file must be chosen.
+        point:
+          name: Point
+          validation_error: This column only supports geospatial data.
+        polygon:
+          name: Polygon
+          validation_error: This column only supports geospatial data.
+        stars:
+          name: Number
+          validation_error: This column only supports numbers between 1 and 5 inclusive.
+        text:
+          name: Text
+          validation_error: This column only supports text.
+        url:
+          name: URL
+          validation_error: This column only supports URLs.
+      error:
+        save: There was an error saving your changes. Please wait a moment and try again, or contact Socrata support if the problem persists.
+        delete: There was an error deleting the specified row. Please try again. If this problem persists, contact Socrata support.
+      is_null: (No value)
+      title_edit: Edit row
+      title_append: Append row
+      utc_offset_label: UTC Offset
     browse:
       actions:
         about:
@@ -5141,6 +5252,9 @@ en:
           title: Add Column
           validation:
             view_column: You cannot add a column to a view
+        add_row:
+          subtitle: Add a new row to your dataset
+          title: Add Row
         api:
           api_docs: API Docs
           column_ids_title: 'Field Names:'
@@ -5545,6 +5659,9 @@ en:
           multilayer_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format
           title: Download
+        edit_column:
+          subtitle: Edit the metadata associated with columns in this dataset or delete the column entirely
+          title: Edit Column
         feed:
           route_to_more_views_subtitle: Looking for additional activity on this dataset? Click on More Views tab.
           subtitle: The discussion feed shows you the conversation and activity around a dataset

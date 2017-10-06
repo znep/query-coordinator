@@ -990,6 +990,32 @@ body.grid-view-2017-refresh {
         .mainTitleBlock {
           background-color: #ffcd1a !important;
         }
+
+        a.editColumn,
+        a.addRow {
+
+          span.icon {
+            display: none !important;
+          }
+
+          &.selected {
+            color: #474747 !important;
+            background-color: #f1f1f1 !important;
+
+            &:hover {
+              background-color: #e4e4e4 !important;
+            }
+          }
+        }
+
+        .controlPane.editColumn {
+          display: none !important;
+        }
+
+        .controlPane.addRow {
+          display: none !important;
+        }
+
       }
 
       /**
@@ -999,6 +1025,10 @@ body.grid-view-2017-refresh {
 
         .mainTitleBlock {
           background-color: #b8864b !important;
+        }
+
+        .controlPane.showHide {
+          display: none !important;
         }
 
         .columnOrder {

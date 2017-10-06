@@ -210,7 +210,7 @@
   // context of the /dataset/four-four 'grid view'. It is meant to be a
   // mostly-drop-in replacement for the 'table' 'Render Type', which is the
   // grid view that was in use until July 2017 (and later, if the
-  // 'enable_2017_grid_refresh' feature flag is set to 'false'
+  // 'enable_2017_grid_view_refresh' feature flag is set to 'false'
   // on the domain in question.
   var socrataVizTableTypeConfig = {
     name: 'socrataVizTable',
@@ -278,7 +278,7 @@
     translations: ['controls.grid', 'screens.ds']
   };
 
-  if (blist.feature_flags.enable_2017_grid_refresh) {
+  if (blist.feature_flags.enable_2017_grid_view_refresh) {
     typeConfigs.table = socrataVizTableTypeConfig;
   } else {
     typeConfigs.table = legacyTableTypeConfig;

@@ -430,7 +430,7 @@
 
 
   if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.addColumn) {
-    $.gridSidebar.registerConfig('edit.addColumn', 'pane_addColumn', 1);
+    $.gridSidebar.registerConfig('edit.addColumn', 'pane_addColumn', 2);
   }
 
 })(jQuery);

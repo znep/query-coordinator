@@ -897,7 +897,7 @@ class View < Model
     # that the Socrata Viz table thinks it is requesting. As such, maybe this is
     # an opportunity for us to start unwinding the tangle of cacheing strategies
     # and more often rely on HTTP-level cacheing.
-    should_include_initial_rows = !@cached_rows.nil? && !enable_2017_grid_refresh_for_current_request?
+    should_include_initial_rows = !@cached_rows.nil? && !enable_2017_grid_view_refresh_for_current_request?
     if should_include_initial_rows
       dhash['initialRows'] = {
         rows: @cached_rows[:rows] || [],

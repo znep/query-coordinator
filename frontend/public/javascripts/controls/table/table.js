@@ -1,4 +1,4 @@
-if (!blist.feature_flags.enable_2017_grid_refresh) {
+if (!blist.feature_flags.enable_2017_grid_view_refresh) {
 
   /**
    * History of table:
@@ -711,7 +711,7 @@ if (!blist.feature_flags.enable_2017_grid_refresh) {
             // trigger the 'attempted_edit' event when the feature flag is set to
             // true, as that event eventually pops up a message offering to create
             // a working copy so you can edit the cell etc. etc.
-            !blist.feature_flags.enable_2017_grid_refresh &&
+            !blist.feature_flags.enable_2017_grid_view_refresh &&
             mode == DEFAULT_EDIT_MODE
           ) {
             $(cell).trigger('attempted_edit');

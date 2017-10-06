@@ -1,0 +1,51 @@
+.api-flyout {
+  letter-spacing: 0;
+  text-align: left;
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h2, h6 {
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .section {
+    margin: 20px 0;
+  }
+
+  .modal-content {
+    margin-bottom: 20px;
+
+    &.api-description {
+      margin-bottom: 1.5rem;
+    }
+
+    .btn.documentation-link {
+      margin-right: 6px;
+    }
+  }
+
+  .endpoint {
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .endpoint-title {
+      margin-top: 0;
+      margin-bottom: 0;
+      text-transform: none;
+    }
+
+    .layer-name {
+      margin-bottom: 0.2rem;
+    }
+
+    .endpoint-input {
+      color: $dark-grey-2;
+      margin-bottom: 0;
+    }
+  }
+}

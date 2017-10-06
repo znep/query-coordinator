@@ -1,17 +1,5 @@
 @import "styleguide-colors";
 @import "variables/breakpoints";
-@import "common/feedback-panel";
-@import "common/schema-preview";
-@import "common/row-details";
-@import "dataset-landing-page/alerts";
-@import "dataset-landing-page/blob-preview";
-@import "dataset-landing-page/contact-form";
-@import "dataset-landing-page/dataset-preview";
-@import "dataset-landing-page/download-section";
-@import "dataset-landing-page/featured-content";
-@import "dataset-landing-page/featured-content-modal";
-@import "dataset-landing-page/view-widget";
-@import "common/visualizations/views/styles/socrata-visualizations";
 
 // Miscellaneous colors not in styleguide
 $facebook-blue: #3b5998;
@@ -20,6 +8,22 @@ $grid-link-color: #5e5e5e; // Mimic color used in styleguide that doesn't follow
 $light-blue: #5aafe1;
 $link-color: #2c97de;
 $twitter-blue: #55acee;
+
+@import "common/feedback-panel";
+@import "common/schema-preview";
+@import "common/row-details";
+@import "dataset-landing-page/alerts";
+@import "dataset-landing-page/blob-preview";
+@import "dataset-landing-page/contact-form";
+@import "dataset-landing-page/dataset-preview";
+@import "dataset-landing-page/featured-content";
+@import "dataset-landing-page/featured-content-modal";
+@import "dataset-landing-page/view-widget";
+@import "dataset-landing-page/flyout";
+@import "dataset-landing-page/api-flyout";
+@import "dataset-landing-page/downloads-flyout";
+@import "dataset-landing-page/share-flyout";
+@import "common/visualizations/views/styles/socrata-visualizations";
 
 body {
   margin: 0;
@@ -517,35 +521,6 @@ div.container.landing-page-container {
   width: 400px;
 }
 
-#api-modal {
-  letter-spacing: 0;
-  text-align: left;
-  max-width: 100%; // mobile
-
-  h2 {
-    font-size: 20px;
-  }
-
-  h2, h6 {
-    font-weight: 400;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .modal-content {
-    overflow-y: visible;
-    margin-bottom: 20px;
-
-    &.api-description {
-      margin-bottom: 1.5rem;
-    }
-
-    .btn.documentation-link {
-      margin-right: 6px;
-    }
-  }
-}
-
 #odata-modal {
   .modal-header {
     h2 {
@@ -564,10 +539,7 @@ div.container.landing-page-container {
       margin-bottom: 0;
     }
   }
-}
 
-#api-modal,
-#odata-modal {
   .endpoint {
     &:not(:last-child) {
       margin-bottom: 2rem;
@@ -587,6 +559,10 @@ div.container.landing-page-container {
       color: $dark-grey-2;
       margin-bottom: 0;
     }
+
+    .modal-content {
+      overflow: unset;
+    }
   }
 
   .btn .icon-copy-document:before,
@@ -601,50 +577,6 @@ div.container.landing-page-container {
       margin-bottom: 6px;
       text-align: center;
     }
-  }
-}
-
-#share-modal {
-  .modal-header {
-    h2 {
-      margin: 0;
-      font-size: 19px;
-      font-weight: normal;
-      color: $dark-grey-2;
-    }
-
-    margin-bottom: 24px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  .alert a {
-    color: $light-blue;
-  }
-
-  .twitter, .facebook, .email {
-    margin-bottom: 12px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    [class^="icon"] {
-      margin-right: 8px;
-    }
-  }
-
-  .twitter a {
-    color: $twitter-blue;
-  }
-
-  .facebook a {
-    color: $facebook-blue;
-  }
-
-  .email a {
-    color: $dark-grey-3;
   }
 }
 
@@ -738,5 +670,12 @@ footer#site-chrome-footer {
       float: right;
       margin-left: 5px;
     }
+  }
+}
+
+.btn-container {
+  display: inline-block;
+  .btn {
+    line-height: 16px;
   }
 }

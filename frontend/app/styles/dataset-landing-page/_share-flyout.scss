@@ -1,0 +1,36 @@
+.share-flyout {
+  a {
+    text-decoration: none;
+  }
+
+  .alert a {
+    color: $light-blue;
+  }
+
+  .twitter, .facebook, .email {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    [class^="icon"] {
+      margin-right: 8px;
+    }
+  }
+
+  .twitter a {
+    color: $twitter-blue;
+  }
+
+  .facebook a {
+    color: $facebook-blue;
+  }
+
+  .email a {
+    color: $dark-grey-3;
+  }
+
+  .section {
+    margin-top: 20px;
+  }
+}

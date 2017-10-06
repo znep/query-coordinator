@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Route, Redirect, IndexRoute } from 'react-router';
 import * as Links from 'links/links';
 import Home from 'pages/Home/Home';
@@ -6,12 +7,29 @@ import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import ShowUpload from 'pages/ShowUpload/ShowUpload';
+import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
+
+const checkSchemaStatus = store => (nextState, replace, cb) => {
+  const osid = _.toNumber(nextState.params.outputSchemaId);
+  // Edit Col metadata only works if we have an output schema, so check that
+  // one exists before allowing access to the page
+  const osExists = !_.isEmpty(store.getState().entities.output_schemas[osid]);
+
+  if (osExists) {
+    store.dispatch(focusColumnEditor(nextState));
+    cb();
+  } else {
+    const newPath = Links.home(nextState.params);
+    replace(newPath);
+    cb();
+  }
+};
 
 const checkIfPublished = store => (nextState, replace, cb) => {
   const { fourfour } = nextState.params;
   const view = store.getState().entities.views[fourfour] || {};
-  // assume unpublished if we don't have the info we need for some reason
+  // assume unpublished if we don't have the info we need for some reason.
   const displayType = view.displayType || 'draft';
   const isPublishedDataset = displayType !== 'draft';
 
@@ -29,7 +47,10 @@ export default function rootRoute(store) {
       <IndexRoute component={ShowRevision} />
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
-      <Route path="metadata/:outputSchemaId/columns" component={ManageMetadata} />
+      <Route
+        path="metadata/:outputSchemaId/columns"
+        component={ManageMetadata}
+        onEnter={checkSchemaStatus(store)} />
       <Route path="sources" component={ShowUpload} onEnter={checkIfPublished(store)} />
       <Route path=":sidebarSelection" component={ShowRevision} />
       <Route

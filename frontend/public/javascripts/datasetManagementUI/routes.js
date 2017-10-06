@@ -1,32 +1,19 @@
 import React from 'react';
-// import _ from 'lodash';
 import { Route, Redirect, IndexRoute } from 'react-router';
 import * as Links from 'links/links';
 import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
-// import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import ShowUpload from 'pages/ShowUpload/ShowUpload';
 import NoMatch from 'pages/NoMatch/NoMatch';
-
-// const checkUploadStatus = store => (nextState, replace) => {
-//   // TODO: is this valid? You can have a source with no output schema
-//   const sourceExists = !_.isEmpty(store.getState().entities.output_columns);
-//
-//   if (sourceExists) {
-//     store.dispatch(focusColumnEditor(nextState));
-//   } else {
-//     const newPath = Links.home(nextState.params);
-//
-//     replace(newPath);
-//   }
-// };
 
 const checkIfPublished = store => (nextState, replace, cb) => {
   const { fourfour } = nextState.params;
   const view = store.getState().entities.views[fourfour] || {};
-  const isPublishedDataset = view.displayType !== 'draft';
+  // assume unpublished if we don't have the info we need for some reason
+  const displayType = view.displayType || 'draft';
+  const isPublishedDataset = displayType !== 'draft';
 
   if (isPublishedDataset) {
     replace(Links.home(nextState.params));

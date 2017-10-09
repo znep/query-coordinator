@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ManageData from 'components/ManageData/ManageData';
+import ManageData from 'containers/ManageDataContainer';
 import RecentActions from 'containers/RecentActionsContainer';
 import styles from './HomePaneSidebar.scss';
 

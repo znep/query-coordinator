@@ -1273,6 +1273,11 @@ body.grid-view-2017-refresh {
 
                 .filterValues {
 
+                  .checker.uniform {
+                    position: absolute !important;
+                    float: none !important;
+                  }
+
                   .line {
                     margin: 0;
                     padding: 0 0 0 2em;
@@ -1291,6 +1296,15 @@ body.grid-view-2017-refresh {
                   font-size: 12px;
                   right: 24px;
                   bottom: 7px;
+                }
+
+                .text-column-filter-operator-notice {
+                  display: block;
+                  margin: 0.5em;
+                  color: #8c8c8c;
+                  font-weight: 200;
+                  font-family: 'Open Sans', sans-serif;
+                  font-style: normal;
                 }
 
                 &:hover {

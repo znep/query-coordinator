@@ -1279,6 +1279,7 @@ en:
         base_info: These filters are always applied, along with any extra filters entered above. These filters cannot be edited, either because you do not have permissions to edit the current view, or because they come from the parent view or dataset.
         filter: Filter
         filter_based_on_contents: Filter this dataset based on contents.
+        filter_operators_for_text_columns_may_differ: Not all filter operators may be available for all text columns.
         no_conditions: No conditions defined yet.
         no_suggestions: There are no suggested values for this column and operator.
         or: or

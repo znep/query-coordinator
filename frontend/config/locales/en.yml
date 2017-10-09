@@ -743,6 +743,7 @@ en:
         date_formatting:
           display_format:
             title: Display format
+            use_default: Use default
     grid_view_row_editor:
       controls:
         cancel: Cancel

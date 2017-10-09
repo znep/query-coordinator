@@ -389,6 +389,7 @@ module.exports = function(options) {
       function renderDateFormatOptions() {
         var displayFormat = _.get(column, 'format.view', null);
         var formats = [
+            {value: null, text: $.t('controls.grid_view_column_editor.column_fields.date_formatting.display_format.use_default')},
             {value: 'date_time', text: '05/23/2017 01:45:31 PM'},
             {value: 'date', text: '05/23/2017'},
             {value: 'date_dmy_time', text: '23/05/2017 01:45:31 PM'},
@@ -776,7 +777,9 @@ module.exports = function(options) {
       if (dateFormatting) {
         var dateFormat = $('#column-date-formatting-display-format-' + id).value();
 
-        format.view = dateFormat;
+        if (!_.isNull(dateFormat) && dateFormat !== 'null') {
+          format.view = dateFormat;
+        }
       }
 
       return format;

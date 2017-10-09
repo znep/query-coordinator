@@ -905,7 +905,7 @@ $(function() {
           $('.basedOnParent').
           addClass('hasParent').
           find('.parentName').
-          attr('href', parDS.url).
+          attr('href', parDS.url + '/data').
           text(parDS.name);
         } else {
           $('.basedOnParent').

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import MetadataTable from 'containers/MetadataTableContainer';
 import SchemaPreview from 'components/SchemaPreview/SchemaPreview';
-import HomePaneSidebar from 'containers/HomePaneSidebarContainer';
+import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
 import TablePreview from 'containers/TablePreviewContainer';
 import RowDetails from 'components/RowDetails/RowDetails';
 import styles from './ShowRevision.scss';
@@ -28,7 +28,7 @@ export function ShowRevision({ params, readFromCore, isPublishedDataset }) {
           </section>
         )}
       </div>
-      <HomePaneSidebar />
+      <HomePaneSidebar defaultTab="recentActions" />
     </div>
   );
 }

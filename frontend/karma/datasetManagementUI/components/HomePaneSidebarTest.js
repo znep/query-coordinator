@@ -4,79 +4,41 @@ import { shallow } from 'enzyme';
 import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
 
 describe('components/HomePaneSidebar', () => {
+  it('shows the RecentActions tab by default', () => {
+    const component = shallow(<HomePaneSidebar />);
 
-  const defaultProps = {
-    entities: {
-      views: {
-        's396-jk8m': {
-          id: 's396-jk8m',
-          name: 'vsgfdfg',
-          viewCount: 0,
-          downloadCount: 0,
-          license: {}
-        }
-      },
-      revisions: {
-        '317': {
-          id: 317,
-          fourfour: 's396-jk8m',
-          permission: 'public',
-          task_sets: [],
-          revision_seq: 0,
-          output_schema_id: null,
-          created_at: '2017-08-10T21:33:14.893Z',
-          created_by: {
-            user_id: 'tugg-ikce',
-            email: 'test@socrata.com',
-            display_name: 'test'
-          }
-        }
-      },
-      updates: {},
-      sources: {},
-      input_schemas: {},
-      output_schemas: {},
-      input_columns: {},
-      output_columns: {},
-      output_schema_columns: {},
-      transforms: {},
-      upsert_jobs: {},
-      email_interests: {},
-      row_errors: {}
-    },
-    columnsExist: false,
-    params: {
-      category: 'dataset',
-      name: 'dfsdfdsf',
-      fourfour: 'kg5j-unyr',
-      revisionSeq: '0',
-      sourceId: '115',
-      inputSchemaId: '98',
-      outputSchemaId: '144',
-      sidebarSelection: null
-    }
-  };
-
-  it('shows the activity feed by default', () => {
-    const component = shallow(<HomePaneSidebar {...defaultProps} />);
-
-    assert.isAtLeast(
+    assert.equal(
       component.find('withRouter(Connect(RecentActions))').length,
       1
     );
   });
 
-  it('shows the manage actions when the url says to', () => {
-    const props = {
-      ...defaultProps,
-      params: {
-        ...defaultProps.params,
-        sidebarSelection: 'manageTab'
-      }
-    };
+  it('allows you to override the default tab via props', () => {
+    const component = shallow(<HomePaneSidebar defaultTab="manageData" />);
 
-    const component = shallow(<HomePaneSidebar {...props} />);
+    assert.equal(component.find('withRouter(Connect(ManageData))').length, 1);
+  });
 
-    assert.isAtLeast(component.find('ManageData').length, 1);
+  it('shows the ManageData content when you click the corresponding tab', () => {
+    const component = shallow(<HomePaneSidebar />);
+
+    const manageDataTab = component.find('button').at(1);
+
+    manageDataTab.simulate('click');
+
+    assert.equal(component.find('withRouter(Connect(ManageData))').length, 1);
+  });
+
+  it('shows the RecentActions content when you click the corresponding tab', () => {
+    const component = shallow(<HomePaneSidebar defaultTab="manageData" />);
+
+    const manageRecentActionsTab = component.find('button').at(0);
+
+    manageRecentActionsTab.simulate('click');
+
+    assert.equal(
+      component.find('withRouter(Connect(RecentActions))').length,
+      1
+    );
   });
 });

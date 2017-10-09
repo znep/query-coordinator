@@ -50,7 +50,6 @@ export default function rootRoute(store) {
         component={ManageMetadata}
         onEnter={checkSchemaStatus(store)} />
       <Route path="sources" component={ShowUpload} onEnter={checkIfPublished(store)} />
-      <Route path=":sidebarSelection" component={ShowRevision} />
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
         component={ShowOutputSchema}

@@ -16,6 +16,8 @@ class ProfileController < ApplicationController
   helper :user
 
   def index
+    return redirect_to login_url unless current_user.present?
+
     redirect_to("#{profile_path(current_user)}?#{request.query_string}")
   end
 

@@ -452,7 +452,10 @@ function renderGeoCellHTML(cellContent) {
 * Renders any GeoJSON column by serializing to Well Known Text.
 */
 function renderWKTCellHTML(cellContent) {
-  return _.escape(wkt.stringify(cellContent));
+
+  return (_.isEmpty(cellContent)) ?
+    '' :
+    _.escape(wkt.stringify(cellContent));
 }
 
 /**

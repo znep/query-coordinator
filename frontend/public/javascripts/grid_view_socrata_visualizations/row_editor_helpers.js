@@ -26,8 +26,8 @@ function renderValidationError(dataTypeName) {
   );
 }
 
-function renderSimpleInputLine(column, value) {
-  var $inputLine = $(
+function renderStandardTextInputLine(column) {
+  return $(
     '<div class="input-line" ' +
       'data-column-field-name="' +
       column.fieldName +
@@ -48,6 +48,10 @@ function renderSimpleInputLine(column, value) {
       '</div>' +
     '</div>'
   );
+}
+
+function renderSimpleInputLine(column, value) {
+  var $inputLine = renderStandardTextInputLine(column);
 
   // Use jQuery's wrapper around the DOM API in order to avoid XSS vectors
   // that we'd expose by doing plain string interpolation.
@@ -121,27 +125,7 @@ function renderDateInputLine(column, value) {
 }
 
 function renderUrlInputLine(column, value) {
-  var $inputLine = $(
-    '<div class="input-line" ' +
-      'data-column-field-name="' +
-      column.fieldName +
-      '" ' +
-      'data-column-data-type-name="' +
-      column.dataTypeName +
-      '">' +
-      renderIcon(column.dataTypeName) +
-      '<label class="value"></label>' +
-      '<input id="row-editor-' +
-        column.fieldName +
-        '" class="value" type="text" />' +
-      '<input id="row-editor-' +
-        column.fieldName +
-        '-is-null" class="is-null" type="checkbox" />' +
-      '<div class="validation-error">' +
-        renderValidationError(column.dataTypeName) +
-      '</div>' +
-    '</div>'
-  );
+  var $inputLine = renderStandardTextInputLine(column);
 
   // Use jQuery's wrapper around the DOM API in order to avoid XSS vectors
   // that we'd expose by doing plain string interpolation.
@@ -188,27 +172,7 @@ function renderCheckboxInputLine(column, value) {
 }
 
 function renderPhoneInputLine(column, value) {
-  var $inputLine = $(
-    '<div class="input-line" ' +
-      'data-column-field-name="' +
-      column.fieldName +
-      '" ' +
-      'data-column-data-type-name="' +
-      column.dataTypeName +
-      '">' +
-      renderIcon(column.dataTypeName) +
-      '<label class="value"></label>' +
-      '<input id="row-editor-' +
-        column.fieldName +
-        '" class="value" type="text" />' +
-      '<input id="row-editor-' +
-        column.fieldName +
-        '-is-null" class="is-null" type="checkbox" />' +
-      '<div class="validation-error">' +
-        renderValidationError(column.dataTypeName) +
-      '</div>' +
-    '</div>'
-  );
+  var $inputLine = renderStandardTextInputLine(column);
 
   // Use jQuery's wrapper around the DOM API in order to avoid XSS vectors
   // that we'd expose by doing plain string interpolation.
@@ -414,6 +378,23 @@ function renderLocationInputLine(column, value) {
       $inputLineValues.eq(5).attr('disabled', true);
       $inputLineValues.eq(6).attr('disabled', true);
     }
+  }
+
+  return $inputLine;
+}
+
+function renderWKTInputLine(column, value) {
+  var $inputLine = renderStandardTextInputLine(column);
+
+  // Use jQuery's wrapper around the DOM API in order to avoid XSS vectors
+  // that we'd expose by doing plain string interpolation.
+  $inputLine.find('label').eq(0).attr('for', 'row-editor-' + column.fieldName).text(column.name);
+
+  if (_.isNull(value)) {
+    $inputLine.find('input.value').attr('disabled', true);
+    $inputLine.find('input.is-null').value(true);
+  } else {
+    $inputLine.find('input.value').value(WKT.stringify(value));
   }
 
   return $inputLine;
@@ -1082,37 +1063,37 @@ var rowEditorHelpers = {
     },
     point: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },
     multiline: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },
     multipolygon: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },
     polygon: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },
     line: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },
     multipoint: {
       icon: 'socrata-icon-geo',
-      inputLineRenderer: renderSimpleInputLine,
+      inputLineRenderer: renderWKTInputLine,
       inputLineGetter: getSimpleInputLineValue,
       validator: validateWKT
     },

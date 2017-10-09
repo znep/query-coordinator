@@ -27,8 +27,7 @@
         window.headerNotifications('#site-chrome-header-notifications',
           options,
           <%== json_escape current_user_id.to_json %>,
-          <%== json_escape I18n.t('.shared.site_chrome.notifications').to_json %>,
-          <%== json_escape I18n.locale.to_json %>
+          <%== json_escape I18n.t('.shared.site_chrome.notifications').to_json %>
         );
       }
     },

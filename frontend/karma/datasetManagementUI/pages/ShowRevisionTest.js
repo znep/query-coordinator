@@ -2,7 +2,6 @@ import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { ShowRevision } from 'pages/ShowRevision/ShowRevision';
-import _ from 'lodash';
 import { ShowRevisionProps } from '../data/defaultProps';
 
 describe('ShowRevision page', () => {
@@ -21,9 +20,7 @@ describe('ShowRevision page', () => {
   });
 
   it('renders the SchemaPreview', () => {
-    assert.isTrue(
-      component.find('SchemaPreview').exists()
-    );
+    assert.isTrue(component.find('SchemaPreview').exists());
   });
 
   it('renders RowDetails', () => {
@@ -31,8 +28,6 @@ describe('ShowRevision page', () => {
   });
 
   it('renders the HomePaneSidebar', () => {
-    assert.isTrue(
-      component.find('withRouter(Connect(HomePaneSidebar))').exists()
-    );
+    assert.isTrue(component.find('HomePaneSidebar').exists());
   });
 });

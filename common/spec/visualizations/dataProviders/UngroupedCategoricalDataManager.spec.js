@@ -44,7 +44,10 @@ const inputVifs = {
   basicEnglish: Object.assign({}, _.cloneDeep(vifBase), {id: 'basicEnglish'}),
   abbrvEnglish: Object.assign({}, _.cloneDeep(vifBase), {id: 'abbrvEnglish'}),
   basicRussian: Object.assign({}, _.cloneDeep(vifBase), {id: 'basicRussian'}),
-  abbrvRussian: Object.assign({}, _.cloneDeep(vifBase), {id: 'abbrvRussian'})
+  abbrvRussian: Object.assign({}, _.cloneDeep(vifBase), {id: 'abbrvRussian'}),
+  noMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'noMonths'}),
+  mixedMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'mixedMonths'}),
+  mixedLanguageMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'mixedLanguageMonths'})
 };
 
 
@@ -83,6 +86,33 @@ const outputResults = {
       ['фев', 12],
       ['янв', 21],
       ['мар', 30]
+    ]
+  },
+  noMonths: {
+    columns: ['dimension', null],
+    rows: [
+      ['hotel', 1],
+      ['bravo', 2],
+      ['oscar', 3],
+      ['alpha', 4]
+    ]
+  },
+  mixedMonths: {
+    columns: ['dimension', null],
+    rows: [
+      ['january', 1],
+      ['bravo', 2],
+      ['oscar', 3],
+      ['alpha', 4]
+    ]
+  },
+  mixedLanguageMonths: {
+    columns: ['dimension', null],
+    rows: [
+      ['январь', 1],
+      ['february', 2],
+      ['march', 3],
+      ['april', 4]
     ]
   }
 };
@@ -178,6 +208,60 @@ describe('UngroupedCategoricalDataManager', () => {
       };
       return UngroupedCategoricalDataManager.getData(
         inputVifs.abbrvRussian, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        then((response) => {
+          assert.deepEqual(response, expectedTable);
+        }).
+        catch(logAndThrow);
+    });
+
+    it('does not apply month ordering for columns which contain non-month values', () => {
+      const expectedTable = {
+        columns: ['dimension', ''],
+        rows: [
+          ['alpha', 4],
+          ['bravo', 2],
+          ['hotel', 1],
+          ['oscar', 3]
+        ]
+      };
+      return UngroupedCategoricalDataManager.getData(
+        inputVifs.noMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        then((response) => {
+          assert.deepEqual(response, expectedTable);
+        }).
+        catch(logAndThrow);
+    });
+
+    it('does not apply month ordering for columns which contain mixed values', () => {
+      const expectedTable = {
+        columns: ['dimension', ''],
+        rows: [
+          ['alpha', 4],
+          ['bravo', 2],
+          ['january', 1],
+          ['oscar', 3]
+        ]
+      };
+      return UngroupedCategoricalDataManager.getData(
+        inputVifs.mixedMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        then((response) => {
+          assert.deepEqual(response, expectedTable);
+        }).
+        catch(logAndThrow);
+    });
+
+    it('does not apply month ordering for columns which contain mixed language months', () => {
+      const expectedTable = {
+        columns: ['dimension', ''],
+        rows: [
+          ['april', 4],
+          ['february', 2],
+          ['march', 3],
+          ['январь', 1]
+        ]
+      };
+      return UngroupedCategoricalDataManager.getData(
+        inputVifs.mixedLanguageMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).

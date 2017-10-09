@@ -210,7 +210,7 @@ function SoqlDataProvider(config, useCache = false) {
     if (readFromNbe) {
 
       queryString =
-        '$select=*,:id&$order=`{0}`+{1}&$limit={2}&$offset={3}{4}'.
+        '$select=*&$order=`{0}`+{1}&$limit={2}&$offset={3}{4}'.
         format(
           order[0].columnName,
           order[0].ascending ? 'ASC' : 'DESC',

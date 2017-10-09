@@ -712,15 +712,15 @@ describe('SoqlDataProvider', () => {
       const argumentsAndExpectedQueryPairs = [
         {
           args: [ [ 'foo', 'bar' ], [ { columnName: 'foo', ascending: true } ], 0, 10 ],
-          resultantQueryParts: [ '$select=*,:id', '$order=`foo`+ASC', '$offset=0', '$limit=10' ]
+          resultantQueryParts: [ '$select=*', '$order=`foo`+ASC', '$offset=0', '$limit=10' ]
         },
         {
           args: [ [ 'bar', 'foo' ], [ { columnName: 'foo', ascending: false } ], 100, 88 ],
-          resultantQueryParts: [ '$select=*,:id', '$order=`foo`+DESC', '$offset=100', '$limit=88' ]
+          resultantQueryParts: [ '$select=*', '$order=`foo`+DESC', '$offset=100', '$limit=88' ]
         },
         {
           args: [ [ 'baz' ], [ { columnName: 'what', ascending: false } ], 10, 2 ],
-          resultantQueryParts: [ '$select=*,:id', '$order=`what`+DESC', '$offset=10', '$limit=2' ]
+          resultantQueryParts: [ '$select=*', '$order=`what`+DESC', '$offset=10', '$limit=2' ]
         }
       ];
 

@@ -492,21 +492,14 @@ body.grid-view-2017-refresh {
 
       #datasetName {
         display: block;
-        margin: 0 8px 26px 0;
+        margin: 0 8px 0 0;
         font-size: 24px;
         font-weight: 300;
         letter-spacing: -0.5px;
       }
 
       .outOfDate {
-        position: absolute;
-        display: block;
-        left: 8px;
-        top: 45px;
-        color: #808080;
-        font-size: 14px;
-        font-weight: 400;
-        font-style: normal;
+        display: none;
       }
 
       .publish {

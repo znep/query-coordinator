@@ -36,7 +36,7 @@ import Localization from 'common/i18n/components/Localization';
 
 import Notifications from './components/Notifications/Notifications';
 
-window.headerNotifications = (container, options, userid, translations, locale) => {
+window.headerNotifications = (container, options, userid, translations) => {
   let rootNode;
   const sharedTranslations = {
     shared_site_chrome_notifications: translations || {}
@@ -52,8 +52,7 @@ window.headerNotifications = (container, options, userid, translations, locale) 
 
   ReactDOM.render(
     <Localization
-      translations={sharedTranslations}
-      locale={locale || 'en'}>
+      translations={sharedTranslations}>
       <Notifications options={options} userid={userid}/>
     </Localization>,
     rootNode

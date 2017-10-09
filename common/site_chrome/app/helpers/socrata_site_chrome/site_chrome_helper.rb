@@ -102,7 +102,15 @@ module SocrataSiteChrome
     end
 
     def current_user_id
-      site_chrome_current_user.try("id") || ""
+      site_chrome_current_user.try(:id).to_s
+    end
+
+    def show_site_chrome_header_notifications_for_admin?
+      get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications')
+    end
+
+    def show_site_chrome_header_notifications_for_user?
+      logged_in? && !current_user_can_see_admin_link? && get_feature_flag('enable_user_notifications')
     end
 
     def current_user_role

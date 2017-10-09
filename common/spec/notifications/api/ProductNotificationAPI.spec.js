@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/store/ProductNotificationStore';
-import {mockResponse} from '../helpers';
+import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/api/ProductNotificationAPI';
+import { mockResponse } from '../helpers';
 
 let updateProductNotificationLastSeenStub;
 let getProductNotifaicationsStub;
 
-describe('ProductNotificationStore', () => {
+describe('ProductNotificationAPI', () => {
   describe('getProductNotifications', () => {
     beforeEach(() => {
       getProductNotifaicationsStub = sinon.stub(

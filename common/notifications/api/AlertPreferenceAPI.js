@@ -79,7 +79,7 @@ function decodePreferenceFormat(preferences) {
   return decodedPreferences;
 }
 
-export const AlertPreferenceStore = (() => {
+export const AlertPreferenceAPI = (() => {
   return {
     get: () => {
       return fetch('/api/notifications_and_alerts/preferences', {
@@ -109,4 +109,4 @@ export const AlertPreferenceStore = (() => {
   };
 })();
 
-export default AlertPreferenceStore;
+export default AlertPreferenceAPI;

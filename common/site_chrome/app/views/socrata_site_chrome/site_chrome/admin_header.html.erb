@@ -33,7 +33,7 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
+      <% if show_site_chrome_header_notifications_for_admin? %>
         <div
           id="site-chrome-header-notifications"
           tabIndex="-1"
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <% if get_feature_flag('enable_header_notifications') || get_feature_flag('enable_user_notifications') %>
+    <% if show_site_chrome_header_notifications_for_admin? %>
       <script type="text/javascript">
         document.addEventListener(
           'DOMContentLoaded',
@@ -97,7 +97,7 @@
               window.headerNotifications('#site-chrome-header-notifications',
                 options,
                 <%== json_escape current_user_id.to_json %>,
-                <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
+                <%== json_escape I18n.t('.shared.site_chrome.notifications').to_json %>,
                 <%== json_escape I18n.locale.to_json %>
               );
             }

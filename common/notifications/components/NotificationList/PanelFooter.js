@@ -6,6 +6,7 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import AlertSettingModal from 'common/notifications/components/AlertSettingModal/AlertSettingModal';
+import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './panel-footer.scss';
 
 class PanelFooter extends Component {
@@ -70,9 +71,9 @@ class PanelFooter extends Component {
           <p>{I18n.t('shared_site_chrome_notifications.clear_all_confirm')}</p>
 
           <div styleName="prompt-buttons-wrapper" className="clearfix">
-            <button styleName="cancle-button"
+            <button styleName="cancel-button"
               className="btn btn-default"
-              onClick={() => { toggleClearAllUserNotificationsPrompt(false) }}>
+              onClick={() => toggleClearAllUserNotificationsPrompt(false)}>
               {I18n.t('shared_site_chrome_notifications.clear_all_confirm_no')}
             </button>
 
@@ -90,9 +91,9 @@ class PanelFooter extends Component {
 
     if (showUserNotifications) {
       return (
-        <a className="btn" styleName="setting-btn" onClick={this.toggleSubscription}>
-          <span className="socrata-icon-settings"></span>
-          {I18n.t('shared_site_chrome_notifications.setting')}
+        <a className="btn" styleName="setting-button" onClick={this.toggleSubscription}>
+          <SocrataIcon name="settings" />
+          <em>{I18n.t('shared_site_chrome_notifications.setting')}</em>
         </a>
       );
     }
@@ -118,7 +119,7 @@ class PanelFooter extends Component {
           <button
             styleName="primary-button"
             className="clear-all-button"
-            onClick={() => { toggleClearAllUserNotificationsPrompt(!openClearAllUserNotificationsPrompt) }}
+            onClick={() => toggleClearAllUserNotificationsPrompt(!openClearAllUserNotificationsPrompt)}
             disabled={!hasUserNotifications}>
             {I18n.t('shared_site_chrome_notifications.clear_all_text')}
           </button>

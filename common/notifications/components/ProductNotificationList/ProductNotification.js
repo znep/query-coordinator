@@ -34,7 +34,7 @@ class ProductNotification extends Component {
     return (
       <li styleName={classNames('notification-item', { 'unread': isUnread })}
         className={classNames('notification-item', { 'is-unread-notification': isUnread })}>
-        <a styleName='notification-link'
+        <a styleName="notification-link"
            className="notification-title"
            href={titleLink}
            target='_blank'>

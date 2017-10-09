@@ -18,7 +18,7 @@ class UserNotificationList extends Component {
       I18n
     } = this.props;
 
-    const notifications = userNotifications.filter(notification => {
+    const notifications = userNotifications.filter((notification) => {
       return _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy);
     });
 

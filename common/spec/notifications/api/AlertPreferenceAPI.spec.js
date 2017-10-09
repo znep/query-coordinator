@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
-import AlertPreferenceStore from 'common/notifications/store/AlertPreferenceStore';
+import AlertPreferenceAPI from 'common/notifications/api/AlertPreferenceAPI';
 
 let getPreferenceStub = null;
 let setPreferenceStub = null;
 
-describe('AlertPreferenceStore', () => {
+describe('AlertPreferenceAPI', () => {
 
-  describe('AlertPreferenceStore.get', () => {
+  describe('AlertPreferenceAPI.get', () => {
 
     describe('successful response', () => {
       let mockResponse = new Response(
@@ -34,7 +34,7 @@ describe('AlertPreferenceStore', () => {
             sub_categories: {'meta-test': {enable: true}}
           }
         };
-        return AlertPreferenceStore.get().then((res) => {
+        return AlertPreferenceAPI.get().then((res) => {
           const request = window.fetch.args[0][1];
           sinon.assert.calledOnce(getPreferenceStub);
           assert.equal(window.fetch.args[0][0], '/api/notifications_and_alerts/preferences');
@@ -65,7 +65,7 @@ describe('AlertPreferenceStore', () => {
 
       // Returns a promise
       it('throws a connection error', () => {
-        return AlertPreferenceStore.get().then(
+        return AlertPreferenceAPI.get().then(
           () => {
             throw new Error('Unexpected resolution')
           },
@@ -78,7 +78,7 @@ describe('AlertPreferenceStore', () => {
     });
   });
 
-  describe('AlertPreferenceStore.set', () => {
+  describe('AlertPreferenceAPI.set', () => {
     describe('successful response', () => {
       let mockResponse = new Response(JSON.stringify ({data: []}), {status: 200});
 
@@ -91,7 +91,7 @@ describe('AlertPreferenceStore', () => {
       });
 
       it('should hit preference url as post method', () => {
-        AlertPreferenceStore.set().then(()=> {
+        AlertPreferenceAPI.set().then(()=> {
           const request = window.fetch.args[0][1];
           assert.equal(request.method, 'POST');
           assert.equal(window.fetch.args[0][0], '/api/notifications_and_alerts/preferences');
@@ -118,7 +118,7 @@ describe('AlertPreferenceStore', () => {
       });
 
       it('throws a connection error', () => {
-        return AlertPreferenceStore.set().then(
+        return AlertPreferenceAPI.set().then(
           () => {
             throw new Error('Unexpected resolution')
           },

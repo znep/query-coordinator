@@ -23,6 +23,10 @@
     font-weight: 300;
     margin-left: 15px;
     text-transform: uppercase;
+
+    span:first-child {
+      margin-right: 3px;
+    }
   }
 
   .header-icon,
@@ -40,6 +44,17 @@
   .header-icon {
     font-size: 21px;
     left: 0;
+
+    & :global(.socrata-icon) {
+      height: 21px;
+      width: 21px;
+      margin-top: 13px;
+
+      & svg {
+        height: 21px;
+        width: 21px;
+      }
+    }
   }
 
   .close-panel-link {
@@ -50,6 +65,34 @@
     &:hover,
     &:focus {
       background-color: $panel-close-link-background-color;
+    }
+
+    & :global(.socrata-icon) {
+      height: 13px;
+      width: 13px;
+      margin-top: 16px;
+
+      & svg {
+        height: 13px;
+        width: 13px;
+      }
+    }
+  }
+
+  & :global(.socrata-icon) {
+    color: $white;
+    fill: $white;
+
+    & svg {
+      &,
+      * {
+        color: $white;
+        fill: $white;
+      }
+    }
+
+    &:before {
+      display: none;
     }
   }
 }

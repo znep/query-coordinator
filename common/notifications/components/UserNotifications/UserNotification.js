@@ -42,7 +42,7 @@ class UserNotification extends React.Component {
         className="toggle-notification-read-state"
         href="javascript:void(0)"
         title={linkTitle}
-        onClick={() => {onToggleReadUserNotification(id, !is_read)}}>
+        onClick={() => onToggleReadUserNotification(id, !is_read)}>
         <SocrataIcon name="checkmark3" />
       </a>
     );
@@ -60,7 +60,7 @@ class UserNotification extends React.Component {
          className="user-notification-clear-icon"
          href="javascript:void(0)"
          title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
-         onClick={() => {onClearUserNotification(id)}}>
+         onClick={() => onClearUserNotification(id)}>
         <SocrataIcon name="close-2" />
       </a>
     );

@@ -6,9 +6,9 @@ import _ from 'lodash';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
-import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/store/ProductNotificationStore';
+import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/api/ProductNotificationAPI';
 import NotificationList from 'common/notifications/components/NotificationList/NotificationList';
-import UserNotificationStore from 'common/notifications/store/UserNotificationStore';
+import UserNotificationAPI from 'common/notifications/api/UserNotificationAPI';
 import Bell from 'common/notifications/components/Bell/Bell';
 import { DEFAULT_FILTER_TAB } from 'common/notifications/constants';
 import styles from './notifications.scss';
@@ -32,7 +32,7 @@ class Notifications extends Component {
     };
 
     if (props.options.showUserNotifications && props.userid) {
-      this.userNotificationStore = new UserNotificationStore(props.userid, this.onNotificationsUpdate.bind(this));
+      this.userNotificationAPI = new UserNotificationAPI(props.userid, this.onNotificationsUpdate.bind(this));
     }
 
     _.bindAll(this,
@@ -134,7 +134,7 @@ class Notifications extends Component {
   }
 
   clearAllUserNotifications() {
-    this.userNotificationStore.deleteAllNotifications();
+    this.userNotificationAPI.deleteAllNotifications();
     this.setState({ openClearAllUserNotificationsPrompt: false });
   }
 
@@ -143,14 +143,14 @@ class Notifications extends Component {
   }
 
   onClearUserNotification(notification_id) {
-    this.userNotificationStore.deleteNotification(notification_id);
+    this.userNotificationAPI.deleteNotification(notification_id);
   }
 
   onToggleReadUserNotification(notification_id, toggle) {
     if (toggle) {
-      this.userNotificationStore.markNotificationAsRead(notification_id);
+      this.userNotificationAPI.markNotificationAsRead(notification_id);
     } else {
-      this.userNotificationStore.markNotificationAsUnRead(notification_id);
+      this.userNotificationAPI.markNotificationAsUnRead(notification_id);
     }
   }
 
@@ -165,7 +165,7 @@ class Notifications extends Component {
       this.addKeyboardEvents();
 
       if (lockScrollbar) {
-        document.querySelector('body').scrollTop = scrollTop;
+        document.querySelector('html').scrollTop = scrollTop;
         document.querySelector('body').style.overflow = 'hidden';
       }
 

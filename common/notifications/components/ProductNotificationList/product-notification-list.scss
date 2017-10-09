@@ -25,9 +25,9 @@ $panelHeaderHeight: 30px;
   }
 
   &.secondary-panel {
-    background-color: #000000;
+    background-color: $panel-footer-prompt-shadow-color;
     bottom: $footerBarHeight;
-    color: #e5e5e5;
+    color: $view-older-notifications-link-color;
     height: $panelHeaderHeight;
     left: 0;
     position: absolute;
@@ -42,7 +42,7 @@ $panelHeaderHeight: 30px;
       display: block;
 
       .panel-header-text {
-        color: #e5e5e5;
+        color: $view-older-notifications-link-color;
         cursor: pointer;
         font-size: 12px;
         font-weight: 400;
@@ -55,7 +55,7 @@ $panelHeaderHeight: 30px;
         text-transform: capitalize;
 
         &:before {
-          background-color: #e6af00;
+          background-color: $product-unread-indicator-color;
           border-radius: 4px;
           content: '';
           display: none;
@@ -80,13 +80,35 @@ $panelHeaderHeight: 30px;
           font-weight: 300;
           margin-left: 8px;
           text-transform: uppercase;
+
+          span:first-child {
+            margin-right: 3px;
+          }
         }
 
-        .header-icon {
-          color: #e5e5e5;
+        & :global(.socrata-icon) {
+          color: $view-older-notifications-link-color;
+          fill: $view-older-notifications-link-color;
+          height: 13px;
           position: absolute;
           right: 10px;
-          top: 5px;
+          top: 8px;
+          width: 13px;
+
+          & svg {
+            height: 13px;
+            width: 13px;
+
+            &,
+            * {
+              color: $view-older-notifications-link-color;
+              fill: $view-older-notifications-link-color;
+            }
+          }
+
+          &:before {
+            display: none;
+          }
         }
       }
     }

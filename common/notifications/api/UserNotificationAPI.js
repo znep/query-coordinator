@@ -4,15 +4,15 @@ import _ from 'lodash';
 
 import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 
-class NotificationStore {
+class NotificationAPI {
   constructor(user_id, callback) {
     if (!user_id) {
-      console.error("NotificationStore called without user id");
+      console.error('NotificationAPI called without user id');
       return;
     }
 
-    let channel_id = "user:" + user_id;
-    let socket = new Socket("wss://" + window.location.host + "/api/notifications_and_alerts/socket", {
+    let channel_id = 'user:' + user_id;
+    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, {
       params: {user_id: user_id},
       logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) })
     });
@@ -27,24 +27,24 @@ class NotificationStore {
       that.update();
       that._channel.join().
         receive('ok', (resp) => {
-          console.log("Joined user channel");
+          console.log('Joined user channel');
         }).
-        receive("error", resp => {
-          console.log("Unable to join", resp);
+        receive('error', (resp) => {
+          console.log('Unable to join', resp);
         });
     }, function() {});
 
-    this._channel.on("new_notification", msg => this._onNewNotification(msg.notification));
-    this._channel.on("delete_notification", msg => this._onNotificationDelete(msg.notification_id));
-    this._channel.on("delete_all_notifications", msg => this._onDeleteAllNotifications(msg.notification_id));
-    this._channel.on("mark_notification_as_read", msg => this._onNotificationMarkedAsRead(msg.notification_id));
-    this._channel.on("mark_notification_as_unread", msg => this._onNotificationMarkedAsUnRead(msg.notification_id));
+    this._channel.on('new_notification', (msg) => this._onNewNotification(msg.notification));
+    this._channel.on('delete_notification', (msg) => this._onNotificationDelete(msg.notification_id));
+    this._channel.on('delete_all_notifications', (msg) => this._onDeleteAllNotifications(msg.notification_id));
+    this._channel.on('mark_notification_as_read', (msg) => this._onNotificationMarkedAsRead(msg.notification_id));
+    this._channel.on('mark_notification_as_unread', (msg) => this._onNotificationMarkedAsUnRead(msg.notification_id));
     this._callback = callback;
   }
 
   _getExistingNotifications() {
-    return fetch("/api/notifications_and_alerts/notifications", { credentials: 'same-origin' })
-      .then(response => response.json());
+    return fetch('/api/notifications_and_alerts/notifications', { credentials: 'same-origin' })
+      .then((response) => response.json());
   };
 
   _onNewNotification(notification) {
@@ -53,7 +53,7 @@ class NotificationStore {
   }
 
   _onNotificationDelete(notificationId) {
-    let index = this._notifications.findIndex(n => n.id === notificationId);
+    let index = this._notifications.findIndex((n) => n.id === notificationId);
     this._notifications.splice(index, 1);
     this.update();
   }
@@ -64,13 +64,13 @@ class NotificationStore {
   }
 
   _onNotificationMarkedAsRead(notificationId) {
-    let index = this._notifications.findIndex(n => n.id === notificationId);
+    let index = this._notifications.findIndex((n) => n.id === notificationId);
     this._notifications[index].read = true;
     this.update();
   }
 
   _onNotificationMarkedAsUnRead(notificationId) {
-    let index = this._notifications.findIndex(n => n.id === notificationId);
+    let index = this._notifications.findIndex((n) => n.id === notificationId);
     this._notifications[index].read = false;
     this.update();
   }
@@ -205,4 +205,4 @@ class NotificationStore {
   }
 }
 
-export default NotificationStore;
+export default NotificationAPI;

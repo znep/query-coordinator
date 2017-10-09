@@ -3,7 +3,7 @@ import { get as getCookie } from 'browser-cookies';
 
 export function getProductNotifications(callback) {
   fetch('/notifications', { credentials: 'same-origin' })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(
       callback,
       () => {
@@ -35,9 +35,9 @@ export function updateProductNotificationLastSeen() {
     headers: headers
   }).then(checkStatus).catch(function(error) {
     if (error.response.status === 401) {
-      console.warn("Unable to update notification last seen due to failed authorization. This is probably as the result of an expired session cookie.");
+      console.warn('Unable to update notification last seen due to failed authorization. This is probably as the result of an expired session cookie.');
     } else {
-      console.log("Unable to update notification last seen due to an unknown error: " + error);
+      console.log(`Unable to update notification last seen due to an unknown error: ${error}`);
     }
   });
 }

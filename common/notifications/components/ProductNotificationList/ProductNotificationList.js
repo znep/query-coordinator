@@ -7,6 +7,7 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import ProductNotification from './ProductNotification';
+import { SocrataIcon } from 'common/components/SocrataIcon';
 import Spinner from 'common/notifications/components/Spinner';
 import ErrorMessage from 'common/notifications/components/ErrorMessage';
 import styles from './product-notification-list.scss';
@@ -21,9 +22,8 @@ class ProductNotificationList extends Component {
     if (unreadProductNotificationCount > 0) {
       return (
         <em styleName="unread-count-label">
-          {unreadProductNotificationCount}
-          &nbsp;
-          {I18n.t('shared_site_chrome_notifications.new_label')}
+          <span>{unreadProductNotificationCount}</span>
+          <span>{I18n.t('shared_site_chrome_notifications.new_label')}</span>
         </em>
       );
     }
@@ -32,14 +32,11 @@ class ProductNotificationList extends Component {
   renderAccordionIcon() {
     const { isSecondaryPanelOpen } = this.props;
 
-    return (
-      <em styleName="header-icon"
-        className={classNames({
-          'socrata-icon-close-2': isSecondaryPanelOpen,
-          'socrata-icon-chevron-up': !isSecondaryPanelOpen
-        })}>
-      </em>
-    );
+    if (isSecondaryPanelOpen) {
+      return <SocrataIcon name="close-2" />
+    } else {
+      return <SocrataIcon name="chevron-up" />
+    }
   }
 
   renderSecondaryPanelHeader() {
@@ -81,8 +78,8 @@ class ProductNotificationList extends Component {
         return <Spinner />;
       } else if (hasError) {
         return (
-          <div styleName='notifications-message'
-            className='notifications-error-message-wrapper'>
+          <div styleName="notifications-message"
+            className="notifications-error-message-wrapper">
             <ErrorMessage text={errorText} />
           </div>
         );
@@ -93,8 +90,8 @@ class ProductNotificationList extends Component {
           );
         } else {
           return (
-            <div styleName='notifications-message'
-              className='no-notifications-message-wrapper'>
+            <div styleName="notifications-message"
+              className="no-notifications-message-wrapper">
               <h3>{I18n.t('shared_site_chrome_notifications.no_unread_notifications')}</h3>
             </div>
           );
@@ -113,10 +110,10 @@ class ProductNotificationList extends Component {
     if (!_.isNull(viewOlderLink) && !areNotificationsLoading) {
       return (
         <div className="view-older"
-          styleName='view-older-links-wrapper'>
+          styleName="view-older-links-wrapper">
           <a href={viewOlderLink}
-            styleName='view-older-link'
-            target='_blank'>
+            styleName="view-older-link"
+            target="_blank">
             {I18n.t('shared_site_chrome_notifications.view_older')}
           </a>
         </div>

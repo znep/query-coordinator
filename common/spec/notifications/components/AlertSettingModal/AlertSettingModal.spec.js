@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import TestUtils from 'react-dom/test-utils';
 import AlertSettingModal from 'common/notifications/components/AlertSettingModal/AlertSettingModal';
-import AlertPreferenceStore from 'common/notifications/store/AlertPreferenceStore';
+import AlertPreferenceAPI from 'common/notifications/api/AlertPreferenceAPI';
 import renderLocalizationElement from '../../renderLocalizationComponent';
 
 describe('AlertSettingModal', () => {
@@ -12,7 +12,7 @@ describe('AlertSettingModal', () => {
   let getPreference;
 
   beforeEach(() => {
-    getPreference = sinon.stub(AlertPreferenceStore, 'get', _.constant(Promise.resolve({status: 200})));
+    getPreference = sinon.stub(AlertPreferenceAPI, 'get', _.constant(Promise.resolve({status: 200})));
   });
 
   afterEach(() => {
@@ -20,13 +20,13 @@ describe('AlertSettingModal', () => {
   });
 
   it('renders an element', () => {
-    var spy = sinon.spy();
+    const spy = sinon.spy();
     const element = renderLocalizationElement(AlertSettingModal, getProps({onClose: spy}));
     assert.isNotNull(element);
   });
 
   it('should renders an Modal with save, cancel buttons', () => {
-    var spy = sinon.spy();
+    const spy = sinon.spy();
     const element = renderLocalizationElement(AlertSettingModal, getProps({onClose: spy}));
     assert.isNotNull(element.querySelectorAll('.alert-setting-modal'));
     assert.isNotNull(element.querySelectorAll('.btn-primary'));
@@ -34,16 +34,16 @@ describe('AlertSettingModal', () => {
   });
 
   it('on load it should get all the saved preferences', () => {
-    var spy = sinon.spy();
+    const spy = sinon.spy();
     renderLocalizationElement(AlertSettingModal, getProps({onClose: spy}));
     sinon.assert.calledOnce(getPreference);
   });
 
   it('on save should set alert preferences', () => {
-    var spy = sinon.spy();
+    const spy = sinon.spy();
     const element = renderLocalizationElement(AlertSettingModal, getProps({onClose: spy}));
-    var setPreference = sinon.stub(AlertPreferenceStore, 'set', _.constant(Promise.resolve({status: 200})));
-    var saveButton = element.querySelector('.save-btn');
+    var setPreference = sinon.stub(AlertPreferenceAPI, 'set', _.constant(Promise.resolve({status: 200})));
+    var saveButton = element.querySelector('.save-button');
     assert.isNotNull(saveButton);
     TestUtils.Simulate.click(saveButton);
     sinon.assert.calledOnce(setPreference);
@@ -51,9 +51,9 @@ describe('AlertSettingModal', () => {
   });
 
   it('on cancel should close the modal', () => {
-    var spy = sinon.spy();
+    const spy = sinon.spy();
     const element = renderLocalizationElement(AlertSettingModal, getProps({onClose: spy}));
-    var cancelButton = element.querySelector('.cancel-btn');
+    var cancelButton = element.querySelector('.cancel-button');
     assert.isNotNull(cancelButton);
     TestUtils.Simulate.click(cancelButton);
     sinon.assert.calledOnce(spy);

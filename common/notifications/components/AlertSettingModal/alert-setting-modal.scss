@@ -75,17 +75,18 @@ $divider-color: #e8eaeb;
     margin-right: 5px;
   }
 
-  .cancel-btn {
+  .cancel-button {
     @extend .btn;
     @extend .btn-default;
   }
 
-  .save-btn {
+  .save-button {
     @extend .btn;
     @extend .btn-primary;
   }
 
-  .cancel-btn, .save-btn {
+  .cancel-button,
+  .save-button {
     display: inline-block;
     font-size: 12px;
     margin-left: 5px;

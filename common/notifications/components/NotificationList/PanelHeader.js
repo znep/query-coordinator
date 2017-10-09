@@ -4,6 +4,7 @@ import cssModules from 'react-css-modules';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
+import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './panel-header.scss';
 
 class PanelHeader extends Component {
@@ -17,9 +18,8 @@ class PanelHeader extends Component {
       return (
         <em styleName='new-notifications-label'
           className='new-notifications-label'>
-          {unreadCount}
-          &nbsp;
-          {I18n.t('shared_site_chrome_notifications.new_label')}
+          <span>{unreadCount}</span>
+          <span>{I18n.t('shared_site_chrome_notifications.new_label')}</span>
         </em>
       );
     }
@@ -36,12 +36,11 @@ class PanelHeader extends Component {
     return (
       <div styleName='header'>
         <div styleName='header-icon'>
-          <span className='socrata-icon-bell'></span>
+          <SocrataIcon name="bell" />
         </div>
 
         <h3>
           {panelHeaderText}
-          &nbsp;
           {this.renderNewNotificationsLabel()}
         </h3>
 
@@ -49,7 +48,7 @@ class PanelHeader extends Component {
           className='close-notifications-panel-link'
           href='javascript:void(0)'
           onClick={onClosePanel}>
-          <span className='socrata-icon-close-2'></span>
+          <SocrataIcon name="close-2" />
         </a>
       </div>
     );

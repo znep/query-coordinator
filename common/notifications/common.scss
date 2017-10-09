@@ -1,13 +1,13 @@
 @import '~bourbon/app/assets/stylesheets/_bourbon.scss';
 @import '~common/styleguide/variables/_colors.scss';
 @import '~common/styleguide/variables/_typography.scss';
+@import '~common/styleguide/partials/_typography.scss';
 @import '~common/styleguide/variables/_layout.scss';
 @import '~common/styleguide/partials/_loader.scss';
 @import '~common/styleguide/partials/_alerts.scss';
 @import '~common/styleguide/partials/_buttons.scss';
 
 $default-font-path: 'socrata-components/dist/fonts/';
-$default-line-height: 1.618;
 $footerBarHeight: 46px;
 $headerBarHeight: 46px;
 $headerHeightSmall: 32px;

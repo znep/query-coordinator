@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import UserNotificationStore from 'common/notifications/store/UserNotificationStore';
+import UserNotificationAPI from 'common/notifications/api/UserNotificationAPI';
 import { mockResponse } from '../helpers';
 import { fakeUserNotifications } from '../data';
 
 let notificationStub = null;
-let userNotificationStore = null;
-const userid = 'tugg-ikce';
+let userNotificationAPI = null;
+const userId = 'tugg-ikce';
 
 describe('User Notification Store', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('User Notification Store', () => {
   });
 
   it('should hit get notifications api on new user notifications mount', () => {
-    userNotificationStore = new UserNotificationStore(userid);
+    userNotificationAPI = new UserNotificationAPI(userId);
     sinon.assert.calledOnce(notificationStub);
 
     const request = window.fetch.args[0][1];
@@ -34,7 +34,7 @@ describe('User Notification Store', () => {
   });
 
   it('should hit delete notification api as a DELETE method', () => {
-    userNotificationStore.deleteNotification('100');
+    userNotificationAPI.deleteNotification('100');
     sinon.assert.calledOnce(notificationStub);
 
     const request = window.fetch.args[0][1];
@@ -47,7 +47,7 @@ describe('User Notification Store', () => {
   });
 
   it('should hit delete all notifications api as a DELETE method', () => {
-    userNotificationStore.deleteAllNotifications();
+    userNotificationAPI.deleteAllNotifications();
     sinon.assert.calledOnce(notificationStub);
 
     const request = window.fetch.args[0][1];
@@ -60,7 +60,7 @@ describe('User Notification Store', () => {
   });
 
   it('should hit mark as read notifications api as a PUT method', () => {
-    userNotificationStore.markNotificationAsRead(100);
+    userNotificationAPI.markNotificationAsRead(100);
     sinon.assert.calledOnce(notificationStub);
 
     const request = window.fetch.args[0][1];
@@ -75,7 +75,7 @@ describe('User Notification Store', () => {
   });
 
   it('should hit mark as unread notifications api as a PUT method', () => {
-    userNotificationStore.markNotificationAsUnRead(100);
+    userNotificationAPI.markNotificationAsUnRead(100);
     sinon.assert.calledOnce(notificationStub);
 
     const request = window.fetch.args[0][1];

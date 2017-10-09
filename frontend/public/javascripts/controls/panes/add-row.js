@@ -37,10 +37,7 @@
     'controlPane'
   );
 
-  if (
-    blist.feature_flags.enable_2017_grid_view_refresh &&
-    ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.addRow)
-  ) {
+  if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.addRow) {
     $.gridSidebar.registerConfig('edit.addRow', 'pane_addRow', 1);
   }
 

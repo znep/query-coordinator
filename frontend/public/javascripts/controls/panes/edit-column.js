@@ -4,7 +4,10 @@
     'pane_editColumn',
     {
       isAvailable: function() {
-        return this._view.valid && this._view.type == 'blist';
+
+        return this._view.valid &&
+          (!this._view.temporary || this._view.minorChange) &&
+          this._view.type == 'blist';
       },
 
       getTitle: function() {
@@ -34,10 +37,7 @@
     'controlPane'
   );
 
-  if (
-    blist.feature_flags.enable_2017_grid_view_refresh &&
-    ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.editColumn)
-  ) {
+  if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.editColumn) {
     $.gridSidebar.registerConfig('edit.editColumn', 'pane_editColumn', 3);
   }
 

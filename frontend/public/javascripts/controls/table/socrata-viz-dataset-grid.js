@@ -303,17 +303,26 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             function attachTableEventHandlers() {
 
               function updateViewWithColumnWidthsFromVif(tableColumnWidths) {
-                var newView = _.cloneDeep(self._view.cleanCopy());
+                // EN-17878 - Changing Column Widths Should Not Force a Derived View
+                //
+                // Actually, we're moving toward making all changes require a
+                // working copy until we can provide a more unified editing
+                // experience. So we're no longer responding to column width changes
+                // *at all* if it's not a working copy, and if it is, we just update
+                // it since we're already editing things.
+                if (self._view.publicationStage === 'unpublished') {
 
-                newView.columns.forEach(function(column) {
+                  var newView = _.cloneDeep(self._view.cleanCopy());
+                  newView.columns.forEach(function(column) {
 
-                  if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
+                    if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
 
-                    column.width = tableColumnWidths[column.fieldName];
-                  }
-                });
+                      column.width = tableColumnWidths[column.fieldName];
+                    }
+                  });
 
-                self._view.update(newView, false, false);
+                  self._view.update(newView, false, false);
+                }
               }
 
               $datasetGrid.

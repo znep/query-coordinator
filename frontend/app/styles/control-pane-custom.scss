@@ -434,7 +434,8 @@
       }
     }
   }
-  &.columnOrder {
+  &.columnOrder,
+  &.editColumnOrder {
     .columnItem {
       @include datatype-icons;
       line-height: 1.5833em;

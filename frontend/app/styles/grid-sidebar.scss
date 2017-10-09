@@ -1012,26 +1012,7 @@ body.grid-view-2017-refresh {
           display: none !important;
         }
 
-        .controlPane.addRow {
-          display: none !important;
-        }
-
-      }
-
-      /**
-       * Manage pane overrides
-       */
-      &#gridSidebar_outer_manage {
-
-        .mainTitleBlock {
-          background-color: #b8864b !important;
-        }
-
-        .controlPane.showHide {
-          display: none !important;
-        }
-
-        .columnOrder {
+        .controlPane.editColumnOrder {
 
           .custom {
 
@@ -1060,6 +1041,21 @@ body.grid-view-2017-refresh {
               }
             }
           }
+        }
+
+        .controlPane.addRow {
+          display: none !important;
+        }
+
+      }
+
+      /**
+       * Manage pane overrides
+       */
+      &#gridSidebar_outer_manage {
+
+        .mainTitleBlock {
+          background-color: #b8864b !important;
         }
       }
 

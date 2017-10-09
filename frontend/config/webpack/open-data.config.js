@@ -520,6 +520,7 @@ module.exports = _.defaultsDeep({
       './controls/panes/delete-dataset.js',
       './controls/panes/download-dataset.js',
       './controls/panes/edit-column.js',
+      './controls/panes/edit-column-order.js',
       './controls/panes/edit-redirect.js',
       './controls/panes/embed-sdp.js',
       './controls/panes/feed.js',

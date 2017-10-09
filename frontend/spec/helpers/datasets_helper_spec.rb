@@ -433,6 +433,7 @@ describe DatasetsHelper do
 
         # existing current_user
         allow(helper).to receive_messages(:current_user => User.new)
+        allow(helper.current_user).to receive_messages(:rights => nil)
 
         # dataset is unpublished
         allow(view).to receive_messages(:is_unpublished? => true, :dataset? => true)

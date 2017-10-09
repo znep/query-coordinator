@@ -102,6 +102,18 @@ class Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.needs_api_call(*api_dependent_attributes)
+    api_dependent_attributes.each do |attribute|
+      class_eval <<-EOS, __FILE__, __LINE__
+        def #{attribute}
+          return data_hash['#{attribute}'] if data_hash.key?('#{attribute}')
+          @cached_instance ||= self.class.find(self.id)
+          @cached_instance.data['#{attribute}']
+        end
+      EOS
+    end
+  end
+
   #
   # Preferentially get the user id from model options; otherwise the user model
   #
@@ -203,7 +215,6 @@ class Model
           @cached_#{attribute} = #{klass}.new
           @cached_#{attribute}.data = @data['#{attribute}']
           @cached_#{attribute}.update_data = Hash.new
-          @cached_#{attribute}.freeze
         end
         return @cached_#{attribute}
       end

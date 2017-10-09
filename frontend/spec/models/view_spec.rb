@@ -380,4 +380,98 @@ describe View do
       end
     end
   end
+
+  context 'when calling an api-dependent method like #profile_image_path' do
+
+    let(:view_data) do <<-JSON
+      {
+        "id" : "2zg4-hn5a",
+        "owner" : {
+          "id" : "ccu6-bz4q",
+          "description" : "Amministrazione Pubblica Locale",
+          "displayName" : "Comune di Monza"
+        }
+      }
+    JSON
+    end
+
+    subject { View.parse(view_data) }
+
+    context 'owner has profile image' do
+      let(:user_data) do <<-JSON
+        {
+          "id" : "ccu6-bz4q",
+          "description" : "Amministrazione Pubblica Locale",
+          "displayName" : "Comune di Monza",
+          "lastNotificationSeenAt" : 1507200855,
+          "oid" : 1055,
+          "profileImageUrlLarge" : "/api/users/ccu6-bz4q/profile_images/LARGE",
+          "profileImageUrlMedium" : "/api/users/ccu6-bz4q/profile_images/THUMB",
+          "profileImageUrlSmall" : "/api/users/ccu6-bz4q/profile_images/TINY",
+          "roleName" : "editor",
+          "screenName" : "Comune di Monza",
+          "rights" : [ "create_datasets", "view_domain", "create_pages", "view_goals", "view_dashboards", "view_story", "view_unpublished_story", "create_data_lens" ]
+        }
+        JSON
+      end
+
+      before(:each) do
+        allow(Owner).to receive(:find).and_return(User.parse(user_data))
+      end
+
+      it 'should make one request' do
+        expect(Owner).to receive(:find).once
+        subject.owner.profile_image_path
+      end
+
+      it 'should make ONLY one request' do
+        expect(Owner).to receive(:find).once
+        subject.owner.profile_image_path
+        subject.owner.profile_image_path
+      end
+
+      it 'should return the profile image' do
+        expect(subject.owner.profile_image_path).
+          to eq("/api/users/ccu6-bz4q/profile_images/THUMB")
+      end
+    end
+
+    context 'owner does not have profile image' do
+      let(:user_data) do <<-JSON
+        {
+          "id" : "ccu6-bz4q",
+          "description" : "Amministrazione Pubblica Locale",
+          "displayName" : "Comune di Monza",
+          "lastNotificationSeenAt" : 1507200855,
+          "oid" : 1055,
+          "roleName" : "editor",
+          "screenName" : "Comune di Monza",
+          "rights" : [ "create_datasets", "view_domain", "create_pages", "view_goals", "view_dashboards", "view_story", "view_unpublished_story", "create_data_lens" ]
+        }
+        JSON
+      end
+
+      before(:each) do
+        allow(Owner).to receive(:find).and_return(User.parse(user_data))
+      end
+
+      # This is non-ideal, but we don't know the difference between "has not made a request"
+      # and "will find nothing when we make a request".
+      it 'should make one request' do
+        expect(Owner).to receive(:find).once
+        subject.owner.profile_image_path
+      end
+
+      it 'should make ONLY one request' do
+        expect(Owner).to receive(:find).once
+        subject.owner.profile_image_path
+        subject.owner.profile_image_path
+      end
+
+      it 'should return the profile image' do
+        # Default response.
+        expect(subject.owner.profile_image_path).to eq("/images/medium-profile.png")
+      end
+    end
+  end
 end

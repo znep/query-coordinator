@@ -29,7 +29,7 @@ const languages = {
 };
 
 
-function monthIndex(candidateMonth, language = null) {
+export const monthIndex = (candidateMonth, language = null) => {
   if (_.isNull(candidateMonth)) {
     return undefined;
   }
@@ -40,8 +40,7 @@ function monthIndex(candidateMonth, language = null) {
   };
   if (language) {
     return checkLanguageMonth(language, candidate);
-  }
-  else {
+  } else {
     // autodetect the language
     for (const language in languages) {
       const res = checkLanguageMonth(language, candidate);
@@ -54,7 +53,7 @@ function monthIndex(candidateMonth, language = null) {
 };
 
 
-function detectLanguage(candidate) {
+export const detectLanguage = (candidate) => {
   for (const language in languages) {
     const months = languages[language];
     if (!_.isUndefined(monthIndex(candidate, language))) {
@@ -62,10 +61,4 @@ function detectLanguage(candidate) {
     }
   }
   return undefined;
-}
-
-
-module.exports = {
-  monthIndex,
-  detectLanguage
 };

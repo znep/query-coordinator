@@ -5,7 +5,7 @@ import SoqlDataProvider from './SoqlDataProvider';
 import SoqlHelpers from './SoqlHelpers';
 import I18n from 'common/i18n';
 import makeSocrataCategoricalDataRequest from './makeSocrataCategoricalDataRequest';
-import * as MPH from 'common/visualizations/dataProviders/MonthPredicateHelper';
+import * as MonthPredicateHelper from 'common/visualizations/dataProviders/MonthPredicateHelper';
 
 const MAX_GROUP_COUNT = 12;
 
@@ -744,20 +744,22 @@ function getData(vif, options) {
       compact().
           every((val) => !_.isNaN(_.toNumber(val)));
 
-    // Determine whether all values for ordering are months in the same language.
-    const language = MPH.detectLanguage(_.get(dataTable, `rows.0.${sortValueIndex}`, null));
+    // Determine whether all values for ordering are months in the same
+    // language, and assume that language is the one in the first row.
+    const language = MonthPredicateHelper.detectLanguage(_.get(dataTable, ['rows', 0, sortValueIndex], null));
     const doSortMonths =
       !doSortNumeric &&
       language &&
-      _.every(dataTable.rows,
-              (row) => !_.isUndefined(MPH.monthIndex(row[sortValueIndex], language)));
+      _.every(
+        dataTable.rows,
+        (row) => !_.isUndefined(MonthPredicateHelper.monthIndex(row[sortValueIndex], language))
+      );
 
     let transformer = _.identity;
     if (doSortNumeric) {
       transformer = _.toNumber;
-    }
-    else if (doSortMonths) {
-      transformer = (x) => _.toNumber(MPH.monthIndex(x, language));
+    } else if (doSortMonths) {
+      transformer = (x) => _.toNumber(MonthPredicateHelper.monthIndex(x, language));
     }
 
     const compareValues = makeValueComparator(orderBySort, transformer);

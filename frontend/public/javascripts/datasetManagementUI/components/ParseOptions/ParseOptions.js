@@ -161,14 +161,16 @@ class ParseOptions extends Component {
                   error={errors.quote_char}
                   getOption={this.getOption}
                   setOption={this.setOption('quote_char')} />
-                <ParseFlag
-                  name={'trim_whitespace'}
-                  getOption={this.getFlag}
-                  setOption={this.setFlag('trim_whitespace')} />
-                <ParseFlag
-                  name={'remove_empty_rows'}
-                  getOption={this.getFlag}
-                  setOption={this.setFlag('remove_empty_rows')} />
+                {_.has(this.props.form.parseOptions, 'trim_whitespace') &&
+                  <ParseFlag
+                    name={'trim_whitespace'}
+                    getOption={this.getFlag}
+                    setOption={this.setFlag('trim_whitespace')} />}
+                {_.has(this.props.form.parseOptions, 'remove_empty_rows') &&
+                  <ParseFlag
+                    name={'remove_empty_rows'}
+                    getOption={this.getFlag}
+                    setOption={this.setFlag('remove_empty_rows')} />}
               </Fieldset>
             </form>
           </div>

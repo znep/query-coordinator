@@ -2,6 +2,8 @@
 // Note: Colors added here won't automatically show up in the colors demo page. Add your color to:
 // frontend/app/styles/demos/color_list.scss
 
+@import "./color_helpers";
+
 /* Base Palette Colors */
 $primary: #288dc1;
 $primary-text: shade($primary, 14%);

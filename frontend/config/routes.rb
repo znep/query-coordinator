@@ -163,6 +163,12 @@ Rails.application.routes.draw do
         :constraints => FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
     end
 
+    scope :controller => 'approvals' do
+      get '/admin/approvals',
+        :action => 'show',
+        :constraints => FeatureFlags::RoutingConstraint.new(:enable_approvals_beta)
+    end
+
     scope :path => '/admin', :controller => 'administration' do
       get '/', :action => :index
       get :analytics

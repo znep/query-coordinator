@@ -427,6 +427,19 @@ en:
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
             title: Try it yourself!
+  approvals:
+    header:
+      breadcrumbs:
+        administration: Administration
+        approval_requests: Approval Requests
+      tabs:
+        history:
+          title: History
+        my_queue:
+          title: My Queue
+        settings:
+          title: Settings
+    title: Routing and Approval
   catalog_landing_page:
     activation:
       action: Feature Content

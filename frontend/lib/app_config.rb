@@ -69,6 +69,8 @@ class AppConfig < Hashie::Trash
   # Third-party analytics and errors
   property :airbrake_api_key
   property :airbrake_project_id
+  property :approvals_airbrake_api_key
+  property :approvals_airbrake_project_id
   property :admin_goals_page_airbrake_api_key
   property :admin_goals_page_airbrake_project_id
   property :catalog_landing_page_airbrake_api_key

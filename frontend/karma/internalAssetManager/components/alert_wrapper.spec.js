@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import I18nJS from 'i18n-js';
-import thunk from 'redux-thunk';
 
 import { AlertWrapper } from 'components/alert_wrapper';
 

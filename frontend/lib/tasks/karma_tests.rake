@@ -45,6 +45,7 @@ namespace :test do
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
       'adminGoals' => 'update_admin_goals_translations',
       'adminUsersV2' => 'update_admin_users_v2_translations',
+      'approvals' => 'update_approvals_translations',
       'authentication' => 'update_authentication_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
@@ -71,6 +72,7 @@ namespace :test do
       'test:karma:translations:update_admin_activity_feed_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_users_v2_translations',
+      'test:karma:translations:update_approvals_translations',
       'test:karma:translations:update_authentication_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_common_translations',
@@ -121,6 +123,19 @@ namespace :test do
         translations = all_translations if translations.empty?
 
         File.write(destination_file, "#{export} #{translations.to_json.html_safe};")
+      end
+
+      task :update_approvals_translations do
+        translation_map = {
+          '': 'approvals',
+          common: 'common'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/approvals/mockTranslations.js',
+          export = 'module.exports ='
+        )
       end
 
       task :update_common_translations do
@@ -278,6 +293,7 @@ namespace :test do
       'karma:adminGoals',
       'karma:adminActivityFeed',
       'karma:adminUsersV2',
+      'karma:approvals',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',

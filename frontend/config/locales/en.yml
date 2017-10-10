@@ -2314,6 +2314,7 @@ en:
         no_errors_exist: All cells will import correctly
         scanning: Still scanning for errors...
         set_row_id: Set as row identifier
+        unset_row_id: Un-set row identifier
         geocode: Use as georeference
         can_geocode: Data in this column can be geocoded
         click_for_options: Click for more options

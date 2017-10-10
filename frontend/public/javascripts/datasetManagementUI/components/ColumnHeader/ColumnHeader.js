@@ -49,12 +49,13 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
-
     if (this.isInProgress()) return;
-    this.props.validateThenSetRowIdentifier(
-      this.props.outputSchema,
-      this.props.outputColumn
-    );
+    this.props.validateThenSetRowIdentifier();
+  }
+
+  onUnsetRowId() {
+    if (this.isInProgress()) return;
+    this.props.unSetRowIdentifier();
   }
 
   onGeocode() {
@@ -101,10 +102,10 @@ export class ColumnHeader extends Component {
         render: DropdownWithIcon
       },
       {
-        title: 'set_row_id',
-        value: 'onRowId',
+        title: column.is_primary_key ? 'unset_row_id' : 'set_row_id',
+        value: column.is_primary_key ? 'onUnsetRowId' : 'onRowId',
         icon: 'socrata-icon-id',
-        disabled: column.is_primary_key || this.isInProgress(),
+        disabled: this.isInProgress(),
         render: DropdownWithIcon
       },
       {
@@ -226,6 +227,7 @@ ColumnHeader.propTypes = {
   dropColumn: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
+  unSetRowIdentifier: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired
 };
 

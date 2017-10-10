@@ -36,6 +36,7 @@ function Table({
   addColumn,
   dropColumn,
   validateThenSetRowIdentifier,
+  unSetRowIdentifier,
   showShortcut,
   onClickError
 }) {
@@ -61,7 +62,8 @@ function Table({
               addColumn={() => addColumn(outputSchema, column)}
               dropColumn={() => dropColumn(outputSchema, column)}
               showShortcut={showShortcut}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
+              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
+              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -105,6 +107,7 @@ Table.propTypes = {
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
+  unSetRowIdentifier: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
   apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,

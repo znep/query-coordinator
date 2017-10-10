@@ -48,7 +48,7 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
 };
 
 const redirectToNewOutputschema = (dispatch, params) => resp => {
-  if (resp.resource) {
+  if (resp && resp.resource) {
     dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
   }
 };
@@ -81,6 +81,11 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
     validateThenSetRowIdentifier: (outputSchema, column) =>
       dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+    unSetRowIdentifier: (outputSchema) =>
+      dispatch(ShowActions.unsetRowIdentifier(outputSchema)).then(
         redirectToNewOutputschema(dispatch, params)
       ),
 

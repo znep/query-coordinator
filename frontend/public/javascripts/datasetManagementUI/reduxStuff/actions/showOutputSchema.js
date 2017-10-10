@@ -177,6 +177,24 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
+export const unsetRowIdentifier = (outputSchema) => (dispatch, getState) => {
+  const { entities } = getState();
+
+  const call = {
+    operation: SET_ROW_IDENTIFIER,
+    callParams: { outputSchema }
+  };
+
+  const newOutputColumns = Selectors.columnsForOutputSchema(entities, outputSchema.id)
+    .map(outputColumn => ({
+      ...outputColumn,
+      is_primary_key: false
+    }))
+    .map(oc => buildNewOutputColumn(oc, sameTransform(entities)));
+
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
+};
+
 export function buildNewOutputColumn(outputColumn, genTransform) {
   return {
     field_name: outputColumn.field_name,

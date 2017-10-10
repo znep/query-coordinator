@@ -212,7 +212,9 @@ export const ShowOutputSchemaProps = {
       column_header: 1,
       encoding: null,
       column_separator: ',',
-      quote_char: '"'
+      quote_char: '"',
+      trim_whitespace: true,
+      remove_empty_rows: true
     },
     percentCompleted: 100,
     finished_at: '2017-06-15T18:59:52.712Z'

@@ -4,6 +4,7 @@ import styles from './ParseOptions.scss';
 import Fieldset from 'components/Fieldset/Fieldset';
 import GridPreview from './GridPreview';
 import ParseOption from './ParseOption';
+import ParseFlag from './ParseFlag';
 import _ from 'lodash';
 
 const SubI18n = I18n.parse_options;
@@ -23,13 +24,19 @@ class ParseOptions extends Component {
     super(props);
 
     this.setOption = this.setOption.bind(this);
+    this.setFlag = this.setFlag.bind(this);
     this.getOption = this.getOption.bind(this);
+    this.getFlag = this.getFlag.bind(this);
     this.setHeaderCount = this.setHeaderCount.bind(this);
     this.setColumnHeader = this.setColumnHeader.bind(this);
   }
 
   getOption(option) {
     return this.props.form.parseOptions[option];
+  }
+
+  getFlag(option) {
+    return !!this.props.form.parseOptions[option];
   }
 
   setError(name, reason) {
@@ -70,6 +77,12 @@ class ParseOptions extends Component {
     } else {
       this.setError('column_header', columnHeader.error);
     }
+  }
+
+  setFlag(option) {
+    return (e) => {
+      this._updateParseOptions({ [option]: e.target.checked });
+    };
   }
 
   _updateParseOptions(values) {
@@ -148,6 +161,16 @@ class ParseOptions extends Component {
                   error={errors.quote_char}
                   getOption={this.getOption}
                   setOption={this.setOption('quote_char')} />
+                {_.has(this.props.form.parseOptions, 'trim_whitespace') &&
+                  <ParseFlag
+                    name={'trim_whitespace'}
+                    getOption={this.getFlag}
+                    setOption={this.setFlag('trim_whitespace')} />}
+                {_.has(this.props.form.parseOptions, 'remove_empty_rows') &&
+                  <ParseFlag
+                    name={'remove_empty_rows'}
+                    getOption={this.getFlag}
+                    setOption={this.setFlag('remove_empty_rows')} />}
               </Fieldset>
             </form>
           </div>

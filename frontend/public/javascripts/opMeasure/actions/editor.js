@@ -72,6 +72,18 @@ export const setColumn = (fieldName) => ({
   fieldName
 });
 
+export const SET_VALUE_COLUMN = 'SET_VALUE_COLUMN';
+export const setValueColumn = (fieldName) => ({
+  type: SET_VALUE_COLUMN,
+  fieldName
+});
+
+export const SET_DATE_COLUMN = 'SET_DATE_COLUMN';
+export const setDateColumn = (fieldName) => ({
+  type: SET_DATE_COLUMN,
+  fieldName
+});
+
 export const TOGGLE_EXCLUDE_NULL_VALUES = 'TOGGLE_EXCLUDE_NULL_VALUES';
 export const toggleExcludeNullValues = (excludeNullValues) => ({
   type: TOGGLE_EXCLUDE_NULL_VALUES,

@@ -48,17 +48,34 @@ export default (state = initialState(), action) => {
         displayableFilterableColumns: action.displayableFilterableColumns
       };
 
-    case actions.editor.SET_CALCULATION_TYPE:
-      // Changing type clears everything other than the data source -
+    case actions.editor.SET_CALCULATION_TYPE: {
+      // Changing type clears everything under 'metric' other than the data source -
       // should we revisit this when we have more than one calculation type implemented?
-      return updateMeasureProperty(state, 'metric', {
+      const currentDataSource = _.get(state, 'measure.metric.dataSource');
+      const newState = {
+        ...state
+      };
+
+      _.set(newState, 'measure.metric', {
         type: action.calculationType,
-        dataSource: _.get(state, 'measure.metric.dataSource')
+        dataSource: currentDataSource
       });
+
+      return newState;
+    }
+
     case actions.editor.SET_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
-
       return updateMeasureProperty(state, 'metric.arguments.column', action.fieldName);
+
+    case actions.editor.SET_VALUE_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+      return updateMeasureProperty(state, 'metric.arguments.valueColumn', action.fieldName);
+
+    case actions.editor.SET_DATE_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+
+      return updateMeasureProperty(state, 'metric.arguments.dateColumn', action.fieldName);
 
     case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);

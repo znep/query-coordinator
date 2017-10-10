@@ -32,6 +32,22 @@ export const calculateSumMeasure = (measure) => {
   });
 };
 
+export const calculateRecentValueMeasure = (measure) => {
+  const dataProviderConfig = {
+    domain: window.location.hostname,
+    datasetUid: _.get(measure, 'metric.dataSource.uid')
+  };
+  const dataProvider = new SoqlDataProvider(dataProviderConfig);
+
+  const valueColumnFieldName = _.get(measure, 'metric.arguments.valueColumn');
+  const dateColumnFieldName = _.get(measure, 'metric.arguments.dateColumn');
+
+  return dataProvider.rawQuery(`select ${valueColumnFieldName} order by ${dateColumnFieldName} DESC limit 1`).
+    then((data) => {
+      return _.values(data[0])[0];
+    });
+};
+
 export const calculateMeasure = (measure) => {
   assertIsOneOfTypes(measure, 'object');
 
@@ -44,6 +60,8 @@ export const calculateMeasure = (measure) => {
       return calculateCountMeasure(measure);
     case CalculationTypeNames.SUM:
       return calculateSumMeasure(measure);
+    case CalculationTypeNames.RECENT_VALUE:
+      return calculateRecentValueMeasure(measure);
     default:
       throw new Error(`Unknown calculation type: ${calculationType}`);
   }

@@ -63,7 +63,7 @@ Tabs.propTypes = {
   tabs: PropTypes.array.isRequired,
   selectedTab: PropTypes.string.isRequired,
   filterNotifications: PropTypes.func.isRequired,
-  children: React.PropTypes.element.isRequired,
+  children: PropTypes.element.isRequired,
   hasSecondaryPanel: PropTypes.bool.isRequired
 };
 

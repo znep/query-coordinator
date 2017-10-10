@@ -143,5 +143,54 @@ describe('MeasureResultCard', () => {
         assert.isFalse(element.instance().isReadyToCalculate(props.measure));
       });
     });
+
+    describe('for recent_value calculations', () => {
+      let props;
+
+      beforeEach(() => {
+        props = getProps();
+        _.set(props, 'measure.metric.type', 'recent_value');
+      });
+
+      it('returns true if uid AND valueColumn AND dateColumn are present', () => {
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+        _.set(props, 'measure.metric.arguments.valueColumn', 'foos');
+        _.set(props, 'measure.metric.arguments.dateColumn', 'bars');
+
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isTrue(element.instance().isReadyToCalculate(props.measure));
+      });
+
+      it('returns false if uid is not set', () => {
+        _.set(props, 'measure.metric.dataSource.uid', undefined);
+        _.set(props, 'measure.metric.arguments.valueColumn', 'foos');
+        _.set(props, 'measure.metric.arguments.dateColumn', 'bars');
+
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+      });
+
+      it('returns false if valueColumn is not set', () => {
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+        _.set(props, 'measure.metric.arguments.valueColumn', undefined);
+        _.set(props, 'measure.metric.arguments.dateColumn', 'bars');
+
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+      });
+
+      it('returns false if dateColumn is not set', () => {
+        _.set(props, 'measure.metric.dataSource.uid', 'test-test');
+        _.set(props, 'measure.metric.arguments.valueColumn', 'foos');
+        _.set(props, 'measure.metric.arguments.dateColumn', undefined);
+
+        const element = shallow(<MeasureResultCard {...props} />);
+
+        assert.isFalse(element.instance().isReadyToCalculate(props.measure));
+      });
+    });
   });
 });

@@ -25,13 +25,13 @@ class UserNotification extends React.Component {
   renderUnreadIcon() {
     const {
       id,
-      is_read,
+      isRead,
       onToggleReadUserNotification,
       I18n
     } = this.props;
     let linkTitle;
 
-    if (is_read) {
+    if (isRead) {
       linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_unread');
     } else {
       linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_read');
@@ -40,9 +40,9 @@ class UserNotification extends React.Component {
     return (
       <a styleName="link-icon"
         className="toggle-notification-read-state"
-        href="javascript:void(0)"
+        href="#"
         title={linkTitle}
-        onClick={() => onToggleReadUserNotification(id, !is_read)}>
+        onClick={() => onToggleReadUserNotification(id, !isRead)}>
         <SocrataIcon name="checkmark3" />
       </a>
     );
@@ -58,7 +58,7 @@ class UserNotification extends React.Component {
     return (
       <a styleName="link-icon"
          className="user-notification-clear-icon"
-         href="javascript:void(0)"
+         href="#"
          title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
          onClick={() => onClearUserNotification(id)}>
         <SocrataIcon name="close-2" />
@@ -68,30 +68,30 @@ class UserNotification extends React.Component {
 
   renderUserLink() {
     const {
-      user_name,
-      user_profile_link
+      userName,
+      userProfileLink
     } = this.props;
 
-    if (_.isNull(user_profile_link)) {
-      return <span styleName="user-name">{user_name}</span>;
-    } else {
-      return <a href={user_profile_link} target="_blank">{user_name}</a>;
+    if (_.isNull(userProfileLink)) {
+      return <span styleName="user-name">{userName}</span>;
     }
+
+    return <a href={userProfileLink} target="_blank">{userName}</a>;
   }
 
   render() {
     const {
       id,
-      is_read,
+      isRead,
       link,
       title,
       type,
-      message_body,
-      created_at,
+      messageBody,
+      createdAt,
       I18n
     } = this.props;
-    const isUnread = !is_read;
-    const notificationLink = _.isNull(link) ? 'javascript:void(0)' : link;
+    const isUnread = !isRead;
+    const notificationLink = _.isNull(link) ? '#' : link;
 
     return (
       <li styleName={classNames("notification-item", type, { 'unread': isUnread })}
@@ -106,11 +106,11 @@ class UserNotification extends React.Component {
               {title}
             </strong>
 
-            <span className="notification-body">{message_body}</span>
+            <span className="notification-body">{messageBody}</span>
           </a>
 
           <p styleName="timestamp" className="notification-timestamp">
-            <span>{moment.utc(created_at).fromNow()}</span>
+            <span>{moment.utc(createdAt).fromNow()}</span>
             <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
             {this.renderUserLink()}
           </p>
@@ -126,18 +126,18 @@ class UserNotification extends React.Component {
 }
 
 UserNotification.propTypes = {
-  activity_type: PropTypes.string.isRequired,
-  message_body: PropTypes.string.isRequired,
-  created_at: PropTypes.string.isRequired,
+  activityType: PropTypes.string.isRequired,
+  messageBody: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
-  is_read: PropTypes.bool.isRequired,
+  isRead: PropTypes.bool.isRequired,
   link: PropTypes.string,
   onClearUserNotification: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  user_name: PropTypes.string.isRequired,
-  user_profile_link: PropTypes.string.isRequired
+  userName: PropTypes.string.isRequired,
+  userProfileLink: PropTypes.string.isRequired
 };
 
 export default connectLocalization(cssModules(UserNotification, styles, { allowMultiple: true }));

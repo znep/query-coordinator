@@ -23,8 +23,6 @@ class PanelHeader extends Component {
         </em>
       );
     }
-
-    return null;
   }
 
   render() {
@@ -46,7 +44,7 @@ class PanelHeader extends Component {
 
         <a styleName='close-panel-link'
           className='close-notifications-panel-link'
-          href='javascript:void(0)'
+          href='#'
           onClick={onClosePanel}>
           <SocrataIcon name="close-2" />
         </a>

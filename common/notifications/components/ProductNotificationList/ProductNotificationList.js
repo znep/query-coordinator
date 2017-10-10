@@ -34,9 +34,9 @@ class ProductNotificationList extends Component {
 
     if (isSecondaryPanelOpen) {
       return <SocrataIcon name="close-2" />
-    } else {
-      return <SocrataIcon name="chevron-up" />
     }
+
+    return <SocrataIcon name="chevron-up" />
   }
 
   renderSecondaryPanelHeader() {

@@ -43,8 +43,6 @@ class PanelFooter extends Component {
           isSuperAdmin={isSuperAdmin}
           currentUserRole={currentUserRole} />
       )
-    } else {
-      return null;
     }
   }
 
@@ -127,25 +125,25 @@ class PanelFooter extends Component {
           {this.renderSettingsButton()}
         </div>
       );
-    } else {
-      const {
-        hasUnreadNotifications,
-        markAllProductNotificationsAsRead
-      } = this.props;
-
-      return (
-        <div styleName="buttons-wrapper" className="clearfix">
-          <button styleName='primary-button'
-            className='mark-all-as-read-button'
-            disabled={!hasUnreadNotifications}
-            onClick={markAllProductNotificationsAsRead}>
-            {I18n.t('shared_site_chrome_notifications.mark_as_read')}
-          </button>
-
-          {this.renderSettingsButton()}
-        </div>
-      );
     }
+
+    const {
+      hasUnreadNotifications,
+      markAllProductNotificationsAsRead
+    } = this.props;
+
+    return (
+      <div styleName="buttons-wrapper" className="clearfix">
+        <button styleName='primary-button'
+          className='mark-all-as-read-button'
+          disabled={!hasUnreadNotifications}
+          onClick={markAllProductNotificationsAsRead}>
+          {I18n.t('shared_site_chrome_notifications.mark_as_read')}
+        </button>
+
+        {this.renderSettingsButton()}
+      </div>
+    );
   }
 
   render() {

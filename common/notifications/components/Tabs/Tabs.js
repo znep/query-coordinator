@@ -39,8 +39,8 @@ class Tabs extends React.Component {
       children,
       hasSecondaryPanel
     } = this.props;
-    const notificationItemsClassName = classNames("notification-items-wrapper", {
-      "has-secondary-panel": hasSecondaryPanel
+    const notificationItemsClassName = classNames('notification-items-wrapper', {
+      'has-secondary-panel': hasSecondaryPanel
     });
 
     return (

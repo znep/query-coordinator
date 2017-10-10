@@ -71,6 +71,12 @@ header#site-chrome-header[template="evergreen"] {
             #socrata-notifications-container {
               z-index: 101;
               position: relative;
+
+              .notifications-bell {
+                svg path {
+                  fill: $header_fg_color;
+                }
+              }
             }
 
             .notifications-bell {

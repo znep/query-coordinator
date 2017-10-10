@@ -5,27 +5,27 @@ import _ from 'lodash';
 import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
 
 class NotificationAPI {
-  constructor(user_id, callback) {
-    if (!user_id) {
+  constructor(userId, callback) {
+    if (!userId) {
       console.error('NotificationAPI called without user id');
       return;
     }
 
-    let channel_id = 'user:' + user_id;
+    let channelId = `user: ${userId}`;
     let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, {
-      params: {user_id: user_id},
+      params: {user_id: userId},
       logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) })
     });
 
     socket.connect();
 
-    this._channel = socket.channel(channel_id, {});
+    this._channel = socket.channel(channelId, {});
 
-    let that = this;
+    let self = this;
     this._getExistingNotifications().then(function(response) {
-      that._notifications = that._transformNotifications(_.get(response, 'data', []));
-      that.update();
-      that._channel.join().
+      self._notifications = self._transformNotifications(_.get(response, 'data', []));
+      self.update();
+      self._channel.join().
         receive('ok', (resp) => {
           console.log('Joined user channel');
         }).
@@ -75,8 +75,8 @@ class NotificationAPI {
     this.update();
   }
 
-  deleteNotification(notification_id) {
-    fetch(`/api/notifications_and_alerts/notifications/${notification_id}`, {
+  deleteNotification(notificationId) {
+    fetch(`/api/notifications_and_alerts/notifications/${notificationId}`, {
       method: 'DELETE',
       credentials: 'same-origin'
     });
@@ -89,16 +89,16 @@ class NotificationAPI {
     });
   }
 
-  markNotificationAsRead(notification_id) {
-    this.toggleNotificationReadState(notification_id, true);
+  markNotificationAsRead(notificationId) {
+    this.toggleNotificationReadState(notificationId, true);
   }
 
-  markNotificationAsUnRead(notification_id) {
-    this.toggleNotificationReadState(notification_id, false);
+  markNotificationAsUnRead(notificationId) {
+    this.toggleNotificationReadState(notificationId, false);
   }
 
-  toggleNotificationReadState(notification_id, toggle) {
-    fetch(`/api/notifications_and_alerts/notifications/${notification_id}`, {
+  toggleNotificationReadState(notificationId, toggle) {
+    fetch(`/api/notifications_and_alerts/notifications/${notificationId}`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -126,20 +126,20 @@ class NotificationAPI {
     return output.slice(0, 50);
   }
 
-  _getUserProfileLink(domain_cname, user_name, user_id) {
-    if(_.isEmpty(domain_cname) || _.isEmpty(user_name) || _.isEmpty(user_id)) {
+  _getUserProfileLink(domainCname, userName, userId) {
+    if(_.isEmpty(domainCname) || _.isEmpty(userName) || _.isEmpty(userId)) {
       return null;
-    } else {
-      return '//' + domain_cname + '/profile/' + this._convertToUrlComponent(user_name) + '/' + user_id;
     }
+
+    return `//${domainCname}/profile/${this._convertToUrlComponent(userName)}/${userId}`;
   }
 
-  _getDatasetLink(domain_cname, name, uid) {
-    if(_.isEmpty(domain_cname) || _.isEmpty(name) || _.isEmpty(uid)) {
+  _getDatasetLink(domainCname, name, uId) {
+    if(_.isEmpty(domainCname) || _.isEmpty(name) || _.isEmpty(uId)) {
       return null;
-    } else {
-      return '//' + domain_cname + '/dataset/' + this._convertToUrlComponent(name) + '/' + uid;
     }
+
+    return `'//${domainCname}/dataset/${this._convertToUrlComponent(name)}/${uId}`;
   }
 
   _transformNotification(notification) {
@@ -152,23 +152,23 @@ class NotificationAPI {
 
     transformedNotification.id = _.get(notification, 'id', '');
     transformedNotification.read = _.get(notification, 'read', false);
-    transformedNotification.activity_type = activityType;
-    transformedNotification.created_at = _.get(notification, 'activity.created_at', '');
+    transformedNotification.activityType = activityType;
+    transformedNotification.createdAt = _.get(notification, 'activity.created_at', '');
     transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status': 'alert';
     transformedNotification.title = _.startCase(activityType);
 
-    transformedNotification.user_name = userName;
-    transformedNotification.user_profile_link = this._getUserProfileLink(domainCname, userName, userId);
+    transformedNotification.userName = userName;
+    transformedNotification.userProfileLink = this._getUserProfileLink(domainCname, userName, userId);
 
     if (activityType === 'ViewMetadataChanged') {
       const viewId = _.get(notification, 'activity.view_uid', '');
       const viewName = _.get(notification, 'activity.view_name', '');
 
       transformedNotification.link = this._getDatasetLink(domainCname, viewName, viewId);
-      transformedNotification.message_body = viewName;
+      transformedNotification.messageBody = viewName;
     } else if (_.includes(userActivityTypes, activityType)) {
       transformedNotification.link = null;
-      transformedNotification.message_body = _.get(
+      transformedNotification.messageBody = _.get(
         JSON.parse(_.get(notification, 'activity.details', '')),
         'summary',
         ''
@@ -178,7 +178,7 @@ class NotificationAPI {
       const datasetName = _.get(notification, 'activity.dataset_name', '');
 
       transformedNotification.link = this._getDatasetLink(domainCname, datasetName, datasetId);
-      transformedNotification.message_body = datasetName;
+      transformedNotification.messageBody = datasetName;
     }
 
     return transformedNotification;
@@ -187,15 +187,14 @@ class NotificationAPI {
   _transformNotifications(notifications) {
     if (_.isEmpty(notifications)) {
       return notifications;
-    } else {
-      const transformedNotifications = [];
-
-      _.each(notifications, (notification) => {
-        transformedNotifications.push(this._transformNotification(notification));
-      });
-
-      return transformedNotifications;
     }
+    const transformedNotifications = [];
+
+    _.each(notifications, (notification) => {
+      transformedNotifications.push(this._transformNotification(notification));
+    });
+
+    return transformedNotifications;
   }
 
   update() {

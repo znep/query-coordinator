@@ -1193,13 +1193,21 @@ module ApplicationHelper
     return unless APP_CONFIG.canary
     content_tag(:style, :type => 'text/css') do
       %q[body:before {
-        font-weight: bold;
-        color: white;
         background-color: red;
+        color: white;
         content: "CANARY!";
         display: block;
         font-size: 32px;
-        padding: 5px;
+        font-weight: bold;
+        height: 50px;
+        line-height: 50px;
+        margin-bottom: -50px;
+        opacity: 0.95;
+        pointer-events: none;
+        position: relative;
+        text-align: center;
+        width: 200px;
+        z-index: 10;
       }].html_safe
     end
   end

@@ -1,7 +1,7 @@
 @import '../../common.scss';
 
 .notification-item {
-  background-color: #fff;
+  background-color: $notification-item-background-color;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -16,13 +16,13 @@
 
   &.status {
     &:before {
-      background-color: #00bf9d;
+      background-color: $status-notification-indicator-background-color;
     }
   }
 
   &.alert {
     &:before {
-      background-color: #ff7258;
+      background-color: $alert-notification-indicator-background-color;
     }
   }
 
@@ -46,22 +46,22 @@
     }
 
     & :global(.socrata-icon-checkmark3) {
-      color: #cdcdcd;
-      fill: #cdcdcd;
+      color: $checkmark-read-state-color;
+      fill: $checkmark-read-state-color;
 
       & svg {
         &,
         * {
-          color: #cdcdcd;
-          fill: #cdcdcd;
+          color: $checkmark-read-state-color;
+          fill: $checkmark-read-state-color;
         }
       }
     }
   }
 
   & :global(.socrata-icon) {
-    color: #676767;
-    fill: #676767;
+    color: $checkmark-un-read-state-color;
+    fill: $checkmark-un-read-state-color;
     height: 14px;
     width: 14px;
 
@@ -71,8 +71,8 @@
 
       &,
       * {
-        color: #676767;
-        fill: #676767;
+        color: $checkmark-un-read-state-color;
+        fill: $checkmark-un-read-state-color;
       }
     }
 
@@ -111,14 +111,14 @@
   }
 
   strong {
-    color: #363636;
+    color: $notification-title-text-color;
     display: block;
     font-size: 14px;
     font-weight: 600;
     text-transform: capitalize;
 
     em {
-      color: #ff7258;
+      color: $alert-notification-indicator-label-color;
       font-style: normal;
       font-weight: 400;
       margin-right: 5px;
@@ -127,7 +127,7 @@
   }
 
   span {
-    color: #259ac7;
+    color: $notification-link-color;
     display: block;
     font-size: 12px;
     font-weight: normal;
@@ -140,13 +140,13 @@
   position: relative;
 
   span {
-    color: #696869;
+    color: $notification-item-text-color;
     margin-right: 3px;
   }
 
   .user-name,
   a {
-    color: #259ac7;
+    color: $notification-link-color;
     text-decoration: none;
   }
 }

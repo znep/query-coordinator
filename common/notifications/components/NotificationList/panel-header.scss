@@ -3,7 +3,7 @@
 .header {
   background-color: $panel-header-background-color;
   box-shadow: inset 1px 0 $panel-header-outline-color;
-  color: $white;
+  color: $panel-header-text-color;
   height: $headerBarHeight;
   position: relative;
 
@@ -31,7 +31,7 @@
 
   .header-icon,
   .close-panel-link {
-    color: $white;
+    color: $panel-header-text-color;
     height: $headerBarHeight;
     line-height: $headerBarHeight !important;
     margin: 0;
@@ -80,14 +80,14 @@
   }
 
   & :global(.socrata-icon) {
-    color: $white;
-    fill: $white;
+    color: $panel-header-text-color;
+    fill: $panel-header-text-color;
 
     & svg {
       &,
       * {
-        color: $white;
-        fill: $white;
+        color: $panel-header-text-color;
+        fill: $panel-header-text-color;
       }
     }
 

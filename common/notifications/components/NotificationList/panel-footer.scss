@@ -21,7 +21,7 @@
     background-color: $panel-primary-button-background-color;
     border: 0 none;
     border-radius: 2px;
-    color: $white;
+    color: $panel-primary-button-text-color;
 
     &:hover,
     &:focus {
@@ -55,7 +55,7 @@
 }
 
 .inline-prompt {
-  background-color: $white;
+  background-color: $panel-footer-prompt-background-color;
   border-radius: 5px;
   bottom: $footerBarHeight + 10px;
   box-shadow: 0 0 1px 1px rgba($panel-footer-prompt-shadow-color, 0.25);
@@ -84,7 +84,7 @@
   }
 
   &:after {
-    border-top-color: $white;
+    border-top-color: $panel-footer-prompt-background-color;
     border-width: 15px 10px 0;
     bottom: -15px;
     left: 26px;
@@ -103,7 +103,7 @@
 }
 
 .setting-button {
-  color: $white;
+  color: $settings-text-color;
   cursor: pointer;
   float: right;
   height: 30px;

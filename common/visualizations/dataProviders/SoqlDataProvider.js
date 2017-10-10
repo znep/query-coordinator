@@ -479,6 +479,8 @@ function SoqlDataProvider(config, useCache = false) {
           const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
           row.push(value);
         }
+
+        return row;
       });
     }
 

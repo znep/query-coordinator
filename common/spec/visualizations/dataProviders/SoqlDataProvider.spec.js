@@ -20,7 +20,9 @@ describe('SoqlDataProvider', () => {
   // `.query()` mock data
   const NAME_ALIAS = 'SOQL_DATA_PROVIDER_NAME_ALIAS';
   const VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
-
+  const ERROR_BARS_LOWER_ALIAS = 'SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS';
+  const ERROR_BARS_UPPER_ALIAS = 'SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS';
+  
   const SAMPLE_QUERY_REQUEST_ERROR = JSON.stringify({
     "message": "query.soql.no-such-column",
     "errorCode": "query.soql.no-such-column",
@@ -48,11 +50,31 @@ describe('SoqlDataProvider', () => {
     }
   ]);
 
+  const SAMPLE_ERROR_BARS_QUERY_REQUEST_RESPONSE = JSON.stringify([
+    {
+      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Street and Sidewalk Cleaning",
+      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "103412",
+      "SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS" : "5000",
+      "SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS": "15000"
+    },
+    {
+      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Graffiti Private Property",
+      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "31161",
+      "SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS" : "5000",
+      "SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS": "15000"
+    }
+  ]);
+
   const EXPECTED_QUERY_REQUEST_COLUMNS = [NAME_ALIAS, VALUE_ALIAS];
 
   const EXPECTED_QUERY_REQUEST_ROWS = [
     ["Street and Sidewalk Cleaning", "103412"],
     ["Graffiti Private Property", "31161"]
+  ];
+
+  const EXPECTED_QUERY_REQUEST_ERROR_BARS = [
+    ["Street and Sidewalk Cleaning", "5000", "15000"],
+    ["Graffiti Private Property", "5000", "15000"]
   ];
 
   // `.getRows()` mock data
@@ -376,6 +398,28 @@ describe('SoqlDataProvider', () => {
           );
 
         _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
+      });
+
+      it('should return the expected errorBars', (done) => {
+        soqlDataProvider.
+          query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS, ERROR_BARS_LOWER_ALIAS, ERROR_BARS_UPPER_ALIAS).
+          then(
+            (data) => {
+
+              assert.deepEqual(data.errorBars, EXPECTED_QUERY_REQUEST_ERROR_BARS);
+              done();
+            },
+            (error) => {
+
+              // Fail the test since we expected an success response.
+              assert.isTrue(undefined);
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithSuccess(SAMPLE_ERROR_BARS_QUERY_REQUEST_RESPONSE);
       });
     });
   });

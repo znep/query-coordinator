@@ -2272,6 +2272,8 @@ en:
       encoding: Character Encoding
       column_separator: Column Separator
       quote_char: Quote Character
+      trim_whitespace: "Trim cells' leading and trailing whitespace"
+      remove_empty_rows: Remove completely empty rows
       this_is_your_header: This is your header row
       this_row_is_ignored: This row is ignored
       header_count_must_be_gt_column_header: Must be greater than Column Header

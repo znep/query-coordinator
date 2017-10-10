@@ -16,6 +16,8 @@ describe('components/ParseOptions', () => {
         encoding: null,
         column_separator: ',',
         quote_char: '"',
+        trim_whitespace: true,
+        remove_empty_rows: true
       }
     },
     setFormState: sinon.spy()

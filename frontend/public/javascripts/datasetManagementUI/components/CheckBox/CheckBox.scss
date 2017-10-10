@@ -1,0 +1,13 @@
+.checkbox {
+  composes: checkbox from global;
+  width: 100%;
+  min-width: 250px;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
+}
+
+form .checkbox {
+  line-height: 22px;
+}

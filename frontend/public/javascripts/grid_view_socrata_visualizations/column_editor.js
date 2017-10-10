@@ -693,6 +693,20 @@ module.exports = function(options) {
     return $columnEditorModal;
   }
 
+  function generateColumnPositionString(columnName, columnIndex, columnCount) {
+
+    return (
+      columnName +
+      ' (' +
+      (columnIndex + 1) +
+      ' ' +
+      $.t('controls.grid_view_column_editor.of') +
+      ' ' +
+      columnCount +
+      ')'
+    );
+  }
+
   function attachColumnEditorEvents($manager) {
 
     function getColumnIdFromEvent(e) {
@@ -804,13 +818,19 @@ module.exports = function(options) {
         if (!$column.hasClass('hidden')) {
           newIndex = (i + argument) % columns.length;
 
+          if (newIndex < 0) {
+            newIndex += columns.length;
+          }
+
           $column.addClass('hidden');
         }
       });
 
       $newColumn = $columns.eq(newIndex);
       columnName = $newColumn.find('input.column-name').value();
-      $manager.find('#column-name').text(columnName);
+      $manager.find('#column-name').text(
+        generateColumnPositionString(columnName, newIndex, $columnsElements.length)
+      );
       $newColumn.removeClass('hidden');
     }
 
@@ -1017,6 +1037,11 @@ module.exports = function(options) {
 
   var columns = _.get(options, 'columns', []);
   var selectedColumnId = _.get(options, 'id', false);
+  var selectedColumnIndex = columns.
+    map(function(column) {
+      return column.id;
+    }).
+    indexOf(selectedColumnId);
   var $columnEditor = renderColumnEditor(window.blist.dataset.id, columns);
   var $firstColumn;
   var firstColumnName;
@@ -1025,15 +1050,19 @@ module.exports = function(options) {
 
   $('body').append($columnEditor);
 
-  if (selectedColumnId) {
+  if (selectedColumnId && selectedColumnIndex >= 0) {
     var $columnToShow = $columnEditor.find('.column[data-column-id="' + selectedColumnId + '"]');
-    $columnEditor.find('#column-name').text($columnToShow.find('.column-name').value());
+    $columnEditor.find('#column-name').text(
+      generateColumnPositionString($columnToShow.find('.column-name').value(), selectedColumnIndex, columns.length)
+    );
     $columnEditor.find('.column').addClass('hidden');
     $columnToShow.removeClass('hidden');
   } else {
     $firstColumn = $columnEditor.find('.column').first();
     firstColumnName = $firstColumn.find('input.column-name').value();
-    $columnEditor.find('#column-name').text(firstColumnName);
+    $columnEditor.find('#column-name').text(
+      generateColumnPositionString(firstColumnName, 0, columns.length)
+    );
     $firstColumn.removeClass('hidden');
   }
 };

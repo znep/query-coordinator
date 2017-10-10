@@ -690,6 +690,7 @@ en:
   controls:
     grid_view_column_editor:
       title: Manage Columns
+      of: of
       error:
         save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
         delete: There was an error deleting the specified column. Please try again. If this problem persists, contact Socrata support.

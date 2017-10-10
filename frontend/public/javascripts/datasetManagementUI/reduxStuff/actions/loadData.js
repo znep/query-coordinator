@@ -72,18 +72,18 @@ function loadData(apiCall) {
 function urlForPreview(entities, displayState) {
   const { source, inputSchema } = Selectors.pathForOutputSchema(entities, displayState.outputSchemaId);
   const { outputSchemaId } = displayState;
-  const offset = PAGE_SIZE;
-  const limit = (displayState.pageNo - 1) * PAGE_SIZE;
+  const offset = (displayState.pageNo - 1) * PAGE_SIZE;
+  const limit = PAGE_SIZE;
 
   switch (displayState.type) {
     case DisplayState.NORMAL:
-      return dsmapiLinks.rows(source.id, inputSchema.id, outputSchemaId, offset, limit);
+      return dsmapiLinks.rows(source.id, inputSchema.id, outputSchemaId, limit, offset);
     case DisplayState.ROW_ERRORS:
-      return dsmapiLinks.rowErrors(source.id, inputSchema.id, offset, limit);
+      return dsmapiLinks.rowErrors(source.id, inputSchema.id, limit, offset);
     case DisplayState.COLUMN_ERRORS: {
       const columnId = _.find(entities.output_columns, { transform_id: displayState.transformId }).id;
 
-      return dsmapiLinks.columnErrors(source.id, inputSchema.id, outputSchemaId, columnId, offset, limit);
+      return dsmapiLinks.columnErrors(source.id, inputSchema.id, outputSchemaId, columnId, limit, offset);
     }
     default:
       throw new TypeError(`Unknown DisplayState: ${displayState.type}`);
@@ -212,22 +212,20 @@ export function loadColumnErrors(apiCall) {
             {}
           );
 
-        const { transforms: existingTransforms } = getState().entities;
-
         const transforms = newRecordsByTransform
           .map((newRecords, idx) => {
             const errorIndices = _.map(newRecords, (newRecord, index) => ({
               ...newRecord,
               index
             }))
-              .filter(newRecord => newRecord.error)
-              .map(newRecord => newRecord.index);
+            .filter(newRecord => newRecord.error)
+            .map(newRecord => Number(newRecord.index));
 
             const id = outputSchemaResp.output_columns[idx].transform.id;
 
             return {
               id,
-              error_indices: _.union(existingTransforms[id]['error_indices'], errorIndices)
+              error_indices: errorIndices
             };
           })
           .reduce(

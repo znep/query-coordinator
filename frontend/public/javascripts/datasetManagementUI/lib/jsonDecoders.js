@@ -117,7 +117,7 @@ function normalizeTransforms(os, totalRows) {
     (acc, transform) => ({
       [transform.id]: {
         ...transform,
-        error_indicies: [],
+        error_indices: [],
         contiguous_rows_processed: transform.completed_at ? totalRows : 0
       },
       ...acc
@@ -162,7 +162,7 @@ function getNormalizedTransforms(resource) {
       (acc, transform) => ({
         [transform.id]: {
           ...transform,
-          error_indicies: [],
+          error_indices: [],
           contiguous_rows_processed: transform.completed_at ? totalRows : 0
         },
         ...acc

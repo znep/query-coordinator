@@ -159,7 +159,7 @@ class TablePane extends Component {
               scrollToColIdx={this.scrollToColIdx} />
           )}
         </div>
-        <PagerBar path={params} displayState={displayState} />
+        <PagerBar path={params} displayState={displayState} isLoading={numLoadsInProgress > 0} />
       </div>
     );
   }

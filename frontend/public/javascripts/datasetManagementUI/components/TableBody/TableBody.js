@@ -47,7 +47,7 @@ class TableBody extends Component {
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.entities.transforms[props.displayState.transformId];
       if (errorsTransform.error_indices) {
-        rowIndices = errorsTransform.error_indices.slice(startRow, endRow);
+        rowIndices = errorsTransform.error_indices.map(_.toString);
       } else {
         rowIndices = [];
       }

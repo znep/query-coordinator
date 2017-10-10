@@ -211,7 +211,7 @@ namespace :test do
           data_types: 'core.data_types',
           edit_metadata: 'screens.edit_metadata',
           schema_preview: 'dataset_landing_page.schema_preview',
-          common: 'common'
+          common: 'dataset_management_ui.common'
         }
 
         update_translations(

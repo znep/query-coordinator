@@ -2074,7 +2074,9 @@ en:
       views: Views
   dataset_management_ui:
     common:
+      default_row_label: row
       cancel: Cancel
+      done: Done
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
       explanation: To get started, choose a name for your dataset

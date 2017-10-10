@@ -144,6 +144,7 @@ export class ManageMetadata extends Component {
     };
 
     let saveBtnProps;
+    let cancelWord = I18n.common.cancel;
 
     if (this.onDatasetTab()) {
       saveBtnProps = {
@@ -152,6 +153,8 @@ export class ManageMetadata extends Component {
         onClick: this.handleSaveClick,
         forceDisable: !datasetFormDirty
       };
+
+      cancelWord = datasetFormDirty ? I18n.common.cancel : I18n.common.done;
     } else {
       saveBtnProps = {
         operation: SAVE_COLUMN_METADATA,
@@ -159,6 +162,8 @@ export class ManageMetadata extends Component {
         onClick: this.handleSaveClick,
         forceDisable: !columnFormDirty
       };
+
+      cancelWord = columnFormDirty ? I18n.common.cancel : I18n.common.done;
     }
 
     return (
@@ -172,7 +177,7 @@ export class ManageMetadata extends Component {
 
           <ModalFooter>
             <button id="cancel" className={styles.button} onClick={this.handleCancelClick}>
-              {I18n.common.cancel}
+              {cancelWord}
             </button>
             <ApiCallButton {...saveBtnProps} />
           </ModalFooter>

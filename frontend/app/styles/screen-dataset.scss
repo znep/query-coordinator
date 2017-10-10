@@ -11,6 +11,31 @@ html, body {
   }
 }
 
+  #grid-view-2017-refresh-preview-banner {
+    position: absolute;
+    display: block;
+    padding: 7px;
+    width: 512px;
+    left: calc(50% - 256px);
+    top: 7px;
+    color: #2279a6;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    text-align: center;
+    background-color: #eaf4f9;
+    border: 1px solid #288dc1;
+    z-index: 1;
+
+    a,
+    a:hover,
+    a:focus,
+    a:active,
+    a:visited {
+      color: #176289;
+      text-decoration: underline;
+    }
+  }
+
 /**
  * EN-18335 - Update and refactor grid view CSS
  *
@@ -1060,7 +1085,7 @@ body.grid-view-2017-refresh {
 
         .unpublished {
           float: left;
-          margin: 0px 15px 15px 0;
+          margin: 0px 15px 6px 0;
         }
 
         #datasetName {

@@ -5966,6 +5966,13 @@ en:
           auth_required: You must be logged in to save a view
           view_name_required: A view name is required
       show:
+        grid_view_2017_refresh_banner:
+          disable:
+            link_text: Click here to stop previewing the new experience.
+            text: We're redesigning the Grid View!
+          enable:
+            link_text: Click here to preview the new experience.
+            text: We're redesigning the Grid View!
         remove_confirm: Are you sure you want to remove this view?
         unauthenticated_alert: Changes will not be saved unless you first sign in.
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.

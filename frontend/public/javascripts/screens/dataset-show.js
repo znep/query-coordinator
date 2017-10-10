@@ -1,3 +1,51 @@
+/**
+ * EN-18682 - Add ability to preview grid view refresh from existing grid view
+ *
+ * This can be removed once we turn the grid view refresh on for all customers
+ * and remove the associated feature flag(s).
+ */
+$(document).ready(function() {
+  var userCanCreateDatasets = _.get(
+    window,
+    'blist.currentUserJson.rights', []
+  ).indexOf('create_datasets') >= 0;
+
+  if (
+    userCanCreateDatasets &&
+    window.blist.feature_flags.enable_2017_grid_view_refresh_preview_banner
+  ) {
+    var refreshEnabled = window.blist.feature_flags.enable_2017_grid_view_refresh_for_users_who_can_create_datasets;
+    var url;
+    var bannerText;
+    var bannerLinkText;
+
+    if (refreshEnabled) {
+
+      url = window.location.origin + window.location.pathname;
+      bannerText = $.t('screens.ds.show.grid_view_2017_refresh_banner.disable.text');
+      bannerLinkText = $.t('screens.ds.show.grid_view_2017_refresh_banner.disable.link_text');
+    } else {
+
+      url = (
+        window.location.origin +
+        window.location.pathname +
+        '?enable_2017_grid_view_refresh_for_users_who_can_create_datasets=true'
+      );
+      bannerText = $.t('screens.ds.show.grid_view_2017_refresh_banner.enable.text');
+      bannerLinkText = $.t('screens.ds.show.grid_view_2017_refresh_banner.enable.link_text');
+    }
+
+    $('#datasetBar').append(
+      '<div id="grid-view-2017-refresh-preview-banner">' +
+        bannerText +
+        ' <a href="' + url + '" title="' + bannerLinkText + '">' +
+        bannerLinkText +
+        '</a>' +
+      '</div>'
+    );
+  }
+});
+
 var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 
 blist.datasetPage.adjustSize = function() {

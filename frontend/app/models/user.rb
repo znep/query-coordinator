@@ -4,6 +4,10 @@ class User < Model
   cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :csv_columns
   attr_accessor :session_token
 
+  needs_api_call :profileLastModified,
+    :profileImageUrlLarge, :profileImageUrlMedium, :profileImageUrlSmall,
+    :lastNotificationSeenAt, :emailUnsubscribed, :rights, :roleName, :roleId
+
   def self.find_profile(id)
     parse(CoreServer::Base.connection.get_request("/users/#{id}.json?method=getProfile"))
   end

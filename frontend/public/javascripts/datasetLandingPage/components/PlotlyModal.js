@@ -35,7 +35,7 @@ export class PlotlyModal extends Component {
 
             <div className="alert info">
               <span className="icon-info" />
-              <span>{I18n.plotly_modal.alert}</span>
+              <div>{I18n.plotly_modal.alert}</div>
             </div>
 
             {I18n.plotly_modal.learn_more_link} <br />

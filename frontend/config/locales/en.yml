@@ -1838,7 +1838,7 @@ en:
     choose: Choose
     close: Close
     carto_modal:
-      alert: Note that Carto has a file size limit of 250MB.
+      alert: Note that Carto has a file size limit of 150MB or 500,000 rows.
       modal_content: Your browser will be redirected to Carto, would you like to proceed?
       learn_more_link: Learn about more external integrations at
       title: Open this dataset in Carto?

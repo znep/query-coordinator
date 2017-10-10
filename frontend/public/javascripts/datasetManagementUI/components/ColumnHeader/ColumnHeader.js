@@ -41,6 +41,9 @@ export class ColumnHeader extends Component {
   }
 
   onDropColumn() {
+    // button is disabled but click handler still fires
+    // so we need to guard against this stuff twice
+    if (this.isDropColumnDisabled()) return;
     this.props.dropColumn();
   }
 
@@ -49,17 +52,35 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
-    if (this.isInProgress()) return;
+    // guard against disabled but not actually click handler
+    if (this.isRowIdDisabled()) return;
     this.props.validateThenSetRowIdentifier();
   }
 
   onUnsetRowId() {
-    if (this.isInProgress()) return;
+    // guard against disabled but not actually click handler
+    if (this.isUnsetRowIdDisabled()) return;
     this.props.unSetRowIdentifier();
   }
 
   onGeocode() {
     this.props.showShortcut('geocode');
+  }
+
+  isDropColumnDisabled() {
+    return this.isInProgress() || this.props.outputColumn.is_primary_key;
+  }
+
+  isRowIdDisabled() {
+    return this.isInProgress() ||
+      this.props.outputColumn.is_primary_key ||
+      this.props.outputColumn.ignored;
+  }
+
+  isUnsetRowIdDisabled() {
+    return this.isInProgress() ||
+      !this.props.outputColumn.is_primary_key ||
+      this.props.outputColumn.ignored;
   }
 
   isInProgress() {
@@ -98,7 +119,7 @@ export class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
-        disabled: column.is_primary_key,
+        disabled: this.isDropColumnDisabled(),
         render: DropdownWithIcon
       },
       {

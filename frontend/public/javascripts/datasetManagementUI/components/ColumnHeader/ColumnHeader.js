@@ -67,6 +67,16 @@ export class ColumnHeader extends Component {
     this.props.showShortcut('geocode');
   }
 
+  onMoveLeft() {
+    if (this.isMoveLeftDisabled()) return;
+    this.props.moveLeft();
+  }
+
+  onMoveRight() {
+    if (this.isMoveRightDisabled()) return;
+    this.props.moveRight();
+  }
+
   isDropColumnDisabled() {
     return this.isInProgress() || this.props.outputColumn.is_primary_key;
   }
@@ -83,6 +93,14 @@ export class ColumnHeader extends Component {
       this.props.outputColumn.ignored;
   }
 
+  isMoveLeftDisabled() {
+    return this.isInProgress() || this.props.outputColumn.position <= 1;
+  }
+
+  isMoveRightDisabled() {
+    return this.isInProgress() || this.props.outputColumn.position >= this.props.columnCount;
+  }
+
   isInProgress() {
     const transform = this.props.outputColumn.transform;
     if (transform) {
@@ -90,6 +108,7 @@ export class ColumnHeader extends Component {
     }
     return false;
   }
+
 
   optionsFor() {
     const column = this.props.outputColumn;
@@ -133,6 +152,20 @@ export class ColumnHeader extends Component {
         title: 'geocode',
         value: 'onGeocode',
         icon: 'socrata-icon-geo',
+        render: DropdownWithIcon
+      },
+      {
+        title: 'move_left',
+        value: 'onMoveLeft',
+        disabled: this.isMoveLeftDisabled(),
+        icon: 'socrata-icon-arrow-prev',
+        render: DropdownWithIcon
+      },
+      {
+        title: 'move_right',
+        value: 'onMoveRight',
+        disabled: this.isMoveRightDisabled(),
+        icon: 'socrata-icon-arrow-next',
         render: DropdownWithIcon
       }
     ];
@@ -249,6 +282,9 @@ ColumnHeader.propTypes = {
   showShortcut: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   unSetRowIdentifier: PropTypes.func.isRequired,
+  moveLeft: PropTypes.func.isRequired,
+  moveRight: PropTypes.func.isRequired,
+  columnCount: PropTypes.number.isRequired,
   params: PropTypes.object.isRequired
 };
 

@@ -37,6 +37,8 @@ function Table({
   dropColumn,
   validateThenSetRowIdentifier,
   unSetRowIdentifier,
+  moveLeft,
+  moveRight,
   showShortcut,
   onClickError
 }) {
@@ -63,7 +65,10 @@ function Table({
               dropColumn={() => dropColumn(outputSchema, column)}
               showShortcut={showShortcut}
               validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
-              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)} />
+              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
+              moveLeft={() => moveLeft(outputSchema, column)}
+              moveRight={() => moveRight(outputSchema, column)}
+              columnCount={outputColumns.length} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -108,6 +113,8 @@ Table.propTypes = {
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   unSetRowIdentifier: PropTypes.func.isRequired,
+  moveLeft: PropTypes.func.isRequired,
+  moveRight: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
   apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,

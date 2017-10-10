@@ -89,6 +89,17 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         redirectToNewOutputschema(dispatch, params)
       ),
 
+    moveLeft: (outputSchema, column) =>
+      dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position - 1)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+    moveRight: (outputSchema, column) =>
+      dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position + 1)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)
         ? Links.showOutputSchema(

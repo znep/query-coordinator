@@ -967,7 +967,10 @@ module.exports = function(options) {
     });
 
     $cancel.on('click', function() {
-      $columnEditor.remove();
+
+      if (confirm($.t('controls.grid_view_column_editor.close_without_saving'))) {
+        $columnEditor.remove();
+      }
     });
 
     $save.on('click', function() {

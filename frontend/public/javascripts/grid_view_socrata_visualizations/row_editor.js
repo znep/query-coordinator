@@ -205,8 +205,10 @@ module.exports = function(options) {
 
     $cancel.on('click', function() {
 
-      $editor.find('input').DatePickerRemove(); // eslint-disable-line new-cap
-      $editor.remove();
+      if (confirm($.t('controls.grid_view_row_editor.close_without_saving'))) {
+        $editor.find('input').DatePickerRemove(); // eslint-disable-line new-cap
+        $editor.remove();
+      }
     });
 
     $save.on('click', function() {

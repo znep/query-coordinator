@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import uuid from 'uuid';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 import * as dsmapiLinks from 'links/dsmapiLinks';
@@ -11,6 +12,7 @@ import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
 import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
+export const UPDATE_SOURCE = 'UPDATE_SOURCE';
 export const CREATE_SOURCE_SUCCESS = 'CREATE_SOURCE_SUCCESS';
 export const CREATE_UPLOAD_SOURCE_SUCCESS = 'CREATE_UPLOAD_SOURCE_SUCCESS';
 export const SOURCE_UPDATE = 'SOURCE_UPDATE';
@@ -43,6 +45,51 @@ function createSource(params, callParams) {
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
         throw err;
+      });
+  };
+}
+
+function updateSource(params, source, changes) {
+  return dispatch => {
+    const callId = uuid();
+
+    const call = {
+      operation: UPDATE_SOURCE,
+      callParams: { sourceId: source.id }
+    };
+
+    dispatch(listenForOutputSchema(source.id, params));
+
+    dispatch(apiCallStarted(callId, call));
+
+    return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
+      method: 'PATCH',
+      body: JSON.stringify(changes)
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        const { resource } = resp;
+
+        dispatch(apiCallSucceeded(callId));
+        dispatch(sourceUpdate(source.id, resource));
+        return resource;
+      })
+      .catch(err => {
+        dispatch(apiCallFailed(callId, err));
+        throw err;
+      });
+  };
+}
+
+export function updateSourceParseOptions(params, source, parseOptions) {
+  return dispatch => {
+    return dispatch(listenForOutputSchema(source.id))
+      .receive('ok', () => {
+        return dispatch(updateSource(params, source, { parse_options: parseOptions }));
+      })
+      .receive('error', (reason) => {
+        console.error('Failed to join source channel!', reason);
       });
   };
 }
@@ -131,10 +178,10 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) 
 function sourceUpdate(sourceId, changes) {
   // oh ffs....we did this to ourselves.
   // TODO: fix this garbage
-  if (changes.created_at) {
+  if (_.isString(changes.created_at)) {
     changes.created_at = parseDate(changes.created_at);
   }
-  if (changes.finished_at) {
+  if (_.isString(changes.finished_at)) {
     changes.finished_at = parseDate(changes.finished_at);
   }
   return {
@@ -147,7 +194,6 @@ function sourceUpdate(sourceId, changes) {
 function listenForOutputSchema(sourceId, params) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
-
     channel.on('insert_input_schema', is => {
       const [os] = is.output_schemas;
 
@@ -170,6 +216,6 @@ function listenForOutputSchema(sourceId, params) {
       }
     });
 
-    channel.join();
+    return channel.join();
   };
 }

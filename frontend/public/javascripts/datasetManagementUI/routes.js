@@ -54,6 +54,7 @@ export default function rootRoute(store) {
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
         component={ShowOutputSchema}
         onEnter={checkIfPublished(store)}>
+        <Route path="option/:option" component={ShowOutputSchema} />
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>
       <Route

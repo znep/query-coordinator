@@ -187,6 +187,14 @@ export const ShowOutputSchemaProps = {
     }
   ],
   children: null,
+  parseOptionsForm: {
+    state: {
+      parseOptions: {
+
+      },
+      errors: {}
+    }
+  },
   source: {
     id: 123,
     created_by: {
@@ -198,6 +206,13 @@ export const ShowOutputSchemaProps = {
     source_type: {
       type: 'upload',
       filename: 'austin_animal_center_stray_map.csv',
+    },
+    parse_options: {
+      header_count: 1,
+      column_header: 1,
+      encoding: null,
+      column_separator: ',',
+      quote_char: '"'
     },
     percentCompleted: 100,
     finished_at: '2017-06-15T18:59:52.712Z'

@@ -1,0 +1,65 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.parseOptions {
+  fieldset {
+    width: 100%;
+  }
+}
+
+.optionsPanes {
+  display: flex;
+}
+.optionsPreview, .optionsForm {
+  display: inline-block;
+}
+.optionsPreview {
+  margin-top: 5em;
+  margin-left: 16px;
+  flex-grow: 2;
+}
+
+.gridPreview {
+  margin: 0px auto;
+}
+
+.theHeaderRow {
+  td.previewCell {
+    background-color: $alternate-2-base !important;
+  }
+}
+.inHeaderRange {
+  td {
+    background-color: $alternate-1-light;
+  }
+}
+.previewCell {
+  padding: 14px 32px;
+  background-color: $light-grey-5;
+}
+
+
+.annotationCell, .indexCell {
+  text-align: right;
+  background-color: $white !important;
+  font-style: italic;
+}
+.annotationCell {
+  min-width: 200px;
+  padding-right: 8px;
+}
+.indexCell {
+  color: $light-grey-1;
+}
+.headerRowAnnotation {
+  color: $alternate-2-text;
+}
+.headerRangeAnnotation {
+  color: $alternate-1-text;
+}
+.optionError {
+  composes: alert from global;
+  composes: error from global;
+  margin: 4px 0px;
+}

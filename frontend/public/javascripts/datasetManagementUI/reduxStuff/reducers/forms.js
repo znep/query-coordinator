@@ -5,6 +5,7 @@ import {
   SHOW_FORM_ERRORS,
   HIDE_FORM_ERRORS,
   SET_FORM_ERRORS,
+  SET_FORM_STATE,
   APPEND_FORM_ERROR
 } from 'reduxStuff/actions/forms';
 
@@ -18,6 +19,11 @@ const initialState = {
     isDirty: false,
     showErrors: false,
     errors: []
+  },
+  parseOptionsForm: {
+    isDirty: false,
+    showErrors: false,
+    state: {}
   }
 };
 
@@ -37,6 +43,9 @@ const forms = (state = initialState, action) => {
 
     case SET_FORM_ERRORS:
       return dotProp.set(state, `${action.formName}.errors`, action.errors);
+
+    case SET_FORM_STATE:
+      return dotProp.set(state, `${action.formName}.state`, action.state);
 
     case APPEND_FORM_ERROR:
       return dotProp.set(state, `${action.formName}.errors`, existingErrors => [

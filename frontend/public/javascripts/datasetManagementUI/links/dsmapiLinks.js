@@ -14,6 +14,7 @@ export const sourceCreate = sourceIndex;
 
 export const sourceBytes = (sourceId) => `${base}/source/${sourceId}`;
 export const sourceShow = sourceBytes;
+export const sourceUpdate = sourceBytes;
 
 // TODO: find names controller uses!
 export const newOutputSchema = (sourceId, inputSchemaId) => {

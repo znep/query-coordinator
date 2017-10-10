@@ -5,14 +5,13 @@
 .table {
   display: inline-flex;
   flex-direction: column;
-
   composes: table-condensed from global;
   overflow: visible;
   table-layout: fixed;
   min-width: auto;
   white-space: nowrap;
   position: absolute;
-  top: 0;
+  top: 45px;
   bottom: 0;
   border-left: 1px solid $light-grey-4;
   margin: 0;

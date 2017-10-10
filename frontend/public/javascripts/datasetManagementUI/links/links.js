@@ -27,6 +27,12 @@ export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
+export const showParseOptions = (params) => {
+  const { sourceId, inputSchemaId, outputSchemaId } = params;
+  return `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/option/parse_options`;
+};
+
 export const showColumnErrors = (
   params,
   sourceId,

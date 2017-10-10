@@ -35,3 +35,10 @@ export const appendFormError = (formName, error) => ({
   formName,
   error
 });
+
+export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const setFormState = (formName, state) => ({
+  type: SET_FORM_STATE,
+  formName,
+  state
+});

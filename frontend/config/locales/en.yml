@@ -2408,7 +2408,6 @@ en:
       noncurrent: Other data sources
       submessage: ...or click Browse to choose a file from your computer
       uploads: Data Sources
-      title: Replace Data
       from_url: URL Source
     show_upsert:
       failure:

@@ -1,9 +1,9 @@
 @import 'app/styles/styleguide-colors';
 
 .sidebar {
-  flex: 0 0 35%;
+  flex: 0 0 24%;
   background-color: $white;
-  border-left: 1px solid $light-grey-2;
+  border-right: 1px solid $light-grey-4;
 
   li {
     color: $primary-base;

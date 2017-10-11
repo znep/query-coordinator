@@ -13,7 +13,7 @@
   display: flex;
 }
 
-.sourceContainer > section:first-child {
+.sourceContainer > section:nth-child(2) {
   flex-grow: 1;
 }
 

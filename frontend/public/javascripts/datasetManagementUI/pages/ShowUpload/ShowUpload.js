@@ -29,8 +29,8 @@ export const ShowUpload = ({ inProgress, goHome }) => (
           </div>
         ) : (
           <div className={styles.sourceContainer}>
-            <DragDropUpload />
             <UploadSidebar />
+            <DragDropUpload />
           </div>
         )}
       </ModalContent>

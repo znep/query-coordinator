@@ -28,8 +28,22 @@ Dir.glob('site_chrome/lib/tasks/*.rake').each(&method(:load))
 
 desc 'Run linter'
 task lint: :deps do
-  npm('run lint') do |ok, res|
-    raise 'Link failed' unless ok
+  # --silent suppresses the (in this case) useless NPM error spew. It does _NOT_
+  # silence the linter output, which prints its own useful error messages.
+  npm('run lint --silent') do |ok, res|
+    unless ok
+      # TODO: See EN-19293 for a better solution we can implement once eslint implements a feature.
+      puts "\n\033[31mIf you are seeing restricted module warnings on common/components, be advised:
+In common/{components,notifications,autocomplete}, importing common/components
+causes dependency cycles. Prefer direct import instead:
+
+import { Checkbox } from 'common/components'; // No
+import Checkbox from 'common/components/Checkbox'; // Yes
+
+See EN-19294 for details.
+\033[0m"
+      abort 'Lint failed.'
+    end
   end
 end
 

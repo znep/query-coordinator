@@ -1,0 +1,9 @@
+{
+  "rules": {
+    // In the context of common/autocomplete, importing
+    // common/components causes dangerous dependency cycles.
+    // Directly import the component you need instead (i.e.,
+    // import Checkbox from 'common/components/Checkbox';)
+    "no-restricted-imports": [ "error", "common/components" ]
+  }
+}

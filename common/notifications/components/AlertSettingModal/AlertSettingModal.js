@@ -5,7 +5,7 @@ import styles from './alert-setting-modal.scss';
 import Tabs from './Tabs';
 import PreferenceContent from './PreferenceContent';
 import cssModules from 'react-css-modules';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import AlertPreferenceAPI from '../../api/AlertPreferenceAPI'
 import Spinner from '../Spinner';
 

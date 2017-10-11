@@ -9,14 +9,13 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/approvals'),
   entry: common.withHotModuleEntries({'main': './main.js'}),
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/approvals/.eslintrc.json'),
   module: {
-    loaders: common.getStandardLoaders(
-      {
-        test: /\.(css|scss)$/,
-        loader: 'style!css!autoprefixer-loader!sass'
+    loaders: common.getStandardLoaders(null, {
+      substituteStyleLoaders: {
+        test: /\.s?css$/,
+        loader: 'style-loader!css-loader!postcss-loader!sass-loader'
       }
-    )
+    })
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/approvals' ])

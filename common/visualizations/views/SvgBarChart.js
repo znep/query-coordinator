@@ -1479,8 +1479,8 @@ function SvgBarChart($element, vif, options) {
         if (!isCurrentlyPanning()) {
           const underlayWidth = parseInt($(this).attr('width'), 10);
           const flyoutOffset = {
-            left: $(this).offset().left + (underlayWidth / 2),
-            top: d3.event.pageY
+            left: $(this).offset().left + (underlayWidth / 2) - window.scrollX,
+            top: d3.event.clientY
           };
 
           self.showReferenceLineFlyout(this, referenceLines, isOneHundredPercentStacked, flyoutOffset);

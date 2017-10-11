@@ -924,8 +924,8 @@ function SvgTimelineChart($element, vif, options) {
         if (!isCurrentlyPanning()) {
           const underlayHeight = parseInt($(this).attr('height'), 10);
           const flyoutOffset = {
-            left: d3.event.pageX,
-            top: $(this).offset().top +  (underlayHeight / 2)
+            left: d3.event.clientX,
+            top: $(this).offset().top + (underlayHeight / 2) - window.scrollY
           };
 
           self.showReferenceLineFlyout(this, referenceLines, false, flyoutOffset);

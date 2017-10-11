@@ -139,7 +139,7 @@ class NotificationAPI {
       return null;
     }
 
-    return `'//${domainCname}/dataset/${this._convertToUrlComponent(name)}/${uId}`;
+    return `//${domainCname}/dataset/${this._convertToUrlComponent(name)}/${uId}`;
   }
 
   _transformNotification(notification) {

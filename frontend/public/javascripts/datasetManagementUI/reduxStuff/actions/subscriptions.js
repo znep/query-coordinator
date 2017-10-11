@@ -3,6 +3,8 @@ import { editOutputSchema } from 'reduxStuff/actions/outputSchemas';
 import { editTransform } from 'reduxStuff/actions/transforms';
 import { editInputSchema } from 'reduxStuff/actions/inputSchemas';
 import { editInputColumn } from 'reduxStuff/actions/inputColumns';
+import { editRevision } from 'reduxStuff/actions/revisions';
+import { parseDate } from 'lib/parseDate';
 
 const PROGRESS_THROTTLE_TIME = 250;
 
@@ -24,6 +26,27 @@ export function subscribeToOutputSchemaThings(is) {
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
     });
+  };
+}
+
+export function subscribeToRevision(id) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`revision:${id}`);
+
+    channel.on('update', revision => {
+      let rev = revision;
+
+      if (rev.created_at) {
+        rev = {
+          ...rev,
+          created_at: parseDate(rev.created_at)
+        };
+      }
+
+      dispatch(editRevision(id, rev));
+    });
+
+    channel.join();
   };
 }
 

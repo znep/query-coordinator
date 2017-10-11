@@ -76,18 +76,18 @@ class PreferenceContent extends Component {
 
         <td className="column-description">
           <OnOffSwitch
-            enableSwitch={categoryData.enable_email}
-            onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+            enableSwitch={categoryData.enable_product_notification}
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
           </OnOffSwitch>
         </td>
 
         <td>
           <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-all-assets">
             <input
-              checked={categoryData.enable_product_notification}
+              checked={categoryData.enable_email}
               id="notify-subscribe-all-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'product')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')}/>
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
@@ -146,8 +146,8 @@ class PreferenceContent extends Component {
           </td>
           <td className="column-description">
             <OnOffSwitch
-              enableSwitch={categoryData.enable_email}
-              onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+              enableSwitch={categoryData.enable_product_notification}
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
             </OnOffSwitch>
           </td>
 
@@ -157,10 +157,10 @@ class PreferenceContent extends Component {
               styleName="email-option"
               htmlFor="notify-subscribe-routing-approval">
               <input
-                checked={categoryData.enable_product_notification}
+                checked={categoryData.enable_email}
                 id="notify-subscribe-routing-approval"
                 type="checkbox"
-                onChange={() => onAlertNotificationChange(category, 'product')}/>
+                onChange={() => onAlertNotificationChange(category, 'email')}/>
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
             </label>
           </td>
@@ -194,18 +194,18 @@ class PreferenceContent extends Component {
           </td>
           <td className="column-description">
             <OnOffSwitch
-              enableSwitch={categoryData.enable_email}
-              onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+              enableSwitch={categoryData.enable_product_notification}
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
             </OnOffSwitch>
           </td>
 
           <td>
             <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-user-accounts">
               <input
-                checked={categoryData.enable_product_notification}
+                checked={categoryData.enable_email}
                 id="notify-subscribe-user-accounts"
                 type="checkbox"
-                onChange={() => onAlertNotificationChange(category, 'product')}/>
+                onChange={() => onAlertNotificationChange(category, 'email')}/>
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
             </label>
           </td>
@@ -230,18 +230,18 @@ class PreferenceContent extends Component {
         </td>
         <td className="column-description">
           <OnOffSwitch
-            enableSwitch={categoryData.enable_email}
-            onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+            enableSwitch={categoryData.enable_product_notification}
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
           </OnOffSwitch>
         </td>
 
         <td>
           <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-delete-assets">
             <input
-              checked={categoryData.enable_product_notification}
+              checked={categoryData.enable_email}
               id="notify-subscribe-delete-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'product')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')}/>
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
@@ -265,18 +265,18 @@ class PreferenceContent extends Component {
         </td>
         <td className="column-description">
           <OnOffSwitch
-            enableSwitch={categoryData.enable_email}
-            onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+            enableSwitch={categoryData.enable_product_notification}
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
           </OnOffSwitch>
         </td>
 
         <td>
           <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-my-assets">
             <input
-              checked={categoryData.enable_product_notification}
+              checked={categoryData.enable_email}
               id="notify-subscribe-my-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'product')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')}/>
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
@@ -301,18 +301,18 @@ class PreferenceContent extends Component {
         </td>
         <td className="column-description">
           <OnOffSwitch
-            enableSwitch={categoryData.enable_email}
-            onSwitchChange={() => onAlertNotificationChange(category, 'email')}>
+            enableSwitch={categoryData.enable_product_notification}
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
           </OnOffSwitch>
         </td>
 
         <td>
           <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-watch-list">
             <input
-              checked={categoryData.enable_product_notification}
+              checked={categoryData.enable_email}
               id="notify-subscribe-watch-list"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'product')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')}/>
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>

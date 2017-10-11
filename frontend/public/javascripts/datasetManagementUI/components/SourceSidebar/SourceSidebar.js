@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import React from 'react';
 import moment from 'moment';
-import { Link } from 'react-router';
+import { Link, IndexLink } from 'react-router';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './SourceSidebar.scss';
@@ -49,24 +49,32 @@ const SourceSidebar = ({ entities, currentUpload, otherUploads, params }) => {
   }
   return (
     <section className={styles.sidebar}>
-      {currentUpload && (
-        <div>
-          <h2>{I18n.show_uploads.current}</h2>
-          <ul>
-            <UploadItem entities={entities} source={currentUpload} params={params} />
-          </ul>
-        </div>
-      )}
-      {otherUploads.length > 0 && (
-        <div>
-          <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
-          <ul>
-            {otherUploads.map(source => (
-              <UploadItem key={source.id} entities={entities} source={source} params={params} />
-            ))}
-          </ul>
-        </div>
-      )}
+      <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
+        Upload a Data File
+      </IndexLink>
+      <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
+        Connect to a Data Source
+      </Link>
+      <div className={styles.sourceList}>
+        {currentUpload && (
+          <div>
+            <h2>{I18n.show_uploads.current}</h2>
+            <ul>
+              <UploadItem entities={entities} source={currentUpload} params={params} />
+            </ul>
+          </div>
+        )}
+        {otherUploads.length > 0 && (
+          <div>
+            <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
+            <ul>
+              {otherUploads.map(source => (
+                <UploadItem key={source.id} entities={entities} source={source} params={params} />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </section>
   );
 };

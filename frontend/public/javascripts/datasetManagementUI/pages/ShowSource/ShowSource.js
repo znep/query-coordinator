@@ -10,12 +10,11 @@ import { Modal, ModalHeader, ModalContent } from 'common/components';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
-import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
 import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
-import styles from './ShowUpload.scss';
+import styles from './ShowSource.scss';
 
-export const ShowSource = ({ inProgress, goHome }) => (
+export const ShowSource = ({ inProgress, goHome, children }) => (
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
@@ -30,7 +29,7 @@ export const ShowSource = ({ inProgress, goHome }) => (
         ) : (
           <div className={styles.sourceContainer}>
             <SourceSidebar />
-            <DragDropUpload />
+            {children}
           </div>
         )}
       </ModalContent>
@@ -52,7 +51,8 @@ export const mapStateToProps = ({ entities, ui }, { params }) => {
 
 ShowSource.propTypes = {
   inProgress: PropTypes.bool.isRequired,
-  goHome: PropTypes.func.isRequired
+  goHome: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({

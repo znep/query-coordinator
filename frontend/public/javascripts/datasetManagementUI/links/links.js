@@ -23,14 +23,18 @@ export const columnMetadataForm = (params, outputSchemaId, columnId) =>
 
 export const sources = params => `${revisionBase(params)}/sources`;
 
+export const urlSource = params => `${sources(params)}/url`;
+
 export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
-export const showParseOptions = (params) => {
+export const showParseOptions = params => {
   const { sourceId, inputSchemaId, outputSchemaId } = params;
-  return `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
-    `/output/${outputSchemaId}/option/parse_options`;
+  return (
+    `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/option/parse_options`
+  );
 };
 
 export const showColumnErrors = (

@@ -4,6 +4,8 @@ set -e
 REALPATH=$(python -c "import os; print(os.path.realpath('$0'))")
 BASEDIR="$(dirname "${REALPATH}")/.."
 
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # Hack to make Unicorn start on High Sierra
+
 cd "$BASEDIR"
 bundle install
 bundle exec unicorn -c $PWD/config/unicorn.rb -N

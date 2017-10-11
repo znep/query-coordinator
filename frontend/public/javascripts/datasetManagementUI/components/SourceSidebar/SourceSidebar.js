@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Link } from 'react-router';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
-import styles from './UploadSidebar.scss';
+import styles from './SourceSidebar.scss';
 
 function titleOf(source) {
   if (source.source_type.type === 'url') return source.source_type.url;
@@ -39,7 +39,7 @@ UploadItem.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const UploadSidebar = ({ entities, currentUpload, otherUploads, params }) => {
+const SourceSidebar = ({ entities, currentUpload, otherUploads, params }) => {
   if (!currentUpload && otherUploads.length === 0) {
     return (
       <section className={styles.sidebar}>
@@ -79,11 +79,11 @@ const sourceProptype = PropTypes.shape({
   finished_at: PropTypes.object
 });
 
-UploadSidebar.propTypes = {
+SourceSidebar.propTypes = {
   currentUpload: sourceProptype,
   otherUploads: PropTypes.arrayOf(sourceProptype),
   entities: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired
 };
 
-export default UploadSidebar;
+export default SourceSidebar;

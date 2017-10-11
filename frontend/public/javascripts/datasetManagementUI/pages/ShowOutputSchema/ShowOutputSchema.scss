@@ -31,6 +31,13 @@ $sidebar-width: 250px;
       z-index: 1002;
     }
 
+    @media (max-width: 750px) {
+      section.modal-content {
+        padding-left: 0px !important;
+      }
+    }
+
+
     .modal-footer-actions {
       display: flex;
       justify-content: space-between;

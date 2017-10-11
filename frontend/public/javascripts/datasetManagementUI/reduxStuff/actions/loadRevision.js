@@ -5,7 +5,7 @@ import { showModal } from 'reduxStuff/actions/modal';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';
 import { createSourceSuccess } from 'reduxStuff/actions/createSource';
-import { subscribeToOutputSchemaThings } from 'reduxStuff/actions/subscriptions';
+import { subscribeToOutputSchemaThings, subscribeToRevision } from 'reduxStuff/actions/subscriptions';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
@@ -70,6 +70,9 @@ export function loadRevision(params) {
       if (revision.closed_at) {
         dispatch(showModal('Publishing'));
       }
+
+      // subscribe to the revision channel, mostly to catch output schema id updates
+      dispatch(subscribeToRevision(revision.id));
     });
   };
 }

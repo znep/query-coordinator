@@ -19,6 +19,8 @@ class Home extends Component {
   componentWillMount() {
     const { dispatch, params } = this.props;
 
+    // loadRevision puts revisions and sources into the store and also subscribes
+    // to the revision websocket channel
     dispatch(loadRevision(params)).then(() =>
       this.setState({
         loaded: true

@@ -2101,9 +2101,10 @@ en:
     home_pane:
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
+      add_data: Add Data
       adding_data: Adding Data
       adding_data_blurb: Adding data will enable visualizations and API access.
-      adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just choose a data file to upload.
+      adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just add a data source (file, URL, etc).
       adding_metadata: Adding Metadata
       adding_metadata_blurb: Metadata is crucial to give your end users context.
       apply_update: Apply Update

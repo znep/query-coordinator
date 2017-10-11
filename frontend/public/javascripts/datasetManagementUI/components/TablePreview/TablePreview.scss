@@ -39,19 +39,16 @@
 }
 
 // NO DATA
-.fileTypes {
-  padding-top: 15px;
-}
-
 .sourceButton {
   display: inline-block;
   margin: 0px 4px;
 }
 
-.uploadButton {
+.dataLink {
   composes: btn from global;
   composes: btn-primary from global;
   composes: sourceButton;
+  min-width: 150px;
 }
 
 // OUPUT SCHEMA

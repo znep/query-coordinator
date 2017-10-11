@@ -50,10 +50,10 @@ const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
 
-const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
-const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
-
 function SvgColumnChart($element, vif, options) {
+  // Embeds needs to wait to define noValueLabel until after hydration.
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+  const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
   let $chartElement;
   let dataToRender;

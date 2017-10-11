@@ -39,9 +39,9 @@ const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const AREA_STROKE_WIDTH = '3px';
 
-const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
-
 function SvgTimelineChart($element, vif, options) {
+  // Embeds needs to wait to define noValueLabel until after hydration.
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
   const self = this;
   const parseDate = d3.
     time.

@@ -7,6 +7,7 @@ const utils = require('common/js_utils');
 const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('common/i18n').default;
+
 // Constants
 import {
   AXIS_LABEL_MARGIN,
@@ -55,10 +56,13 @@ const NO_VALUE_SENTINEL = '__NO_VALUE__';
 const MIN_WIDTH_RESERVED_FOR_CHART = 25;
 const SMALL_VIEWPORT_WIDTH = 400;
 
-const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
-const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
-
 function SvgBarChart($element, vif, options) {
+  // These constants need to be defined inside the function
+  // because I18n does not get hydrated in embeds until after
+  // they were getting set. By moving them into the function,
+  // I18n has time to get hydrated. Relates to EN-18831
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+  const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
   let $chartElement;
   let dataToRender;

@@ -13,8 +13,9 @@
 @import "variables/typography";
 @import "variables/mixins";
 @import "neat";
-@import "socrata-icons-font-family";
+
 @import "socrata-icons";
+
 @import 'partials/admin/breadcrumbs';
 @import "partials/aria";
 @import "partials/typography";
@@ -41,6 +42,8 @@
 @import "partials/cards";
 @import "partials/tour";
 @import "partials/logo";
+
+@import "components/AssetBrowser/styles/index";
 @import "components/AssetTypeIcon/index";
 @import "components/ColorPicker/index";
 @import "components/DateRangePicker/index";

@@ -10,10 +10,10 @@ describe('VisualizationRenderer', () => {
 
   beforeEach(() => {
     element = document.createElement('div');
-    sinon.stub($.fn, 'socrataSvgHistogram', function() {
+    sinon.stub($.fn, 'socrataSvgHistogram').callsFake(function() {
       $(this).append($('div').text('mock histogram'));
     });
-    sinon.stub($.fn, 'socrataSvgColumnChart', () => {});
+    sinon.stub($.fn, 'socrataSvgColumnChart').returns(() => {});
     mockFlyout = {
       clear: sinon.stub(),
       render: sinon.stub()

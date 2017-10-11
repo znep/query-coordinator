@@ -7,17 +7,17 @@
   <%= t('screens.admin.assets.asset_inventory') %>
 <% end %>
 
-<div class="internal-asset-manager" id="internal-asset-manager-content"></div>
+<div class="catalog-results" id="internal-asset-manager-content"></div>
 
-<div id="dynamic-content"></div>
+<div id="feedback-panel-content"></div>
 
 <%= content_for :scripts do %>
   <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
   <script type="text/javascript">var I18n = I18n || {};</script>
 
-  <%= render_internal_asset_manager_translations %>
-  <%= render_internal_asset_manager_session_data %>
-  <%= render_internal_asset_manager_server_config %>
-  <%== render_internal_asset_manager_initial_state %>
+  <%= render_catalog_results_translations %>
+  <%= render_catalog_results_session_data %>
+  <%= render_catalog_results_server_config %>
+  <%== render_catalog_results_initial_state %>
   <%= include_webpack_bundle 'internal-asset-manager/main' %>
 <%- end %>

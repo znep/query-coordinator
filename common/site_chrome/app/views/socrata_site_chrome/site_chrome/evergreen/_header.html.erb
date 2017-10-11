@@ -10,18 +10,7 @@
             <%= divider %>
           <% end %>
 
-          <% if logged_in? && get_feature_flag('enable_user_notifications')  && !current_user_can_see_admin_link? %>
-            <div class="site-chrome-user-header-notifications">
-              <div
-                id="site-chrome-header-notifications"
-                tabIndex="-1"
-                class="for-user-header">
-                <%# This gets filled in by notifications JS %>
-              </div>
-            </div>
-
-            <%= divider %>
-          <% end %>
+          <%= render 'site_chrome/header_notifications_for_user' if show_site_chrome_header_notifications_for_user? %>
 
           <% if show_language_switcher? %>
             <%= render 'site_chrome/language_switcher', :orientation => 'bottom' %>
@@ -62,32 +51,4 @@
   </div>
 
   <%= render 'site_chrome/mobile_menu' %>
-
-  <% if logged_in? && get_feature_flag('enable_user_notifications')  && !current_user_can_see_admin_link? %>
-    <script type="text/javascript">
-      document.addEventListener(
-        'DOMContentLoaded',
-        function() {
-          if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-            var options = {
-              lockScrollbar: true,
-              scrollTop: 0,
-              showProductNotifications: false,
-              showUserNotifications: true,
-              currentUserRole: <%== current_user_role.to_json %>,
-              isSuperAdmin: <%== is_superadmin? %>
-            };
-
-            window.headerNotifications('#site-chrome-header-notifications',
-              options,
-              <%== json_escape current_user_id.to_json %>,
-              <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>,
-              <%== json_escape I18n.locale.to_json %>
-            );
-          }
-        },
-        false
-      );
-    </script>
-  <% end %>
 </header>

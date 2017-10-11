@@ -11,7 +11,7 @@ function httpConfig(config) {
   }, config);
 }
 
-module.exports = function UserSessionService($http, $q, rx) {
+module.exports = function UserSessionService($http, $q, $window, rx) {
   const Rx = rx;
   // Get a promise for the current user.
   // Will be rejected with an appropriate error
@@ -63,17 +63,22 @@ module.exports = function UserSessionService($http, $q, rx) {
       catchException(Rx.Observable.returnValue(null));
   }
 
-  function isSuperadmin(user) {
-    // EN-18397: Should not be checking 'manage_users' here. Replace with appropriate right or other mechanism.
-    var flags = _.get(user, 'flags', []);
-    var rights = _.get(user, 'rights');
-    return _.includes(flags, 'admin') || _.includes(rights, 'manage_users');
+  function hasRight$(right, callCore) {
+    var userHasRight = function(user) {
+      return _.includes(_.get(user, 'rights', []), right);
+    };
+
+    if (callCore || !$window.currentUser) {
+      return getCurrentUser$().map(userHasRight);
+    } else {
+      return Rx.Observable.returnValue($window.currentUser).map(userHasRight);
+    }
   }
 
   return {
     getCurrentUser: getCurrentUser,
     getCurrentUser$: _.once(getCurrentUser$),
-    isSuperadmin: isSuperadmin,
+    hasRight$: hasRight$,
     Errors: Errors
   };
 };

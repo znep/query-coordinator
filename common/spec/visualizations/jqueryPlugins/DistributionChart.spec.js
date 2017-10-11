@@ -116,16 +116,12 @@ describe('DistributionChart jQuery component', function() {
 
       expect(distributionChart.props.data).to.not.exist;
 
-      sinon.stub(DistributionChart.prototype, 'fetchColumnDomain', function() {
-        return Promise.resolve({
-          min: 0,
-          max: 10
-        });
+      sinon.stub(DistributionChart.prototype, 'fetchColumnDomain').resolves({
+        min: 0,
+        max: 10
       });
 
-      sinon.stub(DistributionChart.prototype, 'fetchBucketedData', function() {
-        return Promise.resolve(fakeData);
-      });
+      sinon.stub(DistributionChart.prototype, 'fetchBucketedData').resolves(fakeData);
 
       distributionChart.updateData().then(function() {
         expect(distributionChart.props.data).to.deep.equal(fakeData);
@@ -145,13 +141,15 @@ describe('DistributionChart jQuery component', function() {
     it('makes a request for the min and max of the column in the vif', function(done) {
       var distributionChart = new DistributionChart(outlet, vif);
 
-      sinon.stub(distributionChart.columnDomainDataProvider, 'getRows', function(columnNames, columnDomainQuery) {
-        expect(columnDomainQuery).to.match(/select min\([^\)]+\)/i);
-        expect(columnDomainQuery).to.match(/select .* max\([^\)]+\)/i);
-        return Promise.resolve({
-          rows: [ [ 0, 100 ] ]
-        });
-      });
+      sinon.stub(distributionChart.columnDomainDataProvider, 'getRows').callsFake(
+        function(columnNames, columnDomainQuery) {
+          expect(columnDomainQuery).to.match(/select min\([^\)]+\)/i);
+          expect(columnDomainQuery).to.match(/select .* max\([^\)]+\)/i);
+          return Promise.resolve({
+            rows: [ [ 0, 100 ] ]
+          });
+        }
+      );
 
       distributionChart.fetchColumnDomain().then(function(result) {
         expect(result.min).to.equal(0);
@@ -170,15 +168,10 @@ describe('DistributionChart jQuery component', function() {
     function createDistributionChart(vif) {
       distributionChart = new DistributionChart(outlet, vif);
 
-      unfilteredQueryStub = sinon.stub(distributionChart.unfilteredDataProvider, 'query', function() {
-        return Promise.resolve([]);
-      });
+      unfilteredQueryStub = sinon.stub(distributionChart.unfilteredDataProvider, 'query').resolves([]);
+      filteredQueryStub = sinon.stub(distributionChart.filteredDataProvider, 'query').resolves([]);
 
-      filteredQueryStub = sinon.stub(distributionChart.filteredDataProvider, 'query', function() {
-        return Promise.resolve([]);
-      });
-
-      transformBucketedDataStub = sinon.stub(DistributionChart.prototype, 'transformBucketedData', _.identity);
+      transformBucketedDataStub = sinon.stub(DistributionChart.prototype, 'transformBucketedData').returnsArg(0);
     }
 
     afterEach(function() {

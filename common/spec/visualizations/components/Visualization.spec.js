@@ -15,7 +15,7 @@ describe('Visualization', () => {
   const getDefaultProps = () => ( { vif: mockVif } );
 
   beforeEach(() => {
-    sinon.stub($.fn, 'socrataSvgHistogram', () => {});
+    sinon.stub($.fn, 'socrataSvgHistogram').returns(() => {});
   });
 
   afterEach(() => {

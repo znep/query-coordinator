@@ -13,8 +13,9 @@ import {
 import { showModal } from 'reduxStuff/actions/modal';
 import { addTaskSet } from 'reduxStuff/actions/taskSets';
 import { editRevision } from 'reduxStuff/actions/revisions';
-import * as dsmapiLinks from 'dsmapiLinks';
-import * as Links from 'links';
+import { getView } from 'reduxStuff/actions/views';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as Links from 'links/links';
 import { parseDate } from 'lib/parseDate';
 
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
@@ -170,6 +171,11 @@ export function pollForTaskSetProgress(taskSetId, params) {
             setTimeout(() => {
               dispatch(pollForTaskSetProgress(taskSetId, params));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
+          } else {
+            // If the task set is done processing, then go get the view and update
+            // it in the store. We mainly care about displaying displayType since
+            // that is what we use to determine if we have a published dataset
+            dispatch(getView(params.fourfour));
           }
         } else {
           console.warn('Backend service appears to be down presently.');

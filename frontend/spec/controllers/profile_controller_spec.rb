@@ -10,7 +10,11 @@ describe ProfileController do
   describe 'GET /profile' do
     render_views
 
-    let(:current_user) { login }
+    let(:current_user) do
+      login.tap do |user|
+        allow(user).to receive_messages(rights: nil, profileImageUrlLarge: nil)
+      end
+    end
 
     before do
       allow(subject).to receive(:current_user).and_return(current_user)

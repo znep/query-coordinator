@@ -5,6 +5,9 @@
 .message {
   font-weight: 600;
   color: $dark-grey-2;
+  max-width: 310px;
+  white-space: pre-wrap;
+  margin: 4px 0px;
 }
 
 .subMessage {

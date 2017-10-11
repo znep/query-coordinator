@@ -1,0 +1,36 @@
+<div class="site-chrome-user-header-notifications">
+  <div
+    id="site-chrome-header-notifications"
+    tabIndex="-1"
+    class="for-user-header">
+    <%# This gets filled in by notifications JS %>
+  </div>
+</div>
+
+<%= divider %>
+
+<script type="text/javascript">
+  document.addEventListener(
+    'DOMContentLoaded',
+    function() {
+      if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
+        var template = document.querySelector('#site-chrome-header').getAttribute('template');
+        var options = {
+          lockScrollbar: true,
+          scrollTop: template === 'rally' ? document.querySelector('#site-chrome-header .rally-top').offsetHeight : 0,
+          showProductNotifications: false,
+          showUserNotifications: true,
+          currentUserRole: <%== current_user_role.to_json %>,
+          isSuperAdmin: <%== is_superadmin? %>
+        };
+
+        window.headerNotifications('#site-chrome-header-notifications',
+          options,
+          <%== json_escape current_user_id.to_json %>,
+          <%== json_escape I18n.t('.shared.site_chrome.notifications').to_json %>
+        );
+      }
+    },
+    false
+  );
+</script>

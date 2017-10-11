@@ -4,7 +4,7 @@ import _ from 'lodash';
 import BackButton from '../BackButton';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard, Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { VALID_URL_REGEX } from '../../constants';
+import { VALID_URL_REGEX } from 'common/http/constants';
 
 export class ExternalResourceEditor extends React.Component {
   constructor(props) {

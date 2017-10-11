@@ -409,6 +409,9 @@ module DatasetsHelper
 
     hash.edit!.appendReplace = hide_append_replace?
     hash.edit!.addColumn = hide_add_column?
+    hash.edit!.editColumn = hide_edit_column?
+    hash.edit!.addRow = hide_add_row?
+    hash.edit!.updateColumn = hide_edit_update_column?
     hash.edit!.redirect = hide_redirect?
 
     hash.manage!.updateColumn = hide_update_column?
@@ -475,6 +478,20 @@ module DatasetsHelper
       !view.has_rights?(ViewRights::ADD_COLUMN),
       view.is_immutable?,
       view.geoParent.present?
+    ].any?
+  end
+
+  def hide_edit_column?
+    [
+      !view.is_unpublished?,
+      !enable_2017_grid_view_refresh_for_current_request?
+    ].any?
+  end
+
+  def hide_add_row?
+    [
+      !view.is_unpublished?,
+      !enable_2017_grid_view_refresh_for_current_request?
     ].any?
   end
 
@@ -572,7 +589,15 @@ module DatasetsHelper
       view.is_form?,
       view.is_api?,
       view.geoParent.present?,
-      view.is_api_geospatial?
+      view.is_api_geospatial?,
+      enable_2017_grid_view_refresh_for_current_request?
+    ].any?
+  end
+
+  def hide_edit_update_column?
+    [
+      !view.is_unpublished?,
+      !enable_2017_grid_view_refresh_for_current_request?
     ].any?
   end
 
@@ -582,7 +607,8 @@ module DatasetsHelper
       view.non_tabular?,
       view.is_form?,
       view.is_geo?,
-      view.is_api_geospatial?
+      view.is_api_geospatial?,
+      enable_2017_grid_view_refresh_for_current_request?
     ].any?
   end
 

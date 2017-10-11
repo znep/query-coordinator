@@ -6,7 +6,11 @@ import React from 'react';
 import dotProp from 'dot-prop-immutable';
 
 const defaultProps = {
-  entities: {},
+  entities: {
+    sources: {
+      312: {}
+    }
+  },
   params: {
     category: 'dataset',
     name: 'dfsdfdsf',
@@ -149,7 +153,7 @@ describe('components/Table', () => {
 
   it('renders a table body component', () => {
     const component = shallow(<Table {...defaultProps} />);
-    assert.isFalse(component.find('Connect(TableBody)').isEmpty());
+    assert.isTrue(component.find('Connect(TableBody)').exists());
   });
 
   it('renders a disabled ColumnHeader if column is ignored', () => {

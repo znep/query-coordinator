@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import 'whatwg-fetch';
 import { dataProviders as DataProviders } from 'common/visualizations';
-import { checkStatus, defaultHeaders } from '../common/http';
+import { checkStatus, defaultHeaders } from 'common/http';
 
 // NOTE: In a future refactor, it might be good to separate the Mixpanel action
 // into its own module, similar to how DSLP does it. See also reducer.

@@ -9,6 +9,7 @@
  * of changing internal file organization without
  * having to update all code using common components.
  */
+
 import DropdownFactory from './legacy/Dropdown';
 import FlannelFactory from './legacy/Flannel';
 import FlyoutFactory from './legacy/Flyout';
@@ -18,6 +19,7 @@ import TabsFactory from './legacy/Tabs';
 import ToggleFactory from './legacy/Toggle';
 import TourFactory from './legacy/Tour';
 
+import AssetBrowser from './AssetBrowser';
 import AssetTypeIcon from './AssetTypeIcon';
 import ColorPicker from './ColorPicker';
 import Dropdown from './Dropdown';
@@ -56,6 +58,7 @@ module.exports = {
     TourFactory
   },
 
+  AssetBrowser,
   AssetTypeIcon,
   Checkbox,
   ColorPicker,

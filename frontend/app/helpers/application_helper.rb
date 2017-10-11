@@ -224,7 +224,8 @@ module ApplicationHelper
     LocalePart.account.common,
     LocalePart.controls.charts,
     LocalePart.controls.common,
-    LocalePart.controls.nbe_column_manager,
+    LocalePart.controls.grid_view_column_editor,
+    LocalePart.controls.grid_view_row_editor,
     LocalePart.plugins.jquery_ui,
     LocalePart.shared
   ]
@@ -1192,13 +1193,21 @@ module ApplicationHelper
     return unless APP_CONFIG.canary
     content_tag(:style, :type => 'text/css') do
       %q[body:before {
-        font-weight: bold;
-        color: white;
         background-color: red;
+        color: white;
         content: "CANARY!";
         display: block;
         font-size: 32px;
-        padding: 5px;
+        font-weight: bold;
+        height: 50px;
+        line-height: 50px;
+        margin-bottom: -50px;
+        opacity: 0.95;
+        pointer-events: none;
+        position: relative;
+        text-align: center;
+        width: 200px;
+        z-index: 10;
       }].html_safe
     end
   end
@@ -1272,7 +1281,7 @@ module ApplicationHelper
   end
 
   def data_grid_body_class
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
       return 'grid-view-2017-refresh'
     else
       return 'grid-view-classic'
@@ -1292,7 +1301,7 @@ module ApplicationHelper
   #
   # Finally: yes, of course this could be formulated as a single boolean expression. But I think it's clearer and less
   # error-prone to write it in a more procedural manner.
-  def enable_2017_grid_refresh_for_current_request?
+  def enable_2017_grid_view_refresh_for_current_request?
     if current_user_is_domain_member_and_has_create_datasets_right?
       FeatureFlags.derive(@view, request).enable_2017_grid_view_refresh_for_users_who_can_create_datasets
     else

@@ -26,7 +26,7 @@ class Tabs extends React.Component {
       <li key={index} styleName="tab">
         <button styleName={classNames({ 'selected': tab === selectedTab })}
           className="notification-tab"
-          onClick={() => {filterNotifications(tab)}}>
+          onClick={() => filterNotifications(tab)}>
           {this.renderIndicator(tab)}
           {I18n.t(`shared_site_chrome_notifications.filter_${tab}_notifications_tab_text`)}
         </button>
@@ -39,8 +39,8 @@ class Tabs extends React.Component {
       children,
       hasSecondaryPanel
     } = this.props;
-    const notificationItemsClassName = classNames("notification-items-wrapper", {
-      "has-secondary-panel": hasSecondaryPanel
+    const notificationItemsClassName = classNames('notification-items-wrapper', {
+      'has-secondary-panel': hasSecondaryPanel
     });
 
     return (
@@ -63,7 +63,7 @@ Tabs.propTypes = {
   tabs: PropTypes.array.isRequired,
   selectedTab: PropTypes.string.isRequired,
   filterNotifications: PropTypes.func.isRequired,
-  children: React.PropTypes.element.isRequired,
+  children: PropTypes.element.isRequired,
   hasSecondaryPanel: PropTypes.bool.isRequired
 };
 

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { browserHistory, withRouter } from 'react-router';
 import * as DisplayState from 'lib/displayState';
@@ -43,7 +44,11 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 function mapStateToProps({ entities }, ownProps) {
   const currentPage = ownProps.displayState.pageNo;
-  const resultCount = numItemsToPaginate(entities, ownProps.path.outputSchemaId, ownProps.displayState);
+  const resultCount = numItemsToPaginate(
+    entities,
+    _.toNumber(ownProps.path.outputSchemaId),
+    ownProps.displayState
+  );
 
   return { currentPage, resultCount };
 }

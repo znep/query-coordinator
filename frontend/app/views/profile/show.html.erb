@@ -1,6 +1,5 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-show' %>
-  <%= rendered_stylesheet_tag 'internal-asset-manager' if internal_asset_manager_on_profile_enabled? %>
   <title><%= @user.displayName %> | <%= get_site_title %></title>
 <% end %>
 
@@ -12,20 +11,24 @@
       <%= display_standard_flashes %>
     </div>
   <% end %>
-  <%= render :partial => '/profile/socrata_news/sidebar' %>
+
+  <%= render '/profile/socrata_news/sidebar' %>
 
   <div class="profileMainContent">
-    <%= render :partial => '/profile/socrata_news/header' %>
-  <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
+    <%= render '/profile/socrata_news/header' %>
+    <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
       <div class="basicInfo content">
         <div class="innerItem">
           <%= edit_link(@user, 'editBasicInfoLink basicInfo', t('screens.profile.bar.edit_info_link')) %>
           <h2><%= t('screens.profile.info.title') %></h2>
           <%- if @user.description -%>
-          <p class="innerItem textItem"><%= auto_link(h(@user.description),
-            :html => {:rel => 'nofollow noreferrer external'}) %></p>
+            <p class="innerItem textItem">
+              <%= auto_link(h(@user.description), :html => {:rel => 'nofollow noreferrer external'}) %>
+            </p>
           <%- else -%>
-          <p class="innerItem emptyItem"><%= t('screens.profile.info.no_description') %></p>
+            <p class="innerItem emptyItem">
+              <%= t('screens.profile.info.no_description') %>
+            </p>
           <%- end -%>
         </div>
 
@@ -57,26 +60,26 @@
     <%- end -%>
 
     <% if internal_asset_manager_on_profile_enabled? %>
-      <div class="internal-asset-manager" id="internal-asset-manager-content"></div>
+      <div class="user-profile" id="user-profile-content"></div>
     <% else %>
       <div class="datasetsList content">
         <h2><%= t('screens.profile.browse.title', user: @user.displayName) %></h2>
         <%- if @is_user_current -%>
-        <ul class="ownershipLinks">
-          <%# @base_url comes from browse_controller %>
-          <li><a href="<%= @processed_browse[:base_url] %>"
-            class="<%= params[:ownership] != 'sharedToMe' ?
-              'active' : '' %>"><%= t('screens.profile.browse.owned_datasets') %></a></li>
-          <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
-            class="<%= params[:ownership] == 'sharedToMe' ?
-              'active' : '' %>"><%= t('screens.profile.browse.shared_datasets') %></a></li>
-        </ul>
+          <ul class="ownershipLinks">
+            <%# @base_url comes from browse_controller %>
+            <li><a href="<%= @processed_browse[:base_url] %>"
+              class="<%= params[:ownership] != 'sharedToMe' ?
+                'active' : '' %>"><%= t('screens.profile.browse.owned_datasets') %></a></li>
+            <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
+              class="<%= params[:ownership] == 'sharedToMe' ?
+                'active' : '' %>"><%= t('screens.profile.browse.shared_datasets') %></a></li>
+          </ul>
         <%- end -%>
         <%= render_browse(@processed_browse) %>
       </div>
     <% end %>
 
-    <%- if !@app_tokens.blank? || @user == current_user -%>
+    <%- if @app_tokens.present? || @user == current_user -%>
       <div class="appTokens content">
         <div class="innerItem">
           <%= edit_link(@user, 'editAppTokensLink appTokens', t('screens.profile.app_tokens.manage_link'), 'app_tokens') %>
@@ -88,9 +91,7 @@
         <%- else -%>
           <%- @app_tokens.each do |token| -%>
             <div class="innerItem">
-              <%= render :partial => 'app_token_display', :locals => {
-                  :edit => false, :token => token
-              } %>
+              <%= render 'app_token_display', :edit => false, :token => token %>
             </div>
           <%- end -%>
         <%- end -%>
@@ -105,9 +106,9 @@
 <%= render_translations LocalePart.screens.profile %>
 
 <%- unless @is_user_current -%>
-<% content_for :modals do %>
-  <%= render :partial => 'contact_user' %>
-<% end %>
+  <% content_for :modals do %>
+    <%= render 'contact_user' %>
+  <% end %>
 <%- end -%>
 
 <% content_for :js_footer do %>
@@ -123,10 +124,10 @@
     <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
     <script type="text/javascript">var I18n = I18n || {};</script>
 
-    <%= render_internal_asset_manager_translations %>
-    <%= render_internal_asset_manager_session_data %>
-    <%= render_internal_asset_manager_server_config %>
-    <%== render_internal_asset_manager_initial_state %>
-    <%= include_webpack_bundle 'internal-asset-manager/profile' %>
+    <%= render_catalog_results_translations %>
+    <%= render_catalog_results_session_data %>
+    <%= render_catalog_results_server_config %>
+    <%== render_catalog_results_initial_state %>
+    <%= include_webpack_bundle 'user-profile/main' %>
   <%- end %>
 <% end %>

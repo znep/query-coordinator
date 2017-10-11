@@ -87,6 +87,21 @@ function SoqlDataProvider(config, useCache = false) {
     });
   };
 
+  /**
+   * `.rawQuery()` is basically `.query()` withouot any of the nonsense that ties it to visualizations.
+   * It allows you to execute SoQL without worrying about path or request configurations
+   *
+   * @param {String} queryString - A valid, non-URI-encoded SoQL query.
+   *
+   * @return {Promise}
+   */
+  this.rawQuery = function(queryString) {
+    const path = pathForQuery(`$query=${encodeURIComponent(queryString)}`);
+
+    return makeSoqlGetRequest(path);
+  };
+
+
   this.getRowCount = function(whereClauseComponents) {
     const alias = '__count_alias__'; // lowercase in order to deal with OBE norms
     const whereClause = whereClauseComponents ?
@@ -195,7 +210,7 @@ function SoqlDataProvider(config, useCache = false) {
     if (readFromNbe) {
 
       queryString =
-        '$select=*,:id&$order=`{0}`+{1}&$limit={2}&$offset={3}{4}'.
+        '$select=*&$order=`{0}`+{1}&$limit={2}&$offset={3}{4}'.
         format(
           order[0].columnName,
           order[0].ascending ? 'ASC' : 'DESC',
@@ -272,6 +287,7 @@ function SoqlDataProvider(config, useCache = false) {
   //   soqlError: response JSON
   // }
   const soqlGetRequestPromiseCache = {};
+
   const makeSoqlGetRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
@@ -463,6 +479,8 @@ function SoqlDataProvider(config, useCache = false) {
           const value = datum.hasOwnProperty(column) ? datum[column] : undefined;
           row.push(value);
         }
+
+        return row;
       });
     }
 

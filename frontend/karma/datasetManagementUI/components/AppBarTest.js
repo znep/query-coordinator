@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import {assert } from 'chai';
 import React from 'react';
 import AppBar from 'components/AppBar/AppBar';
 import { shallow } from 'enzyme';
@@ -12,7 +12,7 @@ describe('components/AppBar', () => {
   const component = shallow(<AppBar {...defaultProps} />);
 
   it('renders without errors', () => {
-    assert.isFalse(component.isEmpty());
+    assert.isTrue(component.exists());
   });
 
   it('renders a link to primer', () => {

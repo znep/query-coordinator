@@ -232,6 +232,10 @@ const initialState = {
           type: 'upload',
           filename: 'petty_crimes.csv'
         },
+        parse_options: {
+          header_count: 1,
+          column_header: 1
+        },
         failed_at: null,
         created_by: {
           user_id: 'tugg-ikce',
@@ -2012,6 +2016,23 @@ const initialState = {
       visible: false,
       contentComponentName: null,
       payload: null
+    },
+    forms: {
+      datasetForm: {
+        isDirty: false,
+        showErrors: false,
+        errors: []
+      },
+      columnForm: {
+        isDirty: false,
+        showErrors: false,
+        errors: []
+      },
+      parseOptionsForm: {
+        isDirty: false,
+        showErrors: false,
+        state: {}
+      }
     },
     apiCalls: {
       'e627a631-875d-4684-8ede-505f54dc88ec': {

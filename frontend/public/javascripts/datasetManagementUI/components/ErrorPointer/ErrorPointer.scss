@@ -1,7 +1,7 @@
 .errorPointer {
   cursor: pointer;
-  position: absolute;
-  bottom: 10px;
+  position: fixed;
+  bottom: 130px;
   z-index: 100; // 1 greater than the hovered cells.
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
@@ -12,12 +12,12 @@
 
 .errorPointerLeft {
   composes: errorPointer;
-  left: 8px;
+  left: 258px;
 }
 
 .errorPointerRight {
   composes: errorPointer;
-  right: 10px;
+  right: 8px;
   // this is actually supposed to be different than error-left
   // to line up with stuff on respective sides of the page (which are different for now)
 }

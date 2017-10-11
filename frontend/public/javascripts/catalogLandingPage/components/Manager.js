@@ -3,8 +3,8 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { defaultHeaders } from '../../common/http';
-import { handleEnter } from '../../common/helpers/keyPressHelpers';
+import { defaultHeaders } from 'common/http';
+import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
 import HelpFlyout from './HelpFlyout';
@@ -13,7 +13,7 @@ import MarkdownHelpFlannel from './MarkdownHelpFlannel';
 import * as Actions from '../actions/header';
 import airbrake from 'common/airbrake';
 import { FeatureFlags } from 'common/feature_flags';
-import { fetchTranslation } from '../../common/locale';
+import { fetchTranslation } from 'common/locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 

@@ -83,5 +83,4 @@ describe('components/UploadNotification', () => {
     assert.equal(component.prop('status'), 'error');
     assert.include(component.find('.msgContainer').text(), 'Multilayer shapefiles are not supported.');
   });
-
 });

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 export class BlobDownload extends Component {
   renderManagePrompt() {

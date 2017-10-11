@@ -40,18 +40,25 @@ namespace :test do
       puts "#{dir} Karma tests completed without failure."
     end
 
+    description_options = [
+      '[false]',
+      '[true,,mocha]',
+      '[,,mocha]',
+      '[true,ChromeNoSandboxHeadless]',
+      '[,ChromeNoSandboxHeadless,dots]'
+    ]
     # ADD NEW TEST SUITES HERE
     {
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
       'adminGoals' => 'update_admin_goals_translations',
       'adminUsersV2' => 'update_admin_users_v2_translations',
+      'approvals' => 'update_approvals_translations',
       'authentication' => 'update_authentication_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
-      'internalAssetManager' => 'update_internal_asset_manager_translations',
       'opMeasure' => 'update_op_measure_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
 
@@ -59,7 +66,7 @@ namespace :test do
       'oldUx' => nil,
       'visualization_embed' => nil
     }.each do |task_name, dependency|
-      desc task_name
+      desc "Usage example: rake test:karma:#{task_name}#{description_options.shuffle.first}"
       task_args = { %i(watch browser reporter) => "translations:#{dependency}" }
       task task_name, dependency ? task_args : task_args.keys.first do |_, args|
         run_karma(task_name, args)
@@ -71,13 +78,13 @@ namespace :test do
       'test:karma:translations:update_admin_activity_feed_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_users_v2_translations',
+      'test:karma:translations:update_approvals_translations',
       'test:karma:translations:update_authentication_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_common_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
       'test:karma:translations:update_dataset_management_ui_translations',
-      'test:karma:translations:update_internal_asset_manager_translations',
       'test:karma:translations:update_op_measure_translations',
       'test:karma:translations:update_visualization_canvas_translations'
     ]
@@ -121,6 +128,19 @@ namespace :test do
         translations = all_translations if translations.empty?
 
         File.write(destination_file, "#{export} #{translations.to_json.html_safe};")
+      end
+
+      task :update_approvals_translations do
+        translation_map = {
+          '': 'approvals',
+          common: 'common'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/approvals/mockTranslations.js',
+          export = 'module.exports ='
+        )
       end
 
       task :update_common_translations do
@@ -177,26 +197,13 @@ namespace :test do
         )
       end
 
-      task :update_internal_asset_manager_translations do
-        translation_map = {
-          '': 'internal_asset_manager',
-          common: 'common'
-        }
-
-        update_translations(
-          translation_map,
-          'karma/internalAssetManager/mockTranslations.js',
-          export = 'module.exports ='
-        )
-      end
-
       task :update_dataset_management_ui_translations do
         translation_map = {
           '': 'dataset_management_ui',
           data_types: 'core.data_types',
           edit_metadata: 'screens.edit_metadata',
           schema_preview: 'dataset_landing_page.schema_preview',
-          common: 'common'
+          common: 'dataset_management_ui.common'
         }
 
         update_translations(
@@ -278,12 +285,12 @@ namespace :test do
       'karma:adminGoals',
       'karma:adminActivityFeed',
       'karma:adminUsersV2',
+      'karma:approvals',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
-      'karma:internalAssetManager',
       'karma:oldUx',
       'karma:opMeasure',
       'karma:authentication',

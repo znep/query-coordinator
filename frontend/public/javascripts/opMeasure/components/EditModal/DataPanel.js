@@ -65,7 +65,7 @@ DataPanel.propTypes = {
 
 export function mapStateToProps(state) {
   const uid = _.get(state, 'editor.measure.metric.dataSource.uid');
-  const rowCount = _.get(state, 'editor.measure.metric.dataSource.rowCount');
+  const rowCount = _.get(state, 'editor.cachedRowCount');
 
   let dataSourceState = DataSourceStates.INVALID;
 

@@ -11,7 +11,7 @@ export default {
       methods: 'Some methods text'
     },
     metric: {
-      type: 'COUNT',
+      type: 'count',
       label: 'Units',
       dataSource: {},
       arguments: {}

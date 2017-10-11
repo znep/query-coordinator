@@ -5,7 +5,7 @@ import Slider from '../Slider';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
 import I18n from 'common/i18n';
-import { ENTER, isolateEventByKeys } from 'common/keycodes';
+import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 import { getDefaultFilterForColumn } from './filters';
 

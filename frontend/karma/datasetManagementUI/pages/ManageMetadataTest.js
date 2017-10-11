@@ -87,6 +87,64 @@ describe('ManageMetadata page', () => {
       assert.isTrue(isDisabled);
     });
 
+    it('renders a done button if the form is not dirty', () => {
+      const newProps = {
+        ...defaultDatasetProps,
+        datasetFormDirty: false,
+        columnFormDirty: false
+      };
+
+      const component = shallow(<ManageMetadata {...newProps} />);
+      const actualText = component
+        .find('#cancel')
+        .text();
+      assert.equal(actualText, 'Done');
+    });
+
+    it('renders a done button if the form is not dirty on columns', () => {
+      const newProps = {
+        ...defaultColumnProps,
+        datasetFormDirty: false,
+        columnFormDirty: false
+      };
+
+      const component = shallow(<ManageMetadata {...newProps} />);
+      const actualText = component
+        .find('#cancel')
+        .text();
+      assert.equal(actualText, 'Done');
+    });
+
+
+    it('renders a cancel button if the column form is dirty', () => {
+      const newProps = {
+        ...defaultColumnProps,
+        datasetFormDirty: false,
+        columnFormDirty: true
+      };
+
+      const component = shallow(<ManageMetadata {...newProps} />);
+      const actualText = component
+        .find('#cancel')
+        .text();
+      assert.equal(actualText, 'Cancel');
+    });
+
+    it('renders a cancel button if the form is dirty on columns', () => {
+      const newProps = {
+        ...defaultColumnProps,
+        datasetFormDirty: false,
+        columnFormDirty: true
+      };
+
+      const component = shallow(<ManageMetadata {...newProps} />);
+      const actualText = component
+        .find('#cancel')
+        .text();
+      assert.equal(actualText, 'Cancel');
+    });
+
+
     it('renders an enabled button if the form is dirty', () => {
       const newProps = {
         ...defaultDatasetProps,

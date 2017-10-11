@@ -3,10 +3,11 @@ import $ from 'jquery';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+
 import SocrataUtils from 'common/js_utils';
-import SocrataIcon from '../SocrataIcon';
-import Picklist from '../Picklist';
-import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/keycodes';
+import SocrataIcon from 'common/components/SocrataIcon';
+import Picklist from 'common/components/Picklist';
+import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes';
 
 class Dropdown extends Component {
   constructor(props) {
@@ -281,6 +282,7 @@ class Dropdown extends Component {
     } else if (placeholderIsString) {
       placeholder = [placeholderText(placeholder), caret];
     } else if (placeholder === null) {
+      // TODO: this needs I18n!
       placeholder = [placeholderText('Select...'), caret];
     }
 
@@ -305,7 +307,7 @@ class Dropdown extends Component {
   }
 
   render() {
-    const { disabled, id, options, size } = this.props;
+    const { disabled, id, labelledBy, options, size } = this.props;
     const { focused, opened, selectedOption } = this.state;
     const value = _.get(selectedOption, 'value', null);
 
@@ -316,7 +318,8 @@ class Dropdown extends Component {
         'dropdown-focused': focused,
         'dropdown-opened': opened,
         'dropdown-disabled': disabled
-      })
+      }),
+      'aria-labelledby': labelledBy
     };
 
     const dropdownOptionsAttributes = {
@@ -361,7 +364,13 @@ Dropdown.propTypes = {
     PropTypes.func
   ]),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  value: PropTypes.string
+  value: PropTypes.string,
+  // Since this dropdown is not a form input element (gotta love custom
+  // components that reimplement browser functionality), we can't rely
+  // on built-in accessibility affordances like <label for="some-id">.
+  // Fortunately, the Aria spec allows for this using the aria-labelledby
+  // attribute, which you can set using this prop.
+  labelledBy: PropTypes.string
 };
 
 Dropdown.defaultProps = {

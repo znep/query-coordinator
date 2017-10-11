@@ -4,27 +4,20 @@ import renderLocalizationElement from '../renderLocalizationComponent'
 import Tabs from 'common/notifications/components/Tabs/Tabs';
 
 describe('Tabs', () => {
-  function getProps(props) {
-    return {
-      ...props
-    };
-  }
 
   it('should render user notifications filter tabs', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(Tabs, getProps({ tabs: [] }));
+    const element = renderLocalizationElement(Tabs, {tabs: []});
 
     assert.isNotNull(element);
   });
 
   it('should filter user notifications on tab change', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(Tabs,
-      getProps({
-        tabs: ['alert'],
-        filterNotifications: spy
-      })
-    );
+    const element = renderLocalizationElement(Tabs, {
+      tabs: ['alert'],
+      filterNotifications: spy
+    });
     const tab = element.querySelector('.notification-tab');
 
     assert.isNotNull(tab);

@@ -13,6 +13,7 @@ module Storyteller
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << "#{config.root}/app/services/"
     config.autoload_paths << "#{config.root}/app/validators/"
+    config.autoload_paths << "#{Rails.root}/../platform-ui/lib"
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

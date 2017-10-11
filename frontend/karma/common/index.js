@@ -38,7 +38,7 @@ window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findD
 // Stub data for Mixpanel
 window.sessionData = {ownerId: 'tugg-ikce'};
 window.mixpanelConfig = {disable: false, token: 'mixpanel-token', options: {}};
-window.mixpanel = require('mixpanel');
+window.mixpanel = require('common/mixpanel');
 
 function requireAll(context) {
   context.keys().forEach(context);

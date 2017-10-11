@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 
-import { ESCAPE_KEY_CODE } from 'common/constants';
+import { ESCAPE } from 'common/dom_helpers/keycodes';
 import { cancelEditModal, acceptEditModalChanges } from 'actions/editor';
 import EditModal from 'components/EditModal/EditModal';
 
@@ -60,7 +60,7 @@ describe('EditModal', () => {
 
       Simulate.click(element.querySelector('.modal-header-dismiss'));
       Simulate.click(element.querySelector('.modal-footer-actions .cancel'));
-      Simulate.keyUp(element, { keyCode: ESCAPE_KEY_CODE });
+      Simulate.keyUp(element, { keyCode: ESCAPE });
       sinon.assert.calledThrice(dispatchStub);
       sinon.assert.alwaysCalledWithMatch(dispatchStub, cancelEditModal());
     });

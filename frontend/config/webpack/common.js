@@ -95,27 +95,6 @@ function getSvgAndFontLoaders() {
   ];
 }
 
-// Sets the search path for @include directives SPECIFICALLY in *.scss files.
-//
-// KEEP IN SYNC with:
-//   frontend/app/controllers/styles_controller.rb::SCSS_LOAD_PATHS
-//   storyteller/config/initializers/assets.rb
-function getStyleguideIncludePaths() {
-  return [
-    'node_modules/bourbon/app/assets/stylesheets',
-    'node_modules/bourbon-neat/app/assets/stylesheets',
-    'node_modules/breakpoint-sass/stylesheets',
-    'node_modules/modularscale-sass/stylesheets',
-    'node_modules/normalize.css',
-    'node_modules/react-input-range/dist',
-    'node_modules/react-datepicker/dist',
-    'node_modules/leaflet/dist',
-    path.resolve(frontendRoot, '../common/resources/fonts/dist'),
-    path.resolve(frontendRoot, '../common'),
-    path.resolve(frontendRoot, '../')
-  ];
-}
-
 function getBabelLoader(extraPlugins = []) {
   const babelPlugins = [ 'babel-plugin-transform-object-rest-spread', 'react-hot-loader/babel' ].concat(extraPlugins);
 
@@ -136,14 +115,13 @@ function getBabelLoader(extraPlugins = []) {
 // Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
 // bundle. Includes an ES2015 + React preset for babel, and icon font loader
 function getStandardLoaders(extraLoaders, options) {
-  var loaders = [];
+  let loaders = Array.from(extraLoaders || []);
+  const babelPlugins = [];
+
   options = _.extend({
     babelRewirePlugin: false // Only has effect outside of production.
   }, options);
 
-  loaders = loaders.concat(extraLoaders || []);
-
-  const babelPlugins = [];
   if (!isProduction && options.babelRewirePlugin) {
     babelPlugins.push('babel-plugin-rewire');
   }
@@ -171,6 +149,29 @@ function getStandardLoaders(extraLoaders, options) {
     test: /\.json$/,
     loader: require.resolve('json-loader')
   });
+
+  loaders.push({
+    test: /\.yml$|\.yaml$/,
+    loaders: ['json', 'yaml']
+  });
+
+  if (options.substituteStyleLoaders) {
+    if (_.isArray(options.substituteStyleLoaders)) {
+      loaders = loaders.concat(options.substituteStyleLoaders);
+    } else {
+      loaders.push(options.substituteStyleLoaders);
+    }
+  } else {
+    loaders.push({
+      test: /^((?!\.global).)*(scss|css)$/, // All *.?css files but _not_ the .global.scss file
+      loaders: [
+        'style-loader?sourceMap',
+        'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+        'postcss-loader', // See postcss: key in platform-ui/frontend/config/webpack/base.js
+        'sass-loader'
+      ]
+    });
+  }
 
   return loaders;
 }
@@ -214,7 +215,6 @@ module.exports = {
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,
   getStandardLoaders: getStandardLoaders,
-  getStyleguideIncludePaths: getStyleguideIncludePaths,
   getSvgAndFontLoaders: getSvgAndFontLoaders,
   getStandardResolve: getStandardResolve,
   isProduction: isProduction,

@@ -1,89 +1,79 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
-import * as Selectors from 'selectors';
+import PropTypes from 'prop-types';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import { Link } from 'react-router';
-import * as Links from 'links';
 import styles from './ManageData.scss';
 
-const ManageData = ({ entities, columnsExist, params }) => {
-  const revisionSeq = _.toNumber(params.revisionSeq);
-  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
-  const outputColumns = currentOutputSchema
-    ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
-    : [];
-  const anyColumnHasDescription = outputColumns.some(outputColumn => outputColumn.description);
-  const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
-  const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;
+export const Card = ({ title, blurb, iconName, done, children }) => (
+  <div className={styles.card}>
+    <SocrataIcon name={iconName} className={styles.icon} />
+    {done && <SocrataIcon name="checkmark-alt" className={styles.icon} />}
+    <h3>{title}</h3>
+    <p>{blurb}</p>
+    {children}
+  </div>
+);
 
-  // TODO: Handle features and visualizations.
-  const visualizationDoneCheckmark = null;
-  const featuredDoneCheckmark = null;
-
-  const columnDescriptionLink = currentOutputSchema
-    ? Links.columnMetadataForm(params, currentOutputSchema.id)
-    : '';
-
-  return (
-    <div className={styles.sidebarData}>
-      <div>
-        <SocrataIcon name="column-info" className={styles.icon} />
-        {columnDescriptionCheckmark}
-
-        <h3>
-          {I18n.home_pane.sidebar.column_descriptions}
-        </h3>
-        <p>
-          {' '}{I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
-        </p>
-        <Link to={columnDescriptionLink}>
-          <button
-            className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
-            title={!columnsExist && I18n.home_pane.sidebar.no_columns_msg}
-            disabled={!columnsExist}
-            tabIndex="-1">
-            {I18n.home_pane.sidebar.column_descriptions_button}
-          </button>
-        </Link>
-      </div>
-
-      <div>
-        <SocrataIcon name="cards" className={styles.icon} />
-        {visualizationDoneCheckmark}
-        <h3>
-          {I18n.home_pane.sidebar.visualize}
-        </h3>
-        <p>
-          {I18n.home_pane.sidebar.visualize_blurb}
-        </p>
-        <button className={styles.sidebarBtnDisabled} disabled tabIndex="-1">
-          {I18n.home_pane.sidebar.visualize_button}
-        </button>
-      </div>
-
-      <div>
-        <SocrataIcon name="featured" className={styles.icon} />
-        {featuredDoneCheckmark}
-        <h3>
-          {I18n.home_pane.sidebar.feature}
-        </h3>
-        <p>
-          {I18n.home_pane.sidebar.feature_blurb}
-        </p>
-
-        <button className={styles.sidebarBtnDisabled} disabled tabIndex="-1">
-          {I18n.home_pane.sidebar.feature_button}
-        </button>
-      </div>
-    </div>
-  );
+Card.propTypes = {
+  title: PropTypes.string.isRequired,
+  blurb: PropTypes.string.isRequired,
+  iconName: PropTypes.string.isRequired,
+  done: PropTypes.bool,
+  children: PropTypes.element.isRequired
 };
 
+export const CardButton = ({ onButtonClick, isDisabled, title, children }) => (
+  <button
+    className={isDisabled ? styles.sidebarBtnDisabled : styles.sidebarBtn}
+    title={isDisabled && title}
+    disabled={isDisabled}
+    onClick={onButtonClick}
+    tabIndex="-1">
+    {children}
+  </button>
+);
+
+CardButton.propTypes = {
+  onButtonClick: PropTypes.func,
+  isDisabled: PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  children: PropTypes.string.isRequired
+};
+
+const ManageData = ({ hasDescribedCols, colsExist, onDescribeColsClick }) => (
+  <div>
+    <Card
+      title={I18n.home_pane.sidebar.column_descriptions}
+      blurb={I18n.home_pane.sidebar.column_descriptions_blurb}
+      done={hasDescribedCols}
+      iconName="column-info">
+      <CardButton
+        onButtonClick={onDescribeColsClick}
+        title={I18n.home_pane.sidebar.no_columns_msg}
+        isDisabled={!colsExist}>
+        {I18n.home_pane.sidebar.column_descriptions_button}
+      </CardButton>
+    </Card>
+
+    <Card
+      title={I18n.home_pane.sidebar.visualize}
+      blurb={I18n.home_pane.sidebar.visualize_blurb}
+      iconName="cards">
+      <CardButton isDisabled>{I18n.home_pane.sidebar.visualize_button}</CardButton>
+    </Card>
+
+    <Card
+      title={I18n.home_pane.sidebar.feature}
+      blurb={I18n.home_pane.sidebar.feature_blurb}
+      iconName="featured">
+      <CardButton isDisabled>{I18n.home_pane.sidebar.feature_button}</CardButton>
+    </Card>
+  </div>
+);
+
 ManageData.propTypes = {
-  entities: PropTypes.object,
-  columnsExist: PropTypes.bool,
-  params: PropTypes.object.isRequired
+  hasDescribedCols: PropTypes.bool.isRequired,
+  colsExist: PropTypes.bool.isRequired,
+  onDescribeColsClick: PropTypes.func.isRequired
 };
 
 export default ManageData;

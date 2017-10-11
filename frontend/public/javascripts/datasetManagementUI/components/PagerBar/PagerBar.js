@@ -6,14 +6,14 @@ import { commaify } from '../../../common/formatNumber';
 import Pager from '../../../common/components/Pager';
 import styles from './PagerBar.scss';
 
-function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
+function PagerBar({ currentPage, resultCount, urlForPage, changePage, isLoading }) {
   if (resultCount) {
     const firstPageRow = commaify((currentPage - 1) * PAGE_SIZE + 1);
     const lastPageRow = commaify(Math.min(currentPage * PAGE_SIZE, resultCount));
     const lastPage = urlForPage(Math.ceil(resultCount / PAGE_SIZE));
 
     let resultCountElem;
-    if (resultCount > PAGE_SIZE) {
+    if (resultCount > PAGE_SIZE && !isLoading) {
       resultCountElem = (
         <Link to={lastPage}>
           {commaify(resultCount)}
@@ -23,14 +23,25 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
       resultCountElem = commaify(resultCount);
     }
 
-    return (
-      <div className={styles.pagerBar}>
-        {I18n.home_pane.showing} {firstPageRow}–{lastPageRow} {I18n.home_pane.of} {resultCountElem}
+    let pager = null;
+    if (isLoading) {
+      pager = (
+        <span className={styles.pageLoading}></span>
+      );
+    } else {
+      pager = (
         <Pager
           resultsPerPage={PAGE_SIZE}
           currentPage={currentPage}
           resultCount={resultCount}
           changePage={changePage} />
+      );
+    }
+
+    return (
+      <div className={styles.pagerBar}>
+        {I18n.home_pane.showing} {firstPageRow}–{lastPageRow} {I18n.home_pane.of} {resultCountElem}
+        {pager}
       </div>
     );
   } else {
@@ -42,7 +53,8 @@ PagerBar.propTypes = {
   currentPage: PropTypes.number.isRequired,
   resultCount: PropTypes.number,
   urlForPage: PropTypes.func.isRequired,
-  changePage: PropTypes.func.isRequired
+  changePage: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired
 };
 
 export default PagerBar;

@@ -4,7 +4,7 @@ import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
 
 import Modal from 'components/Modal';
-import { ENTER, ESCAPE } from 'common/keycodes';
+import { ENTER, ESCAPE } from 'common/dom_helpers/keycodes';
 
 describe('Modal', () => {
   let element;

@@ -990,18 +990,29 @@ body.grid-view-2017-refresh {
         .mainTitleBlock {
           background-color: #ffcd1a !important;
         }
-      }
 
-      /**
-       * Manage pane overrides
-       */
-      &#gridSidebar_outer_manage {
+        a.editColumn,
+        a.addRow {
 
-        .mainTitleBlock {
-          background-color: #b8864b !important;
+          span.icon {
+            display: none !important;
+          }
+
+          &.selected {
+            color: #474747 !important;
+            background-color: #f1f1f1 !important;
+
+            &:hover {
+              background-color: #e4e4e4 !important;
+            }
+          }
         }
 
-        .columnOrder {
+        .controlPane.editColumn {
+          display: none !important;
+        }
+
+        .controlPane.editColumnOrder {
 
           .custom {
 
@@ -1030,6 +1041,21 @@ body.grid-view-2017-refresh {
               }
             }
           }
+        }
+
+        .controlPane.addRow {
+          display: none !important;
+        }
+
+      }
+
+      /**
+       * Manage pane overrides
+       */
+      &#gridSidebar_outer_manage {
+
+        .mainTitleBlock {
+          background-color: #b8864b !important;
         }
       }
 
@@ -1243,6 +1269,11 @@ body.grid-view-2017-refresh {
 
                 .filterValues {
 
+                  .checker.uniform {
+                    position: absolute !important;
+                    float: none !important;
+                  }
+
                   .line {
                     margin: 0;
                     padding: 0 0 0 2em;
@@ -1261,6 +1292,15 @@ body.grid-view-2017-refresh {
                   font-size: 12px;
                   right: 24px;
                   bottom: 7px;
+                }
+
+                .text-column-filter-operator-notice {
+                  display: block;
+                  margin: 0.5em;
+                  color: #8c8c8c;
+                  font-weight: 200;
+                  font-family: 'Open Sans', sans-serif;
+                  font-style: normal;
                 }
 
                 &:hover {

@@ -1,6 +1,15 @@
+// You can preview these colors by loading /internal/demos/elements in your browser.
+// Note: Colors added here won't automatically show up in the colors demo page. Add your color to:
+// frontend/app/styles/demos/color_list.scss
+
+@import "./color_helpers";
+
 /* Base Palette Colors */
 $primary: #288dc1;
+$primary-base: $primary;
 $primary-text: shade($primary, 14%);
+$primary-light: #eaf4f9;
+$primary-dark: #176289;
 $alternate-1: #e28432;
 $alternate-1-text: shade($alternate-1, 30%);
 $alternate-2: #00a1af;
@@ -44,18 +53,18 @@ $black: #2c2c2c;
 /* Shades of Grey */
 $light-grey-0: tint($grey, 10%);
 $light-grey-1: tint($grey, 20%);
-$light-grey-2: tint($grey, 40%);   // #c2c2c2
-$light-grey-3: tint($grey, 60%);   // #d6d6d6
-$light-grey-4: tint($grey, 80%);   // #ebebeb
-$light-grey-5: tint($grey, 90%);   // #f5f5f5
-$light-grey-6: tint($grey, 93.3%); // #f8f8f8
+$light-grey-2: tint($grey, 40%);
+$light-grey-3: tint($grey, 60%);
+$light-grey-4: tint($grey, 80%);
+$light-grey-5: tint($grey, 90%);
+$light-grey-6: tint($grey, 93.3%);
 $light-grey-7: tint($grey, 95%);
 $light-grey-8: tint($grey, 97%);
 
 $dark-grey-0: shade($grey, 10%);
-$dark-grey-1: shade($grey, 20%); // #7a7a7a
-$dark-grey-2: shade($grey, 40%); // #5c5c5c
-$dark-grey-3: shade($grey, 60%); // #3d3d3d
+$dark-grey-1: shade($grey, 20%);
+$dark-grey-2: shade($grey, 40%);
+$dark-grey-3: shade($grey, 60%);
 
 /* Color Vars */
 $default-text-color: $dark-grey-1;
@@ -217,14 +226,28 @@ $panel-internal-border-color: $light-grey-5;
 /* Notifications Panel */
 $bell-icon-color: $white;
 $bell-icon-hover-color: #3c3c3c;
+$panel-background-color: $white;
 $panel-header-background-color: #636a71;
+$panel-header-text-color: $white;
 $panel-header-outline-color: #31363d;
 $panel-body-background-color: #373e46;
 $panel-footer-background-color: #4c545d;
 $panel-footer-prompt-shadow-color: #000;
+$panel-footer-prompt-background-color: $white;
 $panel-primary-button-background-color: #15587d;
+$panel-primary-button-text-color: $white;
 $panel-primary-button-hover-background-color: #124e6f;
 $panel-close-link-background-color: rgba(255, 255, 255, 0.15);
 $view-older-notifications-link-color: #e5e5e5;
 $notification-item-text-color: #696869;
+$product-unread-indicator-color: #e6af00;
 $settings-icon-color: #999;
+$settings-text-color: $white;
+$notification-item-background-color: $white;
+$status-notification-indicator-background-color: #00bf9d;
+$alert-notification-indicator-background-color: #ff7258;
+$alert-notification-indicator-label-color: #ff7258;
+$notification-title-text-color: #363636;
+$notification-link-color: #259ac7;
+$checkmark-read-state-color: #cdcdcd;
+$checkmark-un-read-state-color: #676767;

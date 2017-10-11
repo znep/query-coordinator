@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { UPLOAD_FILE_SUCCESS, SOURCE_UPDATE } from 'reduxStuff/actions/manageUploads';
+import { UPLOAD_FILE_SUCCESS, UPLOAD_FILE_FAILURE } from 'reduxStuff/actions/uploadFile';
 
 const uploadFile = (state, action) => {
   switch (action.type) {
@@ -9,12 +9,13 @@ const uploadFile = (state, action) => {
         finished_at: action.finishedAt
       }));
     }
-    case SOURCE_UPDATE: {
+
+    case UPLOAD_FILE_FAILURE:
       return dotProp.set(state, `entities.sources.${action.sourceId}`, record => ({
         ...record,
-        ...action.changes
+        failed_at: action.failedAt
       }));
-    }
+
     default:
       return state;
   }

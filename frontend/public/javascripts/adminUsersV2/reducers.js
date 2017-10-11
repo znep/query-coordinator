@@ -1,15 +1,10 @@
-import { USER_ROLE_CHANGE, LOAD_DATA,
+import { combineReducers } from 'redux';
+import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReducer';
+import { USER_ROLE_CHANGE, LOAD_DATA, USER_SEARCH,
   START, COMPLETE_FAIL, COMPLETE_SUCCESS } from './actions';
 
-const getInitialState = () => {
-  return {
-    users: [],
-    roles: []
-  };
-};
-
 const userRoleChange = (state, action) => {
-  const users = state.users.map((user) => {
+  return state.map((user) => {
     if (user.id !== action.userId) return user;
     switch (action.stage) {
       case START:
@@ -33,26 +28,22 @@ const userRoleChange = (state, action) => {
         return user;
     }
   });
-
-  return {
-    ...state,
-    users
-  };
 };
 
-export default (state = getInitialState(), action) => {
+const users = (state = [], action) => {
   switch (action.type) {
     case USER_ROLE_CHANGE:
       return userRoleChange(state, action);
 
     case LOAD_DATA:
       if (action.stage === COMPLETE_SUCCESS) {
-        const { users, roles } = action;
-        return {
-          ...state,
-          users,
-          roles
-        };
+        return action.users;
+      }
+      return state;
+
+    case USER_SEARCH:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return action.users;
       }
       return state;
 
@@ -60,3 +51,18 @@ export default (state = getInitialState(), action) => {
       return state;
   }
 };
+
+const roles = (state = [], action) => {
+  if (action.type === LOAD_DATA && action.stage === COMPLETE_SUCCESS) {
+    return action.roles;
+  } else {
+    return state;
+  }
+};
+
+export default combineReducers({
+  users,
+  roles,
+  autocomplete
+});
+

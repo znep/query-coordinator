@@ -1,70 +1,96 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import ManageData from 'components/ManageData/ManageData';
+import ManageData, { Card } from 'components/ManageData/ManageData';
 
 describe('components/ManageData', () => {
-  const defaultProps = {
-    entities: {
-      views: {
-        's396-jk8m': {
-          id: 's396-jk8m',
-          name: 'vsgfdfg',
-          viewCount: 0,
-          downloadCount: 0,
-          license: {}
-        }
-      },
-      revisions: {
-        '317': {
-          id: 317,
-          fourfour: 's396-jk8m',
-          permission: 'public',
-          task_sets: [],
-          revision_seq: 0,
-          output_schema_id: null,
-          created_at: '2017-08-10T21:33:14.893Z',
-          created_by: {
-            user_id: 'tugg-ikce',
-            email: 'test@socrata.com',
-            display_name: 'test'
-          }
-        }
-      },
-      updates: {},
-      sources: {},
-      input_schemas: {},
-      output_schemas: {},
-      input_columns: {},
-      output_columns: {},
-      output_schema_columns: {},
-      transforms: {},
-      upsert_jobs: {},
-      email_interests: {},
-      row_errors: {}
-    },
-    columnsExist: false,
-    params: {
-      category: 'dataset',
-      name: 'dfsdfdsf',
-      fourfour: 'kg5j-unyr',
-      revisionSeq: '0',
-      sourceId: '115',
-      inputSchemaId: '98',
-      outputSchemaId: '144',
-      sidebarSelection: null
-    }
-  };
+  describe('ManageData', () => {
+    const props = {
+      hasDescribedCols: true,
+      colsExist: () => {},
+      onDescribeColsClick: () => {}
+    };
 
-  it("shows a disabled 'Describe Columns' button if columnsExist is falsey", () => {
-    const component = shallow(<ManageData {...defaultProps} />);
+    it('renders three cards: Describe Columns, Visualize, and Feature', () => {
+      const component = shallow(<ManageData {...props} />);
+      assert.equal(component.find('Card').length, 3);
 
-    assert.isOk(component.find('button').first().prop('disabled'));
+      assert.equal(
+        component
+          .find('Card')
+          .at(0)
+          .prop('title'),
+        I18n.home_pane.sidebar.column_descriptions
+      );
+
+      assert.equal(
+        component
+          .find('Card')
+          .at(1)
+          .prop('title'),
+        I18n.home_pane.sidebar.visualize
+      );
+
+      assert.equal(
+        component
+          .find('Card')
+          .at(2)
+          .prop('title'),
+        I18n.home_pane.sidebar.feature
+      );
+    });
   });
 
-  it('shows 0 checkmarks when nothing is done', () => {
-    const component = shallow(<ManageData {...defaultProps} />);
+  describe('Card', () => {
+    const props = {
+      title: 'A Title',
+      blurb: 'Some lame blurb',
+      iconName: 'poop',
+      done: true
+    };
+    it('renders a checkmark if done', () => {
+      const component = shallow(
+        <Card {...props}>
+          <span>hey</span>
+        </Card>
+      );
 
-    assert.equal(component.find('.finished').length, 0);
+      assert.equal(
+        component
+          .find('SocrataIcon')
+          .filterWhere(elem => elem.prop('name') === 'checkmark-alt').length,
+        1
+      );
+    });
+
+    it('does not render a checkmark if not done', () => {
+      const newProps = {
+        ...props,
+        done: false
+      };
+
+      const component = shallow(
+        <Card {...newProps}>
+          <span>hey</span>
+        </Card>
+      );
+
+      assert.equal(
+        component
+          .find('SocrataIcon')
+          .filterWhere(elem => elem.prop('name') === 'checkmark-alt').length,
+        0
+      );
+    });
+
+    it('renders chidren passed to it', () => {
+      const component = shallow(
+        <Card {...props}>
+          <span>hey</span>
+        </Card>
+      );
+
+      assert.isTrue(component.containsMatchingElement(<span>hey</span>));
+    });
   });
 });

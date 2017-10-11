@@ -4,14 +4,13 @@ import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import styles from './alert-setting-modal.scss';
 import OnOffSwitch from './OnOffSwitch';
-import connectLocalization from 'common/i18n/components/connectLocalization';
+import I18n from 'common/i18n';
 
 class PreferenceContent extends Component {
   renderAllAssets() {
     const {
       onAlertNotificationChange,
       preferences,
-      I18n,
       currentUserRole,
       isSuperAdmin
     } = this.props;
@@ -101,7 +100,6 @@ class PreferenceContent extends Component {
     const {
       onAlertNotificationChange,
       preferences,
-      I18n,
       isSuperAdmin,
       currentUserRole
     } = this.props;
@@ -177,7 +175,6 @@ class PreferenceContent extends Component {
     const {
       onAlertNotificationChange,
       preferences,
-      I18n,
       currentUserRole,
       isSuperAdmin
     } = this.props;
@@ -218,7 +215,7 @@ class PreferenceContent extends Component {
   }
 
   renderDeleteAssets() {
-    const { onAlertNotificationChange, preferences, I18n } = this.props;
+    const { onAlertNotificationChange, preferences } = this.props;
     const category = 'delete_asset';
     const categoryData = _.get(preferences, category, {});
     return (
@@ -253,7 +250,7 @@ class PreferenceContent extends Component {
   }
 
   renderMyAssets() {
-    const { onAlertNotificationChange, preferences, I18n } = this.props;
+    const { onAlertNotificationChange, preferences } = this.props;
     const category = 'my_assets';
     const categoryData = _.get(preferences, category, {});
     return (
@@ -288,9 +285,10 @@ class PreferenceContent extends Component {
   }
 
   renderWatchList() {
-    const { onAlertNotificationChange, preferences, I18n } = this.props;
+    const { onAlertNotificationChange, preferences } = this.props;
     const category = 'watch_list';
     const categoryData = _.get(preferences, category, {});
+
     return (
       <tr>
         <td>
@@ -319,11 +317,10 @@ class PreferenceContent extends Component {
           </label>
         </td>
       </tr>
-    )
+    );
   }
 
   render() {
-    const { I18n } = this.props;
     return (
       <div>
         <div className="table-wrapper">
@@ -363,7 +360,7 @@ class PreferenceContent extends Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -372,4 +369,4 @@ PreferenceContent.propTypes = {
   onAlertNotificationChange: PropTypes.func
 };
 
-export default  connectLocalization(cssModules(PreferenceContent, styles, { allowMultiple: true }));
+export default  cssModules(PreferenceContent, styles, { allowMultiple: true });

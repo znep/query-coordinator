@@ -16,7 +16,7 @@ describe('ShowOutputSchema page', () => {
     const component = shallow(<ShowOutputSchema {...defaultProps} />);
 
     it('renders Table', () => {
-      assert.equal(component.find('withRouter(Connect(Table))').length, 1);
+      assert.equal(component.find('TablePane').length, 1);
     });
 
     it('renders ReadyToImport', () => {
@@ -24,20 +24,6 @@ describe('ShowOutputSchema page', () => {
         component.find('withRouter(Connect(ReadyToImport))').length,
         1
       );
-    });
-
-    it('renders the Pagerbar if needed', () => {
-      assert.equal(component.find('withRouter(Connect(PagerBar))').length, 1);
-    });
-
-    it('renders the correct number of rows and columns', () => {
-      const [rows, columns] = component
-        .find('.attribute')
-        .map(elem => elem.text())
-        .map(Number);
-
-      assert.equal(rows, 143);
-      assert.equal(columns, 10);
     });
   });
 

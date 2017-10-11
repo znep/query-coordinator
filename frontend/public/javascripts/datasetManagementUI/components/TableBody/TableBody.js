@@ -47,7 +47,7 @@ class TableBody extends Component {
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.entities.transforms[props.displayState.transformId];
       if (errorsTransform.error_indices) {
-        rowIndices = errorsTransform.error_indices.slice(startRow, endRow);
+        rowIndices = errorsTransform.error_indices.map(_.toString);
       } else {
         rowIndices = [];
       }
@@ -86,10 +86,12 @@ class TableBody extends Component {
       <tr key={row.rowIdx}>
         {row.transforms.map((transform, offset) => {
           const t = this.props.entities.transforms[transform.id];
-          const type = t ? t.output_soql_type : false;
+          const type = t ? t.output_soql_type : null;
+          const hasFailed = t ? !!t.failed_at : false;
           return (<TableCell
             key={`${row.rowIdx}-${offset}`}
             cell={transform.cell}
+            failed={hasFailed}
             type={type} />);
         })}
       </tr>

@@ -1,0 +1,1 @@
+export const RELATED_VIEWS_FETCH_LIMIT = 3;

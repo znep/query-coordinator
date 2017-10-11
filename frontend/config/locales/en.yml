@@ -427,6 +427,19 @@ en:
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
             title: Try it yourself!
+  approvals:
+    header:
+      breadcrumbs:
+        administration: Administration
+        approval_requests: Approval Requests
+      tabs:
+        history:
+          title: History
+        my_queue:
+          title: My Queue
+        settings:
+          title: Settings
+    title: Routing and Approval
   catalog_landing_page:
     activation:
       action: Feature Content
@@ -688,10 +701,17 @@ en:
       one: Result
       other: Results
   controls:
-    nbe_column_manager:
+    grid_view_column_editor:
+      close_without_saving: All unsaved changes will be lost. Are you sure you want to close the Column Editor?
       title: Manage Columns
+      of: of
       error:
         save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
+        delete: There was an error deleting the specified column. Please try again. If this problem persists, contact Socrata support.
+      column_properties: Column Properties
+      column_formatting: Column Formatting
+      delete_column: Delete Column
+      delete_column_confirm: Deleting a column cannot be undone. Are you sure you want to proceed?
       controls:
         prev: Previous
         next: Next
@@ -701,13 +721,6 @@ en:
         title: API Field Name
       data_type:
         title: Data Type
-        types:
-          blob: Blob (external file)
-          boolean: True/False
-          calendar_date: Date & Time
-          location: Location
-          number: Number
-          text: Text
       column_fields:
         preview:
           title: Preview
@@ -745,6 +758,121 @@ en:
         date_formatting:
           display_format:
             title: Display format
+            use_default: Use default
+    grid_view_row_editor:
+      close_without_saving: All unsaved changes will be lost. Are you sure you want to close the Row Editor?
+      controls:
+        cancel: Cancel
+        choose_file: Choose file...
+        delete: Delete
+        delete_confirm: Deleting a row cannot be undone. Are you sure you want to proceed?
+        file_chosen: File chosen
+        file_not_chosen: No file chosen
+        filename_placeholder: Type a filename...
+        replace_file: Replace file...
+        save: Save
+      data_types:
+        blob:
+          name: File
+          validation_error: If (No value) is unchecked then a file must be chosen.
+        calendar_date:
+          name: Calendar Date
+          validation_error: This column only supports datetimes of the form "YYYY-MM-DDThh:mm:ss".
+        checkbox:
+          name: Boolean
+          validation_error: This column only supports true and false values.
+        dataset_link:
+          name: URL
+          validation_error: This column only supports URLs.
+        date:
+          name: Date
+          validation_error: This column requires a datetime of the form "YYYY-MM-DDThh:mm:ss" and a valid UTC timezone offset (e.g. "-700").
+        document:
+          name: Document
+          validation_error: If (No value) is unchecked then a filename is required and a file must be chosen.
+        drop_down_list:
+          name: Text
+          validation_error: 'This column only supports the following values: '
+        email:
+          name: Text
+          validation_error: This column only supports e-mail addresses.
+        flag:
+          name: Text
+          validation_error: 'This column only supports the following values: '
+        geospatial:
+          name: Location
+          validation_error: This column only supports geospatial data.
+        html:
+          name: Text
+          validation_error: This column only supports text.
+        line:
+          name: Line
+          validation_error: This column only supports geospatial data.
+        list:
+          name: List
+          validation_error: This column may not be edited.
+        location:
+          name: Location
+          validation_error: This column's latitude or longitude value is in an invalid format.
+          address: Street Address
+          city: City
+          state: State
+          zip: Zip Code
+          needs_recoding: Re-geocode based on updated values
+          latitude: Latitude
+          longitude: Longitude
+        money:
+          name: Money
+          validation_error: This column only supports numbers. Currency symbols can be configured at the column level.
+        multiline:
+          name: MultiLine
+          validation_error: This column only supports geospatial data.
+        multipoint:
+          name: MultiPoint
+          validation_error: This column only supports geospatial data.
+        multipolygon:
+          name: MultiPolygon
+          validation_error: This column only supports geospatial data.
+        nested_table:
+          name: Nested Table
+          validation_error: This column may not be edited.
+        number:
+          name: Number
+          validation_error: This column only supports numbers.
+        object:
+          name: Object
+          validation_error: This column may not be edited.
+        percent:
+          name: Number
+          validation_error: This column only supports numbers. The percent sign will be shown automatically.
+        phone:
+          name: Text
+          validation_error: This column only supports text.
+        photo:
+          name: Photo
+          validation_error: If (No value) is unchecked then a file must be chosen.
+        point:
+          name: Point
+          validation_error: This column only supports geospatial data.
+        polygon:
+          name: Polygon
+          validation_error: This column only supports geospatial data.
+        stars:
+          name: Number
+          validation_error: This column only supports numbers between 1 and 5 inclusive.
+        text:
+          name: Text
+          validation_error: This column only supports text.
+        url:
+          name: URL
+          validation_error: This column only supports URLs.
+      error:
+        save: There was an error saving your changes. Please wait a moment and try again, or contact Socrata support if the problem persists.
+        delete: There was an error deleting the specified row. Please try again. If this problem persists, contact Socrata support.
+      is_null: (No value)
+      title_edit: Edit row
+      title_append: Append row
+      utc_offset_label: UTC Offset
     browse:
       actions:
         about:
@@ -1168,6 +1296,7 @@ en:
         base_info: These filters are always applied, along with any extra filters entered above. These filters cannot be edited, either because you do not have permissions to edit the current view, or because they come from the parent view or dataset.
         filter: Filter
         filter_based_on_contents: Filter this dataset based on contents.
+        filter_operators_for_text_columns_may_differ: Not all filter operators may be available for all text columns.
         no_conditions: No conditions defined yet.
         no_suggestions: There are no suggested values for this column and operator.
         or: or
@@ -1709,7 +1838,7 @@ en:
     choose: Choose
     close: Close
     carto_modal:
-      alert: Note that Carto has a file size limit of 250MB.
+      alert: Note that Carto has a file size limit of 150MB or 500,000 rows.
       modal_content: Your browser will be redirected to Carto, would you like to proceed?
       learn_more_link: Learn about more external integrations at
       title: Open this dataset in Carto?
@@ -1945,7 +2074,9 @@ en:
       views: Views
   dataset_management_ui:
     common:
+      default_row_label: row
       cancel: Cancel
+      done: Done
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
       explanation: To get started, choose a name for your dataset
@@ -2133,16 +2264,36 @@ en:
       url_failed: Fetching URL Failed
       uploading: Uploading
       fetching: Fetching
+      non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
       start_import: Start Import
+    parse_options:
+      header_count: Header Count
+      column_header: Header Row Position
+      encoding: Character Encoding
+      column_separator: Column Separator
+      quote_char: Quote Character
+      trim_whitespace: "Trim cells' leading and trailing whitespace"
+      remove_empty_rows: Remove completely empty rows
+      this_is_your_header: This is your header row
+      this_row_is_ignored: This row is ignored
+      header_count_must_be_gt_column_header: Must be greater than Column Header
+      header_count_gt_error: Header Count must be greater than or equal to Header Row Position
+      must_be_an_int: Must be an integer
     show_output_schema:
+      preview_table: Preview Data Table
+      specify_headers: Specify Headers
       additional_errors:
         singular: Additional error
         plural: Additional errors
       click_to_view: Click to view
+      fatal_error:
+        unknown_error: An unknown error occurred
+        source_error: There was an error with the data source
+        transform_error: There was an unexpected error with the following expression
       geocode_shortcut:
         title: Georeference your dataset
         none: None
@@ -2182,7 +2333,10 @@ en:
         no_errors_exist: All cells will import correctly
         scanning: Still scanning for errors...
         set_row_id: Set as row identifier
+        unset_row_id: Un-set row identifier
         geocode: Use as georeference
+        move_right: Move Right
+        move_left: Move Left
         can_geocode: Data in this column can be geocoded
         click_for_options: Click for more options
         type_display_names:
@@ -2806,204 +2960,6 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
-    alert_messages:
-      visibility_changed:
-        body: This may take a few moments to take effect.
-        title_public: Visibility changed to public.
-        title_private: Visibility changed to private.
-    all_assets_button: View All Assets
-    asset_inventory_dataset_link:
-      asset_inventory_dataset: Asset Inventory Dataset
-      disabled_tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
-      initialize: Initialize Asset Inventory
-    asset_types:
-      blob: File or Document
-      calendar: Calendar
-      chart: Chart
-      datalens: Data Lens
-      data_lens: Data Lens
-      dataset: Dataset
-      draft: Draft Dataset
-      federated_href: Federated External Dataset
-      filter: Filtered View
-      file: File or Document
-      form: Form
-      href: External Dataset
-      map: Map
-      new_view: Data Lens
-      pulse: Pulse
-      story: Story
-      working_copy: Working Copy
-    errors:
-      fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
-      insufficent_view_permission: You do not have permission to view this page.
-      offset_too_large: Sorry, we do not support paging over a large set of results. You should try filtering down the result set first.
-    filters:
-      clear: Clear All Filters
-      asset_types:
-        label: Asset Types
-        options:
-          all: All
-          calendars: Calendars
-          charts: Charts
-          datasets: Datasets
-          'datalenses,visualizations': Data Lens Pages
-          external: External Datasets
-          files: Files and Documents
-          filtered: Filtered Views
-          forms: Forms
-          maps: Maps
-          stories: Stories
-          working_copies: Working Copies
-      authority:
-        label: Authority
-        options:
-          all: All
-          community: Community
-          official: Official
-      category:
-        label: Category
-        placeholder: Any Category
-      custom_facet:
-        placeholder: Any
-      desktop:
-        expand: Expand Filters
-        contract: Contract Filters
-        hide: Hide
-      header:
-        title:
-          clear_filters_only: Filters
-          clear_filter_and_search: Clear All
-      last_updated_date:
-        label: Last Updated Date
-        options:
-          any_date_updated: Any Date Updated
-          past_3_days: Past 3 days
-          past_week: Past week
-          past_month: Past month
-          past_3_months: Past 3 months
-          past_6_months: Past 6 months
-          custom_date_range: Custom date range
-      owned_by:
-        label: Owned By
-        placeholder: Any Owner
-      recently_viewed:
-        label: Recently viewed
-      searchbox_filter:
-        all: All
-      tags:
-        label: Tags
-        placeholder: Any Tag
-      visibility:
-        label: Visibility
-        options:
-          all: All
-          internal: Internal
-          open: Open
-          private: Private
-          public: Public
-    header:
-      asset_counts:
-        charts:
-          one: Chart
-          other: Charts
-        datalenses:
-          one: Data Lens
-          other: Data Lenses
-        'datalenses,visualizations':
-          one: Data Lens
-          other: Data Lenses
-        datasets:
-          one: Dataset
-          other: Datasets
-        files:
-          one: File/Doc
-          other: Files/Docs
-        filters:
-          one: Filtered View
-          other: Filtered Views
-        hrefs:
-          one: External Dataset
-          other: External Datasets
-        maps:
-          one: Map
-          other: Maps
-        stories:
-          one: Story
-          other: Stories
-        workingCopies:
-          one: Working Copy
-          other: Working Copies
-      asset_toggles:
-        all_assets: All Assets
-        my_assets: My Assets
-        shared_to_me: Shared To Me
-    mobile:
-      done: Done
-      filters: Filters
-      reset_filters: Reset Filters
-    result_count:
-      no_results: No results
-      of: of
-    result_list_table:
-      action_dropdown:
-        title: Actions
-        add_collaborators: Add Collaborators...
-        edit_metadata: Edit Metadata...
-        change_visibility: Change Visibility...
-        change_permissions: Change Permissions...
-        transfer_ownership: Transfer Ownership...
-        delete_asset: Delete...
-        no_actions_possible: There are no actions possible.
-        permissions_error: Error determining permissions.
-      action_modal:
-        change_visibility:
-          accept: OK
-          can_not_change_visibility:
-            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.
-          dismiss: Cancel
-          error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
-          options:
-            open:
-              title: Public
-              description: Publicly accessible. Discoverable through the public catalog.
-            private:
-              title: Private
-              description: Only accessible to you and people you've shared to within your organization.
-          title: Choose Visibility
-        delete_asset:
-          accept: Delete
-          chart: chart
-          denied: You are not allowed to delete this asset. Please contact your administrator or support@socrata.com.
-          description: Are you sure you want to delete "%{name}"?
-          description_related_assets:
-            one: '%{count} related asset built using this dataset will also be deleted permanently.'
-            other: '%{count} related assets built using this dataset will also be deleted permanently.'
-          description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
-          dismiss: Cancel
-          error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
-          map: map
-          title: Delete?
-      columns:
-        access_level: Access Level
-        actions: Actions
-        category: Category
-        discoverable: Discoverable
-        last_updated_date: Last Updated
-        name: Name
-        owner: Owner
-        type: Type
-        visibility: Visibility
-      visibility_values:
-        awaiting_approval: Awaiting approval
-        hidden: Hidden
-        internal: Internal
-        open: Open
-        pending: Pending
-        private: Private
-        public: Public
-        rejected: Rejected
-        shared_to_me: Shared to me
     title: Asset Inventory
   number:
     currency:
@@ -3064,13 +3020,16 @@ en:
         title: Configure Measure
         calculation:
           column_placeholder: column
+          choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
+          date_column: Date Column
           display_options:
             decimal_places: Decimal Places
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
           formula: Formula
+          row_placeholder: row
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
@@ -3081,6 +3040,19 @@ en:
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
               help_title: Help with Count
               title: Count Options
+            recent_value:
+              column_condition: Column Condition
+              date_column: Date Column
+              help_body: Chooses the most recent value of a column, given the condition and date column selected.
+              help_title: Help with Exact Values
+              title: Select an Exact Value by Date
+              value_column: Value Column
+            sum:
+              column_condition: Column Condition
+              help_body: Sums the selected column.
+              help_title: Help with Sum
+              title: Sum Options
+          value_column: Value Column
         data_source:
           tab_title: Data Source
         general_info:
@@ -3410,7 +3382,7 @@ en:
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps
-        data_json: Data.JSON URL
+        data_json: Data.JSON URL (ArcGIS Open Data, CKAN, etc.)
         data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
         dataset: Dataset
@@ -3710,16 +3682,6 @@ en:
           restore: Restore
           upsert: Upsert
           working_copy: Working Copy
-        cancel: Cancel
-        close: Close
-        columns:
-          asset_name: Asset Name
-          asset_type: Asset Type
-          date_started: Date Started
-          event: Event
-          initiated_by: Initiated By
-          status: Status
-        details: Details
         filters:
           all: All
           append: Append
@@ -5130,6 +5092,9 @@ en:
           title: Add Column
           validation:
             view_column: You cannot add a column to a view
+        add_row:
+          subtitle: Add a new row to your dataset
+          title: Add Row
         api:
           api_docs: API Docs
           column_ids_title: 'Field Names:'
@@ -5534,6 +5499,9 @@ en:
           multilayer_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format
           title: Download
+        edit_column:
+          subtitle: Edit the metadata associated with columns in this dataset or delete the column entirely
+          title: Edit Column
         feed:
           route_to_more_views_subtitle: Looking for additional activity on this dataset? Click on More Views tab.
           subtitle: The discussion feed shows you the conversation and activity around a dataset
@@ -5808,6 +5776,13 @@ en:
           auth_required: You must be logged in to save a view
           view_name_required: A view name is required
       show:
+        grid_view_2017_refresh_banner:
+          disable:
+            link_text: Click here to stop previewing the new experience.
+            text: We're redesigning the Grid View!
+          enable:
+            link_text: Click here to preview the new experience.
+            text: We're redesigning the Grid View!
         remove_confirm: Are you sure you want to remove this view?
         unauthenticated_alert: Changes will not be saved unless you first sign in.
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.

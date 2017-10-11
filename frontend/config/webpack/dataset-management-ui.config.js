@@ -39,31 +39,30 @@ module.exports = _.defaultsDeep(
       jquery: true
     },
     module: {
-      loaders: common.getStandardLoaders([
-        {
-          test: /\.global.scss$/,
-          include: [
-            path.resolve(
-              common.frontendRoot,
-              'public/javascripts/datasetManagementUI'
-            )
-          ],
-          loader: 'style?sourceMap!css!postcss!sass'
-        },
-        {
-          test: /^((?!\.global).)*(scss|css)$/,
-          loader:
-            'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
-        }
-      ])
+      loaders: common.getStandardLoaders([], {
+        substituteStyleLoaders: [
+          {
+            test: /\.global.scss$/,
+            include: [
+              path.resolve(
+                common.frontendRoot,
+                'public/javascripts/datasetManagementUI'
+              )
+            ],
+            loader: 'style?sourceMap!css!postcss!sass'
+          },
+          {
+            test: /^((?!\.global).)*(scss|css)$/,
+            loader:
+              'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
+          }
+        ]
+      })
     },
     resolve: common.getStandardResolve([
       'public/javascripts/datasetManagementUI'
     ]),
-    plugins: plugins,
-    postcss: function() {
-      return [require('autoprefixer')];
-    }
+    plugins: plugins
   },
   require('./base')
 );

@@ -2,13 +2,16 @@ import _ from 'lodash';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
+import { createDSMAPIRevision } from '../actions/metadataTable';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
 import { FeatureFlags } from 'common/feature_flags';
 
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
+
+const editThruDSMUI = window.serverConfig.featureFlags.enable_dsmui_edit_metadata;
 
 function mapStateToProps(state) {
   const view = state.view || {};
@@ -39,7 +42,7 @@ function mapStateToProps(state) {
     coreView,
     customMetadataFieldsets,
     disableContactDatasetOwner: view.disableContactDatasetOwner,
-    editMetadataUrl: view.editMetadataUrl,
+    editMetadataUrl: editThruDSMUI ? '#' : view.editMetadataUrl,
     statsUrl: view.statsUrl,
     view: view,
     renderWatchDatasetButton() {
@@ -52,9 +55,15 @@ function mapStateToProps(state) {
   });
 }
 
-function mapDispatchToProps(dispatch) {
+function mergeProps(stateProps, { dispatch }) {
   return {
-    onClickEditMetadata() {
+    ...stateProps,
+    onClickEditMetadata: e => {
+      if (editThruDSMUI) {
+        e.preventDefault();
+        dispatch(createDSMAPIRevision(stateProps.view.id));
+      }
+
       const payload = {
         name: 'Edited Metadata',
         properties: {
@@ -64,8 +73,7 @@ function mapDispatchToProps(dispatch) {
 
       dispatch(emitMixpanelEvent(payload));
     },
-
-    onClickStats() {
+    onClickStats: () => {
       const payload = {
         name: 'Viewed Dataset Statistics',
         properties: {
@@ -76,7 +84,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandTags() {
+    onExpandTags: () => {
       const payload = {
         name: 'Expanded Details',
         properties: {
@@ -87,7 +95,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandMetadataTable() {
+    onExpandMetadataTable: () => {
       const payload = {
         name: 'Expanded Details',
         properties: {
@@ -100,4 +108,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonMetadataTable);
+export default connect(mapStateToProps, null, mergeProps)(CommonMetadataTable);

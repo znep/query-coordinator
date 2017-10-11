@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './UploadSidebar.scss';
 
@@ -26,13 +26,9 @@ const UploadItem = ({ entities, source, params }) => {
 
   return (
     <li>
-      <Link to={linkTarget}>
-        {titleOf(source)}
-      </Link>
+      <Link to={linkTarget}>{titleOf(source)}</Link>
       <p>{descriptionOf(source)}</p>
-      <div className={styles.timestamp}>
-        {moment.utc(source.finished_at).fromNow()}
-      </div>
+      <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
     </li>
   );
 };
@@ -47,34 +43,30 @@ const UploadSidebar = ({ entities, currentUpload, otherUploads, params }) => {
   if (!currentUpload && otherUploads.length === 0) {
     return (
       <section className={styles.sidebar}>
-        <span>
-          {I18n.show_uploads.no_uploads}
-        </span>
+        <span>{I18n.show_uploads.no_uploads}</span>
       </section>
     );
   }
   return (
     <section className={styles.sidebar}>
-      {currentUpload &&
+      {currentUpload && (
         <div>
-          <h2>
-            {I18n.show_uploads.current}
-          </h2>
+          <h2>{I18n.show_uploads.current}</h2>
           <ul>
             <UploadItem entities={entities} source={currentUpload} params={params} />
           </ul>
-        </div>}
-      {otherUploads.length > 0 &&
+        </div>
+      )}
+      {otherUploads.length > 0 && (
         <div>
-          <h2>
-            {currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}
-          </h2>
+          <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
           <ul>
-            {otherUploads.map(source =>
+            {otherUploads.map(source => (
               <UploadItem key={source.id} entities={entities} source={source} params={params} />
-            )}
+            ))}
           </ul>
-        </div>}
+        </div>
+      )}
     </section>
   );
 };

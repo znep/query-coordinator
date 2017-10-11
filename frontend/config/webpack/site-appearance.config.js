@@ -12,12 +12,7 @@ module.exports = _.defaultsDeep({
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/siteAppearance/.eslintrc.json'),
   module: {
-    loaders: common.getStandardLoaders(
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader'
-      }
-    )
+    loaders: common.getStandardLoaders()
   },
   resolve: _.extend(
     {

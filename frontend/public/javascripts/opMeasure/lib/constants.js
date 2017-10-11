@@ -10,3 +10,11 @@ export const SaveStates = Object.freeze({
   SAVED: 'SAVED',
   ERRORED: 'ERRORED'
 });
+
+// Breaking with classic enum convention here because we don't want to enforce an all uppercase API when dealing with measure calculation types.
+// We decided to have slightly awkward enums here instead of awkward `toUpperCase()` everywhere we are comparing values
+export const CalculationTypeNames = Object.freeze({
+  COUNT: 'count',
+  RECENT_VALUE: 'recent_value',
+  SUM: 'sum'
+});

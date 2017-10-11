@@ -148,7 +148,7 @@ describe('AuthoringWorkflow', function() {
     describe('when the cancel button is clicked', () => {
       beforeEach(() => {
         // Watch confirm to ensure that it is called to prompt user.
-        sinon.stub(window, 'confirm', _.constant(true));
+        sinon.stub(window, 'confirm').returns(true);
       });
 
       afterEach(() => {
@@ -189,7 +189,7 @@ describe('AuthoringWorkflow', function() {
     describe('when the back button is clicked', () => {
       beforeEach(() => {
         // Watch confirm to ensure that it is called to prompt user.
-        sinon.stub(window, 'confirm', _.constant(true));
+        sinon.stub(window, 'confirm').returns(true);
         var renderedParts = render('columnChart', 'Back Button Text');
         component = renderedParts.component;
         props = renderedParts.props;
@@ -234,7 +234,7 @@ describe('AuthoringWorkflow', function() {
     describe('when the reset button is clicked', () => {
       beforeEach(() => {
         // Watch confirm to ensure that it is called to prompt user.
-        sinon.stub(window, 'confirm', _.constant(true));
+        sinon.stub(window, 'confirm').returns(true);
       });
 
       afterEach(() => {

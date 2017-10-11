@@ -29,7 +29,7 @@ describe('components/GeocodeShortcut', () => {
 
   it('renders', () => {
     const component = shallow(<GeocodeShortcut {...defaultProps} />);
-    assert.isFalse(component.find('ColumnPreview').isEmpty());
+    assert.isTrue(component.find('ColumnPreview').exists());
   });
 
   it('generates an expression correctly for geocode/4', () => {
@@ -540,7 +540,7 @@ describe('components/GeocodeShortcut', () => {
 
     const component = shallow(<GeocodeShortcut {...props} />);
 
-    assert.isFalse(component.find('.configurationError').isEmpty());
+    assert.isTrue(component.find('.configurationError').exists());
   });
 
   it('hides the original columns when the user asks', () => {

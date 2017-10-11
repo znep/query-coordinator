@@ -32,6 +32,27 @@ function getPercentage(source) {
   return source.percentCompleted;
 }
 
+const streamableContentTypes = [
+  'text/csv',
+  'text/tab-separated-values',
+  'application/vnd.google-earth.kml+xml',
+  'application/vnd.geo+json'
+];
+
+function isSourceStreamable(source) {
+  // don't show a scary message until we know for sure
+  if (!source.content_type) return true;
+  return streamableContentTypes.indexOf(source.content_type) !== -1;
+}
+
+function getStreamyWarning(source) {
+  if (!source.finished_at && !source.failed_at && !isSourceStreamable(source)) {
+    return (<p className={styles.message}>
+      {I18n.notifications.non_streamable_source}
+    </p>);
+  }
+}
+
 function failureDetailsMessage(source) {
   if (!_.isEmpty(source.failure_details) &&
       source.failure_details.message &&
@@ -98,11 +119,13 @@ const UploadNotification = ({ source }) => {
     details = errorMessage(source);
     notificationStatus = 'error';
   } else {
+
     message = (
       <span className={styles.message}>
         {getProgressTitle(source)}
         <span className={styles.subMessage}>
           {getFilename(source)}
+          {getStreamyWarning(source)}
         </span>
       </span>
     );

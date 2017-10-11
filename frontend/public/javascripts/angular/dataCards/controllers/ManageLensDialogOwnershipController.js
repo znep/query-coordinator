@@ -27,9 +27,8 @@ module.exports = function ManageLensDialogOwnershipController(
   // determine whether the current user is allowed to access this control
   // and whether the necessary service for owner change is available
   $scope.isUserSearchAvailable = true;
-  var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
-    return _.includes(user.rights, UserRights.CHOWN_DATASETS);
-  });
+  var callCoreForUser = true;
+  var isUserPermitted$ = UserSessionService.hasRight$(UserRights.CHOWN_DATASETS, callCoreForUser);
   var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
   var hasPermission$ = Rx.Observable.combineLatest(
     isUserPermitted$,

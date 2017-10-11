@@ -5,6 +5,7 @@ class DatasetsControllerTest < ActionController::TestCase
   def setup
     load_sample_data('test/fixtures/sample-data.json')
     @test_view = View.find('test-data')
+    User.any_instance.stubs(:profile_image_path => 'foo.png')
     View.any_instance.stubs(
       :op_measure? => false,
       :find_related => [@test_view],

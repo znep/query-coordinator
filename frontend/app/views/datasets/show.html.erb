@@ -7,7 +7,7 @@
 
   <%-
     # EN-16787 - Use socrata-viz table for NBE-only grid view
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
   -%>
     <%= rendered_stylesheet_tag 'socrata-icons' %>
     <%= rendered_stylesheet_tag 'visualizations' %>
@@ -37,7 +37,7 @@
     # dependency with the Socrata Visualizations I18n module; if the
     # translations are not present on the window when that code bootstraps no
     # translations will be available.
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
   -%>
     <%= render_socrata_visualizations_translations %>
   <%- end -%>
@@ -112,7 +112,7 @@
       </ul>
   </div>
 
-  <%- if !enable_2017_grid_refresh_for_current_request? -%>
+  <%- if !enable_2017_grid_view_refresh_for_current_request? -%>
     <a href="#toggleFullScreen" class="fullscreenButton maximize" title="<%= t('screens.ds.bar.full_screen') %>">
       <span class="icon"><%= t('screens.ds.bar.full_screen') %></span>
     </a>
@@ -120,7 +120,7 @@
 
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
 
-    <%- if !enable_2017_grid_refresh_for_current_request? && @view.can_modify_data? -%>
+    <%- if !enable_2017_grid_view_refresh_for_current_request? && @view.can_modify_data? -%>
       <div id="editBar" class="clearfix">
         <ul id="editOptions">
           <li><a href="#Undo" class="button undo" title="<%= t('screens.ds.bar.format.undo') %>">
@@ -166,7 +166,7 @@
         <li><%= sidebar_link('discuss') %></li>
         <li><%= sidebar_link('embed') %></li>
         <li><%= sidebar_link('about') %></li>
-        <%- if !enable_2017_grid_refresh_for_current_request? -%>
+        <%- if !enable_2017_grid_view_refresh_for_current_request? -%>
           <li class="hide"><%= sidebar_link('more') %></li>
         <%- end -%>
       </ul>
@@ -320,7 +320,7 @@
     # dependency detailed in the comment with this ticket number at the top
     # of this file (tl;dr: the translations must exist on the window when
     # we boostrap the Socrata Viz package).
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
   -%>
     <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
   <%- end -%>

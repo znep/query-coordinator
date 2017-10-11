@@ -35,30 +35,107 @@ describe('Edit modal reducer', () => {
     });
   });
 
-  describe('RECEIVE_DATA_SOURCE_ROW_COUNT', () => {
-    it('updates the data source row count in the measure metric', () => {
-      const expectedDataSource = {
-        uid: 'test-test',
-        rowCount: 100
+  describe('RECEIVE_DATA_SOURCE_METADATA', () => {
+    it('updates cachedRowCount in the editor state', () => {
+      _.set(state, 'measure.metric.dataSource', {
+        uid: 'test-test'
+      });
+
+      assert.notNestedProperty(state, 'cachedRowCount');
+
+      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, {}));
+
+      assert.equal(state.cachedRowCount, 100);
+    });
+
+    it('updates the dataSourceViewMetadata in editor state', () => {
+      const viewMetadata = {
+        id: 'xxxx-xxxx',
+        columns: []
       };
 
       _.set(state, 'measure.metric.dataSource', {
         uid: 'test-test'
       });
 
-      assert.notNestedProperty(state.measure, 'metric.dataSource.rowCount');
+      assert.notNestedProperty(state, 'dataSourceViewMetadata');
 
-      state = reducer(state, actions.editor.receiveDataSourceRowCount(100));
+      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
 
-      assert.deepEqual(state.measure.metric.dataSource, expectedDataSource);
+      assert.deepEqual(state.dataSourceViewMetadata, viewMetadata);
     });
 
-    it('throws if not given a number', () => {
+    it('throws if not given a number for the rowCount', () => {
       _.set(state, 'measure.metric.dataSource', {
         uid: 'test-test'
       });
 
-      assert.throws(() => reducer(state, actions.editor.receiveDataSourceRowCount('100')));
+      assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata('100', {})));
+    });
+
+    it('throws if not given an object for the dataSourceViewMetadata', () => {
+      _.set(state, 'measure.metric.dataSource', {
+        uid: 'test-test'
+      });
+
+      assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata(100, 'im not really an object')));
+    });
+  });
+
+  describe('SET_COLUMN', () => {
+    it('updates the column in metric arguments with the column field name', () => {
+      const columnFieldName = 'yay im a column';
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+
+      state = reducer(state, actions.editor.setColumn(columnFieldName));
+      assert.equal(state.measure.metric.arguments.column, columnFieldName);
+    });
+
+    it('throws if not given a string for fieldName', () => {
+      const notAString = 42;
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+
+      assert.throws(() => reducer(state, actions.editor.setColumn(notAString)));
+    });
+  });
+
+  describe('SET_VALUE_COLUMN', () => {
+    it('updates the valueColumn in metric arguments with the column field name', () => {
+      const columnFieldName = 'some value column';
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+
+      state = reducer(state, actions.editor.setValueColumn(columnFieldName));
+      assert.equal(state.measure.metric.arguments.valueColumn, columnFieldName);
+    });
+
+    it('throws if not given a string for fieldName', () => {
+      const notAString = 42;
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+
+      assert.throws(() => reducer(state, actions.editor.setValueColumn(notAString)));
+    });
+  });
+
+  describe('SET_DATE_COLUMN', () => {
+    it('updates the dateColumn in metric arguments with the column field name', () => {
+      const columnFieldName = 'some date column';
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+
+      state = reducer(state, actions.editor.setDateColumn(columnFieldName));
+      assert.equal(state.measure.metric.arguments.dateColumn, columnFieldName);
+    });
+
+    it('throws if not given a string for fieldName', () => {
+      const notAString = 42;
+
+      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+
+      assert.throws(() => reducer(state, actions.editor.setDateColumn(notAString)));
     });
   });
 
@@ -80,15 +157,25 @@ describe('Edit modal reducer', () => {
 
       assert.nestedPropertyVal(state, 'measure.metric.type', 'count' );
     });
+
+    it('removes all values in "measure.metric" except for dataSource uid', () => {
+      state = reducer(state, actions.editor.setCalculationType('sum'));
+      _.set(state, 'measure.metric.arguments.column', 'some column');
+      _.set(state, 'measure.metric.dataSource.uid', 'test-test');
+
+      state = reducer(state, actions.editor.setCalculationType('count'));
+      assert.notNestedProperty(state, 'measure.metric.arguments');
+      assert.equal(state.measure.metric.dataSource.uid, 'test-test');
+    });
   });
 
   describe('SET_UNIT_LABEL', () => {
     it('updates the label in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.label');
+      assert.notNestedProperty(state, 'measure.metric.display.label');
 
       state = reducer(state, actions.editor.setUnitLabel('cold hard cash'));
 
-      assert.nestedPropertyVal(state, 'measure.metric.label', 'cold hard cash' );
+      assert.nestedPropertyVal(state, 'measure.metric.display.label', 'cold hard cash' );
     });
   });
 

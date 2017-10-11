@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import * as dsmapiLinks from 'dsmapiLinks';
-import * as Links from 'links';
+import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as Links from 'links/links';
 import { browserHistory } from 'react-router';
 import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import {
@@ -20,12 +20,11 @@ import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
-import {
-  listenForOutputSchemaSuccess,
-  subscribeToOutputSchema,
-  subscribeToTransforms
-} from 'reduxStuff/actions/manageUploads';
+import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
+import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
+
+export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
 function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
@@ -49,11 +48,13 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
       .then(getJson)
       .catch(getError)
       .then(resp => {
+        const { resource: os } = resp;
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(listenForOutputSchemaSuccess(resp.resource, inputSchema));
-        dispatch(subscribeToOutputSchema(resp.resource));
-        dispatch(subscribeToTransforms(resp.resource));
+        const payload = makeNormalizedCreateOutputSchemaResponse(os, inputSchema.total_rows);
+        dispatch(createNewOutputSchemaSuccess(payload));
+        dispatch(subscribeToOutputSchema(os));
+        dispatch(subscribeToTransforms(os));
 
         return resp;
       })
@@ -61,6 +62,13 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(apiCallFailed(callId, err));
         throw err;
       });
+  };
+}
+
+export function createNewOutputSchemaSuccess(payload) {
+  return {
+    type: CREATE_NEW_OUTPUT_SCHEMA_SUCCESS,
+    ...payload
   };
 }
 
@@ -169,6 +177,47 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
+export const unsetRowIdentifier = (outputSchema) => (dispatch, getState) => {
+  const { entities } = getState();
+
+  const call = {
+    operation: SET_ROW_IDENTIFIER,
+    callParams: { outputSchema }
+  };
+
+  const newOutputColumns = Selectors.columnsForOutputSchema(entities, outputSchema.id)
+    .map(outputColumn => ({
+      ...outputColumn,
+      is_primary_key: false
+    }))
+    .map(oc => buildNewOutputColumn(oc, sameTransform(entities)));
+
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
+};
+
+export const moveColumnToPosition = (outputSchema, column, positionBaseOne) => (dispatch, getState) => {
+  const { entities } = getState();
+
+  const call = {
+    operation: NEW_OUTPUT_SCHEMA,
+    callParams: { outputSchema }
+  };
+
+  const allColumns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
+  const columns = allColumns.filter(oc => oc.id !== column.id);
+
+  const positionBaseZero = Math.min(Math.max(0, positionBaseOne - 1), allColumns.length - 1);
+
+  columns.splice(positionBaseZero, 0, column);
+
+  const newOutputColumns = columns
+    .map(oc => buildNewOutputColumn(oc, sameTransform(entities)))
+    .map((oc, i) => ({ ...oc, position: (i + 1) }));
+
+  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
+};
+
+
 export function buildNewOutputColumn(outputColumn, genTransform) {
   return {
     field_name: outputColumn.field_name,
@@ -191,7 +240,17 @@ function sameTransform(entities) {
 }
 
 export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColumn, newType) {
-  const oldOutputColumns = Selectors.columnsForOutputSchema(entities, oldOutputSchema.id);
+  const oldOutputColumns = Selectors.columnsForOutputSchema(
+    entities,
+    oldOutputSchema.id
+  ).map(oc => (
+  // This was a lovely bug!
+  // When changing the type of a primary key column, we need to make it a non-pk, because
+  // type conversion could lead to duplicate or null values; in fact, this is true of any
+  // transformation
+    oc.id === oldColumn.id ? { ...oc, is_primary_key: false } : oc
+  ));
+
   // Input columns are presently always text.  This will eventually
   // change, and then we'll need the input column here instead of
   // just hardcoding a comparison to text.

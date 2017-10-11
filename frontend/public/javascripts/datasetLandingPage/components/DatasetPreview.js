@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'common/visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserRoled } from '../../common/user';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 export class DatasetPreview extends Component {
   renderActionButton() {

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import components from 'common/components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 export class BootstrapAlert extends Component {
   componentWillMount() {

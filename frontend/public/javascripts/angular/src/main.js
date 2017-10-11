@@ -14,5 +14,4 @@ require('imports?DOMPurify=dompurify!../../util/dompurify-extensions');
 
 require('../../lib/RxExtensions');
 
-require('../dataCards/styles');
 require('../dataCards/app');

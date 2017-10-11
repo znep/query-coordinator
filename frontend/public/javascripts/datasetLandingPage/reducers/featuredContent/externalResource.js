@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { VALID_URL_REGEX } from '../../../common/constants';
+import { VALID_URL_REGEX } from 'common/http/constants';
 import {
   EDIT_FEATURED_ITEM,
   SET_EXTERNAL_RESOURCE_FIELD,

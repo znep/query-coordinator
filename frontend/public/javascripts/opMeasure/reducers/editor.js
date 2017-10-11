@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
-import { assertIsNumber } from 'common/js_utils';
+import { assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
 import actions from '../actions';
+import { CalculationTypeNames } from '../lib/constants';
 
 // Convenience mutator for the measure being edited.
 // warning: _.merge will ignore undefined values so in the scenario where a value is
@@ -25,6 +26,9 @@ export default (state = initialState(), action) => {
     return state;
   }
 
+  // TODO: We're running on a razor's edge due to the shallow props comparison done by
+  // React and Connect. It's very easy to cause updates to not propagate to components.
+  // Consider cloning the entire state tree deeply on every update.
   switch (action.type) {
     case actions.editor.SET_DATA_SOURCE_UID: {
       const newState = { ...state };
@@ -33,17 +37,45 @@ export default (state = initialState(), action) => {
       });
       return newState;
     }
-    case actions.editor.RECEIVE_DATA_SOURCE_ROW_COUNT:
+    case actions.editor.RECEIVE_DATA_SOURCE_METADATA:
       assertIsNumber(action.rowCount);
-      return updateMeasureProperty(state, 'metric.dataSource.rowCount', action.rowCount);
+      assertIsOneOfTypes(action.dataSourceViewMetadata, 'object');
 
-    case actions.editor.SET_CALCULATION_TYPE:
-      // Changing type clears everything other than the data source -
+      return {
+        ...state,
+        cachedRowCount: action.rowCount,
+        dataSourceViewMetadata: action.dataSourceViewMetadata,
+        displayableFilterableColumns: action.displayableFilterableColumns
+      };
+
+    case actions.editor.SET_CALCULATION_TYPE: {
+      // Changing type clears everything under 'metric' other than the data source -
       // should we revisit this when we have more than one calculation type implemented?
-      return updateMeasureProperty(state, 'metric', {
+      const currentDataSource = _.get(state, 'measure.metric.dataSource');
+      const newState = {
+        ...state
+      };
+
+      _.set(newState, 'measure.metric', {
         type: action.calculationType,
-        dataSource: _.get(state, 'measure.metric.dataSource')
+        dataSource: currentDataSource
       });
+
+      return newState;
+    }
+
+    case actions.editor.SET_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+      return updateMeasureProperty(state, 'metric.arguments.column', action.fieldName);
+
+    case actions.editor.SET_VALUE_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+      return updateMeasureProperty(state, 'metric.arguments.valueColumn', action.fieldName);
+
+    case actions.editor.SET_DATE_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+
+      return updateMeasureProperty(state, 'metric.arguments.dateColumn', action.fieldName);
 
     case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);
@@ -56,7 +88,7 @@ export default (state = initialState(), action) => {
       return updateMeasureProperty(state, 'metric.display.decimalPlaces', action.places);
 
     case actions.editor.SET_UNIT_LABEL:
-      return updateMeasureProperty(state, 'metric.label', action.label);
+      return updateMeasureProperty(state, 'metric.display.label', action.label);
 
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
@@ -69,9 +101,10 @@ export default (state = initialState(), action) => {
         pristineMeasure: action.measure
       };
 
+      // If no calculation type is set, defaults to 'count'
       const currentType = _.get(nextState, 'measure.metric.type');
       if (_.isEmpty(currentType)) {
-        nextState = updateMeasureProperty(nextState, 'metric.type', 'count');
+        nextState = updateMeasureProperty(nextState, 'metric.type', CalculationTypeNames.COUNT);
       }
 
       return nextState;

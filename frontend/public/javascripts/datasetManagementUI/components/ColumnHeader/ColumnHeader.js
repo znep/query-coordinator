@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { Link, withRouter } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
 import styles from './ColumnHeader.scss';
@@ -41,6 +41,9 @@ export class ColumnHeader extends Component {
   }
 
   onDropColumn() {
+    // button is disabled but click handler still fires
+    // so we need to guard against this stuff twice
+    if (this.isDropColumnDisabled()) return;
     this.props.dropColumn();
   }
 
@@ -49,16 +52,53 @@ export class ColumnHeader extends Component {
   }
 
   onRowId() {
+    // guard against disabled but not actually click handler
+    if (this.isRowIdDisabled()) return;
+    this.props.validateThenSetRowIdentifier();
+  }
 
-    if (this.isInProgress()) return;
-    this.props.validateThenSetRowIdentifier(
-      this.props.outputSchema,
-      this.props.outputColumn
-    );
+  onUnsetRowId() {
+    // guard against disabled but not actually click handler
+    if (this.isUnsetRowIdDisabled()) return;
+    this.props.unSetRowIdentifier();
   }
 
   onGeocode() {
     this.props.showShortcut('geocode');
+  }
+
+  onMoveLeft() {
+    if (this.isMoveLeftDisabled()) return;
+    this.props.moveLeft();
+  }
+
+  onMoveRight() {
+    if (this.isMoveRightDisabled()) return;
+    this.props.moveRight();
+  }
+
+  isDropColumnDisabled() {
+    return this.isInProgress() || this.props.outputColumn.is_primary_key;
+  }
+
+  isRowIdDisabled() {
+    return this.isInProgress() ||
+      this.props.outputColumn.is_primary_key ||
+      this.props.outputColumn.ignored;
+  }
+
+  isUnsetRowIdDisabled() {
+    return this.isInProgress() ||
+      !this.props.outputColumn.is_primary_key ||
+      this.props.outputColumn.ignored;
+  }
+
+  isMoveLeftDisabled() {
+    return this.isInProgress() || this.props.outputColumn.position <= 1;
+  }
+
+  isMoveRightDisabled() {
+    return this.isInProgress() || this.props.outputColumn.position >= this.props.columnCount;
   }
 
   isInProgress() {
@@ -69,8 +109,13 @@ export class ColumnHeader extends Component {
     return false;
   }
 
+
   optionsFor() {
     const column = this.props.outputColumn;
+    if (column.transform && column.transform.failed_at) {
+      return [];
+    }
+
     if (column.ignored) {
       return [
         {
@@ -93,20 +138,34 @@ export class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
-        disabled: column.is_primary_key,
+        disabled: this.isDropColumnDisabled(),
         render: DropdownWithIcon
       },
       {
-        title: 'set_row_id',
-        value: 'onRowId',
+        title: column.is_primary_key ? 'unset_row_id' : 'set_row_id',
+        value: column.is_primary_key ? 'onUnsetRowId' : 'onRowId',
         icon: 'socrata-icon-id',
-        disabled: column.is_primary_key || this.isInProgress(),
+        disabled: this.isInProgress(),
         render: DropdownWithIcon
       },
       {
         title: 'geocode',
         value: 'onGeocode',
         icon: 'socrata-icon-geo',
+        render: DropdownWithIcon
+      },
+      {
+        title: 'move_left',
+        value: 'onMoveLeft',
+        disabled: this.isMoveLeftDisabled(),
+        icon: 'socrata-icon-arrow-prev',
+        render: DropdownWithIcon
+      },
+      {
+        title: 'move_right',
+        value: 'onMoveRight',
+        disabled: this.isMoveRightDisabled(),
+        icon: 'socrata-icon-arrow-next',
         render: DropdownWithIcon
       }
     ];
@@ -126,8 +185,15 @@ export class ColumnHeader extends Component {
   }
 
   render() {
-    const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis, params } = this.props;
-    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis;
+    const {
+      outputSchema,
+      outputColumn,
+      updateColumnType,
+      activeApiCallInvolvingThis,
+      params,
+      canTransform
+    } = this.props;
+    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis || !canTransform;
 
     let convertibleTo = [];
     if (outputColumn.inputColumns.length === 1) {
@@ -144,7 +210,7 @@ export class ColumnHeader extends Component {
 
     const orderedTypes = _.sortBy(types, 'humanName');
 
-    const isSelectorDisabled = isDisabled || (orderedTypes.length === 0);
+    const isSelectorDisabled = isDisabled || orderedTypes.length === 0;
 
     const dropdownProps = {
       onSelection: e => this[e.value](outputColumn),
@@ -156,23 +222,25 @@ export class ColumnHeader extends Component {
     };
 
     const header =
-      !outputColumn.transform || outputColumn.ignored
-        ? <span
+      !outputColumn.transform || outputColumn.ignored ? (
+        <span
           className={styles.colName}
           id={`column-field-name-${outputColumn.id}`}
           title={outputColumn.display_name}>
+          {outputColumn.display_name}
+        </span>
+      ) : (
+        <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
+          <span
+            className={styles.colName}
+            data-cheetah-hook="col-name"
+            id={`column-display-name-${outputColumn.id}`}
+            title={outputColumn.display_name}>
             {outputColumn.display_name}
+            <SocrataIcon name="edit" className={styles.icon} />
           </span>
-        : <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
-            <span
-              className={styles.colName}
-              data-cheetah-hook="col-name"
-              id={`column-display-name-${outputColumn.id}`}
-              title={outputColumn.display_name}>
-              {outputColumn.display_name}
-              <SocrataIcon name="edit" className={styles.icon} />
-            </span>
-          </Link>;
+        </Link>
+      );
 
     const className = classNames(styles.columnHeader, {
       [styles.columnHeaderDisabled]: isDisabled
@@ -192,11 +260,11 @@ export class ColumnHeader extends Component {
           value={this.columnType()}
           aria-label={`col-type-${outputColumn.field_name}`}
           onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, params)}>
-          {orderedTypes.map(type =>
+          {orderedTypes.map(type => (
             <option key={type.systemName} value={type.systemName}>
               {type.humanName}
             </option>
-          )}
+          ))}
         </select>
       </th>
     );
@@ -207,11 +275,16 @@ ColumnHeader.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
+  canTransform: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
+  unSetRowIdentifier: PropTypes.func.isRequired,
+  moveLeft: PropTypes.func.isRequired,
+  moveRight: PropTypes.func.isRequired,
+  columnCount: PropTypes.number.isRequired,
   params: PropTypes.object.isRequired
 };
 

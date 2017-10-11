@@ -35,7 +35,7 @@ export class CartoModal extends Component {
 
             <div className="alert info">
               <span className="icon-info" />
-              <span>{I18n.carto_modal.alert}</span>
+              <div>{I18n.carto_modal.alert}</div>
             </div>
 
             {I18n.carto_modal.learn_more_link} <br />

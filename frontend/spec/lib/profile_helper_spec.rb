@@ -90,7 +90,7 @@ RSpec.describe ProfileHelper, type: :helper do
       describe 'when the user has edit rights' do
         let(:can_edit) { true }
         it 'returns a url with /revisions/current at the end' do
-          expect(view_url(view)).to eq('/dataset/test-view-name/four-four/manage/revisions/current')
+          expect(view_url(view)).to eq('/dataset/test-view-name/four-four/revisions/current')
         end
       end
 
@@ -98,7 +98,7 @@ RSpec.describe ProfileHelper, type: :helper do
         let(:can_edit) { true }
         let(:category) { "Fun" }
         it 'returns a url with the category and /revisions/current at the end' do
-          expect(view_url(view)).to eq('/Fun/test-view-name/four-four/manage/revisions/current')
+          expect(view_url(view)).to eq('/Fun/test-view-name/four-four/revisions/current')
         end
       end
 

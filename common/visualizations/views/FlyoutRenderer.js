@@ -82,6 +82,10 @@ function FlyoutRenderer(constructorOptions) {
       _flyoutContent = flyoutContent;
       _flyoutHint = flyoutHint;
 
+      // NOTE: Using body creates a situation where it's
+      //      not possible to position certain elements above
+      //      the flyout, when desired, because the element
+      //      lives in a lower z-index context. See .user-story-container
       $('body').append(flyout);
     } else {
       _flyout = $('#socrata-flyout');

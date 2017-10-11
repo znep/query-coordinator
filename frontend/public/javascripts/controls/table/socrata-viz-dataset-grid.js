@@ -1,6 +1,7 @@
-if (blist.feature_flags.enable_2017_grid_refresh) {
+if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
 
   (function($) {
+
     $.fn.socrataTable = _.get(
       window,
       'blist.Visualizations.Table',
@@ -48,8 +49,9 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
       var columns = _.get(serializedView, 'columns', []);
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
+      var rowIdKey = (isNewBackend) ? 'id' : 'uuid';
       var rowIds = rows.map(function(row) {
-        return String(_.get(row, 'metadata.id', ''));
+        return String(_.get(row, ['metadata', rowIdKey], null));
       });
       var transformedRows = rows.map(function(row) {
 
@@ -260,20 +262,67 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
               );
             }
 
+            function getCurrentUserColumns() {
+              // Get all columns as JSON objects, not instances. Because we are pulling from
+              // blist.dataset, they should be up-to-date with regard to other changes the
+              // user has made (e.g. to column order), and since we get the 'fresh' version
+              // every time we render the modal, we should not run into metadata drift any
+              // worse than we already do on account of the Dataset model being a little
+              // iffy.
+              return window.blist.dataset.columns.map(function(column) {
+                var cleanColumn = column.cleanCopy();
+                // The 'noCommas' and 'precision' properties, when present, have values that
+                // are essentially booleans and numbers but represented as strings (ugh),
+                // so in order to simplify the code that actually deals with these things
+                // above we do those conversions here in a 'pre-processing' step. We'll
+                // also have to convert these values, if present, back into strings in a
+                // 'post-processing' step before we PUT to `/api/views/<viewUid>`.
+                if (cleanColumn.format.hasOwnProperty('noCommas')) {
+                  cleanColumn.format.noCommas = (cleanColumn.format.noCommas === 'true') ?
+                    true :
+                    false;
+                }
+
+                if (cleanColumn.format.hasOwnProperty('precision')) {
+                  cleanColumn.format.precision = parseInt(cleanColumn.format.precision, 10);
+                }
+
+                return cleanColumn;
+              // Remove system columns (which have an id of -1)
+              }).filter(function(column) {
+                return column.id >= 0;
+              // Sort by position
+              }).sort(function(a, b) {
+                var aPosition = _.get(a, 'position', -1);
+                var bPosition = _.get(b, 'position', -1);
+
+                return (aPosition <= bPosition) ? -1 : 1;
+              });
+            }
+
             function attachTableEventHandlers() {
 
               function updateViewWithColumnWidthsFromVif(tableColumnWidths) {
-                var newView = _.cloneDeep(self._view.cleanCopy());
+                // EN-17878 - Changing Column Widths Should Not Force a Derived View
+                //
+                // Actually, we're moving toward making all changes require a
+                // working copy until we can provide a more unified editing
+                // experience. So we're no longer responding to column width changes
+                // *at all* if it's not a working copy, and if it is, we just update
+                // it since we're already editing things.
+                if (self._view.publicationStage === 'unpublished') {
 
-                newView.columns.forEach(function(column) {
+                  var newView = _.cloneDeep(self._view.cleanCopy());
+                  newView.columns.forEach(function(column) {
 
-                  if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
+                    if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
 
-                    column.width = tableColumnWidths[column.fieldName];
-                  }
-                });
+                      column.width = tableColumnWidths[column.fieldName];
+                    }
+                  });
 
-                self._view.update(newView, false, false);
+                  self._view.update(newView, false, false);
+                }
               }
 
               $datasetGrid.
@@ -337,6 +386,21 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
                 });
 
               $datasetGrid.
+                on('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function(e) {
+                  var payload = e.originalEvent.detail;
+                  var rowEditorOptions = {
+                    viewId: window.blist.dataset.id,
+                    columns: payload.columns,
+                    row: {
+                      id: payload.row.id,
+                      data: payload.row.data
+                    }
+                  };
+
+                  window.blist.gridViewRowEditor(rowEditorOptions);
+                });
+
+              $datasetGrid.
                 on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(e) {
                   var newOrder = [{
                     columnFieldName: e.originalEvent.detail.columnName,
@@ -386,6 +450,27 @@ if (blist.feature_flags.enable_2017_grid_refresh) {
                     flyoutRenderer.clear();
                   }
                 });
+
+              $('#gridSidebar_outer_edit a.editColumn').live('click', function() {
+                var columnEditorOptions = {
+                  columns: getCurrentUserColumns()
+                };
+
+                window.blist.gridViewColumnEditor(columnEditorOptions);
+              });
+
+              $('#gridSidebar_outer_edit a.addRow').live('click', function() {
+                  var rowEditorOptions = {
+                    viewId: window.blist.dataset.id,
+                    columns: getCurrentUserColumns(),
+                    row: {
+                      id: null,
+                      data: null
+                    }
+                  };
+
+                  window.blist.gridViewRowEditor(rowEditorOptions);
+              });
             }
 
             /**

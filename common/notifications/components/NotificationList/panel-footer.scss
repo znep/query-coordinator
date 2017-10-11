@@ -7,7 +7,7 @@
   text-align: center;
 
   .primary-button,
-  .cancle-button {
+  .cancel-button {
     cursor: pointer;
     font-size: 13px;
     font-weight: 400;
@@ -21,7 +21,7 @@
     background-color: $panel-primary-button-background-color;
     border: 0 none;
     border-radius: 2px;
-    color: $white;
+    color: $panel-primary-button-text-color;
 
     &:hover,
     &:focus {
@@ -34,7 +34,7 @@
     }
   }
 
-  .cancle-button {
+  .cancel-button {
     margin-right: 5px;
   }
 }
@@ -55,7 +55,7 @@
 }
 
 .inline-prompt {
-  background-color: $white;
+  background-color: $panel-footer-prompt-background-color;
   border-radius: 5px;
   bottom: $footerBarHeight + 10px;
   box-shadow: 0 0 1px 1px rgba($panel-footer-prompt-shadow-color, 0.25);
@@ -84,7 +84,7 @@
   }
 
   &:after {
-    border-top-color: $white;
+    border-top-color: $panel-footer-prompt-background-color;
     border-width: 15px 10px 0;
     bottom: -15px;
     left: 26px;
@@ -102,23 +102,43 @@
   }
 }
 
-.setting-btn {
-  color: $white;
+.setting-button {
+  color: $settings-text-color;
   cursor: pointer;
   float: right;
-  font-size: 13px;
-  font-weight: 400;
   height: 30px;
-  line-height: 17px !important;
   padding: 5px;
   text-decoration: none;
 
-  span {
-    color: $settings-icon-color;
+  em {
     display: inline-block;
-    font-size: 17px;
-    line-height: 1 !important;
-    margin-right: 5px;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 17px !important;
+    margin-left: 5px;
     vertical-align: top;
+  }
+
+  & :global(.socrata-icon) {
+    color: $settings-icon-color;
+    fill: $settings-icon-color;
+    height: 17px;
+    width: 17px;
+
+    & svg {
+      height: 17px;
+      width: 17px;
+
+      &,
+      * {
+        color: $settings-icon-color;
+        fill: $settings-icon-color;
+      }
+    }
+
+    &:before {
+      display: none;
+    }
   }
 }

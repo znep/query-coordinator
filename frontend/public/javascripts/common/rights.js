@@ -2,7 +2,7 @@
 
 // NOTE:
 // This needs to reflect:
-//  - SOURCE_ARRAY in frontend/lib/user_rights.rb
+//  - ALL_RIGHTS in frontend/lib/user_rights.rb
 //  - Right enum in core at unobtainium/src/main/java/com/blist/models/account/User.java
 
 export const approve_nominations = 'approve_nominations';
@@ -27,6 +27,7 @@ export const feature_items = 'feature_items';
 export const federations = 'federations';
 export const manage_approval = 'manage_approval';
 export const manage_provenance = 'manage_provenance';
+export const manage_spatial_lens = 'manage_spatial_lens';
 export const manage_stories = 'manage_stories';
 export const manage_story_collaborators = 'manage_story_collaborators';
 export const manage_story_public_version = 'manage_story_public_version';

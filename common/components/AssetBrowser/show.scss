@@ -1,0 +1,138 @@
+@import "variables/colors";
+@import "catalog-results/sizings";
+@import "catalog-results/catalog_results";
+@import "catalog-results/catalog_filters";
+@import "catalog-results/clear_filters";
+
+@import "common/pager";
+@import "common/feedback-panel";
+
+$admin-header-height: 46px;
+
+.admin-header {
+  min-height: $admin-header-height;
+}
+
+body {
+  margin: 0;
+  padding: $admin-header-height 0 0 0;
+  background: $light-grey-6;
+}
+
+.alert.error {
+  clear: both;
+}
+
+.internal-asset-manager {
+  margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom
+
+  .alert-wrapper {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 2rem;
+    z-index: 10000;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .socrata-icon {
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+  }
+
+  .header {
+    margin: 0 $horizontal_margin;
+    min-height: 7.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    &.mobile {
+      display: block;
+      min-height: 5.5rem;
+
+      > div {
+        display: block;
+      }
+    }
+
+    .asset-toggles {
+      a.asset-toggle {
+        color: $light-grey-2;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0 2px 2px 2px;
+        display: inline-block;
+        margin-right: 0.75rem;
+        font-size: 15px;
+        font-weight: 600;
+
+        &.active {
+          color: $black;
+          border-bottom: 3px solid $primary-base;
+        }
+      }
+    }
+
+    .asset-counts {
+      margin: 0.5rem 0;
+      display: inline-block;
+
+      &.fetching {
+        opacity: 0.5;
+      }
+
+      &.has-error {
+        display: none;
+      }
+
+      .asset-counts-item {
+        display: inline-block;
+        margin-right: 2.5rem;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+
+        .item-count {
+          font-size: 1.5rem;
+          line-height: 1;
+          color: $dark-grey-1;
+          margin-bottom: 0.25rem;
+
+          a {
+            color: $primary-base;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .item-name {
+          color: $dark-grey-1;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .results-and-filters {
+    display: flex;
+    border-top: 1px solid $light-grey-3;
+    border-bottom: 1px solid $light-grey-3;
+
+    .catalog-results .socrata-icon-search {
+      top: -3px !important;
+    }
+  }
+}

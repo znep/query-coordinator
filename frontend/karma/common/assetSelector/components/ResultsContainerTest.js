@@ -4,7 +4,7 @@ import 'babel-polyfill';
 import _ from 'lodash';
 import { ResultsContainer } from 'components/assetSelector/ResultsContainer';
 
-import ceteraUtils from 'cetera_utils';
+import ceteraUtils from 'common/cetera/utils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 
 describe('ResultsContainer', () => {

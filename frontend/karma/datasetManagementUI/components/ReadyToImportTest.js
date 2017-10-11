@@ -90,8 +90,8 @@ describe('components/ReadyToImport', () => {
 
     const errorButton = component.find('ErrorButton');
 
-    assert.isFalse(aTag.isEmpty());
-    assert.isFalse(errorButton.isEmpty());
+    assert.isTrue(aTag.exists());
+    assert.isTrue(errorButton.exists());
     assert.isFalse(errorButton.prop('disabled'));
   });
 

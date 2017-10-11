@@ -1,4 +1,4 @@
-import { checkStatus, defaultHeaders } from '../common/http';
+import { checkStatus, defaultHeaders } from 'common/http';
 
 export const sendAnalytics = (viewId) => {
   const url = `/api/views/${viewId}.json?method=opening`;

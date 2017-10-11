@@ -30,16 +30,16 @@ class NotificationList extends Component {
           onClosePanel={toggleNotificationPanel}
           unreadCount={unreadUserNotificationCount} />
       );
-    } else {
-      const { unreadProductNotificationCount } = this.props;
-      const panelHeaderText = I18n.t('shared_site_chrome_notifications.product_updates');
-
-      return (
-        <PanelHeader panelHeaderText={panelHeaderText}
-          onClosePanel={toggleNotificationPanel}
-          unreadCount={unreadProductNotificationCount} />
-      );
     }
+
+    const { unreadProductNotificationCount } = this.props;
+    const panelHeaderText = I18n.t('shared_site_chrome_notifications.product_updates');
+
+    return (
+      <PanelHeader panelHeaderText={panelHeaderText}
+        onClosePanel={toggleNotificationPanel}
+        unreadCount={unreadProductNotificationCount} />
+    );
   }
 
   renderUserNotifications() {

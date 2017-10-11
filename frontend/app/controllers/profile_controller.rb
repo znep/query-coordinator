@@ -6,6 +6,7 @@ class ProfileController < ApplicationController
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
   include NotificationsHelper
+  include CatalogResultsHelper
   include InternalAssetManagerHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
@@ -15,7 +16,12 @@ class ProfileController < ApplicationController
 
   helper :user
 
+  # See also frontend/app/controllers/internal_asset_manager_controller.rb
+  RESULTS_PER_PAGE = 5
+
   def index
+    return redirect_to login_url unless current_user.present?
+
     redirect_to("#{profile_path(current_user)}?#{request.query_string}")
   end
 
@@ -52,7 +58,14 @@ class ProfileController < ApplicationController
         cookie = "_core_session_id=#{cookies[:_core_session_id]}"
 
         catalog_results_response = begin
-          AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options.merge(for_user: current_user.id)).to_h
+          AssetInventoryService::InternalAssetManager.find(
+            request_id,
+            cookie,
+            siam_search_options.merge(
+              for_user: current_user.id,
+              limit: RESULTS_PER_PAGE
+            )
+          ).to_h
         rescue => e
           report_siam_error("Error fetching Cetera results: #{e.inspect}")
           { 'results' => [], 'resultSetSize' => 0 }
@@ -61,7 +74,11 @@ class ProfileController < ApplicationController
         @catalog_results = catalog_results_response['results'].to_a
         @catalog_result_set_size = catalog_results_response['resultSetSize'].to_i
 
-        @initial_filters = initial_filters
+        @initial_filters = initial_filters.merge!(ownedBy: {
+          displayName: current_user.displayName,
+          id: current_user.id
+        })
+
         @initial_order = {
           value: query_param_value('orderColumn'),
           ascending: query_param_value('orderDirection').to_s.downcase == 'asc'

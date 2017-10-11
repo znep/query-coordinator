@@ -3,27 +3,19 @@ import ProductNotification from 'common/notifications/components/ProductNotifica
 
 describe('Product Notification', () => {
 
-  function getProps(props) {
-    return {
-      ...props
-    };
-  }
-
   it('should render notification item', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(ProductNotification, getProps());
+    const element = renderLocalizationElement(ProductNotification, {});
 
     assert.isNotNull(element);
   });
 
   it('should show notification title, body, and timestamp', () => {
-    const element = renderLocalizationElement(ProductNotification,
-      getProps({
-        body: 'test-body',
-        title: 'test-title',
-        dateTime: 1484888755016
-      })
-    );
+    const element = renderLocalizationElement(ProductNotification, {
+      body: 'test-body',
+      title: 'test-title',
+      dateTime: 1484888755016
+    });
 
     assert.isNotNull(element);
     assert.isNotNull(element.querySelector('.notification-body'));

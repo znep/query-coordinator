@@ -327,8 +327,10 @@ function MetadataProvider(config, useCache = false) {
    * getFilterableColumns combined with a fresh call to
    * getDatasetMetadata.
    */
-  this.getDisplayableFilterableColumns = () => {
-    return this.getDatasetMetadata().
+  this.getDisplayableFilterableColumns = (datasetMetadata) => {
+    const metadataPromise = datasetMetadata ? Promise.resolve(_.cloneDeep(datasetMetadata)) : this.getDatasetMetadata();
+
+    return metadataPromise.
       then((datasetMetadata) => {
         return Promise.all([
           Promise.resolve(datasetMetadata),

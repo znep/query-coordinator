@@ -7,6 +7,7 @@ class SignupPresenter < Presenter
   attr_accessor :user
   attr_accessor :inviteToken
   attr_accessor :authToken
+  attr_accessor :auth0Token
   attr_accessor :profile_image
   attr_accessor :errors
   attr_accessor :accept_terms
@@ -17,6 +18,7 @@ class SignupPresenter < Presenter
     @user = User.new
     @inviteToken = inviteToken
     @authToken = authToken
+    @auth0Token = params[:auth0Token]
 
     @errors = Hash.new { |h, k| h[k] = [] } # Note: This hash cannot be Marshal#dump'd with this default proc.
 
@@ -67,6 +69,16 @@ protected
   end
 
   def login!
-    user_session = UserSessionProvider.klass.user_no_security_check(@user)
+    if @auth0Token.present?
+      auth0_authentication = Auth0Authentication.new(@auth0Token.to_json)
+
+      if auth0_authentication.authenticated?
+        user_session = UserSessionProvider.klass.auth0(auth0_authentication)
+      else
+        Rails.logger.error('Failed to login using auth0 token')
+      end
+    else
+      user_session = UserSessionProvider.klass.user_no_security_check(@user)
+    end
   end
 end

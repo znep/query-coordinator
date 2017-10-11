@@ -2,6 +2,8 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+$sidebar-width: 250px;
+
 .icon {
   color: $dark-grey-1;
   margin: 0 0.4em;
@@ -25,6 +27,8 @@
       padding: 0;
       display: flex;
       flex-direction: column;
+      padding-left: $sidebar-width !important;
+      z-index: 1002;
     }
 
     .modal-footer-actions {
@@ -49,17 +53,20 @@
 
 .dataPreview {
   padding: 0.5em 8px 0 8px;
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: calc(100% - #{$sidebar-width});
 
   .titleWrapper {
     h2 {
       margin-right: 0.3em;
-      float: left;
+      padding: 2px 0px;
+      display: inline-block;
     }
 
     span {
       margin-top: 8px;
-      float: left;
     }
   }
 
@@ -67,11 +74,6 @@
     display: inline-block;
     text-align: right;
     margin: 0 0 0 1em;
-    float: right;
-
-    div {
-      float: none;
-    }
 
     p {
       margin: 0px 0px;
@@ -89,7 +91,6 @@
 .tableWrap {
   flex-grow: 1;
   position: relative;
-  overflow-x: scroll;
 }
 
 .previewHeader {
@@ -101,4 +102,22 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow-x: scroll;
+}
+
+.contentWrap {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.optionsWrap {
+  padding-top: 8px;
+}
+
+
+:global {
+  .modal-footer {
+    z-index: 1002;
+  }
 }

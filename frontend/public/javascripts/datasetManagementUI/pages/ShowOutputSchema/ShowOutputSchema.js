@@ -4,129 +4,48 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { connect } from 'react-redux';
-import { interpolate, easeInOutQuad } from 'lib/interpolate';
-import { commaify } from '../../../common/formatNumber';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import * as Actions from 'reduxStuff/actions/showOutputSchema';
-import { SAVE_CURRENT_OUTPUT_SCHEMA } from 'reduxStuff/actions/apiCalls';
+import { updateSourceParseOptions } from 'reduxStuff/actions/createSource';
 import * as DisplayState from 'lib/displayState';
-import Table from 'containers/TableContainer';
 import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
-import PagerBar from 'containers/PagerBarContainer';
-import ErrorPointer from 'components/ErrorPointer/ErrorPointer';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import FatalError from 'containers/FatalErrorContainer';
+import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
+import TablePane from './TablePane';
+import SaveOutputSchemaButton from './SaveOutputSchemaButton';
+import ParseOptionsPane from './ParseOptionsPane';
+import SaveParseOptionsButton from './SaveParseOptionsButton';
 import styles from './ShowOutputSchema.scss';
 
-const COL_WIDTH_PX = 250; // matches style on td in Table.scss
-const ERROR_SCROLL_DURATION_MS = 1000;
 
 export class ShowOutputSchema extends Component {
-  constructor() {
-    super();
-    _.bindAll(this, ['setSize', 'scrollToColIdx']);
-    // need to keep throttled version in an instance variable since it contains state used for
-    // throttling. Putting _.throttle in JSX doesn't work because throttling state is overwritten
-    // on every rerender
-    this.throttledSetSize = _.throttle(this.setSize, ERROR_SCROLL_DURATION_MS / 2);
-    this.state = {
-      scrollLeft: null,
-      viewportWidth: null
-    };
+  isOnParseOptionsPage() {
+    return this.props.params.option === 'parse_options';
   }
 
-  componentDidMount() {
-    this.setSize();
-    window.addEventListener('resize', this.throttledSetSize);
+  contentForOption() {
+    if (this.isOnParseOptionsPage()) {
+      return <ParseOptionsPane {...this.props} />;
+    }
+    return <TablePane {...this.props} />;
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.throttledSetSize);
-  }
-
-  setSize() {
-    this.setState({
-      scrollLeft: this.tableWrap.scrollLeft,
-      viewportWidth: this.tableWrap.offsetWidth
-    });
-  }
-
-  getPath() {
-    const { source, inputSchema, outputSchema } = this.props;
-    return {
-      sourceId: source.id,
-      inputSchemaId: inputSchema.id,
-      outputSchemaId: outputSchema.id
-    };
-  }
-
-  errorsNotInView() {
-    // find the minimum and maximum column indexes visible to the user
-    const minColIdx = this.offsetToColIdx(this.state.scrollLeft);
-    const maxColIdx = this.offsetToColIdx(this.state.scrollLeft + this.state.viewportWidth);
-    // get the column objects for columns out of viewport to left and right
-    const colsToLeft = this.props.columns.slice(0, minColIdx);
-    const colsToRight = this.props.columns.slice(maxColIdx + 1);
-    // sum up errors for those columns
-    return {
-      toLeft: this.errorSumAndFirstColWithErrors(colsToLeft),
-      toRight: this.errorSumAndFirstColWithErrors(colsToRight)
-    };
-  }
-
-  errorSumAndFirstColWithErrors(columns) {
-    let firstColWithErrors = null;
-    let errorSum = 0;
-    columns.forEach(col => {
-      const numErrors = col.transform.error_count || 0;
-      errorSum += numErrors;
-      if (firstColWithErrors === null && numErrors > 0) {
-        firstColWithErrors = col.position;
-      }
-    });
-    return {
-      errorSum,
-      firstColWithErrors
-    };
-  }
-
-  scrollToColIdx(idx) {
-    const offset = this.colIdxToOffset(idx);
-    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, pos => {
-      this.tableWrap.scrollLeft = pos;
-    });
-  }
-
-  offsetToColIdx(offset) {
-    return Math.min(offset / COL_WIDTH_PX);
-  }
-
-  colIdxToOffset(colIdx) {
-    const colOffset = colIdx * COL_WIDTH_PX;
-    const centered = colOffset - this.state.viewportWidth / 2 + COL_WIDTH_PX / 2;
-    return Math.max(0, centered);
+  saveButtonForOption() {
+    if (this.isOnParseOptionsPage()) {
+      return <SaveParseOptionsButton {...this.props} />;
+    }
+    return <SaveOutputSchemaButton {...this.props} />;
   }
 
   render() {
     const {
-      revision,
-      inputSchema,
-      outputSchema,
-      columns,
-      displayState,
       canApplyRevision,
-      numLoadsInProgress,
-      saveCurrentOutputSchema,
+      fatalError,
       goToRevisionBase,
       params
     } = this.props;
-
-    const path = this.getPath();
-
-    const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
-
-    const errorsNotInView = this.errorsNotInView();
 
     return (
       <div className={styles.outputSchemaContainer}>
@@ -135,72 +54,15 @@ export class ShowOutputSchema extends Component {
             <UploadBreadcrumbs />
           </ModalHeader>
           <ModalContent>
-            <div className={styles.dataPreview}>
-              <div className={styles.titleWrapper}>
-                <h2 className={styles.previewHeader}>
-                  {I18n.data_preview.title}
-                </h2>
-                {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
-              </div>
-              <div className={styles.datasetAttribute}>
-                <div className={styles.datasetAttribute}>
-                  <p>
-                    {I18n.data_preview.rows}
-                  </p>
-                  <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
-                    {commaify(rowsTransformed)}
-                  </p>
-                </div>
-                <div className={styles.datasetAttribute}>
-                  <p>
-                    {I18n.data_preview.columns}
-                  </p>
-                  <p className={styles.attribute}>
-                    {columns.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.pointerWrap}>
-              <div
-                className={styles.tableWrap}
-                onScroll={this.throttledSetSize}
-                ref={tableWrap => {
-                  this.tableWrap = tableWrap;
-                }}>
-                <Table
-                  path={path}
-                  columns={columns}
-                  inputSchema={inputSchema}
-                  outputSchema={outputSchema}
-                  displayState={displayState} />
-              </div>
-              {errorsNotInView.toLeft.errorSum > 0 &&
-                <ErrorPointer
-                  errorInfo={errorsNotInView.toLeft}
-                  direction="left"
-                  scrollToColIdx={this.scrollToColIdx} />}
-              {errorsNotInView.toRight.errorSum > 0 &&
-                <ErrorPointer
-                  errorInfo={errorsNotInView.toRight}
-                  direction="right"
-                  scrollToColIdx={this.scrollToColIdx} />}
-            </div>
-            <PagerBar path={path} displayState={displayState} />
+            <OutputSchemaSidebar params={params} page={params.option || 'output_schema'} />
+            {this.contentForOption()}
           </ModalContent>
 
           <ModalFooter>
-            {canApplyRevision ? <ReadyToImport /> : <div />}
+            {canApplyRevision ? <ReadyToImport /> : null}
+            {fatalError ? <FatalError /> : null}
 
-            <div>
-              <ApiCallButton
-                onClick={() => saveCurrentOutputSchema(revision, outputSchema.id, params)}
-                operation={SAVE_CURRENT_OUTPUT_SCHEMA}
-                params={{ outputSchemaId: outputSchema.id }}>
-                {I18n.home_pane.save_for_later}
-              </ApiCallButton>
-            </div>
+            {!fatalError ? (this.saveButtonForOption()) : null}
           </ModalFooter>
         </Modal>
       </div>
@@ -216,13 +78,16 @@ ShowOutputSchema.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired,
   canApplyRevision: PropTypes.bool.isRequired,
+  fatalError: PropTypes.bool.isRequired,
+  parseOptionsForm: PropTypes.object.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.shape({
     revisionSeq: PropTypes.string.isRequired,
-    outputSchemaId: PropTypes.string.isRequired
+    outputSchemaId: PropTypes.string.isRequired,
+    option: PropTypes.string
   }).isRequired
 };
 
@@ -240,13 +105,19 @@ export function mapStateToProps(state, ownProps) {
   const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   const canApplyRevision = Selectors.allTransformsDone(columns);
 
+  const fatalError = !!source.failed_at || _.some(columns.map(c => c.transform.failed_at));
+
+  const parseOptionsForm = state.ui.forms.parseOptionsForm;
+
   return {
     revision,
     source,
     inputSchema,
     outputSchema,
+    parseOptionsForm,
     columns,
     canApplyRevision,
+    fatalError,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     params
@@ -262,6 +133,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId, params)).then(() => {
         browserHistory.push(Links.revisionBase(ownProps.params));
       });
+    },
+    saveCurrentParseOptions: (params, source, parseOptions) => {
+      dispatch(updateSourceParseOptions(params, source, parseOptions));
     },
     dispatch
   };

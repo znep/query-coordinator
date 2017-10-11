@@ -3,7 +3,7 @@
 .header {
   background-color: $panel-header-background-color;
   box-shadow: inset 1px 0 $panel-header-outline-color;
-  color: $white;
+  color: $panel-header-text-color;
   height: $headerBarHeight;
   position: relative;
 
@@ -23,11 +23,15 @@
     font-weight: 300;
     margin-left: 15px;
     text-transform: uppercase;
+
+    span:first-child {
+      margin-right: 3px;
+    }
   }
 
   .header-icon,
   .close-panel-link {
-    color: $white;
+    color: $panel-header-text-color;
     height: $headerBarHeight;
     line-height: $headerBarHeight !important;
     margin: 0;
@@ -40,6 +44,17 @@
   .header-icon {
     font-size: 21px;
     left: 0;
+
+    & :global(.socrata-icon) {
+      height: 21px;
+      width: 21px;
+      margin-top: 13px;
+
+      & svg {
+        height: 21px;
+        width: 21px;
+      }
+    }
   }
 
   .close-panel-link {
@@ -50,6 +65,34 @@
     &:hover,
     &:focus {
       background-color: $panel-close-link-background-color;
+    }
+
+    & :global(.socrata-icon) {
+      height: 13px;
+      width: 13px;
+      margin-top: 16px;
+
+      & svg {
+        height: 13px;
+        width: 13px;
+      }
+    }
+  }
+
+  & :global(.socrata-icon) {
+    color: $panel-header-text-color;
+    fill: $panel-header-text-color;
+
+    & svg {
+      &,
+      * {
+        color: $panel-header-text-color;
+        fill: $panel-header-text-color;
+      }
+    }
+
+    &:before {
+      display: none;
     }
   }
 }

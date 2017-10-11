@@ -7,14 +7,14 @@ import PublishButton from 'components/PublishButton/PublishButton';
 const defaultProps = {
   dataSatisfied: false,
   metadataSatisfied: false,
-  publishedOrPublishing: false,
+  publishing: false,
   publishDataset: _.noop
 };
 
 describe('"Publish Dataset" button and flyout', () => {
   it('is disabled when there is no data', () => {
     const component = shallow(<PublishButton {...defaultProps} />);
-    assert.isFalse(component.find('button[disabled=true]').isEmpty());
+    assert.isTrue(component.find('button[disabled=true]').exists());
   });
 
   it('is disabled when the source is in progress', () => {
@@ -22,11 +22,11 @@ describe('"Publish Dataset" button and flyout', () => {
       ...defaultProps,
       dataSatisfied: true,
       metadataSatisfied: true,
-      publishedOrPublishing: true
+      publishing: true
     };
 
     const component = shallow(<PublishButton {...updatedProps} />);
-    assert.isFalse(component.find('button[disabled=true]').isEmpty());
+    assert.isTrue(component.find('button[disabled=true]').exists());
   });
 
   it('is disabled when metadata is invalid', () => {
@@ -34,10 +34,10 @@ describe('"Publish Dataset" button and flyout', () => {
       ...defaultProps,
       dataSatisfied: true,
       metadataSatisfied: false,
-      publishedOrPublishing: false
+      publishing: false
     };
 
     const component = shallow(<PublishButton {...updatedProps} />);
-    assert.isFalse(component.find('button[disabled=true]').isEmpty());
+    assert.isTrue(component.find('button[disabled=true]').exists());
   });
 });

@@ -26,6 +26,7 @@ import StoryPublicationStatus from './components/StoryPublicationStatus'; //esli
 import MostRecentlyUsed from 'common/most_recently_used';
 
 import 'common/notifications/main';
+import 'common/site_wide';
 
 const {
   ENVIRONMENT,

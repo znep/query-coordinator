@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import mixpanel from '../common/mixpanel';
+import mixpanel from 'common/mixpanel';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
 import utils from 'common/js_utils';

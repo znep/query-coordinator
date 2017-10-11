@@ -60,6 +60,9 @@ function compileStream(stream) {
 }
 
 module.exports = (done) => {
+  // Remove this warning when this JIRA ticket is complete https://socrata.atlassian.net/browse/EN-19260
+  console.warn('Any changes to fonts using this tooling will necessitate coordinating storyteller/frontend deploy.');
+  console.warn('tl;dr EN-19260 storyteller and frontend must be deployed simultaneously or icons break.');
   var settings = {
     fontName: `socrata-icons.${buildTimestamp}`,
     formats: ['eot', 'svg', 'ttf', 'woff', 'woff2'],

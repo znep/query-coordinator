@@ -424,41 +424,41 @@ describe('MetadataProvider', () => {
     };
 
     it('excludes the column if isSystemColumn, isSubcolumn, or isHiddenColumn are true', () => {
-      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(true));
-      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(false));
+      sinon.stub(metadataProvider, 'isSystemColumn').returns(true);
+      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
+      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
       assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
       metadataProvider.isSystemColumn.restore();
       metadataProvider.isSubcolumn.restore();
       metadataProvider.isHiddenColumn.restore();
 
-      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(true));
-      sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(false));
+      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
+      sinon.stub(metadataProvider, 'isSubcolumn').returns(true);
+      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
       assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
       metadataProvider.isSystemColumn.restore();
       metadataProvider.isSubcolumn.restore();
       metadataProvider.isHiddenColumn.restore();
 
-      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(true));
+      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
+      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
+      sinon.stub(metadataProvider, 'isHiddenColumn').returns(true);
       assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
       metadataProvider.isSystemColumn.restore();
       metadataProvider.isSubcolumn.restore();
       metadataProvider.isHiddenColumn.restore();
 
-      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(true));
-      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(true));
-      sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(true));
+      sinon.stub(metadataProvider, 'isSystemColumn').returns(true);
+      sinon.stub(metadataProvider, 'isSubcolumn').returns(true);
+      sinon.stub(metadataProvider, 'isHiddenColumn').returns(true);
       assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
       metadataProvider.isSystemColumn.restore();
       metadataProvider.isSubcolumn.restore();
       metadataProvider.isHiddenColumn.restore();
 
-      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
-      sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(false));
+      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
+      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
+      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
       assert.deepEqual(
         metadataProvider.getDisplayableColumns(mockMetadata),
         mockMetadata.columns

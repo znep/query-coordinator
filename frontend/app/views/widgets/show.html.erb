@@ -20,7 +20,7 @@
     # dependency with the Socrata Visualizations I18n module; if the
     # translations are not present on the window when that code bootstraps no
     # translations will be available.
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
   -%>
     <%= rendered_stylesheet_tag 'socrata-icons' %>
     <%= rendered_stylesheet_tag 'visualizations' %>
@@ -207,7 +207,7 @@
     # dependency detailed in the comment with this ticket number at the top
     # of this file (tl;dr: the translations must exist on the window when
     # we boostrap the Socrata Viz package).
-    if enable_2017_grid_refresh_for_current_request?
+    if enable_2017_grid_view_refresh_for_current_request?
   -%>
     <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
   <%- end -%>

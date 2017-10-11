@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import xhrMock from 'xhr-mock';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as responses from './responses';
 import _ from 'lodash';
 

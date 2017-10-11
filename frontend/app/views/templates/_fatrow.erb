@@ -9,7 +9,7 @@
     #
     # We therefore want to not render the fat row filter controls at all if we are using the
     # new Socrata Viz Table grid view.
-    if !enable_2017_grid_refresh_for_current_request?
+    if !enable_2017_grid_view_refresh_for_current_request?
   -%>
     <div class="columnHeaders"></div>
   <%- end -%>

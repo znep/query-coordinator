@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { commaify } from '../../../common/formatNumber';
-import * as dsmapiLinks from 'dsmapiLinks';
+import * as dsmapiLinks from 'links/dsmapiLinks';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './ReadyToImport.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
-const ErrorButton = ({ disabled }) =>
+const ErrorButton = ({ disabled }) => (
   <button className={styles.errorsBtn} disabled={disabled}>
     {I18n.export_errors} <SocrataIcon name="download" />
-  </button>;
+  </button>
+);
 
 ErrorButton.propTypes = {
   disabled: PropTypes.bool

@@ -14,7 +14,15 @@ module.exports = _.defaultsDeep({
     jquery: true
   },
   module: {
-    loaders: common.getStandardLoaders()
+    loaders: common.getStandardLoaders([], {
+      substituteStyleLoaders: [
+        {
+          test: /\.s?css$/,
+          // Process styles but don't inline images. We don't use them.
+          loader: 'style-loader!css-loader?url=false!sass-loader'
+        }
+      ]
+    })
   },
   resolve: common.getStandardResolve([ 'public/javascripts/datasetLandingPage' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

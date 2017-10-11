@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import usersnap from '../usersnap';
 import zendesk from '../zendesk';
-import { ESCAPE_KEY_CODE } from '../constants';
+import { ESCAPE } from 'common/dom_helpers/keycodes';
 
 function t(key) {
   return I18n.common.feedback[key];
@@ -184,7 +184,7 @@ export class FeedbackPanel extends Component {
   tryEscDismiss(event) {
     // Copy some of the close behavior of common/components flannels because they don't
     // support the behavior we want for the feedback panel yet.
-    if (event.keyCode === ESCAPE_KEY_CODE) {
+    if (event.keyCode === ESCAPE) {
       this.onDismissFeedback();
     }
   }

@@ -273,28 +273,56 @@ var moment = require('moment');
         }
       });
 
-      var timespan = moment.duration(endDate - startDate + 1),
-        hideOverlaps = $chart.width() / 35 < processedData.length;
+      var maxWidthOfLabel = 35;
+      var yAxisLabelWidth = Math.max.apply(null, Array.map($('.tickLabel'), function(that) { return $(that).outerWidth(); }));
+      var xAxisLabelContainerWidth = $chart.width() - yAxisLabelWidth - (maxWidthOfLabel / 2);
+      var maxLabels = Math.floor(xAxisLabelContainerWidth  / maxWidthOfLabel);
+      var hideOverlaps = maxLabels < processedData.length;
+      var overlapInterval = Math.ceil(processedData.length / maxWidthOfLabel);
+      var timespan = moment.duration(endDate - startDate + 1);
+
+      if (sliceType == 'HOURLY') {
+        overlapInterval = Math.floor(24 / (maxLabels / timespan.days()));
+
+        if (overlapInterval > 12) {
+          overlapInterval = 24;
+        } else if (overlapInterval > 6) {
+          overlapInterval = 12;
+        } else if (overlapInterval > 3) {
+          overlapInterval = 6;
+        }
+      }
+
       d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel').
       remove();
       d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel').
       data(_.pluck(processedData, 'timestamp')).
       enter().append('div').
       classed('xLabel', true).
-      classed('hide', function(d, i) {
-        return hideOverlaps && i % 2 == 1;
-      }).
       each(function(d) {
         var format;
         if (sliceType == 'HOURLY' && d.hour() > 0) {
-          format = 'HH:MM';
-        } else if (timespan.asDays() < 30) {
+          format = 'HH:mm';
+        } else if (sliceType == 'WEEKLY' && timespan.years() > 0) {
+          format = 'MMM D \'YY';
+        } else if (sliceType == 'HOURLY' || sliceType == 'DAILY' || sliceType == 'WEEKLY') {
           format = 'MMM D';
         } else {
           format = 'MMM \'YY';
         }
 
         $(this).text(d.format(format));
+      }).
+      classed('hide', function(d, i) {
+        if (sliceType == 'HOURLY') {
+          return hideOverlaps && d.hour() % overlapInterval != 0;
+        }
+
+        if (sliceType == 'DAILY') {
+          return hideOverlaps && d.day() != 0;
+        }
+
+        return hideOverlaps && i % overlapInterval != 0;
       }).
       style('left', function(d) {
         return xScale(d) - ($(this).width() / 2) + 'px';

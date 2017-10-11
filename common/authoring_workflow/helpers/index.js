@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
 import I18n from 'common/i18n';
-import { 
-  AGGREGATION_TYPES, 
-  COLOR_PALETTE_VALUES, 
-  DEFAULT_PRIMARY_COLOR, 
-  DEFAULT_SECONDARY_COLOR 
+import {
+  AGGREGATION_TYPES,
+  COLOR_PALETTE_VALUES,
+  DEFAULT_PRIMARY_COLOR,
+  DEFAULT_SECONDARY_COLOR
 } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
@@ -131,13 +131,13 @@ export const appendSeries = (state, { isInitialLoad }) => {
 
   // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
   // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
-  // 
-  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to 
-  // 'categorical' and set the primary and secondary colors of the first series to the first color in the 'categorical' 
+  //
+  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to
+  // 'categorical' and set the primary and secondary colors of the first series to the first color in the 'categorical'
   // color palette.
   //
   if ((state.series.length == 1) && !isInitialLoad) {
-    const color = COLOR_PALETTE_VALUES['categorical'][0];
+    const color = COLOR_PALETTE_VALUES.categorical[0];
 
     _.set(state, 'series[0].color.palette', 'categorical');
     _.set(state.series[0], 'color.primary', color);
@@ -191,12 +191,12 @@ export const removeSeries = (state, seriesIndex) => {
 
     _.set(state, 'series[0].color.primary', DEFAULT_PRIMARY_COLOR);
     _.set(state, 'series[0].color.secondary', DEFAULT_SECONDARY_COLOR);
-    
+
     tryUnsetShowLegend(state);
   }
 };
 
-// This tries to unset the showLegend property, but only if it is not still grouping, multi-series, 
+// This tries to unset the showLegend property, but only if it is not still grouping, multi-series,
 // or having reference line labels.
 //
 export const tryUnsetShowLegend = (state) => {
@@ -213,7 +213,7 @@ export const tryUnsetShowLegend = (state) => {
   _.unset(state, 'configuration.showLegend');
 }
 
-// This tries to set the showLegend property to true, but only if it is currently grouping, multi-series, 
+// This tries to set the showLegend property to true, but only if it is currently grouping, multi-series,
 // or having reference line labels.
 //
 export const trySetShowLegend = (state) => {

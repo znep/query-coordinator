@@ -7,7 +7,7 @@ import { currentAndIgnoredOutputColumns } from 'selectors';
 import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as DisplayState from 'lib/displayState';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import Table from 'components/Table/Table';
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
@@ -48,7 +48,7 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
 };
 
 const redirectToNewOutputschema = (dispatch, params) => resp => {
-  if (resp.resource) {
+  if (resp && resp.resource) {
     dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
   }
 };
@@ -84,11 +84,31 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         redirectToNewOutputschema(dispatch, params)
       ),
 
+    unSetRowIdentifier: (outputSchema) =>
+      dispatch(ShowActions.unsetRowIdentifier(outputSchema)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+    moveLeft: (outputSchema, column) =>
+      dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position - 1)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+    moveRight: (outputSchema, column) =>
+      dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position + 1)).then(
+        redirectToNewOutputschema(dispatch, params)
+      ),
+
+
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)
-        ? Links.showOutputSchema(params, path.sourceId, path.inputSchemaId, path.outputSchemaId)
-        : Links.showColumnErrors(
-            params,
+        ? Links.showOutputSchema(
+          path,
+          path.sourceId,
+          path.inputSchemaId,
+          path.outputSchemaId
+        ) : Links.showColumnErrors(
+            path,
             path.sourceId,
             path.inputSchemaId,
             path.outputSchemaId,

@@ -176,7 +176,7 @@ class Administration::ConnectorController < AdministrationController
         return handle_failed_connection_and_redirect(error)
       end
 
-      @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold, :params => {})
+      @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold, :params => {:type => 'esri_arcgis'})
     else
       redirect_to :edit_connectors
     end

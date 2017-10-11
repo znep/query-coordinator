@@ -7,7 +7,14 @@ import 'common/visualizations/views/styles/socrata-visualizations.scss';
 // default of generating one package per test file).
 // This file is responsible for defining that mega-package:
 // pulling in every test file via requireAll.
-window.jQuery = require('jquery');
+window.$ = window.jQuery = require('jquery');
+
+// The contents of this object is expected to be provided by the components under test.
+window.serverConfig = {};
+
+window.mixpanelConfig = require('./data/mock_mixpanel_config').default;
+window.sessionData = require('./data/mock_session_data').default;
+window.serverConfig = require('./data/mock_server_config').default;
 
 function requireAll(context) {
   return context.keys().map(context);

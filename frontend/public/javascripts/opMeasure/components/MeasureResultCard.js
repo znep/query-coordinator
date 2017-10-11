@@ -2,7 +2,8 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { calculateCountMeasure } from '../measureCalculator';
+import { calculateMeasure } from '../measureCalculator';
+import { CalculationTypeNames } from '../lib/constants';
 
 // Calculates and displays a measure as a tile
 export class MeasureResultCard extends Component {
@@ -47,20 +48,55 @@ export class MeasureResultCard extends Component {
     }
   }
 
+  isReadyToCalculate(measure) {
+    const calculationType = _.get(measure, 'metric.type');
+
+    if (_.isEmpty(calculationType)) {
+      return false;
+    }
+
+    const allNotNil = (keyPaths) => {
+      return _.every(keyPaths, (attr) => {
+        return !_.isNil(_.get(measure, attr));
+      });
+    };
+
+    switch (calculationType) {
+      case CalculationTypeNames.COUNT:
+        return allNotNil(['metric.dataSource.uid']);
+      case CalculationTypeNames.SUM:
+        return allNotNil([
+          'metric.dataSource.uid',
+          'metric.arguments.column'
+        ]);
+      case CalculationTypeNames.RECENT_VALUE:
+        return allNotNil([
+          'metric.dataSource.uid',
+          'metric.arguments.valueColumn',
+          'metric.arguments.dateColumn'
+        ]);
+      default:
+        throw new Error(`Unknown calculation type: ${calculationType}`);
+    }
+  }
+
   makeRequest() {
     const { measure } = this.props;
-    // TODO: Assumes only "count" measures exist. This will change in our next ticket.
-    // TODO: Very naive logic checking whether or not measure is "set-up-enough" to render.
-    if (_.has(measure, 'metric.dataSource.uid')) {
-      this.props.calculator(measure).then(
-        (count) => {
+    if (this.isReadyToCalculate(measure)) {
+      this.props.calculateMeasure(measure).then(
+        (result) => {
           this.setState(
             {
-              dataResponse: count,
+              dataResponse: result,
               dataRequestInFlight: false
             },
             () => this.checkProps(this.props)
           );
+        },
+        () => {
+          this.setState({
+            dataRequestInFlight: false
+          });
         }
       );
     } else {
@@ -93,7 +129,7 @@ export class MeasureResultCard extends Component {
   }
 
   render() {
-    const subtitle = _.get(this.props, 'measure.metric.label', '');
+    const subtitle = _.get(this.props, 'measure.metric.display.label', '');
 
     return (<div className="measure-result-card">
       {this.renderData()}
@@ -104,9 +140,9 @@ export class MeasureResultCard extends Component {
   }
 }
 
-// Passing in calculator as a prop to allow for dependency injection in tests
+// Passing in calculateMeasure as a prop to allow for dependency injection in tests
 MeasureResultCard.defaultProps = {
-  calculator: calculateCountMeasure
+  calculateMeasure: calculateMeasure
 };
 
 MeasureResultCard.propTypes = {
@@ -116,5 +152,5 @@ MeasureResultCard.propTypes = {
       label: PropTypes.string
     })
   }).isRequired,
-  calculator: PropTypes.func
+  calculateMeasure: PropTypes.func
 };

@@ -4,7 +4,7 @@ import { Simulate } from 'react-dom/test-utils';
 
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
-import { ENTER } from 'common/keycodes';
+import { ENTER } from 'common/dom_helpers/keycodes';
 
 import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'common/components';
 import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
-import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
+import { RELATED_VIEWS_FETCH_LIMIT } from '../lib/constants';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
@@ -63,8 +63,8 @@ export class RelatedViewList extends Component {
       };
     }
 
-    const visibleCount = isCollapsed ? RELATED_VIEWS_CHUNK_SIZE : viewList.length;
-    let rowCount = Math.ceil(visibleCount / RELATED_VIEWS_CHUNK_SIZE);
+    const visibleCount = isCollapsed ? RELATED_VIEWS_FETCH_LIMIT : viewList.length;
+    let rowCount = Math.ceil(visibleCount / RELATED_VIEWS_FETCH_LIMIT);
 
     // While loading on desktop, we immediately expand the container to make room for the new views.
     if (isLoading) {
@@ -170,7 +170,7 @@ export class RelatedViewList extends Component {
   renderCollapseLink() {
     const { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
-    if (hasMore || viewList.length <= RELATED_VIEWS_CHUNK_SIZE || !isDesktop) {
+    if (hasMore || viewList.length <= RELATED_VIEWS_FETCH_LIMIT || !isDesktop) {
       return null;
     }
 

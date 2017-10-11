@@ -1,13 +1,22 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 
-export const getRevision = (rSeq, revisions) => _.chain(revisions).find({ revision_seq: rSeq }).value();
+export const getRevision = (rSeq, revisions) =>
+  _.chain(revisions)
+    .find({ revision_seq: rSeq })
+    .value();
 
-export const getView = (fourfour, views) => _.chain(views).get(fourfour).value();
+export const getView = (fourfour, views) =>
+  _.chain(views)
+    .get(fourfour)
+    .value();
 
 // shapeRevisionForProps :: Revision -> ViewlikeObj
 const shapeRevisionForProps = revision => ({
+  name: revision.metadata.name,
+  description: revision.metadata.description,
+  category: revision.metadata.category,
   tags: revision.metadata.tags,
   attribution: revision.metadata.attribution,
   attributionLink: revision.metadata.attributionLink || '',
@@ -18,7 +27,6 @@ const shapeRevisionForProps = revision => ({
   owner: {
     displayName: revision.created_by.display_name,
     id: revision.created_by.user_id
-
   },
   metadata: revision.metadata
 });

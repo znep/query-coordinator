@@ -18,9 +18,9 @@ class UserNotificationList extends Component {
       I18n
     } = this.props;
 
-    const notifications = userNotifications.filter(notification => {
-      return _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy);
-    });
+    const notifications = userNotifications.filter((notification) => (
+      _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy)
+    ));
 
     if (_.isEmpty(notifications)) {
       return (
@@ -29,24 +29,24 @@ class UserNotificationList extends Component {
           <h3>{I18n.t('shared_site_chrome_notifications.no_filtered_notifications')}</h3>
         </div>
       );
-    } else {
-      return notifications.map(notification =>
-        <UserNotification
-          key={notification.id}
-          id={notification.id}
-          is_read={notification.read}
-          activity_type={notification.activity_type}
-          created_at={notification.created_at}
-          type={notification.type}
-          title={notification.title}
-          message_body={notification.message_body}
-          link={notification.link}
-          user_name={notification.user_name}
-          user_profile_link={notification.user_profile_link}
-          onClearUserNotification={onClearUserNotification}
-          onToggleReadUserNotification={onToggleReadUserNotification} />
-      );
     }
+
+    return notifications.map((notification) =>
+      <UserNotification
+        key={notification.id}
+        id={notification.id}
+        isRead={notification.read}
+        activityType={notification.activityType}
+        createdAt={notification.createdAt}
+        type={notification.type}
+        title={notification.title}
+        messageBody={notification.messageBody}
+        link={notification.link}
+        userName={notification.userName}
+        userProfileLink={notification.userProfileLink}
+        onClearUserNotification={onClearUserNotification}
+        onToggleReadUserNotification={onToggleReadUserNotification} />
+    );
   }
 
   render() {

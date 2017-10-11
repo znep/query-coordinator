@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { redirectToQueryString, urlParams } from '../../common/http';
+import { redirectToQueryString, urlParams } from 'common/http';
 
 export default (state, action) => {
   // Takes existing search query string, modifes the `q` to equal the provided query,

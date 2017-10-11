@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { commaify } from '../../../common/formatNumber';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links';
+import * as Links from 'links/links';
 import * as DisplayState from 'lib/displayState';
 import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
@@ -69,9 +69,7 @@ class RowErrorsLink extends Component {
             }}>
             <Link to={linkPath}>
               <div className={styles.malformedRowsStatusText} data-flyout={FLYOUT_ID}>
-                <span className={styles.error}>
-                  {commaify(numRowErrors)}
-                </span>
+                <span className={styles.error}>{commaify(numRowErrors)}</span>
                 {singularOrPlural(numRowErrors, SubI18n.malformed_row, SubI18n.malformed_rows)}
               </div>
               <ErrorFlyout numRowErrors={numRowErrors} />

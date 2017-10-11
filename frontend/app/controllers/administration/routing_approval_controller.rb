@@ -1,3 +1,6 @@
+# Note (10/5/2017): the "new" Routing & Approval experience being created by the Discovery team is using
+# a new controller, `approvals_controller.rb`
+
 class Administration::RoutingApprovalController < AdministrationController
 
   #

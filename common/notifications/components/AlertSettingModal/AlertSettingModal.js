@@ -6,7 +6,7 @@ import Tabs from './Tabs';
 import PreferenceContent from './PreferenceContent';
 import cssModules from 'react-css-modules';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import AlertPreferenceStore from '../../store/AlertPreferenceStore'
+import AlertPreferenceAPI from '../../api/AlertPreferenceAPI'
 import Spinner from '../Spinner';
 
 class AlertSettingModal extends Component {
@@ -25,7 +25,7 @@ class AlertSettingModal extends Component {
   }
 
   componentDidMount() {
-    AlertPreferenceStore.get().then((response) => {
+    AlertPreferenceAPI.get().then((response) => {
       const preferences = response;
       this.setState({preferences});
     });
@@ -75,7 +75,7 @@ class AlertSettingModal extends Component {
     let { showSpinner } = this.state;
     showSpinner = true;
     this.setState({showSpinner});
-    AlertPreferenceStore.set(preferences).then(() => {
+    AlertPreferenceAPI.set(preferences).then(() => {
       showSpinner = false;
       this.setState({showSpinner});
       onClose();
@@ -105,8 +105,8 @@ class AlertSettingModal extends Component {
           {this.state.showSpinner ? <Spinner /> : null}
         </ModalContent>
         <ModalFooter>
-          <div styleName="cancel-btn" className="cancel-btn" onClick={onClose}>Cancel</div>
-          <div styleName="save-btn" className="save-btn" onClick={this.saveAlertSettings}>Save</div>
+          <div styleName="cancel-button" className="cancel-button" onClick={onClose}>Cancel</div>
+          <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>Save</div>
         </ModalFooter>
       </Modal>
     )

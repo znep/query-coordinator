@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { handleEnter } from '../../helpers/keyPressHelpers';
+import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 
 export class Searchbox extends React.Component {
   constructor(props) {

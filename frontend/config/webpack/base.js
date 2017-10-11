@@ -1,5 +1,6 @@
 const path = require('path');
 const common = require('./common');
+const { getStyleguideIncludePaths } = require('../../../common/webpack/shared_config');
 
 let preLoaders = [];
 
@@ -23,7 +24,7 @@ module.exports = {
   },
   module: { preLoaders },
   sassLoader: {
-    includePaths: common.getStyleguideIncludePaths()
+    includePaths: getStyleguideIncludePaths()
   },
   output: {
     pathinfo: !common.isProduction
@@ -31,5 +32,6 @@ module.exports = {
   resolveLoader: {
     modulesDirectories: [ path.resolve(common.frontendRoot, 'node_modules') ]
   },
-  resolve: common.getStandardResolve()
+  resolve: common.getStandardResolve(),
+  postcss: () => [require('autoprefixer')]
 };

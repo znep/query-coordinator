@@ -702,5 +702,44 @@ module.exports = {
       ['0.01', 100],
       ['0.05', 200],
     ]
+  },
+  // tests for column ordering; different data
+  "SELECT `month` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `month` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 21": {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['February', null],
+      ['January', null],
+      ['March', null],
+      ['April', null]
+    ]
+  },
+  "SELECT `station` AS __dimension_alias__ GROUP BY `station` ORDER BY __dimension_alias__ ASC LIMIT 101": {
+    columns: ['dimension'],
+    rows: [
+      ['alpha'],
+      ['bravo'],
+      ['charlie']
+    ]
+  },
+  "SELECT `month` AS __dimension_alias__, `station` AS __grouping_alias__, COUNT(*) AS __measure_alias__ WHERE `month` IN ('February', 'January', 'March', 'April') AND `station` IN ('alpha', 'bravo', 'charlie') GROUP BY `month`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001": {
+    columns: ['dimension', 'grouping', 'measure'],
+    rows: [
+      ['April', 'alpha', 0],
+      ['April', 'bravo', 1],
+      ['April', 'charlie', 2],
+      ['February', 'alpha', 3],
+      ['February', 'bravo', 4],
+      ['February', 'charlie', 5],
+      ['January', 'alpha', 6],
+      ['January', 'bravo', 7],
+      ['January', 'charlie', 8],
+      ['March', 'alpha', 9],
+      ['March', 'bravo', 10],
+      ['March', 'charlie', 11]
+    ]
+  },
+  "SELECT `month` AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `month` IN ('February', 'January', 'March', 'April') AND `station` IS NOT NULL AND `station` NOT IN ('alpha', 'bravo', 'charlie') GROUP BY `month` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 1001": {
+    columns: ['dimension', 'grouping', 'measure'],
+    rows: []
   }
 };

@@ -99,7 +99,7 @@ StatefulAutocomplete.defaultProps = {
   options: {
     numberOfResults: 7,
     getSearchResults: getCeteraResults,
-    millisecondsBeforeSearch: 60,
+    millisecondsBeforeSearch: 250,
     collapsible: false,
     mobile: false,
     adminHeaderClasses: ''

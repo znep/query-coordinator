@@ -4,7 +4,7 @@ import React from 'react';
 import sinon from 'sinon';
 
 import { Dropdown } from 'common/components';
-import { UserRow } from 'components/user_row';
+import { UserRow } from 'components/UserRow';
 import I18nJS from 'i18n-js';
 
 import { singleRowState } from '../helpers/stateFixtures';

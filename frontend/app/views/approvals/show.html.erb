@@ -1,0 +1,14 @@
+<%= content_for :head do %>
+  <title><%= I18n.t('approvals.title') %> | <%= get_site_title %></title>
+<%- end %>
+
+<div class="approvals" id="approvals-content"></div>
+
+<%= content_for :scripts do %>
+  <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
+
+  <%= render_approvals_translations %>
+  <%= render_approvals_session_data %>
+  <%= render_approvals_server_config %>
+  <%= include_webpack_bundle 'approvals/main' %>
+<%- end %>

@@ -285,7 +285,10 @@ function renderCellHTML(cellContent, column, domain, datasetUid) {
 * Renders a formatted text column (only preserves plain text content).
 */
 function renderFormattedTextHTML(cellContent) {
-  return _.escape($(`<p>${cellContent}</p>`).text());
+
+  return (_.isNull(cellContent)) ?
+    '' :
+    _.escape($(`<p>${cellContent}</p>`).text());
 }
 
 /**
@@ -379,7 +382,13 @@ function renderNumberCellHTML(input, column) {
  * properties).
  */
 function renderObeLocationUnsafePlainText(cellContent) {
+
+  if (_.isNull(cellContent)) {
+    return '';
+  }
+
   let humanAddress = null;
+
   if (cellContent.human_address) {
     try {
       const addressData = JSON.parse(cellContent.human_address);
@@ -443,7 +452,10 @@ function renderGeoCellHTML(cellContent) {
 * Renders any GeoJSON column by serializing to Well Known Text.
 */
 function renderWKTCellHTML(cellContent) {
-  return _.escape(wkt.stringify(cellContent));
+
+  return (_.isEmpty(cellContent)) ?
+    '' :
+    _.escape(wkt.stringify(cellContent));
 }
 
 /**

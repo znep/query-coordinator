@@ -1,8 +1,9 @@
-// Vendor Imports
-const _ = require('lodash');
-// Project Imports
-const I18n = require('common/i18n').default;
-const makeSocrataCategoricalDataRequest = require('./makeSocrataCategoricalDataRequest');
+import _ from 'lodash';
+
+import I18n from 'common/i18n';
+import * as MonthPredicateHelper from 'common/visualizations/dataProviders/MonthPredicateHelper';
+import makeSocrataCategoricalDataRequest from './makeSocrataCategoricalDataRequest';
+
 
 function getData(vif, options) {
   const dataRequests = vif.series.map((series, seriesIndex) => {
@@ -115,7 +116,25 @@ function getData(vif, options) {
       compact().
       every((val) => !_.isNaN(_.toNumber(val)));
 
-    const compareValues = makeValueComparator(orderBySort, doSortNumeric);
+    // Determine whether all values for ordering are months in the same
+    // language, and assume that language is the one in the first row.
+    const language = MonthPredicateHelper.detectLanguage(_.get(dataTable, ['rows', 0, sortValueIndex], null));
+    const doSortMonths =
+      !doSortNumeric &&
+      language &&
+      _.every(
+        dataTable.rows,
+        (row) => !_.isUndefined(MonthPredicateHelper.monthIndex(row[sortValueIndex], language))
+      );
+
+    let transformer = _.identity;
+    if (doSortNumeric) {
+      transformer = _.toNumber;
+    } else if (doSortMonths) {
+      transformer = (x) => _.toNumber(MonthPredicateHelper.monthIndex(x, language));
+    }
+
+    const compareValues = makeValueComparator(orderBySort, transformer);
     const compareCategoriesToNullAndOther = (a, b) => {
       if (a === otherCategoryName) {
         return 1;
@@ -194,15 +213,14 @@ function getData(vif, options) {
 // NOTE: There's a possibility that we can move this logic further down into
 // makeSocrataCategoricalDataRequest, but at time of writing that module isn't
 // covered by tests, so the change is too risky to attempt.
-function makeValueComparator(direction, numeric) {
+function makeValueComparator(direction, transformer = _.identity) {
   const _compare = (direction === 'asc') ? _.gt : _.lt;
-  const _transform = numeric ? _.toNumber : _.identity;
 
   return (a, b) =>  {
     if (a === b) {
       return 0;
     } else {
-      return _compare(_transform(a), _transform(b)) ? 1 : -1;
+      return _compare(transformer(a), transformer(b)) ? 1 : -1;
     }
   };
 }

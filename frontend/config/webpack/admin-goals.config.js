@@ -13,10 +13,6 @@ module.exports = _.defaultsDeep({
   module: {
     loaders: common.getStandardLoaders([
       {
-        test: /\.scss|\.css$/,
-        loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
         test: /\.svg/, // TODO Why is this regex not anchored at EOL?
         loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
         exclude: common.svgFontPath
@@ -25,7 +21,25 @@ module.exports = _.defaultsDeep({
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
       }
-    ])
+    ],
+    {
+      substituteStyleLoaders: [
+        {
+          test: /\.s?css$/,
+          // Process styles but don't inline images. We don't use them.
+          loader: 'style-loader!css-loader?url=false!sass-loader'
+        },
+        {
+          test: /\.svg/, // TODO Why is this regex not anchored at EOL?
+          loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
+          exclude: common.svgFontPath
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
+        }
+      ]
+    })
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/adminGoals' ])

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { ViewCard } from 'common/components';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
-import { handleKeyPress } from '../../helpers/keyPressHelpers';
+import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
 
 export class Card extends React.Component {
   constructor(props) {

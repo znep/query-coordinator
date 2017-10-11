@@ -43,7 +43,7 @@ describe('components/ColumnHeader', () => {
 
   it('renders without errors', () => {
     const component = shallow(<ColumnHeader {...defaultProps} />);
-    assert.isFalse(component.isEmpty());
+    assert.isTrue(component.exists());
   });
 
   it('handles column type changing', () => {

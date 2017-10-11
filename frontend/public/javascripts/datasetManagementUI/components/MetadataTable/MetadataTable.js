@@ -4,7 +4,7 @@ import { InfoPane } from 'common/components';
 import CommonMetadataTable from 'common/components/MetadataTable';
 import styles from './MetadataTable.scss';
 import _ from 'lodash';
-import { localizeLink } from '../../../common/locale';
+import { localizeLink } from 'common/locale';
 
 const MetadataTable = ({
   coreView,

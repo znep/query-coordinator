@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
 
-import { getSearchUrl } from '../Util';
+import { getBrowseUrl } from '../Util';
 import { resultVisibilityChanged } from '../actions';
 import CollapsedIcon from './CollapsedIcon';
 import SearchBox from './SearchBox/SearchBox';
@@ -47,7 +47,8 @@ class Autocomplete extends React.Component {
       adminHeaderClasses,
       onChooseResult,
       onClearSearch,
-      onResultVisibilityChanged
+      onResultVisibilityChanged,
+      renderResult
     } = this.props;
 
     if (collapsible && collapsed) {
@@ -71,7 +72,10 @@ class Autocomplete extends React.Component {
           onClearSearch={onClearSearch}
           query={currentQuery}
           adminHeaderClasses={adminHeaderClasses} />
-        <Results collapsible={collapsible} onChooseResult={onChooseResult} />
+        <Results
+          collapsible={collapsible}
+          onChooseResult={onChooseResult}
+          renderResult={renderResult} />
       </div>
     );
   }
@@ -89,14 +93,15 @@ Autocomplete.propTypes = {
   adminHeaderClasses: PropTypes.array,
   onChooseResult: PropTypes.func,
   onClearSearch: PropTypes.func,
-  onResultVisibilityChanged: PropTypes.func.isRequired
+  onResultVisibilityChanged: PropTypes.func.isRequired,
+  renderResult: PropTypes.func
 };
 
 Autocomplete.defaultProps = {
-  onChooseResult: (name) => { window.location.href = getSearchUrl(name); },
+  onChooseResult: (name) => { window.location.href = getBrowseUrl(name); },
   collapsible: false,
   collapsed: false,
-  adminHeaderClasses: ''
+  adminHeaderClasses: []
 }
 
 const mapStateToProps = (state) => ({ collapsed: state.autocomplete.collapsed });

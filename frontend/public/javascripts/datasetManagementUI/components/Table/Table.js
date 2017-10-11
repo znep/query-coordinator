@@ -36,12 +36,19 @@ function Table({
   addColumn,
   dropColumn,
   validateThenSetRowIdentifier,
+  unSetRowIdentifier,
+  moveLeft,
+  moveRight,
   showShortcut,
   onClickError
 }) {
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const showFlyouts = true;
   const numRowErrors = inputSchema.num_row_errors;
+  const canTransform = (
+    entities.sources[inputSchema.source_id] &&
+    !entities.sources[inputSchema.source_id].failed_at
+  );
   return (
     <table className={styles.table}>
       <thead>
@@ -49,6 +56,7 @@ function Table({
           {outputColumns.map(column =>
             <ColumnHeader
               key={column.id}
+              canTransform={canTransform}
               outputSchema={outputSchema}
               outputColumn={column}
               updateColumnType={updateColumnType}
@@ -56,7 +64,11 @@ function Table({
               addColumn={() => addColumn(outputSchema, column)}
               dropColumn={() => dropColumn(outputSchema, column)}
               showShortcut={showShortcut}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
+              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
+              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
+              moveLeft={() => moveLeft(outputSchema, column)}
+              moveRight={() => moveRight(outputSchema, column)}
+              columnCount={outputColumns.length} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -100,6 +112,9 @@ Table.propTypes = {
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
+  unSetRowIdentifier: PropTypes.func.isRequired,
+  moveLeft: PropTypes.func.isRequired,
+  moveRight: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
   apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,

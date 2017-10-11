@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import airbrake from 'common/airbrake';
-import { defaultHeaders } from '../../common/http';
+import { defaultHeaders } from 'common/http';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 

@@ -24,3 +24,11 @@
     }
   }
 }
+
+
+.pageLoading {
+  composes: spinner-default from global;
+  float: right;
+  position: relative;
+  top: 4px;
+}

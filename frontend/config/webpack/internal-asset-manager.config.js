@@ -12,13 +12,9 @@ module.exports = _.defaultsDeep(
       'public/javascripts/internalAssetManager'
     ),
     entry: common.withHotModuleEntries({
-      main: './main',
-      profile: './profile'
+      main: './main'
     }),
     output: common.getOutput(identifier),
-    eslint: common.getEslintConfig(
-      'public/javascripts/internalAssetManager/.eslintrc.json'
-    ),
     externals: { jquery: true },
     module: {
       loaders: common.getStandardLoaders([
@@ -36,15 +32,6 @@ module.exports = _.defaultsDeep(
             limit: 10000,
             name: 'static/media/[name].[hash:8].[ext]'
           }
-        },
-        {
-          test: /\.(css|scss)$/,
-          loaders: [
-            'style-loader',
-            'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-            'autoprefixer-loader',
-            'sass-loader'
-          ]
         }
       ])
     },

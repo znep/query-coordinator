@@ -101,6 +101,7 @@ export class FilterBar extends Component {
   onFilterAdd(filter) {
     const { filters, onUpdate } = this.props;
     const { maxVisibleFilters } = this.state;
+    // This clone is very important. See comment in onFilterUpdate.
     const newFilters = _.cloneDeep(filters);
 
     newFilters.push(filter);
@@ -115,6 +116,7 @@ export class FilterBar extends Component {
 
   onFilterRemove(index) {
     const { filters, onUpdate } = this.props;
+    // This clone is very important. See comment in onFilterUpdate.
     const newFilters = _.cloneDeep(filters);
 
     newFilters.splice(index, 1);
@@ -125,9 +127,14 @@ export class FilterBar extends Component {
   onFilterUpdate(filter, index) {
     const { filters, onUpdate } = this.props;
 
-    filters.splice(index, 1, filter);
+    // This clone is _very important_. We obtained `filters`
+    // from our parent (via props), and we don't want to mutate
+    // their copy of `filters`. If we do, it makes tracking state
+    // changes via Redux quite difficult.
+    const newFilters = _.cloneDeep(filters);
+    newFilters.splice(index, 1, filter);
 
-    onUpdate(filters);
+    onUpdate(newFilters);
   }
 
   onToggleCollapsedFilters() {
@@ -347,6 +354,8 @@ export class FilterBar extends Component {
 
 FilterBar.propTypes = {
   /**
+   * WARNING: these are not raw columns from view metadata
+   *
    * The columns prop is an array of column objects.  Each column object must contain:
    *   - fieldName (string), the internal column name to query against.
    *   - name (string), the human-readable name of the column.
@@ -356,6 +365,8 @@ FilterBar.propTypes = {
    *   - rangeMax (number), the maximum value present in the column.
    * This list will be used to construct the list of filters available for use.  Eventually,
    * publishers and administrators are able to add at most one filter for each column.
+   *
+   * The best place to get columns in the right format is via `metadataProvider.getDisplayableFilterableColumns`
    */
   columns: PropTypes.arrayOf(PropTypes.object),
 
@@ -404,6 +415,12 @@ FilterBar.propTypes = {
    * show an error to the user and request a retyping.
    *
    * If a function is not supplied, the UI will not allow arbitrary values.
+   *
+   * Recommended implementation uses: SoqlDataProvider#match(fieldName, searchTerm)
+   *
+   * TODO: Consider refactoring FilterBar to take an entire view metadata object instead.
+   * That way, it can implement this functionality itself (we need the view UID).
+   * Under this regime, we could also fetch the column stats ourselves inside the component.
    */
   isValidTextFilterColumnValue: PropTypes.func
 };

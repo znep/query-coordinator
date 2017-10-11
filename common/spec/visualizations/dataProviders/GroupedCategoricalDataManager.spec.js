@@ -407,4 +407,63 @@ describe('GroupedCategoricalDataManager', () => {
       );
     });
   });
+
+  describe('forced month column sorting behavior', () => {
+
+    const vifBase = {
+      configuration: {
+        showOtherCategory: false
+      },
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      series: [
+        {
+          dataSource: {
+            datasetUid: 'four-four',
+            dimension: {
+              columnName: 'month',
+              aggregationFunction: null,
+              grouping: {
+                columnName: 'station'
+              }
+            },
+            domain: 'example.com',
+            filters: [],
+            orderBy: {
+              parameter: 'dimension',
+              sort: 'asc'
+            },
+            limit: 20,
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql'
+          },
+          type: 'barChart'
+        }
+      ]
+    };
+
+    it('sorts month columns by month order', () => {
+      const vif = _.cloneDeep(vifBase);
+      const expectedTable = {
+        columns: ['dimension', 'alpha', 'bravo', 'charlie'],
+        rows: [
+          ['January', 6, 7, 8],
+          ['February', 3, 4, 5],
+          ['March', 9, 10, 11],
+          ['April', 0, 1, 2]
+        ]
+      };
+      return GroupedCategoricalDataManager.getData(vif, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        then((response) => {
+          assert.deepEqual(response, expectedTable);
+        }).
+        catch(logAndThrow);
+    });
+
+  });
 });

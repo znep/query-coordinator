@@ -163,6 +163,12 @@ Rails.application.routes.draw do
         :constraints => FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
     end
 
+    scope :controller => 'approvals' do
+      get '/admin/approvals',
+        :action => 'show',
+        :constraints => FeatureFlags::RoutingConstraint.new(:enable_approvals_beta)
+    end
+
     scope :path => '/admin', :controller => 'administration' do
       get '/', :action => :index
       get :analytics
@@ -465,8 +471,8 @@ Rails.application.routes.draw do
       get '/stats', :action => 'stats', :as => :view_stats
       get '/form_success', :action => 'form_success', :as => :view_form_success
       get '/about', :action => 'about', :as => :about_view
-      get '/manage/revisions/current(*rest_of_path)', :action => 'current_revision', :as => :current_revision
-      get '/manage(*rest_of_path)', :action => 'dsmui', :as => :show_revision
+      get '/revisions/current(*rest_of_path)', :action => 'current_revision', :as => :current_revision
+      get '/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision', :as => :show_revision
       get '/visualization', :action => 'create_visualization_canvas'
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
@@ -505,8 +511,8 @@ Rails.application.routes.draw do
       get 'd/:id/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
       get 'd/:id/edit', :action => 'edit'
 
-      get 'd/:id/manage/revisions/current(*rest_of_path)', :action => 'current_revision'
-      get 'd/:id/manage(*rest_of_path)', :action => 'dsmui'
+      get 'd/:id/revisions/current(*rest_of_path)', :action => 'current_revision'
+      get 'd/:id/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision'
 
       get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}, :bypass_dslp => true
     end

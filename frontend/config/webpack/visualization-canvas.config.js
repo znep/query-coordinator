@@ -16,14 +16,19 @@ module.exports = _.defaultsDeep({
   module: {
     loaders: common.getStandardLoaders([
       {
-        test: /\.scss|\.css$/,
-        loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
       }
-    ])
+    ],
+    {
+      substituteStyleLoaders: [
+        {
+          test: /\.s?css$/,
+          // Process styles but don't inline images. We don't use them.
+          loader: 'style-loader!css-loader?url=false!sass-loader'
+        }
+      ]
+    })
   },
   resolve: common.getStandardResolve([ 'public/javascripts/visualizationCanvas' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

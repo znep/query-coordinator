@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import geojson2wkt from 'geojson2wkt';
 import styles from './TableCell.scss';
+import classNames from 'classnames';
 
 class TableCell extends Component {
 
@@ -11,11 +12,10 @@ class TableCell extends Component {
   }
 
   render() {
-    const { cell, type } = this.props;
+    const { cell, type, failed } = this.props;
 
     if (!cell) {
       return (<td className={styles.notYetLoaded} />);
-
     } else if (cell.error) {
       const inputs = cell.error.inputs;
 
@@ -26,18 +26,22 @@ class TableCell extends Component {
       const input = Object.keys(inputs).length === 1 ? _.first(_.map(inputs, (value) => value)).ok : '';
 
       return (
-        <td className={styles.error} title={cell.error.message.english || cell.error.message}>
+        <td
+          className={classNames(styles.error, { [styles.transformFailed]: failed })}
+          title={cell.error.message.english || cell.error.message}>
           <div>{input}</div>
         </td>
       );
     } else if (cell.ok === null) {
       return (
-        <td className={styles.empty}><div /></td>
+        <td className={classNames(styles.empty, { [styles.transformFailed]: failed })}>
+          <div />
+        </td>
       );
 
     } else {
       return (
-        <td className={styles.base}>
+        <td className={classNames(styles.base, { [styles.transformFailed]: failed })}>
           <div>{renderCellValue(cell.ok, type)}</div>
         </td>
       );
@@ -73,6 +77,7 @@ function renderCellValue(value, type) {
 
 TableCell.propTypes = {
   cell: PropTypes.object,
+  failed: PropTypes.bool,
   type: PropTypes.string
 };
 

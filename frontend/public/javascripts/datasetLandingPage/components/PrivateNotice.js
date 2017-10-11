@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
-import { localizeLink } from '../../common/locale';
+import { localizeLink } from 'common/locale';
 
 export class PrivateNotice extends Component {
   constructor(props) {

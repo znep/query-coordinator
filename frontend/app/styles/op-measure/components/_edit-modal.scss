@@ -118,6 +118,10 @@
     $column-width: 750px;
     $metric-definition-margin: 32px;
 
+    .calculation-panel-subtitle {
+      margin-top: 0;
+    }
+
     .calculation-type-selector {
       margin-bottom: 16px;
     }
@@ -144,15 +148,36 @@
     }
 
     .metric-preview {
-      float: right;
-      width: $column-width / 2;
+      display: flex;
       margin-bottom: $metric-definition-margin;
 
       .measure-result-card {
+        width: 345px;
         margin-top: 4px;
         margin-bottom: 24px;
 
         box-shadow: 0 0 8px $light-grey-1;
+      }
+
+      .metric-display-options {
+        margin-left: 50px;
+
+        .metric-display-options-title {
+          margin-bottom: 5px;
+        }
+
+        .metric-decimal-places {
+          display: inline-block;
+
+          input {
+            width: 60px;
+          }
+        }
+
+        .metric-unit-label {
+          display: inline-block;
+          margin-left: 40px;
+        }
       }
 
       label {
@@ -161,10 +186,11 @@
     }
 
     .metric-definition-text {
-      clear: both;
-      width: 100%;
+      float: right;
+      width: $column-width / 2;
       background: $light-grey-6;
       padding: 18px 16px;
+      margin-right: -20px;
 
       h5 {
         margin-bottom: 4px;

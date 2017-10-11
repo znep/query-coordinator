@@ -40,19 +40,24 @@ export class CalculationPreview extends Component {
 
     return (
       <div className="metric-preview">
-        {I18n.t('open_performance.measure.edit_modal.calculation.sample_result')}
         <EditedMeasureResultCard />
-        <h5>
-          {I18n.t('open_performance.measure.edit_modal.calculation.display_options.title')}
-        </h5>
-        <label htmlFor={decimalPlacesId}>
-          {I18n.t('open_performance.measure.edit_modal.calculation.display_options.decimal_places')}
-        </label>
-        <input {...decimalPlacesAttributes} />
-        <label htmlFor={rowUnitId}>
-          {I18n.t('open_performance.measure.edit_modal.calculation.display_options.unit_label')}
-        </label>
-        <input {...rowUnitAttributes} />
+        <div className="metric-display-options">
+          <h6 className="metric-display-options-title">
+            {I18n.t('open_performance.measure.edit_modal.calculation.display_options.title')}
+          </h6>
+          <div className="metric-decimal-places">
+            <label htmlFor={decimalPlacesId}>
+              {I18n.t('open_performance.measure.edit_modal.calculation.display_options.decimal_places')}
+            </label>
+            <input {...decimalPlacesAttributes} />
+          </div>
+          <div className="metric-unit-label">
+            <label htmlFor={rowUnitId}>
+              {I18n.t('open_performance.measure.edit_modal.calculation.display_options.unit_label')}
+            </label>
+            <input {...rowUnitAttributes} />
+          </div>
+        </div>
       </div>
     );
   }

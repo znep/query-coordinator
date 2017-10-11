@@ -3019,7 +3019,6 @@ en:
         cancel: Cancel
         title: Configure Measure
         calculation:
-          column_placeholder: column
           choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
           date_column: Date Column
@@ -3028,8 +3027,6 @@ en:
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
-          formula: Formula
-          row_placeholder: row
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation

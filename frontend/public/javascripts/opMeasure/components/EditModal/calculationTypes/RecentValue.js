@@ -6,9 +6,7 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import { Dropdown, SocrataIcon } from 'common/components';
-import { setUnitLabel, setDecimalPlaces, setValueColumn, setDateColumn } from '../../../actions/editor';
-
-import CalculationPreview from '../CalculationPreview';
+import { setValueColumn, setDateColumn } from '../../../actions/editor';
 
 export class RecentValue extends Component {
   // Left-hand pane with count-specific options.
@@ -69,13 +67,6 @@ export class RecentValue extends Component {
           {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.help_title')}
         </h5>
         {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.help_body')}
-        <h5>
-          {I18n.t('open_performance.measure.edit_modal.calculation.formula')}
-        </h5>
-        <code><span className="column">
-          [{I18n.t('open_performance.measure.edit_modal.calculation.column_placeholder')} a],
-          [{I18n.t('open_performance.measure.edit_modal.calculation.row_placeholder')} a]
-        </span></code>
       </div>
     );
   }
@@ -83,7 +74,6 @@ export class RecentValue extends Component {
   render() {
     return (<div className="metric-container">
       {this.renderConfigPane()}
-      <CalculationPreview />
       {this.renderDefinitionText()}
     </div>);
   }
@@ -91,40 +81,30 @@ export class RecentValue extends Component {
 
 RecentValue.propTypes = {
   dateColumnFieldName: PropTypes.string,
-  decimalPlaces: PropTypes.number,
   displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
     renderTypeName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
-  onChangeDecimalPlaces: PropTypes.func.isRequired,
-  onChangeUnitLabel: PropTypes.func.isRequired,
   onSelectDateColumn: PropTypes.func.isRequired,
   onSelectValueColumn: PropTypes.func.isRequired,
-  unitLabel: PropTypes.string.isRequired,
   valueColumnFieldName: PropTypes.string
 };
 
 function mapStateToProps(state) {
   const dateColumnFieldName = _.get(state, 'editor.measure.metric.arguments.dateColumn');
-  const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
   const valueColumnFieldName = _.get(state, 'editor.measure.metric.arguments.valueColumn');
-  const unitLabel = _.get(state, 'editor.measure.metric.label', '');
 
   return {
-    decimalPlaces,
     dateColumnFieldName,
     displayableFilterableColumns,
-    valueColumnFieldName,
-    unitLabel
+    valueColumnFieldName
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onChangeDecimalPlaces: setDecimalPlaces,
-    onChangeUnitLabel: setUnitLabel,
     onSelectDateColumn: setDateColumn,
     onSelectValueColumn: setValueColumn
   }, dispatch);

@@ -43,6 +43,7 @@ export class MeasureResultCard extends Component {
   // Called whenever props change or the component receives initial props.
   checkProps(props) {
     const measureHasChanged = !_.isEqual(this.state.lastRequestedMeasure, props.measure);
+
     if (measureHasChanged) {
       this.onMeasureChanged();
     }

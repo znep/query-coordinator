@@ -6,9 +6,7 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import { Dropdown, SocrataIcon } from 'common/components';
-import { setUnitLabel, setDecimalPlaces, setColumn } from '../../../actions/editor';
-
-import CalculationPreview from '../CalculationPreview';
+import { setColumn } from '../../../actions/editor';
 
 export class Sum extends Component {
   // Left-hand pane with count-specific options.
@@ -48,12 +46,6 @@ export class Sum extends Component {
           {I18n.t('open_performance.measure.edit_modal.calculation.types.sum.help_title')}
         </h5>
         {I18n.t('open_performance.measure.edit_modal.calculation.types.sum.help_body')}
-        <h5>
-          {I18n.t('open_performance.measure.edit_modal.calculation.formula')}
-        </h5>
-        <code>sum <span className="column">
-          [{I18n.t('open_performance.measure.edit_modal.calculation.column_placeholder')}]
-        </span></code>
       </div>
     );
   }
@@ -61,7 +53,6 @@ export class Sum extends Component {
   render() {
     return (<div className="metric-container">
       {this.renderConfigPane()}
-      <CalculationPreview />
       {this.renderDefinitionText()}
     </div>);
   }
@@ -74,31 +65,21 @@ Sum.propTypes = {
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
-  decimalPlaces: PropTypes.number,
-  onChangeDecimalPlaces: PropTypes.func.isRequired,
-  onChangeUnitLabel: PropTypes.func.isRequired,
-  onSelectColumn: PropTypes.func.isRequired,
-  unitLabel: PropTypes.string.isRequired
+  onSelectColumn: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
-  const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
-  const unitLabel = _.get(state, 'editor.measure.metric.label', '');
 
   return {
     columnFieldName,
-    decimalPlaces,
-    displayableFilterableColumns,
-    unitLabel
+    displayableFilterableColumns
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onChangeDecimalPlaces: setDecimalPlaces,
-    onChangeUnitLabel: setUnitLabel,
     onSelectColumn: setColumn
   }, dispatch);
 }

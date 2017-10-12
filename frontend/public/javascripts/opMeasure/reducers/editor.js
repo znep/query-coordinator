@@ -26,9 +26,10 @@ export default (state = initialState(), action) => {
     return state;
   }
 
-  // TODO: We're running on a razor's edge due to the shallow props comparison done by
-  // React and Connect. It's very easy to cause updates to not propagate to components.
-  // Consider cloning the entire state tree deeply on every update.
+  // Need to cloneDeep the state since react/redux only does a shallow comparison so when we pass a 'measure'
+  // prop, changes to nested properties such as 'metric' does not trigger rerendering`
+  state = _.cloneDeep(state);
+
   switch (action.type) {
     case actions.editor.SET_DATA_SOURCE_UID: {
       const newState = { ...state };

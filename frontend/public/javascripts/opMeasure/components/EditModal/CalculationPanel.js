@@ -7,10 +7,11 @@ import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 
-import { setCalculationType } from '../../actions/editor';
+import { setCalculationType, setUnitLabel, setDecimalPlaces } from '../../actions/editor';
 
 import calculationTypes from './calculationTypes';
 import { CalculationTypeNames } from '../../lib/constants';
+import CalculationPreview from './CalculationPreview';
 
 // Configuration panel for methods and analysis.
 export class CalculationPanel extends Component {
@@ -100,13 +101,15 @@ export class CalculationPanel extends Component {
   render() {
     return (
       <div>
-        <h3>
+        <h3 className="calculation-panel-title">
           {I18n.t('open_performance.measure.edit_modal.calculation.title')}
         </h3>
-        <p>
+        <p className="calculation-panel-subtitle">
           {I18n.t('open_performance.measure.edit_modal.calculation.subtitle')}
         </p>
         <form onSubmit={(event) => event.preventDefault()}>
+          <h5>{I18n.t('open_performance.measure.edit_modal.calculation.sample_result')}</h5>
+          <CalculationPreview />
           <div className="calculation-type-selector btn-group">
             {this.renderCalculatorTypeButtons()}
           </div>
@@ -118,20 +121,33 @@ export class CalculationPanel extends Component {
 }
 
 CalculationPanel.propTypes = {
-  hasDataSource: PropTypes.bool.isRequired,
   calculationType: PropTypes.string,
-  onSetCalculationType: PropTypes.func.isRequired
+  decimalPlaces: PropTypes.number,
+  hasDataSource: PropTypes.bool.isRequired,
+  onChangeDecimalPlaces: PropTypes.func.isRequired,
+  onChangeUnitLabel: PropTypes.func.isRequired,
+  onSetCalculationType: PropTypes.func.isRequired,
+  unitLabel: PropTypes.string.isRequired
 };
 
 function mapStateToProps(state) {
+  const calculationType = _.get(state, 'editor.measure.metric.type');
+  const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
+  const hasDataSource = !!_.get(state, 'editor.measure.metric.dataSource.uid');
+  const unitLabel = _.get(state, 'editor.measure.metric.label', '');
+
   return {
-    hasDataSource: !!_.get(state, 'editor.measure.metric.dataSource.uid'),
-    calculationType: _.get(state, 'editor.measure.metric.type')
+    calculationType,
+    decimalPlaces,
+    hasDataSource,
+    unitLabel
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    onChangeDecimalPlaces: setDecimalPlaces,
+    onChangeUnitLabel: setUnitLabel,
     onSetCalculationType: setCalculationType
   }, dispatch);
 }

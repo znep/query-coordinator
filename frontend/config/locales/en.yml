@@ -3195,6 +3195,8 @@ en:
     rights:
       approve_nominations:
         name: Approve or reject community-submitted dataset suggestions
+      can_see_all_assets_tab_siam:
+        name: Discover all public and private assets across the organization
       chown_datasets:
         name: Change owner of all assets on site from one user to another
       change_configurations:

@@ -16,7 +16,7 @@ export class ResultsAndFilters extends Component {
     }
 
     return (
-      <div className="results-and-filters">
+      <div className="asset-browser results-and-filters">
         <CatalogResults page={page} />
         {catalogFilters}
       </div>

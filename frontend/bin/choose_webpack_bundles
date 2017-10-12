@@ -31,8 +31,11 @@ trap "rm -f $TMP_FILE" 0 1 2 5 15
 
 # Display dialog, save result into temp file.
 echo "$FRONTEND_WEBPACK_BUNDLES" |
-  sed 's/$/ off/' |
-  xargs dialog --no-items --checklist "Choose bundles (make no selection to build all):
+    # Set all to 'off' by default for dialog
+    sed 's/$/ off/' |
+    # Look for required bundles, set those back to 'on'
+    sed -E 's/^(authentication|open-data|site_wide) (off)$/\1 on/' |
+    xargs dialog --no-items --checklist "Choose bundles (required bundles selected by default):
  <Arrows>: Move
  <Space> : Select Item
  <Escape>: Cancel

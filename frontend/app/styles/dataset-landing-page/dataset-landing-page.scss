@@ -266,7 +266,7 @@ div.container.landing-page-container {
       flex-wrap: wrap;
 
       .btn-default {
-        margin-bottom: 8px;
+        margin-bottom: 9px;
         align-self: center;
 
         &:hover,
@@ -732,6 +732,7 @@ footer#site-chrome-footer {
 .watch-dataset-button {
   .inline-label {
     cursor: pointer;
+    min-width: 180px;
 
     .flag-icon {
       float: right;

@@ -42,12 +42,12 @@ class PanelHeader extends Component {
           {this.renderNewNotificationsLabel()}
         </h3>
 
-        <a styleName='close-panel-link'
+        <span styleName="close-panel-link"
           className='close-notifications-panel-link'
-          href='#'
+          role="button"
           onClick={onClosePanel}>
           <SocrataIcon name="close-2" />
-        </a>
+        </span>
       </div>
     );
   }

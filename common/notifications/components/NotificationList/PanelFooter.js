@@ -89,10 +89,13 @@ class PanelFooter extends Component {
 
     if (showUserNotifications) {
       return (
-        <a className="btn" styleName="setting-button" onClick={this.toggleSubscription}>
+        <span className="btn"
+          styleName="setting-button"
+          onClick={this.toggleSubscription}
+          role="button">
           <SocrataIcon name="settings" />
           <em>{I18n.t('shared_site_chrome_notifications.setting')}</em>
-        </a>
+        </span>
       );
     }
   }

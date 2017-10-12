@@ -38,13 +38,13 @@ class UserNotification extends React.Component {
     }
 
     return (
-      <a styleName="link-icon"
+      <span styleName="link-icon"
         className="toggle-notification-read-state"
-        href="#"
+        role="button"
         title={linkTitle}
         onClick={() => onToggleReadUserNotification(id, !isRead)}>
         <SocrataIcon name="checkmark3" />
-      </a>
+      </span>
     );
   }
 
@@ -56,13 +56,13 @@ class UserNotification extends React.Component {
     } = this.props;
 
     return (
-      <a styleName="link-icon"
-         className="user-notification-clear-icon"
-         href="#"
-         title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
-         onClick={() => onClearUserNotification(id)}>
+      <span styleName="link-icon"
+        className="user-notification-clear-icon"
+        role="button"
+        title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
+        onClick={() => onClearUserNotification(id)}>
         <SocrataIcon name="close-2" />
-      </a>
+      </span>
     );
   }
 
@@ -79,35 +79,46 @@ class UserNotification extends React.Component {
     return <a href={userProfileLink} target="_blank">{userName}</a>;
   }
 
+  renderNotificationTitle() {
+    const {
+      link,
+      title,
+      messageBody
+    } = this.props;
+    const notificationTitle = (
+      <div>
+        <strong className="user-notification-title">
+          {this.renderAlertLabel()}
+          {title}
+        </strong>
+
+        <span className="notification-body">{messageBody}</span>
+      </div>
+    );
+
+    if (_.isNull(link)) {
+      return <span styleName="title">{notificationTitle}</span>;
+    }
+
+    return <a styleName="title" href={link} target="_blank">{notificationTitle}</a>;
+  }
+
   render() {
     const {
       id,
       isRead,
-      link,
-      title,
       type,
-      messageBody,
       createdAt,
       I18n
     } = this.props;
     const isUnread = !isRead;
-    const notificationLink = _.isNull(link) ? '#' : link;
 
     return (
       <li styleName={classNames("notification-item", type, { 'unread': isUnread })}
         className={classNames("user-notification-item clearfix", { 'unread': isUnread })}
         data-notification-id={id}>
         <div styleName="notification-info">
-          <a styleName="title"
-            target="_blank"
-            href={notificationLink}>
-            <strong className="user-notification-title">
-              {this.renderAlertLabel()}
-              {title}
-            </strong>
-
-            <span className="notification-body">{messageBody}</span>
-          </a>
+          {this.renderNotificationTitle()}
 
           <p styleName="timestamp" className="notification-timestamp">
             <span>{moment.utc(createdAt).fromNow()}</span>

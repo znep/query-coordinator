@@ -93,6 +93,7 @@
 }
 
 .link-icon {
+  cursor: pointer;
   display: inline-block;
   margin-left: 5px;
 }
@@ -104,9 +105,11 @@
 }
 
 .title {
+  display: block;
   text-decoration: none;
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: none;
   }
 

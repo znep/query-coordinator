@@ -1,6 +1,6 @@
 /* eslint react/jsx-indent: 0 */
 import PropTypes from 'prop-types';
-
+import _ from 'lodash';
 import React from 'react';
 import moment from 'moment';
 import { Link, IndexLink } from 'react-router';
@@ -9,7 +9,14 @@ import * as Selectors from 'selectors';
 import styles from './SourceSidebar.scss';
 
 function titleOf(source) {
-  if (source.source_type.type === 'url') return source.source_type.url;
+  if (!source || !source.source_type) {
+    return '';
+  }
+
+  if (source.source_type.type === 'url') {
+    return source.source_type.url;
+  }
+
   return source.source_type.filename;
 }
 
@@ -17,7 +24,11 @@ function descriptionOf(source) {
   return source.content_type;
 }
 
-const UploadItem = ({ entities, source, params }) => {
+const SourceItem = ({ entities, source, params }) => {
+  if (_.isEmpty(source)) {
+    return null;
+  }
+
   const outputSchema = Selectors.latestOutputSchemaForSource(entities, source.id);
 
   const linkTarget = outputSchema
@@ -26,56 +37,12 @@ const UploadItem = ({ entities, source, params }) => {
 
   return (
     <li>
-      <Link to={linkTarget}>{titleOf(source)}</Link>
+      <Link to={linkTarget} className={source.isCurrent ? styles.bold : ''}>
+        {titleOf(source)}
+      </Link>
       <p>{descriptionOf(source)}</p>
       <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
     </li>
-  );
-};
-
-UploadItem.propTypes = {
-  entities: PropTypes.object.isRequired,
-  source: PropTypes.object.isRequired,
-  params: PropTypes.object.isRequired
-};
-
-const SourceSidebar = ({ entities, currentUpload, otherUploads, params }) => {
-  if (!currentUpload && otherUploads.length === 0) {
-    return (
-      <section className={styles.sidebar}>
-        <span>{I18n.show_uploads.no_uploads}</span>
-      </section>
-    );
-  }
-  return (
-    <section className={styles.sidebar}>
-      <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
-        Upload a Data File
-      </IndexLink>
-      <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
-        Connect to a Data Source
-      </Link>
-      <div className={styles.sourceList}>
-        {currentUpload && (
-          <div>
-            <h2>{I18n.show_uploads.current}</h2>
-            <ul>
-              <UploadItem entities={entities} source={currentUpload} params={params} />
-            </ul>
-          </div>
-        )}
-        {otherUploads.length > 0 && (
-          <div>
-            <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
-            <ul>
-              {otherUploads.map(source => (
-                <UploadItem key={source.id} entities={entities} source={source} params={params} />
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </section>
   );
 };
 
@@ -84,12 +51,47 @@ const sourceProptype = PropTypes.shape({
   inputSchemaId: PropTypes.number,
   outputSchemaId: PropTypes.number,
   source_type: PropTypes.object,
-  finished_at: PropTypes.object
+  finished_at: PropTypes.object,
+  isCurrent: PropTypes.bool
 });
 
+SourceItem.propTypes = {
+  source: sourceProptype,
+  entities: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired
+};
+
+const SourceList = ({ entities, params, sources }) => {
+  return (
+    <ul className={styles.sourceList}>
+      <h2>{I18n.show_uploads.sources}</h2>
+      {sources.map(source => <SourceItem entities={entities} params={params} source={source} />)}
+    </ul>
+  );
+};
+
+SourceList.propTypes = {
+  sources: PropTypes.arrayOf(sourceProptype),
+  entities: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired
+};
+
+const SourceSidebar = ({ entities, sources, params }) => {
+  return (
+    <section className={styles.sidebar}>
+      <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
+        Upload a Data File
+      </IndexLink>
+      <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
+        Connect to a Data Source
+      </Link>
+      {sources.length && <SourceList entities={entities} sources={sources} params={params} />}
+    </section>
+  );
+};
+
 SourceSidebar.propTypes = {
-  currentUpload: sourceProptype,
-  otherUploads: PropTypes.arrayOf(sourceProptype),
+  sources: PropTypes.arrayOf(sourceProptype),
   entities: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired
 };

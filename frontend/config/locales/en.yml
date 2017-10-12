@@ -2400,15 +2400,13 @@ en:
       upload_failed: Upload Failed
       upload_in_progress: Upload In Progress
     show_uploads:
-      current: Current Upload
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
+      from_url: URL Source
       message: Drag a New Data File Here
       no_uploads: No data sources yet
-      noncurrent: Other data sources
+      sources: Data Sources
       submessage: ...or click Browse to choose a file from your computer
-      uploads: Data Sources
-      from_url: URL Source
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.

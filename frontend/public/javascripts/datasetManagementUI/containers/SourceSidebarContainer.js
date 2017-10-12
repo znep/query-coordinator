@@ -5,8 +5,8 @@ import * as Selectors from 'selectors';
 import SourceSidebar from 'components/SourceSidebar/SourceSidebar';
 
 export const mapStateToProps = ({ entities }, { params }) => {
-  let currentUpload;
-  let otherUploads;
+  let currentSource;
+  let otherSources;
   const revisionSeq = _.toNumber(params.revisionSeq);
   const pendingOrSuccessfulSources = _.chain(entities.sources)
     .values()
@@ -19,17 +19,18 @@ export const mapStateToProps = ({ entities }, { params }) => {
     const { input_schema_id: inputSchemaId } = currentOutputSchema;
     const { source_id: sourceId } = entities.input_schemas[inputSchemaId];
 
-    currentUpload = entities.sources[sourceId];
-    otherUploads = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
+    currentSource = entities.sources[sourceId];
+    otherSources = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
   } else {
     // rare case where you have uploads but not a current upload
-    currentUpload = null;
-    otherUploads = pendingOrSuccessfulSources;
+    currentSource = null;
+    otherSources = pendingOrSuccessfulSources;
   }
 
+  const sources = [{ ...currentSource, isCurrent: true }, ...otherSources];
+
   return {
-    currentUpload,
-    otherUploads,
+    sources: _.orderBy(sources, ['finished_at'], ['desc']),
     entities
   };
 };

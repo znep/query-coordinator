@@ -36,10 +36,10 @@ export class WatchDatasetButton extends Component {
     ];
 
     return (
-      <div className="watch-dataset-button btn btn-sm btn-default">
+      <div className="watch-dataset-button">
         <label
           onClick={(event) => this.onWatchDatasetButtonClick(event)}
-          className="inline-label manage-prompt-button"
+          className="inline-label manage-prompt-button btn btn-sm btn-default"
           htmlFor={inputAttributes.id}>
           <span className={watchDatasetFlagIcon}></span>
           <span className="checkbox-with-icon-label">{watchDatasetButtonText}</span>

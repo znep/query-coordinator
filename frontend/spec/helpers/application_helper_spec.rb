@@ -1174,4 +1174,39 @@ window.socrata.featureFlags =
     end
   end
 
+  describe 'asset_inventory_view_model' do
+    before do
+      allow(helper).to receive_messages(:request => nil, :current_user => current_user)
+    end
+
+    let(:current_user) do
+      double('current_user').tap { |user| allow(user).to receive(:is_superadmin?).and_return(false) }
+    end
+
+    context 'when find raises a core error' do
+      before do
+        allow(AssetInventoryService).to receive(:find).and_raise(CoreServer::CoreServerError.new(
+          '/admin/assets',
+          401,
+          'nope'
+        ))
+      end
+
+      it 'should disable button in view_model' do
+        expect(helper.asset_inventory_view_model[:asset_inventory][:button_disabled]).to eq(true)
+      end
+    end
+
+    context 'when find returns a value asset inventory dataset' do
+      before do
+        allow(AssetInventoryService).to receive(:find).and_return(double('view'))
+      end
+
+      it 'should not disable button in view_model' do
+        expect(helper.asset_inventory_view_model[:asset_inventory][:button_disabled]).to eq(false)
+      end
+    end
+
+  end
+
 end

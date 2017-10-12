@@ -1247,7 +1247,12 @@ module ApplicationHelper
   end
 
   def asset_inventory_view_model
-    @asset_inventory_dataset ||= AssetInventoryService.find(!current_user.try(:is_superadmin?))
+    begin
+      @asset_inventory_dataset ||= AssetInventoryService.find(!current_user.try(:is_superadmin?))
+    rescue CoreServer::CoreServerError => e
+      Rails.logger.error("AssetInventoryService#find raised error: #{e}")
+    end
+
     button_disabled = @asset_inventory_dataset.blank?
     view_model = {
       :asset_inventory => {

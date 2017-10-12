@@ -28,6 +28,7 @@ const components = (
     <AssetBrowser
       baseFilters={getCurrentUserFilter()}
       pageSize={5}
+      showAssetInventoryLink={false}
       showFilters={false}
       showHeader={false}
       showManageAssets

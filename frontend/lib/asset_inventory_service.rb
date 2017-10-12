@@ -38,17 +38,19 @@ module AssetInventoryService
 
   def self.api
     return unless api_configured?
+
     @api ||= AssetInventory::JobsApi.new
   end
 
   def self.create_asset_inventory
     return false unless api_configured?
+
     opts = {
-        :body => AssetInventory::AssetInventoryJob.new(
-            'sourceDomain' => "https://#{CurrentDomain.cname}",
-            'nextExecutionAt' => '2015-01-01T00:00:00Z',
-            'executionInterval' => 1.day.in_milliseconds
-        )
+      :body => AssetInventory::AssetInventoryJob.new(
+        'sourceDomain' => "https://#{CurrentDomain.cname}",
+        'nextExecutionAt' => '2015-01-01T00:00:00Z',
+        'executionInterval' => 1.day.in_milliseconds
+      )
     }
 
     begin

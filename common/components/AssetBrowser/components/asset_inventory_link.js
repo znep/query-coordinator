@@ -8,7 +8,6 @@ import classNames from 'classnames';
 export class AssetInventoryLink extends Component {
   render() {
     const { buttonDisabled, showInitializeButton } = this.props;
-
     const scope = 'shared.asset_browser.asset_inventory_dataset_link';
     const getTranslation = (key) => I18n.t(key, { scope });
 
@@ -30,9 +29,7 @@ export class AssetInventoryLink extends Component {
         </form>
       );
     } else {
-      const buttonClassnames = classNames('btn btn-primary btn-inverse', {
-        'btn-disabled': buttonDisabled
-      });
+      const buttonClassnames = classNames('btn btn-primary btn-inverse', { 'btn-disabled': buttonDisabled });
       const buttonTitle = buttonDisabled ? getTranslation('disabled_tooltip') : null;
 
       return (

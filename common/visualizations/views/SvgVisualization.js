@@ -397,7 +397,7 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.getLegendItems = function({dataTableDimensionIndex, measureLabels, referenceLines}) {
-    
+
     const referenceLinesWithLabels = _.filter(referenceLines, (line) => !_.isEmpty(line.label));
     const referenceLineItems = referenceLinesWithLabels.map((line) => {
       return {
@@ -529,7 +529,7 @@ function SvgVisualization($element, vif, options) {
     return mobile;
   };
 
-  this.isGroupingOrMultiSeries = function() {    
+  this.isGroupingOrMultiSeries = function() {
     return self.isGrouping() || self.isMultiSeries();
   };
 
@@ -549,7 +549,7 @@ function SvgVisualization($element, vif, options) {
 
   this.isInRange = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
   this.isStacked = () => _.get(self.getVif(), 'series[0].stacked', false);
-  
+
   this.hasErrorBars = () =>
     !_.isUndefined(_.get(self.getVif(), 'series[0].errorBars.lowerBoundColumnName')) &&
     !_.isUndefined(_.get(self.getVif(), 'series[0].errorBars.upperBoundColumnName'));
@@ -941,7 +941,7 @@ function SvgVisualization($element, vif, options) {
 
   this.getReferenceLines = function() {
     return _.filter(
-      _.get(self.getVif(), 'referenceLines', []), 
+      _.get(self.getVif(), 'referenceLines', []),
       (referenceLine) => _.isFinite(referenceLine.value));
   }
 
@@ -1006,7 +1006,7 @@ function SvgVisualization($element, vif, options) {
                   $('<div>', {'class': 'socrata-visualization-description'})
                 ),
               $('<div>', {'class': 'socrata-visualization-filter-bar-container'}),
-              $('<div>', {'class': 'socrata-visualization-container'}),
+              $('<div>', {'class': 'socrata-visualization-container', 'aria-hidden': 'true'}),
               $('<div>', {'class': 'socrata-visualization-legend-bar-container'}),
               $('<div>', {'class': 'socrata-visualization-info'}).
                 append([

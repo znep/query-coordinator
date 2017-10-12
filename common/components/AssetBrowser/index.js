@@ -36,11 +36,12 @@ export class AssetBrowser extends Component {
 
     const header = showHeader ? <Header {...this.props} /> : null;
 
+    // TODO: De-dupe this and results_and_filters.js
     return (
       <Provider store={this.state.store}>
         <div>
           {header}
-          <div className="results-and-filters">
+          <div className="asset-browser results-and-filters">
             <CatalogResults {...this.props} />
             {catalogFilters}
           </div>

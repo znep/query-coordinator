@@ -42,7 +42,7 @@ class PageSelector extends React.Component {
       nextProps.onClick = this.handleNextPageClicked;
     }
 
-    let startLabel = startOffset == 0 ? 1 : startOffset;
+    const startLabel = startOffset + 1;
     return <div className="page-selector-container">
       <span className="labels">{ `${startLabel} - ${endPosition} ${this.props.translations.getIn(['admin', 'listing', 'of'])} ${ totalGoalsCount }` }</span>
       <span { ...prevProps } />

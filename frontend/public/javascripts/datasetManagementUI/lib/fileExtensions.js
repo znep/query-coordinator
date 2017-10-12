@@ -1,16 +1,26 @@
-import _ from 'lodash';
+const geo = [
+  '.zip',
+  '.json',
+  '.geojson',
+  '.kml',
+  '.kmz'
+];
 
-export const enabledFileExtensions = _.compact([
+export const enabledFileExtensions = [
   '.csv',
   '.tsv',
   '.xls',
-  '.xlsx',
-  window.serverConfig.featureFlags.dataset_management_ui_enable_shapefile_upload ? '.zip' : null
-]);
+  '.xlsx'
+].concat(
+  window.serverConfig.featureFlags.dataset_management_ui_enable_shapefile_upload ? geo : []
+);
 
 export function formatExpanation(format) {
   if (format === '.zip') {
     return '.zip (shapefile)';
+  }
+  if (format === '.json') {
+    return '.json (GeoJSON)';
   }
   return format;
 }

@@ -184,10 +184,11 @@ module.exports = {
   renderTimestampCellHTML,
   renderObeLocationHTML,
   renderFormattedTextHTML,
-  getCellAlignment
+  getCellAlignment,
+  getCellConditionalFormattingStyles
 };
 
-function renderCellHTML(cellContent, column, domain, datasetUid) {
+function renderCellHTML(cellContent, column, domain, datasetUid, conditionalFormatting) {
   // SECURITY NOTE: Only return safe HTML from this function!
   let cellHTML;
 
@@ -739,6 +740,127 @@ function getCellAlignment(column) {
     default:
       return 'left';
   }
+}
+
+function getCellConditionalFormattingStyles(cellContent, column, conditionalFormattingRules) {
+  const tableColumnId = _.get(column, 'tableColumnId', -1);
+  const getStylesForRule = (rule) => {
+    return `background-color:${_.get(rule, 'color', '#fff')};`;
+  };
+
+  let styles = '';
+
+  if (!_.isArray(conditionalFormattingRules)) {
+    return styles;
+  }
+
+  for (let i = 0; i < conditionalFormattingRules.length; i++) {
+    let rule = conditionalFormattingRules[i];
+
+    // A single, global rule.
+    if (_.isBoolean(rule.condition) && _.isString(rule.color) && rule.condition) {
+
+      styles = getStylesForRule(rule);
+      break;
+    } else {
+
+      const ruleOperator = _.get(rule, 'condition.operator', null);
+
+      if (!_.get(rule, 'condition', {}).hasOwnProperty('children')) {
+
+        _.set(
+          rule,
+          'condition.children',
+          [
+            {
+              operator: _.get(rule, 'condition.operator', ''),
+              tableColumnId: _.get(rule, 'condition.tableColumnId', -1),
+              value: _.get(rule, 'condition.value', '')
+            }
+          ]
+        );
+      }
+
+      const matches = _.get(rule, 'condition.children', []).map(function(condition) {
+        const conditionOperator = _.get(condition, 'operator', null);
+
+        if (_.get(condition, 'tableColumnId', -1) !== tableColumnId) {
+          return false;
+        }
+
+        if (conditionOperator === 'IS_BLANK' && _.isNull(cellContent)) {
+          return true;
+        }
+
+        if (conditionOperator === 'IS_NOT_BLANK' && !_.isNull(cellContent)) {
+          return true;
+        }
+
+        const subColumn = _.get(condition, 'subcolumn', null);
+        const conditionValue = _.get(condition, 'value', null)
+
+        let cellValue;
+
+        switch (_.get(column, 'dataTypeName', null)) {
+
+          case 'number':
+          case 'money':
+          case 'percent':
+          case 'date':
+          case 'stars':
+            cellValue = parseFloat(cellContent);
+            break;
+
+          default:
+            cellValue = cellContent;
+            break;
+        }
+
+        if (_.isString(subColumn)) {
+          cellValue = _.get(cellContent, subColumn, null);
+        }
+
+        switch (conditionOperator) {
+          case 'EQUALS':
+            return _.isEqual(conditionValue, cellValue);
+          case 'NOT_EQUALS':
+            return !_.isEqual(conditionValue, cellValue);
+          case 'STARTS_WITH':
+            return new RegExp('^' + _.escapeRegExp(conditionValue)).test(cellValue);
+          case 'CONTAINS':
+            return new RegExp(_.escapeRegExp(conditionValue)).test(cellValue);
+          case 'NOT_CONTAINS':
+            return !(new RegExp(_.escapeRegExp(conditionValue)).test(cellValue));
+          case 'LESS_THAN':
+            return cellValue < conditionValue;
+          case 'LESS_THAN_OR_EQUALS':
+            return cellValue <= conditionValue;
+          case 'GREATER_THAN':
+            return cellValue > conditionValue;
+          case 'GREATER_THAN_OR_EQUALS':
+            return cellValue >= conditionValue;
+          case 'BETWEEN':
+            return (cellValue > conditionValue[0] && cellValue < conditionValue[1]);
+          case 'IS_BLANK':
+          case 'IS_NOT_BLANK':
+          default:
+            return false;
+        }
+      });
+
+      if (ruleOperator === 'and' && matches.indexOf(false) < 0) {
+
+        styles = getStylesForRule(rule);
+        break;
+      } else if (ruleOperator !== 'and' && matches.indexOf(true) >= 0) {
+
+        styles = getStylesForRule(rule);
+        break;
+      }
+    }
+  }
+
+  return styles;
 }
 
 /**

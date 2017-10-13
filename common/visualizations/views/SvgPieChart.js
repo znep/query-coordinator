@@ -28,10 +28,10 @@ const VALUE_LABEL_THRESHOLD = 25;
 
 const PI2 = Math.PI * 2;
 
-const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
-const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
-
 function SvgPieChart($element, vif, options) {
+  // Embeds needs to wait to define noValueLabel until after hydration.
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+  const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
   let $chartElement; // chart container element
   let dataToRender; // chart data

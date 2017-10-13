@@ -180,17 +180,23 @@ class Dropdown extends Component {
       const { displayTrueWidthOptions } = this.props;
       const containerDimensions = this.dropdownRef.getBoundingClientRect();
       const browserWindowHeight = window.document.documentElement.clientHeight - 10;
-
-      // Calculate Position
-
-      const optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
-
-      this.optionsRef.style.top = `${optionsTop}px`;
-      this.optionsRef.style.left = `${containerDimensions.left}px`;
-
-      // Calculate Height
+      const browserWindowWidth  = window.document.documentElement.clientWidth;
 
       const dimensions = this.optionsRef.getBoundingClientRect();
+
+      // Calculate X Position
+      const optionWidth = this.optionsRef.querySelector('.picklist-option').clientWidth;
+      const exceedsBrowserWindowWidth  = browserWindowWidth < (containerDimensions.left + optionWidth);
+
+      const optionsLeft = exceedsBrowserWindowWidth ?
+        (containerDimensions.left - optionWidth) : containerDimensions.left;
+      this.optionsRef.style.left = `${optionsLeft}px`;
+
+      // Calculate Y Position
+      const optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
+      this.optionsRef.style.top = `${optionsTop}px`;
+
+      // Calculate Height
       const scrollHeight = this.optionsRef.scrollHeight;
       const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
       const optionHeight = this.optionsRef.querySelector('.picklist-option').clientHeight;

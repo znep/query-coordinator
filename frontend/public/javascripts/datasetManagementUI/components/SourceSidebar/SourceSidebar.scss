@@ -18,6 +18,7 @@ section.sidebar {
     a {
       text-decoration: none;
     }
+
     p {
       margin: 0px;
       color: $light-grey-2;
@@ -42,10 +43,23 @@ section.sidebar {
   background-color: $white;
   border-left: 5px solid $light-grey-2;
   border-bottom: 1px solid $light-grey-4;
+  text-decoration: none;
+  color: $black;
 
   @media (max-width: 750px) {
     width: 100%;
   }
+}
+
+a.tab a.tab:visited,
+a.tab:hover {
+  border-left-color: $dark-grey-2;
+  background-color: $light-grey-4;
+}
+
+a.selected:hover {
+  border-left-color: $primary-base;
+  background-color: $white;
 }
 
 .selected {

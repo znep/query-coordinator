@@ -1,0 +1,129 @@
+@import "styleguide-colors";
+
+.dslp-flyout {
+  cursor: default;
+  position: fixed;
+  background-color: white;
+  box-shadow: 0 0 8px -2px #666;
+  border: solid 1px #ddd;
+  border-radius: 1px;
+  z-index: 1;
+  letter-spacing: normal;
+
+  &.flyout-hidden {
+    display: none;
+  }
+
+  &::before {
+    border-color: transparent;
+    border-width: 12px;
+    border-style: solid;
+    margin-top: -5px;
+    margin-left: -3px;
+    content: "";
+    top: -7px;
+    display: block;
+    position: absolute;
+    transform: rotateZ(-135deg);
+  }
+
+  &::after {
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    margin-top: -5px;
+    margin-left: -3px;
+    content: "";
+    top: -5px;
+    display: block;
+    position: absolute;
+    transform: rotateZ(-135deg);
+  }
+
+  &.flyout-right {
+    border-top-left-radius: 0;
+
+    &::before {
+      border-bottom-color: #ddd;
+      margin-left: -3px;
+      left: -10px;
+    }
+
+    &::after {
+      border-bottom-color: white;
+      margin-left: -3px;
+      left: -7px;
+    }
+  }
+
+  &.flyout-left {
+    border-top-right-radius: 0;
+
+    &::before {
+      border-right-color: #ddd;
+      margin-right: -3px;
+      right: -10px;
+    }
+
+    &::after {
+      border-right-color: white;
+      margin-right: -3px;
+      right: -7px;
+    }
+  }
+
+  .flyout-content {
+    padding: 1rem;
+    max-height: none;
+    max-width: 450px;
+    overflow: unset;
+
+    > *:first-child {
+      margin-top: 0;
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+
+    .flyout-header {
+      .flyout-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        color: $dark-grey-3;
+        font-weight: 600;
+        font-size: 20px;
+
+        h1 {
+          font-size: 20px;
+          font-weight: 600;
+          width: calc(100% - 20px);
+        }
+      }
+
+      .flyout-description {
+        margin-top: 10px;
+        color: $dark-grey-3;
+        font-size: 13px;
+      }
+
+      .close-icon {
+        $icon-size: 20px;
+
+        line-height: 15px;
+        font-size: $icon-size;
+        width: $icon-size;
+        height: $icon-size;
+        cursor: pointer;
+
+        svg {
+          width: $icon-size;
+          height: $icon-size;
+        }
+      }
+    }
+
+  }
+}

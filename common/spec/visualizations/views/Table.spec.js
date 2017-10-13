@@ -83,8 +83,8 @@ describe('Table', function() {
 
     columns.forEach(function(column) {
       for (var index = 0; index < numberOfRows; index++) {
-        rows[index] = rows[index] || {};
-        rows[index][column] = column + ':' + index;
+        rows[index] = rows[index] || [];
+        rows[index][column] = '' + column + ':' + index;
       }
     });
 

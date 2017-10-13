@@ -371,8 +371,29 @@ module.exports = function Table(element, originalVif, locale) {
           map(function(column, columnIndex) {
             return templateTableCell(column, row[columnIndex]);
           }).join('');
+        const conditionalFormattingRules = _.get(
+          vif,
+          'series[0].dataSource.view.metadata.conditionalFormatting',
+          []
+        );
+        const conditionalFormattingStyles = (row || []).
+          map((columnValue, columnIndex) => {
 
-        return `<tr data-row-id="${rowId}">${rowData}</tr>`;
+            return DataTypeFormatter.getCellConditionalFormattingStyles(
+              columnValue,
+              filteredColumns[columnIndex],
+              conditionalFormattingRules
+            );
+          }).
+          filter((conditionalFormattingStylesForColumnValue) => {
+            return !_.isEmpty(conditionalFormattingStylesForColumnValue);
+          });
+
+        const conditionalFormattingStyleAttributeOrNothing = (!_.isEmpty(conditionalFormattingStyles)) ?
+          ` style="${_.get(conditionalFormattingStyles, '[0]', '')}"` :
+          '';
+
+        return `<tr data-row-id="${rowId}"${conditionalFormattingStyleAttributeOrNothing}>${rowData}</tr>`;
       }).
       join('');
 

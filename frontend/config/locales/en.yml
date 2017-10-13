@@ -2267,10 +2267,11 @@ en:
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:
+      retry: Retry
+      start_import: Start Import
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
-      start_import: Start Import
     parse_options:
       header_count: Header Count
       column_header: Header Row Position

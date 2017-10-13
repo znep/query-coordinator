@@ -65,7 +65,9 @@ const SourceList = ({ entities, params, sources }) => {
   return (
     <ul className={styles.sourceList}>
       <h2>{I18n.show_uploads.sources}</h2>
-      {sources.map(source => <SourceItem entities={entities} params={params} source={source} />)}
+      {sources.map((source, idx) => (
+        <SourceItem entities={entities} params={params} source={source} key={idx} />
+      ))}
     </ul>
   );
 };

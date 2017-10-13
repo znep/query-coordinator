@@ -5,7 +5,8 @@
 .container {
 }
 
-.errorsHelp, .shortcut {
+.errorsHelp,
+.shortcut {
   :global {
     .modal-container {
       width: 840px;
@@ -18,7 +19,11 @@
   :global {
     .modal-container {
       text-align: center;
-      p, h3, h4, h5, h6 {
+      p,
+      h3,
+      h4,
+      h5,
+      h6 {
         text-align: left;
       }
       h6 {
@@ -29,7 +34,8 @@
       }
 
       table {
-        th, td {
+        th,
+        td {
           padding: 5px;
         }
       }
@@ -73,12 +79,4 @@
 
 div.publishing {
   z-index: 9000; // Allow interaction with the header bar.
-}
-
-.importFromURL {
-  :global {
-    .modal-container {
-      max-width: 768px;
-    }
-  }
 }

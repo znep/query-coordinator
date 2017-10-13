@@ -10,7 +10,7 @@ import ShowSource from 'pages/ShowSource/ShowSource';
 import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
 import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
-import URLSource from 'components/URLSource/URLSource';
+import URLSource from 'containers/URLSourceContainer';
 
 const checkSchemaStatus = store => (nextState, replace, cb) => {
   const osid = _.toNumber(nextState.params.outputSchemaId);

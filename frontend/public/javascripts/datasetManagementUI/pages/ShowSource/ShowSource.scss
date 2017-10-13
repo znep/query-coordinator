@@ -10,6 +10,7 @@
 .sourceContainer {
   background-color: #ddd;
   display: flex;
+  min-height: 100%;
 }
 
 .sourceContainer > section:nth-child(2) {

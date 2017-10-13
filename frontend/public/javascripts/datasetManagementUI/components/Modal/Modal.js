@@ -8,7 +8,6 @@ import PublishConfirmation from 'containers/PublishConfirmationContainer';
 import PublishConfirmationUSAID from 'containers/PublishConfirmationUSAIDContainer';
 import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
 import GeocodeShortcut from 'components/GeocodeShortcut/GeocodeShortcut';
-import ImportFromURL from 'containers/ImportFromURLContainer';
 import styles from './Modal.scss';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
@@ -55,13 +54,6 @@ const getModalProps = (props, contentComponentName, payload) => {
         ...props,
         children: [<RowIdentifierError key={1} result={payload} />],
         className: styles.rowIdentifierError
-      };
-
-    case 'ImportFromURL':
-      return {
-        ...props,
-        children: [<ImportFromURL key={1} payload={payload} />],
-        className: styles.importFromURL
       };
 
     default:

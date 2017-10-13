@@ -11,7 +11,17 @@ module.exports = _.defaultsDeep({
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/adminActivityFeed/.eslintrc.json'),
   module: {
-    loaders: common.getStandardLoaders()
+    loaders: common.getStandardLoaders(
+      [],
+      {
+        substituteStyleLoaders: [
+          {
+            test: /\.scss|\.css$/,
+            loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+          }
+        ]
+      }
+    )
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/adminActivityFeed' ])

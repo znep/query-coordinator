@@ -9,6 +9,12 @@ describe('TextFilter', () => {
     return _.defaultsDeep({}, props, {
       filter: {},
       column: {},
+      spandex: {
+        available: false,
+        datasetUid: 'xxxx-xxxx',
+        domain: 'example.com',
+        provider: null
+      },
       onClickConfig: _.noop,
       onRemove: _.noop,
       onUpdate: _.noop
@@ -62,6 +68,76 @@ describe('TextFilter', () => {
       assert.isBelow(selectedOptionsNewLength, selectedOptionsLength, 'Expected selectedOptions to be smaller');
 
       done();
+    });
+  });
+
+  describe('text input change', () => {
+    const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
+    const getSearchPrompt = (element) => element.querySelector('.alert.info');
+
+    function simulateTextInput(element, searchTerm) {
+      const searchInput = getSearchInput(element);
+      searchInput.value = searchTerm;
+      Simulate.change(searchInput);
+    }
+
+    describe('without Spandex autocomplete', () => {
+      let fetchSuggestionsStub;
+      let element;
+
+      beforeEach(() => {
+        fetchSuggestionsStub = sinon.stub().rejects();
+
+        element = renderComponent(TextFilter, getProps({
+          column: mockTextColumn,
+          spandex: {
+            available: false,
+            provider: {
+              fetchSuggestions: fetchSuggestionsStub
+            }
+          }
+        }));
+      });
+
+      it('displays a message about exact match on change', () => {
+        simulateTextInput(element, 'Example');
+        assert.isNotNull(getSearchPrompt(element));
+      });
+
+      it('does not fetch autocomplete suggestions', () => {
+        simulateTextInput(element, 'Example');
+        sinon.assert.notCalled(fetchSuggestionsStub);
+      });
+    });
+
+    describe('with Spandex autocomplete', () => {
+      let fetchSuggestionsStub;
+      let element;
+
+      beforeEach(() => {
+        fetchSuggestionsStub = sinon.stub().resolves([]);
+
+        element = renderComponent(TextFilter, getProps({
+          column: mockTextColumn,
+          spandex: {
+            available: true,
+            provider: {
+              fetchSuggestions: fetchSuggestionsStub
+            }
+          }
+        }));
+      });
+
+      it('does not display a message about exact match on change', () => {
+        simulateTextInput(element, 'Example');
+        assert.isNull(getSearchPrompt(element));
+      });
+
+      it('fetches autocomplete suggestions', () => {
+        simulateTextInput(element, 'Example');
+        sinon.assert.calledOnce(fetchSuggestionsStub);
+        sinon.assert.calledWith(fetchSuggestionsStub, 'dinosaurName', 'Example');
+      });
     });
   });
 

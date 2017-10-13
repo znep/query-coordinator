@@ -35,7 +35,11 @@ describe('FilterItem', () => {
       filter: mockValueRangeFilter,
       column: mockNumberColumn,
       isReadOnly: false,
-      fetchSuggestions: _.constant(Promise.resolve([])),
+      spandex: {
+        available: false,
+        datasetUid: 'xxxx-xxxx',
+        domain: 'example.com'
+      },
       onUpdate: _.noop,
       onRemove: _.noop
     });

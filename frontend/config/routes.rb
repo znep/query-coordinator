@@ -369,6 +369,7 @@ Rails.application.routes.draw do
         post :modify_permission
         post :post_comment
         post :update_rating
+        post :setup_autocomplete
         match :email, :via => [:get, :post]
         get :append
         get :contact

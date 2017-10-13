@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
+import mixpanel from 'common/mixpanel';
 
 import {
   fetchResults,
@@ -102,10 +103,17 @@ describe('cetera_helpers', () => {
   // fetchResults returns a promise
   describe('fetchResults', () => {
     let ceteraUtilsQuerySpy;
+    let mixpanelSendPayloadSpy;
 
-    beforeEach(() => ceteraUtilsQuerySpy = sinon.spy(ceteraUtils, 'query'));
+    beforeEach(() => {
+      ceteraUtilsQuerySpy = sinon.spy(ceteraUtils, 'query');
+      mixpanelSendPayloadSpy = sinon.spy(mixpanel, 'sendPayload');
+    });
 
-    afterEach(() => ceteraUtilsQuerySpy.restore());
+    afterEach(() => {
+      ceteraUtilsQuerySpy.restore();
+      mixpanelSendPayloadSpy.restore();
+    });
 
     describe('mixpanelContext', () => {
 
@@ -113,16 +121,23 @@ describe('cetera_helpers', () => {
       it('includes the mixpanelContext param for reporting metrics', () => {
         const dispatch = () => {};
         const onSuccess = () => {};
-        const parameters = { action: 'TOGGLE_RECENTLY_VIEWED', pageNumber: 1, onlyRecentlyViewed: true };
+        const parameters = {
+          action: 'TOGGLE_RECENTLY_VIEWED',
+          pageNumber: 1,
+          onlyRecentlyViewed: true,
+          results: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        };
 
         return fetchResults(dispatch, getState, parameters, onSuccess).then((response) => {
           const mixpanelContext = ceteraUtils.query.getCall(0).args[0].mixpanelContext;
 
           assert.equal(mixpanelContext.eventName, 'Filtered Assets to Only Recently Viewed');
-          assert.equal(Object.keys(mixpanelContext.params).length, 2);
-          assert(_.includes(Object.keys(mixpanelContext.params), 'pageNumber', 'onlyRecentlyViewed'));
+          assert.equal(Object.keys(mixpanelContext.params).length, 3);
+          assert(_.includes(Object.keys(mixpanelContext.params), 'results', 'pageNumber', 'onlyRecentlyViewed'));
           assert.equal(mixpanelContext.params.pageNumber, 1);
           assert(mixpanelContext.params.onlyRecentlyViewed);
+          // Confirm that we don't send the entire collection of results to mixpanel
+          assert(!_.includes(Object.keys(mixpanel.sendPayload.getCall(0).args[1]), 'results'));
         });
       });
 

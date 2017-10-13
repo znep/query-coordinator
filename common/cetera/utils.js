@@ -173,7 +173,7 @@ export const ceteraUtils = (() => {
             mixpanelContext.eventName,
             {
               'Result Count': json.results.length,
-              ...mixpanelContext.params
+              ..._.omit(mixpanelContext.params, 'results')
             }
           );
         }

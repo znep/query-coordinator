@@ -5499,7 +5499,7 @@ en:
           download_as: Download As
           download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
-          monolayer_header: Download without geospatial data
+          monolayer_header: Download a non-geospatial file type
           multilayer_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format
           title: Download

@@ -9,22 +9,6 @@ import * as Selectors from 'selectors';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './TablePreview.scss';
 
-// <label id="source-label" className={styles.uploadButton} htmlFor="file">
-//   {I18n.manage_uploads.new_file}&nbsp;
-// </label>
-// <ImportFromURLButton params={params} />
-// <input
-//   id="file"
-//   name="file"
-//   type="file"
-//   accept={enabledFileExtensions.join(',')}
-//   aria-labelledby="source-label"
-//   onChange={evt => createUpload(evt.target.files[0], params)} />
-//
-// <p className={styles.fileTypes}>
-//   {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
-// </p>
-
 // COMPONENT VIEWS
 const NoDataYetView = ({ params }) => (
   <div className={styles.tableInfo}>

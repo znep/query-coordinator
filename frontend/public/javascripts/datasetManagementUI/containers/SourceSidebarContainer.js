@@ -7,6 +7,8 @@ import SourceSidebar from 'components/SourceSidebar/SourceSidebar';
 export const mapStateToProps = ({ entities }, { params }) => {
   let currentSource;
   let otherSources;
+  let sources;
+
   const revisionSeq = _.toNumber(params.revisionSeq);
   const pendingOrSuccessfulSources = _.chain(entities.sources)
     .values()
@@ -21,13 +23,11 @@ export const mapStateToProps = ({ entities }, { params }) => {
 
     currentSource = entities.sources[sourceId];
     otherSources = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
+    sources = [{ ...currentSource, isCurrent: true }, ...otherSources];
   } else {
     // rare case where you have uploads but not a current upload
-    currentSource = null;
-    otherSources = pendingOrSuccessfulSources;
+    sources = pendingOrSuccessfulSources;
   }
-
-  const sources = [{ ...currentSource, isCurrent: true }, ...otherSources];
 
   return {
     sources: _.orderBy(sources, ['finished_at'], ['desc']),

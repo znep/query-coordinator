@@ -61,7 +61,7 @@ SourceItem.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const SourceList = ({ entities, params, sources }) => {
+export const SourceList = ({ entities, params, sources }) => {
   return (
     <ul className={styles.sourceList}>
       <h2>{I18n.show_uploads.sources}</h2>

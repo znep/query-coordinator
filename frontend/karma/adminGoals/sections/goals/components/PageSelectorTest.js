@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import PageSelector from 'sections/goals/components/GoalTable/PageSelector';
 import translations from 'mockTranslations';
 import Immutable from 'immutable';
@@ -22,7 +22,10 @@ describe('sections/goals/components/GoalTable/PageSelector', () => {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(0).textContent).to.eq(`10 - 20 ${translations.admin.listing.of} 100`);
+    assert.equal(
+      output.querySelectorAll('span').item(0).textContent,
+      `11 - 20 ${translations.admin.listing.of} 100`
+    );
   });
 
   it('should start with 1 in first page', () => {
@@ -41,7 +44,10 @@ describe('sections/goals/components/GoalTable/PageSelector', () => {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(0).textContent).to.eq(`1 - 10 ${translations.admin.listing.of} 100`);
+    assert.equal(
+      output.querySelectorAll('span').item(0).textContent,
+      `1 - 10 ${translations.admin.listing.of} 100`
+    );
   });
 
   it('prev link should be disabled in first page', () => {

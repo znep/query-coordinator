@@ -1,21 +1,24 @@
 import _ from 'lodash';
 
+import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
+
 const defaultOrder = {
   ascending: false,
   value: 'lastUpdatedDate'
 };
 
-const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? defaultOrder : {
-  ascending: !!_.get(window, 'initialState.initialOrder.ascending'),
-  value: _.get(window, 'initialState.initialOrder.value')
+const order = _.isEmpty(getQueryParameter({ key: 'orderColumn' })) ? defaultOrder : {
+  ascending: getQueryParameter({ key: 'orderDirection' }) === 'asc',
+  value: getQueryParameter({ key: 'orderColumn' })
 };
 
 const getInitialState = () => _.merge({
   columns: [],
   fetchingResults: false,
   fetchingResultsError: false,
+  initialResultsFetched: false,
   order,
-  pageNumber: _.get(window, 'initialState.initialPage') || 1,
+  pageNumber: parseInt(getQueryParameter({ key: 'page', defaultValue: 1 })),
   results: [],
   resultSetSize: 0
 }, _.get(window, 'initialState.catalog'));
@@ -86,6 +89,20 @@ export default (state, action) => {
     return {
       ...state,
       pageNumber: action.pageNumber
+    };
+  }
+
+  if (action.type === 'INITIAL_RESULTS_FETCHED') {
+    return {
+      ...state,
+      initialResultsFetched: true
+    };
+  }
+
+  if (action.type === 'UPDATE_PAGE_SIZE') {
+    return {
+      ...state,
+      pageSize: action.pageSize
     };
   }
 

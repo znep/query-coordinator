@@ -12,10 +12,12 @@ describe('components/CatalogResults', () => {
     changePage: () => {},
     changeQ: () => {},
     clearAllFilters: () => {},
+    fetchInitialResults: () => {},
     resultSetSize: 0,
     showAssetInventoryLink: false,
     isMobile: false,
     toggleFilters: () => {},
+    updatePageSize: () => {},
     ...options
   });
 

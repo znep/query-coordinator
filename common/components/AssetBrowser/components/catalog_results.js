@@ -5,7 +5,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import ceteraUtils from 'common/cetera/utils';
-import { translateFiltersToQueryParameters } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import * as ceteraHelpers from 'common/components/AssetBrowser/lib/cetera_helpers';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
@@ -19,6 +19,7 @@ import AssetInventoryLink from './asset_inventory_link';
 import * as filters from '../actions/filters';
 import * as mobile from '../actions/mobile';
 import * as pager from '../actions/pager';
+import * as pageSizeActions from '../actions/page_size';
 import ClearFilters from './filters/clear_filters';
 
 const DEFAULT_RESULTS_PER_PAGE = 10;
@@ -38,6 +39,15 @@ export class CatalogResults extends Component {
       'renderTable',
       'renderTopbar'
     );
+  }
+
+  componentWillMount() {
+    const { fetchInitialResults, initialResultsFetched, pageSize, updatePageSize } = this.props;
+
+    if (!initialResultsFetched) {
+      fetchInitialResults({ pageSize });
+      updatePageSize(pageSize);
+    }
   }
 
   renderError() {
@@ -62,7 +72,7 @@ export class CatalogResults extends Component {
     if (_.isEmpty(searchTerm)) {
       callback([]);
     } else {
-      const translatedFilters = translateFiltersToQueryParameters(allFilters);
+      const translatedFilters = ceteraHelpers.translateFiltersToQueryParameters(allFilters);
       ceteraUtils.autocompleteQuery(searchTerm, translatedFilters).
         then(callback);
     }
@@ -247,9 +257,11 @@ CatalogResults.propTypes = {
   clearSearch: PropTypes.func,
   clearAllFilters: PropTypes.func.isRequired,
   currentQuery: PropTypes.string,
+  fetchInitialResults: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   fetchingResultsErrorType: PropTypes.string,
+  initialResultsFetched: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   order: PropTypes.object,
   page: PropTypes.string,
@@ -257,7 +269,8 @@ CatalogResults.propTypes = {
   pageSize: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired,
   showAssetInventoryLink: PropTypes.bool,
-  toggleFilters: PropTypes.func.isRequired
+  toggleFilters: PropTypes.func.isRequired,
+  updatePageSize: PropTypes.func.isRequired
 };
 
 CatalogResults.defaultProps = {
@@ -276,6 +289,7 @@ const mapStateToProps = (state) => ({
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   fetchingResultsErrorType: state.catalog.fetchingResultsErrorType,
+  initialResultsFetched: state.catalog.initialResultsFetched,
   isMobile: state.windowDimensions.isMobile,
   order: state.catalog.order,
   pageNumber: state.catalog.pageNumber,
@@ -283,11 +297,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  changePage: (pageNumber, pageSize) => dispatch(pager.changePage(pageNumber, pageSize)),
+  changePage: (pageNumber) => dispatch(pager.changePage(pageNumber)),
   changeQ: (query) => dispatch(filters.changeQ(query)),
   clearAllFilters: (shouldClearSearch, baseFilters) => dispatch(filters.clearAllFilters(shouldClearSearch, baseFilters)),
   clearSearch: () => dispatch(filters.clearSearch()),
-  toggleFilters: () => dispatch(mobile.toggleFilters())
+  fetchInitialResults: (parameters) => dispatch(ceteraHelpers.fetchInitialResults(parameters)),
+  toggleFilters: () => dispatch(mobile.toggleFilters()),
+  updatePageSize: (pageSize) => dispatch(pageSizeActions.updatePageSize(pageSize))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

@@ -53,29 +53,20 @@ module CatalogResultsHelper
   end
 
   # This method provides the initial redux store state for the internal asset manager using default values
-  # along with any filters, search terms, etc. on the URL. After the page has loaded, the Redux store is the
-  # source of truth and any changes to it will be reflected in the URL.
+  # along with domain-specific categories, custom facets, tags, and users fetched by the controller.
+  # These are used to populate the filter dropdowns.
   def render_catalog_results_initial_state
     initial_state = {
-      :assetCounts => {
-        :values => @asset_counts
-      },
       :assetInventoryViewModel => asset_inventory_view_model,
       :autocomplete => {
         query: params[:q].to_s
       },
       :catalog => {
-        :columns => catalog_results_table_columns,
-        :results => @catalog_results,
-        :resultSetSize => @catalog_result_set_size
+        :columns => catalog_results_table_columns
       },
       :domainCategories => @domain_categories,
       :domainCustomFacets => @domain_custom_facets,
       :domainTags => @domain_tags,
-      :initialFilters => @initial_filters,
-      :initialOrder => @initial_order,
-      :initialPage => @initial_page,
-      :q => params[:q].to_s,
       :usersList => @users_list
     }
     javascript_tag("window.initialState = #{json_escape(initial_state.to_json)}")

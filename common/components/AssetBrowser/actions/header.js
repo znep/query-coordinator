@@ -21,9 +21,3 @@ export const changeTab = (newTab) => (dispatch, getState) => {
     onSuccess
   );
 };
-
-export const updateAssetCounts = (value) => () => {
-  return {
-    type: 'UPDATE_ASEST_COUNTS', assetCounts: value
-  };
-};

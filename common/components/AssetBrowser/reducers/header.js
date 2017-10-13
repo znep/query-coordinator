@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { ALL_ASSETS_TAB, MY_ASSETS_TAB } from 'common/components/AssetBrowser/lib/constants';
+import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 
 const defaultTab = () => {
   if (_.includes(_.get(window.serverConfig, 'currentUser.rights', []), 'can_see_all_assets_tab_siam')) {
@@ -11,7 +12,7 @@ const defaultTab = () => {
 };
 
 const getInitialState = () => ({
-  activeTab: _.get(window, 'initialState.initialFilters.tab') || defaultTab()
+  activeTab: getQueryParameter({ key: 'tab', defaultValue: defaultTab() })
 });
 
 export default (state, action) => {

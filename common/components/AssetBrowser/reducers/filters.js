@@ -11,21 +11,37 @@ import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_
  * state and URL parameters. Subsequent user interactions update both Redux state _and_ URL query parameters.
  */
 
-export const getInitialState = () => ({
-  assetTypes: _.get(window, 'initialState.initialFilters.assetTypes', null),
-  authority: _.get(window, 'initialState.initialFilters.authority', null),
-  category: _.get(window, 'initialState.initialFilters.category'),
-  customFacets: _.get(window, 'initialState.initialFilters.customFacets') || {},
-  domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
-  domainCategories: _.get(window, 'initialState.domainCategories') || [],
-  domainTags: _.get(window, 'initialState.domainTags') || [],
-  onlyRecentlyViewed: false,
-  ownedBy: _.get(window, 'initialState.initialFilters.ownedBy'),
-  q: _.get(window, 'initialState.q'),
-  tag: _.get(window, 'initialState.initialFilters.tag'),
-  usersList: _.get(window, 'initialState.usersList') || [],
-  visibility: _.get(window, 'initialState.initialFilters.visibility', null)
-});
+export const getInitialState = () => {
+  // Map all the domain's custom facets to an object of the facet param name to the value for
+  // custom facets that have filters present in the URL query params.
+  const customFacetFilters = (_.get(window, 'initialState.domainCustomFacets') || []).
+    reduce((acc, customFacet) => {
+      const customFacetValue = getQueryParameter({ key: [customFacet.param] });
+      if (customFacetValue) {
+        acc[customFacet.param] = customFacetValue;
+      }
+      return acc;
+    }, {});
+
+  return {
+    assetTypes: getQueryParameter({ key: 'assetTypes' }),
+    authority: getQueryParameter({ key: 'authority' }),
+    category: getQueryParameter({ key: 'category' }),
+    customFacets: customFacetFilters,
+    domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
+    domainCategories: _.get(window, 'initialState.domainCategories') || [],
+    domainTags: _.get(window, 'initialState.domainTags') || [],
+    onlyRecentlyViewed: false,
+    ownedBy: {
+      displayName: getQueryParameter({ key: 'ownerName' }),
+      id: getQueryParameter({ key: 'ownerId' }),
+    },
+    q: getQueryParameter({ key: 'q' }),
+    tag: getQueryParameter({ key: 'tag' }),
+    usersList: _.get(window, 'initialState.usersList') || [],
+    visibility: getQueryParameter({ key: 'visibility' })
+  };
+};
 
 // This function should _only_ be used for keeping track of user changes to the query. See also changeQ() in
 // platform-ui/frontend/public/javascripts/internalAssetManager/actions/filters.js

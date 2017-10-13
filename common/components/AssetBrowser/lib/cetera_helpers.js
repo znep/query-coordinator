@@ -53,6 +53,8 @@ const translateParamsToMixpanelEvent = (params) => {
       return translateColumnToMixpanelEvent(params.order.value);
     case 'CLEAR_ALL_FILTERS':
       return 'Clears All Asset Filters';
+    case 'FETCH_INITIAL_RESULTS':
+      return 'Fetched initial results';
     default:
       return `Unknown action: ${params.action}`;
   }
@@ -113,7 +115,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     customMetadataFilters,
     forUser,
     idFilters: lastAccessedUids,
-    limit: 10, // TODO Why is this 6 when use pageSize instead 10?
+    limit: pageSize,
     mixpanelContext: {
       eventName: translateParamsToMixpanelEvent(filters),
       params: _.omit(filters, 'action')
@@ -165,7 +167,7 @@ export const fetchAssetCounts = (dispatch, getState, parameters = {}) => {
   });
 };
 
-export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => {
+export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.noop) => {
   const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
   let { sortByRecentlyViewed } = _.merge({}, getState().filters, parameters);
 
@@ -192,4 +194,9 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     console.error(err);
     dispatch(ceteraActions.fetchingResultsError(err.message));
   });
+};
+
+export const fetchInitialResults = (parameters = {}) => (dispatch, getState) => {
+  const onSuccess = () => dispatch({ type: 'INITIAL_RESULTS_FETCHED' });
+  return fetchResults(dispatch, getState, { action: 'FETCH_INITIAL_RESULTS', ...parameters }, onSuccess);
 };

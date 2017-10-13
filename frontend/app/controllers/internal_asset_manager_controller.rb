@@ -2,12 +2,6 @@ class InternalAssetManagerController < ApplicationController
 
   include ApplicationHelper
   include CatalogResultsHelper
-  include InternalAssetManagerHelper
-
-  # NOTE: This should match the value of RESULTS_PER_PAGE in
-  # public/javascripts/internalAssetManager/components/CatalogResults.js and
-  # public/javascripts/internalAssetManager/actions/cetera.js
-  RESULTS_PER_PAGE = 10
 
   before_filter :require_roled_user
 
@@ -18,45 +12,11 @@ class InternalAssetManagerController < ApplicationController
   end
 
   def show
-    cookie = "_core_session_id=#{cookies[:_core_session_id]}"
-
     # These populate the corresponding values in the filter dropdowns
     @users_list = fetch_users
     @domain_categories = fetch_domain_categories
     @domain_tags = fetch_domain_tags
-    # Note: @domain_custom_facets needs to be set before @initial_filters and @catalog_results
     @domain_custom_facets = fetch_domain_custom_facets
-
-    @initial_filters = initial_filters
-    @initial_order = {
-      value: query_param_value('orderColumn'),
-      ascending: query_param_value('orderDirection').to_s.downcase == 'asc'
-    }
-    @initial_page = query_param_value('page').to_i
-
-    catalog_results_response = begin
-      AssetInventoryService::InternalAssetManager.find(request_id, cookie, siam_search_options).to_h
-    rescue => e
-      report_error("Error fetching Cetera results: #{e.inspect}")
-      { 'results' => [], 'resultSetSize' => 0 }
-    end
-
-    @catalog_results = catalog_results_response['results'].to_a
-    @catalog_result_set_size = catalog_results_response['resultSetSize'].to_i
-
-    if params[:assetTypes].present?
-      asset_types = [params[:assetTypes]]
-    else
-      # Note: these asset_types should match those listed in the `asset_counts` component and reducer
-      asset_types = %w(charts datalenses,visualizations datasets files filters hrefs maps stories)
-    end
-
-    @asset_counts = begin
-      Cetera::Utils.get_asset_counts(asset_types, request_id, forwardable_session_cookies, siam_search_options)
-    rescue => e
-      report_error("Error fetching Cetera asset counts: #{e.inspect}")
-      {}
-    end
   end
 
   private

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const getInitialState = () => _.get(window, 'initialState.assetCounts', {
+const getInitialState = () => ({
   values: {
     charts: 0,
     datalenses: 0,

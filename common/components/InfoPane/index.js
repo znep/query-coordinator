@@ -190,6 +190,9 @@ class InfoPane extends Component {
         </label>
       </div> : null;
 
+    //TODO: The .updated and .views class names are confusing. They originally
+    //made sense when the metadata fields were always updated-at and view-count,
+    //but that is no longer the case.
     const metadataLeft = metadata.first ?
       <div className="entry-meta updated">
         <div className="update-content">
@@ -203,13 +206,15 @@ class InfoPane extends Component {
     const metadataRight = metadata.second ?
       <div className="entry-meta views">
         <div className="update-content">
-          <span className="meta-title">updated</span>
+          <span className="meta-title">{metadata.second.label}</span>
           {' '}
-          <span className="date">one day</span>
+          <span className="date">{metadata.second.content}</span>
         </div>
         {metadata.first ? null : watchDatasetFlag}
       </div> : null;
 
+    //TODO: Why is there a class of 'second' here? This element contains
+    //both the first and second metadata entries.
     return (
       <div className="entry-meta second" ref={(el) => this.metadataPane = el}>
         {metadataLeft}

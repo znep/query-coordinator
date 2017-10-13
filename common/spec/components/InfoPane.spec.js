@@ -1,17 +1,13 @@
 import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
-import I18n from 'common/i18n';
+import { useTestTranslations } from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import { renderComponent } from '../helpers';
 import { Simulate } from 'react-dom/test-utils';
 
 describe('InfoPane', () => {
   beforeEach(() => {
-    I18n.translations.en = allLocales.en;
-  });
-
-  afterEach(() => {
-    I18n.translations = {};
+    useTestTranslations(allLocales.en);
   });
 
   function getProps(props) {
@@ -149,6 +145,44 @@ describe('InfoPane', () => {
     });
   });
 
+  /**
+   * The metadata prop is an object meant to contain two arbitrary pieces of metadata about the
+   * asset.  The two sections are named "first" and "second" and should be objects, each
+   * containing a "label" and "content" key.  They are rendered to the right of the description.
+   */
+  describe('metadata prop', () => {
+    const props = getProps();
+    let element;
+
+    before(() => {
+      element = renderComponent(InfoPane, props);
+    });
+
+    describe('first field', () => {
+      it('renders the title', () => {
+        // See TODO in InfoPane/index.js re: confusing class names.
+        assert.equal($(element).find('.entry-meta.updated .meta-title').text(), props.metadata.first.label);
+      });
+
+      it('renders the content', () => {
+        // See TODO in InfoPane/index.js re: confusing class names.
+        assert.equal($(element).find('.entry-meta.updated .date').text(), props.metadata.first.content);
+      });
+    });
+
+    describe('second field', () => {
+      it('renders the title', () => {
+        // See TODO in InfoPane/index.js re: confusing class names.
+        assert.equal($(element).find('.entry-meta.views .meta-title').text(), props.metadata.second.label);
+      });
+
+      it('renders the content', () => {
+        // See TODO in InfoPane/index.js re: confusing class names.
+        assert.equal($(element).find('.entry-meta.views .date').text(), props.metadata.second.content);
+      });
+    });
+  });
+
   describe('when there is no content for the lower section', () => {
     it('renders nothing', () => {
       const element = renderComponent(InfoPane, { name: 'Just the Title' });
@@ -168,6 +202,54 @@ describe('InfoPane', () => {
         const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: true, subscribed: false }));
         assert.ok(element.querySelector('.watch-dataset-flag'));
         assert.ok(element.querySelector('.socrata-icon-watch'));
+      });
+
+      describe('when there is only a `first` metadata item', () => {
+        it('should show watch dataset flag only in the first metadata item', () => {
+          const props = getProps({ showWatchDatasetFlag: true });
+          // N.B. defaultsDeep (used in getProps) does _not_ allow you to remove items.
+          delete props.metadata.second;
+          const element = renderComponent(InfoPane, props);
+          assert.lengthOf(element.querySelectorAll('.watch-dataset-flag'), 1);
+          // See TODO in InfoPane/index.js re: confusing class names.
+          assert.lengthOf(element.querySelectorAll('.entry-meta.updated .watch-dataset-flag'), 1);
+        });
+      });
+
+      describe('when there is only a `second` metadata item', () => {
+        it('should show watch dataset flag only in the second metadata item', () => {
+          const props = getProps({ showWatchDatasetFlag: true });
+          // N.B. defaultsDeep (used in getProps) does _not_ allow you to remove items.
+          delete props.metadata.first;
+          const element = renderComponent(InfoPane, props);
+          assert.lengthOf(element.querySelectorAll('.watch-dataset-flag'), 1);
+          // See TODO in InfoPane/index.js re: confusing class names.
+          assert.lengthOf(element.querySelectorAll('.entry-meta.views .watch-dataset-flag'), 1);
+        });
+      });
+
+      // TODO: Is this really the expected behavior?
+      describe('when there are no metadata fields', () => {
+        describe('because there is no metadata prop set', () => {
+          it('should hide watch dataset flag', () => {
+            const props = getProps({ showWatchDatasetFlag: true });
+            // N.B. defaultsDeep (used in getProps) does _not_ allow you to remove items.
+            delete props.metadata;
+            const element = renderComponent(InfoPane, props);
+            assert.isNull(element.querySelector('.watch-dataset-flag'));
+          });
+        });
+
+        describe('because the metadata prop does includes neither `first` nor `second`', () => {
+          it('should hide watch dataset flag', () => {
+            // N.B. defaultsDeep (used in getProps) does _not_ allow you to override items
+            // with empty objects.
+            const props = getProps({ showWatchDatasetFlag: true });
+            props.metadata = {};
+            const element = renderComponent(InfoPane, props);
+            assert.isNull(element.querySelector('.watch-dataset-flag'));
+          });
+        });
       });
     });
 

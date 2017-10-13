@@ -7,8 +7,7 @@ import reducer from './reducers';
 import createLogger from 'redux-logger';
 
 import Header from './components/header';
-import CatalogResults from './components/catalog_results';
-import CatalogFilters from './components/filters/catalog_filters';
+import ResultsAndFilters from './components/results_and_filters';
 import WindowDimensions from './components/window_dimensions';
 
 export class AssetBrowser extends Component {
@@ -30,9 +29,7 @@ export class AssetBrowser extends Component {
   }
 
   render() {
-    const { showFilters, showHeader } = this.props;
-
-    const catalogFilters = showFilters ? <CatalogFilters {...this.props} /> : null;
+    const { showHeader } = this.props;
 
     const header = showHeader ? <Header {...this.props} /> : null;
 
@@ -40,10 +37,7 @@ export class AssetBrowser extends Component {
       <Provider store={this.state.store}>
         <div>
           {header}
-          <div className="results-and-filters">
-            <CatalogResults {...this.props} />
-            {catalogFilters}
-          </div>
+          <ResultsAndFilters {...this.props} />
           <WindowDimensions />
         </div>
       </Provider>

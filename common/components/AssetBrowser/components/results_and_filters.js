@@ -8,17 +8,16 @@ import CatalogResults from './catalog_results';
 
 export class ResultsAndFilters extends Component {
   render() {
-    const { isMobile, page } = this.props;
+    const { isMobile, showFilters } = this.props;
 
-    let catalogFilters = null;
-    if (page !== 'profile') {
-      catalogFilters = isMobile ? <MobileCatalogFilters /> : <CatalogFilters />;
-    }
+    const catalogFilters = isMobile ?
+      <MobileCatalogFilters {...this.props} /> :
+      <CatalogFilters {...this.props} />;
 
     return (
-      <div className="results-and-filters">
-        <CatalogResults page={page} />
-        {catalogFilters}
+      <div className="asset-browser results-and-filters">
+        <CatalogResults {...this.props} />
+        {showFilters ? catalogFilters : null}
       </div>
     );
   }

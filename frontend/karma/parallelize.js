@@ -69,7 +69,7 @@ function report(suite) {
 }
 
 function karmaTimeoutSeconds() {
-  return (parseInt(process.env.KARMA_TIMEOUT_SECONDS || '300', 10));
+  return (parseInt(process.env.KARMA_TIMEOUT_SECONDS || '600', 10));
 }
 
 // Execute test suites in parallel.

@@ -5779,7 +5779,6 @@ en:
         grid_view_2017_refresh_banner:
           disable:
             link_text: Click here to stop previewing the new experience.
-            text: We're redesigning the Grid View!
           enable:
             link_text: Click here to preview the new experience.
             text: We're redesigning the Grid View!

@@ -22,7 +22,7 @@ $(document).ready(function() {
     if (refreshEnabled) {
 
       url = window.location.origin + window.location.pathname;
-      bannerText = $.t('screens.ds.show.grid_view_2017_refresh_banner.disable.text');
+      bannerText = '';
       bannerLinkText = $.t('screens.ds.show.grid_view_2017_refresh_banner.disable.link_text');
     } else {
 

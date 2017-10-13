@@ -25,7 +25,7 @@ namespace :test do
         puts "Executing the following command with no timeout:\n#{cmd}"
         fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
       else
-        timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 300
+        timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 600
 
         puts "Executing the following command with #{timeout_secs} second timeout:\n#{cmd}"
         begin

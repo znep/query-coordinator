@@ -4,7 +4,15 @@
   color: $dark-grey-1;
 
   .title {
-    font-size: 15px;
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  .title + span {
+    font-size: 12px;
+    position: relative;
+    top: -1px;
+    padding-right: 5px;
   }
 
   .active-filter-count {
@@ -27,10 +35,10 @@
 
   &.button {
     display: inline-block;
-    background-color: $dark-grey-0;
+    background-color: $light-grey-3;
     color: $white;
-    padding: 7px 0 7px 5px;
-    margin: 1px 5px;
+    padding: 4px 4px 6px 14px;
+    margin: 4px 10px;
     cursor: pointer;
 
     .clear-all-filters {

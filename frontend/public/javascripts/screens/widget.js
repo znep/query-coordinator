@@ -309,7 +309,16 @@ $(function() {
     return $.t('screens.widget.' + str);
   }
 
-  blist.dataset.setAccessType('WIDGET');
+  // EN-19389: Make isMobile check more comprehensive
+  var isMobile = function() {
+    return $.device.iphone || $.device.android;
+  };
+
+  if (isMobile() && window.top === window.self) {
+    blist.dataset.setAccessType('WEBSITE');
+  } else {
+    blist.dataset.setAccessType('WIDGET');
+  }
 
   // keep track of some stuff for easy access
   widgetNS.orientation = widgetNS.theme.frame.orientation;
@@ -753,7 +762,7 @@ $(function() {
   widgetNS.ready = true;
 
   // Make adjustments for mobile
-  if ($.device.iphone || $.device.android) {
+  if (isMobile()) {
     // supposedly scroll past address bar in webkit mobile
     _.defer(function() {
       window.scrollTo(0, 1);

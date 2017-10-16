@@ -1881,7 +1881,7 @@ en:
       previous: Previous
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
-      visualize_link: Visualize and Filter (preview)
+      visualize_link: Visualize and Filter
     default_row_label: row
     done: Done
     download:
@@ -1902,7 +1902,7 @@ en:
       openin_plotly: Plot.ly
       openin_separator: OPEN IN...
       view_data: View Data
-      visualize_and_filter: Visualize and Filter (preview)
+      visualize_and_filter: Visualize and Filter
     featured_content:
       manage_prompt:
         button: Manage Featured Content

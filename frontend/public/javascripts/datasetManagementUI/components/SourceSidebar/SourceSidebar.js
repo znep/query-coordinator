@@ -82,10 +82,10 @@ const SourceSidebar = ({ entities, sources, params }) => {
   return (
     <section className={styles.sidebar}>
       <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
-        Upload a Data File
+        {I18n.show_uploads.upload_link}
       </IndexLink>
       <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
-        Connect to a Data Source
+        {I18n.show_uploads.url_link}
       </Link>
       {!!sources.length && <SourceList entities={entities} sources={sources} params={params} />}
     </section>

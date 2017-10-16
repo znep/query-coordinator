@@ -87,7 +87,7 @@ const SourceSidebar = ({ entities, sources, params }) => {
       <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
         Connect to a Data Source
       </Link>
-      {sources.length && <SourceList entities={entities} sources={sources} params={params} />}
+      {!!sources.length && <SourceList entities={entities} sources={sources} params={params} />}
     </section>
   );
 };

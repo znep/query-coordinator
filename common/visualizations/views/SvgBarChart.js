@@ -282,6 +282,7 @@ function SvgBarChart($element, vif, options) {
     let numberOfItemsPerGroup;
     let minXValue;
     let maxXValue;
+    let positions;
     let d3YAxis;
     let d3XAxis;
     let d3Zoom;
@@ -993,16 +994,6 @@ function SvgBarChart($element, vif, options) {
     /**
      * 2. Set up the x-scale and -axis.
      */
-    let positions;
-
-    if (isOneHundredPercentStacked) {
-      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
-    } else if (isStacked) {
-      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    } else {
-      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
-    }
-
     try {
 
       const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex, referenceLines);
@@ -1030,14 +1021,22 @@ function SvgBarChart($element, vif, options) {
       }
 
       if (isOneHundredPercentStacked) {
+
+        positions = self.getOneHundredPercentStackedPositions(groupedDataToRender); // measure axes do not change for 100% stacked
         minXValue = self.getMinOneHundredPercentStackedValue(positions);
         maxXValue = self.getMaxOneHundredPercentStackedValue(positions);
+
       } else if (isStacked) {
+
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
+        positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
+        
       } else {
+
         minXValue = measureAxisMinValue || Math.min(dataMinXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
+        positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue);
       }
 
       if (minXValue > maxXValue) {

@@ -190,6 +190,7 @@ function SvgColumnChart($element, vif, options) {
     let numberOfItemsPerGroup;
     let minYValue;
     let maxYValue;
+    let positions;
     let d3XAxis;
     let d3YAxis;
     let d3Zoom;
@@ -768,15 +769,6 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 3. Set up the y-scale and -axis.
      */
-    let positions;
-
-    if (isOneHundredPercentStacked) {
-      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
-    } else if (isStacked) {
-      positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue)
-    } else {
-      positions = self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue)
-    }
 
     try {
 
@@ -806,6 +798,7 @@ function SvgColumnChart($element, vif, options) {
 
       if (isOneHundredPercentStacked) {
 
+        positions = self.getOneHundredPercentStackedPositions(groupedDataToRender); // measure axes do not change for 100% stacked
         minYValue = self.getMinOneHundredPercentStackedValue(positions);
         maxYValue = self.getMaxOneHundredPercentStackedValue(positions);
 
@@ -827,6 +820,8 @@ function SvgColumnChart($element, vif, options) {
           maxYValue = dataMaxSummedYValue;
         }
 
+        positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
+
       } else {
 
         if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
@@ -844,6 +839,8 @@ function SvgColumnChart($element, vif, options) {
         } else {
           maxYValue = dataMaxYValue;
         }
+
+        positions = self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue);
       }
 
       if (minYValue > maxYValue) {

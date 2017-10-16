@@ -1112,4 +1112,45 @@ describe('SvgVisualization', () => {
       assert.isFalse(viz.shouldDisplayFilterBar());
     });
   });
+
+  describe('#getOneHundredPercentStackedPositions', () => {
+    let viz;
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+    });
+
+    const data = [
+      ["Ice Cream",4000,1000,1000,4000],
+      ["Cookies",4000,1000,-1000,4000],
+      ["Brownies",-4000,-1000,1000,4000]
+    ];
+
+    const expectedPositions = [
+      [
+        {"start":0,"end":0.4,"percent":40},
+        {"start":0.4,"end":0.5,"percent":10},
+        {"start":0.5,"end":0.6,"percent":10},
+        {"start":0.6,"end":1,"percent":40}
+      ],
+      [
+        {"start":0,"end":0.4,"percent":40},
+        {"start":0.4,"end":0.5,"percent":10},
+        {"start":-0.1,"end":0,"percent":-10},
+        {"start":0.5,"end":0.9,"percent":40}
+      ],
+      [
+        {"start":-0.4,"end":0,"percent":-40},
+        {"start":-0.5,"end":-0.4,"percent":-10},
+        {"start":0,"end":0.1,"percent":10},
+        {"start":0.1,"end":0.5,"percent":40}
+      ]
+    ];
+
+    it('combines a vif with a default vif', () => {
+      
+      let positions = viz.getOneHundredPercentStackedPositions(data);
+      assert.deepEqual(positions, expectedPositions);
+    });
+  });
 });

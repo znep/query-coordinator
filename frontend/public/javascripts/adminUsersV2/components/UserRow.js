@@ -7,39 +7,52 @@ import moment from 'moment';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class UserRow extends React.Component {
+  constructor() {
+    super();
+    _.bindAll(['formatLastActiveTooltip', 'formatLastActive', 'renderLastActive']);
+  }
+
+  formatLastActive(lastAuthenticatedAt) {
+    const { I18n } = this.props;
+    if (_.isUndefined(lastAuthenticatedAt)) {
+      // users that have not logged in since we started tracking this
+      return I18n.t('users.last_active.unknown');
+    } else if (moment(lastAuthenticatedAt, 'X').isSame(moment(), 'day')) {
+      // we only update once a day, no point in showing more granular than that
+      return I18n.t('users.last_active.today');
+    } else {
+      return moment(lastAuthenticatedAt, 'X').fromNow();
+    }
+  }
+
+  formatLastActiveTooltip(lastAuthenticatedAt) {
+    const { I18n } = this.props;
+    if (_.isUndefined(lastAuthenticatedAt)) {
+      return I18n.t('users.last_active.unknown');
+    } else {
+      return moment(lastAuthenticatedAt, 'X').format('LLLL');
+    }
+  }
 
   renderDisplayName() {
     return (
       <td>
         <SocrataIcon name="user" />
-        <a href={`/profile/${this.props.id}`}>
-          {this.props.screenName}
-        </a>
+        <a href={`/profile/${this.props.id}`}>{this.props.screenName}</a>
       </td>
     );
   }
 
   renderEmail() {
-    return (
-      <td>{this.props.email}</td>
-    );
+    return <td>{this.props.email}</td>;
   }
 
   renderLastActive() {
-    const { I18n, lastAuthenticatedAt } = this.props;
-    let lastActiveText;
+    const { lastAuthenticatedAt } = this.props;
+    const lastActiveText = this.formatLastActive(lastAuthenticatedAt);
+    const lastActiveTooltip = this.formatLastActiveTooltip(lastAuthenticatedAt);
 
-    if (_.isUndefined(lastAuthenticatedAt)) {
-      // users that have not logged in since we started tracking this
-      lastActiveText = I18n.t('users.last_active.unknown');
-    } else if (moment(lastAuthenticatedAt, 'X').isSame(moment(), 'day')) {
-      // we only update once a day, no point in showing more granular than that
-      lastActiveText = I18n.t('users.last_active.today');
-    } else {
-      lastActiveText = moment(lastAuthenticatedAt, 'X').fromNow();
-    }
-
-    return (<td>{lastActiveText}</td>);
+    return <td title={lastActiveTooltip}>{lastActiveText}</td>;
   }
 
   renderPendingActionStatus() {
@@ -57,33 +70,29 @@ export class UserRow extends React.Component {
   renderRolePicker() {
     const { availableRoles, I18n } = this.props;
 
-    const options = availableRoles.map((role) => {
-      const title = role.isDefault ?
-        I18n.t(`roles.default_roles.${role.name}.name`) :
-        role.name;
+    const options = availableRoles.map(role => {
+      const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
       return {
         title,
         value: role.id
       };
     });
 
-
     return (
       <td className="role-picker-cell">
         <Dropdown
-          onSelection={(selection) => this.props.onRoleChange(selection.value)}
+          onSelection={selection => this.props.onRoleChange(selection.value)}
           options={options}
           size="medium"
-          value={_.isUndefined(this.props.pendingRole) ?
-            this.props.roleId : this.props.pendingRole} />
-            {this.renderPendingActionStatus()}
+          value={_.isUndefined(this.props.pendingRole) ? this.props.roleId : this.props.pendingRole} />
+        {this.renderPendingActionStatus()}
       </td>
     );
   }
 
   render() {
     return (
-      <tr key={this.props.id} className="result-list-row" >
+      <tr key={this.props.id} className="result-list-row">
         {this.renderDisplayName()}
         {this.renderEmail()}
         {this.renderLastActive()}
@@ -106,12 +115,10 @@ UserRow.propTypes = {
   I18n: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     availableRoles: state.roles
   };
 };
 
-export const LocalizedUserRow = connectLocalization(
-  connect(mapStateToProps)(UserRow)
-);
+export const LocalizedUserRow = connectLocalization(connect(mapStateToProps)(UserRow));

@@ -380,6 +380,16 @@ export const initialState = {
   ]
 };
 
+export const futureUsers = [
+  {
+    "id": 1,
+    "createdAt": 1506712824,
+    "email": "new.userton@example.com",
+    "pendingRoleId": 6,
+    "role": "publisher_stories"
+  }
+];
+
 export const singleRowState = {
   screenName: 'Justin Bieber',
   id: 'abcd-1234',

@@ -5,9 +5,9 @@ import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import * as Actions from '../actions';
 import { renderUserAutocompleteResult } from './UserAutocompleteResult';
 
+// TODO: EN-19403 - Factor out as shared component
 class UserSearchBar extends Component {
   render() {
-
     const autocompleteOptions = {
       animate: true,
       anonymous: false,
@@ -20,9 +20,7 @@ class UserSearchBar extends Component {
       renderResult: renderUserAutocompleteResult
     };
 
-    return (
-      <Autocomplete {...autocompleteOptions} />
-    );
+    return <Autocomplete {...autocompleteOptions} />;
   }
 }
 
@@ -31,10 +29,16 @@ UserSearchBar.propTypes = {
   onClearSearch: PropTypes.func.isRequired
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  onChooseResult: (query) => { dispatch(Actions.userSearch(query)); },
-  onClearSearch: () => { dispatch(Actions.userSearch()); }
+const mapDispatchToProps = dispatch => ({
+  onChooseResult: query => {
+    dispatch(Actions.userSearch(query));
+  },
+  onClearSearch: () => {
+    dispatch(Actions.userSearch());
+  }
 });
 
-const ConnectedUserSearchBar = connect(() => { return {}; }, mapDispatchToProps)(UserSearchBar);
+const ConnectedUserSearchBar = connect(() => {
+  return {};
+}, mapDispatchToProps)(UserSearchBar);
 export default ConnectedUserSearchBar;

@@ -3,10 +3,9 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-import reducer from 'reducers';
 import * as Actions from 'actions';
 
-import { initialState, usersResponse, rolesResponse } from './helpers/stateFixtures';
+import { futureUsers, initialState, usersResponse, rolesResponse } from './helpers/stateFixtures';
 
 describe('reducers', () => {
 
@@ -38,6 +37,7 @@ describe('reducers', () => {
       const store = mockStore({ users: [], roles: []});
 
       fetchMock.get('/api/catalog/v1/users?domain=localhost', usersResponse);
+      fetchMock.get('/api/future_accounts', futureUsers);
       fetchMock.get('/api/roles', rolesResponse);
 
       store

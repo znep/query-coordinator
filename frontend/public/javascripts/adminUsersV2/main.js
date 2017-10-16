@@ -8,11 +8,13 @@ import reducer from './reducers';
 import { AppContainer } from 'react-hot-loader';
 
 const middleware = [thunk];
-middleware.push(createLogger({
-  duration: true,
-  timestamp: false,
-  collapsed: true
-}));
+middleware.push(
+  createLogger({
+    duration: true,
+    timestamp: false,
+    collapsed: true
+  })
+);
 
 const store = createStore(
   reducer,

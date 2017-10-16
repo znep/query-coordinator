@@ -7,31 +7,16 @@ import * as Actions from '../actions';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class UsersTable extends React.Component {
-
   constructor(props) {
     super(props);
 
-    _.bindAll(this,
-      'componentDidMount',
-      'userToRow',
-      'renderHeaderRow',
-      'renderDataRows'
-    );
-  }
-
-  componentDidMount() {
-    this.props.loadData();
+    _.bindAll(this, 'userToRow', 'renderHeaderRow', 'renderDataRows');
   }
 
   userToRow(user) {
-    const onRoleChange = (newRole) => this.props.onRoleChange(user.id, newRole);
+    const onRoleChange = newRole => this.props.onRoleChange(user.id, newRole);
 
-    return (
-      <LocalizedUserRow
-        {...user}
-        onRoleChange={onRoleChange}
-        key={user.id} />
-    );
+    return <LocalizedUserRow {...user} onRoleChange={onRoleChange} key={user.id} />;
   }
 
   renderHeaderRow() {
@@ -50,18 +35,14 @@ export class UsersTable extends React.Component {
   }
 
   renderDataRows() {
-    return (
-      <tbody>
-        {this.props.users.map(this.userToRow)}
-      </tbody>
-    );
+    return <tbody>{this.props.users.map(this.userToRow)}</tbody>;
   }
 
   render() {
     return (
       <table
         className="result-list-table table table-discrete table-condensed table-borderless"
-        id="users-table" >
+        id="users-table">
         {this.renderHeaderRow()}
         {this.renderDataRows()}
       </table>
@@ -72,20 +53,18 @@ export class UsersTable extends React.Component {
 UsersTable.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRoleChange: PropTypes.func.isRequired,
-  loadData: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     users: state.users
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    onRoleChange: (userId, newRole) => dispatch(Actions.changeUserRole(userId, newRole)),
-    loadData: () => dispatch(Actions.loadData())
+    onRoleChange: (userId, newRole) => dispatch(Actions.changeUserRole(userId, newRole))
   };
 };
 

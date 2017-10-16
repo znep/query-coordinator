@@ -6449,6 +6449,7 @@ en:
     headers:
       actions: Actions
       email: Email
+      invited: Invited
       last_active: Last Active
       name: Name
       role: Role

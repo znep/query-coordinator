@@ -1,10 +1,9 @@
 import { combineReducers } from 'redux';
 import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReducer';
-import { USER_ROLE_CHANGE, LOAD_DATA, USER_SEARCH,
-  START, COMPLETE_FAIL, COMPLETE_SUCCESS } from './actions';
+import { COMPLETE_FAIL, COMPLETE_SUCCESS, LOAD_DATA, START, USER_ROLE_CHANGE, USER_SEARCH } from './actions';
 
 const userRoleChange = (state, action) => {
-  return state.map((user) => {
+  return state.map(user => {
     if (user.id !== action.userId) return user;
     switch (action.stage) {
       case START:
@@ -52,6 +51,18 @@ const users = (state = [], action) => {
   }
 };
 
+const futureUsers = (state = [], action) => {
+  switch (action.type) {
+    case LOAD_DATA:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return action.futureUsers;
+      }
+      return state;
+    default:
+      return state;
+  }
+};
+
 const roles = (state = [], action) => {
   if (action.type === LOAD_DATA && action.stage === COMPLETE_SUCCESS) {
     return action.roles;
@@ -62,7 +73,7 @@ const roles = (state = [], action) => {
 
 export default combineReducers({
   users,
+  futureUsers,
   roles,
   autocomplete
 });
-

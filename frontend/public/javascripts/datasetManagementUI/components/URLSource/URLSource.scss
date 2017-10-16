@@ -42,16 +42,17 @@
 }
 
 .imageContainer {
-  width: 40%;
+  width: 33.3%;
   position: relative;
 }
 
 .textContainer {
-  width: 60%;
+  width: 66.6%;
   position: relative;
 
   .content {
     padding-left: 1em;
+    max-width: 75%;
     position: absolute;
     left: 0;
     right: 0;

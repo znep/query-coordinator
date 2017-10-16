@@ -2106,9 +2106,10 @@ en:
     home_pane:
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
+      add_data: Add Data
       adding_data: Adding Data
       adding_data_blurb: Adding data will enable visualizations and API access.
-      adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just choose a data file to upload.
+      adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just add a data source (file, URL, etc).
       adding_metadata: Adding Metadata
       adding_metadata_blurb: Metadata is crucial to give your end users context.
       apply_update: Apply Update
@@ -2271,10 +2272,11 @@ en:
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:
+      retry: Retry
+      start_import: Start Import
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
-      start_import: Start Import
     parse_options:
       header_count: Header Count
       column_header: Header Row Position
@@ -2404,16 +2406,15 @@ en:
       upload_failed: Upload Failed
       upload_in_progress: Upload In Progress
     show_uploads:
-      current: Current Upload
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
+      from_url: URL Source
       message: Drag a New Data File Here
       no_uploads: No data sources yet
-      noncurrent: Other data sources
+      sources: Data Sources
       submessage: ...or click Browse to choose a file from your computer
-      uploads: Data Sources
-      title: Replace Data
-      from_url: URL Source
+      upload_link: Upload a Data File
+      url_link: Import Data from URL
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.

@@ -1,12 +1,12 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ShowUpload, mapStateToProps } from 'pages/ShowUpload/ShowUpload';
+import { ShowSource, mapStateToProps } from 'pages/ShowSource/ShowSource';
 import _ from 'lodash';
 import dotProp from 'dot-prop-immutable';
 import state from '../data/initialState';
 
-describe('ShowUpload page', () => {
+describe('ShowSource page', () => {
   const defaultProps = {
     goHome: _.noop,
     inProgress: false
@@ -16,9 +16,13 @@ describe('ShowUpload page', () => {
     params: {
       revisionSeq: '0'
     }
-  }
+  };
 
-  const component = shallow(<ShowUpload {...defaultProps} />);
+  const component = shallow(
+    <ShowSource {...defaultProps}>
+      <span className="child">hey</span>
+    </ShowSource>
+  );
 
   it('renders a modal', () => {
     assert.equal(component.find('Modal').length, 1);
@@ -27,20 +31,21 @@ describe('ShowUpload page', () => {
   it('renders a spinner if in progress', () => {
     const newProps = {
       ...defaultProps,
+      children: {},
       inProgress: true
     };
 
-    const component = shallow(<ShowUpload {...newProps} />);
+    const component = shallow(<ShowSource {...newProps} />);
 
     assert.equal(component.find('.spinner').length, 1);
   });
 
-  it('renders Upload index page if not in progress', () => {
-    const dragDrop = component.find('withRouter(Connect(DragDropUpload))');
-    const sidebar = component.find('withRouter(Connect(UploadSidebar))');
+  it('renders SourceSidebar and any children if not in progress', () => {
+    const child = component.find('.child');
+    const sidebar = component.find('withRouter(Connect(SourceSidebar))');
 
-    assert.equal(dragDrop.length, 1);
-    assert.equal(sidebar.length, 1);
+    assert.isTrue(child.exists());
+    assert.isTrue(sidebar.exists());
   });
 
   it('sets inProgress to false if there is no source', () => {

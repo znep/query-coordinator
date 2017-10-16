@@ -6,9 +6,11 @@ import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
-import ShowUpload from 'pages/ShowUpload/ShowUpload';
+import ShowSource from 'pages/ShowSource/ShowSource';
 import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
+import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
+import URLSource from 'containers/URLSourceContainer';
 
 const checkSchemaStatus = store => (nextState, replace, cb) => {
   const osid = _.toNumber(nextState.params.outputSchemaId);
@@ -49,7 +51,10 @@ export default function rootRoute(store) {
         path="metadata/:outputSchemaId/columns"
         component={ManageMetadata}
         onEnter={checkSchemaStatus(store)} />
-      <Route path="sources" component={ShowUpload} onEnter={checkIfPublished(store)} />
+      <Route path="sources" component={ShowSource} onEnter={checkIfPublished(store)}>
+        <IndexRoute component={DragDropUpload} />
+        <Route path="url" component={URLSource} />
+      </Route>
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
         component={ShowOutputSchema}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
+    <title>external-square</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="external-square" fill="#d6d6d6">
+            <path d="M824.243867,131.861635 L454.135678,502.435369 L520.937725,569.321444 L892.251256,197.540853 L892.251256,371.886792 L982,371.886792 L982,42 L665.517588,42 L665.517588,131.861635 L824.243867,131.861635 L824.243867,131.861635 Z M629.162555,174.427673 L42,174.427673 L42,982 L848.557789,982 L848.557789,392.126292 L759.98995,480.805537 L759.98995,893.320755 L131.748744,893.320755 L131.748744,264.289308 L539.413812,264.289308 L629.162555,174.427673 L629.162555,174.427673 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>

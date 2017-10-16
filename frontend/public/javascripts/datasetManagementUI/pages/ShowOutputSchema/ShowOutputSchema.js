@@ -9,7 +9,7 @@ import * as Selectors from 'selectors';
 import * as Actions from 'reduxStuff/actions/showOutputSchema';
 import { updateSourceParseOptions } from 'reduxStuff/actions/createSource';
 import * as DisplayState from 'lib/displayState';
-import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
+import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
 import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
@@ -18,7 +18,6 @@ import SaveOutputSchemaButton from './SaveOutputSchemaButton';
 import ParseOptionsPane from './ParseOptionsPane';
 import SaveParseOptionsButton from './SaveParseOptionsButton';
 import styles from './ShowOutputSchema.scss';
-
 
 export class ShowOutputSchema extends Component {
   isOnParseOptionsPage() {
@@ -40,18 +39,13 @@ export class ShowOutputSchema extends Component {
   }
 
   render() {
-    const {
-      canApplyRevision,
-      fatalError,
-      goToRevisionBase,
-      params
-    } = this.props;
+    const { canApplyRevision, fatalError, goToRevisionBase, params } = this.props;
 
     return (
       <div className={styles.outputSchemaContainer}>
         <Modal fullScreen onDismiss={goToRevisionBase}>
           <ModalHeader onDismiss={goToRevisionBase}>
-            <UploadBreadcrumbs />
+            <SourceBreadcrumbs />
           </ModalHeader>
           <ModalContent>
             <OutputSchemaSidebar params={params} page={params.option || 'output_schema'} />
@@ -62,7 +56,7 @@ export class ShowOutputSchema extends Component {
             {canApplyRevision ? <ReadyToImport /> : null}
             {fatalError ? <FatalError /> : null}
 
-            {!fatalError ? (this.saveButtonForOption()) : null}
+            {!fatalError ? this.saveButtonForOption() : null}
           </ModalFooter>
         </Modal>
       </div>

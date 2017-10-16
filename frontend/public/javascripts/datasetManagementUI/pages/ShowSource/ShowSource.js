@@ -9,17 +9,16 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
-import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
-import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
-import UploadSidebar from 'containers/UploadSidebarContainer';
+import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
+import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
-import styles from './ShowUpload.scss';
+import styles from './ShowSource.scss';
 
-export const ShowUpload = ({ inProgress, goHome }) => (
+export const ShowSource = ({ inProgress, goHome, children }) => (
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
-        <UploadBreadcrumbs atShowUpload />
+        <SourceBreadcrumbs atShowSource />
       </ModalHeader>
       <ModalContent className={styles.modalContent}>
         <FlashMessage />
@@ -29,8 +28,8 @@ export const ShowUpload = ({ inProgress, goHome }) => (
           </div>
         ) : (
           <div className={styles.sourceContainer}>
-            <DragDropUpload />
-            <UploadSidebar />
+            <SourceSidebar />
+            {children}
           </div>
         )}
       </ModalContent>
@@ -50,13 +49,14 @@ export const mapStateToProps = ({ entities, ui }, { params }) => {
   };
 };
 
-ShowUpload.propTypes = {
+ShowSource.propTypes = {
   inProgress: PropTypes.bool.isRequired,
-  goHome: PropTypes.func.isRequired
+  goHome: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({
   goHome: () => browserHistory.push(Links.revisionBase(ownProps.params))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowUpload);
+export default connect(mapStateToProps, mapDispatchToProps)(ShowSource);

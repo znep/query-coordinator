@@ -2,11 +2,13 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import * as Selectors from 'selectors';
-import UploadSidebar from 'components/UploadSidebar/UploadSidebar';
+import SourceSidebar from 'components/SourceSidebar/SourceSidebar';
 
 export const mapStateToProps = ({ entities }, { params }) => {
-  let currentUpload;
-  let otherUploads;
+  let currentSource;
+  let otherSources;
+  let sources;
+
   const revisionSeq = _.toNumber(params.revisionSeq);
   const pendingOrSuccessfulSources = _.chain(entities.sources)
     .values()
@@ -19,19 +21,18 @@ export const mapStateToProps = ({ entities }, { params }) => {
     const { input_schema_id: inputSchemaId } = currentOutputSchema;
     const { source_id: sourceId } = entities.input_schemas[inputSchemaId];
 
-    currentUpload = entities.sources[sourceId];
-    otherUploads = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
+    currentSource = entities.sources[sourceId];
+    otherSources = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
+    sources = [{ ...currentSource, isCurrent: true }, ...otherSources];
   } else {
     // rare case where you have uploads but not a current upload
-    currentUpload = null;
-    otherUploads = pendingOrSuccessfulSources;
+    sources = pendingOrSuccessfulSources;
   }
 
   return {
-    currentUpload,
-    otherUploads,
+    sources: _.orderBy(sources, ['finished_at'], ['desc']),
     entities
   };
 };
 
-export default withRouter(connect(mapStateToProps)(UploadSidebar));
+export default withRouter(connect(mapStateToProps)(SourceSidebar));

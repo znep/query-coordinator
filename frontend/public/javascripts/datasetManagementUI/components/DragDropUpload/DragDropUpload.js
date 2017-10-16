@@ -6,7 +6,6 @@ import { withRouter } from 'react-router';
 import { createUploadSource } from 'reduxStuff/actions/createSource';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
-import ImportFromURLButton from 'containers/ImportFromURLButtonContainer';
 import styles from './DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
@@ -77,7 +76,6 @@ export class DragDropUpload extends Component {
 
     return (
       <section className={styles.container}>
-        <h2>{I18n.show_uploads.title}</h2>
         <div
           onDrop={this.handleDrop}
           onDragOver={this.handleDragOver}
@@ -104,8 +102,6 @@ export class DragDropUpload extends Component {
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
                 onChange={e => dispatch(createUploadSource(e.target.files[0], params))} />
-
-              <ImportFromURLButton params={params} />
             </div>
           </div>
         </div>

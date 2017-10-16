@@ -1,0 +1,68 @@
+@import 'app/styles/styleguide-colors';
+
+section.sidebar {
+  flex: 0 0 24%;
+  background-color: $white;
+  border-right: 1px solid $light-grey-4;
+  padding: 0;
+}
+
+.sourceList {
+  padding: 1em;
+  list-style-type: none;
+
+  li {
+    color: $primary-base;
+    margin-bottom: 1em;
+
+    a {
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0px;
+      color: $light-grey-2;
+    }
+  }
+}
+
+.bold {
+  font-weight: 900;
+}
+
+.timestamp {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: $dark-grey-1;
+}
+
+.tab {
+  display: block;
+  padding: 15px 0 15px 13px;
+  font-size: 13px;
+  background-color: $white;
+  border-left: 5px solid $light-grey-2;
+  border-bottom: 1px solid $light-grey-4;
+  text-decoration: none;
+  color: $black;
+
+  @media (max-width: 750px) {
+    width: 100%;
+  }
+}
+
+a.tab a.tab:visited,
+a.tab:hover {
+  border-left-color: $dark-grey-2;
+  background-color: $light-grey-4;
+}
+
+a.selected:hover {
+  border-left-color: $primary-base;
+  background-color: $white;
+}
+
+.selected {
+  composes: tab;
+  border-left-color: $primary-base;
+}

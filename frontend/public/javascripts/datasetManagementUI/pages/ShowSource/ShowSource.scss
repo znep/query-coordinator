@@ -9,11 +9,11 @@
 
 .sourceContainer {
   background-color: #ddd;
-  height: 100%;
   display: flex;
+  min-height: 100%;
 }
 
-.sourceContainer > section:first-child {
+.sourceContainer > section:nth-child(2) {
   flex-grow: 1;
 }
 

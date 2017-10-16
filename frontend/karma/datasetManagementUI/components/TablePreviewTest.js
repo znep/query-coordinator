@@ -173,19 +173,17 @@ describe('components/TablePreview', () => {
       email_interests: {},
       row_errors: {},
       col_data: {}
-    },
-    createUpload: () => {}
+    }
   };
 
-  it('renders list of accepted file types', () => {
+  it('renders a link to the source page', () => {
     const component = shallow(<TablePreview {...defaultProps} />);
-    const actual = component
+    const link = component
       .find('NoDataYetView')
       .dive()
-      .find('.fileTypes')
-      .text();
-    const expected = 'Supported file types: .csv, .tsv, .xls, .xlsx';
+      .find('Link');
 
-    assert.equal(actual, expected);
+    assert.isTrue(link.exists());
+    assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources');
   });
 });

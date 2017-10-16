@@ -5,39 +5,22 @@ import { Link } from 'react-router';
 import NotifyButton from 'containers/NotifyButtonContainer';
 import * as Links from 'links/links';
 import DatasetPreview from 'containers/DatasetPreviewContainer';
-import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import * as Selectors from 'selectors';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './TablePreview.scss';
-import ImportFromURLButton from 'containers/ImportFromURLButtonContainer';
 
 // COMPONENT VIEWS
-const NoDataYetView = ({ createUpload, params }) => (
+const NoDataYetView = ({ params }) => (
   <div className={styles.tableInfo}>
     <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
     <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
-    <div>
-      <label id="source-label" className={styles.uploadButton} htmlFor="file">
-        {I18n.manage_uploads.new_file}&nbsp;
-      </label>
-      <ImportFromURLButton params={params} />
-      <input
-        id="file"
-        name="file"
-        type="file"
-        accept={enabledFileExtensions.join(',')}
-        aria-labelledby="source-label"
-        onChange={evt => createUpload(evt.target.files[0], params)} />
-    </div>
-
-    <p className={styles.fileTypes}>
-      {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
-    </p>
+    <Link to={Links.sources(params)} className={styles.dataLink}>
+      {I18n.home_pane.add_data}
+    </Link>
   </div>
 );
 
 NoDataYetView.propTypes = {
-  createUpload: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired
 };
 
@@ -99,7 +82,7 @@ const haveAllTasksSucceeded = entities =>
   );
 
 // MAIN COMPONENT
-const TablePreview = ({ entities, params, view, createUpload }) => {
+const TablePreview = ({ entities, params, view }) => {
   let child;
   const tasksExist = doTasksExist(entities);
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
@@ -112,7 +95,7 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
   } else if (!tasksExist && os) {
     child = <OutputSchemaView entities={entities} outputSchema={os} params={params} />;
   } else {
-    child = <NoDataYetView createUpload={createUpload} params={params} />;
+    child = <NoDataYetView params={params} />;
   }
 
   return <div className={styles.resultCard}>{child}</div>;
@@ -121,8 +104,7 @@ const TablePreview = ({ entities, params, view, createUpload }) => {
 TablePreview.propTypes = {
   entities: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired,
-  view: PropTypes.object.isRequired,
-  createUpload: PropTypes.func.isRequired
+  view: PropTypes.object.isRequired
 };
 
 export default TablePreview;

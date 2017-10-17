@@ -1,14 +1,14 @@
-@import "common/schema-preview";
-@import "common/row-details";
-@import "common/styleguide/partials/pager";
+@import 'common/schema-preview';
+@import 'common/row-details';
+@import 'common/styleguide/partials/pager';
 
-@import "common/visualizations/views/styles/socrata-visualizations";
+@import 'common/visualizations/views/styles/socrata-visualizations';
 
 // this is in the erb, so can't move to within react app
 #initial-spinner-container {
-  text-align: center;
-  padding-top: 10em;
   padding-bottom: 10em;
+  padding-top: 10em;
+  text-align: center;
 }
 
 .siteContentWrapper {
@@ -20,45 +20,54 @@
     margin: 0;
   }
 
-  thead.results-list-header {
+  .result-list-row {
+    td {
+      &:first-child {
+        text-align: left;
+      }
+    }
+  }
+
+  .results-list-header {
     background-color: $light-grey-6;
+
     th {
       font-weight: bold;
     }
   }
 
   .role-picker-cell {
-    padding-top: 0;
     padding-bottom: 0;
+    padding-top: 0;
+    position: relative;
     vertical-align: bottom;
     width: 15em;
-    position: relative;
   }
 
   .pending-action-span {
-    position: absolute;
-    left: 0;
-    top: 0;
     height: 100%;
+    left: 0;
+    position: absolute;
+    text-align: right;
+    top: 0;
     width: 100%;
     z-index: 100;
-    text-align: right;
 
     .pending-action-cover {
-      position: absolute;
+      background: $white;
       height: 100%;
-      width: 50px;
-      background: white;
+      position: absolute;
       right: 0;
+      width: 50px;
     }
 
     .spinner-default {
-      margin: 10px 25px 10px 0px;
+      margin: 10px 25px 10px 0;
     }
   }
 
   .dropdown-placeholder {
-    border: none;
+    border: 0;
     outline: none;
   }
 
@@ -68,5 +77,12 @@
 
   .dropdown-container {
     width: 100%;
+  }
+
+  .export-button-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 1em;
   }
 }

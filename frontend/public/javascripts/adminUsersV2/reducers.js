@@ -71,9 +71,13 @@ const roles = (state = [], action) => {
   }
 };
 
-export default combineReducers({
-  users,
-  futureUsers,
-  roles,
-  autocomplete
-});
+const config = initialConfig => (state = initialConfig) => state;
+
+export default initialConfig =>
+  combineReducers({
+    users,
+    futureUsers,
+    roles,
+    config: config(initialConfig),
+    autocomplete
+  });

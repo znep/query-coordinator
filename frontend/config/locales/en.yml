@@ -6447,6 +6447,7 @@ en:
       short: "%H:%M:%S"
     pm: pm
   users:
+    export_as_csv: Export as CSV
     headers:
       actions: Actions
       email: Email
@@ -6454,6 +6455,7 @@ en:
       last_active: Last Active
       name: Name
       role: Role
+      uid: UID
     last_active:
       today: today
       unknown: unknown

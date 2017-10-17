@@ -351,7 +351,7 @@ class AdministrationController < ApplicationController
   # TODO: page user results (EN-10520)
   def users
     users_v2 = FeatureFlags.derive(nil, request).enable_new_user_management_page
-    return render '/administration/users_v2' if users_v2
+    return render '/administration/users_v2' if users_v2 && params[:format].to_s != 'csv'
     # else, revert to previous behavior...
 
     begin

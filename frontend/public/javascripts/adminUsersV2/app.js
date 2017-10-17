@@ -6,6 +6,7 @@ import UserSearchBar from './components/UserSearchBar';
 import { ConnectedFutureUsersTable } from './components/FutureUsersTable';
 import { Tabs } from '../common/components/Tabs';
 import { DataLoader } from './components/DataLoader';
+import { LocalizedCSVExportButton } from './components/CSVExportButton';
 import Localization from 'common/i18n/components/Localization';
 
 export const App = ({ store }) => {
@@ -18,6 +19,9 @@ export const App = ({ store }) => {
               <div name="Users">
                 <UserSearchBar />
                 <ConnectedUsersTable />
+                <div className="export-button-bar">
+                  <LocalizedCSVExportButton />
+                </div>
               </div>
               <div name="Pending Users">
                 <ConnectedFutureUsersTable />

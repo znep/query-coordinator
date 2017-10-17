@@ -6125,6 +6125,37 @@ en:
           no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.
+      getting_started:
+        manage_user_accounts:
+          title: Managing User Accounts and Assigning Roles
+          description: Create, manage, and remove users on your site.
+        featuring_content:
+          title: Featuring Content on Your Data Catalog
+          description: Guide consumers to your organization's best data assets.
+        connecting_external_data:
+          title: Connecting External Data into Your Catalog
+          description: Automatically connect and federate assets from external data sites into your Socrata site.
+        developer_resources:
+          title: Developer Resources and APIs
+          description: Explore APIs for datasets, metadata, discovery, and more.
+        publishing_data:
+          title: Guide to Publishing Data
+          description: Upload, automate, and manage datasets.
+        visualizing_data:
+          title: Visualizing Data
+          description: Create charts and maps using the new visualization canvas.
+        getting_to_know_datasets:
+          title: Getting to Know Datasets
+          description: Explore metadata, related assets, and key actions via datasets' "Primer" pages.
+        discovering_and_managing_your_assetings:
+          title: Discovering and Managing Your Assets
+          description: Searching for and managing your assets and assets from your organization.
+        filtering_datasets:
+          title: Filtering Datasets
+          description: Creating a Filtered View of data according to different conditions and criteria.
+        navigating_the_data_catalog:
+          title: Navigating the Data Catalog
+          description: Discovering and accessing valuable data resources from across the organization.
       info:
         edit_link: Edit
         external_links: External Links

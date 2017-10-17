@@ -11,6 +11,7 @@ import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
 import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
 import URLSource from 'containers/URLSourceContainer';
+import HrefForm from 'components/HrefForm/HrefForm';
 
 const checkSchemaStatus = store => (nextState, replace, cb) => {
   const osid = _.toNumber(nextState.params.outputSchemaId);
@@ -54,6 +55,7 @@ export default function rootRoute(store) {
       <Route path="sources" component={ShowSource} onEnter={checkIfPublished(store)}>
         <IndexRoute component={DragDropUpload} />
         <Route path="url" component={URLSource} />
+        <Route path="href" component={HrefForm} />
       </Route>
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"

@@ -93,7 +93,7 @@ body {
     @include border-radius(0.2em);
     margin-bottom: $chrome_margin_inner;
     padding: 1.5em;
-    > .innerItem {
+    .innerItem {
       border-top: 1px solid $color_chrome_box_border;
       margin-top: 1.5em;
       padding-top: 1.5em;
@@ -192,6 +192,17 @@ body {
     &.newsFeed {
       min-height: 7em;
       position: relative;
+    }
+    .gettingStartedPanel {
+      .gettingStartedRow {
+        padding-bottom: 10px;
+        &.gettingStartedTitle {
+          font-size: 1.4em;
+        }
+        &.gettingStartedDescription {
+          font-size: 1.2em;
+        }
+      }
     }
   }
   .summaryStatsContainer {

@@ -54,9 +54,9 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
   } else if (assetType === 'datalens') {
     // NOTE: this will treat "private" and "hidden" as the same thing for data lenses.
     // We probably want to do something better.
-    visibilityValue = newVisibility === 'open' ? 'yes' : 'no'; // srsly
+    visibilityValue = newVisibility === 'shown' ? 'false' : 'true'; // if it's 'shown', set 'hide' to 'false'
 
-    apiPath = `/admin/views/${uid}/set/${visibilityValue}?skip_redirect=true`;
+    apiPath = `/admin/views/${uid}/hide/${visibilityValue}?skip_redirect=true`;
     method = 'POST';
   } else {
     visibilityValue = newVisibility;

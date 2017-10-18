@@ -645,6 +645,35 @@ describe AdministrationController do
     end
   end
 
+  describe 'set_hidden' do
+    before do
+      init_environment
+    end
+
+    it 'should set a flash[:notice] unless request is JSON' do
+      double(View).tap do |view_double|
+        allow(view_double).to receive(:hideFromCatalog=).and_return(false)
+        allow(view_double).to receive(:hideFromDataJson=).and_return(false)
+        allow(view_double).to receive(:save!)
+        allow(view_double).to receive(:name).and_return('view name')
+        allow(View).to receive(:find).and_return(view_double)
+      end
+
+      double.tap do |flash_double|
+        expect(flash_double).to receive(:[]=).with(:notice, "The asset \"view name\" has been hidden from the public catalog. Please allow a few minutes for the changes to be reflected in your data catalog")
+        expect(flash_double).to receive(:update)
+        expect(flash_double).to receive(:to_session_value)
+        allow(request).to receive(:flash).and_return(flash_double)
+      end
+
+      allow(request.format).to receive(:json?).and_return(false)
+
+      VCR.use_cassette('set_hidden') do
+        post :set_hidden, :id => 'test-test', :hidden => 'true'
+      end
+    end
+  end
+
   describe 'set_view_moderation_status' do
     before do
       init_environment
@@ -653,11 +682,8 @@ describe AdministrationController do
     it 'should set a flash[:notice] unless request is JSON' do
       double(View).tap do |view_double|
         allow(view_double).to receive(:moderationStatus=).and_return(true)
-        allow(view_double).to receive(:hideFromCatalog=).and_return(false)
-        allow(view_double).to receive(:hideFromDataJson=).and_return(false)
         allow(view_double).to receive(:save!)
         allow(view_double).to receive(:name).and_return('view name')
-        allow(view_double).to receive(:data_lens?).and_return(true)
         allow(view_double).to receive(:moderationStatus).and_return(true)
         allow(view_double).to receive(:moderation_status).and_return('APPROVED')
         allow(View).to receive(:find).and_return(view_double)

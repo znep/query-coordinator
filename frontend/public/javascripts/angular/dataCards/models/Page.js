@@ -61,7 +61,6 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       self.defineEphemeralObservableProperty('hasExpandedCard', null);
       self.defineEphemeralObservableProperty('shares', pageMetadata.shares);
       self.defineEphemeralObservableProperty('provenance', pageMetadata.provenance);
-      self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
       self.defineEphemeralObservableProperty('hideFromCatalog', pageMetadata.hideFromCatalog);
       self.defineEphemeralObservableProperty('hideFromDataJson', pageMetadata.hideFromDataJson);
       self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);

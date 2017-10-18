@@ -1,3 +1,4 @@
+# coding: utf-8
 Rails.application.routes.draw do
   # NOTE: Currently socrata-analytics.js is dependent on path structure for accurately tracking metrics.
   # If you decide to change how pages are routed please reflect your changes in socrata-analytics 'determine_page_type'
@@ -267,6 +268,8 @@ Rails.application.routes.draw do
       post '/home/catalog_config', :action => 'modify_catalog_config'
       post '/datasets/sidebar_config', :action => 'modify_sidebar_config'
       post '/views/:id/set/:approved', :action => 'set_view_moderation_status',
+        :constraints => {:id => Frontend::UID_REGEXP}
+      post '/views/:id/hide/:hidden', :action => 'set_hidden',
         :constraints => {:id => Frontend::UID_REGEXP}
 
       get '/configuration', :action => 'configuration'

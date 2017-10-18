@@ -141,17 +141,11 @@ class DataLensManager
     new_page_id = payload_with_id[:id]
     payload_with_id[:displayFormat][:data_lens_page_metadata][:pageId] = new_page_id
 
-    if page_metadata.key?(:moderationStatus)
-      payload_with_id[:moderationStatus] = page_metadata[:moderationStatus]
-      payload_with_id[:hideFromCatalog] = !page_metadata[:moderationStatus]
-      payload_with_id[:hideFromDataJson] = !page_metadata[:moderationStatus]
-    elsif page_metadata.key?(:hideFromCatalog) && page_metadata.key?(:hideFromDataJson)
+    if page_metadata.key?(:hideFromCatalog)
       payload_with_id[:hideFromCatalog] = page_metadata[:hideFromCatalog]
+    end
+    if page_metadata.key?(:hideFromDataJson)
       payload_with_id[:hideFromDataJson] = page_metadata[:hideFromDataJson]
-    else
-      # If there's no moderationStatus, that means it's pending, and should be hidden
-      payload_with_id[:hideFromCatalog] = true
-      payload_with_id[:hideFromDataJson] = true
     end
 
     update(new_page_id, payload_with_id)

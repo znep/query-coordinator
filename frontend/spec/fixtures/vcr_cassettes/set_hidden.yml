@@ -1,0 +1,289 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&type=site_chrome
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - b6dvl42wdqf3x5sd4idx772q1
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 39,
+          "name" : "Site Chrome",
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1476470830,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.3" : {
+                  "draft" : {
+                    "content" : {
+                      "general" : {
+                        "template" : "Evergreen",
+                        "social_shares" : {
+                          "youtube" : {
+                            "url" : ""
+                          },
+                          "yammer" : {
+                            "url" : ""
+                          },
+                          "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
+                            "url" : ""
+                          },
+                          "vimeo" : {
+                            "url" : ""
+                          },
+                          "flickr" : {
+                            "url" : ""
+                          },
+                          "facebook" : {
+                            "url" : ""
+                          },
+                          "linked_in" : {
+                            "url" : ""
+                          },
+                          "tumblr" : {
+                            "url" : ""
+                          },
+                          "pinterest" : {
+                            "url" : ""
+                          },
+                          "google_plus" : {
+                            "url" : ""
+                          },
+                          "instagram" : {
+                            "url" : ""
+                          }
+                        },
+                        "window_title_display" : "",
+                        "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
+                        "show_signup" : "true",
+                        "styles" : {
+                          "max_width" : "",
+                          "font_family" : "Open Sans"
+                        },
+                        "show_signin_signout" : "true",
+                        "show_profile" : "true"
+                      },
+                      "locales" : {
+                        "en" : {
+                          "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
+                            "links" : {
+                              "link_3" : "Accessibility",
+                              "link_4" : "Contact Us",
+                              "link_1" : "Terms of Service",
+                              "link_2" : "Privacy Policy",
+                              "link_0" : "Home Page"
+                            }
+                          },
+                          "header" : {
+                            "site_name" : "Local Toast",
+                            "links" : {
+                              "link_3" : "Support",
+                              "link_1" : "Browse",
+                              "link_2" : "Developers",
+                              "link_0" : "Home Page"
+                            }
+                          }
+                        }
+                      },
+                      "footer" : {
+                        "copyright_notice" : "true",
+                        "powered_by" : "true",
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                        },
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "fg_color" : "#fff",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "link_4",
+                          "url" : "http://www.socrata.com/contact-us"
+                        } ]
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                        },
+                        "styles" : {
+                          "bg_color" : "#22b479",
+                          "fg_color" : "#fff",
+                          "logo_height" : "36px",
+                          "logo_width" : "",
+                          "bg_color_secondary" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "/browse"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://dev.socrata.com"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://support.socrata.com"
+                        } ]
+                      }
+                    }
+                  },
+                  "published" : {
+                    "content" : {
+                      "general" : {
+                        "template" : "",
+                        "social_shares" : {
+                          "youtube" : {
+                            "url" : ""
+                          },
+                          "yammer" : {
+                            "url" : ""
+                          },
+                          "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
+                            "url" : ""
+                          },
+                          "vimeo" : {
+                            "url" : ""
+                          },
+                          "flickr" : {
+                            "url" : ""
+                          },
+                          "facebook" : {
+                            "url" : ""
+                          },
+                          "linked_in" : {
+                            "url" : ""
+                          },
+                          "tumblr" : {
+                            "url" : ""
+                          },
+                          "pinterest" : {
+                            "url" : ""
+                          },
+                          "google_plus" : {
+                            "url" : ""
+                          },
+                          "instagram" : {
+                            "url" : ""
+                          }
+                        },
+                        "window_title_display" : "",
+                        "window_icon" : "",
+                        "languages" : {
+                          "display_language_switcher" : "true"
+                        },
+                        "show_signup" : "true",
+                        "styles" : {
+                          "max_width" : "",
+                          "font_family" : ""
+                        },
+                        "show_signin_signout" : "true",
+                        "show_profile" : "true"
+                      },
+                      "locales" : {
+                        "es,en" : {
+                          "footer" : {
+                            "site_name" : ""
+                          },
+                          "header" : {
+                            "site_name" : ""
+                          }
+                        },
+                        "en" : {
+                          "footer" : {
+                            "site_name" : ""
+                          },
+                          "header" : {
+                            "site_name" : ""
+                          }
+                        }
+                      },
+                      "footer" : {
+                        "copyright_notice" : "false",
+                        "powered_by" : "true",
+                        "logo" : {
+                          "src" : "",
+                          "alt" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "",
+                          "fg_color" : "",
+                          "logo_height" : "",
+                          "logo_width" : ""
+                        }
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "",
+                          "alt" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "",
+                          "fg_color" : "",
+                          "logo_height" : "",
+                          "logo_width" : "",
+                          "bg_color_secondary" : ""
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "current_version" : "0.3",
+              "activation_state" : {
+                "data_lens" : true,
+                "open_data" : true,
+                "homepage" : true
+              }
+            }
+          } ]
+        } ]
+    http_version:
+  recorded_at: Thu, 20 Oct 2016 17:50:15 GMT
+recorded_with: VCR 3.0.3

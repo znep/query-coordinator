@@ -104,15 +104,12 @@
 
 <section class="row visibility" ng-controller="ManageLensDialogVisibilityController">
   <label class="span2">
-    {{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}
+    {{::'manageLensDialog.visibility.title' | I18n}}
   </label>
   <div class="contents span10">
     <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
       <option value="approved">{{visibilityDropdownStrings.approved}}</option>
       <option value="rejected">{{visibilityDropdownStrings.rejected}}</option>
-      <option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">
-        {{visibilityDropdownStrings.pending}}
-      </option>
     </soc-select>
     <div class="flavor-text" ng-show="visibilityDropdownError">
       <span class="icon-info"></span>

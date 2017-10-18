@@ -98,6 +98,7 @@ en:
             open: Open
             private: Private
             public: Public
+            hidden: Hidden
       header:
         asset_counts:
           charts:
@@ -143,6 +144,7 @@ en:
           add_collaborators: Add Collaborators...
           change_permissions: Change Permissions...
           change_visibility: Change Visibility...
+          change_catalog_visibility: Change Visibility in Public Catalog...
           delete_asset: Delete...
           edit_metadata: Edit Metadata...
           no_actions_possible: There are no actions possible.
@@ -163,6 +165,12 @@ en:
               private:
                 title: Private
                 description: Only accessible to you and people you've shared to within your organization.
+              shown:
+                title: Shown
+                description: Discoverable through the public catalog.
+              hidden:
+                title: Hidden
+                description: Not visible in the public catalog.
             title: Choose Visibility
           delete_asset:
             accept: Delete
@@ -189,7 +197,6 @@ en:
           visibility: Visibility
         visibility_values:
           awaiting_approval: Awaiting approval
-          hidden: Hidden
           internal: Internal
           open: Open
           pending: Pending
@@ -197,6 +204,8 @@ en:
           public: Public
           rejected: Rejected
           shared_to_me: Shared to me
+          hidden: Hidden
+          hidden_from_catalog: Hidden from catalog
     components:
       color_picker:
         open_color_picker: Open Color Picker

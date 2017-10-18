@@ -176,13 +176,11 @@ describe('components/ActionDropdown', () => {
       })
     });
 
-    it('does not render the changeVisibility or editMetdata options for data lens', (done) => {
+    it('does render the deleteAsset and changeVisibility options for datalens', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'datalens'
       }));
-      const expectedMenuActions = [
-        'deleteAsset'
-      ];
+      const expectedMenuActions = ['deleteAsset', 'changeVisibility'];
 
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
 

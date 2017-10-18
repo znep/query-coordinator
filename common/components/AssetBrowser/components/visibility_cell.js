@@ -42,39 +42,48 @@ export class VisibilityCell extends Component {
   }
 
   isHidden() {
-    const { isDatalensApproved, isExplicitlyHidden, isModerationApproved, isPublished, isRoutingApproved } =
-      this.props;
+    const {
+      isExplicitlyHidden,
+      isModerationApproved,
+      isPublished,
+      isRoutingApproved
+    } = this.props;
 
     return (
-      !isDatalensApproved || isExplicitlyHidden || !isModerationApproved || !isPublished || !isRoutingApproved
+      isExplicitlyHidden || !isModerationApproved || !isPublished || !isRoutingApproved
     );
   }
 
-  // "Rejected" from either R&A, View Moderation, or Data Lens Approval
+  // "Rejected" from either R&A or View Moderation
   isHiddenAndRejected() {
-    const { datalensStatus, moderationStatus, routingStatus } = this.props;
+    const { moderationStatus, routingStatus } = this.props;
 
     return (
-      datalensStatus === 'rejected' || moderationStatus === 'rejected' || routingStatus === 'rejected'
+      moderationStatus === 'rejected' || routingStatus === 'rejected'
     );
   }
 
-  // "Awaiting approval" from either R&A, View Moderation, or Data Lens Approval
+  // "Awaiting approval" from either R&A or View Moderation
   isHiddenAndAwaitingApproval() {
-    const { datalensStatus, moderationStatus, routingStatus } = this.props;
+    const { moderationStatus, routingStatus } = this.props;
 
     return (
-      datalensStatus === 'pending' || moderationStatus === 'pending' || routingStatus === 'pending'
+      moderationStatus === 'pending' || routingStatus === 'pending'
     );
   }
 
-  // Note that order here is important. An asset can be both "Private" and "Hidden", but only the private
-  // text/icon will show.
+  // Note that order here is important.
+  // - Hidden takes priority, because changing any other values has no effect
+  // - Privacy takes next priority, because approving it has no effect
+  // - then comes the various approvals
   renderVisibilityTitle() {
     let visibilityCellText;
     let visibilityIconName;
 
-    if (this.isOpen()) {
+    if (this.props.isExplicitlyHidden) {
+      visibilityIconName = 'eye-blocked';
+      visibilityCellText = this.getTranslation('hidden');
+    } else if (this.isOpen()) {
       visibilityIconName = 'public-open';
       visibilityCellText = this.getTranslation('public');
     } else if (this.isPrivate()) {
@@ -94,12 +103,15 @@ export class VisibilityCell extends Component {
     );
   }
 
-  // Note that order here is important. If multiple cases apply, "private" takes priority over "hidden",
-  // and hidden "rejected" takes priority over hidden "awaiting approval".
+  // Note that order here is important. If multiple cases apply, "private" takes priority over "pending",
+  // and hidden "rejected" takes priority over hidden "awaiting approval", and "hidden" takes priority
+  // over "pending" and "rejected" because even if it makes it through R&A/VM, it's still hidden
   renderVisibilityDescription() {
     let descriptionText;
 
-    if (this.isPrivateAndSharedToCurrentUser()) {
+    if (this.props.isExplicitlyHidden) {
+      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.hidden_from_catalog');
+    } else if (this.isPrivateAndSharedToCurrentUser()) {
       descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.shared_to_me');
     } else if (this.isHiddenAndRejected()) {
       descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.rejected');
@@ -121,9 +133,7 @@ export class VisibilityCell extends Component {
 }
 
 VisibilityCell.propTypes = {
-  datalensStatus: PropTypes.string,
   grants: PropTypes.array,
-  isDatalensApproved: PropTypes.bool,
   isExplicitlyHidden: PropTypes.bool,
   isModerationApproved: PropTypes.bool,
   isPublic: PropTypes.bool.isRequired,

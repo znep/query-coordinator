@@ -17,21 +17,19 @@ module.exports = function ManageLensDialogVisibilityController($q, $scope, $wind
     _.get($window.currentUser || {}, 'rights', []).indexOf(UserRights.APPROVE_NOMINATIONS) >= 0
   );
 
-  var moderationStatus$ = $scope.page.observe('moderationStatus');
+  var hideFromCatalog$ = $scope.page.observe('hideFromCatalog');
+  var hideFromDataJson$ = $scope.page.observe('hideFromDataJson');
 
-  var pageVisibility$ = moderationStatus$.map(function(moderationStatus) {
-    if ($scope.usingViewModeration && !_.isPresent(moderationStatus)) {
-      return 'pending';
-    }
-
-    return moderationStatus ? 'approved' : 'rejected';
-  });
+  var pageVisibility$ = Rx.Observable.combineLatest(
+    hideFromCatalog$,
+    hideFromDataJson$,
+    function(hideFromCatalog, hideFromDataJson) {
+      return (hideFromCatalog || hideFromDataJson) ? 'rejected' : 'approved';
+    });
 
   var initialPageVisibility$ = pageVisibility$.take(1);
 
   var visibilityDropdownSelection$ = $scope.$observe('visibilityDropdownSelection');
-
-  $scope.usingViewModeration = ServerConfig.getFeatureSet().view_moderation;
 
   // Set initial value of visibility dropdown selection
   $scope.$bindObservable('initialPageVisibility', initialPageVisibility$);
@@ -69,35 +67,26 @@ module.exports = function ManageLensDialogVisibilityController($q, $scope, $wind
     }
   );
 
-  if ($scope.usingViewModeration) {
-    $scope.visibilityDropdownStrings = {
-      approved: I18n.manageLensDialog.visibility.viewModerationApproved,
-      rejected: I18n.manageLensDialog.visibility.viewModerationRejected,
-      pending: I18n.manageLensDialog.visibility.viewModerationPending
-    };
-  } else {
-    $scope.visibilityDropdownStrings = {
-      approved: I18n.manageLensDialog.visibility.shown,
-      rejected: I18n.manageLensDialog.visibility.hidden
-    };
-  }
+  $scope.visibilityDropdownStrings = {
+    approved: I18n.manageLensDialog.visibility.shown,
+    rejected: I18n.manageLensDialog.visibility.hidden
+  };
 
   var save = function() {
     if (!$scope.components.visibility.hasChanges) {
       return $q.when(null);
     }
 
-    var visibility = $scope.visibilityDropdownSelection === 'approved' ? 'yes' : 'no';
+    var hidden = $scope.visibilityDropdownSelection === 'approved' ? 'false' : 'true';
 
-    var url = `/admin/views/${$scope.page.id}/set/${visibility}.json`;
+    var url = `/admin/views/${$scope.page.id}/hide/${hidden}.json`;
 
     return http.post(url, null, { requester: self });
   };
 
   var postSave = function() {
-    $scope.page.set('moderationStatus', $scope.visibilityDropdownSelection === 'approved');
-    $scope.page.set('hideFromCatalog', $scope.visibilityDropdownSelection != 'approved');
-    $scope.page.set('hideFromDataJson', $scope.visibilityDropdownSelection != 'approved');
+    $scope.page.set('hideFromCatalog', $scope.visibilityDropdownSelection === 'rejected');
+    $scope.page.set('hideFromDataJson', $scope.visibilityDropdownSelection === 'rejected');
   };
 
   Rx.Observable.subscribeLatest(

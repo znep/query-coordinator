@@ -90,7 +90,6 @@ class PageMetadataManager
     page_metadata = migrated_page_metadata(page_metadata, request_options)
 
     page_metadata[:permissions] = permissions.stringify_keys!
-    page_metadata[:moderationStatus] = result[:moderationStatus]
     page_metadata[:hideFromCatalog] = result[:hideFromCatalog]
     page_metadata[:hideFromDataJson] = result[:hideFromDataJson]
     page_metadata[:shares] = View.new(result).shares

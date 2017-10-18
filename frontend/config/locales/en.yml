@@ -3507,6 +3507,8 @@ en:
         unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
         asset_inventory_dataset: Asset Inventory Dataset
+        set_hidden: The asset "%{view_name}" has been hidden from the public catalog. Please allow a few minutes for the changes to be reflected in your data catalog
+        set_shown: The asset "%{view_name}" has been made discoverable in the public catalog. Please allow a few minutes for the changes to be reflected in your data catalog
       federation:
         accept: Accept
         accepted: Accepted

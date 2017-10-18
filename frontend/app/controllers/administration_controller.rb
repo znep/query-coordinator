@@ -488,7 +488,39 @@ class AdministrationController < ApplicationController
     )
   end
 
-  # Used by changeVisibility in SIAM for datalens (uses setPermission in Core for datasets)
+  # Set hide_from_catalog and hide_from_data_json, which are how datalenses
+  # are kept out of the catalog. We used to overload view moderation, but no longer do.
+  # Also used by changeVisibility in SIAM for datalenses only (we use setPermission
+  # to set all other assets to private)
+  # :partyparrot:
+  def set_hidden
+    begin
+      view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash[:error] = t('screens.admin.view_moderation.could_not_find_view')
+      return redirect_to :action => 'views'
+    end
+
+    hidden = params[:hidden] == 'true' || params[:hidden] == 't'
+    view.hideFromCatalog = hidden
+    view.hideFromDataJson = hidden
+    view.save!
+
+    unless request.format.json?
+      # EN-7318: ajax calls to this endpoint (currently from data lens pages) should not persist flash messages
+      flash[:notice] = t(
+        hidden ? 'screens.admin.datasets.set_hidden' : 'screens.admin.datasets.set_shown',
+        :view_name => view.name
+      )
+    end
+
+    if params[:skip_redirect] == 'true'
+      render :nothing => true
+    else
+      redirect_to request.referer || { :action => 'views' }
+    end
+  end
+
   def set_view_moderation_status
     begin
       view = View.find(params[:id])
@@ -498,22 +530,13 @@ class AdministrationController < ApplicationController
     end
 
     view.moderationStatus = params[:approved] == 'yes'
-    # if this is a datalens, also set hideFromDataJson and hideFromCatalog
-    # to the opposite of whatever moderation status is
-    if view.data_lens?
-      view.hideFromCatalog = !view.moderationStatus
-      view.hideFromDataJson = !view.moderationStatus
-    end
     view.save!
 
-    unless request.format.json?
-      # EN-7318: ajax calls to this endpoint (currently from data lens pages) should not persist flash messages
-      flash[:notice] = t(
-        'screens.admin.view_moderation.set_moderation_status',
-        :view_name => view.name,
-        :moderation_status => view.moderation_status.downcase
-      )
-    end
+    flash[:notice] = t(
+      'screens.admin.view_moderation.set_moderation_status',
+      :view_name => view.name,
+      :moderation_status => view.moderation_status.downcase
+    )
 
     if params[:skip_redirect] == 'true'
       render :nothing => true

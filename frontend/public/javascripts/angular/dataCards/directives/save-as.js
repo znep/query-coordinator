@@ -20,9 +20,7 @@ module.exports = function saveAs($window, I18n, WindowState, FlyoutService, Serv
           $window.currentUser.rights.indexOf(UserRights.APPROVE_NOMINATIONS) >= 0
       );
 
-      $scope.usingViewModeration = ServerConfig.getFeatureSet().view_moderation;
-
-      var initialPageVisibility$ = Rx.Observable.of($scope.usingViewModeration ? 'pending' : 'rejected');
+      var initialPageVisibility$ = Rx.Observable.of('rejected');
 
       $scope.$bindObservable('datasetIsPrivate', datasetIsPrivate$);
       $scope.$bindObservable('initialPageVisibility', initialPageVisibility$);
@@ -94,15 +92,14 @@ module.exports = function saveAs($window, I18n, WindowState, FlyoutService, Serv
         var $visibilityDropdown = element.find('#save-as-visibility select');
         $scope.visibilityDropdownSelection = $visibilityDropdown.val();
 
-        var moderationStatus;
-        var moderationStatusLookup = {
-          approved: true,
-          rejected: false,
-          pending: null
+        var hidden;
+        var hiddenLookup = {
+          approved: false,
+          rejected: true
         };
 
         if (!$scope.visibilityDropdownDisabled) {
-          moderationStatus = moderationStatusLookup[$scope.visibilityDropdownSelection];
+          hidden = hiddenLookup[$scope.visibilityDropdownSelection];
         }
 
         if ($scope.isOfficial) {
@@ -112,7 +109,7 @@ module.exports = function saveAs($window, I18n, WindowState, FlyoutService, Serv
         if ($scope.name.trim() === '') {
           $nameInput.addClass('form-error').focus();
         } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
-          $scope.savePageAs($scope.name.trim(), $scope.description.trim(), moderationStatus, $scope.provenance).
+          $scope.savePageAs($scope.name.trim(), $scope.description.trim(), hidden, $scope.provenance).
             subscribe(saveEvents$);
           $scope.$bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
         }

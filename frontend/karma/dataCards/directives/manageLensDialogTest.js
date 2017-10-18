@@ -148,7 +148,7 @@ describe('manageLensDialog', function() {
       var $scope = element.children().scope();
 
       $scope.visibilityDropdownSelection = 'approved';
-      $httpBackend.expectPOST('/admin/views/asdf-fdsa/set/yes.json').respond({});
+      $httpBackend.expectPOST('/admin/views/asdf-fdsa/hide/true.json').respond({});
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');
@@ -170,19 +170,19 @@ describe('manageLensDialog', function() {
       ServerConfig.override('allow_data_lens_owner_change', false);
     });
 
-    it('should have three options if the page has no moderation status', function() {
+    it('should have the same number of options (2) as when view moderation is off', function() {
       // handle initialization of ownership component
       // (uncomment these lines if the feature flag for the ownership component is removed)
       // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
       // $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
 
       var element = createElement({moderationStatus: null});
-      expect(element.find('option')).to.have.length(3);
+      expect(element.find('option')).to.have.length(2);
 
       // $httpBackend.flush();
     });
 
-    it('should have two options if the page has a moderation status', function() {
+    it('should have the same number of options (2) if the page has a moderation status', function() {
       // handle initialization of ownership component
       // (uncomment these lines if the feature flag for the ownership component is removed)
       // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });

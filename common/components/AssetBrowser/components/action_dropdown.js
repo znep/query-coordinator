@@ -169,11 +169,16 @@ export class ActionDropdown extends Component {
           - just link to the story if it's unpublished.
           - if it is published, use the storyteller api to toggle permissions, not the core api directly.
           (in asset_actions) */
-      case 'datalens': // eslint-disable-line no-fallthrough
-        // TODO: Implement the "hidden" checkbox and use that for data lenses.
       case 'visualization': // eslint-disable-line no-fallthrough
         // TODO: Implement once new viz bootstrapping / permissions are ready to go.
         return null;
+      case 'datalens':
+        // The behavior is a little different for datalenses, as there's no way in the rest of the platform
+        // to set them to private (private/public is inherited from the parent view). Instead we set hideFrom{Catalog,DataJson}
+        return this.renderDropdownOption(
+          this.getTranslation('change_catalog_visibility'),
+          () => this.showActionModal('changeVisibility', uid)
+        );
       default:
         return this.renderDropdownOption(
           this.getTranslation('change_visibility'),

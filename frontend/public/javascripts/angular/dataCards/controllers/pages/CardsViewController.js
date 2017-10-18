@@ -145,7 +145,8 @@ module.exports = function CardsViewController(
   $scope.page = page;
   $scope.siteChromeEnabled = ServerConfig.get('siteChromeEnabled');
   $scope.pageHeaderEnabled = ServerConfig.get('show_newux_page_header') && !$scope.siteChromeEnabled;
-  $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
+  $scope.$bindObservable('hideFromCatalog', page.observe('hideFromCatalog'));
+  $scope.$bindObservable('hideFromDataJson', page.observe('hideFromDataJson'));
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
   $scope.$bindObservable('dataset', page.observe('dataset'));
 
@@ -339,9 +340,7 @@ module.exports = function CardsViewController(
         var serializedBlob = $.extend(
           page.serialize(),
           {
-            pageId: page.id,
-            hideFromCatalog: !page.getCurrentValue('moderationStatus'),
-            hideFromDataJson: !page.getCurrentValue('moderationStatus')
+            pageId: page.id
           }
         );
         savePromise = PageDataService.save(serializedBlob, page.id);
@@ -366,7 +365,7 @@ module.exports = function CardsViewController(
     }
   };
 
-  $scope.savePageAs = function(name, description, moderationStatus, provenance) {
+  $scope.savePageAs = function(name, description, hidden, provenance) {
     var saveStatus$ = new Rx.BehaviorSubject();
     var savePromise;
 
@@ -374,16 +373,10 @@ module.exports = function CardsViewController(
       var newPageSerializedBlob = _.extend(page.serialize(), {
         name: $.trim(name),
         description: description,
-        provenance: provenance
+        provenance: provenance,
+        hideFromCatalog: hidden,
+        hideFromDataJson: hidden
       });
-      if (!_.isUndefined(moderationStatus)) {
-        newPageSerializedBlob.moderationStatus = moderationStatus;
-        newPageSerializedBlob.hideFromCatalog = !moderationStatus;
-        newPageSerializedBlob.hideFromDataJson = !moderationStatus;
-      } else {
-        newPageSerializedBlob.hideFromCatalog = true;
-        newPageSerializedBlob.hideFromDataJson = true;
-      }
 
       newPageSerializedBlob.parentLensId = newPageSerializedBlob.pageId;
 

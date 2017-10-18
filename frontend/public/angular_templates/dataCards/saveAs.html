@@ -24,12 +24,10 @@
       </div>
 
       <div class="tool-panel-input-group">
-        <label for="save-as-visibility" ng-if="!datasetIsPrivate && !usingViewModeration">{{::'saveAsPanel.visibility' | I18n}}</label>
-        <label for="save-as-visibility" ng-if="!datasetIsPrivate && usingViewModeration">{{::'saveAsPanel.visibilityWithViewModeration' | I18n}}</label>
+        <label for="save-as-visibility" ng-if="!datasetIsPrivate">{{::'saveAsPanel.visibility' | I18n}}</label>
         <soc-select id="save-as-visibility" ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled" ng-if="!datasetIsPrivate">
-          <option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</option>
-          <option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</option>
-          <option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</option>
+          <option value="approved">{{::'manageLensDialog.visibility.shown' | I18n}}</option>
+          <option value="rejected">{{::'manageLensDialog.visibility.hidden' | I18n}}</option>
         </soc-select>
         <p class="visibility-alert" ng-if="visibilityDropdownDisabled && !datasetIsPrivate">
           {{::'saveAsPanel.visibilityDisabled' | I18n}}

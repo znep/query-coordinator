@@ -65,7 +65,7 @@ describe PageMetadataManager do
       VCR.use_cassette('page_metadata_manager') do
         expected_keys = %w(
           cards datasetId description name pageId primaryAggregation primaryAmountField version
-          permissions moderationStatus hideFromCatalog hideFromDataJson shares rights provenance ownerDisplayName ownerId
+          permissions hideFromCatalog hideFromDataJson shares rights provenance ownerDisplayName ownerId
           isFromDerivedView
         )
 

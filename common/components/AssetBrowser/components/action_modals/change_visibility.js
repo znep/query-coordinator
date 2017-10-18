@@ -56,10 +56,30 @@ export class ChangeVisibility extends React.Component {
     return I18n.t(`shared.asset_browser.result_list_table.action_modal.change_visibility.${key}`);
   }
 
+  isDatalens() {
+    // There are three datatypes (as Cetera returns them) that should behave like datalenses:
+    // - datalens
+    // - datalens_chart
+    // - datalens_map
+    const { assetType } = this.props;
+    return assetType.startsWith('datalens');
+  }
+
+  getOptions() {
+    if (this.isDatalens()) {
+      return ['hidden', 'shown'];
+    }
+    return ['private', 'open'];
+  }
+
   getVisibility() {
     let { visibility } = this.state;
     if (visibility === null) {
-      visibility = this.initialVisibility().open ? 'open' : 'private';
+      if (this.isDatalens()) {
+	visibility = this.initialVisibility().hidden ? 'hidden' : 'shown';
+      } else {
+	visibility = this.initialVisibility().open ? 'open' : 'private';
+      }
     }
     return visibility;
   }
@@ -67,8 +87,8 @@ export class ChangeVisibility extends React.Component {
   initialVisibility() {
     return {
       'open': this.currentAsset().metadata.visible_to_anonymous,
-      'private': !this.currentAsset().metadata.is_public
-      // TODO: implement "hidden"
+      'private': !this.currentAsset().metadata.is_public,
+      'hidden': this.currentAsset().metadata.is_hidden
     };
   }
 
@@ -115,18 +135,18 @@ export class ChangeVisibility extends React.Component {
     };
 
     const iconClass = (option) => {
-      if (option === 'open') {
+      if (_.includes(['open', 'shown'], option)) {
         return 'socrata-icon-public-open';
       } else if (option === 'private') {
         return 'socrata-icon-private';
-      // } else if (option === 'hidden') { // TODO: implement "hidden" checkbox
-      //   return 'socrata-icon-eye-blocked';
+      } else if (option === 'hidden') {
+        return 'socrata-icon-eye-blocked';
       }
     };
 
     return (
       <ul className="change-visibility-options">
-        {['private', 'open'].map((option) => (
+        {this.getOptions().map((option) => (
           <li
             className={visibilityOptionClass(option)}
             key={option}

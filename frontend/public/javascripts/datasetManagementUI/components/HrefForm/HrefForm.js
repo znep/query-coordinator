@@ -30,6 +30,9 @@ import TextArea from 'components/TextArea/TextArea';
 // };
 
 // {"data_dictionary" : $URL, "data_dictionary_type" : STRING, "title" : STRING, "description" : STRING, "urls" : MAP<STRING, URL>}
+function getBasename(url) {
+  return url.split(/[\\/]/).pop();
+}
 
 function getExtension(filename = '') {
   // check that we have an arg and that it is a string
@@ -49,39 +52,86 @@ function getExtension(filename = '') {
   return filename.slice(pos + 1);
 }
 
-function makeUniqueURLKey(filename) {
-  // get basename
-  const extension = getExtension(filename);
-  const postfix = extension ? `-${extension}` : '';
-  return `${uuid()}${postfix}`;
+// function makeUniqueURLKey(url) {
+//   const filename = getBasename(url);
+//   const extension = getExtension(filename);
+//   const postfix = extension ? `-${extension}` : '';
+//   return `${uuid()}${postfix}`;
+// }
+
+class URLField extends Component {
+  constructor() {
+    super();
+    this.state = {
+      extension: ''
+    };
+
+    this.handleExtensionChange = this.handleExtensionChange.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      extension: getExtension(getBasename(this.props.value))
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({
+        extension: getExtension(getBasename(nextProps.value))
+      });
+    }
+  }
+
+  handleExtensionChange(e) {
+    this.setState({
+      extension: e.target.value
+    });
+  }
+
+  render() {
+    const { handleChangeUrl, value } = this.props;
+
+    return (
+      <div>
+        <label>URL</label>
+        <TextInput
+          value={value}
+          handleChange={e => handleChangeUrl(e.target.value)}
+          label="URL"
+          inErrorState={false} />
+        <label>File Type</label>
+        <TextInput
+          value={this.state.extension}
+          label="File Type"
+          inErrorState={false}
+          handleChange={this.handleExtensionChange} />
+      </div>
+    );
+  }
 }
 
-const URLField = ({ handleChangeUrl, value }) => (
-  <div>
-    <label>URL</label>
-    <TextInput value={value} handleChange={e => handleChangeUrl(e.target.value)} />
-    <label>File Type</label>
-    <TextInput />
-  </div>
-);
-
-const DatsetFieldset = ({ href, onAddURL, handleChangeUrl }) => (
-  <Fieldset title="External Dataset 1">
+const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref }) => (
+  <Fieldset title={href.title}>
     <div>
       <label>Dataset Name</label>
-      <TextInput />
+      <TextInput value={href.title} handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
     </div>
     <div>
       <label>Dataset Description</label>
-      <TextArea />
+      <TextArea
+        value={href.description}
+        handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
     </div>
     <div>
       {_.map(href.urls, (val, key) => <URLField value={val} handleChangeUrl={handleChangeUrl(key)} />)}
-      <button onClick={onAddURL}>Add URL</button>
+      <button onClick={handleAddURL}>Add URL</button>
     </div>
     <div>
       <label>Data Dictionary URL</label>
-      <TextInput />
+      <TextInput
+        value={href.data_dictionary}
+        handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
     </div>
   </Fieldset>
 );
@@ -94,21 +144,23 @@ class HrefForm extends Component {
       currentId: 1
     };
 
-    _.bindAll(this, ['handleAddDataset', 'handleAddURL', 'handleChangeUrl']);
+    _.bindAll(this, ['handleAddDataset', 'handleAddURL', 'handleChangeUrl', 'handleChangeHref']);
   }
 
   componentWillMount() {
+    const datasetNum = this.state.hrefs.length + 1;
+
     this.setState({
-      hrefs: [...this.state.hrefs, this.initializeHref()]
+      hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
     });
   }
 
-  initializeHref() {
+  initializeHref(datasetNum) {
     const href = {
       id: this.state.currentId,
       data_dictionary: '',
       data_dictionary_type: '',
-      title: '',
+      title: `External Dataset ${datasetNum}`,
       description: '',
       urls: {
         [uuid()]: ''
@@ -123,21 +175,22 @@ class HrefForm extends Component {
   }
 
   handleAddDataset() {
+    const datasetNum = this.state.hrefs.length + 1;
     this.setState({
-      hrefs: [...this.state.hrefs, this.initializeHref()]
+      hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
     });
   }
 
-  handleAddURL(id, url = 'dog.txt') {
+  handleAddURL(id, url) {
     const href = this.state.hrefs.find(h => h.id === id);
 
-    const urlKey = makeUniqueURLKey(url);
+    // const urlKey = makeUniqueURLKey(url);
 
     const newHref = {
       ...href,
       urls: {
         ...href.urls,
-        [urlKey]: ''
+        [uuid()]: ''
       }
     };
 
@@ -170,6 +223,21 @@ class HrefForm extends Component {
     };
   }
 
+  handleChangeHref(id, fieldname, newValue) {
+    const href = this.state.hrefs.find(h => h.id === id);
+
+    const newHref = {
+      ...href,
+      [fieldname]: newValue
+    };
+
+    const newHrefs = [...this.state.hrefs.filter(h => h.id !== id), newHref];
+
+    this.setState({
+      hrefs: _.orderBy(newHrefs, 'id')
+    });
+  }
+
   render() {
     return (
       <section>
@@ -181,7 +249,8 @@ class HrefForm extends Component {
             <DatsetFieldset
               href={href}
               handleChangeUrl={this.handleChangeUrl(href.id)}
-              onAddURL={url => this.handleAddURL(href.id, url)} />
+              handleChangeHref={this.handleChangeHref}
+              handleAddURL={url => this.handleAddURL(href.id, url)} />
           ))}
         </form>
         <button onClick={this.handleAddDataset}>Add Dataset</button>

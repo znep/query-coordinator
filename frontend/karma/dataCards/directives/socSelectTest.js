@@ -48,18 +48,4 @@ describe('socSelect', function() {
     );
     expect(element.find('select').scope().ngModel).to.equal(fakeModel);
   });
-
-  it('should convert soc-options to options, and retain attributes', function() {
-    var scope = $rootScope.$new();
-    var element = testHelpers.TestDom.compileAndAppend(
-      '<soc-select name="alpha">' +
-      '<soc-option value="a">Ay</soc-option>' +
-      '<soc-option value="b" disabled>Bee</soc-option>' +
-      '</soc-select>', scope
-    );
-    var select = element.find('select[name="alpha"]');
-    expect(select.length).to.equal(1);
-    expect(select.find('option[value="a"]:contains("Ay")').length).to.equal(1);
-    expect(select.find('option[value="b"]:disabled:contains("Bee")').length).to.equal(1);
-  });
 });

@@ -1,9 +1,12 @@
+/* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import uuid from 'uuid';
 import Fieldset from 'components/Fieldset/Fieldset';
 import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
+import { getBasename, getExtension } from 'lib/util';
 
 // TextInput.propTypes = {
 //   name: PropTypes.string.isRequired,
@@ -30,34 +33,6 @@ import TextArea from 'components/TextArea/TextArea';
 // };
 
 // {"data_dictionary" : $URL, "data_dictionary_type" : STRING, "title" : STRING, "description" : STRING, "urls" : MAP<STRING, URL>}
-function getBasename(url) {
-  return url.split(/[\\/]/).pop();
-}
-
-function getExtension(filename = '') {
-  // check that we have an arg and that it is a string
-  if (!filename || typeof filename !== 'string') {
-    return '';
-  }
-
-  // find the index of the last '.' in the string
-  const pos = filename.lastIndexOf('.');
-
-  // if there was no '.' (lastIndexOf returned -1) or it was at the start of the
-  // filename string (e.g. .htaccess)
-  if (pos < 1) {
-    return '';
-  }
-
-  return filename.slice(pos + 1);
-}
-
-// function makeUniqueURLKey(url) {
-//   const filename = getBasename(url);
-//   const extension = getExtension(filename);
-//   const postfix = extension ? `-${extension}` : '';
-//   return `${uuid()}${postfix}`;
-// }
 
 class URLField extends Component {
   constructor() {
@@ -70,12 +45,16 @@ class URLField extends Component {
   }
 
   componentWillMount() {
+    // If we have a url saved on the server, then we need to extract the extension
+    // on mount IOT populate the file type field below
     this.setState({
       extension: getExtension(getBasename(this.props.value))
     });
   }
 
   componentWillReceiveProps(nextProps) {
+    // If the user changes the value of the url field, update the extension. If
+    // we didn't do this, the file type and url fields would get out of sync
     if (nextProps.value !== this.props.value) {
       this.setState({
         extension: getExtension(getBasename(nextProps.value))
@@ -84,6 +63,7 @@ class URLField extends Component {
   }
 
   handleExtensionChange(e) {
+    // allows the user to override the calculated extension
     this.setState({
       extension: e.target.value
     });
@@ -97,9 +77,9 @@ class URLField extends Component {
         <label>URL</label>
         <TextInput
           value={value}
-          handleChange={e => handleChangeUrl(e.target.value)}
           label="URL"
-          inErrorState={false} />
+          inErrorState={false}
+          handleChange={e => handleChangeUrl(e.target.value)} />
         <label>File Type</label>
         <TextInput
           value={this.state.extension}
@@ -111,16 +91,27 @@ class URLField extends Component {
   }
 }
 
+URLField.propTypes = {
+  value: PropTypes.string,
+  handleChangeUrl: PropTypes.func.isRequired
+};
+
 const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref }) => (
   <Fieldset title={href.title}>
     <div>
       <label>Dataset Name</label>
-      <TextInput value={href.title} handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
+      <TextInput
+        value={href.title}
+        label="Dataset Name"
+        inErrorState={false}
+        handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
     </div>
     <div>
       <label>Dataset Description</label>
       <TextArea
         value={href.description}
+        label="Dataset Description"
+        inErrorState={false}
         handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
     </div>
     <div>
@@ -131,10 +122,26 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref 
       <label>Data Dictionary URL</label>
       <TextInput
         value={href.data_dictionary}
+        label="Data Dictionary URL"
+        inErrorState={false}
         handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
     </div>
   </Fieldset>
 );
+
+DatsetFieldset.propTypes = {
+  href: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    data_dictionary: PropTypes.string,
+    data_dictionary_type: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    urls: PropTypes.object.isRequired
+  }),
+  handleAddURL: PropTypes.func.isRequired,
+  handleChangeUrl: PropTypes.func.isRequired,
+  handleChangeHref: PropTypes.func.isRequired
+};
 
 class HrefForm extends Component {
   constructor() {
@@ -175,16 +182,16 @@ class HrefForm extends Component {
   }
 
   handleAddDataset() {
+    // hanlder for the button that adds a new dataset fieldset
     const datasetNum = this.state.hrefs.length + 1;
     this.setState({
       hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
     });
   }
 
-  handleAddURL(id, url) {
+  handleAddURL(id) {
+    // handler for the button that creates a new url field in the form
     const href = this.state.hrefs.find(h => h.id === id);
-
-    // const urlKey = makeUniqueURLKey(url);
 
     const newHref = {
       ...href,
@@ -202,6 +209,8 @@ class HrefForm extends Component {
   }
 
   handleChangeUrl(id) {
+    // Since urls are nested objects, they need to be udpated a little differently
+    // that the other href attributes, hence this dedicated method
     return urlId => newValue => {
       const href = this.state.hrefs.find(h => h.id === id);
 
@@ -224,6 +233,7 @@ class HrefForm extends Component {
   }
 
   handleChangeHref(id, fieldname, newValue) {
+    // generic handler for all href attributes except for url
     const href = this.state.hrefs.find(h => h.id === id);
 
     const newHref = {

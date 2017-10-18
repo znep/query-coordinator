@@ -28,7 +28,7 @@ TextArea.propTypes = {
   placeholder: PropTypes.string,
   isRequired: PropTypes.bool.isRequired,
   inErrorState: PropTypes.bool.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired
+  handleChange: PropTypes.func,
+  handleBlur: PropTypes.func,
+  handleFocus: PropTypes.func
 };

@@ -1,5 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { setFormState } from 'reduxStuff/actions/forms';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import uuid from 'uuid';
@@ -115,7 +117,9 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref 
         handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
     </div>
     <div>
-      {_.map(href.urls, (val, key) => <URLField value={val} handleChangeUrl={handleChangeUrl(key)} />)}
+      {_.map(href.urls, (val, key) => (
+        <URLField key={key} value={val} handleChangeUrl={handleChangeUrl(key)} />
+      ))}
       <button onClick={handleAddURL}>Add URL</button>
     </div>
     <div>
@@ -160,6 +164,15 @@ class HrefForm extends Component {
     this.setState({
       hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
     });
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    const { syncStateToStore } = this.props;
+    // this lifecycle method is called on props and state changes; we use it to
+    // sync local state to the store because of the stupid modal save button
+    // that we must use to submit this form
+    syncStateToStore(nextState.hrefs);
+    console.log('woot', nextState);
   }
 
   initializeHref(datasetNum) {
@@ -257,6 +270,7 @@ class HrefForm extends Component {
           <h4>Add External Datasets</h4>
           {this.state.hrefs.map(href => (
             <DatsetFieldset
+              key={href.id}
               href={href}
               handleChangeUrl={this.handleChangeUrl(href.id)}
               handleChangeHref={this.handleChangeHref}
@@ -269,4 +283,8 @@ class HrefForm extends Component {
   }
 }
 
-export default HrefForm;
+const mapDispatchToProps = dispatch => ({
+  syncStateToStore: state => dispatch(setFormState('hrefForm', state))
+});
+
+export default connect(null, mapDispatchToProps)(HrefForm);

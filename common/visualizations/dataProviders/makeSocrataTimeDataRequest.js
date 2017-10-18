@@ -40,6 +40,8 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
   let queryString;
 
+  const requireGroupingInSelect = vif.requireGroupingInSelect;
+
   // If there is no aggregation, we do not select the dimension with a
   // `date_trunc` function, but rather just ask for the actual values.
   if (isUnaggregatedQuery) {
@@ -48,6 +50,16 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
         `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
         `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
+      `LIMIT ${limit}`
+    ].join(' ');
+  } else if (requireGroupingInSelect) {
+    queryString = [
+      'SELECT',
+      `${options.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+      `${vif.groupingColumnName} AS ${SoqlHelpers.groupingAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${options.dateTruncFunction}(${groupByClause}), ${SoqlHelpers.groupingAlias()}`,
       `LIMIT ${limit}`
     ].join(' ');
   } else {
@@ -64,11 +76,17 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
   return soqlDataProvider.query(
     queryString,
     SoqlHelpers.dimensionAlias(),
-    SoqlHelpers.measureAlias()
+    SoqlHelpers.measureAlias(),
+    null,
+    null,
+    (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
   ).
     then((queryResponse) => {
       const dimensionIndex = queryResponse.columns.indexOf(
         SoqlHelpers.dimensionAlias()
+      );
+      const groupingIndex = queryResponse.columns.indexOf(
+        SoqlHelpers.groupingAlias()
       );
       const measureIndex = queryResponse.columns.indexOf(
         SoqlHelpers.measureAlias()
@@ -84,6 +102,9 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
       queryResponse.columns[dimensionIndex] = 'dimension';
       queryResponse.columns[measureIndex] = 'measure';
+      if (groupingIndex !== -1) {
+        queryResponse.columns[groupingIndex] = 'grouping';
+      }
 
       // The dimension comes back as an ISO-8601 date, which means we can sort
       // dimension values lexically. This sort puts the dates in ascending
@@ -108,8 +129,9 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
       let rows;
 
-      if (typeVariant === 'area') {
-
+      if (vif.requireGroupingInSelect) {
+        rows = queryResponse.rows;
+      } else if (typeVariant === 'area') {
         // If there are no values in a specific interval (according to the
         // date_trunc_* function) then we will not get a response row for that
         // interval.
@@ -131,7 +153,6 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
           queryResponse
         );
       } else {
-
         rows = addBlankRowAfterLastRow(
           vif,
           dimensionIndex,
@@ -144,6 +165,7 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
         rows,
         precision: options.precision
       };
+
     });
 }
 

@@ -10,6 +10,7 @@ import { AssetBrowser } from 'common/components';
 import { dateLocalize } from 'common/locale';
 import Localization from 'common/i18n/components/Localization';
 import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import { ALL_ASSETS_TAB } from 'common/components/AssetBrowser/lib/constants';
 
 const middleware = [thunk];
 
@@ -29,15 +30,17 @@ const components = (
       baseFilters={getCurrentUserFilter()}
       pageSize={5}
       showAssetInventoryLink={false}
+      showAssetCounts={false}
       showFilters={false}
-      showHeader={false}
+      showHeader
       showManageAssets
       showPager={false}
-      showSearchField={false} />
+      showSearchField
+      tabsToHide={[ALL_ASSETS_TAB]} />
   </Localization>
 );
 
-ReactDOM.render(components, document.querySelector('#user-profile-content'));
+ReactDOM.render(components, document.querySelector('#user-profile-asset-browser'));
 
 if (module.hot) {
   module.hot.accept('common/components/AssetBrowser', () => {

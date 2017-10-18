@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import { Header } from 'common/components/AssetBrowser/components/header';
 import { FeatureFlags } from 'common/feature_flags';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
+import { MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
 
 let savedCurrentUser = window.serverConfig.currentUser;
 
@@ -47,4 +48,32 @@ describe('components/Header', () => {
     });
   });
 
+  describe('tabsToHide', () => {
+    describe('when not passed', () => {
+      it('renders all tabs', () => {
+        const element = renderComponentWithPropsAndStore(Header);
+        assert.isNotNull(element);
+        assert.equal(element.querySelectorAll('.my-assets').length, 1);
+        assert.equal(element.querySelectorAll('.shared-to-me').length, 1);
+      });
+    });
+
+    describe('when passed', () => {
+      it('hides single tab', () => {
+        const props = { 'tabsToHide': [MY_ASSETS_TAB] }
+        const element = renderComponentWithPropsAndStore(Header, props);
+        assert.isNotNull(element);
+        assert.equal(element.querySelectorAll('.my-assets').length, 0);
+        assert.equal(element.querySelectorAll('.shared-to-me').length, 1);
+      });
+
+      it('hides multiple tabs', () => {
+        const props = { 'tabsToHide': [MY_ASSETS_TAB, SHARED_TO_ME_TAB] }
+        const element = renderComponentWithPropsAndStore(Header, props);
+        assert.isNotNull(element);
+        assert.equal(element.querySelectorAll('.my-assets').length, 0);
+        assert.equal(element.querySelectorAll('.shared-to-me').length, 0);
+      });
+    });
+  });
 });

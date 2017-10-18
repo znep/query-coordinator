@@ -3,11 +3,9 @@
 @import "catalog_results";
 @import "catalog_filters";
 @import "clear_filters";
-@import "common/styleguide/variables/colors";
-
 @import "common/styleguide/partials/pager";
 
-.catalog-results {
+.asset-browser {
   margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom
 
   &.footerless {
@@ -19,12 +17,42 @@
     margin-bottom: 0.5rem;
   }
 
+  .alert-wrapper {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 2rem;
+    z-index: 10000;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .socrata-icon {
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+  }
+
   .header {
     margin: 0 $horizontal_margin;
-    height: 7.5rem;
+    min-height: 7.5rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+
+    &.mobile {
+      display: block;
+      min-height: 5.5rem;
+
+      > div {
+        display: block;
+      }
+    }
 
     .asset-tabs {
       a.asset-tab {

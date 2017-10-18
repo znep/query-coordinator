@@ -103,17 +103,36 @@ describe('analytics.js', function() {
       analytics.setMetricsQueueCapacity(3);
     });
 
-    // TODO: Has this ever worked? I don't know!
-    // I do know that it causes the test run to fail sometimes, but not always!
+    // NOTE: Test fails due to full page reload.
     xit('calls flushMetrics()', function() {
       analytics.sendMetric('waiting', 'forunload', 123);
 
-      $(window).trigger('onbeforeunload');
+      $(window).triggerHandler('beforeunload');
 
       setTimeout(function() {
         assert.lengthOf(server.requests, 1);
         assert.isFalse(server.requests[0].async);
       }, 10);
+    });
+  });
+
+  describe('registerPageView', function() {
+    beforeEach(function() {
+      server.respondWith(
+        'POST', '/api/views/test-test/metrics.json?method=opening',
+        [200, { 'Content-Type': 'application/text' }, 'OK']
+      );
+    });
+
+    it('makes a POST request to the Core metrics endpoint', function() {
+      analytics.registerPageView('test-test');
+      assert.lengthOf(server.requests, 1);
+    });
+
+    it('does not allow duplicate page views to be registered', function() {
+      analytics.registerPageView('test-test');
+      analytics.registerPageView('test-test');
+      assert.lengthOf(server.requests, 1);
     });
   });
 });

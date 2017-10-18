@@ -31,7 +31,6 @@ import 'common/site_wide';
 
 $(document).on('ready', function() {
 
-  var analytics = new Analytics();
   (new PresentationMode());
 
   SocrataVisualizations.views.RowInspector.setup();
@@ -167,11 +166,14 @@ $(document).on('ready', function() {
   $window.on('resize', _moveFooterToBottomOfWindowOrContent);
 
   if (Environment.IS_STORY_PUBLISHED && !Environment.IS_GOAL) {
+    var analytics = new Analytics();
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-story', 1);
     analytics.sendMetric('domain', 'page-views', 1);
 
     analytics.flushMetrics();
+
+    analytics.registerPageView(Environment.STORY_UID);
   }
 
   if (Environment.CURRENT_USER && Environment.STORY_UID) {

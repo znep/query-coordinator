@@ -1,11 +1,11 @@
 import { expect, assert } from 'chai';
-import { ODataModal } from 'components/ODataModal';
+import { ShareModal } from 'components/ShareModal';
 import mockView from 'data/mockView';
 
-describe('components/ODataModal', function() {
+describe('components/ShareModal', function() {
   it('renders an element', function() {
-    var element = renderComponent(ODataModal, {
-      onClickCopy: _.noop,
+    var element = renderComponent(ShareModal, {
+      onClickOption: _.noop,
       view: mockView
     });
 

@@ -109,7 +109,6 @@ class DatasetLandingPage
         :name => view.name,
         :namedResourceUrl => view.named_resource_url,
         :odataUrl => view.odata_url,
-        :odataUrlV4 => view.odata_url_v4,
         :ownerName => view.owner.displayName,
         :plotlyUrl => view.plotly_url,
         :provenance => view.provenance,

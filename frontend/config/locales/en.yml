@@ -1820,6 +1820,7 @@ en:
       json: JSON
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       name: Name
+      resource_type: Resource Type
       title: Access this Dataset via SODA API
     back: Back
     blob_download:
@@ -1888,9 +1889,6 @@ en:
       csv_for_excel: CSV for Excel
       csv_for_excel_europe: CSV for Excel (Europe)
       csv_without_geo: CSV (without geospatial data)
-      flyout_title: Download %{dataset_title}
-      flyout_description: Download %{dataset_title} for offline use in other applications.
-      flyout_additional_links_title: Additional Formats
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
@@ -1988,7 +1986,6 @@ en:
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
-      resource_type: Resource Type
       title: Access this Dataset via OData
     official: Official
     open: Open
@@ -2014,7 +2011,6 @@ en:
       view: View
     remove: Remove
     render_error: There was a problem rendering this page.
-    resource_type: Resource Type
     save: Save
     saved: Saved
     saving: Saving
@@ -2064,8 +2060,7 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      title: Share %{dataset_title}
-      description: Share %{dataset_title} with your friends and colleagues.
+      title: Share
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:

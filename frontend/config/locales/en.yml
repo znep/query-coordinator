@@ -1800,7 +1800,7 @@ en:
       api: API
       comment: Comment on this Dataset
       contact_owner: Contact Dataset Owner
-      download: Download
+      export: Export
       explore_data: Explore Data
       odata: Access Data via OData
       share: Share
@@ -1884,10 +1884,13 @@ en:
       visualize_link: Visualize and Filter (preview)
     default_row_label: row
     done: Done
-    download:
+    export:
       csv_for_excel: CSV for Excel
       csv_for_excel_europe: CSV for Excel (Europe)
       csv_without_geo: CSV (without geospatial data)
+      flannel_title: Download %{dataset_title}
+      flannel_description: Download %{dataset_title} for offline use in other applications.
+      flannel_additional_links_title: Additional Formats
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
@@ -2056,10 +2059,11 @@ en:
       type: Type
     share:
       cancel: Cancel
+      description: Share %{dataset_title} with your friends and colleagues.
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      title: Share
+      title: Share %{dataset_title}
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:

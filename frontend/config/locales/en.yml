@@ -5054,11 +5054,11 @@ en:
         email_button: Email
         message_prompt: Enter an optional message
         private_notice: 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
-        prompt_html: 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
+        prompt_html: 'Invite Collaborators to <span class="datasetName">%{name}</span>:'
         remove_email: Remove
         role: Role
         success: Your email has been successfully sent.
-        title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
+        title_html: Invite Collaborators
       fatrow:
         edit_layout: Edit Layout
       grid_sidebar:
@@ -5678,16 +5678,16 @@ en:
             public: This view must be public before it can be published
             valid_saved: This view must be valid and saved
         share:
-          error: There was an error modifying your shares. Please try again later
-          loading_shares: Loading Shares...
-          no_shares_html: You are not currently sharing this <span class="datasetTypeName">dataset</span> with anyone
+          error: There was an error modifying your collaborators. Please try again later.
+          loading_shares: Loading Collaborators...
+          no_shares_html: There are currently no other collaborators for this <span class="datasetTypeName">dataset</span>
           notify_button: Notify All of Changes
-          notify_success: Notification sent
-          prompt_html: This <span class="datasetTypeName">dataset</span> is <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">and shared with:</span>
-          share_button_html: Share this <span class="datasetTypeNameUpcase">Dataset</span>
-          subtitle: Share this %{view_type}
+          notify_success: Notification Sent
+          prompt_html: This <span class="datasetTypeName">dataset</span> is <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">and has the following collaborators:</span>
+          share_button_html: Add Collaborator
+          subtitle: Add Collaborator
           success: Your permissions have been updated
-          title: Sharing
+          title: Invite & Manage Collaborators
           validation:
             valid_saved: This view must be valid and saved
         showhide_columns:
@@ -5795,7 +5795,7 @@ en:
             link_text: Click here to stop previewing the new experience.
           enable:
             link_text: Click here to preview the new experience.
-            text: We're redesigning the Grid View!
+            text: We're redesigning the Data Table!
         remove_confirm: Are you sure you want to remove this view?
         unauthenticated_alert: Changes will not be saved unless you first sign in.
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.

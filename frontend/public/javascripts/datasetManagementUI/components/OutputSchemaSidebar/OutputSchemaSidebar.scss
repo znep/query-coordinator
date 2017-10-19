@@ -9,10 +9,14 @@
   height: 100%;
   z-index: 101;
 
-  span {
-    font-size: 125%;
-    position: relative;
-    top: 2px;
-    margin-right: 4px;
+  :global {
+    /* lol, because styleguide icons don't have a common class...
+    and there's no way to set one using the react component*/
+    span[class^='socrata-icon-'] {
+      font-size: 125%;
+      position: relative;
+      top: 2px;
+      margin-right: 4px;
+    }
   }
 }

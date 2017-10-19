@@ -13,7 +13,7 @@ describe('components/GeocodeShortcut', () => {
       pageNo: 1,
       outputSchemaId: 137
     },
-    path: {
+    params: {
       sourceId: 114,
       inputSchemaId: 97,
       outputSchemaId: 137
@@ -23,8 +23,7 @@ describe('components/GeocodeShortcut', () => {
     newOutputSchema: _.noop,
     redirectToOutputSchema: _.noop,
     onDismiss: sinon.spy(),
-    showError: sinon.spy(),
-    params: {}
+    showError: sinon.spy()
   };
 
   it('renders', () => {
@@ -198,7 +197,7 @@ describe('components/GeocodeShortcut', () => {
     };
 
     const outputSchemaColumn = {
-      output_schema_id: defaultProps.path.outputSchemaId,
+      output_schema_id: defaultProps.params.outputSchemaId,
       output_column_id: 99999,
       is_primary_key: false
     };
@@ -301,7 +300,7 @@ describe('components/GeocodeShortcut', () => {
     };
 
     const outputSchemaColumn = {
-      output_schema_id: defaultProps.path.outputSchemaId,
+      output_schema_id: defaultProps.params.outputSchemaId,
       output_column_id: 99999,
       is_primary_key: false
     };
@@ -390,7 +389,7 @@ describe('components/GeocodeShortcut', () => {
     };
 
     const outputSchemaColumn = {
-      output_schema_id: defaultProps.path.outputSchemaId,
+      output_schema_id: defaultProps.params.outputSchemaId,
       output_column_id: 99999,
       is_primary_key: false
     };
@@ -482,7 +481,7 @@ describe('components/GeocodeShortcut', () => {
     };
 
     const outputSchemaColumn = {
-      output_schema_id: defaultProps.path.outputSchemaId,
+      output_schema_id: defaultProps.params.outputSchemaId,
       output_column_id: 99999,
       is_primary_key: false
     };

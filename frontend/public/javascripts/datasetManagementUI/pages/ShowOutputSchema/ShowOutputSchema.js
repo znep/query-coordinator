@@ -11,6 +11,7 @@ import { updateSourceParseOptions } from 'reduxStuff/actions/createSource';
 import * as DisplayState from 'lib/displayState';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
+import * as ModalActions from 'reduxStuff/actions/modal';
 import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
 import TablePane from './TablePane';
@@ -39,7 +40,7 @@ export class ShowOutputSchema extends Component {
   }
 
   render() {
-    const { canApplyRevision, fatalError, goToRevisionBase, params } = this.props;
+    const { canApplyRevision, fatalError, goToRevisionBase, params, showShortcut } = this.props;
 
     return (
       <div className={styles.outputSchemaContainer}>
@@ -48,7 +49,10 @@ export class ShowOutputSchema extends Component {
             <SourceBreadcrumbs />
           </ModalHeader>
           <ModalContent>
-            <OutputSchemaSidebar params={params} page={params.option || 'output_schema'} />
+            <OutputSchemaSidebar
+              params={params}
+              page={params.option || 'output_schema'}
+              showShortcut={showShortcut} />
             {this.contentForOption()}
           </ModalContent>
 
@@ -77,6 +81,7 @@ ShowOutputSchema.propTypes = {
   numLoadsInProgress: PropTypes.number.isRequired,
   goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
+  showShortcut: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.shape({
     revisionSeq: PropTypes.string.isRequired,
@@ -118,8 +123,10 @@ export function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mergeProps(stateProps, { dispatch }, ownProps) {
   return {
+    ...stateProps,
+    ...ownProps,
     goToRevisionBase: () => {
       browserHistory.push(Links.revisionBase(ownProps.params));
     },
@@ -131,8 +138,18 @@ function mapDispatchToProps(dispatch, ownProps) {
     saveCurrentParseOptions: (params, source, parseOptions) => {
       dispatch(updateSourceParseOptions(params, source, parseOptions));
     },
+
+    showShortcut: name => {
+      dispatch(
+        ModalActions.showModal(name, {
+          displayState: stateProps.displayState,
+          params: stateProps.params
+        })
+      );
+    },
+
     dispatch
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowOutputSchema);
+export default connect(mapStateToProps, null, mergeProps)(ShowOutputSchema);

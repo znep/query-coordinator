@@ -10,7 +10,7 @@ import * as Links from 'links/links';
 const SubI18n = I18n.show_output_schema;
 
 const OutputSchemaSidebar = props => {
-  const { params, page } = props;
+  const { params, page, showShortcut } = props;
 
   const outputSchemaClass = classNames(
     sidebarStyles.tab,
@@ -41,13 +41,20 @@ const OutputSchemaSidebar = props => {
         <SocrataIcon name="question" />
         {SubI18n.specify_headers}
       </Link>
+      <span
+        onClick={() => showShortcut('geocode')}
+        className={sidebarStyles.tab}>
+        <SocrataIcon name="geo" />
+        {SubI18n.geocode}
+      </span>
     </div>
   );
 };
 
 OutputSchemaSidebar.propTypes = {
   params: PropTypes.object.isRequired,
-  page: PropTypes.string.isRequired
+  page: PropTypes.string.isRequired,
+  showShortcut: PropTypes.func.isRequired
 };
 
 export default OutputSchemaSidebar;

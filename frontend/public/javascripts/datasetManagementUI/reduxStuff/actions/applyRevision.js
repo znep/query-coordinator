@@ -7,12 +7,11 @@ import {
   apiCallSucceeded,
   apiCallFailed,
   APPLY_REVISION,
-  UPDATE_REVISION,
   ADD_EMAIL_INTEREST
 } from 'reduxStuff/actions/apiCalls';
 import { showModal } from 'reduxStuff/actions/modal';
 import { addTaskSet } from 'reduxStuff/actions/taskSets';
-import { editRevision } from 'reduxStuff/actions/revisions';
+import { editRevision, updateRevision } from 'reduxStuff/actions/revisions';
 import { getView } from 'reduxStuff/actions/views';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as Links from 'links/links';
@@ -67,7 +66,7 @@ function shapeRevision(apiResponse) {
   return revision;
 }
 
-export function updateRevision(permission, params) {
+export function updatePermission(permission, params) {
   return (dispatch, getState) => {
     const { entities } = getState();
     const { id: revisionId } = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
@@ -77,40 +76,16 @@ export function updateRevision(permission, params) {
       return;
     }
 
-    // disable btn then reenable in promise resolve
-    const callId = uuid();
+    const update = {
+      action: {
+        permission
+      }
+    };
 
-    dispatch(
-      apiCallStarted(callId, {
-        operation: UPDATE_REVISION,
-        callParams: {
-          action: {
-            permission
-          }
-        }
-      })
-    );
-
-    return socrataFetch(dsmapiLinks.revisionBase(params), {
-      method: 'PUT',
-      body: JSON.stringify({
-        action: {
-          permission
-        }
-      })
-    })
-      .then(checkStatus)
-      .then(getJson)
-      .then(resp => {
-        dispatch(apiCallSucceeded(callId));
-
-        const updatedRevision = shapeRevision(resp.resource);
-
-        dispatch(editRevision(updatedRevision.id, updatedRevision));
-      })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-      });
+    return dispatch(updateRevision(update, params)).then(resp => {
+      const updatedRevision = shapeRevision(resp.resource);
+      dispatch(editRevision(updatedRevision.id, updatedRevision));
+    });
   };
 }
 

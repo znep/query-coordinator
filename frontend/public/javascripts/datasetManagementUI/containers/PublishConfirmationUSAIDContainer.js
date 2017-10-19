@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideModal } from 'reduxStuff/actions/modal';
-import { applyRevision, updateRevision } from 'reduxStuff/actions/applyRevision';
+import { applyRevision, updatePermission } from 'reduxStuff/actions/applyRevision';
 import PublishConfirmationUSAID from 'components/PublishConfirmationUSAID/PublishConfirmationUSAID';
 
 export function mapStateToProps({ entities, ui }, { params }) {
@@ -28,11 +28,11 @@ export function mapStateToProps({ entities, ui }, { params }) {
 function mapDispatchToProps(dispatch, { params }) {
   return {
     doCancel: initialPermission => {
-      dispatch(updateRevision(initialPermission, params));
+      dispatch(updatePermission(initialPermission, params));
       dispatch(hideModal());
     },
     dispatchApplyRevision: () => dispatch(applyRevision(params)),
-    setPermission: permission => dispatch(updateRevision(permission, params))
+    setPermission: permission => dispatch(updatePermission(permission, params))
   };
 }
 

@@ -6,8 +6,6 @@ import {
   apiCallFailed,
   UPDATE_REVISION
 } from 'reduxStuff/actions/apiCalls';
-// import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
-// import { markFormClean, setFormErrors } from 'reduxStuff/actions/forms';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 

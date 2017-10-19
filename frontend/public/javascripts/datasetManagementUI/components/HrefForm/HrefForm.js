@@ -74,7 +74,9 @@ class URLField extends Component {
   }
 
   render() {
-    const { handleChangeUrl, value } = this.props;
+    const { handleChangeUrl, value, errors } = this.props;
+
+    const inErrorState = errors.includes(value);
 
     return (
       <div>
@@ -82,8 +84,9 @@ class URLField extends Component {
         <TextInput
           value={value}
           label="URL"
-          inErrorState={false}
+          inErrorState={inErrorState}
           handleChange={e => handleChangeUrl(e.target.value)} />
+        {inErrorState && <div>bad url</div>}
         <label>File Type</label>
         <TextInput
           value={this.state.extension}
@@ -97,10 +100,11 @@ class URLField extends Component {
 
 URLField.propTypes = {
   value: PropTypes.string,
+  errors: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleChangeUrl: PropTypes.func.isRequired
 };
 
-const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref }) => (
+const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref, errors }) => (
   <Fieldset title={href.title}>
     <div>
       <label>Dataset Name</label>
@@ -120,7 +124,7 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref 
     </div>
     <div>
       {_.map(href.urls, (val, key) => (
-        <URLField key={key} value={val} handleChangeUrl={handleChangeUrl(key)} />
+        <URLField key={key} errors={errors} value={val} handleChangeUrl={handleChangeUrl(key)} />
       ))}
       <button onClick={handleAddURL}>Add URL</button>
     </div>
@@ -146,7 +150,8 @@ DatsetFieldset.propTypes = {
   }),
   handleAddURL: PropTypes.func.isRequired,
   handleChangeUrl: PropTypes.func.isRequired,
-  handleChangeHref: PropTypes.func.isRequired
+  handleChangeHref: PropTypes.func.isRequired,
+  errors: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 // This form strives to let the UI derrive from the data, so in order to control
@@ -304,6 +309,7 @@ class HrefForm extends Component {
   }
 
   render() {
+    const { errors } = this.props;
     return (
       <section>
         <h3>Link to an External Dataset</h3>
@@ -314,6 +320,7 @@ class HrefForm extends Component {
             <DatsetFieldset
               key={href.id}
               href={href}
+              errors={errors}
               handleChangeUrl={this.handleChangeUrl(href.id)}
               handleChangeHref={this.handleChangeHref}
               handleAddURL={url => this.handleAddURL(href.id, url)} />
@@ -330,10 +337,11 @@ HrefForm.propTypes = {
   params: PropTypes.object.isRequired,
   syncStateToStore: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
-  markFormClean: PropTypes.func.isRequired
+  markFormClean: PropTypes.func.isRequired,
+  errors: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
-const mapStateStateToProps = ({ entities }, { params }) => {
+const mapStateStateToProps = ({ entities, ui }, { params }) => {
   const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
 
   let hrefs = [];
@@ -346,12 +354,14 @@ const mapStateStateToProps = ({ entities }, { params }) => {
 
   return {
     hrefs,
+    errors: ui.forms.hrefForm.errors,
     revisionId
   };
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   hrefs: stateProps.hrefs,
+  errors: stateProps.errors,
   syncStateToStore: state => {
     return stateProps.revisionId == null ? _.noop : dispatch(editRevision(stateProps.revisionId, state));
   },

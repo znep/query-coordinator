@@ -11,7 +11,6 @@ import FlashMessage from 'containers/FlashMessageContainer';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { updateRevision } from 'reduxStuff/actions/revisions';
 import { UPDATE_REVISION } from 'reduxStuff/actions/apiCalls';
-import { markFormClean } from 'reduxStuff/actions/forms';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './ShowSource.scss';
@@ -138,9 +137,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
 
   const save = () => {
-    return dispatch(updateRevision(callParams, ownProps.params)).then(() =>
-      dispatch(markFormClean('hrefForm'))
-    );
+    return dispatch(updateRevision(callParams, ownProps.params));
   };
 
   return {

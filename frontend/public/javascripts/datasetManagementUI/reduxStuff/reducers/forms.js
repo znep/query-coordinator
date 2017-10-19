@@ -26,7 +26,8 @@ const initialState = {
     state: {}
   },
   hrefForm: {
-    isDirty: false
+    isDirty: false,
+    errors: []
   }
 };
 

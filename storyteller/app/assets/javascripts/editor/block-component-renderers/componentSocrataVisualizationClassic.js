@@ -48,8 +48,11 @@ export default function componentSocrataVisualizationClassic(props) {
 
 function _renderVisualization($element, componentData) {
   assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'value');
 
-  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const { type, value: { visualization } } = componentData;
+
+  const className = StorytellerUtils.typeToClassNameForComponentType(type);
   const $iframeElement = $(
     '<iframe>',
     {
@@ -73,7 +76,7 @@ function _renderVisualization($element, componentData) {
   const iconClass = 'socrata-visualization-view-source-data-icon';
   const $sourceLinkElement = $(`
     <div class="socrata-visualization-view-source-data">
-      <a href="/d/${componentData.value.visualization.id}" target="_blank">
+      <a href="https://${visualization.domain}/d/${visualization.id}" target="_blank">
         <span>${I18n.t('common.view_source_data')}</span><span class="${iconClass}"></span>
       </a>
     </div>
@@ -102,17 +105,20 @@ function _updateVisualization($element, componentData) {
 
   // This guard is to wait for loading.
   // The iframe load event above should invoke _updateVisualization again.
-  if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
-
-    // Don't re-render if we've already rendered this visualization.
-    if (!_.isEqual(oldValue, newValue)) {
-      $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME, componentData.value.visualization);
-
-      // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
-      // This endpoint contains a function on window called renderVisualization.
-      // renderVisualization kicks off a classic visualization rendering using a view
-      // metadata object. See the frontend implementation for more information.
-      $iframe[0].contentWindow.renderVisualization(componentData.value.visualization);
-    }
+  if (!_.isFunction($iframe[0].contentWindow.renderVisualization)) {
+    return;
   }
+
+  // Don't re-render if we've already rendered this visualization.
+  if (_.isEqual(oldValue, newValue)) {
+    return;
+  }
+
+  $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME, newValue);
+
+  // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
+  // This endpoint contains a function on window called renderVisualization.
+  // renderVisualization kicks off a classic visualization rendering using a view
+  // metadata object. See the frontend implementation for more information.
+  $iframe[0].contentWindow.renderVisualization(newValue);
 }

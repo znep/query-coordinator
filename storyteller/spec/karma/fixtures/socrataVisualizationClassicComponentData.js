@@ -5,6 +5,7 @@ export default {
       'id': 'img8-rukh',
       'oid': 363,
       'name': 'Ooooh, a bar chart!',
+      'domain': 'arbitrary.example.com',
       'owner': {
         'id': 'tugg-ikce',
         'flags': [

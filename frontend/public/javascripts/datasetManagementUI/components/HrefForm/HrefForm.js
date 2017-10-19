@@ -84,11 +84,14 @@ class URLField extends Component {
         <TextInput
           value={value}
           label="URL"
+          name="url"
+          isRequired
           inErrorState={inErrorState}
           handleChange={e => handleChangeUrl(e.target.value)} />
         {inErrorState && <div>bad url</div>}
         <label>File Type</label>
         <TextInput
+          name="filetype"
           value={this.state.extension}
           label="File Type"
           inErrorState={false}
@@ -109,6 +112,7 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref,
     <div>
       <label>Dataset Name</label>
       <TextInput
+        name="title"
         value={href.title}
         label="Dataset Name"
         inErrorState={false}
@@ -117,6 +121,7 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref,
     <div>
       <label>Dataset Description</label>
       <TextArea
+        name="description"
         value={href.description}
         label="Dataset Description"
         inErrorState={false}
@@ -131,6 +136,7 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref,
     <div>
       <label>Data Dictionary URL</label>
       <TextInput
+        name="dictionary-url"
         value={href.data_dictionary}
         label="Data Dictionary URL"
         inErrorState={false}

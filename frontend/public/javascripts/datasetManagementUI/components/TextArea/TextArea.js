@@ -26,7 +26,7 @@ TextArea.propTypes = {
   value: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   inErrorState: PropTypes.bool.isRequired,
   handleChange: PropTypes.func,
   handleBlur: PropTypes.func,

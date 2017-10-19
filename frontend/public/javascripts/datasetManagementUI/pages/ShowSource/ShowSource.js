@@ -8,38 +8,13 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import SaveButtons from './SaveButtons';
 import { updateRevision } from 'reduxStuff/actions/revisions';
-import { UPDATE_REVISION } from 'reduxStuff/actions/apiCalls';
 import { markFormClean, setFormErrors } from 'reduxStuff/actions/forms';
 import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './ShowSource.scss';
-
-const Buttons = ({ handleSave, handleSaveAndExit, callParams, isDirty }) => (
-  <div>
-    <ApiCallButton
-      forceDisable={!isDirty}
-      onClick={handleSave}
-      operation={UPDATE_REVISION}
-      callParams={callParams} />
-    <ApiCallButton
-      forceDisable={!isDirty}
-      onClick={handleSaveAndExit}
-      operation={UPDATE_REVISION}
-      callParams={callParams}>
-      Save and Exit
-    </ApiCallButton>
-  </div>
-);
-
-Buttons.propTypes = {
-  handleSave: PropTypes.func.isRequired,
-  handleSaveAndExit: PropTypes.func.isRequired,
-  callParams: PropTypes.object.isRequired,
-  isDirty: PropTypes.bool.isRequired
-};
 
 export const ShowSource = ({
   inProgress,
@@ -71,7 +46,7 @@ export const ShowSource = ({
       </ModalContent>
       {onHrefPage && (
         <ModalFooter>
-          <Buttons
+          <SaveButtons
             handleSave={handleSave}
             handleSaveAndExit={handleSaveAndExit}
             callParams={callParams}
@@ -81,6 +56,25 @@ export const ShowSource = ({
     </Modal>
   </div>
 );
+
+ShowSource.propTypes = {
+  inProgress: PropTypes.bool.isRequired,
+  goHome: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired,
+  onHrefPage: PropTypes.bool.isRequired,
+  handleSave: PropTypes.func.isRequired,
+  handleSaveAndExit: PropTypes.func.isRequired,
+  callParams: PropTypes.object.isRequired,
+  hrefFormDirty: PropTypes.bool.isRequired
+};
+
+const removeEmptyValues = obj => _.omitBy(obj, val => !val);
+
+const shapeHrefState = rawState =>
+  rawState.map(href => ({
+    ...href,
+    urls: removeEmptyValues(href.urls)
+  }));
 
 export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // selector returns undefined if there are no sources
@@ -112,25 +106,6 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   };
 };
 
-ShowSource.propTypes = {
-  inProgress: PropTypes.bool.isRequired,
-  goHome: PropTypes.func.isRequired,
-  children: PropTypes.object.isRequired,
-  onHrefPage: PropTypes.bool.isRequired,
-  handleSave: PropTypes.func.isRequired,
-  handleSaveAndExit: PropTypes.func.isRequired,
-  callParams: PropTypes.object.isRequired,
-  hrefFormDirty: PropTypes.bool.isRequired
-};
-
-const removeEmptyValues = obj => _.omitBy(obj, val => !val);
-
-const shapeHrefState = rawState =>
-  rawState.map(href => ({
-    ...href,
-    urls: removeEmptyValues(href.urls)
-  }));
-
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const callParams = {
     href: shapeHrefState(stateProps.hrefFormState)
@@ -150,6 +125,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
         dispatch(setFormErrors('hrefForm', errors));
         dispatch(showFlashMessage('error', message));
+        throw new Error('error');
       });
   };
 
@@ -159,7 +135,9 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     goHome,
     handleSave: save,
     handleSaveAndExit: () => {
-      save().then(() => goHome());
+      save()
+        .then(() => goHome())
+        .catch(() => {});
     },
     callParams
   };

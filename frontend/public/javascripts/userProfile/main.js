@@ -48,7 +48,7 @@ if (module.hot) {
       <AppContainer>
         {components}
       </AppContainer>,
-      document.querySelector('#user-profile-content')
+      document.querySelector('#user-profile-asset-browser')
     );
   });
 }

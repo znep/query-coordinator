@@ -1,6 +1,10 @@
 import uuid from 'uuid';
 import * as dsmapiLinks from 'links/dsmapiLinks';
-import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
+import {
+  addNotification,
+  removeNotificationAfterTimeout,
+  updateNotification
+} from 'reduxStuff/actions/notifications';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 
 export const UPLOAD_FILE = 'UPLOAD_FILE';
@@ -19,7 +23,7 @@ function getContentType(fileType) {
   return fileType;
 }
 
-function xhrPromise(method, url, file, sourceId, dispatch) {
+function xhrPromise(method, url, file, onProgress) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
@@ -30,7 +34,7 @@ function xhrPromise(method, url, file, sourceId, dispatch) {
     if (xhr.upload) {
       xhr.upload.onprogress = evt => {
         percent = evt.loaded / evt.total * 100;
-        dispatch(updateProgress(sourceId, percent));
+        onProgress(percent);
       };
     }
 
@@ -53,6 +57,7 @@ function xhrPromise(method, url, file, sourceId, dispatch) {
     };
 
     xhr.setRequestHeader('Content-type', getContentType(file.type));
+    xhr.setRequestHeader('X-File-Name', file.name);
 
     xhr.send(file);
   });
@@ -63,6 +68,47 @@ function updateProgress(sourceId, percentCompleted) {
     type: UPDATE_PROGRESS,
     sourceId,
     percentCompleted
+  };
+}
+
+export function uploadAttachment(revision, file) {
+  return dispatch => {
+    const callParams = {
+      fourfour: revision.fourfour,
+      revision_seq: revision.revision_seq
+    };
+
+    const callId = uuid();
+    const subject = file.name;
+
+    const call = {
+      operation: UPLOAD_FILE,
+      callParams
+    };
+
+    dispatch(apiCallStarted(callId, call));
+    dispatch(addNotification('attachment', subject, { percent: 0, status: 'inProgress' }));
+
+    const onProgress = (percent) => {
+      dispatch(updateNotification(subject, { percent, status: 'inProgress' }));
+    };
+
+    return xhrPromise('POST', dsmapiLinks.addAttachment(revision), file, onProgress)
+      .then(resp => JSON.parse(resp.responseText))
+      .then(resp => {
+
+        dispatch(apiCallSucceeded(callId));
+        dispatch(updateNotification(subject, { status: 'success' }));
+        dispatch(removeNotificationAfterTimeout(subject));
+
+        return resp;
+      })
+      .catch(error => {
+        dispatch(updateNotification(subject, { status: 'error', error }));
+        dispatch(removeNotificationAfterTimeout(subject));
+        dispatch(apiCallFailed(callId, error));
+        throw error;
+      });
   };
 }
 
@@ -82,9 +128,13 @@ export function uploadFile(sourceId, file) {
     dispatch(apiCallStarted(callId, call));
     dispatch(addNotification('source', sourceId));
 
-    return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)
+    const onProgress = (percent) => dispatch(updateProgress(sourceId, percent));
+
+    return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, onProgress)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
+        // Why do we have this action? it's stupid - we're setting something
+        // that dsmapi sets for us and we get in the response....
         dispatch(uploadFileSuccess(sourceId, new Date()));
 
         dispatch(apiCallSucceeded(callId));
@@ -94,6 +144,7 @@ export function uploadFile(sourceId, file) {
         return resp;
       })
       .catch(err => {
+        // also this is not required...
         dispatch(uploadFileFailure(sourceId));
         dispatch(apiCallFailed(callId, err));
       });

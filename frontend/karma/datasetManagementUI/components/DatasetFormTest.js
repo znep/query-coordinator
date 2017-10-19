@@ -269,6 +269,23 @@ describe('components/Forms/DatasetForm', () => {
             }
           }
         ]
+      },
+      {
+        title: 'Attachments',
+        subtitle: null,
+        fields: [
+          {
+            data: {
+              name: 'attachments',
+              label: 'attachments',
+              value: [],
+              isPrivate: false,
+              isRequired: false,
+              placeholder: false,
+              isCustom: false
+            }
+          }
+        ]
       }
     ],
     customFieldsets: [
@@ -295,7 +312,7 @@ describe('components/Forms/DatasetForm', () => {
   it('renders correctly', () => {
     const component = shallow(<DatasetForm {...defaultProps} />);
     assert.lengthOf(component.find('form'), 1);
-    assert.lengthOf(component.find('Fieldset'), 5);
-    assert.lengthOf(component.find('withRouter(Connect(Field))'), 9);
+    assert.lengthOf(component.find('Fieldset'), 6);
+    assert.lengthOf(component.find('withRouter(Connect(Field))'), 10);
   });
 });

@@ -126,7 +126,8 @@ function getCurrentRevision(params) {
         revision_seq: _.toNumber(resource.revision_seq),
         created_at: parseDate(resource.created_at),
         created_by: resource.created_by,
-        closed_at: resource.closed_at ? parseDate(resource.closed_at) : null
+        closed_at: resource.closed_at ? parseDate(resource.closed_at) : null,
+        attachments: resource.attachments
       };
     });
 }

@@ -19,6 +19,7 @@ const API_RESPONSES = {
       action: {
         permission: 'public'
       },
+      attachments: [],
       task_sets: [
         {
           updated_at: '2017-10-03T16:14:01.869151Z',

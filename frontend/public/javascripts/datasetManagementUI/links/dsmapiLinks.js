@@ -7,6 +7,9 @@ export const revisionsForView =
 export const revisionBase = (params) =>
   `${revisionsForView}/${params.revisionSeq}`;
 
+export const addAttachment = (revision) =>
+  `${revisionsForView}/${revision.revision_seq}/attachment`;
+
 export const createRevision = revisionsForView;
 
 export const sourceIndex = (params) => `${revisionBase(params)}/source`;

@@ -2233,12 +2233,14 @@ en:
           dataset_subtitle: Make your title and description as clear and simple as possible.
           private_field: Private field. Only logged in users will see this value.
           tags_subtitle: Categorize your dataset to make it easier to find.
+          attachments_subtitle: Add an attachment if you want to provide extra context to this dataset.
         title: Title and Description
         titles:
           contact_title: Contact Email
           dataset_title: Title and Description
           licenses_title: Licensing & Attribution
           tags_title: Categories and Tags
+          attachments_title: Attachments
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -2264,6 +2266,7 @@ en:
       upload_failed: Upload Failed
       url_failed: Fetching URL Failed
       uploading: Uploading
+      uploading_attachment: Uploading attachment
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:

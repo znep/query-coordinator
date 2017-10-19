@@ -34,6 +34,7 @@ const mergeProps = ({ revision, ...rest }, { dispatch }, ownProps) => {
   const path = forgePath(ownProps.field, ownProps.fieldset, revision.id);
 
   return {
+    revision,
     ...rest,
     ...ownProps,
     setValue: value => {
@@ -48,15 +49,17 @@ function forgePath(field, fieldsetName, revisionId) {
   const isRegPrivate = f => f.data.isPrivate && !f.data.isCustom;
   const isCustomPrivate = f => f.data.isPrivate && f.data.isCustom;
   const isCustomPublic = f => !f.data.isPrivate && f.data.isCustom;
+  const isAttachments = field.data.name === 'attachments';
 
   let path;
-
   if (isRegPrivate(field)) {
     path = `${revisionId}.metadata.privateMetadata.${field.data.name}`;
   } else if (isCustomPrivate(field)) {
     path = `${revisionId}.metadata.privateMetadata.custom_fields.${fieldsetName}.${field.data.name}`;
   } else if (isCustomPublic(field)) {
     path = `${revisionId}.metadata.metadata.custom_fields.${fieldsetName}.${field.data.name}`;
+  } else if (isAttachments) {
+    path = `${revisionId}.attachments`;
   } else {
     path = `${revisionId}.metadata.${field.data.name}`;
   }

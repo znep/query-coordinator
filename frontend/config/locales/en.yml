@@ -2274,6 +2274,16 @@ en:
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
+      start_import: Start Import
+    automate_this:
+      copy_code: Copy this code
+      title: Set Up Automation
+      description: You can automate updates to this dataset with just a few lines of Python code.
+      install_socrata_py: Install the socrata-py Python library with
+      local_py_env: into your local Python environment
+      containing_this_code: "Create a file (eg: my-update-script.py) containing this code:"
+      use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
+      activity_log: See a log of your updates here
     parse_options:
       header_count: Header Count
       column_header: Header Row Position

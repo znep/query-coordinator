@@ -8,6 +8,7 @@ import PublishConfirmation from 'containers/PublishConfirmationContainer';
 import PublishConfirmationUSAID from 'containers/PublishConfirmationUSAIDContainer';
 import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
 import GeocodeShortcut from 'components/GeocodeShortcut/GeocodeShortcut';
+import SetupAutomation from 'containers/SetupAutomationContainer';
 import styles from './Modal.scss';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
@@ -56,7 +57,19 @@ const getModalProps = (props, contentComponentName, payload) => {
         className: styles.rowIdentifierError
       };
 
+    case 'SetupAutomation':
+      return {
+        ...props,
+        children: [
+          <SetupAutomation
+            key={1}
+            {...payload} />
+        ],
+        className: styles.setupAutomation
+      };
+
     default:
+      console.warn('Unknown modal', contentComponentName);
       return props;
   }
 };

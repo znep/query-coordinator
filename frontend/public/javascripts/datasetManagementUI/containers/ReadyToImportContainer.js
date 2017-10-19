@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { showModal } from 'reduxStuff/actions/modal';
+import { createImportConfig } from 'reduxStuff/actions/createImportConfig';
 import ReadyToImport from 'components/ReadyToImport/ReadyToImport';
 
 const mapStateToProps = ({ entities }, { params }) => {
@@ -18,15 +19,31 @@ const mapStateToProps = ({ entities }, { params }) => {
       inputSchema,
       importableRows,
       errorRows,
-      outputSchema
+      outputSchema,
+      params
     };
   } else {
     return {};
   }
 };
 
-const mapDispatchToProps = dispatch => ({
-  openModal: componentName => dispatch(showModal(componentName))
+const mergeProps = (stateProps, { dispatch }, ownProps) => ({
+  ...ownProps,
+  ...stateProps,
+  openModal: componentName => dispatch(showModal(componentName)),
+  createConfigAndOpenModal: () => {
+    dispatch(createImportConfig(
+      stateProps.source,
+      stateProps.outputSchema.id
+    )).then((resource) => {
+      dispatch(showModal('SetupAutomation', {
+        outputSchemaId: stateProps.outputSchema.id,
+        importConfigName: resource.name,
+        fourfour: ownProps.params.fourfour,
+        source: stateProps.source
+      }));
+    });
+  }
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReadyToImport));
+export default withRouter(connect(mapStateToProps, null, mergeProps)(ReadyToImport));

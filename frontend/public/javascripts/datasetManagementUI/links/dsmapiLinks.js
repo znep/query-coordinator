@@ -42,3 +42,6 @@ export const errorExport = (sourceId, inputSchemaId, outputSchemaId) =>
 
 export const validateRowIdentifier = (sourceId, transformId) =>
   `${base}/source/${sourceId}/transform/${transformId}/validate_row_identifier`;
+
+export const createImportConfig = (outputSchemaId) =>
+  `${base}/config/build_from/${outputSchemaId}`;

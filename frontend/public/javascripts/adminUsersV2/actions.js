@@ -40,9 +40,9 @@ const convertUserListFromApi = users => {
 };
 
 function fetchJson(apiPath, fetchOptions) {
-  return fetch(apiPath, fetchOptions)
-    .then(checkStatus)
-    .then(response => response.json());
+  return fetch(apiPath, fetchOptions).
+    then(checkStatus).
+    then(response => response.json());
 }
 
 const loadUsers = query => {
@@ -56,9 +56,9 @@ const loadUsers = query => {
     apiPath = `${apiPath}&q=${query}`;
   }
 
-  return fetchJson(apiPath, fetchOptions)
-    .then(json => json.results)
-    .then(convertUserListFromApi);
+  return fetchJson(apiPath, fetchOptions).
+    then(json => json.results).
+    then(convertUserListFromApi);
 };
 
 const loadFutureUsers = () => {
@@ -127,8 +127,8 @@ export const userAutocomplete = (query, callback) => {
     headers: defaultHeaders
   };
 
-  fetchJson(apiPath, fetchOptions)
-    .then(searchResults => {
+  fetchJson(apiPath, fetchOptions).
+    then(searchResults => {
       return {
         ...searchResults,
         results: searchResults.results.map(result => {
@@ -138,7 +138,25 @@ export const userAutocomplete = (query, callback) => {
           };
         })
       };
-    })
-    .then(searchResults => callback(searchResults), error => console.error('Failed to fetch data', error))
-    .catch(ex => console.error('Error parsing JSON', ex));
+    }).
+    then(searchResults => callback(searchResults), error => console.error('Failed to fetch data', error)).
+    catch(ex => console.error('Error parsing JSON', ex));
+};
+
+export const removeUserRole = (userId, roleId) => dispatch => {
+  const ACTION = {
+    type: USER_ROLE_CHANGE,
+    userId,
+    newRole: 'none'
+  };
+
+  dispatch({ ...ACTION, stage: START });
+  CoreApi.removeRoleFromUser({ userId, roleId }).
+    then(
+      () => { dispatch({ ...ACTION, stage: COMPLETE_SUCCESS }); },
+      (err) => {
+        console.error(err);
+        dispatch({ ...ACTION, stage: COMPLETE_FAIL });
+      }
+    );
 };

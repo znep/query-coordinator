@@ -1,8 +1,12 @@
 {
-  "extends": "../../../node_modules/eslint-base/.eslintrc-airbnb.json",
+  "extends": "../../../node_modules/eslint-base/.eslintrc.json",
   "rules": {
     "padded-blocks": 0,
-    "import/default": "off"
+    "import/default": "off",
+    "dot-notation": ["error", {
+      "allowKeywords": true,
+      "allowPattern": "^[a-z]+(_[a-z]+)+$"
+    }],
   },
   "settings": {
     "import/ignore": [

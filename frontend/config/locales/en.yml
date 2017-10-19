@@ -6477,6 +6477,8 @@ en:
       short: "%H:%M:%S"
     pm: pm
   users:
+    actions:
+      remove_role: Remove role
     export_as_csv: Export as CSV
     headers:
       actions: Actions
@@ -6489,6 +6491,9 @@ en:
     last_active:
       today: today
       unknown: unknown
+    roles:
+      default: default
+      custom: custom
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

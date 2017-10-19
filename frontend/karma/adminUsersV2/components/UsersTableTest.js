@@ -13,7 +13,7 @@ describe('components/UsersTable', () => {
   const defaultProps = {
     ...initialState,
     onRoleChange: sinon.spy(),
-    loadData: sinon.spy(),
+    onRemoveUserRole: sinon.spy(),
     I18n: I18nJS
   };
 
@@ -21,7 +21,7 @@ describe('components/UsersTable', () => {
     const component = shallow(<UsersTable {...defaultProps} />);
     const header = component.find('thead');
     const rows = component.find('tbody');
-    expect(header.find('tr').children()).to.have.length(4);
+    expect(header.find('tr').children()).to.have.length(5);
     expect(rows.children()).to.have.length(41);
   });
 

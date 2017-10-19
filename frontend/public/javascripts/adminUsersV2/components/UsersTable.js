@@ -15,8 +15,15 @@ export class UsersTable extends React.Component {
 
   userToRow(user) {
     const onRoleChange = newRole => this.props.onRoleChange(user.id, newRole);
+    const onRemoveUserRole = () => this.props.onRemoveUserRole(user.id, user.roleId);
 
-    return <LocalizedUserRow {...user} onRoleChange={onRoleChange} key={user.id} />;
+    return (
+      <LocalizedUserRow
+        {...user}
+        onRoleChange={onRoleChange}
+        onRemoveUserRole={onRemoveUserRole}
+        key={user.id} />
+    );
   }
 
   renderHeaderRow() {
@@ -29,6 +36,7 @@ export class UsersTable extends React.Component {
           <th>{I18n.t('users.headers.email')}</th>
           <th>{I18n.t('users.headers.last_active')}</th>
           <th>{I18n.t('users.headers.role')}</th>
+          <th>{I18n.t('users.headers.actions')}</th>
         </tr>
       </thead>
     );
@@ -53,6 +61,7 @@ export class UsersTable extends React.Component {
 UsersTable.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRoleChange: PropTypes.func.isRequired,
+  onRemoveUserRole: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 
@@ -64,7 +73,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onRoleChange: (userId, newRole) => dispatch(Actions.changeUserRole(userId, newRole))
+    onRoleChange: (userId, newRole) => dispatch(Actions.changeUserRole(userId, newRole)),
+    onRemoveUserRole: (userId, roleId) => dispatch(Actions.removeUserRole(userId, roleId))
   };
 };
 

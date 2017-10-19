@@ -5,6 +5,7 @@ import { Dropdown, SocrataIcon } from 'common/components';
 import _ from 'lodash';
 import moment from 'moment';
 import connectLocalization from 'common/i18n/components/connectLocalization';
+import UserEditControl from './UserEditControl';
 
 export class UserRow extends React.Component {
   constructor() {
@@ -70,12 +71,28 @@ export class UserRow extends React.Component {
   renderRolePicker() {
     const { availableRoles, I18n } = this.props;
 
+    const customRolesExist = availableRoles.some(role => !role.isDefault);
+
     const options = availableRoles.map(role => {
-      const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
-      return {
-        title,
-        value: role.id
-      };
+      const title = role.isDefault ?
+        I18n.t(`roles.default_roles.${role.name}.name`) :
+        role.name;
+
+      if (customRolesExist) {
+        const group = role.isDefault ?
+          I18n.t('users.roles.default') :
+          I18n.t('users.roles.custom');
+        return {
+          title,
+          group,
+          value: role.id
+        };
+      } else {
+        return {
+          title,
+          value: role.id
+        };
+      }
     });
 
     return (
@@ -90,6 +107,15 @@ export class UserRow extends React.Component {
     );
   }
 
+  renderActionMenu() {
+    return (
+      <td>
+        <UserEditControl
+          removeRole={this.props.onRemoveUserRole} />
+      </td>
+    );
+  }
+
   render() {
     return (
       <tr key={this.props.id} className="result-list-row">
@@ -97,6 +123,7 @@ export class UserRow extends React.Component {
         {this.renderEmail()}
         {this.renderLastActive()}
         {this.renderRolePicker()}
+        {this.renderActionMenu()}
       </tr>
     );
   }
@@ -112,6 +139,7 @@ UserRow.propTypes = {
   roleId: PropTypes.string.isRequired,
   pendingRole: PropTypes.string,
   onRoleChange: PropTypes.func.isRequired,
+  onRemoveUserRole: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 

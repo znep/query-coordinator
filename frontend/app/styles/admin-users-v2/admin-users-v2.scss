@@ -85,4 +85,28 @@
     justify-content: flex-end;
     padding-top: 1em;
   }
+
+  .user-edit-control {
+    position: relative;
+
+    .kebab-button {
+      padding-top: 0;
+      padding-bottom: 0;
+      background-color: inherit;
+      transform: rotate(90deg);
+    }
+
+    .user-edit-actions {
+      position: absolute;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      list-style: none;
+      background-color: white;
+      border-style: solid;
+      border-width: thin;
+      border-color: black;
+      padding-left: 0;
+    }
+  }
 }

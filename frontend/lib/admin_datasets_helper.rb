@@ -7,7 +7,8 @@
 # "helper :all", which causes all helpers to be loaded for all views.
 # We want to override view_url for Admin->Datasets specifically, but if this file
 # lived in app/helpers, the override would take place for _all_ views.
-module AdministrationHelper
+
+module AdminDatasetsHelper
 
   def view_url(view)
     if view.story?
@@ -22,33 +23,6 @@ module AdministrationHelper
       # See: Rails.application.routes.url_helpers.methods.grep(/view_url/)
       super
     end
-  end
-
-  def show_site_appearance_admin_panel?
-    !!current_user.try(:can_use_site_appearance?) &&
-      !SocrataSiteChrome::CustomContent.new(CurrentDomain.cname).activated?
-  end
-
-  def render_admin_users_v2_data
-
-    server_config = {
-      airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
-      csrfToken: form_authenticity_token.to_s,
-      csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
-      currentUser: current_user,
-      domain: CurrentDomain.cname,
-      environment: Rails.env,
-      locale: I18n.locale.to_s,
-      localePrefix: locale_prefix.to_s
-    }
-
-    translations = LocaleCache.render_partial_translations(:users)
-    translations.deep_merge!(LocaleCache.render_partial_translations(:roles))
-
-    javascript_tag(%Q(
-      window.serverConfig = #{json_escape(server_config.to_json)};
-      window.translations = #{json_escape(translations.to_json)};
-    ))
   end
 
 end

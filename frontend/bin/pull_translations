@@ -22,7 +22,7 @@ touch log/localeapp.yml
 set -e
 
 ## Pull platform-ui/frontend locales
-LOCALEAPP_API_KEY=$LOCALEAPP_API_KEY localeapp pull
+localeapp pull
 
 ## Pull platform-ui/common locales
 cd ../common/i18n/

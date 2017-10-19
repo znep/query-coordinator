@@ -1,5 +1,5 @@
 class Administration::RolesController < AdministrationController
-  include AdminHelper
+  include AdministrationHelper
 
   before_action :only => [:index] { |_| user_can_see_roles? }
 

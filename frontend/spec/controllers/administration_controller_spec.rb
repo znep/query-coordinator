@@ -88,7 +88,11 @@ describe AdministrationController do
     render_views
 
     describe 'and user is a member of the domain' do
-      before { allow(CurrentDomain).to receive(:member?).and_return(true) }
+      before do
+        allow(CurrentDomain).to receive(:member?).and_return(true)
+        allow_any_instance_of(User).to receive(:has_right?).and_return(true)
+      end
+
 
       it 'allows access' do
         get :index

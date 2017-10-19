@@ -21,8 +21,8 @@ module GeoregionsHelper
     end
   end
 
-  def can_view_georegions_admin?(_current_user)
-    _current_user.try(:has_right?, UserRights::MANAGE_SPATIAL_LENS)
+  def can_view_georegions_admin?
+    (current_user || User.new).has_right?(UserRights::MANAGE_SPATIAL_LENS)
   end
 
   def curated_region_job_queue

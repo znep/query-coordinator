@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AdminHelper do
+describe AdministrationHelper do
   describe '#form_button' do
 
     it 'generates a form tag' do
@@ -95,6 +95,63 @@ describe AdminHelper do
         expect(select).to include('<option value="editor_stories" disabled>')
         expect(select).to include('test_role')
       end
+    end
+  end
+
+  describe 'user_can_see_content_section?', :verify_stubs => false do
+    before do
+      allow(helper).to receive(:user_can_see_routing_approval?).and_return(false)
+      allow(helper).to receive(:user_can_see_view_moderation?).and_return(false)
+      allow(helper).to receive(:user_can_see_comment_moderation?).and_return(false)
+      allow(helper).to receive(:user_can_see_view_moderation?).and_return(false)
+      allow(helper).to receive(:can_view_georegions_admin?).and_return(false)
+      allow(helper).to receive(:user_can_see_home_page?).and_return(false)
+      allow(helper).to receive(:user_can_see_canvas_designer?).and_return(false)
+      allow(helper).to receive(:user_can_review_approvals?).and_return(false)
+    end
+
+    it 'returns true when user_can_see_routing_approval? is true' do
+      expect(helper.user_can_see_content_section?).to eq(false)
+    end
+
+    it 'returns true when user_can_see_routing_approval? is true' do
+      allow(helper).to receive(:user_can_see_routing_approval?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_see_view_moderation? is true' do
+      allow(helper).to receive(:user_can_see_view_moderation?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_see_comment_moderation? is true' do
+      allow(helper).to receive(:user_can_see_comment_moderation?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_see_view_moderation? is true' do
+      allow(helper).to receive(:user_can_see_view_moderation?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when can_view_georegions_admin? is true' do
+      allow(helper).to receive(:can_view_georegions_admin?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_see_home_page? is true' do
+      allow(helper).to receive(:user_can_see_home_page?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_see_canvas_designer? is true' do
+      allow(helper).to receive(:user_can_see_canvas_designer?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
+    end
+
+    it 'returns true when user_can_review_approvals? is true' do
+      allow(helper).to receive(:user_can_review_approvals?).and_return(true)
+      expect(helper.user_can_see_content_section?).to eq(true)
     end
   end
 end

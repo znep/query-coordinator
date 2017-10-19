@@ -1,4 +1,4 @@
-module AdminHelper
+module AdministrationHelper
   include ThirdPartySurvey
 
   def select_for_role(id, options = {})
@@ -88,15 +88,41 @@ module AdminHelper
   end
 
   def admin_nav_link(title_key, options)
-    # This method should support Hash and url only strings as `options`
+    # options may be either a Hash or URL path string
     if options.is_a?(Hash)
       options[:locale] = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
     end
 
+    scope = 'screens.admin.index'
+
     link_to(
-      content_tag(:strong, I18n.t(title_key)) + content_tag(:span, I18n.t("#{title_key}_description")),
+      content_tag(:strong, I18n.t(title_key, :scope => scope)) +
+        content_tag(:span, I18n.t("#{title_key}_description", :scope => scope)),
       options
     )
+  end
+
+  def admin_section_link(title_key, allowed, options = {})
+    return unless allowed
+
+    content_tag(:li, admin_nav_link(title_key, options))
+  end
+
+  def admin_page_link(title_key, allowed, options)
+    return unless allowed
+
+    scope = 'screens.admin.index'
+
+    content_tag(:li, nil, :class => title_key) do # Is the class really needed?
+      admin_nav_link_to("#{scope}.#{title_key}", options) <<
+        content_tag(:span, I18n.t("#{title_key}_description", :scope => scope), :class => 'description')
+    end
+  end
+
+  def admin_left_nav_link(title_key, allowed, options)
+    return unless allowed
+
+    content_tag(:li, admin_nav_link_to("screens.admin.index.#{title_key}", options), :class => title_key)
   end
 
   def user_can?(*actions)
@@ -178,9 +204,10 @@ module AdminHelper
     user_can_see_routing_approval? ||
       user_can_see_view_moderation? ||
       user_can_see_comment_moderation? ||
-      can_view_georegions_admin?(current_user) ||
+      can_view_georegions_admin? ||
       user_can_see_home_page? ||
-      user_can_see_canvas_designer?
+      user_can_see_canvas_designer? ||
+      user_can_review_approvals?
   end
 
   def user_can_see_administration_section?
@@ -190,8 +217,18 @@ module AdminHelper
       user_can_see_sdp_templates?
   end
 
+  def user_can_configure_approvals?
+    _user = (current_user || User.new)
+    _user.is_superadmin? || _user.has_right?(UserRights::CONFIGURE_APPROVALS)
+  end
+
+  def user_can_review_approvals?
+    _user = (current_user || User.new)
+    _user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS)
+  end
+
   def a11y_metadata_category_summary(categories, columns)
-    a11y_summary(
+    AdministrationHelper.a11y_summary(
       :columns => columns,
       :rows => categories.map(&:first),
       :a11y_table_description => t('screens.admin.metadata.category_table_description')
@@ -199,7 +236,7 @@ module AdminHelper
   end
 
   def a11y_metadata_fieldset_summary(metadata_fields, columns)
-    a11y_summary(
+    AdministrationHelper.a11y_summary(
       :columns => columns,
       :rows => metadata_fields.fetch('fields', []).pluck('name'),
       :a11y_table_description => t('screens.admin.metadata.metadata_field_table_description', :name => metadata_fields['name'])
@@ -207,7 +244,7 @@ module AdminHelper
   end
 
   def a11y_users_summary(users, columns)
-    a11y_summary(
+    AdministrationHelper.a11y_summary(
       :columns => columns,
       :rows => users.map(&:displayName),
       :a11y_table_description => t('screens.admin.users.users_table_description')
@@ -215,7 +252,7 @@ module AdminHelper
   end
 
   def a11y_pending_users_summary(users, columns)
-    a11y_summary(
+    AdministrationHelper.a11y_summary(
       :columns => columns,
       :rows => users.map(&:email),
       :a11y_table_description => t('screens.admin.users.pending_users_table_description')
@@ -226,28 +263,32 @@ module AdminHelper
     render_qualtrics_survey('admin')
   end
 
-  private
 
-  def a11y_summary(opts)
-    if opts[:columns].blank? || opts[:rows].blank?
-      return t('table.no_summary_available')
-    end
-    columns = opts[:columns].map { |value| %("#{value}") }
-    rows = opts[:rows].map { |row| %("#{row}") }
-    row_headings = ''
-    if rows.size < 5
-      row_headings = rows.join(', ')
-    end
+  def show_site_appearance_admin_panel?
+    !!current_user.try(:can_use_site_appearance?) &&
+      !SocrataSiteChrome::CustomContent.new(CurrentDomain.cname).activated?
+  end
 
-    template_opts = {
-      :data_description => opts[:a11y_table_description],
-      :column_heading_count => columns.size,
-      :column_headings => columns.join(', '),
-      :row_heading_count => rows.size,
-      :row_headings => row_headings
+  def render_admin_users_v2_data
+
+    server_config = {
+      airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
+      csrfToken: form_authenticity_token.to_s,
+      csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
+      currentUser: current_user,
+      domain: CurrentDomain.cname,
+      environment: Rails.env,
+      locale: I18n.locale.to_s,
+      localePrefix: locale_prefix.to_s
     }
 
-    t('table.summary', template_opts)
+    translations = LocaleCache.render_partial_translations(:users)
+    translations.deep_merge!(LocaleCache.render_partial_translations(:roles))
+
+    javascript_tag(%Q(
+      window.serverConfig = #{json_escape(server_config.to_json)};
+      window.translations = #{json_escape(translations.to_json)};
+    ))
   end
 
   def render_admin_session_data
@@ -281,4 +322,28 @@ module AdminHelper
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
   end
+
+  def AdministrationHelper.a11y_summary(opts)
+    if opts[:columns].blank? || opts[:rows].blank?
+      return I18n.t('table.no_summary_available')
+    end
+
+    columns = opts[:columns].map { |value| %("#{value}") }
+    rows = opts[:rows].map { |row| %("#{row}") }
+    row_headings = ''
+    if rows.size < 5
+      row_headings = rows.join(', ')
+    end
+
+    template_opts = {
+      :data_description => opts[:a11y_table_description],
+      :column_heading_count => columns.size,
+      :column_headings => columns.join(', '),
+      :row_heading_count => rows.size,
+      :row_headings => row_headings
+    }
+
+    I18n.t('table.summary', template_opts)
+  end
+
 end

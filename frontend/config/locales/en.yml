@@ -3612,6 +3612,8 @@ en:
         up: Up
       index:
         administration: Administration
+        approvals: Approvals
+        approvals_description: Review and approve assets submitted by users
         section_headers:
           data_and_assets: Data and Assets
           content: Content

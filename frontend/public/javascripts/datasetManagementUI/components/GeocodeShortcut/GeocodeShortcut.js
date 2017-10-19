@@ -556,7 +556,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     redirectToOutputSchema: outputSchemaId =>
       dispatch(ShowActions.redirectToOutputSchema(params, outputSchemaId)),
 
-    showError: message => dispatch(FlashActions.showFlashMessage('error', message, 3500))
+    showError: message => dispatch(FlashActions.showFlashMessage('error', message, 10000))
   };
 
   return { ...stateProps, ...dispatchProps, ...ownProps };

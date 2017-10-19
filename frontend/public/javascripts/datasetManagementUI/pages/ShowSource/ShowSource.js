@@ -1,20 +1,55 @@
-import _ from 'lodash';
-
 /* eslint react/jsx-indent: 0 */
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import * as Links from 'links/links';
-import * as Selectors from 'selectors';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
+import ApiCallButton from 'containers/ApiCallButtonContainer';
+import { updateRevision } from 'reduxStuff/actions/revisions';
+import { UPDATE_REVISION } from 'reduxStuff/actions/apiCalls';
+import { markFormClean } from 'reduxStuff/actions/forms';
+import * as Links from 'links/links';
+import * as Selectors from 'selectors';
 import styles from './ShowSource.scss';
 
-export const ShowSource = ({ inProgress, goHome, children, onHrefPage }) => (
+const Buttons = ({ handleSave, handleSaveAndExit, callParams, isDirty }) => (
+  <div>
+    <ApiCallButton
+      forceDisable={!isDirty}
+      onClick={handleSave}
+      operation={UPDATE_REVISION}
+      callParams={callParams} />
+    <ApiCallButton
+      forceDisable={!isDirty}
+      onClick={handleSaveAndExit}
+      operation={UPDATE_REVISION}
+      callParams={callParams}>
+      Save and Exit
+    </ApiCallButton>
+  </div>
+);
+
+Buttons.propTypes = {
+  handleSave: PropTypes.func.isRequired,
+  handleSaveAndExit: PropTypes.func.isRequired,
+  callParams: PropTypes.object.isRequired,
+  isDirty: PropTypes.bool.isRequired
+};
+
+export const ShowSource = ({
+  inProgress,
+  goHome,
+  children,
+  onHrefPage,
+  handleSave,
+  handleSaveAndExit,
+  callParams,
+  hrefFormDirty
+}) => (
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
@@ -33,7 +68,15 @@ export const ShowSource = ({ inProgress, goHome, children, onHrefPage }) => (
           </div>
         )}
       </ModalContent>
-      {onHrefPage && <ModalFooter>wood</ModalFooter>}
+      {onHrefPage && (
+        <ModalFooter>
+          <Buttons
+            handleSave={handleSave}
+            handleSaveAndExit={handleSaveAndExit}
+            callParams={callParams}
+            isDirty={hrefFormDirty} />
+        </ModalFooter>
+      )}
     </Modal>
   </div>
 );
@@ -41,6 +84,16 @@ export const ShowSource = ({ inProgress, goHome, children, onHrefPage }) => (
 export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // selector returns undefined if there are no sources
   const source = Selectors.currentSource(entities, _.toNumber(params.revisionSeq));
+
+  const hrefFormDirty = ui.forms.hrefForm.isDirty;
+
+  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
+
+  let hrefs = [];
+
+  if (revision && revision.href && Array.isArray(revision.href)) {
+    hrefs = revision.href;
+  }
 
   // "routes" is supplied by react router; it is an array of all matched routes for
   // the current path (including nested routes). Here we check that array for the
@@ -51,26 +104,55 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // we don't want to show the spinner, we want to show the actual component so the
   // user can source something
   return {
+    onHrefPage,
+    hrefFormDirty,
     inProgress: !!source && (!source.finished_at && !source.failed_at),
-    onHrefPage
+    hrefFormState: hrefs
   };
 };
 
 ShowSource.propTypes = {
   inProgress: PropTypes.bool.isRequired,
   goHome: PropTypes.func.isRequired,
-  handleHrefFormSubmit: PropTypes.func.isRequired,
   children: PropTypes.object.isRequired,
-  onHrefPage: PropTypes.bool.isRequired
+  onHrefPage: PropTypes.bool.isRequired,
+  handleSave: PropTypes.func.isRequired,
+  handleSaveAndExit: PropTypes.func.isRequired,
+  callParams: PropTypes.object.isRequired,
+  hrefFormDirty: PropTypes.bool.isRequired
 };
 
-export const mapDispatchToProps = (dispatch, ownProps) => ({
-  goHome: () => browserHistory.push(Links.revisionBase(ownProps.params)),
-  handleHrefFormSubmit: data => {
-    // the reasonable place to define this is the form itself, but can't do that
-    // because of this stupid page-modal thing
-    console.log('data', data);
-  }
-});
+const removeEmptyValues = obj => _.omitBy(obj, val => !val);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowSource);
+const shapeHrefState = rawState =>
+  rawState.map(href => ({
+    ...href,
+    urls: removeEmptyValues(href.urls)
+  }));
+
+const mergeProps = (stateProps, { dispatch }, ownProps) => {
+  const callParams = {
+    href: shapeHrefState(stateProps.hrefFormState)
+  };
+
+  const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
+
+  const save = () => {
+    return dispatch(updateRevision(callParams, ownProps.params)).then(() =>
+      dispatch(markFormClean('hrefForm'))
+    );
+  };
+
+  return {
+    ...stateProps,
+    ...ownProps,
+    goHome,
+    handleSave: save,
+    handleSaveAndExit: () => {
+      save().then(() => goHome());
+    },
+    callParams
+  };
+};
+
+export default connect(mapStateToProps, null, mergeProps)(ShowSource);

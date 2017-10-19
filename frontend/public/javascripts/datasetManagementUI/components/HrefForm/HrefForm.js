@@ -1,7 +1,8 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setFormState } from 'reduxStuff/actions/forms';
+import { editRevision } from 'reduxStuff/actions/revisions';
+import * as formActions from 'reduxStuff/actions/forms';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import uuid from 'uuid';
@@ -9,7 +10,8 @@ import Fieldset from 'components/Fieldset/Fieldset';
 import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import { getBasename, getExtension } from 'lib/util';
-
+import * as Selectors from 'selectors';
+import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
 // TextInput.propTypes = {
 //   name: PropTypes.string.isRequired,
 //   value: PropTypes.string,
@@ -147,6 +149,26 @@ DatsetFieldset.propTypes = {
   handleChangeHref: PropTypes.func.isRequired
 };
 
+// This form strives to let the UI derrive from the data, so in order to control
+// the UI, it changes the data--namely the "hrefs" array. When the component loads,
+// it initializes "hrefs" as an empty array. Then right before the component mounts,
+// it creates an empty href and puts it in the array. This way, if we have no saved
+// data, we can still show the user something.
+
+// Once the form mounts, it checks dsmapi to see if there is any saved href data
+// on the revision. If there is, it overwrites the empty href we put into the state
+// earlier. If not, then it does nothing.
+
+// Finally, because of the stupid modal thing, the button that submits this form
+// does not live inside of this form. So we need a way to get the form state out
+// of this form so that it can be shared with sibling components. We do this
+// by syncing the local state of this form to the redux store. That way, we can
+// connect the button that submits the form to the store, pull out the form data,
+// and send it to the server. It may be better to change this behavior and instead
+// of storing form state in local component state and the redux store, just store it
+// in the redux store. But for now, using local state as a buffer works well considering
+// that the "Add URL" and "Add Dataset" buttons would have to stick empty values into
+// the redux store otherwise.
 class HrefForm extends Component {
   constructor() {
     super();
@@ -162,17 +184,30 @@ class HrefForm extends Component {
     const datasetNum = this.state.hrefs.length + 1;
 
     this.setState({
-      hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
+      hrefs: [this.initializeHref(datasetNum)]
+    });
+  }
+
+  componentDidMount() {
+    getCurrentRevision(this.props.params).then(r => {
+      if (r && r.href && r.href.length) {
+        this.setState({
+          hrefs: r.href.map((href, idx) => ({ ...href, id: idx + 1 })),
+          currentId: r.href.length + 1
+        });
+      }
     });
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { syncStateToStore } = this.props;
+    const { syncStateToStore, hrefs: oldHrefs } = this.props;
+    const { hrefs: newHrefs } = nextState;
     // this lifecycle method is called on props and state changes; we use it to
     // sync local state to the store because of the stupid modal save button
     // that we must use to submit this form
-    syncStateToStore(nextState.hrefs);
-    console.log('woot', nextState);
+    if (!_.isEqual(oldHrefs, newHrefs)) {
+      syncStateToStore({ href: nextState.hrefs });
+    }
   }
 
   initializeHref(datasetNum) {
@@ -197,6 +232,9 @@ class HrefForm extends Component {
   handleAddDataset() {
     // hanlder for the button that adds a new dataset fieldset
     const datasetNum = this.state.hrefs.length + 1;
+
+    this.props.markFormDirty();
+
     this.setState({
       hrefs: [...this.state.hrefs, this.initializeHref(datasetNum)]
     });
@@ -225,6 +263,8 @@ class HrefForm extends Component {
     // Since urls are nested objects, they need to be udpated a little differently
     // that the other href attributes, hence this dedicated method
     return urlId => newValue => {
+      this.props.markFormDirty();
+
       const href = this.state.hrefs.find(h => h.id === id);
 
       const newUrls = {
@@ -247,6 +287,8 @@ class HrefForm extends Component {
 
   handleChangeHref(id, fieldname, newValue) {
     // generic handler for all href attributes except for url
+    this.props.markFormDirty();
+
     const href = this.state.hrefs.find(h => h.id === id);
 
     const newHref = {
@@ -283,8 +325,39 @@ class HrefForm extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  syncStateToStore: state => dispatch(setFormState('hrefForm', state))
+HrefForm.propTypes = {
+  hrefs: PropTypes.arrayOf(PropTypes.object),
+  params: PropTypes.object.isRequired,
+  syncStateToStore: PropTypes.func.isRequired,
+  markFormDirty: PropTypes.func.isRequired,
+  markFormClean: PropTypes.func.isRequired
+};
+
+const mapStateStateToProps = ({ entities }, { params }) => {
+  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
+
+  let hrefs = [];
+  let revisionId = null;
+
+  if (revision && revision.href && Array.isArray(revision.href)) {
+    hrefs = revision.href;
+    revisionId = revision.id;
+  }
+
+  return {
+    hrefs,
+    revisionId
+  };
+};
+
+const mergeProps = (stateProps, { dispatch }, ownProps) => ({
+  hrefs: stateProps.hrefs,
+  syncStateToStore: state => {
+    return stateProps.revisionId == null ? _.noop : dispatch(editRevision(stateProps.revisionId, state));
+  },
+  markFormDirty: () => dispatch(formActions.markFormDirty('hrefForm')),
+  markFormClean: () => dispatch(formActions.markFormClean('hrefForm')),
+  ...ownProps
 });
 
-export default connect(null, mapDispatchToProps)(HrefForm);
+export default connect(mapStateStateToProps, null, mergeProps)(HrefForm);

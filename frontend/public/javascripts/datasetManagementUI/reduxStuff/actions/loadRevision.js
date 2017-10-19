@@ -110,7 +110,7 @@ function getMetadataErrors(revision, customFieldests) {
   });
 }
 
-function getCurrentRevision(params) {
+export function getCurrentRevision(params) {
   return socrataFetch(dsmapiLinks.revisionBase(params))
     .then(checkStatus)
     .then(getJson)
@@ -120,6 +120,7 @@ function getCurrentRevision(params) {
         action: resource.action,
         fourfour: resource.fourfour,
         metadata: resource.metadata,
+        href: resource.href,
         output_schema_id: resource.output_schema_id,
         permission: _.get(resource, 'action.permission', 'public'),
         task_sets: resource.task_sets,

@@ -71,7 +71,10 @@ const loadFutureUsers = () => {
 
   return fetchJson(apiPath, fetchOptions).then(values =>
     values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))
-  );
+  ).catch(error => {
+    console.warn("Unable to load future users, showing empty list.", error);
+    return [];
+  });
 };
 
 const loadRoles = () => {

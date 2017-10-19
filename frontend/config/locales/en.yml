@@ -430,8 +430,7 @@ en:
   approvals:
     header:
       breadcrumbs:
-        administration: Administration
-        approval_requests: Approval Requests
+        approvals: Approvals
       tabs:
         history:
           title: History

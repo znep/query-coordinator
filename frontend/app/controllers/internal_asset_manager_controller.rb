@@ -1,7 +1,7 @@
 class InternalAssetManagerController < ApplicationController
 
   include ApplicationHelper
-  include CatalogResultsHelper
+  include AssetBrowserHelper
 
   before_filter :require_roled_user
 
@@ -12,7 +12,9 @@ class InternalAssetManagerController < ApplicationController
   end
 
   def show
-    @internal_asset_manager_initial_tab = current_user.has_right?('can_see_all_assets_tab_siam') ?
+    @app_name = 'internal_asset_manager'
+    @asset_browser_columns = %w(type name actions lastUpdatedDate category owner visibility)
+    @asset_browser_initial_tab = current_user.has_right?('can_see_all_assets_tab_siam') ?
       'allAssets' : 'myAssets'
     # These populate the corresponding values in the filter dropdowns
     @users_list = fetch_users

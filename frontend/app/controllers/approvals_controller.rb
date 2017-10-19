@@ -1,7 +1,7 @@
 class ApprovalsController < ApplicationController
 
   include ApplicationHelper
-  include ApprovalsHelper
+  include AssetBrowserHelper
 
   before_filter :require_roled_user
 
@@ -12,7 +12,8 @@ class ApprovalsController < ApplicationController
   end
 
   def show
-
+    @app_name = 'approvals'
+    @asset_browser_columns = %w(type name actions lastUpdatedDate category owner visibility)
   end
 
   private

@@ -6,7 +6,7 @@ class ProfileController < ApplicationController
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
   include NotificationsHelper
-  include CatalogResultsHelper
+  include AssetBrowserHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
@@ -51,7 +51,9 @@ class ProfileController < ApplicationController
       end
 
       if internal_asset_manager_on_profile_enabled?
-        @internal_asset_manager_initial_tab = 'myAssets'
+        @app_name = 'internal_asset_manager'
+        @asset_browser_columns = %w(type name actions lastUpdatedDate category owner visibility)
+        @asset_browser_initial_tab = 'myAssets'
         render :layout => 'styleguide'
       else
         begin

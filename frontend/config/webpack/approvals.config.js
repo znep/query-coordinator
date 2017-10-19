@@ -10,12 +10,7 @@ module.exports = _.defaultsDeep({
   entry: common.withHotModuleEntries({'main': './main.js'}),
   output: common.getOutput(identifier),
   module: {
-    loaders: common.getStandardLoaders(null, {
-      substituteStyleLoaders: {
-        test: /\.s?css$/,
-        loader: 'style-loader!css-loader!postcss-loader!sass-loader'
-      }
-    })
+    loaders: common.getStandardLoaders()
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/approvals' ])

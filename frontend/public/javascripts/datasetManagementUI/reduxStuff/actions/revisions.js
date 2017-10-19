@@ -1,13 +1,13 @@
 import uuid from 'uuid';
-import _ from 'lodash';
+// import _ from 'lodash';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
   UPDATE_REVISION
 } from 'reduxStuff/actions/apiCalls';
-import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
-import { markFormClean, setFormErrors } from 'reduxStuff/actions/forms';
+// import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
+// import { markFormClean, setFormErrors } from 'reduxStuff/actions/forms';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 
@@ -44,22 +44,13 @@ export function updateRevision(update, params) {
     })
       .then(checkStatus)
       .then(getJson)
-      .then(() => {
-        dispatch(markFormClean('hrefForm'));
-        return dispatch(apiCallSucceeded(callId));
+      .then(resp => {
+        dispatch(apiCallSucceeded(callId));
+        return resp;
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
-        return err.response.json();
-      })
-      .then(({ message, reason }) => {
-        const errors = _.chain(reason.href)
-          .filter(href => !_.isEmpty(href))
-          .flatMap(href => href.urls)
-          .value();
-
-        dispatch(setFormErrors('hrefForm', errors));
-        dispatch(showFlashMessage('error', message));
+        throw err;
       });
   };
 }

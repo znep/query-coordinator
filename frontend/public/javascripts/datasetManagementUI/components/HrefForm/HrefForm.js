@@ -196,8 +196,21 @@ class HrefForm extends Component {
   componentDidMount() {
     getCurrentRevision(this.props.params).then(r => {
       if (r && r.href && r.href.length) {
+        const newHrefs = r.href.map((href, idx) => ({ ...href, id: idx + 1 })).map(href => {
+          if (_.isEmpty(href.urls)) {
+            return {
+              ...href,
+              urls: {
+                [uuid()]: ''
+              }
+            };
+          } else {
+            return href;
+          }
+        });
+
         this.setState({
-          hrefs: r.href.map((href, idx) => ({ ...href, id: idx + 1 })),
+          hrefs: newHrefs,
           currentId: r.href.length + 1
         });
       }

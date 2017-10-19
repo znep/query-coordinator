@@ -51,6 +51,7 @@ class ProfileController < ApplicationController
       end
 
       if internal_asset_manager_on_profile_enabled?
+        @internal_asset_manager_initial_tab = 'myAssets'
         render :layout => 'styleguide'
       else
         begin

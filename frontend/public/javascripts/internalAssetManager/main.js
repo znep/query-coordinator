@@ -26,7 +26,7 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 
 const assetBrowser = <AssetBrowser showFilters showSearchField />;
 
-ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-content'));
+ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-asset-browser'));
 
 const store = createStore(reducer, applyMiddleware(...middleware));
 
@@ -37,7 +37,7 @@ if (module.hot) {
       <AppContainer>
         {assetBrowser}
       </AppContainer>,
-      document.querySelector('#internal-asset-manager-content')
+      document.querySelector('#internal-asset-manager-asset-browser')
     );
   });
 }

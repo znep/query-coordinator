@@ -67,6 +67,9 @@ module CatalogResultsHelper
       :domainCategories => @domain_categories,
       :domainCustomFacets => @domain_custom_facets,
       :domainTags => @domain_tags,
+      :header => {
+        :initialTab => @internal_asset_manager_initial_tab
+      },
       :usersList => @users_list
     }
     javascript_tag("window.initialState = #{json_escape(initial_state.to_json)}")
@@ -77,5 +80,4 @@ module CatalogResultsHelper
   def catalog_results_table_columns
     %w(type name actions lastUpdatedDate category owner visibility)
   end
-
 end

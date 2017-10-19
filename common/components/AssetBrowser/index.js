@@ -35,7 +35,7 @@ export class AssetBrowser extends Component {
 
     return (
       <Provider store={this.state.store}>
-        <div>
+        <div className="asset-browser">
           {header}
           <ResultsAndFilters {...this.props} />
           <WindowDimensions />
@@ -56,7 +56,8 @@ AssetBrowser.propTypes = {
   showManageAssets: PropTypes.bool,
   showOwnedByFilter: PropTypes.bool,
   showPager: PropTypes.bool,
-  showSearchField: PropTypes.bool
+  showSearchField: PropTypes.bool,
+  tabsToHide: PropTypes.arrayOf(PropTypes.string)
 };
 
 AssetBrowser.defaultProps = {

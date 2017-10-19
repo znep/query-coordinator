@@ -12,6 +12,8 @@ class InternalAssetManagerController < ApplicationController
   end
 
   def show
+    @internal_asset_manager_initial_tab = current_user.has_right?('can_see_all_assets_tab_siam') ?
+      'allAssets' : 'myAssets'
     # These populate the corresponding values in the filter dropdowns
     @users_list = fetch_users
     @domain_categories = fetch_domain_categories

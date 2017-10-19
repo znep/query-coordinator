@@ -60,7 +60,7 @@
     <%- end -%>
 
     <% if internal_asset_manager_on_profile_enabled? %>
-      <div class="user-profile" id="user-profile-content"></div>
+      <div id="user-profile-asset-browser"></div>
     <% else %>
       <div class="datasetsList content">
         <h2><%= t('screens.profile.browse.title', user: @user.displayName) %></h2>

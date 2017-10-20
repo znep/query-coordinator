@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './FieldSet.scss';
 
-const Fieldset = ({ children, title, subtitle, containerClass, legendClass }) => {
+const Fieldset = ({ children, title, subtitle, closable, closeCallback, containerClass, legendClass }) => {
   let fsClasses = [styles.fieldset]; // eslint-disable-line prefer-const
   let legendClasses = [styles.tabTitle]; // eslint-disable-line prefer-const
 
@@ -16,7 +17,12 @@ const Fieldset = ({ children, title, subtitle, containerClass, legendClass }) =>
 
   return (
     <fieldset className={fsClasses.join(' ')}>
-      <legend className={legendClasses.join(' ')}>{title}</legend>
+      <legend className={legendClasses.join(' ')}>
+        {title}
+        {closable && (
+          <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={closeCallback} />
+        )}
+      </legend>
       <span className={styles.tabSubtitle}>{subtitle}</span>
       {children}
     </fieldset>
@@ -28,7 +34,9 @@ Fieldset.propTypes = {
   subtitle: PropTypes.string,
   children: PropTypes.any,
   containerClass: PropTypes.string,
-  legendClass: PropTypes.string
+  legendClass: PropTypes.string,
+  closable: PropTypes.bool,
+  closeCallback: PropTypes.func
 };
 
 export default Fieldset;

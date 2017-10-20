@@ -12,32 +12,8 @@ import TextArea from 'components/TextArea/TextArea';
 import { getBasename, getExtension } from 'lib/util';
 import * as Selectors from 'selectors';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './HrefForm.scss';
-// TextInput.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   value: PropTypes.string,
-//   label: PropTypes.string,
-//   placeholder: PropTypes.string,
-//   isRequired: PropTypes.bool,
-//   inErrorState: PropTypes.bool.isRequired,
-//   handleChange: PropTypes.func,
-//   handleBlur: PropTypes.func,
-//   handleFocus: PropTypes.func
-// };
-
-// TextArea.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   value: PropTypes.string,
-//   label: PropTypes.string,
-//   placeholder: PropTypes.string,
-//   isRequired: PropTypes.bool.isRequired,
-//   inErrorState: PropTypes.bool.isRequired,
-//   handleChange: PropTypes.func.isRequired,
-//   handleBlur: PropTypes.func.isRequired,
-//   handleFocus: PropTypes.func.isRequired
-// };
-
-// {"data_dictionary" : $URL, "data_dictionary_type" : STRING, "title" : STRING, "description" : STRING, "urls" : MAP<STRING, URL>}
 
 class URLField extends Component {
   constructor() {
@@ -75,7 +51,7 @@ class URLField extends Component {
   }
 
   render() {
-    const { handleChangeUrl, value, errors } = this.props;
+    const { handleChangeUrl, handleXClick, value, errors } = this.props;
 
     const inErrorState = errors.includes(value);
 
@@ -101,6 +77,7 @@ class URLField extends Component {
             inErrorState={false}
             handleChange={this.handleExtensionChange} />
         </div>
+        <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={handleXClick} />
       </div>
     );
   }
@@ -109,11 +86,26 @@ class URLField extends Component {
 URLField.propTypes = {
   value: PropTypes.string,
   errors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  handleChangeUrl: PropTypes.func.isRequired
+  handleChangeUrl: PropTypes.func.isRequired,
+  handleXClick: PropTypes.func.isRequired
 };
 
-const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref, errors }) => (
-  <Fieldset title={href.title} containerClass={styles.fieldset} legendClass={styles.legend}>
+const DatsetFieldset = ({
+  href,
+  handleAddURL,
+  handleChangeUrl,
+  handleChangeHref,
+  handleRemoveFirstURL,
+  handleRemoveOtherURL,
+  handleXClick,
+  errors
+}) => (
+  <Fieldset
+    title={href.title}
+    closable
+    closeCallback={handleXClick}
+    containerClass={styles.fieldset}
+    legendClass={styles.legend}>
     <div className={styles.fieldWrapper}>
       <div>
         <label>Dataset Name</label>
@@ -134,9 +126,20 @@ const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref,
           handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
       </div>
       <div>
-        {_.map(href.urls, (val, key) => (
-          <URLField key={key} errors={errors} value={val} handleChangeUrl={handleChangeUrl(key)} />
-        ))}
+        {Object.keys(href.urls).map((key, idx) => {
+          return (
+            <URLField
+              key={key}
+              errors={errors}
+              value={href.urls[key]}
+              handleXClick={
+                idx === 0
+                  ? () => handleRemoveFirstURL(href.id, key)
+                  : () => handleRemoveOtherURL(href.id, key)
+              }
+              handleChangeUrl={handleChangeUrl(key)} />
+          );
+        })}
         <button className={styles.addURLBtn} onClick={handleAddURL}>
           + Add Another URL
         </button>
@@ -166,6 +169,9 @@ DatsetFieldset.propTypes = {
   handleAddURL: PropTypes.func.isRequired,
   handleChangeUrl: PropTypes.func.isRequired,
   handleChangeHref: PropTypes.func.isRequired,
+  handleRemoveFirstURL: PropTypes.func.isRequired,
+  handleRemoveOtherURL: PropTypes.func.isRequired,
+  handleXClick: PropTypes.func.isRequired,
   errors: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
@@ -197,7 +203,16 @@ class HrefForm extends Component {
       currentId: 1
     };
 
-    _.bindAll(this, ['handleAddDataset', 'handleAddURL', 'handleChangeUrl', 'handleChangeHref']);
+    _.bindAll(this, [
+      'handleAddDataset',
+      'handleAddURL',
+      'handleChangeUrl',
+      'handleChangeHref',
+      'handleRemoveFirstDataset',
+      'handleRemoveOtherDataset',
+      'handleRemoveFirstURL',
+      'handleRemoveOtherURL'
+    ]);
   }
 
   componentWillMount() {
@@ -243,9 +258,11 @@ class HrefForm extends Component {
     }
   }
 
-  initializeHref(datasetNum) {
+  initializeHref(datasetNum, id) {
+    const idIsDefined = id != null;
+
     const href = {
-      id: this.state.currentId,
+      id: idIsDefined ? id : this.state.currentId,
       data_dictionary: '',
       data_dictionary_type: '',
       title: `External Dataset ${datasetNum}`,
@@ -255,9 +272,11 @@ class HrefForm extends Component {
       }
     };
 
-    this.setState({
-      currentId: this.state.currentId + 1
-    });
+    if (!idIsDefined) {
+      this.setState({
+        currentId: this.state.currentId + 1
+      });
+    }
 
     return href;
   }
@@ -286,6 +305,57 @@ class HrefForm extends Component {
     };
 
     const newHrefs = [...this.state.hrefs.filter(h => h.id !== id), newHref];
+
+    this.setState({
+      hrefs: _.orderBy(newHrefs, 'id')
+    });
+  }
+
+  handleRemoveFirstDataset(id) {
+    const newHref = this.initializeHref(1, id);
+
+    const newHrefs = [...this.state.hrefs.filter(h => h.id !== id), newHref];
+
+    this.setState({
+      hrefs: _.orderBy(newHrefs, 'id')
+    });
+  }
+
+  handleRemoveOtherDataset(id) {
+    const newHrefs = this.state.hrefs.filter(h => h.id !== id);
+
+    this.setState({
+      hrefs: _.orderBy(newHrefs, 'id')
+    });
+  }
+
+  handleRemoveFirstURL(datasetId, urlId) {
+    const href = this.state.hrefs.find(h => h.id === datasetId);
+
+    const newHref = {
+      ...href,
+      urls: {
+        ...href.urls,
+        [urlId]: ''
+      }
+    };
+
+    const newHrefs = [...this.state.hrefs.filter(h => h.id !== datasetId), newHref];
+
+    this.setState({
+      hrefs: _.orderBy(newHrefs, 'id')
+    });
+  }
+
+  handleRemoveOtherURL(datasetId, urlId) {
+    const href = this.state.hrefs.find(h => h.id === datasetId);
+
+    const newHref = {
+      ...href,
+      urls: _.omit(href.urls, urlId)
+    };
+
+    const newHrefs = [...this.state.hrefs.filter(h => h.id !== datasetId), newHref];
 
     this.setState({
       hrefs: _.orderBy(newHrefs, 'id')
@@ -344,11 +414,18 @@ class HrefForm extends Component {
         <div>What even is an external dataset?</div>
         <form onSubmit={e => e.preventDefault()}>
           <h3 className={styles.mediumHeading}>Add External Datasets</h3>
-          {this.state.hrefs.map(href => (
+          {this.state.hrefs.map((href, idx) => (
             <DatsetFieldset
               key={href.id}
               href={href}
               errors={errors}
+              handleRemoveFirstURL={this.handleRemoveFirstURL}
+              handleRemoveOtherURL={this.handleRemoveOtherURL}
+              handleXClick={
+                idx === 0
+                  ? () => this.handleRemoveFirstDataset(href.id)
+                  : () => this.handleRemoveOtherDataset(href.id)
+              }
               handleChangeUrl={this.handleChangeUrl(href.id)}
               handleChangeHref={this.handleChangeHref}
               handleAddURL={() => this.handleAddURL(href.id)} />

@@ -66,7 +66,7 @@
 }
 
 .urlFieldArea {
-  width: 66.6%;
+  width: 75%;
   padding-right: 2%;
 }
 
@@ -75,9 +75,20 @@
 }
 
 .filetypeFieldArea {
-  width: 33.3%;
+  width: 20%;
+}
+
+form .filetypeFieldArea > input {
+  min-width: 0;
 }
 
 .filetypeFieldArea > * {
   display: block;
+}
+
+.closeButton {
+  cursor: pointer;
+  display: inline-block;
+  width: 5%;
+  text-align: center;
 }

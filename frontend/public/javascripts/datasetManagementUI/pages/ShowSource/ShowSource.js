@@ -113,20 +113,32 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
   const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
 
-  const save = () => {
+  const save = (andExit = false) => {
     return dispatch(updateRevision(callParams, ownProps.params))
-      .then(() => dispatch(markFormClean('hrefForm')))
-      .catch(err => err.response.json())
-      .then(({ message, reason }) => {
-        const errors = _.chain(reason.href)
-          .filter(href => !_.isEmpty(href))
-          .flatMap(href => href.urls)
-          .value();
+      .then(() => {
+        dispatch(showFlashMessage('success', 'Data saved successfully.'));
+        dispatch(markFormClean('hrefForm'));
+      })
+      .then(() => {
+        if (andExit) {
+          goHome();
+        }
+      })
+      .catch(err =>
+        err.response.json().then(({ message, reason }) => {
+          if (!message || !reason) {
+            return;
+          }
 
-        dispatch(setFormErrors('hrefForm', errors));
-        dispatch(showFlashMessage('error', message));
-        throw new Error('error');
-      });
+          const errors = _.chain(reason.href)
+            .filter(href => !_.isEmpty(href))
+            .flatMap(href => href.urls)
+            .value();
+
+          dispatch(setFormErrors('hrefForm', errors));
+          dispatch(showFlashMessage('error', message));
+        })
+      );
   };
 
   return {
@@ -134,11 +146,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     ...ownProps,
     goHome,
     handleSave: save,
-    handleSaveAndExit: () => {
-      save()
-        .then(() => goHome())
-        .catch(() => {});
-    },
+    handleSaveAndExit: () => save(true),
     callParams
   };
 };

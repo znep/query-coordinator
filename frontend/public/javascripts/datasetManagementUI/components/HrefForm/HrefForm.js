@@ -12,6 +12,7 @@ import TextArea from 'components/TextArea/TextArea';
 import { getBasename, getExtension } from 'lib/util';
 import * as Selectors from 'selectors';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
+import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './HrefForm.scss';
 
@@ -258,6 +259,11 @@ class HrefForm extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { clearFlash } = this.props;
+    clearFlash();
+  }
+
   initializeHref(datasetNum, id) {
     const idIsDefined = id != null;
 
@@ -411,7 +417,9 @@ class HrefForm extends Component {
     return (
       <section className={styles.container}>
         <h2 className={styles.bigHeading}>Link to an External Dataset</h2>
-        <div>What even is an external dataset?</div>
+        <div className={styles.subtitle}>
+          This will create a link to a dataset on another server. Your data will not be imported.
+        </div>
         <form onSubmit={e => e.preventDefault()}>
           <h3 className={styles.mediumHeading}>Add External Datasets</h3>
           {this.state.hrefs.map((href, idx) => (
@@ -445,6 +453,7 @@ HrefForm.propTypes = {
   syncStateToStore: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
+  clearFlash: PropTypes.func.isRequired,
   errors: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
@@ -474,6 +483,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   },
   markFormDirty: () => dispatch(formActions.markFormDirty('hrefForm')),
   markFormClean: () => dispatch(formActions.markFormClean('hrefForm')),
+  clearFlash: () => dispatch(hideFlashMessage()),
   ...ownProps
 });
 

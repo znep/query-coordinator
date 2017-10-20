@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import encoding from 'text-encoding';
 import utils from 'common/js_utils';
 import SoqlDataProvider from './SoqlDataProvider';
 import SoqlHelpers from './SoqlHelpers';
 import I18n from 'common/i18n';
 import makeSocrataCategoricalDataRequest from './makeSocrataCategoricalDataRequest';
 import * as MonthPredicateHelper from 'common/visualizations/dataProviders/MonthPredicateHelper';
+import * as ArrayHelpers from 'common/visualizations/helpers/ArrayHelpers.js';
 
 const MAX_GROUP_COUNT = 12;
 
@@ -283,8 +283,8 @@ function getData(vif, options) {
       'shared.visualizations.charts.common.other_category'
     );
 
-    const chunkedDimensionValues = chunkArrayByLength(state.dimensionValues);
-    const chunkedGroupingValues = chunkArrayByLength(state.groupingValues);
+    const chunkedDimensionValues = ArrayHelpers.chunkArrayByLength(state.dimensionValues);
+    const chunkedGroupingValues = ArrayHelpers.chunkArrayByLength(state.groupingValues);
 
     chunkedDimensionValues.forEach((dimensionValuesCurrentChunk) => {
       chunkedGroupingValues.forEach((groupingValuesCurrentChunk) => {
@@ -871,30 +871,8 @@ function makeValueComparator(direction, transformer = _.identity) {
   };
 }
 
-function chunkArrayByLength(arr, maxChunkLength = 1400, chunkByBytes = true) {
-  const chunkFn = (chunkByBytes
-                   ? (str) => (new encoding.TextEncoder('utf-8').encode(str)).length
-                   : (str) => _.size(str));
-  let res = [];
-  let currentChunk = [];
-  let currentChunkLength = 0;
-  _.forEach(arr, (elt) => {
-    currentChunk.push(elt);
-    currentChunkLength += chunkFn(elt);
-    if (currentChunkLength >= maxChunkLength) {
-      res.push(currentChunk);
-      currentChunk = [];
-      currentChunkLength = 0;
-    }
-  });
-  if (currentChunkLength !== 0) {
-    res.push(currentChunk);
-  }
-  return res;
-}
 
 module.exports = {
   MAX_GROUP_COUNT,
-  getData,
-  chunkArrayByLength
+  getData
 };

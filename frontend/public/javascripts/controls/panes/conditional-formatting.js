@@ -435,7 +435,7 @@
       _.each(newMd.conditionalFormatting || [], function(cf) {
         if (cf.condition.operator == 'always') {
           cf.condition = true;
-        } else if (cf.condition.children.length < 2) {
+        } else if (cf.condition.hasOwnProperty('children') && cf.condition.children.length < 2) {
           cf.condition = cf.condition.children[0];
         }
       });

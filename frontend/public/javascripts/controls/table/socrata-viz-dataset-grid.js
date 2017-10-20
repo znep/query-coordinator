@@ -214,6 +214,21 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
               loadRowsFromModel(currentStartIndex, currentEndIndex);
             }
 
+            function updateConditionalFormatting() {
+              self._view.save();
+
+              var inlineData = _.get(lastRenderedVif, 'series[0].dataSource', null);
+
+              if (!_.isNull(inlineData)) {
+
+                inlineData.view = _.cloneDeep(self._view.cleanCopyIncludingRenderTypeName());
+
+                delete inlineData.type;
+
+                renderInlineData(inlineData);
+              }
+            }
+
             function renderInlineData(inlineData) {
               var newVifToRender = $.fn.socrataVizDatasetGrid.
                 generateVifFromInlineData(inlineData);
@@ -324,6 +339,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                   });
 
                   self._view.update(newView, false, false);
+                  self._view.save();
                 }
               }
 
@@ -490,6 +506,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             self._view.bucketSize = PAGE_SIZE;
             self._view.bind('query_change', renderTableFromScratch);
             self._view.bind('columns_changed', renderTableFromScratch);
+            self._view.bind('conditionalformatting_change', updateConditionalFormatting);
 
             $datasetGrid = self.$dom();
             $datasetGrid.data('datasetGrid', self);

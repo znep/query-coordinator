@@ -9,6 +9,7 @@ import uuid from 'uuid';
 import Fieldset from 'components/Fieldset/Fieldset';
 import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
+import SourceMessage from 'components/SourceMessage/SourceMessage';
 import { getBasename, getExtension } from 'lib/util';
 import * as Selectors from 'selectors';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
@@ -413,7 +414,12 @@ class HrefForm extends Component {
   }
 
   render() {
-    const { errors } = this.props;
+    const { errors, schemaExists } = this.props;
+
+    if (schemaExists) {
+      return <SourceMessage schemaExists={schemaExists} />;
+    }
+
     return (
       <section className={styles.container}>
         <h2 className={styles.bigHeading}>Link to an External Dataset</h2>
@@ -454,7 +460,8 @@ HrefForm.propTypes = {
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired
+  errors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  schemaExists: PropTypes.bool.isRequired
 };
 
 const mapStateStateToProps = ({ entities, ui }, { params }) => {
@@ -470,6 +477,7 @@ const mapStateStateToProps = ({ entities, ui }, { params }) => {
 
   return {
     hrefs,
+    schemaExists: !!revision.output_schema_id,
     errors: ui.forms.hrefForm.errors,
     revisionId
   };
@@ -478,6 +486,7 @@ const mapStateStateToProps = ({ entities, ui }, { params }) => {
 const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   hrefs: stateProps.hrefs,
   errors: stateProps.errors,
+  schemaExists: stateProps.schemaExists,
   syncStateToStore: state => {
     return stateProps.revisionId == null ? _.noop : dispatch(editRevision(stateProps.revisionId, state));
   },

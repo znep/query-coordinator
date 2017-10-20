@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import styles from './URLSource.scss';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import TextInput from 'components/TextInput/TextInput';
+import SourceMessage from 'components/SourceMessage/SourceMessage';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
+import styles from './URLSource.scss';
 
 const SubI18n = I18n.import_from_url;
 
@@ -53,6 +54,12 @@ class URLSource extends Component {
   }
 
   render() {
+    const { hrefExists } = this.props;
+
+    if (hrefExists) {
+      return <SourceMessage hrefExists={hrefExists} />;
+    }
+
     const sourceType = {
       type: 'url',
       url: this.state.url
@@ -100,7 +107,8 @@ class URLSource extends Component {
 }
 
 URLSource.propTypes = {
-  createURLSource: PropTypes.func.isRequired
+  createURLSource: PropTypes.func.isRequired,
+  hrefExists: PropTypes.bool.isRequired
 };
 
 export default URLSource;

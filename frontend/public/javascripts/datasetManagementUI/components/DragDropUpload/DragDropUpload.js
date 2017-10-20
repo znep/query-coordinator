@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import SourceMessage from 'components/SourceMessage/SourceMessage';
 import { createUploadSource } from 'reduxStuff/actions/createSource';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
+import * as Selectors from 'selectors';
 import styles from './DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
@@ -72,7 +73,11 @@ export class DragDropUpload extends Component {
   }
 
   render() {
-    const { dispatch, params } = this.props;
+    const { dispatch, params, hrefExists } = this.props;
+
+    if (hrefExists) {
+      return <SourceMessage hrefExists={hrefExists} />;
+    }
 
     return (
       <section className={styles.container}>
@@ -112,7 +117,15 @@ export class DragDropUpload extends Component {
 
 DragDropUpload.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  params: PropTypes.object.isRequired
+  params: PropTypes.object.isRequired,
+  hrefExists: PropTypes.bool.isRequired
 };
 
-export default withRouter(connect()(DragDropUpload));
+const mapStateToProps = ({ entities }, { params }) => {
+  const rev = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
+  return {
+    hrefExists: !!rev.href.length
+  };
+};
+
+export default connect(mapStateToProps)(DragDropUpload);

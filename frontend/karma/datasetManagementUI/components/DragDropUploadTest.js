@@ -34,7 +34,7 @@ describe('components/DragDropUpload', () => {
     const fakeStore = mockStore(state);
 
     const component = shallow(
-      <DragDropUpload dispatch={fakeStore.dispatch} params={{}} />,
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
       {
         context: { store: fakeStore }
       }
@@ -58,7 +58,7 @@ describe('components/DragDropUpload', () => {
     const fakeStore = mockStore(state);
 
     const component = shallow(
-      <DragDropUpload dispatch={fakeStore.dispatch} params={{}} />,
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
       {
         context: { store: fakeStore }
       }
@@ -91,7 +91,7 @@ describe('components/DragDropUpload', () => {
   });
 
   it('updates state properly on dragover', () => {
-    const component = shallow(<DragDropUpload dispatch={_.noop} params={{}} />);
+    const component = shallow(<DragDropUpload dispatch={_.noop} hrefExists={false} params={{}} />);
     const initialState = component.state('draggingOver');
     component.find('.dropZone').simulate('dragover', fakeEvent);
     const updatedState = component.state('draggingOver');
@@ -100,7 +100,7 @@ describe('components/DragDropUpload', () => {
   });
 
   it('updates state properly on dragleave', () => {
-    const component = shallow(<DragDropUpload dispatch={_.noop} params={{}} />);
+    const component = shallow(<DragDropUpload dispatch={_.noop} hrefExists={false} params={{}} />);
     component.find('.dropZone').simulate('dragover', fakeEvent);
     const initialState = component.state('draggingOver');
     component.find('.dropZone').simulate('dragleave', fakeEvent);

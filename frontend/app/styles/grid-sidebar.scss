@@ -1057,6 +1057,28 @@ body.grid-view-2017-refresh {
         .mainTitleBlock {
           background-color: #b8864b !important;
         }
+
+        .controlPane.shareDataset {
+
+          .subtitleBlock {
+            display: none;
+          }
+
+          .sharingForm {
+
+            .formHeader {
+              margin-top: 13px;
+            }
+          }
+        }
+
+        input[data-origname="datasetThief"] {
+          margin-top: 6px;
+        }
+
+        input[data-origname="user"] {
+          margin-top: -4px;
+        }
       }
 
       /**

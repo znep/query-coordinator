@@ -35,14 +35,21 @@ $(document).ready(function() {
       bannerLinkText = $.t('screens.ds.show.grid_view_2017_refresh_banner.enable.link_text');
     }
 
-    $('#datasetBar').append(
+    $(
       '<div id="grid-view-2017-refresh-preview-banner">' +
         bannerText +
         ' <a href="' + url + '" title="' + bannerLinkText + '">' +
         bannerLinkText +
         '</a>' +
+        '<button class="close">' +
+          '<span class="socrata-icon-close-2"></span>' +
+        '</button>' +
       '</div>'
-    );
+    ).insertBefore('#datasetBar');
+
+    $('#grid-view-2017-refresh-preview-banner button').on('click', function() {
+      $('#grid-view-2017-refresh-preview-banner').hide();
+    });
   }
 });
 

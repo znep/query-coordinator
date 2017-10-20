@@ -123,6 +123,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
     const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
     const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
+    const precision = _.get(newVif, 'series[0].dataSource.precision');
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
@@ -141,7 +142,7 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
         const [ columns, datasetMetadata ] = resolutions;
         const dimension = _.find(datasetMetadata.columns, (column) => (dimensionColumnName === column.fieldName));
 
-        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') ?
+        const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') && (precision !== 'none') ?
           TimeDataManager.getData(newVif) :
           CategoricalDataManager.getData(newVif);
 

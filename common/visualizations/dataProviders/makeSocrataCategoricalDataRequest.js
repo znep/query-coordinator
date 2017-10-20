@@ -117,7 +117,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
       errorBarsUpperAlias,
       (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
     ).then(dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInSelect, showOtherCategory, limit))
-    .then(mapQueryResponseToDataTable);
+    .then(mapQueryResponseToDataTable(vif));
 }
 
 /**
@@ -434,61 +434,69 @@ function dealWithQueryResponse(vif, seriesIndex, maxRowCount, requireGroupingInS
   };
 }
 
-function mapQueryResponseToDataTable(queryResponse) {
-  const dataTable = queryResponse;
-  const dimensionIndex = dataTable.columns.indexOf(SoqlHelpers.dimensionAlias());
-  const groupingIndex = dataTable.columns.indexOf(SoqlHelpers.groupingAlias());
-  const measureIndex = dataTable.columns.indexOf(SoqlHelpers.measureAlias());
+function mapQueryResponseToDataTable(vif) {
+  return (queryResponse) => {
+    const dataTable = queryResponse;
+    const dimensionIndex = dataTable.columns.indexOf(SoqlHelpers.dimensionAlias());
+    const groupingIndex = dataTable.columns.indexOf(SoqlHelpers.groupingAlias());
+    const measureIndex = dataTable.columns.indexOf(SoqlHelpers.measureAlias());
 
-  dataTable.columns[dimensionIndex] = 'dimension';
-  dataTable.columns[measureIndex] = 'measure';
-  if (groupingIndex !== -1) {
-    dataTable.columns[groupingIndex] = 'grouping';
-  }
-
-  dataTable.rows.forEach((row) => {
-
-    if (_.isUndefined(row[dimensionIndex])) {
-      row[dimensionIndex] = null;
-    }
+    dataTable.columns[dimensionIndex] = 'dimension';
+    dataTable.columns[measureIndex] = 'measure';
 
     if (groupingIndex !== -1) {
-      if (_.isUndefined(row[groupingIndex])) {
-        row[groupingIndex] = null;
-      }
+      dataTable.columns[groupingIndex] = 'grouping';
     }
 
-    row[measureIndex] = getNumberValue(row[measureIndex]);
+    const treatNullValuesAsZero = _.get(vif, 'configuration.treatNullValuesAsZero', false);
 
-  });
+    dataTable.rows.forEach((row) => {
 
-  if (!_.isUndefined(dataTable.errorBars)) {
+      if (_.isUndefined(row[dimensionIndex])) {
+        row[dimensionIndex] = null;
+      }
 
-    dataTable.errorBars = dataTable.errorBars.map((row) => {
+      if (groupingIndex !== -1) {
+        if (_.isUndefined(row[groupingIndex])) {
+          row[groupingIndex] = null;
+        }
+      }
 
-      const dimensionIndex = 0;
-      const lowerBoundIndex = 1;
-      const upperBoundIndex = 2;
-      const newRow = [];
-
-      // Dimension
-      newRow[dimensionIndex] = _.isUndefined(row[dimensionIndex]) ? null : row[dimensionIndex];
-
-      // Error bar bounds
-      newRow[measureIndex] = [
-        getNumberValue(row[lowerBoundIndex]), 
-        getNumberValue(row[upperBoundIndex])];
-
-      return newRow;
+      if (_.isNil(row[measureIndex])) {
+        row[measureIndex] = treatNullValuesAsZero ? 0 : null;
+      } else {
+        row[measureIndex] = getNumberValue(row[measureIndex]);
+      }
     });
-  }
 
-  return dataTable;
+    if (!_.isUndefined(dataTable.errorBars)) {
+
+      dataTable.errorBars = dataTable.errorBars.map((row) => {
+
+        const dimensionIndex = 0;
+        const lowerBoundIndex = 1;
+        const upperBoundIndex = 2;
+        const newRow = [];
+
+        // Dimension
+        newRow[dimensionIndex] = _.isUndefined(row[dimensionIndex]) ? null : row[dimensionIndex];
+
+        // Error bar bounds
+        newRow[measureIndex] = [
+          getNumberValue(row[lowerBoundIndex]), 
+          getNumberValue(row[upperBoundIndex])];
+
+        return newRow;
+      });
+    }
+
+    return dataTable;
+  }
 }
 
 function getNumberValue(o) {
 
-  if (_.isUndefined(o) || _.isNull(o)) {
+  if (_.isNil(o)) {
     return null;
   }
 

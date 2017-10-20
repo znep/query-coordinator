@@ -57,6 +57,16 @@ export default function timelineChart(state, action) {
       }
       break;
 
+    case actions.SET_PRECISION:
+      const xAxisScalingMode = (action.precision === 'none') ? 'pan' : 'fit';
+      _.set(state, 'configuration.xAxisScalingMode', xAxisScalingMode);
+      
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.orderBy', { parameter: 'dimension', sort: 'asc' });
+        _.set(series, 'dataSource.precision', action.precision);
+      });
+      break;
+
     case actions.APPEND_REFERENCE_LINE:
     case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
@@ -73,7 +83,7 @@ export default function timelineChart(state, action) {
     case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
-    case actions.SET_PRECISION:
+    case actions.SET_ORDER_BY:
     case actions.SET_PRIMARY_COLOR:
     case actions.SET_REFERENCE_LINE_COLOR:
     case actions.SET_REFERENCE_LINE_LABEL:

@@ -117,6 +117,7 @@ export default function(state, action) {
 
     case actions.SET_PRECISION:
       forEachSeries(state, series => {
+        _.set(series, 'dataSource.orderBy', { parameter: 'dimension', sort: 'asc' });
         _.set(series, 'dataSource.precision', action.precision);
       });
       break;

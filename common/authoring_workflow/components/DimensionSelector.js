@@ -26,7 +26,7 @@ export class DimensionSelector extends Component{
     _.bindAll(this, [
       'renderDimensionOption',
       'renderDimensionSelector',
-      'onSelectDimension'
+      'onChangeDimension'
     ]);
   }
 
@@ -73,8 +73,8 @@ export class DimensionSelector extends Component{
     const dimensionAttributes = {
       id: 'dimension-selection',
       options: dimensions,
-      onChange: this.onSelectDimension,
-      onSelection: this.onSelectDimension,
+      onChange: this.onChangeDimension,
+      onSelection: this.onChangeDimension,
       value
     };
 
@@ -85,9 +85,16 @@ export class DimensionSelector extends Component{
     );
   }
 
-  onSelectDimension(dimension) {
-    const sort = (dimension.type === 'calendar_date') ? 'asc' : 'desc';
-    this.props.onSelectDimensionAndOrderBy(dimension, sort);
+  onChangeDimension(dimension) {
+    const { onSelectDimension, onSelectOrderBy } = this.props;
+
+    onSelectDimension(dimension);
+    
+    if (dimension.type === 'calendar_date') {
+      onSelectOrderBy('dimension', 'asc');
+    } else {
+      onSelectOrderBy('measure', 'desc');
+    }
   }
 
   render() {
@@ -98,9 +105,10 @@ export class DimensionSelector extends Component{
 }
 
 DimensionSelector.propTypes = {
-  vifAuthoring: PropTypes.object,
   metadata: PropTypes.object,
-  onSelectDimensionAndOrderBy: PropTypes.func
+  onSelectDimension: PropTypes.func,
+  onSelectOrderBy: PropTypes.func,
+  vifAuthoring: PropTypes.object
 }
 
 function mapStateToProps(state) {
@@ -109,9 +117,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectDimensionAndOrderBy: (dimension, sort) => {
+    onSelectDimension: (dimension) => {
       dispatch(setDimension(dimension.value));
-      dispatch(setOrderBy({ parameter: 'measure', sort }));
+    },
+    onSelectOrderBy: (parameter, sort) => {
+      dispatch(setOrderBy({ parameter, sort }));
     }
   };
 }

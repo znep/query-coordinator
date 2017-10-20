@@ -12,6 +12,7 @@ import TextArea from 'components/TextArea/TextArea';
 import { getBasename, getExtension } from 'lib/util';
 import * as Selectors from 'selectors';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
+import styles from './HrefForm.scss';
 // TextInput.propTypes = {
 //   name: PropTypes.string.isRequired,
 //   value: PropTypes.string,
@@ -80,22 +81,26 @@ class URLField extends Component {
 
     return (
       <div>
-        <label>URL</label>
-        <TextInput
-          value={value}
-          label="URL"
-          name="url"
-          isRequired
-          inErrorState={inErrorState}
-          handleChange={e => handleChangeUrl(e.target.value)} />
-        {inErrorState && <div>bad url</div>}
-        <label>File Type</label>
-        <TextInput
-          name="filetype"
-          value={this.state.extension}
-          label="File Type"
-          inErrorState={false}
-          handleChange={this.handleExtensionChange} />
+        <div className={styles.urlFieldArea}>
+          <label>URL</label>
+          <TextInput
+            value={value}
+            label="URL"
+            name="url"
+            isRequired
+            inErrorState={inErrorState}
+            handleChange={e => handleChangeUrl(e.target.value)} />
+          {inErrorState && <div>bad url</div>}
+        </div>
+        <div className={styles.filetypeFieldArea}>
+          <label>File Type</label>
+          <TextInput
+            name="filetype"
+            value={this.state.extension}
+            label="File Type"
+            inErrorState={false}
+            handleChange={this.handleExtensionChange} />
+        </div>
       </div>
     );
   }
@@ -108,39 +113,43 @@ URLField.propTypes = {
 };
 
 const DatsetFieldset = ({ href, handleAddURL, handleChangeUrl, handleChangeHref, errors }) => (
-  <Fieldset title={href.title}>
-    <div>
-      <label>Dataset Name</label>
-      <TextInput
-        name="title"
-        value={href.title}
-        label="Dataset Name"
-        inErrorState={false}
-        handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
-    </div>
-    <div>
-      <label>Dataset Description</label>
-      <TextArea
-        name="description"
-        value={href.description}
-        label="Dataset Description"
-        inErrorState={false}
-        handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
-    </div>
-    <div>
-      {_.map(href.urls, (val, key) => (
-        <URLField key={key} errors={errors} value={val} handleChangeUrl={handleChangeUrl(key)} />
-      ))}
-      <button onClick={handleAddURL}>Add URL</button>
-    </div>
-    <div>
-      <label>Data Dictionary URL</label>
-      <TextInput
-        name="dictionary-url"
-        value={href.data_dictionary}
-        label="Data Dictionary URL"
-        inErrorState={false}
-        handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
+  <Fieldset title={href.title} containerClass={styles.fieldset} legendClass={styles.legend}>
+    <div className={styles.fieldWrapper}>
+      <div>
+        <label>Dataset Name</label>
+        <TextInput
+          name="title"
+          value={href.title}
+          label="Dataset Name"
+          inErrorState={false}
+          handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
+      </div>
+      <div>
+        <label>Dataset Description</label>
+        <TextArea
+          name="description"
+          value={href.description}
+          label="Dataset Description"
+          inErrorState={false}
+          handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
+      </div>
+      <div>
+        {_.map(href.urls, (val, key) => (
+          <URLField key={key} errors={errors} value={val} handleChangeUrl={handleChangeUrl(key)} />
+        ))}
+        <button className={styles.addURLBtn} onClick={handleAddURL}>
+          + Add Another URL
+        </button>
+      </div>
+      <div>
+        <label>Data Dictionary URL</label>
+        <TextInput
+          name="dictionary-url"
+          value={href.data_dictionary}
+          label="Data Dictionary URL"
+          inErrorState={false}
+          handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
+      </div>
     </div>
   </Fieldset>
 );
@@ -164,7 +173,7 @@ DatsetFieldset.propTypes = {
 // the UI, it changes the data--namely the "hrefs" array. When the component loads,
 // it initializes "hrefs" as an empty array. Then right before the component mounts,
 // it creates an empty href and puts it in the array. This way, if we have no saved
-// data, we can still show the user something.
+// data, we can still show the user an empty form.
 
 // Once the form mounts, it checks dsmapi to see if there is any saved href data
 // on the revision. If there is, it overwrites the empty href we put into the state
@@ -330,11 +339,11 @@ class HrefForm extends Component {
   render() {
     const { errors } = this.props;
     return (
-      <section>
-        <h3>Link to an External Dataset</h3>
-        <span>What even is an external dataset?</span>
+      <section className={styles.container}>
+        <h2 className={styles.bigHeading}>Link to an External Dataset</h2>
+        <div>What even is an external dataset?</div>
         <form onSubmit={e => e.preventDefault()}>
-          <h4>Add External Datasets</h4>
+          <h3 className={styles.mediumHeading}>Add External Datasets</h3>
           {this.state.hrefs.map(href => (
             <DatsetFieldset
               key={href.id}
@@ -342,10 +351,12 @@ class HrefForm extends Component {
               errors={errors}
               handleChangeUrl={this.handleChangeUrl(href.id)}
               handleChangeHref={this.handleChangeHref}
-              handleAddURL={url => this.handleAddURL(href.id, url)} />
+              handleAddURL={() => this.handleAddURL(href.id)} />
           ))}
         </form>
-        <button onClick={this.handleAddDataset}>Add Dataset</button>
+        <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
+          + Add Another External Dataset
+        </button>
       </section>
     );
   }

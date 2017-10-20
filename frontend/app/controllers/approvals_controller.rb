@@ -1,9 +1,7 @@
-class ApprovalsController < ApplicationController
+class ApprovalsController < AdministrationController
 
   include ApplicationHelper
   include AssetBrowserHelper
-
-  before_filter :require_roled_user
 
   layout 'styleguide'
 
@@ -12,16 +10,15 @@ class ApprovalsController < ApplicationController
   end
 
   def show
-    @app_name = 'approvals'
-    @asset_browser_columns = %w(type name actions lastUpdatedDate category owner visibility)
+    @asset_browser_config = {
+      :app_name => 'approvals',
+      :columns => %w(type name actions lastUpdatedDate category owner visibility),
+      :initial_tab => 'allAssets',
+      :filters_enabled => true
+    }
   end
 
   private
-
-  def require_roled_user
-    user = current_user || User.new
-    render_forbidden(I18n.t('core.auth.need_permission')) unless user.is_superadmin? || user.is_roled_user?
-  end
 
   def report_error(error_message)
     Airbrake.notify(

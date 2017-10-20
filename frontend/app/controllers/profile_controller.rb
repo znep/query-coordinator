@@ -51,9 +51,13 @@ class ProfileController < ApplicationController
       end
 
       if internal_asset_manager_on_profile_enabled?
-        @app_name = 'internal_asset_manager'
-        @asset_browser_columns = %w(type name actions lastUpdatedDate category owner visibility)
-        @asset_browser_initial_tab = 'myAssets'
+        @asset_browser_config = {
+          :app_name => 'internal_asset_manager',
+          :columns => %w(type name actions lastUpdatedDate category owner visibility),
+          :initial_tab => 'myAssets',
+          :filters_enabled => false
+        }
+
         render :layout => 'styleguide'
       else
         begin

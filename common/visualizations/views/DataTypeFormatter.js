@@ -2,6 +2,7 @@ const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('common/js_utils');
 const moment = require('moment');
+const BigNumber = require('bignumber.js')
 // Converts GeoJSON formats to text
 const wkt = require('wellknown');
 const I18n = require('common/i18n').default;
@@ -304,9 +305,15 @@ function renderBooleanCellHTML(cellContent) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCellUnsafePlainText(input, column) {
-  // TODO: Floats are not ideal to use - our backend supports much more precision
-  // than JavaScript numbers do. Consider something like BigNumber.
   const amount = parseFloat(input);
+
+  // NOTE: use safeAmount if you need to do any mathematical operations prior to
+  // returning a renderable value.
+  let safeAmount;
+  if (_.isFinite(amount)) {
+    safeAmount = new BigNumber(input);
+  }
+
   const locale = utils.getLocale(window);
   const format = _.extend({
     precisionStyle: 'standard',
@@ -348,7 +355,14 @@ function renderNumberCellUnsafePlainText(input, column) {
   // The path for OBE percentages is being left in place in case a decision is
   // made to intentionally support OBE queries as well.
   if (_isNbePercentColumn(column)) {
-    return _renderPercentageNumber(amount * 100, format);
+    if (_.isNil(safeAmount)) {
+      // This case *should* be unreachable, so we'll log and render something
+      // obviously wrong if we hit this branch.
+      console.error(`Unable to create BigNumber from the following: ${input}`);
+      return 'NaN';
+    }
+
+    return _renderPercentageNumber(safeAmount.times(100), format);
   } else if (_isObePercentColumn(column)) {
     return _renderPercentageNumber(amount, format);
   } else if (format.mask) {
@@ -937,7 +951,7 @@ function _renderPercentageNumber(amount, format) {
   let value = amount;
 
   if (format.forceHumane) {
-    value = utils.formatNumber(value, format);
+    value = utils.formatNumber(parseFloat(value), format);
   } else {
     if (format.precision >= 0) {
       value = value.toFixed(format.precision);

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "airbrake-js": "0.5.9",
+    "bignumber.js": "4.1.0",
     "es6-promise-polyfill": "1.2.0",
     "jstz": "1.0.10",
     "moment-timezone": "0.5.13",

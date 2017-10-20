@@ -1,181 +1,11 @@
-/* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { editRevision } from 'reduxStuff/actions/revisions';
-import * as formActions from 'reduxStuff/actions/forms';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import uuid from 'uuid';
-import Fieldset from 'components/Fieldset/Fieldset';
-import TextInput from 'components/TextInput/TextInput';
-import TextArea from 'components/TextArea/TextArea';
+import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
-import { getBasename, getExtension } from 'lib/util';
-import * as Selectors from 'selectors';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
-import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './HrefForm.scss';
-
-class URLField extends Component {
-  constructor() {
-    super();
-    this.state = {
-      extension: ''
-    };
-
-    this.handleExtensionChange = this.handleExtensionChange.bind(this);
-  }
-
-  componentWillMount() {
-    // If we have a url saved on the server, then we need to extract the extension
-    // on mount IOT populate the file type field below
-    this.setState({
-      extension: getExtension(getBasename(this.props.value))
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // If the user changes the value of the url field, update the extension. If
-    // we didn't do this, the file type and url fields would get out of sync
-    if (nextProps.value !== this.props.value) {
-      this.setState({
-        extension: getExtension(getBasename(nextProps.value))
-      });
-    }
-  }
-
-  handleExtensionChange(e) {
-    // allows the user to override the calculated extension
-    this.setState({
-      extension: e.target.value
-    });
-  }
-
-  render() {
-    const { handleChangeUrl, handleXClick, value, errors } = this.props;
-
-    const inErrorState = errors.includes(value);
-
-    return (
-      <div>
-        <div className={styles.urlFieldArea}>
-          <label>{I18n.show_sources.label_url}</label>
-          <TextInput
-            value={value}
-            label={I18n.show_sources.label_url}
-            name="url"
-            isRequired
-            inErrorState={inErrorState}
-            handleChange={e => handleChangeUrl(e.target.value)} />
-          {inErrorState && <div>{I18n.show_sources.error_url}</div>}
-        </div>
-        <div className={styles.filetypeFieldArea}>
-          <label>{I18n.show_sources.label_file_type}</label>
-          <TextInput
-            name="filetype"
-            value={this.state.extension}
-            label={I18n.show_sources.label_file_type}
-            inErrorState={false}
-            handleChange={this.handleExtensionChange} />
-        </div>
-        <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={handleXClick} />
-      </div>
-    );
-  }
-}
-
-URLField.propTypes = {
-  value: PropTypes.string,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  handleChangeUrl: PropTypes.func.isRequired,
-  handleXClick: PropTypes.func.isRequired
-};
-
-const DatsetFieldset = ({
-  href,
-  handleAddURL,
-  handleChangeUrl,
-  handleChangeHref,
-  handleRemoveFirstURL,
-  handleRemoveOtherURL,
-  handleXClick,
-  errors
-}) => (
-  <Fieldset
-    title={href.title}
-    closable
-    closeCallback={handleXClick}
-    containerClass={styles.fieldset}
-    legendClass={styles.legend}>
-    <div className={styles.fieldWrapper}>
-      <div>
-        <label>{I18n.show_sources.label_name}</label>
-        <TextInput
-          name="title"
-          value={href.title}
-          label={I18n.show_sources.label_name}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
-      </div>
-      <div>
-        <label>{I18n.show_sources.label_description}</label>
-        <TextArea
-          name="description"
-          value={href.description}
-          label={I18n.show_sources.label_description}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
-      </div>
-      <div>
-        {Object.keys(href.urls).map((key, idx) => {
-          return (
-            <URLField
-              key={key}
-              errors={errors}
-              value={href.urls[key]}
-              handleXClick={
-                idx === 0
-                  ? () => handleRemoveFirstURL(href.id, key)
-                  : () => handleRemoveOtherURL(href.id, key)
-              }
-              handleChangeUrl={handleChangeUrl(key)} />
-          );
-        })}
-        <button className={styles.addURLBtn} onClick={handleAddURL}>
-          {I18n.show_sources.add_url}
-        </button>
-      </div>
-      <div>
-        <label>{I18n.show_sources.label_data_dictionary}</label>
-        <TextInput
-          name="dictionary-url"
-          value={href.data_dictionary}
-          label={I18n.show_sources.label_data_dictionary}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
-      </div>
-    </div>
-  </Fieldset>
-);
-
-DatsetFieldset.propTypes = {
-  href: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    data_dictionary: PropTypes.string,
-    data_dictionary_type: PropTypes.string,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    urls: PropTypes.object.isRequired
-  }),
-  handleAddURL: PropTypes.func.isRequired,
-  handleChangeUrl: PropTypes.func.isRequired,
-  handleChangeHref: PropTypes.func.isRequired,
-  handleRemoveFirstURL: PropTypes.func.isRequired,
-  handleRemoveOtherURL: PropTypes.func.isRequired,
-  handleXClick: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired
-};
 
 // This form strives to let the UI derrive from the data, so in order to control
 // the UI, it changes the data--namely the "hrefs" array. When the component loads,
@@ -429,7 +259,7 @@ class HrefForm extends Component {
         <form onSubmit={e => e.preventDefault()}>
           <h3 className={styles.mediumHeading}>{I18n.show_sources.add_ext_dataset}</h3>
           {this.state.hrefs.map((href, idx) => (
-            <DatsetFieldset
+            <DatasetFieldset
               key={href.id}
               href={href}
               errors={errors}
@@ -442,7 +272,10 @@ class HrefForm extends Component {
               }
               handleChangeUrl={this.handleChangeUrl(href.id)}
               handleChangeHref={this.handleChangeHref}
-              handleAddURL={() => this.handleAddURL(href.id)} />
+              handleAddURL={e => {
+                e.preventDefault();
+                this.handleAddURL(href.id);
+              }} />
           ))}
         </form>
         <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
@@ -464,36 +297,4 @@ HrefForm.propTypes = {
   schemaExists: PropTypes.bool.isRequired
 };
 
-const mapStateStateToProps = ({ entities, ui }, { params }) => {
-  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
-
-  let hrefs = [];
-  let revisionId = null;
-
-  if (revision && revision.href && Array.isArray(revision.href)) {
-    hrefs = revision.href;
-    revisionId = revision.id;
-  }
-
-  return {
-    hrefs,
-    schemaExists: !!revision.output_schema_id,
-    errors: ui.forms.hrefForm.errors,
-    revisionId
-  };
-};
-
-const mergeProps = (stateProps, { dispatch }, ownProps) => ({
-  hrefs: stateProps.hrefs,
-  errors: stateProps.errors,
-  schemaExists: stateProps.schemaExists,
-  syncStateToStore: state => {
-    return stateProps.revisionId == null ? _.noop : dispatch(editRevision(stateProps.revisionId, state));
-  },
-  markFormDirty: () => dispatch(formActions.markFormDirty('hrefForm')),
-  markFormClean: () => dispatch(formActions.markFormClean('hrefForm')),
-  clearFlash: () => dispatch(hideFlashMessage()),
-  ...ownProps
-});
-
-export default connect(mapStateStateToProps, null, mergeProps)(HrefForm);
+export default HrefForm;

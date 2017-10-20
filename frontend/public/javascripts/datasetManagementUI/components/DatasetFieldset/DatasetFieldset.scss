@@ -1,0 +1,45 @@
+@import 'app/styles/styleguide-colors';
+
+.fieldset {
+  border: 1px solid $light-grey-4;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 2em;
+}
+
+.legend {
+  border-bottom: 1px solid $light-grey-4;
+  background-color: $light-grey-5;
+  border: 1px solid $light-grey-4;
+  display: block;
+  width: calc(100% - 0.6rem);
+  padding: 0.6rem;
+  padding-right: 0;
+  box-sizing: content-box;
+  margin-left: -1px;
+}
+
+.fieldWrapper {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.fieldWrapper label {
+  font-size: 1rem;
+  margin-bottom: 0.4em;
+  display: block;
+}
+
+.addURLBtn {
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.8em;
+  border: 0;
+  padding: 0 0 1px 0;
+  border-bottom: 1px solid $primary-base;
+  color: $primary-base;
+  background-color: transparent;
+  font-size: 1rem;
+  font-family: 'Open Sans', 'Helvetica', Arial, sans-serif;
+}

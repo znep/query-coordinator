@@ -11,7 +11,7 @@ import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
 import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
 import URLSource from 'containers/URLSourceContainer';
-import HrefForm from 'components/HrefForm/HrefForm';
+import HrefForm from 'containers/HrefFormContainer';
 
 const checkSchemaStatus = store => (nextState, replace, cb) => {
   const osid = _.toNumber(nextState.params.outputSchemaId);

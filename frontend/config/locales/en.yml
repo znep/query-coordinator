@@ -2127,6 +2127,9 @@ en:
       email_me_error: An error has occurred.
       email_me_success: We'll send you an email!
       getting_started: Getting Started
+      href_header: External Datasource Has Been Linked
+      href_message: You have linked an external datasource to this dataset. Click the link below to view details.
+      href_view_btn: View Datasource Link
       home_pane_sidebar:
         manage: Manage
         recent_actions: Recent Actions

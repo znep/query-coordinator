@@ -2405,6 +2405,23 @@ en:
       upload_done: Upload Done
       upload_failed: Upload Failed
       upload_in_progress: Upload In Progress
+    show_sources:
+      add_dataset: + Add Another External Dataset
+      add_ext_dataset: Add External Datasets
+      add_url: + Add Another URL
+      dataset_title: "External Dataset {0}"
+      error_url: Not a valid URL
+      error_href_exists: This dataset has been linked to data on an external server. Uploading a new source or importing data from a URL is no longer possible.
+      error_schema_exists: A data source has already been imported for this dataset. Linking to data from an external server is no longer possible.
+      error_unknown: An unknown error has occured.
+      label_description: Dataset Description
+      label_data_dictionary: Data Dictionary URL
+      label_file_type: File Type
+      label_name: Dataset Name
+      label_url: URL
+      save_and_exit: Save and Exit
+      subtitle: This will create a link to a dataset on another server. Your data will not be imported.
+      title: Link to an External Dataset
     show_uploads:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type

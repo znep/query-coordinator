@@ -6,11 +6,11 @@ const SourceMessage = ({ hrefExists, schemaExists }) => {
   let message;
 
   if (hrefExists) {
-    message = 'yo you already have an href, so cant do this';
+    message = I18n.show_sources.error_href_exists;
   } else if (schemaExists) {
-    message = 'yo there is a schema so cant do this';
+    message = I18n.show_sources.error_schema_exists;
   } else {
-    message = 'error, go home';
+    message = I18n.show_sources.error_unknown;
   }
 
   return (

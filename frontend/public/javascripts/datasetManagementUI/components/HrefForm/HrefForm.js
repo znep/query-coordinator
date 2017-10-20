@@ -60,22 +60,22 @@ class URLField extends Component {
     return (
       <div>
         <div className={styles.urlFieldArea}>
-          <label>URL</label>
+          <label>{I18n.show_sources.label_url}</label>
           <TextInput
             value={value}
-            label="URL"
+            label={I18n.show_sources.label_url}
             name="url"
             isRequired
             inErrorState={inErrorState}
             handleChange={e => handleChangeUrl(e.target.value)} />
-          {inErrorState && <div>bad url</div>}
+          {inErrorState && <div>{I18n.show_sources.error_url}</div>}
         </div>
         <div className={styles.filetypeFieldArea}>
-          <label>File Type</label>
+          <label>{I18n.show_sources.label_file_type}</label>
           <TextInput
             name="filetype"
             value={this.state.extension}
-            label="File Type"
+            label={I18n.show_sources.label_file_type}
             inErrorState={false}
             handleChange={this.handleExtensionChange} />
         </div>
@@ -110,20 +110,20 @@ const DatsetFieldset = ({
     legendClass={styles.legend}>
     <div className={styles.fieldWrapper}>
       <div>
-        <label>Dataset Name</label>
+        <label>{I18n.show_sources.label_name}</label>
         <TextInput
           name="title"
           value={href.title}
-          label="Dataset Name"
+          label={I18n.show_sources.label_name}
           inErrorState={false}
           handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
       </div>
       <div>
-        <label>Dataset Description</label>
+        <label>{I18n.show_sources.label_description}</label>
         <TextArea
           name="description"
           value={href.description}
-          label="Dataset Description"
+          label={I18n.show_sources.label_description}
           inErrorState={false}
           handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
       </div>
@@ -143,15 +143,15 @@ const DatsetFieldset = ({
           );
         })}
         <button className={styles.addURLBtn} onClick={handleAddURL}>
-          + Add Another URL
+          {I18n.show_sources.add_url}
         </button>
       </div>
       <div>
-        <label>Data Dictionary URL</label>
+        <label>{I18n.show_sources.label_data_dictionary}</label>
         <TextInput
           name="dictionary-url"
           value={href.data_dictionary}
-          label="Data Dictionary URL"
+          label={I18n.show_sources.label_data_dictionary}
           inErrorState={false}
           handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
       </div>
@@ -268,11 +268,13 @@ class HrefForm extends Component {
   initializeHref(datasetNum, id) {
     const idIsDefined = id != null;
 
+    const datasetTitle = I18n.show_sources.dataset_title.format(datasetNum);
+
     const href = {
       id: idIsDefined ? id : this.state.currentId,
       data_dictionary: '',
       data_dictionary_type: '',
-      title: `External Dataset ${datasetNum}`,
+      title: datasetTitle,
       description: '',
       urls: {
         [uuid()]: ''
@@ -422,12 +424,10 @@ class HrefForm extends Component {
 
     return (
       <section className={styles.container}>
-        <h2 className={styles.bigHeading}>Link to an External Dataset</h2>
-        <div className={styles.subtitle}>
-          This will create a link to a dataset on another server. Your data will not be imported.
-        </div>
+        <h2 className={styles.bigHeading}>{I18n.show_sources.title}</h2>
+        <div className={styles.subtitle}>{I18n.show_sources.subtitle}</div>
         <form onSubmit={e => e.preventDefault()}>
-          <h3 className={styles.mediumHeading}>Add External Datasets</h3>
+          <h3 className={styles.mediumHeading}>{I18n.show_sources.add_ext_dataset}</h3>
           {this.state.hrefs.map((href, idx) => (
             <DatsetFieldset
               key={href.id}
@@ -446,7 +446,7 @@ class HrefForm extends Component {
           ))}
         </form>
         <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
-          + Add Another External Dataset
+          {I18n.show_sources.add_dataset}
         </button>
       </section>
     );

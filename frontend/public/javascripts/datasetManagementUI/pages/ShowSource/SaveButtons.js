@@ -15,7 +15,7 @@ const SaveButtons = ({ handleSave, handleSaveAndExit, callParams, isDirty }) => 
       onClick={handleSaveAndExit}
       operation={UPDATE_REVISION}
       callParams={callParams}>
-      Save and Exit
+      {I18n.show_sources.save_and_exit}
     </ApiCallButton>
   </div>
 );

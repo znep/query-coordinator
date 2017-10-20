@@ -70,8 +70,9 @@
 }
 
 .urlFieldArea {
-  width: 75%;
+  width: 74%;
   padding-right: 2%;
+  vertical-align: top;
 }
 
 .urlFieldArea > * {
@@ -79,7 +80,7 @@
 }
 
 .filetypeFieldArea {
-  width: 20%;
+  width: 19%;
 }
 
 form .filetypeFieldArea > input {

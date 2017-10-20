@@ -118,6 +118,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       .then(() => {
         dispatch(showFlashMessage('success', 'Data saved successfully.'));
         dispatch(markFormClean('hrefForm'));
+        dispatch(setFormErrors('hrefForm', []));
       })
       .then(() => {
         if (andExit) {
@@ -145,7 +146,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     ...stateProps,
     ...ownProps,
     goHome,
-    handleSave: save,
+    handleSave: () => save(),
     handleSaveAndExit: () => save(true),
     callParams
   };

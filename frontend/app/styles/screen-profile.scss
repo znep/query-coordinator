@@ -51,29 +51,6 @@
   line-height: 1.618;
 }
 
-#user-profile-asset-browser {
-  margin: 1rem 0;
-  border: 1px solid $light-grey-3;
-
-  font-size: 15px;
-  line-height: 24.27px;
-  overflow: scroll;
-
-  .header {
-    height: auto;
-  }
-
-  .results-and-filters {
-    border: none;
-
-    .result-list-table {
-      thead tr th:first-of-type {
-        border-left: none;
-      }
-    }
-  }
-}
-
 body {
   margin: 0;
   padding: 0 !important;

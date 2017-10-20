@@ -6,7 +6,7 @@
     "dot-notation": ["error", {
       "allowKeywords": true,
       "allowPattern": "^[a-z]+(_[a-z]+)+$"
-    }],
+    }]
   },
   "settings": {
     "import/ignore": [

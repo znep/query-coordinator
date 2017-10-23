@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Grid from '../util/Grid';
 
 import Expandable from '../util/Expandable';
+import Hoverable from '../util/Hoverable';
 import TristateCheckbox from '../util/TristateCheckbox';
 import TristateIndicator from '../util/TristateIndicator';
 import { toggleRoleRightCategoryValue, toggleRoleRightValue } from '../../actions';
@@ -23,7 +24,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       toggleRoleRightCategoryValue: (role, rightCategory) =>
-        toggleRoleRightCategoryValue({ role, rightCategory }),
+      toggleRoleRightCategoryValue({ role, rightCategory }),
       toggleRoleRightValue: (role, right) => toggleRoleRightValue({ role, right })
     },
     dispatch
@@ -49,29 +50,33 @@ class RoleRightCategory extends Component {
         itemHeight={cellHeight}
         isExpanded={selectors.getExpandedStateFromRightCategory(rightCategory)}
       >
-        <Grid.Cell styleName="role-cell">
-          {isDefault
-            ? <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />
-            : editingColumn
-              ? <TristateCheckbox
-                  id={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
-                  checkedState={selectors.rightCategoryStateForRole(role, rightCategory)}
-                  onChange={() => toggleRoleRightCategoryValue(role, rightCategory)}
-                />
-              : <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />}
-        </Grid.Cell>
-        {selectors.getRightsFromRightCategory(rightCategory).map(right =>
-          <Grid.Cell styleName="role-cell" key={`${roleName}_${selectors.getNameFromRight(right)}`}>
+        <Hoverable name={rightCategory.get('translationKey')}>
+          <Grid.Cell styleName="role-cell">
             {isDefault
-              ? <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />
+              ? <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />
               : editingColumn
                 ? <TristateCheckbox
-                    id={`${roleName}_${selectors.getNameFromRight(right)}`}
-                    checkedState={selectors.roleHasRight(role, right)}
-                    onChange={() => toggleRoleRightValue(role, right)}
+                    id={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
+                    checkedState={selectors.rightCategoryStateForRole(role, rightCategory)}
+                    onChange={() => toggleRoleRightCategoryValue(role, rightCategory)}
                   />
-                : <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />}
+                : <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />}
           </Grid.Cell>
+        </Hoverable>
+        {selectors.getRightsFromRightCategory(rightCategory).map(right =>
+          <Hoverable name={right.get('name')} key={`${roleName}_${selectors.getNameFromRight(right)}`} >
+            <Grid.Cell styleName="role-cell">
+              {isDefault
+                ? <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />
+                : editingColumn
+                  ? <TristateCheckbox
+                      id={`${roleName}_${selectors.getNameFromRight(right)}`}
+                      checkedState={selectors.roleHasRight(role, right)}
+                      onChange={() => toggleRoleRightValue(role, right)}
+                    />
+                  : <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />}
+            </Grid.Cell>
+          </Hoverable>
         )}
       </Expandable>
     );

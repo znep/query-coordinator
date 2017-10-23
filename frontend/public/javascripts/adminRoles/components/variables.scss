@@ -13,18 +13,18 @@ $rights-cell-width: 8em;
 $grid-width: 500px;
 $grid-header-color: $white;
 
-$scroll-container-border-color: $black;
-$cell-background-color: $light-grey-5;
+$scroll-container-border-color: #e7e8e8;
+$cell-background-color: $white;
 $footer-background-color: $light-grey-4;
 $cell-border-color: $light-grey-3;
 $checkbox-border-color: $black;
 $checkbox-icon-color: $black;
-$column-border-color: $black;
+$column-border-color: #E7E8E8;
 $column-header-background-color: $white;
 $column-section-separator-color: $dark-grey-2;
 $rights-column-separator-color: $light-grey-3;
 $expandable-trigger-text-color: $primary-dark;
-$expandable-cell-background-color: $light-grey-7;
+$expandable-cell-background-color: $white;
 
 $role-edit-control-background-color: $white;
 $role-edit-control-box-shadow-color: rgba(50, 50, 50, .25);
@@ -32,7 +32,12 @@ $role-edit-control-hover-background-color: $light-grey-4;
 $role-edit-control-color: $dark-grey-3;
 
 $action-bar-background-color: $light-grey-6;
-$action-bar-border-color: $black;
+$action-bar-border-color: #e7e8e8;
+
+$right-category-title-cell-expanded-color: $primary-base;
+$hovered-title-cell-sidebar-color: $alternate-4-base;
+$hovered-cell-background-color: $light-grey-5;
+$unhovered-title-cell-sidebar-color: $light-grey-4;
 
 $role-edit-control-height: 3em;
 $role-edit-control-width: 2.25em;

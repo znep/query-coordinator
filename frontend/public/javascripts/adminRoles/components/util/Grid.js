@@ -50,10 +50,10 @@ Header.propTypes = {
 
 class Cell extends Component {
   render() {
-    const { className } = this.props;
+    const { children, className} = this.props;
     return (
       <div styleName="cell" className={className}>
-        {this.props.children}
+        {children}
       </div>
     );
   }

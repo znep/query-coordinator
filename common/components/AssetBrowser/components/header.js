@@ -21,7 +21,7 @@ export class Header extends Component {
 
   // See ../lib/constants.js for tabName values
   renderTab(tabName, text) {
-    if (this.props.tabsToHide.includes(tabName)) return;
+    if (_(this.props.tabsToHide).includes(tabName)) return;
 
     const activeClass = (tabName === this.props.activeTab) ? 'active' : '';
 

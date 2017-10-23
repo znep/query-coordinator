@@ -12,9 +12,6 @@ export class CategoryFilter extends Component {
   render() {
     const { category, changeCategory, domainCategories } = this.props;
 
-    if (I18n.t('shared.asset_browser.filters.category.label').includes('missing')) {
-      debugger;
-    }
     return (
       <div className="filter-section category">
         <label className="filter-label">

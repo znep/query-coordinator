@@ -63,11 +63,26 @@ class HrefForm extends Component {
             return {
               ...href,
               urls: {
-                [uuid()]: ''
+                [uuid()]: {
+                  url: '',
+                  filetype: ''
+                }
               }
             };
           } else {
-            return href;
+            return {
+              ...href,
+              urls: Object.keys(href.urls).reduce(
+                (acc, key) => ({
+                  ...acc,
+                  [uuid()]: {
+                    url: href.urls[key],
+                    filetype: key
+                  }
+                }),
+                {}
+              )
+            };
           }
         });
 
@@ -107,7 +122,10 @@ class HrefForm extends Component {
       title: datasetTitle,
       description: '',
       urls: {
-        [uuid()]: ''
+        [uuid()]: {
+          url: '',
+          filetype: ''
+        }
       }
     };
 
@@ -139,7 +157,10 @@ class HrefForm extends Component {
       ...href,
       urls: {
         ...href.urls,
-        [uuid()]: ''
+        [uuid()]: {
+          url: '',
+          filetype: ''
+        }
       }
     };
 
@@ -175,7 +196,10 @@ class HrefForm extends Component {
       ...href,
       urls: {
         ...href.urls,
-        [urlId]: ''
+        [urlId]: {
+          url: '',
+          filetype: ''
+        }
       }
     };
 

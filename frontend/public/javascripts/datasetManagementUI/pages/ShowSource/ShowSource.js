@@ -101,14 +101,14 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   return {
     onHrefPage,
     hrefFormDirty,
-    inProgress: !!source && (!source.finished_at && !source.failed_at),
-    hrefFormState: hrefs
+    hrefs,
+    inProgress: !!source && (!source.finished_at && !source.failed_at)
   };
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const callParams = {
-    href: shapeHrefState(stateProps.hrefFormState)
+    href: shapeHrefState(stateProps.hrefs)
   };
 
   const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));

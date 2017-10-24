@@ -14,6 +14,7 @@ if [ "${RUN_TESTS}" = "true" ]; then
   # built concurrently.
   bin/test
 else
+  bin/install_deps # bin/test install deps for us already.
   echo "Skipping tests because RUN_TESTS is false"
 fi
 
@@ -30,7 +31,7 @@ cd "${WORKSPACE}"
 pushd common/i18n
   mkdir -p log
   touch log/localeapp.yml
-  LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull config/locales
+  LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull
 popd
 
 rm -f marathon.properties

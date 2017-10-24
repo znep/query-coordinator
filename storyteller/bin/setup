@@ -39,9 +39,7 @@ On Ubuntu:
   puts "== Copying and moving git hooks into .git/hooks"
   system "cp -n bin/pre-commit ../.git/hooks/pre-commit"
 
-  puts "== Installing dependencies =="
-  system "gem install bundler --conservative"
-  system "bundle check || bundle install"
+  system "bin/install_deps"
 
   puts "\n== Copying sample files =="
   unless File.exist?('config/database.yml')

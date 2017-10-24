@@ -16,10 +16,7 @@ const middleware = [
   })
 ];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
-  reducer(window.serverConfig),
-  composeEnhancers(applyMiddleware(...middleware))
-);
+const store = createStore(reducer(window.serverConfig), composeEnhancers(applyMiddleware(...middleware)));
 
 ReactDOM.render(
   <AppContainer>

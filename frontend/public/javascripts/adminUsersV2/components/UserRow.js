@@ -74,14 +74,10 @@ export class UserRow extends React.Component {
     const customRolesExist = availableRoles.some(role => !role.isDefault);
 
     const options = availableRoles.map(role => {
-      const title = role.isDefault ?
-        I18n.t(`roles.default_roles.${role.name}.name`) :
-        role.name;
+      const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
 
       if (customRolesExist) {
-        const group = role.isDefault ?
-          I18n.t('users.roles.default') :
-          I18n.t('users.roles.custom');
+        const group = role.isDefault ? I18n.t('users.roles.default') : I18n.t('users.roles.custom');
         return {
           title,
           group,
@@ -101,7 +97,8 @@ export class UserRow extends React.Component {
           onSelection={selection => this.props.onRoleChange(selection.value)}
           options={options}
           size="medium"
-          value={_.isUndefined(this.props.pendingRole) ? this.props.roleId : this.props.pendingRole} />
+          value={_.isUndefined(this.props.pendingRole) ? this.props.roleId : this.props.pendingRole}
+        />
         {this.renderPendingActionStatus()}
       </td>
     );
@@ -110,8 +107,7 @@ export class UserRow extends React.Component {
   renderActionMenu() {
     return (
       <td>
-        <UserEditControl
-          removeRole={this.props.onRemoveUserRole} />
+        <UserEditControl removeRole={this.props.onRemoveUserRole} />
       </td>
     );
   }

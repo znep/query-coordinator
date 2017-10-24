@@ -1,7 +1,6 @@
 @import 'common/schema-preview';
 @import 'common/row-details';
 @import 'common/styleguide/partials/pager';
-
 @import 'common/visualizations/views/styles/socrata-visualizations';
 
 // this is in the erb, so can't move to within react app
@@ -42,6 +41,11 @@
     position: relative;
     vertical-align: bottom;
     width: 15em;
+
+    .dropdown-placeholder {
+      border: 0;
+      outline: none;
+    }
   }
 
   .pending-action-span {
@@ -64,11 +68,6 @@
     .spinner-default {
       margin: 10px 25px 10px 0;
     }
-  }
-
-  .dropdown-placeholder {
-    border: 0;
-    outline: none;
   }
 
   .socrata-icon-user {
@@ -108,5 +107,33 @@
       border-color: black;
       padding-left: 0;
     }
+  }
+
+  .user-search-bar {
+    align-items: center;
+    display: flex;
+
+    .add-user-button {
+      margin-left: 10px;
+    }
+
+    .user-autocomplete {
+      flex: 1;
+      width: 100%;
+    }
+  }
+
+  .add-user {
+    .add-user-emails {
+      width: 100%;
+    }
+  }
+
+  .add-user-confirm {
+    margin-right: 10px;
+  }
+
+  .error-list {
+    margin-bottom: 0;
   }
 }

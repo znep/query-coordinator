@@ -71,18 +71,18 @@ class UserEditControl extends React.Component {
 
     return (
       <div className="user-edit-control" ref={ref => (this.dropdownRef = ref)}>
-        <button
-          className={buttonClass}
-          onClick={() => this.setState({ showDropdown: !showDropdown })}>
+        <button className={buttonClass} onClick={() => this.setState({ showDropdown: !showDropdown })}>
           <SocrataIcon name="kebab" />
         </button>
-        {showDropdown &&
+        {showDropdown && (
           <ul className="user-edit-actions">
             <DropdownItem
               name={I18n.t('users.actions.remove_role')}
               hideDropdown={this.hideDropdown}
-              onClick={removeRole} />
-          </ul>}
+              onClick={removeRole}
+            />
+          </ul>
+        )}
       </div>
     );
   }

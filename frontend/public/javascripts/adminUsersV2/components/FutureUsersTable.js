@@ -38,7 +38,8 @@ export class FutureUsersTable extends React.Component {
     return (
       <table
         className="result-list-table table table-discrete table-condensed table-borderless"
-        id="future-users-table">
+        id="future-users-table"
+      >
         {this.renderHeaderRow()}
         {this.renderDataRows()}
       </table>

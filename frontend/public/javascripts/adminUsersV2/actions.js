@@ -1,5 +1,7 @@
-import { defaultHeaders, checkStatus } from 'common/http';
-import CoreApi from 'common/core-roles-api';
+import { defaultHeaders, fetchJson } from 'common/http';
+import CoreFutureAccountsApi from 'common/core-future-accounts-api';
+import CoreRolesApi from 'common/core-roles-api';
+import * as Validators from './validators';
 
 import _ from 'lodash';
 
@@ -7,6 +9,7 @@ import _ from 'lodash';
 export const START = 'START';
 export const COMPLETE_SUCCESS = 'COMPLETE_SUCCESS';
 export const COMPLETE_FAIL = 'COMPLETE_FAIL';
+export const VALIDATION_FAIL = 'VALIDATION_FAIL';
 
 export const USER_ROLE_CHANGE = 'USER_ROLE_CHANGE';
 export const changeUserRole = (userId, newRole) => dispatch => {
@@ -17,7 +20,7 @@ export const changeUserRole = (userId, newRole) => dispatch => {
   };
 
   dispatch({ ...ACTION, stage: START });
-  return CoreApi.assignRoleToUser({ userId, roleId: newRole }).then(
+  return CoreRolesApi.assignRoleToUser({ userId, roleId: newRole }).then(
     () => {
       dispatch({ ...ACTION, stage: COMPLETE_SUCCESS });
     },
@@ -39,12 +42,6 @@ const convertUserListFromApi = users => {
   });
 };
 
-function fetchJson(apiPath, fetchOptions) {
-  return fetch(apiPath, fetchOptions).
-    then(checkStatus).
-    then(response => response.json());
-}
-
 const loadUsers = query => {
   const fetchOptions = {
     credentials: 'same-origin',
@@ -61,24 +58,16 @@ const loadUsers = query => {
     then(convertUserListFromApi);
 };
 
-const loadFutureUsers = () => {
-  const fetchOptions = {
-    credentials: 'same-origin',
-    headers: defaultHeaders
-  };
-
-  const apiPath = '/api/future_accounts';
-
-  return fetchJson(apiPath, fetchOptions).then(values =>
-    values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))
-  ).catch(error => {
-    console.warn("Unable to load future users, showing empty list.", error);
-    return [];
-  });
-};
+const loadFutureUsers = () =>
+  CoreFutureAccountsApi.getFutureUsers().
+    then(values => values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))).
+    catch(error => {
+      console.warn('Unable to load future users, showing empty list.', error);
+      return [];
+    });
 
 const loadRoles = () => {
-  return CoreApi.getAllRoles().then(roles =>
+  return CoreRolesApi.getAllRoles().then(roles =>
     roles.map(({ name, id, isDefault }) => {
       return {
         name,
@@ -154,12 +143,64 @@ export const removeUserRole = (userId, roleId) => dispatch => {
   };
 
   dispatch({ ...ACTION, stage: START });
-  CoreApi.removeRoleFromUser({ userId, roleId }).
-    then(
-      () => { dispatch({ ...ACTION, stage: COMPLETE_SUCCESS }); },
-      (err) => {
-        console.error(err);
-        dispatch({ ...ACTION, stage: COMPLETE_FAIL });
-      }
-    );
+  CoreRolesApi.removeRoleFromUser({ userId, roleId }).then(
+    () => {
+      dispatch({ ...ACTION, stage: COMPLETE_SUCCESS });
+    },
+    err => {
+      console.error(err);
+      dispatch({ ...ACTION, stage: COMPLETE_FAIL });
+    }
+  );
+};
+
+export const TOGGLE_ADD_USER_UI = 'TOGGLE_ADD_USER_UI';
+export const toggleAddUserUi = (isOpen = false) => ({ type: TOGGLE_ADD_USER_UI, payload: { isOpen } });
+export const cancelAddUser = () => dispatch => {
+  dispatch(clearAddUserErrors());
+  dispatch(toggleAddUserUi(false));
+};
+
+export const SET_ADD_USER_ERRORS = 'SET_ADD_USER_ERRORS';
+export const setAddUserErrors = errors => ({ type: SET_ADD_USER_ERRORS, payload: { errors } });
+export const clearAddUserErrors = () => ({ type: SET_ADD_USER_ERRORS, payload: { errors: [] } });
+
+export const SUBMIT_NEW_USERS = 'SUBMIT_NEW_USERS';
+const postNewUsers = (emails, roleId, dispatch) => {
+  CoreFutureAccountsApi.postFutureUsers(emails, roleId).
+    then(createdEmails => {
+      const futureUsers = createdEmails.map((email, i) => ({
+        createdAt: Date.now() / 1000,
+        email,
+        id: Date.now() + i,
+        pendingRoleId: roleId
+      }));
+      dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { futureUsers } });
+      dispatch(toggleAddUserUi(false));
+    }).
+    catch(error => {
+      console.warn(error);
+      const errors =
+        error instanceof CoreFutureAccountsApi.FutureAccountsCreationError
+          ? error.errors
+          : [{ translationKey: 'users.errors.server_error_html' }];
+
+      dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_FAIL, payload: { errors } });
+      dispatch(setAddUserErrors(errors));
+    });
+};
+
+export const submitNewUsers = (emails, id) => dispatch => {
+  const roleId = parseInt(id, 10);
+  dispatch({ type: SUBMIT_NEW_USERS, stage: START, payload: { emails, roleId } });
+  dispatch(clearAddUserErrors());
+  const validation = Validators.isValidEmailGroup(emails).concat(Validators.isValidRoleId(roleId));
+  validation.matchWith({
+    Success: () => postNewUsers(emails, roleId, dispatch),
+    Failure: failedValidation => {
+      const validationErrors = failedValidation.value;
+      dispatch({ type: SUBMIT_NEW_USERS, stage: VALIDATION_FAIL, payload: { validationErrors } });
+      dispatch(setAddUserErrors(validationErrors));
+    }
+  });
 };

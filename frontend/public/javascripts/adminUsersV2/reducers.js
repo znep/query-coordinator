@@ -1,6 +1,17 @@
 import { combineReducers } from 'redux';
 import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReducer';
-import { COMPLETE_FAIL, COMPLETE_SUCCESS, LOAD_DATA, START, USER_ROLE_CHANGE, USER_SEARCH } from './actions';
+import {
+  COMPLETE_FAIL,
+  COMPLETE_SUCCESS,
+  LOAD_DATA,
+  SET_ADD_USER_ERRORS,
+  START,
+  SUBMIT_NEW_USERS,
+  TOGGLE_ADD_USER_UI,
+  USER_ROLE_CHANGE,
+  USER_SEARCH
+} from './actions';
+import _ from 'lodash';
 
 const userRoleChange = (state, action) => {
   return state.map(user => {
@@ -51,11 +62,38 @@ const users = (state = [], action) => {
   }
 };
 
+const initialUiState = {
+  showAddUserUi: false,
+  addUserErrors: []
+};
+
+const ui = (state = initialUiState, action) => {
+  switch (action.type) {
+    case SET_ADD_USER_ERRORS:
+      return {
+        ...state,
+        addUserErrors: _.get(action, 'payload.errors', [])
+      };
+    case TOGGLE_ADD_USER_UI:
+      return {
+        ...state,
+        showAddUserUi: _.get(action, 'payload.isOpen', !state.showAddUserUi)
+      };
+    default:
+      return state;
+  }
+};
+
 const futureUsers = (state = [], action) => {
   switch (action.type) {
     case LOAD_DATA:
       if (action.stage === COMPLETE_SUCCESS) {
         return action.futureUsers;
+      }
+      return state;
+    case SUBMIT_NEW_USERS:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return state.concat(_.get(action, 'payload.futureUsers', []));
       }
       return state;
     default:
@@ -75,6 +113,7 @@ const config = initialConfig => (state = initialConfig) => state;
 
 export default initialConfig =>
   combineReducers({
+    ui,
     users,
     futureUsers,
     roles,

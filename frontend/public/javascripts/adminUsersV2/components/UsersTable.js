@@ -22,7 +22,8 @@ export class UsersTable extends React.Component {
         {...user}
         onRoleChange={onRoleChange}
         onRemoveUserRole={onRemoveUserRole}
-        key={user.id} />
+        key={user.id}
+      />
     );
   }
 
@@ -50,7 +51,8 @@ export class UsersTable extends React.Component {
     return (
       <table
         className="result-list-table table table-discrete table-condensed table-borderless"
-        id="users-table">
+        id="users-table"
+      >
         {this.renderHeaderRow()}
         {this.renderDataRows()}
       </table>

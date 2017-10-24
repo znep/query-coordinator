@@ -47,3 +47,8 @@ export const redirectTo = (location, wait = 0) => {
     document.location.assign(location);
   }, wait);
 };
+
+export const fetchJson = (apiPath, options) =>
+  fetch(apiPath, options).
+  then(checkStatus).
+  then(response => response.json());

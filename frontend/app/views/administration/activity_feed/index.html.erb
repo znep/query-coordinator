@@ -1,191 +1,36 @@
 <% content_for :head do %>
+  <%= render_feature_flags_for_javascript %>
+  <%= rendered_stylesheet_tag 'styleguide' %>
+  <%= google_font_link %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
-  <%= rendered_stylesheet_tag 'administration-activity-feed' %>
   <title><%= t('screens.admin.jobs.index_page.title') %> | <%= get_site_title %></title>
-<% end %>
-
-<% content_for :skip_links do %>
-  <%= link_to t('core.no_js'), '?no_js=true' %>
-<% end %>
-
-<% content_for :js_footer do %>
-  <%- unless params[:no_js].present? -%>
-    <%= include_webpack_bundle 'admin/admin-activity-feed.js' %>
-  <%- end -%>
+  <%= render_admin_session_data %>
+  <%= render_admin_server_config %>
+  <%= render_admin_activity_feed_initial_data %>
+  <%= render_mixpanel_config %>
+  <% translations = json_escape(LocaleCache.render_all_translation_keys(['shared.components.filter_bar', 'screens.admin.jobs']).to_json) %>
+  <%= javascript_tag("window.translations = #{translations};") %>
 <% end %>
 
 <% content_for :translations do %>
+  <%= render_translations LocalePart.screens.admin.jobs %>
   <%= render_translations LocalePart.plugins.daterangepicker %>
-  <%= render_translations LocalePart.screens.admin.jobs.index_page %>
+  <%= render_translations LocalePart.table %>
 <% end %>
 
 <% content_for :breadcrumb do %>
-  <%= t("screens.admin.jobs.index_page.title") %>
+  <%= t('screens.admin.jobs.index_page.title') %>
 <% end %>
 
-<%= render '/administration/left_nav' %>
+<% content_for :admin_header do %>
+  <div id="activity-feed-header"></div>
+<% end %>
 
-<div class="contentBox <%= admin_page_with_left_nav_class %> jobsScreen">
-  <div class="adminHeader floating jobs">
-    <span class="icon"></span>
-    <h1><%= t('screens.admin.jobs.index_page.page_title') %></h1>
-  </div>
-</div>
-
-<div class="contentBox <%= admin_page_with_left_nav_class %> jobsScreen">
-  <%= display_standard_flashes %>
-
-  <% if @alert %>
-    <div class="flash error">
-      <%= t('screens.admin.jobs.index_page.alerts.server_error') %>
-    </div>
-  <% end %>
-
-  <div class="jobs-filter">
-    <span class="jobs-filter--header"><%= t('screens.admin.jobs.filters.filter_by') %>:</span>
-    <form class="jobs-filter--form" action="/admin/activity_feed">
-      <label for="activity_type"><%= t('screens.admin.jobs.filters.type') %>:</label>
-
-      <%= select_tag(:activity_type, options_for_select([[t('screens.admin.jobs.filters.all'), 'All']]) + grouped_options_for_select(
-        [
-          [t('screens.admin.jobs.filters.import_activity'),
-            [
-              [t('screens.admin.jobs.filters.import'), 'Import'],
-              [t('screens.admin.jobs.filters.append'), 'Append'],
-              [t('screens.admin.jobs.filters.replace'), 'Replace'],
-              [t('screens.admin.jobs.filters.upsert'), 'Upsert'],
-              [t('screens.admin.jobs.filters.delete'), 'Delete'],
-              [t('screens.admin.jobs.filters.restore'), 'Restore']
-            ]
-          ]
-          # TODO once these events are added, uncomment this!
-          #[t('screens.admin.jobs.filters.data_workflow'),
-          #  [
-          #    [t('screens.admin.jobs.filters.working_copy'), 'WorkingCopy'],
-          #    [t('screens.admin.jobs.filters.publish'), 'Publish']
-          #  ]
-          #]
-        ],
-        params[:activity_type]
-      )) %>
-
-      <label for="activity_status"><%= t('screens.admin.jobs.index_page.status') %>:</label>
-      <%= select_tag(
-        :activity_status,
-        options_for_select(
-        [
-          [t('screens.admin.jobs.filters.all'), 'All'],
-          [t('screens.admin.jobs.statuses.in_progress'), 'InProgress'],
-          [t('screens.admin.jobs.statuses.success'), 'Success'],
-          [t('screens.admin.jobs.statuses.success_with_data_errors'), 'SuccessWithDataErrors'],
-          [t('screens.admin.jobs.statuses.failure'), 'Failure']
-
-        ],
-        params[:activity_status]
-      )) %>
-
-      <label for="time-control-input"><%= t('screens.admin.jobs.filters.date') %>:</label>
-      <input name="date_range" type="text" id="time-control-input" class="currentTimeSlice" readonly="readonly" value='<%= if params[:date_range].present? then CGI.unescapeHTML params[:date_range] end %>' />
-
-      <button class="button" type="submit"><%= t('screens.admin.jobs.filters.apply_filters') %></button>
-    </form>
-  </div>
-
-  <table class="gridList">
-    <thead>
-      <tr>
-        <th><%= t('screens.admin.jobs.index_page.action') %></th>
-        <th><%= t('screens.admin.jobs.index_page.dataset') %></th>
-        <th><%= t('screens.admin.jobs.index_page.initiated_by') %></th>
-        <th><%= t('screens.admin.jobs.index_page.started') %></th>
-        <th><%= t('screens.admin.jobs.index_page.status') %></th>
-        <td></td>
-      </tr>
-    </thead>
-    <tbody>
-      <%- @activities.each do |activity| %>
-        <tr class="job-row">
-          <td><%= t("screens.admin.jobs.actions.#{activity.activity_type}") %></td>
-          <td>
-            <% if activity.dataset.nil? %>
-              <span class="import-status-deleted"><%= t('screens.admin.jobs.index_page.deleted_dataset') %></span>
-            <% elsif activity.dataset.deleted %>
-              <%= activity.dataset.name %> <span class="import-status-deleted"><%= t('screens.admin.jobs.index_page.deleted') %></span>
-            <% else %>
-              <%= link_to activity.dataset.name, view_path(activity.dataset) %>
-            <% end %>
-            <% if activity.had_working_copy? %>
-              <% working_copy = activity.working_copy %>
-              <p class="working-copy-annotation">
-                <%= t('screens.admin.jobs.index_page.to_working_copy') %>
-              <% if working_copy && working_copy.is_unpublished? %>
-                <%= link_to(activity.working_copy_id, view_path(working_copy)) %>
-              <% else %>
-                <%= activity.working_copy_display %>
-              <% end %>
-              </p>
-            <% end %>
-          </td>
-          <td nowrap>
-            <% if activity.initiated_by.nil? %>
-              <span class="import-status-deleted"><%= "(#{t('screens.admin.jobs.index_page.deleted_user')})" %></span>
-            <% elsif activity.initiated_by.is_superadmin? %>
-              Socrata
-              <% if current_user.is_superadmin? %>
-                (<%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>)
-              <% end %>
-            <% else %>
-              <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
-            <% end %>
-          </td>
-          <td nowrap>
-            <span class="started-time" data-epoch-seconds="<%= activity.created_at.to_i %>">
-              <%= short_date_span(activity.created_at) %>
-            </span>
-            <span class="started-time-relative-day">
-              <%= short_date_span(activity.created_at) %>
-            </span>
-          </td>
-          <td class="import-status-label" nowrap>
-            <span class="import-status-icon import-status-icon-<%= activity.status.dasherize %> icon-<%= icon_for_status(activity.status) %>"></span>
-            <% if activity.status == 'success_with_data_errors' %>
-              <%= link_to t('screens.admin.jobs.statuses.success'),
-                          :action => 'show', :id => activity.id %>
-              <div class="with-problems"><%= t('screens.admin.jobs.index_page.with_problems') %></div>
-            <% elsif activity.status == 'failure' %>
-              <%= link_to t("screens.admin.jobs.statuses.#{activity.status}"),
-                          :action => 'show', :id => activity.id %>
-            <% else %>
-              <%= t("screens.admin.jobs.statuses.#{activity.status}") %>
-            <% end %>
-
-          </td>
-          <td>
-            <%= restore_button(activity) %>
-          </td>
-        </tr>
-      <%- end %>
-    </tbody>
-  </table>
-  <% if @activities.blank? %>
-    <p class="end-message">
-      <%= t('screens.admin.jobs.index_page.no_jobs') %>
-    </p>
-  <% end %>
-</div>
-
-<div class="pager">
-  <% if @pager_info[:has_prev_page?] %>
-      <%= link_to(t('core.pagination.previous_page'),
-                  "/admin/activity_feed?page=#{@pager_info[:prev_page]}&#{@pager_info[:params].to_query}",
-                  :class => 'pager-element page') %>
-  <% end %>
-
-  <% if @pager_info[:has_next_page?] %>
-      <%= link_to(t('core.pagination.next_page'),
-                  "/admin/activity_feed?page=#{@pager_info[:next_page]}&#{@pager_info[:params].to_query}",
-                  :class => 'pager-element page') %>
-  <% end %>
+<div
+  id="app"
+  data-alert-type="<%= (@alert || {}).fetch(:type, nil) %>"
+  data-alert-translation-key="<%= (@alert || {}).fetch(:translation_key, nil) %>">
 </div>
 
 <%= render_admin_qualtrics %>
+<%= include_webpack_bundle 'admin-activity-feed/main.js' %>

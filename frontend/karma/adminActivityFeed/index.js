@@ -14,8 +14,7 @@ window.serverConfig = { environment: 'development' };
 window.sessionData = { };
 
 FeatureFlags.useTestFixture({
-  open_performance_narrative_editor: 'storyteller',
-  enable_new_activity_log_ui: true
+  open_performance_narrative_editor: 'storyteller'
 });
 
 const MockHttpClient = require('./MockHttpClient').default;

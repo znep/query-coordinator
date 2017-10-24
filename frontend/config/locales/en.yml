@@ -2415,6 +2415,8 @@ en:
       dataset_title: "External Dataset {0}"
       error_url: Not a valid URL
       error_href_exists: This dataset has been linked to data on an external server. Uploading a new source or importing data from a URL is no longer possible.
+      error_no_dupes: This field must be unique
+      error_no_empties: This field cannot be empty
       error_schema_exists: A data source has already been imported for this dataset. Linking to data from an external server is no longer possible.
       error_unknown: An unknown error has occured.
       label_description: Dataset Description
@@ -2423,6 +2425,8 @@ en:
       label_name: Dataset Name
       label_url: URL
       save_and_exit: Save and Exit
+      save_error: There was a problem saving your data. Please review your inputs below.
+      save_success: Data saved successfully.
       subtitle: This will create a link to a dataset on another server. Your data will not be imported.
       title: Link to an External Dataset
     show_uploads:

@@ -182,14 +182,14 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
   const save = (andExit = false) => {
     if (errors.length) {
-      dispatch(showFlashMessage('error', 'proplems...'));
+      dispatch(showFlashMessage('error', I18n.show_sources.save_error));
       dispatch(setFormErrors('hrefForm', errors));
       return;
     }
 
     return dispatch(updateRevision(callParams, ownProps.params))
       .then(() => {
-        dispatch(showFlashMessage('success', 'Data saved successfully.'));
+        dispatch(showFlashMessage('success', I18n.show_sources.save_success));
         dispatch(markFormClean('hrefForm'));
         dispatch(setFormErrors('hrefForm', []));
       })

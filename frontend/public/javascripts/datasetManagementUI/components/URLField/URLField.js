@@ -34,10 +34,10 @@ class URLField extends Component {
 
     if (emptyErrors.length) {
       filetypeInErrorState = true;
-      errorMessage = 'cannot be empty';
+      errorMessage = I18n.show_sources.error_no_empties;
     } else if (dupeErrors.length) {
       filetypeInErrorState = dupeErrors.includes(value.filetype);
-      errorMessage = 'no dupes';
+      errorMessage = I18n.show_sources.error_no_dupes;
     }
 
     return (

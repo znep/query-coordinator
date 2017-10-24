@@ -79,9 +79,6 @@ class PublishButton extends Component {
   render() {
     const { publishDataset, metadataSatisfied, dataSatisfied, publishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
-    const modalName = window.serverConfig.featureFlags.usaid_features_enabled
-      ? 'PublishConfirmationUSAID'
-      : 'PublishConfirmation';
 
     return (
       <div
@@ -91,7 +88,7 @@ class PublishButton extends Component {
         <div data-flyout={FLYOUT_ID}>
           <button
             className={styles.publishButton}
-            onClick={() => publishDataset(modalName)}
+            onClick={() => publishDataset('PublishConfirmation')}
             disabled={!readyToPublish || publishing}>
             {SubI18n.publish_dataset}
           </button>

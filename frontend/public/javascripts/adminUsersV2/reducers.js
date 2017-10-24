@@ -3,8 +3,8 @@ import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReduc
 import {
   COMPLETE_FAIL,
   COMPLETE_SUCCESS,
-  LOAD_DATA,
-  SET_ADD_USER_ERRORS,
+  LOAD_DATA, REMOVE_FUTURE_USER,
+  SET_ADD_USER_ERRORS, SHOW_NOTIFICATION,
   START,
   SUBMIT_NEW_USERS,
   TOGGLE_ADD_USER_UI,
@@ -63,8 +63,12 @@ const users = (state = [], action) => {
 };
 
 const initialUiState = {
+  addUserErrors: [],
+  notificationContent: '',
+  notificationType: 'default',
+  notificationTimeout: null,
   showAddUserUi: false,
-  addUserErrors: []
+  showNotification: false
 };
 
 const ui = (state = initialUiState, action) => {
@@ -74,6 +78,23 @@ const ui = (state = initialUiState, action) => {
         ...state,
         addUserErrors: _.get(action, 'payload.errors', [])
       };
+    case SHOW_NOTIFICATION:
+      if (action.stage === START) {
+        return {
+          ...state,
+          showNotification: true,
+          notificationTimeout: _.get(action, 'payload.timeout', null),
+          notificationType: _.get(action, 'payload.type', 'default'),
+          notificationContent: _.get(action, 'payload.content', '')
+        };
+      } else if (action.stage === COMPLETE_SUCCESS) {
+        return {
+          ...state,
+          showNotification: false,
+          notificationTimeout: null
+        };
+      }
+      return state;
     case TOGGLE_ADD_USER_UI:
       return {
         ...state,
@@ -89,6 +110,11 @@ const futureUsers = (state = [], action) => {
     case LOAD_DATA:
       if (action.stage === COMPLETE_SUCCESS) {
         return action.futureUsers;
+      }
+      return state;
+    case REMOVE_FUTURE_USER:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return state.filter(user => user.id !== _.get(action, 'payload.id', null));
       }
       return state;
     case SUBMIT_NEW_USERS:

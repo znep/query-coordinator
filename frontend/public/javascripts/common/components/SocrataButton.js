@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
+/* eslint-disable no-use-before-define */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
 
 class SocrataButton extends Component {
@@ -46,7 +47,9 @@ SocrataButton.propTypes = {
   ]).isRequired,
   buttonStyle: PropTypes.oneOf(['inverse', 'block', 'dark', 'busy']),
   buttonSize: PropTypes.oneOf(['lg', 'sm', 'xs']),
-  buttonDisabledStyle: PropTypes.oneOf(['light'])
+  buttonDisabledStyle: PropTypes.oneOf(['light']),
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  className: PropTypes.string
 };
 
 export default SocrataButton;

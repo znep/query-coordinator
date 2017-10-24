@@ -5,12 +5,12 @@ import { Dropdown, SocrataIcon } from 'common/components';
 import _ from 'lodash';
 import moment from 'moment';
 import connectLocalization from 'common/i18n/components/connectLocalization';
-import UserEditControl from './UserEditControl';
+import DropdownButton, { DropdownItem } from './DropdownButton';
 
 export class UserRow extends React.Component {
   constructor() {
     super();
-    _.bindAll(['formatLastActiveTooltip', 'formatLastActive', 'renderLastActive']);
+    _.bindAll(['formatLastActiveTooltip', 'formatLastActive', 'renderLastActive', 'renderEditControl']);
   }
 
   formatLastActive(lastAuthenticatedAt) {
@@ -104,11 +104,20 @@ export class UserRow extends React.Component {
     );
   }
 
+  renderEditControl() {
+    const { I18n, onRemoveUserRole } = this.props;
+    return (
+      <DropdownButton>
+        <DropdownItem onClick={() => onRemoveUserRole()}>
+          {I18n.t('users.actions.remove_role')}
+        </DropdownItem>
+      </DropdownButton>
+    );
+  }
+
   renderActionMenu() {
     return (
-      <td>
-        <UserEditControl removeRole={this.props.onRemoveUserRole} />
-      </td>
+      <td>{this.renderEditControl()}</td>
     );
   }
 

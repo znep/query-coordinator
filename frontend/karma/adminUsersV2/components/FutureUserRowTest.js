@@ -18,7 +18,7 @@ describe('components/FutureUserRow', () => {
 
   it('renders a row with a future user', () => {
     const component = shallow(<FutureUserRow {...defaultProps} />);
-    expect(component.find('td')).to.have.length(3);
+    expect(component.find('td')).to.have.length(4);
   });
 
 });

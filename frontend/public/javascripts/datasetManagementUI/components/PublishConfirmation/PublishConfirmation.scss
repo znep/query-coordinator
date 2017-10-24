@@ -10,13 +10,57 @@
   }
 }
 
-.mainIcon {
-  font-size: 150px;
+.privacySelector {
+  width: 185px;
   display: inline-block;
-  height: 190px;
-  line-height: 170px;
-  vertical-align: top;
-  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 1.1em 0.5em 0.9em 0.5em;
+  margin-bottom: 13px;
+  cursor: pointer;
+  position: relative;
+}
+
+.privacySelector:hover {
+  border: 2px solid $primary-base;
+}
+
+.checkbox {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: $primary-light;
+  background-color: $primary-base;
+  padding: 3px;
+  border-radius: 2px;
+  line-height: 1;
+  visibility: hidden;
+}
+
+.privacySelectorActive {
+  .checkbox {
+    visibility: visible;
+  }
+}
+
+.privacySelectorActive {
+  composes: privacySelector;
+  border: 2px solid $primary-base;
+  background-color: $primary-light;
+}
+
+.privacySelector h3 {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.privacySelector:first-child {
+  margin-right: 20px;
+}
+
+.icon {
+  font-size: 55px;
+  line-height: 1.2;
+  display: block;
   color: $primary-base;
 }
 

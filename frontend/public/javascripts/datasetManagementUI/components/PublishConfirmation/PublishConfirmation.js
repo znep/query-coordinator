@@ -1,42 +1,84 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'reduxStuff/actions/apiCalls';
 import styles from './PublishConfirmation.scss';
 
-function PublishConfirmation({ doCancel, doUpdate, params }) {
-  return (
-    <div>
-      <h2>
-        {I18n.home_pane.publish_confirmation.title}
-      </h2>
-      <ModalContent>
-        <p>
-          {I18n.home_pane.publish_confirmation.body}
-        </p>
-        <SocrataIcon className={styles.mainIcon} name="public-open" />
-      </ModalContent>
-      <ModalFooter className={styles.modalFooter}>
-        <button onClick={doCancel} className={styles.cancelButton}>
-          {I18n.common.cancel}
-        </button>
-        <ApiCallButton
-          additionalClassName={styles.mainButton}
-          operation={APPLY_REVISION}
-          onClick={() => doUpdate(params)}>
-          {I18n.home_pane.publish_confirmation.button}
-        </ApiCallButton>
-      </ModalFooter>
-    </div>
-  );
+class PublishConfirmation extends Component {
+  constructor() {
+    super();
+    // cache the initial permission in the component state so we can revert
+    // to it if the user clicks cancel
+    this.state = {
+      initialPermission: null
+    };
+  }
+
+  componentWillMount() {
+    const { publicSelected } = this.props;
+
+    this.setState({
+      initialPermission: publicSelected ? 'public' : 'private'
+    });
+  }
+
+  render() {
+    const { doCancel, dispatchApplyRevision, setPermission, btnDisabled, publicSelected } = this.props;
+
+    return (
+      <div>
+        <h2>
+          {I18n.home_pane.publish_confirmation_usaid.title}
+        </h2>
+        <ModalContent>
+          <span
+            onClick={() => setPermission('public')}
+            className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
+            <SocrataIcon name="checkmark3" className={styles.checkbox} />
+            <h3>
+              {I18n.home_pane.publish_confirmation_usaid.public}
+            </h3>
+            <SocrataIcon className={styles.icon} name="public-open" />
+            {I18n.home_pane.publish_confirmation_usaid.public_msg}
+          </span>
+          <span
+            onClick={() => setPermission('private')}
+            className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
+            <SocrataIcon name="checkmark3" className={styles.checkbox} />
+            <h3>
+              {I18n.home_pane.publish_confirmation_usaid.private}
+            </h3>
+            <SocrataIcon className={styles.icon} name="private" />
+            {I18n.home_pane.publish_confirmation_usaid.private_msg}
+          </span>
+        </ModalContent>
+        <ModalFooter className={styles.modalFooter}>
+          <button onClick={() => doCancel(this.state.initialPermission)} className={styles.cancelButton}>
+            {I18n.common.cancel}
+          </button>
+          <ApiCallButton
+            additionalClassName={styles.mainButton}
+            operation={APPLY_REVISION}
+            forceDisable={btnDisabled}
+            onClick={() => dispatchApplyRevision()}>
+            {publicSelected
+              ? I18n.home_pane.publish_confirmation.button
+              : I18n.home_pane.publish_confirmation_usaid.button}
+          </ApiCallButton>
+        </ModalFooter>
+      </div>
+    );
+  }
 }
 
 PublishConfirmation.propTypes = {
   doCancel: PropTypes.func.isRequired,
-  doUpdate: PropTypes.func.isRequired,
-  params: PropTypes.object.isRequired
+  dispatchApplyRevision: PropTypes.func.isRequired,
+  btnDisabled: PropTypes.bool,
+  setPermission: PropTypes.func,
+  publicSelected: PropTypes.bool.isRequired
 };
 
 export default PublishConfirmation;

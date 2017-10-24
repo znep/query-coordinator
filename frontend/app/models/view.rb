@@ -1831,9 +1831,9 @@ class View < Model
 
   def moderation_status
     case moderationStatus
-      when true then 'Approved'
-      when false then 'Rejected'
-      else 'Pending'
+      when true then I18n.t('controls.browse.view_moderation.approved')
+      when false then I18n.t('controls.browse.view_moderation.rejected')
+      else I18n.t('controls.browse.view_moderation.pending')
     end
   end
 

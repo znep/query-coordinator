@@ -7,10 +7,10 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createNewRole, endRenameRole } from '../../actions';
-import ConditionTransitionMotion from '../util/ConditionTransitionMotion';
+import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { spring } from 'react-motion';
 import { RENAME_INDIVIDUAL_CUSTOM_ROLE, NEW_CUSTOM_ROLE } from '../../appStates';
-import SocrataButton from '../util/SocrataButton';
+import SocrataButton from 'common/components/SocrataButton';
 import CustomRoleForm from './CustomRoleForm';
 import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../selectors';
 import { connectLocalization } from 'common/components/Localization';

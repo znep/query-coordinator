@@ -8,12 +8,14 @@ import { Tabs } from '../common/components/Tabs';
 import { DataLoader } from './components/DataLoader';
 import { LocalizedCSVExportButton } from './components/CSVExportButton';
 import Localization from 'common/i18n/components/Localization';
+import { LocalizedNotification } from './components/Notification';
 
 export const App = ({ store }) => {
   return (
     <Localization locale={serverConfig.locale || 'en'}>
       <Provider store={store}>
         <DataLoader>
+          <LocalizedNotification />
           <div className="admin-users-app">
             <Tabs>
               <div name="Users">

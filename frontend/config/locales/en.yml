@@ -1133,6 +1133,10 @@ en:
           facet_main: matching %{body}
           main: Results %{body}
           term: for "%{term}"
+      view_moderation:
+        approved: Approved
+        pending: Pending
+        rejected: Rejected
     charts:
       inaccessible: This visualization is inaccessible or missing.
       missing_column_html: Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.
@@ -4775,6 +4779,7 @@ en:
         users_table_description: Users
       view_moderation:
         could_not_find_view: Could not find view to modify moderation status
+        moderation_status: Moderation Status
         set_moderation_status: The view '%{view_name}' has been %{moderation_status}. Please allow a few minutes for the changes to be reflected on your home page
         table_description: Moderated Datasets
         view_moderation: View Moderation
@@ -6512,7 +6517,9 @@ en:
     pm: pm
   users:
     actions:
+      remove_pending_user: Remove
       remove_role: Remove role
+      resend_pending_user_email: Resend email
     add_new_users:
       add_users: Add Users
       button: Add New User(s)
@@ -6537,6 +6544,9 @@ en:
     last_active:
       today: today
       unknown: unknown
+    notifications:
+      pending_user_removed: Pending user removed!
+      resent_email_success: Pending user email resent!
     roles:
       default: default
       custom: custom

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 // Yoinked from https://github.com/tessenate/polyhedra-viewer/blob/e96d6ebe0b78c35ec7613d35a48914ada9967e46/src/components/ConditionTransitionMotion.js
 /* Example
  <ConditionTransitionMotion
@@ -13,6 +14,7 @@
  </ConditionTransitionMotion>
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { TransitionMotion } from 'react-motion';
 
 const ConditionTransitionMotion = ({ condition, style, children, ...props }) => {
@@ -29,6 +31,12 @@ const ConditionTransitionMotion = ({ condition, style, children, ...props }) => 
         </div>}
     </TransitionMotion>
   );
+};
+
+ConditionTransitionMotion.propTypes = {
+  condition: PropTypes.bool,
+  style: PropTypes.any,
+  children: PropTypes.any
 };
 
 export default ConditionTransitionMotion;

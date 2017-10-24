@@ -3,18 +3,35 @@
     <p><%= t('screens.ds.grid_sidebar.odata.intro_html1') %></p>
     <p><%= raw t('screens.ds.grid_sidebar.odata.intro_html2', :doc_link => 'http://dev.socrata.com/odata/') %></p>
   </div>
-  <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_action') %></h3>
+
+  <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_v4_action') %></h3>
   <div class="odataEndpointWrapper">
     <%- if @view.geospatial_child_layer_count > 1 -%>
       <%- @view.geospatial_child_layers.each do |child_layer| -%>
-        <%= endpoint_url_tag(child_layer.odata_url(request), :name => child_layer.name, :label_id => 'odata') %>
+        <%= endpoint_url_tag(child_layer.odata_url_v4(request), :name => child_layer.name, :label_id => 'odata') %>
       <%- end -%>
     <%- elsif @view.geospatial_child_layer_count == 1 && @view.geospatial_child_layers[0] -%>
-      <%= endpoint_url_tag(@view.geospatial_child_layers[0].odata_url(request), :label_id => 'odata') %>
+      <%= endpoint_url_tag(@view.geospatial_child_layers[0].odata_url_v4(request), :label_id => 'odata') %>
     <%- elsif @view.geospatial_child_layer_count == 0 -%>
-      <%= endpoint_url_tag(@view.odata_url(request)) %>
+      <%= endpoint_url_tag(@view.odata_url_v4(request)) %>
     <%- else -%>
       <p><%= t('screens.ds.grid_sidebar.odata.no_endpoints_available') %></p>
     <%- end -%>
   </div>
+
+  <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_v2_action') %></h3>
+  <div class="odataEndpointWrapper">
+    <%- if @view.geospatial_child_layer_count > 1 -%>
+      <%- @view.geospatial_child_layers.each do |child_layer| -%>
+        <%= endpoint_url_tag(child_layer.odata_url_v2(request), :name => child_layer.name, :label_id => 'odata') %>
+      <%- end -%>
+    <%- elsif @view.geospatial_child_layer_count == 1 && @view.geospatial_child_layers[0] -%>
+      <%= endpoint_url_tag(@view.geospatial_child_layers[0].odata_url_v2(request), :label_id => 'odata') %>
+    <%- elsif @view.geospatial_child_layer_count == 0 -%>
+      <%= endpoint_url_tag(@view.odata_url_v2(request)) %>
+    <%- else -%>
+      <p><%= t('screens.ds.grid_sidebar.odata.no_endpoints_available') %></p>
+    <%- end -%>
+  </div>
+
 </div>

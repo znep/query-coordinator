@@ -5611,7 +5611,8 @@ en:
             location_column_invalid_dataset: Requested dataset does not exist.
             viz_limit: A view may only have one visualization on it
         odata:
-          endpoint_action: 'OData Endpoint:'
+          endpoint_v2_action: 'OData V2 Endpoint:'
+          endpoint_v4_action: 'OData V4 Endpoint:'
           intro_html1: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
           intro_html2: Use Microsoft Excel 2010, Microsoft Excel 2013 or Microsoft Power Query. Follow the instructions here, using <a href="%{doc_link}">Socrata's OData documentation</a>.
           no_endpoints_available: No available endpoints.

@@ -28,8 +28,8 @@ const components = (
   <Localization locale={serverConfig.locale || 'en'}>
     <AssetBrowser
       baseFilters={getCurrentUserFilter()}
+      enableAssetInventoryLink={false}
       pageSize={5}
-      showAssetInventoryLink={false}
       showAssetCounts={false}
       showFilters={false}
       showHeader

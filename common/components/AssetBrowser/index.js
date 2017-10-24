@@ -47,9 +47,9 @@ export class AssetBrowser extends Component {
 
 AssetBrowser.propTypes = {
   baseFilters: PropTypes.object,
+  enableAssetInventoryLink: PropTypes.bool,
   onAssetSelected: PropTypes.func,
   pageSize: PropTypes.number,
-  showAssetInventoryLink: PropTypes.bool,
   showAuthorityFilter: PropTypes.bool,
   showFilters: PropTypes.bool,
   showHeader: PropTypes.bool,
@@ -62,9 +62,9 @@ AssetBrowser.propTypes = {
 
 AssetBrowser.defaultProps = {
   baseFilters: {},
+  enableAssetInventoryLink: true,
   onAssetSelected: null,
   pageSize: 10,
-  showAssetInventoryLink: true,
   showAuthorityFilter: true,
   showFilters: true,
   showHeader: true,

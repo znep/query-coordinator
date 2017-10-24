@@ -6,15 +6,16 @@ import thunk from 'redux-thunk';
 
 import { CatalogResults } from 'common/components/AssetBrowser/components/catalog_results';
 import ResultListTable from 'common/components/AssetBrowser/components/result_list_table';
+import * as constants from 'common/components/AssetBrowser/lib/constants.js';
 
 describe('components/CatalogResults', () => {
   const catalogResultsProps = (options = {}) => ({
     changePage: () => {},
     changeQ: () => {},
     clearAllFilters: () => {},
+    enableAssetInventoryLink: false,
     fetchInitialResults: () => {},
     resultSetSize: 0,
-    showAssetInventoryLink: false,
     isMobile: false,
     toggleFilters: () => {},
     updatePageSize: () => {},
@@ -36,16 +37,27 @@ describe('components/CatalogResults', () => {
     assert.lengthOf(element.find(ResultListTable), 1);
   });
 
-  // NOTE: This prop appears unused.
-  describe('showAssetInventoryLink', () => {
-    it('shows the asset inventory button when true', () => {
-      const props = catalogResultsProps({ showAssetInventoryLink: true });
+  describe('enableAssetInventoryLink', () => {
+    it('shows the asset inventory button when true and on the "All Assets" tab', () => {
+      const props = catalogResultsProps({ activeTab: constants.ALL_ASSETS_TAB , enableAssetInventoryLink: true });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 1);
     });
 
+    it('hides the asset inventory button when true and on the "My Assets" tab', () => {
+      const props = catalogResultsProps({ activeTab: constants.MY_ASSETS_TAB , enableAssetInventoryLink: true });
+      const element = shallow(<CatalogResults {...props} />);
+      assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
+    });
+
+    it('hides the asset inventory button when true and on the "Shared to Me" tab', () => {
+      const props = catalogResultsProps({ activeTab: constants.SHARED_TO_ME_TAB , enableAssetInventoryLink: true });
+      const element = shallow(<CatalogResults {...props} />);
+      assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
+    });
+
     it('hides the asset inventory button when false', () => {
-      const props = catalogResultsProps({ showAssetInventoryLink: false });
+      const props = catalogResultsProps({ enableAssetInventoryLink: false });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
     });

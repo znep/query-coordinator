@@ -80,8 +80,8 @@ Header.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  activeTab: _.get(state, 'header.activeTab', 'myAssets'),
-  isMobile: _.get(state, 'windowDimensions.isMobile', false)
+  activeTab: state.header.activeTab,
+  isMobile: state.windowDimensions.isMobile
 });
 
 const mapDispatchToProps = (dispatch) => ({

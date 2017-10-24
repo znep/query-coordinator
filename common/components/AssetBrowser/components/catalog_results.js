@@ -10,7 +10,7 @@ import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
 
-import { MY_ASSETS_TAB } from '../lib/constants';
+import * as constants from '../lib/constants';
 import ActiveFilterCount from './filters/active_filter_count';
 import ResultListTable from './result_list_table';
 import Pager from 'frontend/public/javascripts/common/components/Pager';
@@ -37,7 +37,8 @@ export class CatalogResults extends Component {
       'renderError',
       'renderFooter',
       'renderTable',
-      'renderTopbar'
+      'renderTopbar',
+      'showAssetInventoryLink'
     );
   }
 
@@ -117,7 +118,7 @@ export class CatalogResults extends Component {
 
     const allAssetsButton = showManageAssets ? (
       <div className="manage-assets-link">
-        <a href={`/admin/assets?tab=${MY_ASSETS_TAB}`}>
+        <a href={`/admin/assets?tab=${constants.MY_ASSETS_TAB}`}>
           <button className="btn btn-primary all-assets-button">
             {I18n.t('shared.asset_browser.view_and_manage_assets')}
             <SocrataIcon name="arrow-right" />
@@ -175,13 +176,20 @@ export class CatalogResults extends Component {
     }
   }
 
+  // EN-18329: Hide the Asset Inventory button when on "My Assets" or "Shared to Me" tabs.
+  showAssetInventoryLink() {
+    const { activeTab, enableAssetInventoryLink } = this.props;
+    return enableAssetInventoryLink &&
+      activeTab !== constants.MY_ASSETS_TAB &&
+      activeTab !== constants.SHARED_TO_ME_TAB;
+  }
+
   renderFooter() {
     const {
       fetchingResults,
       pageNumber,
       pageSize,
       resultSetSize,
-      showAssetInventoryLink,
       showPager
     } = this.props;
 
@@ -202,9 +210,7 @@ export class CatalogResults extends Component {
       total: resultSetSize
     };
 
-    // EN-18329: Hide the Asset Inventory button on the /profile page,
-    // or on the /admin/assets page when filtered on "My Assets".
-    const renderedAssetInventoryLink = showAssetInventoryLink ? (
+    const renderedAssetInventoryLink = this.showAssetInventoryLink() ? (
       <div className="asset-inventory-link-wrapper">
         <AssetInventoryLink />
       </div>
@@ -218,7 +224,7 @@ export class CatalogResults extends Component {
     ) : null;
 
     // If there's nothing inside the footer, don't render it at all.
-    if (!showPager && !showAssetInventoryLink) {
+    if (!showPager && !this.showAssetInventoryLink()) {
       return;
     }
 
@@ -231,11 +237,11 @@ export class CatalogResults extends Component {
   }
 
   render() {
-    const { showPager, showAssetInventoryLink } = this.props;
+    const { showPager } = this.props;
 
     const catalogResultsClassnames = classNames('catalog-results', {
       'mobile': this.props.isMobile,
-      'footerless': !showPager && !showAssetInventoryLink
+      'footerless': !showPager && !this.showAssetInventoryLink()
     });
 
     return (
@@ -250,6 +256,7 @@ export class CatalogResults extends Component {
 }
 
 CatalogResults.propTypes = {
+  activeTab: PropTypes.string.isRequired,
   allFilters: PropTypes.object,
   baseFilters: PropTypes.object,
   changePage: PropTypes.func.isRequired,
@@ -257,6 +264,7 @@ CatalogResults.propTypes = {
   clearSearch: PropTypes.func,
   clearAllFilters: PropTypes.func.isRequired,
   currentQuery: PropTypes.string,
+  enableAssetInventoryLink: PropTypes.bool,
   fetchInitialResults: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
@@ -268,7 +276,6 @@ CatalogResults.propTypes = {
   pageNumber: PropTypes.number,
   pageSize: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired,
-  showAssetInventoryLink: PropTypes.bool,
   toggleFilters: PropTypes.func.isRequired,
   updatePageSize: PropTypes.func.isRequired
 };
@@ -284,6 +291,7 @@ CatalogResults.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
+  activeTab: state.header.activeTab,
   allFilters: state.filters,
   currentQuery: state.filters.q,
   fetchingResults: state.catalog.fetchingResults,

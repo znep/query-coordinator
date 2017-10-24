@@ -29,6 +29,10 @@ http://www.socrata.com
         <%= I18n.t('dataset.skip-to-content') %>
       </a>
     </div>
+    <%- if render_asset_action_bar? %>
+      <div id="asset-action-bar-container"></div>
+    <%- end %>
+
     <%- if render_site_admin_chrome? -%>
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>

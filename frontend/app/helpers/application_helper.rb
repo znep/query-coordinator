@@ -1223,6 +1223,18 @@ module ApplicationHelper
     )
   end
 
+  def render_asset_action_bar?
+    return false unless FeatureFlags.value_for(:enable_asset_action_bar,
+                                               view: @view, request: request)
+
+    # Currently we want it to show on DSLP and nowhere else,
+    # but it will eventually be in other places.
+
+    %(
+      datasets
+    ).include?(controller_name)
+  end
+
   def render_admin_header?
     %w(
       activity_feed

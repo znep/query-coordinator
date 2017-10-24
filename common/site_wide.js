@@ -5,6 +5,7 @@ import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 import AccessManagerModalToggle from 'common/components/AccessManagerModalToggle';
 import 'common/notifications/main';
+import AssetActionBar from 'common/components/AssetActionBar';
 
 /** ***************************************************************************************************/
 /*
@@ -83,4 +84,12 @@ if (_.get(window, 'blist.feature_flags.enable_access_manager_modal', false)) {
       console.warn(`Couldn't render access manager; datasetUid: ${datasetUid}, accessManagerRoot: ${accessManagerRoot}`);
     }
   });
+}
+
+const assetActionBarNode = document.querySelector('#asset-action-bar-container');
+if (assetActionBarNode) {
+  ReactDOM.render(
+    <AssetActionBar />,
+    assetActionBarNode
+  );
 }

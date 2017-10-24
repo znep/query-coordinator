@@ -2,9 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import PublishConfirmationUSAID from 'components/PublishConfirmationUSAID/PublishConfirmationUSAID';
+import PublishConfirmation from 'components/PublishConfirmation/PublishConfirmation';
 
-describe('components/PublishConfirmationUSAID', () => {
+describe('components/PublishConfirmation', () => {
   let component;
   let defaultProps;
 
@@ -19,7 +19,7 @@ describe('components/PublishConfirmationUSAID', () => {
       params: {}
     };
 
-    component = shallow(<PublishConfirmationUSAID {...defaultProps} />);
+    component = shallow(<PublishConfirmation {...defaultProps} />);
   });
 
   before(() => {
@@ -67,7 +67,7 @@ describe('components/PublishConfirmationUSAID', () => {
       outputSchemaId: null
     };
     const theComponent = shallow(
-      <PublishConfirmationUSAID {...withoutOutputSchema} />
+      <PublishConfirmation {...withoutOutputSchema} />
     );
     assert.isNotNull(theComponent);
   });

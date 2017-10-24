@@ -5,7 +5,6 @@ import _ from 'lodash';
 import ErrorsHelp from 'containers/ErrorsHelpContainer';
 import Publishing from 'containers/PublishingContainer';
 import PublishConfirmation from 'containers/PublishConfirmationContainer';
-import PublishConfirmationUSAID from 'containers/PublishConfirmationUSAIDContainer';
 import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
 import GeocodeShortcut from 'components/GeocodeShortcut/GeocodeShortcut';
 import SetupAutomation from 'containers/SetupAutomationContainer';
@@ -40,13 +39,6 @@ const getModalProps = (props, contentComponentName, payload) => {
       return {
         ...props,
         children: [<PublishConfirmation key={1} />],
-        className: styles.publishConfirmation
-      };
-
-    case 'PublishConfirmationUSAID':
-      return {
-        ...props,
-        children: [<PublishConfirmationUSAID key={1} />],
         className: styles.publishConfirmation
       };
 

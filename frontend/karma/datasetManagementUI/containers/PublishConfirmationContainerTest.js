@@ -1,10 +1,10 @@
 import React from 'react';
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/PublishConfirmationUSAIDContainer';
+import { mapStateToProps } from 'containers/PublishConfirmationContainer';
 import state from '../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 
-describe('containers/PublishConfirmationUSAIDContainer', () => {
+describe('containers/PublishConfirmationContainer', () => {
   const ownProps = {
     params: {
       revisionSeq: '0'

@@ -25,7 +25,9 @@ export function needToLoadAnything(entities, apiCalls, displayState) {
       const minRowsProcessed = Selectors.rowsTransformed(columns);
       const firstRowNeeded = (displayState.pageNo - 1) * PAGE_SIZE;
       const lastRowNeeded = firstRowNeeded + PAGE_SIZE;
-      const haveWholePage = minRowsProcessed >= Math.min(inputSchema.total_rows, lastRowNeeded);
+      // min(null, 50) is 0, so let's assume our dataset has an infinite number of rows until we're told otherwise.
+      const effectiveTotalRows = inputSchema.total_rows == null ? Infinity : inputSchema.total_rows;
+      const haveWholePage = minRowsProcessed >= Math.min(effectiveTotalRows, lastRowNeeded);
       const doneLoadingThisPage =
         minRowsProcessed === inputSchema.total_rows && minRowsProcessed >= firstRowNeeded;
       return (haveWholePage || doneLoadingThisPage) && !previousApiCall;

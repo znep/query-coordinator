@@ -189,7 +189,7 @@ module.exports = {
   getCellConditionalFormattingStyles
 };
 
-function renderCellHTML(cellContent, column, domain, datasetUid, conditionalFormatting) {
+function renderCellHTML(cellContent, column, domain, datasetUid) {
   // SECURITY NOTE: Only return safe HTML from this function!
   let cellHTML;
 

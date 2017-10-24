@@ -110,8 +110,6 @@ This method will return the series index of the first series for which the label
 ###### `<visualization>.getTypeVariantBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getUnitOneBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getUnitOtherBySeriesIndex(seriesIndex)`
-###### `<visualization>.getPrimaryColorBySeriesIndex(seriesIndex)`
-###### `<visualization>.getSecondaryColorBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getHighlightColorBySeriesIndex(seriesIndex)`
 These methods all retrieve specific configuration values from the current vif. Since all of these properties can vary by series, the `seriesIndex` argument is required.
 

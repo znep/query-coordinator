@@ -19,8 +19,8 @@ export function getColumnFormats(columns) {
 
 
 // Formats a value from the dataset for rendering within the chart as HTML.
-export function formatValueHTML(value, column, dataToRender, forceHumane = false) {
-  const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
+export function formatValueHTML(value, columnName, dataToRender, forceHumane = false) {
+  const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${columnName}`, {}));
 
   if (!formatInfo.renderTypeName) {
     formatInfo.renderTypeName = 'number';
@@ -38,7 +38,7 @@ export function formatValueHTML(value, column, dataToRender, forceHumane = false
   }
 
   if (dataToRender.precision) {
-    // Having a precision ('year', 'month' or 'day') allows us to return a 
+    // Having a precision ('year', 'month' or 'day') allows us to return a
     // format string for calendar_date that is appropriate to the precision.
     // For instance, a precision of 'year' should only render a year like '2017'.
     // A precision of 'month', should only render year and month like '2017/01'.

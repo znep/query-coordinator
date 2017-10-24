@@ -119,39 +119,6 @@ const generateCustomColorPalette = (vifAuthoring) => {
   }
 };
 
-/**
- * Returns an array of colors selected from the currentPalette for each item in the displayedColumnTitles array
- * If a color is not defined, a default color is returned
- *
- * @param {Array} displayedColumnTitles
- * @param {Object} currentPalette
- * @return {Array}
- */
-const getDisplayedColorsFromCustomPalette = (displayedColumnTitles, currentPalette) => {
-  const baseColorPalette = _.clone(COLOR_PALETTE_VALUES.categorical);
-
-  if (_.isUndefined(currentPalette)) {
-    return baseColorPalette;
-  } else {
-
-    const noValue = I18n.t('shared.visualizations.charts.common.no_value');
-    let paletteArray = _.transform(displayedColumnTitles, (result, value, index) => {
-      if (_.has(currentPalette, value)) {
-        result.push(currentPalette[value].color);
-      } else if (_.isUndefined(value) && _.has(currentPalette, noValue)) {
-        result.push(currentPalette[noValue].color);
-      } else {
-        result.push(baseColorPalette[index]);
-      }
-      return result;
-    }, []);
-
-    return paletteArray;
-  }
-
-};
-
 module.exports = {
-  generateCustomColorPalette,
-  getDisplayedColorsFromCustomPalette
+  generateCustomColorPalette
 };

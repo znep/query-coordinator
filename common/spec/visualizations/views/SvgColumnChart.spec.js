@@ -45,7 +45,7 @@ describe('SvgColumnChart', () => {
 
   const multiSeriesTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null
     ],
     rows: [
       ['10', 10, 10, 10],
@@ -60,7 +60,8 @@ describe('SvgColumnChart', () => {
       ['30', [null, null], [null, null], [null, null]],
       ['40', [null, null], [null, null], [null, null]],
       ['50', [null, null], [null, null], [null, null]],
-    ]
+    ],
+    columnFormats: {}
   };
 
   const zerosTestData = {
@@ -76,7 +77,7 @@ describe('SvgColumnChart', () => {
 
   const oneHundredPercentStackedTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null, null
     ],
     rows: [
       ['10', 10, 10, 10, 10]
@@ -85,7 +86,7 @@ describe('SvgColumnChart', () => {
 
   const oneHundredPercentNegativeStackedTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null, null
     ],
     rows: [
       ['10', 10, 10, -10, -10]
@@ -500,7 +501,39 @@ describe('SvgColumnChart', () => {
     });
 
     it('should show multiple columns', () => {
-      columnChart = createColumnChart();
+      // Add a series.
+      columnChart = createColumnChart(null, {
+        series: {
+          1: {
+            color: {
+              primary: 'gray',
+              secondary: null,
+              highlight: '#44aa00'
+            },
+            dataSource: {
+              datasetUid: 'example',
+              domain: 'example.com',
+              dimension: {
+                columnName: 'latitude',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            label: 'Series 1',
+            type: 'columnChart',
+            unit: {
+              one: 'unit_one',
+              other: 'unit_other'
+            }
+          }
+        }
+      });
+      assert.isTrue(columnChart.chart.isMultiSeries());
       columnChart.chart.render(null, multiSeriesTestData);
       const $columns = columnChart.element.find('.dimension-group:first > .column');
       assert.equal($columns.length, 3);

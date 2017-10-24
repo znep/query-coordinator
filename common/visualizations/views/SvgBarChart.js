@@ -21,6 +21,8 @@ import {
   REFERENCE_LINES_UNDERLAY_THICKNESS
 } from './SvgStyleConstants';
 
+import { getMeasures } from '../helpers/measure';
+
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
@@ -71,7 +73,7 @@ function SvgBarChart($element, vif, options) {
   let d3XScale;
   let lastRenderedSeriesHeight = 0;
   let lastRenderedZoomTranslate = 0;
-  let measureLabels;
+  let measures;
   let referenceLines;
 
   const labelResizeState = {
@@ -247,31 +249,7 @@ function SvgBarChart($element, vif, options) {
       (row) => row[dataTableDimensionIndex]
     );
 
-    const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
-
-    if (self.isMultiSeries()) {
-      measureLabels = columns.map((column, index) => {
-        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
-
-        if (_.isEmpty(measureColumnName)) {
-          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
-        }
-
-        const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
-        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
-      });
-    }
-    else {
-
-      // Grouped bar charts will have multiple columns. If one of those columns is null (which is
-      // a valid value for it to be if there are nulls in the dataset), we need to replace it with
-      // the no value label. If there are not multiple columns, that's an expected null that we
-      // should not overwrite with the no value label.
-
-      measureLabels = columns.map((column) => {
-        return self.isGrouping() ? column || noValueLabel : column;
-      });
-    }
+    measures = getMeasures(self, dataToRender);
 
     referenceLines = self.getReferenceLines();
 
@@ -573,7 +551,11 @@ function SvgBarChart($element, vif, options) {
           attr('fill', 'transparent').
           attr(
             'data-default-fill',
-            (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels));
+            (d, measureIndex, dimensionIndex) => {
+              const measure = measures[measureIndex];
+              utils.assert(measureIndex === measure.measureIndex);
+              return measure.getColor();
+            });
       }
 
       const bars = dimensionGroupSvgs.selectAll('.bar');
@@ -598,11 +580,19 @@ function SvgBarChart($element, vif, options) {
         attr('stroke', 'none').
         attr(
           'fill',
-          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
+          (d, measureIndex, dimensionIndex) => {
+            const measure = measures[measureIndex];
+            utils.assert(measureIndex === measure.measureIndex);
+            return measure.getColor();
+          }
         ).
         attr(
           'data-default-fill',
-          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
+          (d, measureIndex, dimensionIndex) => {
+            const measure = measures[measureIndex];
+            utils.assert(measureIndex === measure.measureIndex);
+            return measure.getColor();
+          }
         );
 
       if (isOneHundredPercentStacked) {
@@ -916,7 +906,7 @@ function SvgBarChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+        const legendItems = self.getLegendItems({dataTableDimensionIndex, measures, referenceLines});
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -1082,7 +1072,7 @@ function SvgBarChart($element, vif, options) {
 
     // This scale is used for groupings of bars under a single dimension category.
     d3GroupingYScale = generateYGroupScale(
-      self.getOrdinalDomainFromMeasureLabels(measureLabels),
+      _.range(0, measures.length),
       d3DimensionYScale);
 
     d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
@@ -1391,10 +1381,6 @@ function SvgBarChart($element, vif, options) {
           function() {
 
             if (!isCurrentlyPanning()) {
-              const dimensionIndex = parseInt(
-                this.getAttribute('data-dimension-index'),
-                10
-              );
               const measureIndex = parseInt(
                 this.getAttribute('data-measure-index'),
                 10
@@ -1403,8 +1389,8 @@ function SvgBarChart($element, vif, options) {
               const siblingBar = d3.select(dimensionGroup).select(
                 `rect.bar[data-measure-index="${measureIndex}"]`
               )[0][0];
-              const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
-              const label = measureLabels[measureIndex];
+
+              const measure = measures[measureIndex];
 
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
@@ -1414,7 +1400,7 @@ function SvgBarChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showBarHighlight(siblingBar);
-              showBarFlyout(siblingBar, { measureIndex, color, label, value });
+              showBarFlyout(siblingBar, { measure, value });
             }
           }
         ).
@@ -1439,16 +1425,11 @@ function SvgBarChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(
-              this.getAttribute('data-dimension-index'),
-              10
-            );
             const measureIndex = parseInt(
               this.getAttribute('data-measure-index'),
               10
             );
-            const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
-            const label = measureLabels[measureIndex];
+            const measure = measures[measureIndex];
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1459,7 +1440,7 @@ function SvgBarChart($element, vif, options) {
             const percent = parseFloat(this.getAttribute('data-percent'));
 
             showBarHighlight(this);
-            showBarFlyout(this, { measureIndex, color, label, value, percent });
+            showBarFlyout(this, { measure, value, percent });
           }
         }
       ).
@@ -1509,10 +1490,6 @@ function SvgBarChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(
-              this.getAttribute('data-dimension-index'),
-              10
-            );
             const measureIndex = parseInt(
               this.getAttribute('data-measure-index'),
               10
@@ -1521,8 +1498,8 @@ function SvgBarChart($element, vif, options) {
             const siblingBar = d3.select(dimensionGroup).select(
               `rect.bar[data-measure-index="${measureIndex}"]`
             )[0][0];
-            const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
-            const label = measureLabels[measureIndex];
+
+            const measure = measures[measureIndex];
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1533,7 +1510,7 @@ function SvgBarChart($element, vif, options) {
             const percent = parseFloat(this.getAttribute('data-percent'));
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, { measureIndex, color, label, value, percent });
+            showBarFlyout(siblingBar, { measure, value, percent });
           }
         }
       ).
@@ -1938,11 +1915,10 @@ function SvgBarChart($element, vif, options) {
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
     $labelValueRows = measureValues.map((value, measureIndex) => {
-      const label = measureLabels[measureIndex];
-
+      const measure = measures[measureIndex];
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
-        text(label).
-        css('color', self.getColor(dimensionIndex, measureIndex, measureLabels));
+        html(measure.labelHtml).
+        css('color', measure.getColor());
       const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
       const unitOne = self.getUnitOneBySeriesIndex(
         getSeriesIndexByMeasureIndex(measureIndex)
@@ -2023,9 +1999,8 @@ function SvgBarChart($element, vif, options) {
     );
   }
 
-  function showBarFlyout(barElement, { measureIndex, color, label, value, percent }) {
+  function showBarFlyout(barElement, { measure, value, percent }) {
     const titleHTML = barElement.getAttribute('data-dimension-value-html') || noValueLabel;
-    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
 
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
@@ -2034,8 +2009,8 @@ function SvgBarChart($element, vif, options) {
         )
       );
     const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
-      text(label).
-      css('color', color);
+      html(measure.labelHtml).
+      css('color', measure.getColor());
     const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
@@ -2045,7 +2020,7 @@ function SvgBarChart($element, vif, options) {
     if (value === null) {
       valueHTML = noValueLabel;
     } else {
-      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+      const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
 

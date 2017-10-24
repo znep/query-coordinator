@@ -322,25 +322,6 @@ describe('SvgHistogram', function() {
     });
   });
 
-  describe('when called with no data', function() {
-
-    beforeEach(function() {
-      histogram = createHistogram();
-    });
-
-    afterEach(function() {
-      removeHistogram(histogram);
-    });
-
-    it('should hide all existing columns when the data is cleared', function() {
-
-      histogram.chart.render(null, testData);
-      expect($('rect.column').length).to.not.equal(0);
-      histogram.chart.render(null, []);
-      expect($('rect.column').length).to.equal(0);
-    });
-  });
-
   describe('on mousemove events', function() {
 
     var histogram;

@@ -40,10 +40,6 @@ class URLField extends Component {
       errorMessage = 'no dupes';
     }
 
-    // console.log('fties', filetypeInErrorState);
-    // console.log('eerr', emptyErrors);
-    // console.log('derr', dupeErrors);
-
     return (
       <div className={styles.urlFieldContainer}>
         <div className={styles.urlFieldArea}>
@@ -82,7 +78,10 @@ class URLField extends Component {
 }
 
 URLField.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.shape({
+    url: PropTypes.string,
+    filetype: PropTypes.string
+  }),
   uuid: PropTypes.string.isRequired,
   hrefId: PropTypes.number.isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,

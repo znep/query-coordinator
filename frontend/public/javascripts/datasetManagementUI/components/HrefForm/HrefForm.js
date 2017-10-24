@@ -176,6 +176,8 @@ class HrefForm extends Component {
   }
 
   handleRemoveFirstDataset(id) {
+    this.props.markFormDirty();
+
     const newHref = this.initializeHref(1, id);
 
     const newHrefs = [...this.state.hrefs.filter(h => h.id !== id), newHref];
@@ -186,6 +188,8 @@ class HrefForm extends Component {
   }
 
   handleRemoveOtherDataset(id) {
+    this.props.markFormDirty();
+
     const newHrefs = this.state.hrefs.filter(h => h.id !== id);
 
     this.setState({
@@ -194,6 +198,8 @@ class HrefForm extends Component {
   }
 
   handleRemoveFirstURL(datasetId, urlId) {
+    this.props.markFormDirty();
+
     const href = this.state.hrefs.find(h => h.id === datasetId);
 
     const newHref = {
@@ -215,6 +221,8 @@ class HrefForm extends Component {
   }
 
   handleRemoveOtherURL(datasetId, urlId) {
+    this.props.markFormDirty();
+
     const href = this.state.hrefs.find(h => h.id === datasetId);
 
     const newHref = {

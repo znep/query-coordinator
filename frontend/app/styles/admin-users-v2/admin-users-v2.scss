@@ -93,19 +93,33 @@
       padding-bottom: 0;
       background-color: inherit;
       transform: rotate(90deg);
+      padding: 2px;
+      margin-left: 13px;
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+
+      &.selected {
+        box-shadow: inset 0 0 10px -2px #c8c8c8;
+        background-color: #f1f1f1;
+      }
     }
 
     .user-edit-actions {
       position: absolute;
       z-index: 1000;
-      top: 0;
+      top: -5px;
       left: 0;
       list-style: none;
       background-color: white;
       border-style: solid;
       border-width: thin;
-      border-color: black;
+      border-color: #c8c8c8;
       padding-left: 0;
+      &:hover {
+        background-color: #f1f1f1;
+      }
     }
   }
 

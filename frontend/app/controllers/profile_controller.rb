@@ -46,10 +46,6 @@ class ProfileController < ApplicationController
       end
       @app_tokens = @user.app_tokens
 
-      unless feature_flag?(:enable_header_notifications, request)
-        @news = retrieve_zendesk_news
-      end
-
       if internal_asset_manager_on_profile_enabled?
         @asset_browser_config = {
           :app_name => 'internal_asset_manager',

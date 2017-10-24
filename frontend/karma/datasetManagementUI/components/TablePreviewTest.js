@@ -138,6 +138,7 @@ describe('components/TablePreview', () => {
         '350': {
           id: 350,
           fourfour: 'm6u6-r357',
+          href: [],
           metadata: {
             tags: null,
             privateMetadata: {},

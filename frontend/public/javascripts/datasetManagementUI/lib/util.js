@@ -34,7 +34,8 @@ export const getUniqueFieldName = _.flowRight(removeWhitespace, getUniqueName);
 export const titleCase = word => word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
 
 export function getBasename(url) {
-  return url.split(/[\\/]/).pop();
+  const name = url.split(/[\\/]/).pop();
+  return name.split('?').shift();
 }
 
 export function getExtension(filename = '') {

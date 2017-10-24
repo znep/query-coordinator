@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
-export default class Accordion extends React.Component {
+export default class AccordionContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -60,10 +60,3 @@ export default class Accordion extends React.Component {
   }
 }
 
-Accordion.defaultProps = {
-  defaultPane: 'pane-0'
-};
-
-Accordion.propTypes = {
-  defaultPane: PropTypes.string
-};

@@ -2,21 +2,16 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { SocrataIcon } from 'common/components';
-import Scrolls from '../shared/Scrolls';
+import { SocrataIcon } from '../SocrataIcon';
+import Scrolls from './Scrolls';
 
 class AccordionPane extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleOnClickTitle = this.handleOnClickTitle.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
     this.shouldScroll = false;
-  }
-
-  handleOnClickTitle() {
-    this.props.onToggle(this.props.paneId);
   }
 
   handleKeyDown(event) {
@@ -63,7 +58,7 @@ class AccordionPane extends React.Component {
              role="button"
              aria-expanded={isOpen ? 'true' : 'false'}
              aria-label={this.props['aria-label'] || title}
-             onClick={this.handleOnClickTitle}
+             onClick={() => this.props.onToggle(this.props.paneId)}
              tabIndex="0"
              onKeyDown={this.handleKeyDown}
              ref={(ref) => this.paneTitleElement = ref}>

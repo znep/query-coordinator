@@ -19,6 +19,7 @@ import TabsFactory from './legacy/Tabs';
 import ToggleFactory from './legacy/Toggle';
 import TourFactory from './legacy/Tour';
 
+import { AccordionContainer, AccordionPane, Scrolls, ScrollView } from './Accordion';
 import AssetBrowser from './AssetBrowser';
 import AssetTypeIcon from './AssetTypeIcon';
 import ColorPicker from './ColorPicker';
@@ -58,6 +59,8 @@ module.exports = {
     TourFactory
   },
 
+  AccordionContainer,
+  AccordionPane,
   AssetBrowser,
   AssetTypeIcon,
   Checkbox,
@@ -82,6 +85,8 @@ module.exports = {
   ModalFooter,
   ModalHeader,
   Picklist,
+  Scrolls,
+  ScrollView,
   SideMenu,
   Slider,
   SocrataIcon,

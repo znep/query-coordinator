@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CustomizationTabPane from './CustomizationTabPane';
-import ScrollView from './shared/ScrollView';
+import { ScrollView } from 'common/components';
 
 export class CustomizationTabPanes extends Component {
   constructor(props) {

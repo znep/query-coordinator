@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Dropdown } from 'common/components';
+import { Dropdown, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
 import { getMeasureTitle } from '../../helpers';
 
@@ -32,8 +32,6 @@ import {
 
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
-import Accordion from '../shared/Accordion';
-import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
 
 export class LegendsAndFlyoutsPane extends Component {
@@ -71,7 +69,7 @@ export class LegendsAndFlyoutsPane extends Component {
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOne(index, event.target.value),
-        placeholder: hasSumAggregation ? 
+        placeholder: hasSumAggregation ?
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
         value: unitOne
@@ -82,7 +80,7 @@ export class LegendsAndFlyoutsPane extends Component {
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOther(index, event.target.value),
-        placeholder: hasSumAggregation ? 
+        placeholder: hasSumAggregation ?
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
         value: unitOther
@@ -257,9 +255,9 @@ export class LegendsAndFlyoutsPane extends Component {
 
       return (
         <form>
-          <Accordion>
+          <AccordionContainer>
             {configuration}
-          </Accordion>
+          </AccordionContainer>
         </form>
       );
     } else {

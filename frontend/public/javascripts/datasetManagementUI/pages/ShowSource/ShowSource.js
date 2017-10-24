@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
+import isURLHelper from 'validator/lib/isURL';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import SourceSidebar from 'containers/SourceSidebarContainer';
@@ -71,7 +72,9 @@ ShowSource.propTypes = {
 const removeEmptyValues = hrefURLObj => _.omitBy(hrefURLObj, val => !val.url);
 
 const findDupes = hrefURLObj => {
-  const filetypes = Object.values(hrefURLObj).map(val => val.filetype);
+  const filetypes = Object.values(hrefURLObj)
+    .map(val => val.filetype)
+    .filter(ft => ft);
 
   const dupes = filetypes.filter(filetype => {
     const firstIdx = _.findIndex(filetypes, ft => ft === filetype);
@@ -80,6 +83,42 @@ const findDupes = hrefURLObj => {
   });
 
   return [...new Set(dupes)];
+};
+
+const findInvalidURLs = hrefURLObj => {
+  const urls = Object.values(hrefURLObj)
+    .map(val => val.url)
+    .filter(url => !!url);
+
+  return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
+};
+
+const findEmpties = (href, hrefURLObj) =>
+  _.map(hrefURLObj, (val, uuid) => {
+    if (val.url && !val.filetype) {
+      return { hrefId: href.id, type: 'emptyError', id: uuid };
+    } else {
+      return null;
+    }
+  });
+
+const validate = hrefs => {
+  const dupes = _.chain(hrefs)
+    .map(href => ({ hrefId: href.id, type: 'dupeFiletypeError', dupes: findDupes(href.urls) }))
+    .filter(err => err.dupes.length)
+    .value();
+
+  const badUrls = _.chain(hrefs)
+    .flatMap(href => findInvalidURLs(href.urls))
+    .thru(urls => (urls.length ? [{ type: 'urlError', urls }] : []))
+    .value();
+
+  const empties = _.chain(hrefs)
+    .flatMap(href => findEmpties(href, href.urls))
+    .filter(err => err)
+    .value();
+
+  return [...dupes, ...badUrls, ...empties];
 };
 
 const makeExtKeys = hrefURLObj =>
@@ -129,27 +168,22 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
-  const dupes = _.chain(stateProps.hrefs)
-    .flatMap(href => {
-      if (!_.isEmpty(href.urls) && _.isPlainObject(Object.values(href.urls)[0])) {
-        return [{ hrefId: href.id, type: 'filetypeError', dupes: findDupes(href.urls) }];
-      } else {
-        return [];
-      }
-    })
-    .filter(err => !!err.dupes.length)
-    .value();
+  let errors = [];
+
+  if (stateProps.hrefFormDirty) {
+    errors = validate(stateProps.hrefs);
+  }
 
   const callParams = {
-    href: dupes.length ? [] : shapeHrefState(stateProps.hrefs)
+    href: errors.length ? [] : shapeHrefState(stateProps.hrefs)
   };
 
   const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
 
   const save = (andExit = false) => {
-    if (dupes.length) {
-      dispatch(showFlashMessage('error', 'duplicate file types'));
-      dispatch(appendFormErrors('hrefForm', dupes));
+    if (errors.length) {
+      dispatch(showFlashMessage('error', 'proplems...'));
+      dispatch(setFormErrors('hrefForm', errors));
       return;
     }
 
@@ -170,12 +204,12 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
             return;
           }
 
-          const errors = _.chain(reason.href)
+          const errs = _.chain(reason.href)
             .filter(href => !_.isEmpty(href))
             .flatMap(href => href.urls)
             .value();
 
-          dispatch(appendFormErrors('hrefForm', [{ type: 'urlError', urls: errors }]));
+          dispatch(appendFormErrors('hrefForm', [{ type: 'urlError', urls: errs }]));
           dispatch(showFlashMessage('error', message));
         })
       );

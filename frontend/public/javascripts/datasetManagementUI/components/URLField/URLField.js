@@ -8,22 +8,41 @@ import styles from './URLField.scss';
 
 class URLField extends Component {
   render() {
-    const { handleChangeUrl, handleXClick, value, errors, hrefId } = this.props;
-    console.log('err', errors);
+    const { handleChangeUrl, handleXClick, value, errors, hrefId, uuid } = this.props;
+
     const urlErrors = _.chain(errors)
       .filter(err => err.type === 'urlError')
       .flatMap(err => err.urls)
       .value();
 
-    const filetypeErrors = _.chain(errors)
-      .filter(err => err.type === 'filetypeError')
+    const dupeErrors = _.chain(errors)
+      .filter(err => err.type === 'dupeFiletypeError')
       .filter(err => err.hrefId === hrefId)
       .flatMap(err => err.dupes)
       .value();
 
+    const emptyErrors = _.chain(errors)
+      .filter(err => err.type === 'emptyError')
+      .filter(err => err.hrefId === hrefId)
+      .filter(err => err.id === uuid)
+      .value();
+
     const urlInErrorState = urlErrors.length ? urlErrors.includes(value.url) : false;
 
-    const filetypeInErrorState = filetypeErrors.length ? filetypeErrors.includes(value.filetype) : false;
+    let filetypeInErrorState = false;
+    let errorMessage = '';
+
+    if (emptyErrors.length) {
+      filetypeInErrorState = true;
+      errorMessage = 'cannot be empty';
+    } else if (dupeErrors.length) {
+      filetypeInErrorState = dupeErrors.includes(value.filetype);
+      errorMessage = 'no dupes';
+    }
+
+    // console.log('fties', filetypeInErrorState);
+    // console.log('eerr', emptyErrors);
+    // console.log('derr', dupeErrors);
 
     return (
       <div className={styles.urlFieldContainer}>
@@ -54,7 +73,7 @@ class URLField extends Component {
                 ...value,
                 filetype: e.target.value
               })} />
-          {filetypeInErrorState && <div className={styles.error}>Dupe</div>}
+          {filetypeInErrorState && <div className={styles.error}>{errorMessage}</div>}
         </div>
         <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={handleXClick} />
       </div>
@@ -64,6 +83,7 @@ class URLField extends Component {
 
 URLField.propTypes = {
   value: PropTypes.string,
+  uuid: PropTypes.string.isRequired,
   hrefId: PropTypes.number.isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleChangeUrl: PropTypes.func.isRequired,

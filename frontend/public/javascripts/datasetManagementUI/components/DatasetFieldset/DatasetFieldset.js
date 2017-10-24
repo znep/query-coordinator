@@ -46,6 +46,7 @@ const DatasetFieldset = ({
           return (
             <URLField
               key={key}
+              uuid={key}
               hrefId={href.id}
               errors={errors}
               value={href.urls[key]}

@@ -8,11 +8,11 @@ import includes from 'lodash/fp/includes';
 import bindAll from 'lodash/fp/bindAll';
 
 import { connectLocalization } from 'common/components/Localization';
-import ConditionTransitionMotion from './util/ConditionTransitionMotion';
+import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { editCustomRoles, saveRoles } from '../actions';
 import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../selectors';
 import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
-import SocrataButton from './util/SocrataButton';
+import SocrataButton from 'common/components/SocrataButton';
 import styles from './save-bar.scss';
 
 const mapStateToProps = state => {

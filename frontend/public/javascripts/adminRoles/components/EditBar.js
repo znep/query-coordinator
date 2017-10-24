@@ -13,7 +13,7 @@ import {
 } from '../selectors';
 import { DEFAULT, EDIT_CUSTOM_ROLES } from '../appStates';
 import includes from 'lodash/fp/includes';
-import SocrataButton from './util/SocrataButton';
+import SocrataButton from 'common/components/SocrataButton';
 import { connectLocalization } from 'common/components/Localization';
 
 const mapStateToProps = state => {

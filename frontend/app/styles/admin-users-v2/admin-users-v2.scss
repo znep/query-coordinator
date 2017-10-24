@@ -2,6 +2,7 @@
 @import 'common/row-details';
 @import 'common/styleguide/partials/pager';
 @import 'common/visualizations/views/styles/socrata-visualizations';
+@import 'styleguide-colors';
 
 // this is in the erb, so can't move to within react app
 #initial-spinner-container {
@@ -85,38 +86,39 @@
     padding-top: 1em;
   }
 
-  .user-edit-control {
+  .dropdown-button {
     position: relative;
 
     .kebab-button {
-      padding-top: 0;
-      padding-bottom: 0;
       background-color: inherit;
-      transform: rotate(90deg);
-      padding: 2px;
       margin-left: 13px;
+      padding: 0 2px;
+      transform: rotate(90deg);
 
       &:hover {
         background-color: #f1f1f1;
       }
 
       &.selected {
-        box-shadow: inset 0 0 10px -2px #c8c8c8;
         background-color: #f1f1f1;
+        box-shadow: inset 0 0 10px -2px #c8c8c8;
       }
     }
 
-    .user-edit-actions {
-      position: absolute;
-      z-index: 1000;
-      top: -5px;
+    .dropdown-button-actions {
+      background-color: $white;
+      border: thin solid #c8c8c8;
       left: 0;
       list-style: none;
-      background-color: white;
-      border-style: solid;
-      border-width: thin;
-      border-color: #c8c8c8;
       padding-left: 0;
+      position: absolute;
+      top: -5px;
+      z-index: 1000;
+    }
+
+    .dropdown-button-item {
+      white-space: nowrap;
+
       &:hover {
         background-color: #f1f1f1;
       }
@@ -149,5 +151,92 @@
 
   .error-list {
     margin-bottom: 0;
+  }
+}
+
+
+$notification-offset: 50px;
+
+.socrata-notification {
+  .alert {
+    position: fixed;
+    right: 16px;
+    top: $notification-offset;
+    z-index: 2;
+
+    button {
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .btn-dismiss {
+      float: right;
+      margin-left: 20px;
+      margin-top: 4px;
+
+      .socrata-icon {
+        svg {
+          height: 15px;
+          width: 15px;
+        }
+      }
+    }
+
+    .success {
+      .btn-dismiss {
+        .socrata-icon {
+          svg {
+            g {
+              fill: $success-dark;
+            }
+          }
+        }
+
+        &:hover,
+        &:focus {
+          .socrata-icon {
+            svg {
+              g {
+                fill: $success-base;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .error {
+      .btn-dismiss {
+        .socrata-icon {
+          svg {
+            g {
+              fill: $error-dark;
+            }
+          }
+        }
+
+        &:hover,
+        &:focus {
+          .socrata-icon {
+            svg {
+              g {
+                fill: $error-base;
+              }
+            }
+          }
+        }
+      }
+
+      .btn-retry {
+        color: $error-dark;
+        font-weight: bold;
+        padding-left: 5px;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 }

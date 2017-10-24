@@ -25,6 +25,7 @@ export class FutureUsersTable extends React.Component {
           <th>{I18n.t('users.headers.email')}</th>
           <th>{I18n.t('users.headers.role')}</th>
           <th>{I18n.t('users.headers.invited')}</th>
+          <th>{I18n.t('users.headers.actions')}</th>
         </tr>
       </thead>
     );

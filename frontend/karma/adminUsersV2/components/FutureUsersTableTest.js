@@ -18,7 +18,7 @@ describe('components/UsersTable', () => {
     const component = shallow(<FutureUsersTable {...defaultProps} />);
     const header = component.find('thead');
     const rows = component.find('tbody');
-    expect(header.find('tr').children()).to.have.length(3);
+    expect(header.find('tr').children()).to.have.length(4);
     expect(rows.children()).to.have.length(1);
   });
 });

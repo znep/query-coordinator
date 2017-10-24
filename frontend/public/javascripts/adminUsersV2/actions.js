@@ -154,6 +154,14 @@ export const removeUserRole = (userId, roleId) => dispatch => {
   );
 };
 
+export const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
+export const showNotification = (content, type = 'default') => dispatch => {
+  const timeout = setTimeout(() => {
+    dispatch({ type: SHOW_NOTIFICATION, stage: COMPLETE_SUCCESS });
+  }, 2500);
+  dispatch({ type: SHOW_NOTIFICATION, stage: START, payload: { content, timeout, type } });
+};
+
 export const TOGGLE_ADD_USER_UI = 'TOGGLE_ADD_USER_UI';
 export const toggleAddUserUi = (isOpen = false) => ({ type: TOGGLE_ADD_USER_UI, payload: { isOpen } });
 export const cancelAddUser = () => dispatch => {
@@ -202,5 +210,33 @@ export const submitNewUsers = (emails, id) => dispatch => {
       dispatch({ type: SUBMIT_NEW_USERS, stage: VALIDATION_FAIL, payload: { validationErrors } });
       dispatch(setAddUserErrors(validationErrors));
     }
+  });
+};
+
+export const REMOVE_FUTURE_USER = 'REMOVE_FUTURE_USER';
+export const removeFutureUser = (id) => dispatch => {
+  dispatch({ type: REMOVE_FUTURE_USER, stage: START, payload: { id }});
+  CoreFutureAccountsApi.removeFutureUser(id).
+    then(() => {
+      dispatch({ type: REMOVE_FUTURE_USER, stage: COMPLETE_SUCCESS, payload: { id }});
+      dispatch(showNotification({ translationKey: 'users.notifications.pending_user_removed' }, 'success'));
+    }).
+    catch(error => {
+      dispatch({ type: REMOVE_FUTURE_USER, stage: COMPLETE_FAIL, payload: { id, error }});
+      dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
+    });
+};
+
+export const RESEND_FUTURE_USER_EMAIL = 'RESEND_FUTURE_USER_EMAIL';
+export const resendPendingUserEmail = (email) => dispatch => {
+  dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: START, payload: { email }});
+  CoreFutureAccountsApi.resendFutureUserEmail(email).
+  then(() => {
+    dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_SUCCESS, payload: { email }});
+    dispatch(showNotification({ translationKey: 'users.notifications.resent_email_success' }, 'success'));
+  }).
+  catch(error => {
+    dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_FAIL, payload: { email, error }});
+    dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
   });
 };

@@ -1,4 +1,4 @@
-import { fetchJson, defaultHeaders } from 'common/http';
+import { checkStatus, fetchJson, defaultHeaders } from 'common/http';
 import _ from 'lodash';
 
 function FutureAccountsCreationError(errors, fileName, lineNumber) {
@@ -31,9 +31,9 @@ const postFutureUsers = (emails, roleId) => {
   const body = `addresses=${emails}&roleId=${roleId}`;
   const fetchOptions = {
     body,
-    method: 'POST',
     credentials: 'same-origin',
-    headers: _.merge({}, defaultHeaders, { 'Content-Type': 'application/x-www-form-urlencoded' })
+    headers: _.merge({}, defaultHeaders, { 'Content-Type': 'application/x-www-form-urlencoded' }),
+    method: 'POST'
   };
   return fetchJson(apiPath, fetchOptions).then(response => {
     if (_.get(response, 'errors')) {
@@ -44,8 +44,32 @@ const postFutureUsers = (emails, roleId) => {
   });
 };
 
+const removeFutureUser = (id) => {
+  const apiPath = `/api/future_accounts?method=delete&id=${id}`;
+  const fetchOptions = {
+    credentials: 'same-origin',
+    headers: defaultHeaders,
+    method: 'DELETE'
+  };
+
+  return fetch(apiPath, fetchOptions).then(checkStatus);
+};
+
+const resendFutureUserEmail = (email) => {
+  const apiPath = `/api/future_accounts?method=resendEmail&email=${email}`;
+  const fetchOptions = {
+    credentials: 'same-origin',
+    headers: defaultHeaders,
+    method: 'POST'
+  };
+
+  return fetchJson(apiPath, fetchOptions);
+};
+
 export default {
   getFutureUsers,
   postFutureUsers,
+  removeFutureUser,
+  resendFutureUserEmail,
   FutureAccountsCreationError
 };

@@ -3,8 +3,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import moment from 'moment';
+import DropdownButton, { DropdownItem } from './DropdownButton';
+import * as Actions from '../actions';
+import _ from 'lodash';
 
 export class FutureUserRow extends React.Component {
+  constructor() {
+    super();
+    _.bindAll(this, ['renderEditControl']);
+  }
+
+  renderEditControl() {
+    const { I18n, removeFutureUser, resendPendingUserEmail } = this.props;
+    return (
+      <DropdownButton>
+        <DropdownItem onClick={() => removeFutureUser()}>
+          {I18n.translate('users.actions.remove_pending_user')}
+        </DropdownItem>
+        <DropdownItem onClick={() => resendPendingUserEmail()}>
+          {I18n.translate('users.actions.resend_pending_user_email')}
+        </DropdownItem>
+      </DropdownButton>
+    );
+  }
+
   render() {
     const { email, id, invited, invitedLabel, role } = this.props;
     return (
@@ -12,6 +34,7 @@ export class FutureUserRow extends React.Component {
         <td>{email}</td>
         <td>{role}</td>
         <td title={invited}>{invitedLabel}</td>
+        <td>{this.renderEditControl()}</td>
       </tr>
     );
   }
@@ -27,12 +50,19 @@ FutureUserRow.propTypes = {
   I18n: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, props) => {
-  const createdAt = moment(props.createdAt, 'X');
+const mapStateToProps = (state, { createdAt }) => {
+  const createdAtMoment = moment(createdAt, 'X');
   return {
-    invitedLabel: createdAt.fromNow(),
-    invited: createdAt.format('LLLL')
+    invitedLabel: createdAtMoment.fromNow(),
+    invited: createdAtMoment.format('LLLL')
   };
 };
 
-export const LocalizedFutureUserRow = connectLocalization(connect(mapStateToProps)(FutureUserRow));
+const mapDispatchToProps = (dispatch, { email, id }) => {
+  return {
+    removeFutureUser: () => Actions.removeFutureUser(id)(dispatch),
+    resendPendingUserEmail: () => Actions.resendPendingUserEmail(email)(dispatch)
+  };
+};
+
+export const LocalizedFutureUserRow = connectLocalization(connect(mapStateToProps, mapDispatchToProps)(FutureUserRow));

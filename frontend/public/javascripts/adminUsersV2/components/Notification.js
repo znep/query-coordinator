@@ -2,13 +2,14 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { SocrataIcon } from 'common/components';
 import SocrataButton from 'common/components/SocrataButton';
-import cssModules from 'react-css-modules';
-import styles from './socrata-notification.scss';
 import cx from 'classnames';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { spring } from 'react-motion';
+import { connect } from 'react-redux';
+import connectLocalization from 'common/i18n/components/connectLocalization';
+import _ from 'lodash';
 
-class UnstyledNotification extends Component {
+class NotificationBox extends Component {
   render() {
     const { content, onDismiss, style, type, canDismiss = false } = this.props;
     const className = cx(
@@ -22,13 +23,13 @@ class UnstyledNotification extends Component {
       __html: content
     };
     return (
-      <div styleName="notification">
+      <div className="socrata-notification">
         <div className={className} style={style}>
           <span dangerouslySetInnerHTML={htmlContent} />
           {canDismiss
             ? <SocrataButton buttonType="transparent" onClick={() => onDismiss()}>
-                <SocrataIcon name="close-2" />
-              </SocrataButton>
+              <SocrataIcon name="close-2" />
+            </SocrataButton>
             : null}
         </div>
       </div>
@@ -36,14 +37,17 @@ class UnstyledNotification extends Component {
   }
 }
 
-UnstyledNotification.propTypes = {
+NotificationBox.defaultProps = {
+  canDismiss: false,
+  onDismiss: () => {}
+};
+
+NotificationBox.propTypes = {
   content: PropTypes.string,
-  onDismiss: PropTypes.func.isRequired,
+  onDismiss: PropTypes.func,
   type: PropTypes.oneOf(['warning', 'default', 'info', 'success', 'error']),
   canDismiss: PropTypes.bool
 };
-
-const StyledNotification = cssModules(UnstyledNotification, styles);
 
 export default class Notification extends Component {
   render() {
@@ -55,11 +59,25 @@ export default class Notification extends Component {
         willLeave={() => ({ opacity: spring(0), right: spring(-16) })}
         style={{ opacity: spring(1), right: spring(16) }}
       >
-        {style => <StyledNotification style={style} {...props} />}
+        {style => <NotificationBox style={style} {...props} />}
       </ConditionTransitionMotion>
     );
   }
 }
+
+const mapStateToProps = ({ ui: { notificationContent, notificationType, showNotification }}, { I18n }) => {
+  const content = _.has(notificationContent, 'translationKey') ?
+    I18n.translate(notificationContent.translationKey, notificationContent) :
+    notificationContent;
+
+  return {
+    content,
+    type: notificationType,
+    showNotification
+  };
+};
+
+export const LocalizedNotification = connectLocalization(connect(mapStateToProps)(Notification));
 
 export const types = {
   DEFAULT: 'default',

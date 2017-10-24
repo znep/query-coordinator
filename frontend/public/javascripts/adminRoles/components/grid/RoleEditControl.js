@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import cssModules from 'react-css-modules';
 import styles from './role-edit-control.scss';
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import SocrataButton from '../util/SocrataButton';
+import SocrataButton from 'common/components/SocrataButton';
 import { startEditRole, deleteRole, startRenameRole } from '../../actions';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/fp/bindAll';

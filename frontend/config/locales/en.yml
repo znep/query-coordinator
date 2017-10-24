@@ -6488,7 +6488,9 @@ en:
     pm: pm
   users:
     actions:
+      remove_pending_user: Remove
       remove_role: Remove role
+      resend_pending_user_email: Resend email
     add_new_users:
       add_users: Add Users
       button: Add New User(s)
@@ -6513,6 +6515,9 @@ en:
     last_active:
       today: today
       unknown: unknown
+    notifications:
+      pending_user_removed: Pending user removed!
+      resent_email_success: Pending user email resent!
     roles:
       default: default
       custom: custom

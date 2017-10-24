@@ -142,3 +142,6 @@ export const showNotification = makeActionCreator('show_notification', {
     setTimeout(() => dispatch(stages.end()), 2500);
   }
 });
+
+export const hoverRow = makeActionCreator('hover_row');
+export const unhoverRow = makeActionCreator('unhover_row');

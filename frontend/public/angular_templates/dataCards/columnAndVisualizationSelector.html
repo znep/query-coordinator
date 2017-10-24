@@ -4,32 +4,32 @@
       <div class="add-card-select-input-group">
         <label ng-if="selectedCardModel">{{::'addCardDialog.columnLabel' | I18n}}</label>
         <soc-select class="column-selector" ng-model="addCardSelectedColumnFieldName">
-          <soc-option
+          <option
             value="null"
             disabled="disabled"
-            ng-selected="addCardSelectedColumnFieldName === null">{{::'addCardDialog.chooseColumn' | I18n}}</soc-option>
-          <soc-option value="null" disabled="disabled" ng-if="availableColumns.length > 0"></soc-option>
-          <soc-option
+            ng-selected="addCardSelectedColumnFieldName === null">{{::'addCardDialog.chooseColumn' | I18n}}</option>
+          <option value="null" disabled="disabled" ng-if="availableColumns.length > 0"></option>
+          <option
             value="{{fieldName}}"
             title="{{::'addCardDialog.addThisCard' | I18n}}"
-            ng-repeat="fieldName in availableColumns">{{columnHumanNameFn(fieldName)}}</soc-option>
-          <soc-option value="null" disabled="disabled" ng-if="unsupportedColumns.length > 0"></soc-option>
-          <soc-option
+            ng-repeat="fieldName in availableColumns">{{columnHumanNameFn(fieldName)}}</option>
+          <option value="null" disabled="disabled" ng-if="unsupportedColumns.length > 0"></option>
+          <option
             value="null"
             disabled="disabled"
-            ng-if="unsupportedColumns.length > 0">{{::'addCardDialog.notSupported' | I18n}}</soc-option>
-          <soc-option
+            ng-if="unsupportedColumns.length > 0">{{::'addCardDialog.notSupported' | I18n}}</option>
+          <option
             value="{{fieldName}}"
             title="{{::'addCardDialog.notSupportedLong' | I18n}}"
             disabled="disabled"
-            ng-repeat="fieldName in unsupportedColumns">-{{columnHumanNameFn(fieldName)}}</soc-option>
-          <soc-option
+            ng-repeat="fieldName in unsupportedColumns">-{{columnHumanNameFn(fieldName)}}</option>
+          <option
             title="{{::'addCardDialog.custom' | I18n}}"
             class="classic-visualization-option"
             ng-if="classicVisualization"
             ng-selected="true">
             {{::'addCardDialog.custom' | I18n}}
-          </soc-option>
+          </option>
         </soc-select>
       </div>
       <card-aggregation-selector

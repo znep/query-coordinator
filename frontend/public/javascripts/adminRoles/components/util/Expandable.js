@@ -43,9 +43,11 @@ class Trigger extends Component {
   render() {
     const { className, isExpanded, onClick } = this.props;
     return (
-      <div className={className} styleName="trigger" onClick={onClick}>
-        <ExpanderIcon isExpanded={isExpanded} />
-        {this.props.children}
+      <div styleName="trigger">
+        <div className={className + (isExpanded ? ' expanded' : '')} onClick={onClick} >
+          <ExpanderIcon isExpanded={isExpanded} />
+          {this.props.children}
+        </div>
       </div>
     );
   }

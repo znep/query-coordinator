@@ -20,7 +20,6 @@ const shapeRevisionForProps = revision => ({
   tags: revision.metadata.tags,
   attribution: revision.metadata.attribution,
   attributionLink: revision.metadata.attributionLink || '',
-  attachments: revision.metadata.attachments, // MetadataTable transforms this
   license: revision.metadata.license,
   createdAt: Math.floor(revision.created_at.getTime() / 1000),
   // TODO Not sure about this - is the revision author effectively the owner?
@@ -28,7 +27,10 @@ const shapeRevisionForProps = revision => ({
     displayName: revision.created_by.display_name,
     id: revision.created_by.user_id
   },
-  metadata: revision.metadata
+  metadata: {
+    ...revision.metadata.metadata,
+    attachments: revision.attachments.map(a => ({ ...a, assetId: a.asset_id }))
+  }
 });
 
 // MetadataTable component doesn't distinguish between private and non-private

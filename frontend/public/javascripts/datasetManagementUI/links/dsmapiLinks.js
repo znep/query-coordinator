@@ -7,6 +7,9 @@ export const revisionsForView =
 export const revisionBase = (params) =>
   `${revisionsForView}/${params.revisionSeq}`;
 
+export const addAttachment = (revision) =>
+  `${revisionsForView}/${revision.revision_seq}/attachment`;
+
 export const createRevision = revisionsForView;
 
 export const sourceIndex = (params) => `${revisionBase(params)}/source`;
@@ -39,3 +42,6 @@ export const errorExport = (sourceId, inputSchemaId, outputSchemaId) =>
 
 export const validateRowIdentifier = (sourceId, transformId) =>
   `${base}/source/${sourceId}/transform/${transformId}/validate_row_identifier`;
+
+export const createImportConfig = (outputSchemaId) =>
+  `${base}/config/build_from/${outputSchemaId}`;

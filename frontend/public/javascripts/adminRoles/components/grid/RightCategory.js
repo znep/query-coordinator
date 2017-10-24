@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import Grid from '../util/Grid';
 import Expandable from '../util/Expandable';
+import Hoverable from '../util/Hoverable';
 import { toggleExpanded } from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
 import * as selectors from '../../selectors';
@@ -34,15 +35,19 @@ class RightCategory extends Component {
         itemHeight={cellHeight}
         isExpanded={selectors.getExpandedStateFromRightCategory(rightCategory)}
       >
-        <Expandable.Trigger styleName="right-cell-trigger" onClick={() => toggleExpanded(rightCategory)}>
-          <h6>
-            {translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}
-          </h6>
-        </Expandable.Trigger>
+        <Hoverable name={rightCategory.get('translationKey')}>
+          <Expandable.Trigger styleName="right-cell-trigger" onClick={() => toggleExpanded(rightCategory)}>
+            <h6>
+              {translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}
+            </h6>
+          </Expandable.Trigger>
+        </Hoverable>
         {selectors.getRightsFromRightCategory(rightCategory).map(right =>
-          <Grid.Cell styleName="right-cell-item" key={selectors.getNameFromRight(right)}>
-            {translate(selectors.getNameTranslationKeyPathFromRight(right))}
-          </Grid.Cell>
+          <Hoverable name={right.get('name')} key={selectors.getNameFromRight(right)}>
+            <Grid.Cell styleName="right-cell-item">
+              {translate(selectors.getNameTranslationKeyPathFromRight(right))}
+            </Grid.Cell>
+          </Hoverable>
         )}
       </Expandable>
     );

@@ -63,7 +63,6 @@ function Table({
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column)}
               dropColumn={() => dropColumn(outputSchema, column)}
-              showShortcut={showShortcut}
               validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
               unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
               moveLeft={() => moveLeft(outputSchema, column)}

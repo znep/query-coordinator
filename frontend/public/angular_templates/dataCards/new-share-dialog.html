@@ -10,9 +10,9 @@
     <div class="span9">
       <input ng-model="share.name" class="email" type="email"></input>
       <soc-select ng-model="share.type">
-        <soc-option value="owner">{{'manageLensDialog.sharing.owner' | I18n}}</soc-option>
-        <soc-option value="contributor">{{'manageLensDialog.sharing.contributor' | I18n}}</soc-option>
-        <soc-option value="viewer">{{'manageLensDialog.sharing.viewer' | I18n}}</soc-option>
+        <option value="owner">{{'manageLensDialog.sharing.owner' | I18n}}</option>
+        <option value="contributor">{{'manageLensDialog.sharing.contributor' | I18n}}</option>
+        <option value="viewer">{{'manageLensDialog.sharing.viewer' | I18n}}</option>
       </soc-select>
       <button class="action-btn dark remove-button" ng-class="{disabled: !multipleNewShares()}" ng-click="removeNewShare(share)">
         {{::'manageLensDialog.sharing.newShareDialog.remove' | I18n}}

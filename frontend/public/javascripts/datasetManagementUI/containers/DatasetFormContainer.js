@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { setFormErrors } from 'reduxStuff/actions/forms';
+import { setFormErrors, showFormErrors } from 'reduxStuff/actions/forms';
 import { makeFieldsets } from 'models/forms';
 import DatasetForm from 'components/DatasetForm/DatasetForm';
 
@@ -26,7 +26,10 @@ const mapStateToProps = ({ entities }, { params }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setErrors: errors => dispatch(setFormErrors('datasetForm', errors))
+  setErrors: errors => {
+    dispatch(showFormErrors('datasetForm'));
+    dispatch(setFormErrors('datasetForm', errors));
+  }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DatasetForm));

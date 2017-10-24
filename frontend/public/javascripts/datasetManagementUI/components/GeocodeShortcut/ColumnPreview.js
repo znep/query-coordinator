@@ -13,7 +13,7 @@ const ColumnPreview = ({
   anySelected,
   isPreviewable,
   entities,
-  path,
+  params,
   inputSchema,
   outputColumn,
   displayState,
@@ -54,7 +54,7 @@ const ColumnPreview = ({
                 </th>
                 <TransformStatus
                   key={outputColumn.id}
-                  path={path}
+                  path={params}
                   transform={outputColumn.transform}
                   isIgnored={false}
                   displayState={displayState}
@@ -87,7 +87,7 @@ const ColumnPreview = ({
 ColumnPreview.propTypes = {
   displayState: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
-  path: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
   onPreview: PropTypes.func.isRequired,
   onClickError: PropTypes.func.isRequired,

@@ -104,6 +104,7 @@ export const renderUserAutocompleteResult = (result, index, focused, onChooseRes
       user={user}
       index={index}
       focused={focused}
-      onChooseResult={onChooseResult} />
+      onChooseResult={onChooseResult}
+    />
   );
 };

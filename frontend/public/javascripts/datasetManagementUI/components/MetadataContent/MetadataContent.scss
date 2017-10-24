@@ -11,15 +11,11 @@
   width: 250px;
   border-right: 1px solid $light-grey-4;
 
-  a, a:visited, a:hover {
+  a, a:visited, a:hover, span {
     text-decoration: none;
     color: $black;
   }
 
-  a:hover {
-    border-left-color: $dark-grey-2;
-    background-color: $light-grey-4;
-  }
 
   @media (max-width: 750px) {
     position: static;
@@ -39,8 +35,13 @@
     width: 100%;
   }
 }
+.tab:hover {
+  cursor: pointer;
+  border-left-color: $dark-grey-2;
+  background-color: $light-grey-4;
+}
 
-a.selected:hover {
+.selected:hover {
   border-left-color: $primary-base;
   background-color: $white;
 }

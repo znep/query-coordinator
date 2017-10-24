@@ -3,171 +3,82 @@
   <%= google_font_link %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-new-index-screen' %>
-  <title><%= t('screens.admin.index.administration') %> | <%= get_site_title %></title>
+  <title><%= t('administration', :scope => 'screens.admin.index') %> | <%= get_site_title %></title>
 <% end %>
 
 <div class="admin-index">
   <%= display_standard_flashes %>
 
   <div class="admin-link-columns">
+
     <section>
       <h2>
         <i class="socrata-icon-dataset"></i>
-        <%= t('screens.admin.index.section_headers.data_and_assets') %>
+        <%= t('section_headers.data_and_assets', :scope => 'screens.admin.index') %>
       </h2>
       <ul class="admin-link-list">
-        <% if user_can_see_activity_feed? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.activity_log',
-              :controller => 'administration/activity_feed') %>
-          </li>
-        <% end %>
-        <li>
-          <%= admin_nav_link('screens.admin.index.site_analytics',
-            :controller => 'administration', :action => 'analytics') %>
-        </li>
-        <% if user_can_see_asset_inventory? && !use_internal_asset_manager? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.datasets',
-              :controller => 'administration', :action => 'datasets') %>
-          </li>
-        <% elsif use_internal_asset_manager? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.datasets',
-              :controller => 'internal_asset_manager', :action => 'show') %>
-          </li>
-        <% end %>
-        <% if user_can_see_goals? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.goals',
-              :controller => 'administration', :action => 'goals') %>
-          </li>
-        <% end %>
-        <% if user_can_see_federations? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.federation',
-              :controller => 'administration', :action => 'federations') %>
-          </li>
-        <% end %>
-        <% if user_can_see_connectors? %>
-          <li>
-            <%= admin_nav_link('screens.admin.index.connectors',
-              :controller => 'administration/connector', :action => 'connectors') %>
-          </li>
-        <% end %>
+        <%= admin_section_link('activity_log', user_can_see_activity_feed?, 'admin/activity_feed') %>
+        <%= admin_section_link('site_analytics', true, '/admin/analytics') %>
+        <%= admin_section_link('datasets', user_can_see_asset_inventory? && !use_internal_asset_manager?, '/admin/datasets') %>
+        <%= admin_section_link('datasets', use_internal_asset_manager?, '/admin/assets') %>
+        <%= admin_section_link('goals', user_can_see_goals?, '/admin/goals') %>
+        <%= admin_section_link('federation', user_can_see_federations?, '/admin/federations') %>
+        <%= admin_section_link('connectors', user_can_see_connectors?, '/admin/connectors') %>
       </ul>
     </section>
+
     <section>
       <% if user_can_see_content_section? %>
         <h2>
           <i class="socrata-icon-copy-document"></i>
-          <%= t('screens.admin.index.section_headers.content') %>
+          <%= t('section_headers.content', :scope => 'screens.admin.index') %>
         </h2>
         <ul class="admin-link-list">
-          <% if user_can_see_routing_approval? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.dataset_routing_and_approval',
-                :controller => 'administration/routing_approval') %>
-            </li>
-          <% end %>
-          <% if user_can_see_view_moderation? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.view_moderation',
-                :controller => 'administration', :action => 'views') %>
-            </li>
-          <% end %>
-          <% if user_can_see_comment_moderation? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.comment_moderation',
-                :controller => 'administration', :action => 'comment_moderation') %>
-            </li>
-          <% end %>
-          <% if can_view_georegions_admin?(current_user) %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.georegions',
-                :controller => 'administration', :action => 'georegions') %>
-            </li>
-          <% end %>
-          <% if user_can_see_home_page? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.home_page',
-                :controller => 'administration', :action => 'home') %>
-            </li>
-          <% end %>
-          <% if user_can_see_canvas_designer? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.dataslate_pages',
-                :controller => 'administration', :action => 'canvas_pages') %>
-            </li>
-          <% end %>
+          <%= admin_section_link('approvals', user_can_review_approvals?, '/admin/approvals') %>
+          <%= admin_section_link('dataset_routing_and_approval', user_can_see_routing_approval?, '/admin/routing_approval') %>
+          <%= admin_section_link('view_moderation', user_can_see_view_moderation?, '/admin/views') %>
+          <%= admin_section_link('comment_moderation', user_can_see_comment_moderation?, '/admin/comment_moderation') %>
+          <%= admin_section_link('georegions', can_view_georegions_admin?, '/admin/geo') %>
+          <%= admin_section_link('home_page', user_can_see_home_page?, '/admin/home') %>
+          <%= admin_section_link('dataslate_pages', user_can_see_canvas_designer?, '/admin/data_slate') %>
         </ul>
       <% end %>
     </section>
+
     <section>
       <% if current_user.try(:is_superadmin?) %>
         <div class="super-admin-menu">
           <h2>
             <i class="socrata-icon-private"></i>
-            <%= t('screens.admin.index.section_headers.super_admin') %>
+            <%= t('section_headers.super_admin', :scope => 'screens.admin.index') %>
           </h2>
           <ul class="admin-link-list">
             <li>
-              <%= admin_nav_link('screens.admin.index.internal', :controller => 'internal') %>
+              <%= admin_nav_link('internal', '/internal') %>
             </li>
             <li>
-              <%= admin_nav_link(
-                'screens.admin.index.feature_flags',
-                :controller => 'internal',
-                :action => 'feature_flags',
-                :domain_id => CurrentDomain.cname
-              ) %>
+              <%= admin_nav_link('feature_flags', :controller => 'internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname) %>
             </li>
-            <% if user_can_see_stories? %>
-              <li>
-                <%= admin_nav_link('screens.admin.index.stories', '/stories/admin/themes') %>
-              </li>
-            <% end %>
+            <%= admin_section_link('stories', user_can_see_stories?, '/stories/admin/themes') %>
           </ul>
         </div>
       <% end %>
+
       <% if user_can_see_administration_section? %>
         <h2>
           <i class="socrata-icon-settings"></i>
-          <%= t('screens.admin.index.section_headers.site_settings') %>
+          <%= t('section_headers.site_settings', :scope => 'screens.admin.index') %>
         </h2>
         <ul class="admin-link-list">
-          <% if user_can_see_users? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.users',
-                :controller => 'administration', :action => 'users') %>
-            </li>
-          <% end %>
-          <% if user_can_see_metadata? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.metadata',
-                :controller => 'administration', :action => 'metadata') %>
-            </li>
-          <% end %>
-          <% if show_site_appearance_admin_panel? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.site_appearance',
-                :controller => 'site_appearance', :action => 'edit') %>
-            </li>
-          <% end %>
-          <% if user_can_see_sdp_templates? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.sdp_templates',
-                :controller => 'administration', :action => 'sdp_templates') %>
-            </li>
-          <% end %>
-          <% if user_can_see_roles? %>
-            <li>
-              <%= admin_nav_link('screens.admin.index.roles', '/admin/roles') %>
-            </li>
-          <% end %>
+          <%= admin_section_link('users', user_can_see_users?, '/admin/users') %>
+          <%= admin_section_link('metadata', user_can_see_metadata?, '/admin/metadata') %>
+          <%= admin_section_link('site_appearance', show_site_appearance_admin_panel?, '/admin/site_chrome') %>
+          <%= admin_section_link('sdp_templates', user_can_see_sdp_templates?, '/admin/sdp_templates') %>
+          <%= admin_section_link('roles', user_can_see_sdp_templates?, '/admin/roles') %>
         </ul>
       <% end %>
     </section>
+
   </div>
 </div>
 

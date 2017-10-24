@@ -84,5 +84,10 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
 
       assert(iframe[0].contentWindow.renderVisualization.calledOnce);
     });
+
+    it('should use the provided domain for the source data link', function() {
+      var sourceDataLink = $component.find('.socrata-visualization-view-source-data a');
+      assert.match(sourceDataLink.attr('href'), /\barbitrary\.example\.com\b/);
+    });
   });
 });

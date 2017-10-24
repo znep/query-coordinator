@@ -7,22 +7,16 @@ import App from './app';
 import reducer from './reducers';
 import { AppContainer } from 'react-hot-loader';
 
-const middleware = [thunk];
-middleware.push(
+const middleware = [
+  thunk,
   createLogger({
     duration: true,
     timestamp: false,
     collapsed: true
   })
-);
-
-const store = createStore(
-  reducer(window.serverConfig),
-  compose(
-    applyMiddleware(...middleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
-);
+];
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducer(window.serverConfig), composeEnhancers(applyMiddleware(...middleware)));
 
 ReactDOM.render(
   <AppContainer>

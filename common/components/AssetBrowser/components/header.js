@@ -21,6 +21,8 @@ export class Header extends Component {
 
   // See ../lib/constants.js for tabName values
   renderTab(tabName, text) {
+    if (_(this.props.tabsToHide).includes(tabName)) return;
+
     const activeClass = (tabName === this.props.activeTab) ? 'active' : '';
 
     return (
@@ -35,7 +37,7 @@ export class Header extends Component {
   }
 
   render() {
-    const { isMobile } = this.props;
+    const { isMobile, showAssetCounts } = this.props;
     const rights = _.get(window.serverConfig, 'currentUser.rights');
 
     const allAssetsTab = _.includes(rights, 'can_see_all_assets_tab_siam') ?
@@ -60,7 +62,7 @@ export class Header extends Component {
     return (
       <div className={headerClassnames}>
         {!isMobile && assetTabs}
-        <AssetCounts />
+        {showAssetCounts && <AssetCounts />}
         {isMobile && assetTabs}
       </div>
     );
@@ -71,6 +73,10 @@ Header.propTypes = {
   activeTab: PropTypes.string.isRequired,
   changeTab: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired
+};
+
+Header.defaultProps = {
+  tabsToHide: []
 };
 
 const mapStateToProps = (state) => ({

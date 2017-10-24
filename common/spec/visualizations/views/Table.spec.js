@@ -387,6 +387,67 @@ describe('Table', function() {
       removeTable(table);
     });
 
+    const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+    describe('Sort Menu', () => {
+
+      const data = {
+        columns: [
+          { fieldName: 'hello0', name: 'hello0', renderTypeName: 'text' },
+          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: lorem },
+        ]
+      };
+
+      const delay = () => {
+        return new Promise((resolve) => {
+          setTimeout(resolve, 5);
+        });
+      };
+
+      it('closes sort menu on kebab blur, unless focus on child', (done) => {
+        render(table, data);
+
+        const btn = $('.sort-menu-button')[0];
+        btn.focus();
+        btn.click();
+
+        assert.equal($('#sort-menu').length, 1);
+
+        let $asc = $('#sort-menu-sort-asc-button');
+        $asc[0].focus();
+
+        // Internally, there is a 1 ms delay to allow a follow up
+        // focus event on a child, in order to determine if the
+        // sort-menu should still be open.
+        delay().then(() => {
+          assert.equal($('#sort-menu').length, 1);
+        }).then(() => {
+          $('.sort-menu-button')[1].focus();
+        }).then(delay).then(() => {
+          assert.equal($('#sort-menu').length, 0);
+        }).then(done);
+      });
+
+      it('shows More link for long column descriptions in sort menu', (done) => {
+        render(table, data);
+
+        const btn = $('.sort-menu-button')[1];
+        btn.focus();
+        btn.click();
+
+        // Before clicking "More", description should not match full description.
+        assert.notEqual($('#sort-menu-description-container p').text(), lorem);
+
+        const more = $('#sort-menu-more-link')[0];
+        more.click();
+
+        assert.equal($('#sort-menu-description-container p').text(), lorem);
+
+        delay().then(done);
+      });
+    });
+
+    // NOTE: The string SOCRATA_VISUALIZATION_COLUMN_BUTTON_CLICKED is never used outside of this file.
     describe('SOCRATA_VISUALIZATION_COLUMN_BUTTON_CLICKED', function() {
 
       var data = {
@@ -607,6 +668,8 @@ describe('Table', function() {
         });
 
         table.element.find('td').trigger('mouseenter');
+        // TODO: sinon should probably be used to determine that the handler is NOT called.
+        //       Using a timeout here is kind of hacky.
         setTimeout(done, 100);
       });
 

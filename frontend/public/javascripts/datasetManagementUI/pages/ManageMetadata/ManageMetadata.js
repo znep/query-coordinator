@@ -24,7 +24,7 @@ export class ManageMetadata extends Component {
   constructor() {
     super();
     this.state = {
-      initialDatasetMetadata: null,
+      initialRevision: null,
       initialColMetadata: null
     };
 
@@ -35,7 +35,11 @@ export class ManageMetadata extends Component {
     const { revision, currentColumns } = this.props;
 
     this.setState({
-      initialDatasetMetadata: Selectors.datasetMetadata(revision.metadata),
+      initialRevision: {
+        metadata: Selectors.datasetMetadata(revision.metadata),
+        attachments: revision.attachments
+      },
+
       initialColMetadata: currentColumns
     });
   }
@@ -51,9 +55,7 @@ export class ManageMetadata extends Component {
     // cancel, we want to reset the data in the store back to what it was when
     // this component first mounted (which we've cached in the local state here)
     dispatch(
-      editRevision(revision.id, {
-        metadata: this.state.initialDatasetMetadata
-      })
+      editRevision(revision.id, this.state.initialRevision)
     );
 
     dispatch(markFormClean('datasetForm'));
@@ -78,7 +80,10 @@ export class ManageMetadata extends Component {
       dispatch(saveDatasetMetadata(revision, params))
         .then(() => {
           this.setState({
-            initialDatasetMetadata: Selectors.datasetMetadata(revision.metadata)
+            initialRevision: {
+              metadata: Selectors.datasetMetadata(revision.metadata),
+              attachments: revision.attachments
+            }
           });
         })
         .catch(error => {

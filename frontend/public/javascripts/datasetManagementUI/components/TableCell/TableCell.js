@@ -50,16 +50,8 @@ class TableCell extends Component {
   }
 }
 
-function renderLocation({ latitude, longitude, human_address: address }) {
-  return `Location(
-    latitude = ${latitude},
-    longitude = ${longitude},
-    address = ${address.address},
-    city = ${address.city},
-    state = ${address.state},
-    zip = ${address.zip}
-  )
-  `;
+function renderLocation({ latitude, longitude }) {
+  return `Location(${latitude}, ${longitude})`;
 }
 
 function renderCellValue(value, type) {

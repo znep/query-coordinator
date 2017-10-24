@@ -61,9 +61,9 @@
           </div>
           <div class="span8">
             <soc-select ng-model="share.type" ng-disabled="disableSharingDropdown(share)">
-              <soc-option value="owner">{{::'manageLensDialog.sharing.owner' | I18n}}</soc-option>
-              <soc-option value="contributor">{{::'manageLensDialog.sharing.contributor' | I18n}}</soc-option>
-              <soc-option value="viewer">{{::'manageLensDialog.sharing.viewer' | I18n}}</soc-option>
+              <option value="owner">{{::'manageLensDialog.sharing.owner' | I18n}}</option>
+              <option value="contributor">{{::'manageLensDialog.sharing.contributor' | I18n}}</option>
+              <option value="viewer">{{::'manageLensDialog.sharing.viewer' | I18n}}</option>
             </soc-select>
             <button
               ng-hide="disableRemoveButton(share)"
@@ -108,11 +108,11 @@
   </label>
   <div class="contents span10">
     <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
-      <soc-option value="approved">{{visibilityDropdownStrings.approved}}</soc-option>
-      <soc-option value="rejected">{{visibilityDropdownStrings.rejected}}</soc-option>
-      <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">
+      <option value="approved">{{visibilityDropdownStrings.approved}}</option>
+      <option value="rejected">{{visibilityDropdownStrings.rejected}}</option>
+      <option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">
         {{visibilityDropdownStrings.pending}}
-      </soc-option>
+      </option>
     </soc-select>
     <div class="flavor-text" ng-show="visibilityDropdownError">
       <span class="icon-info"></span>

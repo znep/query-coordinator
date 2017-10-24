@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
 import UploadNotification from 'containers/UploadNotificationContainer';
+import AttachmentNotification from 'components/AttachmentNotification/AttachmentNotification';
+
 import styles from './NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
@@ -13,6 +15,13 @@ const NotificationList = ({ notifications }) => {
     switch (notification.kind) {
       case 'source':
         return <UploadNotification notification={notification} key={i} />;
+      case 'attachment':
+        return (<AttachmentNotification
+          filename={notification.subject}
+          percent={notification.percent}
+          status={notification.status}
+          error={notification.error}
+          key={i} />);
       default:
         return null;
     }

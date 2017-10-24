@@ -24,6 +24,28 @@ describe('SvgTimelineChart', () => {
     precision: 'day'
   };
 
+  const testDataPrecisionNone = {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ["2017-09-01T09:45:00.000", 10],
+      ["2017-09-02T09:45:00.000", 20],
+      ["2017-09-03T09:45:00.000", 30],
+      ["2017-09-04T09:45:00.000", 40],
+      ["2017-09-05T09:45:00.000", 50]
+    ],
+    columnFormats: {
+      dimension_date_column: {
+        dataTypeName: 'calendar_date',
+        fieldName: 'dimension_date_column',
+        name: 'Dimension Date',
+        renderTypeName: 'calendar_date',
+        format: {
+          view: 'date_time'
+        }
+      }
+    }
+  };
+
   const multiSeriesTestData = {
     columns: ['dimension', 'measure 1', 'measure 2', null],
     rows: [
@@ -159,6 +181,47 @@ describe('SvgTimelineChart', () => {
       });
     });
 
+    describe('when rendering single series with no time grouping', () => {
+      beforeEach(() => {
+        overrideVIF = {
+          series: [
+            {
+              dataSource: {
+                precision: 'none'
+              }
+            }
+          ]
+        };
+
+        timelineChart = createTimelineChart(overrideVIF);
+        timelineChart.chart.render(null, testDataPrecisionNone);
+      });
+
+      it('renders a line', () => {
+        const renderedLine0 = timelineChart.$element.find('.series-0-area-line');
+        const renderedLine1 = timelineChart.$element.find('.series-1-area-line');
+
+        // renders an svg path
+        assert.equal(renderedLine0.prop('tagName'), 'path');
+        assert.lengthOf(renderedLine1, 0);
+      });
+
+      it('shows values in flyout', done => {
+        const overlay = timelineChart.$element.find('.overlay')[0];
+
+        timelineChart.$element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', event => {
+          let payload = event.originalEvent.detail;
+          let $content = $(payload.content);
+
+          assert.equal($content.find('.socrata-flyout-title').text(), '09/01/2017 09:45:00 AM');
+          assert.equal($content.find('.socrata-flyout-row').length, testDataPrecisionNone.rows[0].length - 1);
+          done();
+        });
+
+        testHelpers.fireMouseEvent(overlay, 'mousemove');
+      });
+    });
+
     describe('when the measure is set to "count"', () => {
       beforeEach(() => {
         timelineChart.chart.render(null, {
@@ -204,7 +267,8 @@ describe('SvgTimelineChart', () => {
               }
             }
           ]
-        }
+        };
+
         timelineChart = createTimelineChart(overrideVIF);
         timelineChart.chart.render(null, multiSeriesTestData);
       });

@@ -18,7 +18,15 @@ ErrorButton.propTypes = {
 };
 
 const ReadyToImport = props => {
-  const { source, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
+  const {
+    source,
+    inputSchema,
+    importableRows,
+    errorRows,
+    outputSchema,
+    openModal,
+    createConfigAndOpenModal
+  } = props;
 
   if (!outputSchema) {
     return null;
@@ -38,6 +46,17 @@ const ReadyToImport = props => {
     errorExportButton = <ErrorButton disabled />;
   }
 
+  let automateButton;
+
+  if (source.source_type.type === 'upload' &&
+    window.serverConfig.featureFlags.socrata_py_automate_button) {
+    automateButton = (<button
+      className={styles.automationBtn}
+      onClick={() => createConfigAndOpenModal()}>
+      Automate This
+    </button>);
+  }
+
   return (
     <div className={styles.readyToImport}>
       <p>
@@ -54,6 +73,7 @@ const ReadyToImport = props => {
       </p>
       {/* TODO: add flyout to help icon*/}
       <span className={styles.helpModalIcon} onClick={() => openModal('ErrorsHelp')} />
+      {automateButton}
       {errorExportButton}
     </div>
   );
@@ -65,7 +85,8 @@ ReadyToImport.propTypes = {
   source: PropTypes.object,
   importableRows: PropTypes.number,
   inputSchema: PropTypes.object,
-  openModal: PropTypes.func
+  openModal: PropTypes.func,
+  createConfigAndOpenModal: PropTypes.func.isRequired
 };
 
 export default ReadyToImport;

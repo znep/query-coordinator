@@ -26,18 +26,23 @@ const MARGINS = {
   BOTTOM: 24,
   LEFT: 50
 };
-const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+const AREA_DOT_RADIUS = 1;
+const AREA_STROKE_WIDTH = 3;
+const AXIS_DEFAULT_COLOR = '#979797';
+const AXIS_GRID_COLOR = '#f1f1f1';
+const AXIS_TICK_COLOR = '#adadad';
 const DIMENSION_LABEL_FONT_SIZE = 14;
 const DIMENSION_LABEL_FONT_COLOR = '#5e5e5e';
-const MEASURE_LABEL_FONT_SIZE = 14;
-const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
-const MINIMUM_DESKTOP_DATUM_WIDTH = 20;
-const MINIMUM_MOBILE_DATUM_WIDTH = 50;
+const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+const LINE_DOT_RADIUS = 2;
+const LINE_STROKE_WIDTH = 3;
 const MAX_ROW_COUNT_WITHOUT_PAN = 1000;
-const AXIS_DEFAULT_COLOR = '#979797';
-const AXIS_TICK_COLOR = '#adadad';
-const AXIS_GRID_COLOR = '#f1f1f1';
-const AREA_STROKE_WIDTH = '3px';
+const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
+const MEASURE_LABEL_FONT_SIZE = 14;
+const MINIMUM_DESKTOP_DATUM_WIDTH = 6;
+const MINIMUM_HIGHLIGHT_WIDTH = 5;
+const MINIMUM_MOBILE_DATUM_WIDTH = 50;
+const RECOMMENDED_TICK_DISTANCE = 150;
 
 function SvgTimelineChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
@@ -55,17 +60,18 @@ function SvgTimelineChart($element, vif, options) {
     parse;
 
   let $chartElement;
-  let dataToRender;
-  let dataToRenderBySeries;
-  let minYValue;
-  let maxYValue;
+  let bisectorDates;
   let d3XScale;
   let d3YScale;
-  let lastRenderedStartDate;
+  let dataToRender;
+  let dataToRenderBySeries;
   let lastRenderedEndDate;
+  let lastRenderedStartDate;
   let lastRenderedZoomTranslateOffsetFromEnd;
-  let dateBisector;
+  let maxYValue;
   let measureLabels;
+  let minYValue;
+  let precision;
   let referenceLines;
 
   _.extend(this, new SvgVisualization($element, vif, options));
@@ -222,35 +228,63 @@ function SvgTimelineChart($element, vif, options) {
     const seriesMeasureIndex = 1;
 
     referenceLines = self.getReferenceLines();
+    precision = _.get(self.getVif(), 'series[0].dataSource.precision');
 
-    let width;
-    let xAxisPanningEnabled;
-    let height;
-    let startDate;
-    let endDate;
-    let domainStartDate;
-    let domainEndDate;
+    let chartSvg;
+    let d3AreaSeries;
+    let d3LineSeries;
     let d3XAxis;
     let d3YAxis;
-    let d3LineSeries;
-    let d3AreaSeries;
     let d3Zoom;
-    let rootElement;
-    let chartSvg;
-    let viewportSvg;
+    let domainEndDate;
+    let domainStartDate;
+    let endDate;
+    let height;
+    let lastRenderedZoomTranslate = 0;
     let referenceLineSvgs;
     let referenceLineUnderlaySvgs;
+    let rootElement;
+    let startDate;
+    let viewportSvg;
+    let width;
+    let xAxisAndSeriesSvg;
+    let xAxisBound = false;
+    let xAxisPanDistance;
+    let xAxisPanningEnabled;
 
+    // See comment in renderXAxis() for an explanation as to why this is
+    // separate.
+    function bindXAxisOnce() {
+      const renderedXAxisSvg = viewportSvg.select('.x.axis');
+      const renderedXAxisBaselineSvg = viewportSvg.select('.x.axis.baseline');
+
+      if (!xAxisBound) {
+
+        renderedXAxisSvg.
+          call(d3XAxis);
+
+        renderedXAxisBaselineSvg.
+          call(
+            d3XAxis.
+              tickFormat('').
+              tickSize(0));
+
+            xAxisBound = true;
+      }
+    }
+      
     function renderXAxis() {
+      // Binding the axis to the svg elements is something that only needs to
+      // happen once even if we want to update the rendered properties more
+      // than once; separating the bind from the layout in this way allows us
+      // to treat renderXAxis() as idempotent.
+      bindXAxisOnce();
+      
       const renderedXAxisSvg = viewportSvg.select('.x.axis');
       const renderedXAxisBaselineSvg = viewportSvg.select('.x.axis.baseline');
 
       renderedXAxisSvg.
-        attr(
-          'transform',
-          `translate(0,${height})`
-        ).
-        call(d3XAxis);
+        attr('transform',`translate(0,${height})`);
 
       renderedXAxisSvg.selectAll('path').
         attr('fill', 'none').
@@ -270,16 +304,11 @@ function SvgTimelineChart($element, vif, options) {
 
       const baselineValue = _.clamp(0, minYValue, maxYValue);
 
-      let d3XBaselineAxis = d3XAxis.
-        tickFormat('').
-        tickSize(0);
-
       renderedXAxisBaselineSvg.
         attr(
           'transform',
           `translate(0,${d3YScale(baselineValue)})`
-        ).
-        call(d3XBaselineAxis);
+        );
 
       renderedXAxisBaselineSvg.selectAll('path').
         attr('fill', 'none').
@@ -418,7 +447,7 @@ function SvgTimelineChart($element, vif, options) {
             'stroke',
             getColorByVariantAndSeriesIndex('primary', seriesIndex)
           ).
-          attr('stroke-width', AREA_STROKE_WIDTH);
+          attr('stroke-width', LINE_STROKE_WIDTH);
 
         const seriesDotsPathSvg = viewportSvg.
           select(`.series-${seriesIndex}-line-dots`);
@@ -431,7 +460,7 @@ function SvgTimelineChart($element, vif, options) {
         // chart the dots help to indicate non-contiguous sections which may
         // be drawn at 1 pixel wide and nearly invisible with the fill color
         // alone.
-        const radius = (seriesTypeVariant === 'line') ? 2 : 1;
+        const radius = (seriesTypeVariant === 'line') ? LINE_DOT_RADIUS : AREA_DOT_RADIUS;
 
         seriesDotsSvg.
           attr('r', radius).
@@ -441,18 +470,22 @@ function SvgTimelineChart($element, vif, options) {
               return d3XScale(parseDate(d[seriesDimensionIndex]));
             } else {
 
-              // For area (bucketed) variants, we need to shift the rendered
-              // points by half the width of the domain interval to the right
-              // in order for the peaks to appear in the middle of the
-              // intervals, as opposed to the beginning of them (if we do not
-              // do this shift, the a range of 2001-2002 and a value of 1000
-              // looks like the 1000 was measured on Jan 1, 2001).
-              return d3XScale(
-                new Date(
-                  parseDate(d[seriesDimensionIndex]).getTime() +
-                  getSeriesHalfIntervalWidthInMs(seriesData)
-                )
-              );
+              if (precision !== 'none') {
+                // For area (bucketed) variants, we need to shift the rendered
+                // points by half the width of the domain interval to the right
+                // in order for the peaks to appear in the middle of the
+                // intervals, as opposed to the beginning of them (if we do not
+                // do this shift, the a range of 2001-2002 and a value of 1000
+                // looks like the 1000 was measured on Jan 1, 2001).
+                return d3XScale(
+                  new Date(
+                    parseDate(d[seriesDimensionIndex]).getTime() +
+                    getSeriesHalfIntervalWidthInMs(seriesData)
+                  )
+                );
+              } else {
+                return d3XScale(parseDate(d[seriesDimensionIndex]));
+              }
             }
           }).
           attr('cy', (d) => {
@@ -473,27 +506,31 @@ function SvgTimelineChart($element, vif, options) {
     }
 
     function handleZoom() {
-      const translate = d3Zoom.translate();
-      const translateY = translate[1];
-
-      let translateX = translate[0];
-
-      translateX = Math.min(translateX, 0);
-      translateX = _.clamp(
-        translateX,
-        -(width - viewportWidth),
+      lastRenderedZoomTranslate = _.clamp(
+        d3.event.translate[0],
+        -1 * xAxisPanDistance,
         0
       );
 
-      lastRenderedZoomTranslateOffsetFromEnd = width - Math.abs(translateX);
+      // We need to override d3's internal translation since it doesn't seem to
+      // respect our snapping to the beginning and end of the rendered data.
+      d3Zoom.translate([lastRenderedZoomTranslate, 0]);
 
-      d3Zoom.translate([translateX, translateY]);
+      chartSvg.
+        select('#' + d3ClipPathId).
+        select('rect').
+          attr(
+            'transform',
+            'translate(' + (-1 * lastRenderedZoomTranslate) + ',0)'
+          );
 
-      renderXAxis();
-      renderValues();
+      xAxisAndSeriesSvg.
+        attr(
+          'transform',
+          'translate(' + lastRenderedZoomTranslate + ',0)'
+        );
 
       if (self.isMobile()) {
-
         hideHighlight();
         hideFlyout();
       }
@@ -575,8 +612,10 @@ function SvgTimelineChart($element, vif, options) {
           dataToRender.rows.length
         )
       );
-      xAxisPanningEnabled = (viewportWidth !== width);
 
+      xAxisPanDistance = width - viewportWidth;
+      xAxisPanningEnabled = (viewportWidth !== width);
+      
       if (xAxisPanningEnabled) {
         self.showPanningNotice();
       } else {
@@ -590,7 +629,22 @@ function SvgTimelineChart($element, vif, options) {
     height = viewportHeight;
 
     // Next we can set up some data that we only want to compute once.
-    dateBisector = d3.bisector((d) => parseDate(d[seriesDimensionIndex])).left;
+    //
+    // The bisector is used to determine which data point or bucket to 
+    // highlight when moving along the x-axis.  For bucketed variants, 
+    // the axis is bisected on the dates themselves because the displayed 
+    // point is shifted to be in the middle of the bucket.
+    //
+    // For non-bucketed, the displayed point is the actual data point, so 
+    // we want to do the opposite, and set up bisector dates that are 
+    // mid-way between the data points in order for the highlight to 
+    // behave they way you would expect as you mouse along the x-axis.
+    //
+    if (precision !== 'none') {
+      bisectorDates = dataToRenderBySeries[0].rows.map((d) => parseDate(d[seriesDimensionIndex]));
+    } else {
+      bisectorDates = getPrecisionNoneBisectorDates(dataToRenderBySeries[0].rows);
+    }
 
     startDate = d3.min(
       dataToRenderBySeries.map((seriesData) => {
@@ -603,46 +657,16 @@ function SvgTimelineChart($element, vif, options) {
       })
     );
 
-    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
-
-      domainStartDate = parseDate(startDate);
-      domainEndDate = parseDate(endDate);
-
-    } else {
-
-      if ((minimumDatumWidth * dataToRender.rows.length) <= viewportWidth) {
-
-        domainStartDate = parseDate(startDate);
-        domainEndDate = parseDate(endDate);
-
-      } else {
-
-        const lastRenderableDatumIndex = Math.floor(
-          viewportWidth /
-          minimumDatumWidth
-        );
-
-        domainStartDate = parseDate(startDate);
-        domainEndDate = parseDate(
-          d3.min(
-            dataToRenderBySeries.map((series) => {
-              const lastRenderableRowIndex = Math.min(
-                lastRenderableDatumIndex,
-                series.rows.length - 1
-              );
-
-              return series.rows[lastRenderableRowIndex][seriesDimensionIndex];
-            })
-          )
-        );
-      }
-    }
+    domainStartDate = parseDate(startDate);
+    domainEndDate = parseDate(endDate);
 
     // Add 1 year, month or day (depending on the precision) so that we render
     // the last time bucket properly.
     //
-    domainEndDate = getIncrementedDateByPrecision(domainEndDate, dataToRender.precision);
-    endDate = domainEndDate.toISOString();
+    if (precision !== 'none') {
+      domainEndDate = getIncrementedDateByPrecision(domainEndDate, dataToRender.precision);
+      endDate = domainEndDate.toISOString();
+    }
 
     const allMeasureValues = _.flatMap(
       dataToRender.rows.map((row) => {
@@ -695,7 +719,7 @@ function SvgTimelineChart($element, vif, options) {
     d3XScale = d3.time.scale.
       utc().
       domain([domainStartDate, domainEndDate]).
-      range([0, viewportWidth]);
+      range([0, width]);
 
     d3YScale = d3.scale.
       linear().
@@ -705,7 +729,9 @@ function SvgTimelineChart($element, vif, options) {
 
     d3XAxis = d3.svg.axis().
       scale(d3XScale).
-      orient('bottom').
+      orient('bottom');
+
+    if (precision !== 'none') {
       // The value 4 is somewhat arbitrary, but was chosen to coax d3 into not
       // drawing too many ticks when the interval between data is only a day or
       // two.
@@ -726,7 +752,14 @@ function SvgTimelineChart($element, vif, options) {
       // the width of the datum (bl.ocks.org/mbostock/7555321) would introduce
       // significant complexity, and I'm not convinced that the payoff justifies
       // the cost at the moment.
-      ticks(4);
+      d3XAxis.ticks(4)
+
+    } else {
+
+      // Display a tick every 150px or so for the non-bucketed timeline.
+      let ticks = Math.floor(width / RECOMMENDED_TICK_DISTANCE);
+      d3XAxis.ticks(ticks);
+    }
 
     d3YAxis = d3.svg.axis().
       scale(d3YScale).
@@ -764,18 +797,22 @@ function SvgTimelineChart($element, vif, options) {
               return d3XScale(parseDate(d[seriesDimensionIndex]));
             } else {
 
-              // For area (bucketed) variants, we need to shift the rendered
-              // points by half the width of the domain interval to the right in
-              // order for the peaks to appear in the middle of the intervals,
-              // as opposed to the beginning of them (if we do not do this
-              // shift, the a range of 2001-2002 and a value of 1000 looks like
-              // the 1000 was measured on Jan 1, 2001).
-              return d3XScale(
-                new Date(
-                  parseDate(d[seriesDimensionIndex]).getTime() +
-                  getSeriesHalfIntervalWidthInMs(series)
-                )
-              );
+              if (precision !== 'none') {
+                // For area (bucketed) variants, we need to shift the rendered
+                // points by half the width of the domain interval to the right in
+                // order for the peaks to appear in the middle of the intervals,
+                // as opposed to the beginning of them (if we do not do this
+                // shift, the a range of 2001-2002 and a value of 1000 looks like
+                // the 1000 was measured on Jan 1, 2001).
+                return d3XScale(
+                  new Date(
+                    parseDate(d[seriesDimensionIndex]).getTime() +
+                    getSeriesHalfIntervalWidthInMs(series)
+                  )
+                );
+              } else {
+                return d3XScale(parseDate(d[seriesDimensionIndex]));
+              }
             }
           }).
           /* eslint-disable no-unused-vars */
@@ -795,18 +832,22 @@ function SvgTimelineChart($element, vif, options) {
             return d3XScale(parseDate(d[seriesDimensionIndex]));
           } else {
 
-            // For area (bucketed) variants, we need to shift the rendered
-            // points by half the width of the domain interval to the right in
-            // order for the peaks to appear in the middle of the intervals, as
-            // opposed to the beginning of them (if we do not do this shift, the
-            // a range of 2001-2002 and a value of 1000 looks like the 1000 was
-            // measured on Jan 1, 2001).
-            return d3XScale(
-              new Date(
-                parseDate(d[seriesDimensionIndex]).getTime() +
-                getSeriesHalfIntervalWidthInMs(series)
-              )
-            );
+            if (precision !== 'none') {
+              // For area (bucketed) variants, we need to shift the rendered
+              // points by half the width of the domain interval to the right in
+              // order for the peaks to appear in the middle of the intervals, as
+              // opposed to the beginning of them (if we do not do this shift, the
+              // a range of 2001-2002 and a value of 1000 looks like the 1000 was
+              // measured on Jan 1, 2001).
+              return d3XScale(
+                new Date(
+                  parseDate(d[seriesDimensionIndex]).getTime() +
+                  getSeriesHalfIntervalWidthInMs(series)
+                )
+              );
+            } else {
+              return d3XScale(parseDate(d[seriesDimensionIndex]));
+            }
           }
         }).
         y((d) => {
@@ -842,28 +883,35 @@ function SvgTimelineChart($element, vif, options) {
     clipPathRectSvg.
       attr('x', 0).
       attr('y', 0).
-      attr('width', viewportWidth).
-      attr('height', viewportHeight);
+      attr('width', viewportWidth + leftMargin + rightMargin).
+      attr('height', viewportHeight + topMargin + bottomMargin);
 
     // Render the y- and x-axis.
-    const yAxisSvg = viewportSvg.append('g');
-    yAxisSvg.attr('class', 'y axis');
+    const yAxisSvg = viewportSvg.append('g').
+      attr('class', 'y axis');
 
-    const yAxisGridSvg = viewportSvg.append('g');
-    yAxisGridSvg.attr('class', 'y grid');
+    const yAxisGridSvg = viewportSvg.append('g').
+      attr('class', 'y grid');
 
-    const xAxisSvg =  viewportSvg.append('g');
-    xAxisSvg.attr('class', 'x axis');
+    xAxisAndSeriesSvg = viewportSvg.append('g').
+      attr('class', 'x-axis-and-series').
+      attr('clip-path', 'url(#' + d3ClipPathId + ')');
 
-    const xAxisBaselineSvg = viewportSvg.append('g');
-    xAxisBaselineSvg.attr('class', 'x axis baseline');
+    const seriesSvg = xAxisAndSeriesSvg.append('g').
+      attr('class', 'series');
+
+    const xAxisSvg =  xAxisAndSeriesSvg.append('g').
+      attr('class', 'x axis');
+
+    const xAxisBaselineSvg = xAxisAndSeriesSvg.append('g').
+      attr('class', 'x axis baseline');
 
     // Render the actual marks.
     dataToRenderBySeries.forEach((series, seriesIndex) => {
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
-      const areaSvg = viewportSvg.append('path');
-      const lineSvg = viewportSvg.append('path');
-      const dotsGroupSvg = viewportSvg.append('g');
+      const areaSvg = seriesSvg.append('path');
+      const lineSvg = seriesSvg.append('path');
+      const dotsGroupSvg = seriesSvg.append('g');
       const dotsSvg = dotsGroupSvg.
         selectAll(`.series-${seriesIndex}-line-dot`);
 
@@ -881,16 +929,14 @@ function SvgTimelineChart($element, vif, options) {
         append('circle');
     });
 
-    const highlightSvg = viewportSvg.append('rect');
-    highlightSvg.
+    const highlightSvg = viewportSvg.append('rect').
       attr('class', 'highlight').
       attr('fill', DEFAULT_LINE_HIGHLIGHT_FILL).
       attr('stroke', 'none').
       attr('opacity', '0').
       attr('height', height);
 
-    const overlaySvg = viewportSvg.append('rect');
-    overlaySvg.
+    const overlaySvg = viewportSvg.append('rect').
       attr('class', 'overlay').
       attr('width', width).
       attr('height', height).
@@ -899,8 +945,7 @@ function SvgTimelineChart($element, vif, options) {
       on('mousemove', handleMouseMove).
       on(
         'mouseleave',
-        function() {
-
+        () => {
           hideHighlight();
           hideFlyout();
         }
@@ -1100,10 +1145,13 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function handleMouseMove() {
+    const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
     const rawDate = d3XScale.invert(d3.mouse(this)[0]);
+    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate)
     const firstSeriesRows = dataToRenderBySeries[0].rows;
+    
     const firstSeriesIndex = _.clamp(
-      dateBisector(firstSeriesRows, rawDate) - 1,
+      (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
       0,
       firstSeriesRows.length - 1
     );
@@ -1118,17 +1166,21 @@ function SvgTimelineChart($element, vif, options) {
       flyoutXOffset = d3XScale(startDate);
     } else {
 
-      // For area (bucketed) variants, we need to shift the rendered points by
-      // half the width of the domain interval to the right in order for the
-      // peaks to appear in the middle of the intervals, as opposed to the
-      // beginning of them (if we do not do this shift, the a range of 2001-2002
-      // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
-      flyoutXOffset = d3XScale(
-        new Date(
-          startDate.getTime() +
-          getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
-        )
-      );
+      if (precision !== 'none') {
+        // For area (bucketed) variants, we need to shift the rendered points by
+        // half the width of the domain interval to the right in order for the
+        // peaks to appear in the middle of the intervals, as opposed to the
+        // beginning of them (if we do not do this shift, the a range of 2001-2002
+        // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
+        flyoutXOffset = d3XScale(
+          new Date(
+            startDate.getTime() +
+            getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
+          )
+        );
+      } else {
+        flyoutXOffset = d3XScale(startDate);
+      }
     }
 
     const flyoutData = dataToRenderBySeries.map((series) => {
@@ -1153,13 +1205,18 @@ function SvgTimelineChart($element, vif, options) {
       };
     });
 
-    showHighlight(startDate, endDate);
-    showFlyout({
-      startDate: startDate,
-      endDate: endDate,
+    const payload = {
+      startDate,
       xOffset: flyoutXOffset,
       data: flyoutData
-    });
+    };
+
+    if (precision !== 'none') {
+      payload.endDate = endDate;
+    }
+
+    showHighlight(startDate, endDate);
+    showFlyout(payload);
   }
 
   function showHighlight(startDate, endDate) {
@@ -1167,10 +1224,16 @@ function SvgTimelineChart($element, vif, options) {
     const scaledEndDate = d3XScale(endDate);
     const rootElement = d3.select($chartElement[0]);
 
-    let highlightWidth = Math.max(2, scaledEndDate - scaledStartDate - 2);
-    let highlightXTranslation = (allSeriesAreLineVariant()) ?
-      scaledStartDate - (highlightWidth / 2) :
-      scaledStartDate;
+    let highlightWidth = Math.max(MINIMUM_HIGHLIGHT_WIDTH, scaledEndDate - scaledStartDate - 2);
+    let highlightXTranslation;
+
+    if (precision !== 'none') {
+      highlightXTranslation = (allSeriesAreLineVariant()) ?
+        scaledStartDate - (highlightWidth / 2) :
+        scaledStartDate;
+    } else {
+      highlightXTranslation = scaledStartDate - (highlightWidth / 2);
+    }
 
     // If we are offsetting the highlight left by half of its width but that
     // would place it beyond the y-axis, then start the highlight at the y-axis
@@ -1195,25 +1258,37 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function showFlyout(flyoutData) {
-    const boundingClientRect = self.
-      $element.
-      find('.timeline-chart')[0].
-      getBoundingClientRect();
-    const formattedStartDate = formatDateForFlyout(flyoutData.startDate);
-    const formattedEndDate = formatDateForFlyout(flyoutData.endDate);
-    const title = (allSeriesAreLineVariant()) ?
-      `${formattedStartDate}` :
-      `${formattedStartDate} to ${formattedEndDate}`;
+    let title;
+
+    if (_.isNil(flyoutData.endDate)) {
+
+      const dimensionColumn = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+      const value = flyoutData.startDate.toString();
+      title = ColumnFormattingHelpers.formatValueHTML(value, dimensionColumn, dataToRender);
+
+    } else if (allSeriesAreLineVariant()) {
+
+      title = formatDateForFlyout(flyoutData.startDate);
+
+    } else {
+
+      const formattedStartDate = formatDateForFlyout(flyoutData.startDate);
+      const formattedEndDate = formatDateForFlyout(flyoutData.endDate);
+      title = `${formattedStartDate} to ${formattedEndDate}`;
+    }
+
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append($('<td>', {'colspan': 2}).text(title ? title : ''));
+
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
       append($title);
+
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
         const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
-
         const column = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
+
         const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
           text(label).
           css('color', getColorByVariantAndSeriesIndex('primary', seriesIndex));
@@ -1239,6 +1314,7 @@ function SvgTimelineChart($element, vif, options) {
             $valueCell
           ]);
       });
+
     // Note: d3.max will return undefined if passed an array of non-numbers
     // (such as when we try to show a flyout for a null value).
     const maxFlyoutValue = d3.max(
@@ -1279,6 +1355,11 @@ function SvgTimelineChart($element, vif, options) {
     } else {
       maxFlyoutValueOffset = d3YScale(minYValue);
     }
+
+    const boundingClientRect = self.
+      $element.
+      find('.timeline-chart')[0].
+      getBoundingClientRect();
 
     const payload = {
       content: $table,
@@ -1329,12 +1410,41 @@ function SvgTimelineChart($element, vif, options) {
       case 'day':
         nextDate.setDate(nextDate.getDate() + 1);
         break;
-
-      default:
-        throw new Error(`Invalid precision: ${precision}`);
       }
 
     return nextDate;
+  }
+
+  // Gets the midpoint between each date for use as bisector dates for non-bucketed data
+  //
+  function getPrecisionNoneBisectorDates(rows) {
+    let previousDate;
+    const dates = [];
+    
+    rows.forEach((row) => {
+      if (_.isNil(row[0])) {
+        return;
+      }
+
+      let currentDate = parseDate(row[0]); // first index is the dimension data value
+
+      if (!_.isNil(previousDate)) {
+        dates.push(new Date((previousDate.getTime() + currentDate.getTime()) / 2));
+      }
+
+      previousDate = currentDate;
+    });
+
+    // Push a date after the last date to be the final bisector date so that we may select 
+    // the last data point.
+    //
+    if (!_.isNil(previousDate)) {
+      let lastDate = new Date(previousDate.getTime());
+      lastDate.setFullYear(lastDate.getFullYear() + 1); // doesn't matter how far in the future after the last date in row
+      dates.push(lastDate);
+    }
+
+    return dates;
   }
 }
 

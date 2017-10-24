@@ -1,14 +1,21 @@
 <%= content_for :head do %>
+  <%= rendered_stylesheet_tag('approvals') %>
   <title><%= I18n.t('approvals.title') %> | <%= get_site_title %></title>
 <%- end %>
 
-<div class="approvals" id="approvals-content"></div>
+<% content_for :breadcrumb do %>
+  <%= t('approvals.header.breadcrumbs.approvals') %>
+<% end %>
+
+<div class="approvals catalog-results" id="approvals-content"></div>
 
 <%= content_for :scripts do %>
   <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
+  <script type="text/javascript">var I18n = I18n || {};</script>
 
-  <%= render_approvals_translations %>
-  <%= render_approvals_session_data %>
-  <%= render_approvals_server_config %>
+  <%= render_asset_browser_translations %>
+  <%= render_asset_browser_session_data %>
+  <%= render_asset_browser_server_config %>
+  <%== render_asset_browser_initial_state %>
   <%= include_webpack_bundle 'approvals/main' %>
 <%- end %>

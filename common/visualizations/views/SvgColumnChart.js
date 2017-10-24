@@ -1073,7 +1073,6 @@ function SvgColumnChart($element, vif, options) {
       width = xAxisAndSeriesSvg.node().getBBox().width;
 
       xAxisPanDistance = width - viewportWidth;
-
       xAxisPanningEnabled = xAxisPanDistance > 0;
 
       if (xAxisPanningEnabled) {
@@ -1330,7 +1329,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = _.isNull(label) ? noValueLabel : label;
+    label = _.isEmpty(label) ? noValueLabel : label;
 
     return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(

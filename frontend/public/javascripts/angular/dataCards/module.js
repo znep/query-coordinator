@@ -74,7 +74,6 @@ angular.module('dataCards').
   directive('searchCard', require('./directives/searchCard.js')).
   directive('selectionLabel', require('./directives/selection-label.js')).
   directive('socSelect', require('./directives/socSelect.js')).
-  directive('socOption', require('./directives/socOption.js')).
   directive('suggestionToolPanel', require('./directives/suggestionToolPanel.js')).
   directive('tableCard', require('./directives/tableCard.js')).
   directive('timelineChart', require('./directives/timelineChart.js')).

@@ -32,7 +32,11 @@ export default () => ({
         },
         "type": "socrata.soql",
         "filters": [],
-        "precision": null
+        "precision": null,
+        "orderBy":{
+          "parameter": "dimension",
+          "sort": "asc"
+        }
       },
       "label": null,
       "type": "timelineChart",

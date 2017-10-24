@@ -242,6 +242,10 @@ export const TIMELINE_PRECISION = [
   {
     title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.day'),
     value: 'day'
+  },
+  {
+    title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.none'),
+    value: 'none'
   }
 ];
 

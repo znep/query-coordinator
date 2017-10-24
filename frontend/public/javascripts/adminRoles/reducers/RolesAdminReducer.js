@@ -175,6 +175,14 @@ export default () => {
     return state.delete('notification').setIn(['notification', 'showNotification'], false);
   }
 
+  function hoverRight(state, name) {
+    return state.set('hovered', name);
+  }
+
+  function unhoverRight(state) {
+    return state.set('hovered', undefined);
+  }
+
   return (state, action) => {
     switch (action.type) {
       case actions.editCustomRoles.CANCEL:
@@ -234,6 +242,12 @@ export default () => {
         return showNotificationStart(state, action);
       case actions.showNotification.END:
         return showNotificationEnd(state, action);
+
+      case actions.hoverRow.type:
+        return hoverRight(state, action.payload.name);
+
+      case actions.unhoverRow.type:
+        return unhoverRight(state);
 
       default:
         return state;

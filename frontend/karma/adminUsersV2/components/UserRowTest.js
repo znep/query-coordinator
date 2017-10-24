@@ -14,12 +14,13 @@ describe('components/UserRow', () => {
   const defaultProps = {
     ...singleRowState,
     onRoleChange: sinon.spy(),
+    onRemoveUserRole: sinon.spy(),
     I18n: I18nJS
   };
 
-  it('renders a row with 4 columns when passed default props', () => {
+  it('renders a row with 5 columns when passed default props', () => {
     const component = shallow(<UserRow {...defaultProps} />);
-    expect(component.find('td')).to.have.length(4);
+    expect(component.find('td')).to.have.length(5);
   });
 
   it('passes the onRoleChange function to the dropdown', () => {

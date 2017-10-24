@@ -430,8 +430,7 @@ en:
   approvals:
     header:
       breadcrumbs:
-        administration: Administration
-        approval_requests: Approval Requests
+        approvals: Approvals
       tabs:
         history:
           title: History
@@ -1820,6 +1819,7 @@ en:
       json: JSON
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       name: Name
+      resource_type: Resource Type
       title: Access this Dataset via SODA API
     back: Back
     blob_download:
@@ -1888,9 +1888,6 @@ en:
       csv_for_excel: CSV for Excel
       csv_for_excel_europe: CSV for Excel (Europe)
       csv_without_geo: CSV (without geospatial data)
-      flyout_title: Download %{dataset_title}
-      flyout_description: Download %{dataset_title} for offline use in other applications.
-      flyout_additional_links_title: Additional Formats
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
@@ -1988,7 +1985,6 @@ en:
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
-      resource_type: Resource Type
       title: Access this Dataset via OData
     official: Official
     open: Open
@@ -2014,7 +2010,6 @@ en:
       view: View
     remove: Remove
     render_error: There was a problem rendering this page.
-    resource_type: Resource Type
     save: Save
     saved: Saved
     saving: Saving
@@ -2064,8 +2059,7 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      title: Share %{dataset_title}
-      description: Share %{dataset_title} with your friends and colleagues.
+      title: Share
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:
@@ -2241,12 +2235,14 @@ en:
           dataset_subtitle: Make your title and description as clear and simple as possible.
           private_field: Private field. Only logged in users will see this value.
           tags_subtitle: Categorize your dataset to make it easier to find.
+          attachments_subtitle: Add an attachment if you want to provide extra context to this dataset.
         title: Title and Description
         titles:
           contact_title: Contact Email
           dataset_title: Title and Description
           licenses_title: Licensing & Attribution
           tags_title: Categories and Tags
+          attachments_title: Attachments
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -2272,6 +2268,7 @@ en:
       upload_failed: Upload Failed
       url_failed: Fetching URL Failed
       uploading: Uploading
+      uploading_attachment: Uploading attachment
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
     import_from_url:
@@ -2280,6 +2277,16 @@ en:
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
+      start_import: Start Import
+    automate_this:
+      copy_code: Copy this code
+      title: Set Up Automation
+      description: You can automate updates to this dataset with just a few lines of Python code.
+      install_socrata_py: Install the socrata-py Python library with
+      local_py_env: into your local Python environment
+      containing_this_code: "Create a file (eg: my-update-script.py) containing this code:"
+      use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
+      activity_log: See a log of your updates here
     parse_options:
       header_count: Header Count
       column_header: Header Row Position
@@ -2294,6 +2301,7 @@ en:
       header_count_gt_error: Header Count must be greater than or equal to Header Row Position
       must_be_an_int: Must be an integer
     show_output_schema:
+      geocode: Add georeference
       preview_table: Preview Data Table
       specify_headers: Specify Headers
       additional_errors:
@@ -2344,7 +2352,6 @@ en:
         scanning: Still scanning for errors...
         set_row_id: Set as row identifier
         unset_row_id: Un-set row identifier
-        geocode: Use as georeference
         move_right: Move Right
         move_left: Move Left
         can_geocode: Data in this column can be geocoded
@@ -3638,6 +3645,8 @@ en:
         up: Up
       index:
         administration: Administration
+        approvals: Approvals
+        approvals_description: Review and approve assets submitted by users
         section_headers:
           data_and_assets: Data and Assets
           content: Content
@@ -5069,11 +5078,11 @@ en:
         email_button: Email
         message_prompt: Enter an optional message
         private_notice: 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
-        prompt_html: 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
+        prompt_html: 'Invite Collaborators to <span class="datasetName">%{name}</span>:'
         remove_email: Remove
         role: Role
         success: Your email has been successfully sent.
-        title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
+        title_html: Invite Collaborators
       fatrow:
         edit_layout: Edit Layout
       grid_sidebar:
@@ -5693,16 +5702,16 @@ en:
             public: This view must be public before it can be published
             valid_saved: This view must be valid and saved
         share:
-          error: There was an error modifying your shares. Please try again later
-          loading_shares: Loading Shares...
-          no_shares_html: You are not currently sharing this <span class="datasetTypeName">dataset</span> with anyone
+          error: There was an error modifying your collaborators. Please try again later.
+          loading_shares: Loading Collaborators...
+          no_shares_html: There are currently no other collaborators for this <span class="datasetTypeName">dataset</span>
           notify_button: Notify All of Changes
-          notify_success: Notification sent
-          prompt_html: This <span class="datasetTypeName">dataset</span> is <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">and shared with:</span>
-          share_button_html: Share this <span class="datasetTypeNameUpcase">Dataset</span>
-          subtitle: Share this %{view_type}
+          notify_success: Notification Sent
+          prompt_html: This <span class="datasetTypeName">dataset</span> is <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">and has the following collaborators:</span>
+          share_button_html: Add Collaborator
+          subtitle: Add Collaborator
           success: Your permissions have been updated
-          title: Sharing
+          title: Invite & Manage Collaborators
           validation:
             valid_saved: This view must be valid and saved
         showhide_columns:
@@ -5810,7 +5819,7 @@ en:
             link_text: Click here to stop previewing the new experience.
           enable:
             link_text: Click here to preview the new experience.
-            text: We're redesigning the Grid View!
+            text: We're redesigning the Data Table!
         remove_confirm: Are you sure you want to remove this view?
         unauthenticated_alert: Changes will not be saved unless you first sign in.
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.
@@ -6149,6 +6158,37 @@ en:
           no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.
+      getting_started:
+        manage_user_accounts:
+          title: Managing User Accounts and Assigning Roles
+          description: Create, manage, and remove users on your site.
+        featuring_content:
+          title: Featuring Content on Your Data Catalog
+          description: Guide consumers to your organization's best data assets.
+        connecting_external_data:
+          title: Connecting External Data into Your Catalog
+          description: Automatically connect and federate assets from external data sites into your Socrata site.
+        developer_resources:
+          title: Developer Resources and APIs
+          description: Explore APIs for datasets, metadata, discovery, and more.
+        publishing_data:
+          title: Guide to Publishing Data
+          description: Upload, automate, and manage datasets.
+        visualizing_data:
+          title: Visualizing Data
+          description: Create charts and maps using the new visualization canvas.
+        getting_to_know_datasets:
+          title: Getting to Know Datasets
+          description: Explore metadata, related assets, and key actions via datasets' "Primer" pages.
+        discovering_and_managing_your_assets:
+          title: Discovering and Managing Your Assets
+          description: Searching for and managing your assets and assets from your organization.
+        filtering_datasets:
+          title: Filtering Datasets
+          description: Creating a Filtered View of data according to different conditions and criteria.
+        navigating_the_data_catalog:
+          title: Navigating the Data Catalog
+          description: Discovering and accessing valuable data resources from across the organization.
       info:
         edit_link: Edit
         external_links: External Links
@@ -6471,6 +6511,20 @@ en:
       short: "%H:%M:%S"
     pm: pm
   users:
+    actions:
+      remove_role: Remove role
+    add_new_users:
+      add_users: Add Users
+      button: Add New User(s)
+      cancel: Cancel
+      create_accounts: Create Accounts
+      emails_label: Emails (comma-separated)
+      emails_placeholder: Emails
+    errors:
+      invalid_email: "'%{value}' is not a valid email"
+      invalid_role_selected: Invalid role selected
+      no_emails_provided: No email addresses provided
+      server_error_html: An error has occurred while performing this action.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     export_as_csv: Export as CSV
     headers:
       actions: Actions
@@ -6483,6 +6537,9 @@ en:
     last_active:
       today: today
       unknown: unknown
+    roles:
+      default: default
+      custom: custom
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

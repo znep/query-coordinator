@@ -21,7 +21,8 @@ export const Field = daggy.taggedSum('Field', {
   TextArea: ['data'],
   Tags: ['data'],
   Select: ['data', 'options'],
-  NoField: ['data']
+  NoField: ['data'],
+  Attachments: ['data']
 });
 
 export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']);
@@ -85,6 +86,27 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
   return Fieldset(
     I18n.metadata_manage.dataset_tab.titles.tags_title,
     I18n.metadata_manage.dataset_tab.subtitles.tags_subtitle,
+    fields
+  );
+};
+
+// fieldsetAttachments : [Attachment] -> Fieldset
+const fieldsetAttachments = (attachments) => {
+  const attachmentsDescriptor = FieldDescriptor(
+    'attachments',
+    attachments,
+    '',
+    '',
+    false,
+    false,
+    false
+  );
+
+  const fields = [Field.Attachments(attachmentsDescriptor)];
+
+  return Fieldset(
+    I18n.metadata_manage.dataset_tab.titles.attachments_title,
+    I18n.metadata_manage.dataset_tab.subtitles.attachments_subtitle,
     fields
   );
 };
@@ -219,12 +241,14 @@ export const makeRegularFieldsets = revision => {
   const email = privateMetadata ? privateMetadata.contactEmail : null;
 
   const tagsValue = tags || [];
+  const attachments = revision.attachments;
 
   return [
     fieldsetTitleAndDesc(name, description),
     fieldsetCategoryAndTags(category, tagsValue),
     fieldsetLicense(licenseId, attribution, attributionLink),
-    fieldsetEmail(email)
+    fieldsetEmail(email),
+    fieldsetAttachments(attachments)
   ];
 };
 
@@ -288,13 +312,22 @@ const validateFieldsetEmail = fieldset => {
     .map(() => fieldset);
 };
 
+const validateAttachments = fieldset => {
+  const model = makeDataModel(fieldset);
+  return Validation.of()
+    .concat(areUnique(model.attachments.name, model.attachments.value)) // eslint ignore:line
+    .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
+    .map(() => fieldset);
+};
+
 // validateRegularFieldsets : List Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateRegularFieldsets = fieldsets =>
   Validation.of()
     .concat(validateFieldsetTitleAndDesc(fieldsets[0]))
     .concat(validateFieldsetCategoryAndTags(fieldsets[1]))
     .concat(validateFieldsetLicense(fieldsets[2]))
-    .concat(validateFieldsetEmail(fieldsets[3]));
+    .concat(validateFieldsetEmail(fieldsets[3]))
+    .concat(validateAttachments(fieldsets[4]));
 
 // validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {

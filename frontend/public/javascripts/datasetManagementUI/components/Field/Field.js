@@ -7,6 +7,7 @@ import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
 import TagsInput from 'components/TagsInput/TagsInput';
+import AttachmentsInput from 'containers/AttachmentsInputContainer';
 import * as Types from 'models/forms';
 import styles from './Field.scss';
 
@@ -40,7 +41,7 @@ class Field extends Component {
   }
 
   render() {
-    const { field, errors, setValue, showErrors } = this.props;
+    const { field, errors, setValue, showErrors, revision } = this.props;
 
     const labelClassNames = [styles.label];
 
@@ -70,6 +71,14 @@ class Field extends Component {
         <TagsInput
           {...data}
           handleFocus={this.handleFocus}
+          handleBlur={this.handleBlur}
+          setValue={setValue}
+          inErrorState={inErrorState} />,
+      Attachments: data =>
+        <AttachmentsInput
+          {...data}
+          handleFocus={this.handleFocus}
+          revision={revision}
           handleBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
@@ -122,6 +131,7 @@ class Field extends Component {
 }
 
 Field.propTypes = {
+  revision: PropTypes.object.isRequired,
   errors: PropTypes.array,
   setValue: PropTypes.func.isRequired,
   field: PropTypes.object.isRequired,

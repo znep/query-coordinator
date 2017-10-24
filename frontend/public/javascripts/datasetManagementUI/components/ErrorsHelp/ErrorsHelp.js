@@ -179,7 +179,7 @@ class ErrorsHelp extends Component {
     const headerProps = {
       title: getHeaderTitle(modalPage, errorRowCount),
       className: styles.header,
-      onDismiss: onDismiss
+      onDismiss
     };
 
     const content = getContent(modalPage, errorRowCount);

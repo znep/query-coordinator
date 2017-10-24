@@ -214,6 +214,21 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
               loadRowsFromModel(currentStartIndex, currentEndIndex);
             }
 
+            function updateConditionalFormatting() {
+              self._view.save();
+
+              var inlineData = _.get(lastRenderedVif, 'series[0].dataSource', null);
+
+              if (!_.isNull(inlineData)) {
+
+                inlineData.view = _.cloneDeep(self._view.cleanCopyIncludingRenderTypeName());
+
+                delete inlineData.type;
+
+                renderInlineData(inlineData);
+              }
+            }
+
             function renderInlineData(inlineData) {
               var newVifToRender = $.fn.socrataVizDatasetGrid.
                 generateVifFromInlineData(inlineData);
@@ -310,7 +325,9 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                 // experience. So we're no longer responding to column width changes
                 // *at all* if it's not a working copy, and if it is, we just update
                 // it since we're already editing things.
-                if (self._view.publicationStage === 'unpublished') {
+                var isWorkingCopy = self._view.publicationStage === 'unpublished';
+
+                if (isWorkingCopy) {
 
                   var newView = _.cloneDeep(self._view.cleanCopy());
                   newView.columns.forEach(function(column) {
@@ -322,6 +339,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                   });
 
                   self._view.update(newView, false, false);
+                  self._view.save();
                 }
               }
 
@@ -387,17 +405,21 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
 
               $datasetGrid.
                 on('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function(e) {
-                  var payload = e.originalEvent.detail;
-                  var rowEditorOptions = {
-                    viewId: window.blist.dataset.id,
-                    columns: payload.columns,
-                    row: {
-                      id: payload.row.id,
-                      data: payload.row.data
-                    }
-                  };
+                  var isWorkingCopy = self._view.publicationStage === 'unpublished';
 
-                  window.blist.gridViewRowEditor(rowEditorOptions);
+                  if (isWorkingCopy) {
+                    var payload = e.originalEvent.detail;
+                    var rowEditorOptions = {
+                      viewId: window.blist.dataset.id,
+                      columns: payload.columns,
+                      row: {
+                        id: payload.row.id,
+                        data: payload.row.data
+                      }
+                    };
+
+                    window.blist.gridViewRowEditor(rowEditorOptions);
+                  }
                 });
 
               $datasetGrid.
@@ -484,6 +506,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             self._view.bucketSize = PAGE_SIZE;
             self._view.bind('query_change', renderTableFromScratch);
             self._view.bind('columns_changed', renderTableFromScratch);
+            self._view.bind('conditionalformatting_change', updateConditionalFormatting);
 
             $datasetGrid = self.$dom();
             $datasetGrid.data('datasetGrid', self);

@@ -108,6 +108,7 @@ const initialState = {
     revisions: {
       '179': {
         id: 179,
+        attachments: [],
         output_schema_id: '144',
         fourfour: 'kg5j-unyr',
         task_sets: [],

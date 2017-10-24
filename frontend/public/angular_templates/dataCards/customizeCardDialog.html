@@ -22,10 +22,10 @@
       <div>
         <div class="dropdown-container">
           <soc-select class="base-layer-selector" ng-model="baseLayerOption">
-            <soc-option value="simpleBlue">{{::'customizeCardDialog.mapLayer.simpleBlue' | I18n}}</soc-option>
-            <soc-option value="simpleGrey">{{::'customizeCardDialog.mapLayer.simpleGrey' | I18n}}</soc-option>
-            <soc-option value="esri">Esri</soc-option>
-            <soc-option value="custom">{{::'customizeCardDialog.mapLayer.custom' | I18n}}</soc-option>
+            <option value="simpleBlue">{{::'customizeCardDialog.mapLayer.simpleBlue' | I18n}}</option>
+            <option value="simpleGrey">{{::'customizeCardDialog.mapLayer.simpleGrey' | I18n}}</option>
+            <option value="esri">Esri</option>
+            <option value="custom">{{::'customizeCardDialog.mapLayer.custom' | I18n}}</option>
           </soc-select>
         </div>
         <input name="customLayerUrl"
@@ -43,13 +43,13 @@
       <h3>{{::'customizeCardDialog.featureMapFlannel.title' | I18n}}</h3>
       <div class="dropdown-container">
         <soc-select class="column-selector flannel-title-selector" ng-model="selectedFlannelTitleColumnName">
-          <soc-option
+          <option
             value="null"
-            ng-selected="selectedFlannelTitleColumnName === null">{{::'customizeCardDialog.featureMapFlannel.defaultOption' | I18n}}</soc-option>
-          <soc-option
+            ng-selected="selectedFlannelTitleColumnName === null">{{::'customizeCardDialog.featureMapFlannel.defaultOption' | I18n}}</option>
+          <option
             value="{{column.fieldName}}"
             ng-selected="selectedFlannelTitleColumnName === column.fieldName"
-            ng-repeat="column in titleColumnOptions">{{column.columnName}}</soc-option>
+            ng-repeat="column in titleColumnOptions">{{column.columnName}}</option>
         </soc-select>
       </div>
     </div>
@@ -58,8 +58,8 @@
       <div>
         <div class="dropdown-container" ng-class="{ 'warning-dropdown': showBucketTypeWarning }">
           <soc-select ng-model="histogramBucketOption">
-            <soc-option value="logarithmic">{{::'customizeCardDialog.histogramBucketType.logarithmic' | I18n}}</soc-option>
-            <soc-option value="linear">{{::'customizeCardDialog.histogramBucketType.linear' | I18n}}</soc-option>
+            <option value="logarithmic">{{::'customizeCardDialog.histogramBucketType.logarithmic' | I18n}}</option>
+            <option value="linear">{{::'customizeCardDialog.histogramBucketType.linear' | I18n}}</option>
           </soc-select>
           <span class="warning-icon icon-warning"></span>
         </div>

@@ -60,9 +60,13 @@
 .expandable-container {
   display: flex;
   flex-direction: column;
+}
 
-  > .expandable-item-container .role-cell {
-    background-color: $expandable-cell-background-color;
+:global(.hovered) {
+  background: $hovered-cell-background-color !important;
+
+  .right-cell {
+    border-left-color: $hovered-title-cell-sidebar-color !important;
   }
 }
 
@@ -80,6 +84,13 @@
   display: flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
+  border-left-style: solid;
+  border-left-color: $unhovered-title-cell-sidebar-color;
+  border-left-width: 5px;
+
+  &:global(.expanded) {
+    border-left-color: $right-category-title-cell-expanded-color;
+  }
 
   :global(.socrata-icon) {
     margin-left: .5em;
@@ -90,11 +101,12 @@
   }
 }
 
-
 .right-cell-item {
   @extend .right-cell;
-  background-color: $expandable-cell-background-color;
-  padding-left: 1.5em;
+  padding-left: 1em;
+  border-left-style: solid;
+  border-left-color: $unhovered-title-cell-sidebar-color;
+  border-left-width: 5px;
 }
 
 .footer-cell {
@@ -138,6 +150,13 @@
 
 .roles-grid {
   .edit-custom-role-column {
+
+    :global(.hovered) {
+      .role-cell {
+        background-color: $hovered-cell-background-color;
+      }
+    }
+
     background-color: $edit-custom-role-background-color;
 
     .role-cell {

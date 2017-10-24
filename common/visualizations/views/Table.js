@@ -1,9 +1,11 @@
 const utils = require('common/js_utils');
 const $ = require('jquery');
 const _ = require('lodash');
+const classNames = require('classnames');
 const SvgVisualization = require('./SvgVisualization.js');
 const DataTypeFormatter = require('./DataTypeFormatter.js');
 const I18n = require('common/i18n').default;
+const { ENTER, SPACE, TAB } = require('common/dom_helpers/keycodes');
 
 const MINIMUM_COLUMN_WIDTH = 64;
 
@@ -154,43 +156,51 @@ module.exports = function Table(element, originalVif, locale) {
     `;
   }
 
+  function renderResizeTarget(options) {
+    const {
+      isLastColumn,
+      resizingClassIfIsResizing,
+      columnName,
+    } = options;
+
+    const className = classNames(
+      'column-resize-target', {
+      [`column-resize-target-last${resizingClassIfIsResizing}`]: isLastColumn
+    });
+
+    return `
+      <div
+        class="${className}"
+        data-column-name="${columnName}">
+      </div>
+    `;
+  }
+
   function templateTableSortedHeader(options) {
-    let resizeTarget;
+    const {
+      columnName,
+      columnDescription,
+      renderTypeName,
+      columnTitle,
+      sortDirection
+    } = options;
 
-    if (options.isLastColumn) {
-
-      resizeTarget = `
-        <div
-          class="
-            column-resize-target
-            column-resize-target-last${options.resizingClassIfIsResizing}
-          "
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    } else {
-
-      resizeTarget = `
-        <div
-          class="column-resize-target${options.resizingClassIfIsResizing}"
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    }
+    const resizeTarget = renderResizeTarget(options);
 
     return `
       <th scope="col">
         <div
           class="column-header-content"
-          data-column-name="${options.columnName}"
-          data-column-description="${options.columnDescription}"
-          data-column-render-type="${options.renderTypeName}" data-sort>
+          data-column-name="${columnName}"
+          data-column-description="${columnDescription}"
+          data-column-render-type="${renderTypeName}"
+          data-sort>
 
           <span class="column-header-content-column-name">
-            ${options.columnTitle}
+            ${columnTitle}
           </span>
           <span class="sort-controls-container">
-            <span class="${options.sortDirection} sort-indicator"></span>
+            <span class="${sortDirection} sort-indicator"></span>
             <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
           </div>
         </span>
@@ -200,39 +210,25 @@ module.exports = function Table(element, originalVif, locale) {
   }
 
   function templateTableUnsortableHeader(options) {
-    let resizeTarget;
+    const {
+      columnName,
+      columnDescription,
+      renderTypeName,
+      columnTitle
+    } = options;
 
-    if (options.isLastColumn) {
-
-      resizeTarget = `
-        <div
-          class="
-            column-resize-target
-            column-resize-target-last${options.resizingClassIfIsResizing}
-          "
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    } else {
-
-      resizeTarget = `
-        <div
-          class="column-resize-target${options.resizingClassIfIsResizing}"
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    }
+    const resizeTarget = renderResizeTarget(options);
 
     return `
       <th scope="col">
         <div
           class="column-header-content"
-          data-column-name="${options.columnName}"
-          data-column-description="${options.columnDescription}"
-          data-column-render-type="${options.renderTypeName}">
+          data-column-name="${columnName}"
+          data-column-description="${columnDescription}"
+          data-column-render-type="${renderTypeName}">
 
           <span class="column-header-content-column-name">
-            ${options.columnTitle}
+            ${columnTitle}
           </span>
         </div>
         ${resizeTarget}
@@ -241,39 +237,25 @@ module.exports = function Table(element, originalVif, locale) {
   }
 
   function templateTableHeader(options) {
-    let resizeTarget;
+    const {
+      columnName,
+      columnDescription,
+      renderTypeName,
+      columnTitle
+    } = options;
 
-    if (options.isLastColumn) {
-
-      resizeTarget = `
-        <div
-          class="
-            column-resize-target
-            column-resize-target-last${options.resizingClassIfIsResizing}
-          "
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    } else {
-
-      resizeTarget = `
-        <div
-          class="column-resize-target${options.resizingClassIfIsResizing}"
-          data-column-name="${options.columnName}">
-        </div>
-      `;
-    }
+    const resizeTarget = renderResizeTarget(options);
 
     return `
       <th scope="col">
         <div
           class="column-header-content"
-          data-column-name="${options.columnName}"
-          data-column-description="${options.columnDescription}"
-          data-column-render-type="${options.renderTypeName}">
+          data-column-name="${columnName}"
+          data-column-description="${columnDescription}"
+          data-column-render-type="${renderTypeName}">
 
           <span class="column-header-content-column-name">
-            ${options.columnTitle}
+            ${columnTitle}
           </span>
           <span class="sort-controls-container">
             <span class="socrata-icon-arrow-up2 sort-indicator"></span>
@@ -305,7 +287,7 @@ module.exports = function Table(element, originalVif, locale) {
         <div id="sort-menu-description-container">
           <div><span class="socrata-icon-info-inverse"></span>${description}</div>
           <p></p>
-          <a id="sort-menu-more-link">${more}</a>
+          <a id="sort-menu-more-link" tabindex="0">${more}</a>
         </div>
       </div>
     `;
@@ -624,6 +606,17 @@ module.exports = function Table(element, originalVif, locale) {
       addClass('loaded');
   }
 
+  function closeIfBlurred() {
+    setTimeout(() => {
+      const sortMenu = document.getElementById('sort-menu');
+      const focused = document.activeElement;
+
+      if (!$.contains(sortMenu, focused)) {
+        hideSortMenu();
+      }
+    }, 1);
+  }
+
   function attachEvents() {
 
     $(window).on('mousemove', handleMousemove);
@@ -646,6 +639,8 @@ module.exports = function Table(element, originalVif, locale) {
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
+
+    self.$element.on('blur', '.sort-menu-button', closeIfBlurred);
 
     if (!self.isMobile()) {
 
@@ -703,6 +698,8 @@ module.exports = function Table(element, originalVif, locale) {
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
+
+    self.$element.off('blur', '.sort-menu-button', closeIfBlurred);
 
     if (!self.isMobile()) {
 
@@ -949,7 +946,6 @@ module.exports = function Table(element, originalVif, locale) {
   }
 
   function handleSortMenuButtonClick(event) {
-
     event.stopPropagation();
     event.preventDefault();
 
@@ -1019,15 +1015,37 @@ module.exports = function Table(element, originalVif, locale) {
         $sortMenu.remove();
       });
 
-      $sortMenu.find('#sort-menu-more-link').off().on('click touchstart', (event) => {
+      const $moreLink = $sortMenu.find('#sort-menu-more-link');
 
+      const openDescription = (event) => {
         event.stopPropagation();
         event.preventDefault();
 
+        // Open the full description
         const columnDescription = $sortMenu.attr('sort-menu-column-description');
         $sortMenu.find('#sort-menu-description-container p').text(columnDescription);
-        $(event.target).hide();
+        const $dummy = $('<span tabindex="0"></span>');
+        $sortMenu.append($dummy);
+        $dummy.focus();
+        $dummy.on('blur', () => {
+          closeIfBlurred();
+          $dummy.remove(); // We only need the dummy element once.
+        });
+        $moreLink.hide();
+      };
+
+      $moreLink.on('click touchstart', openDescription);
+
+      $moreLink.on('keydown', (event) => {
+        if (event.keyCode === ENTER || event.keyCode === SPACE) {
+          openDescription(event);
+        } else if (event.keyCode === TAB) {
+          // We can't use on(blur) because clicking the "more" button triggers a blur.
+          closeIfBlurred();
+        }
       });
+
+      $sortMenu.find('button').on('blur', closeIfBlurred);
     }
   }
 

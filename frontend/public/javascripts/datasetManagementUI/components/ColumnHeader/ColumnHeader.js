@@ -63,10 +63,6 @@ export class ColumnHeader extends Component {
     this.props.unSetRowIdentifier();
   }
 
-  onGeocode() {
-    this.props.showShortcut('geocode');
-  }
-
   onMoveLeft() {
     if (this.isMoveLeftDisabled()) return;
     this.props.moveLeft();
@@ -146,12 +142,6 @@ export class ColumnHeader extends Component {
         value: column.is_primary_key ? 'onUnsetRowId' : 'onRowId',
         icon: 'socrata-icon-id',
         disabled: this.isInProgress(),
-        render: DropdownWithIcon
-      },
-      {
-        title: 'geocode',
-        value: 'onGeocode',
-        icon: 'socrata-icon-geo',
         render: DropdownWithIcon
       },
       {
@@ -279,7 +269,6 @@ ColumnHeader.propTypes = {
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
-  showShortcut: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   unSetRowIdentifier: PropTypes.func.isRequired,
   moveLeft: PropTypes.func.isRequired,

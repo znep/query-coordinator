@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter, browserHistory } from 'react-router';
 import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
-import * as ModalActions from 'reduxStuff/actions/modal';
 import { currentAndIgnoredOutputColumns } from 'selectors';
 import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
@@ -27,7 +26,10 @@ const getInputColumns = (entities, outputColumns) =>
 
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
-const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, displayState }) => {
+const mapStateToProps = (
+  { entities, ui },
+  { path, inputSchema, outputSchema, displayState, showShortcut }
+) => {
   const { apiCalls } = ui;
   const apiCallsByColumnId = _.chain(apiCalls)
     .filter(call => _.includes(COLUMN_OPERATIONS, call.operation) && call.status === STATUS_CALL_IN_PROGRESS)
@@ -39,6 +41,7 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
     inputSchema,
     outputSchema,
     displayState,
+    showShortcut,
     outputColumns: getInputColumns(
       entities,
       combineAndSort(currentAndIgnoredOutputColumns(entities, outputSchema.id))
@@ -70,15 +73,6 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         redirectToNewOutputschema(dispatch, params)
       ),
 
-    showShortcut: name =>
-      dispatch(
-        ModalActions.showModal(name, {
-          path: ownProps.path,
-          displayState: ownProps.displayState,
-          params: ownProps.params
-        })
-      ),
-
     validateThenSetRowIdentifier: (outputSchema, column) =>
       dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column)).then(
         redirectToNewOutputschema(dispatch, params)
@@ -98,7 +92,6 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position + 1)).then(
         redirectToNewOutputschema(dispatch, params)
       ),
-
 
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)

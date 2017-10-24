@@ -15,7 +15,9 @@ export const LOAD_NORMAL_PREVIEW_SUCCESS = 'LOAD_NORMAL_PREVIEW_SUCCESS';
 export function needToLoadAnything(entities, apiCalls, displayState) {
   // don't want to load if there's any matching api call -
   // succeeded, in progress, or failed.
-  const previousApiCall = _.find(apiCalls, call => _.isEqual(call.callParams.displayState, displayState));
+  const previousApiCall = _.find(apiCalls, call => {
+    return _.isEqual(call.callParams && call.callParams.displayState, displayState);
+  });
   switch (displayState.type) {
     case DisplayState.NORMAL: {
       const { inputSchema } = Selectors.pathForOutputSchema(entities, displayState.outputSchemaId);
@@ -23,7 +25,7 @@ export function needToLoadAnything(entities, apiCalls, displayState) {
       const minRowsProcessed = Selectors.rowsTransformed(columns);
       const firstRowNeeded = (displayState.pageNo - 1) * PAGE_SIZE;
       const lastRowNeeded = firstRowNeeded + PAGE_SIZE;
-      const haveWholePage = minRowsProcessed >= lastRowNeeded;
+      const haveWholePage = minRowsProcessed >= Math.min(inputSchema.total_rows, lastRowNeeded);
       const doneLoadingThisPage =
         minRowsProcessed === inputSchema.total_rows && minRowsProcessed >= firstRowNeeded;
       return (haveWholePage || doneLoadingThisPage) && !previousApiCall;

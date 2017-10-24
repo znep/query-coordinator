@@ -60,24 +60,24 @@
   <span class="soc-select faux-disabled" ng-show="showNoRegions">{{::'addCardDialog.noAvailableBoundaries' | I18n}}</span>
   <span class="soc-select" ng-show="showSingleRegion">{{allCuratedRegions[0].name}}</span>
   <soc-select ng-model="selectedCuratedRegion" ng-show="showMultipleRegions">
-    <soc-option
+    <option
       ng-bind="curatedRegion.name"
       ng-repeat="curatedRegion in computedCuratedRegions"
       ng-selected="curatedRegion.view.id === selectedCuratedRegion && selectedCuratedRegion"
       ng-show="computedCuratedRegions.length"
       value="{{curatedRegion.view.id}}">
-    </soc-option>
-    <soc-option
+    </option>
+    <option
       ng-if="showNonComputedSection && showRegionDivider"
       disabled="disabled">
-    </soc-option>
-    <soc-option
+    </option>
+    <option
       ng-if="showNonComputedSection"
       ng-bind-html="nonComputedSectionTitle"
       ng-show="nonComputedCuratedRegions.length"
       disabled="disabled">
-    </soc-option>
-    <soc-option
+    </option>
+    <option
       ng-bind="curatedRegion.name"
       ng-disabled="!enableNonComputedSection"
       ng-if="showNonComputedSection"
@@ -85,7 +85,7 @@
       ng-selected="curatedRegion.view.id === selectedCuratedRegion && selectedCuratedRegion"
       ng-show="nonComputedCuratedRegions.length"
       value="{{curatedRegion.view.id}}">
-    </soc-option>
+    </option>
   </soc-select>
 </div>
 

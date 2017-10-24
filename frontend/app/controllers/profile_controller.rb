@@ -6,7 +6,7 @@ class ProfileController < ApplicationController
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
   include NotificationsHelper
-  include CatalogResultsHelper
+  include AssetBrowserHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
@@ -46,11 +46,14 @@ class ProfileController < ApplicationController
       end
       @app_tokens = @user.app_tokens
 
-      unless feature_flag?(:enable_header_notifications, request)
-        @news = retrieve_zendesk_news
-      end
-
       if internal_asset_manager_on_profile_enabled?
+        @asset_browser_config = {
+          :app_name => 'internal_asset_manager',
+          :columns => %w(type name actions lastUpdatedDate category owner visibility),
+          :initial_tab => 'myAssets',
+          :filters_enabled => false
+        }
+
         render :layout => 'styleguide'
       else
         begin

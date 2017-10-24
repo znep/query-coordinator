@@ -33,27 +33,57 @@ describe('DimensionSelector', function() {
   });
 
   describe('events', function() {
-    var props;
-    var component;
-    var overrides = {
-      onSelectDimensionAndOrderBy: sinon.stub()
-    };
 
-    var emitsPicklistEvent = function(selector, eventName) {
-      it(`should emit an ${eventName} event.`, function() {
-        var option = component.querySelector(`${selector} .picklist-option`);
-        TestUtils.Simulate.click(option);
-        sinon.assert.calledOnce(props[eventName]);
+    describe('onSelectDimension', () => {
+      var props;
+      var component;
+      var overrides = {
+        onSelectDimension: sinon.stub(),
+        onSelectOrderBy: () => {}
+      };
+
+      var emitsPicklistEvent = function(selector, eventName) {
+        it(`should emit an ${eventName} event.`, function() {
+          var option = component.querySelector(`${selector} .picklist-option`);
+          TestUtils.Simulate.click(option);
+          sinon.assert.calledOnce(props[eventName]);
+        });
+      };
+
+      beforeEach(function() {
+        props = defaultProps(overrides);
+        component = renderComponent(DimensionSelector, props);
       });
-    };
 
-    beforeEach(function() {
-      props = defaultProps(overrides);
-      component = renderComponent(DimensionSelector, props);
+      describe('when changing the dimension dropdown', function() {
+        emitsPicklistEvent('#dimension-selection', 'onSelectDimension');
+      });
     });
 
-    describe('when changing the dimension dropdown', function() {
-      emitsPicklistEvent('#dimension-selection', 'onSelectDimensionAndOrderBy');
+    describe('onSelectOrderBy', () => {
+      var props;
+      var component;
+      var overrides = {
+        onSelectDimension: () => {},
+        onSelectOrderBy: sinon.stub()
+      };
+
+      var emitsPicklistEvent = function(selector, eventName) {
+        it(`should emit an ${eventName} event.`, function() {
+          var option = component.querySelector(`${selector} .picklist-option`);
+          TestUtils.Simulate.click(option);
+          sinon.assert.calledOnce(props[eventName]);
+        });
+      };
+
+      beforeEach(function() {
+        props = defaultProps(overrides);
+        component = renderComponent(DimensionSelector, props);
+      });
+
+      describe('when changing the dimension dropdown', function() {
+        emitsPicklistEvent('#dimension-selection', 'onSelectOrderBy');
+      });
     });
   });
 });

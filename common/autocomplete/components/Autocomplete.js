@@ -38,6 +38,7 @@ class Autocomplete extends React.Component {
     const {
       animate,
       anonymous,
+      className,
       collapsed,
       collapsible,
       currentQuery,
@@ -57,6 +58,7 @@ class Autocomplete extends React.Component {
 
     return (
       <div
+        className={className}
         styleName="container"
         tabIndex="-1"
         onFocus={() => onResultVisibilityChanged(true) }
@@ -84,6 +86,7 @@ class Autocomplete extends React.Component {
 Autocomplete.propTypes = {
   animate: PropTypes.bool,
   anonymous: PropTypes.bool,
+  className: PropTypes.string,
   collapsed: PropTypes.bool,
   collapsible: PropTypes.bool,
   currentQuery: PropTypes.string,

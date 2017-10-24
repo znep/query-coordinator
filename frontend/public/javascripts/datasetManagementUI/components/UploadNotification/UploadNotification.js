@@ -123,6 +123,7 @@ const UploadNotification = ({ source }) => {
     message = (
       <span className={styles.message}>
         {getProgressTitle(source)}
+        {' '}
         <span className={styles.subMessage}>
           {getFilename(source)}
           {getStreamyWarning(source)}

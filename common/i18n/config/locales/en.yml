@@ -617,6 +617,7 @@ en:
               automatic: Automatic
               day: Group by Day
               month: Group by Month
+              none: No Time Grouping
               title: Time Grouping
               year: Group by Year
             treat_null_values_as_zero:

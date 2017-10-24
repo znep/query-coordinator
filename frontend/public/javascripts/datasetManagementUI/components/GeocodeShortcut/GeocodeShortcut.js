@@ -93,8 +93,8 @@ export class GeocodeShortcut extends Component {
   }
 
   componentWillMount() {
-    const { path: { outputSchemaId } } = this.props;
-    this.setOutputSchema(outputSchemaId);
+    const { params: { outputSchemaId } } = this.props;
+    this.setOutputSchema(_.toNumber(outputSchemaId));
   }
 
   componentDidMount() {
@@ -140,7 +140,7 @@ export class GeocodeShortcut extends Component {
   }
 
   getOutputSchema() {
-    const id = this.state.outputSchemaId || this.props.path.outputSchemaId;
+    const id = _.toNumber(this.state.outputSchemaId || this.props.params.outputSchemaId);
     return this.props.entities.output_schemas[id];
   }
 
@@ -190,7 +190,10 @@ export class GeocodeShortcut extends Component {
     }
     return {
       mappings: generateDefaultMappings(
-        Selectors.columnsForInputSchema(this.props.entities, this.props.path.inputSchemaId),
+        Selectors.columnsForInputSchema(
+          this.props.entities,
+          _.toNumber(this.props.params.inputSchemaId)
+        ),
         this.getOutputColumns()
       )
     };
@@ -356,7 +359,10 @@ export class GeocodeShortcut extends Component {
 
   createNewOutputSchema() {
     return this.props
-      .newOutputSchema(this.props.path.inputSchemaId, this.genDesiredColumns())
+      .newOutputSchema(
+        _.toNumber(this.props.params.inputSchemaId),
+        this.genDesiredColumns()
+      )
       .then(resp => {
         const { resource: { id: outputSchemaId } } = resp;
         this.setOutputSchema(outputSchemaId);
@@ -408,7 +414,7 @@ export class GeocodeShortcut extends Component {
   }
 
   render() {
-    const { onDismiss, path, entities, redirectToOutputSchema } = this.props;
+    const { onDismiss, params, entities, redirectToOutputSchema } = this.props;
     const { mappings, shouldHideOriginal, shouldConvertToNull, composedFrom, displayState } = this.state;
     const outputColumns = this.getOutputColumns();
     const outputColumn = this.getOutputColumn();
@@ -417,8 +423,8 @@ export class GeocodeShortcut extends Component {
       className: styles.header,
       onDismiss: onDismiss
     };
-    const { inputSchemaId } = path;
-    const inputSchema = entities.input_schemas[inputSchemaId];
+    const { inputSchemaId } = params;
+    const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
 
     const onPreview = () => this.createNewOutputSchema();
 
@@ -489,7 +495,7 @@ export class GeocodeShortcut extends Component {
             isPreviewable={this.isPreviewable()}
             onPreview={onPreview}
             onClickError={this.toggleErrorDisplayState}
-            path={path} />
+            params={params} />
         </div>
       : <div className={classNames(flashMessageStyles.error, styles.configurationError)}>
           {this.state.configurationError}
@@ -532,7 +538,6 @@ export class GeocodeShortcut extends Component {
 GeocodeShortcut.propTypes = {
   onDismiss: PropTypes.func,
   entities: PropTypes.object.isRequired,
-  path: PropTypes.object.isRequired,
   newOutputSchema: PropTypes.func.isRequired,
   showError: PropTypes.func.isRequired,
   redirectToOutputSchema: PropTypes.func.isRequired,
@@ -556,7 +561,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     redirectToOutputSchema: outputSchemaId =>
       dispatch(ShowActions.redirectToOutputSchema(params, outputSchemaId)),
 
-    showError: message => dispatch(FlashActions.showFlashMessage('error', message, 3500))
+    showError: message => dispatch(FlashActions.showFlashMessage('error', message, 10000))
   };
 
   return { ...stateProps, ...dispatchProps, ...ownProps };

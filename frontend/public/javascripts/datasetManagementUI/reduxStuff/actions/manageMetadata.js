@@ -64,8 +64,6 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
     return Promise.reject(error);
   }
 
-  const datasetMetadata = Selectors.datasetMetadata(revision.metadata);
-
   const callId = uuid();
 
   dispatch(
@@ -78,7 +76,8 @@ export const saveDatasetMetadata = (revision, params) => (dispatch, getState) =>
   return socrataFetch(dsmapiLinks.revisionBase(params), {
     method: 'PUT',
     body: JSON.stringify({
-      metadata: datasetMetadata
+      metadata: Selectors.datasetMetadata(revision.metadata),
+      attachments: revision.attachments
     })
   })
     .then(checkStatus)

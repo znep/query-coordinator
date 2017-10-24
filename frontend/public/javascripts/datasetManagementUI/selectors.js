@@ -200,7 +200,8 @@ const regularPublic = metadata =>
       'license',
       'attribution',
       'attributionLink',
-      'tags'
+      'tags',
+      'attachments'
     ])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)

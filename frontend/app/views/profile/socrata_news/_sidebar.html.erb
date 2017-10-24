@@ -1,10 +1,14 @@
 <div class="profile-sidebar">
-
-  <% unless FeatureFlags.derive(@view, request).enable_header_notifications %>
-    <%= render :partial => 'whats_new' %>
-  <% end %>
-
   <div class="content">
     <%= render :partial => 'friends_list' %>
+  </div>
+
+  <div class="content">
+    <h4><%= t('dataset_management_ui.home_pane.getting_started')%></h4>
+    <div class="innerItem">
+      <%= render :partial => "getting_started",
+        :collection => GettingStarted.panels_for(@user),
+        :as => :panel %>
+    </div>
   </div>
 </div>

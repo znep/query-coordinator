@@ -54,6 +54,18 @@
   }
 }
 
+.setupAutomation {
+  :global {
+    .modal-container {
+      width: 1200px;
+      max-width: 1200px;
+      .modal-content {
+        max-height: 1000px;
+      }
+    }
+  }
+}
+
 .publishConfirmation {
   text-align: center;
 
@@ -80,3 +92,4 @@
 div.publishing {
   z-index: 9000; // Allow interaction with the header bar.
 }
+

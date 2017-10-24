@@ -13,12 +13,12 @@ class AdministrationController < ApplicationController
   include BrowseActions
   include CommonSocrataMethods
   include GeoregionsHelper
+  include AdministrationHelper
 
   # To learn why we include AdministrationHelper manually, see
   # the comment at the top of AdministrationHelper's implementation.
   # tl;dr "helper :all" in ApplicationController.
-  # NOTE: AdministrationHelper is distinct from AdminHelper.
-  include AdministrationHelper
+  include AdminDatasetsHelper # Override the view_url method from Socrata::UrlHelpers
 
   skip_before_filter :require_user, :only => [:configuration, :flag_out_of_date]
 
@@ -148,7 +148,7 @@ class AdministrationController < ApplicationController
   #
   def allow_georegions_access?
     run_access_check do
-      can_view_georegions_admin?(current_user)
+      can_view_georegions_admin?
     end
   end
 

@@ -35,20 +35,7 @@ describe InternalAssetManagerController do
       end
 
       it 'should render show' do
-        cetera_user_search_client_double = double(Cetera::UserSearch)
-        expect(cetera_user_search_client_double).to receive(:find_all_owners).and_return('results' => [])
-        expect(Cetera::Utils).to receive(:user_search_client).and_return(cetera_user_search_client_double)
-
-        cetera_facet_search_client_double = double(Cetera::FacetSearch)
-        expect(cetera_facet_search_client_double).to receive(:get_categories_of_views).
-          and_return('results' => [])
-        expect(cetera_facet_search_client_double).to receive(:get_tags_of_views).
-          and_return('results' => [])
-        expect(Cetera::Utils).to receive(:facet_search_client).
-          and_return(cetera_facet_search_client_double).exactly(2).times
-
         get :show
-
         expect(response).to have_http_status(:success)
       end
     end

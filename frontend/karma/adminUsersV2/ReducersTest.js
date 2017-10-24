@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
 import * as Actions from 'actions';
+import reducerCreator from 'reducers';
 
 import { futureUsers, initialState, usersResponse, rolesResponse } from './helpers/stateFixtures';
 
@@ -77,5 +78,31 @@ describe('reducers', () => {
         })
         .catch(err => done(err));
     });
-  })
+  });
+
+  describe('ui', () => {
+    it('toggles the add user UI on', () => {
+      const reducer = reducerCreator(null);
+      const newState = reducer({ ui: { showAddUserUi: false }}, Actions.toggleAddUserUi(true));
+      expect(newState.ui.showAddUserUi).to.eql(true);
+    });
+
+    it('toggles the add user UI off', () => {
+      const reducer = reducerCreator(null);
+      const newState = reducer({ ui: { showAddUserUi: true }}, Actions.toggleAddUserUi(false));
+      expect(newState.ui.showAddUserUi).to.eql(false);
+    });
+
+    it('set errors', () => {
+      const reducer = reducerCreator(null);
+      const newState = reducer({ ui: { addUserErrors: [] }}, Actions.setAddUserErrors(['error']));
+      expect(newState.ui.addUserErrors).to.eql(['error']);
+    });
+
+    it('clear errors', () => {
+      const reducer = reducerCreator(null);
+      const newState = reducer({ ui: { addUserErrors: ['error'] }}, Actions.clearAddUserErrors());
+      expect(newState.ui.addUserErrors).to.eql([]);
+    });
+  });
 });

@@ -472,7 +472,7 @@ class AdministrationController < ApplicationController
       datasetView: 'view',
       default_params: { moderation: 'pending' },
       browse_in_container: true,
-      dataset_actions: 'Moderation Status',
+      dataset_actions: t('screens.admin.view_moderation.moderation_status'),
       facets: [
         moderation_facet,
         view_facet,

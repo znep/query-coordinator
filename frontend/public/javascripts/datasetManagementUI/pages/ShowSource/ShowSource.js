@@ -10,7 +10,7 @@ import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
 import SaveButtons from './SaveButtons';
 import { updateRevision } from 'reduxStuff/actions/revisions';
-import { markFormClean, setFormErrors } from 'reduxStuff/actions/forms';
+import { markFormClean, appendFormErrors, setFormErrors } from 'reduxStuff/actions/forms';
 import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
@@ -68,12 +68,34 @@ ShowSource.propTypes = {
   hrefFormDirty: PropTypes.bool.isRequired
 };
 
-const removeEmptyValues = obj => _.omitBy(obj, val => !val);
+const removeEmptyValues = hrefURLObj => _.omitBy(hrefURLObj, val => !val.url);
+
+const findDupes = hrefURLObj => {
+  const filetypes = Object.values(hrefURLObj).map(val => val.filetype);
+
+  const dupes = filetypes.filter(filetype => {
+    const firstIdx = _.findIndex(filetypes, ft => ft === filetype);
+    const withCurrentOmitted = filetypes.filter((ft, idx) => firstIdx !== idx);
+    return withCurrentOmitted.includes(filetype);
+  });
+
+  return [...new Set(dupes)];
+};
+
+const makeExtKeys = hrefURLObj =>
+  Object.keys(hrefURLObj).reduce((acc, uuid) => {
+    const entry = hrefURLObj[uuid];
+
+    return {
+      ...acc,
+      [entry.filetype]: entry.url
+    };
+  }, {});
 
 const shapeHrefState = rawState =>
   rawState.map(href => ({
     ...href,
-    urls: removeEmptyValues(href.urls)
+    urls: makeExtKeys(removeEmptyValues(href.urls))
   }));
 
 export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
@@ -107,13 +129,30 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
+  const dupes = _.chain(stateProps.hrefs)
+    .flatMap(href => {
+      if (!_.isEmpty(href.urls) && _.isPlainObject(Object.values(href.urls)[0])) {
+        return [{ hrefId: href.id, type: 'filetypeError', dupes: findDupes(href.urls) }];
+      } else {
+        return [];
+      }
+    })
+    .filter(err => !!err.dupes.length)
+    .value();
+
   const callParams = {
-    href: shapeHrefState(stateProps.hrefs)
+    href: dupes.length ? [] : shapeHrefState(stateProps.hrefs)
   };
 
   const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
 
   const save = (andExit = false) => {
+    if (dupes.length) {
+      dispatch(showFlashMessage('error', 'duplicate file types'));
+      dispatch(appendFormErrors('hrefForm', dupes));
+      return;
+    }
+
     return dispatch(updateRevision(callParams, ownProps.params))
       .then(() => {
         dispatch(showFlashMessage('success', 'Data saved successfully.'));
@@ -136,7 +175,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
             .flatMap(href => href.urls)
             .value();
 
-          dispatch(setFormErrors('hrefForm', errors));
+          dispatch(appendFormErrors('hrefForm', [{ type: 'urlError', urls: errors }]));
           dispatch(showFlashMessage('error', message));
         })
       );

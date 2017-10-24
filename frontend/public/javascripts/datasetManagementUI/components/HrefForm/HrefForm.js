@@ -97,10 +97,14 @@ class HrefForm extends Component {
   componentWillUpdate(nextProps, nextState) {
     const { syncStateToStore, hrefs: oldHrefs } = this.props;
     const { hrefs: newHrefs } = nextState;
+
+    const oldUrls = oldHrefs.map(href => href.urls);
+    const newUrls = newHrefs.map(href => href.urls);
+
     // this lifecycle method is called on props and state changes; we use it to
     // sync local state to the store because of the stupid modal save button
     // that we must use to submit this form
-    if (!_.isEqual(oldHrefs, newHrefs)) {
+    if (!_.isEqual(oldHrefs, newHrefs) || !_.isEqual(oldUrls, newUrls)) {
       syncStateToStore({ href: nextState.hrefs });
     }
   }
@@ -317,7 +321,7 @@ HrefForm.propTypes = {
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  errors: PropTypes.arrayOf(PropTypes.object).isRequired,
   schemaExists: PropTypes.bool.isRequired
 };
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import TextInput from 'components/TextInput/TextInput';
 import { getBasename, getExtension } from 'lib/util';
@@ -7,12 +8,25 @@ import styles from './URLField.scss';
 
 class URLField extends Component {
   render() {
-    const { handleChangeUrl, handleXClick, value, errors } = this.props;
+    const { handleChangeUrl, handleXClick, value, errors, hrefId } = this.props;
+    console.log('err', errors);
+    const urlErrors = _.chain(errors)
+      .filter(err => err.type === 'urlError')
+      .flatMap(err => err.urls)
+      .value();
 
-    const inErrorState = errors.includes(value);
+    const filetypeErrors = _.chain(errors)
+      .filter(err => err.type === 'filetypeError')
+      .filter(err => err.hrefId === hrefId)
+      .flatMap(err => err.dupes)
+      .value();
+
+    const urlInErrorState = urlErrors.length ? urlErrors.includes(value.url) : false;
+
+    const filetypeInErrorState = filetypeErrors.length ? filetypeErrors.includes(value.filetype) : false;
 
     return (
-      <div>
+      <div className={styles.urlFieldContainer}>
         <div className={styles.urlFieldArea}>
           <label>{I18n.show_sources.label_url}</label>
           <TextInput
@@ -20,13 +34,13 @@ class URLField extends Component {
             label={I18n.show_sources.label_url}
             name="url"
             isRequired
-            inErrorState={inErrorState}
+            inErrorState={urlInErrorState}
             handleChange={e =>
               handleChangeUrl({
                 url: e.target.value,
                 filetype: getExtension(getBasename(e.target.value))
               })} />
-          {inErrorState && <div className={styles.error}>{I18n.show_sources.error_url}</div>}
+          {urlInErrorState && <div className={styles.error}>{I18n.show_sources.error_url}</div>}
         </div>
         <div className={styles.filetypeFieldArea}>
           <label>{I18n.show_sources.label_file_type}</label>
@@ -34,12 +48,13 @@ class URLField extends Component {
             name="filetype"
             value={value.filetype}
             label={I18n.show_sources.label_file_type}
-            inErrorState={false}
+            inErrorState={filetypeInErrorState}
             handleChange={e =>
               handleChangeUrl({
                 ...value,
                 filetype: e.target.value
               })} />
+          {filetypeInErrorState && <div className={styles.error}>Dupe</div>}
         </div>
         <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={handleXClick} />
       </div>
@@ -49,7 +64,8 @@ class URLField extends Component {
 
 URLField.propTypes = {
   value: PropTypes.string,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  hrefId: PropTypes.number.isRequired,
+  errors: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleChangeUrl: PropTypes.func.isRequired,
   handleXClick: PropTypes.func.isRequired
 };

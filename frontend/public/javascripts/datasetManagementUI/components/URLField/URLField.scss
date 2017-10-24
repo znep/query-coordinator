@@ -5,10 +5,13 @@
   display: inline-block;
 }
 
+.urlFieldContainer > * {
+  vertical-align: top;
+}
+
 .urlFieldArea {
   width: 74%;
   padding-right: 2%;
-  vertical-align: top;
 }
 
 .urlFieldArea > * {
@@ -32,6 +35,7 @@ form .filetypeFieldArea > input {
   display: inline-block;
   width: 5%;
   text-align: center;
+  margin-top: 40px;
 }
 
 .error {

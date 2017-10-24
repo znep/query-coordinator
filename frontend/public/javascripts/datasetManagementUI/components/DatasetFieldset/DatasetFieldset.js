@@ -46,6 +46,7 @@ const DatasetFieldset = ({
           return (
             <URLField
               key={key}
+              hrefId={href.id}
               errors={errors}
               value={href.urls[key]}
               handleXClick={
@@ -88,7 +89,7 @@ DatasetFieldset.propTypes = {
   handleRemoveFirstURL: PropTypes.func.isRequired,
   handleRemoveOtherURL: PropTypes.func.isRequired,
   handleXClick: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired
+  errors: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default DatasetFieldset;

@@ -15,7 +15,12 @@ describe('ShowSource page', () => {
   const ownProps = {
     params: {
       revisionSeq: '0'
-    }
+    },
+    routes: [
+      {
+        path: '/dataset/jjjj/fz3i-57sq/revisions/0'
+      }
+    ]
   };
 
   const component = shallow(

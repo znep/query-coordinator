@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import {
   applyRevision,
-  updateRevision
+  updatePermission
 } from 'reduxStuff/actions/applyRevision';
 import state from '../data/stateWithRevision';
 import fetchMock from 'fetch-mock';
@@ -91,10 +91,10 @@ describe('applyRevision actions', () => {
     fetchMock.restore();
   });
 
-  describe('updateRevision', () => {
+  describe('updatePermission', () => {
     it('launches an UPDATE_REVISION api call', done => {
       fakeStore
-        .dispatch(updateRevision('private', params))
+        .dispatch(updatePermission('private', params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(
@@ -108,7 +108,7 @@ describe('applyRevision actions', () => {
 
     it('updates the revision with the correct permission if api call succeeds', () => {
       fakeStore
-        .dispatch(updateRevision('private', params))
+        .dispatch(updatePermission('private', params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(
@@ -121,7 +121,7 @@ describe('applyRevision actions', () => {
     });
 
     it('does nothing if attempting to set permission to same as current permission', () => {
-      fakeStore.dispatch(updateRevision('public', params));
+      fakeStore.dispatch(updatePermission('public', params));
       assert.equal(fakeStore.getActions().length, 0);
     });
   });

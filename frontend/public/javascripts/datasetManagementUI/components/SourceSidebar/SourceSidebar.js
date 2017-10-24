@@ -87,6 +87,9 @@ const SourceSidebar = ({ entities, sources, params }) => {
       <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
         {I18n.show_uploads.url_link}
       </Link>
+      <Link to={Links.hrefSource(params)} className={styles.tab} activeClassName={styles.selected}>
+        Link to an External Data Source
+      </Link>
       {!!sources.length && <SourceList entities={entities} sources={sources} params={params} />}
     </section>
   );

@@ -1,0 +1,11 @@
+@import 'app/styles/styleguide-colors';
+
+.container {
+  background-color: $light-grey-7;
+  padding: 1em;
+  font-size: 1rem;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

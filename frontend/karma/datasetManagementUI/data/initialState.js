@@ -2033,6 +2033,10 @@ const initialState = {
         isDirty: false,
         showErrors: false,
         state: {}
+      },
+      hrefForm: {
+        isDirty: false,
+        errors: []
       }
     },
     apiCalls: {

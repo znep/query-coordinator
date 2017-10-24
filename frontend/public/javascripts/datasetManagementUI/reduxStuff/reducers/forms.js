@@ -6,7 +6,8 @@ import {
   HIDE_FORM_ERRORS,
   SET_FORM_ERRORS,
   SET_FORM_STATE,
-  APPEND_FORM_ERROR
+  APPEND_FORM_ERROR,
+  APPEND_FORM_ERRORS
 } from 'reduxStuff/actions/forms';
 
 const initialState = {
@@ -24,6 +25,10 @@ const initialState = {
     isDirty: false,
     showErrors: false,
     state: {}
+  },
+  hrefForm: {
+    isDirty: false,
+    errors: []
   }
 };
 
@@ -51,6 +56,12 @@ const forms = (state = initialState, action) => {
       return dotProp.set(state, `${action.formName}.errors`, existingErrors => [
         ...existingErrors,
         action.error
+      ]);
+
+    case APPEND_FORM_ERRORS:
+      return dotProp.set(state, `${action.formName}.errors`, existingErrors => [
+        ...existingErrors,
+        ...action.errors
       ]);
 
     default:

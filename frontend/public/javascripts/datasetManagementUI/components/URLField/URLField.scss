@@ -1,0 +1,44 @@
+@import 'app/styles/styleguide-colors';
+
+.urlFieldArea,
+.filetypeFieldArea {
+  display: inline-block;
+}
+
+.urlFieldContainer > * {
+  vertical-align: top;
+}
+
+.urlFieldArea {
+  width: 74%;
+  padding-right: 2%;
+}
+
+.urlFieldArea > * {
+  display: block;
+}
+
+.filetypeFieldArea {
+  width: 19%;
+}
+
+form .filetypeFieldArea > input {
+  min-width: 0;
+}
+
+.filetypeFieldArea > * {
+  display: block;
+}
+
+.closeButton {
+  cursor: pointer;
+  display: inline-block;
+  width: 5%;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.error {
+  color: $error-text;
+  margin-bottom: 0.5em;
+}

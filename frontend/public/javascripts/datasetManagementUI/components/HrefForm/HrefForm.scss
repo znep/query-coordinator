@@ -1,0 +1,29 @@
+@import 'app/styles/styleguide-colors';
+
+.container {
+  background-color: $white;
+}
+
+.bigHeading {
+  font-size: 1.8em;
+}
+
+.mediumHeading {
+  font-size: 1.4em;
+}
+
+.subtitle {
+  margin-bottom: 2em;
+}
+
+.addDatasetButton {
+  cursor: pointer;
+  margin-bottom: 0.8em;
+  border: 0;
+  padding: 0 0 1px 0;
+  border-bottom: 1px solid $primary-base;
+  color: $primary-base;
+  background-color: transparent;
+  font-size: 1rem;
+  font-family: 'Open Sans', 'Helvetica', Arial, sans-serif;
+}

@@ -24,6 +24,20 @@ NoDataYetView.propTypes = {
   params: PropTypes.object.isRequired
 };
 
+const HrefView = ({ params }) => (
+  <div className={styles.tableInfo}>
+    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.href_header}</h3>
+    <p>{I18n.home_pane.href_message}</p>
+    <Link to={Links.hrefSource(params)} className={styles.dataLink}>
+      {I18n.home_pane.href_view_btn}
+    </Link>
+  </div>
+);
+
+HrefView.propTypes = {
+  params: PropTypes.object.isRequired
+};
+
 const OutputSchemaView = ({ entities, outputSchema, params }) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
@@ -88,12 +102,15 @@ const TablePreview = ({ entities, params, view }) => {
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);
   const os = Selectors.currentOutputSchema(entities, revisionSeq);
+  const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
   if (tasksExist && allTasksSucceeded && os) {
     child = <UpsertCompleteView view={view} outputSchema={os} />;
   } else if (tasksExist && !allTasksSucceeded && os) {
     child = <UpsertInProgressView />;
   } else if (!tasksExist && os) {
     child = <OutputSchemaView entities={entities} outputSchema={os} params={params} />;
+  } else if (hrefExists) {
+    child = <HrefView params={params} />;
   } else {
     child = <NoDataYetView params={params} />;
   }

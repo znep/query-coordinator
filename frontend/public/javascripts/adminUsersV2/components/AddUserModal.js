@@ -17,8 +17,16 @@ export class AddUserModal extends Component {
     _.bindAll(this, ['cancelModal', 'renderError', 'renderErrors', 'submitNewUsers']);
   }
 
+  componentDidUpdate() {
+    const { showModal } = this.props;
+    if (showModal) {
+      this.textArea.focus();
+    }
+  }
+
   cancelModal() {
     const { onCancelAddUser } = this.props;
+    this.setState({ selectedRoleId: undefined });
     onCancelAddUser();
   }
 

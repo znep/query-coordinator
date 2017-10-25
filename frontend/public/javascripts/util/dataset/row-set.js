@@ -70,20 +70,16 @@
         var gotID = function(data) {
           successCallback(data[id]);
         };
-        if (rs._dataset._useSODA2) {
-          // FIXME: Doesn't work for SODA2
-          successCallback(0);
-        } else {
-          rs.makeRequest({
-            inline: true,
-            params: {
-              method: 'getByIds',
-              indexesOnly: true,
-              ids: id
-            },
-            success: gotID
-          });
-        }
+
+        rs.makeRequest({
+          inline: true,
+          params: {
+            method: 'getByIds',
+            indexesOnly: true,
+            ids: id
+          },
+          success: gotID
+        });
       }
     },
 
@@ -732,50 +728,41 @@
                 value: rs._calculateAggregate(curCol.fieldName, a)
               }]);
             } else {
-              if (rs._dataset._useSODA2) {
-                soda2Aggs.push({
-                  method: blist.datatypes.soda2Aggregate(a),
-                  column: curCol.fieldName
-                });
-              } else {
-                needReq = true;
-                if ($.isBlank(ilViews[i])) {
-                  ilViews[i] = rs._dataset.cleanCopy();
-                }
-                var col = _.detect(ilViews[i].columns, function(c) {
-                  return c.fieldName === curCol.fieldName;
-                });
-                col.format.aggregate = a;
+              needReq = true;
+              if ($.isBlank(ilViews[i])) {
+                ilViews[i] = rs._dataset.cleanCopy();
               }
+              var col = _.detect(ilViews[i].columns, function(c) {
+                return c.fieldName === curCol.fieldName;
+              });
+              col.format.aggregate = a;
             }
           });
         });
 
-        if (!rs._dataset._useSODA2) {
-          if (needReq) {
-            args.success = function(resAggs) {
-              gotAggs(_.map(resAggs, function(ra) {
-                return {
-                  columnIdent: ra.fieldName,
-                  name: ra.name,
-                  value: ra.value
-                };
-              }));
-            };
-            _.each(ilViews, function(v) {
-              if ($.isBlank(v)) {
-                return;
-              }
-              var req = $.extend({}, args, {
-                data: v,
-                batch: true
-              });
-              rs.makeRequest(req);
+        if (needReq) {
+          args.success = function(resAggs) {
+            gotAggs(_.map(resAggs, function(ra) {
+              return {
+                columnIdent: ra.fieldName,
+                name: ra.name,
+                value: ra.value
+              };
+            }));
+          };
+          _.each(ilViews, function(v) {
+            if ($.isBlank(v)) {
+              return;
+            }
+            var req = $.extend({}, args, {
+              data: v,
+              batch: true
             });
-            ServerModel.sendBatch(callResults);
-          } else {
-            callResults();
-          }
+            rs.makeRequest(req);
+          });
+          ServerModel.sendBatch(callResults);
+        } else {
+          callResults();
         }
       } else {
         var checkAgg = function(c) {
@@ -792,11 +779,6 @@
                 name: c.format.aggregate,
                 value: rs._calculateAggregate(c.fieldName, c.format.aggregate)
               }]);
-            } else if (rs._dataset._useSODA2) {
-              soda2Aggs.push({
-                method: blist.datatypes.soda2Aggregate(c.format.aggregate),
-                column: c.fieldName
-              });
             } else {
               needReq = true;
             }
@@ -810,24 +792,22 @@
           });
         });
 
-        if (!rs._dataset._useSODA2) {
-          if (needReq) {
-            aggs = [];
-            args.success = function(recAggs) {
-              gotAggs(recAggs);
-              gotAggs(_.map(recAggs, function(ra) {
-                return {
-                  columnIdent: ra.fieldName,
-                  name: ra.name,
-                  value: ra.value
-                };
-              }));
-              callResults();
-            };
-            rs.makeRequest(args);
-          } else {
+        if (needReq) {
+          aggs = [];
+          args.success = function(recAggs) {
+            gotAggs(recAggs);
+            gotAggs(_.map(recAggs, function(ra) {
+              return {
+                columnIdent: ra.fieldName,
+                name: ra.name,
+                value: ra.value
+              };
+            }));
             callResults();
-          }
+          };
+          rs.makeRequest(args);
+        } else {
+          callResults();
         }
       }
 
@@ -851,8 +831,6 @@
             callResults();
           }
         });
-      } else if (rs._dataset._useSODA2) {
-        callResults();
       }
     },
 
@@ -972,43 +950,40 @@
         args.params.$$query_timeout_seconds =
           $.deepGet(blist, 'configuration', 'inDatasetSearchQueryTimeoutSeconds') || 30;
       }
-      if (rs._dataset._useSODA2) {
-        rs._makeSODA2Request(args);
-      } else {
-        if (args.inline) {
-          var d;
-          if (!$.isBlank(args.data)) {
-            d = _.isString(args.data) ? JSON.parse(args.data) : args.data;
-          } else {
-            d = rs._dataset.cleanCopy();
-          }
-          if (!_.isEmpty(rs._query)) {
-            d.query = d.query || {};
-            d.query.orderBys = rs._query.orderBys;
-            d.query.groupBys = rs._query.groupBys;
-            d.query.filterCondition = rs._query.filterCondition;
-          }
-          if ($.subKeyDefined(d, 'metadata.jsonQuery.select')) {
-            _.each(d.metadata.jsonQuery.select, function(s) {
-              var col = _.detect(d.columns, function(c) {
-                s.columnFieldName === c.fieldName;
-              });
-              if ($.isBlank(col)) {
-                return;
-              }
-              if (col instanceof Column) {
-                col = col.cleanCopy();
-              }
-              if (!$.isBlank(s.aggregate)) {
-                col.format = col.format || {};
-                col.format.grouping_aggregate = blist.datatypes.aggregateFromSoda2(s.aggregate);
-              }
-            });
-          }
-          args.data = JSON.stringify(d);
+
+      if (args.inline) {
+        var d;
+        if (!$.isBlank(args.data)) {
+          d = _.isString(args.data) ? JSON.parse(args.data) : args.data;
+        } else {
+          d = rs._dataset.cleanCopy();
         }
-        rs._dataset.makeRequest(args);
+        if (!_.isEmpty(rs._query)) {
+          d.query = d.query || {};
+          d.query.orderBys = rs._query.orderBys;
+          d.query.groupBys = rs._query.groupBys;
+          d.query.filterCondition = rs._query.filterCondition;
+        }
+        if ($.subKeyDefined(d, 'metadata.jsonQuery.select')) {
+          _.each(d.metadata.jsonQuery.select, function(s) {
+            var col = _.detect(d.columns, function(c) {
+              s.columnFieldName === c.fieldName;
+            });
+            if ($.isBlank(col)) {
+              return;
+            }
+            if (col instanceof Column) {
+              col = col.cleanCopy();
+            }
+            if (!$.isBlank(s.aggregate)) {
+              col.format = col.format || {};
+              col.format.grouping_aggregate = blist.datatypes.aggregateFromSoda2(s.aggregate);
+            }
+          });
+        }
+        args.data = JSON.stringify(d);
       }
+      rs._dataset.makeRequest(args);
     },
 
     _generateQueryParams: function(args) {
@@ -1219,24 +1194,15 @@
       var includeMeta = options.includeMeta;
       var fullLoad = options.fullLoad;
       var sortOrderForRequest = options.sortOrderForRequest;
-
-      var params = rs._dataset.newBackend ? {
-          $select: ':*,*'
-        } :
-        rs._dataset._useSODA2 ? {
-          $$exclude_system_fields: false
-        } : {
-          method: 'getByIds',
-          asHashes: true
-        };
+      var params = {
+        method: 'getByIds',
+        asHashes: true
+      };
 
       var start;
       if (_.isNumber(startOrIds) && _.isNumber(len)) {
         start = startOrIds;
-        $.extend(params, rs._dataset._useSODA2 ? {
-          $offset: start,
-          $limit: len
-        } : {
+        $.extend(params, {
           start: start,
           length: len
         });
@@ -1244,11 +1210,7 @@
           params.$offset = rs._totalCount - (start + len);
         }
       } else if (_.isArray(startOrIds)) {
-        if (rs._dataset._useSODA2) {
-          params.$where = 'any_of(:id,' + startOrIds.join(',') + ')';
-        } else {
-          params.ids = startOrIds;
-        }
+        params.ids = startOrIds;
       } else {
         if (_.isFunction(errorCallback)) {
           errorCallback({
@@ -1267,15 +1229,12 @@
       }
 
       if ((fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
-          !_.isEqual(reqData, rs._curMetaReqMeta)) && !rs._dataset._useSODA2) {
+          !_.isEqual(reqData, rs._curMetaReqMeta))) {
         params.meta = true;
       }
-      if ($.isBlank(rs._totalCount) && rs._dataset._useSODA2) {
-        params.$$row_count = 'approximate';
-      } // really gives the exact count
 
       var reqId = _.uniqueId();
-      var rowsLoaded = function(result, ___, xhr) {
+      var rowsLoaded = function(result) {
         if (sortOrderForRequest === 'reversed') {
           result.reverse();
         }
@@ -1305,28 +1264,10 @@
           rs._totalCount = result.meta.totalRows;
           delete rs._potentialBuckets;
           delete rs._columnsInvalid;
-          var metaToUpdate;
-          if (rs._dataset._useSODA2) {
-            metaToUpdate = {
-              columns: result.meta.view.columns
-            };
-            // If we're grouped, then filter out fake columns
-            if (rs._dataset.isGrouped()) {
-              metaToUpdate.columns = _.reject(metaToUpdate.columns, function(c) {
-                if ($.subKeyDefined(c, 'format.grouping_aggregate')) {
-                  return true;
-                }
 
-                // Is it a group function column?
-                var indexOfGroupingCol = c.fieldName.indexOf('__');
-                var realC = rs._dataset.columnForFieldName(c.fieldName.slice(0, indexOfGroupingCol));
-                return !$.isBlank(realC) && realC.format.group_function === blist.datatypes.groupFunctionFromSoda2(c.fieldName.slice(indexOfGroupingCol + 2));
-              });
-            }
-          } else {
-            metaToUpdate = result.meta.view;
-          }
-          if (!fullLoad && !rs._dataset._useSODA2) {
+          var metaToUpdate = result.meta.view;
+
+          if (!fullLoad) {
             // I would rather get rid of triggering a metadata_update
             // all the time, since if this isn't a full load, I don't
             // think any relevant metadata has changed. But various UI
@@ -1341,61 +1282,7 @@
             }
             metaToUpdate.metadata = rs._dataset.metadata;
           }
-          rs.trigger('metadata_update', [metaToUpdate, !rs._dataset._useSODA2, !rs._dataset._useSODA2]);
-        } else if (rs._dataset._useSODA2) {
-          // In SODA2 we get basic columns back in the header
-          var rowCount = JSON.parse(xhr.getResponseHeader('X-SODA2-Row-Count') || 'null');
-          if (_.isNumber(rowCount)) {
-            rs._totalCount = rowCount;
-            delete rs._potentialBuckets;
-          }
-
-          var fields = JSON.parse(xhr.getResponseHeader('X-SODA2-Fields'));
-          var types = JSON.parse(xhr.getResponseHeader('X-SODA2-Types') || '[]') || [];
-          var newCols = _.map(fields, function(field, index) {
-            var col = rs._dataset.findColumnForServerName(field);
-            if ($.isBlank(col)) {
-              if (field.startsWith(':')) {
-                // metadata column, add it
-                col = {
-                  id: -1,
-                  name: field.slice(1),
-                  fieldName: field,
-                  dataTypeName: 'meta_data',
-                  renderTypeName: 'meta_data'
-                };
-              } else {
-                // uh-oh, a column we don't know about
-                $.debug('!!!!!!!!!!!! Unknown column: ' + field);
-              }
-            } else if (blist.datatypes[types[index]]) {
-              col.dataTypeName = types[index];
-              col.renderTypeName = types[index];
-            }
-            return col;
-          });
-
-          var hasSystemIDColumn = _.any(newCols, function(c) {
-            return c && c.fieldName === ':id';
-          });
-
-          var hasIDColumn = !$.isBlank(rs._dataset.metaColumnForName('id'));
-
-          if (!hasSystemIDColumn && !hasIDColumn) {
-            newCols.push({
-              id: -1,
-              name: 'id',
-              fieldName: ':id',
-              dataTypeName: 'meta_data',
-              renderTypeName: 'meta_data'
-            });
-          }
-
-          newCols = _.compact(newCols);
-
-          rs.trigger('metadata_update', [{
-            columns: newCols
-          }, false, true]);
+          rs.trigger('metadata_update', [metaToUpdate, true, true]);
         } else if ($.isBlank(rs._totalCount)) {
           // If we loaded without meta but don't have meta available, bail
           if (_.isFunction(errorCallback)) {
@@ -1497,25 +1384,23 @@
       // TODO: CORE-1794: The correct fix is changing the ETag in the backend, but
       // that won't happen anytime soon and a customer wants this and the only impact
       // should be client-side repeated fetches for the same set of rows.
-      if ($.browser.safari && !rs._dataset._useSODA2) {
+      if ($.browser.safari) {
         params.safariCacheBust = Math.random().toString().slice(2);
       }
       var req = {
         success: rowsLoaded,
         params: params,
-        inline: !rs._dataset._useSODA2 && !fullLoad,
-        type: rs._dataset._useSODA2 || fullLoad ? 'GET' : 'POST'
+        inline: !fullLoad,
+        type: fullLoad ? 'GET' : 'POST'
       };
-      if (!rs._dataset._useSODA2 && fullLoad) {
+      if (fullLoad) {
         req.url = '/views/' + rs._dataset.id + '/rows.json';
       }
       if (params.meta) {
         rs._curMetaReq = reqId;
         rs._curMetaReqMeta = reqData;
       }
-      if (rs._dataset._useSODA2 && $.parseParams().$$store) {
-        req.params.$$store = $.parseParams().$$store;
-      }
+
       req.sortOrderForRequest = sortOrderForRequest;
 
       rs.makeRequest(req);
@@ -1734,18 +1619,14 @@
           }
         }
 
-        if (dataset._useSODA2 && $.subKeyDefined(c, 'renderType.fromSoQLValue')) {
-          newVal = c.renderType.fromSoQLValue(newVal, c);
-        }
-
         if (c.renderTypeName === 'checkbox' && newVal === false ||
           c.renderTypeName === 'stars' && newVal === 0) {
           newVal = null;
         }
 
-        if (c.renderTypeName === 'geospatial' && r[dataset._useSODA2 ? ':id' : 'sid']) {
+        if (c.renderTypeName === 'geospatial' && r['sid']) {
           newVal = $.extend({}, newVal, {
-            row_id: r[dataset._useSODA2 ? ':id' : 'sid']
+            row_id: r['sid']
           });
         }
 

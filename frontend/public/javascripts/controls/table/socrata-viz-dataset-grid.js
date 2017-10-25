@@ -40,30 +40,45 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
     // additional dataset/query metadata.
     $.fn.socrataVizDatasetGrid.generateInlineData = function(
       view,
+      columns,
       rows,
       startIndex,
       endIndex,
       totalRowCount
     ) {
       var serializedView = view.cleanCopyIncludingRenderTypeName();
-      var columns = _.get(serializedView, 'columns', []);
-      var columnsSortedByPosition = _.sortBy(columns, 'position');
-      var isNewBackend = _.get(view, 'newBackend', false);
-      var rowIdKey = (isNewBackend) ? 'id' : 'uuid';
+      var visibleColumnsSortedByPosition = _.sortBy(columns, 'position').
+        filter(function(column) {
+          return column.id >= 0 && !column.hidden;
+        });
+      var visibleColumnIds = visibleColumnsSortedByPosition.
+        map(function(column) {
+          return column.id;
+        });
       var rowIds = rows.map(function(row) {
-        return String(_.get(row, ['metadata', rowIdKey], null));
+        return String(_.get(row, ['metadata', 'uuid'], null));
       });
       var transformedRows = rows.map(function(row) {
 
-        return columnsSortedByPosition.map(function(column) {
-          var identifier = (isNewBackend) ? column.fieldName : column.id;
+        return visibleColumnsSortedByPosition.map(function(column) {
+          var identifier = column.id;
 
           return _.get(row, ['data', identifier], null);
         });
       });
 
+      // Note that the serialized view won't have enough information for us
+      // to be able to filter out hidden columns, so we'll need to instead
+      // use the presence of a column in visibleColumnsSortedByPosition to
+      // indicate that a column is not 'hidden' and therefor actually
+      // included in the query results.
+      serializedView.columns = serializedView.columns.
+        filter(function(column) {
+          return visibleColumnIds.indexOf(column.id) >= 0;
+        });
+
       return {
-        columns: columnsSortedByPosition,
+        columns: visibleColumnsSortedByPosition,
         endIndex: endIndex,
         order: null,
         rows: transformedRows,
@@ -267,6 +282,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                   renderInlineData(
                     $.fn.socrataVizDatasetGrid.generateInlineData(
                       self._view,
+                      _.cloneDeep(self._view.realColumns),
                       rows,
                       startIndex,
                       endIndex,

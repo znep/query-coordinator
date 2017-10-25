@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import I18n from 'common/i18n';
-import { 
+import {
   getValidMeasures,
-  hasData, 
+  hasData,
   hasError,
   isLoading
 } from '../../selectors/metadata';
@@ -24,8 +24,7 @@ import {
   setTreatNullValuesAsZero
 } from '../../actions';
 
-import Accordion from '../shared/Accordion';
-import AccordionPane from '../shared/AccordionPane';
+import { AccordionContainer, AccordionPane } from 'common/components';
 import BlockLabel from '../shared/BlockLabel';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
@@ -133,13 +132,13 @@ export class DataPane extends Component {
         <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
           <DisplayOptions />
         </AccordionPane>
-      ) : 
+      ) :
       null;
   }
 
   renderErrorBarsOptions() {
     const { vifAuthoring } = this.props;
-    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) && 
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) &&
       !isGroupingOrMultiSeries(vifAuthoring);
 
     return shouldRender ? (
@@ -149,7 +148,7 @@ export class DataPane extends Component {
     ) :
     null;
   }
-  
+
   render() {
     const { metadata } = this.props;
 
@@ -166,7 +165,7 @@ export class DataPane extends Component {
     const errorBarsOptions = this.renderErrorBarsOptions();
 
     const sections = (
-      <Accordion>
+      <AccordionContainer>
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.data_selection')}>
           <div className="authoring-field">
             <BlockLabel
@@ -189,7 +188,7 @@ export class DataPane extends Component {
         {timelineOptions}
         {displayOptions}
         {errorBarsOptions}
-      </Accordion>
+      </AccordionContainer>
     );
 
     return (

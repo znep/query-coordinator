@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { Dropdown, ColorPicker } from 'common/components';
+import { Dropdown, ColorPicker, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
 import { getMeasureTitle } from '../../helpers';
 import { hasData } from '../../selectors/metadata';
@@ -16,8 +16,6 @@ import {
 } from '../../constants';
 
 import EmptyPane from './EmptyPane';
-import Accordion from '../shared/Accordion';
-import AccordionPane from '../shared/AccordionPane';
 import DebouncedSlider from '../shared/DebouncedSlider';
 import DebouncedInput from '../shared/DebouncedInput';
 import DebouncedTextArea from '../shared/DebouncedTextArea';
@@ -682,11 +680,11 @@ export class PresentationPane extends Component {
 
     return (
       <form>
-        <Accordion>
+        <AccordionContainer>
           {general}
           {configuration}
           {showLabels}
-        </Accordion>
+        </AccordionContainer>
       </form>
     );
   }

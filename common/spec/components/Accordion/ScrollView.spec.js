@@ -1,9 +1,8 @@
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
-import renderComponent from '../../renderComponent';
+import renderComponent from '../../../spec/authoring_workflow/renderComponent';
 
-import ScrollView from 'common/authoring_workflow/components/shared/ScrollView';
-import Scrolls from 'common/authoring_workflow/components/shared/Scrolls';
+import { Scrolls, ScrollView } from 'common/components';
 
 describe('ScrollView', () => {
   it('should render a div with all given props', () => {

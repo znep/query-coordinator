@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ColorPicker, Dropdown } from 'common/components';
+import { ColorPicker, Dropdown, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
 import { CHART_SORTING, COLORS } from '../../constants';
 import {
@@ -30,8 +30,6 @@ import {
 } from '../../selectors/vifAuthoring';
 import { isDimensionTypeCalendarDate } from '../../selectors/metadata';
 import EmptyPane from './EmptyPane';
-import Accordion from '../shared/Accordion';
-import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
 import TextInputButton from '../shared/TextInputButton';
 
@@ -128,7 +126,7 @@ export class AxisAndScalePane extends Component {
     }
 
     const isAuto = (this.state.measureAxisScaleControl == 'automatic') &&
-      !limitMin && 
+      !limitMin &&
       !limitMax;
 
     const boundariesPart = (
@@ -194,7 +192,7 @@ export class AxisAndScalePane extends Component {
     const { vifAuthoring } = this.props;
     const controls = getReferenceLines(vifAuthoring).map(this.renderReferenceLinesControlsAtIndex);
     const link = this.renderAddReferenceLineLink();
-    
+
     return (
       <AccordionPane title={I18n.t('shared.visualizations.panes.reference_lines.subheaders.reference_lines')}>
         {controls}
@@ -252,7 +250,7 @@ export class AxisAndScalePane extends Component {
       onClick: () => {
         const key = this.getExpandedStateKey(referenceLineIndex);
         this.setState({ [key]: false });
-  
+
         onClickRemoveReferenceLine(referenceLineIndex);
       }
     };
@@ -344,11 +342,11 @@ export class AxisAndScalePane extends Component {
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
-      <Accordion>
+      <AccordionContainer>
         {measureAxisScaleControl}
         {chartSorting}
         {referenceLinesControls}
-      </Accordion>
+      </AccordionContainer>
     );
   }
 
@@ -358,11 +356,11 @@ export class AxisAndScalePane extends Component {
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
-      <Accordion>
+      <AccordionContainer>
         {measureAxisScaleControl}
         {chartSorting}
         {referenceLinesControls}
-      </Accordion>
+      </AccordionContainer>
     );
   }
 
@@ -371,22 +369,22 @@ export class AxisAndScalePane extends Component {
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
-      <Accordion>
+      <AccordionContainer>
         {measureAxisScaleControl}
         {referenceLinesControls}
-      </Accordion>
+      </AccordionContainer>
     );
   }
 
   renderTimelineChartControls() {
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
     const referenceLinesControls = this.renderReferenceLinesControls();
-    
+
     return (
-      <Accordion>
+      <AccordionContainer>
         {measureAxisScaleControl}
         {referenceLinesControls}
-      </Accordion>
+      </AccordionContainer>
     );
   }
 
@@ -394,9 +392,9 @@ export class AxisAndScalePane extends Component {
     const chartSorting = this.renderChartSorting();
 
     return (
-      <Accordion>
+      <AccordionContainer>
         {chartSorting}
-      </Accordion>
+      </AccordionContainer>
     );
   }
 

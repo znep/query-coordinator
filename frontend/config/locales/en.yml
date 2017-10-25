@@ -6533,7 +6533,9 @@ en:
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: Invalid role selected
       no_emails_provided: No email addresses provided
+      own_role: Unable to change your own role.
       server_error_html: An error has occurred while performing this action.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
+      unkown: An unknown error has occurred.
     export_as_csv: Export as CSV
     headers:
       actions: Actions

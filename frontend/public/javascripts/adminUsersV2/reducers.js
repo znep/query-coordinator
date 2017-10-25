@@ -137,12 +137,15 @@ const roles = (state = [], action) => {
 
 const config = initialConfig => (state = initialConfig) => state;
 
-export default initialConfig =>
+const filters = initialFilters => (state = initialFilters) => state;
+
+export default (initialConfig, initialFilters) =>
   combineReducers({
     ui,
     users,
     futureUsers,
     roles,
     config: config(initialConfig),
-    autocomplete
+    autocomplete,
+    filters: filters(initialFilters)
   });

@@ -57,16 +57,26 @@ const convertUserListFromApi = users => {
   });
 };
 
-const loadUsers = query => {
+const loadUsers = options => {
   const fetchOptions = {
     credentials: 'same-origin',
     headers: defaultHeaders
   };
 
   let apiPath = `/api/catalog/v1/users?domain=${serverConfig.domain}`;
-  if (!_.isEmpty(query)) {
-    apiPath = `${apiPath}&q=${query}`;
+  if (!_.isEmpty(options.query)) {
+    apiPath = `${apiPath}&q=${options.query}`;
   }
+  if (!_.isEmpty(options.filters)) {
+    Object.keys(options.filters).forEach(key => {
+      const val = options.filters[key];
+      if (!_.isEmpty(val)) {
+        apiPath = `${apiPath}&${key}=${val}`;
+      }
+    });
+  }
+
+  console.log(options.filters);
 
   return fetchJson(apiPath, fetchOptions).
     then(json => json.results).
@@ -94,13 +104,14 @@ const loadRoles = () => {
 };
 
 export const LOAD_DATA = 'LOAD_DATA';
-export const loadData = () => dispatch => {
+export const loadData = () => (dispatch, getState) => {
+  const { filters } = getState();
   const ACTION = {
     type: LOAD_DATA
   };
 
   dispatch({ ...ACTION, stage: START });
-  return Promise.all([loadUsers(), loadRoles(), loadFutureUsers()]).then(([users, roles, futureUsers]) => {
+  return Promise.all([loadUsers({filters}), loadRoles(), loadFutureUsers()]).then(([users, roles, futureUsers]) => {
     dispatch({
       ...ACTION,
       stage: COMPLETE_SUCCESS,
@@ -119,7 +130,7 @@ export const userSearch = query => dispatch => {
   };
 
   dispatch({ ...ACTION, stage: START });
-  return loadUsers(query).then(users => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users }));
+  return loadUsers({query}).then(users => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users }));
 };
 
 export const userAutocomplete = (query, callback) => {

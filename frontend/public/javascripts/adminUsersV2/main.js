@@ -4,8 +4,15 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import App from './app';
-import reducer from './reducers';
+import createReducer from './reducers';
 import { AppContainer } from 'react-hot-loader';
+
+const getQueryParamFilters = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    role_ids: urlParams.get('roleId')
+  };
+};
 
 const middleware = [
   thunk,
@@ -16,7 +23,8 @@ const middleware = [
   })
 ];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer(window.serverConfig), composeEnhancers(applyMiddleware(...middleware)));
+const reducer = createReducer(window.serverConfig, getQueryParamFilters());
+const store = createStore(reducer, composeEnhancers(applyMiddleware(...middleware)));
 
 ReactDOM.render(
   <AppContainer>

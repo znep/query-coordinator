@@ -1,17 +1,14 @@
-import _ from 'lodash';
-
-import SoqlDataProvider from './SoqlDataProvider';
-import SoqlHelpers from './SoqlHelpers';
-import I18n from 'common/i18n';
-import makeSocrataTimeDataRequest from './makeSocrataTimeDataRequest';
-import * as ArrayHelpers from 'common/visualizations/helpers/ArrayHelpers.js';
-
-
+// Vendor Imports
+const _ = require('lodash');
+// Project Imports
+const SoqlDataProvider = require('./SoqlDataProvider');
+const SoqlHelpers = require('./SoqlHelpers');
+const I18n = require('common/i18n').default;
+const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
 // Constants
 const MAX_GROUP_COUNT = 12;
 const VALID_SORTS = ['asc', 'desc'];
 const DEFAULT_SORT = 'asc';
-
 
 function getData(vif, options) {
 
@@ -90,48 +87,43 @@ function getData(vif, options) {
   }
 
   function buildGroupingVifs(state) {
-    state.groupingVifs = [];
 
-    const makeGroupingVif = (filters, extras = {}) => {
+    // Make one vif for each grouping value which results in an identical query
+    // as the original vif, just with the added constraint that the grouping
+    // column is constrained to the grouping value in question.
+    state.groupingVifs = state.groupingValues.map((groupingValue) => {
       const groupingVif = _.cloneDeep(state.vif);
-      _.set(groupingVif, ['series', 0, 'dataSource', 'filters'], filters);
-      return Object.assign(groupingVif, extras);
-    };
+      const firstSeries = groupingVif.series[0];
 
-    const groupingValuesIncludeNull = _.includes(state.groupingValues, null);
+      let filter;
 
-    if (groupingValuesIncludeNull) {
-      state.groupingVifs.push(
-        makeGroupingVif([{
-          function: 'isNull',
+      if (groupingValue === null) {
+
+        filter = {
+          'function': 'isNull',
           columnName: state.groupingColumnName,
           arguments: {
             isNull: false
           }
-        }])
-      );
-    }
+        };
+      } else {
 
-    const nonNullGroupingValues = _.without(state.groupingValues, null);
-    const chunkedNonNullGroupingValues = ArrayHelpers.chunkArrayByLength(nonNullGroupingValues);
-
-    chunkedNonNullGroupingValues.forEach((groupingValuesCurrentChunk) => {
-
-      if (!_.isEmpty(groupingValuesCurrentChunk)) {
-        state.groupingVifs.push(
-          makeGroupingVif(
-            [{
-              function: 'in',
-              columnName: state.groupingColumnName,
-              arguments: groupingValuesCurrentChunk
-            }],
-            {
-              requireGroupingInSelect: true,
-              groupingColumnName: state.groupingColumnName
-            })
-        );
+        filter = {
+          'function': 'binaryOperator',
+          columnName: state.groupingColumnName,
+          arguments: {
+            operator: '=',
+            operand: groupingValue
+          }
+        };
       }
 
+      firstSeries.dataSource.filters.push(filter);
+      firstSeries.label = groupingValue;
+
+      groupingVif.series = [firstSeries];
+
+      return groupingVif;
     });
 
     return state;
@@ -155,39 +147,12 @@ function getData(vif, options) {
     return Promise.all(groupingDataRequests).
       then((groupingDataResponses) => {
 
-        let groupTable = _.reduce(
-          groupingDataResponses,
-          (result, response) => {
-            const idxDimension = _.findIndex(response.columns, (x) => x === 'dimension');
-            const idxGrouping = _.findIndex(response.columns, (x) => x === 'grouping');
-            const idxMeasure = _.findIndex(response.columns, (x) => x === 'measure');
-            response.rows.forEach((row) => {
-              const dimension = row[idxDimension];
-              const grouping = row[idxGrouping];
-              const measure = row[idxMeasure];
-              if (_.isUndefined(result[grouping] )) {
-                result[grouping] = [];
-              }
-              result[grouping].push([dimension, measure]);
-            });
-            return result;
-          },
-          {}
-        );
+        state.groupingData = state.groupingValues.map((groupingValue, i) => {
 
-        state.groupingData = _.map(groupTable, (row, groupingValue) => {
           return {
             group: groupingValue,
-            data: {
-              columns: ['dimension', 'measure'],
-              rows: row
-            }
+            data: groupingDataResponses[i]
           };
-        });
-        // XXX: Subsequent code relies on state.groupingData being ordered the
-        // same as state.groupingValues, so sort it that way.
-        state.groupingData.sort((a, b) => {
-          return _.indexOf(state.groupingValues, a.group) - _.indexOf(state.groupingValues, b.group);
         });
 
         return state;
@@ -337,8 +302,8 @@ function getData(vif, options) {
       descendingComparator;
     const uniqueDimensionValues = _.uniq(
       _.flatMap(
-        _.map(state.groupingData, (groupingData) => {
-          return _.map(groupingData.data.rows, (row) => row[dimensionIndex]);
+        state.groupingData.map((groupingData) => {
+          return groupingData.data.rows.map((row) => row[dimensionIndex]);
         })
       )
     ).sort(comparator);
@@ -461,7 +426,6 @@ function getData(vif, options) {
       return state.dataToRender;
     });
 }
-
 
 module.exports = {
   MAX_GROUP_COUNT,

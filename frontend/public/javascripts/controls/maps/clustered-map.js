@@ -239,7 +239,8 @@
       var query = $.extend(true, {}, this._query),
         locCol = this._locCol || this._geoCol;
 
-      var viewportFunc = 'toQuery';
+      var useSoda2 = this._view._useSODA2,
+        viewportFunc = useSoda2 ? 'toSoql' : 'toQuery';
 
       if ((query.namedFilters || {}).viewport) {
         delete query.namedFilters.viewport;
@@ -251,7 +252,7 @@
 
       // If the viewport hasn't changed, we're in here because some other filter
       // has been updated and we need to go get the new data from the dataset object
-      if (this.compareViewportFilters(this._query, query) &&
+      if (this.compareViewportFilters(this._query, query, useSoda2) &&
         $.subKeyDefined(this._view, 'query.namedFilters.viewport')) {
         this.getData();
       } else {
@@ -259,7 +260,11 @@
       }
     },
 
-    compareViewportFilters: function(currentQuery, newQuery) {
+    compareViewportFilters: function(currentQuery, newQuery, useSoda2) {
+      // If our query is in soql, we can simply compare the strings
+      if (useSoda2) {
+        return _.isEqual(currentQuery, newQuery);
+      }
 
       function flattenQuery(query) {
         var viewportFilters = _.get(query, 'namedFilters.viewport.children', []);

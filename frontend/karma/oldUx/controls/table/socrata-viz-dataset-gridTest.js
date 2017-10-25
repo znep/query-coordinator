@@ -64,21 +64,21 @@ var TEST_VIEW = {
 var TEST_ROWS = [
   {
     "metadata": {
-      "uuid": 1
+      "id": 1
     },
     "data": {
-      1670: "1",
-      1673: "2"
+      "id": "1",
+      "plausibility": "2"
     }
   },
   {
     "metadata": {
-      "uuid": 2
+      "id": 2
     },
     "data": {
-      1672: "0.99",
-      1670: "2",
-      1673: "10"
+      "blood_alcohol_level": "0.99",
+      "id": "2",
+      "plausibility": "10"
     }
   },
 ];
@@ -156,12 +156,11 @@ describe('$.fn.socrataVizDatasetGrid', function () {
   });
 
   describe('.generateInlineData()', function() {
-    it.only('returns the expected inline data object', function() {
+    it('returns the expected inline data object', function() {
       var view = new Dataset(TEST_VIEW);
       view.domainCName = 'test.example.com';
       var inlineData = $.fn.socrataVizDatasetGrid.generateInlineData(
         view,
-        _.cloneDeep(view.realColumns),
         TEST_ROWS,
         // The following values don't really matter in the context of these
         // tests.
@@ -169,9 +168,8 @@ describe('$.fn.socrataVizDatasetGrid', function () {
         0,
         0
       );
-      var minimalInlineData = _.omit(_.omit(inlineData, 'view'), 'columns');
 
-      assert.deepEqual(minimalInlineData, _.omit(_.omit(EXPECTED_INLINE_DATA, 'view'), 'columns'));
+      assert.deepEqual(_.omit(inlineData, 'view'), _.omit(EXPECTED_INLINE_DATA, 'view'));
     });
   });
 

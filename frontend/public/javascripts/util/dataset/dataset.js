@@ -68,6 +68,11 @@
         blist.sharedDatasetCache[this.resourceName] = this;
       }
 
+      // EN-6784 - Race condition in useSODA2 + column .lookup
+      // We need to determine useSoda2 before we construct the columns for this dataset
+      // because column creation actually uses that flag.
+      this._determineUseSODA2();
+
       // This ID really shouldn't be changing; if it does, this URL
       // will be out-of-date...
       var selfUrl = '/views/' + this.id;
@@ -83,9 +88,10 @@
 
       this._adjustProperties();
 
+      // Note: _useSODA2 is set in _adjustProperties.
       if (!_.isUndefined(this.rowIdentifierColumnId)) {
         this.rowIdentifierColumn = this.columnForID(this.rowIdentifierColumnId);
-        this.rowsNeedPK = false;
+        this.rowsNeedPK = this.newBackend && this._useSODA2; // BASICALLY A TAUTOLOGY.
       }
 
       var originalQuery = this._getQueryGrouping();
@@ -1216,12 +1222,15 @@
       }
 
       var savingLookups;
-
-      savingLookups = _.pluck(_.reject(!$.isBlank(parCol) ? parCol.realChildColumns :
-        ds.realColumns,
-        function(c) {
-          return c.dataTypeName == 'nested_table';
-        }), 'id');
+      if (ds._useSODA2) {
+        savingLookups = _.pluck(ds.realColumns, 'lookup');
+      } else {
+        savingLookups = _.pluck(_.reject(!$.isBlank(parCol) ? parCol.realChildColumns :
+          ds.realColumns,
+          function(c) {
+            return c.dataTypeName == 'nested_table';
+          }), 'id');
+      }
 
       // Don't bother actually doing separate row creation unless it's OBE.
       // In NBE, the entire purpose of this function is to do some UX work and then
@@ -1447,7 +1456,7 @@
           if ($.isBlank(r)) {
             return;
           }
-          uuid = r.metadata.uuid;
+          uuid = ds._useSODA2 ? r.id : r.metadata.uuid;
           if (ds.rowsNeedPK) {
             uuid = r.data[ds.rowIdentifierColumn.lookup];
           }
@@ -1456,7 +1465,7 @@
           parRow.data[parCol.lookup] = _.reject(parRow.data[parCol.lookup],
             function(cr) {
               if (cr.id == rId) {
-                uuid = cr.metadata.uuid;
+                uuid = ds._useSODA2 ? cr.id : cr.metadata.uuid;
                 return true;
               }
               return false;
@@ -1617,14 +1626,37 @@
 
     findColumnForServerName: function(name, parCol) {
       var ds = this;
-      name = ({
+      name = ds._useSODA2 ? name : ({
         sid: 'id',
         'id': 'uuid'
       }[name] || name);
-      var c = $.isBlank(parCol) ? ds.columnForID(name) : parCol.childColumnForID(name);
+      var c = ds._useSODA2 ?
+        $.isBlank(parCol) ? ds.columnForFieldName(name) : parCol.childColumnForFieldName(name) :
+        $.isBlank(parCol) ? ds.columnForID(name) : parCol.childColumnForID(name);
 
       if ($.isBlank(c)) {
-        return null;
+        if (ds._useSODA2 && ds.isGrouped()) {
+          // Maybe a group function?
+          var i = name.indexOf('__');
+          var gf = name.slice(i + 2);
+          var mId = name.slice(0, i);
+          c = $.isBlank(parCol) ? ds.columnForIdentifier(mId) : parCol.childColumnForIdentifier(mId);
+          if ($.isBlank(c) || c.format.group_function !=
+            blist.datatypes.groupFunctionFromSoda2(gf)) {
+            // Maybe this is an aggregate column?
+            i = name.indexOf('_');
+            var agg = name.slice(0, i);
+            name = name.slice(i + 1);
+            c = $.isBlank(parCol) ? ds.columnForIdentifier(name) :
+              parCol.childColumnForIdentifier(name);
+            if ($.isBlank(c) || c.format.grouping_aggregate !=
+              blist.datatypes.aggregateFromSoda2(agg)) {
+              return null;
+            }
+          }
+        } else {
+          return null;
+        }
       }
       return c;
     },
@@ -1735,7 +1767,9 @@
       if ($.isPresent(referrer)) {
         params.referrer = referrer;
       }
-
+      if (this._useSODA2 && $.parseParams().$$store) {
+        params.$$store = $.parseParams().$$store;
+      }
       this.makeRequest({
         url: '/views/' + this.id + '.json',
         params: params,
@@ -2721,9 +2755,30 @@
       }
     },
 
+    _determineUseSODA2: function() {
+      var ds = this;
+
+      if (ds.newBackend || blist.configuration.useSoda2) {
+        ds._useSODA2 = true;
+      } else {
+        ds._useSODA2 = false;
+      }
+
+      // Allow explicit override of SODA version via URL parameter
+      var sodaVersion = $.urlParam(window.location.href, 'soda');
+      if (sodaVersion === '1') {
+        ds._useSODA2 = false;
+      }
+      if (sodaVersion === '2') {
+        ds._useSODA2 = true;
+      }
+    },
+
     _adjustProperties: function() {
       var ds = this;
       ds.originalViewId = ds.id;
+
+      ds._determineUseSODA2();
 
       ds.type = getType(ds);
       ds._mixpanelViewType = getMixpanelViewType(ds);
@@ -2923,6 +2978,7 @@
       var oldDispFmt = $.extend(true, {}, ds.displayFormat);
       var oldDispType = ds.displayType;
       var oldRTConfig = $.extend(true, {}, ds.metadata.renderTypeConfig);
+      var oldCondFmt = ds.metadata.conditionalFormatting;
 
       if (forceFull) {
         // If we are updating the entire dataset, then clean out all the
@@ -2979,6 +3035,15 @@
         needsDTChange = true;
       }
 
+      var needQueryChange = !_.isEqual(oldRTConfig.visible,
+          ds.metadata.renderTypeConfig.visible) &&
+        _.any(ds.query.namedFilters || [], function(nf) {
+          return _.any(nf.displayTypes || [], function(nd) {
+            return oldRTConfig.visible[nd] ||
+              ds.metadata.renderTypeConfig.visible[nd];
+          });
+        });
+
       var cleanFC = ds.cleanJsonFilters();
       var jsonQ = $.extend({}, ds.metadata.jsonQuery, {
         where: cleanFC.where,
@@ -2986,29 +3051,49 @@
         namedFilters: null
       });
       var newKey = RowSet.getQueryKey(jsonQ);
-
-      if (!$.isBlank(ds._availableRowSets[newKey])) {
-        ds._activateRowSet(ds._availableRowSets[newKey]);
-      } else {
-        // Find existing set to derive from
-        var parRS = _.detect(_.sortBy(ds._availableRowSets,
-            function(rs, key) {
-              // Sometimes the key argument is undefined :-(
-              return -(rs._isComplete ? 1000000 : 1) * (key ? key.length : 1);
-            }),
-          function(rs) {
-            return rs.canDerive(jsonQ);
+      if (needQueryChange ||
+        ($.subKeyDefined(ds, '_activeRowSet._key') && ds._activeRowSet._key != newKey)) {
+        ds.aggregatesChanged();
+        var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
+        if (filterChanged) {
+          if (!$.isBlank(ds._availableRowSets[newKey])) {
+            ds._activateRowSet(ds._availableRowSets[newKey]);
+          } else {
+            // Find existing set to derive from
+            var parRS = _.detect(_.sortBy(ds._availableRowSets,
+                function(rs, key) {
+                  // Sometimes the key argument is undefined :-(
+                  return -(rs._isComplete ? 1000000 : 1) * (key ? key.length : 1);
+                }),
+              function(rs) {
+                return rs.canDerive(jsonQ);
+              });
+            ds._activateRowSet(new RowSet(ds, jsonQ, {
+                orderBys: (ds.query || {}).orderBys,
+                filterCondition: ds.cleanFilters(),
+                groupBys: (ds.query || {}).groupBys,
+                groupFuncs: ds._getGroupedFunctions()
+              },
+              parRS));
+          }
+        } else {
+          // Clear out the rows, since the data is different now
+          ds._invalidateAll(filterChanged);
+        }
+        ds.trigger('query_change');
+      } else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting)) {
+        // If we aren't invalidating all the rows, but conditional formatting
+        // changed, then redo all the colors and re-render. We may not
+        // have a row set if we're in the _init path.
+        if (!$.isBlank(ds._availableRowSets) && !$.isBlank(ds._activeRowSet)) {
+          _.each(ds._availableRowSets, function(rs) {
+            rs.formattingChanged();
           });
-        ds._activateRowSet(new RowSet(ds, jsonQ, {
-            orderBys: (ds.query || {}).orderBys,
-            filterCondition: ds.cleanFilters(),
-            groupBys: (ds.query || {}).groupBys,
-            groupFuncs: ds._getGroupedFunctions()
-          },
-          parRS));
-      }
+          ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
+        }
 
-      ds.trigger('query_change');
+        ds.trigger('conditionalformatting_change');
+      }
 
       if (needsDTChange) {
         ds.trigger('displaytype_change');
@@ -3222,6 +3307,7 @@
         ds._origColOrder = _.pluck(ds.visibleColumns, 'id');
       }
 
+      var colsChanged = false;
       var curGrouped = {};
       _.each(ds.realColumns, function(c) {
         if (c.format.drill_down) {
@@ -3240,6 +3326,7 @@
         if ($.isBlank(col.format.grouping_aggregate)) {
           if (!curGrouped[col.id]) {
             col.width += 30;
+            colsChanged = true;
           }
           col.format.drill_down = 'true';
         }
@@ -3250,6 +3337,7 @@
           col.update({
             flags: _.without(col.flags, 'hidden')
           });
+          colsChanged = true;
         }
 
         newColOrder.push(col.id);
@@ -3288,6 +3376,7 @@
             c.update({
               flags: f
             });
+            colsChanged = true;
           }
           if (isNewOrder) {
             if (i < 0) {
@@ -3298,6 +3387,31 @@
         });
 
         ds.updateColumns();
+      }
+
+      if (
+        colsChanged ||
+        // EN-16787 - Use socrata-viz table for NBE-only grid view
+        //
+        // In order to consistently render the Socrata Viz table in a way that
+        // reflects the state of the UI we need to be notified if the
+        // aggregation has changed, even if the other column metadata has not.
+        //
+        // Given this, the easiest way to do so is to fire the 'columns_changed'
+        // event even if the only change was the aggregation function, since
+        // we already respond to that event and calculate the query that the
+        // Socrata Viz table will make from 'first principles' based on the
+        // Dataset model's internal state in any case (in effect, we
+        // 'invalidateAll' every time any type of change is made to the Dataset
+        // model at all, so this approach seems consistent with the use of
+        // 'invalidateAll' on the Dataset model when the grouping aggregations
+        // change that happens inside the !_.isEqual() check below).
+        (
+          blist.feature_flags.enable_2017_grid_view_refresh &&
+          !_.isEqual(oldGroupAggs, newGroupAggs)
+        )
+      ) {
+        ds.trigger('columns_changed');
       }
 
       if (!_.isEqual(oldGroupAggs, newGroupAggs)) {
@@ -3313,6 +3427,22 @@
         }
       });
       return gf;
+    },
+
+    // TODO IDE says this is an unused method
+    _adjustVisibleColumns: function(visColIds) {
+      var ds = this;
+      if (ds.isGrouped()) {
+        // Hide columns not grouped or rolled-up
+        visColIds = _.filter(visColIds, function(cId) {
+          var c = ds.columnForID(cId);
+          return !$.isBlank(c.format.grouping_aggregate) ||
+            _.any(ds.query.groupBys, function(g) {
+              return g.columnId == c.id;
+            });
+        });
+      }
+      return visColIds;
     },
 
     makeRequest: function(req) {
@@ -3352,7 +3482,7 @@
       });
 
       // Hard-coding here is bad; but sometimes we don't get the meta column back :/
-      var fieldMeta = (ds.metaColumnForName('meta') || {}).lookup || 'meta';
+      var fieldMeta = (ds.metaColumnForName('meta') || {}).lookup || ds._useSODA2 ? ':meta' : 'meta';
 
       // Copy over desired metadata columns
       data[fieldMeta] = row.metadata.meta;
@@ -3372,6 +3502,10 @@
       // Metadata is a JSON string
       if (!$.isBlank(data[fieldMeta])) {
         data[fieldMeta] = JSON.stringify(data[fieldMeta]);
+      }
+
+      if (ds._useSODA2) {
+        data[':id'] = row.id;
       }
 
       return data;
@@ -3442,23 +3576,28 @@
       var ds = this;
       var rowCreated = function(rr) {
         var oldID = req.row.id;
-
-        // Add metadata to new row
-        // FIXME: The server response for this should be changing; we can
-        // run into problems if there is a user column named something like
-        // '_id'
-        _.each(rr, function(v, k) {
-          if (k.startsWith('_')) {
-            var adjName = k.slice(1);
-            var c = !$.isBlank(req.parentColumn) ?
-              req.parentColumn.childColumnForID(adjName) :
-              ds.columnForID(adjName);
-            var l = $.isBlank(c) ? adjName : c.lookup;
-            req.row.data[l] = v;
-            req.row.metadata[l] = v;
-          }
-        });
-        req.row.id = req.row.metadata.id;
+        if (!ds._useSODA2) {
+          // Add metadata to new row
+          // FIXME: The server response for this should be changing; we can
+          // run into problems if there is a user column named something like
+          // '_id'
+          _.each(rr, function(v, k) {
+            if (k.startsWith('_')) {
+              var adjName = k.slice(1);
+              var c = !$.isBlank(req.parentColumn) ?
+                req.parentColumn.childColumnForID(adjName) :
+                ds.columnForID(adjName);
+              var l = $.isBlank(c) ? adjName : c.lookup;
+              req.row.data[l] = v;
+              req.row.metadata[l] = v;
+            }
+          });
+          req.row.id = req.row.metadata.id;
+        } else {
+          // Pretty sure this code path never gets called.
+          // Response keys = [:updated_meta, :id, :updated_at, :created_meta, :position, :created_at]
+          req.row.id = req.row.metadata.id = req.row.data[':id'] = rr[':id'];
+        }
 
         if (req.row.underlying) {
           req.row.noMatch = true;
@@ -3475,6 +3614,15 @@
         delete ds._pendingRowEdits[oldKey];
         ds._pendingRowDeletes[newKey] = ds._pendingRowDeletes[oldKey];
         delete ds._pendingRowDeletes[oldKey];
+
+        if (ds._useSODA2) {
+          _.each(ds._pendingRowEdits[newKey], function(pre) {
+            pre.rowData[':id'] = req.row.id;
+          });
+          _.each(ds._pendingRowDeletes[newKey], function(pre) {
+            pre.rowId = req.row.id;
+          });
+        }
 
         // We can have old IDs embedded in child row keys; so messy cleanup...
         if ($.isBlank(req.parentRow)) {
@@ -3543,17 +3691,23 @@
         }
       };
 
-      var url = '/views/' + ds.id + '/rows';
+      var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
       if (!$.isBlank(req.parentRow)) {
         url += '/' + req.parentRow.id + '/columns/' + req.parentColumn.id +
           '/subrows';
       }
       url += '.json';
       var rd = req.rowData;
-
+      if (ds._useSODA2) {
+        if (blist.feature_flags.send_soql_version) {
+          url += '?$$version=2.0';
+        }
+        rd = $.extend(true, {}, rd);
+        delete rd[':id'];
+      }
       ds.makeRequest({
         url: url,
-        isSODA: false,
+        isSODA: ds._useSODA2,
         type: 'POST',
         data: JSON.stringify(rd),
         batch: isBatch,
@@ -3588,7 +3742,10 @@
         //
         // This is a NOOP in OBE land.
         var oldRowId = undefined;
-
+        if (ds._useSODA2 && result[':id']) {
+          oldRowId = r.row.id;
+          r.row.id = result[':id'];
+        }
         ds._updateRow(r.parentRow || r.row, oldRowId);
         ds.trigger('row_change', [
           [r.parentRow || r.row]
@@ -3620,16 +3777,16 @@
       };
 
 
-      var url = '/views/' + ds.id + '/rows';
+      var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
       if (!$.isBlank(r.parentRow)) {
         url += '/' + r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows';
       }
-      url += '/' + r.row.metadata.uuid + '.json';
+      url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
       ds.makeRequest({
         url: url,
-        type: 'PUT',
+        type: ds._useSODA2 ? 'POST' : 'PUT',
         data: JSON.stringify(r.rowData),
-        isSODA: false,
+        isSODA: ds._useSODA2,
         batch: isBatch,
         success: rowSaved,
         error: rowErrored,
@@ -3649,12 +3806,13 @@
         ds.aggregatesChanged();
       };
 
-      var url = '/views/' + ds.id + '/rows/';
+      var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows/';
       if (!$.isBlank(parRowId)) {
         url += parRowId + '/columns/' + parColId + '/subrows/';
       }
-
-      url += rowId + '.json';
+      if (!ds._useSODA2) {
+        url += rowId + '.json';
+      }
 
       var rowData = {
         ':deleted': true
@@ -3673,8 +3831,8 @@
       ds.makeRequest({
         batch: isBatch,
         url: url,
-        type: 'DELETE',
-        isSODA: false,
+        type: ds._useSODA2 ? 'POST' : 'DELETE',
+        isSODA: ds._useSODA2,
         data: JSON.stringify(rowData),
         success: rowRemoved
       });
@@ -4419,6 +4577,10 @@
             filterQ.columnFieldName = c.columnFieldName;
           } else if (!$.isBlank(col)) {
             filterQ.columnFieldName = col.fieldName;
+          }
+          if (isHaving && $.subKeyDefined(col, 'format.grouping_aggregate') && ds._useSODA2) {
+            filterQ.columnFieldName = blist.datatypes.soda2Aggregate(
+              col.format.grouping_aggregate) + '_' + filterQ.columnFieldName;
           }
 
           // Don't put in redundant subcolumns (ie, when no sub-column)

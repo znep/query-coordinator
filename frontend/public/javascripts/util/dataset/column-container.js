@@ -431,6 +431,12 @@
         }).
         value();
 
+      if (_.any(this[colSet], function(c) {
+          return c.renderType.soda1Only;
+        })) {
+        (cont.view || cont)._useSODA2 = false;
+      }
+
       if (!$.isBlank(changeType)) {
         _.defer(function() {
           (cont.view || cont).trigger('columns_changed', [changeType]);

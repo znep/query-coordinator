@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
+import { defaultHeaders } from 'common/http';
+
 export const Analytics = function() {
 
   // Queue of metrics for consolidation and minimizing outgoing POST request.
@@ -88,15 +90,22 @@ export const Analytics = function() {
    * track stuff like referrers.
    *
    * @param uid The 4x4 of the view
+   * @param headers A hash of headers to include with the request (default: the
+   *                default headers from common/http). This parameter should be
+   *                removed once we settle on a unified way of injecting and
+   *                retrieving things like app tokens and CSRF tokens.
    */
-  this.registerPageView = _.memoize((uid) => {
+  this.registerPageView = _.memoize((uid, headers = defaultHeaders) => {
     if (!/^\w{4}-\w{4}$/.test(uid)) {
       return;
     }
 
     const coreMetricsUrl = `/api/views/${uid}.json?method=opening`;
 
-    $.post(coreMetricsUrl);
+    $.post({
+      url: coreMetricsUrl,
+      headers
+    });
   });
 
   // We want to flush metrics on unload in case we've queued up some metrics and

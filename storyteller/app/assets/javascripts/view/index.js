@@ -1,6 +1,12 @@
 import 'babel-polyfill';
 import $ from 'jquery';
+
 import SocrataVisualizations from 'common/visualizations';
+import MostRecentlyUsed from 'common/most_recently_used';
+import { Analytics } from 'common/analytics';
+import { defaultHeaders } from 'common/http';
+import 'common/notifications/main';
+import 'common/site_wide';
 
 import '../editor/componentBase';
 import '../editor/block-component-renderers/componentEmbeddedHtml';
@@ -20,14 +26,9 @@ import '../editor/block-component-renderers/componentStoryTile';
 
 import Environment from '../StorytellerEnvironment';
 import PresentationMode from './PresentationMode';
-import { Analytics } from 'common/analytics';
 
 import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpointStore';
 
-import MostRecentlyUsed from 'common/most_recently_used';
-
-import 'common/notifications/main';
-import 'common/site_wide';
 
 $(document).on('ready', function() {
 
@@ -173,7 +174,13 @@ $(document).on('ready', function() {
 
     analytics.flushMetrics();
 
-    analytics.registerPageView(Environment.STORY_UID);
+    // Using the old accessor for the CSRF token, since Storyteller doesn't use
+    // the newer serverConfig object like the common Analytics module expects.
+    var pageViewHeaders = {
+      ...defaultHeaders,
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    };
+    analytics.registerPageView(Environment.STORY_UID, pageViewHeaders);
   }
 
   if (Environment.CURRENT_USER && Environment.STORY_UID) {

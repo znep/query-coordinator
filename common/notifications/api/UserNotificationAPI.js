@@ -155,8 +155,7 @@ class NotificationAPI {
     transformedNotification.activityType = activityType;
     transformedNotification.createdAt = _.get(notification, 'activity.created_at', '');
     transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status': 'alert';
-    transformedNotification.title = _.startCase(activityType);
-
+    transformedNotification.title = _.startCase(_.get(notification, 'title', ''));
     transformedNotification.userName = userName;
     transformedNotification.userProfileLink = this._getUserProfileLink(domainCname, userName, userId);
 

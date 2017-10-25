@@ -14,5 +14,11 @@ export const STATUS_ACTIVITY_TYPES = [
   'ViewOwnerChanged',
   'ViewPermissionsChanged',
   'WorkingCopyCreated',
-  'WorkingCopyPublished'
+  'WorkingCopyPublished',
+  'AssetMetadataChanged',
+  'AssetPermissionsChanged',
+  'DraftPublished',
+  'AssetOwnerChanged',
+  'CollaboratorChanged',
+  'DraftCreated'
 ];

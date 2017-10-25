@@ -200,6 +200,7 @@ const postNewUsers = (emails, roleId, dispatch) => {
       }));
       dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { futureUsers } });
       dispatch(toggleAddUserUi(false));
+      dispatch(showNotification({ translationKey: 'users.add_new_users.success_toast' }, 'success'));
     }).
     catch(error => {
       console.warn(error);

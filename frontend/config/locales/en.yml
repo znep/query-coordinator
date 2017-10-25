@@ -6529,6 +6529,7 @@ en:
       create_accounts: Create Accounts
       emails_label: Emails (comma-separated)
       emails_placeholder: Emails
+      success_toast: Successfully added user.
     errors:
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: Invalid role selected

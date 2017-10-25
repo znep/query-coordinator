@@ -37,7 +37,7 @@ describe('reducers', () => {
       const mockStore = configureStore([thunk]);
       const store = mockStore({ users: [], roles: []});
 
-      fetchMock.get('/api/catalog/v1/users?domain=localhost', usersResponse);
+      fetchMock.get('/api/catalog/v1/users?domain=localhost&limit=10000&order=screen_name', usersResponse);
       fetchMock.get('/api/future_accounts', futureUsers);
       fetchMock.get('/api/roles', rolesResponse);
 
@@ -63,7 +63,7 @@ describe('reducers', () => {
       const store = mockStore({ users: [], roles: [] });
 
       const query = 'asdf';
-      fetchMock.get(`/api/catalog/v1/users?domain=localhost&q=${query}`, usersResponse);
+      fetchMock.get(`/api/catalog/v1/users?domain=localhost&limit=10000&q=${query}`, usersResponse);
 
       store
         .dispatch(Actions.userSearch(query))

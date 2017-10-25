@@ -63,9 +63,11 @@ const loadUsers = options => {
     headers: defaultHeaders
   };
 
-  let apiPath = `/api/catalog/v1/users?domain=${serverConfig.domain}`;
+  let apiPath = `/api/catalog/v1/users?domain=${serverConfig.domain}&limit=10000`;
   if (!_.isEmpty(options.query)) {
     apiPath = `${apiPath}&q=${options.query}`;
+  } else {
+    apiPath = `${apiPath}&order=screen_name`;
   }
   if (!_.isEmpty(options.filters)) {
     Object.keys(options.filters).forEach(key => {
@@ -76,8 +78,6 @@ const loadUsers = options => {
     });
   }
 
-  console.log(options.filters);
-
   return fetchJson(apiPath, fetchOptions).
     then(json => json.results).
     then(convertUserListFromApi);
@@ -86,6 +86,9 @@ const loadUsers = options => {
 const loadFutureUsers = () =>
   CoreFutureAccountsApi.getFutureUsers().
     then(values => values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))).
+    then(users => users.sort((a, b) => {
+      return b.createdAt - a.createdAt;
+    })).
     catch(error => {
       console.warn('Unable to load future users, showing empty list.', error);
       return [];

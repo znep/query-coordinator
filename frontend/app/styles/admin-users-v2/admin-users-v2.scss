@@ -129,6 +129,10 @@
     align-items: center;
     display: flex;
 
+    span.socrata-icon-search {
+      top: -5px !important;
+    }
+
     .add-user-button {
       margin-left: 10px;
     }

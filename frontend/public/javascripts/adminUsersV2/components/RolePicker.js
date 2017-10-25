@@ -25,12 +25,23 @@ RolePicker.propTypes = {
 };
 
 const mapStateToProps = (state, { I18n }) => {
+  const customRolesExist = state.roles.some(role => !role.isDefault);
+
   const availableRoles = state.roles.map(role => {
     const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
-    return {
-      title,
-      value: role.id
-    };
+    if (customRolesExist) {
+      const group = role.isDefault ? I18n.t('users.roles.default') : I18n.t('users.roles.custom');
+      return {
+        title,
+        value: role.id,
+        group
+      };
+    } else {
+      return {
+        title,
+        value: role.id
+      };
+    }
   });
 
   return {

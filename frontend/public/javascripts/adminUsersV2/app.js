@@ -9,6 +9,7 @@ import { DataLoader } from './components/DataLoader';
 import { LocalizedCSVExportButton } from './components/CSVExportButton';
 import Localization from 'common/i18n/components/Localization';
 import { LocalizedNotification } from './components/Notification';
+import AddUserButton from './components/AddUserButton';
 
 export const App = ({ store }) => {
   return (
@@ -17,6 +18,7 @@ export const App = ({ store }) => {
         <DataLoader>
           <LocalizedNotification />
           <div className="admin-users-app">
+            <AddUserButton />
             <Tabs>
               <div name="Users">
                 <UserSearchBar />

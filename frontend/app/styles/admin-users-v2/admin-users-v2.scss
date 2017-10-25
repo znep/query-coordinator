@@ -20,6 +20,16 @@
     margin: 0;
   }
 
+  .admin-users-app {
+    position: relative;
+
+    .add-user-button-container {
+      position: absolute;
+      right: 0;
+      top: -15px;
+    }
+  }
+
   .result-list-row {
     td {
       &:first-child {

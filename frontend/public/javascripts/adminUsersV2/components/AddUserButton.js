@@ -10,7 +10,7 @@ export class AddUserButton extends Component {
   render() {
     const { I18n, onStartAddUser } = this.props;
     return (
-      <div>
+      <div className="add-user-button-container">
         <button type="button" className="add-user-button btn btn-primary" onClick={() => onStartAddUser()}>
           {I18n.translate('users.add_new_users.button')}
         </button>

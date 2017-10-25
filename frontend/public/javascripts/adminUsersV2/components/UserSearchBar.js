@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
-import AddUserButton from './AddUserButton';
 import * as Actions from '../actions';
 import { renderUserAutocompleteResult } from './UserAutocompleteResult';
 
@@ -24,7 +23,6 @@ class UserSearchBar extends Component {
     return (
       <div className="user-search-bar">
         <Autocomplete className="user-autocomplete" {...autocompleteOptions} />
-        <AddUserButton />
       </div>
     );
   }

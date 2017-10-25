@@ -1,0 +1,26 @@
+<% content_for :head do %>
+  <title><%= t('screens.admin.jobs.index_page.title') %> | <%= get_site_title %></title>
+  <%= render_admin_session_data %>
+  <%= render_admin_server_config %>
+  <%= render_admin_activity_feed_initial_data %>
+  <%= render_mixpanel_config %>
+
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+<% end %>
+
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.jobs.index_page.title') %>
+<% end %>
+
+<div id="app">
+  <div class="placeholder-wrapper">
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render_admin_qualtrics %>
+  <%= include_webpack_bundle 'admin-activity-feed-soql/main.js' %>
+<% end %>

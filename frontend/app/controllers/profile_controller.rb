@@ -42,7 +42,7 @@ class ProfileController < ApplicationController
           request.path =~ /^\w{4}-\w{4}/
           logger.info("Doing a profile redirect from #{request.referrer}")
         end
-        redirect_to(profile_path(@user) + '?' + request.query_string, :status => 301)
+        return redirect_to(profile_path(@user) + '?' + request.query_string, :status => 301)
       end
       @app_tokens = @user.app_tokens
 

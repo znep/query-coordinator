@@ -45,14 +45,14 @@ export const loadActivities = () => {
       }));
 
       if (data.error) {
-        dispatch(setAlert('error', 'general_error', {error: data.error}));
+        dispatch(setAlert('error', 'general_error'));
       }
 
       dispatch(stopLoading());
 
       return data;
-    }).catch((error) => { // eslint-disable-line dot-notation
-      dispatch(setAlert('error', 'general_error', {error: error.message}));
+    }).catch(() => { // eslint-disable-line dot-notation
+      dispatch(setAlert('error', 'general_error'));
       dispatch(stopLoading());
     });
   };
@@ -102,10 +102,10 @@ export const restoreDataset = () => {
         dispatch(dismissRestoreModal());
         return dispatch(loadActivities());
       }).
-      catch((error) => { // eslint-disable-line dot-notation
+      catch(() => { // eslint-disable-line dot-notation
         dispatch(dismissRestoreModal());
         dispatch(stopLoading());
-        return dispatch(setAlert('error', 'general_error', { error: error.message }));
+        return dispatch(setAlert('error', 'general_error'));
       });
   };
 };

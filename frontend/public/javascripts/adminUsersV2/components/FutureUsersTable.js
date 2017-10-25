@@ -57,14 +57,18 @@ const mapStateToProps = (state, props) => {
   const { I18n } = props;
   const { roles } = state;
   const futureUsers = state.futureUsers.map(futureUser => {
-    const roleName = _.get(
-      roles.find(role => _.toString(role.id) === _.toString(futureUser.pendingRoleId)),
-      'name'
-    );
-    return {
-      ...futureUser,
-      role: I18n.t(`roles.default_roles.${roleName}.name`)
-    };
+    const role = roles.find(r => _.toString(r.id) === _.toString(futureUser.pendingRoleId));
+    if (role.isDefault) {
+      return {
+        ...futureUser,
+        role: I18n.t(`roles.default_roles.${role.name}.name`)
+      };
+    } else {
+      return {
+        ...futureUser,
+        role: role.name
+      };
+    }
   });
   return { futureUsers };
 };

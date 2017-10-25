@@ -3207,11 +3207,11 @@ en:
       editor:
         name: Editor
       editor_stories:
-        name: Editor (Stories)
+        name: Editor (Perspectives)
       publisher:
         name: Publisher
       publisher_stories:
-        name: Publisher (Stories)
+        name: Publisher (Perspectives)
       viewer:
         name: Viewer
     right_categories:

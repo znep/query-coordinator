@@ -14,7 +14,8 @@ describe('components/UsersTable', () => {
     ...initialState,
     onRoleChange: sinon.spy(),
     onRemoveUserRole: sinon.spy(),
-    I18n: I18nJS
+    I18n: I18nJS,
+    loadingData: false
   };
 
   it('renders a table with 41 rows', () => {

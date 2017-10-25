@@ -6552,6 +6552,7 @@ en:
     notifications:
       pending_user_removed: Pending user removed!
       resent_email_success: Pending user email resent!
+    no_results: No results
     roles:
       default: default
       custom: custom

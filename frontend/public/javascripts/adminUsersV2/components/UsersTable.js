@@ -44,7 +44,34 @@ export class UsersTable extends React.Component {
   }
 
   renderDataRows() {
-    return <tbody>{this.props.users.map(this.userToRow)}</tbody>;
+    const { users, I18n, loadingData } = this.props;
+    if (loadingData) {
+      return (
+        <tbody>
+          <tr>
+            <td colSpan="5" className="no-results-message">
+              <span className="spinner-default spinner-large" />
+            </td>
+          </tr>
+        </tbody>
+      );
+    } else if (users.length > 0) {
+      return (
+        <tbody>
+          {users.map(this.userToRow)}
+        </tbody>
+      );
+    } else {
+      return (
+        <tbody>
+          <tr>
+            <td colSpan="5" className="no-results-message">
+              {I18n.t('users.no_results')}
+            </td>
+          </tr>
+        </tbody>
+      );
+    }
   }
 
   render() {
@@ -61,6 +88,7 @@ export class UsersTable extends React.Component {
 }
 
 UsersTable.propTypes = {
+  loadingData: PropTypes.bool.isRequired,
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRoleChange: PropTypes.func.isRequired,
   onRemoveUserRole: PropTypes.func.isRequired,
@@ -69,7 +97,8 @@ UsersTable.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    users: state.users
+    users: state.users,
+    loadingData: state.ui.loadingData
   };
 };
 

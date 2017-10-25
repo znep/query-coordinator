@@ -68,7 +68,8 @@ const initialUiState = {
   notificationType: 'default',
   notificationTimeout: null,
   showAddUserUi: false,
-  showNotification: false
+  showNotification: false,
+  loadingData: true
 };
 
 const ui = (state = initialUiState, action) => {
@@ -100,6 +101,14 @@ const ui = (state = initialUiState, action) => {
         ...state,
         showAddUserUi: _.get(action, 'payload.isOpen', !state.showAddUserUi)
       };
+    case LOAD_DATA:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return {
+          ...state,
+          loadingData: false
+        };
+      }
+      return state;
     default:
       return state;
   }

@@ -51,7 +51,7 @@ export class ResultListTable extends Component {
   }
 
   render() {
-    const { columns, order, results } = this.props;
+    const { actionElement, columns, order, results } = this.props;
 
     const columnHeaderProps = (columnName) => {
       const columnIsActive = columnName === _.get(order, 'value');
@@ -91,7 +91,10 @@ export class ResultListTable extends Component {
     const tableBody = (
       <tbody>
         {results.map((result) =>
-          <ResultListRow {...this.resultListRowProps(result)} key={result.resource.id} />
+          <ResultListRow
+            {...this.resultListRowProps(result)}
+            actionElement={actionElement}
+            key={result.resource.id} />
         )}
       </tbody>
     );
@@ -110,6 +113,7 @@ export class ResultListTable extends Component {
 }
 
 ResultListTable.propTypes = {
+  actionElement: PropTypes.func,
   bordered: PropTypes.bool,
   changeSortOrder: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,

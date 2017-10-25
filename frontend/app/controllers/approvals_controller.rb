@@ -1,7 +1,10 @@
 class ApprovalsController < AdministrationController
 
   include ApplicationHelper
+  include AdministrationHelper
   include AssetBrowserHelper
+
+  before_filter :require_approval_right
 
   layout 'styleguide'
 
@@ -12,13 +15,17 @@ class ApprovalsController < AdministrationController
   def show
     @asset_browser_config = {
       :app_name => 'approvals',
-      :columns => %w(type name actions lastUpdatedDate category owner visibility),
-      :initial_tab => 'allAssets',
+      :columns => %w(type name approval_requested owner status actions),
+      :initial_tab => 'myQueue',
       :filters_enabled => true
     }
   end
 
   private
+
+  def require_approval_right
+    render_forbidden(I18n.t('core.auth.need_permission')) unless user_can_review_approvals?
+  end
 
   def report_error(error_message)
     Airbrake.notify(
@@ -27,4 +34,5 @@ class ApprovalsController < AdministrationController
     )
     Rails.logger.error(error_message)
   end
+
 end

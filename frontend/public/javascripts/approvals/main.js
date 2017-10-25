@@ -6,12 +6,18 @@ import { AppContainer } from 'react-hot-loader';
 import airbrake from 'common/airbrake';
 import { dateLocalize } from 'common/locale';
 import AssetBrowser from 'common/components/AssetBrowser';
+import { ApprovalActionButtons } from 'common/components/AssetBrowser/components';
 
 if (_.get(window, 'serverConfig.environment') !== 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-const assetBrowser = <AssetBrowser showFilters showSearchField />;
+const assetBrowser = (
+  <AssetBrowser
+    actionElement={ApprovalActionButtons}
+    showFilters
+    showSearchField />
+);
 
 ReactDOM.render(assetBrowser, document.querySelector('#approvals-content'));
 

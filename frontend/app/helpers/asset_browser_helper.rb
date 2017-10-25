@@ -53,9 +53,8 @@ module AssetBrowserHelper
     javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")
   end
 
-  # This method provides the initial redux store state for the asset browser using default values
-  # along with domain-specific categories, custom facets, tags, and users fetched by the controller.
-  # These are used to populate the filter dropdowns.
+  # This method provides the initial redux store state for the static data used by asset browser
+  # including domain-specific categories, custom facets, tags, users, initial tab, columns in the table...
   def render_asset_browser_initial_state
     initial_state = {
       :assetInventoryViewModel => asset_inventory_view_model,
@@ -78,6 +77,7 @@ module AssetBrowserHelper
       :usersList => fetch_users_list
     ) if @asset_browser_config[:filters_enabled]
 
+    # TODO: rename this to window.socrata.assetBrowser.staticData
     javascript_tag("window.initialState = #{json_escape(initial_state.to_json)}")
   end
 

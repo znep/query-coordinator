@@ -135,14 +135,14 @@ export class ActionDropdown extends Component {
   }
 
   renderEditMetadataMenuOption() {
-    const { assetType, uid } = this.props;
+    const { type, uid } = this.props;
     const { allowableActions } = this.state;
 
     if (!_(allowableActions).includes('edit_metadata')) {
       return null;
     }
 
-    switch (assetType) {
+    switch (type) {
       case 'story':
       case 'datalens':
         return null; // EN-17219: (temporary fix)
@@ -157,13 +157,13 @@ export class ActionDropdown extends Component {
 
   renderChangeVisibilityMenuOption() {
     const { allowableActions } = this.state;
-    const { uid } = this.props;
+    const { type, uid } = this.props;
 
     if (!_(allowableActions).includes('change_visibility')) {
       return null;
     }
 
-    switch (this.props.assetType) {
+    switch (type) {
       case 'story':
         /* TODO: Need to do something different if a story is unpublished vs published:
           - just link to the story if it's unpublished.
@@ -214,7 +214,7 @@ export class ActionDropdown extends Component {
   }
 
   render() {
-    const { assetType, uid } = this.props;
+    const { type, uid } = this.props;
     const { allowableActions, dropdownIsOpen, failedPermissions, fetchingPermissions } = this.state;
 
     const actionDropdownButton = (
@@ -261,7 +261,7 @@ export class ActionDropdown extends Component {
     }
 
     const actionModalProps = {
-      assetType,
+      assetType: type,
       onDismiss: this.handleModalClose,
       uid
     };
@@ -288,7 +288,7 @@ export class ActionDropdown extends Component {
 ActionDropdown.propTypes = {
   activeActionModalType: PropTypes.string,
   activeActionForUid: PropTypes.string,
-  assetType: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
   showModal: PropTypes.func.isRequired,
   uid: PropTypes.string.isRequired

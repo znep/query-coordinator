@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { ALL_ASSETS_TAB, MY_ASSETS_TAB } from 'common/components/AssetBrowser/lib/constants';
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 
 const getInitialState = () => ({

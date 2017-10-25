@@ -7,7 +7,7 @@ import TestUtils from 'react-dom/test-utils';
 
 describe('components/ActionDropdown', () => {
   const actionDropdownProps = (options = {}) => ({
-    assetType: 'dataset',
+    type: 'dataset',
     closeModal: () => undefined,
     deleteAsset: () => undefined,
     showModal: () => undefined,
@@ -178,7 +178,7 @@ describe('components/ActionDropdown', () => {
 
     it('does render the deleteAsset and changeVisibility options for datalens', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
-        assetType: 'datalens'
+        type: 'datalens'
       }));
       const expectedMenuActions = ['deleteAsset', 'changeVisibility'];
 
@@ -193,7 +193,7 @@ describe('components/ActionDropdown', () => {
 
     it('does not render the changeVisibility option for new viz', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
-        assetType: 'visualization'
+        type: 'visualization'
       }));
       const expectedMenuActions = [
         'editMetadata',
@@ -211,7 +211,7 @@ describe('components/ActionDropdown', () => {
 
     it('does not render the changeVisibility or editMetadata option for stories', (done) => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
-        assetType: 'story'
+        type: 'story'
       }));
       const expectedMenuActions = [
         'deleteAsset'

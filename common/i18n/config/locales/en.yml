@@ -185,14 +185,19 @@ en:
             error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
             map: map
             title: Delete?
+        approval_action_buttons:
+          approve: Approve
+          reject: Reject
         columns:
           access_level: Access Level
           actions: Actions
+          approval_requested: Approval Requested
           category: Category
           discoverable: Discoverable
           last_updated_date: Last Updated
           name: Name
           owner: Owner
+          status: Status
           type: Type
           visibility: Visibility
         visibility_values:

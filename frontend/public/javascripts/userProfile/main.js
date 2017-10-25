@@ -7,6 +7,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import airbrake from 'common/airbrake';
 import { AssetBrowser } from 'common/components';
+import ActionDropdown from 'common/components/AssetBrowser/components/action_dropdown';
 import { dateLocalize } from 'common/locale';
 import Localization from 'common/i18n/components/Localization';
 import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_helpers';
@@ -27,6 +28,7 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 const components = (
   <Localization locale={serverConfig.locale || 'en'}>
     <AssetBrowser
+      actionElement={ActionDropdown}
       baseFilters={getCurrentUserFilter()}
       enableAssetInventoryLink={false}
       pageSize={5}

@@ -7,7 +7,6 @@ import _ from 'lodash';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import I18n from 'common/i18n';
 
-import ActionDropdown from './action_dropdown';
 import Provenance from './provenance';
 import VisibilityCell from './visibility_cell';
 
@@ -23,6 +22,7 @@ export class ResultListRow extends Component {
   renderCell(columnName, index) {
     let { link } = this.props;
     const {
+      actionElement,
       description,
       isOwner,
       isPublished,
@@ -54,7 +54,7 @@ export class ResultListRow extends Component {
     }
 
     if (columnName === 'actions') {
-      return cellTag(<ActionDropdown assetType={type} uid={uid} />);
+      return cellTag(React.createElement(actionElement, this.props));
     }
 
     if (columnName === 'name') {
@@ -109,6 +109,7 @@ export class ResultListRow extends Component {
 }
 
 ResultListRow.propTypes = {
+  actionElement: PropTypes.func,
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
   datalensStatus: PropTypes.string,

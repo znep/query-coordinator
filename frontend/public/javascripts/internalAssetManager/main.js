@@ -8,6 +8,7 @@ import airbrake from 'common/airbrake';
 import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
+import ActionDropdown from 'common/components/AssetBrowser/components/action_dropdown';
 import AssetBrowser from 'common/components/AssetBrowser';
 import FeedbackPanel from 'common/components/AssetBrowser/components/feedback_panel';
 import reducer from 'common/components/AssetBrowser/reducers';
@@ -24,7 +25,12 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-const assetBrowser = <AssetBrowser showFilters showSearchField />;
+const assetBrowser = (
+  <AssetBrowser
+    actionElement={ActionDropdown}
+    showFilters
+    showSearchField />
+);
 
 ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-asset-browser'));
 

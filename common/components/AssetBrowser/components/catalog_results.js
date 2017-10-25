@@ -157,7 +157,7 @@ export class CatalogResults extends Component {
   }
 
   renderTable() {
-    const { fetchingResults } = this.props;
+    const { actionElement, fetchingResults } = this.props;
     const { tableView } = this.state;
 
     const spinner = fetchingResults ? (
@@ -169,7 +169,7 @@ export class CatalogResults extends Component {
     if (tableView === 'list') {
       return (
         <div className="table-wrapper">
-          <ResultListTable />
+          <ResultListTable actionElement={actionElement} />
           {spinner}
         </div>
       );
@@ -259,6 +259,7 @@ export class CatalogResults extends Component {
 }
 
 CatalogResults.propTypes = {
+  actionElement: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
   allFilters: PropTypes.object,
   baseFilters: PropTypes.object,

@@ -33,7 +33,7 @@ const components = (
       showAssetCounts={false}
       showFilters={false}
       showHeader
-      showManageAssets
+      showManageAssets={!_.isEmpty(window.serverConfig.currentUser.roleName)}
       showPager={false}
       showSearchField
       tabsToHide={[ALL_ASSETS_TAB]} />

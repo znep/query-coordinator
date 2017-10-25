@@ -165,6 +165,21 @@ export const removeUserRole = (userId, roleId) => dispatch => {
     err => {
       console.error(err);
       dispatch({ ...ACTION, stage: COMPLETE_FAIL });
+      if (err.status == 400) {
+        err.json().then(
+          data => {
+            if (data.message === 'Cannot change your own role') {
+              dispatch(
+                showNotification({ translationKey: 'users.errors.own_role' }, 'error')
+              );
+            } else {
+              dispatch(
+                showNotification({ translationKey: 'users.errors.unknown' }, 'error')
+              );
+            }
+          }
+        );
+      }
     }
   );
 };

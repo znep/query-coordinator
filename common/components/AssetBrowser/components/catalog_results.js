@@ -68,12 +68,15 @@ export class CatalogResults extends Component {
   // to calls to the Cetera to fetch autocomplete suggestions. It is in this module in order to
   // have access to the allFilters prop.
   fetchAutocompleteSuggestions(searchTerm, callback) { // numberOfResults, anonymous args unused
-    const { allFilters } = this.props;
+    const { reduxState } = this.props;
 
     if (_.isEmpty(searchTerm)) {
       callback([]);
     } else {
-      const translatedFilters = ceteraHelpers.translateFiltersToQueryParameters(allFilters);
+      // EN-19556: hack to get proper state into query param filters
+      const getState = () => { return reduxState };
+      const translatedFilters = ceteraHelpers.mergedCeteraQueryParameters(getState);
+
       ceteraUtils.autocompleteQuery(searchTerm, translatedFilters).
         then(callback);
     }
@@ -301,6 +304,7 @@ const mapStateToProps = (state) => ({
   isMobile: state.windowDimensions.isMobile,
   order: state.catalog.order,
   pageNumber: state.catalog.pageNumber,
+  reduxState: state,
   resultSetSize: state.catalog.resultSetSize
 });
 

@@ -1,5 +1,6 @@
 import { checkStatus, fetchJson, defaultHeaders } from 'common/http';
 import _ from 'lodash';
+import 'url-search-params-polyfill';
 
 function FutureAccountsCreationError(errors, fileName, lineNumber) {
   const instance = new Error(fileName, lineNumber);
@@ -28,7 +29,9 @@ const getFutureUsers = () => {
 
 const postFutureUsers = (emails, roleId) => {
   const apiPath = '/api/future_accounts?method=createMultiple';
-  const body = `addresses=${emails}&roleId=${roleId}`;
+  const body = new URLSearchParams();
+  body.set('addresses', emails);
+  body.set('roleId', roleId);
   const fetchOptions = {
     body,
     credentials: 'same-origin',

@@ -105,11 +105,14 @@ export class UserRow extends React.Component {
   }
 
   renderEditControl() {
-    const { I18n, onRemoveUserRole, roleId } = this.props;
+    const { I18n, onRemoveUserRole, onResetPassword, roleId } = this.props;
     return (
       <DropdownButton isDisabled={roleId === 'none'}>
         <DropdownItem onClick={() => onRemoveUserRole()}>
           {I18n.t('users.actions.remove_role')}
+        </DropdownItem>
+        <DropdownItem onClick={() => onResetPassword()}>
+          {I18n.t('users.actions.reset_password')}
         </DropdownItem>
       </DropdownButton>
     );
@@ -145,6 +148,7 @@ UserRow.propTypes = {
   pendingRole: PropTypes.string,
   onRoleChange: PropTypes.func.isRequired,
   onRemoveUserRole: PropTypes.func.isRequired,
+  onResetPassword: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 

@@ -20,10 +20,11 @@ describe('reducers', () => {
       store.dispatch(Actions.changeUserRole('cr53-8rh5', '5')).
         then(() => {
           const actions = store.getActions();
-          expect(actions).to.have.length(2);
-          actions.forEach((action) => expect(action.type).to.equal(Actions.USER_ROLE_CHANGE));
+          expect(actions).to.have.length(3);
+          actions.slice(0,2).forEach((action) => expect(action.type).to.equal(Actions.USER_ROLE_CHANGE));
           expect(actions[0].stage).to.equal(Actions.START);
           expect(actions[1].stage).to.equal(Actions.COMPLETE_SUCCESS);
+          expect(actions[2].type).to.equal(Actions.SHOW_NOTIFICATION);
           done();
         }).
         catch(err => {

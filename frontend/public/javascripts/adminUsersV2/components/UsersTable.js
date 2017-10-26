@@ -16,12 +16,14 @@ export class UsersTable extends React.Component {
   userToRow(user) {
     const onRoleChange = newRole => this.props.onRoleChange(user.id, newRole);
     const onRemoveUserRole = () => this.props.onRemoveUserRole(user.id, user.roleId);
+    const onResetPassword = () => this.props.onResetPassword(user.id);
 
     return (
       <LocalizedUserRow
         {...user}
         onRoleChange={onRoleChange}
         onRemoveUserRole={onRemoveUserRole}
+        onResetPassword={onResetPassword}
         key={user.id}
       />
     );
@@ -92,6 +94,7 @@ UsersTable.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRoleChange: PropTypes.func.isRequired,
   onRemoveUserRole: PropTypes.func.isRequired,
+  onResetPassword: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired
 };
 
@@ -105,7 +108,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onRoleChange: (userId, newRole) => dispatch(Actions.changeUserRole(userId, newRole)),
-    onRemoveUserRole: (userId, roleId) => dispatch(Actions.removeUserRole(userId, roleId))
+    onRemoveUserRole: (userId, roleId) => dispatch(Actions.removeUserRole(userId, roleId)),
+    onResetPassword: userId => dispatch(Actions.resetPassword(userId))
   };
 };
 

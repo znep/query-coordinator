@@ -23,6 +23,7 @@ export const changeUserRole = (userId, newRole) => dispatch => {
   return CoreRolesApi.assignRoleToUser({ userId, roleId: newRole }).then(
     () => {
       dispatch({ ...ACTION, stage: COMPLETE_SUCCESS });
+      dispatch(showNotification({ translationKey: 'users.notifications.role_changed' }, 'success'));
     },
     err => {
       console.error(err);
@@ -179,6 +180,7 @@ export const removeUserRole = (userId, roleId) => dispatch => {
   CoreRolesApi.removeRoleFromUser({ userId, roleId }).then(
     () => {
       dispatch({ ...ACTION, stage: COMPLETE_SUCCESS });
+      dispatch(showNotification({ translationKey: 'users.notifications.role_removed' }, 'success'));
     },
     err => {
       console.error(err);
@@ -233,7 +235,7 @@ const postNewUsers = (emails, roleId, dispatch) => {
       }));
       dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { futureUsers } });
       dispatch(toggleAddUserUi(false));
-      dispatch(showNotification({ translationKey: 'users.add_new_users.success_toast' }, 'success'));
+      dispatch(showNotification({ translationKey: 'users.notifications.add_user_success' }, 'success'));
     }).
     catch(error => {
       console.warn(error);
@@ -277,7 +279,7 @@ export const removeFutureUser = (id) => dispatch => {
 };
 
 export const RESEND_FUTURE_USER_EMAIL = 'RESEND_FUTURE_USER_EMAIL';
-export const resendPendingUserEmail = (email) => dispatch => {
+export const resendPendingUserEmail = email => dispatch => {
   dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: START, payload: { email }});
   CoreFutureAccountsApi.resendFutureUserEmail(email).
   then(() => {
@@ -288,6 +290,31 @@ export const resendPendingUserEmail = (email) => dispatch => {
     dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_FAIL, payload: { email, error }});
     dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
   });
+};
+
+export const RESET_PASSWORD = 'RESET_PASSWORD';
+export const resetPassword = userId => dispatch => {
+  dispatch({ type: RESET_PASSWORD, stage: START, userId });
+  const apiPath = `/admin/users/${userId}/reset_password`;
+
+  const fetchOptions = {
+    credentials: 'same-origin',
+    headers: defaultHeaders,
+    method: 'POST'
+  };
+
+  fetchJson(apiPath, fetchOptions).
+    then(response => {
+      if (response.success) {
+        dispatch({ type: RESET_PASSWORD, stage: COMPLETE_SUCCESS, userId });
+        dispatch(showNotification({ translationKey: 'users.notifications.password_reset' }, 'success'));
+      } else {
+        dispatch(showNotification({ translationsKey: 'users.errors.unknown' }, 'error'));
+      }
+    }).
+    catch(err => {
+      console.error(err);
+    });
 };
 
 export const ROLE_FILTER_CHANGED = 'ROLE_FILTER_CHANGED';

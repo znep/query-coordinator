@@ -131,12 +131,11 @@ const makeExtKeys = hrefURLObj =>
     };
   }, {});
 
-const hrefIsEmpty = href =>
-  _.isEmpty(href.urls) &&
-  !href.title &&
-  !href.description &&
-  !href.data_dictionary_type &&
-  !href.data_dictionary;
+const hrefIsEmpty = href => {
+  const hasUrls = !_.isEmpty(href.urls);
+
+  return !(hasUrls || href.title || href.description || href.data_dictionary_type || href.data_dictionary);
+};
 
 const shapeHrefState = rawState =>
   rawState

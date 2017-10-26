@@ -9,9 +9,7 @@ import styles from './HrefForm.scss';
 
 function hrefIsEmpty(href) {
   const hasAnyUrls = !!Object.values(href.urls).filter(val => val.url && val.href).length;
-  return (
-    !href.title && !href.description && !href.data_dictionary_type && !href.data_dictionary && !hasAnyUrls
-  );
+  return !(href.title || href.description || href.data_dictionary_type || href.data_dictionary || hasAnyUrls);
 }
 
 // This form strives to let the UI derrive from the data, so in order to control
@@ -105,17 +103,17 @@ class HrefForm extends Component {
     const { syncStateToStore, hrefs: oldHrefs } = this.props;
     const { hrefs: newHrefs } = nextState;
 
-    const filteredOldHrefs = oldHrefs.filter(href => !hrefIsEmpty(href));
-    const filteredNewHrefs = newHrefs.filter(href => !hrefIsEmpty(href));
+    const nonEmptyOldHrefs = oldHrefs.filter(href => !hrefIsEmpty(href));
+    const nonEmptyNewHrefs = newHrefs.filter(href => !hrefIsEmpty(href));
 
-    const oldUrls = filteredOldHrefs.map(href => href.urls);
-    const newUrls = filteredNewHrefs.map(href => href.urls);
+    const oldUrls = nonEmptyOldHrefs.map(href => href.urls);
+    const newUrls = nonEmptyNewHrefs.map(href => href.urls);
 
     // this lifecycle method is called on props and state changes; we use it to
     // sync local state to the store because of the stupid modal save button
     // that we must use to submit this form
-    if (!_.isEqual(filteredOldHrefs, filteredNewHrefs) || !_.isEqual(oldUrls, newUrls)) {
-      syncStateToStore({ href: filteredNewHrefs });
+    if (!_.isEqual(nonEmptyOldHrefs, nonEmptyNewHrefs) || !_.isEqual(oldUrls, newUrls)) {
+      syncStateToStore({ href: nonEmptyNewHrefs });
     }
   }
 

@@ -7,6 +7,13 @@ import SourceMessage from 'components/SourceMessage/SourceMessage';
 import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
 import styles from './HrefForm.scss';
 
+function hrefIsEmpty(href) {
+  const hasAnyUrls = !!Object.values(href.urls).filter(val => val.url && val.href).length;
+  return (
+    !href.title && !href.description && !href.data_dictionary_type && !href.data_dictionary && !hasAnyUrls
+  );
+}
+
 // This form strives to let the UI derrive from the data, so in order to control
 // the UI, it changes the data--namely the "hrefs" array. When the component loads,
 // it initializes "hrefs" as an empty array. Then right before the component mounts,
@@ -98,14 +105,17 @@ class HrefForm extends Component {
     const { syncStateToStore, hrefs: oldHrefs } = this.props;
     const { hrefs: newHrefs } = nextState;
 
-    const oldUrls = oldHrefs.map(href => href.urls);
-    const newUrls = newHrefs.map(href => href.urls);
+    const filteredOldHrefs = oldHrefs.filter(href => !hrefIsEmpty(href));
+    const filteredNewHrefs = newHrefs.filter(href => !hrefIsEmpty(href));
+
+    const oldUrls = filteredOldHrefs.map(href => href.urls);
+    const newUrls = filteredNewHrefs.map(href => href.urls);
 
     // this lifecycle method is called on props and state changes; we use it to
     // sync local state to the store because of the stupid modal save button
     // that we must use to submit this form
-    if (!_.isEqual(oldHrefs, newHrefs) || !_.isEqual(oldUrls, newUrls)) {
-      syncStateToStore({ href: nextState.hrefs });
+    if (!_.isEqual(filteredOldHrefs, filteredNewHrefs) || !_.isEqual(oldUrls, newUrls)) {
+      syncStateToStore({ href: filteredNewHrefs });
     }
   }
 

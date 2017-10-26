@@ -14,7 +14,7 @@ describe('StandardPalette', () => {
   });
 
   describe('fallbackMode = SOLID_COLOR', () => {
-    describe('palette set to valid value and primaryColor set to a valid value', () => {
+    describe('palette set to valid value and primaryColor unset', () => {
       const vif = _.set({}, 'series[0].color.palette', 'categorical');
       const p = new StandardPalette(vif, 0);
       it('given an in-range index returns the corresponding palette entry', () => {
@@ -54,7 +54,7 @@ describe('StandardPalette', () => {
       });
     });
 
-    describe('palette unset and primaryColor set to a valid value', () => {
+    describe('palette unset and primaryColor unset', () => {
       const vif = _.set({}, 'series[0].color.primary', '#f0f');
       const p = new StandardPalette(vif, 0);
       it('returns the primary color', () => {

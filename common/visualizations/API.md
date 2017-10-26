@@ -250,3 +250,13 @@ The FlyoutRenderer should be instantiated by the host application to handle all 
   dark: true
 }
 ```
+
+## Appendix: The Palette class
+Built-in and custom palettes are handled centrally by the private `Palette` class and its internal helper
+classes `StandardPalette` and `CustomPalette`. They understand how to look up custom colors based on measure
+names or grouping values, and encapsulate color rotation schemes.
+
+## Appendix: The Measure class
+Each SvgVisualization uses instances of the private `Measure` class to keep track of the measures to be
+displayed. Along with `getMeasures()`, this centralizes coloration schemes, palette selection and label
+formatting.

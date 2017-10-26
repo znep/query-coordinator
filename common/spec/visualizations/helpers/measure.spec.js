@@ -15,6 +15,10 @@ describe('Measure', () => {
     const m = new Measure({ vif, seriesIndex, measureIndex, tagValue });
     assert.equal(m.labelHtml, 'a tag &amp; stuff');
   });
+  it('can override labelHtml with markup', () => {
+    const m = new Measure({ vif, seriesIndex, measureIndex, tagValue, labelHtml: 'something<b>special</b>' });
+    assert.equal(m.labelHtml, 'something<b>special</b>');
+  });
 
   describe('getColor', () => {
     it('delegates to its palette', () => {

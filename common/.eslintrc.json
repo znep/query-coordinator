@@ -1,4 +1,5 @@
 {
+  "extends": "./karma_config/node_modules/eslint-base/.eslintrc-airbnb.json",
   "parser": "babel-eslint",
   "plugins": [
     "react",

@@ -1,36 +1,85 @@
 <% content_for :head do %>
+  <%= rendered_stylesheet_tag 'styleguide' %>
+  <%= google_font_link %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-index-screen' %>
-  <title><%= t('screens.admin.index.administration') %> | <%= get_site_title %></title>
+  <title><%= t('administration', :scope => 'screens.admin.index') %> | <%= get_site_title %></title>
 <% end %>
 
-<%= render '/administration/left_nav' %>
-
-<div class="contentBox <%= admin_page_with_left_nav_class %>">
+<div class="admin-index">
   <%= display_standard_flashes %>
 
-  <ul class="adminList">
-    <%= admin_page_link('site_analytics', true, '/admin/analytics') %>
-    <%= admin_page_link('users', user_can_see_users?, '/admin/users') %>
-    <%= admin_page_link('federation', user_can_see_federations?, '/admin/federations') %>
-    <%= admin_page_link('comment_moderation', user_can_see_comment_moderation?, '/admin/comment_moderation') %>
-    <%= admin_page_link('view_moderation', user_can_see_view_moderation?, '/admin/views') %>
-    <%= admin_page_link('sdp_templates', user_can_see_sdp_templates?, '/admin/sdp_templates') %>
-    <%= admin_page_link('datasets', user_can_see_asset_inventory? && !use_internal_asset_manager?, '/admin/datasets') %>
-    <%= admin_page_link('datasets', use_internal_asset_manager?, '/admin/assets') %>
-    <%= admin_page_link('georegions', can_view_georegions_admin?, '/admin/geo') %>
-    <%= admin_page_link('site_appearance', show_site_appearance_admin_panel?, '/admin/site_appearance') %>
-    <%= admin_page_link('home_page', user_can_see_home_page?, '/admin/home') %>
-    <%= admin_page_link('metadata', user_can_see_metadata?, '/admin/metadata') %>
-    <%= admin_page_link('approvals', user_can_review_approvals?, '/admin/approvals') %>
-    <%= admin_page_link('dataset_routing_and_approval', user_can_see_routing_approval?, '/admin/routing_approval') %>
-    <%= admin_page_link('activity_log', user_can_see_activity_feed?, '/admin/activity_feed') %>
-    <%= admin_page_link('internal', current_user.try(:is_superadmin?), '/internal') %>
-    <%= admin_page_link('stories', user_can_see_stories?, '/stories/admin/themes') %>
-    <%= admin_page_link('goals', user_can_see_goals?, '/admin/goals') %>
-    <%= admin_page_link('connectors', user_can_see_connectors?, '/admin/connectors') %>
-    <%= admin_page_link('feature_flags', current_user.try(:is_superadmin?), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname) %>
-  </ul>
+  <div class="admin-link-columns">
+
+    <section>
+      <h2>
+        <i class="socrata-icon-dataset"></i>
+        <%= t('section_headers.data_and_assets', :scope => 'screens.admin.index') %>
+      </h2>
+      <ul class="admin-link-list">
+        <%= admin_section_link('activity_log', user_can_see_activity_feed?, 'admin/activity_feed') %>
+        <%= admin_section_link('site_analytics', true, '/admin/analytics') %>
+        <%= admin_section_link('datasets', user_can_see_asset_inventory? && !use_internal_asset_manager?, '/admin/datasets') %>
+        <%= admin_section_link('datasets', use_internal_asset_manager?, '/admin/assets') %>
+        <%= admin_section_link('goals', user_can_see_goals?, '/admin/goals') %>
+        <%= admin_section_link('federation', user_can_see_federations?, '/admin/federations') %>
+        <%= admin_section_link('connectors', user_can_see_connectors?, '/admin/connectors') %>
+      </ul>
+    </section>
+
+    <section>
+      <% if user_can_see_content_section? %>
+        <h2>
+          <i class="socrata-icon-copy-document"></i>
+          <%= t('section_headers.content', :scope => 'screens.admin.index') %>
+        </h2>
+        <ul class="admin-link-list">
+          <%= admin_section_link('approvals', user_can_review_approvals?, '/admin/approvals') %>
+          <%= admin_section_link('dataset_routing_and_approval', user_can_see_routing_approval?, '/admin/routing_approval') %>
+          <%= admin_section_link('view_moderation', user_can_see_view_moderation?, '/admin/views') %>
+          <%= admin_section_link('comment_moderation', user_can_see_comment_moderation?, '/admin/comment_moderation') %>
+          <%= admin_section_link('georegions', can_view_georegions_admin?, '/admin/geo') %>
+          <%= admin_section_link('home_page', user_can_see_home_page?, '/admin/home') %>
+          <%= admin_section_link('dataslate_pages', user_can_see_canvas_designer?, '/admin/data_slate') %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section>
+      <% if current_user.try(:is_superadmin?) %>
+        <div class="super-admin-menu">
+          <h2>
+            <i class="socrata-icon-private"></i>
+            <%= t('section_headers.super_admin', :scope => 'screens.admin.index') %>
+          </h2>
+          <ul class="admin-link-list">
+            <li>
+              <%= admin_nav_link('internal', '/internal') %>
+            </li>
+            <li>
+              <%= admin_nav_link('feature_flags', :controller => 'internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname) %>
+            </li>
+            <%= admin_section_link('stories', user_can_see_stories?, '/stories/admin/themes') %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if user_can_see_administration_section? %>
+        <h2>
+          <i class="socrata-icon-settings"></i>
+          <%= t('section_headers.site_settings', :scope => 'screens.admin.index') %>
+        </h2>
+        <ul class="admin-link-list">
+          <%= admin_section_link('users', user_can_see_users?, '/admin/users') %>
+          <%= admin_section_link('metadata', user_can_see_metadata?, '/admin/metadata') %>
+          <%= admin_section_link('site_appearance', show_site_appearance_admin_panel?, '/admin/site_chrome') %>
+          <%= admin_section_link('sdp_templates', user_can_see_sdp_templates?, '/admin/sdp_templates') %>
+          <%= admin_section_link('roles', user_can_see_sdp_templates?, '/admin/roles') %>
+        </ul>
+      <% end %>
+    </section>
+
+  </div>
 </div>
 
 <%= render_admin_qualtrics %>

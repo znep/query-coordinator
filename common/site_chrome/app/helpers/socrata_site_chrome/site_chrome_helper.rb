@@ -43,10 +43,6 @@ module SocrataSiteChrome
       use_internal_asset_manager? ? '/admin/assets' : '/stat/data'
     end
 
-    def enable_new_admin_ui?
-      get_feature_flag('enable_new_admin_ui')
-    end
-
     def use_internal_asset_manager?
       get_feature_flag('use_internal_asset_manager')
     end

@@ -44,10 +44,6 @@ class AdministrationController < ApplicationController
     true
   end
 
-  def index
-    render enable_new_admin_ui? ? 'sectioned_index' : 'index'
-  end
-
   def datasets
     @meta[:page_name] = 'Admin Catalog'
 

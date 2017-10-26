@@ -14,15 +14,6 @@
     </a>
   </li>
 
-  <%- if current_user_can_see_admin_link? && !enable_new_admin_ui? %>
-    <li>
-      <a href="<%= site_chrome_massage_url('/admin') %>">
-        <span class="socrata-icon-settings"></span>
-        <span><%= t('shared.site_chrome.admin.user.administration') %></span>
-      </a>
-    </li>
-  <%- end %>
-
   <li>
     <a href="https://support.socrata.com">
       <span class="socrata-icon-question-inverse"></span>

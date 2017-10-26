@@ -36,13 +36,13 @@
       <div
         id="site-chrome-header-notifications"
         tabIndex="-1"
-        class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? && enable_new_admin_ui? %>">
+        class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? %>">
         <%# This gets filled in by notifications JS %>
       </div>
 
       <div class="site-chrome-admin-separator"></div>
 
-      <% if current_user_can_see_admin_link? && enable_new_admin_ui? %>
+      <% if current_user_can_see_admin_link? %>
         <div class="site-chrome-admin-settings"
           tabIndex="0"
           role="button"

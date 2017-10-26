@@ -85,7 +85,7 @@ export class PresentationPane extends Component {
     const colorPickerAttributes = {
       handleColorChange: (primaryColor) => onChangePrimaryColor(0, primaryColor),
       palette: COLORS,
-      value: primaryColor,
+      value: primaryColor
     };
 
     return (
@@ -167,7 +167,7 @@ export class PresentationPane extends Component {
       const colorPickerAttributes = {
         handleColorChange: (primaryColor) => onChangePrimaryColor(index, primaryColor),
         palette: COLORS,
-        value: item.color.primary,
+        value: item.color.primary
       };
 
       const title = getMeasureTitle(metadata, item);
@@ -197,7 +197,7 @@ export class PresentationPane extends Component {
 
     if (hasCustomPaletteGrouping && !hasCustomColorPaletteError) {
       const colorSelectors = _.chain(customColorPalette[dimensionColumnName]).
-        map((paletteValue, paletteKey) => ({color: paletteValue.color, index: paletteValue.index, group: paletteKey})).
+        map((paletteValue, paletteKey) => ({ color: paletteValue.color, index: paletteValue.index, group: paletteKey })).
         filter((palette) => palette.index > -1).
         sortBy('index').
         map((palette) => {
@@ -244,7 +244,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <div className="checkbox">
-          <input {...inputAttributes}/>
+          <input {...inputAttributes} />
           <label className="inline-label" htmlFor="show-dimension-labels">
                 <span className="fake-checkbox">
                   <span className="icon-checkmark3"></span>
@@ -290,7 +290,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <div className="checkbox">
-          <input {...inputAttributes}/>
+          <input {...inputAttributes} />
           <label className="inline-label" htmlFor="show-value-labels">
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
@@ -321,7 +321,7 @@ export class PresentationPane extends Component {
     return (
       <div className={authoringFieldClasses}>
         <div className="checkbox">
-          <input {...inputAttributes}/>
+          <input {...inputAttributes} />
           <label className="inline-label" htmlFor="show-value-labels-as-percent">
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
@@ -526,19 +526,19 @@ export class PresentationPane extends Component {
       <AccordionPane key="pointControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.points')}>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-color">{I18n.t('shared.visualizations.panes.presentation.fields.point_color.title')}</label>
+            htmlFor="point-color">{I18n.t('shared.visualizations.panes.presentation.fields.point_color.title')}</label>
           <ColorPicker {...pointColorAttributes} />
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
+            htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
+            htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -571,7 +571,7 @@ export class PresentationPane extends Component {
     const colorControls = (
       <AccordionPane key="colorControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
         <label className="block-label"
-               htmlFor="color-scale">{I18n.t('shared.visualizations.panes.presentation.fields.color_scale.title')}</label>
+          htmlFor="color-scale">{I18n.t('shared.visualizations.panes.presentation.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorScaleAttributes} />
         </div>
@@ -607,14 +607,14 @@ export class PresentationPane extends Component {
       <AccordionPane key="mapLayerControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.map')}>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="base-layer">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer.title')}</label>
+            htmlFor="base-layer">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="base-layer-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer_opacity.title')}</label>
+            htmlFor="base-layer-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer_opacity.title')}</label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>

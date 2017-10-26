@@ -1,5 +1,5 @@
-import reducer from 'common/autocomplete/reducers/StatefulAutocompleteReducer'
-import * as actions from 'common/autocomplete/actions'
+import reducer from 'common/autocomplete/reducers/StatefulAutocompleteReducer';
+import * as actions from 'common/autocomplete/actions';
 
 describe('autocomplete reducer', () => {
   const someResults = {
@@ -147,5 +147,5 @@ describe('autocomplete reducer', () => {
       const reducedState = reducer(initialState, actions.collapseChanged(true));
       expect(reducedState).to.eql(expectedState);
     });
-  })
-})
+  });
+});

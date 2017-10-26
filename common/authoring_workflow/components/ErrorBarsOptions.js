@@ -17,13 +17,13 @@ import {
 
 import {
   getValidMeasures,
-  hasData, 
+  hasData
 } from '../selectors/metadata';
 
 import {
   getErrorBarsColor,
   getErrorBarsLowerBoundColumnName,
-  getErrorBarsUpperBoundColumnName,
+  getErrorBarsUpperBoundColumnName
 } from '../selectors/vifAuthoring';
 
 export class ErrorBarsOptions extends Component {
@@ -42,21 +42,21 @@ export class ErrorBarsOptions extends Component {
   }
 
   renderErrorBarsSelector() {
-    const { 
+    const {
       onChangeErrorBarsBarColor,
       onSelectErrorBarsLowerBoundColumn,
       onSelectErrorBarsUpperBoundColumn,
-      vifAuthoring 
+      vifAuthoring
     } = this.props;
 
     const lowerBoundColumnName = getErrorBarsLowerBoundColumnName(vifAuthoring);
     const upperBoundColumnName = getErrorBarsUpperBoundColumnName(vifAuthoring);
-    
+
     const lowerBoundDropdown = this.renderErrorBarsDropdown(
       'error-bars-lower-bound-column-selection',
       lowerBoundColumnName,
       onSelectErrorBarsLowerBoundColumn);
-    
+
     const upperBoundDropdown = this.renderErrorBarsDropdown(
       'error-bars-upper-bound-column-selection',
       upperBoundColumnName,
@@ -121,11 +121,11 @@ export class ErrorBarsOptions extends Component {
     return (
       <Dropdown {...attributes} />
     );
-  };
+  }
 }
 
 ErrorBarsOptions.propTypes = {
-  vifAuthoring: PropTypes.object,
+  vifAuthoring: PropTypes.object
 };
 
 function mapStateToProps(state) {

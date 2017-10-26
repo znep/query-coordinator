@@ -2,12 +2,12 @@ import _ from 'lodash';
 import { createSelector } from 'reselect';
 import { COLOR_PALETTES, ERROR_BARS_DEFAULT_BAR_COLOR } from '../constants';
 
-export const getVifs = state => _.get(state, 'vifs', {})
+export const getVifs = state => _.get(state, 'vifs', {});
 export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
 
 export const getFilters = state => _.get(state, 'filters', []);
 
-export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
+export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null);
 export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
 export const isUserCurrentlyActive = state => _.get(state, 'authoring.userCurrentlyActive', false);
 export const getCustomColorPaletteError = state => _.get(state, 'authoring.customColorPaletteError', null);
@@ -48,7 +48,7 @@ export const getMeasure = createSelector(
 
 export const getReferenceLines = createSelector(
   getCurrentVif,
-  (vif) =>  _.get(vif, 'referenceLines', [])
+  (vif) => _.get(vif, 'referenceLines', [])
 );
 
 export const hasReferenceLineLabels = createSelector(
@@ -97,7 +97,7 @@ export const getColorScale = createSelector(
     return {
       negativeColor: _.get(vif, 'configuration.legend.negativeColor'),
       zeroColor: _.get(vif, 'configuration.legend.zeroColor'),
-      positiveColor: _.get(vif, 'configuration.legend.positiveColor'),
+      positiveColor: _.get(vif, 'configuration.legend.positiveColor')
     };
   }
 );

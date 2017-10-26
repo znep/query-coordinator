@@ -258,6 +258,6 @@ describe('InfoPane', () => {
         const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: false }));
         assert.isNull(element.querySelector('.watch-dataset-flag'));
       });
-    })
+    });
   });
 });

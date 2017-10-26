@@ -13,7 +13,7 @@ import {
   setReferenceLineValue,
   setOrderBy,
   setMeasureAxisMinValue,
-  setMeasureAxisMaxValue,
+  setMeasureAxisMaxValue
 } from '../../actions';
 import {
   getAnyDimension,
@@ -157,12 +157,12 @@ export class AxisAndScalePane extends Component {
         <div {...containerAttributes}>
           <div>
             <input type="radio"
-                   name="measure-axis-scale"
-                   id="measure-axis-scale-automatic"
-                   value="automatic"
-                   onChange={this.onMeasureAxisScaleControlChange}
-                   checked={isAuto}
-                   disabled={isDisabled} />
+              name="measure-axis-scale"
+              id="measure-axis-scale-automatic"
+              value="automatic"
+              onChange={this.onMeasureAxisScaleControlChange}
+              checked={isAuto}
+              disabled={isDisabled} />
             <label htmlFor="measure-axis-scale-automatic">
               <span className="fake-radiobutton" />
               <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.automatic')}</div>
@@ -170,12 +170,12 @@ export class AxisAndScalePane extends Component {
           </div>
           <div>
             <input type="radio"
-                   name="measure-axis-scale"
-                   id="measure-axis-scale-custom"
-                   value="custom"
-                   onChange={this.onMeasureAxisScaleControlChange}
-                   checked={!isAuto}
-                   disabled={isDisabled} />
+              name="measure-axis-scale"
+              id="measure-axis-scale-custom"
+              value="custom"
+              onChange={this.onMeasureAxisScaleControlChange}
+              checked={!isAuto}
+              disabled={isDisabled} />
             <label htmlFor="measure-axis-scale-custom">
               <span className="fake-radiobutton" />
               <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.custom')}</div>
@@ -230,7 +230,7 @@ export class AxisAndScalePane extends Component {
       placeholder: I18n.t('shared.visualizations.panes.reference_lines.fields.add_value'),
       step: 1,
       type: 'number',
-      value: _.isFinite(referenceLine.value) ? referenceLine.value.toString() : '',
+      value: _.isFinite(referenceLine.value) ? referenceLine.value.toString() : ''
     };
 
     if (isOneHundredPercentStacked(vifAuthoring)) {
@@ -243,7 +243,7 @@ export class AxisAndScalePane extends Component {
     const colorPickerAttributes = {
       handleColorChange: (color) => onChangeReferenceLineColor({ referenceLineIndex, color }),
       palette: COLORS,
-      value: referenceLine.color,
+      value: referenceLine.color
     };
 
     const removeLinkAttributes = {
@@ -480,7 +480,7 @@ function mapDispatchToProps(dispatch) {
     onMeasureAxisControlAuto: () => {
       dispatch(setMeasureAxisMinValue());
       dispatch(setMeasureAxisMaxValue());
-    },
+    }
   };
 }
 

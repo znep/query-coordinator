@@ -184,7 +184,7 @@ describe('ChoroplethMap jQuery component', function() {
 
         var stubChoroplethMap;
 
-        beforeEach(function () {
+        beforeEach(function() {
           stubChoroplethMap = sinon.stub().returns({
             render: _.noop,
             renderError: _.noop,
@@ -285,7 +285,7 @@ describe('ChoroplethMap jQuery component', function() {
           new window.CustomEvent(
             'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
             {
-              detail: {shapefileFeatureId: 'test'},
+              detail: { shapefileFeatureId: 'test' },
               bubbles: true
             }
           )

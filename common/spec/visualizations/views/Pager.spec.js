@@ -147,7 +147,7 @@ describe('Pager', function() {
     beforeEach(function() {
       element = $('<div>');
       pager = new Pager(element);
-      pager.render(_.merge(options, {unit: {one: 'case', other: 'cases'}}));
+      pager.render(_.merge(options, { unit: { one: 'case', other: 'cases' } }));
       previousButton = element.find('.pager-button-previous');
       nextButton = element.find('.pager-button-next');
       pagerLabel = element.find('.pager-label');
@@ -178,7 +178,7 @@ describe('Pager', function() {
         $('body').append(element);
 
         previousButton.click();
-        pager.render({unit: {one: 'case', other: 'cases'}});
+        pager.render({ unit: { one: 'case', other: 'cases' } });
         assert.equal(document.activeElement.className, previousButton[0].className);
 
         element.remove();
@@ -210,7 +210,7 @@ describe('Pager', function() {
         $('body').append(element);
 
         nextButton.click();
-        pager.render({unit: {one: 'case', other: 'cases'}});
+        pager.render({ unit: { one: 'case', other: 'cases' } });
         assert.equal(document.activeElement.className, nextButton[0].className);
 
         element.remove();

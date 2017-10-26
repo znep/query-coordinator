@@ -35,7 +35,7 @@ export class AuthoringWorkflow extends Component {
 
     this.state = {
       currentTabSelection: 'authoring-data'
-    }
+    };
 
     _.bindAll(this, [
       'onComplete',
@@ -93,7 +93,7 @@ export class AuthoringWorkflow extends Component {
 
     if (href) {
       event.preventDefault();
-      this.setState({currentTabSelection: href.slice(1)});
+      this.setState({ currentTabSelection: href.slice(1) });
     }
   }
 
@@ -127,7 +127,7 @@ export class AuthoringWorkflow extends Component {
   renderBackButton() {
     const { backButtonText } = this.props;
 
-      return _.isString(backButtonText) ? (
+    return _.isString(backButtonText) ? (
         <button className="authoring-back-button" onClick={this.onBack}>
           <span className="icon-arrow-left" />
           {backButtonText}
@@ -138,7 +138,7 @@ export class AuthoringWorkflow extends Component {
   renderResetButton() {
     const { backButtonText, onReset } = this.props;
     const confirmDialog = () => {
-      if(confirm(I18n.t('shared.visualizations.common.reset_confirm'))) {
+      if (confirm(I18n.t('shared.visualizations.common.reset_confirm'))) {
         onReset();
       }
     };
@@ -162,7 +162,7 @@ export class AuthoringWorkflow extends Component {
     });
 
     return (
-      <Modal className="authoring-modal" fullScreen={true} onDismiss={this.onCancel} ref={(ref) => this.modal = ref}>
+      <Modal className="authoring-modal" fullScreen onDismiss={this.onCancel} ref={(ref) => this.modal = ref}>
         <ModalHeader title={I18n.t('shared.visualizations.modal.title')} onDismiss={this.onCancel} />
         <ModalContent className="authoring-modal-content">
           {this.renderFilterBar()}
@@ -173,7 +173,7 @@ export class AuthoringWorkflow extends Component {
               <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
             </div>
             <div className="authoring-preview-container">
-              <VisualizationTypeSelector/>
+              <VisualizationTypeSelector />
               <VisualizationPreviewContainer />
               <TableView />
               {scalingMode}
@@ -240,7 +240,7 @@ AuthoringWorkflow.defaultProps = {
       id: 'authoring-axis-and-scale',
       title: I18n.t('shared.visualizations.panes.axis_and_scale.title'),
       paneComponent: AxisAndScalePane,
-      icon: 'axis-scale',
+      icon: 'axis-scale'
     },
     {
       id: 'authoring-colors-and-style',

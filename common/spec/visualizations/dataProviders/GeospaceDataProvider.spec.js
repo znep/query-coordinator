@@ -19,32 +19,32 @@ describe('GeospaceDataProvider', function() {
   var ERROR_MESSAGE = 'Bad request';
   var SUCCESS_STATUS = 200;
   var SAMPLE_EXTENT_REQUEST_ERROR = JSON.stringify({
-    "message": "query.soql.no-such-column",
-    "errorCode": "query.soql.no-such-column",
-    "data": {
-      "data": {
-        "column": "npoint",
-        "dataset": "alpha.90",
-        "position": {
-          "row": 1,
-          "column": 15,
-          "line": "SELECT extent(`npoint`)\n              ^"
+    'message': 'query.soql.no-such-column',
+    'errorCode': 'query.soql.no-such-column',
+    'data': {
+      'data': {
+        'column': 'npoint',
+        'dataset': 'alpha.90',
+        'position': {
+          'row': 1,
+          'column': 15,
+          'line': 'SELECT extent(`npoint`)\n              ^'
         }
       }
     }
   });
   var SAMPLE_EXTENT_REQUEST_RESPONSE = JSON.stringify([
     {
-      "extent_point": {
-        "type": "MultiPolygon",
-        "coordinates": [
+      'extent_point': {
+        'type': 'MultiPolygon',
+        'coordinates': [
           [
             [
-              [SOUTHWEST_EXTENT_LNG,SOUTHWEST_EXTENT_LAT],
-              [-122.513300926011,37.829992142],
-              [NORTHEAST_EXTENT_LNG,NORTHEAST_EXTENT_LAT],
-              [-122.361277017,37.707360625],
-              [SOUTHWEST_EXTENT_LNG,SOUTHWEST_EXTENT_LAT]
+              [SOUTHWEST_EXTENT_LNG, SOUTHWEST_EXTENT_LAT],
+              [-122.513300926011, 37.829992142],
+              [NORTHEAST_EXTENT_LNG, NORTHEAST_EXTENT_LAT],
+              [-122.361277017, 37.707360625],
+              [SOUTHWEST_EXTENT_LNG, SOUTHWEST_EXTENT_LAT]
             ]
           ]
         ]
@@ -52,26 +52,26 @@ describe('GeospaceDataProvider', function() {
     }
   ]);
   var SAMPLE_GEOJSON_REQUEST_ERROR = JSON.stringify({
-    "message": "query.soql.no-such-column",
-    "errorCode": "query.soql.no-such-column",
-    "data": {
-      "data": {
-        "column": "npoint",
-        "dataset": "alpha.90",
-        "position": {
-          "row": 1,
-          "column": 15,
-          "line": "SELECT extent(`npoint`)\n              ^"
+    'message': 'query.soql.no-such-column',
+    'errorCode': 'query.soql.no-such-column',
+    'data': {
+      'data': {
+        'column': 'npoint',
+        'dataset': 'alpha.90',
+        'position': {
+          'row': 1,
+          'column': 15,
+          'line': 'SELECT extent(`npoint`)\n              ^'
         }
       }
     }
   });
-  var SAMPLE_GEOJSON_COORDINATES = [[[[-87.7051,41.8463],[-87.7054,41.8463]]]];
+  var SAMPLE_GEOJSON_COORDINATES = [[[[-87.7051, 41.8463], [-87.7054, 41.8463]]]];
   var SAMPLE_GEOJSON_REQUEST_RESPONSE = JSON.stringify([
     {
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": SAMPLE_GEOJSON_COORDINATES
+      'geometry': {
+        'type': 'MultiPolygon',
+        'coordinates': SAMPLE_GEOJSON_COORDINATES
       }
     }
   ]);
@@ -512,7 +512,7 @@ describe('GeospaceDataProvider', function() {
         geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
 
         // Ensure requesting the geojson endpoint
-        server.respondWith(/geojson/,[SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
+        server.respondWith(/geojson/, [SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
       });
 
       afterEach(function() {
@@ -580,11 +580,11 @@ describe('GeospaceDataProvider', function() {
           'extent',
           [],
           {},
-          {northwest: null, southeast: null},
-          {northeast: null, southwest: null},
-          {northeast: [], southwest: []},
-          {northeast: [1], southwest: [1]},
-          {northeast: [1, 2, 3], southwest: [1, 2, 3]}
+          { northwest: null, southeast: null },
+          { northeast: null, southwest: null },
+          { northeast: [], southwest: [] },
+          { northeast: [1], southwest: [1] },
+          { northeast: [1, 2, 3], southwest: [1, 2, 3] }
         ];
 
         invalidExtentArguments.forEach(function(invalidExtentArgument) {
@@ -630,10 +630,10 @@ describe('GeospaceDataProvider', function() {
         geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
 
         // Ensure requesting the geojson endpoint with a MULTIPOLYGON query argument
-        server.respondWith(/geojson(.*)MULTIPOLYGON/,[SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
+        server.respondWith(/geojson(.*)MULTIPOLYGON/, [SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
         // Still respond to non-MULTIPOLYGON requests so that the test doesn't stall,
         // but fake an error status to trigger the test failure.
-        server.respondWith(/geojson$/,[ERROR_STATUS, {}, '{}']);
+        server.respondWith(/geojson$/, [ERROR_STATUS, {}, '{}']);
       });
 
       afterEach(function() {

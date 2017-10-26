@@ -124,7 +124,7 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
     }
 
     trySetShowLegend(state);
-  };
+  }
 };
 
 export const appendSeries = (state, { isInitialLoad }) => {
@@ -211,7 +211,7 @@ export const tryUnsetShowLegend = (state) => {
   }
 
   _.unset(state, 'configuration.showLegend');
-}
+};
 
 // This tries to set the showLegend property to true, but only if it is currently grouping, multi-series,
 // or having reference line labels.
@@ -224,7 +224,7 @@ export const trySetShowLegend = (state) => {
   }
 
   _.set(state, 'configuration.showLegend', true);
-}
+};
 
 export const isGroupingOrMultiSeries = (state) => {
   const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping') !== undefined);

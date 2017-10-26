@@ -78,7 +78,7 @@ function mapDispatchToProps(dispatch) {
     dismissMapInfo() {
       dispatch(setMapInfoDismissed());
     }
-  }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisualizationPreviewContainer);

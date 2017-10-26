@@ -34,7 +34,7 @@ export class SelectedDimensionIndicator extends React.Component {
   }
 
   renderEmpty() {
-    return <span>{ I18n.t('shared.visualizations.panes.data.fields.dimension.empty_selection') }</span>;
+    return <span>{I18n.t('shared.visualizations.panes.data.fields.dimension.empty_selection')}</span>;
   }
 
   render() {
@@ -45,8 +45,8 @@ export class SelectedDimensionIndicator extends React.Component {
     });
 
     return (
-      <div className={ classes }>
-        { dimensionFieldName ? this.renderDimension() : this.renderEmpty() }
+      <div className={classes}>
+        {dimensionFieldName ? this.renderDimension() : this.renderEmpty()}
       </div>
     );
   }

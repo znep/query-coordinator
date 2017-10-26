@@ -51,10 +51,10 @@ describe('ScrollView', () => {
 
     beforeEach(() => {
       component = renderComponent(ScrollView, {
-        style: {height: 200, width: 200, overflow: 'auto'},
+        style: { height: 200, width: 200, overflow: 'auto' },
         id: 'component',
         children: [
-          <div key="1" style={{height: 200}} />,
+          <div key="1" style={{ height: 200 }} />,
           <Scroller key="2" />
         ]
       });

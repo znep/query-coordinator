@@ -19,8 +19,8 @@ function defaultProps() {
       }
     },
     vif: vifsCloned.columnChart
-  }
-};
+  };
+}
 
 // Replace chart implementations
 // with Sinon stubs.
@@ -83,11 +83,11 @@ describe('VisualizationPreview', () => {
     describe('when rendering a columnChart', () => {
       const props = defaultProps();
 
-      _.set(props, 'vif.series[0].type','columnChart');
-      _.set(props, 'vif.series[0].dataSource.dimension.columnName','example_dimension');
-      _.set(props, 'vif.series[0].dataSource.measure.columnName','example_measure');
-      _.set(props, 'vif.series[0].dataSource.datasetUid','exam-ples');
-      _.set(props, 'vif.series[0].dataSource.domain','example.com');
+      _.set(props, 'vif.series[0].type', 'columnChart');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName', 'example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
       rendersChartType(props, 'socrataSvgColumnChart');
     });
@@ -107,11 +107,11 @@ describe('VisualizationPreview', () => {
         );
       };
 
-      _.set(props, 'vif.series[0].type','barChart');
-      _.set(props, 'vif.series[0].dataSource.dimension.columnName','example_dimension');
-      _.set(props, 'vif.series[0].dataSource.measure.columnName','example_measure');
-      _.set(props, 'vif.series[0].dataSource.datasetUid','exam-ples');
-      _.set(props, 'vif.series[0].dataSource.domain','example.com');
+      _.set(props, 'vif.series[0].type', 'barChart');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName', 'example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
       rendersChartType(props, 'socrataSvgBarChart');
 
@@ -202,7 +202,7 @@ describe('VisualizationPreview', () => {
       _.set(props, 'vif.series[0].type', 'regionMap');
       _.set(props, 'vif.configuration.computedColumnName', '@computed_column');
       _.set(props, 'vif.configuration.shapefile.uid', 'four-four');
-      _.set(props, 'vif.configuration.mapCenterAndZoom', {center: 10, zoom: 10});
+      _.set(props, 'vif.configuration.mapCenterAndZoom', { center: 10, zoom: 10 });
       _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
       _.set(props, 'vif.series[0].dataSource.measure.aggregationFunction', 'sum');
       _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
@@ -233,7 +233,7 @@ describe('VisualizationPreview', () => {
         vif: {
           configuration: {
             computedColumnName: '@new_computed_column_name',
-            mapCenterAndZoom: {center: 20, zoom: 20}
+            mapCenterAndZoom: { center: 20, zoom: 20 }
           }
         }
       });
@@ -246,7 +246,7 @@ describe('VisualizationPreview', () => {
       const newProps = _.merge({}, props, {
         vif: {
           configuration: {
-            mapCenterAndZoom: {center: 20, zoom: 20}
+            mapCenterAndZoom: { center: 20, zoom: 20 }
           }
         }
       });

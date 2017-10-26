@@ -125,7 +125,7 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 
-      shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
+      shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
 
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);

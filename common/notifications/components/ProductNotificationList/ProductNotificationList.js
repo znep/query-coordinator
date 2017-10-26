@@ -33,10 +33,10 @@ class ProductNotificationList extends Component {
     const { isSecondaryPanelOpen } = this.props;
 
     if (isSecondaryPanelOpen) {
-      return <SocrataIcon name="close-2" />
+      return <SocrataIcon name="close-2" />;
     }
 
-    return <SocrataIcon name="chevron-up" />
+    return <SocrataIcon name="chevron-up" />;
   }
 
   renderSecondaryPanelHeader() {
@@ -58,7 +58,7 @@ class ProductNotificationList extends Component {
             {this.renderAccordionIcon()}
           </h3>
         </div>
-      )
+      );
     }
   }
 
@@ -156,7 +156,7 @@ ProductNotificationList.propTypes = {
   toggleProductNotificationsSecondaryPanel: PropTypes.func,
   unreadProductNotificationCount: PropTypes.number,
   viewOlderLink: PropTypes.string
-}
+};
 
 ProductNotificationList.defaultProps = {
   isSecondaryPanelOpen: false,
@@ -164,6 +164,6 @@ ProductNotificationList.defaultProps = {
   toggleProductNotificationsSecondaryPanel: () => {},
   unreadProductNotificationCount: 0,
   viewOlderLink: null
-}
+};
 
 export default connectLocalization(cssModules(ProductNotificationList, styles, { allowMultiple: true }));

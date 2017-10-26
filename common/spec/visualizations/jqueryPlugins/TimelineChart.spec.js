@@ -35,7 +35,7 @@ describe('TimelineChart jQuery component', function() {
         'no_value': 'No value',
         'flyout_unfiltered_amount_label': 'Total',
         'flyout_filtered_amount_label': 'Filtered',
-        'flyout_selected_notice': 'This column is selected',
+        'flyout_selected_notice': 'This column is selected'
       },
       precision: 'MONTH'
     },
@@ -149,7 +149,7 @@ describe('TimelineChart jQuery component', function() {
             new window.CustomEvent(
               'SOCRATA_VISUALIZATION_TIMELINE_FILTER',
               {
-                detail: {start: new Date('2001-01-01T00:00:00'), end: new Date('2002-01-01T00:00:00')},
+                detail: { start: new Date('2001-01-01T00:00:00'), end: new Date('2002-01-01T00:00:00') },
                 bubbles: true
               }
             )

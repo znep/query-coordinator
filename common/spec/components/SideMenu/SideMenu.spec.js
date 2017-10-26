@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Simulate } from 'react-dom/test-utils';
-import { renderComponent  } from '../../helpers';
+import { renderComponent } from '../../helpers';
 import SideMenu from 'components/SideMenu';
 
 describe('SideMenu', () => {

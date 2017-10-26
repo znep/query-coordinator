@@ -1,6 +1,6 @@
 import { Simulate } from 'react-dom/test-utils';
 
-import renderLocalizationElement from '../renderLocalizationComponent'
+import renderLocalizationElement from '../renderLocalizationComponent';
 import UserNotification from 'common/notifications/components/UserNotifications/UserNotification';
 
 describe('UserNotification', () => {

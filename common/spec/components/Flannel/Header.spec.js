@@ -17,7 +17,7 @@ describe('FlannelHeader', () => {
 
   beforeEach(() => {
     onDismissSpy = sinon.spy();
-    element = renderPureComponent(FlannelHeader(getProps({ //eslint-disable-line new-cap
+    element = renderPureComponent(FlannelHeader(getProps({ // eslint-disable-line new-cap
       title,
       onDismiss: onDismissSpy
     })));

@@ -25,7 +25,7 @@ class UserNotificationList extends Component {
     if (_.isEmpty(notifications)) {
       return (
         <div styleName="no-notifications-message"
-             className="no-user-notifications-message">
+          className="no-user-notifications-message">
           <h3>{I18n.t('shared_site_chrome_notifications.no_filtered_notifications')}</h3>
         </div>
       );

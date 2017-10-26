@@ -77,7 +77,7 @@ describe('FilterBar', () => {
 
   it('renders filters if provided', () => {
     element = render({
-      filters: [ mockValueRangeFilter ]
+      filters: [mockValueRangeFilter]
     });
 
     const filters = getFilters(element);
@@ -95,7 +95,7 @@ describe('FilterBar', () => {
 
   it('renders a hidden expand control', () => {
     element = render({
-      filters: [ mockValueRangeFilter ]
+      filters: [mockValueRangeFilter]
     });
 
     assert.deepEqual(getExpandControl(element).classList.contains('is-hidden'), true);
@@ -104,7 +104,7 @@ describe('FilterBar', () => {
   describe('when isReadOnly is true', () => {
     it('does not render the add filter controls', () => {
       element = render({
-        filters: [ mockValueRangeFilter ],
+        filters: [mockValueRangeFilter],
         isReadOnly: true
       });
 

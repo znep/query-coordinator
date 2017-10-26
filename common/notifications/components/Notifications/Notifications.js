@@ -64,7 +64,7 @@ class Notifications extends Component {
 
     if (showProductNotifications) {
       if (showUserNotifications) {
-        this.setState({showProductNotificationsAsSecondaryPanel: true});
+        this.setState({ showProductNotificationsAsSecondaryPanel: true });
       }
 
       this.setState({ areNotificationsLoading: true });
@@ -120,17 +120,17 @@ class Notifications extends Component {
 
   onNotificationsUpdate(notifications) {
     const unReadNotificationsCount = _.isEmpty(notifications) ? 0 : notifications.filter(notification => {
-        return _.isUndefined(notification.read) || notification.read === false;
-      }).length;
+      return _.isUndefined(notification.read) || notification.read === false;
+    }).length;
 
     this.setState({
       userNotifications: notifications,
       unreadUserNotificationCount: unReadNotificationsCount
-    })
+    });
   }
 
   filterUserNotifications(filterUserNotificationsBy) {
-    this.setState({filterUserNotificationsBy});
+    this.setState({ filterUserNotificationsBy });
   }
 
   clearAllUserNotifications() {
@@ -169,7 +169,7 @@ class Notifications extends Component {
         document.querySelector('body').style.overflow = 'hidden';
       }
 
-      this.setState({showNotificationPanel});
+      this.setState({ showNotificationPanel });
     } else {
       this.removeKeyboardEvents();
 
@@ -222,7 +222,7 @@ class Notifications extends Component {
         openClearAllUserNotificationsPrompt: false
       });
     } else {
-      this.setState({isSecondaryPanelOpen});
+      this.setState({ isSecondaryPanelOpen });
     }
 
   }
@@ -231,9 +231,9 @@ class Notifications extends Component {
     const { showProductNotifications } = this.props.options;
 
     if (!showProductNotifications) {
-      return <span className="sidebar-overlay"
+      return (<span className="sidebar-overlay"
         aria-hidden="true"
-        onClick={this.toggleNotificationPanel}></span>;
+        onClick={this.toggleNotificationPanel}></span>);
     }
   }
 
@@ -262,7 +262,7 @@ class Notifications extends Component {
       } = this.state;
 
       return (
-        <div className='notifications-panel-wrapper'>
+        <div className="notifications-panel-wrapper">
           {this.renderSidebarOverlay()}
 
           <NotificationList
@@ -301,8 +301,8 @@ class Notifications extends Component {
     } = this.state;
 
     return (
-      <div styleName='container'>
-        <div id='socrata-notifications-container'>
+      <div styleName="container">
+        <div id="socrata-notifications-container">
           <Bell hasUnreadNotifications={this.hasUnreadNotifications()}
             toggleNotificationPanel={this.toggleNotificationPanel} />
 
@@ -327,7 +327,7 @@ Notifications.propTypes = {
 Notifications.defaultProps = {
   options: {
     lockScrollbar: PropTypes.false,
-    scrollTop: 0,
+    scrollTop: 0
   }
 };
 

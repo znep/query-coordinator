@@ -4,8 +4,8 @@ import { AccordionContainer, AccordionPane } from 'common/components';
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 
-describe('AccordionContainer', function () {
-  it('should render given AccordionPane children', function () {
+describe('AccordionContainer', function() {
+  it('should render given AccordionPane children', function() {
     const element = shallow(
       <AccordionContainer>
         <AccordionPane title="Pane 1" />
@@ -15,7 +15,7 @@ describe('AccordionContainer', function () {
     assert.equal(element.children().length, 2);
   });
 
-  it('should render first pane in open state', function () {
+  it('should render first pane in open state', function() {
     const element = shallow(
       <AccordionContainer>
         <AccordionPane title="Pane 1" />
@@ -27,11 +27,11 @@ describe('AccordionContainer', function () {
     assert.isFalse(element.children().last().prop('isOpen'));
   });
 
-  it('should respect default open panes', function () {
+  it('should respect default open panes', function() {
     const element = shallow(
       <AccordionContainer>
         <AccordionPane title="Pane 1" />
-        <AccordionPane title="Pane 2" isOpen={true}/>
+        <AccordionPane title="Pane 2" isOpen />
       </AccordionContainer>
     );
 
@@ -43,7 +43,7 @@ describe('AccordionContainer', function () {
     it('toggles isOpen on the AccordionPane', () => {
       const element = shallow(
         <AccordionContainer>
-          <AccordionPane title="Pane 1" className="test-accordion-pane"/>
+          <AccordionPane title="Pane 1" className="test-accordion-pane" />
         </AccordionContainer>
       );
 

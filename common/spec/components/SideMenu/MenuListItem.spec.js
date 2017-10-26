@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Simulate } from 'react-dom/test-utils';
 import { MenuListItem } from 'components/SideMenu';
-import { renderPureComponent  } from '../../helpers';
+import { renderPureComponent } from '../../helpers';
 
 /* eslint-disable new-cap */
 describe('MenuListItem', () => {

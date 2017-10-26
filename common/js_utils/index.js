@@ -263,7 +263,7 @@ var utils = {
     switch (locale) {
       case 'en':
       case 'zh':
-       return ',';
+        return ',';
 
       case 'ca':
       case 'es':
@@ -293,7 +293,7 @@ var utils = {
     switch (locale) {
       case 'en':
       case 'zh':
-       return '.';
+        return '.';
 
       case 'ca':
       case 'es':
@@ -331,7 +331,7 @@ var utils = {
    * Gets the user timezone from the browser
    */
   getTimeZone: function() {
-    jstz.determine().name()
+    jstz.determine().name();
   },
 
   /**

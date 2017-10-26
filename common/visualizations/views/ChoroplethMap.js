@@ -691,7 +691,7 @@ function ChoroplethMap(element, vif) {
     utils.assertIsOneOfTypes(centerAndZoom.center.lng, 'number');
     utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
 
-    map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
+    map.setView(centerAndZoom.center, centerAndZoom.zoom, { animate: false });
   }
 
   /**

@@ -15,7 +15,7 @@ describe('RowInspector', function() {
       return {
         column: 'row {0} col {1}'.format(rowIndex, columnIndex),
         value: _.uniqueId('row value ')
-      }
+      };
     });
   });
 
@@ -57,18 +57,18 @@ describe('RowInspector', function() {
 
   function verifyCloseBehavior() {
     it('should close when the x is clicked', function() {
-      $rowInspector.find('.icon-close').trigger({ type: 'click',  which: 1 });
+      $rowInspector.find('.icon-close').trigger({ type: 'click', which: 1 });
       assert.isFalse($rowInspector.hasClass('visible'));
     });
 
     it('should close when the user clicks outside the rowInspector', function() {
-       $('body').trigger({ type: 'click',  which: 1 });
-       assert.isFalse($rowInspector.hasClass('visible'));
+      $('body').trigger({ type: 'click', which: 1 });
+      assert.isFalse($rowInspector.hasClass('visible'));
     });
 
     it('should not close when something in the rowInspector other than the x is clicked', function() {
-       $rowInspector.trigger({ type: 'click',  which: 1 });
-       assert.isTrue($rowInspector.hasClass('visible'));
+      $rowInspector.trigger({ type: 'click', which: 1 });
+      assert.isTrue($rowInspector.hasClass('visible'));
     });
   }
 
@@ -131,8 +131,8 @@ describe('RowInspector', function() {
 
         describe('that has badly-formed data', function() {
           verifyThrowsWithInvalidPayload(_.extend({}, validUpdatePayload, { data: {} }));
-          verifyThrowsWithInvalidPayload(_.extend({}, validUpdatePayload, { data: [ { column: 'c', value: '' } ] }));
-          verifyThrowsWithInvalidPayload(_.extend({}, validUpdatePayload, { data: [ [ { bad: true } ] ] }));
+          verifyThrowsWithInvalidPayload(_.extend({}, validUpdatePayload, { data: [{ column: 'c', value: '' }] }));
+          verifyThrowsWithInvalidPayload(_.extend({}, validUpdatePayload, { data: [[{ bad: true }]] }));
         });
 
         describe('that is valid', function() {
@@ -412,7 +412,7 @@ describe('RowInspector', function() {
         });
 
         it('should display the hint at the mouse X position', function() {
-          var distance= Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().left);
+          var distance = Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().left);
           assert.isBelow(distance, $hint.width());
         });
 

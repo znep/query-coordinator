@@ -17,12 +17,12 @@ class AssetTypeIcon extends React.Component {
     const otherAttributes = {
       'data-type': displayType,
       title: tooltip
-    }
+    };
 
-    return <SocrataIcon
+    return (<SocrataIcon
       name={name}
       className={`asset-type-icon ${className}`}
-      otherAttributes={otherAttributes} />;
+      otherAttributes={otherAttributes} />);
   }
 }
 

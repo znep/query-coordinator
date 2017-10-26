@@ -55,13 +55,13 @@ class AccordionPane extends React.Component {
     return (
       <div className={paneClasses}>
         <div className="socrata-accordion-pane-title"
-             role="button"
-             aria-expanded={isOpen ? 'true' : 'false'}
-             aria-label={this.props['aria-label'] || title}
-             onClick={() => this.props.onToggle(this.props.paneId)}
-             tabIndex="0"
-             onKeyDown={this.handleKeyDown}
-             ref={(ref) => this.paneTitleElement = ref}>
+          role="button"
+          aria-expanded={isOpen ? 'true' : 'false'}
+          aria-label={this.props['aria-label'] || title}
+          onClick={() => this.props.onToggle(this.props.paneId)}
+          tabIndex="0"
+          onKeyDown={this.handleKeyDown}
+          ref={(ref) => this.paneTitleElement = ref}>
           <span>{title}</span>
           <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />
         </div>

@@ -9,7 +9,7 @@ describe('SoqlDataProvider', () => {
   const INVALID_DOMAIN = null;
   const INVALID_DATASET_UID = null;
 
-  const QUERY_COLUMNS = [ 'NAME_ALIAS', 'VALUE_ALIAS' ];
+  const QUERY_COLUMNS = ['NAME_ALIAS', 'VALUE_ALIAS'];
   const QUERY_STRING = 'SELECT testName AS NAME_ALIAS, testValue AS VALUE_ALIAS WHERE testValue > 0 LIMIT 200';
 
   const ERROR_STATUS = 400;
@@ -22,18 +22,18 @@ describe('SoqlDataProvider', () => {
   const VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
   const ERROR_BARS_LOWER_ALIAS = 'SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS';
   const ERROR_BARS_UPPER_ALIAS = 'SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS';
-  
+
   const SAMPLE_QUERY_REQUEST_ERROR = JSON.stringify({
-    "message": "query.soql.no-such-column",
-    "errorCode": "query.soql.no-such-column",
-    "data": {
-      "data": {
-        "column": "ncategory",
-        "dataset": "alpha.90",
-        "position": {
-          "row": 1,
-          "column": 8,
-          "line": "SELECT `ncategory` as SOQL_DATA_PROVIDER_NAME_ALIAS,COUNT(*) as SOQL_DATA_PROVIDER_VALUE_ALIAS GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200\n       ^"
+    'message': 'query.soql.no-such-column',
+    'errorCode': 'query.soql.no-such-column',
+    'data': {
+      'data': {
+        'column': 'ncategory',
+        'dataset': 'alpha.90',
+        'position': {
+          'row': 1,
+          'column': 8,
+          'line': 'SELECT `ncategory` as SOQL_DATA_PROVIDER_NAME_ALIAS,COUNT(*) as SOQL_DATA_PROVIDER_VALUE_ALIAS GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200\n       ^'
         }
       }
     }
@@ -41,54 +41,54 @@ describe('SoqlDataProvider', () => {
 
   const SAMPLE_QUERY_REQUEST_RESPONSE = JSON.stringify([
     {
-      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Street and Sidewalk Cleaning",
-      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "103412"
+      'SOQL_DATA_PROVIDER_NAME_ALIAS': 'Street and Sidewalk Cleaning',
+      'SOQL_DATA_PROVIDER_VALUE_ALIAS': '103412'
     },
     {
-      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Graffiti Private Property",
-      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "31161"
+      'SOQL_DATA_PROVIDER_NAME_ALIAS': 'Graffiti Private Property',
+      'SOQL_DATA_PROVIDER_VALUE_ALIAS': '31161'
     }
   ]);
 
   const SAMPLE_ERROR_BARS_QUERY_REQUEST_RESPONSE = JSON.stringify([
     {
-      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Street and Sidewalk Cleaning",
-      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "103412",
-      "SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS" : "5000",
-      "SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS": "15000"
+      'SOQL_DATA_PROVIDER_NAME_ALIAS': 'Street and Sidewalk Cleaning',
+      'SOQL_DATA_PROVIDER_VALUE_ALIAS': '103412',
+      'SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS' : '5000',
+      'SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS': '15000'
     },
     {
-      "SOQL_DATA_PROVIDER_NAME_ALIAS": "Graffiti Private Property",
-      "SOQL_DATA_PROVIDER_VALUE_ALIAS": "31161",
-      "SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS" : "5000",
-      "SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS": "15000"
+      'SOQL_DATA_PROVIDER_NAME_ALIAS': 'Graffiti Private Property',
+      'SOQL_DATA_PROVIDER_VALUE_ALIAS': '31161',
+      'SOQL_DATA_PROVIDER_ERROR_BARS_LOWER_ALIAS' : '5000',
+      'SOQL_DATA_PROVIDER_ERROR_BARS_UPPER_ALIAS': '15000'
     }
   ]);
 
   const EXPECTED_QUERY_REQUEST_COLUMNS = [NAME_ALIAS, VALUE_ALIAS];
 
   const EXPECTED_QUERY_REQUEST_ROWS = [
-    ["Street and Sidewalk Cleaning", "103412"],
-    ["Graffiti Private Property", "31161"]
+    ['Street and Sidewalk Cleaning', '103412'],
+    ['Graffiti Private Property', '31161']
   ];
 
   const EXPECTED_QUERY_REQUEST_ERROR_BARS = [
-    ["Street and Sidewalk Cleaning", "5000", "15000"],
-    ["Graffiti Private Property", "5000", "15000"]
+    ['Street and Sidewalk Cleaning', '5000', '15000'],
+    ['Graffiti Private Property', '5000', '15000']
   ];
 
   // `.getRows()` mock data
   const SAMPLE_ROW_REQUEST_ERROR = JSON.stringify({
-    "message": "query.soql.no-such-column",
-    "errorCode": "query.soql.no-such-column",
-    "data": {
-      "data": {
-        "column": "npoint",
-        "dataset": "alpha.90",
-        "position": {
-          "row": 1,
-          "column": 38,
-          "line": "SELECT * ORDER BY distance_in_meters(`npoint`,'POINT(-122.36434936523439 37.81005519477107)') ASC NULL LAST LIMIT 1 OFFSET 0\n                                     ^"
+    'message': 'query.soql.no-such-column',
+    'errorCode': 'query.soql.no-such-column',
+    'data': {
+      'data': {
+        'column': 'npoint',
+        'dataset': 'alpha.90',
+        'position': {
+          'row': 1,
+          'column': 38,
+          'line': "SELECT * ORDER BY distance_in_meters(`npoint`,'POINT(-122.36434936523439 37.81005519477107)') ASC NULL LAST LIMIT 1 OFFSET 0\n                                     ^"
         }
       }
     }
@@ -96,48 +96,48 @@ describe('SoqlDataProvider', () => {
 
   const SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
     {
-      "address": "Intersection of TREASURE ISLAND RD and",
-      "case_id": "501753",
-      "category": "General Requests",
-      "closed": "2009-12-30T09:13:10.000",
-      "neighborhood": "Treasure Island/YBI",
-      "opened": "2009-09-09T06:50:28.000",
-      "point": {
-        "type": "Point",
-        "coordinates": [-122.36357929,37.808938925]
+      'address': 'Intersection of TREASURE ISLAND RD and',
+      'case_id': '501753',
+      'category': 'General Requests',
+      'closed': '2009-12-30T09:13:10.000',
+      'neighborhood': 'Treasure Island/YBI',
+      'opened': '2009-09-09T06:50:28.000',
+      'point': {
+        'type': 'Point',
+        'coordinates': [-122.36357929, 37.808938925]
       },
-      "request_details": "tida - tida - request_for_service",
-      "request_type": "tida - tida - request_for_service",
-      "responsible_agency": "PUC - Electric/Power - G - Hold",
-      "source": "Voice In",
-      "status": "Closed",
-      "supervisor_district": "6",
-      "updated": "2009-12-30T09:13:10.000",
-      "can_be_blank": "not blank this time"
+      'request_details': 'tida - tida - request_for_service',
+      'request_type': 'tida - tida - request_for_service',
+      'responsible_agency': 'PUC - Electric/Power - G - Hold',
+      'source': 'Voice In',
+      'status': 'Closed',
+      'supervisor_district': '6',
+      'updated': '2009-12-30T09:13:10.000',
+      'can_be_blank': 'not blank this time'
     },
     {
-      "address": "83 S King St",
-      "case_id": "12345",
-      "category": "General Requests",
-      "closed": "2009-12-30T09:13:10.000",
-      "neighborhood": "Treasure Island/YBI",
-      "opened": "2009-09-09T06:50:28.000",
-      "point": {
-        "type": "Point",
-        "coordinates": [-120, 30]
+      'address': '83 S King St',
+      'case_id': '12345',
+      'category': 'General Requests',
+      'closed': '2009-12-30T09:13:10.000',
+      'neighborhood': 'Treasure Island/YBI',
+      'opened': '2009-09-09T06:50:28.000',
+      'point': {
+        'type': 'Point',
+        'coordinates': [-120, 30]
       },
-      "request_details": "foo",
-      "request_type": "bar",
-      "responsible_agency": "baz",
-      "source": "BATMAN",
-      "status": "Closed",
-      "supervisor_district": "1",
-      "updated": "2009-12-30T09:13:10.000"
+      'request_details': 'foo',
+      'request_type': 'bar',
+      'responsible_agency': 'baz',
+      'source': 'BATMAN',
+      'status': 'Closed',
+      'supervisor_district': '1',
+      'updated': '2009-12-30T09:13:10.000'
     }
   ]);
 
   const SAMPLE_DATASET_METADATA = {
-    "columns":
+    'columns':
       Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map((columnName) => {
         return {
           fieldName: columnName
@@ -146,14 +146,14 @@ describe('SoqlDataProvider', () => {
   };
 
   const SAMPLE_METADATA_ERROR = JSON.stringify({
-    "code" : "not_found",
-    "error" : true,
-    "message" : "Cannot find view with id 56p4-vdcc.jso"
+    'code' : 'not_found',
+    'error' : true,
+    'message' : 'Cannot find view with id 56p4-vdcc.jso'
   });
 
   const EXPECTED_ROW_COUNT = 100;
 
-  const SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__count_alias__: EXPECTED_ROW_COUNT}]);
+  const SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{ __count_alias__: EXPECTED_ROW_COUNT }]);
 
   let server;
 
@@ -622,24 +622,24 @@ describe('SoqlDataProvider', () => {
         'address', // Exists, always non null
         'point',   // Exists, always non null
         'can_be_blank', // Sometimes is null.
-        'always_blank', // Always null.
+        'always_blank' // Always null.
       ];
 
       const expectedRowResults = [
         [
-          "Intersection of TREASURE ISLAND RD and",
+          'Intersection of TREASURE ISLAND RD and',
           {
-            "type": "Point",
-            "coordinates": [-122.36357929,37.808938925]
+            'type': 'Point',
+            'coordinates': [-122.36357929, 37.808938925]
           },
-          "not blank this time",
+          'not blank this time',
           undefined
         ],
         [
-          "83 S King St",
+          '83 S King St',
           {
-            "type": "Point",
-            "coordinates": [-120, 30 ]
+            'type': 'Point',
+            'coordinates': [-120, 30]
           },
           undefined,
           undefined
@@ -727,7 +727,7 @@ describe('SoqlDataProvider', () => {
 
       describe('cross-domain request', () => {
         it('should not provide the X-Socrata-Federation header', () => {
-          soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+          soqlDataProvider.getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10);
           assert.lengthOf(server.requests, 1);
           assert.notProperty(
             server.requests[0].requestHeaders,
@@ -742,7 +742,7 @@ describe('SoqlDataProvider', () => {
             domain: window.location.hostname,
             datasetUid: VALID_DATASET_UID
           });
-          soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+          soqlDataProvider.getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10);
           assert.lengthOf(server.requests, 1);
           assert.propertyVal(
             server.requests[0].requestHeaders,
@@ -755,16 +755,16 @@ describe('SoqlDataProvider', () => {
       // function getTableData (columnNames, order, offset, limit) { ... }
       const argumentsAndExpectedQueryPairs = [
         {
-          args: [ [ 'foo', 'bar' ], [ { columnName: 'foo', ascending: true } ], 0, 10 ],
-          resultantQueryParts: [ '$select=*', '$order=`foo`+ASC', '$offset=0', '$limit=10' ]
+          args: [['foo', 'bar'], [{ columnName: 'foo', ascending: true }], 0, 10],
+          resultantQueryParts: ['$select=*', '$order=`foo`+ASC', '$offset=0', '$limit=10']
         },
         {
-          args: [ [ 'bar', 'foo' ], [ { columnName: 'foo', ascending: false } ], 100, 88 ],
-          resultantQueryParts: [ '$select=*', '$order=`foo`+DESC', '$offset=100', '$limit=88' ]
+          args: [['bar', 'foo'], [{ columnName: 'foo', ascending: false }], 100, 88],
+          resultantQueryParts: ['$select=*', '$order=`foo`+DESC', '$offset=100', '$limit=88']
         },
         {
-          args: [ [ 'baz' ], [ { columnName: 'what', ascending: false } ], 10, 2 ],
-          resultantQueryParts: [ '$select=*', '$order=`what`+DESC', '$offset=10', '$limit=2' ]
+          args: [['baz'], [{ columnName: 'what', ascending: false }], 10, 2],
+          resultantQueryParts: ['$select=*', '$order=`what`+DESC', '$offset=10', '$limit=2']
         }
       ];
 
@@ -809,7 +809,7 @@ describe('SoqlDataProvider', () => {
       it('should return an object containing "status", "message" and "soqlError" properties', (done) => {
 
         soqlDataProvider.
-          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10).
           then(
             (data) => {
               // Fail the test since we expected an error response.
@@ -831,7 +831,7 @@ describe('SoqlDataProvider', () => {
 
       it('should include the correct request error status', (done) => {
         soqlDataProvider.
-          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10).
           then(
             (data) => {
               done('Request succeeded, we did not expect it to.');
@@ -850,7 +850,7 @@ describe('SoqlDataProvider', () => {
 
       it('should include the correct request error message', (done) => {
         soqlDataProvider.
-          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10).
           then(
             (data) => {
               // Fail the test since we expected an error response.
@@ -869,7 +869,7 @@ describe('SoqlDataProvider', () => {
 
       it('should include the correct soqlError object', (done) => {
         soqlDataProvider.
-          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10).
           then(
             (data) => {
               // Fail the test since we expected an error response.
@@ -905,11 +905,11 @@ describe('SoqlDataProvider', () => {
 
       it('should return the expected columns', (done) => {
         soqlDataProvider.
-          getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
+          getTableData(['columnA', 'columnB'], [{ columnName: 'columnA', ascending: true }], 0, 10).
           then(
             (data) => {
 
-              assert.deepEqual(data.columns, [ 'columnA', 'columnB' ]);
+              assert.deepEqual(data.columns, ['columnA', 'columnB']);
               done();
             },
             done
@@ -920,13 +920,13 @@ describe('SoqlDataProvider', () => {
 
       it('should return the expected rows', (done) => {
         soqlDataProvider.
-          getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
+          getTableData(['columnA', 'columnB'], [{ columnName: 'columnA', ascending: true }], 0, 10).
           then(
             (data) => {
 
               assert.deepEqual(data.rows, [
-                [ 'column A value 1', 'column B value 1' ],
-                [ 'column A value 2', 'column B value 2' ]
+                ['column A value 1', 'column B value 1'],
+                ['column A value 2', 'column B value 2']
               ]);
               done();
             },
@@ -936,14 +936,14 @@ describe('SoqlDataProvider', () => {
         _respondWithSuccess(
           JSON.stringify([
             {
-              "columnA": "column A value 1",
-              "columnB": "column B value 1",
-              "someOtherColumn": "some other value 1"
+              'columnA': 'column A value 1',
+              'columnB': 'column B value 1',
+              'someOtherColumn': 'some other value 1'
             },
             {
-              "columnA": "column A value 2",
-              "columnB": "column B value 2",
-              "someOtherColumn": "some other value 2"
+              'columnA': 'column A value 2',
+              'columnB': 'column B value 2',
+              'someOtherColumn': 'some other value 2'
             }
           ])
         );
@@ -1132,11 +1132,11 @@ describe('SoqlDataProvider', () => {
       return soqlDataProvider.getColumnStats([{
         dataTypeName: 'text',
         cachedContents: {
-          top: [{item: 'best', count: 10}]
+          top: [{ item: 'best', count: 10 }]
         }
       }]).then(
         (stats) => {
-          assert.deepEqual(stats[0].top, [{item: 'best', count: 10}]);
+          assert.deepEqual(stats[0].top, [{ item: 'best', count: 10 }]);
           assert.lengthOf(server.requests, 0);
         }
       );
@@ -1177,7 +1177,7 @@ describe('SoqlDataProvider', () => {
         then(done).
         catch(() => done());
 
-      server.respond([200, {'Content-Type': 'application/json'}, '[]']);
+      server.respond([200, { 'Content-Type': 'application/json' }, '[]']);
     });
 
     it('resolves when term is found', (done) => {
@@ -1185,7 +1185,7 @@ describe('SoqlDataProvider', () => {
         then(() => done()).
         catch(done);
 
-      server.respond([200, {'Content-Type': 'application/json'}, '[{"columnName": "value"}]']);
+      server.respond([200, { 'Content-Type': 'application/json' }, '[{"columnName": "value"}]']);
     });
   });
 

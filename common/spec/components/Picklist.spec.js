@@ -120,10 +120,10 @@ describe('Picklist', () => {
       const headerSelector = '.picklist-group-header';
       const optionSelector = '.picklist-option';
       const options = [
-        {title: 'Chinook', value: 'chinook', group: 'Washington State'},
-        {title: 'Duwamish', value: 'duwamish', group: 'Washington State'},
-        {title: 'Pueblo', value: 'pueblo', group: 'New Mexico'},
-        {title: 'Jicarilla Apache', value: 'jicarilla-pueblo', group: 'New Mexico'}
+        { title: 'Chinook', value: 'chinook', group: 'Washington State' },
+        { title: 'Duwamish', value: 'duwamish', group: 'Washington State' },
+        { title: 'Pueblo', value: 'pueblo', group: 'New Mexico' },
+        { title: 'Jicarilla Apache', value: 'jicarilla-pueblo', group: 'New Mexico' }
       ];
 
       beforeEach(() => {
@@ -162,8 +162,8 @@ describe('Picklist', () => {
 
       it('passes an option when rendering', () => {
         assert.isTrue(render.calledOnce);
-        assert.equal(option.title, render.getCall(0).args[0].title)
-        assert.equal(option.value, render.getCall(0).args[0].value)
+        assert.equal(option.title, render.getCall(0).args[0].title);
+        assert.equal(option.value, render.getCall(0).args[0].value);
       });
     });
   });

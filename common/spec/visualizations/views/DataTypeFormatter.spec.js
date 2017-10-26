@@ -127,7 +127,7 @@ describe('DataTypeFormatter', function() {
 
     const scriptInjection = '<script>window.ranEvil = true;</script>';
 
-    const trivialXssContents = [ scriptInjection, _.escape(scriptInjection) ];
+    const trivialXssContents = [scriptInjection, _.escape(scriptInjection)];
 
     // Maps a renderer name to a XSS attack for it (column/content pair).
     // These are basic tests, but hopefully they will
@@ -216,18 +216,18 @@ describe('DataTypeFormatter', function() {
       },
       renderMultipleChoiceCellHTML: {
         column: {
-            dropDown: {
-              values: [
-                {
-                  id: scriptInjection,
-                  description: scriptInjection
-                },
-                {
-                  id: _.escape(scriptInjection),
-                  description: _.escape(scriptInjection)
-                }
-              ]
-            }
+          dropDown: {
+            values: [
+              {
+                id: scriptInjection,
+                description: scriptInjection
+              },
+              {
+                id: _.escape(scriptInjection),
+                description: _.escape(scriptInjection)
+              }
+            ]
+          }
         },
         contents: trivialXssContents
       },
@@ -1245,21 +1245,21 @@ describe('DataTypeFormatter', function() {
 
   describe('location cell formatting', function() {
     const LOCATION_WITH_HUMAN_ADDESS = {
-      human_address: "{\"address\": \"1111 e pine st\",\"city\":\"seattle,\",\"state\":\"wa,\",\"zip\":\"98122\"}",
-      latitude: "47.615267",
-      longitude: "-122.317664"
+      human_address: '{"address": "1111 e pine st","city":"seattle,","state":"wa,","zip":"98122"}',
+      latitude: '47.615267',
+      longitude: '-122.317664'
     };
 
     const LOCATION_WITH_PARTIAL_HUMAN_ADDRESS = {
-      human_address: "{\"address\": \"1111 e pine st\",\"zip\":\"98122\"}",
-      latitude: "47.615267",
-      longitude: "-122.317664"
+      human_address: '{"address": "1111 e pine st","zip":"98122"}',
+      latitude: '47.615267',
+      longitude: '-122.317664'
     };
 
     const LOCATION_WITH_HUMAN_ADDRESS_ERROR = {
-      human_address: "...",  // invalid json on purpose
-      latitude: "47.615267",
-      longitude: "-122.317664"
+      human_address: '...',  // invalid json on purpose
+      latitude: '47.615267',
+      longitude: '-122.317664'
     };
 
     const LOCATION_WITH_COORDINATES = {
@@ -1267,8 +1267,8 @@ describe('DataTypeFormatter', function() {
     };
 
     const LOCATION = {
-      latitude: "47.615267",
-      longitude: "-122.317664"
+      latitude: '47.615267',
+      longitude: '-122.317664'
     };
 
     it('should render location as latitude and longitude', function() {
@@ -1296,7 +1296,7 @@ describe('DataTypeFormatter', function() {
       assert.equal(locationOutput, point);
     });
 
-    it('should render only the latitude and longitude if human address is not a valid json', function () {
+    it('should render only the latitude and longitude if human address is not a valid json', function() {
       const locationOutput = DataTypeFormatter.renderCellHTML(LOCATION_WITH_HUMAN_ADDRESS_ERROR, { renderTypeName: 'location' });
       const point = `(${LOCATION_WITH_HUMAN_ADDRESS_ERROR.latitude}°, ${LOCATION_WITH_HUMAN_ADDRESS_ERROR.longitude}°)`;
       assert.equal(locationOutput, `${point}`);

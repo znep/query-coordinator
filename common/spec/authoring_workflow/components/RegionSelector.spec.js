@@ -115,7 +115,7 @@ describe('RegionSelector', function() {
         vifAuthoring: validVifAuthoring,
         metadata: {
           curatedRegions: [
-            {name: 'Curated Region', uid: 'four-five'}
+            { name: 'Curated Region', uid: 'four-five' }
           ],
           data: {
             columns: [

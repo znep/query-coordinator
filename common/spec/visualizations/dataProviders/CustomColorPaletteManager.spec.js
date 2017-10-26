@@ -24,7 +24,7 @@ describe('CustomColorPaletteManager', () => {
       const results = {
         // null represents (No value) for bar, column, and timeline charts.
         columns: ['dimension', null, '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'],
-        rows: [['3',118],['8',112],['5',111],['4',110],['6',107],['9',100],['10',92],['7',90],['1',83],['2',77],['(Other)',0], ['(No value)', 10]]
+        rows: [['3', 118], ['8', 112], ['5', 111], ['4', 110], ['6', 107], ['9', 100], ['10', 92], ['7', 90], ['1', 83], ['2', 77], ['(Other)', 0], ['(No value)', 10]]
       };
       timeStub = sinon.stub();
       timeStub.returns(Promise.resolve(results));
@@ -54,26 +54,26 @@ describe('CustomColorPaletteManager', () => {
         vif = visualizationType === 'pieChart' ? customPalettePieChartVif : customPaletteVif;
         expectedCustomPalette = visualizationType === 'pieChart' ? customPalettePieChart : customPalette;
         partialPalette = visualizationType === 'pieChart' ?
-        {
-          '1': {
-            'color': '#aaaaaa',
-            'index': 8
-          },
-          '2': {
-            'color': '#aaaaaa',
-            'index': 9
-          }
-        } :
-        {
-          '1': {
-            'color': '#aaaaaa',
-            'index': 10
-          },
-          '2': {
-            'color': '#aaaaaa',
-            'index': 9
-          }
-        };
+          {
+            '1': {
+              'color': '#aaaaaa',
+              'index': 8
+            },
+            '2': {
+              'color': '#aaaaaa',
+              'index': 9
+            }
+          } :
+          {
+            '1': {
+              'color': '#aaaaaa',
+              'index': 10
+            },
+            '2': {
+              'color': '#aaaaaa',
+              'index': 9
+            }
+          };
       });
 
       describe(visualizationType, () => {
@@ -153,7 +153,7 @@ describe('CustomColorPaletteManager', () => {
     });
 
     it('returns the corresponding custom colors for all grouping values', () => {
-      const columnNames = [ '10988', '10989', '10990', '10991', '10992', '10993', '10994', '10995', '10996', '10997', '10998', '10999', '(Other)' ];
+      const columnNames = ['10988', '10989', '10990', '10991', '10992', '10993', '10994', '10995', '10996', '10997', '10998', '10999', '(Other)'];
       const expectedColumnColors = ['#fdbb69', '#f06c45', '#e42022', '#f16666', '#dc9a88', '#6f9e4c', '#52af43', '#98d277', '#7eba98', '#2d82af', '#5b9ec9', '#a6cee3', '#fe982c'];
       const colorsToRender = CustomColorPaletteManager.getDisplayedColorsFromCustomPalette(
         columnNames,
@@ -164,7 +164,7 @@ describe('CustomColorPaletteManager', () => {
     });
 
     it('returns the corresponding custom colors for a subset of column values', () => {
-      const columnNames = [ '10988', '10995', '10999' ];
+      const columnNames = ['10988', '10995', '10999'];
       const expectedColumnColors = ['#fdbb69', '#98d277', '#a6cee3'];
       const colorsToRender = CustomColorPaletteManager.getDisplayedColorsFromCustomPalette(
         columnNames,
@@ -175,7 +175,7 @@ describe('CustomColorPaletteManager', () => {
     });
 
     it('returns values from the base color palette if column names not in the custom palette are given', () => {
-      const columnNames = [ 'invalid', 'names' ];
+      const columnNames = ['invalid', 'names'];
       const expectedColumnColors = COLOR_PALETTES.categorical.slice(0, 2);
       const colorsToRender = CustomColorPaletteManager.getDisplayedColorsFromCustomPalette(
         columnNames,

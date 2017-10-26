@@ -18,84 +18,84 @@ describe('MetadataProvider', () => {
   const SAMPLE_DATASET_METADATA_REQUEST_ERROR = '';
 
   const SAMPLE_DATASET_METADATA_REQUEST_RESPONSE = JSON.stringify({
-    "name": "Case Data from San Francisco 311",
-    "updatedAt": "2014-08-22T22:36:10.000Z",
-    "defaultPage": "cs5s-apnb",
-    "description": "Cases created since 7/1/2008 with location information",
-    "domain": "dataspace.demo.socrata.com",
-    "rowDisplayUnit": "Case",
-    "locale": "en_US",
-    "id": "r6t9-rak2",
-    "columns": {
-      "request_details": {
-        "name": "request details",
-        "fred": "text",
-        "description": "Cases created since 7/1/2008 with location information",
-        "physicalDatatype": "text",
-        "position": 9,
-        "hideInTable": false,
-        "format": {},
-        "dataTypeName": "text",
-        "renderTypeName": "text"
+    'name': 'Case Data from San Francisco 311',
+    'updatedAt': '2014-08-22T22:36:10.000Z',
+    'defaultPage': 'cs5s-apnb',
+    'description': 'Cases created since 7/1/2008 with location information',
+    'domain': 'dataspace.demo.socrata.com',
+    'rowDisplayUnit': 'Case',
+    'locale': 'en_US',
+    'id': 'r6t9-rak2',
+    'columns': {
+      'request_details': {
+        'name': 'request details',
+        'fred': 'text',
+        'description': 'Cases created since 7/1/2008 with location information',
+        'physicalDatatype': 'text',
+        'position': 9,
+        'hideInTable': false,
+        'format': {},
+        'dataTypeName': 'text',
+        'renderTypeName': 'text'
       },
-      "category": {
-        "name": "category",
-        "fred": "category",
-        "description": "",
-        "physicalDatatype": "text",
-        "position": 7,
-        "hideInTable": false,
-        "format": {},
-        "dataTypeName": "text",
-        "renderTypeName": "text"
+      'category': {
+        'name': 'category',
+        'fred': 'category',
+        'description': '',
+        'physicalDatatype': 'text',
+        'position': 7,
+        'hideInTable': false,
+        'format': {},
+        'dataTypeName': 'text',
+        'renderTypeName': 'text'
       }
     },
-    "ownerId": "8ibz-n25n",
-    "permissions": {
-      "isPublic": true,
-      "rights": [
-        "read"
+    'ownerId': '8ibz-n25n',
+    'permissions': {
+      'isPublic': true,
+      'rights': [
+        'read'
       ]
     }
   });
 
   const SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
     {
-      "address": "Intersection of TREASURE ISLAND RD and",
-      "case_id": "501753",
-      "category": "General Requests",
-      "closed": "2009-12-30T09:13:10.000",
-      "neighborhood": "Treasure Island/YBI",
-      "opened": "2009-09-09T06:50:28.000",
-      "point": {
-        "type": "Point",
-        "coordinates": [-122.36357929,37.808938925]
+      'address': 'Intersection of TREASURE ISLAND RD and',
+      'case_id': '501753',
+      'category': 'General Requests',
+      'closed': '2009-12-30T09:13:10.000',
+      'neighborhood': 'Treasure Island/YBI',
+      'opened': '2009-09-09T06:50:28.000',
+      'point': {
+        'type': 'Point',
+        'coordinates': [-122.36357929, 37.808938925]
       },
-      "request_details": "tida - tida - request_for_service",
-      "request_type": "tida - tida - request_for_service",
-      "responsible_agency": "PUC - Electric/Power - G - Hold",
-      "source": "Voice In",
-      "status": "Closed",
-      "supervisor_district": "6",
-      "updated": "2009-12-30T09:13:10.000"
-    },
+      'request_details': 'tida - tida - request_for_service',
+      'request_type': 'tida - tida - request_for_service',
+      'responsible_agency': 'PUC - Electric/Power - G - Hold',
+      'source': 'Voice In',
+      'status': 'Closed',
+      'supervisor_district': '6',
+      'updated': '2009-12-30T09:13:10.000'
+    }
   ]);
 
   const SAMPLE_DATASET_METADATA = testData.CHICAGO_CRIMES_DATASET_METADATA;
 
   const SAMPLE_METADATA_ERROR = JSON.stringify({
-    "code" : "not_found",
-    "error" : true,
-    "message" : "Cannot find view with id 56p4-vdcc.jso"
+    'code' : 'not_found',
+    'error' : true,
+    'message' : 'Cannot find view with id 56p4-vdcc.jso'
   });
 
   const SAMPLE_MIGRATION_METADATA = {
-    "migrationPhase": "prep",
-    "migrationPhaseUpdated": 1462987365,
-    "nbeId": "h6bt-4qvq",
-    "nbePublicationGroup": 95,
-    "obeId": "yrcj-6b25",
-    "syncedAt": 1462987365
+    'migrationPhase': 'prep',
+    'migrationPhaseUpdated': 1462987365,
+    'nbeId': 'h6bt-4qvq',
+    'nbePublicationGroup': 95,
+    'obeId': 'yrcj-6b25',
+    'syncedAt': 1462987365
   };
 
   let server;
@@ -283,7 +283,7 @@ describe('MetadataProvider', () => {
           done
         ).catch(done);
 
-        server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
+        server.respond([SUCCESS_STATUS, { 'Content-Type': 'application/json' }, JSON.stringify(SAMPLE_DATASET_METADATA)]);
       });
     });
   });
@@ -299,7 +299,7 @@ describe('MetadataProvider', () => {
             done();
           });
 
-        server.respond([ERROR_STATUS, {'Content-Type': 'application/json'}, '{}']);
+        server.respond([ERROR_STATUS, { 'Content-Type': 'application/json' }, '{}']);
       });
     });
 
@@ -314,7 +314,7 @@ describe('MetadataProvider', () => {
           }).
           catch(done);
 
-        server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_MIGRATION_METADATA)]);
+        server.respond([SUCCESS_STATUS, { 'Content-Type': 'application/json' }, JSON.stringify(SAMPLE_MIGRATION_METADATA)]);
       });
     });
   });
@@ -333,47 +333,47 @@ describe('MetadataProvider', () => {
     const sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
 
     sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Location 1",
-      "dataTypeName" : "point",
-      "fieldName" : "location_1",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
-      "renderTypeName" : "point",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
+      'id' : _.uniqueId(),
+      'name' : 'Location 1',
+      'dataTypeName' : 'point',
+      'fieldName' : 'location_1',
+      'position' : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
+      'renderTypeName' : 'point',
+      'tableColumnId' : _.uniqueId(),
+      'format' : { }
     });
 
     sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Location 1 (city)",
-      "dataTypeName" : "point",
-      "fieldName" : "location_1_city",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
-      "renderTypeName" : "point",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
+      'id' : _.uniqueId(),
+      'name' : 'Location 1 (city)',
+      'dataTypeName' : 'point',
+      'fieldName' : 'location_1_city',
+      'position' : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
+      'renderTypeName' : 'point',
+      'tableColumnId' : _.uniqueId(),
+      'format' : { }
     });
 
     sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Website URL",
-      "dataTypeName" : "text",
-      "fieldName" : "website_url",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 3,
-      "renderTypeName" : "text",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
+      'id' : _.uniqueId(),
+      'name' : 'Website URL',
+      'dataTypeName' : 'text',
+      'fieldName' : 'website_url',
+      'position' : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 3,
+      'renderTypeName' : 'text',
+      'tableColumnId' : _.uniqueId(),
+      'format' : { }
     });
 
     sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
-      "id" : _.uniqueId(),
-      "name" : "Website URL (description)",
-      "dataTypeName" : "text",
-      "fieldName" : "website_url_description",
-      "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 4,
-      "renderTypeName" : "text",
-      "tableColumnId" : _.uniqueId(),
-      "format" : { }
+      'id' : _.uniqueId(),
+      'name' : 'Website URL (description)',
+      'dataTypeName' : 'text',
+      'fieldName' : 'website_url_description',
+      'position' : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 4,
+      'renderTypeName' : 'text',
+      'tableColumnId' : _.uniqueId(),
+      'format' : { }
     });
 
     it('returns true when there is a suffix', () => {
@@ -399,7 +399,7 @@ describe('MetadataProvider', () => {
         'website_url_description',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
       ));
-    })
+    });
   });
 
   describe('isHiddenColumn()', () => {
@@ -469,8 +469,8 @@ describe('MetadataProvider', () => {
   describe('getFilterableColumns()', () => {
     it('returns money with rangeMin and rangeMax', () => {
       const columns = [
-        {dataTypeName: 'money', fieldName: 'kitty'},
-        {dataTypeName: 'money', fieldName: 'roomba', rangeMin: 1, rangeMax: 100}
+        { dataTypeName: 'money', fieldName: 'kitty' },
+        { dataTypeName: 'money', fieldName: 'roomba', rangeMin: 1, rangeMax: 100 }
       ];
 
       const filteredColumns = metadataProvider.getFilterableColumns({ columns });
@@ -480,8 +480,8 @@ describe('MetadataProvider', () => {
 
     it('returns numbers with rangeMin and rangeMax', () => {
       const columns = [
-        {dataTypeName: 'number', fieldName: 'kitty'},
-        {dataTypeName: 'number', fieldName: 'roomba', rangeMin: 1, rangeMax: 100}
+        { dataTypeName: 'number', fieldName: 'kitty' },
+        { dataTypeName: 'number', fieldName: 'roomba', rangeMin: 1, rangeMax: 100 }
       ];
 
       const filteredColumns = metadataProvider.getFilterableColumns({ columns });
@@ -491,8 +491,8 @@ describe('MetadataProvider', () => {
 
     it('returns text', () => {
       const columns = [
-        {dataTypeName: 'number', fieldName: 'kitty'},
-        {dataTypeName: 'text', fieldName: 'sparrow'}
+        { dataTypeName: 'number', fieldName: 'kitty' },
+        { dataTypeName: 'text', fieldName: 'sparrow' }
       ];
 
       const filteredColumns = metadataProvider.getFilterableColumns({ columns });
@@ -502,8 +502,8 @@ describe('MetadataProvider', () => {
 
     it('returns calendar_date', () => {
       const columns = [
-        {dataTypeName: 'number', fieldName: 'kitty'},
-        {dataTypeName: 'calendar_date', fieldName: 'piggy'}
+        { dataTypeName: 'number', fieldName: 'kitty' },
+        { dataTypeName: 'calendar_date', fieldName: 'piggy' }
       ];
 
       const filteredColumns = metadataProvider.getFilterableColumns({ columns });
@@ -515,7 +515,7 @@ describe('MetadataProvider', () => {
   describe('getDisplayableFilterableColumns', () => {
     beforeEach(() => {
       server.respondImmediately = true;
-      server.respondWith('GET', 'https://example.com/api/views/test-test.json?read_from_nbe=true&version=2.1', [200, { 'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
+      server.respondWith('GET', 'https://example.com/api/views/test-test.json?read_from_nbe=true&version=2.1', [200, { 'Content-Type': 'application/json' }, JSON.stringify(SAMPLE_DATASET_METADATA)]);
       server.respondWith('GET', /api\/id/, [200, { 'Content-Type': 'application/json' }, JSON.stringify([{}])]);
     });
 

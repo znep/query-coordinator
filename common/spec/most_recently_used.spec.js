@@ -105,7 +105,7 @@ describe('most_recently_used', () => {
     mru.add('feed-face');
     stubDate(10);
     mru.add('fake-beef');
-    assert.deepEqual(mru.keys(), ['fake-beef', 'feed-face'])
+    assert.deepEqual(mru.keys(), ['fake-beef', 'feed-face']);
   });
 
   it('catches and logs JSON parse errors', () => {

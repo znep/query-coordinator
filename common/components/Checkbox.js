@@ -4,7 +4,7 @@ import React from 'react';
 
 // A simple controlled checkbox. The containing app is in full
 // control of whether or not the checkbox is checked.
-const Checkbox = ({checked, disabled, id, onChange, children}) => {
+const Checkbox = ({ checked, disabled, id, onChange, children }) => {
   let inputRef;
 
   const inputAttributes = {
@@ -35,6 +35,6 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   onChange: _.noop
-}
+};
 
 export default Checkbox;

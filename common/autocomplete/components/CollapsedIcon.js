@@ -10,7 +10,7 @@ import styles from './autocomplete.scss';
 function CollapsedIcon({ onCollapsedChanged, adminHeaderClasses }) {
   return (
     <div
-      styleName={classNames("collapsed-icon", adminHeaderClasses)}
+      styleName={classNames('collapsed-icon', adminHeaderClasses)}
       onClick={() => { onCollapsedChanged(false); }}>
       <SocrataIcon name="search" />
     </div>

@@ -23,10 +23,10 @@ export default class Dimension extends React.Component {
 
     return (
       <div className="dimension">
-        <span className={ columnType && columnType.icon }></span>
-        <span>{ name }</span>
-        { recommendedIndicator }
-        { this.renderRemoveButton() }
+        <span className={columnType && columnType.icon}></span>
+        <span>{name}</span>
+        {recommendedIndicator}
+        {this.renderRemoveButton()}
       </div>
     );
   }

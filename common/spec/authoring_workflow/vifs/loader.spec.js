@@ -1,6 +1,6 @@
 import { load } from 'common/authoring_workflow/vifs/loader';
 import testStore from '../testStore';
-import testData from  '../testData'
+import testData from '../testData';
 
 describe('loader', function() {
   describe('load', function() {
@@ -24,12 +24,12 @@ describe('loader', function() {
       server.respondWith(
         'GET',
         'https://example.com/api/views/mock-viif.json?read_from_nbe=true&version=2.1',
-        [200, { 'Content-Type': 'application/json'}, JSON.stringify(mockMetadata)]
+        [200, { 'Content-Type': 'application/json' }, JSON.stringify(mockMetadata)]
       );
       server.respondWith(
         'GET',
         'https://example.com/api/curated_regions',
-        [200, { 'Content-Type': 'application/json'}, '{}']
+        [200, { 'Content-Type': 'application/json' }, '{}']
       );
       store = testStore();
       dispatch = store.dispatch;

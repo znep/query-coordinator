@@ -33,7 +33,7 @@ describe('ColumnChart jQuery component', function() {
         'no_value': 'No value',
         'flyout_unfiltered_amount_label': 'Total',
         'flyout_filtered_amount_label': 'Filtered',
-        'flyout_selected_notice': 'This column is selected',
+        'flyout_selected_notice': 'This column is selected'
       }
     },
     filters: [],
@@ -128,10 +128,10 @@ describe('ColumnChart jQuery component', function() {
           function() {
             $(window).trigger('resize');
 
-              setTimeout(function() {
-                assert.isTrue(true);
-                done();
-              },
+            setTimeout(function() {
+              assert.isTrue(true);
+              done();
+            },
               300
             );
           },
@@ -159,7 +159,7 @@ describe('ColumnChart jQuery component', function() {
             new window.CustomEvent(
               'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
               {
-                detail: {name: 'test'},
+                detail: { name: 'test' },
                 bubbles: true
               }
             )

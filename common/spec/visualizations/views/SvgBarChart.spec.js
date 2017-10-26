@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
 const I18n = require('common/i18n').default;
-const allLocales = require('common/i18n/config/locales').default
+const allLocales = require('common/i18n/config/locales').default;
 const SvgBarChart = require('common/visualizations/views/SvgBarChart');
 
 describe('SvgBarChart', () => {
@@ -59,7 +59,7 @@ describe('SvgBarChart', () => {
       ['20', [null, null], [null, null], [null, null]],
       ['30', [null, null], [null, null], [null, null]],
       ['40', [null, null], [null, null], [null, null]],
-      ['50', [null, null], [null, null], [null, null]],
+      ['50', [null, null], [null, null], [null, null]]
     ]
   };
 
@@ -93,7 +93,7 @@ describe('SvgBarChart', () => {
     ]
   };
 
-  const createBarChart = (width, overrideVIF)  => {
+  const createBarChart = (width, overrideVIF) => {
 
     if (!width) {
       width = CHART_WIDTH;
@@ -211,7 +211,7 @@ describe('SvgBarChart', () => {
       barChart = createBarChart(null, {
         configuration: {
           measureAxisMinValue: 2,
-          measureAxisMaxValue: 1,
+          measureAxisMaxValue: 1
         }
       });
       barChart.chart.render(null, testData);

@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import { ClearFilters } from 'common/components/AssetBrowser/components/filters/clear_filters';
 
-const store = configureMockStore([ thunk ])();
+const store = configureMockStore([thunk])();
 
 const clearFilterProps = (options = {}) => ({
   allFilters: {},
@@ -30,7 +30,7 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is false', () => {
       it('does not render anything', () => {
         const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({showTitle: false})} />
+          <ClearFilters {...clearFilterProps({ showTitle: false })} />
         );
 
         assert.equal(0, wrapper.find('*').length);
@@ -40,13 +40,13 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is true', () => {
       it('renders the title', () => {
         const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({showTitle: true})} />
+          <ClearFilters {...clearFilterProps({ showTitle: true })} />
         );
 
         assert.equal(1, wrapper.find('.title').length);
       });
     });
-  })
+  });
 
   describe('when there are filters', () => {
     const allFilters = {
@@ -63,7 +63,7 @@ describe('<ClearFilters />', () => {
     describe('when showTitle is false', () => {
       it('still renders the title', () => {
         const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({allFilters, showTitle: false})} />
+          <ClearFilters {...clearFilterProps({ allFilters, showTitle: false })} />
         );
 
         assert.equal(1, wrapper.find('span.title').length);
@@ -72,7 +72,7 @@ describe('<ClearFilters />', () => {
 
     describe('when buttonStyle is false', () => {
       it('renders as an icon', () => {
-        const wrapper = shallow(<ClearFilters {...clearFilterProps({allFilters})} />);
+        const wrapper = shallow(<ClearFilters {...clearFilterProps({ allFilters })} />);
 
         assert.equal(1, wrapper.find('.socrata-icon-close-circle').length);
         assert.equal(0, wrapper.find('.socrata-icon-close').length);
@@ -82,17 +82,17 @@ describe('<ClearFilters />', () => {
 
       it('calls clearAllFilters when clicked', () => {
         const clearFiltersSpy = spy();
-        const wrapper = shallow(<ClearFilters {...clearFilterProps({clearAllFilters: clearFiltersSpy, allFilters})} />);
+        const wrapper = shallow(<ClearFilters {...clearFilterProps({ clearAllFilters: clearFiltersSpy, allFilters })} />);
 
         wrapper.find('.clear-all-filters').simulate('click');
         assert(clearFiltersSpy.calledOnce, 'Expected clearAllFilters to have been invoked');
       });
-    })
+    });
 
     describe('when buttonStyle is true', () => {
       it('renders as an button', () => {
         const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({buttonStyle: true, allFilters})} />
+          <ClearFilters {...clearFilterProps({ buttonStyle: true, allFilters })} />
         );
 
         assert.equal(0, wrapper.find('.socrata-icon-close-circle').length);
@@ -103,12 +103,12 @@ describe('<ClearFilters />', () => {
       it('calls clearAllFilters when clicked', () => {
         const clearFiltersSpy = spy();
         const wrapper = shallow(
-          <ClearFilters {...clearFilterProps({buttonStyle: true, clearAllFilters: clearFiltersSpy, allFilters})} />
+          <ClearFilters {...clearFilterProps({ buttonStyle: true, clearAllFilters: clearFiltersSpy, allFilters })} />
         );
 
         wrapper.find('.clear-filters-wrapper.button').simulate('click');
         assert(clearFiltersSpy.calledOnce, 'Expected clearAllFilters to have been invoked');
       });
-    })
-  })
+    });
+  });
 });

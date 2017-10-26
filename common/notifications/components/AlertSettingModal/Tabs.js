@@ -18,7 +18,7 @@ class Tabs extends Component {
           </li>
         </ul>
       </div>
-    )
+    );
   }
 }
 

@@ -6,12 +6,12 @@ import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 import 'common/notifications/main';
 
-/*****************************************************************************************************/
+/** ***************************************************************************************************/
 /*
  * This adds a "lastAccessed" objecdt on window that is used for keeping track when users access a dataset
  * by adding a 4x4 and timestamp.
  */
-/*****************************************************************************************************/
+/** ***************************************************************************************************/
 
 // Attempt to find the current user id in the various places it might be found
 const userId = _.get(window, 'blist.currentUserId',
@@ -22,13 +22,13 @@ if (userId) {
   window.lastAccessed = new MostRecentlyUsed({ namespace: `socrata:assets:mru:${userId}` });
 }
 
-/*****************************************************************************************************/
+/** ***************************************************************************************************/
 /*
  * This adds a "autocomplete" function that can be called by an external application
  * (i.e. socrata_site_chrome) to scan the DOM and transform any search fields with the attribute
  * data-autocomplete="true" into autocomplete search fields after the page has loaded.
  */
-/*****************************************************************************************************/
+/** ***************************************************************************************************/
 
 Array.from(document.querySelectorAll('[data-autocomplete="true"]')).forEach((container) => {
   const collapsible = container.dataset.autocompleteCollapsible === 'true';

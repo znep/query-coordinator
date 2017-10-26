@@ -265,7 +265,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, false)],
         [testIsNullFilter(true, true)],
         [testTimeRangeFilter(true)],
-        [testValueRangeFilter(true)],
+        [testValueRangeFilter(true)]
       ];
       var whereClause;
 
@@ -285,7 +285,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(false, false)],
         [testIsNullFilter(false, true)],
         [testTimeRangeFilter(false)],
-        [testValueRangeFilter(false)],
+        [testValueRangeFilter(false)]
       ];
 
       var matchSets = [
@@ -390,7 +390,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, false), testIsNullFilter(false, false)],
         [testIsNullFilter(true, true), testIsNullFilter(false, true)],
         [testTimeRangeFilter(true), testTimeRangeFilter(false)],
-        [testValueRangeFilter(true), testValueRangeFilter(false)],
+        [testValueRangeFilter(true), testValueRangeFilter(false)]
       ];
 
       var matchSets = [
@@ -478,7 +478,7 @@ describe('SoqlHelpers', function() {
             pattern: VALUE_RANGE_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
-        ],
+        ]
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, false);
@@ -513,7 +513,7 @@ describe('SoqlHelpers', function() {
           'joinOn': 'BROKEN'
         }];
 
-        assert.throws(() => { SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0); });;
+        assert.throws(() => { SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0); });
       });
 
       it('joins binaryOperatorFilters using OR when joinOn is not set', function() {
@@ -594,7 +594,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, false)],
         [testIsNullFilter(true, true)],
         [testTimeRangeFilter(true)],
-        [testValueRangeFilter(true)],
+        [testValueRangeFilter(true)]
       ];
       var matchSets = [
         [
@@ -681,7 +681,7 @@ describe('SoqlHelpers', function() {
             pattern: VALUE_RANGE_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
-        ],
+        ]
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, true);
@@ -694,7 +694,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(false, false)],
         [testIsNullFilter(false, true)],
         [testTimeRangeFilter(false)],
-        [testValueRangeFilter(false)],
+        [testValueRangeFilter(false)]
       ];
       var matchSets = [
         [
@@ -781,7 +781,7 @@ describe('SoqlHelpers', function() {
             pattern: VALUE_RANGE_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
-        ],
+        ]
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, true);
@@ -794,7 +794,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, false), testIsNullFilter(false, false)],
         [testIsNullFilter(true, true), testIsNullFilter(false, true)],
         [testTimeRangeFilter(true), testTimeRangeFilter(false)],
-        [testValueRangeFilter(true), testValueRangeFilter(false)],
+        [testValueRangeFilter(true), testValueRangeFilter(false)]
       ];
       var matchSets = [
         [
@@ -881,7 +881,7 @@ describe('SoqlHelpers', function() {
             pattern: VALUE_RANGE_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
-        ],
+        ]
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, true);

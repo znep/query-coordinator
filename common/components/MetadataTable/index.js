@@ -14,7 +14,7 @@ import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes';
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
   (event) => {
-    if (isOneOfKeys(event, [ ENTER, SPACE ])) {
+    if (isOneOfKeys(event, [ENTER, SPACE])) {
       if (preventDefault) {
         event.preventDefault();
       }
@@ -373,7 +373,7 @@ class MetadataTable extends Component {
           </dt>
 
           <dd className="metadata-detail-group-value">
-            { formatDateWithLocale(moment.unix(coreView.rowsUpdatedAt)) }
+            {formatDateWithLocale(moment.unix(coreView.rowsUpdatedAt))}
           </dd>
         </div>
       );
@@ -627,8 +627,8 @@ MetadataTable.propTypes = {
     }),
     viewCount: PropTypes.number,
     downloadCount: PropTypes.number
-  }).isRequired,
-  
+  }).isRequired
+
 };
 
 export default MetadataTable;

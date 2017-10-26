@@ -16,7 +16,7 @@ const stubCeteraAssetCountsFetch = (ceteraResponse = mockCeteraFacetCountsRespon
   sinon.stub(ceteraUtils, 'facetCountsQuery').callsFake(_.constant(Promise.resolve(ceteraResponse)))
 );
 
-const mockStore = configureMockStore([ thunk ]);
+const mockStore = configureMockStore([thunk]);
 
 let ceteraStub;
 let ceteraAssetCountsStub;
@@ -41,7 +41,7 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true }  },
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true } },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
@@ -61,7 +61,7 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  },
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false } },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
@@ -81,7 +81,7 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false }  },
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false } },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
@@ -101,7 +101,7 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true }  },
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true } },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },

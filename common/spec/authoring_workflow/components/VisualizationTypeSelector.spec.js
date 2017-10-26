@@ -33,7 +33,7 @@ describe('VisualizationTypeSelector', function() {
       describe('with a visualization selected', function() {
         it('selects the visualization', function() {
           expect(component.querySelector('.btn.active')).to.exist;
-        })
+        });
       });
 
       describe('with region map selected and no regions', function() {

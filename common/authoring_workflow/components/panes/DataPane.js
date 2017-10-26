@@ -18,7 +18,7 @@ import {
   isGroupingOrMultiSeries,
   isMultiSeries,
   isPieChart,
-  isTimelineChart,
+  isTimelineChart
 } from '../../selectors/vifAuthoring';
 import {
   setTreatNullValuesAsZero
@@ -171,17 +171,17 @@ export class DataPane extends Component {
             <BlockLabel
               htmlFor="dimension-selection"
               title={I18n.t('shared.visualizations.panes.data.fields.dimension.title')}
-              description={I18n.t('shared.visualizations.panes.data.fields.dimension.description')}/>
+              description={I18n.t('shared.visualizations.panes.data.fields.dimension.description')} />
             <SelectedDimensionIndicator />
           </div>
           <div className="authoring-field">
-            <DimensionSelector/>
+            <DimensionSelector />
           </div>
           <div className="authoring-field">
-            <MeasureSelector/>
+            <MeasureSelector />
           </div>
           <div className="authoring-field">
-            <RegionSelector/>
+            <RegionSelector />
           </div>
         </AccordionPane>
         {groupingOptions}
@@ -216,7 +216,7 @@ function mapDispatchToProps(dispatch) {
     onChangeTreatNullValuesAsZero: (event) => {
       const treatNullValuesAsZero = event.target.checked;
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
-    },
+    }
   };
 }
 

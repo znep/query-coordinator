@@ -13,9 +13,9 @@ const metadata = {
   datasetUid: 'xxxx-xxxx',
   data: {
     columns: [
-      {name: 'Money', fieldName: 'money', renderTypeName: 'money'},
-      {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
-      {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
+      { name: 'Money', fieldName: 'money', renderTypeName: 'money' },
+      { name: 'Number', fieldName: 'number', renderTypeName: 'number' },
+      { name: 'Percent', fieldName: 'percent', renderTypeName: 'percent' }
     ]
   }
 };
@@ -79,7 +79,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
           { metadata }
         );
 
-        for(let option of component.querySelectorAll('.picklist-option')) {
+        for (let option of component.querySelectorAll('.picklist-option')) {
           if (option.getAttribute('id') == 'null-0') {
             continue;
           }
@@ -98,7 +98,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
             selectedVisualizationType: 'barChart'
           },
           vifs: {
-            barChart: {series: [{dataSource: {dimension: {columnName: metadata.data.columns[1].fieldName}}}]}
+            barChart: { series: [{ dataSource: { dimension: { columnName: metadata.data.columns[1].fieldName } } }] }
           }
         };
 
@@ -132,7 +132,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
     let component;
     const validVifAuthoring = {
       vifs: {
-        columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
+        columnChart: { series: [{ dataSource: { measure: { columnName: 'columnName' } } }] }
       }
     };
     const props = {

@@ -41,7 +41,7 @@ export class DebouncedSlider extends React.Component {
 
   render() {
     const props = _.omit(this.props, ['value', 'onChange', 'onDebouncedInputStart', 'onDebouncedInputStop', 'vifAuthoring']);
-    return <Slider {...props} value={this.state.value} onChange={this.handleChange}/>;
+    return <Slider {...props} value={this.state.value} onChange={this.handleChange} />;
   }
 }
 
@@ -63,7 +63,7 @@ function mapDispatchToProps(dispatch) {
 
     onDebouncedInputStop: () => {
       dispatch(setUserIdle());
-    },
+    }
   };
 }
 

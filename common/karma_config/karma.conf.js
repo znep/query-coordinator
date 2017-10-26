@@ -112,7 +112,7 @@ var webpackConfig = {
       // Allow code under test to require dependencies in karma_config's package.json.
       `${platformUiRoot}/common/karma_config/node_modules`
     ],
-    modulesDirectories: [ path.resolve(platformUiRoot) ]
+    modulesDirectories: [path.resolve(platformUiRoot)]
   },
   externals: {
     'jsdom': 'window',

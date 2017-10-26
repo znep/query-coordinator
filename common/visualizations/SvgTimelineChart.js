@@ -116,7 +116,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.t('shared.visualizations.charts.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -137,10 +137,10 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
       then((columns) => {
 
-        const getData = (precision !== 'none') ? 
+        const getData = (precision !== 'none') ?
           TimeDataManager.getData(newVif) :
           CategoricalDataManager.getData(newVif);
-          
+
         return Promise.all([
           Promise.resolve(columns),
           getData,
@@ -148,7 +148,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
         ]);
       }).
       then((resolutions) => {
-        const [ newColumns, newData, datasetMetadata ] = resolutions;
+        const [newColumns, newData, datasetMetadata] = resolutions;
 
         const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
         newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);

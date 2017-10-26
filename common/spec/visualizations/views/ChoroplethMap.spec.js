@@ -78,7 +78,7 @@ describe('ChoroplethMap', function() {
   var fakeClock = null;
 
   function dataFeatureValues(geojsonAggregateData) {
-    return _.map(geojsonAggregateData.features, function(feature){
+    return _.map(geojsonAggregateData.features, function(feature) {
       return Number(feature.properties[featureMergedValueName]);
     });
   }
@@ -123,7 +123,7 @@ describe('ChoroplethMap', function() {
       vif: {
         configuration: {
           shapefile: {
-            primaryKey: 'primaryKey',
+            primaryKey: 'primaryKey'
           }
         }
       }
@@ -142,7 +142,7 @@ describe('ChoroplethMap', function() {
       visualization: visualization,
       options: visualizationRenderOptions,
       data: data
-    }
+    };
   }
 
   /**
@@ -199,10 +199,10 @@ describe('ChoroplethMap', function() {
             type: 'Polygon',
             coordinates: [[
               // make nice parallelograms
-              [ x0, y0 ],
-              [ x0 + increment / 3, y0 + increment ],
-              [ x0 + increment * 4 / 3, y0 + increment ],
-              [ x0 + increment, y0 ]
+              [x0, y0],
+              [x0 + increment / 3, y0 + increment],
+              [x0 + increment * 4 / 3, y0 + increment],
+              [x0 + increment, y0]
             ]]
           }
         };
@@ -224,7 +224,7 @@ describe('ChoroplethMap', function() {
       createGeoJsonData(values.length),
       values,
       values,
-      {filters: []}
+      { filters: [] }
     );
   }
 
@@ -431,7 +431,7 @@ describe('ChoroplethMap', function() {
         var choroplethObject = createChoroplethMap(geojsonAggregateData);
         var el = choroplethObject.element;
 
-        expect(el.find(featureGeometrySelector).length).to.equal(2+3);
+        expect(el.find(featureGeometrySelector).length).to.equal(2 + 3);
       });
 
       it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function() {
@@ -441,7 +441,7 @@ describe('ChoroplethMap', function() {
         var choroplethObject = createChoroplethMap(geojsonAggregateData);
         var el = choroplethObject.element;
 
-        expect(el.find(featureGeometrySelector).length).to.equal(12+15+6+3);
+        expect(el.find(featureGeometrySelector).length).to.equal(12 + 15 + 6 + 3);
       });
 
       it('should render LineStrings on the map, if the geojson contains LineStrings', function() {
@@ -663,7 +663,7 @@ describe('ChoroplethMap', function() {
             white: whiteCount,
             red: redCount,
             blue: blueCount
-          }
+          };
         }
 
         it('colors red-orange scale for all negative values', function() {
@@ -870,11 +870,11 @@ describe('ChoroplethMap', function() {
         expect(el.find(legendColorSelector).length).to.equal(1);
 
         // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-        var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
           var color = $(el).css('fill');
           return chroma.color(color).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
 
         expect(nullColors.length).to.equal(1);
       });
@@ -894,11 +894,11 @@ describe('ChoroplethMap', function() {
         expect(el.find(legendColorSelector).length).to.equal(1);
 
         // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-        var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
           var color = $(el).css('fill');
           return chroma.color(color).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
         expect(nullColors.length).to.equal(1);
       });
 
@@ -917,11 +917,11 @@ describe('ChoroplethMap', function() {
         expect(el.find(legendColorSelector).length).to.equal(1);
 
         // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-        var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
           var color = $(el).css('fill');
           return chroma.color(color).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
         expect(nullColors.length).to.equal(1);
       });
 
@@ -933,7 +933,7 @@ describe('ChoroplethMap', function() {
           // value. They should display the same on the legend.
           _.each(_.range(1, 3), function(valueCount) {
             var values = _.map(_.range(0, valueCount), function(i) {
-              return {name: '' + i, value: 100};
+              return { name: '' + i, value: 100 };
             });
 
             it('colors datasets blue with {0} rows, 1 unique positive value'.format(valueCount), function() {
@@ -957,7 +957,7 @@ describe('ChoroplethMap', function() {
 
           _.each(_.range(1, 3), function(valueCount) {
             var values = _.map(_.range(0, valueCount), function(i) {
-              return {name: '' + i, value: -128};
+              return { name: '' + i, value: -128 };
             });
 
             it('colors red datasets {0} rows, 1 unique negative value'.format(valueCount), function() {
@@ -981,7 +981,7 @@ describe('ChoroplethMap', function() {
 
           _.each(_.range(1, 3), function(valueCount) {
             var values = _.map(_.range(0, valueCount), function(i) {
-              return {name: '' + i, value: 0};
+              return { name: '' + i, value: 0 };
             });
 
             it('colors white datasets with {0} rows, 1 value = 0'.format(valueCount), function() {
@@ -1005,7 +1005,7 @@ describe('ChoroplethMap', function() {
 
           it('colors blue datasets with only two positive values', function() {
 
-            var values = _.map(_.range(5, 100, 90), function(v, i) { return {name: '' + i, value: v}; });
+            var values = _.map(_.range(5, 100, 90), function(v, i) { return { name: '' + i, value: v }; });
             var geojsonAggregateData = aggregateDataForValues(values);
 
             var choroplethObject = createChoroplethMap(geojsonAggregateData);
@@ -1028,7 +1028,7 @@ describe('ChoroplethMap', function() {
 
           it('colors red datasets with only two negative values', function() {
 
-            var values = _.map(_.range(-100, -5, 90), function(v, i) { return {name: '' + i, value: v}; });
+            var values = _.map(_.range(-100, -5, 90), function(v, i) { return { name: '' + i, value: v }; });
             var geojsonAggregateData = aggregateDataForValues(values);
 
             var choroplethObject = createChoroplethMap(geojsonAggregateData);
@@ -1051,7 +1051,7 @@ describe('ChoroplethMap', function() {
 
           it('colors blue/red datasets with two values straddling 0', function() {
 
-            var values = _.map(_.range(-50, 50, 90), function(v, i) { return {name: '' + i, value: v}; });
+            var values = _.map(_.range(-50, 50, 90), function(v, i) { return { name: '' + i, value: v }; });
             var geojsonAggregateData = aggregateDataForValues(values);
 
             var choroplethObject = createChoroplethMap(geojsonAggregateData);
@@ -1385,15 +1385,15 @@ describe('ChoroplethMap', function() {
           var ticks = el.find(legendSelector + ' .labels .tick');
           var offsets = _.map(ticks, function(tick) {
             var translateString = $(tick).attr('transform');
-            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
+            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/, ''));
             return yOffset;
           });
           // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
           var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
             if (i == offsets.length - 1) {
-              return difference ? true: false;
+              return difference ? true : false;
             }
-            return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
+            return Math.abs(difference - (offset - offsets[i + 1])) <= 2 ? difference : false;
           }, offsets[0] - offsets[1]);
           expect(isEquidistant).to.equal(true);
         });
@@ -1475,7 +1475,7 @@ describe('ChoroplethMap', function() {
           });
           // should start relatively light, get progressively darker, and end relatively dark
           expect(legendColors[0].luminance()).to.be.greaterThan(0.7);
-          for (var i=1; i<legendColors.length; i++) {
+          for (var i = 1; i < legendColors.length; i++) {
             expect(legendColors[i].luminance()).to.be.lessThan(legendColors[i - 1].luminance());
           }
           expect(legendColors[legendColors.length - 1].luminance()).to.be.lessThan(0.2);
@@ -1486,7 +1486,7 @@ describe('ChoroplethMap', function() {
 
         function toNumber(str) {
 
-          switch(str.charAt(str.length - 1)) {
+          switch (str.charAt(str.length - 1)) {
             case 'K':
               return parseFloat(str) * 1e3;
             case 'M':
@@ -1706,7 +1706,7 @@ describe('ChoroplethMap', function() {
             });
             var newGeojsonAggregateData = aggregateDataForValues(values);
 
-            choroplethObject.visualization.render(newGeojsonAggregateData, choroplethObject.options)
+            choroplethObject.visualization.render(newGeojsonAggregateData, choroplethObject.options);
 
             ticks = el.find('.continuous .tick');
             // Should not have an extra 0 tick

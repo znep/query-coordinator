@@ -7,7 +7,7 @@ describe('SocrataIcon', () => {
   let element;
 
   beforeEach(() => {
-    component = SocrataIcon({ name: 'info' }); //eslint-disable-line new-cap
+    component = SocrataIcon({ name: 'info' }); // eslint-disable-line new-cap
     element = renderPureComponent(component);
   });
 
@@ -25,7 +25,7 @@ describe('SocrataIcon', () => {
 
   describe('when given a name that doesn\'t exist', () => {
     it('throws', () => {
-      assert.throws(() => SocrataIcon({ name: 'rawrenstein' })); //eslint-disable-line new-cap
+      assert.throws(() => SocrataIcon({ name: 'rawrenstein' })); // eslint-disable-line new-cap
     });
   });
 });

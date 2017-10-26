@@ -11,7 +11,7 @@ class Brush extends Component {
     this.state = {
       dragContext: null,
       hover: null
-    }
+    };
 
     _.bindAll(this, [
       'getClipPath',
@@ -221,7 +221,7 @@ class Brush extends Component {
       style: { cursor: 'ew-resize' }
     }, rightEdge, rightHandle, rightHitbox);
 
-    return [ left, right ];
+    return [left, right];
   }
 
   // Start dragging.

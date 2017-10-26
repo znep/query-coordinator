@@ -86,7 +86,7 @@ describe('Flannel', () => {
   });
 
   it('dismisses itself when ESC is pressed', () => {
-    const event = $.Event('keyup', { keyCode: ESCAPE }); //eslint-disable-line new-cap
+    const event = $.Event('keyup', { keyCode: ESCAPE }); // eslint-disable-line new-cap
 
     $(document.body).trigger(event);
 

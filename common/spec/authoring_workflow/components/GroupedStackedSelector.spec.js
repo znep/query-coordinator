@@ -11,7 +11,7 @@ function render(type) {
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onSelectGrouped: sinon.spy(),
     onSelectStacked: sinon.spy(),
-    onSelectOneHundredPercentStacked: sinon.spy(),
+    onSelectOneHundredPercentStacked: sinon.spy()
   });
 
   return {

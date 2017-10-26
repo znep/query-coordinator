@@ -208,7 +208,7 @@ class NumberFilter extends Component {
     return (
       <form>
         <div className="checkbox">
-          <input {...inputAttributes}/>
+          <input {...inputAttributes} />
           <label className="inline-label" htmlFor={nullToggleId}>
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
@@ -261,6 +261,6 @@ NumberFilter.propTypes = {
   onClickConfig: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired
-}
+};
 
 export default NumberFilter;

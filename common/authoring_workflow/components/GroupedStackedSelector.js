@@ -38,7 +38,7 @@ export class GroupedStackedSelector extends Component {
     return (
       <div className="grouped-stacked-selector-container">
         <div className="authoring-field">
-          <span>{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
+          <span>{I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_options.title')}</span>
           <div className="radiobutton">
             {groupedContainer}
             {stackedContainer}
@@ -54,7 +54,7 @@ export class GroupedStackedSelector extends Component {
     const containerAttributes = {
       id: 'grouping-display-grouped-container',
       className: `${disabled ? 'disabled' : null}`
-    }
+    };
 
     const inputAttributes = {
       id: 'display-grouped',
@@ -69,9 +69,9 @@ export class GroupedStackedSelector extends Component {
       <div {...containerAttributes}>
         <input {...inputAttributes} />
         <label htmlFor="display-grouped">
-          <span className="fake-radiobutton"/>
+          <span className="fake-radiobutton" />
         </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.grouped`)}
+        {I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_options.grouped')}
       </div>
     );
   }
@@ -80,8 +80,8 @@ export class GroupedStackedSelector extends Component {
 
     const containerAttributes = {
       id: 'grouping-display-stacked-container',
-      className: `${disabled ? 'disabled': null}`
-    }
+      className: `${disabled ? 'disabled' : null}`
+    };
 
     const inputAttributes = {
       id: 'display-stacked',
@@ -96,9 +96,9 @@ export class GroupedStackedSelector extends Component {
       <div {...containerAttributes}>
         <input {...inputAttributes} />
         <label htmlFor="display-stacked">
-          <span className="fake-radiobutton"/>
+          <span className="fake-radiobutton" />
         </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.stacked`)}
+        {I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_options.stacked')}
       </div>
     );
   }
@@ -106,8 +106,8 @@ export class GroupedStackedSelector extends Component {
   renderOneHundredPercentStackedContainer({ checked, disabled }) {
     const containerAttributes = {
       id: 'grouping-display-100-percent-stacked-container',
-      className: `${disabled ? 'disabled': ''}`
-    }
+      className: `${disabled ? 'disabled' : ''}`
+    };
 
     const inputAttributes = {
       id: 'display-100-percent-stacked',
@@ -122,9 +122,9 @@ export class GroupedStackedSelector extends Component {
       <div {...containerAttributes}>
         <input {...inputAttributes} />
         <label htmlFor="display-100-percent-stacked">
-          <span className="fake-radiobutton"/>
+          <span className="fake-radiobutton" />
         </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.one_hundred_percent_stacked`)}
+        {I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_options.one_hundred_percent_stacked')}
       </div>
     );
   }

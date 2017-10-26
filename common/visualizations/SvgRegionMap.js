@@ -158,15 +158,15 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
 
       filters.
         push(
-          {
-            'columnName': columnName,
-            'function': 'binaryComputedGeoregionOperator',
-            'arguments': {
-              'computedColumnName': newVif.configuration.computedColumnName,
-              'operator': '=',
-              'operand': shapefileFeatureId
-            }
+        {
+          'columnName': columnName,
+          'function': 'binaryComputedGeoregionOperator',
+          'arguments': {
+            'computedColumnName': newVif.configuration.computedColumnName,
+            'operator': '=',
+            'operand': shapefileFeatureId
           }
+        }
         );
     }
 
@@ -343,7 +343,7 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
       emitFlyoutEvent(null);
     } else {
 
-      flyoutContent = `<div class="flyout-title">${payload.title}</div>`
+      flyoutContent = `<div class="flyout-title">${payload.title}</div>`;
 
       // Assemble payload
       flyoutPayload = {
@@ -505,7 +505,7 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
         const newColumns = values[3];
 
         const data = soqlQueryResponse.rows.map((row) => {
-          return { name: row[0], value: parseInt(row[1], 10) }
+          return { name: row[0], value: parseInt(row[1], 10) };
         });
 
         const processShapefile = (shapefile) => {
@@ -553,7 +553,7 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
             lastRenderedVif = vifToRender;
           }).
           catch(handleError);
-      })
+      });
     }).
     catch(handleError);
   }
@@ -568,7 +568,7 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.t('shared.visualizations.charts.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);

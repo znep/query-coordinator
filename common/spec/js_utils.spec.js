@@ -326,10 +326,10 @@ describe('utils.js', function() {
           utils.assertLengthIs([], 1);
         });
         assert.throws(function() {
-          utils.assertLengthIs([ 'a' ], 0);
+          utils.assertLengthIs(['a'], 0);
         });
         assert.throws(function() {
-          utils.assertLengthIs([ 'a', 'b' ], 3);
+          utils.assertLengthIs(['a', 'b'], 3);
         });
         assert.throws(function() {
           utils.assertLengthIs('', 1);
@@ -346,8 +346,8 @@ describe('utils.js', function() {
     describe('given a matching length', function() {
       it('does not throw', function() {
         utils.assertLengthIs([], 0);
-        utils.assertLengthIs([ 'a' ], 1);
-        utils.assertLengthIs([ 'a', 'b' ], 2);
+        utils.assertLengthIs(['a'], 1);
+        utils.assertLengthIs(['a', 'b'], 2);
         utils.assertLengthIs('', 0);
         utils.assertLengthIs('a', 1);
         utils.assertLengthIs('ab', 2);
@@ -712,7 +712,7 @@ describe('utils.js', function() {
         it('should respect the locale specified on window', () => {
           assert.equal(utils.formatNumber(10460), '10,5K');
         });
-      })
+      });
 
     });
   });
@@ -797,7 +797,7 @@ describe('utils.js', function() {
       );
 
       assert.equal(
-        utils.commaify("20000.1234", { groupCharacter: '-', decimalCharacter: '/' }),
+        utils.commaify('20000.1234', { groupCharacter: '-', decimalCharacter: '/' }),
         '20-000/1234'
       );
     });
@@ -823,7 +823,7 @@ describe('utils.js', function() {
         );
 
         assert.equal(
-          utils.commaify("20000,1234", { groupCharacter: '-', decimalCharacter: '/' }),
+          utils.commaify('20000,1234', { groupCharacter: '-', decimalCharacter: '/' }),
           '20-000/1234'
         );
       });
@@ -904,7 +904,7 @@ describe('utils.js', function() {
       left: 0,
       overflow: 'auto'
     };
-    var contentBox =  {
+    var contentBox = {
       height: heightOfScrollableContent
     };
     var staticBox = {
@@ -970,7 +970,7 @@ describe('utils.js', function() {
       var originalEventData = { preventDefault: _.noop };
       originalEventData[propertyName] = testDeltaY;
 
-      return $.Event(eventName, {originalEvent: originalEventData}); //eslint-disable-line new-cap
+      return $.Event(eventName, { originalEvent: originalEventData }); // eslint-disable-line new-cap
     }
 
     describe('mousewheel (IE, Safari, Chrome)', function() {

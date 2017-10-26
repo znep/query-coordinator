@@ -1,13 +1,13 @@
 import { Simulate } from 'react-dom/test-utils';
 
-import renderLocalizationElement from '../renderLocalizationComponent'
+import renderLocalizationElement from '../renderLocalizationComponent';
 import Tabs from 'common/notifications/components/Tabs/Tabs';
 
 describe('Tabs', () => {
 
   it('should render user notifications filter tabs', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(Tabs, {tabs: []});
+    const element = renderLocalizationElement(Tabs, { tabs: [] });
 
     assert.isNotNull(element);
   });

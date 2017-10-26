@@ -203,6 +203,7 @@ function SvgFeatureMap(element, vif, options) {
   }
 
   function renderTemplate() {
+    let $mapLocateUserButton;
     var $mapElement = $('<div>', { 'class': 'feature-map' });
     var $mapLegend = $('<div>', { 'class': 'feature-map-legend' });
     var $mapPanZoomDisabledWarningIcon = $('<div>', { 'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon' });
@@ -237,7 +238,7 @@ function SvgFeatureMap(element, vif, options) {
         '</svg>'
       );
 
-      var $mapLocateUserButton = $('<button>', {
+      $mapLocateUserButton = $('<button>', {
         'class': 'feature-map-locate-user-btn',
         'data-locate-user-status': 'ready'
       }).append([
@@ -895,7 +896,7 @@ function SvgFeatureMap(element, vif, options) {
     if (userCurrentPositionBounds) {
       fitBounds(userCurrentPositionBounds);
     } else if (centerAndZoomDefined && (!_.isEqual(newCenter, lastRenderedCenter) || newZoom !== lastRenderedZoom)) {
-      map.setView(newCenter, newZoom, {animate: false});
+      map.setView(newCenter, newZoom, { animate: false });
     }
   }
 

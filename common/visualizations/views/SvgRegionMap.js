@@ -371,7 +371,7 @@ function SvgRegionMap(element, vif, options) {
       utils.assertIsOneOfTypes(center.lng, 'number');
       utils.assertIsOneOfTypes(zoom, 'number');
 
-      map.setView(center, zoom, {animate: false});
+      map.setView(center, zoom, { animate: false });
     }
   }
 

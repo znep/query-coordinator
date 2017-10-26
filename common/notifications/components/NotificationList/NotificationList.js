@@ -112,12 +112,12 @@ class NotificationList extends Component {
         unreadProductNotificationCount
       } = this.props;
 
-      return <PanelFooter markAllProductNotificationsAsRead={markAllProductNotificationsAsRead}
+      return (<PanelFooter markAllProductNotificationsAsRead={markAllProductNotificationsAsRead}
         hasUnreadNotifications={unreadProductNotificationCount > 0}
         forUserNotifications={false}
         currentUserRole={currentUserRole}
         showUserNotifications={showUserNotifications}
-        isSuperAdmin={isSuperAdmin} />;
+        isSuperAdmin={isSuperAdmin} />);
     } else if (showUserNotifications) {
       const {
         clearAllUserNotifications,
@@ -126,14 +126,14 @@ class NotificationList extends Component {
         userNotifications
       } = this.props;
 
-      return <PanelFooter clearAllUserNotifications={clearAllUserNotifications}
-        forUserNotifications={true}
+      return (<PanelFooter clearAllUserNotifications={clearAllUserNotifications}
+        forUserNotifications
         hasUserNotifications={userNotifications.length > 0}
         openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
         toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
         showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
-        isSuperAdmin={isSuperAdmin} />;
+        isSuperAdmin={isSuperAdmin} />);
     }
   }
 
@@ -141,7 +141,7 @@ class NotificationList extends Component {
     const { showUserNotifications } = this.props;
 
     return (
-      <div styleName='notifications-panel'
+      <div styleName="notifications-panel"
         className={classNames('clearfix', { 'socrata-notifications-sidebar': showUserNotifications })}>
         {this.renderPanelHeader()}
         {this.renderUserNotifications()}

@@ -76,9 +76,9 @@ export class ChangeVisibility extends React.Component {
     let { visibility } = this.state;
     if (visibility === null) {
       if (this.isDatalens()) {
-	visibility = this.initialVisibility().hidden ? 'hidden' : 'shown';
+	                                                                                visibility = this.initialVisibility().hidden ? 'hidden' : 'shown';
       } else {
-	visibility = this.initialVisibility().open ? 'open' : 'private';
+	                                                                                visibility = this.initialVisibility().open ? 'open' : 'private';
       }
     }
     return visibility;

@@ -1,4 +1,4 @@
-import renderLocalizationElement from '../renderLocalizationComponent'
+import renderLocalizationElement from '../renderLocalizationComponent';
 import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
 
 describe('UserNotificationList', () => {

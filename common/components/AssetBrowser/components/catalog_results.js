@@ -74,7 +74,7 @@ export class CatalogResults extends Component {
       callback([]);
     } else {
       // EN-19556: hack to get proper state into query param filters
-      const getState = () => { return reduxState };
+      const getState = () => { return reduxState; };
       const translatedFilters = ceteraHelpers.mergedCeteraQueryParameters(getState);
 
       ceteraUtils.autocompleteQuery(searchTerm, translatedFilters).

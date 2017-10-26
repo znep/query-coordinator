@@ -9,7 +9,7 @@ export const getCurrentUserFilter = () => {
       id: _.get(window, 'serverConfig.currentUser.id'),
       displayName: _.get(window, 'serverConfig.currentUser.displayName')
     }
-  }
+  };
 };
 
 const translateColumnToMixpanelEvent = (columnName) => {

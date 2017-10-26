@@ -8,7 +8,7 @@ var reqLocales = require.context('.', false, /\.yml$/);
 
 var allLocales = {};
 
-reqLocales.keys().forEach(function(locale){
+reqLocales.keys().forEach(function(locale) {
   _.extend(allLocales, reqLocales(locale));
 });
 

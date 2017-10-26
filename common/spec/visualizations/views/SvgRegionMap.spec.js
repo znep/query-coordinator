@@ -33,73 +33,73 @@ describe('SvgRegionMap', function() {
   function getDefaultVif() {
 
     return {
-      "configuration": {
-        "axisLabels": {
-          "top": false,
-          "right": false,
-          "bottom": false,
-          "left": false
+      'configuration': {
+        'axisLabels': {
+          'top': false,
+          'right': false,
+          'bottom': false,
+          'left': false
         },
-        "interactive": true,
-        "localization": {
-          "flyout_amount_label": "Total",
-          "flyout_selected_notice": "This visualization is being filtered by this item.",
-          "no_value": "(No Value)"
+        'interactive': true,
+        'localization': {
+          'flyout_amount_label': 'Total',
+          'flyout_selected_notice': 'This visualization is being filtered by this item.',
+          'no_value': '(No Value)'
         },
-        "computedColumnName": ":@wards",
-        "legend": {
-          "type": "discrete",
+        'computedColumnName': ':@wards',
+        'legend': {
+          'type': 'discrete'
         },
-        "shapefile": {
-          "geometryLabel": null,
-          "primaryKey": "primaryKey",
-          "uid": "snuk-a5kv"
+        'shapefile': {
+          'geometryLabel': null,
+          'primaryKey': 'primaryKey',
+          'uid': 'snuk-a5kv'
         },
         // If you change to true, make sure to mock out the resultant MetadataProvider request.
-        "viewSourceDataLink": false
+        'viewSourceDataLink': false
       },
-      "description": "An example Region Map",
-      "format": {
-        "type": "visualization_interchange_format",
-        "version": 2
+      'description': 'An example Region Map',
+      'format': {
+        'type': 'visualization_interchange_format',
+        'version': 2
       },
-      "scale": {
-        "x": {
-          "type": "ordinal",
-          "unit": {
-            "one":null,
-            "other":null
+      'scale': {
+        'x': {
+          'type': 'ordinal',
+          'unit': {
+            'one':null,
+            'other':null
           }
         },
-        "y": {
-          "type": "quantitative"
+        'y': {
+          'type': 'quantitative'
         }
       },
-      "series": [
+      'series': [
         {
-          "dataSource": {
-            "datasetUid": "52my-2pak",
-            "dimension": {
-              "columnName": "location_point",
-              "aggregationFunction": null
+          'dataSource': {
+            'datasetUid': '52my-2pak',
+            'dimension': {
+              'columnName': 'location_point',
+              'aggregationFunction': null
             },
-            "domain": "dataspace.demo.socrata.com",
-            "measure": {
-              "columnName": null,
-              "aggregationFunction": "count"
+            'domain': 'dataspace.demo.socrata.com',
+            'measure': {
+              'columnName': null,
+              'aggregationFunction': 'count'
             },
-            "filters": [],
-            "type": "socrata.soql"
+            'filters': [],
+            'type': 'socrata.soql'
           },
-          "label": "Filtered",
-          "unit": {
-            "one": "crime",
-            "other": "crimes"
+          'label': 'Filtered',
+          'unit': {
+            'one': 'crime',
+            'other': 'crimes'
           },
-          "type": "choroplethMap"
+          'type': 'choroplethMap'
         }
       ],
-      "title": "Example Usage: RegionMap.js"
+      'title': 'Example Usage: RegionMap.js'
     };
   }
 
@@ -155,7 +155,7 @@ describe('SvgRegionMap', function() {
       visualization: visualization,
       vif: vif,
       data: data
-    }
+    };
   }
 
   /**
@@ -212,10 +212,10 @@ describe('SvgRegionMap', function() {
             type: 'Polygon',
             coordinates: [[
               // make nice parallelograms
-              [ x0, y0 ],
-              [ x0 + increment / 3, y0 + increment ],
-              [ x0 + increment * 4 / 3, y0 + increment ],
-              [ x0 + increment, y0 ]
+              [x0, y0],
+              [x0 + increment / 3, y0 + increment],
+              [x0 + increment * 4 / 3, y0 + increment],
+              [x0 + increment, y0]
             ]]
           }
         };
@@ -412,7 +412,7 @@ describe('SvgRegionMap', function() {
         var regionMapObject = createRegionMap(getDefaultVif(), geojsonAggregateData);
         var el = regionMapObject.element;
 
-        expect(el.find(featureGeometrySelector).length).to.equal(2+3);
+        expect(el.find(featureGeometrySelector).length).to.equal(2 + 3);
       });
 
       it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function() {
@@ -420,7 +420,7 @@ describe('SvgRegionMap', function() {
         var regionMapObject = createRegionMap(getDefaultVif(), geojsonAggregateData);
         var el = regionMapObject.element;
 
-        expect(el.find(featureGeometrySelector).length).to.equal(12+15+6+3);
+        expect(el.find(featureGeometrySelector).length).to.equal(12 + 15 + 6 + 3);
       });
 
       it('should render LineStrings on the map, if the geojson contains LineStrings', function() {
@@ -516,7 +516,7 @@ describe('SvgRegionMap', function() {
             white: whiteCount,
             red: redCount,
             blue: blueCount
-          }
+          };
         }
 
         it('colors red-orange scale for all negative values', function() {
@@ -601,7 +601,7 @@ describe('SvgRegionMap', function() {
           var color = $(el).css('fill');
           return chroma.color(color).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
 
         expect(nullColors.length).to.equal(1);
       });
@@ -618,7 +618,7 @@ describe('SvgRegionMap', function() {
         var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
           return chroma.color($(el).css('fill')).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
 
         expect(nullColors.length).to.equal(1);
       });
@@ -635,7 +635,7 @@ describe('SvgRegionMap', function() {
         var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
           return chroma.color($(el).css('fill')).hex();
         });
-        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd' });
+        var nullColors = _.filter(fillColors, function(fc) { return chroma.color(fc).hex() == '#dddddd'; });
 
         expect(nullColors.length).to.equal(1);
       });

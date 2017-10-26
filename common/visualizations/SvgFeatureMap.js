@@ -146,7 +146,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
       if (error.errorMessages) {
         messages = error.errorMessages;
       } else {
-        messages = I18n.t('shared.visualizations.charts.common.error_generic')
+        messages = I18n.t('shared.visualizations.charts.common.error_generic');
       }
     }
 
@@ -283,7 +283,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
   function handleRowInspectorQuerySuccess(data) {
     var rowInspectorTitleColumnName = _.get(lastRenderedVif, 'configuration.rowInspectorTitleColumnName');
     var getPageTitle = function(page) {
-      var title = _.find(page, {column: rowInspectorTitleColumnName});
+      var title = _.find(page, { column: rowInspectorTitleColumnName });
       // In case the column name cannot be found in 'page' to locate the title value
       return title ? title.value : null;
     };
@@ -489,7 +489,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
 
     columnNames.forEach(
       function(columnName) {
-        var columnMetadata = _.find(datasetMetadataColumns, {fieldName: columnName});
+        var columnMetadata = _.find(datasetMetadataColumns, { fieldName: columnName });
 
         if (_.isPlainObject(columnMetadata)) {
 
@@ -508,7 +508,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
             // or 'crime_location_zip', the parentColumnName would be
             // 'crime_location'.
             var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
-            var parentColumnMetadata = _.find(datasetMetadataColumns, {fieldName: parentColumnName});
+            var parentColumnMetadata = _.find(datasetMetadataColumns, { fieldName: parentColumnName });
 
             if (_.isPlainObject(parentColumnMetadata)) {
 

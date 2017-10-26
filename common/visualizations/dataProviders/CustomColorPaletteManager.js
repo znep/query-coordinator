@@ -58,15 +58,15 @@ const generateCustomColorPalette = (vifAuthoring) => {
       }, {});
 
       _.forEach(groups, (group, index) => {
-          if (_.isNull(group)) {
-            group = I18n.t('shared.visualizations.charts.common.no_value');
-          }
+        if (_.isNull(group)) {
+          group = I18n.t('shared.visualizations.charts.common.no_value');
+        }
 
-          const color = _.has(currentPalette, group) ?
+        const color = _.has(currentPalette, group) ?
             currentPalette[group].color :
             COLOR_PALETTE_VALUES[baseColorPalette][index];
 
-          customColorPalette[group] = { color, index };
+        customColorPalette[group] = { color, index };
       });
 
       return { customColorPalette, dimensionColumnName };
@@ -92,7 +92,7 @@ const generateCustomColorPalette = (vifAuthoring) => {
 
       _.forEach(groups, (group, groupIndex) => {
         let index;
-        let [ groupName ] = group;
+        let [groupName] = group;
 
         if (_.isNull(groupName)) {
           groupName = I18n.t('shared.visualizations.charts.common.no_value');

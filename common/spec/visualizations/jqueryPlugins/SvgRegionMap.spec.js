@@ -44,7 +44,7 @@ describe('SvgRegionMap jQuery component', function() {
         no_value: 'No value',
         flyout_unfiltered_amount_label: 'Total',
         flyout_filtered_amount_label: 'Filtered',
-        flyout_selected_notice: 'This column is selected',
+        flyout_selected_notice: 'This column is selected'
       },
       shapefile: {
         geometryLabel: 'ward',
@@ -184,7 +184,7 @@ describe('SvgRegionMap jQuery component', function() {
       describe('on initialization', function() {
         var stubRegionMap;
 
-        beforeEach(function () {
+        beforeEach(function() {
           stubRegionMap = sinon.stub().returns({
             render: _.noop,
             renderError: _.noop,

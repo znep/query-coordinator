@@ -3,7 +3,7 @@ import Dropdown from 'components/Dropdown';
 import Picklist from 'components/Picklist';
 import { shallow } from 'enzyme';
 
-//TODO Write a full test suite.
+// TODO Write a full test suite.
 // Missing specs:
 // * Focus behavior.
 // * Keyboard navigation.
@@ -11,18 +11,18 @@ import { shallow } from 'enzyme';
 // * Picklist positioning.
 // * Scroll isolation.
 describe('Dropdown', () => {
-  it('renders an element',  () => {
+  it('renders an element', () => {
     const element = shallow(<Dropdown />);
     assert.isNotNull(element);
   });
 
   describe('labelledBy prop', () => {
-    it('sets aria-labelledby on the root div if set',  () => {
+    it('sets aria-labelledby on the root div if set', () => {
       const element = shallow(<Dropdown labelledBy="magic" />);
       assert.lengthOf(element.find('[aria-labelledby="magic"]'), 1);
     });
 
-    it('does not set aria-labelledby on any element if not set',  () => {
+    it('does not set aria-labelledby on any element if not set', () => {
       const element = shallow(<Dropdown />);
       assert.lengthOf(element.find('[aria-labelledby]'), 0);
     });
@@ -34,7 +34,7 @@ describe('Dropdown', () => {
       assert.isFalse(Dropdown.defaultProps.disabled);
       assert.notEqual(Dropdown.defaultProps.size, 'small');
 
-      const options = [ { value: 'fake' }, { value: 'options' } ];
+      const options = [{ value: 'fake' }, { value: 'options' }];
 
       const dropdownProps = {
         size: 'small',

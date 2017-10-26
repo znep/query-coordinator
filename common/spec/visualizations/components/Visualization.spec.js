@@ -12,7 +12,7 @@ describe('Visualization', () => {
   let element;
 
   const renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument);
-  const getDefaultProps = () => ( { vif: mockVif } );
+  const getDefaultProps = () => ({ vif: mockVif });
 
   beforeEach(() => {
     sinon.stub($.fn, 'socrataSvgHistogram').returns(() => {});

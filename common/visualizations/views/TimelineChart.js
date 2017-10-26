@@ -794,7 +794,7 @@ function TimelineChart(element, vif) {
       // options into a VIF on its own.
       } else if (options.vif && !options.vif.configuration.isMobile) {
 
-        //derive selection start and end
+        // derive selection start and end
         var filtersOnThisColumn = options.
           vif.
           filters.
@@ -2627,7 +2627,7 @@ function TimelineChart(element, vif) {
     var mousePositionTarget = mousePosition.target;
 
     // Work-around for browsers with no pointer-event support.
-    //mousePositionTarget = FlyoutService.targetUnder();
+    // mousePositionTarget = FlyoutService.targetUnder();
 
     var $mousePositionTarget = $(mousePositionTarget);
     var mousePositionIsClearButton = $mousePositionTarget.

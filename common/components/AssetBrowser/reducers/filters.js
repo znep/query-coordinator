@@ -34,7 +34,7 @@ export const getInitialState = () => {
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: getQueryParameter({ key: 'ownerName' }),
-      id: getQueryParameter({ key: 'ownerId' }),
+      id: getQueryParameter({ key: 'ownerId' })
     },
     q: getQueryParameter({ key: 'q' }),
     tag: getQueryParameter({ key: 'tag' }),

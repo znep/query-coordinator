@@ -33,7 +33,7 @@ describe('LocalizedText', () => {
   it('translate(key,data) should replace sub keys in translation with fields provided in data', () => {
     const component = (
       <Localization translations={translations} locale="en">
-        <LocalizedText localeKey="greeting" data={{ name: 'John Doe' }}/>
+        <LocalizedText localeKey="greeting" data={{ name: 'John Doe' }} />
       </Localization>
     );
 
@@ -45,7 +45,7 @@ describe('LocalizedText', () => {
     it('singular', () => {
       const component = (
         <Localization translations={translations} locale="en">
-          <LocalizedText localeKey="product" data={{ count: 1 }}/>
+          <LocalizedText localeKey="product" data={{ count: 1 }} />
         </Localization>
       );
 
@@ -56,7 +56,7 @@ describe('LocalizedText', () => {
     it('plural', () => {
       const component = (
         <Localization translations={translations} locale="en">
-          <LocalizedText localeKey="product" data={{ count: 5 }}/>
+          <LocalizedText localeKey="product" data={{ count: 5 }} />
         </Localization>
       );
 

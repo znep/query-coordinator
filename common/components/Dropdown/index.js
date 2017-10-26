@@ -180,13 +180,13 @@ class Dropdown extends Component {
       const { displayTrueWidthOptions } = this.props;
       const containerDimensions = this.dropdownRef.getBoundingClientRect();
       const browserWindowHeight = window.document.documentElement.clientHeight - 10;
-      const browserWindowWidth  = window.document.documentElement.clientWidth;
+      const browserWindowWidth = window.document.documentElement.clientWidth;
 
       const dimensions = this.optionsRef.getBoundingClientRect();
 
       // Calculate X Position
       const optionWidth = this.optionsRef.querySelector('.picklist-option').clientWidth;
-      const exceedsBrowserWindowWidth  = browserWindowWidth < (containerDimensions.left + optionWidth);
+      const exceedsBrowserWindowWidth = browserWindowWidth < (containerDimensions.left + optionWidth);
 
       const optionsLeft = exceedsBrowserWindowWidth ?
         (containerDimensions.left - optionWidth) : containerDimensions.left;
@@ -277,7 +277,7 @@ class Dropdown extends Component {
     const placeholderIsString = typeof placeholder === 'string';
 
     if (placeholderIsFunction) {
-      placeholder = placeholder({isOpened: opened});
+      placeholder = placeholder({ isOpened: opened });
     } else if (selectedOption) {
       placeholder = [placeholderText(selectedOption.title), caret];
       // TODO: Make this an explicit test for a SocrataIcon,

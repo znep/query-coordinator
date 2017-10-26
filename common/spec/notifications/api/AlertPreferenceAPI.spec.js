@@ -11,10 +11,10 @@ describe('AlertPreferenceAPI', () => {
 
     describe('successful response', () => {
       let mockResponse = new Response(
-        JSON.stringify ({data:[
-          {'name': 'test_asset'},
-          {'name': 'test_all_asset', type: 'meta-test', 'value': 'true'}
-        ]}), {status: 200}
+        JSON.stringify({ data:[
+          { 'name': 'test_asset' },
+          { 'name': 'test_all_asset', type: 'meta-test', 'value': 'true' }
+        ] }), { status: 200 }
       );
 
       beforeEach(() => {
@@ -27,11 +27,11 @@ describe('AlertPreferenceAPI', () => {
 
       it('should hit preference url as get method and return decoded preference', () => {
         let expectedOutput = {
-          test_asset: {enable_email: false, enable_product_notification: false},
+          test_asset: { enable_email: false, enable_product_notification: false },
           test_all_asset: {
             enable_email: false,
             enable_product_notification: false,
-            sub_categories: {'meta-test': {enable: true}}
+            sub_categories: { 'meta-test': { enable: true } }
           }
         };
         return AlertPreferenceAPI.get().then((res) => {
@@ -43,7 +43,7 @@ describe('AlertPreferenceAPI', () => {
           getPreferenceStub.restore();
 
         });
-      })
+      });
 
     });
 
@@ -54,7 +54,7 @@ describe('AlertPreferenceAPI', () => {
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
-        getPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({status: 500}));
+        getPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({ status: 500 }));
       });
 
       afterEach(() => {
@@ -67,7 +67,7 @@ describe('AlertPreferenceAPI', () => {
       it('throws a connection error', () => {
         return AlertPreferenceAPI.get().then(
           () => {
-            throw new Error('Unexpected resolution')
+            throw new Error('Unexpected resolution');
           },
           (error) => {
             getPreferenceStub.restore();
@@ -80,7 +80,7 @@ describe('AlertPreferenceAPI', () => {
 
   describe('AlertPreferenceAPI.set', () => {
     describe('successful response', () => {
-      let mockResponse = new Response(JSON.stringify ({data: []}), {status: 200});
+      let mockResponse = new Response(JSON.stringify({ data: [] }), { status: 200 });
 
       beforeEach(() => {
         setPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
@@ -91,7 +91,7 @@ describe('AlertPreferenceAPI', () => {
       });
 
       it('should hit preference url as post method', () => {
-        AlertPreferenceAPI.set().then(()=> {
+        AlertPreferenceAPI.set().then(() => {
           const request = window.fetch.args[0][1];
           assert.equal(request.method, 'POST');
           assert.equal(window.fetch.args[0][0], '/api/notifications_and_alerts/preferences');
@@ -108,7 +108,7 @@ describe('AlertPreferenceAPI', () => {
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
-        setPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({status: 500}));
+        setPreferenceStub = sinon.stub(window, 'fetch').returns(Promise.resolve({ status: 500 }));
       });
 
       afterEach(() => {
@@ -120,7 +120,7 @@ describe('AlertPreferenceAPI', () => {
       it('throws a connection error', () => {
         return AlertPreferenceAPI.set().then(
           () => {
-            throw new Error('Unexpected resolution')
+            throw new Error('Unexpected resolution');
           },
           (error) => {
             assert.equal(error.toString(), 'Error');

@@ -27,7 +27,7 @@ class PanelFooter extends Component {
   closeModal() {
     const showAlertSettingModal = false;
 
-    this.setState({showAlertSettingModal});
+    this.setState({ showAlertSettingModal });
   }
 
   renderModal() {
@@ -42,14 +42,14 @@ class PanelFooter extends Component {
         <AlertSettingModal onClose={this.closeModal}
           isSuperAdmin={isSuperAdmin}
           currentUserRole={currentUserRole} />
-      )
+      );
     }
   }
 
   toggleSubscription() {
     const showAlertSettingModal = !this.state.showAlertSettingModal;
 
-    this.setState({showAlertSettingModal});
+    this.setState({ showAlertSettingModal });
   }
 
   renderClearAllNotificationsPrompt() {
@@ -137,8 +137,8 @@ class PanelFooter extends Component {
 
     return (
       <div styleName="buttons-wrapper" className="clearfix">
-        <button styleName='primary-button'
-          className='mark-all-as-read-button'
+        <button styleName="primary-button"
+          className="mark-all-as-read-button"
           disabled={!hasUnreadNotifications}
           onClick={markAllProductNotificationsAsRead}>
           {I18n.t('shared_site_chrome_notifications.mark_as_read')}
@@ -151,7 +151,7 @@ class PanelFooter extends Component {
 
   render() {
     return (
-      <div styleName='footer-bar'>
+      <div styleName="footer-bar">
         {this.renderFooter()}
         {this.renderModal()}
       </div>

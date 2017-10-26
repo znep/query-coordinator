@@ -146,7 +146,7 @@ describe('components/MetadataTable', () => {
 
     it('renders tags', () => {
       const wrapper = shallowWithCoreViewProps({
-        tags: [ 'cats', 'morecats' ]
+        tags: ['cats', 'morecats']
       });
       assert.lengthOf(wrapper.find('.tag-list a'), 2);
       assert.ok(wrapper.contains(<a href="/browse?tags=morecats">morecats</a>));

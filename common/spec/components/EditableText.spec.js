@@ -114,7 +114,7 @@ describe('EditableText', () => {
 
     const display = find('.editable-text-display');
 
-    Simulate.mouseOver(display[0]); //Maybe not needed, but closer to reality.
+    Simulate.mouseOver(display[0]); // Maybe not needed, but closer to reality.
     Simulate.click(display[0]);
 
     const input = find('input');

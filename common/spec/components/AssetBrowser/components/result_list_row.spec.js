@@ -143,7 +143,7 @@ describe('components/ResultListRow', () => {
     const element = renderComponentWithPropsAndStore(ResultListRow, resultListRowProps({
       columns: ['name']
     }));
-    const nameCell = element.querySelector('td')
+    const nameCell = element.querySelector('td');
     assert.isNotNull(nameCell.querySelector('a'));
     assert.equal(
       nameCell.querySelector('a').getAttribute('href'), 'https://data.seattle.gov/dataset/blah-blah/cfa5-i2ky'

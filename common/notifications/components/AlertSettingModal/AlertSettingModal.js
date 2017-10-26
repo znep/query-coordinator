@@ -6,7 +6,7 @@ import Tabs from './Tabs';
 import PreferenceContent from './PreferenceContent';
 import cssModules from 'react-css-modules';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
-import AlertPreferenceAPI from '../../api/AlertPreferenceAPI'
+import AlertPreferenceAPI from '../../api/AlertPreferenceAPI';
 import Spinner from '../Spinner';
 
 class AlertSettingModal extends Component {
@@ -27,35 +27,35 @@ class AlertSettingModal extends Component {
   componentDidMount() {
     AlertPreferenceAPI.get().then((response) => {
       const preferences = response;
-      this.setState({preferences});
+      this.setState({ preferences });
     });
 
   }
 
   onAlertNotificationChange(category, notificationType, subCategoryType) {
     let { preferences } = this.state;
-    let categoryData = _.get(preferences, category , {});
+    let categoryData = _.get(preferences, category, {});
     if (categoryData) {
       if (notificationType == 'email') {
-        categoryData.enable_email = !categoryData.enable_email
-      } else if(notificationType == 'product') {
-        categoryData.enable_product_notification = !categoryData.enable_product_notification
+        categoryData.enable_email = !categoryData.enable_email;
+      } else if (notificationType == 'product') {
+        categoryData.enable_product_notification = !categoryData.enable_product_notification;
       }
       if (!_.isUndefined(subCategoryType)) {
         let subCategoryData = _.get(categoryData, ['sub_categories', subCategoryType], {});
         subCategoryData.enable = !subCategoryData.enable;
-        if(_.isUndefined(categoryData.sub_categories)){
-          categoryData.sub_categories = {}
+        if (_.isUndefined(categoryData.sub_categories)) {
+          categoryData.sub_categories = {};
         }
         categoryData.sub_categories[subCategoryType] = subCategoryData;
       }
     }
     preferences[category] = categoryData;
-    this.setState({preferences});
+    this.setState({ preferences });
   }
 
   onTabChange(selectedTab) {
-    this.setState({selectedTab});
+    this.setState({ selectedTab });
   }
 
   renderNotificationTabContent() {
@@ -66,23 +66,23 @@ class AlertSettingModal extends Component {
         isSuperAdmin={isSuperAdmin}
         onAlertNotificationChange={this.onAlertNotificationChange}
         preferences={this.state.preferences}>
-      </PreferenceContent>)
+      </PreferenceContent>);
   }
 
-  saveAlertSettings(){
+  saveAlertSettings() {
     const { preferences } = this.state;
     const { onClose } = this.props;
     let { showSpinner } = this.state;
     showSpinner = true;
-    this.setState({showSpinner});
+    this.setState({ showSpinner });
     AlertPreferenceAPI.set(preferences).then(() => {
       showSpinner = false;
-      this.setState({showSpinner});
+      this.setState({ showSpinner });
       onClose();
     }).
     catch(() => {
       showSpinner = false;
-      this.setState({showSpinner});
+      this.setState({ showSpinner });
     });
   }
 
@@ -94,13 +94,13 @@ class AlertSettingModal extends Component {
     const { onClose } = this.props;
     const containerStyle = {
       'maxWidth': '80%',
-      'padding': '2rem',
+      'padding': '2rem'
     };
     return (
       <Modal styleName="alert-setting-modal" onDismiss={onClose} containerStyle={containerStyle}>
-        <ModalHeader title="Settings" onDismiss={onClose}/>
+        <ModalHeader title="Settings" onDismiss={onClose} />
         <ModalContent styleName="alert-setting-modal-content">
-          <Tabs onTabChange={this.onTabChange} selectedTab={this.state.selectedTab}/>
+          <Tabs onTabChange={this.onTabChange} selectedTab={this.state.selectedTab} />
           {this.renderTabContent()}
           {this.state.showSpinner ? <Spinner /> : null}
         </ModalContent>
@@ -109,7 +109,7 @@ class AlertSettingModal extends Component {
           <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>Save</div>
         </ModalFooter>
       </Modal>
-    )
+    );
   }
 }
 

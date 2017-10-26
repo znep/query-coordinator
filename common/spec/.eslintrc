@@ -9,6 +9,7 @@
     "beforeEach": true,
     "afterEach": true,
     "xdescribe": true,
-    "xit": true
+    "xit": true,
+    "expect": true // Deprecated, but many tests still use it.
   }
 }

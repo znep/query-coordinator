@@ -114,8 +114,8 @@ class UserNotification extends React.Component {
     const isUnread = !isRead;
 
     return (
-      <li styleName={classNames("notification-item", type, { 'unread': isUnread })}
-        className={classNames("user-notification-item clearfix", { 'unread': isUnread })}
+      <li styleName={classNames('notification-item', type, { 'unread': isUnread })}
+        className={classNames('user-notification-item clearfix', { 'unread': isUnread })}
         data-notification-id={id}>
         <div styleName="notification-info">
           {this.renderNotificationTitle()}

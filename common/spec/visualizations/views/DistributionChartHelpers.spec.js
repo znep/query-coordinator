@@ -134,7 +134,7 @@ describe('DistributionChartHelpers', function() {
     });
 
     it('returns the pixel value on the x axis for a bucket', function() {
-      expect(_.isNumber(helpers.bucketToPosition(scale)({start: 0, end: 10, value: 5}))).to.equal(true);
+      expect(_.isNumber(helpers.bucketToPosition(scale)({ start: 0, end: 10, value: 5 }))).to.equal(true);
     });
   });
 
@@ -196,27 +196,27 @@ describe('DistributionChartHelpers', function() {
       });
 
       it('should throw an error if the input object does not have min and max keys', function() {
-        var input = {color: 'purple'};
+        var input = { color: 'purple' };
         expect(_.partial(run, input)).to.throw;
       });
 
       it('should throw an error if either the min or the max is NaN', function() {
         var input;
 
-        input = {min: NaN, max: 19};
+        input = { min: NaN, max: 19 };
         expect(_.partial(run, input)).to.throw;
 
-        input = {min: -19, max: NaN};
+        input = { min: -19, max: NaN };
         expect(_.partial(run, input)).to.throw;
       });
 
       it('should throw an error if either the min or the max is Infinity', function() {
         var input;
 
-        input = {min: -Infinity, max: 19};
+        input = { min: -Infinity, max: 19 };
         expect(_.partial(run, input)).to.throw;
 
-        input = {min: 0, max: Infinity};
+        input = { min: 0, max: Infinity };
         expect(_.partial(run, input)).to.throw;
       });
     });
@@ -227,27 +227,27 @@ describe('DistributionChartHelpers', function() {
         var result;
 
         // Minimum is not below the threshold
-        input = {min: -threshold + 1, max: 0};
+        input = { min: -threshold + 1, max: 0 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
 
         // Minimum is below the threshold
-        input = {min: -threshold, max: 0};
+        input = { min: -threshold, max: 0 };
         result = run(input);
         expect(result.bucketType).to.equal('logarithmic');
 
         // Maximum does not exceed the threshold
-        input = {min: 0, max: threshold - 1};
+        input = { min: 0, max: threshold - 1 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
 
         // Maximum exceeds the threshold
-        input = {min: 0, max: threshold};
+        input = { min: 0, max: threshold };
         result = run(input);
         expect(result.bucketType).to.equal('logarithmic');
 
         // Both exceed the threshold
-        input = {min: -threshold, max: threshold};
+        input = { min: -threshold, max: threshold };
         result = run(input);
         expect(result.bucketType).to.equal('logarithmic');
       });
@@ -258,14 +258,14 @@ describe('DistributionChartHelpers', function() {
         var input;
         var result;
 
-        input = {min: -threshold, max: threshold};
+        input = { min: -threshold, max: threshold };
         var result = run(input);
         expect(result.bucketType).to.equal('logarithmic');
         expect(result.bucketSize).to.not.exist;
       });
 
       it('should default to a bucketSize of one if the range is empty', function() {
-        var input = {min: 17, max: 17};
+        var input = { min: 17, max: 17 };
         var result;
 
         result = run(input);
@@ -277,17 +277,17 @@ describe('DistributionChartHelpers', function() {
         var input;
         var result;
 
-        input = {min: -threshold / 2, max: threshold / 2};
+        input = { min: -threshold / 2, max: threshold / 2 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
         expect((input.max - input.min) / result.bucketSize).to.be.closeTo(20, 5);
 
-        input = {min: 0, max: threshold - 1};
+        input = { min: 0, max: threshold - 1 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
         expect((input.max - input.min) / result.bucketSize).to.be.closeTo(20, 5);
 
-        input = {min: -threshold + 1, max: threshold - 1};
+        input = { min: -threshold + 1, max: threshold - 1 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
         expect((input.max - input.min) / result.bucketSize).to.be.closeTo(20, 5);
@@ -297,7 +297,7 @@ describe('DistributionChartHelpers', function() {
         var input;
         var result;
 
-        input = {min: -1.9, max: 2.3};
+        input = { min: -1.9, max: 2.3 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
         expect(result.bucketSize).to.equal(0.2); // and not 0.19999999999999996
@@ -306,19 +306,19 @@ describe('DistributionChartHelpers', function() {
 
     describe('edge cases', function() {
       it('should not freak out if the minimum is greater than the maximum', function() {
-        var input = {min: threshold, max: -threshold};
+        var input = { min: threshold, max: -threshold };
         var result = run(input);
-        expect(result).to.deep.equal({bucketType: 'logarithmic'});
+        expect(result).to.deep.equal({ bucketType: 'logarithmic' });
       });
 
       it('should not freak out if both the minimum and the maximum are positive', function() {
         var input;
 
-        input = {min: threshold / 2, max: threshold * 2};
+        input = { min: threshold / 2, max: threshold * 2 };
         var result = run(input);
-        expect(result).to.deep.equal({bucketType: 'logarithmic'});
+        expect(result).to.deep.equal({ bucketType: 'logarithmic' });
 
-        input = {min: 5, max: 10};
+        input = { min: 5, max: 10 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
       });
@@ -327,26 +327,26 @@ describe('DistributionChartHelpers', function() {
         var input;
         var result;
 
-        input = {min: -threshold * 2, max: -threshold / 2};
+        input = { min: -threshold * 2, max: -threshold / 2 };
         result = run(input);
-        expect(result).to.deep.equal({bucketType: 'logarithmic'});
+        expect(result).to.deep.equal({ bucketType: 'logarithmic' });
 
-        input = {min: -10, max: -5};
+        input = { min: -10, max: -5 };
         result = run(input);
         expect(result.bucketType).to.equal('linear');
       });
 
       it('should not freak out if both the minimum and maximum are zero', function() {
-        var input = {min: 0, max: 0};
+        var input = { min: 0, max: 0 };
         var result = run(input);
-        expect(result).to.deep.equal({bucketType: 'linear', bucketSize: 1});
+        expect(result).to.deep.equal({ bucketType: 'linear', bucketSize: 1 });
       });
     });
   });
 
   describe('bucketData', function() {
 
-    var logarithmicOptions = {bucketType: 'logarithmic'};
+    var logarithmicOptions = { bucketType: 'logarithmic' };
 
     function run(input, options) {
       return helpers.bucketData(input, options);
@@ -385,7 +385,7 @@ describe('DistributionChartHelpers', function() {
 
       it('should return null if linear bucketing is requested without a bucketSize', function() {
         var input, output;
-        var options = {bucketType: 'linear'};
+        var options = { bucketType: 'linear' };
 
         input = ['validipromise'];
         expect(run(input, options)).to.equal(null);
@@ -430,31 +430,31 @@ describe('DistributionChartHelpers', function() {
       it('should return a single bucket if all values are zero', function() {
         var input, output;
 
-        input = [{magnitude: 0, value: 10000}];
+        input = [{ magnitude: 0, value: 10000 }];
         output = run(input, logarithmicOptions);
 
         expect(output).to.be.instanceof(Array);
         expect(output).to.have.length(1);
-        expect(output).to.deep.equal([{start: 0, end: 10, value: 10000}]);
+        expect(output).to.deep.equal([{ start: 0, end: 10, value: 10000 }]);
       });
 
       it('should merge the zero bucket into the bucket with magnitude equal to one, or create one', function() {
         var input, output;
 
         // mag1 bucket exists, ensure the values are summed.
-        input = [{magnitude: 0, value: 2}, {magnitude: 1, value: 3}, {magnitude: 2, value: 4}];
+        input = [{ magnitude: 0, value: 2 }, { magnitude: 1, value: 3 }, { magnitude: 2, value: 4 }];
         output = run(input, logarithmicOptions);
 
         expect(output).to.be.instanceof(Array);
         expect(output).to.have.length(2);
-        expect(output).to.deep.equal([{start: 0, end: 10, value: 5}, {start: 10, end: 100, value: 4}]);
+        expect(output).to.deep.equal([{ start: 0, end: 10, value: 5 }, { start: 10, end: 100, value: 4 }]);
 
         // mag1 bucket does not exist, ensure it is created and has value of zero bucket.
-        input = [{magnitude: 0, value: 2}, {magnitude: 2, value: 4}];
+        input = [{ magnitude: 0, value: 2 }, { magnitude: 2, value: 4 }];
         output = run(input, logarithmicOptions);
 
         expect(output).to.have.length(2);
-        expect(output).to.deep.equal([{start: 0, end: 10, value: 2}, {start: 10, end: 100, value: 4}]);
+        expect(output).to.deep.equal([{ start: 0, end: 10, value: 2 }, { start: 10, end: 100, value: 4 }]);
       });
     });
 
@@ -464,20 +464,20 @@ describe('DistributionChartHelpers', function() {
           var input, output;
 
           input = [
-            {magnitude: -2, value: 5},
-            {magnitude: -1, value: 5},
-            {magnitude: 0, value: 5},
-            {magnitude: 1, value: 5},
-            {magnitude: 2, value: 5}
+            { magnitude: -2, value: 5 },
+            { magnitude: -1, value: 5 },
+            { magnitude: 0, value: 5 },
+            { magnitude: 1, value: 5 },
+            { magnitude: 2, value: 5 }
           ];
 
           output = run(input, logarithmicOptions);
 
           var expectedOutput = [
-            {start: -100, end: -10, value: 5},
-            {start: -10, end: 0, value: 5},
-            {start: 0, end: 10, value: 10},
-            {start: 10, end: 100, value: 5}
+            { start: -100, end: -10, value: 5 },
+            { start: -10, end: 0, value: 5 },
+            { start: 0, end: 10, value: 10 },
+            { start: 10, end: 100, value: 5 }
           ];
 
           expect(output).to.deep.equal(expectedOutput);
@@ -488,21 +488,21 @@ describe('DistributionChartHelpers', function() {
           it('should extend the bucket range up to zero if all buckets are negative', function() {
             var input, output;
 
-            input = [{magnitude: -6, value: 17}, {magnitude: -5, value: 11}];
+            input = [{ magnitude: -6, value: 17 }, { magnitude: -5, value: 11 }];
             output = run(input, _.extend({ forceIncludeZero: true }, logarithmicOptions));
 
             expect(output.length).to.equal(6);
-            expect(_.last(output)).to.deep.equal({start: -10, end: 0, value: 0});
+            expect(_.last(output)).to.deep.equal({ start: -10, end: 0, value: 0 });
           });
 
           it('should extend the bucket range down to zero if all buckets are positive', function() {
             var input, output;
 
-            input = [{magnitude: 3, value: 17}, {magnitude: 6, value: 11}];
+            input = [{ magnitude: 3, value: 17 }, { magnitude: 6, value: 11 }];
             output = run(input, _.extend({ forceIncludeZero: true }, logarithmicOptions));
 
             expect(output.length).to.equal(6);
-            expect(_.head(output)).to.deep.equal({start: 0, end: 10, value: 0});
+            expect(_.head(output)).to.deep.equal({ start: 0, end: 10, value: 0 });
           });
         });
 
@@ -511,7 +511,7 @@ describe('DistributionChartHelpers', function() {
           it('should maintain the true bucket range if all buckets are negative', function() {
             var input, output;
 
-            input = [{magnitude: -6, value: 17}, {magnitude: -5, value: 11}];
+            input = [{ magnitude: -6, value: 17 }, { magnitude: -5, value: 11 }];
             output = run(input, logarithmicOptions);
 
             expect(output).to.deep.equal([
@@ -523,7 +523,7 @@ describe('DistributionChartHelpers', function() {
           it('should maintain the true bucket range if all buckets are positive', function() {
             var input, output;
 
-            input = [{magnitude: 3, value: 17}, {magnitude: 6, value: 11}];
+            input = [{ magnitude: 3, value: 17 }, { magnitude: 6, value: 11 }];
             output = run(input, logarithmicOptions);
 
             expect(output).to.deep.equal([
@@ -542,28 +542,28 @@ describe('DistributionChartHelpers', function() {
 
           input = ['validiswear'];
 
-          expect(_.curry(run)(input, {bucketType: 'linear'})).to.throw;
+          expect(_.curry(run)(input, { bucketType: 'linear' })).to.throw;
         });
 
         it('should create start and end boundaries spaced equally according to the bucketSize argument', function() {
           var input, output;
 
           input = [
-            {magnitude: -2, value: 5},
-            {magnitude: -1, value: 5},
-            {magnitude: 0, value: 5},
-            {magnitude: 1, value: 5},
-            {magnitude: 2, value: 5}
+            { magnitude: -2, value: 5 },
+            { magnitude: -1, value: 5 },
+            { magnitude: 0, value: 5 },
+            { magnitude: 1, value: 5 },
+            { magnitude: 2, value: 5 }
           ];
 
-          output = run(input, {bucketType: 'linear', bucketSize: 17});
+          output = run(input, { bucketType: 'linear', bucketSize: 17 });
 
           var expectedOutput = [
-            {start: -34, end: -17, value: 5},
-            {start: -17, end: 0, value: 5},
-            {start: 0, end: 17, value: 5},
-            {start: 17, end: 34, value: 5},
-            {start: 34, end: 51, value: 5}
+            { start: -34, end: -17, value: 5 },
+            { start: -17, end: 0, value: 5 },
+            { start: 0, end: 17, value: 5 },
+            { start: 17, end: 34, value: 5 },
+            { start: 34, end: 51, value: 5 }
           ];
 
           expect(output).to.deep.equal(expectedOutput);
@@ -574,24 +574,24 @@ describe('DistributionChartHelpers', function() {
             var input, output;
 
             input = [
-              {magnitude: -6, value: 17},
-              {magnitude: -5, value: 11}
+              { magnitude: -6, value: 17 },
+              { magnitude: -5, value: 11 }
             ];
 
-            output = run(input, {bucketType: 'linear', forceIncludeZero: true, bucketSize: 25});
+            output = run(input, { bucketType: 'linear', forceIncludeZero: true, bucketSize: 25 });
 
             expect(output.length).to.equal(6);
-            expect(_.last(output)).to.deep.equal({start: -25, end: 0, value: 0});
+            expect(_.last(output)).to.deep.equal({ start: -25, end: 0, value: 0 });
           });
 
           it('should extend the bucket range down to zero if all buckets are positive', function() {
             var input, output;
 
-            input = [{magnitude: 3, value: 17}, {magnitude: 6, value: 11}];
-            output = run(input, {bucketType: 'linear', forceIncludeZero: true, bucketSize: 25});
+            input = [{ magnitude: 3, value: 17 }, { magnitude: 6, value: 11 }];
+            output = run(input, { bucketType: 'linear', forceIncludeZero: true, bucketSize: 25 });
 
             expect(output.length).to.equal(7);
-            expect(_.head(output)).to.deep.equal({start: 0, end: 25, value: 0});
+            expect(_.head(output)).to.deep.equal({ start: 0, end: 25, value: 0 });
           });
         });
 
@@ -600,11 +600,11 @@ describe('DistributionChartHelpers', function() {
             var input, output;
 
             input = [
-              {magnitude: -6, value: 17},
-              {magnitude: -5, value: 11}
+              { magnitude: -6, value: 17 },
+              { magnitude: -5, value: 11 }
             ];
 
-            output = run(input, {bucketType: 'linear', bucketSize: 25});
+            output = run(input, { bucketType: 'linear', bucketSize: 25 });
 
             expect(output).to.deep.equal([
               { start: -150, end: -125, value: 17 },
@@ -616,11 +616,11 @@ describe('DistributionChartHelpers', function() {
             var input, output;
 
             input = [
-              {magnitude: 3, value: 17},
-              {magnitude: 6, value: 11}
+              { magnitude: 3, value: 17 },
+              { magnitude: 6, value: 11 }
             ];
 
-            output = run(input, {bucketType: 'linear', bucketSize: 25});
+            output = run(input, { bucketType: 'linear', bucketSize: 25 });
 
             expect(output).to.deep.equal([
               { start: 75, end: 100, value: 17 },
@@ -635,13 +635,13 @@ describe('DistributionChartHelpers', function() {
               var input, output;
 
               input = [
-                {magnitude: 3, value: 17},
-                {magnitude: 4, value: 21},
-                {magnitude: 5, value: 9},
-                {magnitude: 6, value: 11}
+                { magnitude: 3, value: 17 },
+                { magnitude: 4, value: 21 },
+                { magnitude: 5, value: 9 },
+                { magnitude: 6, value: 11 }
               ];
 
-              output = run(input, {bucketType: 'linear', bucketSize: 1});
+              output = run(input, { bucketType: 'linear', bucketSize: 1 });
 
               expect(output).to.deep.equal([
                 { start: 3, end: 4, value: 17 },
@@ -655,13 +655,13 @@ describe('DistributionChartHelpers', function() {
               var input, output;
 
               input = [
-                {magnitude: -4, value: 17},
-                {magnitude: -3, value: 21},
-                {magnitude: -2, value: 9},
-                {magnitude: -1, value: 11}
+                { magnitude: -4, value: 17 },
+                { magnitude: -3, value: 21 },
+                { magnitude: -2, value: 9 },
+                { magnitude: -1, value: 11 }
               ];
 
-              output = run(input, {bucketType: 'linear', bucketSize: 1});
+              output = run(input, { bucketType: 'linear', bucketSize: 1 });
 
               expect(output).to.deep.equal([
                 { start: -4, end: -3, value: 17 },
@@ -675,20 +675,20 @@ describe('DistributionChartHelpers', function() {
               var input, output;
 
               input = [
-                {magnitude: -2, value: 17},
-                {magnitude: -1, value: 21},
-                {magnitude: 0, value: 9},
-                {magnitude: 1, value: 11}
+                { magnitude: -2, value: 17 },
+                { magnitude: -1, value: 21 },
+                { magnitude: 0, value: 9 },
+                { magnitude: 1, value: 11 }
               ];
 
-              output = run(input, {bucketType: 'linear', bucketSize: 1});
+              output = run(input, { bucketType: 'linear', bucketSize: 1 });
 
               expect(output).to.deep.equal([
                 { start: -2, end: -1, value: 17 },
                 { start: -1, end: 0, value: 21 },
                 { start: 0, end: 1, value: 9 },
                 { start: 1, end: 2, value: 11 }
-              ])
+              ]);
             });
           });
         });

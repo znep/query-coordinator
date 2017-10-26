@@ -60,7 +60,7 @@ export default function(state, action) {
 
         if ((action.columnName === null) && (_.get(series, 'errorBars.lowerBoundColumnName') === undefined)) {
           _.unset(series, 'errorBars');
-        };
+        }
       });
       break;
 
@@ -78,7 +78,7 @@ export default function(state, action) {
       const groupingDimension = _.get(state, 'series[0].dataSource.dimension.grouping.columnName');
       if (action.dimension && action.dimension === groupingDimension) {
         setDimensionGroupingColumnName(state, null);
-      };
+      }
       break;
 
     case actions.APPEND_SERIES:
@@ -131,9 +131,9 @@ export default function(state, action) {
         color: REFERENCE_LINES_DEFAULT_LINE_COLOR,
         label: '',
         uId: _.uniqueId('reference-line-')
-      })
+      });
       break;
-    
+
     case actions.REMOVE_REFERENCE_LINE:
       state.referenceLines.splice(action.referenceLineIndex, 1);
 
@@ -142,7 +142,7 @@ export default function(state, action) {
         tryUnsetShowLegend(state);
       }
       break;
-    
+
     case actions.SET_REFERENCE_LINE_COLOR:
       if (action.referenceLineIndex < state.referenceLines.length) {
         const referenceLine = state.referenceLines[action.referenceLineIndex];
@@ -174,19 +174,19 @@ export default function(state, action) {
         }
       }
       break;
-    
+
     case actions.SET_STACKED:
       forEachSeries(state, series => {
         if (action.stacked) {
           _.set(series, 'stacked.oneHundredPercent', action.oneHundredPercent);
         } else {
-          _.unset(series, 'stacked')
+          _.unset(series, 'stacked');
         }
       });
 
       if (action.oneHundredPercent) {
-        _.unset(state, 'configuration.measureAxisMinValue');        
-        _.unset(state, 'configuration.measureAxisMaxValue');        
+        _.unset(state, 'configuration.measureAxisMinValue');
+        _.unset(state, 'configuration.measureAxisMaxValue');
       }
       break;
 

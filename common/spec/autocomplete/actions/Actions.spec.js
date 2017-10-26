@@ -1,4 +1,4 @@
-import * as actions from 'common/autocomplete/actions'
+import * as actions from 'common/autocomplete/actions';
 
 describe('actions', () => {
   it('should create query changed action', () => {
@@ -22,7 +22,7 @@ describe('actions', () => {
       type: actions.RESULTS_CHANGED,
       response: someResponse
     };
-    expect(actions.resultsChanged(someResponse)).to.eql(expectedAction)
+    expect(actions.resultsChanged(someResponse)).to.eql(expectedAction);
   });
 
   it('should create results visibility changed action', () => {
@@ -57,4 +57,4 @@ describe('actions', () => {
     expect(actions.clearSearch()).to.eql(expectedAction);
   });
 
-})
+});

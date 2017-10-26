@@ -444,7 +444,7 @@ $.fn.socrataTimelineChart = function(vif) {
       Promise.resolve(vifToRender.configuration.precision) :
       precisionSoqlDataProvider.
         getRows(
-          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
+          [SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS],
           '$query=' + precisionQueryString
         ).
         then(mapQueryResponseToPrecision);
@@ -455,7 +455,7 @@ $.fn.socrataTimelineChart = function(vif) {
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    Promise.all([ dataPromise, precisionPromise ]).
+    Promise.all([dataPromise, precisionPromise]).
       then(renderDataFromPromises).catch(handleError);
 
     function mapQueryResponseToPrecision(response) {
@@ -508,18 +508,18 @@ $.fn.socrataTimelineChart = function(vif) {
     }
 
     function mapPrecisionToDataQuery(precision) {
-      var date_trunc_function;
+      var dateTruncFunction;
       var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
 
       switch (precision) {
         case 'YEAR':
-          date_trunc_function = 'date_trunc_y';
+          dateTruncFunction = 'date_trunc_y';
           break;
         case 'MONTH':
-          date_trunc_function = 'date_trunc_ym';
+          dateTruncFunction = 'date_trunc_ym';
           break;
         case 'DAY':
-          date_trunc_function = 'date_trunc_ymd';
+          dateTruncFunction = 'date_trunc_ymd';
           break;
         default:
           throw 'precision was invalid: {0}'.format(precision);
@@ -531,7 +531,7 @@ $.fn.socrataTimelineChart = function(vif) {
           SOQL_DATA_PROVIDER_NAME_ALIAS,
           aggregationClause,
           SOQL_DATA_PROVIDER_VALUE_ALIAS,
-          date_trunc_function
+          dateTruncFunction
         ) +
         ' {0} ' +
         DATA_QUERY_SUFFIX.format(SOQL_DATA_PROVIDER_NAME_ALIAS)
@@ -616,7 +616,7 @@ $.fn.socrataTimelineChart = function(vif) {
       var filteredValue;
       // If the filtered value exists, use it.
       if (filteredAsHash.hasOwnProperty(item[DATE_INDEX])) {
-        filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1])
+        filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1]);
       } else {
         // If the filtered value does not exist but the unfiltered value for
         // the same date interval exists, then the value has just been filtered

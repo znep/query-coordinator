@@ -35,17 +35,17 @@ class ProductNotification extends Component {
       <li styleName={classNames('notification-item', { 'unread': isUnread })}
         className={classNames('notification-item', { 'is-unread-notification': isUnread })}>
         <a styleName="notification-link"
-           className="notification-title"
-           href={titleLink}
-           target='_blank'>
+          className="notification-title"
+          href={titleLink}
+          target="_blank">
           {title}
         </a>
 
-        <p styleName='body-text' className="notification-body">
+        <p styleName="body-text" className="notification-body">
           {this.truncateBodyText()}
         </p>
 
-        <p styleName='timestamp' className="notification-timestamp">
+        <p styleName="timestamp" className="notification-timestamp">
           {formatDateWithLocale(moment.unix(dateTime))}
         </p>
       </li>
@@ -56,7 +56,7 @@ class ProductNotification extends Component {
 ProductNotification.propTypes = {
   body: PropTypes.string.isRequired,
   dateTime: PropTypes.number.isRequired,
-  id: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   isUnread: PropTypes.bool,
   title: PropTypes.string.isRequired,
   titleLink: PropTypes.string

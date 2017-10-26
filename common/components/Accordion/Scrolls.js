@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 export default function Scrolls(component) {
-  let ScrollsWrapper = function (props, context) {
+  let ScrollsWrapper = function(props, context) {
     const mergedProps = _.assign({
       scroll: context.scroll || {
         horizontal: _.noop,

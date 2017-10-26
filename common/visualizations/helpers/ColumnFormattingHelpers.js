@@ -38,7 +38,7 @@ export function formatValueHTML(value, column, dataToRender, forceHumane = false
   }
 
   if (dataToRender.precision) {
-    // Having a precision ('year', 'month' or 'day') allows us to return a 
+    // Having a precision ('year', 'month' or 'day') allows us to return a
     // format string for calendar_date that is appropriate to the precision.
     // For instance, a precision of 'year' should only render a year like '2017'.
     // A precision of 'month', should only render year and month like '2017/01'.

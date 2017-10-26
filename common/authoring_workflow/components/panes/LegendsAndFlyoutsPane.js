@@ -216,7 +216,7 @@ export class LegendsAndFlyoutsPane extends Component {
   }
 
   renderRowInspectorTitleColumnOption(option) {
-    const columnType = _.find(COLUMN_TYPES, {type: option.type});
+    const columnType = _.find(COLUMN_TYPES, { type: option.type });
     const icon = columnType ? columnType.icon : '';
 
     return (

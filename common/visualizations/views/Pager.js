@@ -67,8 +67,8 @@ module.exports = function Pager(element, locale) {
   function templatePagerButtons(options) {
     const template = [
       '<span class="pager-buttons">',
-        '<button{previousDisabled} class="pager-button-previous"><span class="icon-arrow-left"></span> {previous}</button>',
-        '<button{nextDisabled} class="pager-button-next">{next} <span class="icon-arrow-right"></span></button>',
+      '<button{previousDisabled} class="pager-button-previous"><span class="icon-arrow-left"></span> {previous}</button>',
+      '<button{nextDisabled} class="pager-button-next">{next} <span class="icon-arrow-right"></span></button>',
       '</span>'
     ].join('\n');
 
@@ -83,8 +83,8 @@ module.exports = function Pager(element, locale) {
   function templatePager(options) {
     return [
       '<div class="socrata-pager{classes}">',
-        templatePagerButtons(options),
-        templatePagerLabel(options),
+      templatePagerButtons(options),
+      templatePagerLabel(options),
       '</div>'
     ].join('\n');
   }

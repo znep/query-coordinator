@@ -16,7 +16,7 @@ const stubCeteraAssetCountsFetch = (ceteraResponse = mockCeteraFacetCountsRespon
   sinon.stub(ceteraUtils, 'facetCountsQuery').callsFake(_.constant(Promise.resolve(ceteraResponse)))
 );
 
-const mockStore = configureMockStore([ thunk ]);
+const mockStore = configureMockStore([thunk]);
 
 let ceteraStub;
 let ceteraAssetCountsStub;
@@ -246,7 +246,7 @@ describe('actions/filters', () => {
         { results: [], resultSetSize: 0 });
       ceteraStub = sinon.stub(ceteraUtils, 'query')
         .onFirstCall().callsFake(_.constant(Promise.resolve(customMockCeteraResponse)))
-        .onSecondCall().callsFake(_.constant(Promise.resolve(mockCeteraResponse)))
+        .onSecondCall().callsFake(_.constant(Promise.resolve(mockCeteraResponse)));
       ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 

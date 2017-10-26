@@ -184,6 +184,7 @@ function FeatureMap(element, vif) {
    */
 
   function _renderTemplate(targetElement) {
+    let mapLocateUserButton;
 
     var mapElement = $(
       '<div>',
@@ -245,7 +246,7 @@ function FeatureMap(element, vif) {
         '</svg>'
       );
 
-      var mapLocateUserButton = $(
+      mapLocateUserButton = $(
         '<button>',
         {
           'class': 'feature-map-locate-user-btn',
@@ -919,7 +920,7 @@ function FeatureMap(element, vif) {
     utils.assertHasProperties(centerAndZoom.center, 'lat', 'lng');
     utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
 
-    _map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
+    _map.setView(centerAndZoom.center, centerAndZoom.zoom, { animate: false });
   }
 
   /**

@@ -18,7 +18,7 @@ describe('components/ActionDropdown', () => {
   describe('dropdown button', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ['view']}, 200)
+        mockResponse({ rights: ['view'] }, 200)
       )));
     });
 
@@ -42,7 +42,7 @@ describe('components/ActionDropdown', () => {
   describe('dropdown menu', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ['view']}, 200)
+        mockResponse({ rights: ['view'] }, 200)
       )));
     });
 
@@ -59,7 +59,7 @@ describe('components/ActionDropdown', () => {
   describe('when no mutation rights are present', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ['view']}, 200)
+        mockResponse({ rights: ['view'] }, 200)
       )));
     });
 
@@ -79,7 +79,7 @@ describe('components/ActionDropdown', () => {
   describe('when the delete right is present', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ["delete", "delete_view"]}, 200)
+        mockResponse({ rights: ['delete', 'delete_view'] }, 200)
       )));
     });
 
@@ -98,14 +98,14 @@ describe('components/ActionDropdown', () => {
         assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
         assert.match(menu.querySelector('a').textContent, /delete/i);
         done();
-      })
+      });
     });
   });
 
   describe('when the write or update_view rights are present', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ["write", "update_view"]}, 200)
+        mockResponse({ rights: ['write', 'update_view'] }, 200)
       )));
     });
 
@@ -127,14 +127,14 @@ describe('components/ActionDropdown', () => {
         assert(_.find(links, (link) => link.textContent.match(/metadata/i)));
         assert(_.find(links, (link) => link.textContent.match(/visibility/i)));
         done();
-      })
+      });
     });
   });
 
   describe('when all rights are present', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(
-        mockResponse({rights: ['delete', 'delete_view', 'write', 'update_view']}, 200)
+        mockResponse({ rights: ['delete', 'delete_view', 'write', 'update_view'] }, 200)
       )));
     });
 
@@ -173,7 +173,7 @@ describe('components/ActionDropdown', () => {
         const menu = element.querySelector('.action-dropdown-menu');
         assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
         done();
-      })
+      });
     });
 
     it('does render the deleteAsset and changeVisibility options for datalens', (done) => {

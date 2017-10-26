@@ -409,7 +409,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
   function handleRowInspectorQuerySuccess(data) {
     var getPageTitle = function(page) {
-      return _.find(page, {column: vif.configuration.rowInspectorTitleColumnName}).value;
+      return _.find(page, { column: vif.configuration.rowInspectorTitleColumnName }).value;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
     var titles = vif.configuration.rowInspectorTitleColumnName ? _.map(formattedData, getPageTitle) : [];
@@ -546,7 +546,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
     columnNames.forEach(
       function(columnName) {
-        var columnMetadata = _.find(datasetMetadataColumns, {fieldName: columnName});
+        var columnMetadata = _.find(datasetMetadataColumns, { fieldName: columnName });
 
         if (_.isPlainObject(columnMetadata)) {
 
@@ -565,7 +565,7 @@ $.fn.socrataFeatureMap = function(vif) {
             // or 'crime_location_zip', the parentColumnName would be
             // 'crime_location'.
             var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
-            var parentColumnMetadata = _.find(datasetMetadataColumns, {fieldName: parentColumnName});
+            var parentColumnMetadata = _.find(datasetMetadataColumns, { fieldName: parentColumnName });
 
             if (_.isPlainObject(parentColumnMetadata)) {
 

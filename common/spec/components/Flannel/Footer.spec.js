@@ -7,7 +7,7 @@ describe('FlannelFooter', () => {
   let element;
 
   beforeEach(() => {
-    element = renderPureComponent(FlannelFooter({ //eslint-disable-line new-cap
+    element = renderPureComponent(FlannelFooter({ // eslint-disable-line new-cap
       children: [
         React.createElement('div', {
           className: 'test-element',

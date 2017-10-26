@@ -131,11 +131,19 @@ const makeExtKeys = hrefURLObj =>
     };
   }, {});
 
+const hrefIsEmpty = href => {
+  const hasUrls = !_.isEmpty(href.urls);
+
+  return !(hasUrls || href.title || href.description || href.data_dictionary_type || href.data_dictionary);
+};
+
 const shapeHrefState = rawState =>
-  rawState.map(href => ({
-    ...href,
-    urls: makeExtKeys(removeEmptyValues(href.urls))
-  }));
+  rawState
+    .map(href => ({
+      ...href,
+      urls: makeExtKeys(removeEmptyValues(href.urls))
+    }))
+    .filter(href => !hrefIsEmpty(href));
 
 export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // selector returns undefined if there are no sources

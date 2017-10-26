@@ -58,7 +58,7 @@ class DropdownButton extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, isDisabled } = this.props;
     const { showDropdown } = this.state;
 
     const buttonClass = `btn btn-transparent kebab-button${showDropdown ? ' selected' : ''}`;
@@ -70,7 +70,8 @@ class DropdownButton extends React.Component {
       <div className="dropdown-button" ref={ref => (this.dropdownRef = ref)}>
         <button
           className={buttonClass}
-          onClick={() => this.setState({ showDropdown: !showDropdown })}>
+          onClick={() => this.setState({ showDropdown: !showDropdown })}
+          disabled={isDisabled}>
           <SocrataIcon name="kebab" />
         </button>
         {showDropdown &&
@@ -83,7 +84,8 @@ class DropdownButton extends React.Component {
 }
 
 DropdownButton.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  isDisabled: PropTypes.bool
 };
 
 export default DropdownButton;

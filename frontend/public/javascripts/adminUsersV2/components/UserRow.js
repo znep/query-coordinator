@@ -105,9 +105,9 @@ export class UserRow extends React.Component {
   }
 
   renderEditControl() {
-    const { I18n, onRemoveUserRole } = this.props;
+    const { I18n, onRemoveUserRole, roleId } = this.props;
     return (
-      <DropdownButton>
+      <DropdownButton isDisabled={roleId === 'none'}>
         <DropdownItem onClick={() => onRemoveUserRole()}>
           {I18n.t('users.actions.remove_role')}
         </DropdownItem>

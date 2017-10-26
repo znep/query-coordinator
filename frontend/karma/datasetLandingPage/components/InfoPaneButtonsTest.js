@@ -71,10 +71,16 @@ describe('components/InfoPaneButtons', () => {
         assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
-      it('does not exist if the user lacks a role', () => {
+      it('routes through login if the user is not logged in', () => {
         window.serverConfig.currentUser = {};
         const element = renderComponent(InfoPaneButtons, getProps());
-        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
+        assert.ok(element.querySelector('a[href="/login?return_to=bootstrapUrl"]'));
+      });
+
+      it('is rendered when the user is logged in', () => {
+        window.serverConfig.currentUser = { roleName: 'anything' };
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
 

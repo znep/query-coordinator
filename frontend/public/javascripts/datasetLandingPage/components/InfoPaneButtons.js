@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { isUserRoled } from '../../common/user';
+import { isLoggedIn } from '../../common/user';
 import { localizeLink } from 'common/locale';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -40,12 +40,15 @@ export default class InfoPaneButtons extends Component {
 
     const vizCanvasEnabled = FeatureFlags.value('enable_visualization_canvas');
     const canCreateVisualizationCanvas = vizCanvasEnabled &&
-      isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
     if (isBlobbyOrHref || !canCreateVisualizationCanvas) {
       return null;
     }
+
+    const url = isLoggedIn() ?
+      localizeLink(view.bootstrapUrl) :
+      localizeLink(`/login?return_to=${encodeURIComponent(view.bootstrapUrl)}`);
 
     return (
       <li>
@@ -54,7 +57,7 @@ export default class InfoPaneButtons extends Component {
           role="button"
           data-id={view.id}
           className="option"
-          href={localizeLink(view.bootstrapUrl)}
+          href={url}
           onClick={onClickVisualizeAndFilter}>
           {I18n.explore_data.visualize_and_filter}
         </a>

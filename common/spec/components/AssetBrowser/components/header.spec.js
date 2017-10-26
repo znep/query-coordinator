@@ -48,6 +48,15 @@ describe('components/Header', () => {
     });
   });
 
+  describe('asset counts', () => {
+    it('renders', () => {
+      const props = { showAssetCounts: true };
+      const element = renderComponentWithPropsAndStore(Header, props);
+      assert.isNotNull(element);
+      assert.equal(element.querySelectorAll('.asset-counts').length, 1);
+    });
+  });
+
   describe('tabsToHide', () => {
     describe('when not passed', () => {
       it('renders all tabs', () => {

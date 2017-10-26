@@ -24,7 +24,7 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-const assetBrowser = <AssetBrowser showFilters showSearchField />;
+const assetBrowser = <AssetBrowser showAssetCounts showFilters showSearchField />;
 
 ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-asset-browser'));
 

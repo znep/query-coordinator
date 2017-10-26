@@ -224,7 +224,8 @@ module AdministrationHelper
 
   def user_can_review_approvals?
     _user = (current_user || User.new)
-    _user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS)
+    feature_flag?('enable_approvals_beta', request) &&
+      (_user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS))
   end
 
   def a11y_metadata_category_summary(categories, columns)

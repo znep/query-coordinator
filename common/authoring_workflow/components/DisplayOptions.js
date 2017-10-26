@@ -7,7 +7,7 @@ import I18n from 'common/i18n';
 import {
   setLimitCountAndShowOtherCategory,
   setLimitNoneAndShowOtherCategory,
-  setShowOtherCategory,
+  setShowOtherCategory
 } from '../actions';
 
 import {
@@ -17,7 +17,7 @@ import {
   getVisualizationType,
   isBarChart,
   isColumnChart,
-  isPieChart,
+  isPieChart
 } from '../selectors/vifAuthoring';
 
 import { isDimensionTypeCalendarDate } from '../selectors/metadata';
@@ -57,13 +57,12 @@ export class DisplayOptions extends Component {
   renderPieChartDescription() {
     const { vifAuthoring } = this.props;
     const shouldRender = isPieChart(vifAuthoring);
-    
+
     return shouldRender ? (
-        <p className="authoring-field-description">
-          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
-        </p>
-      ) : 
-      null;
+      <p className="authoring-field-description">
+        <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
+      </p>
+    ) : null;
   }
 
   renderLimitCountSelector() {
@@ -97,15 +96,15 @@ export class DisplayOptions extends Component {
     };
 
     const limitNoneContainerAttributes = {
-      className: `${isPieChart(vifAuthoring) ? 'disabled': ''}`,
+      className: `${isPieChart(vifAuthoring) ? 'disabled' : ''}`,
       id: 'limit-none-container'
-    }
+    };
 
     const limitNoneContainer = (
       <div {...limitNoneContainerAttributes}>
         <input {...limitNoneInputAttributes} />
         <label htmlFor="limit-none">
-          <span className="fake-radiobutton"/>
+          <span className="fake-radiobutton" />
         </label>
         {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.none`)}
       </div>
@@ -163,10 +162,10 @@ export class DisplayOptions extends Component {
       <div {...limitCountValueContainerAttributes}>
         <DebouncedInput {...limitCountValueInputAttributes} />
         <div id="show-other-category-container" className="checkbox">
-          <input {...showOtherCategoryInputAttributes}/>
+          <input {...showOtherCategoryInputAttributes} />
           <label className="inline-label" htmlFor="show-other-category">
             <span className="fake-checkbox">
-              <span className="icon-checkmark3"/>
+              <span className="icon-checkmark3" />
             </span>
             {I18n.t('shared.visualizations.panes.data.fields.show_other_category.title')}
           </label>
@@ -178,7 +177,7 @@ export class DisplayOptions extends Component {
       <div id="limit-count-container">
         <input {...limitCountInputAttributes} />
         <label htmlFor="limit-count">
-          <span className="fake-radiobutton"/>
+          <span className="fake-radiobutton" />
         </label>
         {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.count`)}
         {limitCountValueContainer}
@@ -211,7 +210,7 @@ export class DisplayOptions extends Component {
 DisplayOptions.propTypes = {
   metadata: PropTypes.object,
   vifAuthoring: PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return _.pick(state, ['metadata', 'vifAuthoring']);

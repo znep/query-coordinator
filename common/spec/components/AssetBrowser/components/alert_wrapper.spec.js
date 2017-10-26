@@ -22,16 +22,16 @@ describe('components/AlertWrapper', () => {
   });
 
   it('does not render an alert if the alert prop is null', () => {
-    const wrapper = shallow(<AlertWrapper {...alertWrapperProps({
-      alert: null
-    })} />);
+    const wrapper = shallow(<AlertWrapper
+      {...alertWrapperProps({ alert: null })} />
+    );
     assert.isFalse(wrapper.find('.alert').exists());
   });
 
   it('does not render an alert if the alert prop is an empty object', () => {
-    const wrapper = shallow(<AlertWrapper {...alertWrapperProps({
-      alert: {}
-    })} />);
+    const wrapper = shallow(<AlertWrapper
+      {...alertWrapperProps({ alert: {} })} />
+    );
     assert.isFalse(wrapper.find('.alert').exists());
   });
 

@@ -584,9 +584,9 @@ function SampleChart($element, vif) {
     // series we should attempt to use the primary color associated with each
     // series for the label text (this is not shown below but can be seen in
     // the flyouts for SvgColumnChart and SvgTimelineChart.
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).
+        $('<td>', { 'colspan': 2 }).
           text(
             (title) ? title : ''
           )
@@ -595,10 +595,10 @@ function SampleChart($element, vif) {
     // providing a spacer to keep the value cell on the right. In the case
     // of more varied categorical data, the label cell would indicate to
     // the user which category they are looking at.
-    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    const $table = $('<table>', {'class': 'socrata-flyout-table'});
+    const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' });
 
     let payload = null;
     let valueString = I18n.t('shared.visualizations.charts.common.no_value');

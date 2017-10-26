@@ -35,10 +35,10 @@ const paths = {
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
   primaryColor: 'series[{0}].color.primary',
-  referenceLineColor: `referenceLines[{0}].color`,
-  referenceLineLabel: `referenceLines[{0}].label`,
+  referenceLineColor: 'referenceLines[{0}].color',
+  referenceLineLabel: 'referenceLines[{0}].label',
   referenceLines: 'referenceLines',
-  referenceLineValue: `referenceLines[{0}].value`,
+  referenceLineValue: 'referenceLines[{0}].value',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[{0}].color.secondary',
   series: 'series',
@@ -81,7 +81,7 @@ export const load = (dispatch, vif) => {
 
     const seriesCount = get(paths.series).length;
 
-    for (var i = 0; i < seriesCount; i++) {
+    for (let i = 0; i < seriesCount; i++) {
 
       if (i > 0) { // the first series already exists in the vif templates, no need to create it.
         dispatch(actions.appendSeries({ isInitialLoad: true }));
@@ -120,10 +120,10 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.referenceLines)) {
-    
+
     const referenceLinesCount = get(paths.referenceLines).length;
 
-    for (var i = 0; i < referenceLinesCount; i++) {
+    for (let i = 0; i < referenceLinesCount; i++) {
       dispatch(actions.appendReferenceLine());
 
       const referenceLineColorPath = paths.referenceLineColor.format(i);
@@ -141,7 +141,7 @@ export const load = (dispatch, vif) => {
         dispatch(actions.setReferenceLineValue({ referenceLineIndex: i, value: get(referenceLineValuePath) }));
       }
     }
-  }    
+  }
 
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));

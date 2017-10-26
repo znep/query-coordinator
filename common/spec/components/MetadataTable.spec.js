@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { expect, assert } from 'chai';
@@ -146,7 +147,7 @@ describe('components/MetadataTable', () => {
 
     it('renders tags', () => {
       const wrapper = shallowWithCoreViewProps({
-        tags: [ 'cats', 'morecats' ]
+        tags: ['cats', 'morecats']
       });
       assert.lengthOf(wrapper.find('.tag-list a'), 2);
       assert.ok(wrapper.contains(<a href="/browse?tags=morecats">morecats</a>));
@@ -163,7 +164,7 @@ describe('components/MetadataTable', () => {
       });
       assert.ok(wrapper.contains(
         <a href="http://example.com" target="_blank">
-         <img src="/assets/wtfpl.png" alt="WTFPL" className="license" />
+          <img src="/assets/wtfpl.png" alt="WTFPL" className="license" />
         </a>
       ));
     });

@@ -154,7 +154,7 @@ describe('SoqlVifValidator', function() {
       };
 
       // all series use same dataset.
-      const datasetMetadatas = [ datasetMetadata, datasetMetadata, datasetMetadata ];
+      const datasetMetadatas = [datasetMetadata, datasetMetadata, datasetMetadata];
 
       validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
       validateFails('requireExactlyOneSeries', vif, datasetMetadatas);
@@ -184,16 +184,16 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'number', renderTypeName: 'number' }
-      ]};
+      ] };
 
-      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
-      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
-      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
-      validatePasses('requireNumericDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireAtLeastOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireExactlyOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [datasetMetadata]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
+      validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
+      validateFails('requirePointDimension', vif, [datasetMetadata]);
+      validatePasses('requireNumericDimension', vif, [datasetMetadata]);
     });
 
     describe('VIF with a money dimensioned series', function() {
@@ -214,15 +214,15 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'money', renderTypeName: 'money' }
-      ]};
+      ] };
 
-      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
-      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
-      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
-      validatePasses('requireNumericDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireAtLeastOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireExactlyOneSeries', vif, [datasetMetadata]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
+      validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
+      validateFails('requirePointDimension', vif, [datasetMetadata]);
+      validatePasses('requireNumericDimension', vif, [datasetMetadata]);
     });
 
     describe('VIF with a point dimensioned series', function() {
@@ -243,16 +243,16 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'point', renderTypeName: 'point' }
-      ]};
+      ] };
 
-      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
-      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
-      validatePasses('requirePointDimension', vif, [ datasetMetadata ]);
-      validateFails('requireNumericDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireAtLeastOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireExactlyOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [datasetMetadata]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
+      validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
+      validatePasses('requirePointDimension', vif, [datasetMetadata]);
+      validateFails('requireNumericDimension', vif, [datasetMetadata]);
     });
 
     describe('VIF with a date dimensioned series', function() {
@@ -273,16 +273,16 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'date', renderTypeName: 'calendar_date' }
-      ]};
+      ] };
 
-      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
-      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireCalendarDateDimension', vif, [ datasetMetadata ]);
-      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
-      validateFails('requireNumericDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireAtLeastOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireExactlyOneSeries', vif, [datasetMetadata]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [datasetMetadata]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireCalendarDateDimension', vif, [datasetMetadata]);
+      validateFails('requirePointDimension', vif, [datasetMetadata]);
+      validateFails('requireNumericDimension', vif, [datasetMetadata]);
     });
 
     describe('VIF with an aggregated measure and an unaggregated dimension', function() {
@@ -303,10 +303,10 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'date', renderTypeName: 'calendar_date' }
-      ]};
+      ] };
 
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
     });
 
     describe('VIF with two series, one of which is aggregated on measure, and the other is not', function() {
@@ -338,10 +338,10 @@ describe('SoqlVifValidator', function() {
       const datasetMetadata = { columns: [
         { fieldName: 'number', renderTypeName: 'number' },
         { fieldName: 'number2', renderTypeName: 'number' }
-      ]};
+      ] };
 
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata, datasetMetadata ]);
-      validateFails('requireMeasureAggregation', vif, [ datasetMetadata, datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata, datasetMetadata]);
+      validateFails('requireMeasureAggregation', vif, [datasetMetadata, datasetMetadata]);
     });
 
     describe('VIF with a measure aggregated on count', function() {
@@ -362,10 +362,10 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'number', renderTypeName: 'number' }
-      ]};
+      ] };
 
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
     });
 
     describe('VIF with a measure aggregated by sum', function() {
@@ -387,10 +387,10 @@ describe('SoqlVifValidator', function() {
       const datasetMetadata = { columns: [
         { fieldName: 'number', renderTypeName: 'number' },
         { fieldName: 'number2', renderTypeName: 'number' }
-      ]};
+      ] };
 
-      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validatePasses('requireMeasureAggregation', vif, [datasetMetadata]);
     });
 
     describe('VIF with an unaggregated measure', function() {
@@ -411,10 +411,10 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = { columns: [
         { fieldName: 'number', renderTypeName: 'number' }
-      ]};
+      ] };
 
-      validatePasses('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
-      validateFails('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireNoMeasureAggregation', vif, [datasetMetadata]);
+      validateFails('requireMeasureAggregation', vif, [datasetMetadata]);
     });
 
     describe('VIF with series on different domains', function() {
@@ -451,7 +451,7 @@ describe('SoqlVifValidator', function() {
       };
 
       // all series use same dataset.
-      const datasetMetadatas = [ datasetMetadata, datasetMetadata ];
+      const datasetMetadatas = [datasetMetadata, datasetMetadata];
 
       validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
       validateFails('requireExactlyOneSeries', vif, datasetMetadatas);

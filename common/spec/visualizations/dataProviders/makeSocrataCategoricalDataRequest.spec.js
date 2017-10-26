@@ -46,7 +46,7 @@ function SoqlDataProviderStub() {
     const trimmedAndReformattedQueryString = queryString.replace(/[\n\s]+/g, ' ').trim();
     return Promise.resolve(trimmedAndReformattedQueryString);
   };
-};
+}
 
 function dWQRStub(...args) {
   return (query) => query;
@@ -54,7 +54,7 @@ function dWQRStub(...args) {
 
 function mQRTDTStub(query) {
   return query;
-};
+}
 
 describe('makeSocrataCategoricalDataRequest', () => {
 
@@ -75,7 +75,7 @@ describe('makeSocrataCategoricalDataRequest', () => {
     makeSocrataCategoricalDataRequest(vif, 0, 1001).then((query) => {
       assert.equal(
         query,
-        "SELECT `station` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `station` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21"
+        'SELECT `station` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `station` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21'
       );
       done();
     });
@@ -88,7 +88,7 @@ describe('makeSocrataCategoricalDataRequest', () => {
     makeSocrataCategoricalDataRequest(vif, 0, 1001).then((query) => {
       assert.equal(
         query,
-        "SELECT `station` AS __dimension_alias__, SUM(`contacts`) AS __measure_alias__ GROUP BY `station` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21"
+        'SELECT `station` AS __dimension_alias__, SUM(`contacts`) AS __measure_alias__ GROUP BY `station` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21'
       );
       done();
     });
@@ -100,7 +100,7 @@ describe('makeSocrataCategoricalDataRequest', () => {
     makeSocrataCategoricalDataRequest(vif, 0, 1001).then((query) => {
       assert.equal(
         query,
-        "SELECT `station` AS __dimension_alias__, `sensor_type` AS __grouping_alias__, COUNT(*) AS __measure_alias__ GROUP BY `station`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21"
+        'SELECT `station` AS __dimension_alias__, `sensor_type` AS __grouping_alias__, COUNT(*) AS __measure_alias__ GROUP BY `station`, __grouping_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21'
       );
       done();
     });
@@ -116,7 +116,7 @@ describe('makeSocrataCategoricalDataRequest', () => {
     makeSocrataCategoricalDataRequest(vif, 0, 1001).then((query) => {
       assert.equal(
         query,
-        "SELECT `station` AS __dimension_alias__, `null` AS __measure_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21"
+        'SELECT `station` AS __dimension_alias__, `null` AS __measure_alias__ ORDER BY __measure_alias__ DESC NULL LAST LIMIT 21'
       );
       done();
     });
@@ -128,7 +128,7 @@ describe('makeSocrataCategoricalDataRequest', () => {
       {
         function: 'binaryOperator',
         columnName: 'station',
-        arguments: {operator: '=', operand: 'alpha'}
+        arguments: { operator: '=', operand: 'alpha' }
       }
     ]);
     makeSocrataCategoricalDataRequest(vif, 0, 1001).then((query) => {

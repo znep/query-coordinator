@@ -116,4 +116,4 @@
     dropdownFactory(document.querySelector('#site-chrome-header'));
     dropdownFactory(document.querySelector('#site-chrome-footer'));
   });
-})(window.$);
+}(window.$));

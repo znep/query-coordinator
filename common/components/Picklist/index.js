@@ -169,7 +169,7 @@ export class Picklist extends Component {
 
   blur() {
     this.picklist.blur();
-  };
+  }
 
   move(upOrDown) {
     let newIndex;
@@ -219,7 +219,7 @@ export class Picklist extends Component {
       'aria-selected': isSelected
     };
 
-    const pickListTitleClasses = classNames('picklist-title', { 'picklist-with-icon' : !!option.icon })
+    const pickListTitleClasses = classNames('picklist-title', { 'picklist-with-icon' : !!option.icon });
     const content = hasRenderFunction ?
       option.render(option) :
       <span className={pickListTitleClasses} key={index}>

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';

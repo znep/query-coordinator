@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
-import Modal from 'common/components/Modal';
-import { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
+import Modal, { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
 import ActiveFilterCount from './active_filter_count';
 import AssetTypesFilter from './asset_types_filter';

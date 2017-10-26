@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import renderComponent from '../../../spec/authoring_workflow/renderComponent';
@@ -51,10 +53,10 @@ describe('ScrollView', () => {
 
     beforeEach(() => {
       component = renderComponent(ScrollView, {
-        style: {height: 200, width: 200, overflow: 'auto'},
+        style: { height: 200, width: 200, overflow: 'auto' },
         id: 'component',
         children: [
-          <div key="1" style={{height: 200}} />,
+          <div key="1" style={{ height: 200 }} />,
           <Scroller key="2" />
         ]
       });
@@ -90,3 +92,4 @@ describe('ScrollView', () => {
     });
   });
 });
+/* eslint-enable react/jsx-no-bind */

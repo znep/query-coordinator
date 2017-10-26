@@ -20,7 +20,7 @@ export const renderComponentWithPropsAndStore = (component, props, store) => {
   const _store = store || createStore(_.constant({}));
   const _props = props || {};
   return renderComponent(Provider, { store: _store }, React.createElement(component, _props));
-}
+};
 
 export function mockResponse(body, status, statusText) {
   return new Response(JSON.stringify(body), {

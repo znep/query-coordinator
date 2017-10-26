@@ -66,7 +66,7 @@ export class ClearFilters extends Component {
       I18n.t('shared.asset_browser.filters.header.title.clear_filter_and_search') : null;
     const hasFiltersOrQuery = this.activeFilterCount() > 0 || this.activeFilters().q;
 
-    const clearFiltersControls = this.activeFilterCount()  > 0 ?
+    const clearFiltersControls = this.activeFilterCount() > 0 ?
       <span>
         <span
           className="filter-section clear-all-filters socrata-icon-close"

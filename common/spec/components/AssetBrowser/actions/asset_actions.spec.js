@@ -9,7 +9,7 @@ import {
 } from 'common/components/AssetBrowser/actions/asset_actions';
 import { mockResponse } from 'common/spec/helpers';
 
-const mockStore = configureMockStore([ thunk ]);
+const mockStore = configureMockStore([thunk]);
 
 describe('actions/assetActions', () => {
   let reloadStub;

@@ -12,12 +12,12 @@ var showingSelector = `div:not(.${hiddenClass})`;
 function defaultProps() {
   return {
     tabs: [
-      {id: 'hello-world', title: 'Hello World', paneComponent: 'span'},
-      {id: 'hello-you', title: 'Hello You', paneComponent: 'span'}
+      { id: 'hello-world', title: 'Hello World', paneComponent: 'span' },
+      { id: 'hello-you', title: 'Hello You', paneComponent: 'span' }
     ],
     selection: 'hello-you'
-  }
-};
+  };
+}
 
 describe('CustomizationTabPanes', function() {
   var component;

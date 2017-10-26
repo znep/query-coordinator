@@ -430,7 +430,7 @@ describe('SvgVisualization', () => {
         viz.showViewSourceDataLink();
 
         _.defer(() => {
-          validateLink(`https://${mockVifDomain}/d/nbe4-four`)
+          validateLink(`https://${mockVifDomain}/d/nbe4-four`);
           done();
         });
       });
@@ -817,7 +817,7 @@ describe('SvgVisualization', () => {
       viz.updateVif(copiedVif);
 
       const color = viz.getColor(dimensionIndex, measureIndex, measureLabels);
-      assert.equal(color, COLOR_PALETTES.categorical[0])
+      assert.equal(color, COLOR_PALETTES.categorical[0]);
     });
 
     it('uses a custom color palette if defined', () => {
@@ -904,9 +904,9 @@ describe('SvgVisualization', () => {
     });
 
     it('calls getColorPaletteByColumnTitles with the correct arguments', () => {
-      const columnNames = [ '10988', '10989', '10990', '10991', '10992', '10993', '10994', '10995', '10996', '10997', '10998', '10999', '(Other)' ];
+      const columnNames = ['10988', '10989', '10990', '10991', '10992', '10993', '10994', '10995', '10996', '10997', '10998', '10999', '(Other)'];
       const columnColors = ['#fdbb69', '#f06c45', '#e42022', '#f16666', '#dc9a88', '#6f9e4c', '#52af43', '#98d277', '#7eba98', '#2d82af', '#5b9ec9', '#a6cee3', '#fe982c'];
-      viz.getColorPaletteByColumnTitles(columnNames)
+      viz.getColorPaletteByColumnTitles(columnNames);
 
       sinon.assert.calledWith(stub, columnNames, customPalette.id);
     });
@@ -1064,7 +1064,7 @@ describe('SvgVisualization', () => {
       });
 
       const viz = new SvgVisualization($element, mockVif);
-      viz.emitEvent('TEST_EVENT', {content: null});
+      viz.emitEvent('TEST_EVENT', { content: null });
     });
   });
 
@@ -1121,34 +1121,34 @@ describe('SvgVisualization', () => {
     });
 
     const data = [
-      ["Ice Cream",4000,1000,1000,4000],
-      ["Cookies",4000,1000,-1000,4000],
-      ["Brownies",-4000,-1000,1000,4000]
+      ['Ice Cream', 4000, 1000, 1000, 4000],
+      ['Cookies', 4000, 1000, -1000, 4000],
+      ['Brownies', -4000, -1000, 1000, 4000]
     ];
 
     const expectedPositions = [
       [
-        {"start":0,"end":0.4,"percent":40},
-        {"start":0.4,"end":0.5,"percent":10},
-        {"start":0.5,"end":0.6,"percent":10},
-        {"start":0.6,"end":1,"percent":40}
+        { 'start':0, 'end':0.4, 'percent':40 },
+        { 'start':0.4, 'end':0.5, 'percent':10 },
+        { 'start':0.5, 'end':0.6, 'percent':10 },
+        { 'start':0.6, 'end':1, 'percent':40 }
       ],
       [
-        {"start":0,"end":0.4,"percent":40},
-        {"start":0.4,"end":0.5,"percent":10},
-        {"start":-0.1,"end":0,"percent":-10},
-        {"start":0.5,"end":0.9,"percent":40}
+        { 'start':0, 'end':0.4, 'percent':40 },
+        { 'start':0.4, 'end':0.5, 'percent':10 },
+        { 'start':-0.1, 'end':0, 'percent':-10 },
+        { 'start':0.5, 'end':0.9, 'percent':40 }
       ],
       [
-        {"start":-0.4,"end":0,"percent":-40},
-        {"start":-0.5,"end":-0.4,"percent":-10},
-        {"start":0,"end":0.1,"percent":10},
-        {"start":0.1,"end":0.5,"percent":40}
+        { 'start':-0.4, 'end':0, 'percent':-40 },
+        { 'start':-0.5, 'end':-0.4, 'percent':-10 },
+        { 'start':0, 'end':0.1, 'percent':10 },
+        { 'start':0.1, 'end':0.5, 'percent':40 }
       ]
     ];
 
     it('combines a vif with a default vif', () => {
-      
+
       let positions = viz.getOneHundredPercentStackedPositions(data);
       assert.deepEqual(positions, expectedPositions);
     });

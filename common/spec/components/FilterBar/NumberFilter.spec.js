@@ -158,7 +158,7 @@ describe('NumberFilter', () => {
 
     it('updates filter with new includeNullValues value when checkbox clicked', () => {
       const checkbox = getCheckbox(element);
-      Simulate.change(checkbox, { target: { checked: false } })
+      Simulate.change(checkbox, { target: { checked: false } });
       Simulate.click(getApplyButton(element));
       const filter = spy.firstCall.args[0];
 

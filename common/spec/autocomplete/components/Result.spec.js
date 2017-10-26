@@ -31,20 +31,24 @@ describe('<Result />', () => {
     });
 
     it('can match an entire name', () => {
-      const wrapper = shallow(<Result {...getProps({
-        name: 'meat',
-        matchOffsets: [{ start: 0, length: 4 }]
-      })} />);
+      const wrapper = shallow(<Result
+        {...getProps({
+          name: 'meat',
+          matchOffsets: [{ start: 0, length: 4 }]
+        })} />
+      );
       expect(wrapper.html()).to.equal(
         '<div><span class="highlight">meat</span></div>'
       );
     });
 
     it('escapes html in the name', () => {
-      const wrapper = shallow(<Result {...getProps({
-        name: '<script>some bad stuff</script>',
-        matchOffsets: [{ start: 8, length: 4 }]
-      })} />);
+      const wrapper = shallow(<Result
+        {...getProps({
+          name: '<script>some bad stuff</script>',
+          matchOffsets: [{ start: 8, length: 4 }]
+        })} />
+      );
       expect(wrapper.html()).to.equal(
         '<div>&lt;script&gt;<span class="highlight">some</span> bad stuff&lt;/script&gt;</div>'
       );

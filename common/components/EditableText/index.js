@@ -33,7 +33,7 @@ export class EditableText extends Component {
       if (!isInside && isEditing) {
         this.acceptChangesAndCloseEditor();
       }
-    }
+    };
 
     document.body.addEventListener('click', this.bodyClickHandler);
   }
@@ -69,9 +69,9 @@ export class EditableText extends Component {
     //  from too wide of a corpus of values.
 
     const props = {
-      name: "text",
-      autoComplete: "off",
-      className: "editable-input",
+      name: 'text',
+      autoComplete: 'off',
+      className: 'editable-input',
       defaultValue: text,
       ref: (ref) => this.input = ref,
       onKeyDown: (event) => {
@@ -93,18 +93,18 @@ export class EditableText extends Component {
     const { text } = this.props;
     const { isHovering } = this.state;
 
-    const startEditing  = () => {
+    const startEditing = () => {
       this.setState({
         isEditing: true
       }, () => {
         this.input.select();
       });
-    }
+    };
 
     const props = {
       className: classNames(
         'editable-text-display',
-        {'highlight' : isHovering}
+        { 'highlight' : isHovering }
       ),
       onMouseOver: () => this.setState({ isHovering: true }),
       onMouseOut: () => this.setState({ isHovering: false }),
@@ -117,8 +117,8 @@ export class EditableText extends Component {
       onFocus: () => this.setState({ isHovering: true }),
       onBlur: () => this.setState({ isHovering: false }),
       onKeyUp: (e) => {
-        if(!isHovering) return;
-        if(e.keyCode === ENTER) {
+        if (!isHovering) return;
+        if (e.keyCode === ENTER) {
           startEditing();
         }
       },
@@ -142,7 +142,7 @@ export class EditableText extends Component {
       this.renderEditMode() :
       this.renderViewMode();
 
-    return(
+    return (
       <div className="editable-text" ref={(ref) => this.container = ref}>
         {contents}
       </div>

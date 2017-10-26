@@ -248,12 +248,16 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
       datasetMetadataProvider.
         getDatasetMetadata().
         then((metadata) => {
+          // TODO why is this not defined? Disabling lint warning for now.
+          // eslint-disable-next-line no-undef
           const computedColumn = _.find(columns, (column) => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
           dispatch(finishRegionCoding());
           dispatch(setComputedColumn(computedColumn.fieldName));
+          // TODO why is this not defined? Disabling lint warning for now.
+          // eslint-disable-next-line no-undef
           dispatch(setDatasetMetadata(metadata));
         }).
         catch(handleError);
@@ -346,7 +350,7 @@ export function setComputedColumn(computedColumn) {
 export const REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
 export function requestShapefileMetadata(domain, shapefileUid) {
   return (dispatch) => {
-    const shapefileMetadataProvider = new dataProviders.MetadataProvider({domain, datasetUid: shapefileUid});
+    const shapefileMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid: shapefileUid });
     const handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
       dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));
     };
@@ -481,7 +485,7 @@ export function setColorPaletteProperties() {
     if (hasCustomColorPalette) {
       dataProviders.CustomColorPaletteManager.
         generateCustomColorPalette(vifAuthoring).then(
-          ({customColorPalette, dimensionColumnName}) => {
+          ({ customColorPalette, dimensionColumnName }) => {
             dispatch(setCustomColorPalette(customColorPalette, dimensionColumnName));
           }
       ).catch((error) => {

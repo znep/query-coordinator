@@ -29,91 +29,91 @@ describe('ColumnChart', function() {
   var NON_DEFAULT_SELECTED_INDEX = 1;
 
   var testData = [
-    ["THEFT", 21571, 21571, false],
-    ["BATTERY", 18355, 18355, false],
-    ["NARCOTICS", 11552, 11552, false],
-    ["CRIMINAL DAMAGE", 9905, 9905, false],
-    ["OTHER OFFENSE", 6574, 6574, false],
-    ["ASSAULT", 6098, 6098, false],
-    ["BURGLARY", 5166, 5166, false],
-    ["DECEPTIVE PRACTICE", 5120, 5120, false],
-    ["MOTOR VEHICLE THEFT", 3828, 3828, false],
-    ["ROBBERY", 3457, 3457, false],
-    ["CRIMINAL TRESPASS", 2981, 2981, false],
-    ["WEAPONS VIOLATION", 1091, 1091, false],
-    ["PUBLIC PEACE VIOLATION", 1021, 1021, false],
-    ["OFFENSE INVOLVING CHILDREN", 919, 919, false],
-    ["PROSTITUTION", 508, 508, false],
-    ["INTERFERENCE WITH PUBLIC OFFICER", 479, 479, false],
-    ["CRIM SEXUAL ASSAULT", 412, 412, false],
-    ["SEX OFFENSE", 289, 289, false],
-    ["LIQUOR LAW VIOLATION", 142, 142, false],
-    ["HOMICIDE", 142, 142, false],
-    ["ARSON", 126, 126, false],
-    ["KIDNAPPING", 89, 89, false],
-    ["GAMBLING", 70, 70, false],
-    ["INTIMIDATION", 42, 42, false],
-    ["STALKING", 41, 41, false],
-    ["OBSCENITY", 12, 12, false],
-    ["PUBLIC INDECENCY", 6, 6, false],
-    ["NON-CRIMINAL", 5, 5, false],
-    ["CONCEALED CARRY LICENSE VIOLATION", 5, 5, false],
-    ["OTHER NARCOTIC VIOLATION", 5, 5, false],
-    ["NON - CRIMINAL", 2, 2, false],
-    ["NON-CRIMINAL (SUBJECT SPECIFIED)", 2, 2, false]
+    ['THEFT', 21571, 21571, false],
+    ['BATTERY', 18355, 18355, false],
+    ['NARCOTICS', 11552, 11552, false],
+    ['CRIMINAL DAMAGE', 9905, 9905, false],
+    ['OTHER OFFENSE', 6574, 6574, false],
+    ['ASSAULT', 6098, 6098, false],
+    ['BURGLARY', 5166, 5166, false],
+    ['DECEPTIVE PRACTICE', 5120, 5120, false],
+    ['MOTOR VEHICLE THEFT', 3828, 3828, false],
+    ['ROBBERY', 3457, 3457, false],
+    ['CRIMINAL TRESPASS', 2981, 2981, false],
+    ['WEAPONS VIOLATION', 1091, 1091, false],
+    ['PUBLIC PEACE VIOLATION', 1021, 1021, false],
+    ['OFFENSE INVOLVING CHILDREN', 919, 919, false],
+    ['PROSTITUTION', 508, 508, false],
+    ['INTERFERENCE WITH PUBLIC OFFICER', 479, 479, false],
+    ['CRIM SEXUAL ASSAULT', 412, 412, false],
+    ['SEX OFFENSE', 289, 289, false],
+    ['LIQUOR LAW VIOLATION', 142, 142, false],
+    ['HOMICIDE', 142, 142, false],
+    ['ARSON', 126, 126, false],
+    ['KIDNAPPING', 89, 89, false],
+    ['GAMBLING', 70, 70, false],
+    ['INTIMIDATION', 42, 42, false],
+    ['STALKING', 41, 41, false],
+    ['OBSCENITY', 12, 12, false],
+    ['PUBLIC INDECENCY', 6, 6, false],
+    ['NON-CRIMINAL', 5, 5, false],
+    ['CONCEALED CARRY LICENSE VIOLATION', 5, 5, false],
+    ['OTHER NARCOTIC VIOLATION', 5, 5, false],
+    ['NON - CRIMINAL', 2, 2, false],
+    ['NON-CRIMINAL (SUBJECT SPECIFIED)', 2, 2, false]
   ];
 
   var testDataWithLongLabels = [
-    ["STREET", "1453143", "1453143", false],
-    ["RESIDENCE", "910452", "910452", false],
-    ["SIDEWALK", "540147", "540147", false],
-    ["APARTMENT", "528835", "528835", false],
-    ["OTHER", "199411", "199411", false],
-    ["PARKING LOT/GARAGE(NON.RESID.)", "153799", "153799", false],
-    ["ALLEY", "122895", "122895", false],
-    ["SCHOOL, PUBLIC, BUILDING", "122024", "122024", false],
-    ["RESIDENCE-GARAGE", "108148", "108148", false],
-    ["RESIDENCE PORCH/HALLWAY", "94679", "94679", false],
-    ["SMALL RETAIL STORE", "88836", "88836", false],
-    ["VEHICLE NON-COMMERCIAL", "83866", "83866", false],
-    ["RESTAURANT", "76701", "76701", false],
-    ["GROCERY FOOD STORE", "70823", "70823", false],
-    ["DEPARTMENT STORE", "62696", "62696", false],
-    ["GAS STATION", "55631", "55631", false],
-    ["CHA PARKING LOT/GROUNDS", "50841", "50841", false],
-    ["RESIDENTIAL YARD (FRONT/BACK)", "44177", "44177", false],
-    ["PARK PROPERTY", "41171", "41171", false],
-    ["COMMERCIAL / BUSINESS OFFICE", "40976", "40976", false],
-    ["CTA PLATFORM", "31842", "31842", false],
-    ["CHA APARTMENT", "31632", "31632", false],
-    ["BAR OR TAVERN", "26812", "26812", false],
-    ["DRUG STORE", "24975", "24975", false],
-    ["SCHOOL, PUBLIC, GROUNDS", "23549", "23549", false],
-    ["CHA HALLWAY/STAIRWELL/ELEVATOR", "23302", "23302", false],
-    ["BANK", "22132", "22132", false],
-    ["HOTEL/MOTEL", "21446", "21446", false],
-    ["VACANT LOT/LAND", "19097", "19097", false],
-    ["TAVERN/LIQUOR STORE", "18912", "18912", false],
-    ["CTA TRAIN", "16929", "16929", false],
-    ["CTA BUS", "16854", "16854", false],
-    ["DRIVEWAY - RESIDENTIAL", "15788", "15788", false],
-    ["AIRPORT/AIRCRAFT", "15038", "15038", false],
-    ["HOSPITAL BUILDING/GROUNDS", "14973", "14973", false],
-    ["POLICE FACILITY/VEH PARKING LOT", "12880", "12880", false],
-    ["CHURCH/SYNAGOGUE/PLACE OF WORSHIP", "11966", "11966", false],
-    ["GOVERNMENT BUILDING/PROPERTY", "11245", "11245", false],
-    ["CONSTRUCTION SITE", "10916", "10916", false],
-    ["SCHOOL, PRIVATE, BUILDING", "10561", "10561", false],
-    ["NURSING HOME/RETIREMENT HOME", "9830", "9830", false],
-    ["ABANDONED BUILDING", "8957", "8957", false],
-    ["CURRENCY EXCHANGE", "8601", "8601", false],
-    ["CTA GARAGE / OTHER PROPERTY", "8578", "8578", false],
-    ["CONVENIENCE STORE", "8495", "8495", false],
-    ["WAREHOUSE", "7668", "7668", false],
-    ["BARBERSHOP", "6439", "6439", false],
-    ["FACTORY/MANUFACTURING BUILDING", "5940", "5940", false],
-    ["MEDICAL/DENTAL OFFICE", "5675", "5675", false],
-    ["ATHLETIC CLUB", "5544", "5544", false]
+    ['STREET', '1453143', '1453143', false],
+    ['RESIDENCE', '910452', '910452', false],
+    ['SIDEWALK', '540147', '540147', false],
+    ['APARTMENT', '528835', '528835', false],
+    ['OTHER', '199411', '199411', false],
+    ['PARKING LOT/GARAGE(NON.RESID.)', '153799', '153799', false],
+    ['ALLEY', '122895', '122895', false],
+    ['SCHOOL, PUBLIC, BUILDING', '122024', '122024', false],
+    ['RESIDENCE-GARAGE', '108148', '108148', false],
+    ['RESIDENCE PORCH/HALLWAY', '94679', '94679', false],
+    ['SMALL RETAIL STORE', '88836', '88836', false],
+    ['VEHICLE NON-COMMERCIAL', '83866', '83866', false],
+    ['RESTAURANT', '76701', '76701', false],
+    ['GROCERY FOOD STORE', '70823', '70823', false],
+    ['DEPARTMENT STORE', '62696', '62696', false],
+    ['GAS STATION', '55631', '55631', false],
+    ['CHA PARKING LOT/GROUNDS', '50841', '50841', false],
+    ['RESIDENTIAL YARD (FRONT/BACK)', '44177', '44177', false],
+    ['PARK PROPERTY', '41171', '41171', false],
+    ['COMMERCIAL / BUSINESS OFFICE', '40976', '40976', false],
+    ['CTA PLATFORM', '31842', '31842', false],
+    ['CHA APARTMENT', '31632', '31632', false],
+    ['BAR OR TAVERN', '26812', '26812', false],
+    ['DRUG STORE', '24975', '24975', false],
+    ['SCHOOL, PUBLIC, GROUNDS', '23549', '23549', false],
+    ['CHA HALLWAY/STAIRWELL/ELEVATOR', '23302', '23302', false],
+    ['BANK', '22132', '22132', false],
+    ['HOTEL/MOTEL', '21446', '21446', false],
+    ['VACANT LOT/LAND', '19097', '19097', false],
+    ['TAVERN/LIQUOR STORE', '18912', '18912', false],
+    ['CTA TRAIN', '16929', '16929', false],
+    ['CTA BUS', '16854', '16854', false],
+    ['DRIVEWAY - RESIDENTIAL', '15788', '15788', false],
+    ['AIRPORT/AIRCRAFT', '15038', '15038', false],
+    ['HOSPITAL BUILDING/GROUNDS', '14973', '14973', false],
+    ['POLICE FACILITY/VEH PARKING LOT', '12880', '12880', false],
+    ['CHURCH/SYNAGOGUE/PLACE OF WORSHIP', '11966', '11966', false],
+    ['GOVERNMENT BUILDING/PROPERTY', '11245', '11245', false],
+    ['CONSTRUCTION SITE', '10916', '10916', false],
+    ['SCHOOL, PRIVATE, BUILDING', '10561', '10561', false],
+    ['NURSING HOME/RETIREMENT HOME', '9830', '9830', false],
+    ['ABANDONED BUILDING', '8957', '8957', false],
+    ['CURRENCY EXCHANGE', '8601', '8601', false],
+    ['CTA GARAGE / OTHER PROPERTY', '8578', '8578', false],
+    ['CONVENIENCE STORE', '8495', '8495', false],
+    ['WAREHOUSE', '7668', '7668', false],
+    ['BARBERSHOP', '6439', '6439', false],
+    ['FACTORY/MANUFACTURING BUILDING', '5940', '5940', false],
+    ['MEDICAL/DENTAL OFFICE', '5675', '5675', false],
+    ['ATHLETIC CLUB', '5544', '5544', false]
   ];
 
   function testDataWithSelectedAtIndex(selectedIndex) {
@@ -234,7 +234,7 @@ describe('ColumnChart', function() {
     }
     $ruler.css('font-size', fontSize);
     $ruler.text(this + '');
-    dimensions = {width: $ruler.width(), height: $ruler.height()};
+    dimensions = { width: $ruler.width(), height: $ruler.height() };
     $ruler.remove();
 
     return dimensions;
@@ -457,7 +457,7 @@ describe('ColumnChart', function() {
 
       // Craft the data such that the scale will result in a <.5px value
       var testData = [
-        ["THEFT", 10, 0, false]
+        ['THEFT', 10, 0, false]
       ];
 
       columnChart.chart.render(testData, columnChart.renderOptions);
@@ -467,11 +467,11 @@ describe('ColumnChart', function() {
       var maxHeight = bars.eq(0).height();
 
       testData = [
-        ["THEFT", maxHeight, 0, false],
-        ["FOULLANGUAGE", 50, 0, false],
-        ["JAYWALKING", 1, 0, false],
-        ["PICKINGNOSE", 0.4, 0, false],
-        ["BEINGAWESOME", 0, 0, false]
+        ['THEFT', maxHeight, 0, false],
+        ['FOULLANGUAGE', 50, 0, false],
+        ['JAYWALKING', 1, 0, false],
+        ['PICKINGNOSE', 0.4, 0, false],
+        ['BEINGAWESOME', 0, 0, false]
       ];
 
       columnChart.chart.render(testData, columnChart.renderOptions);
@@ -520,14 +520,14 @@ describe('ColumnChart', function() {
       }
 
       var testData = [
-        ["BOTH_POSITIVE_TOTAL_BIGGER", 10, 5, false],
-        ["BOTH_POSITIVE_FILTERED_BIGGER", 10, 15, false],
+        ['BOTH_POSITIVE_TOTAL_BIGGER', 10, 5, false],
+        ['BOTH_POSITIVE_FILTERED_BIGGER', 10, 15, false],
 
-        ["BOTH_NEGATIVE_TOTAL_BIGGER", -10, -5, false],
-        ["BOTH_NEGATIVE_FILTERED_BIGGER", -10, -15, false],
+        ['BOTH_NEGATIVE_TOTAL_BIGGER', -10, -5, false],
+        ['BOTH_NEGATIVE_FILTERED_BIGGER', -10, -15, false],
 
-        ["TOTAL_POSITIVE_FILTERED_NEGATIVE", 10, -10, false],
-        ["TOTAL_NEGATIVE_FILTERED_POSITIVE", -10, 10, false]
+        ['TOTAL_POSITIVE_FILTERED_NEGATIVE', 10, -10, false],
+        ['TOTAL_NEGATIVE_FILTERED_POSITIVE', -10, 10, false]
       ];
 
       columnChart.chart.render(testData, columnChart.renderOptions);
@@ -657,7 +657,7 @@ describe('ColumnChart', function() {
 
       // Craft the data such that the scale will result in a <.5px value
       var testDataWithNonDefaultColumnIndices = [
-        [0, false, "THEFT", 10]
+        [0, false, 'THEFT', 10]
       ];
 
       columnChart.chart.render(testDataWithNonDefaultColumnIndices, columnChart.renderOptions);
@@ -667,11 +667,11 @@ describe('ColumnChart', function() {
       var maxHeight = bars.eq(0).height();
 
       testDataWithNonDefaultColumnIndices = [
-        [0, false, "THEFT", maxHeight],
-        [0, false, "FOULLANGUAGE", 50],
-        [0, false, "JAYWALKING", 1],
-        [0, false, "PICKINGNOSE", 0.4],
-        [0, false, "BEINGAWESOME", 0]
+        [0, false, 'THEFT', maxHeight],
+        [0, false, 'FOULLANGUAGE', 50],
+        [0, false, 'JAYWALKING', 1],
+        [0, false, 'PICKINGNOSE', 0.4],
+        [0, false, 'BEINGAWESOME', 0]
       ];
 
       columnChart.chart.render(testDataWithNonDefaultColumnIndices, columnChart.renderOptions);
@@ -720,14 +720,14 @@ describe('ColumnChart', function() {
       }
 
       var testDataWithNonDefaultColumnIndices = [
-        [5, false, "BOTH_POSITIVE_TOTAL_BIGGER", 10],
-        [15, false, "BOTH_POSITIVE_FILTERED_BIGGER", 10],
+        [5, false, 'BOTH_POSITIVE_TOTAL_BIGGER', 10],
+        [15, false, 'BOTH_POSITIVE_FILTERED_BIGGER', 10],
 
-        [-5, false, "BOTH_NEGATIVE_TOTAL_BIGGER", -10],
-        [-15, false, "BOTH_NEGATIVE_FILTERED_BIGGER", -10],
+        [-5, false, 'BOTH_NEGATIVE_TOTAL_BIGGER', -10],
+        [-15, false, 'BOTH_NEGATIVE_FILTERED_BIGGER', -10],
 
-        [-10, false, "TOTAL_POSITIVE_FILTERED_NEGATIVE", 10],
-        [10, false, "TOTAL_NEGATIVE_FILTERED_POSITIVE", -10]
+        [-10, false, 'TOTAL_POSITIVE_FILTERED_NEGATIVE', 10],
+        [10, false, 'TOTAL_NEGATIVE_FILTERED_POSITIVE', -10]
       ];
 
       columnChart.chart.render(testDataWithNonDefaultColumnIndices, columnChart.renderOptions);
@@ -777,7 +777,7 @@ describe('ColumnChart', function() {
 
   describe('y scale', function() {
 
-    var smallDataPoint = ['small', 1, 1, false ];
+    var smallDataPoint = ['small', 1, 1, false];
     var hugeDataPoint = ['small', 10000000, 10000000, false];
     var testDataOnlySmall = _.map(_.range(100), _.constant(smallDataPoint));
     var testDataWithOneBigAtEnd = testDataOnlySmall.concat([hugeDataPoint]);
@@ -1304,7 +1304,7 @@ describe('ColumnChart', function() {
       expect(columnChart.element.find('.bar-group .bar').first().width()).to.equal(30);
     });
 
-    it('should display the columns at their maximum width when show all labels is set to true', function(){
+    it('should display the columns at their maximum width when show all labels is set to true', function() {
 
       expect(testDataSubset.length).to.equal(4);
 

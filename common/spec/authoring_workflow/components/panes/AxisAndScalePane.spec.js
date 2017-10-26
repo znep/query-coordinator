@@ -7,31 +7,31 @@ import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants
 function render(type) {
   const referenceLines = [
     {
-      color: "#ba001e",
-      label: "Red Line",
+      color: '#ba001e',
+      label: 'Red Line',
       value: 70000
     },
     {
-      color: "#1e489f",
-      label: "Blue Line",
+      color: '#1e489f',
+      label: 'Blue Line',
       value: 60000
     },
     {
-      color: "#067126",
-      label: "Green Line",
+      color: '#067126',
+      label: 'Green Line',
       value: 50000
     }
   ];
-  
+
   const props = defaultProps({
-    vifAuthoring: { 
+    vifAuthoring: {
       authoring: { selectedVisualizationType: type },
-      vifs: { 
+      vifs: {
         columnChart: { referenceLines },
         barChart: { referenceLines },
         timelineChart: { referenceLines },
         histogram: { referenceLines }
-       }
+      }
     },
     measureAxisScaleControl: 'custom',
     onClickAddReferenceLine: sinon.spy(),
@@ -185,7 +185,7 @@ describe('AxisAndScalePane', () => {
 
   describe('histogram', () => {
     beforeEach(setUpVisualization('histogram'));
-    
+
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
     rendersReferenceLinesAndEmitsEvents();
   });

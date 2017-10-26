@@ -24,7 +24,7 @@ export class CustomizationTabs extends React.Component {
     };
   }
 
-  tab (tab) {
+  tab(tab) {
     return <CustomizationTab {...this.tabAttributes(tab)} />;
   }
 

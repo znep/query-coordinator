@@ -41,13 +41,13 @@ const vifBase = {
 
 
 const inputVifs = {
-  basicEnglish: Object.assign({}, _.cloneDeep(vifBase), {id: 'basicEnglish'}),
-  abbrvEnglish: Object.assign({}, _.cloneDeep(vifBase), {id: 'abbrvEnglish'}),
-  basicRussian: Object.assign({}, _.cloneDeep(vifBase), {id: 'basicRussian'}),
-  abbrvRussian: Object.assign({}, _.cloneDeep(vifBase), {id: 'abbrvRussian'}),
-  noMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'noMonths'}),
-  mixedMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'mixedMonths'}),
-  mixedLanguageMonths: Object.assign({}, _.cloneDeep(vifBase), {id: 'mixedLanguageMonths'})
+  basicEnglish: Object.assign({}, _.cloneDeep(vifBase), { id: 'basicEnglish' }),
+  abbrvEnglish: Object.assign({}, _.cloneDeep(vifBase), { id: 'abbrvEnglish' }),
+  basicRussian: Object.assign({}, _.cloneDeep(vifBase), { id: 'basicRussian' }),
+  abbrvRussian: Object.assign({}, _.cloneDeep(vifBase), { id: 'abbrvRussian' }),
+  noMonths: Object.assign({}, _.cloneDeep(vifBase), { id: 'noMonths' }),
+  mixedMonths: Object.assign({}, _.cloneDeep(vifBase), { id: 'mixedMonths' }),
+  mixedLanguageMonths: Object.assign({}, _.cloneDeep(vifBase), { id: 'mixedLanguageMonths' })
 };
 
 
@@ -153,7 +153,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.basicEnglish, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.basicEnglish, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -171,7 +171,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.abbrvEnglish, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.abbrvEnglish, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -189,7 +189,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.basicRussian, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.basicRussian, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -207,7 +207,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.abbrvRussian, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.abbrvRussian, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -225,7 +225,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.noMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.noMonths, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -243,7 +243,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.mixedMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.mixedMonths, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).
@@ -261,7 +261,7 @@ describe('UngroupedCategoricalDataManager', () => {
         ]
       };
       return UngroupedCategoricalDataManager.getData(
-        inputVifs.mixedLanguageMonths, {MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100}).
+        inputVifs.mixedLanguageMonths, { MAX_ROW_COUNT: 1000, MAX_GROUP_COUNT: 100 }).
         then((response) => {
           assert.deepEqual(response, expectedTable);
         }).

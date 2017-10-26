@@ -1,4 +1,4 @@
-import airbrake, {__RewireAPI__ as AirbrakeAPI} from 'common/airbrake';
+import airbrake, { __RewireAPI__ as AirbrakeAPI } from 'common/airbrake';
 import ieFilter from 'common/airbrake/filters/ie';
 import environmentFilter from 'common/airbrake/filters/environment';
 
@@ -58,12 +58,12 @@ describe('airbrake', function() {
 
     it('passes projectId, and projectKey to AirbrakeJs', function() {
       airbrake.init('PROJECT_ID', 'PROJECT_KEY');
-      sinon.assert.calledWith(ClientSpy, { projectId: "PROJECT_ID", projectKey: "PROJECT_KEY" });
+      sinon.assert.calledWith(ClientSpy, { projectId: 'PROJECT_ID', projectKey: 'PROJECT_KEY' });
     });
 
     it('adds a default reporter', function() {
       airbrake.init('PROJECT_ID', 'PROJECT_KEY');
-      sinon.assert.calledWith(addReporterSpy, sinon.match.func);;
+      sinon.assert.calledWith(addReporterSpy, sinon.match.func);
     });
   });
 
@@ -73,12 +73,12 @@ describe('airbrake', function() {
     });
 
     it('logs the payload to the console', function() {
-      airbrake.notify({error: 'bah humbug'});
-      sinon.assert.calledWith(consoleErrorStub, notifyMatcher, {error: 'bah humbug'});
+      airbrake.notify({ error: 'bah humbug' });
+      sinon.assert.calledWith(consoleErrorStub, notifyMatcher, { error: 'bah humbug' });
     });
 
     it('passes the payload to the AirbrakeJs client', function() {
-      const payload = {error: 'foo bar'}
+      const payload = { error: 'foo bar' };
       airbrake.notify(payload);
       sinon.assert.calledWith(notifySpy, payload);
     });
@@ -90,7 +90,7 @@ describe('airbrake', function() {
     });
 
     it('passes the filter callback to the AirbrakeJs client', function() {
-      const fakeFilter = function(notice) { return notice };
+      const fakeFilter = function(notice) { return notice; };
 
       airbrake.addFilter(fakeFilter);
       sinon.assert.calledWith(addFilterSpy, fakeFilter);

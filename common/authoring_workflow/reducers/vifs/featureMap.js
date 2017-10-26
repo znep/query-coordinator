@@ -41,8 +41,8 @@ export default function featureMap(state, action) {
       break;
 
     case actions.SET_BASE_LAYER_OPACITY:
-      var opacity = parseFloat(action.baseLayerOpacity);
-      _.set(state, 'configuration.baseLayerOpacity', _.isFinite(opacity) ? opacity : null);
+      var baseLayerOpacity = parseFloat(action.baseLayerOpacity);
+      _.set(state, 'configuration.baseLayerOpacity', _.isFinite(baseLayerOpacity) ? baseLayerOpacity : null);
       break;
 
     case actions.SET_ROW_INSPECTOR_TITLE_COLUMN_NAME:

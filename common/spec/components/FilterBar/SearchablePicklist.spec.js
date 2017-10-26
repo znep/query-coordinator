@@ -333,7 +333,7 @@ describe('SearchablePicklist', () => {
   describe('selected values', () => {
     it('renders', () => {
       const element = renderComponent(SearchablePicklist, getProps({
-        selectedOptions: [{title: 'Pesto', value: 'Pesto'}]
+        selectedOptions: [{ title: 'Pesto', value: 'Pesto' }]
       }));
 
       assert.isNotNull(getSelectedOptions(element));

@@ -6,17 +6,17 @@ import { shallow } from 'enzyme';
 
 describe('components/AccordionPane', () => {
   it('renders', () => {
-    const element = shallow(<AccordionPane title="t-pane"/>);
+    const element = shallow(<AccordionPane title="t-pane" />);
     assert.isNotNull(element);
   });
 
   it('is closed by default', () => {
-    const element = shallow(<AccordionPane title="t-pane"/>);
+    const element = shallow(<AccordionPane title="t-pane" />);
     assert.equal(element.dive().find('.socrata-accordion-pane-title').prop('aria-expanded'), 'false');
   });
 
   it('is open if isOpen is set to true', () => {
-    const element = shallow(<AccordionPane title="t-pane" isOpen={true} />);
+    const element = shallow(<AccordionPane title="t-pane" isOpen />);
     assert.equal(element.dive().find('.socrata-accordion-pane-title').prop('aria-expanded'), 'true');
   });
 

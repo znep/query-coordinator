@@ -20,11 +20,11 @@ describe('SvgHistogram', function() {
     {
       bucketType: 'linear',
       rows: [
-        [ 0, 10, 5 ],
-        [ 10, 20, 1 ],
-        [ 20, 30, 15 ],
-        [ 30, 40, 20 ],
-        [ 40, 50, 25 ]
+        [0, 10, 5],
+        [10, 20, 1],
+        [20, 30, 15],
+        [30, 40, 20],
+        [40, 50, 25]
       ],
       columns: [
         'bucket_start', 'bucket_end', 'measure'
@@ -145,7 +145,7 @@ describe('SvgHistogram', function() {
     if ($('#chart').length) {
       throw new Error('A test in this spec file did not clean up its chart. This may cause downstream test failures.');
     }
-    I18n.translations = {}
+    I18n.translations = {};
   });
 
   describe('when called with data', function() {
@@ -170,14 +170,14 @@ describe('SvgHistogram', function() {
 
     it('should create columns with a defined width', function() {
 
-      histogram.chart.render(null, testData)
+      histogram.chart.render(null, testData);
 
       expect(parseFloat($('rect.column').attr('width'))).to.be.above(0);
     });
 
     it('should place the columns above the axis', function() {
 
-      histogram.chart.render(null, testData)
+      histogram.chart.render(null, testData);
 
       var xAxis = histogram.element.find('.x.axis .domain');
       var xAxisPosition = Math.round(xAxis.offset().top + xAxis.outerHeight());
@@ -196,11 +196,11 @@ describe('SvgHistogram', function() {
         {
           bucketType: 'linear',
           rows: [
-            [ 0, 10, 5000 ],
-            [ 10, 20, 10000 ],
-            [ 20, 30, 1 ], // rounds up
-            [ 30, 40, 0 ], // stays at 0
-            [ 40, 50, 20005 ]
+            [0, 10, 5000],
+            [10, 20, 10000],
+            [20, 30, 1], // rounds up
+            [30, 40, 0], // stays at 0
+            [40, 50, 20005]
           ],
           columns: [
             'bucket_start', 'bucket_end', 'measure'
@@ -208,7 +208,7 @@ describe('SvgHistogram', function() {
         }
       ];
 
-      histogram.chart.render(null, testData)
+      histogram.chart.render(null, testData);
 
       var columns = histogram.element.find('rect.column');
       expect(columns.length).to.equal(5);
@@ -218,7 +218,7 @@ describe('SvgHistogram', function() {
   });
 
   describe('when rendered in different sized containers', () => {
-    afterEach( () => {
+    afterEach(() => {
       removeHistogram(histogram);
     });
 
@@ -255,7 +255,7 @@ describe('SvgHistogram', function() {
       histogram = createHistogram(null, {
         configuration: {
           measureAxisMinValue: 2,
-          measureAxisMaxValue: 1,
+          measureAxisMaxValue: 1
         }
       });
       histogram.chart.render(null, testData);
@@ -294,8 +294,8 @@ describe('SvgHistogram', function() {
     describe('with a domain including zero (positive side)', function() {
       it('should display an error', function() {
         validateDataCausesError([
-          [ 0, 1, 5 ],
-          [ 1, 10, 5 ]
+          [0, 1, 5],
+          [1, 10, 5]
         ]);
       });
     });
@@ -303,8 +303,8 @@ describe('SvgHistogram', function() {
     describe('with a domain including zero (negative side)', function() {
       it('should display an error', function() {
         validateDataCausesError([
-          [ -10, -1, 5 ],
-          [ -1, 0, 5 ]
+          [-10, -1, 5],
+          [-1, 0, 5]
         ]);
       });
     });
@@ -312,11 +312,11 @@ describe('SvgHistogram', function() {
     describe('with a domain crossing zero', function() {
       it('should display an error', function() {
         validateDataCausesError([
-          [ -10, -1, 5 ],
-          [ 1, 10, 5 ]
+          [-10, -1, 5],
+          [1, 10, 5]
         ]);
         validateDataCausesError([
-          [ -10, 10, 5 ]
+          [-10, 10, 5]
         ]);
       });
     });
@@ -357,7 +357,7 @@ describe('SvgHistogram', function() {
 
       it('should emit an event in which the `element` property is the real column and the content contains the value and series name', function(done) {
 
-        histogram.chart.render(null, testData)
+        histogram.chart.render(null, testData);
 
         var columnUnderlay = histogram.element.find('rect.column-underlay').get(0);
         var column = histogram.element.find('rect.column').get(0);
@@ -380,7 +380,7 @@ describe('SvgHistogram', function() {
 
       it('should emit an event in which the `element` property is the column itself and the content contains the value and series name', function(done) {
 
-        histogram.chart.render(null, testData)
+        histogram.chart.render(null, testData);
 
         var column = histogram.element.find('rect.column').get(0);
 
@@ -402,7 +402,7 @@ describe('SvgHistogram', function() {
 
       it('should emit an event in which the `element` property is the column itself and the content contains the value and series name', function(done) {
 
-        histogram.chart.render(null, testData)
+        histogram.chart.render(null, testData);
 
         var column = histogram.element.find('rect.column').get(1);
 

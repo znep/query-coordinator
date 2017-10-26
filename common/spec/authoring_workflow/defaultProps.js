@@ -12,8 +12,8 @@ export default function(overrides) {
   const metadata = _.merge({}, defaultMetadata, {
     domain: 'domain',
     datasetUid: 'xxxx-xxxx',
-    data: {columns: [{fieldName: 'test', name: 'Testing', renderTypeName: 'text'}]},
-    curatedRegions: [{name: 'Region', uid: 'four-four'}]
+    data: { columns: [{ fieldName: 'test', name: 'Testing', renderTypeName: 'text' }] },
+    curatedRegions: [{ name: 'Region', uid: 'four-four' }]
   });
 
   return _.merge({}, {

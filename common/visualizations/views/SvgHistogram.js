@@ -218,7 +218,7 @@ function SvgHistogram($element, vif, options) {
         {
           x0: bucketStartFromRow(row),
           x1: bucketEndFromRow(row),
-          values: [ measureFromRow(row) ] // Note provision for multiple values.
+          values: [measureFromRow(row)] // Note provision for multiple values.
         }
       ))
     );
@@ -452,7 +452,7 @@ function SvgHistogram($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({referenceLines});
+        const legendItems = self.getLegendItems({ referenceLines });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -943,8 +943,8 @@ function SvgHistogram($element, vif, options) {
   }
 
   function bucketTitleHTML(bucketData) {
-    //TODO units
-    const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+    // TODO units
+    const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
     return `${ColumnFormattingHelpers.formatValueHTML(bucketData.x0, column, dataToRender[0], true)} to ${ColumnFormattingHelpers.formatValueHTML(bucketData.x1, column, dataToRender[0], true)}`;
   }
 
@@ -964,19 +964,19 @@ function SvgHistogram($element, vif, options) {
     var value = datum.value;
     var valueHTML;
     var payload = null;
-    var $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    var $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).
+        $('<td>', { 'colspan': 2 }).
           html(
             (titleHTML) ? titleHTML : ''
           )
         );
-    var $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+    var $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
       text(label).
       css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
-    var $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    var $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    var $table = $('<table>', {'class': 'socrata-flyout-table'});
+    var $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    var $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+    var $table = $('<table>', { 'class': 'socrata-flyout-table' });
 
     if (value === null) {
       valueHTML = I18n.t('shared.visualizations.charts.common.no_value');

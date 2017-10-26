@@ -9,13 +9,13 @@ import CustomizationTabs from 'common/authoring_workflow/components/Customizatio
 function defaultProps() {
   return {
     tabs: [
-      {id: 'hello-world', title: 'Hello World', paneComponent: 'span'},
-      {id: 'hello-you', title: 'Hello You', paneComponent: 'span'}
+      { id: 'hello-world', title: 'Hello World', paneComponent: 'span' },
+      { id: 'hello-you', title: 'Hello You', paneComponent: 'span' }
     ],
     selection: 'hello-you',
     onTabNavigation: sinon.stub()
-  }
-};
+  };
+}
 
 describe('CustomizationTabs', function() {
   var component;

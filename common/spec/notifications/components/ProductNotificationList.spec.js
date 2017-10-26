@@ -1,4 +1,4 @@
-import renderLocalizationElement from '../renderLocalizationComponent'
+import renderLocalizationElement from '../renderLocalizationComponent';
 
 import ProductNotificationList from 'common/notifications/components/ProductNotificationList/ProductNotificationList';
 

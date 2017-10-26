@@ -216,7 +216,7 @@ function getData(vif, options) {
 function makeValueComparator(direction, transformer = _.identity) {
   const _compare = (direction === 'asc') ? _.gt : _.lt;
 
-  return (a, b) =>  {
+  return (a, b) => {
     if (a === b) {
       return 0;
     } else {

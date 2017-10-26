@@ -11,7 +11,7 @@ export class DebouncedTextArea extends React.Component {
     super(props);
 
     if (_.isUndefined(props.value)) {
-      throw new Error(`DebouncedTextArea needs "value" property to be set.`);
+      throw new Error('DebouncedTextArea needs "value" property to be set.');
     }
 
     this.state = {
@@ -37,12 +37,12 @@ export class DebouncedTextArea extends React.Component {
     this.timeoutId = setTimeout(() => {
       this.props.onDebouncedInputStop();
       return this.props.onChange(event);
-    }, INPUT_DEBOUNCE_MILLISECONDS)
+    }, INPUT_DEBOUNCE_MILLISECONDS);
   }
 
   render() {
     const props = _.omit(this.props, ['onDebouncedInputStart', 'onDebouncedInputStop', 'vifAuthoring']);
-    return <textarea {...props} value={this.state.value} onChange={this.handleChange}/>;
+    return <textarea {...props} value={this.state.value} onChange={this.handleChange} />;
   }
 }
 
@@ -65,7 +65,7 @@ function mapDispatchToProps(dispatch) {
 
     onDebouncedInputStop: () => {
       dispatch(setUserIdle());
-    },
+    }
   };
 }
 

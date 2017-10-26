@@ -118,7 +118,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         then(function() {
           visualization.render(renderState.vif, renderState.fetchedData);
         }).catch(function() {
-          updateState({error: true});
+          updateState({ error: true });
         });
     }
   }
@@ -325,7 +325,7 @@ $.fn.socrataTable = function(originalVif, locale) {
       newOrder = [{
         columnName: columnName,
         ascending: true
-      }]
+      }];
     }
 
     _.set(renderState.vif, 'configuration.order', newOrder);
@@ -593,7 +593,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         pageSize: inlineDataProvider.getRowCount(),
         rows: inlineDataProvider.getRows(),
         rowIds: inlineDataProvider.getRowIds(),
-        startIndex: inlineDataProvider.getStartIndex(),
+        startIndex: inlineDataProvider.getStartIndex()
       },
       vif: vifWithInlineData
     };
@@ -765,7 +765,7 @@ $.fn.socrataTable = function(originalVif, locale) {
             return _.includes(
               displayableColumnsFieldNames,
               displayableColumn.fieldName
-            )
+            );
           });
           const newState = {
             busy: false,
@@ -780,7 +780,7 @@ $.fn.socrataTable = function(originalVif, locale) {
               order: order,
               whereClauseComponents: whereClauseComponents
             },
-            vif: vifForDataQuery,
+            vif: vifForDataQuery
           };
 
           $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');

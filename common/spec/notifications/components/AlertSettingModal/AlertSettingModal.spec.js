@@ -8,7 +8,7 @@ describe('AlertSettingModal', () => {
   let getPreference;
 
   beforeEach(() => {
-    getPreference = sinon.stub(AlertPreferenceAPI, 'get').returns(Promise.resolve({status: 200}));
+    getPreference = sinon.stub(AlertPreferenceAPI, 'get').returns(Promise.resolve({ status: 200 }));
   });
 
   afterEach(() => {
@@ -17,13 +17,13 @@ describe('AlertSettingModal', () => {
 
   it('renders an element', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(AlertSettingModal, {onClose: spy});
+    const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
     assert.isNotNull(element);
   });
 
   it('should renders an Modal with save, cancel buttons', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(AlertSettingModal, {onClose: spy});
+    const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
     assert.isNotNull(element.querySelectorAll('.alert-setting-modal'));
     assert.isNotNull(element.querySelectorAll('.btn-primary'));
     assert.isNotNull(element.querySelectorAll('.btn-simple'));
@@ -31,14 +31,14 @@ describe('AlertSettingModal', () => {
 
   it('on load it should get all the saved preferences', () => {
     const spy = sinon.spy();
-    renderLocalizationElement(AlertSettingModal, {onClose: spy});
+    renderLocalizationElement(AlertSettingModal, { onClose: spy });
     sinon.assert.calledOnce(getPreference);
   });
 
   it('on save should set alert preferences', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(AlertSettingModal, {onClose: spy});
-    const setPreference = sinon.stub(AlertPreferenceAPI, 'set').returns(Promise.resolve({status: 200}));
+    const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
+    const setPreference = sinon.stub(AlertPreferenceAPI, 'set').returns(Promise.resolve({ status: 200 }));
     const saveButton = element.querySelector('.save-button');
     assert.isNotNull(saveButton);
     TestUtils.Simulate.click(saveButton);
@@ -48,7 +48,7 @@ describe('AlertSettingModal', () => {
 
   it('on cancel should close the modal', () => {
     const spy = sinon.spy();
-    const element = renderLocalizationElement(AlertSettingModal, {onClose: spy});
+    const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
     const cancelButton = element.querySelector('.cancel-button');
     assert.isNotNull(cancelButton);
     TestUtils.Simulate.click(cancelButton);

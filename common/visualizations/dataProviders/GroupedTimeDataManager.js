@@ -57,7 +57,7 @@ function getData(vif, options) {
     // repeating the grouping column name in the GROUP BY clause.
     const queryString = [
       'SELECT',
-        `\`${state.groupingColumnName}\` AS ${SoqlHelpers.dimensionAlias()}`,
+      `\`${state.groupingColumnName}\` AS ${SoqlHelpers.dimensionAlias()}`,
       whereClause,
       `GROUP BY \`${state.groupingColumnName}\``,
       `ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}`,
@@ -222,8 +222,8 @@ function getData(vif, options) {
     );
     const queryString = [
       'SELECT',
-        `${state.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      `${state.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `GROUP BY ${state.dateTruncFunction}(${groupByClause})`,
       `ORDER BY ${orderByClause}`,
@@ -410,7 +410,7 @@ function getData(vif, options) {
   if (
     initialState.columnName === null || initialState.groupingColumnName === null
   ) {
-    return Promise.resolve({columns: [], rows: []});
+    return Promise.resolve({ columns: [], rows: [] });
   }
 
   return Promise.resolve(initialState).

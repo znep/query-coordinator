@@ -46,49 +46,49 @@ export const customPalette = {
 };
 
 export const customPaletteVif = {
-  "format": {
-    "type": "visualization_interchange_format",
-    "version": 2
+  'format': {
+    'type': 'visualization_interchange_format',
+    'version': 2
   },
-  "configuration": {
-    "viewSourceDataLink": true,
-    "showDimensionLabels": true,
-    "xAxisScalingMode": "pan",
-    "showLegend": true
+  'configuration': {
+    'viewSourceDataLink': true,
+    'showDimensionLabels': true,
+    'xAxisScalingMode': 'pan',
+    'showLegend': true
   },
-  "description": "",
-  "series": [
+  'description': '',
+  'series': [
     {
-      "color": {
-        "primary": "#71abd9",
-        "secondary": "#71abd9",
-        "highlight": "#cccccc",
-        "palette": "custom"
+      'color': {
+        'primary': '#71abd9',
+        'secondary': '#71abd9',
+        'highlight': '#cccccc',
+        'palette': 'custom'
       },
-      "dataSource": {
-        "datasetUid": "mock-viif",
-        "dimension": {
-          "columnName": "plausibility",
-          "aggregationFunction": null,
-          "grouping": {
-            "columnName": "plausibility"
+      'dataSource': {
+        'datasetUid': 'mock-viif',
+        'dimension': {
+          'columnName': 'plausibility',
+          'aggregationFunction': null,
+          'grouping': {
+            'columnName': 'plausibility'
           }
         },
-        "domain": "example.com",
-        "measure": {
-          "columnName": null,
-          "aggregationFunction": "count"
+        'domain': 'example.com',
+        'measure': {
+          'columnName': null,
+          'aggregationFunction': 'count'
         },
-        "orderBy": {
-          "parameter": "measure",
-          "sort": "desc"
+        'orderBy': {
+          'parameter': 'measure',
+          'sort': 'desc'
         },
-        "type": "socrata.soql",
-        "filters": []
+        'type': 'socrata.soql',
+        'filters': []
       },
-      "label": null,
-      "type": "columnChart"
+      'label': null,
+      'type': 'columnChart'
     }
   ],
-  "title": ""
+  'title': ''
 };

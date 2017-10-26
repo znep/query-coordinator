@@ -30,7 +30,7 @@ export class CheckboxFilter extends Component {
 
     // get the initial state from props
     const { filter } = props;
-    
+
     const selectedValues = _.map(filter.arguments, (argument) => {
       if (_.includes(['IS NULL', 'IS NOT NULL'], argument.operator)) {
         return null;
@@ -174,7 +174,7 @@ export class CheckboxFilter extends Component {
 
     const options = _.filter([nullOption, trueOption, falseOption], (option) => {
       return !_.includes(selectedValues, this.stringToBoolean(option.value));
-    })
+    });
 
     const selectedOptions = _.map(selectedValues, (selectedValue) => {
       return {

@@ -51,7 +51,7 @@ export class DebouncedInput extends React.Component {
     this.timeoutId = setTimeout(() => {
       this.props.onDebouncedInputStop();
       return this.props.onChange(event);
-    }, INPUT_DEBOUNCE_MILLISECONDS)
+    }, INPUT_DEBOUNCE_MILLISECONDS);
   }
 
   handleKeyDown(event) {
@@ -72,9 +72,9 @@ export class DebouncedInput extends React.Component {
     );
 
     if (this.usingChecked) {
-      return <input {...props} checked={this.state.checked} onChange={this.handleChange}/>;
+      return <input {...props} checked={this.state.checked} onChange={this.handleChange} />;
     } else {
-      return <input {...props} value={this.state.value} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>;
+      return <input {...props} value={this.state.value} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />;
     }
   }
 }
@@ -104,7 +104,7 @@ function mapDispatchToProps(dispatch) {
 
     onDebouncedInputStop: () => {
       dispatch(setUserIdle());
-    },
+    }
   };
 }
 

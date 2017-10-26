@@ -53,7 +53,7 @@ export default function barChart(state, action) {
     case actions.UPDATE_CUSTOM_COLOR_PALETTE: {
       const { dimensionGroupingColumnName, group, selectedColor } = action;
       const path = ['series', 0, 'color', 'customPalette', dimensionGroupingColumnName, group, 'color'];
-      _.set(state, path, selectedColor)
+      _.set(state, path, selectedColor);
       break;
     }
 

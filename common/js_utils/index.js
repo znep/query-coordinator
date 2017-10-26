@@ -263,7 +263,7 @@ var utils = {
     switch (locale) {
       case 'en':
       case 'zh':
-       return ',';
+        return ',';
 
       case 'ca':
       case 'es':
@@ -293,7 +293,7 @@ var utils = {
     switch (locale) {
       case 'en':
       case 'zh':
-       return '.';
+        return '.';
 
       case 'ca':
       case 'es':
@@ -331,7 +331,7 @@ var utils = {
    * Gets the user timezone from the browser
    */
   getTimeZone: function() {
-    jstz.determine().name()
+    jstz.determine().name();
   },
 
   /**
@@ -453,6 +453,7 @@ var utils = {
     // If input is numeric, decimal will always be period. Otherwise look for period, comma and default character respectively.
     var periodIndex = value.lastIndexOf('.');
     var commaIndex = value.lastIndexOf(',');
+    // eslint-disable-next-line no-nested-ternary
     var nonNumericDecimalCharacter = periodIndex > commaIndex ? '.' : (commaIndex != -1 ? ',' : defaultOptions.decimalCharacter);
     var decimalCharacterToLookFor = isNumeric ? '.' : nonNumericDecimalCharacter;
 

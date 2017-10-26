@@ -186,7 +186,7 @@ $.fn.socrataChoroplethMap = function(vif) {
             logError(error);
           }
         );
-      }
+    }
     );
 
   function getRenderOptions(vifToRender) {
@@ -512,15 +512,15 @@ $.fn.socrataChoroplethMap = function(vif) {
 
       newVif.filters.
         push(
-          {
-            'columnName': columnName,
-            'function': 'binaryComputedGeoregionOperator',
-            'arguments': {
-              'computedColumnName': newVif.configuration.computedColumnName,
-              'operator': '=',
-              'operand': payload.shapefileFeatureId
-            }
+        {
+          'columnName': columnName,
+          'function': 'binaryComputedGeoregionOperator',
+          'arguments': {
+            'computedColumnName': newVif.configuration.computedColumnName,
+            'operator': '=',
+            'operand': payload.shapefileFeatureId
           }
+        }
         );
     }
 

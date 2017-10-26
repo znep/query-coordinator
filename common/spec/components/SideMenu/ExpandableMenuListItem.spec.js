@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Simulate } from 'react-dom/test-utils';
-import { renderComponent  } from '../../helpers';
+import { renderComponent } from '../../helpers';
 import { ExpandableMenuListItem } from 'components/SideMenu';
 
 describe('ExpandableMenuListItem', () => {

@@ -49,7 +49,7 @@ function getData(vif, seriesIndex) {
 
     // Make the appropriate query to fetch bucketed data once bucketing scheme is known
     then((bucketingOptions) => fetchBucketedData(bucketingOptions, vif, seriesIndex));
-};
+}
 
 function dataProvider(vif, seriesIndex) {
   var series = vif.series[seriesIndex];
@@ -65,18 +65,18 @@ function dataProvider(vif, seriesIndex) {
  * @returns Promise
  */
 function fetchDomain(vif, seriesIndex) {
-  var columnNames = [ 'min', 'max' ];
+  var columnNames = ['min', 'max'];
   var queryTemplate = '$query=SELECT min({column}) as `min`, max({column}) as `max`';
   var columnDomainQuery = queryTemplate.format({
     column: SoqlHelpers.dimension(vif, seriesIndex)
   });
 
-  return dataProvider(vif, seriesIndex). //TODO negative domain.
+  return dataProvider(vif, seriesIndex). // TODO negative domain.
     getRows(columnNames, columnDomainQuery).
     // Convert the SoqlDataProvider response into an object containing min and max keys.
     then((response) => _.map(_.head(response.rows), parseFloat)).
     then((values) => _.zipObject(columnNames, values));
-};
+}
 
 /**
  * Given a set of bucketingOptions, makes the SoQL requests to bucket the data appropriately and
@@ -149,8 +149,8 @@ function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
 function transformBucketedData(bucketingOptions, response) {
   // Transform the array of arrays into an array of objects, each with 'magnitude' and 'value' keys.
   var data = _.chain(response.rows).
-      map((pair) =>_.map(pair, parseFloat)).
-      map((parsed) => _.zipObject([ 'magnitude', 'value' ], parsed)).
+      map((pair) => _.map(pair, parseFloat)).
+      map((parsed) => _.zipObject(['magnitude', 'value'], parsed)).
       value();
 
   var bucketedData = DistributionChartHelpers.bucketData(data, bucketingOptions);
@@ -163,7 +163,7 @@ function transformBucketedData(bucketingOptions, response) {
     bucketedData: bucketedData,
     bucketingOptions: bucketingOptions
   };
-};
+}
 
 $.fn.socrataSvgHistogram = function(originalVif, options) {
   originalVif = VifHelpers.migrateVif(originalVif);
@@ -229,7 +229,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.t('shared.visualizations.charts.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -277,7 +277,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
         ]).
         then(
           function(resolutions) {
-            const [ newColumns, datasetMetadata, ...dataResponses ] = resolutions;
+            const [newColumns, datasetMetadata, ...dataResponses] = resolutions;
             const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
               const measureIndex = dataResponse.columns.indexOf('measure');
               return dataResponse.rows.map((row) => row[measureIndex]);
@@ -303,7 +303,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
               visualization.render(newVif, dataResponses, newColumns);
             }
           }
-        )
+        );
     }).catch(handleError);
   }
 
@@ -311,7 +311,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
     return getData(vifToRender, seriesIndex).then((data) => ({
       bucketType: data.bucketingOptions.bucketType,
       rows: data.bucketedData.map((row) =>
-        [ row.start, row.end, row.value ]
+        [row.start, row.end, row.value]
       ),
       columns: [
         'bucket_start', 'bucket_end', 'measure'

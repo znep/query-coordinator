@@ -26,7 +26,7 @@ export default class Localization extends React.Component {
     _.bindAll(this, ['getLocalePrefix']);
   }
 
-  assertKeysAreNew() {
+  assertKeysAreNew() { // eslint-disable-line react/sort-comp
     const { translations } = this.props;
 
     const overwrittenKeys = _.reject(_.intersection(

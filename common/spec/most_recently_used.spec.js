@@ -105,11 +105,12 @@ describe('most_recently_used', () => {
     mru.add('feed-face');
     stubDate(10);
     mru.add('fake-beef');
-    assert.deepEqual(mru.keys(), ['fake-beef', 'feed-face'])
+    assert.deepEqual(mru.keys(), ['fake-beef', 'feed-face']);
   });
 
   it('catches and logs JSON parse errors', () => {
-    let called, message;
+    let called;
+    let message;
     const originalConsole = window.console;
     const spy = { error: (msg) => { called = true; message = msg; } };
     const brokenNamespace = 'test:namespace:broken';
@@ -124,7 +125,8 @@ describe('most_recently_used', () => {
   });
 
   it('uses the logger when present', () => {
-    let called, message;
+    let called;
+    let message;
     const logger = (msg) => { called = true; message = msg; };
     new MostRecentlyUsed({ namespace: 'logger test', logger: logger }).add('logg-meee');
     assert(called);

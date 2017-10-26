@@ -45,16 +45,16 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
   if (isUnaggregatedQuery) {
     queryString = [
       'SELECT',
-        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `LIMIT ${limit}`
     ].join(' ');
   } else {
     queryString = [
       'SELECT',
-        `${options.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      `${options.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `GROUP BY ${options.dateTruncFunction}(${groupByClause})`,
       `LIMIT ${limit}`
@@ -241,11 +241,11 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
   let nextRowStartDate;
   let lastRowVisited = 0;
   let duration;
-  
+
   switch (precision) {
     case 'year':
       // Just do full year subtraction here.  If our timespan included a leap year,
-      // moment's duration.asYears() returned a fractional year (i.e. 5.002), which 
+      // moment's duration.asYears() returned a fractional year (i.e. 5.002), which
       // we were ceil-ing and getting an extra year in our monotonicRowCount.
       //
       const years = endDateMoment.toDate().getFullYear() - startDateMoment.toDate().getFullYear();

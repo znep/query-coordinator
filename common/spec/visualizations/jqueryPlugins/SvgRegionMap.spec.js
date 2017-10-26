@@ -6,9 +6,6 @@ import { soqlVifValidator } from 'common/visualizations/dataProviders/SoqlVifVal
 import { __RewireAPI__ as SocrataSvgRegionMapAPI } from 'common/visualizations/SvgRegionMap';
 
 describe('SvgRegionMap jQuery component', function() {
-
-  'use strict';
-
   var GEOJSON_RESPONSE;
   var SHAPEFILE_METADATA_RESPONSE;
   var FEATURE_EXTENT_RESPONSE;
@@ -44,7 +41,7 @@ describe('SvgRegionMap jQuery component', function() {
         no_value: 'No value',
         flyout_unfiltered_amount_label: 'Total',
         flyout_filtered_amount_label: 'Filtered',
-        flyout_selected_notice: 'This column is selected',
+        flyout_selected_notice: 'This column is selected'
       },
       shapefile: {
         geometryLabel: 'ward',
@@ -184,7 +181,7 @@ describe('SvgRegionMap jQuery component', function() {
       describe('on initialization', function() {
         var stubRegionMap;
 
-        beforeEach(function () {
+        beforeEach(function() {
           stubRegionMap = sinon.stub().returns({
             render: _.noop,
             renderError: _.noop,

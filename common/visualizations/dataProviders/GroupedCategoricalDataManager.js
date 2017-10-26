@@ -53,8 +53,8 @@ function getData(vif, options) {
       options.MAX_ROW_COUNT;
     const dimensionQueryString = [
       'SELECT',
-        `\`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},`,
-        `${SoqlHelpers.aggregationClause(state.vif, 0, 'measure')} AS ${SoqlHelpers.measureAlias()}`,
+      `\`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},`,
+      `${SoqlHelpers.aggregationClause(state.vif, 0, 'measure')} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `GROUP BY \`${state.columnName}\``,
       `ORDER BY ${aliasForOrderByParameter} ${orderBySort}`,
@@ -339,8 +339,8 @@ function getData(vif, options) {
               nonNullDimensionValuesFilter,
               nonNullGroupingValuesFilter
             ]),
-            {query: "Anteater 1",
-             requireGroupingInSelect: true}
+            { query: 'Anteater 1',
+             requireGroupingInSelect: true }
           )
         });
 
@@ -354,8 +354,8 @@ function getData(vif, options) {
                 nullDimensionFilter,
                 nonNullGroupingValuesFilter
               ]),
-              {query: "Anteater 2",
-               requireGroupingInSelect: true}
+              { query: 'Anteater 2',
+               requireGroupingInSelect: true }
             )
           });
         }
@@ -367,8 +367,8 @@ function getData(vif, options) {
                 nonNullDimensionValuesFilter,
                 nullGroupingFilter
               ]),
-              {query: "Anteater 3",
-               requireGroupingInSelect: true}
+              { query: 'Anteater 3',
+               requireGroupingInSelect: true }
             )
           });
         }
@@ -380,8 +380,8 @@ function getData(vif, options) {
                 nullDimensionFilter,
                 nullGroupingFilter
               ]),
-              {query: "Anteater 4",
-               requireGroupingInSelect: true}
+              { query: 'Anteater 4',
+               requireGroupingInSelect: true }
             )
           });
         }
@@ -397,8 +397,8 @@ function getData(vif, options) {
               nonNullGroupingFilter,
               invertedNonNullGroupingValuesFilter
             ]),
-            {query: "Beaver 1",
-             requireGroupingInSelect: false}
+            { query: 'Beaver 1',
+             requireGroupingInSelect: false }
           )
         });
 
@@ -410,8 +410,8 @@ function getData(vif, options) {
                 nonNullGroupingFilter,
                 invertedNonNullGroupingValuesFilter
               ]),
-              {query: "Beaver 2",
-               requireGroupingInSelect: false}
+              { query: 'Beaver 2',
+               requireGroupingInSelect: false }
             )
           });
         }
@@ -469,11 +469,11 @@ function getData(vif, options) {
             }
 
             groupingData.push({
-              query: "Chinchilla",
+              query: 'Chinchilla',
               vif: generateGroupingVifWithFilters(
                 invertedDimensionValuesFilters,
-                {query: "Chinchilla",
-                 requireGroupingInSelect: false}),
+                { query: 'Chinchilla',
+                 requireGroupingInSelect: false }),
               dimensionValue: otherCategoryName, // XXX: critical
               groupingValue
             });
@@ -561,8 +561,8 @@ function getData(vif, options) {
           groupingData.push({
             vif: generateGroupingVifWithFilters(
               invertedEverythingValuesFilters,
-              {query: "Dingo",
-               requireGroupingInSelect: false}),
+              { query: 'Dingo',
+               requireGroupingInSelect: false }),
             dimensionValue: otherCategoryName,
             groupingValue: otherCategoryName
           });
@@ -582,7 +582,7 @@ function getData(vif, options) {
     return new Promise((resolve, reject) => {
       Promise.all(groupingRequests).then((groupingResponses) => {
         groupingData.forEach((groupingDatum, i) => {
-          if (groupingDatum.vif.query === "Dingo") {
+          if (groupingDatum.vif.query === 'Dingo') {
             const measureIndex = groupingResponses[i].columns.indexOf('measure');
             const sumOfRows = _.sumBy(groupingResponses[i].rows, measureIndex);
             groupingDatum.data = {
@@ -591,9 +591,8 @@ function getData(vif, options) {
                 [groupingDatum.dimensionValue, sumOfRows]
               ]
             };
-          }
-          // everything else
-          else {
+          } else {
+            // everything else
             groupingDatum.data = groupingResponses[i];
           }
         });
@@ -674,7 +673,7 @@ function getData(vif, options) {
 
     // Convert the table (a map data structure) into an array of rows suitable
     // for rendering, with entries ordered as specified by dataToRenderColumns:
-    const nullConverterFn = (x) => { return (x === "null") ? null : x; };
+    const nullConverterFn = (x) => { return (x === 'null') ? null : x; };
     const otherIndex = _.findIndex(dataToRenderColumns, (x) => x === otherCategoryName);
     const dataToRenderRows = _.map(table, (rowData, dimension) => {
       const realDimension = nullConverterFn(dimension);
@@ -838,7 +837,7 @@ function getData(vif, options) {
     initialState.columnName === null ||
     initialState.groupingColumnName === null
   ) {
-    return Promise.resolve({columns: [], rows: []});
+    return Promise.resolve({ columns: [], rows: [] });
   }
 
   return Promise.resolve(initialState).
@@ -862,7 +861,7 @@ function getData(vif, options) {
 function makeValueComparator(direction, transformer = _.identity) {
   const _compare = (direction === 'asc') ? _.gt : _.lt;
 
-  return (a, b) =>  {
+  return (a, b) => {
     if (a === b) {
       return 0;
     } else {

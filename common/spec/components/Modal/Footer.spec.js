@@ -18,7 +18,7 @@ describe('Footer', () => {
       className: 'testing-modal-footer'
     });
 
-    element = renderPureComponent(Footer(props)); //eslint-disable-line new-cap
+    element = renderPureComponent(Footer(props)); // eslint-disable-line new-cap
 
     assert.isNotNull(element);
     assert.isTrue($(element).hasClass('testing-modal-footer'));

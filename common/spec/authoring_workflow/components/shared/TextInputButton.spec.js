@@ -21,7 +21,7 @@ describe('TextInputButton', () => {
     assert.equal(textInput.getAttribute('id'), 'Id');
   });
 
-  it('should call change callback when user changes the value', () => {
+  it('should call change callback when user changes the value', (done) => {
     const onChangeCallback = sinon.spy();
     const component = renderComponent(TextInputButton, {
       onChange: onChangeCallback,

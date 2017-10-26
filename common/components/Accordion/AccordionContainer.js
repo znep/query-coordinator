@@ -54,7 +54,7 @@ export default class AccordionContainer extends React.Component {
   render() {
     return (
       <div className="socrata-accordion-container">
-        { this.renderPanes() }
+        {this.renderPanes()}
       </div>
     );
   }

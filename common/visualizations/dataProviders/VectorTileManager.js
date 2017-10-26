@@ -176,15 +176,15 @@ VectorTileFeature.prototype.draw = function(tileId, offset) {
   var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
   switch (feature.type) {
-    case 1: //Point
+    case 1: // Point
       this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle, offset);
       break;
 
-    case 2: //LineString
+    case 2: // LineString
       this.drawLineString(canvas, feature.coordinates, this.getFeatureStyle);
       break;
 
-    case 3: //Polygon
+    case 3: // Polygon
       this.drawPolygon(canvas, feature.coordinates, this.getFeatureStyle);
       break;
 
@@ -434,7 +434,7 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
   // is handled by our own `renderTile` method instead (as
   // a result of needing to fetch and parse protocol buffers.
   drawTile: function(canvas, tilePoint, zoom) {
-    var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
+    var tileId = VectorTileUtil.getTileId({ x: tilePoint.x, y: tilePoint.y, zoom: zoom });
 
     this.featuresByTile[tileId] = [];
     this.totalPointsByTile[tileId] = 0;
@@ -469,7 +469,7 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
     var featurePointCount = 0;
     var tileSize = this.options.tileSize;
 
-    var style = this.getFeatureStyle({type: 1});
+    var style = this.getFeatureStyle({ type: 1 });
     var featureRadius;
     if (_.isFunction(style.radius)) {
       featureRadius = style.radius(this.map.getZoom());
@@ -531,7 +531,7 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
 
     _.each(VectorTileUtil.hotspots, function(hotspot) {
       var neighbor = _.clone(tileInfo);
-      var offset = {x: 0, y: 0};
+      var offset = { x: 0, y: 0 };
 
       _.each(hotspot, function(direction) {
         VectorTileUtil.tileIdModifiers[direction](neighbor);
@@ -818,7 +818,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
         y: e.originalEvent.clientY - canvasBoundingRect.top
       };
 
-      var tiles = [{id: e.tile.id, offset: mouseTileOffset}].
+      var tiles = [{ id: e.tile.id, offset: mouseTileOffset }].
         concat(getNeighboringTiles(e.tile, mouseTileOffset, hoverThreshold));
 
       // For each tile near the mouse, visit nodes of its quad tree and
@@ -1115,7 +1115,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
         callback: callback
       });
 
-      this.tileLoading(VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom}));
+      this.tileLoading(VectorTileUtil.getTileId({ x: tilePoint.x, y: tilePoint.y, zoom: zoom }));
 
     } else {
 
@@ -1150,7 +1150,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
   getTileData: function(tilePoint, zoom, callback) {
 
     var self = this;
-    var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
+    var tileId = VectorTileUtil.getTileId({ x: tilePoint.x, y: tilePoint.y, zoom: zoom });
     var getterPromise;
 
     // Don't re-request tiles that are already outstanding.

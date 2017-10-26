@@ -17,19 +17,17 @@ export class VisualizationPreviewContainer extends Component {
     _.bindAll(this, ['onDismissMapInfo']);
   }
 
-  renderGetStartedMessage() {
+  renderGetStartedMessage() { // eslint-disable-line react/sort-comp
     const { vifAuthoring } = this.props;
     const hasType = hasVisualizationType(vifAuthoring);
     const hasDimension = hasVisualizationDimension(vifAuthoring);
 
-    return hasType && hasDimension ?
-      null :
-      (
-        <div className="get-started-container">
-          <h5 className="get-started-title">{I18n.t('shared.visualizations.preview.get_started.title')}</h5>
-          <p className="get-started-description">{I18n.t('shared.visualizations.preview.get_started.description')}</p>
-        </div>
-      );
+    return hasType && hasDimension ? null : (
+      <div className="get-started-container">
+        <h5 className="get-started-title">{I18n.t('shared.visualizations.preview.get_started.title')}</h5>
+        <p className="get-started-description">{I18n.t('shared.visualizations.preview.get_started.description')}</p>
+      </div>
+    );
   }
 
   onDismissMapInfo() {
@@ -78,7 +76,7 @@ function mapDispatchToProps(dispatch) {
     dismissMapInfo() {
       dispatch(setMapInfoDismissed());
     }
-  }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisualizationPreviewContainer);

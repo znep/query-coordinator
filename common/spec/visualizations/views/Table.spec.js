@@ -7,7 +7,7 @@ const allLocales = require('common/i18n/config/locales').default;
 describe('Table', function() {
 
   function createTable(overrideVIF) {
-    var element = $( '<div>', {'id': 'table'});
+    var element = $('<div>', { 'id': 'table' });
 
     $('body').append(element);
 
@@ -67,7 +67,7 @@ describe('Table', function() {
         fieldName: 'header:' + index,
         name: 'header:' + index,
         renderTypeName: 'text'
-      }
+      };
     }
 
     return columns;
@@ -113,7 +113,7 @@ describe('Table', function() {
 
   var table;
 
-  beforeEach(function(){
+  beforeEach(function() {
     I18n.translations.en = allLocales.en;
   });
 
@@ -160,7 +160,7 @@ describe('Table', function() {
       var eventHandlerHasBeenFired = false;
 
       table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
-        throw 'Table did not remove handlers correctly'
+        throw new Error('Table did not remove handlers correctly');
       });
 
       table.table.destroy();
@@ -172,7 +172,7 @@ describe('Table', function() {
       table = createTable(
         {
           configuration:{
-            order: [{ascending: true, columnName: 'hello'}],
+            order: [{ ascending: true, columnName: 'hello' }],
             // If you change to true, make sure to mock out the resultant MetadataProvider request.
             viewSourceDataLink: false
           }
@@ -244,7 +244,7 @@ describe('Table', function() {
         { fieldName: 'link_description', name: 'Link (description)', renderTypeName: 'text' },
         { fieldName: 'link', name: 'Link', renderTypeName: 'text' }
       ];
-      const nbeUrlRows = [['Google', 'www.google.com']]
+      const nbeUrlRows = [['Google', 'www.google.com']];
 
       it('renders exploded URL columns as a single OBE-like URL column', function() {
         render(
@@ -394,7 +394,7 @@ describe('Table', function() {
       const data = {
         columns: [
           { fieldName: 'hello0', name: 'hello0', renderTypeName: 'text' },
-          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: lorem },
+          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: lorem }
         ]
       };
 
@@ -453,7 +453,7 @@ describe('Table', function() {
       var data = {
         columns: [
           { fieldName: 'hello0', name: 'hello0', renderTypeName: 'text' },
-          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: 'hello description' },
+          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: 'hello description' }
         ]
       };
 

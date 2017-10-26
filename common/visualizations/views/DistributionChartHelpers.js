@@ -208,7 +208,7 @@ var helpers = module.exports = {
         if (_.isPlainObject(dataByMagnitude[1])) {
           dataByMagnitude[1].value += dataByMagnitude[0].value;
         } else {
-          dataByMagnitude[1] = {magnitude: 1, value: dataByMagnitude[0].value};
+          dataByMagnitude[1] = { magnitude: 1, value: dataByMagnitude[0].value };
         }
       }
     }
@@ -258,9 +258,9 @@ var helpers = module.exports = {
       start = Math.pow(10, magnitude - 1);
       end = Math.pow(10, magnitude);
 
-      //TODO we shouldn't be doing this - it groups
-      //an infinite number of orders of magnitude into
-      //one bucket.
+      // TODO we shouldn't be doing this - it groups
+      // an infinite number of orders of magnitude into
+      // one bucket.
       if (start === 1) {
         start = 0;
       }
@@ -268,9 +268,9 @@ var helpers = module.exports = {
       start = -Math.pow(10, Math.abs(magnitude));
       end = -Math.pow(10, Math.abs(magnitude + 1));
 
-      //TODO we shouldn't be doing this - it groups
-      //an infinite number of orders of magnitude into
-      //one bucket.
+      // TODO we shouldn't be doing this - it groups
+      // an infinite number of orders of magnitude into
+      // one bucket.
       if (end === -1) {
         end = 0;
       }
@@ -287,8 +287,8 @@ var helpers = module.exports = {
   getLinearBucket: function(magnitude, value, bucketSize) {
     // Also vulnerable to floating point weirdness here; applying same fix as above for now
     // until we can settle on a formal way to deal with floating point math
-    var start = Math.round( (magnitude * bucketSize) * 1000000 ) / 1000000;
-    var end = Math.round( ((magnitude + 1) * bucketSize) * 1000000 ) / 1000000;
+    var start = Math.round((magnitude * bucketSize) * 1000000) / 1000000;
+    var end = Math.round(((magnitude + 1) * bucketSize) * 1000000) / 1000000;
 
     return {
       start: start,

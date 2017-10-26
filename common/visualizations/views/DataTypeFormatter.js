@@ -2,7 +2,7 @@ const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('common/js_utils');
 const moment = require('moment');
-const BigNumber = require('bignumber.js')
+const BigNumber = require('bignumber.js');
 // Converts GeoJSON formats to text
 const wkt = require('wellknown');
 const I18n = require('common/i18n').default;
@@ -418,7 +418,7 @@ function renderObeLocationUnsafePlainText(cellContent) {
     const { longitude, latitude } = cellContent;
     return `${humanAddress ? (humanAddress + ' ') : ''}(${latitude}°, ${longitude}°)`;
   } else if (cellContent.hasOwnProperty('coordinates')) {
-    const [ longitude, latitude ] = cellContent.coordinates;
+    const [longitude, latitude] = cellContent.coordinates;
     return `${humanAddress ? (humanAddress + ' ') : ''}(${latitude}°, ${longitude}°)`;
   } else if (humanAddress) {
     return humanAddress;
@@ -811,7 +811,7 @@ function getCellConditionalFormattingStyles(cellContent, column, conditionalForm
         }
 
         const subColumn = _.get(condition, 'subcolumn', null);
-        const conditionValue = _.get(condition, 'value', null)
+        const conditionValue = _.get(condition, 'value', null);
 
         let cellValue;
 
@@ -905,7 +905,7 @@ function _renderCurrencyNumber(amount, format) {
     }
 
     value = utils.commaify(value, format.commaifyOptions);
-    if (format.noCommas === true || format.noCommas === "true") {
+    if (format.noCommas === true || format.noCommas === 'true') {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -928,7 +928,7 @@ function _renderFinancialNumber(amount, format) {
     }
 
     value = utils.commaify(value, format.commaifyOptions);
-    if (format.noCommas === true || format.noCommas === "true") {
+    if (format.noCommas === true || format.noCommas === 'true') {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -941,7 +941,7 @@ function _renderFinancialNumber(amount, format) {
 }
 
 function _renderScientificNumber(amount, format) {
-  const value =  amount.toExponential(format.precision);
+  const value = amount.toExponential(format.precision);
 
   // no groups, so we can skip groupSeparator and commaify and noCommas
   return value.replace('.', format.decimalSeparator);
@@ -959,7 +959,7 @@ function _renderPercentageNumber(amount, format) {
 
     value = utils.commaify(value, format.commaifyOptions);
 
-    if (format.noCommas === true || format.noCommas === "true") {
+    if (format.noCommas === true || format.noCommas === 'true') {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -979,7 +979,7 @@ function _renderStandardNumber(amount, format) {
 
     value = utils.commaify(value, format.commaifyOptions);
 
-    if (format.noCommas === true || format.noCommas === "true") {
+    if (format.noCommas === true || format.noCommas === 'true') {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }

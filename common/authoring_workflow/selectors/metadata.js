@@ -28,7 +28,7 @@ export const getDisplayableColumns = createSelector(
   (domain, datasetUid, datasetMetadata) => {
 
     if (datasetMetadata) {
-      return new dataProviders.MetadataProvider({domain, datasetUid}, true).getDisplayableColumns(datasetMetadata);
+      return new dataProviders.MetadataProvider({ domain, datasetUid }, true).getDisplayableColumns(datasetMetadata);
     } else {
       return []; // No data yet.
     }
@@ -61,7 +61,7 @@ export const getValidDimensions = createSelector(
   getDatasetUid,
   getDatasetMetadata,
   (domain, datasetUid, datasetMetadata) => {
-    const datasetMetadataProvider = new dataProviders.MetadataProvider({domain, datasetUid}, true);
+    const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid }, true);
 
     return _.chain(datasetMetadata).
       get('columns').
@@ -90,7 +90,7 @@ export const getRecommendedDimensions = (state, type) => {
 export const isDimensionTypeCalendarDate = (state, column) => {
   const dimensionType = getDimensionType(state, column);
   return !_.isUndefined(dimensionType) && (dimensionType.type === 'calendar_date');
-}
+};
 
 export const getDimensionType = (state, column) => {
   const dimension = _.find(getValidDimensions(state), dimension => {
@@ -137,9 +137,9 @@ export const getValidComputedColumns = createSelector(
 export const getValidCuratedRegions = createSelector(
   getCuratedRegions,
   getValidComputedColumns,
-  (curatedRegions, computedColumns) =>  {
+  (curatedRegions, computedColumns) => {
     const notInDataset = (region) => {
-      return !_.some(computedColumns, {uid: region.uid});
+      return !_.some(computedColumns, { uid: region.uid });
     };
 
     return _.chain(curatedRegions).
@@ -165,7 +165,7 @@ export const hasRegions = createSelector(
 
 export const getAnyLocationColumn = createSelector(
   getDatasetMetadata,
-  (datasetMetadata) => _.find(datasetMetadata.columns, {renderTypeName: 'point'})
+  (datasetMetadata) => _.find(datasetMetadata.columns, { renderTypeName: 'point' })
 );
 
 export const getSoqlDataProvider = createSelector(
@@ -174,7 +174,7 @@ export const getSoqlDataProvider = createSelector(
   (domain, datasetUid) => new dataProviders.SoqlDataProvider({ domain, datasetUid }, true)
 );
 
-const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
+const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, { fieldName: column.fieldName });
 
 const isNotSystemColumn = column => {
   return !_.startsWith(column.name, ':');

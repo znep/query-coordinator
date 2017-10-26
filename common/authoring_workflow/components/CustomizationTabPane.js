@@ -15,7 +15,7 @@ export default class CustomizationTabPane extends React.Component {
 
     return <div {...attributes}>{this.props.children}</div>;
   }
-};
+}
 
 CustomizationTabPane.defaultProps = {
   show: false

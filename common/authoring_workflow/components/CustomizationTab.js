@@ -30,12 +30,12 @@ class CustomizationTab extends Component {
   listItemAttributes() {
     return {
       key: this.props.id,
-      className: classNames('tab-link', {'current': this.props.selected})
+      className: classNames('tab-link', { 'current': this.props.selected })
     };
   }
 
   render() {
-    const {id, title, icon} = this.props;
+    const { id, title, icon } = this.props;
 
     return (
       <li {...this.listItemAttributes()}>

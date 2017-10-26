@@ -17,7 +17,7 @@ describe('components/Header', () => {
   describe('when not a privileged user', () => {
     before(() => {
       savedCurrentUser = window.serverConfig.currentUser;
-      window.serverConfig.currentUser = { rights: [ ] };
+      window.serverConfig.currentUser = { rights: [] };
     });
 
     after(() => {
@@ -34,7 +34,7 @@ describe('components/Header', () => {
   describe('when a privileged user', () => {
     before(() => {
       savedCurrentUser = window.serverConfig.currentUser;
-      window.serverConfig.currentUser = { rights: [ 'can_see_all_assets_tab_siam' ] };
+      window.serverConfig.currentUser = { rights: ['can_see_all_assets_tab_siam'] };
     });
 
     after(() => {
@@ -60,7 +60,7 @@ describe('components/Header', () => {
 
     describe('when passed', () => {
       it('hides single tab', () => {
-        const props = { 'tabsToHide': [MY_ASSETS_TAB] }
+        const props = { 'tabsToHide': [MY_ASSETS_TAB] };
         const element = renderComponentWithPropsAndStore(Header, props);
         assert.isNotNull(element);
         assert.equal(element.querySelectorAll('.my-assets').length, 0);
@@ -68,7 +68,7 @@ describe('components/Header', () => {
       });
 
       it('hides multiple tabs', () => {
-        const props = { 'tabsToHide': [MY_ASSETS_TAB, SHARED_TO_ME_TAB] }
+        const props = { 'tabsToHide': [MY_ASSETS_TAB, SHARED_TO_ME_TAB] };
         const element = renderComponentWithPropsAndStore(Header, props);
         assert.isNotNull(element);
         assert.equal(element.querySelectorAll('.my-assets').length, 0);

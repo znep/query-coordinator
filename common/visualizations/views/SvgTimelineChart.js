@@ -179,8 +179,7 @@ function SvgTimelineChart($element, vif, options) {
         const measureColumnFormat = dataTable.columnFormats[measureColumnName];
         return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
       });
-    }
-    else {
+    } else {
       measureLabels = columns.map((column) => {
         return self.isGrouping() ? column || noValueLabel : column;
       });
@@ -269,22 +268,22 @@ function SvgTimelineChart($element, vif, options) {
               tickFormat('').
               tickSize(0));
 
-            xAxisBound = true;
+        xAxisBound = true;
       }
     }
-      
+
     function renderXAxis() {
       // Binding the axis to the svg elements is something that only needs to
       // happen once even if we want to update the rendered properties more
       // than once; separating the bind from the layout in this way allows us
       // to treat renderXAxis() as idempotent.
       bindXAxisOnce();
-      
+
       const renderedXAxisSvg = viewportSvg.select('.x.axis');
       const renderedXAxisBaselineSvg = viewportSvg.select('.x.axis.baseline');
 
       renderedXAxisSvg.
-        attr('transform',`translate(0,${height})`);
+        attr('transform', `translate(0,${height})`);
 
       renderedXAxisSvg.selectAll('path').
         attr('fill', 'none').
@@ -565,7 +564,7 @@ function SvgTimelineChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measureLabels, referenceLines });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -615,7 +614,7 @@ function SvgTimelineChart($element, vif, options) {
 
       xAxisPanDistance = width - viewportWidth;
       xAxisPanningEnabled = (viewportWidth !== width);
-      
+
       if (xAxisPanningEnabled) {
         self.showPanningNotice();
       } else {
@@ -630,14 +629,14 @@ function SvgTimelineChart($element, vif, options) {
 
     // Next we can set up some data that we only want to compute once.
     //
-    // The bisector is used to determine which data point or bucket to 
-    // highlight when moving along the x-axis.  For bucketed variants, 
-    // the axis is bisected on the dates themselves because the displayed 
+    // The bisector is used to determine which data point or bucket to
+    // highlight when moving along the x-axis.  For bucketed variants,
+    // the axis is bisected on the dates themselves because the displayed
     // point is shifted to be in the middle of the bucket.
     //
-    // For non-bucketed, the displayed point is the actual data point, so 
-    // we want to do the opposite, and set up bisector dates that are 
-    // mid-way between the data points in order for the highlight to 
+    // For non-bucketed, the displayed point is the actual data point, so
+    // we want to do the opposite, and set up bisector dates that are
+    // mid-way between the data points in order for the highlight to
     // behave they way you would expect as you mouse along the x-axis.
     //
     if (precision !== 'none') {
@@ -752,7 +751,7 @@ function SvgTimelineChart($element, vif, options) {
       // the width of the datum (bl.ocks.org/mbostock/7555321) would introduce
       // significant complexity, and I'm not convinced that the payoff justifies
       // the cost at the moment.
-      d3XAxis.ticks(4)
+      d3XAxis.ticks(4);
 
     } else {
 
@@ -900,7 +899,7 @@ function SvgTimelineChart($element, vif, options) {
     const seriesSvg = xAxisAndSeriesSvg.append('g').
       attr('class', 'series');
 
-    const xAxisSvg =  xAxisAndSeriesSvg.append('g').
+    const xAxisSvg = xAxisAndSeriesSvg.append('g').
       attr('class', 'x axis');
 
     const xAxisBaselineSvg = xAxisAndSeriesSvg.append('g').
@@ -1147,9 +1146,9 @@ function SvgTimelineChart($element, vif, options) {
   function handleMouseMove() {
     const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
     const rawDate = d3XScale.invert(d3.mouse(this)[0]);
-    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate)
+    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
-    
+
     const firstSeriesIndex = _.clamp(
       (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
       0,
@@ -1189,13 +1188,13 @@ function SvgTimelineChart($element, vif, options) {
       let label = series.columns[measureIndex];
       // We do not want to apply formatting if the label is `(Other)` category
       if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
-        const groupingColumn = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
+        const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
         label = _.isNil(groupingColumn) ? label : ColumnFormattingHelpers.formatValueHTML(label, groupingColumn, dataToRender, true);
       }
 
       let value = series.rows[firstSeriesIndex][measureIndex];
       if (!_.isNil(value)) {
-        const measureColumn = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+        const measureColumn = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
         value = ColumnFormattingHelpers.formatValueHTML(value, measureColumn, dataToRender);
       }
 
@@ -1262,7 +1261,7 @@ function SvgTimelineChart($element, vif, options) {
 
     if (_.isNil(flyoutData.endDate)) {
 
-      const dimensionColumn = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+      const dimensionColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
       const value = flyoutData.startDate.toString();
       title = ColumnFormattingHelpers.formatValueHTML(value, dimensionColumn, dataToRender);
 
@@ -1277,19 +1276,19 @@ function SvgTimelineChart($element, vif, options) {
       title = `${formattedStartDate} to ${formattedEndDate}`;
     }
 
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
-      append($('<td>', {'colspan': 2}).text(title ? title : ''));
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).text(title ? title : ''));
 
-    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
       append($title);
 
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
         const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
-        const column = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
+        const column = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
 
-        const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+        const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
           text(label).
           css('color', getColorByVariantAndSeriesIndex('primary', seriesIndex));
 
@@ -1305,10 +1304,10 @@ function SvgTimelineChart($element, vif, options) {
           datumValueString = `${datum.value} ${datumValueUnit}`;
         }
 
-        const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+        const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
           text(datumValueString);
 
-        return $('<tr>', {'class': 'socrata-flyout-row'}).
+        return $('<tr>', { 'class': 'socrata-flyout-row' }).
           append([
             $labelCell,
             $valueCell
@@ -1410,7 +1409,7 @@ function SvgTimelineChart($element, vif, options) {
       case 'day':
         nextDate.setDate(nextDate.getDate() + 1);
         break;
-      }
+    }
 
     return nextDate;
   }
@@ -1420,7 +1419,7 @@ function SvgTimelineChart($element, vif, options) {
   function getPrecisionNoneBisectorDates(rows) {
     let previousDate;
     const dates = [];
-    
+
     rows.forEach((row) => {
       if (_.isNil(row[0])) {
         return;
@@ -1435,7 +1434,7 @@ function SvgTimelineChart($element, vif, options) {
       previousDate = currentDate;
     });
 
-    // Push a date after the last date to be the final bisector date so that we may select 
+    // Push a date after the last date to be the final bisector date so that we may select
     // the last data point.
     //
     if (!_.isNil(previousDate)) {

@@ -41,7 +41,7 @@ export class RegionSelector extends Component {
     ]);
   }
 
-  onSelectRegion({computedColumn, curatedRegion, domain}) {
+  onSelectRegion({ computedColumn, curatedRegion, domain }) {
     var {
       vifAuthoring,
       onSelectComputedColumn,
@@ -80,7 +80,7 @@ export class RegionSelector extends Component {
           <p>{I18n.t('shared.visualizations.panes.data.fields.region.selected_region_processing')}</p>
           <p>{I18n.t('shared.visualizations.panes.data.fields.region.region_coding_duration')}</p>
           <p>{I18n.t('shared.visualizations.panes.data.fields.region.stay_or_return_later')}</p>
-          <p className="region-processing-info-last-checked"><span className="spinner-default"/> {lastCheckedMessage}</p>
+          <p className="region-processing-info-last-checked"><span className="spinner-default" /> {lastCheckedMessage}</p>
         </div>
       );
     }
@@ -92,7 +92,7 @@ export class RegionSelector extends Component {
     if (regionCodingError) {
       return (
         <div className="region-processing-error alert error">
-          <p>Oh no!<br/>There was an error trying to process your region selection.</p>
+          <p>Oh no!<br />There was an error trying to process your region selection.</p>
         </div>
       );
     }
@@ -126,7 +126,7 @@ export class RegionSelector extends Component {
     var regionAttributes = {
       id: 'region-selection',
       placeholder: I18n.t('shared.visualizations.panes.data.fields.region.placeholder'),
-      options: [ ...computedColumns, ...curatedRegions ],
+      options: [...computedColumns, ...curatedRegions],
       value: defaultRegion,
       onSelection: this.onSelectRegion,
       disabled: !hasRegions(metadata)

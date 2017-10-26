@@ -260,8 +260,7 @@ function SvgBarChart($element, vif, options) {
         const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
         return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
       });
-    }
-    else {
+    } else {
 
       // Grouped bar charts will have multiple columns. If one of those columns is null (which is
       // a valid value for it to be if there are nulls in the dataset), we need to replace it with
@@ -898,7 +897,7 @@ function SvgBarChart($element, vif, options) {
             const translateX = -dimensionLabelsWidth;
             const translateY = -lastRenderedZoomTranslate;
 
-              return (self.getShowDimensionLabels()) ?
+            return (self.getShowDimensionLabels()) ?
                 `translate(${translateX},${translateY})` :
                 `translate(0,${translateY})`;
           }
@@ -916,7 +915,7 @@ function SvgBarChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({dataTableDimensionIndex, measureLabels, referenceLines});
+        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measureLabels, referenceLines });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -982,7 +981,7 @@ function SvgBarChart($element, vif, options) {
       // of the last label until we render it, at which time we will
       // re-measure. This estimate will be sufficient to get d3 to render the
       // bars at widths that are in line with our expectations, however.
-      height = Math.max(
+    height = Math.max(
         viewportHeight,
         barHeight * numberOfGroups * numberOfItemsPerGroup
       );
@@ -1031,7 +1030,7 @@ function SvgBarChart($element, vif, options) {
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
         positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
-        
+
       } else {
 
         minXValue = measureAxisMinValue || Math.min(dataMinXValue, 0);
@@ -1058,10 +1057,10 @@ function SvgBarChart($element, vif, options) {
 
       // Normalize min and max values so that we always show 0 if the user
       // has specified that behavior in the Vif.
-      //if (_.isNull(measureAxisMinValue) && _.isNull(measureAxisMaxValue)) {
+      // if (_.isNull(measureAxisMinValue) && _.isNull(measureAxisMaxValue)) {
       //  minXValue = Math.min(minXValue, 0);
       //  maxXValue = Math.max(0, maxXValue);
-      //}
+      // }
 
     // See TODO above.
     // }
@@ -1192,7 +1191,7 @@ function SvgBarChart($element, vif, options) {
             return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
           }
 
-      }).
+        }).
       attr('transform', (d) => `translate(0,${d3DimensionYScale(d[0])})`);
 
     if (!isStacked) {
@@ -1272,7 +1271,7 @@ function SvgBarChart($element, vif, options) {
       append('rect').
       attr('class', 'reference-line-underlay');
 
-      if (!_.isUndefined(dataToRender.errorBars)) {
+    if (!_.isUndefined(dataToRender.errorBars)) {
       dimensionGroupSvgs.selectAll('line.error-bar-left').
         data((d) => d.slice(1)).
         enter().
@@ -1337,18 +1336,18 @@ function SvgBarChart($element, vif, options) {
       // We need to render the y-axis before we can determine whether or not to
       // enable panning, since panning depends on the actual rendered height of
       // the axis.
-      renderYAxis();
+    renderYAxis();
 
       // This is the actual rendered height.
-      height = yAxisAndSeriesSvg.node().getBBox().height;
+    height = yAxisAndSeriesSvg.node().getBBox().height;
 
-      yAxisPanDistance = height - viewportHeight;
+    yAxisPanDistance = height - viewportHeight;
 
-      yAxisPanningEnabled = yAxisPanDistance > 0;
+    yAxisPanningEnabled = yAxisPanDistance > 0;
 
-      if (yAxisPanningEnabled) {
+    if (yAxisPanningEnabled) {
 
-        self.showPanningNotice();
+      self.showPanningNotice();
 
         // If we are showing the panning notice, it may be that the info bar
         // was previously hidden but is now shown. If this is the case, we need
@@ -1358,23 +1357,23 @@ function SvgBarChart($element, vif, options) {
         // from the viewport height and using the stale value will cause the
         // panning behavior to be incorrect (it will become impossible to pan
         // the bottom-most edge of the chart into view).
-        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+      viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
-        yAxisPanDistance = height - viewportHeight;
-      } else {
-        self.hidePanningNotice();
-      }
+      yAxisPanDistance = height - viewportHeight;
+    } else {
+      self.hidePanningNotice();
+    }
 
       // Now that we have determined if panning is enabled and potentially
       // updated the viewport height, we need to render everything at the new
       // viewport size.
-      renderYAxis();
-      renderSeries();
-      renderXAxis();
-      renderReferenceLines();
-      renderErrorBars();
+    renderYAxis();
+    renderSeries();
+    renderXAxis();
+    renderReferenceLines();
+    renderErrorBars();
 
-      updateLabelWidthDragger(leftMargin, topMargin, height);
+    updateLabelWidthDragger(leftMargin, topMargin, height);
     // See TODO above.
     // }
 
@@ -1643,7 +1642,7 @@ function SvgBarChart($element, vif, options) {
       x: leftMargin,
       y: topMargin,
       width: viewportWidth,
-      height: viewportHeight -  viewportSvg.select('.x.axis').node().getBBox().height
+      height: viewportHeight - viewportSvg.select('.x.axis').node().getBBox().height
     });
   }
 
@@ -1708,19 +1707,19 @@ function SvgBarChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          let label;
+        let label;
 
-          if (_.isNil(d)) {
-            label = noValueLabel;
-          } else if (d === otherLabel) {
-            label = otherLabel;
-          } else {
-            const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
+        if (_.isNil(d)) {
+          label = noValueLabel;
+        } else if (d === otherLabel) {
+          label = otherLabel;
+        } else {
+          const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
-            label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
-          }
+          label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
+        }
 
-          return conditionallyTruncateLabel(label);
+        return conditionallyTruncateLabel(label);
         // See TODO above.
         // }
       }).
@@ -1846,7 +1845,7 @@ function SvgBarChart($element, vif, options) {
     if (isOneHundredPercentStacked) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
-      const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+      const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
     }
 
@@ -1921,13 +1920,13 @@ function SvgBarChart($element, vif, options) {
   function showGroupFlyout(seriesElement, groupElement, dimensionValues, positions) {
     const titleHTML = groupElement.attr('data-dimension-value-html');
 
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).html(
+        $('<td>', { 'colspan': 2 }).html(
           (titleHTML === NO_VALUE_SENTINEL) ? noValueLabel : titleHTML
         )
       );
-    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
       append($title);
     const dimensionValue = groupElement.data()[0][0];
     const dimensionIndex = dimensionValues.indexOf(dimensionValue);
@@ -1940,10 +1939,10 @@ function SvgBarChart($element, vif, options) {
     $labelValueRows = measureValues.map((value, measureIndex) => {
       const label = measureLabels[measureIndex];
 
-      const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+      const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         text(label).
         css('color', self.getColor(dimensionIndex, measureIndex, measureLabels));
-      const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+      const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
       const unitOne = self.getUnitOneBySeriesIndex(
         getSeriesIndexByMeasureIndex(measureIndex)
       );
@@ -1973,7 +1972,7 @@ function SvgBarChart($element, vif, options) {
 
       $valueCell.html(`${valueHTML} ${percentAsString}`);
 
-      return $('<tr>', {'class': 'socrata-flyout-row'}).
+      return $('<tr>', { 'class': 'socrata-flyout-row' }).
         append([
           $labelCell,
           $valueCell
@@ -2027,18 +2026,18 @@ function SvgBarChart($element, vif, options) {
     const titleHTML = barElement.getAttribute('data-dimension-value-html') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
 
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).html(
+        $('<td>', { 'colspan': 2 }).html(
           (titleHTML) ? titleHTML : ''
         )
       );
-    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+    const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
       text(label).
       css('color', color);
-    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    const $table = $('<table>', {'class': 'socrata-flyout-table'});
+    const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' });
 
     let valueHTML;
 

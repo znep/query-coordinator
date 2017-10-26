@@ -13,7 +13,7 @@ function GeospaceDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
   if (useCache) {
-    const cached = this.cachedInstance("GeospaceDataProvider");
+    const cached = this.cachedInstance('GeospaceDataProvider');
     if (cached) {
       return cached;
     }

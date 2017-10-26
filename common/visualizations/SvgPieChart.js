@@ -107,7 +107,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.t('shared.visualizations.charts.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -115,7 +115,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
 
   function updateData(newVif) {
 
-    const domain =  _.get(newVif, 'series[0].dataSource.domain');
+    const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
@@ -141,7 +141,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       };
 
       const processData = (resolutions) => {
-        const [ newColumns, datasetMetadata, ...dataResponses ] = resolutions;
+        const [newColumns, datasetMetadata, ...dataResponses] = resolutions;
         const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
           const measureIndex = dataResponse.columns.indexOf('measure');
 

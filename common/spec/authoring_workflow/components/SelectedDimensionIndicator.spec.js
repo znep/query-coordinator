@@ -5,8 +5,7 @@ import { Simulate } from 'react-dom/test-utils';
 import renderComponent from '../renderComponent';
 import defaultProps from '../defaultProps';
 import columnChartData from '../testData/columnChart';
-import { SelectedDimensionIndicator } from 'common/authoring_workflow/components/SelectedDimensionIndicator';
-import ConnectedSelectedDimensionIndicator from 'common/authoring_workflow/components/SelectedDimensionIndicator';
+import ConnectedSelectedDimensionIndicator, { SelectedDimensionIndicator } from 'common/authoring_workflow/components/SelectedDimensionIndicator';
 
 import I18n from 'common/i18n';
 

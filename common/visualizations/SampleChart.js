@@ -7,6 +7,7 @@
  * See API.md for more details.
  */
 
+import _ from 'lodash';
 const $ = require('jquery');
 // Socrata Utils provides utility functions like asserts and polyfills.
 const utils = require('common/js_utils');
@@ -288,7 +289,7 @@ $.fn.socrataSampleChart = function(originalVif) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.t('shared.visualizations.charts.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -466,7 +467,7 @@ $.fn.socrataSampleChart = function(originalVif) {
         queryResponse.
           rows.
           forEach((row) => {
-          let valueAsNumber;
+            let valueAsNumber;
 
             try {
 

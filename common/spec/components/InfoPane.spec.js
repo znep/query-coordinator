@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
 import { useTestTranslations } from 'common/i18n';
@@ -258,6 +259,6 @@ describe('InfoPane', () => {
         const element = renderComponent(InfoPane, getProps({ showWatchDatasetFlag: false }));
         assert.isNull(element.querySelector('.watch-dataset-flag'));
       });
-    })
+    });
   });
 });

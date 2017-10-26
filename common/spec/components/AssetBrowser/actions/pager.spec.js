@@ -16,7 +16,7 @@ const stubCeteraAssetCountsFetch = (ceteraResponse = mockCeteraFacetCountsRespon
   sinon.stub(ceteraUtils, 'facetCountsQuery').callsFake(_.constant(Promise.resolve(ceteraResponse)))
 );
 
-const mockStore = configureMockStore([ thunk ]);
+const mockStore = configureMockStore([thunk]);
 
 let ceteraStub;
 let ceteraAssetCountsStub;
@@ -41,7 +41,7 @@ describe('actions/pager', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_PAGE', pageNumber: 4  },
+        { type: 'CHANGE_PAGE', pageNumber: 4 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
         { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }

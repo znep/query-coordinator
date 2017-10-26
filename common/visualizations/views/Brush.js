@@ -11,7 +11,7 @@ class Brush extends Component {
     this.state = {
       dragContext: null,
       hover: null
-    }
+    };
 
     _.bindAll(this, [
       'getClipPath',
@@ -30,7 +30,7 @@ class Brush extends Component {
   }
 
   // Returns a <defs> element containing a <clipPath> used to clip the selected plots.
-  getClipPath() {
+  getClipPath() { // eslint-disable-line react/sort-comp
     if (!_.isObject(this.props.filter)) {
       return null;
     }
@@ -221,7 +221,7 @@ class Brush extends Component {
       style: { cursor: 'ew-resize' }
     }, rightEdge, rightHandle, rightHitbox);
 
-    return [ left, right ];
+    return [left, right];
   }
 
   // Start dragging.

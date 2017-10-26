@@ -74,7 +74,7 @@ describe('VisualizationRenderer', () => {
       });
 
       it('triggers the visualization to update on calling update with same VIF type', () => {
-        const slightlyChangedMockVif = Object.assign({}, mockVif, {'description': 'Elephants in space wearing suits'});
+        const slightlyChangedMockVif = Object.assign({}, mockVif, { 'description': 'Elephants in space wearing suits' });
         visualization.update(slightlyChangedMockVif);
         const triggeredUpdate = _.some($.fn.trigger.getCalls(), (call) => {
           return _.get(call, 'args[0].type') === 'SOCRATA_VISUALIZATION_RENDER_VIF';

@@ -626,9 +626,9 @@ blist.namespace.fetch('blist.datatypes');
 
     if (isUrl) {
       var domainRegex = new RegExp('^https?://' + column.view.domainCName, 'i');
-      var isSameOrigin = domainRegex.test(value);
+      var isSameOriginAndSODA2Configured = domainRegex.test(value) && column.view._useSODA2;
 
-      if (isSameOrigin) {
+      if (isSameOriginAndSODA2Configured) {
         url = value;
       } else {
         url = '';
@@ -1939,6 +1939,9 @@ blist.namespace.fetch('blist.datatypes');
       deprecatedInNbe: true,
       filterConditions: blist.filter.groups.comparable,
       matchValue: function(v, col) {
+        if (col.view._useSODA2) {
+          return v;
+        }
 
         // This is a numeric comparison, so use indices
         _.any(col.dropDownList.values, function(ddv, i) {

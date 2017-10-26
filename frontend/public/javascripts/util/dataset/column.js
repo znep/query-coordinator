@@ -44,17 +44,55 @@
         }
       };
 
-      if ($.isBlank(col._summary) || limit > col._summaryLimit) {
+      var colSumLoadedSODA2 = function(resp) {
+        col._summary = {};
+        col._summaryLimit = limit;
 
-        col.view.makeRequest({
-          inline: true,
-          params: {
-            method: 'getSummary',
-            columnId: col.id,
-            limit: limit
-          },
-          success: colSumLoaded
-        });
+        // Yeah, we're just making this all up.
+        // It normally comes back from getSummary for us.
+        col._summary[col.renderTypeName] = {
+          subColumnType: col.renderTypeName,
+          topFrequencies: _.map(resp, function(item) {
+            return {
+              count: parseInt(item[aggregateAlias], 10),
+              value: item[col.fieldName]
+            };
+          })
+        };
+
+        if (canCallback) {
+          successCallback(col._summary);
+        }
+      };
+
+      if ($.isBlank(col._summary) || limit > col._summaryLimit) {
+        if (col.view._useSODA2) {
+          var aggregateAlias = 'count_{0}'.format(col.fieldName);
+          var soql = {
+            '$select': [col.fieldName,
+              'count({0}) as {1}'.format(col.fieldName, aggregateAlias)
+            ].join(','),
+            '$group': col.fieldName,
+            '$order': '{0} desc'.format(aggregateAlias),
+            '$limit': limit
+          };
+          col.view.makeRequest({
+            url: '/resource/{0}.json'.format(col.view.id),
+            params: soql,
+            isSODA: true,
+            success: colSumLoadedSODA2
+          });
+        } else {
+          col.view.makeRequest({
+            inline: true,
+            params: {
+              method: 'getSummary',
+              columnId: col.id,
+              limit: limit
+            },
+            success: colSumLoaded
+          });
+        }
       } else {
         if (canCallback) {
           successCallback(col._summary);
@@ -243,7 +281,11 @@
         columnFieldName: col.fieldName
       };
       if (!$.isBlank(subColumnType) && _.isString(subColumnType)) {
-        colItem.subColumn = subColumnType.toUpperCase();
+        if (col.view._useSODA2) {
+          colItem.subColumn = subColumnType.toLowerCase();
+        } else {
+          colItem.subColumn = subColumnType.toUpperCase();
+        }
       }
 
       // Special handling for human_address in location
@@ -416,13 +458,13 @@
       this.isMeta = this.dataTypeName == 'meta_data';
 
       if (!$.isBlank(col.view)) {
-        col.lookup = col.isMeta ? col.name : col.id;
+        col.lookup = col.view._useSODA2 ? col.fieldName : (col.isMeta ? col.name : col.id);
         // The use of id and uuid potentially causes collision with user column field names.
         // We already do in the catalog dataset because it has another id column.
         // Not fixing this yet.  Suggest to use prefix ":" for system columns.
-        if (col.isMeta && col.name == 'sid') {
+        if (!col.view._useSODA2 && col.isMeta && col.name == 'sid') {
           col.lookup = 'id';
-        } else if (col.isMeta && col.name == 'id') {
+        } else if (!col.view._useSODA2 && col.isMeta && col.name == 'id') {
           col.lookup = 'uuid';
         }
       }

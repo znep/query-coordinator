@@ -48,7 +48,9 @@ function mapStateToProps(state) {
     },
     renderButtons(ownProps) {
       const {
+        onClickCopy,
         onClickGrid,
+        onClickShareOption,
         onDownloadData,
         isDesktop,
         isTablet,
@@ -59,7 +61,9 @@ function mapStateToProps(state) {
 
       const childProps = {
         view,
+        onClickCopy,
         onClickGrid,
+        onClickShareOption,
         onDownloadData,
         isDesktop,
         isTablet,
@@ -75,6 +79,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onClickCopy(section) {
+      const payload = {
+        name: `Copied ${section} Link`
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
     onClickGrid() {
       var payload = {
         name: 'Navigated to Gridpage'
@@ -99,6 +111,17 @@ function mapDispatchToProps(dispatch) {
         name: 'Opened in Plot.ly',
         properties: {
           id: event.target.dataset.id
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onClickShareOption(provider) {
+      const payload = {
+        name: 'Shared Dataset',
+        properties: {
+          'Provider': provider
         }
       };
 
@@ -132,4 +155,5 @@ function mapDispatchToProps(dispatch) {
     }
   };
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(InfoPaneComponent);

@@ -1133,6 +1133,10 @@ class View < Model
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
   end
 
+  def odata_url_v4(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/api/odata/v4/#{id}"
+  end
+
   def allAccessPoints
     if metadata.present?
       # If additionalAccessPoints is present, we can assume that the links in accessPoints are

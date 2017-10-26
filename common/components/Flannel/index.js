@@ -18,6 +18,8 @@ export class Flannel extends Component {
     };
 
     _.bindAll(this, ['onClickDocument', 'onKeyUpDocument', 'positionSelf', 'checkBlur', 'tryFocusTrap']);
+
+    this.positionSelf = _.throttle(this.positionSelf, 100);
   }
 
   componentWillMount() {

@@ -14,7 +14,7 @@ const SourceMessage = ({ hrefExists, schemaExists }) => {
   }
 
   return (
-    <section className={styles.container}>
+    <section className={styles.container} data-cheetah-hook="no-source-ingress-message">
       <span className={styles.message}>{message}</span>
     </section>
   );

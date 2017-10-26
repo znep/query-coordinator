@@ -63,6 +63,7 @@ $.fn.socrataFeatureMap = function(vif) {
   );
 
   var $element = $(this);
+  let metadataProvider;
   var datasetMetadata;
 
   var columnName = _.get(vif, 'columnName');
@@ -116,7 +117,7 @@ $.fn.socrataFeatureMap = function(vif) {
       domain: domain,
       datasetUid: datasetUid
     };
-    var metadataProvider = new MetadataProvider(
+    metadataProvider = new MetadataProvider(
       metadataProviderConfig
     );
 

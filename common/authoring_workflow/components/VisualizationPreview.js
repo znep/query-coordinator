@@ -47,7 +47,7 @@ export class VisualizationPreview extends Component {
       on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount() { // eslint-disable-line react/sort-comp
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     $(this.visualizationPreview).

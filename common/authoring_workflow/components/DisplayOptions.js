@@ -59,11 +59,10 @@ export class DisplayOptions extends Component {
     const shouldRender = isPieChart(vifAuthoring);
 
     return shouldRender ? (
-        <p className="authoring-field-description">
-          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
-        </p>
-      ) :
-      null;
+      <p className="authoring-field-description">
+        <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
+      </p>
+    ) : null;
   }
 
   renderLimitCountSelector() {

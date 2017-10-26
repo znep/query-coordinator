@@ -77,8 +77,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -147,8 +146,7 @@ class PreferenceContent extends Component {
           <td className="column-description">
             <OnOffSwitch
               enableSwitch={categoryData.enable_product_notification}
-              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-            </OnOffSwitch>
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
           </td>
 
           <td>
@@ -195,8 +193,7 @@ class PreferenceContent extends Component {
           <td className="column-description">
             <OnOffSwitch
               enableSwitch={categoryData.enable_product_notification}
-              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-            </OnOffSwitch>
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
           </td>
 
           <td>
@@ -231,8 +228,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -266,8 +262,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -302,8 +297,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -326,28 +320,28 @@ class PreferenceContent extends Component {
         <div className="table-wrapper">
           <table className="table table-borderless table-condensed table-discrete">
             <thead>
-            <tr>
-              <th scope="col" className="column-name">
-                <span>
-                  {I18n.t('shared_site_chrome_notifications.alert_setting_modal.table_header.feature')}
-                </span>
-              </th>
+              <tr>
+                <th scope="col" className="column-name">
+                  <span>
+                    {I18n.t('shared_site_chrome_notifications.alert_setting_modal.table_header.feature')}
+                  </span>
+                </th>
 
-              <th scope="col" className="column-description">
-                <span>
-                  {I18n.t(
-                    'shared_site_chrome_notifications.alert_setting_modal.table_header.product_alerts')}
-                </span>
-              </th>
+                <th scope="col" className="column-description">
+                  <span>
+                    {I18n.t(
+                      'shared_site_chrome_notifications.alert_setting_modal.table_header.product_alerts')}
+                  </span>
+                </th>
 
-              <th scope="col" className="column-type">
-                <span>
-                  {I18n.t(
-                    'shared_site_chrome_notifications.alert_setting_modal.table_header.email_notifications'
-                  )}
-                </span>
-              </th>
-            </tr>
+                <th scope="col" className="column-type">
+                  <span>
+                    {I18n.t(
+                      'shared_site_chrome_notifications.alert_setting_modal.table_header.email_notifications'
+                    )}
+                  </span>
+                </th>
+              </tr>
             </thead>
             <tbody>
             {this.renderWatchList()}

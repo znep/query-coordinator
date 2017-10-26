@@ -1,3 +1,4 @@
+import _ from 'lodash';
 var $ = require('jquery');
 var Pager = require('common/visualizations/views/Pager');
 var I18n = require('common/i18n').default;

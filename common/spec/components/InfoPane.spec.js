@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
 import { useTestTranslations } from 'common/i18n';

@@ -30,7 +30,7 @@ class Brush extends Component {
   }
 
   // Returns a <defs> element containing a <clipPath> used to clip the selected plots.
-  getClipPath() {
+  getClipPath() { // eslint-disable-line react/sort-comp
     if (!_.isObject(this.props.filter)) {
       return null;
     }

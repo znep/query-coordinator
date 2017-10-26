@@ -14,7 +14,7 @@ class AccordionPane extends React.Component {
     this.shouldScroll = false;
   }
 
-  handleKeyDown(event) {
+  handleKeyDown(event) { // eslint-disable-line react/sort-comp
     const firstPaneTitle = document.querySelector('.customization-tab-pane:not(.customization-tab-pane_hidden) .socrata-accordion-pane-title');
     const isFirstPaneTitle = this.paneTitleElement === firstPaneTitle;
     const isShiftTab = event.shiftKey && event.keyCode === 9;
@@ -54,7 +54,8 @@ class AccordionPane extends React.Component {
 
     return (
       <div className={paneClasses}>
-        <div className="socrata-accordion-pane-title"
+        <div
+          className="socrata-accordion-pane-title"
           role="button"
           aria-expanded={isOpen ? 'true' : 'false'}
           aria-label={this.props['aria-label'] || title}

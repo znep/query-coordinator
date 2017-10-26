@@ -16,7 +16,8 @@ class PanelHeader extends Component {
 
     if (unreadCount > 0) {
       return (
-        <em styleName="new-notifications-label"
+        <em
+          styleName="new-notifications-label"
           className="new-notifications-label">
           <span>{unreadCount}</span>
           <span>{I18n.t('shared_site_chrome_notifications.new_label')}</span>
@@ -42,7 +43,8 @@ class PanelHeader extends Component {
           {this.renderNewNotificationsLabel()}
         </h3>
 
-        <span styleName="close-panel-link"
+        <span
+          styleName="close-panel-link"
           className="close-notifications-panel-link"
           role="button"
           onClick={onClosePanel}>

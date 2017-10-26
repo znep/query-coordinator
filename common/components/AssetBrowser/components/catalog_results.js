@@ -51,7 +51,7 @@ export class CatalogResults extends Component {
     }
   }
 
-  renderError() {
+  renderError() { // eslint-disable-line react/sort-comp
     if (this.props.fetchingResultsError) {
       const errorDetails = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
       console.error(errorDetails);

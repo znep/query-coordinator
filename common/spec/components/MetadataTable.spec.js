@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { expect, assert } from 'chai';
@@ -163,7 +164,7 @@ describe('components/MetadataTable', () => {
       });
       assert.ok(wrapper.contains(
         <a href="http://example.com" target="_blank">
-         <img src="/assets/wtfpl.png" alt="WTFPL" className="license" />
+          <img src="/assets/wtfpl.png" alt="WTFPL" className="license" />
         </a>
       ));
     });

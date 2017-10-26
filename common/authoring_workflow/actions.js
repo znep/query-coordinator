@@ -248,12 +248,16 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
       datasetMetadataProvider.
         getDatasetMetadata().
         then((metadata) => {
+          // TODO why is this not defined? Disabling lint warning for now.
+          // eslint-disable-next-line no-undef
           const computedColumn = _.find(columns, (column) => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
           dispatch(finishRegionCoding());
           dispatch(setComputedColumn(computedColumn.fieldName));
+          // TODO why is this not defined? Disabling lint warning for now.
+          // eslint-disable-next-line no-undef
           dispatch(setDatasetMetadata(metadata));
         }).
         catch(handleError);

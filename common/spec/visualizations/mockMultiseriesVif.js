@@ -6,7 +6,6 @@ export default {
   'description': 'Elephants in Space',
   'configuration': {
     'bucketType': 'linear',
-    'viewSourceDataLink': true,
     'measureAxisMinValue': 50,
     'measureAxisMaxValue': 200,
     // If you change to true, make sure to mock out the resultant MetadataProvider request.

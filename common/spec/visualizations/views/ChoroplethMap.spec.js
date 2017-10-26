@@ -6,9 +6,6 @@ import ChoroplethMap from 'common/visualizations/views/ChoroplethMap';
 import testHelpers from '../testHelpers';
 
 describe('ChoroplethMap', function() {
-
-  'use strict';
-
   // Indices into an rgb array, for greater semantics!
   var RED = 0;
   var GREEN = 1;
@@ -1103,7 +1100,7 @@ describe('ChoroplethMap', function() {
                 find('stop[offset="100%"]');
             expect(gradient.length).to.equal(1);
 
-            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            elementColor = chroma.color(gradient.css('stop-color')).rgb();
             expect(isBlue(elementColor)).to.equal(true);
           });
 
@@ -1127,7 +1124,7 @@ describe('ChoroplethMap', function() {
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
 
-            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            elementColor = chroma.color(gradient.css('stop-color')).rgb();
             expect(isRed(elementColor)).to.equal(true);
           });
 
@@ -1151,7 +1148,7 @@ describe('ChoroplethMap', function() {
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
 
-            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            elementColor = chroma.color(gradient.css('stop-color')).rgb();
             expect(isGray(elementColor)).to.equal(true);
           });
 

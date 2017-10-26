@@ -768,7 +768,7 @@ describe('SoqlDataProvider', () => {
         }
       ];
 
-      argumentsAndExpectedQueryPairs.map((pair) => {
+      argumentsAndExpectedQueryPairs.map((pair) => { // eslint-disable-line array-callback-return
         const args = pair.args;
         const resultantQueryParts = pair.resultantQueryParts;
 
@@ -782,7 +782,7 @@ describe('SoqlDataProvider', () => {
           assert.include(url, '$$version=2.1');
         });
 
-        resultantQueryParts.map((queryPart) => {
+        resultantQueryParts.map((queryPart) => { // eslint-disable-line array-callback-return
           it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), () => {
             soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 

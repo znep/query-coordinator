@@ -591,9 +591,8 @@ function getData(vif, options) {
                 [groupingDatum.dimensionValue, sumOfRows]
               ]
             };
-          }
-          // everything else
-          else {
+          } else {
+            // everything else
             groupingDatum.data = groupingResponses[i];
           }
         });

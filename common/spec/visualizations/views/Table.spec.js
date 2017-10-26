@@ -160,7 +160,7 @@ describe('Table', function() {
       var eventHandlerHasBeenFired = false;
 
       table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
-        throw 'Table did not remove handlers correctly';
+        throw new Error('Table did not remove handlers correctly');
       });
 
       table.table.destroy();

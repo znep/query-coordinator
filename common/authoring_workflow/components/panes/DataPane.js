@@ -97,11 +97,10 @@ export class DataPane extends Component {
       !hasErrorBars(vifAuthoring);
 
     return shouldRender ? (
-        <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
-          <DimensionGroupingColumnNameSelector />
-        </AccordionPane>
-      ) :
-      null;
+      <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
+        <DimensionGroupingColumnNameSelector />
+      </AccordionPane>
+    ) : null;
   }
 
   renderTimelineOptions() {
@@ -109,12 +108,11 @@ export class DataPane extends Component {
     const shouldRender = isTimelineChart(vifAuthoring);
 
     return shouldRender ? (
-        <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
-          <TimelinePrecisionSelector />
-          {this.renderTreatNullValuesAsZero()}
-        </AccordionPane>
-      ) :
-      null;
+      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
+        <TimelinePrecisionSelector />
+        {this.renderTreatNullValuesAsZero()}
+      </AccordionPane>
+    ) : null;
   }
 
   renderDisplayOptions() {
@@ -129,11 +127,10 @@ export class DataPane extends Component {
     const translationKey = translationKeys[visualizationType];
 
     return shouldRender ? (
-        <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
-          <DisplayOptions />
-        </AccordionPane>
-      ) :
-      null;
+      <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
+        <DisplayOptions />
+      </AccordionPane>
+    ) : null;
   }
 
   renderErrorBarsOptions() {

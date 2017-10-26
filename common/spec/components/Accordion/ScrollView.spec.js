@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import renderComponent from '../../../spec/authoring_workflow/renderComponent';
@@ -90,3 +92,4 @@ describe('ScrollView', () => {
     });
   });
 });
+/* eslint-enable react/jsx-no-bind */

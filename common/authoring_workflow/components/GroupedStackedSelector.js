@@ -24,7 +24,7 @@ export class GroupedStackedSelector extends Component {
     ]);
   }
 
-  render() {
+  render() { // eslint-disable-line react/sort-comp
     const { vifAuthoring } = this.props;
 
     const stacked = isStacked(vifAuthoring);

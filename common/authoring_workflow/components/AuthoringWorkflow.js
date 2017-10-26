@@ -65,10 +65,11 @@ export class AuthoringWorkflow extends Component {
     });
   }
 
-  confirmUserCanEscape() {
+  confirmUserCanEscape() { // eslint-disable-line react/sort-comp
     const { vifAuthoring } = this.props;
     const message = I18n.t('shared.visualizations.modal.changes_made_confirmation');
     const changesMade = hasMadeChangesToVifs(vifAuthoring);
+    // eslint-disable-next-line no-alert
     return !changesMade || window.confirm(message);
   }
 
@@ -128,16 +129,17 @@ export class AuthoringWorkflow extends Component {
     const { backButtonText } = this.props;
 
     return _.isString(backButtonText) ? (
-        <button className="authoring-back-button" onClick={this.onBack}>
-          <span className="icon-arrow-left" />
-          {backButtonText}
-        </button>
-      ) : null;
+      <button className="authoring-back-button" onClick={this.onBack}>
+        <span className="icon-arrow-left" />
+        {backButtonText}
+      </button>
+    ) : null;
   }
 
   renderResetButton() {
     const { backButtonText, onReset } = this.props;
     const confirmDialog = () => {
+      // eslint-disable-next-line no-alert
       if (confirm(I18n.t('shared.visualizations.common.reset_confirm'))) {
         onReset();
       }

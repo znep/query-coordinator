@@ -5,9 +5,6 @@ import 'common/visualizations/dataProviders/VectorTileManager';
 import featureTestData from '../featureTestData/featureTestData';
 
 describe('FeatureMap', function() {
-
-  'use strict';
-
   var VALID_BASE_LAYER = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
   var VALID_EXTENT = { 'southwest': [41.681944, -87.827778], 'northeast': [42.081944, -87.427778] };
   // For use with `deserializeBytes()` below

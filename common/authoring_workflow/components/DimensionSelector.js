@@ -30,7 +30,7 @@ export class DimensionSelector extends Component {
     ]);
   }
 
-  renderDimensionOption(recommended, option) {
+  renderDimensionOption(recommended, option) { // eslint-disable-line react/sort-comp
     return (
       <div className="dataset-column-selector-option">
         <Dimension type={option.type} name={option.title} recommended={recommended} />

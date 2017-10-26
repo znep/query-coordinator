@@ -5,8 +5,6 @@ var I18n = require('common/i18n').default;
 var allLocales = require('common/i18n/config/locales').default;
 
 describe('RowInspector', function() {
-  'use strict';
-
   var $rowInspector;
   var $toolPanel;
 

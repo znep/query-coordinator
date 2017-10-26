@@ -1219,7 +1219,7 @@ function TimelineChart(element, vif) {
       // by half the amount that the others are, since it already sits at
       // the left edge of the labels. The last will be a special case
       // also, but it's easier to just adjust it after the map operation.
-      labels.map(function(label) {
+      labels.map(function(label) { // eslint-disable-line array-callback-return
         label.left -= halfExtendedLabelWidth;
         label.width += (2 * halfExtendedLabelWidth);
       });

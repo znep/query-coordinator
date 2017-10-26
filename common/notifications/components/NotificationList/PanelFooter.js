@@ -30,7 +30,7 @@ class PanelFooter extends Component {
     this.setState({ showAlertSettingModal });
   }
 
-  renderModal() {
+  renderModal() { // eslint-disable-line react/sort-comp
     const { showAlertSettingModal } = this.state;
     const {
       currentUserRole,
@@ -39,7 +39,8 @@ class PanelFooter extends Component {
 
     if (showAlertSettingModal) {
       return (
-        <AlertSettingModal onClose={this.closeModal}
+        <AlertSettingModal
+          onClose={this.closeModal}
           isSuperAdmin={isSuperAdmin}
           currentUserRole={currentUserRole} />
       );
@@ -69,7 +70,8 @@ class PanelFooter extends Component {
           <p>{I18n.t('shared_site_chrome_notifications.clear_all_confirm')}</p>
 
           <div styleName="prompt-buttons-wrapper" className="clearfix">
-            <button styleName="cancel-button"
+            <button
+              styleName="cancel-button"
               className="btn btn-default"
               onClick={() => toggleClearAllUserNotificationsPrompt(false)}>
               {I18n.t('shared_site_chrome_notifications.clear_all_confirm_no')}
@@ -89,7 +91,8 @@ class PanelFooter extends Component {
 
     if (showUserNotifications) {
       return (
-        <span className="btn"
+        <span
+          className="btn"
           styleName="setting-button"
           onClick={this.toggleSubscription}
           role="button">
@@ -137,7 +140,8 @@ class PanelFooter extends Component {
 
     return (
       <div styleName="buttons-wrapper" className="clearfix">
-        <button styleName="primary-button"
+        <button
+          styleName="primary-button"
           className="mark-all-as-read-button"
           disabled={!hasUnreadNotifications}
           onClick={markAllProductNotificationsAsRead}>

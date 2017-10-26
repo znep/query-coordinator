@@ -6,9 +6,6 @@ import { soqlVifValidator } from 'common/visualizations/dataProviders/SoqlVifVal
 import { __RewireAPI__ as SocrataSvgRegionMapAPI } from 'common/visualizations/SvgRegionMap';
 
 describe('SvgRegionMap jQuery component', function() {
-
-  'use strict';
-
   var GEOJSON_RESPONSE;
   var SHAPEFILE_METADATA_RESPONSE;
   var FEATURE_EXTENT_RESPONSE;

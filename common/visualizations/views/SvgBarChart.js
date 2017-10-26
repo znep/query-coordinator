@@ -260,8 +260,7 @@ function SvgBarChart($element, vif, options) {
         const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
         return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
       });
-    }
-    else {
+    } else {
 
       // Grouped bar charts will have multiple columns. If one of those columns is null (which is
       // a valid value for it to be if there are nulls in the dataset), we need to replace it with

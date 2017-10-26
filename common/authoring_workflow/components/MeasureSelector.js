@@ -57,7 +57,7 @@ export class MeasureSelector extends Component {
     return hasData(metadata) ? this.renderMeasureSelectors() : null;
   }
 
-  renderMeasureSelectors() {
+  renderMeasureSelectors() { // eslint-disable-line react/sort-comp
     const { metadata, vifAuthoring } = this.props;
     const { isSeriesPending } = this.state;
 
@@ -250,8 +250,7 @@ export class MeasureSelector extends Component {
 
     if (isSeriesPending) {
       this.setState({ isSeriesPending: false });
-    }
-    else {
+    } else {
       onRemoveMeasure(seriesIndex);
     }
   }

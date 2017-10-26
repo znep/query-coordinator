@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import $ from 'jquery';
+
 function fireEvent(target, name, opts) {
   var evt = document.createEvent('HTMLEvents');
   evt.initEvent(name, true, true);

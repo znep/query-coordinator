@@ -56,7 +56,7 @@ export class ChangeVisibility extends React.Component {
     return I18n.t(`shared.asset_browser.result_list_table.action_modal.change_visibility.${key}`);
   }
 
-  isDatalens() {
+  isDatalens() { // eslint-disable-line react/sort-comp
     // There are three datatypes (as Cetera returns them) that should behave like datalenses:
     // - datalens
     // - datalens_chart
@@ -76,9 +76,9 @@ export class ChangeVisibility extends React.Component {
     let { visibility } = this.state;
     if (visibility === null) {
       if (this.isDatalens()) {
-	                                                                                visibility = this.initialVisibility().hidden ? 'hidden' : 'shown';
+        visibility = this.initialVisibility().hidden ? 'hidden' : 'shown';
       } else {
-	                                                                                visibility = this.initialVisibility().open ? 'open' : 'private';
+        visibility = this.initialVisibility().open ? 'open' : 'private';
       }
     }
     return visibility;

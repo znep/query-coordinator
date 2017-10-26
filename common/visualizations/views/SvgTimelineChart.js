@@ -179,8 +179,7 @@ function SvgTimelineChart($element, vif, options) {
         const measureColumnFormat = dataTable.columnFormats[measureColumnName];
         return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
       });
-    }
-    else {
+    } else {
       measureLabels = columns.map((column) => {
         return self.isGrouping() ? column || noValueLabel : column;
       });

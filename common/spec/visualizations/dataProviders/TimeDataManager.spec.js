@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import TimeDataManager, {
   __RewireAPI__ as TimeDataManagerAPI
 } from 'visualizations/dataProviders/TimeDataManager';

@@ -58,15 +58,15 @@ class AlertSettingModal extends Component {
     this.setState({ selectedTab });
   }
 
-  renderNotificationTabContent() {
+  renderNotificationTabContent() { // eslint-disable-line react/sort-comp
     const { currentUserRole, isSuperAdmin } = this.props;
     return (
       <PreferenceContent
         currentUserRole={currentUserRole}
         isSuperAdmin={isSuperAdmin}
         onAlertNotificationChange={this.onAlertNotificationChange}
-        preferences={this.state.preferences}>
-      </PreferenceContent>);
+        preferences={this.state.preferences} />
+    );
   }
 
   saveAlertSettings() {

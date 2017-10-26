@@ -9,9 +9,6 @@ const { getStyleguideIncludePaths } = require(path.resolve(platformUiRoot, './co
 // TODO Move base webpack config from frontend/webpack into common, then use here.
 var webpackConfig = {
   context: __dirname,
-  sassLoader: {
-    includePaths: getStyleguideIncludePaths()
-  },
   module: {
     loaders: [
       {

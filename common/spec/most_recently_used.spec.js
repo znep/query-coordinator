@@ -109,7 +109,8 @@ describe('most_recently_used', () => {
   });
 
   it('catches and logs JSON parse errors', () => {
-    let called, message;
+    let called;
+    let message;
     const originalConsole = window.console;
     const spy = { error: (msg) => { called = true; message = msg; } };
     const brokenNamespace = 'test:namespace:broken';
@@ -124,7 +125,8 @@ describe('most_recently_used', () => {
   });
 
   it('uses the logger when present', () => {
-    let called, message;
+    let called;
+    let message;
     const logger = (msg) => { called = true; message = msg; };
     new MostRecentlyUsed({ namespace: 'logger test', logger: logger }).add('logg-meee');
     assert(called);

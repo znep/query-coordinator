@@ -62,7 +62,7 @@ export class AxisAndScalePane extends Component {
     ]);
   }
 
-  renderChartSortingOption(option) {
+  renderChartSortingOption(option) { // eslint-disable-line react/sort-comp
     return (
       <div className="dataset-column-dropdown-option">
         <span className={option.icon}></span> {option.title}
@@ -156,7 +156,8 @@ export class AxisAndScalePane extends Component {
         {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.title')}
         <div {...containerAttributes}>
           <div>
-            <input type="radio"
+            <input
+              type="radio"
               name="measure-axis-scale"
               id="measure-axis-scale-automatic"
               value="automatic"
@@ -169,7 +170,8 @@ export class AxisAndScalePane extends Component {
             </label>
           </div>
           <div>
-            <input type="radio"
+            <input
+              type="radio"
               name="measure-axis-scale"
               id="measure-axis-scale-custom"
               value="custom"

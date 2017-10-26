@@ -68,8 +68,6 @@ var TIMESTAMP_WITH_USER_FORMAT_REGEX = /^\w{3}\s[0-3][0-9],\s\d{4}\s[01][0-9]:[0
 var TIMESTAMP_NO_HR_MIN_SEC_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]$/;
 
 describe('DataTypeFormatter', function() {
-  'use strict';
-
   beforeEach(function() {
     I18n.translations.en = allLocales.en;
   });

@@ -51,7 +51,8 @@ class ProductNotificationList extends Component {
 
       return (
         <div styleName="accordion-header" className="secondary-panel">
-          <h3 styleName={classNames('panel-header-text', { unread: unreadProductNotificationCount > 0 })}
+          <h3
+            styleName={classNames('panel-header-text', { unread: unreadProductNotificationCount > 0 })}
             onClick={toggleProductNotificationsSecondaryPanel}>
             {I18n.t('shared_site_chrome_notifications.product_updates')}
             {this.renderUnreadNewCountLabel()}
@@ -78,7 +79,8 @@ class ProductNotificationList extends Component {
         return <Spinner />;
       } else if (hasError) {
         return (
-          <div styleName="notifications-message"
+          <div
+            styleName="notifications-message"
             className="notifications-error-message-wrapper">
             <ErrorMessage text={errorText} />
           </div>
@@ -90,7 +92,8 @@ class ProductNotificationList extends Component {
           );
         } else {
           return (
-            <div styleName="notifications-message"
+            <div
+              styleName="notifications-message"
               className="no-notifications-message-wrapper">
               <h3>{I18n.t('shared_site_chrome_notifications.no_unread_notifications')}</h3>
             </div>
@@ -109,9 +112,11 @@ class ProductNotificationList extends Component {
 
     if (!_.isNull(viewOlderLink) && !areNotificationsLoading) {
       return (
-        <div className="view-older"
+        <div
+          className="view-older"
           styleName="view-older-links-wrapper">
-          <a href={viewOlderLink}
+          <a
+            href={viewOlderLink}
             styleName="view-older-link"
             target="_blank">
             {I18n.t('shared_site_chrome_notifications.view_older')}

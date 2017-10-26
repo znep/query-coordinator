@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { assert } from 'chai';
 import { DeleteAsset } from 'common/components/AssetBrowser/components/action_modals/delete_asset';
 import mockCeteraResults from '../../data/mock_cetera_results';

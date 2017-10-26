@@ -938,7 +938,7 @@ function ChoroplethMap(element, vif) {
         if (_.last(classBreaks) > 0) {
           var indexOfZero = classBreaks.indexOf(0);
           if (indexOfZero < 0) {
-            throw 'Expecting classBreaks to contain a break at 0, if the values straddle 0';
+            throw new Error('Expecting classBreaks to contain a break at 0, if the values straddle 0');
           }
 
           var negatives = classBreaks.slice(0, indexOfZero + 1);

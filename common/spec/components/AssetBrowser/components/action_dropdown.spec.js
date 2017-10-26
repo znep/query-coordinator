@@ -1,8 +1,8 @@
+import _ from 'lodash';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import { ActionDropdown } from 'common/components/AssetBrowser/components/action_dropdown';
-import { mockResponse } from 'common/spec/helpers';
-import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
+import { mockResponse, renderComponentWithPropsAndStore } from 'common/spec/helpers';
 import TestUtils from 'react-dom/test-utils';
 
 describe('components/ActionDropdown', () => {

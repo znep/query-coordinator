@@ -1,3 +1,4 @@
+import _ from 'lodash';
 var TileserverDataProvider = require('common/visualizations/dataProviders/TileserverDataProvider');
 
 describe('TileserverDataProvider', function() {

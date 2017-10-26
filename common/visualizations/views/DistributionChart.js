@@ -33,7 +33,7 @@ export class DistributionChart extends Component {
   }
 
   // Set the output range for each scale, which is, in general, the dimensions of the chart.
-  updateScaleRange() { //eslint-disable-line react/sort-comp
+  updateScaleRange() { // eslint-disable-line react/sort-comp
     var props = this.props;
     props.scale.x.rangeBands([props.margin.left, props.width - props.margin.right], 0, -0.5);
     props.scale.y.range([props.height - props.margin.top - props.margin.bottom, 0]);

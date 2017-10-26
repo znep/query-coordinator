@@ -3,9 +3,6 @@ import $ from 'jquery';
 import { __RewireAPI__ as SocrataFeatureMapAPI } from 'common/visualizations/FeatureMap';
 
 describe('FeatureMap jQuery component', function() {
-
-  'use strict';
-
   var isNotPhantom = !(/PhantomJS\/([0-9.]+)/.exec(navigator.userAgent));
   var NAME_ALIAS = '__NAME_ALIAS__';
   var VALUE_ALIAS = '__VALUE_ALIAS__';
@@ -199,7 +196,7 @@ describe('FeatureMap jQuery component', function() {
         });
       }
 
-      it('emits a flyout render event when the mouse is moved over the pan and zoom disabled warning', function() {
+      it('emits a flyout render event when the mouse is moved over the pan and zoom disabled warning', function(done) {
         var vif = _.cloneDeep(featureMapVIF);
         vif.configuration.panAndZoom = true;
 

@@ -6,9 +6,6 @@ import SvgRegionMap from 'common/visualizations/views/SvgRegionMap';
 import testHelpers from '../testHelpers';
 
 describe('SvgRegionMap', function() {
-
-  'use strict';
-
   // Indices into an rgb array, for greater semantics!
   var RED = 0;
   var GREEN = 1;

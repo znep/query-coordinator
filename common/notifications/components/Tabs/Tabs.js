@@ -24,7 +24,8 @@ class Tabs extends React.Component {
 
     return tabs.map((tab, index) =>
       <li key={index} styleName="tab">
-        <button styleName={classNames({ 'selected': tab === selectedTab })}
+        <button
+          styleName={classNames({ 'selected': tab === selectedTab })}
           className="notification-tab"
           onClick={() => filterNotifications(tab)}>
           {this.renderIndicator(tab)}

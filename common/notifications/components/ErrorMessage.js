@@ -9,7 +9,8 @@ class ErrorMessage extends PureComponent {
     const { text } = this.props;
 
     return (
-      <div styleName="error-message"
+      <div
+        styleName="error-message"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: text }} />
     );

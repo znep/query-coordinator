@@ -7,6 +7,7 @@
  * See API.md for more details.
  */
 
+import _ from 'lodash';
 const $ = require('jquery');
 // Socrata Utils provides utility functions like asserts and polyfills.
 const utils = require('common/js_utils');

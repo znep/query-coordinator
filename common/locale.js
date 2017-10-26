@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
 import moment from 'moment-timezone';
@@ -19,6 +20,9 @@ export const localizeLink = (href) => {
 };
 
 export const fetchTranslation = (key) => {
+  // Not sure exactly why this isn't imported - punting for
+  // lintapalooza purposes.
+  // eslint-disable-next-line no-undef
   const message = _.get(I18n, key);
   if (!message) {
     console.error(`Error retrieving I18n message for key: ${key}`);

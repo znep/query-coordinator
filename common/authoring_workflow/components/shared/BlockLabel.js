@@ -4,7 +4,7 @@ import React from 'react';
 import { factories } from 'common/components';
 
 export default class BlockLabel extends React.Component {
-  getFlyoutName() {
+  getFlyoutName() { // eslint-disable-line react/sort-comp
     return `${_.kebabCase(this.props.title)}-flyout`;
   }
 

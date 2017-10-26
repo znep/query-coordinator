@@ -3,9 +3,6 @@ import $ from 'jquery';
 import { __RewireAPI__ as TimelineChartAPI } from 'common/visualizations/TimelineChart';
 
 describe('TimelineChart jQuery component', function() {
-
-  'use strict';
-
   var NAME_ALIAS = '__NAME_ALIAS__';
   var VALUE_ALIAS = '__VALUE_ALIAS__';
 

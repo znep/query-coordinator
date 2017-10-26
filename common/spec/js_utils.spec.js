@@ -14,9 +14,6 @@ import 'intl/locale-data/jsonp/zh.js';
 require('karma-intl-shim');
 
 describe('utils.js', function() {
-
-  'use strict';
-
   describe('String.prototype.format', function() {
 
     describe('when the first argument is not an object', function() {

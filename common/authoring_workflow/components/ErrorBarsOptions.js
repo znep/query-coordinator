@@ -36,7 +36,7 @@ export class ErrorBarsOptions extends Component {
     ]);
   }
 
-  render() {
+  render() { // eslint-disable-line react/sort-comp
     const { metadata } = this.props;
     return hasData(metadata) ? this.renderErrorBarsSelector() : null;
   }

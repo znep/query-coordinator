@@ -15,4 +15,4 @@
       window.location.reload();
     });
   });
-})(window.$);
+}(window.$));

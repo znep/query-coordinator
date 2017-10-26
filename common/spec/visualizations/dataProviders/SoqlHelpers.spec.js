@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 
 describe('SoqlHelpers', function() {

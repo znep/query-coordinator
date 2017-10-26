@@ -6,7 +6,7 @@ import { Dropdown } from 'common/components';
 
 export class RolePicker extends Component {
   render() {
-    const { availableRoles, onRoleChange, roleId, initialOption } = this.props;
+    const { availableRoles, onRoleChange, roleId, initialOption, placeholder } = this.props;
 
     if (initialOption) {
       availableRoles.unshift(initialOption);
@@ -17,7 +17,8 @@ export class RolePicker extends Component {
         onSelection={selection => onRoleChange(selection.value)}
         options={availableRoles}
         size="medium"
-        value={roleId} />
+        value={roleId}
+        placeholder={placeholder} />
     );
   }
 }
@@ -27,7 +28,8 @@ RolePicker.propTypes = {
   roleId: PropTypes.string,
   onRoleChange: PropTypes.func.isRequired,
   I18n: PropTypes.object.isRequired,
-  initialOption: PropTypes.object
+  initialOption: PropTypes.object,
+  placeholder: PropTypes.string
 };
 
 const mapStateToProps = (state, { I18n }) => {

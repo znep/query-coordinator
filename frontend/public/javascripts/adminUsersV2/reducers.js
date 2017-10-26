@@ -135,7 +135,7 @@ const futureUsers = (state = [], action) => {
       return state;
     case SUBMIT_NEW_USERS:
       if (action.stage === COMPLETE_SUCCESS) {
-        return state.concat(_.get(action, 'payload.futureUsers', []));
+        return _.get(action, 'payload.futureUsers', []).concat(state);
       }
       return state;
     default:

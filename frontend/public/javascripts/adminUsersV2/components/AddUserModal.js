@@ -78,7 +78,11 @@ export class AddUserModal extends Component {
     if (showModal) {
       return (
         <Modal {...modalProps}>
-          <ModalHeader {...headerProps} />
+          <ModalHeader {...headerProps}>
+            <div>
+              {I18n.translate('users.add_new_users.subtitle')}
+            </div>
+          </ModalHeader>
 
           <ModalContent>
             <form className="add-user">
@@ -90,23 +94,27 @@ export class AddUserModal extends Component {
                 className="add-user-emails text-input text-area"
                 placeholder={I18n.translate('users.add_new_users.emails_placeholder')}
                 id="add-user-emails" />
+              <label className="block-label" >
+                {I18n.translate('users.add_new_users.role_label')}:
+              </label>
               <LocalizedRolePicker
                 roleId={selectedRoleId}
-                onRoleChange={roleId => this.setState({ selectedRoleId: roleId })} />
+                onRoleChange={roleId => this.setState({ selectedRoleId: roleId })}
+                placeholder={I18n.t('users.add_new_users.role_placeholder')} />
             </form>
             {hasError && this.renderErrors(errors)}
           </ModalContent>
 
           <ModalFooter>
             <div>
+              <button type="button" className="btn btn-secondary add-user-cancel" onClick={this.cancelModal}>
+                {I18n.translate('users.add_new_users.cancel')}
+              </button>
               <button
                 type="button"
                 className="btn btn-primary add-user-confirm"
                 onClick={this.submitNewUsers}>
-                {I18n.translate('users.add_new_users.create_accounts')}
-              </button>
-              <button type="button" className="btn btn-secondary add-user-cancel" onClick={this.cancelModal}>
-                {I18n.translate('users.add_new_users.cancel')}
+                {I18n.translate('users.add_new_users.add_users')}
               </button>
             </div>
           </ModalFooter>

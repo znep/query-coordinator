@@ -6523,12 +6523,14 @@ en:
       reset_password: Reset Password
       resend_pending_user_email: Resend email
     add_new_users:
-      add_users: Add Users
-      button: Add New User(s)
+      add_users: Add User(s)
+      subtitle: Add a single user or multiple users with the same role.
       cancel: Cancel
-      create_accounts: Create Accounts
       emails_label: Emails (comma-separated)
-      emails_placeholder: Emails
+      emails_placeholder: e.g. john.smith@evergreen.gov, jane.doe@evergreen.gov, etc.
+      role_label: Role
+      role_placeholder: Select user role...
+      success_toast: Successfully added user.
     errors:
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: Invalid role selected

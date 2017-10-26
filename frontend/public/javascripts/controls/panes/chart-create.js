@@ -1,6 +1,7 @@
 (function($) {
 
   var typeOrder = ['column', 'stackedcolumn', 'bar', 'stackedbar', 'pie', 'donut', 'line', 'area', 'timeline', 'bubble', 'treemap'];
+  var classicChartRequested = false;
 
   $.Control.extend('pane_chart_create', {
       _init: function() {
@@ -213,26 +214,45 @@
           pipe(function(nbeMetadata) {
             var localePrefix = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
             var label = cpObj.$dom().find('.chartTypeSelection > label.formHeader');
-            label.after(
+
+            var newVizButton = $.tag({
+              tagName: 'a',
+              href: localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id),
+              'class': 'visualization-canvas-button',
+              contents: $.t('screens.ds.grid_sidebar.visualization_canvas.button')
+            });
+
+            label.before(
+              $('<div>').
+                addClass('visualization-canvas-bootstrap').
+                append(newVizButton)
+            );
+
+            // NOTE: The whole sidebar section gets re-rendered for pointless
+            // reasons, so we use a control variable held in outermost scope to
+            // ensure that we only show this link once.
+            if (classicChartRequested) {
+              return;
+            }
+
+            newVizButton.after(
               $.tag({
-                tagName: 'div',
-                'class': 'visualization-canvas-bootstrap',
-                contents: [{
-                  tagName: 'h3',
-                  'class': 'visualization-canvas-title',
-                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.title')
-                }, {
-                  tagName: 'p',
-                  'class': 'visualization-canvas-message',
-                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.message')
-                }, {
-                  tagName: 'a',
-                  href: localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id),
-                  'class': 'visualization-canvas-button',
-                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.button')
-                }]
+                tagName: 'a',
+                href: '#continue-to-classic',
+                'class': 'visualization-canvas-ignore-link',
+                contents: $.t('screens.ds.grid_sidebar.visualization_canvas.link_to_classic')
+              }).click(function() {
+                var link = $(this);
+                link.closest('.formSection').find('.hide').removeClass('hide').css({display: ''});
+                link.remove();
+                classicChartRequested = true;
+                return false;
               })
             );
+
+            // Have to add redundant `display: none` because Grid View Refresh 2017 uses
+            // `!important` liberally and there's no reasonable way to undo that damage.
+            label.nextAll().andSelf().addClass('hide').attr({style: 'display: none !important'});
           }).
           fail(_.noop);
       },

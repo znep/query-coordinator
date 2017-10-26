@@ -1544,20 +1544,6 @@ body.grid-view-2017-refresh {
   background: #ffffff;
   padding: 8px;
 
-  .visualization-canvas-title {
-    color: #3d3d3d;
-    font-size: 1.75em;
-    font-weight: normal;
-    margin-bottom: 0.5em;
-  }
-
-  .visualization-canvas-message {
-    color: #3d3d3d;
-    font-size: 1.3em;
-    margin-bottom: 1em;
-    line-height: 1.3em
-  }
-
   .visualization-canvas-button {
     font-size: 1.3em;
     font-weight: normal;
@@ -1568,6 +1554,15 @@ body.grid-view-2017-refresh {
     text-align: center;
     display: block;
     box-sizing: border-box;
+  }
+
+  .visualization-canvas-ignore-link {
+    color: #3d3d3d;
+    font-size: 13px;
+    line-height: 1.3em;
+    margin: .5em auto;
+    display: block;
+    text-align: center;
   }
 }
 

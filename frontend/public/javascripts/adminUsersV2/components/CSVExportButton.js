@@ -8,7 +8,7 @@ export class CSVExportButton extends Component {
   render() {
     const { href, I18n } = this.props;
     return (
-      <a href={href} className="btn btn-simple">
+      <a href={href} className="btn btn-simple export-csv-btn">
         {I18n.t('users.export_as_csv')}
       </a>
     );

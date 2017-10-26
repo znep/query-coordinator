@@ -34,11 +34,21 @@
 
   .admin-users-app {
     position: relative;
+  }
 
-    .add-user-button-container {
-      position: absolute;
-      right: 0;
-      top: -15px;
+  .header-button-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 1em;
+    position: absolute;
+    right: 0;
+    top: -30px;
+
+    .export-csv-btn {
+      margin-right: 8px;
+      height: 42px;
+      line-height: 1.25;
     }
   }
 
@@ -112,13 +122,6 @@
     .dropdown-placeholder {
       padding-bottom: 4px;
     }
-  }
-
-  .export-button-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding-top: 1em;
   }
 
   .dropdown-button {

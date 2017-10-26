@@ -18,14 +18,14 @@ export const App = ({ store }) => {
         <DataLoader>
           <LocalizedNotification />
           <div className="admin-users-app">
-            <AddUserButton />
+            <div className="header-button-bar">
+              <LocalizedCSVExportButton />
+              <AddUserButton />
+            </div>
             <Tabs>
               <div name="Users">
                 <UserSearchBar />
                 <ConnectedUsersTable />
-                <div className="export-button-bar">
-                  <LocalizedCSVExportButton />
-                </div>
               </div>
               <div name="Pending Users">
                 <ConnectedFutureUsersTable />

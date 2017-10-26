@@ -102,10 +102,16 @@
 
   .socrata-icon-user {
     padding-right: 2em;
+    top: -2px;
+    position: relative;
   }
 
   .dropdown-container {
     width: 100%;
+    margin-top: 0;
+    .dropdown-placeholder {
+      padding-bottom: 4px;
+    }
   }
 
   .export-button-bar {

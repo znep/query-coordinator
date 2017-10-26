@@ -57,21 +57,21 @@ const convertUserListFromApi = users => {
   });
 };
 
-const loadUsers = options => {
+const loadUsers = ({query, filters} = {}) => {
   const fetchOptions = {
     credentials: 'same-origin',
     headers: defaultHeaders
   };
 
   let apiPath = `/api/catalog/v1/users?domain=${serverConfig.domain}&limit=10000`;
-  if (!_.isEmpty(options.query)) {
-    apiPath = `${apiPath}&q=${options.query}`;
+  if (!_.isEmpty(query)) {
+    apiPath = `${apiPath}&q=${query}`;
   } else {
     apiPath = `${apiPath}&order=screen_name`;
   }
-  if (!_.isEmpty(options.filters)) {
-    Object.keys(options.filters).forEach(key => {
-      const val = options.filters[key];
+  if (!_.isEmpty(filters)) {
+    Object.keys(filters).forEach(key => {
+      const val = filters[key];
       if (!_.isEmpty(val)) {
         apiPath = `${apiPath}&${key}=${val}`;
       }
@@ -108,13 +108,15 @@ const loadRoles = () => {
 
 export const LOAD_DATA = 'LOAD_DATA';
 export const loadData = () => (dispatch, getState) => {
-  const { filters } = getState();
+  const state = getState();
+  const filters = state.filters;
+  const query = _.get(state, 'autocomplete.query');
   const ACTION = {
     type: LOAD_DATA
   };
 
   dispatch({ ...ACTION, stage: START });
-  return Promise.all([loadUsers({filters}), loadRoles(), loadFutureUsers()]).then(([users, roles, futureUsers]) => {
+  return Promise.all([loadUsers({filters, query}), loadRoles(), loadFutureUsers()]).then(([users, roles, futureUsers]) => {
     dispatch({
       ...ACTION,
       stage: COMPLETE_SUCCESS,
@@ -126,14 +128,16 @@ export const loadData = () => (dispatch, getState) => {
 };
 
 export const USER_SEARCH = 'USER_SEARCH';
-export const userSearch = query => dispatch => {
+export const userSearch = query => (dispatch, getState) => {
   const ACTION = {
     type: USER_SEARCH,
     query
   };
 
+  const { filters } = getState();
+
   dispatch({ ...ACTION, stage: START });
-  return loadUsers({query}).then(users => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users }));
+  return loadUsers({query, filters}).then(users => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users }));
 };
 
 export const userAutocomplete = (query, callback) => {
@@ -284,4 +288,12 @@ export const resendPendingUserEmail = (email) => dispatch => {
     dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_FAIL, payload: { email, error }});
     dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
   });
+};
+
+export const ROLE_FILTER_CHANGED = 'ROLE_FILTER_CHANGED';
+export const roleFilterChanged = roleId => (dispatch, getState) => {
+  dispatch({ type: ROLE_FILTER_CHANGED, stage: START, roleId });
+  const { filters, autocomplete: { query }} = getState();
+  return loadUsers({filters, query}).
+    then(users => dispatch({ type: ROLE_FILTER_CHANGED, stage: COMPLETE_SUCCESS, users, roleId }));
 };

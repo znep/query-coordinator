@@ -4,6 +4,7 @@ import {
   COMPLETE_FAIL,
   COMPLETE_SUCCESS,
   LOAD_DATA, REMOVE_FUTURE_USER,
+  ROLE_FILTER_CHANGED,
   SET_ADD_USER_ERRORS, SHOW_NOTIFICATION,
   START,
   SUBMIT_NEW_USERS,
@@ -52,6 +53,12 @@ const users = (state = [], action) => {
       return state;
 
     case USER_SEARCH:
+      if (action.stage === COMPLETE_SUCCESS) {
+        return action.users;
+      }
+      return state;
+
+    case ROLE_FILTER_CHANGED:
       if (action.stage === COMPLETE_SUCCESS) {
         return action.users;
       }
@@ -146,7 +153,24 @@ const roles = (state = [], action) => {
 
 const config = initialConfig => (state = initialConfig) => state;
 
-const filters = initialFilters => (state = initialFilters) => state;
+const filters = initialFilters => (state = initialFilters, action) => {
+  switch (action.type) {
+    case ROLE_FILTER_CHANGED:
+      if (action.roleId === 'all') {
+        return {
+          ...state,
+          role_ids: undefined
+        };
+      } else {
+        return {
+          ...state,
+          role_ids: action.roleId
+        };
+      }
+    default:
+      return state;
+  }
+};
 
 export default (initialConfig, initialFilters) =>
   combineReducers({

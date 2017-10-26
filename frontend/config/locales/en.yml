@@ -6556,6 +6556,7 @@ en:
     roles:
       default: default
       custom: custom
+      all: All Roles
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

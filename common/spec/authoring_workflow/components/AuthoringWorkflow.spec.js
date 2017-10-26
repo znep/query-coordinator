@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import $ from 'jquery';
 import TestUtils from 'react-dom/test-utils';
@@ -172,8 +173,8 @@ describe('AuthoringWorkflow', function() {
 
       describe('when changes have been made', () => {
         beforeEach(() => {
-          _.set(props, 'vifAuthoring.vifs', {notI: 'saidHe'});
-          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {notI: 'saidThey'});
+          _.set(props, 'vifAuthoring.vifs', { notI: 'saidHe' });
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', { notI: 'saidThey' });
           component = renderComponent(AuthoringWorkflow, props);
         });
 
@@ -217,8 +218,8 @@ describe('AuthoringWorkflow', function() {
 
       describe('when changes have been made', () => {
         beforeEach(() => {
-          _.set(props, 'vifAuthoring.vifs', {notI: 'saidHe'});
-          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {notI: 'saidThey'});
+          _.set(props, 'vifAuthoring.vifs', { notI: 'saidHe' });
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', { notI: 'saidThey' });
           component = renderComponent(AuthoringWorkflow, props);
         });
 

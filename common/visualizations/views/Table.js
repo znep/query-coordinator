@@ -96,8 +96,8 @@ module.exports = function Table(element, originalVif, locale) {
       // the public this.render() function, but we add the 'placeholder'
       // property so that we know to not actually display the placholder data.
       dataToRender = {
-        columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
-        rows: [ [ 'placeholder' ] ],
+        columns: [{ fieldName: 'placeholder', renderTypeName: 'text' }],
+        rows: [['placeholder']],
         placeholder: true
       };
 
@@ -160,13 +160,13 @@ module.exports = function Table(element, originalVif, locale) {
     const {
       isLastColumn,
       resizingClassIfIsResizing,
-      columnName,
+      columnName
     } = options;
 
     const className = classNames(
       'column-resize-target', {
-      [`column-resize-target-last${resizingClassIfIsResizing}`]: isLastColumn
-    });
+        [`column-resize-target-last${resizingClassIfIsResizing}`]: isLastColumn
+      });
 
     return `
       <div
@@ -407,7 +407,7 @@ module.exports = function Table(element, originalVif, locale) {
   function findNbeUrlCols(columnData) {
     utils.assertIsArray(columnData);
 
-    return _.filter(columnData, ({name, fieldName}) => {
+    return _.filter(columnData, ({ name, fieldName }) => {
       return _.find(columnData, _.matches({
         name: `${name} (description)`,
         fieldName: `${fieldName}_description`
@@ -741,30 +741,30 @@ module.exports = function Table(element, originalVif, locale) {
      // (activeResizeColumnName is set to the name of the column being resized
      // at the start of the resize action, and reset to null when the resize
      // action is complete).
-     if (activeResizeColumnName === null) {
+    if (activeResizeColumnName === null) {
 
-       self.emitEvent(
+      self.emitEvent(
          'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-         {
-           element: $(this)[0],
-           content: I18n.t('shared.visualizations.charts.table.column_options', locale),
-           belowTarget: false,
-           rightSideHint: false,
-           dark: true
-         }
+        {
+          element: $(this)[0],
+          content: I18n.t('shared.visualizations.charts.table.column_options', locale),
+          belowTarget: false,
+          rightSideHint: false,
+          dark: true
+        }
        );
-     }
-   }
+    }
+  }
 
-   function hideSortMenuButtonFlyout() {
+  function hideSortMenuButtonFlyout() {
 
-     self.emitEvent(
+    self.emitEvent(
        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
        null
      );
-   }
+  }
 
-   function showCellFlyout(event) {
+  function showCellFlyout(event) {
     const $target = $(event.currentTarget).find('div');
     // Sometimes $target doesn't seem to have any elements associated with it.
     const isOverflowing = (!_.isUndefined($target[0])) ?
@@ -935,7 +935,7 @@ module.exports = function Table(element, originalVif, locale) {
     const columnName = $contentDiv.attr('data-column-name');
     const columnRenderType = $contentDiv.attr('data-column-render-type');
 
-    if (columnName && !isUnsortableColumnType({renderTypeName: columnRenderType})) {
+    if (columnName && !isUnsortableColumnType({ renderTypeName: columnRenderType })) {
       self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
     }
   }
@@ -993,7 +993,7 @@ module.exports = function Table(element, originalVif, locale) {
 
   function attachSortMenuEventHandlers($sortMenu, columnName, columnRenderType) {
 
-    if (columnName && !isUnsortableColumnType({renderTypeName: columnRenderType})) {
+    if (columnName && !isUnsortableColumnType({ renderTypeName: columnRenderType })) {
 
       $(document).on('click touchstart', hideSortMenu);
 

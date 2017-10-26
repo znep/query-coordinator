@@ -1,10 +1,9 @@
 var _ = require('lodash');
 var $ = require('jquery');
+var DistributionChart = require('common/visualizations/DistributionChart');
+var helpers = require('common/visualizations/views/DistributionChartHelpers');
 
 describe('DistributionChart jQuery component', function() {
-  var DistributionChart = require('common/visualizations/DistributionChart');
-  var helpers = require('common/visualizations/views/DistributionChartHelpers');
-
   var vif = {
     aggregation: {
       field: null,
@@ -146,7 +145,7 @@ describe('DistributionChart jQuery component', function() {
           expect(columnDomainQuery).to.match(/select min\([^\)]+\)/i);
           expect(columnDomainQuery).to.match(/select .* max\([^\)]+\)/i);
           return Promise.resolve({
-            rows: [ [ 0, 100 ] ]
+            rows: [[0, 100]]
           });
         }
       );
@@ -303,10 +302,10 @@ describe('DistributionChart jQuery component', function() {
     it('transform the data provider responses into an object with unfiltered and filtered keys', function() {
       var unfiltered = {
         rows: [
-          [ 0, 0 ],
-          [ 1, 0 ],
-          [ 2, 0 ],
-          [ 3, 0 ]
+          [0, 0],
+          [1, 0],
+          [2, 0],
+          [3, 0]
         ]
       };
 
@@ -315,7 +314,7 @@ describe('DistributionChart jQuery component', function() {
       var distributionChart = new DistributionChart(outlet, vif);
       var bucketingOptions = { bucketType: 'linear', bucketSize: 1 };
 
-      var result = distributionChart.transformBucketedData(bucketingOptions, [ unfiltered, filtered ]);
+      var result = distributionChart.transformBucketedData(bucketingOptions, [unfiltered, filtered]);
       expect(result.unfiltered).to.exist;
       expect(result.filtered).to.exist;
     });
@@ -323,23 +322,23 @@ describe('DistributionChart jQuery component', function() {
     it('adds missing filtered buckets to the result', function() {
       var unfiltered = {
         rows: [
-          [ 0, 0 ],
-          [ 1, 0 ],
-          [ 2, 0 ],
-          [ 3, 0 ]
+          [0, 0],
+          [1, 0],
+          [2, 0],
+          [3, 0]
         ]
       };
 
       var filtered = {
         rows: [
-          [ 0, 0 ]
+          [0, 0]
         ]
       };
 
       var distributionChart = new DistributionChart(outlet, vif);
       var bucketingOptions = { bucketType: 'linear', bucketSize: 1 };
 
-      var result = distributionChart.transformBucketedData(bucketingOptions, [ unfiltered, filtered ]);
+      var result = distributionChart.transformBucketedData(bucketingOptions, [unfiltered, filtered]);
 
       expect(result.unfiltered).to.have.length(4);
       expect(result.filtered).to.have.length(4);
@@ -355,7 +354,7 @@ describe('DistributionChart jQuery component', function() {
       var distributionChart = new DistributionChart(outlet, vif);
       var bucketingOptions = { bucketType: 'linear', bucketSize: 1 };
 
-      expect(_.partial(distributionChart.transformBucketedData, bucketingOptions, [ unfiltered, filtered ])).to.throw;
+      expect(_.partial(distributionChart.transformBucketedData, bucketingOptions, [unfiltered, filtered])).to.throw;
     });
   });
 

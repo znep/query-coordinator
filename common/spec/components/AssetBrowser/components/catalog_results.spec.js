@@ -39,19 +39,19 @@ describe('components/CatalogResults', () => {
 
   describe('enableAssetInventoryLink', () => {
     it('shows the asset inventory button when true and on the "All Assets" tab', () => {
-      const props = catalogResultsProps({ activeTab: constants.ALL_ASSETS_TAB , enableAssetInventoryLink: true });
+      const props = catalogResultsProps({ activeTab: constants.ALL_ASSETS_TAB, enableAssetInventoryLink: true });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 1);
     });
 
     it('hides the asset inventory button when true and on the "My Assets" tab', () => {
-      const props = catalogResultsProps({ activeTab: constants.MY_ASSETS_TAB , enableAssetInventoryLink: true });
+      const props = catalogResultsProps({ activeTab: constants.MY_ASSETS_TAB, enableAssetInventoryLink: true });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
     });
 
     it('hides the asset inventory button when true and on the "Shared to Me" tab', () => {
-      const props = catalogResultsProps({ activeTab: constants.SHARED_TO_ME_TAB , enableAssetInventoryLink: true });
+      const props = catalogResultsProps({ activeTab: constants.SHARED_TO_ME_TAB, enableAssetInventoryLink: true });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
     });

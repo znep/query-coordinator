@@ -6,13 +6,13 @@ import { factories, Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
 
-import { 
-  appendSeries, 
-  removeSeries, 
-  setMeasure, 
+import {
+  appendSeries,
+  removeSeries,
+  setMeasure,
   setMeasureAggregation } from '../actions';
 
-import { 
+import {
   getDimensionGroupingColumnName,
   getSeries,
   hasErrorBars,
@@ -57,13 +57,13 @@ export class MeasureSelector extends Component {
     return hasData(metadata) ? this.renderMeasureSelectors() : null;
   }
 
-  renderMeasureSelectors() {
+  renderMeasureSelectors() { // eslint-disable-line react/sort-comp
     const { metadata, vifAuthoring } = this.props;
     const { isSeriesPending } = this.state;
 
     const validMeasures = getValidMeasures(metadata);
     const options = [{
-      title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
+      title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null },
       ...validMeasures.map(validMeasure => ({
         title: validMeasure.name,
         value: validMeasure.fieldName,
@@ -163,8 +163,8 @@ export class MeasureSelector extends Component {
     }
 
     const options = [
-      {title: I18n.translate('shared.visualizations.aggregations.none'), value: null},
-      ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
+      { title: I18n.translate('shared.visualizations.aggregations.none'), value: null },
+      ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type }))
     ];
 
     const measureAggregationAttributes = {
@@ -208,7 +208,7 @@ export class MeasureSelector extends Component {
         <a {...deleteLinkAttributes}>
           <span className="socrata-icon-close" />
         </a>
-      </div>) : 
+      </div>) :
       null;
   }
 
@@ -220,7 +220,7 @@ export class MeasureSelector extends Component {
     const shouldRender = (series.length < MAXIMUM_MEASURES) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    const isDisabled = isSeriesPending || 
+    const isDisabled = isSeriesPending ||
       !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) ||
       hasErrorBars(vifAuthoring);
 
@@ -250,8 +250,7 @@ export class MeasureSelector extends Component {
 
     if (isSeriesPending) {
       this.setState({ isSeriesPending: false });
-    }
-    else {
+    } else {
       onRemoveMeasure(seriesIndex);
     }
   }
@@ -285,7 +284,7 @@ MeasureSelector.propTypes = {
   onAddMeasure: PropTypes.func,
   onRemoveMeasure: PropTypes.func,
   onSetMeasureColumn: PropTypes.func,
-  onSetMeasureAggregation: PropTypes.func,
+  onSetMeasureAggregation: PropTypes.func
 };
 
 MeasureSelector.defaultProps = { aggregationTypes: AGGREGATION_TYPES };
@@ -309,7 +308,7 @@ function mapDispatchToProps(dispatch) {
     },
     onSetMeasureAggregation(seriesIndex, aggregationFunction) {
       dispatch(setMeasureAggregation(seriesIndex, aggregationFunction));
-    },
+    }
   };
 }
 

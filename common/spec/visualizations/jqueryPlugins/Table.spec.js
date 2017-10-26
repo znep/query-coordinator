@@ -13,7 +13,7 @@ describe('Table', () => {
           ascending: true,
           columnName: 'ward'
         }
-      ],
+      ]
     },
     datasetUid: 'snuk-a5kv',
     domain: 'dataspace.demo.socrata.com',
@@ -101,7 +101,7 @@ describe('Table', () => {
       TableAPI.__Rewire__('SoqlDataProvider', function() {
         this.getTableData = getTableDataSpy;
         this.getRowCount = _.constant(Promise.resolve(123));
-        this.getConfigurationProperty = _.constant('configProperty')
+        this.getConfigurationProperty = _.constant('configProperty');
       });
 
       TableAPI.__Rewire__('Table', function() {
@@ -190,7 +190,7 @@ describe('Table', () => {
             getGetTableDataArgumentsHash(calls[0]),
             {
               columnNames: displayableColumnNames,
-              order: [ { ascending: false, columnName: 'date' } ],
+              order: [{ ascending: false, columnName: 'date' }],
               limit: 6,
               offset: 0
             }
@@ -220,7 +220,7 @@ describe('Table', () => {
             getGetTableDataArgumentsHash(calls[0]),
             {
               columnNames: displayableColumnNames,
-              order: [ { ascending: true, columnName: ':id' } ],
+              order: [{ ascending: true, columnName: ':id' }],
               limit: 6,
               offset: 0
             }
@@ -252,7 +252,7 @@ describe('Table', () => {
             getGetTableDataArgumentsHash(calls[0]),
             {
               columnNames: displayableColumnNames,
-              order: [ { ascending: true, columnName: 'case_number' } ],
+              order: [{ ascending: true, columnName: 'case_number' }],
               limit: 6,
               offset: 0
             }
@@ -282,7 +282,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[0]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'ward' } ],
+            order: [{ ascending: true, columnName: 'ward' }],
             limit: 6,
             offset: 0
           }
@@ -292,7 +292,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[1]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'ward' } ],
+            order: [{ ascending: true, columnName: 'ward' }],
             limit: 6,
             offset: 6
           }
@@ -318,7 +318,7 @@ describe('Table', () => {
             getGetTableDataArgumentsHash(calls[2]),
             {
               columnNames: displayableColumnNames,
-              order: [ { ascending: true, columnName: 'ward' } ],
+              order: [{ ascending: true, columnName: 'ward' }],
               limit: 6,
               offset: 0
             }
@@ -349,7 +349,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[0]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'ward' } ],
+            order: [{ ascending: true, columnName: 'ward' }],
             limit: 6,
             offset: 0
           }
@@ -359,7 +359,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[1]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'district' } ],
+            order: [{ ascending: true, columnName: 'district' }],
             limit: 6,
             offset: 0
           }
@@ -404,7 +404,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[0]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'ward' } ],
+            order: [{ ascending: true, columnName: 'ward' }],
             limit: 6,
             offset: 0
           }
@@ -414,7 +414,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[1]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: false, columnName: 'district' } ],
+            order: [{ ascending: false, columnName: 'district' }],
             limit: 6,
             offset: 0
           }
@@ -459,7 +459,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[0]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'ward' } ],
+            order: [{ ascending: true, columnName: 'ward' }],
             limit: 6,
             offset: 0
           }
@@ -469,7 +469,7 @@ describe('Table', () => {
           getGetTableDataArgumentsHash(calls[1]),
           {
             columnNames: displayableColumnNames,
-            order: [ { ascending: true, columnName: 'district' } ],
+            order: [{ ascending: true, columnName: 'district' }],
             limit: 6,
             offset: 0
           }
@@ -505,7 +505,7 @@ describe('Table', () => {
             getGetTableDataArgumentsHash(calls[2]),
             {
               columnNames: displayableColumnNames,
-              order: [ { ascending: false, columnName: 'district' } ],
+              order: [{ ascending: false, columnName: 'district' }],
               limit: 6,
               offset: 0
             }
@@ -527,7 +527,7 @@ describe('Table', () => {
               getGetTableDataArgumentsHash(calls[3]),
               {
                 columnNames: displayableColumnNames,
-                order: [ { ascending: true, columnName: 'district' } ],
+                order: [{ ascending: true, columnName: 'district' }],
                 limit: 6,
                 offset: 0
               }

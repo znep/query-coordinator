@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 
@@ -33,7 +34,7 @@ describe('VisualizationTypeSelector', function() {
       describe('with a visualization selected', function() {
         it('selects the visualization', function() {
           expect(component.querySelector('.btn.active')).to.exist;
-        })
+        });
       });
 
       describe('with region map selected and no regions', function() {

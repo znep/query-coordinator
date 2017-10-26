@@ -13,10 +13,10 @@ function createVifAuthoring(type, groupBy) {
     authoring: {
       selectedVisualizationType: type
     },
-    vifs: {...vifs}
+    vifs: { ...vifs }
   };
 
-  if(groupBy) _.set(vifAuthoring, 'vifs.timelineChart.series[0].dataSource.dimension.grouping.columnName', 'example_grouping');
+  if (groupBy) _.set(vifAuthoring, 'vifs.timelineChart.series[0].dataSource.dimension.grouping.columnName', 'example_grouping');
 
   return vifAuthoring;
 }
@@ -108,10 +108,10 @@ describe('PresentationPane', () => {
       });
     });
 
-    describe('events', function () {
-      describe('when changing the show value labels as percent checkbox', function () {
+    describe('events', function() {
+      describe('when changing the show value labels as percent checkbox', function() {
         emitsEvent('#show-value-labels-as-percent', 'onChangeShowValueLabelsAsPercent');
-      })
+      });
     });
   }
 
@@ -252,7 +252,7 @@ describe('PresentationPane', () => {
     });
   });
 
-  describe('barChart', function () {
+  describe('barChart', function() {
     beforeEach(setUpVisualization('barChart'));
 
     describe('rendering', () => {

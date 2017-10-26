@@ -1,0 +1,57 @@
+.api-flannel {
+  max-width: 475px;
+  letter-spacing: 0;
+  text-align: left;
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h2, h6 {
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .socrata-flannel-content {
+    width: 475px;
+  }
+
+  .section {
+    margin: 20px 0;
+  }
+
+  .endpoint {
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .endpoint-title {
+      margin-top: 0;
+      margin-bottom: 0;
+      text-transform: none;
+    }
+
+    .layer-name {
+      margin-bottom: 0.2rem;
+    }
+
+    .endpoint-input {
+      color: $dark-grey-2;
+      margin-bottom: 0;
+    }
+
+    .dropdown-container {
+      min-width: 90px;
+    }
+
+    .dropdown-placeholder {
+      padding-right: 10px;
+      line-height: 1.2;
+
+      .socrata-icon {
+        display: none;
+      }
+    }
+  }
+}

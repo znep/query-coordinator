@@ -6,7 +6,7 @@ describe('DSLP Cross Origin Errors Filter', function() {
       errors: [{
         message: 'Uncaught SecurityError: Blocked a frame with origin "http://domain.com" from accessing a frame with origin "http://bar.com".'
       }]
-    }
+    };
 
     assert.isNull(dslpCrossOriginErrorsFilter(notice));
   });
@@ -16,7 +16,7 @@ describe('DSLP Cross Origin Errors Filter', function() {
       errors: [{
         message: 'Another type of error'
       }]
-    }
+    };
 
     assert.equal(dslpCrossOriginErrorsFilter(notice), notice);
   });

@@ -38,7 +38,8 @@ class UserNotification extends React.Component {
     }
 
     return (
-      <span styleName="link-icon"
+      <span
+        styleName="link-icon"
         className="toggle-notification-read-state"
         role="button"
         title={linkTitle}
@@ -56,7 +57,8 @@ class UserNotification extends React.Component {
     } = this.props;
 
     return (
-      <span styleName="link-icon"
+      <span
+        styleName="link-icon"
         className="user-notification-clear-icon"
         role="button"
         title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
@@ -114,8 +116,9 @@ class UserNotification extends React.Component {
     const isUnread = !isRead;
 
     return (
-      <li styleName={classNames("notification-item", type, { 'unread': isUnread })}
-        className={classNames("user-notification-item clearfix", { 'unread': isUnread })}
+      <li
+        styleName={classNames('notification-item', type, { 'unread': isUnread })}
+        className={classNames('user-notification-item clearfix', { 'unread': isUnread })}
         data-notification-id={id}>
         <div styleName="notification-info">
           {this.renderNotificationTitle()}

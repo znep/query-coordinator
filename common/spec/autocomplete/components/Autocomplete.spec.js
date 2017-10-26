@@ -10,8 +10,8 @@ describe('<Autocomplete />', () => {
     it('renders collapsed when collapsible & collapsed are true', () => {
       const wrapper = shallow(
         <AutocompleteClass
-          collapsed={true}
-          collapsible={true}
+          collapsed
+          collapsible
           onResultVisibilityChanged={() => {}}
           millisecondsBeforeSearch={0}
           getSearchResults={() => {}} />
@@ -36,7 +36,7 @@ describe('<Autocomplete />', () => {
     it('renders un-collapsed when collapsible is false even if collapsed is true', () => {
       const wrapper = shallow(
         <AutocompleteClass
-          collapsed={true}
+          collapsed
           collapsible={false}
           onResultVisibilityChanged={() => {}}
           millisecondsBeforeSearch={0}

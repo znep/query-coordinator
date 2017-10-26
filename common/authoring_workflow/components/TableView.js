@@ -13,7 +13,7 @@ export class TableView extends React.Component {
 
     _.bindAll(this, [
       'renderBasedOn',
-      'renderTableView',
+      'renderTableView'
 
     ]);
   }

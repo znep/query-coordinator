@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -85,12 +86,11 @@ class ViewCard extends Component {
       <span className="icon socrata-icon-private" /> : null;
 
     const previewImageStyling = { backgroundImage: `url(${imageUrl})` };
-    const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ?
-      (
-        <div className="preview-image" style={previewImageStyling} title={name}>
-          <span className="aria-not-displayed">Preview image</span>
-        </div>
-      ) : <span className={`${icon} x-large-icon`}></span>;
+    const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ? (
+      <div className="preview-image" style={previewImageStyling} title={name}>
+        <span className="aria-not-displayed">Preview image</span>
+      </div>
+    ) : <span className={`${icon} x-large-icon`}></span>;
 
     return (
       <div className="result-card media view-card">

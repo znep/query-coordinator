@@ -5,11 +5,8 @@ import 'common/visualizations/dataProviders/VectorTileManager';
 import featureTestData from '../featureTestData/featureTestData';
 
 describe('FeatureMap', function() {
-
-  'use strict';
-
   var VALID_BASE_LAYER = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
-  var VALID_EXTENT = { "southwest": [41.681944,-87.827778], "northeast": [42.081944,-87.427778] };
+  var VALID_EXTENT = { 'southwest': [41.681944, -87.827778], 'northeast': [42.081944, -87.427778] };
   // For use with `deserializeBytes()` below
   var VALID_DESERIALIZED_TILESERVER_RESPONSES = deserializeTileserverResponses(featureTestData);
   var MAP_WIDTH = 640;
@@ -140,7 +137,7 @@ describe('FeatureMap', function() {
       map: map,
       renderOptions: renderOptions
     };
-  };
+  }
 
   function removeFeatureMap(featureMap) {
 

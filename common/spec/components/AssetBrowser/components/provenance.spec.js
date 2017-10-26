@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { Provenance} from 'common/components/AssetBrowser/components/provenance';
+import { Provenance } from 'common/components/AssetBrowser/components/provenance';
 import { FeatureFlags } from 'common/feature_flags';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
 

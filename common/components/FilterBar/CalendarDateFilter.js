@@ -11,7 +11,7 @@ import moment from 'moment';
 class CalendarDateFilter extends Component {
   constructor(props) {
     super(props);
-    
+
     const { filter, column } = props;
     const values = _.defaultTo(filter.arguments, {
       start: column.rangeMin,
@@ -30,7 +30,7 @@ class CalendarDateFilter extends Component {
       'shouldDisableApply',
       'resetFilter',
       'updateFilter',
-      'renderDateRangePicker',
+      'renderDateRangePicker'
     ]);
 
     this.state = this.getInitialState();

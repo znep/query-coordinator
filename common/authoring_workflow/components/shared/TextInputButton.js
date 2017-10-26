@@ -18,7 +18,7 @@ export class TextInputButton extends Component {
     isolateEventByKeys(event, [ENTER, ESCAPE]);
 
     if ((keyCode === ENTER) || (keyCode === ESCAPE)) {
-      this.setState({ isPopupOpen: false })
+      this.setState({ isPopupOpen: false });
     }
   }
 
@@ -89,7 +89,7 @@ export class TextInputButton extends Component {
       </div>
     );
   }
-};
+}
 
 TextInputButton.propTypes = {
   onChange: PropTypes.func,

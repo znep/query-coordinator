@@ -14,7 +14,7 @@ describe('actions/query_string', () => {
     });
 
     afterEach(() => {
-      historyStub.restore()
+      historyStub.restore();
     });
 
     it('returns an empty query string when getState is empty', () => {

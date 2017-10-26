@@ -217,11 +217,10 @@ function SvgPieChart($element, vif, options) {
       } else if (columnValue === otherLabel) {
         return otherLabel;
       } else {
-        //TODO
-        const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+        const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
         return _.unescape(ColumnFormattingHelpers.formatValueHTML(columnValue, column, dataToRender[0]));
       }
-    }
+    };
 
     // create legend texts
     legend.append('text').
@@ -251,7 +250,7 @@ function SvgPieChart($element, vif, options) {
             return percentAsString;
           } else {
             // makes sure pie chart labels do no break when value is null
-            const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+            const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
             const value = d.data[1];
 
             if (_.isNil(value)) {
@@ -516,7 +515,7 @@ function SvgPieChart($element, vif, options) {
     const legendTopOffset = (height - legendHeight) / 2;
     const legendTop = index => legendTopOffset + index * legendRowHeight;
 
-    return { pieLeft, pieTop, legendLeft, legendTop};
+    return { pieLeft, pieTop, legendLeft, legendTop };
   }
 
   /**
@@ -632,7 +631,7 @@ function SvgPieChart($element, vif, options) {
     legend.
       on('mouseover', (d, index) => {
         // Delegate to slice.
-        var evt = new MouseEvent("mouseover");
+        var evt = new MouseEvent('mouseover');
         svg.node().querySelector(`.slice-group[data-index="${index}"]`).dispatchEvent(evt);
       }).
       on('mouseleave', hideFlyout);
@@ -661,7 +660,7 @@ function SvgPieChart($element, vif, options) {
     } else if (titleValue === otherLabel) {
       titleHTML = otherLabel;
     } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`)
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
       titleHTML = ColumnFormattingHelpers.formatValueHTML(titleValue, column, dataToRender[0]);
     }
 
@@ -674,11 +673,11 @@ function SvgPieChart($element, vif, options) {
       '';
 
     // Constructing html table for flyout content
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
-      append($('<td>', {'colspan': 2}).html(titleHTML || ''));
-    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).html(titleHTML || ''));
+    const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
       append($title);
     const value = data.value;
 
@@ -687,7 +686,7 @@ function SvgPieChart($element, vif, options) {
     if (value === null) {
       valueHTML = noValueLabel;
     } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`)
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
 
       if (value === 1) {

@@ -8,13 +8,13 @@ function getDefaultState() {
   return {
     data: {
       columns: [
-        {renderTypeName: 'text', fieldName: 'text', name: 'text'},
-        {renderTypeName: 'number', fieldName: 'number', name: 'number'},
-        {renderTypeName: 'point', fieldName: 'point', name: 'point'},
-        {renderTypeName: 'location', fieldName: 'location', name: 'location'},
-        {renderTypeName: 'calendar_date', fieldName: 'calendar_date', name: 'calendar date'},
-        {renderTypeName: 'money', fieldName: 'money', name: 'money'},
-        {renderTypeName: 'percent', fieldName: 'percent', name: 'percent' }
+        { renderTypeName: 'text', fieldName: 'text', name: 'text' },
+        { renderTypeName: 'number', fieldName: 'number', name: 'number' },
+        { renderTypeName: 'point', fieldName: 'point', name: 'point' },
+        { renderTypeName: 'location', fieldName: 'location', name: 'location' },
+        { renderTypeName: 'calendar_date', fieldName: 'calendar_date', name: 'calendar date' },
+        { renderTypeName: 'money', fieldName: 'money', name: 'money' },
+        { renderTypeName: 'percent', fieldName: 'percent', name: 'percent' }
       ]
     },
     domain: 'test.domain',
@@ -60,7 +60,7 @@ describe('metadata', function() {
   describe('getRecommendedVisualizationTypes', function() {
     function returnsRecommendedVisualizationType(dimension) {
       it('returns a list of recommended visualization types', function() {
-        var types = selector.getRecommendedVisualizationTypes(getDefaultState(), {columnName: dimension});
+        var types = selector.getRecommendedVisualizationTypes(getDefaultState(), { columnName: dimension });
         var columnType = _.find(COLUMN_TYPES, column => column.type === dimension);
 
         expect(types).to.have.length.above(0);

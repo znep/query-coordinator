@@ -39,18 +39,18 @@ function encodePreferenceFormat(preferences) {
         encodedPreferences.push({
           name: preference,
           type: subCategory,
-          //value stores strings
+          // value stores strings
           value: subCategoryData.enable ? 'true' : 'false',
           enable_email_notification: preferenceData.enable_email,
           enable_product_notification: preferenceData.enable_product_notification
-        })
+        });
       });
     } else {
       encodedPreferences.push({
         name: preference,
         enable_email_notification: preferenceData.enable_email,
         enable_product_notification: preferenceData.enable_product_notification
-      })
+      });
     }
   });
   return encodedPreferences;
@@ -72,7 +72,7 @@ function decodePreferenceFormat(preferences) {
       decodedPreferences[name].sub_categories = {};
       _.each(preferenceData, (preference) => {
         const enableValue = _.get(preference, 'value', 'false');
-        decodedPreferences[name].sub_categories[preference.type] = {enable: (enableValue == 'true')}
+        decodedPreferences[name].sub_categories[preference.type] = { enable: (enableValue == 'true') };
       });
     }
   });
@@ -85,7 +85,7 @@ export const AlertPreferenceAPI = (() => {
       return fetch('/api/notifications_and_alerts/preferences', {
         method: 'GET',
         headers: defaultHeaders(),
-        credentials: 'same-origin',
+        credentials: 'same-origin'
       }).
       then(checkStatus).
       then((response) => response.json()).
@@ -99,11 +99,11 @@ export const AlertPreferenceAPI = (() => {
         method: 'POST',
         headers: defaultHeaders(),
         credentials: 'same-origin',
-        body: JSON.stringify({preferences: encodePreferences})
+        body: JSON.stringify({ preferences: encodePreferences })
       }).
       then(checkStatus).
       then((response) => response.json()).
-      then((response) => response.data)
+      then((response) => response.data);
 
     }
   };

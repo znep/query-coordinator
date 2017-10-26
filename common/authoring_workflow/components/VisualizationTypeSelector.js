@@ -113,7 +113,7 @@ export class VisualizationTypeSelector extends Component {
         </div>
         <div>
           <p>{I18n.t('shared.visualizations.panes.data.fields.visualization_type.no_boundaries')}</p>
-          <p dangerouslySetInnerHTML={{__html: I18n.t('shared.visualizations.panes.data.fields.visualization_type.ask_site_admin')}} />
+          <p dangerouslySetInnerHTML={{ __html: I18n.t('shared.visualizations.panes.data.fields.visualization_type.ask_site_admin') }} />
         </div>
       </div>
     ) : null;
@@ -122,10 +122,10 @@ export class VisualizationTypeSelector extends Component {
   renderVisualizationTypeButton(visualizationType) {
     const { metadata, vifAuthoring } = this.props;
     const recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
-    const isRecommended = _.some(recommendedVisualizationTypes, {type: visualizationType});
-    const selectedVisualizationType = getSelectedVisualizationType(vifAuthoring)
+    const isRecommended = _.some(recommendedVisualizationTypes, { type: visualizationType });
+    const selectedVisualizationType = getSelectedVisualizationType(vifAuthoring);
     const isSelected = (visualizationType === selectedVisualizationType);
-    const visualizationTypeMetadata = _.find(VISUALIZATION_TYPES, {type: visualizationType});
+    const visualizationTypeMetadata = _.find(VISUALIZATION_TYPES, { type: visualizationType });
     const flyout = this.renderVisualizationTypeFlyout(visualizationTypeMetadata, isRecommended);
 
     const buttonAttributes = {
@@ -154,7 +154,7 @@ export class VisualizationTypeSelector extends Component {
     };
 
     return (
-      <div  {...attributes}>
+      <div {...attributes}>
         <div className="visualization-type-gutter" />
         <div className="btn-group">
           {this.renderVisualizationTypeButton('barChart')}

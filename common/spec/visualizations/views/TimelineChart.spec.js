@@ -6,8 +6,6 @@ import timelineTestData from '../timelineTestData';
 import TimelineChart from 'common/visualizations/views/TimelineChart';
 
 describe('TimelineChart', function() {
-  'use strict';
-
   // Each rendering of the timeline chart potentially
   // leaves behind DOM nodes and associated event handlers.
   // This will cause tests to sporadically fail.
@@ -314,7 +312,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000 + i, 0, 1)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ), 'YEAR');
 
@@ -337,7 +335,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000 + i, 0, 1)),
               total: i,
               filtered: 0
-            }
+            };
           })
        ), 'YEAR');
 
@@ -360,7 +358,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000 + i, 2, 3)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ), 'YEAR');
 
@@ -380,7 +378,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000 + i, 0, 1)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ));
 
@@ -403,7 +401,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2009, 11, i)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ), 'DAY');
 
@@ -427,7 +425,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2009, 11, i)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ), 'DAY');
 
@@ -451,7 +449,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000, 0, 1 + i)),
               total: i,
               filtered: 0
-            }
+            };
           })
         ), 'DAY');
 
@@ -485,7 +483,7 @@ describe('TimelineChart', function() {
               date: moment(new Date(2000 + i, 0, 1)),
               total: i,
               filtered: 0
-            }
+            };
           })
        ), 'YEAR');
 

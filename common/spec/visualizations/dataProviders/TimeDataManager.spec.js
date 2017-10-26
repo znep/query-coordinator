@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import TimeDataManager, {
   __RewireAPI__ as TimeDataManagerAPI
 } from 'visualizations/dataProviders/TimeDataManager';
@@ -33,8 +34,8 @@ describe('TimeDataManager', () => {
   beforeEach(() => {
     TimeDataManagerAPI.__Rewire__('SoqlDataProvider', function() {
       this.getRows = () => Promise.resolve({
-        columns: ["__dimension_alias__", "__measure_alias__"],
-        rows: [["2001-01-01T00:00:00.000", "2001-12-31T00:00:00.000"]]
+        columns: ['__dimension_alias__', '__measure_alias__'],
+        rows: [['2001-01-01T00:00:00.000', '2001-12-31T00:00:00.000']]
       });
     });
   });

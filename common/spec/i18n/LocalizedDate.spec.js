@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,7 +30,7 @@ describe('LocalizedDate', () => {
     it('without seconds', () => {
       const component = (
         <Localization translations={translations} locale="en">
-          <LocalizedDate date={date} withTime/>
+          <LocalizedDate date={date} withTime />
         </Localization>
       );
 
@@ -41,7 +42,7 @@ describe('LocalizedDate', () => {
     it('with seconds', () => {
       const component = (
         <Localization translations={translations} locale="en">
-          <LocalizedDate date={date} withTime includeSeconds/>
+          <LocalizedDate date={date} withTime includeSeconds />
         </Localization>
       );
 

@@ -121,10 +121,10 @@ DistributionChart.prototype.render = function() {
  * @returns Promise
  */
 DistributionChart.prototype.fetchColumnDomain = function() {
-  var columnNames = [ 'min', 'max' ];
+  var columnNames = ['min', 'max'];
   var queryTemplate = '$query=SELECT min({column}) as `min`, max({column}) as `max`';
   var columnDomainQuery = queryTemplate.format({
-    column: this.props.vif.columnName,
+    column: this.props.vif.columnName
   });
 
   var columnDomainRequest = this.columnDomainDataProvider.getRows(columnNames, columnDomainQuery);
@@ -154,7 +154,7 @@ DistributionChart.prototype.fetchBucketedData = function(bucketingOptions) {
 
   if (bucketingOptions.bucketType === 'linear') {
     bucketingFunction = 'signed_magnitude_linear';
-    bucketingArguments = [ bucketingOptions.bucketSize ];
+    bucketingArguments = [bucketingOptions.bucketSize];
   } else {
     bucketingFunction = 'signed_magnitude_10';
     bucketingArguments = [];
@@ -181,7 +181,7 @@ DistributionChart.prototype.fetchBucketedData = function(bucketingOptions) {
     filteredWhereClause = 'where ' + filteredWhereClause;
   }
 
-  var columnNames = [ queryParameters.columnAlias, queryParameters.valueAlias ];
+  var columnNames = [queryParameters.columnAlias, queryParameters.valueAlias];
   var unfilteredDataQuery = queryTemplate.format(queryParameters);
   var filteredDataQuery = queryTemplate.format(_.assign(queryParameters, {
     whereClause: filteredWhereClause
@@ -199,7 +199,7 @@ DistributionChart.prototype.fetchBucketedData = function(bucketingOptions) {
     queryParameters.valueAlias
   );
 
-  return Promise.all([ unfilteredRequest, filteredRequest ]).
+  return Promise.all([unfilteredRequest, filteredRequest]).
     then(_.bind(this.transformBucketedData, this, bucketingOptions, _));
 };
 
@@ -216,7 +216,7 @@ DistributionChart.prototype.fetchBucketedData = function(bucketingOptions) {
 DistributionChart.prototype.transformBucketedData = function(bucketingOptions, responses) {
 
   // Give semantic names to the repsonse array elements
-  responses = _.zipObject([ 'unfiltered', 'filtered' ], responses);
+  responses = _.zipObject(['unfiltered', 'filtered'], responses);
 
   // Transform the array of arrays into an array of objects, each with 'magnitude' and 'value' keys.
   var data = _.mapValues(responses, function(response) {
@@ -224,7 +224,7 @@ DistributionChart.prototype.transformBucketedData = function(bucketingOptions, r
       map(function(pair) {
         return _.map(pair, parseFloat);
       }).
-      map(_.partial(_.zipObject, [ 'magnitude', 'value' ])).
+      map(_.partial(_.zipObject, ['magnitude', 'value'])).
       value();
   });
 
@@ -318,22 +318,22 @@ DistributionChart.prototype.onFlyout = function(payload) {
 
     var unfiltered = [
       '<tr class="socrata-flyout-row">',
-        '<td class="socrata-flyout-cell">Total</td>',
-        '<td class="socrata-flyout-cell">{0}</td>'.format(unfilteredValue),
+      '<td class="socrata-flyout-cell">Total</td>',
+      '<td class="socrata-flyout-cell">{0}</td>'.format(unfilteredValue),
       '</tr>'
     ].join('');
 
     var filtered = payload.filtered ? [
       '<tr class="socrata-flyout-row">',
-        '<td class="socrata-flyout-cell">Filtered</td>',
-        '<td class="socrata-flyout-cell">{0}</td>'.format(filteredValue),
+      '<td class="socrata-flyout-cell">Filtered</td>',
+      '<td class="socrata-flyout-cell">{0}</td>'.format(filteredValue),
       '</tr>'
     ].join('') : '';
 
     var table = [
       '<table class="socrata-flyout-table">',
-        unfiltered,
-        filtered,
+      unfiltered,
+      filtered,
       '</table>'
     ].join('');
 
@@ -423,4 +423,4 @@ $.fn.socrataDistributionChart = function(vif) {
   distributionChart.updateData().then(distributionChart.render.bind(distributionChart));
 
   return distributionChart;
-}
+};

@@ -87,9 +87,9 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   } else if (requireGroupingInSelect) {
     queryString = [
       'SELECT',
-        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
-        `${grouping} AS ${SoqlHelpers.groupingAlias()},`,
-        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+      `${grouping} AS ${SoqlHelpers.groupingAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
       `GROUP BY ${groupByClause}, ${SoqlHelpers.groupingAlias()}`,
       `ORDER BY ${orderByClause}`,
@@ -313,8 +313,8 @@ function augmentSocrataDataResponseWithOtherCategory(
 
     otherCategoryQueryString = [
       'SELECT',
-        `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
-        `${measureClause} AS ${SoqlHelpers.measureAlias()}`,
+      `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
+      `${measureClause} AS ${SoqlHelpers.measureAlias()}`,
       otherCategoryWhereClause,
       `LIMIT ${maxRowCount}`
     ].join(' ');
@@ -322,8 +322,8 @@ function augmentSocrataDataResponseWithOtherCategory(
 
     otherCategoryQueryString = [
       'SELECT',
-        `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
-        `${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}`,
+      `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
+      `${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}`,
       otherCategoryWhereClause,
       `LIMIT ${maxRowCount}`
     ].join(' ');
@@ -483,7 +483,7 @@ function mapQueryResponseToDataTable(vif) {
 
         // Error bar bounds
         newRow[measureIndex] = [
-          getNumberValue(row[lowerBoundIndex]), 
+          getNumberValue(row[lowerBoundIndex]),
           getNumberValue(row[upperBoundIndex])];
 
         return newRow;
@@ -491,7 +491,7 @@ function mapQueryResponseToDataTable(vif) {
     }
 
     return dataTable;
-  }
+  };
 }
 
 function getNumberValue(o) {

@@ -64,10 +64,14 @@ class Notifications extends Component {
 
     if (showProductNotifications) {
       if (showUserNotifications) {
-        this.setState({showProductNotificationsAsSecondaryPanel: true});
+      // TODO fix this linter warning properly.
+      // Don't use setState here!
+        this.setState({ showProductNotificationsAsSecondaryPanel: true }); // eslint-disable-line react/no-did-mount-set-state
       }
 
-      this.setState({ areNotificationsLoading: true });
+      // TODO fix this linter warning properly.
+      // Don't use setState here!
+      this.setState({ areNotificationsLoading: true }); // eslint-disable-line react/no-did-mount-set-state
 
       getProductNotifications((response) => {
         if (response.notifications && response.viewOlderLink) {
@@ -91,7 +95,7 @@ class Notifications extends Component {
     this.removeKeyboardEvents();
   }
 
-  addKeyboardEvents() {
+  addKeyboardEvents() { // eslint-disable-line react/sort-comp
     // add an event listener to hide when clicking somewhere
     window.addEventListener('mouseup', this.hidePanelOnOutsideClick);
 
@@ -120,17 +124,17 @@ class Notifications extends Component {
 
   onNotificationsUpdate(notifications) {
     const unReadNotificationsCount = _.isEmpty(notifications) ? 0 : notifications.filter(notification => {
-        return _.isUndefined(notification.read) || notification.read === false;
-      }).length;
+      return _.isUndefined(notification.read) || notification.read === false;
+    }).length;
 
     this.setState({
       userNotifications: notifications,
       unreadUserNotificationCount: unReadNotificationsCount
-    })
+    });
   }
 
   filterUserNotifications(filterUserNotificationsBy) {
-    this.setState({filterUserNotificationsBy});
+    this.setState({ filterUserNotificationsBy });
   }
 
   clearAllUserNotifications() {
@@ -142,15 +146,15 @@ class Notifications extends Component {
     this.setState({ openClearAllUserNotificationsPrompt: toggle });
   }
 
-  onClearUserNotification(notification_id) {
-    this.userNotificationAPI.deleteNotification(notification_id);
+  onClearUserNotification(notificationId) {
+    this.userNotificationAPI.deleteNotification(notificationId);
   }
 
-  onToggleReadUserNotification(notification_id, toggle) {
+  onToggleReadUserNotification(notificationId, toggle) {
     if (toggle) {
-      this.userNotificationAPI.markNotificationAsRead(notification_id);
+      this.userNotificationAPI.markNotificationAsRead(notificationId);
     } else {
-      this.userNotificationAPI.markNotificationAsUnRead(notification_id);
+      this.userNotificationAPI.markNotificationAsUnRead(notificationId);
     }
   }
 
@@ -169,7 +173,7 @@ class Notifications extends Component {
         document.querySelector('body').style.overflow = 'hidden';
       }
 
-      this.setState({showNotificationPanel});
+      this.setState({ showNotificationPanel });
     } else {
       this.removeKeyboardEvents();
 
@@ -222,7 +226,7 @@ class Notifications extends Component {
         openClearAllUserNotificationsPrompt: false
       });
     } else {
-      this.setState({isSecondaryPanelOpen});
+      this.setState({ isSecondaryPanelOpen });
     }
 
   }
@@ -231,9 +235,10 @@ class Notifications extends Component {
     const { showProductNotifications } = this.props.options;
 
     if (!showProductNotifications) {
-      return <span className="sidebar-overlay"
+      return (<span
+        className="sidebar-overlay"
         aria-hidden="true"
-        onClick={this.toggleNotificationPanel}></span>;
+        onClick={this.toggleNotificationPanel}></span>);
     }
   }
 
@@ -262,7 +267,7 @@ class Notifications extends Component {
       } = this.state;
 
       return (
-        <div className='notifications-panel-wrapper'>
+        <div className="notifications-panel-wrapper">
           {this.renderSidebarOverlay()}
 
           <NotificationList
@@ -301,9 +306,10 @@ class Notifications extends Component {
     } = this.state;
 
     return (
-      <div styleName='container'>
-        <div id='socrata-notifications-container'>
-          <Bell hasUnreadNotifications={this.hasUnreadNotifications()}
+      <div styleName="container">
+        <div id="socrata-notifications-container">
+          <Bell
+            hasUnreadNotifications={this.hasUnreadNotifications()}
             toggleNotificationPanel={this.toggleNotificationPanel} />
 
           {this.renderNotificationPanel()}
@@ -327,7 +333,7 @@ Notifications.propTypes = {
 Notifications.defaultProps = {
   options: {
     lockScrollbar: PropTypes.false,
-    scrollTop: 0,
+    scrollTop: 0
   }
 };
 

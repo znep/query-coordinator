@@ -1,4 +1,4 @@
-/*eslint no-unused-vars:0*/
+/* eslint no-unused-vars:0*/
 
 (function($) {
   if (!$) {
@@ -27,15 +27,18 @@
     $siteChromeHeaderMobileNav = $siteChromeHeader.find('nav.mobile');
     $siteChromeMobileMenu = $siteChromeHeader.find('.mobile-menu');
     $siteChromeMobileMenuToggle = $siteChromeHeader.find('.menu-toggle');
-    $collapsibleSearchToggle = $siteChromeHeaderAndAdminHeader.find('.collapsible-search-toggle');
+    // Not sure if this is supposed to be leaking onto window.
+    // Ignoring for lintapalooza.
+    $collapsibleSearchToggle = $siteChromeHeaderAndAdminHeader.find('.collapsible-search-toggle'); // eslint-disable-line no-undef
     $vanishingSearchboxInput = $siteChromeHeaderAndAdminHeader.find('.searchbox-input.vanishing');
     siteChromeTemplate = $siteChromeHeader.attr('template');
     navLinkFullWidth = $siteChromeHeaderDesktopNav.find('.site-chrome-nav-links').width();
 
-    if (siteChromeTemplate === 'evergreen')
+    if (siteChromeTemplate === 'evergreen') {
       navbarRightWidth = $siteChromeHeader.find('.evergreen-link-cluster').width();
-    else if (siteChromeTemplate === 'rally')
+    } else if (siteChromeTemplate === 'rally') {
       navbarRightWidth = $siteChromeHeader.find('.navbar-right').width();
+    }
 
     initialBodyOverflowY = $('body').css('overflow-y') || 'visible';
 
@@ -46,7 +49,7 @@
     $(window).resize(checkMobileBreakpoint);
     $siteChromeMobileMenuToggle.click(toggleMobileMenu);
 
-    $collapsibleSearchToggle.
+    $collapsibleSearchToggle. // eslint-disable-line no-undef
       click(toggleCollapsibleSearch).
       keypress(toggleCollapsibleByKeypress);
 
@@ -149,15 +152,16 @@
       var $adminSearchbox = $siteChromeAdminHeader.find('.collapsible-search .searchbox');
       var $searchbox = $('header#site-chrome-header').find('.collapsible-search .searchbox');
 
+      var positionTop;
       if ($adminSearchbox.is(':visible')) {
-        var positionTop = ($siteChromeAdminHeader.height() - $adminSearchbox.height()) / 2;
+        positionTop = ($siteChromeAdminHeader.height() - $adminSearchbox.height()) / 2;
 
         $adminSearchbox.css('top', positionTop);
       }
 
       if ($searchbox.is(':visible')) {
         var $banner = $siteChromeHeader.find('.banner');
-        var positionTop = $banner.height() / 2 - $searchbox.height() / 2;
+        positionTop = $banner.height() / 2 - $searchbox.height() / 2;
 
         $searchbox.css('top', positionTop);
       }
@@ -229,4 +233,4 @@
     $siteChromeHeaderMobileNav.attr('aria-hidden', 'false');
     $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'false').removeAttr('hidden');
   }
-})(window.$);
+}(window.$));

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { fetchResults } from 'common/components/AssetBrowser/lib/cetera_helpers';
 import { clearPage } from './pager';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';

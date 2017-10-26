@@ -12,11 +12,11 @@ function defaultProps() {
     metadata: {
       data: null,
       datasetUid: 'test-test',
-      domain: 'example.com',
+      domain: 'example.com'
     },
     vif: vifsCloned.table
-  }
-};
+  };
+}
 
 // Replace chart implementations
 // with Sinon stubs.

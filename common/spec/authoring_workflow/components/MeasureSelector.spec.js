@@ -8,9 +8,9 @@ import { MeasureSelector } from 'common/authoring_workflow/components/MeasureSel
 var validMetadata = {
   data: {
     columns: [
-      {name: 'Money', fieldName: 'money', renderTypeName: 'money'},
-      {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
-      {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
+      { name: 'Money', fieldName: 'money', renderTypeName: 'money' },
+      { name: 'Number', fieldName: 'number', renderTypeName: 'number' },
+      { name: 'Percent', fieldName: 'percent', renderTypeName: 'percent' }
     ]
   }
 };
@@ -18,42 +18,42 @@ var validMetadata = {
 var nonNumericMetadata = {
   data: {
     columns: [
-      {name: 'Text', fieldName: 'text', renderTypeName: 'text'}
+      { name: 'Text', fieldName: 'text', renderTypeName: 'text' }
     ]
   }
 };
 
 var validVifAuthoring = {
   vifs: {
-    columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
+    columnChart: { series: [{ dataSource: { measure: { columnName: 'columnName' } } }] }
   }
 };
 
 var validVifAuthoringMultiSeries = {
   vifs: {
-    columnChart: {series: [
-      {dataSource: {measure: {columnName: 'columnName0'}}},
-      {dataSource: {measure: {columnName: 'columnName1'}}}
-    ]}
+    columnChart: { series: [
+      { dataSource: { measure: { columnName: 'columnName0' } } },
+      { dataSource: { measure: { columnName: 'columnName1' } } }
+    ] }
   }
 };
 
 var validVifAuthoringMultiSeriesMax = {
   vifs: {
-    columnChart: {series: [
-      {dataSource: {measure: {columnName: 'columnName0'}}},
-      {dataSource: {measure: {columnName: 'columnName1'}}},
-      {dataSource: {measure: {columnName: 'columnName2'}}},
-      {dataSource: {measure: {columnName: 'columnName3'}}},
-      {dataSource: {measure: {columnName: 'columnName4'}}},
-      {dataSource: {measure: {columnName: 'columnName5'}}},
-      {dataSource: {measure: {columnName: 'columnName6'}}},
-      {dataSource: {measure: {columnName: 'columnName7'}}},
-      {dataSource: {measure: {columnName: 'columnName8'}}},
-      {dataSource: {measure: {columnName: 'columnName9'}}},
-      {dataSource: {measure: {columnName: 'columnName10'}}},
-      {dataSource: {measure: {columnName: 'columnName11'}}}
-    ]}
+    columnChart: { series: [
+      { dataSource: { measure: { columnName: 'columnName0' } } },
+      { dataSource: { measure: { columnName: 'columnName1' } } },
+      { dataSource: { measure: { columnName: 'columnName2' } } },
+      { dataSource: { measure: { columnName: 'columnName3' } } },
+      { dataSource: { measure: { columnName: 'columnName4' } } },
+      { dataSource: { measure: { columnName: 'columnName5' } } },
+      { dataSource: { measure: { columnName: 'columnName6' } } },
+      { dataSource: { measure: { columnName: 'columnName7' } } },
+      { dataSource: { measure: { columnName: 'columnName8' } } },
+      { dataSource: { measure: { columnName: 'columnName9' } } },
+      { dataSource: { measure: { columnName: 'columnName10' } } },
+      { dataSource: { measure: { columnName: 'columnName11' } } }
+    ] }
   }
 };
 

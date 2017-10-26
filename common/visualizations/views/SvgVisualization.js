@@ -330,7 +330,7 @@ function SvgVisualization($element, vif, options) {
     //
     const $button = $('<button>', { 'class': 'socrata-legend-button' }).
       append($('<label>').text(I18n.t('shared.visualizations.charts.common.show_legend'))).
-      append($('<span>', { 'class': 'socrata-icon-arrow-up'} )).
+      append($('<span>', { 'class': 'socrata-icon-arrow-up' })).
       append($('<span>', { 'class': 'socrata-icon-close-2 legend-button-display-none' }));
 
     $innerContainer.append($button);
@@ -351,7 +351,7 @@ function SvgVisualization($element, vif, options) {
         $ul.append(
           $('<li>').
             text(item.label).
-            append($('<span>', { 'style': `background-color:${item.color}`}))
+            append($('<span>', { 'style': `background-color:${item.color}` }))
         );
       }
     });
@@ -393,7 +393,6 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.getLegendItems = function({ measures, referenceLines }) {
-
     const referenceLinesWithLabels = _.filter(referenceLines, (line) => !_.isEmpty(line.label));
     const referenceLineItems = referenceLinesWithLabels.map((line) => {
       return {
@@ -418,7 +417,7 @@ function SvgVisualization($element, vif, options) {
     }
 
     return [...referenceLineItems, ...measureItems];
-  }
+  };
 
   this.hideLegendMenu = function() {
 
@@ -452,7 +451,7 @@ function SvgVisualization($element, vif, options) {
 
       const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
       const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
-      const metadataProvider = new MetadataProvider({domain, datasetUid}, true);
+      const metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
       const renderLink = function(linkableDatasetUid) {
 
         let href = `https://${domain}/d/${linkableDatasetUid}`;
@@ -817,7 +816,7 @@ function SvgVisualization($element, vif, options) {
         return position;
       });
     });
-  }
+  };
 
   this.getMaxOneHundredPercentStackedValue = (positions) => {
     const sumOfPositivePercents = positions.map(                  // for each row of positions
@@ -825,7 +824,7 @@ function SvgVisualization($element, vif, options) {
         reduce((sum, position) => sum + position.percent, 0));    // sum the positive percents
 
     return d3.max(sumOfPositivePercents) / 100;
-  }
+  };
 
   this.getMinOneHundredPercentStackedValue = (positions) => {
     const sumOfNegativePercents = positions.map(                  // for each row of positions
@@ -833,34 +832,34 @@ function SvgVisualization($element, vif, options) {
         reduce((sum, position) => sum + position.percent, 0));    // sum the negative percents
 
     return d3.min(sumOfNegativePercents) / 100;
-  }
+  };
 
   this.getReferenceLines = () => {
     return _.filter(
       _.get(self.getVif(), 'referenceLines', []),
       (referenceLine) => _.isFinite(referenceLine.value));
-  }
+  };
 
   this.showReferenceLineFlyout = (element, referenceLines, isPercent, flyoutOffset) => {
     const index = parseInt(element.getAttribute('data-reference-line-index'), 10);
     const referenceLine = referenceLines[index];
 
-    const $table = $('<table>', {'class': 'socrata-flyout-table'});
-    const $titleRow = $('<tr>', {'class': 'socrata-flyout-title'}).
-      append($('<td>', {'colspan': 2}).text(referenceLine.label));
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' });
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).text(referenceLine.label));
 
     let value = d3.format('s')(referenceLine.value);
     value = isPercent ? `${value}%` : value;
 
-    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
+    const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
 
     if (_.isEmpty(referenceLine.label)) {
       $valueRow.
-        append($('<td>', {'class': 'socrata-flyout-cell'}).text(value));
+        append($('<td>', { 'class': 'socrata-flyout-cell' }).text(value));
     } else {
       $valueRow.
         append($('<td>')).
-        append($('<td>', {'class': 'socrata-flyout-cell'}).text(value));
+        append($('<td>', { 'class': 'socrata-flyout-cell' }).text(value));
 
       $table.append($titleRow);
     }
@@ -880,7 +879,7 @@ function SvgVisualization($element, vif, options) {
       'SOCRATA_VISUALIZATION_FLYOUT',
       payload
     );
-  }
+  };
 
   /**
    * Private methods
@@ -891,38 +890,38 @@ function SvgVisualization($element, vif, options) {
     self.
       $element.
         append(
-          $('<div>', {'class': 'socrata-visualization'}).
+          $('<div>', { 'class': 'socrata-visualization' }).
             append([
-              $('<div>', {'class': 'socrata-visualization-title-container'}).
+              $('<div>', { 'class': 'socrata-visualization-title-container' }).
                 append(
-                  $('<div>', {'class': 'socrata-visualization-title'})
+                  $('<div>', { 'class': 'socrata-visualization-title' })
                 ),
-              $('<div>', {'class': 'socrata-visualization-description-container'}).
+              $('<div>', { 'class': 'socrata-visualization-description-container' }).
                 append(
-                  $('<div>', {'class': 'socrata-visualization-description'})
+                  $('<div>', { 'class': 'socrata-visualization-description' })
                 ),
-              $('<div>', {'class': 'socrata-visualization-filter-bar-container'}),
-              $('<div>', {'class': 'socrata-visualization-container', 'aria-hidden': 'true'}),
-              $('<div>', {'class': 'socrata-visualization-legend-bar-container'}),
-              $('<div>', {'class': 'socrata-visualization-info'}).
+              $('<div>', { 'class': 'socrata-visualization-filter-bar-container' }),
+              $('<div>', { 'class': 'socrata-visualization-container', 'aria-hidden': 'true' }),
+              $('<div>', { 'class': 'socrata-visualization-legend-bar-container' }),
+              $('<div>', { 'class': 'socrata-visualization-info' }).
                 append([
-                  $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(
-                    $('<a>', {'href': '', 'target': '_blank'}).append([
+                  $('<div>', { 'class': 'socrata-visualization-view-source-data' }).append(
+                    $('<a>', { 'href': '', 'target': '_blank' }).append([
                       $('<span>').append(I18n.t('shared.visualizations.charts.common.view_source_data')),
-                      $('<span>', {'class': 'socrata-visualization-view-source-data-icon'})
+                      $('<span>', { 'class': 'socrata-visualization-view-source-data-icon' })
                     ])
                   ),
-                  $('<div>', {'class': 'socrata-visualization-panning-notice'}).text(
+                  $('<div>', { 'class': 'socrata-visualization-panning-notice' }).text(
                     I18n.t('shared.visualizations.charts.common.panning_notice')
                   )
                 ]),
-              $('<div>', {'class': 'socrata-visualization-error-container error light'}).
+              $('<div>', { 'class': 'socrata-visualization-error-container error light' }).
                 append([
-                  $('<span>', {'class': 'socrata-visualization-error-message text'})
+                  $('<span>', { 'class': 'socrata-visualization-error-message text' })
                 ]),
-              $('<div>', {'class': 'socrata-visualization-busy-indicator-container'}).
+              $('<div>', { 'class': 'socrata-visualization-busy-indicator-container' }).
                 append([
-                  $('<span>', {'class': 'socrata-visualization-busy-indicator'})
+                  $('<span>', { 'class': 'socrata-visualization-busy-indicator' })
                 ])
             ])
         );
@@ -970,17 +969,17 @@ function SvgVisualization($element, vif, options) {
       ? element.querySelector('text').textContent
       : element.getAttribute('data-full-text');
 
-    return [ element, content ];
+    return [element, content];
   }
 
   function showFlyout(event) {
-    const [ element, content ] = getTextContent(this, event);
+    const [element, content] = getTextContent(this, event);
 
     if (content) {
       const customEvent = new window.CustomEvent('SOCRATA_VISUALIZATION_FLYOUT', {
         detail: {
           element,
-          content:  $('<div>', {'class': 'socrata-flyout-title'}).text(content),
+          content:  $('<div>', { 'class': 'socrata-flyout-title' }).text(content),
           rightSideHint: false,
           belowTarget: false,
           dark: true

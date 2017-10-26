@@ -29,12 +29,12 @@ describe('<Results />', () => {
     const wrapper = shallow(
       <ResultsClass
         results={results}
-        visible={true}
+        visible
         onResultsVisibilityChanged={() => {}}
         onResultFocusChanged={() => {}}
         onQueryChanged={() => {}} />
     );
 
     expect(wrapper.find(Result)).to.have.length(3);
-  })
+  });
 });

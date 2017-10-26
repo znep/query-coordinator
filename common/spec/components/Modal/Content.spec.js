@@ -18,7 +18,7 @@ describe('Content', () => {
       className: 'testing-modal-content'
     });
 
-    element = renderPureComponent(Content(props)); //eslint-disable-line new-cap
+    element = renderPureComponent(Content(props)); // eslint-disable-line new-cap
 
     assert.isNotNull(element);
     assert.isTrue($(element).hasClass('testing-modal-content'));

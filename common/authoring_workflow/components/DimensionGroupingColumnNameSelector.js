@@ -56,7 +56,7 @@ export class DimensionGroupingColumnNameSelector extends Component {
     return (
       <div className="authoring-field">
         <BlockLabel
-          title={I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle`)}
+          title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle')}
           htmlFor={dimensionGroupingColumnNameAttributes.id}
           description={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')} />
         <Dropdown {...dimensionGroupingColumnNameAttributes} />

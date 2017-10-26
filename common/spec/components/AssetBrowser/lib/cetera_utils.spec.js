@@ -30,7 +30,7 @@ describe('cetera_helpers', () => {
   });
 
   afterEach(() => {
-    ceteraStub.restore()
+    ceteraStub.restore();
     ceteraAssetCountsStub.restore();
   });
 

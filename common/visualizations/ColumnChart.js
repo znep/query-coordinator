@@ -32,7 +32,7 @@ String.prototype.visualSize = _.memoize(
     }
     $ruler.css('font-size', fontSize);
     $ruler.text(this + '');
-    dimensions = {width: $ruler.width(), height: $ruler.height()};
+    dimensions = { width: $ruler.width(), height: $ruler.height() };
     $ruler.remove();
 
     return dimensions;
@@ -395,7 +395,7 @@ $.fn.socrataColumnChart = function(vif) {
     );
   }
 
-  function _handleExpandedToggle() {// event) { ---> Linting sucks
+  function _handleExpandedToggle() { // event) { ---> Linting sucks
 
     // var payload = event.originalEvent.detail;
 

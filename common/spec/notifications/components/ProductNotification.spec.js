@@ -1,4 +1,4 @@
-import renderLocalizationElement from '../renderLocalizationComponent'
+import renderLocalizationElement from '../renderLocalizationComponent';
 import ProductNotification from 'common/notifications/components/ProductNotificationList/ProductNotification';
 
 describe('Product Notification', () => {

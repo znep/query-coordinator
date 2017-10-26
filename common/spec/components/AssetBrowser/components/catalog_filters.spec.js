@@ -49,7 +49,7 @@ describe('components/CatalogFilters', () => {
         activeTab: 'myAssets'
       });
       const wrapper = shallow(<CatalogFilters {...props} />);
-      //TODO this should really be a test on AuthorityFilter
+      // TODO this should really be a test on AuthorityFilter
       assert.lengthOf(wrapper.find(AuthorityFilter), 0);
 
       assert.lengthOf(wrapper.find(RecentlyViewedFilter), 1);
@@ -58,7 +58,7 @@ describe('components/CatalogFilters', () => {
       assert.lengthOf(wrapper.find(CategoryFilter), 1);
       assert.lengthOf(wrapper.find(TagFilter), 1);
     });
-  })
+  });
 
   describe('when on allAssets tab', () => {
     it('renders the relevant filter sections', () => {

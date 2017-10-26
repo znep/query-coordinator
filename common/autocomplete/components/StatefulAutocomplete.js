@@ -19,7 +19,7 @@ class StatefulAutocomplete extends React.Component {
 
     // we only want to set the query to the current one if we're NOT collapsible and if we're animating
     // the appearance of the "clear search" icon, which the version used in the header bar does not have.
-     if (collapsible === false && animate === true) {
+    if (collapsible === false && animate === true) {
       // grab the current search query from the URL
       const currentQuery = _.get(url.parse(window.location.href, true), 'query.q', '');
 

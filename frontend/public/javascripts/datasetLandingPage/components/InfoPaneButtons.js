@@ -1,29 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { isUserRoled } from '../../common/user';
+import { isLoggedIn } from '../../common/user';
 import { localizeLink } from 'common/locale';
 import { FeatureFlags } from 'common/feature_flags';
+
+import ExportFlannel from './ExportFlannel';
+import ApiFlannel from './ApiFlannel';
+import ShareFlannel from './ShareFlannel';
+import ODataModal from './ODataModal';
 
 export default class InfoPaneButtons extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.alignActionButtons);
-  }
-
-  componentWillUpdate(nextProps) {
-    const { isMobile, isTablet } = nextProps;
-    const apiBtn = document.querySelector('.entry-actions .api');
-    const apiLink = document.querySelector('.entry-actions .api-link');
-
-    if (apiBtn && apiLink) {
-      if (isMobile || isTablet) {
-        apiBtn.classList.add('hidden');
-        apiLink.classList.remove('hidden');
-      } else {
-        apiBtn.classList.remove('hidden');
-        apiLink.classList.add('hidden');
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -51,12 +40,15 @@ export default class InfoPaneButtons extends Component {
 
     const vizCanvasEnabled = FeatureFlags.value('enable_visualization_canvas');
     const canCreateVisualizationCanvas = vizCanvasEnabled &&
-      isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
     if (isBlobbyOrHref || !canCreateVisualizationCanvas) {
       return null;
     }
+
+    const url = isLoggedIn() ?
+      localizeLink(view.bootstrapUrl) :
+      localizeLink(`/login?return_to=${encodeURIComponent(view.bootstrapUrl)}`);
 
     return (
       <li>
@@ -65,7 +57,7 @@ export default class InfoPaneButtons extends Component {
           role="button"
           data-id={view.id}
           className="option"
-          href={localizeLink(view.bootstrapUrl)}
+          href={url}
           onClick={onClickVisualizeAndFilter}>
           {I18n.explore_data.visualize_and_filter}
         </a>
@@ -187,115 +179,8 @@ export default class InfoPaneButtons extends Component {
     );
   }
 
-  renderDownloadLink(format, callback) {
-    const { view } = this.props;
-    let extension = format;
-    let type = format.toUpperCase();
-    const params = {
-      accessType: 'DOWNLOAD'
-    };
-
-    if (format === 'csv_for_excel') {
-      extension = 'csv';
-      type = 'CSV for Excel';
-      params.bom = 'true';
-      params.format = 'true';
-    }
-
-    if (format === 'csv_for_excel_europe') {
-      extension = 'csv';
-      type = 'CSV for Excel (Europe)';
-      params.bom = 'true';
-      params.format = 'true';
-      params.delimiter = ';';
-    }
-
-    if (format === 'tsv_for_excel') {
-      extension = 'tsv';
-      type = 'TSV for Excel';
-      params.bom = 'true';
-    }
-
-    // Construct the query string, url, and label
-    const queryString = $.param(params);
-    const url = `/api/views/${view.id}/rows.${extension}?${queryString}`;
-    const label = I18n.download[format] || format.toUpperCase();
-
-    return (
-      <li key={format}>
-        <a role="menuitem" href={url} data-type={type} onClick={callback}>
-          {label}
-        </a>
-      </li>
-    );
-  }
-
-  renderDownloadDropdown() {
-    const { onDownloadData, view } = this.props;
-    const overrideLink = _.get(view.metadata, 'overrideLink');
-
-    // Special cases for different view types and download overrides
-    if (view.isHref) {
-      return null;
-    } else if (view.isBlobby) {
-      return (
-        <a
-          href={`/api/views/${view.id}/files/${view.blobId}?filename=${view.blobFilename}`}
-          className="btn btn-simple btn-sm unstyled-link download"
-          target="_blank">
-          {I18n.action_buttons.download}
-        </a>
-      );
-    } else if (overrideLink) {
-      return (
-        <a href={overrideLink} className="btn btn-simple btn-sm unstyled-link download">
-          {I18n.action_buttons.download}
-        </a>
-      );
-    } else {
-      const exportLinks = _.map(view.exportFormats, (format) =>
-        this.renderDownloadLink(format, onDownloadData)
-      );
-
-      return (
-        <div
-          className="dropdown btn btn-simple download btn-sm"
-          data-dropdown
-          data-orientation="bottom">
-          <span aria-hidden>{I18n.action_buttons.download}</span>
-          <ul role="menu" aria-label={I18n.action_buttons.download} className="dropdown-options">
-            {exportLinks}
-          </ul>
-        </div>
-      );
-    }
-  }
-
-  renderApiButton() {
-    const { view } = this.props;
-    const isBlobbyOrHref = view.isBlobby || view.isHref;
-
-    if (isBlobbyOrHref) {
-      return null;
-    }
-
-    return (
-      <button className="btn btn-simple btn-sm api" data-modal="api-modal">
-        {I18n.action_buttons.api}
-      </button>
-    );
-  }
-
-  renderShareButton() {
-    return (
-      <button className="btn btn-simple btn-sm share" data-modal="share-modal">
-        {I18n.action_buttons.share}
-      </button>
-    );
-  }
-
   renderMoreActions() {
-    const { view, onWatchDatasetFlagClick } = this.props;
+    const { view, onWatchDatasetFlagClick, isMobile, isTablet } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
     const contactFormLink = !view.disableContactDatasetOwner ? (
@@ -325,16 +210,6 @@ export default class InfoPaneButtons extends Component {
       );
     }
 
-    let apiLink = null;
-    if (!isBlobbyOrHref) {
-      apiLink = (
-        <li>
-          <a tabIndex="0" role="button" className="option api-link" data-modal="api-modal">
-            {I18n.action_buttons.api}
-          </a>
-        </li>
-      );
-    }
     let watchDatasetLink = null;
     const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
 
@@ -356,6 +231,23 @@ export default class InfoPaneButtons extends Component {
       );
     }
 
+    let apiLink = null;
+    const enableDatasetLandingPageFoundryLinks =
+      serverConfig.featureFlags.enable_dataset_landing_page_foundry_links;
+    if (!isBlobbyOrHref && enableDatasetLandingPageFoundryLinks && (isMobile || isTablet)) {
+      const apiLinkProps = {
+        tabIndex: 0,
+        role: 'button',
+        className: 'option',
+        href: view.apiFoundryUrl
+      };
+      apiLink = (
+        <li>
+          <a {...apiLinkProps}>{I18n.api_modal.foundry_button}</a>
+        </li>
+      );
+    }
+
     return (
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
@@ -371,14 +263,24 @@ export default class InfoPaneButtons extends Component {
   }
 
   render() {
+    const { view, isMobile, isTablet } = this.props;
+
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
+    const shouldApiLinkRender = !isBlobbyOrHref && !(isMobile || isTablet);
+    let apiLink = null;
+    if (shouldApiLinkRender) {
+      apiLink = <ApiFlannel {...this.props} />;
+    }
+
     return (
       <div className="btn-group">
         {this.renderExploreDataDropdown()}
         {this.renderManageButton()}
-        {this.renderDownloadDropdown()}
-        {this.renderApiButton()}
-        {this.renderShareButton()}
+        <ExportFlannel {...this.props} />
+        {apiLink}
+        <ShareFlannel {...this.props} />
         {this.renderMoreActions()}
+        <ODataModal {...this.props} />
       </div>
     );
   }
@@ -386,7 +288,8 @@ export default class InfoPaneButtons extends Component {
 
 InfoPaneButtons.propTypes = {
   view: PropTypes.object.isRequired,
-  onDownloadData: PropTypes.func,
+  onDownloadData: PropTypes.func.isRequired,
+  onClickShareOption: PropTypes.func.isRequired,
   onClickGrid: PropTypes.func,
   onClickVisualizeAndFilter: PropTypes.func,
   isDesktop: PropTypes.bool,

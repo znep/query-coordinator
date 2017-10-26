@@ -59,15 +59,17 @@ if [[ ${SKIP_PUSH_LOCALE_DANGEROUS} != "true" ]]; then
 
   echo "Pushing 'frontend' locales to LocaleApp"
   `git rev-parse --show-toplevel`/bin/push_locale frontend
+
+  # Pull translations from both common / frontend
+  echo "Pulling translations from LocaleApp"
+  set +e
+  bin/pull_translations
+  set -e
+
 else
-  echo 'Skipping LocaleApp push because SKIP_PUSH_LOCALE_DANGEROUS is set'
+  echo 'Skipping LocaleApp push and pull because SKIP_PUSH_LOCALE_DANGEROUS is set'
 fi
 shopt -u nocasematch
-
-# Pull translations from both common / frontend
-set +e
-bin/pull_translations
-set -e
 
 if [ ! -f ${WORKSPACE}/frontend/config/locales/es.yml ]; then
   echo "Did not successfully download locales"

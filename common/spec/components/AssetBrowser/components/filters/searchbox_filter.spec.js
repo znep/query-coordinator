@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { assert } from 'chai';
 import { SearchboxFilter } from 'common/components/AssetBrowser/components/filters/searchbox_filter';
 import sinon from 'sinon';

@@ -52,7 +52,7 @@ export class DeleteAsset extends React.Component {
     const { currentAssetChildrenCount, fetchingChildCount } = this.state;
 
     const scope = 'shared.asset_browser.result_list_table.action_modal.delete_asset';
-    const getTranslation = (key, options = {}) => I18n.t(key, _.merge({scope}, options));
+    const getTranslation = (key, options = {}) => I18n.t(key, _.merge({ scope }, options));
 
     const modalProps = {
       fullScreen: false,

@@ -59,7 +59,7 @@ describe('SvgColumnChart', () => {
       ['20', [null, null], [null, null], [null, null]],
       ['30', [null, null], [null, null], [null, null]],
       ['40', [null, null], [null, null], [null, null]],
-      ['50', [null, null], [null, null], [null, null]],
+      ['50', [null, null], [null, null], [null, null]]
     ],
     columnFormats: {}
   };
@@ -93,7 +93,7 @@ describe('SvgColumnChart', () => {
     ]
   };
 
-  const createColumnChart = (width, overrideVIF)  => {
+  const createColumnChart = (width, overrideVIF) => {
 
     if (!width) {
       width = CHART_WIDTH;
@@ -431,7 +431,7 @@ describe('SvgColumnChart', () => {
       columnChart = createColumnChart(null, {
         configuration: {
           measureAxisMinValue: 2,
-          measureAxisMaxValue: 1,
+          measureAxisMaxValue: 1
         }
       });
       columnChart.chart.render(null, testData);
@@ -471,15 +471,15 @@ describe('SvgColumnChart', () => {
       columnChart.chart.render(null, {
         columns: ['dimension', 'measure'],
         rows: [
-          ["2017-09-01T09:45:00.000", 1],
-          ["2017-09-02T09:45:00.000", 1],
-          ["2017-09-03T09:45:00.000", 2],
-          ["2017-09-04T09:45:00.000", 1],
-          ["2017-09-06T09:45:00.000", 5],
-          ["2017-09-07T09:45:00.000", 2],
-          ["2017-09-08T09:45:00.000", 2],
-          ["2017-09-09T09:45:00.000", 2],
-          ["2017-09-10T09:45:00.000", 1]
+          ['2017-09-01T09:45:00.000', 1],
+          ['2017-09-02T09:45:00.000', 1],
+          ['2017-09-03T09:45:00.000', 2],
+          ['2017-09-04T09:45:00.000', 1],
+          ['2017-09-06T09:45:00.000', 5],
+          ['2017-09-07T09:45:00.000', 2],
+          ['2017-09-08T09:45:00.000', 2],
+          ['2017-09-09T09:45:00.000', 2],
+          ['2017-09-10T09:45:00.000', 1]
         ]
       });
 

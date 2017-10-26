@@ -58,7 +58,7 @@ describe('SvgHelpers', () => {
 
   describe('textBasedColumnLayout(textAttributes)', function() {
     it('should be able to divide the given container into columns', () => {
-      const layout = SvgHelpers.textBasedColumnLayout({})
+      const layout = SvgHelpers.textBasedColumnLayout({});
     });
   });
 });

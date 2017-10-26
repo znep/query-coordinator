@@ -12,7 +12,7 @@ function render(type) {
     onSelectLimitNone: sinon.spy(),
     onSelectLimitCount: sinon.spy(),
     onChangeLimitCount: sinon.spy(),
-    onChangeShowOtherCategory: sinon.spy(),
+    onChangeShowOtherCategory: sinon.spy()
   });
 
   return {
@@ -65,7 +65,7 @@ describe('DisplayOptions', function() {
 
           it('renders class \'disabled\' on #limit-none-container when in pie chart', () => {
             if (chartType === 'pieChart') {
-              assert.isTrue(component.querySelector('#limit-none-container').classList.contains('disabled'))
+              assert.isTrue(component.querySelector('#limit-none-container').classList.contains('disabled'));
             }
           });
 
@@ -85,7 +85,7 @@ describe('DisplayOptions', function() {
           emitsEvent('#limit-count', 'onSelectLimitCount');
           emitsEvent('#limit-count-value', 'onChangeLimitCount');
           emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
-          emitsEvent('#limit-count-value', 'onChangeLimitCount', 'keyDown', {key: 'Enter'});
+          emitsEvent('#limit-count-value', 'onChangeLimitCount', 'keyDown', { key: 'Enter' });
         });
       });
     });

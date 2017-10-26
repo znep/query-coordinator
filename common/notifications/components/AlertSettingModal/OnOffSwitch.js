@@ -7,18 +7,18 @@ import _ from 'lodash';
 
 class OnOffSwitch extends Component {
   render() {
-    const {onSwitchChange, enableSwitch} = this.props;
+    const { onSwitchChange, enableSwitch } = this.props;
     const switchId = _.uniqueId('switch_on_');
-    return <div styleName="on-off-switch">
+    return (<div styleName="on-off-switch">
       <input
         type="checkbox"
         id={switchId}
         name="switch"
         onChange={onSwitchChange}
-        checked={!enableSwitch}/>
-      <label htmlFor={switchId} styleName={classNames({'selected': !enableSwitch})}>OFF</label>
-      <label htmlFor={switchId} styleName={classNames({'selected': enableSwitch})}>ON</label>
-    </div>;
+        checked={!enableSwitch} />
+      <label htmlFor={switchId} styleName={classNames({ 'selected': !enableSwitch })}>OFF</label>
+      <label htmlFor={switchId} styleName={classNames({ 'selected': enableSwitch })}>ON</label>
+    </div>);
   }
 }
 OnOffSwitch.propTypes = {

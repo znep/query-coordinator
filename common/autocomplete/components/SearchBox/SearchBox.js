@@ -159,7 +159,7 @@ class SearchBox extends React.Component {
   render() {
     const { collapsible, query, adminHeaderClasses } = this.props;
     const { I18n } = this.props;
-    const autocompleteSearchInputId = `autocomplete-search-input-${_.random(32768)}`
+    const autocompleteSearchInputId = `autocomplete-search-input-${_.random(32768)}`;
 
     return (
       <form
@@ -211,7 +211,7 @@ SearchBox.propTypes = {
 
   // need to know this since if it's undefined, it means on form submission and
   // we search for what's in the textbox instead of for the selected result
-  focusedResult: PropTypes.number,
+  focusedResult: PropTypes.number
 };
 
 SearchBox.defaultProps = {

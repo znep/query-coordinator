@@ -20,7 +20,7 @@ describe('Localization', () => {
     it('should be accessible from children components', () => {
       let localizationApiDefined = false;
 
-      const MyComponent = connectLocalization(({localization}) => {
+      const MyComponent = connectLocalization(({ localization }) => {
         return <span>{(!_.isUndefined(localization)).toString()}</span>;
       });
 

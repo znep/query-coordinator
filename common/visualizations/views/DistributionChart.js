@@ -15,7 +15,7 @@ export class DistributionChart extends Component {
       // filtered.  The buckets in this range will be highlighted yellow.  The filter can be changed
       // by clicking and dragging with the mouse.
       filter: props.filter
-    }
+    };
 
     _.bindAll(this, [
       'updateScaleRange',
@@ -33,7 +33,7 @@ export class DistributionChart extends Component {
   }
 
   // Set the output range for each scale, which is, in general, the dimensions of the chart.
-  updateScaleRange() {
+  updateScaleRange() { // eslint-disable-line react/sort-comp
     var props = this.props;
     props.scale.x.rangeBands([props.margin.left, props.width - props.margin.right], 0, -0.5);
     props.scale.y.range([props.height - props.margin.top - props.margin.bottom, 0]);
@@ -78,7 +78,7 @@ export class DistributionChart extends Component {
   getPlots(svg) {
     var props = this.props;
 
-    var plots = _.isObject(this.state.filter) ? [ 'unfiltered' ] : [ 'unfiltered', 'filtered' ];
+    var plots = _.isObject(this.state.filter) ? ['unfiltered'] : ['unfiltered', 'filtered'];
 
     return _.chain(plots).
       map(function(type) {
@@ -105,7 +105,7 @@ export class DistributionChart extends Component {
           }
         });
 
-        return [ area, line ];
+        return [area, line];
       }).
       flatten().
       value();
@@ -147,7 +147,7 @@ export class DistributionChart extends Component {
           }
         });
 
-        return [ area, line ];
+        return [area, line];
       }).
       flatten().
       value();
@@ -189,7 +189,7 @@ export class DistributionChart extends Component {
       });
     });
 
-    return [ xTicks, yTicks ];
+    return [xTicks, yTicks];
   }
 
   // Return all x and y labels for the chart as <text> elements.
@@ -249,7 +249,7 @@ export class DistributionChart extends Component {
       }, utils.formatNumber(tickValue));
     });
 
-    return [ x, y ];
+    return [x, y];
   }
 
   getBrush() {

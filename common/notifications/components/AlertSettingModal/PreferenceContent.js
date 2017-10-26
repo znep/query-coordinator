@@ -27,10 +27,10 @@ class PreferenceContent extends Component {
             checked={_.get(subCategoryData, [collaboratorsKey, 'enable'], false)}
             onChange={() => onAlertNotificationChange(category, null, collaboratorsKey)}
             id="collaborators-changes"
-            type="checkbox"/>
+            type="checkbox" />
           {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.collaborators_change')}
         </label>
-      )
+      );
     }
 
     return (
@@ -49,7 +49,7 @@ class PreferenceContent extends Component {
                 id="meta-data-change"
                 type="checkbox"
                 checked={_.get(subCategoryData, ['meta_data_change', 'enable'], false)}
-                onChange={(event) => onAlertNotificationChange(category, null, 'meta_data_change')}/>
+                onChange={(event) => onAlertNotificationChange(category, null, 'meta_data_change')} />
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.meta_data_change')}
             </label>
 
@@ -58,7 +58,7 @@ class PreferenceContent extends Component {
                 checked={_.get(subCategoryData, ['data_change', 'enable'], false)}
                 onChange={() => onAlertNotificationChange(category, null, 'data_change')}
                 id="data-change"
-                type="checkbox"/>
+                type="checkbox" />
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.data_change')}
             </label>
 
@@ -67,7 +67,7 @@ class PreferenceContent extends Component {
                 checked={_.get(subCategoryData, ['permission_change', 'enable'], false)}
                 onChange={() => onAlertNotificationChange(category, null, 'permission_change')}
                 id="permission-change"
-                type="checkbox"/>
+                type="checkbox" />
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.permission_change')}
             </label>
             {collaboratorsTag}
@@ -77,8 +77,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -87,12 +86,12 @@ class PreferenceContent extends Component {
               checked={categoryData.enable_email}
               id="notify-subscribe-all-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'email')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')} />
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
       </tr>
-    )
+    );
   }
 
   renderRotingAndApproval() {
@@ -121,7 +120,7 @@ class PreferenceContent extends Component {
                   id="asset-review"
                   type="checkbox"
                   checked={_.get(subCategoryData, ['asset_review', 'enable'], false)}
-                  onChange={(event) => onAlertNotificationChange(category, null, 'asset_review')}/>
+                  onChange={(event) => onAlertNotificationChange(category, null, 'asset_review')} />
                 {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_review')}
               </label>
 
@@ -130,7 +129,7 @@ class PreferenceContent extends Component {
                   checked={_.get(subCategoryData, ['asset_approved', 'enable'], false)}
                   onChange={() => onAlertNotificationChange(category, null, 'asset_approved')}
                   id="asset-approved"
-                  type="checkbox"/>
+                  type="checkbox" />
                 {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_approved')}
               </label>
 
@@ -139,7 +138,7 @@ class PreferenceContent extends Component {
                   checked={_.get(subCategoryData, ['asset_rejected', 'enable'], false)}
                   onChange={() => onAlertNotificationChange(category, null, 'asset_rejected')}
                   id="asset-rejected"
-                  type="checkbox"/>
+                  type="checkbox" />
                 {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_rejected')}
               </label>
             </div>
@@ -147,8 +146,7 @@ class PreferenceContent extends Component {
           <td className="column-description">
             <OnOffSwitch
               enableSwitch={categoryData.enable_product_notification}
-              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-            </OnOffSwitch>
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
           </td>
 
           <td>
@@ -160,12 +158,12 @@ class PreferenceContent extends Component {
                 checked={categoryData.enable_email}
                 id="notify-subscribe-routing-approval"
                 type="checkbox"
-                onChange={() => onAlertNotificationChange(category, 'email')}/>
+                onChange={() => onAlertNotificationChange(category, 'email')} />
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
             </label>
           </td>
         </tr>
-      )
+      );
     }
     return routingAndApprovalRow;
   }
@@ -195,8 +193,7 @@ class PreferenceContent extends Component {
           <td className="column-description">
             <OnOffSwitch
               enableSwitch={categoryData.enable_product_notification}
-              onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-            </OnOffSwitch>
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
           </td>
 
           <td>
@@ -205,12 +202,12 @@ class PreferenceContent extends Component {
                 checked={categoryData.enable_email}
                 id="notify-subscribe-user-accounts"
                 type="checkbox"
-                onChange={() => onAlertNotificationChange(category, 'email')}/>
+                onChange={() => onAlertNotificationChange(category, 'email')} />
               {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
             </label>
           </td>
         </tr>
-      )
+      );
     }
   }
 
@@ -231,8 +228,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -241,12 +237,12 @@ class PreferenceContent extends Component {
               checked={categoryData.enable_email}
               id="notify-subscribe-delete-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'email')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')} />
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
       </tr>
-    )
+    );
   }
 
   renderMyAssets() {
@@ -266,8 +262,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -276,12 +271,12 @@ class PreferenceContent extends Component {
               checked={categoryData.enable_email}
               id="notify-subscribe-my-assets"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'email')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')} />
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
       </tr>
-    )
+    );
   }
 
   renderWatchList() {
@@ -302,8 +297,7 @@ class PreferenceContent extends Component {
         <td className="column-description">
           <OnOffSwitch
             enableSwitch={categoryData.enable_product_notification}
-            onSwitchChange={() => onAlertNotificationChange(category, 'product')}>
-          </OnOffSwitch>
+            onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
         </td>
 
         <td>
@@ -312,7 +306,7 @@ class PreferenceContent extends Component {
               checked={categoryData.enable_email}
               id="notify-subscribe-watch-list"
               type="checkbox"
-              onChange={() => onAlertNotificationChange(category, 'email')}/>
+              onChange={() => onAlertNotificationChange(category, 'email')} />
             {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
           </label>
         </td>
@@ -326,28 +320,28 @@ class PreferenceContent extends Component {
         <div className="table-wrapper">
           <table className="table table-borderless table-condensed table-discrete">
             <thead>
-            <tr>
-              <th scope="col" className="column-name">
-                <span>
-                  {I18n.t('shared_site_chrome_notifications.alert_setting_modal.table_header.feature')}
-                </span>
-              </th>
+              <tr>
+                <th scope="col" className="column-name">
+                  <span>
+                    {I18n.t('shared_site_chrome_notifications.alert_setting_modal.table_header.feature')}
+                  </span>
+                </th>
 
-              <th scope="col" className="column-description">
-                <span>
-                  {I18n.t(
-                    'shared_site_chrome_notifications.alert_setting_modal.table_header.product_alerts')}
-                </span>
-              </th>
+                <th scope="col" className="column-description">
+                  <span>
+                    {I18n.t(
+                      'shared_site_chrome_notifications.alert_setting_modal.table_header.product_alerts')}
+                  </span>
+                </th>
 
-              <th scope="col" className="column-type">
-                <span>
-                  {I18n.t(
-                    'shared_site_chrome_notifications.alert_setting_modal.table_header.email_notifications'
-                  )}
-                </span>
-              </th>
-            </tr>
+                <th scope="col" className="column-type">
+                  <span>
+                    {I18n.t(
+                      'shared_site_chrome_notifications.alert_setting_modal.table_header.email_notifications'
+                    )}
+                  </span>
+                </th>
+              </tr>
             </thead>
             <tbody>
             {this.renderWatchList()}
@@ -369,4 +363,4 @@ PreferenceContent.propTypes = {
   onAlertNotificationChange: PropTypes.func
 };
 
-export default  cssModules(PreferenceContent, styles, { allowMultiple: true });
+export default cssModules(PreferenceContent, styles, { allowMultiple: true });

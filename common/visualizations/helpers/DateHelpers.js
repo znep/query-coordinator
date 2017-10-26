@@ -102,7 +102,7 @@ export function incrementDateByHalfInterval(date, interval) {
 // DECADE => Jan 01 1980 00:00:00 GMT-0800 (PST)
 export function snapToBinStartDate(date, interval) {
 
-  if (interval === 'DECADE' ) {
+  if (interval === 'DECADE') {
     date.setYear(Math.floor(date.getYear() / 10) * 10); // Beginning of decade.
     date.setMonth(0);
     date.setDate(1);

@@ -51,7 +51,7 @@ export class CatalogResults extends Component {
     }
   }
 
-  renderError() {
+  renderError() { // eslint-disable-line react/sort-comp
     if (this.props.fetchingResultsError) {
       const errorDetails = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
       console.error(errorDetails);
@@ -74,7 +74,7 @@ export class CatalogResults extends Component {
       callback([]);
     } else {
       // EN-19556: hack to get proper state into query param filters
-      const getState = () => { return reduxState };
+      const getState = () => { return reduxState; };
       const translatedFilters = ceteraHelpers.mergedCeteraQueryParameters(getState);
 
       ceteraUtils.autocompleteQuery(searchTerm, translatedFilters).

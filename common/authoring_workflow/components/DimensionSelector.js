@@ -19,7 +19,7 @@ import {
   hasData
 } from '../selectors/metadata';
 
-export class DimensionSelector extends Component{
+export class DimensionSelector extends Component {
   constructor(props) {
     super(props);
 
@@ -30,7 +30,7 @@ export class DimensionSelector extends Component{
     ]);
   }
 
-  renderDimensionOption(recommended, option) {
+  renderDimensionOption(recommended, option) { // eslint-disable-line react/sort-comp
     return (
       <div className="dataset-column-selector-option">
         <Dimension type={option.type} name={option.title} recommended={recommended} />
@@ -89,7 +89,7 @@ export class DimensionSelector extends Component{
     const { onSelectDimension, onSelectOrderBy } = this.props;
 
     onSelectDimension(dimension);
-    
+
     if (dimension.type === 'calendar_date') {
       onSelectOrderBy('dimension', 'asc');
     } else {
@@ -109,7 +109,7 @@ DimensionSelector.propTypes = {
   onSelectDimension: PropTypes.func,
   onSelectOrderBy: PropTypes.func,
   vifAuthoring: PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return _.pick(state, ['metadata', 'vifAuthoring']);

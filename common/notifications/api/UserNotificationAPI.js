@@ -13,8 +13,8 @@ class NotificationAPI {
 
     let channelId = `user: ${userId}`;
     let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, {
-      params: {user_id: userId},
-      logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) })
+      params: { user_id: userId },
+      logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data); })
     });
 
     socket.connect();
@@ -45,7 +45,7 @@ class NotificationAPI {
   _getExistingNotifications() {
     return fetch('/api/notifications_and_alerts/notifications', { credentials: 'same-origin' })
       .then((response) => response.json());
-  };
+  }
 
   _onNewNotification(notification) {
     this._notifications.unshift(this._transformNotification(notification));
@@ -127,7 +127,7 @@ class NotificationAPI {
   }
 
   _getUserProfileLink(domainCname, userName, userId) {
-    if(_.isEmpty(domainCname) || _.isEmpty(userName) || _.isEmpty(userId)) {
+    if (_.isEmpty(domainCname) || _.isEmpty(userName) || _.isEmpty(userId)) {
       return null;
     }
 
@@ -135,7 +135,7 @@ class NotificationAPI {
   }
 
   _getDatasetLink(domainCname, name, uId) {
-    if(_.isEmpty(domainCname) || _.isEmpty(name) || _.isEmpty(uId)) {
+    if (_.isEmpty(domainCname) || _.isEmpty(name) || _.isEmpty(uId)) {
       return null;
     }
 
@@ -154,7 +154,7 @@ class NotificationAPI {
     transformedNotification.read = _.get(notification, 'read', false);
     transformedNotification.activityType = activityType;
     transformedNotification.createdAt = _.get(notification, 'activity.created_at', '');
-    transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status': 'alert';
+    transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status' : 'alert';
     transformedNotification.title = _.startCase(_.get(notification, 'title', ''));
     transformedNotification.userName = userName;
     transformedNotification.userProfileLink = this._getUserProfileLink(domainCname, userName, userId);

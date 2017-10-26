@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import reducer from 'common/authoring_workflow/reducers';
 import getVifTemplates from 'common/authoring_workflow/vifs';
 import * as actions from 'common/authoring_workflow/actions';
-import vifs from 'common/authoring_workflow/vifs';
 import mockFilters from './mockFilters';
 import { COLOR_PALETTE_VALUES, DEFAULT_PRIMARY_COLOR } from 'common/authoring_workflow/constants';
 
@@ -125,7 +124,7 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 
-      shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
+      shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
 
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
@@ -277,7 +276,7 @@ describe('AuthoringWorkflow reducer', function() {
 
         _.each(newState.vifAuthoring.vifs, (vif, type) => {
           if (type !== 'initialVif') {
-            assert.deepEqual(newState.vifAuthoring.vifs[type], vifs()[type]);
+            assert.deepEqual(newState.vifAuthoring.vifs[type], getVifTemplates()[type]);
           }
         });
       });
@@ -296,7 +295,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('REQUEST_METADATA', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
       var domain = 'https://example.com';
       var datasetUid = 'asdf-qwer';
 
@@ -326,7 +327,9 @@ describe('AuthoringWorkflow reducer', function() {
     describe('RECEIVE_METADATA', function() {
       const datasetMetadata = { id: 'data-sets', columns: [] };
       const baseViewMetadata = { id: 'base-view', columns: [] };
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
@@ -353,7 +356,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('HANDLE_METADATA_ERROR', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
@@ -384,7 +389,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('REQUEST_CURATED_REGIONS', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
       var domain = 'https://example.com';
       var datasetUid = 'asdf-qwer';
 
@@ -408,7 +415,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('RECEIVE_CURATED_REGIONS', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
@@ -436,7 +445,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('HANDLE_CURATED_REGIONS_ERROR', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
@@ -463,7 +474,9 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('SET_FILTERS', function() {
-      var state, action, newState;
+      let state;
+      let action;
+      let newState;
 
       beforeEach(function() {
         state = getTestState();

@@ -100,15 +100,15 @@ describe('components/DatasetPreview', function() {
       });
     });
 
-    describe('when the user lacks a role', () => {
+    describe('when the user is not logged in', () => {
       beforeEach(() => {
         window.serverConfig.currentUser = {};
         window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
-      it('renders the grid view link', function() {
+      it('renders a link to login with a return_to=bootstrapUrl', function() {
         const element = renderComponent(DatasetPreview, getProps());
-        assert.ok(element.querySelector('a.btn-grid'));
+        assert.ok(element.querySelector('a[href="/login?return_to=bootstrapUrl"]'));
       });
 
       it('does not render the visualize link', () => {

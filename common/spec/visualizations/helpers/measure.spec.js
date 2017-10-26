@@ -36,7 +36,7 @@ describe('getMeasures', () => {
       _.set({}, 'dataSource.measure.columnName', 'whoo_columns'),
       _.set({}, 'dataSource.measure.columnName', 'whoo_columns_but_no_name_defined'),
       { } // Represents a Count Of series.
-    ]};
+    ] };
     const chart = {
       getVif: () => vif,
       isGrouping: () => false,
@@ -48,7 +48,7 @@ describe('getMeasures', () => {
       // Yes, I'd expect no_value to map to something else, but it doesn't.
       useTestTranslations(_.set({}, 'shared.visualizations.panes.data.fields.measure.no_value', 'count stub'));
       const dataToRender = {
-        columns: [ 'dimension', 'whoo_columns', 'whoo_columns_but_no_name_defined', 'something' ],
+        columns: ['dimension', 'whoo_columns', 'whoo_columns_but_no_name_defined', 'something'],
         columnFormats: {
           whoo_columns: {
             name: 'whoo I love columns'
@@ -78,7 +78,7 @@ describe('getMeasures', () => {
 
     it('maps each measure column to a measure with correct properties', () => {
       const dataToRender = {
-        columns: [ 'dimension', 'hello <', 'goodbye' ],
+        columns: ['dimension', 'hello <', 'goodbye'],
         columnFormats: {
           group_col: {
             renderTypeName: 'text'
@@ -99,7 +99,7 @@ describe('getMeasures', () => {
 
     it('maps each measure column to a measure with correct properties and renders dates', () => {
       const dataToRender = {
-        columns: [ 'dimension', '2017-10-26T03:27:49.970', '2017-10-28T03:27:49.970' ],
+        columns: ['dimension', '2017-10-26T03:27:49.970', '2017-10-28T03:27:49.970'],
         columnFormats: {
           group_col: {
             renderTypeName: 'calendar_date'
@@ -129,7 +129,7 @@ describe('getMeasures', () => {
     it('maps each measure column to a measure with correct measureIndex and seriesIndex of 0', () => {
       const dataToRender = {
         // Only one measure is going to be passed in practice, but we check multiples anyway
-        columns: [ 'dimension', null, null ] // Yes, charts use null columns to represent measures :/
+        columns: ['dimension', null, null] // Yes, charts use null columns to represent measures :/
       };
       const measures = getMeasures(chart, dataToRender);
       assert.lengthOf(measures, 2);
@@ -141,10 +141,10 @@ describe('getMeasures', () => {
     it('throws if too few values are provided in the rows array', () => {
       const badData = {
         // Two measures
-        columns: [ 'dimension', null, null ],
+        columns: ['dimension', null, null],
          // One value
         rows: [
-          [ 'dim_value', 2 ]
+          ['dim_value', 2]
         ]
       };
 
@@ -153,10 +153,10 @@ describe('getMeasures', () => {
     it('does not throw if too may values are provided in the rows array', () => {
       const badData = {
         // Two measures
-        columns: [ 'dimension', null, null ],
+        columns: ['dimension', null, null],
          // three value
         rows: [
-          [ 'dim_value', 2, 3, 4 ]
+          ['dim_value', 2, 3, 4]
         ]
       };
 

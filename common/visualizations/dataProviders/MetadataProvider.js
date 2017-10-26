@@ -36,7 +36,7 @@ function MetadataProvider(config, useCache = false) {
   _.extend(this, new DataProvider(config));
 
   if (useCache) {
-    const cached = this.cachedInstance("MetadataProvider");
+    const cached = this.cachedInstance('MetadataProvider');
     if (cached) {
       return cached;
     }
@@ -123,7 +123,7 @@ function MetadataProvider(config, useCache = false) {
         });
       }
     );
-  }
+  };
 
   this.getDefaultView = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
@@ -338,7 +338,7 @@ function MetadataProvider(config, useCache = false) {
         ]);
       }).
       then((resolutions) => {
-        const [ datasetMetadata, columnStats ] = resolutions;
+        const [datasetMetadata, columnStats] = resolutions;
         const columns = _.merge([], columnStats, datasetMetadata.columns);
         const getDisplayableFilterableColumns = _.flow(
           this.getDisplayableColumns,

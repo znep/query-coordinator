@@ -7,9 +7,9 @@ import { ErrorBarsOptions } from 'common/authoring_workflow/components/ErrorBars
 var validMetadata = {
   data: {
     columns: [
-      {name: 'Money', fieldName: 'money', renderTypeName: 'money'},
-      {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
-      {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
+      { name: 'Money', fieldName: 'money', renderTypeName: 'money' },
+      { name: 'Number', fieldName: 'number', renderTypeName: 'number' },
+      { name: 'Percent', fieldName: 'percent', renderTypeName: 'percent' }
     ]
   }
 };
@@ -17,14 +17,14 @@ var validMetadata = {
 var nonNumericMetadata = {
   data: {
     columns: [
-      {name: 'Text', fieldName: 'text', renderTypeName: 'text'}
+      { name: 'Text', fieldName: 'text', renderTypeName: 'text' }
     ]
   }
 };
 
 var validVifAuthoring = {
   vifs: {
-    columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
+    columnChart: { series: [{ dataSource: { measure: { columnName: 'columnName' } } }] }
   }
 };
 

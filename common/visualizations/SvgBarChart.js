@@ -162,13 +162,13 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
         ]);
       }).
       then((resolutions) => {
-        const [ columns, datasetMetadata ] = resolutions;
+        const [columns, datasetMetadata] = resolutions;
         const dimension = _.find(datasetMetadata.columns, (column) => (dimensionColumnName === column.fieldName));
 
         const getData = !_.isUndefined(dimension) && (dimension.dataTypeName === 'calendar_date') && (precision !== 'none') ?
           TimeDataManager.getData(newVif) :
           CategoricalDataManager.getData(newVif);
-  
+
         return Promise.all([
           columns,
           getData,
@@ -176,7 +176,7 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
         ]);
       }).
       then((resolutions) => {
-        const [ newColumns, newData, datasetMetadata ] = resolutions;
+        const [newColumns, newData, datasetMetadata] = resolutions;
 
         const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
         newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);

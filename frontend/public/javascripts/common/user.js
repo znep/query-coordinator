@@ -1,5 +1,11 @@
 import _ from 'lodash';
 
+function isLoggedIn() {
+  const { currentUser } = window.serverConfig;
+
+  return !_.isEmpty(currentUser);
+}
+
 function isUserRoled() {
   const { currentUser } = window.serverConfig;
 
@@ -31,6 +37,7 @@ function userHasRight(right) {
 }
 
 export {
+  isLoggedIn,
   isUserRoled,
   userHasRight,
   isUserSuperadmin

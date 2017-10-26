@@ -9,10 +9,10 @@ import SvgPieChart from 'common/visualizations/views/SvgPieChart';
 import testHelpers from '../testHelpers';
 
 const COLOR_PALETTES = {
-  categorical: ["#a6cee3", "#5b9ec9", "#2d82af", "#7eba98", "#98d277", "#52af43", "#6f9e4c", "#dc9a88", "#f16666", "#e42022", "#f06c45", "#fdbb69", "#fe982c", "#f78620", "#d9a295", "#b294c7", "#7d54a6", "#9e8099", "#f0eb99", "#dbb466"],
-  alternate1: ["#e41a1c", "#9e425a", "#596a98", "#3b87a2", "#449b75", "#4daf4a", "#6b886d", "#896191", "#ac5782", "#d56b41", "#ff7f00", "#ffb214", "#ffe528", "#eddd30", "#c9992c", "#a65628", "#c66764", "#e678a0", "#e485b7", "#be8fa8"],
-  alternate2: ["#66c2a5", "#9aaf8d", "#cf9c76", "#f68d67", "#cf948c", "#a89bb0", "#969dca", "#b596c7", "#d58ec4", "#dd95b2", "#c6b18b", "#afcc64", "#b7d84c", "#d6d83f", "#f6d832", "#f8d348", "#efcc6b", "#e6c58e", "#d5be9d", "#c4b8a8"],
-  dark: ["#1b9e77", "#5d874e", "#a07125", "#d45f0a", "#b16548", "#8e6b86", "#8068ae", "#a850a0", "#d03792", "#d33b79", "#a66753", "#79932e", "#7fa718", "#aca80e", "#d9aa04", "#d69d08", "#bf8b12", "#a9781b", "#927132", "#7c6b4c"]
+  categorical: ['#a6cee3', '#5b9ec9', '#2d82af', '#7eba98', '#98d277', '#52af43', '#6f9e4c', '#dc9a88', '#f16666', '#e42022', '#f06c45', '#fdbb69', '#fe982c', '#f78620', '#d9a295', '#b294c7', '#7d54a6', '#9e8099', '#f0eb99', '#dbb466'],
+  alternate1: ['#e41a1c', '#9e425a', '#596a98', '#3b87a2', '#449b75', '#4daf4a', '#6b886d', '#896191', '#ac5782', '#d56b41', '#ff7f00', '#ffb214', '#ffe528', '#eddd30', '#c9992c', '#a65628', '#c66764', '#e678a0', '#e485b7', '#be8fa8'],
+  alternate2: ['#66c2a5', '#9aaf8d', '#cf9c76', '#f68d67', '#cf948c', '#a89bb0', '#969dca', '#b596c7', '#d58ec4', '#dd95b2', '#c6b18b', '#afcc64', '#b7d84c', '#d6d83f', '#f6d832', '#f8d348', '#efcc6b', '#e6c58e', '#d5be9d', '#c4b8a8'],
+  dark: ['#1b9e77', '#5d874e', '#a07125', '#d45f0a', '#b16548', '#8e6b86', '#8068ae', '#a850a0', '#d03792', '#d33b79', '#a66753', '#79932e', '#7fa718', '#aca80e', '#d9aa04', '#d69d08', '#bf8b12', '#a9781b', '#927132', '#7c6b4c']
 };
 
 describe('SvgPieChart', () => {
@@ -155,7 +155,7 @@ describe('SvgPieChart', () => {
 
       const total = testData[0].rows.reduce((sum, d) => sum + d[1], 0);
 
-      for(let i = 0; i < testData[0].rows.length; i++) {
+      for (let i = 0; i < testData[0].rows.length; i++) {
         let renderedValue = Number(pieChart.$element.find('.slice')[i].getAttribute('data-value'));
         let expectedValue = testData[0].rows[i][1];
 

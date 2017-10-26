@@ -303,4 +303,4 @@
     return defaultTitle + ' - ' + datePieces.join('-');
   }
 
-})(window.$);
+}(window.$));

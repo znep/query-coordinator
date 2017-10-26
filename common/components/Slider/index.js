@@ -62,7 +62,7 @@ export class Slider extends Component {
   }
 }
 
-Slider.propTypes = { 
+Slider.propTypes = {
   /**
    * The minimum value selectable.
    */

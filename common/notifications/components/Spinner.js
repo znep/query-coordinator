@@ -5,7 +5,7 @@ import styles from './spinner.scss';
 
 class Spinner extends PureComponent {
   render() {
-    return <div styleName='spinner' className='spinner-large' />;
+    return <div styleName="spinner" className="spinner-large" />;
   }
 }
 

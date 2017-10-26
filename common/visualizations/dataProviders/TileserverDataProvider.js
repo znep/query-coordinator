@@ -30,7 +30,7 @@ function TileserverDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
 
   if (useCache) {
-    const cached = this.cachedInstance("TileserverDataProvider");
+    const cached = this.cachedInstance('TileserverDataProvider');
     if (cached) {
       return cached;
     }
@@ -135,7 +135,7 @@ function TileserverDataProvider(config, useCache = false) {
     var text = '';
     var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-    for (var i = 0; i < n; i++ ) {
+    for (var i = 0; i < n; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 

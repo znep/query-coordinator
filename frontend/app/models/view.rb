@@ -1132,6 +1132,15 @@ class View < Model
   def odata_url(request = nil)
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
   end
+  alias :odata_url_v2 :odata_url
+
+  def odata_url_v4(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/api/odata/v4/#{id}"
+  end
+
+  def odata_url_v4(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/api/odata/v4/#{id}"
+  end
 
   def allAccessPoints
     if metadata.present?

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 var TileserverDataProvider = require('common/visualizations/dataProviders/TileserverDataProvider');
 
 describe('TileserverDataProvider', function() {
@@ -88,13 +89,13 @@ describe('TileserverDataProvider', function() {
       xhr.onSend = () => {
         try {
           onXhrSend(xhr);
-        } catch(e) {
+        } catch (e) {
           // Log the error, otherwise sinon eats it.
           console.error(e.message);
           console.error(e.stack);
           throw e;
         }
-      }
+      };
     };
   });
 

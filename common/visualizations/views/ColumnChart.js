@@ -950,13 +950,13 @@ function ColumnChart(element, vif) {
 
     var unfilteredData = rescaleAxis ? [] : chartData.map((d) => d[UNFILTERED_INDEX]);
     var filteredData = showFiltered ? chartData.map((d) => d[FILTERED_INDEX]) : [];
-    var allData = _.flatten([ unfilteredData, filteredData ]);
+    var allData = _.flatten([unfilteredData, filteredData]);
 
     function _makeDomainIncludeZero(domain) {
       var min = domain[0];
       var max = domain[1];
-      if (min > 0) { return [ 0, max ]; }
-      if (max < 0) { return [ min, 0]; }
+      if (min > 0) { return [0, max]; }
+      if (max < 0) { return [min, 0]; }
       return domain;
     }
 

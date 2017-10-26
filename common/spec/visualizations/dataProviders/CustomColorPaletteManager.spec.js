@@ -24,7 +24,7 @@ describe('CustomColorPaletteManager', () => {
       const results = {
         // null represents (No value) for bar, column, and timeline charts.
         columns: ['dimension', null, '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'],
-        rows: [['3',118],['8',112],['5',111],['4',110],['6',107],['9',100],['10',92],['7',90],['1',83],['2',77],['(Other)',0], ['(No value)', 10]]
+        rows: [['3', 118], ['8', 112], ['5', 111], ['4', 110], ['6', 107], ['9', 100], ['10', 92], ['7', 90], ['1', 83], ['2', 77], ['(Other)', 0], ['(No value)', 10]]
       };
       timeStub = sinon.stub();
       timeStub.returns(Promise.resolve(results));
@@ -54,26 +54,26 @@ describe('CustomColorPaletteManager', () => {
         vif = visualizationType === 'pieChart' ? customPalettePieChartVif : customPaletteVif;
         expectedCustomPalette = visualizationType === 'pieChart' ? customPalettePieChart : customPalette;
         partialPalette = visualizationType === 'pieChart' ?
-        {
-          '1': {
-            'color': '#aaaaaa',
-            'index': 8
-          },
-          '2': {
-            'color': '#aaaaaa',
-            'index': 9
-          }
-        } :
-        {
-          '1': {
-            'color': '#aaaaaa',
-            'index': 10
-          },
-          '2': {
-            'color': '#aaaaaa',
-            'index': 9
-          }
-        };
+          {
+            '1': {
+              'color': '#aaaaaa',
+              'index': 8
+            },
+            '2': {
+              'color': '#aaaaaa',
+              'index': 9
+            }
+          } :
+          {
+            '1': {
+              'color': '#aaaaaa',
+              'index': 10
+            },
+            '2': {
+              'color': '#aaaaaa',
+              'index': 9
+            }
+          };
       });
 
       describe(visualizationType, () => {

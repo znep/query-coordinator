@@ -1,67 +1,27 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { connect } from 'react-redux';
-import { emitMixpanelEvent } from '../actions/mixpanel';
-import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
+import React, { PureComponent } from 'react';
+import ResourceToggle from './ResourceToggle';
 
-export class ODataModal extends Component {
-  componentDidMount() {
-    if (isCopyingSupported) {
-      const el = ReactDOM.findDOMNode(this);
-      initClipboardControl(el.querySelectorAll('.btn.copy'));
-    }
-  }
+class ODataModal extends PureComponent {
+  getResourceTypes() {
+    const { view } = this.props;
 
-  onFocusInput(event) {
-    event.target.select();
-  }
+    const v2 = { label: 'OData V2', url: view.odataUrl };
+    const v4 = { label: 'OData V4', url: view.odataUrlV4, defaultType: true };
 
-  onSubmit(event) {
-    event.preventDefault();
-  }
-
-  renderEndpoint() {
-    const { view, onClickCopy } = this.props;
-
-    const copyButton = isCopyingSupported ?
-      <span className="input-group-btn">
-        <button
-          type="button"
-          className="btn btn-primary btn-sm copy"
-          data-confirmation={I18n.copy_success}
-          onClick={onClickCopy}>
-          {I18n.copy}
-        </button>
-      </span> :
-      null;
-
-    return (
-      <div className="endpoint odata-endpoint">
-        <section className="modal-content">
-          <h6 id="odata-endpoint" className="endpoint-title">
-            {I18n.odata_modal.endpoint_title}
-          </h6>
-
-          <form onSubmit={this.onSubmit}>
-            <span className="input-group">
-              <input
-                aria-labelledby="odata-endpoint"
-                className="endpoint-input text-input text-input-sm"
-                type="text"
-                value={view.odataUrl}
-                onFocus={this.onFocusInput}
-                readOnly />
-              {copyButton}
-            </span>
-          </form>
-        </section>
-      </div>
-    );
+    return [v2, v4];
   }
 
   render() {
+    const { onClickCopy } = this.props;
+
+    const toggleProps = {
+      types: this.getResourceTypes(),
+      section: 'odata',
+      title: I18n.odata_modal.endpoint_title,
+      onClickCopy
+    };
+
     return (
       <div id="odata-modal" className="modal modal-overlay modal-hidden" data-modal-dismiss>
         <div className="modal-container">
@@ -71,7 +31,7 @@ export class ODataModal extends Component {
               aria-label={I18n.close}
               className="btn btn-transparent modal-header-dismiss"
               data-modal-dismiss>
-              <span className="icon-close-2"></span>
+              <span className="icon-close-2" />
             </button>
           </header>
 
@@ -84,12 +44,12 @@ export class ODataModal extends Component {
               className="btn btn-default btn-sm documentation-link"
               href="https://dev.socrata.com/odata"
               target="_blank">
-              <span className="icon-copy-document"></span>
+              <span className="icon-copy-document" />
               {I18n.odata_modal.developer_portal_button}
             </a>
           </section>
 
-          {this.renderEndpoint()}
+          <ResourceToggle {...toggleProps} />
 
           <footer className="modal-actions">
             <button className="btn btn-default btn-sm" data-modal-dismiss>
@@ -107,20 +67,4 @@ ODataModal.propTypes = {
   view: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return _.pick(state, 'view');
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    onClickCopy() {
-      const payload = {
-        name: 'Copied OData Link'
-      };
-
-      dispatch(emitMixpanelEvent(payload));
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ODataModal);
+export default ODataModal;

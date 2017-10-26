@@ -26,7 +26,7 @@ function SoqlDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
   if (useCache) {
-    const cached = this.cachedInstance("SoqlDataProvider");
+    const cached = this.cachedInstance('SoqlDataProvider');
     if (cached) {
       return cached;
     }
@@ -252,7 +252,7 @@ function SoqlDataProvider(config, useCache = false) {
       if (_.includes(['money', 'number', 'calendar_date'], dataTypeName)) {
         return Promise.resolve(getNumberColumnStats(column));
       } else if (dataTypeName === 'text') {
-          return Promise.resolve(getTextColumnStats(column));
+        return Promise.resolve(getTextColumnStats(column));
       } else {
         return Promise.resolve(null);
       }
@@ -406,13 +406,13 @@ function SoqlDataProvider(config, useCache = false) {
     if (_.has(cachedContents, 'top')) {
       return {
         top: _.get(cachedContents, 'top')
-      }
+      };
     } else {
       const countAlias = '__count__';
       const escapedFieldName = escapeColumnName(fieldName);
 
       const select = `${escapedFieldName}+as+item,count(*)+as+${countAlias}`;
-      const where = `${escapedFieldName}+is+not+null`
+      const where = `${escapedFieldName}+is+not+null`;
       const orderBy = `${countAlias}+DESC`;
       const queryString = `$select=${select}&$where=${where}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
       const path = pathForQuery(queryString);

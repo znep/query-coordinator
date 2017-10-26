@@ -61,8 +61,8 @@ class Autocomplete extends React.Component {
         className={className}
         styleName="container"
         tabIndex="-1"
-        onFocus={() => onResultVisibilityChanged(true) }
-        onBlur={() => onResultVisibilityChanged(false) }>
+        onFocus={() => onResultVisibilityChanged(true)}
+        onBlur={() => onResultVisibilityChanged(false)}>
         <SearchBox
           animate={animate}
           anonymous={anonymous}
@@ -105,7 +105,7 @@ Autocomplete.defaultProps = {
   collapsible: false,
   collapsed: false,
   adminHeaderClasses: []
-}
+};
 
 const mapStateToProps = (state) => ({ collapsed: state.autocomplete.collapsed });
 

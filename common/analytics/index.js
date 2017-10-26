@@ -45,7 +45,7 @@ export const Analytics = function() {
    * @param metricValue The value of the metric, e.g. 1
    */
   this.sendMetric = (entityName, metricName, metricValue) => {
-    queue.push({entity: entityName, metric: metricName, increment: metricValue});
+    queue.push({ entity: entityName, metric: metricName, increment: metricValue });
     if (queue.length >= queueCapacity) {
       this.flushMetrics();
     }
@@ -70,7 +70,7 @@ export const Analytics = function() {
 
     // create the batched payload and reset the queue
     const analyticsUrl = '/analytics/add';
-    const analyticsPayload = JSON.stringify({metrics: queue});
+    const analyticsPayload = JSON.stringify({ metrics: queue });
     queue.splice(0);
 
     $.post({

@@ -528,10 +528,10 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'height',
             (d, measureIndex, dimensionIndex) => {
-            const position = positions[dimensionIndex][measureIndex];
-            const value = position.end - position.start;
-            return Math.max(d3YScale(0) - d3YScale(value), 0);
-          }
+              const position = positions[dimensionIndex][measureIndex];
+              const value = position.end - position.start;
+              return Math.max(d3YScale(0) - d3YScale(value), 0);
+            }
         ).
         attr('shape-rendering', 'crispEdges').
         attr('stroke', 'none').
@@ -648,7 +648,7 @@ function SvgColumnChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({dataTableDimensionIndex, measures, referenceLines});
+        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measures, referenceLines });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -721,7 +721,7 @@ function SvgColumnChart($element, vif, options) {
       // of the last label until we render it, at which time we will
       // re-measure. This estimate will be sufficient to get d3 to render the
       // columns at widths that are in line with our expectations, however.
-      width = Math.max(
+    width = Math.max(
         viewportWidth,
         columnWidth * numberOfGroups * numberOfItemsPerGroup
       );
@@ -871,7 +871,7 @@ function SvgColumnChart($element, vif, options) {
     // be used to draw the x-axis, y-axis and chart marks.
     viewportSvg = chartSvg.append('g').
       attr('class', 'viewport').
-      attr('transform', `translate(${leftMargin}, ${topMargin})`) ;
+      attr('transform', `translate(${leftMargin}, ${topMargin})`);
 
     // The clip path is used as a mask. It is attached to another svg element,
     // at which time all children of that svg element that would be drawn
@@ -1055,46 +1055,46 @@ function SvgColumnChart($element, vif, options) {
       // Also note that we must render the x-axis before setting up the event
       // handlers for flyouts below, since it attempts to bind data to elements
       // that will not exist before the x-axis has been rendered.
-      renderXAxis();
-      renderSeries();
+    renderXAxis();
+    renderSeries();
 
       // This is the actual rendered width (which accounts for the labels
       // extending beyond what d3 considers the right edge of the chart on
       // account of their being rotated 45 degrees.
-      width = xAxisAndSeriesSvg.node().getBBox().width;
+    width = xAxisAndSeriesSvg.node().getBBox().width;
 
-      xAxisPanDistance = width - viewportWidth;
-      xAxisPanningEnabled = xAxisPanDistance > 0;
+    xAxisPanDistance = width - viewportWidth;
+    xAxisPanningEnabled = xAxisPanDistance > 0;
 
-      if (xAxisPanningEnabled) {
+    if (xAxisPanningEnabled) {
 
-        self.showPanningNotice();
+      self.showPanningNotice();
 
-        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+      viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
-        if (self.getShowDimensionLabels()) {
+      if (self.getShowDimensionLabels()) {
           // Note that we need to recompute height here since
           // $chartElement.height() may have changed when we showed the panning
           // notice.
-          height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
-        } else {
-          height = Math.max(0, viewportHeight - MARGINS.TOP);
-        }
-
-        d3YScale = generateYScale(minYValue, maxYValue, height);
-        d3YAxis = generateYAxis(d3YScale);
-
-        renderXAxis();
-        renderSeries();
+        height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
       } else {
-        self.hidePanningNotice();
+        height = Math.max(0, viewportHeight - MARGINS.TOP);
       }
+
+      d3YScale = generateYScale(minYValue, maxYValue, height);
+      d3YAxis = generateYAxis(d3YScale);
+
+      renderXAxis();
+      renderSeries();
+    } else {
+      self.hidePanningNotice();
+    }
 
       // We only have to render the y-axis once, after we have decided whether
       // we will show or hide the panning notice.
-      renderYAxis();
-      renderReferenceLines();
-      renderErrorBars();
+    renderYAxis();
+    renderReferenceLines();
+    renderErrorBars();
 
     // See TODO above.
     // }
@@ -1368,19 +1368,19 @@ function SvgColumnChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          let label;
+        let label;
 
-          if (_.isNil(d)) {
-            label = noValueLabel;
-          } else if (d === otherLabel) {
-            label = otherLabel;
-          } else {
-            const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
+        if (_.isNil(d)) {
+          label = noValueLabel;
+        } else if (d === otherLabel) {
+          label = otherLabel;
+        } else {
+          const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
-            label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender);
-          }
+          label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender);
+        }
 
-          return conditionallyTruncateLabel(label);
+        return conditionallyTruncateLabel(label);
         // See TODO above.
         // }
       }).
@@ -1506,7 +1506,7 @@ function SvgColumnChart($element, vif, options) {
     if (isOneHundredPercentStacked) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
-      const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+      const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
       formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
     }
 
@@ -1518,7 +1518,7 @@ function SvgColumnChart($element, vif, options) {
     const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
     if (isCount) {
       // If the number of possible values is small, limit number of ticks to force integer values.
-      const [ minYValue, maxYValue ] = yScale.domain();
+      const [minYValue, maxYValue] = yScale.domain();
       const span = maxYValue - minYValue;
       if (span < 10) {
         const ticks = d3.range(minYValue, maxYValue + 1, 1);
@@ -1589,13 +1589,13 @@ function SvgColumnChart($element, vif, options) {
 
   function showGroupFlyout(groupElement, dimensionValues, positions) {
     const titleHTML = groupElement.attr('data-dimension-value-html');
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).html(
+        $('<td>', { 'colspan': 2 }).html(
           (titleHTML === NO_VALUE_SENTINEL) ? noValueLabel : titleHTML
         )
       );
-    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
       append($title);
     const dimensionValue = groupElement.data()[0][0];
     const dimensionIndex = dimensionValues.indexOf(dimensionValue);
@@ -1609,10 +1609,10 @@ function SvgColumnChart($element, vif, options) {
     $labelValueRows = measureValues.map((value, measureIndex) => {
       const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const measure = measures[measureIndex];
-      const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+      const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         html(measure.labelHtml).
         css('color', measure.getColor());
-      const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+      const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
       const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
       const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
 
@@ -1637,7 +1637,7 @@ function SvgColumnChart($element, vif, options) {
 
       $valueCell.html(`${valueHTML} ${percentAsString}`);
 
-      return $('<tr>', {'class': 'socrata-flyout-row'}).
+      return $('<tr>', { 'class': 'socrata-flyout-row' }).
         append([
           $labelCell,
           $valueCell
@@ -1687,19 +1687,19 @@ function SvgColumnChart($element, vif, options) {
   function showColumnFlyout(columnElement, { measure, value, percent }) {
     const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
-        $('<td>', {'colspan': 2}).html(
+        $('<td>', { 'colspan': 2 }).html(
           (titleHTML) ? titleHTML : ''
         )
       );
 
-    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+    const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
       html(measure.labelHtml).
       css('color', measure.getColor());
-    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    const $table = $('<table>', {'class': 'socrata-flyout-table'});
+    const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+    const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' });
 
     let valueHTML;
     let payload = null;

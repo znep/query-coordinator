@@ -58,8 +58,8 @@ function getData(vif, options) {
     const sortFromVifOrDefault = (_.includes(VALID_SORTS, sortFromVif)) ?
       sortFromVif :
       DEFAULT_SORT;
-    const ascendingComparator = (a, b) => (a >= b) ? 1 : -1;
-    const descendingComparator = (a, b) => (a <= b) ? 1 : -1;
+    const ascendingComparator = (a, b) => (a >= b) ? 1 : -1; // eslint-disable-line no-confusing-arrow
+    const descendingComparator = (a, b) => (a <= b) ? 1 : -1; // eslint-disable-line no-confusing-arrow
     const comparator = (sortFromVifOrDefault === 'asc') ?
       ascendingComparator :
       descendingComparator;

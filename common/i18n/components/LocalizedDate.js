@@ -10,6 +10,7 @@ export default function LocalizedDate(props, context) {
 
   const locale = _.get(I18n, 'locale', I18n.defaultLocale);
 
+  // eslint-disable-next-line no-nested-ternary
   const format = withTime ?
     (
       includeSeconds ?

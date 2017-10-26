@@ -193,18 +193,9 @@
       },
 
       _renderVisualizationCanvasButton: function() {
-        var user = blist.currentUser;
-
-        if (!_.isObject(user)) {
-          return;
-        }
-
-        var isRoledUser = _.trim(user.roleName).length > 0;
-        var isSuperadmin = _.includes(blist.currentUser.flags, 'admin');
         var enableVisualizationCanvas = blist.feature_flags.enable_visualization_canvas;
-        var canAccessVisualizationCanvas = enableVisualizationCanvas && (isRoledUser || isSuperadmin);
 
-        if (!canAccessVisualizationCanvas) {
+        if (!enableVisualizationCanvas) {
           return;
         }
 
@@ -213,11 +204,17 @@
         blist.dataset.getNewBackendMetadata().
           pipe(function(nbeMetadata) {
             var localePrefix = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
+            const bootstrapUrl = localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id);
+
+            const url = _.isObject(blist.currentUser) ?
+              bootstrapUrl :
+              localePrefix + '/login?return_to=' + encodeURIComponent(bootstrapUrl);
+
             var label = cpObj.$dom().find('.chartTypeSelection > label.formHeader');
 
             var newVizButton = $.tag({
               tagName: 'a',
-              href: localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id),
+              href: url,
               'class': 'visualization-canvas-button',
               contents: $.t('screens.ds.grid_sidebar.visualization_canvas.button')
             });

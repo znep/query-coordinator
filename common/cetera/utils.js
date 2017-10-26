@@ -211,7 +211,7 @@ export const ceteraUtils = (() => {
     },
 
     autocompleteQuery: (searchTerm, otherFilters = {}) => {
-      const queryString = ceteraQueryString({...otherFilters, q: searchTerm });
+      const queryString = ceteraQueryString({ ...otherFilters, q: searchTerm });
       const fetchUrl = `${CETERA_AUTOCOMPLETE_PATH}?${queryString}`;
 
       return fetch(fetchUrl, fetchOptions).

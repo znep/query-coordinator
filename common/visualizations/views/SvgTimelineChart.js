@@ -254,7 +254,7 @@ function SvgTimelineChart($element, vif, options) {
               tickFormat('').
               tickSize(0));
 
-            xAxisBound = true;
+        xAxisBound = true;
       }
     }
 
@@ -269,7 +269,7 @@ function SvgTimelineChart($element, vif, options) {
       const renderedXAxisBaselineSvg = viewportSvg.select('.x.axis.baseline');
 
       renderedXAxisSvg.
-        attr('transform',`translate(0,${height})`);
+        attr('transform', `translate(0,${height})`);
 
       renderedXAxisSvg.selectAll('path').
         attr('fill', 'none').
@@ -731,7 +731,7 @@ function SvgTimelineChart($element, vif, options) {
       // the width of the datum (bl.ocks.org/mbostock/7555321) would introduce
       // significant complexity, and I'm not convinced that the payoff justifies
       // the cost at the moment.
-      d3XAxis.ticks(4)
+      d3XAxis.ticks(4);
 
     } else {
 
@@ -879,7 +879,7 @@ function SvgTimelineChart($element, vif, options) {
     const seriesSvg = xAxisAndSeriesSvg.append('g').
       attr('class', 'series');
 
-    const xAxisSvg =  xAxisAndSeriesSvg.append('g').
+    const xAxisSvg = xAxisAndSeriesSvg.append('g').
       attr('class', 'x axis');
 
     const xAxisBaselineSvg = xAxisAndSeriesSvg.append('g').
@@ -1082,7 +1082,7 @@ function SvgTimelineChart($element, vif, options) {
   function handleMouseMove() {
     const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
     const rawDate = d3XScale.invert(d3.mouse(this)[0]);
-    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate)
+    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
 
     const firstSeriesIndex = _.clamp(
@@ -1124,13 +1124,13 @@ function SvgTimelineChart($element, vif, options) {
       let label = series.columns[measureIndex];
       // We do not want to apply formatting if the label is `(Other)` category
       if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
-        const groupingColumn = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
+        const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
         label = _.isNil(groupingColumn) ? label : ColumnFormattingHelpers.formatValueHTML(label, groupingColumn, dataToRender, true);
       }
 
       let value = series.rows[firstSeriesIndex][measureIndex];
       if (!_.isNil(value)) {
-        const measureColumn = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+        const measureColumn = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
         value = ColumnFormattingHelpers.formatValueHTML(value, measureColumn, dataToRender);
       }
 
@@ -1197,7 +1197,7 @@ function SvgTimelineChart($element, vif, options) {
 
     if (_.isNil(flyoutData.endDate)) {
 
-      const dimensionColumn = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+      const dimensionColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
       const value = flyoutData.startDate.toString();
       title = ColumnFormattingHelpers.formatValueHTML(value, dimensionColumn, dataToRender);
 
@@ -1212,10 +1212,10 @@ function SvgTimelineChart($element, vif, options) {
       title = `${formattedStartDate} to ${formattedEndDate}`;
     }
 
-    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
-      append($('<td>', {'colspan': 2}).text(title ? title : ''));
+    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).text(title ? title : ''));
 
-    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
       append($title);
 
     const $labelValueRows = flyoutData.data.
@@ -1224,7 +1224,7 @@ function SvgTimelineChart($element, vif, options) {
         const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
 
-        const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+        const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
           text(label).
           css('color', measure.getColor());
 
@@ -1240,10 +1240,10 @@ function SvgTimelineChart($element, vif, options) {
           datumValueString = `${datum.value} ${datumValueUnit}`;
         }
 
-        const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+        const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
           text(datumValueString);
 
-        return $('<tr>', {'class': 'socrata-flyout-row'}).
+        return $('<tr>', { 'class': 'socrata-flyout-row' }).
           append([
             $labelCell,
             $valueCell
@@ -1345,7 +1345,7 @@ function SvgTimelineChart($element, vif, options) {
       case 'day':
         nextDate.setDate(nextDate.getDate() + 1);
         break;
-      }
+    }
 
     return nextDate;
   }

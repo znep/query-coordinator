@@ -14,7 +14,7 @@ class TextFilter extends Component {
     super(props);
 
     const { filter } = props;
-    
+
     const selectedValues = _.map(filter.arguments, (argument) => {
       if (_.includes(['IS NULL', 'IS NOT NULL'], argument.operator)) {
         return null;
@@ -266,6 +266,6 @@ TextFilter.propTypes = {
 
 TextFilter.defaultProps = {
   isValidTextFilterColumnValue: (column, value) => Promise.reject(value)
-}
+};
 
 export default TextFilter;

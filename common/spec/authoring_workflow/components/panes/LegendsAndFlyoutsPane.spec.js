@@ -118,7 +118,7 @@ describe('LegendsAndFlyoutsPane', function() {
       var renderedParts = render('columnChart', props);
       component = renderedParts.component;
       props = renderedParts.props;
-      legendsPanel = component.querySelector('[aria-label=Legends]')
+      legendsPanel = component.querySelector('[aria-label=Legends]');
     }
 
     function renderMultiSeriesColumnChartPane() {
@@ -251,7 +251,7 @@ describe('LegendsAndFlyoutsPane', function() {
       component = renderedParts.component;
       props = renderedParts.props;
     });
-    
+
     describe('multi-series', function() {
       it('renders multiple units containers', function() {
         assert.isNotNull(component.querySelector('#units-container-0'));

@@ -10,7 +10,7 @@ export function getDefaultFilterForColumn(column) {
     arguments: null,
     isHidden: true
   };
-};
+}
 
 export function getTextFilter(column, filter, values, isNegated) {
   if (_.isEmpty(values)) {
@@ -100,7 +100,7 @@ export function getFilterToggleText(filter, column) {
       }
     }
 
-    case 'text': 
+    case 'text':
       return getTextFilterToggleText(filter, column);
 
     case 'checkbox':
@@ -109,7 +109,7 @@ export function getFilterToggleText(filter, column) {
     default:
       console.error(`Unsupported column type "${column.dataTypeName}"`); // eslint-disable-line no-console
   }
-};
+}
 
 // Private functions
 //

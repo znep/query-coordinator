@@ -432,7 +432,7 @@ function orderByClauseFromSeries(vif, seriesIndex) {
     'The key sort must have a value of "asc" or "desc"'
   );
 
-  const sort = _.lowerCase(orderBy.sort) === 'asc' ?  'ASC' : 'DESC';
+  const sort = _.lowerCase(orderBy.sort) === 'asc' ? 'ASC' : 'DESC';
   const parameter = _.lowerCase(orderBy.parameter) === 'dimension' ?
     dimensionAlias() :
     measureAlias();
@@ -595,7 +595,7 @@ function isNullWhereClauseComponent(filter) {
     'arguments.isNull'
   );
 
-  return '{0} {1}' .format(
+  return '{0} {1}'.format(
     soqlEncodeColumnName(filter.columnName),
     filter.arguments.isNull ? 'IS NULL' : 'IS NOT NULL'
   );

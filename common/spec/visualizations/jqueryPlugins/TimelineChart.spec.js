@@ -3,9 +3,6 @@ import $ from 'jquery';
 import { __RewireAPI__ as TimelineChartAPI } from 'common/visualizations/TimelineChart';
 
 describe('TimelineChart jQuery component', function() {
-
-  'use strict';
-
   var NAME_ALIAS = '__NAME_ALIAS__';
   var VALUE_ALIAS = '__VALUE_ALIAS__';
 
@@ -35,7 +32,7 @@ describe('TimelineChart jQuery component', function() {
         'no_value': 'No value',
         'flyout_unfiltered_amount_label': 'Total',
         'flyout_filtered_amount_label': 'Filtered',
-        'flyout_selected_notice': 'This column is selected',
+        'flyout_selected_notice': 'This column is selected'
       },
       precision: 'MONTH'
     },
@@ -149,7 +146,7 @@ describe('TimelineChart jQuery component', function() {
             new window.CustomEvent(
               'SOCRATA_VISUALIZATION_TIMELINE_FILTER',
               {
-                detail: {start: new Date('2001-01-01T00:00:00'), end: new Date('2002-01-01T00:00:00')},
+                detail: { start: new Date('2001-01-01T00:00:00'), end: new Date('2002-01-01T00:00:00') },
                 bubbles: true
               }
             )

@@ -22,7 +22,7 @@ const DatasetFieldset = ({
     closeCallback={handleXClick}
     containerClass={styles.fieldset}
     legendClass={styles.legend}>
-    <div className={styles.fieldWrapper}>
+    <div className={styles.fieldWrapper} data-cheetah-hook="dataset-fieldset">
       <div>
         <label>{I18n.show_sources.label_name}</label>
         <TextInput

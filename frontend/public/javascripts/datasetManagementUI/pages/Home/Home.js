@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import FeedbackPanel from '../../../common/components/FeedbackPanel';
 import AppBar from 'containers/AppBarContainer';
 import NotificationList from 'containers/NotificationListContainer';
 import Modal from 'containers/ModalContainer';
@@ -31,7 +32,17 @@ class Home extends Component {
   render() {
     if (this.state.loaded) {
       const wrapperClasses = `dataset-management-ui ${styles.datasetManagementUi}`;
+
       const { children } = this.props;
+
+      const { serverConfig } = window;
+
+      const FeedbackPanelProps = {
+        currentUser: serverConfig.currentUser,
+        locale: serverConfig.localePrefix,
+        usersnapProjectID: serverConfig.usersnapProjectID,
+        buttonPosition: 'right'
+      };
 
       return (
         <div className={wrapperClasses}>
@@ -39,6 +50,7 @@ class Home extends Component {
           {children}
           <NotificationList />
           <Modal />
+          <FeedbackPanel {...FeedbackPanelProps} />
         </div>
       );
     } else {

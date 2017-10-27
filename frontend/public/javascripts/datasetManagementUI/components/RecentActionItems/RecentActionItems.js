@@ -23,7 +23,7 @@ export const RevisionActivity = ({ details }) => (
     </div>
     <div>
       <p>
-        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+        <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
         {SubI18n.opened_revision}
@@ -52,7 +52,7 @@ export const SourceActivity = ({ details: source }) => (
     </div>
     <div>
       <p>
-        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+        <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {source.createdBy}
         </a>{' '}
         {sourceActionLabel(source)}
@@ -76,7 +76,7 @@ export const OutputSchemaActivity = ({ details, params }) => (
     </div>
     <div>
       <p>
-        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+        <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
         changed the&nbsp;
@@ -105,7 +105,7 @@ export const TaskSetActivity = ({ details }) => (
     </div>
     <div>
       <p>
-        <a href={`/profile/${window.serverConfig.currentUserId}`} className={styles.createdBy}>
+        <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
         {SubI18n.started_processing}

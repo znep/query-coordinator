@@ -194,7 +194,7 @@ export function addEmailInterest(jobUUID) {
       })
     );
 
-    return socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
+    return socrataFetch(`/users/${serverConfig.currentUser.id}/email_interests.json`, {
       method: 'POST',
       body: JSON.stringify({
         eventTag: 'MAIL.IMPORT_ACTIVITY_COMPLETE',

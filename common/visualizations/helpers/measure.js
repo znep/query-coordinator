@@ -66,14 +66,15 @@ export const getMeasures = (chart, dataToRender) => {
   const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
 
   if (chart.isMultiSeries()) {
+    // This is actually "(Count of Rows)". While the behavior is correct (Count of Rows shows
+    // up in the flyout), it's very confusing. Not to be confused with
+    // 'shared.visualizations.charts.common.no_value'
+    const countOfLabel = I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+
     utils.assertHasProperty(dataToRender, 'columnFormats');
     utils.assert(columns.length >= vif.series.length, 'Multi Series chart given too few columns.');
     return columns.map((column, seriesIndex) => {
       const measureColumnName = _.get(vif, `series[${seriesIndex}].dataSource.measure.columnName`);
-      // This is actually "(Count of Rows)". While the behavior is correct (Count of Rows shows
-      // up in the flyout), it's very confusing. Not to be confused with
-      // 'shared.visualizations.charts.common.no_value'
-      const noValueLabel = I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
       if (_.isEmpty(measureColumnName)) {
         return new Measure({
           vif,
@@ -81,7 +82,7 @@ export const getMeasures = (chart, dataToRender) => {
           measureIndex: seriesIndex, // Yes, these are linked together.
           // TODO Relying on an i18n value for VIF configuration is unwise. We should
           // use a better sentinel value.
-          tagValue: noValueLabel
+          tagValue: countOfLabel
         });
       }
 
@@ -101,18 +102,22 @@ export const getMeasures = (chart, dataToRender) => {
     // the no value label. If there are not multiple columns, that's an expected null that we
     // should not overwrite with the no value label.
 
+    const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
     const groupingColumnName = _.get(
       vif,
       'series[0].dataSource.dimension.grouping.columnName'
     );
     return columns.map((column, measureIndex) => {
       // NOTE: the variable `column` holds a value from the grouping column.
+      const labelHtml = column ?
+        ColumnFormattingHelpers.formatValueHTML(column, groupingColumnName, dataToRender) :
+        noValueLabel;
       return new Measure({
         vif,
         seriesIndex: 0,
         measureIndex,
         tagValue: column,
-        labelHtml: ColumnFormattingHelpers.formatValueHTML(column, groupingColumnName, dataToRender)
+        labelHtml
       });
     });
   } else {

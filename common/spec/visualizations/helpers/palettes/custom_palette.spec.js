@@ -1,15 +1,21 @@
 import _ from 'lodash';
 import CustomPalette from 'common/visualizations/helpers/palettes/custom_palette';
+import { useTestTranslations } from 'common/i18n';
 
 describe('CustomPalette', () => {
+  before(() => {
+    useTestTranslations(_.set({}, 'shared.visualizations.charts.common.no_value', '(No value)'));
+  });
   const vif = _.set({}, 'series[0].color.customPalette', {
     grouped_column: {
       groupTag1: { color: '#fff' },
-      groupTag2: { color: '#0ff' }
+      groupTag2: { color: '#0ff' },
+      '(No value)': { color: '#ccc' }
     },
     non_grouped_column: {
       ungroupTag1: { color: '#ff0' },
-      ungroupTag2: { color: '#0f0' }
+      ungroupTag2: { color: '#0f0' },
+      '(No value)': { color: '#ddd' }
     }
   });
   _.set(vif, 'series[0].dataSource.dimension', {
@@ -28,6 +34,12 @@ describe('CustomPalette', () => {
       assert.isUndefined(p.getColor('groupTag1'));
       assert.isUndefined(p.getColor('groupTag2'));
     });
+
+    describe('null tag', () => {
+      it('falls back to looking up via tag (No value)', () => {
+        assert.equal(p.getColor(null), '#ddd');
+      });
+    });
   });
 
   describe('not pie charts', () => {
@@ -39,6 +51,12 @@ describe('CustomPalette', () => {
       assert.equal(p.getColor('groupTag2'), '#0ff');
       assert.isUndefined(p.getColor('ungroupTag1'));
       assert.isUndefined(p.getColor('ungroupTag2'));
+    });
+
+    describe('null tag', () => {
+      it('falls back to looking up via tag (No value)', () => {
+        assert.equal(p.getColor(null), '#ccc');
+      });
     });
   });
 });

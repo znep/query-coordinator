@@ -81,8 +81,9 @@ describe('getMeasures', () => {
     };
 
     it('maps each measure column to a measure with correct properties', () => {
+      useTestTranslations(_.set({}, 'shared.visualizations.charts.common.no_value', '(No value)'));
       const dataToRender = {
-        columns: ['dimension', 'hello <', 'goodbye'],
+        columns: ['dimension', 'hello <', 'goodbye', null],
         columnFormats: {
           group_col: {
             renderTypeName: 'text'
@@ -90,7 +91,7 @@ describe('getMeasures', () => {
         }
       };
       const measures = getMeasures(chart, dataToRender);
-      assert.lengthOf(measures, 2);
+      assert.lengthOf(measures, 3);
       assert.propertyVal(measures[0], 'measureIndex', 0);
       assert.propertyVal(measures[0], 'seriesIndex', 0);
       assert.propertyVal(measures[0], 'tagValue', 'hello <');
@@ -99,6 +100,10 @@ describe('getMeasures', () => {
       assert.propertyVal(measures[1], 'seriesIndex', 0);
       assert.propertyVal(measures[1], 'tagValue', 'goodbye');
       assert.propertyVal(measures[1], 'labelHtml', 'goodbye');
+      assert.propertyVal(measures[2], 'measureIndex', 2);
+      assert.propertyVal(measures[2], 'seriesIndex', 0);
+      assert.propertyVal(measures[2], 'tagValue', null);
+      assert.propertyVal(measures[2], 'labelHtml', '(No value)');
     });
 
     it('maps each measure column to a measure with correct properties and renders dates', () => {

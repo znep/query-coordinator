@@ -151,6 +151,9 @@ describe CatalogLandingPageController do
         expect_any_instance_of(CatalogLandingPage).to receive(:create_or_update_featured_content).
           with('removed' => false, 'resource_id' => '3').once
 
+        allow_any_instance_of(Domain).to receive(:default_configuration).
+          and_return(Configuration.new)
+
         post :manage_write, post_body
 
         expect(response).to have_http_status(:success)

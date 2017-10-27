@@ -1977,4 +1977,41 @@ http_interactions:
         }
     http_version: 
   recorded_at: Thu, 16 Mar 2017 22:58:18 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Oct 2017 22:41:42 GMT
+      X-Socrata-Requestid:
+      - 7z8d1xmifodxv0hxfypt7wjyu
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Fri, 27 Oct 2017 22:41:42 GMT
 recorded_with: VCR 3.0.3

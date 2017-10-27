@@ -292,7 +292,6 @@ describe DatasetsController do
     describe 'GET /category/view_name/id/visualization' do
 
       it 'should render the visualization canvas page if the feature flag is enabled' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(view).to receive(:new_backend?).and_return(true)
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
@@ -301,16 +300,7 @@ describe DatasetsController do
         expect(response).to render_template(:visualization_canvas)
       end
 
-      it 'should return a 404 if accessed anonymously' do
-        allow(subject).to receive(:current_user).and_return(double({:is_roled_user? => false, :is_superadmin? => false}))
-        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
-        get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-
-        expect(response).to have_http_status(:not_found)
-      end
-
       it 'should return a 404 if the feature flag is disabled' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(false)
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
@@ -318,7 +308,6 @@ describe DatasetsController do
       end
 
       it 'should return a 404 if the view is not a dataset' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(subject).to receive(:get_view).and_return(derived_view)
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
@@ -327,7 +316,6 @@ describe DatasetsController do
       end
 
       it 'should return reroute to the NBE 4x4 if the page is accessed with an OBE 4x4' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(view).to receive(:new_backend?).and_return(false)
         allow(view).to receive(:nbe_view).and_return(View.new({ 'id' => '1234-abcd' }))
@@ -338,7 +326,6 @@ describe DatasetsController do
       end
 
       it 'should throw a 500 error if the page is accessed with an OBE 4x4 without OBE-NBE migrations' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(view).to receive(:new_backend?).and_return(false)
         allow(view).to receive(:nbe_view).and_return(nil)
@@ -350,7 +337,6 @@ describe DatasetsController do
 
     describe 'GET /category/view_name/id/edit' do
       it 'should render the edit visualization canvas page' do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(subject).to receive(:using_canonical_url?).and_return(false)
         allow(view).to receive(:new_backend?).and_return(true)

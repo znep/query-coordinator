@@ -225,10 +225,6 @@ class User < Model
     has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
   end
 
-  def can_create_or_edit_visualization_canvas?
-    is_roled_user? || is_superadmin?
-  end
-
   def can_use_site_appearance?
     is_superadmin? ||
       (FeatureFlags.derive[:site_appearance_visible] &&

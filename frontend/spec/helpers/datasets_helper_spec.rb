@@ -14,11 +14,16 @@ describe DatasetsHelper do
     :has_rights? => true
   }
 
+  let(:request) { ActionController::TestRequest.new(:host => 'localhost') }
+
   before do
     init_current_domain
     init_signaller
     allow(Configuration).to receive(:find_by_type).and_return([])
     allow(helper).to receive(:request).and_return(nil)
+    @controller = ApplicationController.new
+    @controller.request = request
+    CoreManagedUserSession.controller = @controller
   end
 
   it 'contains the normal download types' do

@@ -5,7 +5,7 @@ import * as Selectors from 'selectors';
 import SourceSidebar from 'components/SourceSidebar/SourceSidebar';
 
 export const mapStateToProps = ({ entities }, { params }) => {
-  let currentSource;
+  // let currentSource;
   let otherSources;
   let sources;
 
@@ -15,14 +15,10 @@ export const mapStateToProps = ({ entities }, { params }) => {
     .filter(source => !source.failed_at)
     .value();
 
-  const currentOutputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
+  const currentSource = Selectors.currentSource(entities, revisionSeq);
 
-  if (currentOutputSchema) {
-    const { input_schema_id: inputSchemaId } = currentOutputSchema;
-    const { source_id: sourceId } = entities.input_schemas[inputSchemaId];
-
-    currentSource = entities.sources[sourceId];
-    otherSources = pendingOrSuccessfulSources.filter(source => source.id !== sourceId);
+  if (currentSource) {
+    otherSources = pendingOrSuccessfulSources.filter(source => source.id !== currentSource.id);
     sources = [{ ...currentSource, isCurrent: true }, ...otherSources];
   } else {
     // rare case where you have uploads but not a current upload

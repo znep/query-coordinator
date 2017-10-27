@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import TablePreview from 'components/TablePreview/TablePreview';
+import dotProp from 'dot-prop-immutable';
 
 describe('components/TablePreview', () => {
   const defaultProps = {
@@ -163,10 +164,22 @@ describe('components/TablePreview', () => {
           }
         }
       },
-      sources: {},
-      input_schemas: {},
+      sources: {
+        '100': { id: 100 }
+      },
+      input_schemas: {
+        '1': {
+          id: 1,
+          source_id: 100
+        }
+      },
       input_columns: {},
-      output_schemas: {},
+      output_schemas: {
+        '10': {
+          id: 10,
+          input_schema_id: 1
+        }
+      },
       output_columns: {},
       output_schema_columns: {},
       transforms: {},
@@ -186,5 +199,29 @@ describe('components/TablePreview', () => {
 
     assert.isTrue(link.exists());
     assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources');
+  });
+
+  it('renders a link to the schema page when schema available', () => {
+    const newProps = dotProp.set(defaultProps, 'entities.revisions.350.output_schema_id', 10);
+    const component = shallow(<TablePreview {...newProps} />);
+    const link = component
+      .find('PreviewDataView')
+      .dive()
+      .find('Link');
+
+    assert.isTrue(link.exists());
+    assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/schemas/1/output/10');
+  });
+
+  it('renders a link to the blob page when blob available', () => {
+    const newProps = dotProp.set(defaultProps, 'entities.revisions.350.blob_id', 100);
+    const component = shallow(<TablePreview {...newProps} />);
+    const link = component
+      .find('PreviewDataView')
+      .dive()
+      .find('Link');
+
+    assert.isTrue(link.exists());
+    assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/preview');
   });
 });

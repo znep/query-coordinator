@@ -60,16 +60,13 @@ export class DragDropUpload extends Component {
   }
 
   isValidFile(file) {
-    const validExtensions = ['csv', 'tsv', 'xls', 'xlsx'];
-    const matches = file.name.match(/\.([^\.]+)$/);
+    const matches = file.name.match(/(\.[^\.]+)$/);
 
     if (!matches) {
       return false;
     }
-
     const ext = matches[1];
-
-    return validExtensions.includes(ext.toLowerCase());
+    return enabledFileExtensions.includes(ext.toLowerCase());
   }
 
   render() {

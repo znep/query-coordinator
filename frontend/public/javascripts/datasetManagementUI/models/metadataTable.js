@@ -49,7 +49,6 @@ export const makeProps = (entities, params) => {
   const rSeq = _.toNumber(params.revisionSeq);
 
   const r = getRevision(rSeq, entities.revisions);
-
   const v = getView(params.fourfour, entities.views);
 
   const emptyProps = {

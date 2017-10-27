@@ -33,12 +33,22 @@ export function currentOutputSchema(entities, revisionSeq) {
   return entities.output_schemas[revision.output_schema_id];
 }
 
+export function currentBlobSource(entities, revisionSeq) {
+  const revision = currentRevision(entities, revisionSeq);
+  return entities.sources[revision.blob_id];
+}
+
 // TODO: prob do some backend work to put sourceId on the revision
 // need to discuss when we link the two (e.g. on upload vs on save)
 export function currentSource(entities, revisionSeq) {
-  const os = currentOutputSchema(entities, revisionSeq);
-  const is = os ? entities.input_schemas[os.input_schema_id] : null;
-  return is ? entities.sources[is.source_id] : null;
+  const blobSource = currentBlobSource(entities, revisionSeq);
+  if (blobSource) {
+    return blobSource;
+  } else {
+    const os = currentOutputSchema(entities, revisionSeq);
+    const is = os ? entities.input_schemas[os.input_schema_id] : null;
+    return is ? entities.sources[is.source_id] : null;
+  }
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {

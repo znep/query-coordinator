@@ -13,7 +13,7 @@ const SaveOutputSchemaButton = ({
     <ApiCallButton
       onClick={() => saveCurrentOutputSchema(revision, outputSchema.id, params)}
       operation={SAVE_CURRENT_OUTPUT_SCHEMA}
-      callParams={{ outputSchemaId: outputSchema.id }} >
+      callParams={{ outputSchemaId: outputSchema.id, blobId: null }} >
       {I18n.home_pane.save_for_later}
     </ApiCallButton>
   </div>

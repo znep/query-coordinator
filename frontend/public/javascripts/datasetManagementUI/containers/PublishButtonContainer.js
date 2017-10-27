@@ -20,8 +20,11 @@ function isDataSatisfied({ entities, ui }, params) {
   let dataSatisfied;
   const revisionSeq = _.toNumber(params.revisionSeq);
   const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
+  const blob = Selectors.currentBlobSource(entities, revisionSeq);
   if (outputSchema) {
     dataSatisfied = !!outputSchema.completed_at;
+  } else if (blob) {
+    dataSatisfied = !!blob.finished_at;
   } else {
     dataSatisfied = false;
   }

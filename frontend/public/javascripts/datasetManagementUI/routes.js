@@ -6,6 +6,7 @@ import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
+import ShowBlobPreview from 'pages/ShowBlobPreview/ShowBlobPreview';
 import ShowSource from 'pages/ShowSource/ShowSource';
 import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import NoMatch from 'pages/NoMatch/NoMatch';
@@ -64,6 +65,7 @@ export default function rootRoute(store) {
         <Route path="option/:option" component={ShowOutputSchema} />
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>
+      <Route path="sources/:sourceId/preview" component={ShowBlobPreview} onEnter={checkIfPublished(store)} />
       <Route
         path={
           'sources/:sourceId/schemas/:inputSchemaId/output/' +

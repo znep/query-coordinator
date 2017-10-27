@@ -11,7 +11,7 @@ import {
 } from 'reduxStuff/actions/apiCalls';
 import { showModal } from 'reduxStuff/actions/modal';
 import { addTaskSet } from 'reduxStuff/actions/taskSets';
-import { editRevision, updateRevision } from 'reduxStuff/actions/revisions';
+import { editRevision, updateRevision, shapeRevision } from 'reduxStuff/actions/revisions';
 import { getView } from 'reduxStuff/actions/views';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as Links from 'links/links';
@@ -42,29 +42,6 @@ export const TASK_SET_STATUSES = [
 ];
 
 export const POLL_FOR_TASK_SET_PROGRESS_SUCCESS = 'POLL_FOR_TASK_SET_PROGRESS_SUCCESS';
-
-// TODO: remove once https://github.com/socrata/dsmapi/pull/402 is deployed
-// and we can count on revision.action.permission being there
-function shapeRevision(apiResponse) {
-  let revision = apiResponse;
-
-  if (revision.action && revision.action.permission) {
-    const permission = revision.action.permission;
-
-    revision = {
-      ..._.omit(revision, 'action'),
-      created_at: parseDate(revision.created_at),
-      permission
-    };
-  } else {
-    revision = {
-      ...revision,
-      permission: 'public'
-    };
-  }
-
-  return revision;
-}
 
 export function updatePermission(permission, params) {
   return (dispatch, getState) => {

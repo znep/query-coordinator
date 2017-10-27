@@ -79,8 +79,10 @@ function SvgPieChart($element, vif, options) {
 
   this.invalidateSize = () => {
     if ($chartElement && dataToRender) {
-      // Not re-rendering whole chart just resizing and repositioning
-      resizePie();
+      renderPie();
+      // TODO D3 is smart enough to not rerender things that don't need to be rerendered.
+      // A separate resizeLegend is premature optimization - we can simplify and avoid
+      // bugs by having all rendering happen inside of renderLegend().
       resizeLegend(legend);
     }
   };
@@ -153,7 +155,7 @@ function SvgPieChart($element, vif, options) {
       attr('class', 'slice-group').
       attr('data-index', (d, i) => i);
 
-    arcs.
+    let arcPaths = arcs.
       append('path').
       attr('class', 'slice').
       attr('data-index', (d, i) => i).
@@ -185,7 +187,63 @@ function SvgPieChart($element, vif, options) {
       renderArcLabels(self.getShowValueLabelsAsPercent());
     }
 
-    resizePie();
+    determineSize();
+
+    svg.
+      attr('width', width).
+      attr('height', height);
+
+    // pie radius
+    const radius = outerWidth / 2;
+
+    let leftOffset;
+    let topOffset;
+
+    if (isHorizontalLayout()) {
+      leftOffset = horizontalLayoutOffsets().pieLeft;
+      topOffset = horizontalLayoutOffsets().pieTop;
+    } else {
+      leftOffset = verticalLayoutOffsets().pieLeft;
+      topOffset = verticalLayoutOffsets().pieTop;
+    }
+
+    svg.select('g.slices').
+      attr(
+        'transform',
+        `translate(${leftOffset}, ${topOffset})`
+      );
+
+    // pie arc
+    let arc = getArc(radius);
+
+    // flyout's bigger arc
+    let textLabelArc = getArc(radius * MARGINS.textLabelArcMultiplier);
+
+    // apply arcs
+    arcPaths.
+      attr('d', arc);
+
+    // align labels
+    // use textLabelArc for positioning
+    svg.selectAll('g.slice-group text').
+      attr('transform', (d) => `translate(${textLabelArc.centroid(d)})`);
+
+    const arcRadius = arc.outerRadius()();
+
+    // Show/hide labels according to length of each slice
+    const labelVisibilityThreshold =
+      self.getShowValueLabelsAsPercent()
+        ? PERCENT_LABEL_THRESHOLD
+        : VALUE_LABEL_THRESHOLD;
+
+    svg.selectAll('g.slice-group path').
+      each(function(d) {
+        const length = calculateArcLength(arcRadius, d.startAngle, d.endAngle);
+        const textEl = d3.select(this.parentNode).select('text');
+        const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
+
+        textEl.style('visibility', visibility);
+      });
   }
 
   /**
@@ -262,71 +320,6 @@ function SvgPieChart($element, vif, options) {
             }
           }
         });
-  }
-
-  /**
-   * Resize and reposition pie
-   */
-  function resizePie() {
-    determineSize();
-
-    svg.
-      attr('width', width).
-      attr('height', height);
-
-    // pie radius
-    const radius = outerWidth / 2;
-
-    let leftOffset;
-    let topOffset;
-
-    if (isHorizontalLayout()) {
-
-      leftOffset = horizontalLayoutOffsets().pieLeft;
-      topOffset = horizontalLayoutOffsets().pieTop;
-    } else {
-
-      leftOffset = verticalLayoutOffsets().pieLeft;
-      topOffset = verticalLayoutOffsets().pieTop;
-    }
-
-    svg.select('g.slices').
-      attr(
-        'transform',
-        `translate(${leftOffset}, ${topOffset})`
-      );
-
-    // pie arc
-    let arc = getArc(radius);
-
-    // flyout's bigger arc
-    let textLabelArc = getArc(radius * MARGINS.textLabelArcMultiplier);
-
-    // apply arcs
-    svg.selectAll('path').
-      attr('d', arc);
-
-    // align labels
-    // use textLabelArc for positioning
-    svg.selectAll('g.slice-group text').
-      attr('transform', (d) => `translate(${textLabelArc.centroid(d)})`);
-
-    const arcRadius = arc.outerRadius()();
-
-    // Show/hide labels according to length of each slice
-    const labelVisibilityThreshold =
-      self.getShowValueLabelsAsPercent()
-        ? PERCENT_LABEL_THRESHOLD
-        : VALUE_LABEL_THRESHOLD;
-
-    svg.selectAll('g.slice-group path').
-      each(function(d) {
-        const length = calculateArcLength(arcRadius, d.startAngle, d.endAngle);
-        const textEl = d3.select(this.parentNode).select('text');
-        const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
-
-        textEl.style('visibility', visibility);
-      });
   }
 
   /**

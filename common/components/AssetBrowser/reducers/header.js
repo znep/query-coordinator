@@ -1,10 +1,13 @@
 import _ from 'lodash';
 
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 
-const getInitialState = () => ({
-  activeTab: getQueryParameter({ key: 'tab', defaultValue: window.initialState.header.initialTab })
-});
+const getInitialState = () => {
+  return {
+    activeTab: getQueryParameter('tab', window.initialState.header.initialTab)
+  };
+};
 
 export default (state, action) => {
   if (_.isUndefined(state)) {

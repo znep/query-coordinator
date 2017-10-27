@@ -1,79 +1,41 @@
+import React from 'react';
 import { assert } from 'chai';
-import { Header } from 'common/components/AssetBrowser/components/header';
-import { FeatureFlags } from 'common/feature_flags';
-import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
-import { MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
+import { mount, shallow } from 'enzyme';
 
-let savedCurrentUser = window.serverConfig.currentUser;
+import { useTestTranslations } from 'common/i18n';
+import sharedTranslations from 'common/i18n/config/locales/en.yml';
+
+import { Header } from 'common/components/AssetBrowser/components/header';
+import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
+
+const getProps = (props = {}) => ({
+  activeTab: 'myAssets',
+  changeTab: () => {},
+  isMobile: false,
+  tabs: {
+    myAssets: {
+      component: ResultsAndFilters
+    },
+    sharedToMe: {
+      component: ResultsAndFilters
+    },
+    allAssets: {
+      component: ResultsAndFilters
+    }
+  },
+  ...props
+});
 
 describe('components/Header', () => {
-
-  it('does render My Assets', () => {
-    const element = renderComponentWithPropsAndStore(Header);
-    assert.isNotNull(element);
-    assert.equal(element.querySelectorAll('.my-assets').length, 1);
+  beforeEach(() => {
+    useTestTranslations(sharedTranslations.en);
   });
 
-  describe('when not a privileged user', () => {
-    before(() => {
-      savedCurrentUser = window.serverConfig.currentUser;
-      window.serverConfig.currentUser = { rights: [] };
-    });
-
-    after(() => {
-      window.serverConfig.currentUser = savedCurrentUser;
-    });
-
-    it('does not render All Assets', () => {
-      const element = renderComponentWithPropsAndStore(Header);
-      assert.isNotNull(element);
-      assert.equal(element.querySelectorAll('.all-assets').length, 0);
-    });
-  });
-
-  describe('when a privileged user', () => {
-    before(() => {
-      savedCurrentUser = window.serverConfig.currentUser;
-      window.serverConfig.currentUser = { rights: ['can_see_all_assets_tab_siam'] };
-    });
-
-    after(() => {
-      window.serverConfig.currentUser = savedCurrentUser;
-    });
-
-    it('does render All Assets', () => {
-      const element = renderComponentWithPropsAndStore(Header);
-      assert.isNotNull(element);
-      assert.equal(element.querySelectorAll('.all-assets').length, 1);
-    });
-  });
-
-  describe('tabsToHide', () => {
-    describe('when not passed', () => {
-      it('renders all tabs', () => {
-        const element = renderComponentWithPropsAndStore(Header);
-        assert.isNotNull(element);
-        assert.equal(element.querySelectorAll('.my-assets').length, 1);
-        assert.equal(element.querySelectorAll('.shared-to-me').length, 1);
-      });
-    });
-
-    describe('when passed', () => {
-      it('hides single tab', () => {
-        const props = { 'tabsToHide': [MY_ASSETS_TAB] };
-        const element = renderComponentWithPropsAndStore(Header, props);
-        assert.isNotNull(element);
-        assert.equal(element.querySelectorAll('.my-assets').length, 0);
-        assert.equal(element.querySelectorAll('.shared-to-me').length, 1);
-      });
-
-      it('hides multiple tabs', () => {
-        const props = { 'tabsToHide': [MY_ASSETS_TAB, SHARED_TO_ME_TAB] };
-        const element = renderComponentWithPropsAndStore(Header, props);
-        assert.isNotNull(element);
-        assert.equal(element.querySelectorAll('.my-assets').length, 0);
-        assert.equal(element.querySelectorAll('.shared-to-me').length, 0);
-      });
-    });
+  it('renders the tabs provided in the prop', () => {
+    const wrapper = shallow(<Header {...getProps()} />);
+    assert.isTrue(wrapper.find('.my-assets').exists());
+    assert.isTrue(wrapper.find('.shared-to-me').exists());
+    assert.isTrue(wrapper.find('.all-assets').exists());
   });
 });

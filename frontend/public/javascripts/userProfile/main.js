@@ -7,11 +7,11 @@ import { AppContainer } from 'react-hot-loader';
 
 import airbrake from 'common/airbrake';
 import { AssetBrowser } from 'common/components';
-import ActionDropdown from 'common/components/AssetBrowser/components/action_dropdown';
+import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import { dateLocalize } from 'common/locale';
 import Localization from 'common/i18n/components/Localization';
 import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_helpers';
-import { ALL_ASSETS_TAB } from 'common/components/AssetBrowser/lib/constants';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 
 const middleware = [thunk];
 
@@ -25,10 +25,18 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
+const tabs = {
+  [constants.MY_ASSETS_TAB]: {
+    component: ResultsAndFilters
+  },
+  [constants.SHARED_TO_ME_TAB]: {
+    component: ResultsAndFilters
+  }
+};
+
 const components = (
   <Localization locale={serverConfig.locale || 'en'}>
     <AssetBrowser
-      actionElement={ActionDropdown}
       baseFilters={getCurrentUserFilter()}
       enableAssetInventoryLink={false}
       pageSize={5}
@@ -38,7 +46,7 @@ const components = (
       showManageAssets={!_.isEmpty(window.serverConfig.currentUser.roleName)}
       showPager={false}
       showSearchField
-      tabsToHide={[ALL_ASSETS_TAB]} />
+      tabs={tabs} />
   </Localization>
 );
 

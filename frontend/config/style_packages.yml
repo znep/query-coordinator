@@ -164,8 +164,6 @@ admin-users-v2:
 - admin-users-v2/admin-users-v2
 administration-view-moderation:
 - screen-administration-views
-approvals:
-- approvals/show
 base-control:
 - control-pane
 - control-pane-custom
@@ -234,8 +232,6 @@ error-pages:
 - screen-error-pages
 internal:
 - screen-internal
-internal-asset-manager:
-- internal-asset-manager/show
 internal-metrics:
 - screen-metrics
 homepage-show:

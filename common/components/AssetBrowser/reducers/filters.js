@@ -16,7 +16,7 @@ export const getInitialState = () => {
   // custom facets that have filters present in the URL query params.
   const customFacetFilters = (_.get(window, 'initialState.domainCustomFacets') || []).
     reduce((acc, customFacet) => {
-      const customFacetValue = getQueryParameter({ key: [customFacet.param] });
+      const customFacetValue = getQueryParameter(customFacet.param);
       if (customFacetValue) {
         acc[customFacet.param] = customFacetValue;
       }
@@ -24,28 +24,28 @@ export const getInitialState = () => {
     }, {});
 
   return {
-    assetTypes: getQueryParameter({ key: 'assetTypes' }),
-    authority: getQueryParameter({ key: 'authority' }),
-    category: getQueryParameter({ key: 'category' }),
+    assetTypes: getQueryParameter('assetTypes'),
+    authority: getQueryParameter('authority'),
+    category: getQueryParameter('category'),
     customFacets: customFacetFilters,
     domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
     domainCategories: _.get(window, 'initialState.domainCategories') || [],
     domainTags: _.get(window, 'initialState.domainTags') || [],
     onlyRecentlyViewed: false,
     ownedBy: {
-      displayName: getQueryParameter({ key: 'ownerName' }),
-      id: getQueryParameter({ key: 'ownerId' })
+      displayName: getQueryParameter('ownerName'),
+      id: getQueryParameter('ownerId')
     },
-    q: getQueryParameter({ key: 'q' }),
-    tag: getQueryParameter({ key: 'tag' }),
+    q: getQueryParameter('q'),
+    tag: getQueryParameter('tag'),
     usersList: _.get(window, 'initialState.usersList') || [],
-    visibility: getQueryParameter({ key: 'visibility' })
+    visibility: getQueryParameter('visibility')
   };
 };
 
 // This function should _only_ be used for keeping track of user changes to the query. See also changeQ() in
 // platform-ui/frontend/public/javascripts/internalAssetManager/actions/filters.js
-export const getCurrentQuery = () => getQueryParameter({ key: 'q', defaultValue: '' });
+export const getCurrentQuery = () => getQueryParameter('q', '');
 
 export const getUnfilteredState = (state, baseFilters = {}) => ({
   assetTypes: null,

@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import reducer from './reducers';
 import createLogger from 'redux-logger';
+import reducer from './reducers';
 
 import Header from './components/header';
-import ResultsAndFilters from './components/results_and_filters';
+import TabContent from './components/tab_content';
 import WindowDimensions from './components/window_dimensions';
+
+import Localization from 'common/i18n/components/Localization';
 
 export class AssetBrowser extends Component {
   constructor(props) {
@@ -25,29 +27,28 @@ export class AssetBrowser extends Component {
       }));
     }
 
-    const store = createStore(reducer, applyMiddleware(...middlewares));
-    this.state = { store };
+    this.store = createStore(reducer, applyMiddleware(...middlewares));
   }
 
   render() {
     const { showHeader } = this.props;
-
     const header = showHeader ? <Header {...this.props} /> : null;
 
     return (
-      <Provider store={this.state.store}>
-        <div className="asset-browser">
-          {header}
-          <ResultsAndFilters {...this.props} />
-          <WindowDimensions />
-        </div>
-      </Provider>
+      <Localization locale={window.serverConfig.locale || 'en'}>
+        <Provider store={this.store}>
+          <div className="asset-browser">
+            {header}
+            <TabContent {...this.props} />
+            <WindowDimensions />
+          </div>
+        </Provider>
+      </Localization>
     );
   }
 }
 
 AssetBrowser.propTypes = {
-  actionElement: PropTypes.func,
   baseFilters: PropTypes.object,
   enableAssetInventoryLink: PropTypes.bool,
   onAssetSelected: PropTypes.func,
@@ -60,11 +61,10 @@ AssetBrowser.propTypes = {
   showOwnedByFilter: PropTypes.bool,
   showPager: PropTypes.bool,
   showSearchField: PropTypes.bool,
-  tabsToHide: PropTypes.arrayOf(PropTypes.string)
+  tabs: PropTypes.object.isRequired
 };
 
 AssetBrowser.defaultProps = {
-  actionElement: null,
   baseFilters: {},
   enableAssetInventoryLink: true,
   onAssetSelected: null,

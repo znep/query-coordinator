@@ -1,9 +1,30 @@
 @import "variables/colors";
 @import "sizings";
+
 @import "catalog_results";
 @import "catalog_filters";
 @import "clear_filters";
+@import "settings";
+
+@import "common/styleguide/variables/colors";
 @import "common/styleguide/partials/pager";
+
+// @import "common/feedback-panel"; // TODO figure out what to do for this case
+
+$admin-header-height: 46px;
+.admin-header {
+  min-height: $admin-header-height;
+}
+
+body {
+  margin: 0;
+  padding: $admin-header-height 0 0 0;
+  background: $light-grey-6;
+}
+
+.alert.error {
+  clear: both;
+}
 
 .asset-browser {
   margin-bottom: 3rem; // Make room for "feedback" button when scrolled to the bottom

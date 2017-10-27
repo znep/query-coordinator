@@ -8,6 +8,7 @@ import catalog from './catalog';
 import filters from './filters';
 import header from './header';
 import mobile from './mobile';
+import settings from './settings';
 import windowDimensions from './window_dimensions';
 
 export default combineReducers({
@@ -19,5 +20,6 @@ export default combineReducers({
   filters,
   header,
   mobile,
+  settings,
   windowDimensions
 });

@@ -16,6 +16,12 @@ class User < Model
     parse(CoreServer::Base.connection.get_request("/users.json?#{{'ids' => ids}.to_param}"))
   end
 
+  def self.find_with_right(right)
+    parse(CoreServer::Base.connection.get_request(
+      "/rights.json?method=usersWithRight&right=#{right}"
+    ))
+  end
+
   def self.create(attributes, inviteToken = nil, authToken = nil)
     opts = {}
     if inviteToken.present?

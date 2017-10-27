@@ -85,7 +85,10 @@ function urlForPreview(entities, displayState) {
     case DisplayState.ROW_ERRORS:
       return dsmapiLinks.rowErrors(source.id, inputSchema.id, limit, offset);
     case DisplayState.COLUMN_ERRORS: {
-      const columnId = _.find(entities.output_columns, { transform_id: displayState.transformId }).id;
+      const columnId = _.find(
+        Selectors.columnsForOutputSchema(entities, outputSchemaId),
+        (oc) => oc.transform.id === displayState.transformId
+      ).id;
 
       return dsmapiLinks.columnErrors(source.id, inputSchema.id, outputSchemaId, columnId, limit, offset);
     }

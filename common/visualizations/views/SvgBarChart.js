@@ -585,7 +585,10 @@ function SvgBarChart($element, vif, options) {
           'fill',
           (d, measureIndex, dimensionIndex) => {
             const measure = measures[measureIndex];
-            utils.assert(measureIndex === measure.measureIndex);
+            utils.assert(
+              measureIndex === measure.measureIndex,
+              'BUG: measures array out of sync with bars in dimensionGroupSvgs'
+            );
             return measure.getColor();
           }
         ).
@@ -593,7 +596,10 @@ function SvgBarChart($element, vif, options) {
           'data-default-fill',
           (d, measureIndex, dimensionIndex) => {
             const measure = measures[measureIndex];
-            utils.assert(measureIndex === measure.measureIndex);
+            utils.assert(
+              measureIndex === measure.measureIndex,
+              'BUG: measures array out of sync with bars in dimensionGroupSvgs'
+            );
             return measure.getColor();
           }
         );

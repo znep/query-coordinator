@@ -962,8 +962,6 @@ function SvgHistogram($element, vif, options) {
 
     utils.assert(seriesIndex === 0, 'Multiple series not supported in this chart yet');
 
-    utils.assertIsOneOfTypes(seriesIndex, 'number');
-
     var titleHTML = bucketTitleHTML(datum);
     var label = seriesLabel(seriesIndex);
     var value = datum.value;

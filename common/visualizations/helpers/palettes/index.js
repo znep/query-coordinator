@@ -11,10 +11,8 @@ export const COLOR_VARY_BY = {
   MEASURE: 'MEASURE' // like a bar chart.
 };
 
-// Represents a palette defined on a particular series in a VIF.
-//
-// Reconciles custom palettes being by value where normal palettes are by
-// index.
+// Represents a palette defined on a particular series in a VIF. Reconciles custom palettes being by value
+// where normal palettes are by index.
 export default class Palette {
   constructor({ vif, seriesIndex, colorVaryBy = COLOR_VARY_BY.MEASURE }) {
     utils.assert(_.isPlainObject(vif), 'vif must be a plain object');

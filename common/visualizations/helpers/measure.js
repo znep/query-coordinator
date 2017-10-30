@@ -1,8 +1,10 @@
 import _ from 'lodash';
+
 import utils from 'common/js_utils';
-import Palette from './palettes';
 import I18n from 'common/i18n';
-const ColumnFormattingHelpers = require('./ColumnFormattingHelpers');
+
+import { formatValueHTML } from './ColumnFormattingHelpers';
+import Palette from './palettes';
 
 // Represents a measure viewmodel for rendering purposes.
 // You probably don't want to instantiate this directly - use getMeasures instead!
@@ -35,6 +37,7 @@ export default class Measure {
     utils.assertIsNumber(seriesIndex);
     utils.assertIsNumber(measureIndex);
     utils.assertIsOneOfTypes(labelHtml, 'string', 'undefined');
+    utils.assert(!!palette, 'A palette object must be provided');
     utils.assert(
       _.isFunction(palette.getColor),
       'palette lacks a getColor function - did you mean to pass a Palette instance?'
@@ -110,7 +113,7 @@ export const getMeasures = (chart, dataToRender) => {
     return columns.map((column, measureIndex) => {
       // NOTE: the variable `column` holds a value from the grouping column.
       const labelHtml = column ?
-        ColumnFormattingHelpers.formatValueHTML(column, groupingColumnName, dataToRender) :
+        formatValueHTML(column, groupingColumnName, dataToRender) :
         noValueLabel;
       return new Measure({
         vif,

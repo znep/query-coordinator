@@ -8,7 +8,7 @@ describe('Measure', () => {
   const measureIndex = 0;
   const tagValue = 'a tag & stuff';
 
-  it('throws if palette is missing needed API', () => {
+  it('checks that custom palettes provide required APIs', () => {
     assert.throws(() => new Measure({ vif, seriesIndex, measureIndex, tagValue, palette: 'nope' }));
   });
   it('defaults labelHtml to an escaped tagValue', () => {
@@ -159,7 +159,7 @@ describe('getMeasures', () => {
 
       assert.throws(() => getMeasures(chart, badData));
     });
-    it('does not throw if too may values are provided in the rows array', () => {
+    it('does not throw if too many values are provided in the rows array', () => {
       const badData = {
         // Two measures
         columns: ['dimension', null, null],
@@ -169,7 +169,9 @@ describe('getMeasures', () => {
         ]
       };
 
-      getMeasures(chart, badData);
+      assert.doesNotThrow(() => {
+        getMeasures(chart, badData);
+      });
     });
   });
 });

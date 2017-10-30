@@ -76,7 +76,7 @@ function _renderVisualization($element, componentData) {
   const iconClass = 'socrata-visualization-view-source-data-icon';
   const $sourceLinkElement = $(`
     <div class="socrata-visualization-view-source-data">
-      <a href="https://${visualization.domain}/d/${visualization.id}" target="_blank">
+      <a href="/d/${visualization.id}" target="_blank">
         <span>${I18n.t('common.view_source_data')}</span><span class="${iconClass}"></span>
       </a>
     </div>

@@ -6582,7 +6582,7 @@ en:
       resent_email_success: Pending user email resent!
       add_user_success: Successfully added user!
       password_reset: Password reset.
-      role_changed: User's role changed.
+      role_changed: User's role successfully changed.
       role_removed: User's role removed.
     no_results: No results
     roles:

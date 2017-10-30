@@ -16,8 +16,6 @@ export class Picklist extends Component {
 
     _.bindAll(this, [
       'onClickOption',
-      'onKeyUpSelection',
-      'onKeyUpBlur',
       'onKeyUp',
       'onKeyDown',
       'onMouseDownOption',
@@ -28,7 +26,6 @@ export class Picklist extends Component {
       'setSelectedOption',
       'setChangedOption',
       'setScrollPositionToOption',
-      'blur',
       'move',
       'renderOption'
     ]);
@@ -76,19 +73,14 @@ export class Picklist extends Component {
     this.setSelectedOption(selectedOption);
   }
 
-  onKeyUpSelection(event) {
-    const { disabled, onSelection } = this.props;
+  onKeyUp(event) {
+    isolateEventByKeys(event, [ENTER, SPACE, ESCAPE]);
 
-    if (disabled) {
-      return;
-    }
+    const { onSelection } = this.props;
 
     switch (event.keyCode) {
-      case UP:
-        this.move('up');
-        break;
-      case DOWN:
-        this.move('down');
+      case ESCAPE:
+        this.picklist.blur();
         break;
       case ENTER:
       case SPACE:
@@ -101,21 +93,23 @@ export class Picklist extends Component {
     }
   }
 
-  onKeyUpBlur(event) {
-    if (event.keyCode === ESCAPE) {
-      this.picklist.blur();
-    }
-  }
-
-  onKeyUp(event) {
-    isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
-
-    this.onKeyUpSelection(event);
-    this.onKeyUpBlur(event);
-  }
-
   onKeyDown(event) {
+    // Isolating ENTER and SPACE help prevent some side effects
+    // of holding those keys down.
     isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
+
+    // We need to handle UP an DOWN in onKeyDown to allow for
+    // press and hold to fire multiple events.
+    switch (event.keyCode) {
+      case UP:
+        this.move('up');
+        break;
+      case DOWN:
+        this.move('down');
+        break;
+      default:
+        break;
+    }
   }
 
   onMouseDownOption(event) {
@@ -123,11 +117,18 @@ export class Picklist extends Component {
   }
 
   onFocus() {
+    const { options } = this.props;
+    if (this.state.selectedIndex === -1 && options.length > 0) {
+      this.setNavigationPointer(0);
+      this.setChangedOption(options[0]);
+    }
     this.props.onFocus();
     this.setState({ focused: true });
   }
 
   onBlur() {
+    this.setNavigationPointer(-1);
+    this.setChangedOption(null);
     this.props.onBlur();
     this.setState({ focused: false });
   }
@@ -156,6 +157,7 @@ export class Picklist extends Component {
     this.props.onChange(selectedOption);
   }
 
+  // TODO: Keying DOWN to items outside the container should scroll, but doesn't.
   setScrollPositionToOption(picklistOptionIndex) {
     const picklist = this.picklist;
     const picklistOptions = this.picklist.querySelectorAll('.picklist-option');
@@ -165,10 +167,6 @@ export class Picklist extends Component {
     const picklistOptionTop = picklistOption.getBoundingClientRect().top;
 
     this.picklist.scrollTop = (picklistOptionTop - picklistTop) - picklistCenter;
-  }
-
-  blur() {
-    this.picklist.blur();
   }
 
   move(upOrDown) {
@@ -247,7 +245,6 @@ export class Picklist extends Component {
         'picklist-disabled': disabled,
         'picklist-focused': focused
       }),
-      onKeyUp: this.onKeyUp,
       role: 'listbox',
       'aria-activedescendant': activeDescendant,
       'aria-disabled': disabled
@@ -256,6 +253,7 @@ export class Picklist extends Component {
     if (!disabled) {
       _.merge(attributes, {
         onKeyDown: this.onKeyDown,
+        onKeyUp: this.onKeyUp,
         onFocus: this.onFocus,
         onBlur: this.onBlur
       });

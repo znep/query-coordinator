@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import $ from 'jquery';
 import CalendarDateFilter from './CalendarDateFilter';
 import CheckboxFilter from './CheckboxFilter';
 import NumberFilter from './NumberFilter';
@@ -154,7 +155,7 @@ export class FilterItem extends Component {
     const configProps = {
       filter,
       onUpdate,
-      ref: _.partial(_.set, this, 'filterConfig')
+      ref: ref => this.filterConfig = ref
     };
 
     return <FilterConfig {...configProps} />;
@@ -179,7 +180,7 @@ export class FilterItem extends Component {
       role: 'button',
       onClick: this.toggleConfig,
       onKeyDown: this.onKeyDownConfig,
-      ref: _.partial(_.set, this, 'filterConfigToggle')
+      ref: ref => this.filterConfigToggle = ref
     };
 
     return (
@@ -215,7 +216,7 @@ export class FilterItem extends Component {
       onRemove: this.onRemove,
       onUpdate: this.onUpdate,
       onClear: this.props.onClear,
-      ref: _.partial(_.set, this, 'filterControl')
+      ref: ref => this.filterControl = ref
     };
 
     // This used to be a switch statement, but the babel
@@ -252,7 +253,7 @@ export class FilterItem extends Component {
       role: 'button',
       onClick: this.toggleControl,
       onKeyDown: this.onKeyDownControl,
-      ref: _.partial(_.set, this, 'filterControlToggle')
+      ref: ref => this.filterControlToggle = ref
     };
 
     return (
@@ -266,14 +267,43 @@ export class FilterItem extends Component {
   }
 
   render() {
+    const CONFIG = 'config';
+    const CONTROL = 'control';
+
+    const closeIfBlurred = (which) => {
+      _.defer(() => {
+        const focused = document.activeElement;
+        let container;
+        if (which === CONFIG) {
+          container = this.configContainer;
+        } else if (which === CONTROL) {
+          container = this.controlContainer;
+        }
+        const hasFocus = $.contains(container, focused);
+        if (!hasFocus) {
+          this.closeAll();
+        }
+      });
+    };
+
+    // NOTE: You can't use ref'd values right away.
+    //       Using a string constant to ID the
+    //       container. There is probably a better
+    //       way to do this.
     return (
       <div className="filter-bar-filter">
-        <div className="filter-control-container">
+        <div
+          className="filter-control-container"
+          ref={(ref) => this.controlContainer = ref}
+          onBlur={() => closeIfBlurred(CONTROL)}>
           {this.renderFilterControlToggle()}
           {this.renderFilterControl()}
         </div>
 
-        <div className="filter-config-container">
+        <div
+          className="filter-config-container"
+          ref={(ref) => this.configContainer = ref}
+          onBlur={() => closeIfBlurred(CONFIG)}>
           {this.renderFilterConfigToggle()}
           {this.renderFilterConfig()}
         </div>

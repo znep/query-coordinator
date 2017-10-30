@@ -180,8 +180,12 @@ a:hover {
 }
 
 // Styleguide compatibility
+// This mirrors common/styleguide/partials/admin/_breadcrumbs.scss, and should
+// be kept in sync with that file (and vice versa)
+$site-chrome-admin-header-height: 46px;
 .admin-header {
-  min-height: 108px;
+  margin: $site-chrome-admin-header-height 0 0;
+  min-height: $site-chrome-admin-header-height;
   padding: 15px 32px 0;
   border-bottom: 1px solid $light-grey-4;
   font-family: Open Sans,Helvetica,Arial,sans-serif;

@@ -11,14 +11,8 @@
 
 // @import "common/feedback-panel"; // TODO figure out what to do for this case
 
-$admin-header-height: 46px;
-.admin-header {
-  min-height: $admin-header-height;
-}
-
 body {
   margin: 0;
-  padding: $admin-header-height 0 0 0;
   background: $light-grey-6;
 }
 

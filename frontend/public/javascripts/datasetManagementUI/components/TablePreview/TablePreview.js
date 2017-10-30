@@ -38,15 +38,24 @@ HrefView.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const OutputSchemaView = ({ entities, outputSchema, params }) => {
-  const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
-  if (!inputSchema) return;
+const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
+  let previewDataPath;
+  if (outputSchema) {
+    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
+    if (!inputSchema) return;
+    previewDataPath = Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id);
+  } else if (blob) {
+    previewDataPath = Links.showBlobPreview(params, blob.id);
+  } else {
+    return;
+  }
+
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
       <p>{I18n.home_pane.data_uploaded_blurb}</p>
       <p>
-        <Link to={Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id)}>
+        <Link to={previewDataPath}>
           <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -56,9 +65,10 @@ const OutputSchemaView = ({ entities, outputSchema, params }) => {
   );
 };
 
-OutputSchemaView.propTypes = {
+PreviewDataView.propTypes = {
   entities: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object.isRequired,
+  outputSchema: PropTypes.object,
+  blob: PropTypes.object,
   params: PropTypes.object.isRequired
 };
 
@@ -102,13 +112,15 @@ const TablePreview = ({ entities, params, view }) => {
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);
   const os = Selectors.currentOutputSchema(entities, revisionSeq);
+  const blob = Selectors.currentBlobSource(entities, revisionSeq);
   const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
+
   if (tasksExist && allTasksSucceeded && os) {
     child = <UpsertCompleteView view={view} outputSchema={os} />;
   } else if (tasksExist && !allTasksSucceeded && os) {
     child = <UpsertInProgressView />;
-  } else if (!tasksExist && os) {
-    child = <OutputSchemaView entities={entities} outputSchema={os} params={params} />;
+  } else if (!tasksExist && (os || blob)) {
+    child = <PreviewDataView entities={entities} outputSchema={os} blob={blob} params={params} />;
   } else if (hrefExists) {
     child = <HrefView params={params} />;
   } else {

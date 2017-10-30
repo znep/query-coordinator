@@ -16,6 +16,12 @@ class User < Model
     parse(CoreServer::Base.connection.get_request("/users.json?#{{'ids' => ids}.to_param}"))
   end
 
+  def self.find_with_right(right)
+    parse(CoreServer::Base.connection.get_request(
+      "/rights.json?method=usersWithRight&right=#{right}"
+    ))
+  end
+
   def self.create(attributes, inviteToken = nil, authToken = nil)
     opts = {}
     if inviteToken.present?
@@ -217,10 +223,6 @@ class User < Model
 
   def can_approve?
     has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
-  end
-
-  def can_create_or_edit_visualization_canvas?
-    is_roled_user? || is_superadmin?
   end
 
   def can_use_site_appearance?

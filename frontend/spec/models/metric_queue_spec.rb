@@ -13,6 +13,7 @@ describe MetricQueue do
         before(:each) do
           MetricQueue.instance.batch_size = 2
           allow(Thread).to receive(:new).and_yield.and_call_original
+          APP_CONFIG.atomic_metrics_flush = true
         end
 
         it 'accepts a metric and adds it to the batch' do

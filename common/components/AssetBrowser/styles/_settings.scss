@@ -1,0 +1,133 @@
+.asset-browser .settings {
+  display: flex;
+  justify-content: center;
+
+  font-size: 90%;
+
+  .settingsContainer {
+    margin-left: 4rem;
+    max-width: 84em;
+  }
+
+  .section-title {
+    font-weight: bold;
+  }
+
+  .introduction {
+    margin-top: 24.27px;
+
+    .section-title {
+      font-size: 120%;
+    }
+  }
+
+  p:first-of-type {
+    margin-top: 10px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: solid 0.5px $light-grey-2;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding-top: 1em;
+
+    button {
+      margin-left: 0.8em;
+    }
+  }
+
+  .approver-configuration {
+    margin-left: 23px;
+    width: 52em;
+
+    p {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .user-setting {
+      display: flex;
+
+      &:hover {
+        background-color: #dbeef9;
+      }
+
+      width: 45em;
+      margin: 0 auto;
+
+      label.name {
+        flex: 2 1 auto;
+      }
+
+      div {
+        margin: 0 0.4em;
+      }
+
+      label.helper {
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .automatically-approve {
+    display: flex;
+
+    margin-top: 2em;
+    margin-bottom: 2em;
+
+    .approval-configuration {
+      width: 50%;
+
+      .configuration-title {
+        font-weight: bold;
+      }
+
+      .socrata-icon {
+        position: relative;
+        top: -4px;
+        width: 20px;
+        height: 20px;
+        margin-right: 0.3em;
+      }
+
+      .socrata-icon-official2 {
+        color: $alternate-1;
+      }
+      .socrata-icon-community {
+        color: $primary-base;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 23px;
+      }
+
+      li {
+        list-style-type: none;
+        display: flex;
+        margin-top: 0.8em;
+
+        label.radioLabel {
+          display: inline-block;
+          margin-left: 0.5em;
+
+          div {
+            font-size: 80%;
+          }
+        }
+
+        div.checkboxWrapper {
+          display: flex;
+          margin-top: 0.8em;
+          margin-left: 0.5em;
+
+          label {
+            margin-left: 0.5em;
+          }
+        }
+      }
+    }
+  }
+}

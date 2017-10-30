@@ -17,7 +17,7 @@
   "scripts": {
     "build:dev": "webpack --config ${npm_package_config_webpackConfig}",
     "prebuild:dev": "npm run webpack-clean",
-    "build:prod": "NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack --config ${npm_package_config_webpackConfig} --bail",
+    "build:prod": "NODE_PATH=`pwd`/node_modules NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack --config ${npm_package_config_webpackConfig} --bail",
     "prebuild:prod": "npm run webpack-clean",
     "postbuild:prod": "node ./tools/merge-asset-manifests.js",
     "webpack-clean": "rimraf ${npm_package_config_webpackDestination}",

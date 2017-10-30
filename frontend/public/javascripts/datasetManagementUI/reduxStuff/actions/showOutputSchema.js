@@ -312,7 +312,7 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
   return dispatch => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
-      callParams: { outputSchemaId }
+      callParams: { outputSchemaId, blobId: null }
     };
 
     const callId = uuid();
@@ -323,7 +323,8 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
       method: 'PUT',
       body: JSON.stringify({
         ...revision,
-        output_schema_id: outputSchemaId
+        output_schema_id: outputSchemaId,
+        blob_id: null
       })
     })
       .then(checkStatus)
@@ -332,7 +333,8 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
         dispatch(apiCallSucceeded(callId));
         dispatch(
           editRevision(revision.id, {
-            output_schema_id: outputSchemaId
+            output_schema_id: outputSchemaId,
+            blob_id: null
           })
         );
       })

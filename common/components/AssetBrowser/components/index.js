@@ -11,6 +11,7 @@ import ResultCount from 'common/components/AssetBrowser/components/result_count'
 import ResultListRow from 'common/components/AssetBrowser/components/result_list_row';
 import ResultListTable from 'common/components/AssetBrowser/components/result_list_table';
 import ResultsAndFilters from 'common/components/AssetBrowser/components/results_and_filters';
+import TabContent from 'common/components/AssetBrowser/components/tab_content';
 import VisibilityCell from 'common/components/AssetBrowser/components/visibility_cell';
 import WindowDimensions from 'common/components/AssetBrowser/components/window_dimensions';
 
@@ -28,6 +29,7 @@ module.exports = {
   ResultListRow,
   ResultListTable,
   ResultsAndFilters,
+  TabContent,
   VisibilityCell,
   WindowDimensions
 };

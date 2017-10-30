@@ -22,4 +22,4 @@ Prop | Type | Default | Description
 `showManageAssets` | `bool` | `false` | Show the link to SIAM _(myAssets tab is preselected)_.
 `showOwnedByFilter` | `bool` | `true` | Show the owned by filter in the filter panel.
 `showSearchField` | `bool` | `true` | Show the autocomplete search field.
-
+`tabs` | `obj` |  | Mapping of tab translation key to a React component containing the tab's content.

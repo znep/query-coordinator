@@ -1,5 +1,15 @@
-{
-  "extends": "./karma_config/node_modules/eslint-base/.eslintrc-airbnb.json",
+module.exports = {
+  // Here we have a problem. This file is shared between frontend, storyteller, and common/karma_config
+  // NPM packages. In build scenarios, only one of the 3 packages will have installed its node modules.
+  // Node's require() looks for node_modules relative to the _file being run_, which doesn't work here
+  // because there is no node_modules entry in common/.
+  //
+  // Additionally and quite separately, eslint refuses to import modules not starting with
+  // eslint-config-*. Our package is called eslint-base. Therefore, we must provide the
+  // _full path_ of the json configuration to the "extends" directive, otherwise eslint
+  // will fail to load the file.
+  "extends": require.resolve('eslint-base/.eslintrc-airbnb.json'),
+
   "parser": "babel-eslint",
   "plugins": [
     "react",
@@ -57,4 +67,4 @@
     "L": true,
     "VBArray": true
   }
-}
+};

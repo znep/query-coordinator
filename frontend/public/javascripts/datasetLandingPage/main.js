@@ -1,6 +1,5 @@
 import _ from 'lodash';
 window._ = _;
-import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import components from 'common/components';

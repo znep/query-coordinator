@@ -132,6 +132,9 @@ en:
           all_assets: All Assets
           my_assets: My Assets
           shared_to_me: Shared To Me
+          my_queue: My Queue
+          settings: Settings
+          history: History
       mobile:
         done: Done
         filters: Filters

@@ -17,7 +17,7 @@ describe('components/RecentActionItems', () => {
     initialConfig = window.serverConfig;
 
     window.serverConfig = {
-      currentUserId: 'bigg-deal'
+      currentUser: {id: 'bigg-deal'}
     };
   });
 

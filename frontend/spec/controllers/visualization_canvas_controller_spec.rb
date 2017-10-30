@@ -90,17 +90,6 @@ describe VisualizationCanvasController do
         expect(response).to have_http_status(:error)
       end
     end
-
-    describe 'as an anonymous user' do
-      before do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => false}))
-      end
-
-      it 'returns a 404' do
-        post :create, JSON.dump(store)
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
   end
 
   describe 'PUT /visualization_canvas/:id' do
@@ -124,17 +113,6 @@ describe VisualizationCanvasController do
 
         put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
         expect(response).to have_http_status(:error)
-      end
-    end
-
-    describe 'as an anonymous user' do
-      before do
-        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => false}))
-      end
-
-      it 'returns a 404' do
-        put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
-        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

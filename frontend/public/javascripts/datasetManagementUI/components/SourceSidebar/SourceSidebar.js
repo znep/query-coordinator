@@ -24,8 +24,9 @@ function descriptionOf(source) {
   return source.content_type;
 }
 
-const SourceItem = ({ entities, source, params }) => {
-  if (_.isEmpty(source)) {
+export const SourceItem = ({ entities, source, params }) => {
+  const noBytesUploaded = !(source.finished_at || source.failed_at);
+  if (_.isEmpty(source) || noBytesUploaded) {
     return null;
   }
 
@@ -33,7 +34,7 @@ const SourceItem = ({ entities, source, params }) => {
 
   const linkTarget = outputSchema
     ? Links.showOutputSchema(params, source.id, outputSchema.input_schema_id, outputSchema.id)
-    : null;
+    : Links.showBlobPreview(params, source.id);
 
   return (
     <li>

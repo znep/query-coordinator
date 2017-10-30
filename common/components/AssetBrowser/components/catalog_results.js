@@ -11,10 +11,11 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
 
 import * as constants from '../lib/constants';
+import ActionDropdown from './action_dropdown';
 import ActiveFilterCount from './filters/active_filter_count';
-import ResultListTable from './result_list_table';
 import Pager from 'frontend/public/javascripts/common/components/Pager';
 import ResultCount from './result_count';
+import ResultListTable from './result_list_table';
 import AssetInventoryLink from './asset_inventory_link';
 import * as filters from '../actions/filters';
 import * as mobile from '../actions/mobile';
@@ -36,7 +37,6 @@ export class CatalogResults extends Component {
       'fetchAutocompleteSuggestions',
       'renderError',
       'renderFooter',
-      'renderTable',
       'renderTopbar',
       'showAssetInventoryLink'
     );
@@ -84,6 +84,7 @@ export class CatalogResults extends Component {
 
   renderTopbar() {
     const {
+      activeTab,
       allFilters,
       baseFilters,
       changeQ,
@@ -158,7 +159,6 @@ export class CatalogResults extends Component {
 
   renderTable() {
     const { actionElement, fetchingResults } = this.props;
-    const { tableView } = this.state;
 
     const spinner = fetchingResults ? (
       <div className="catalog-results-spinner-container">
@@ -166,17 +166,13 @@ export class CatalogResults extends Component {
       </div>
     ) : null;
 
-    if (tableView === 'list') {
-      return (
-        <div className="table-wrapper">
-          <ResultListTable actionElement={actionElement} />
-          {spinner}
-        </div>
-      );
-    } else {
-      // Currently only support for the "list" view. TODO: add "card" view and the ability to toggle them.
-      // return <ResultCardTable />;
-    }
+    // Currently only support for the "list" view. TODO: add ResultCardTable for "card" view.
+    return (
+      <div className="table-wrapper">
+        <ResultListTable actionElement={actionElement} />
+        {spinner}
+      </div>
+    );
   }
 
   // EN-18329: Hide the Asset Inventory button when on "My Assets" or "Shared to Me" tabs.
@@ -189,6 +185,7 @@ export class CatalogResults extends Component {
 
   renderFooter() {
     const {
+      activeTab,
       fetchingResults,
       pageNumber,
       pageSize,
@@ -285,6 +282,7 @@ CatalogResults.propTypes = {
 };
 
 CatalogResults.defaultProps = {
+  actionElement: ActionDropdown,
   allFilters: {},
   baseFilters: {},
   currentQuery: '',

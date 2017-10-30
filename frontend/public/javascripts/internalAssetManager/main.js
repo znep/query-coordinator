@@ -8,10 +8,11 @@ import airbrake from 'common/airbrake';
 import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
-import ActionDropdown from 'common/components/AssetBrowser/components/action_dropdown';
 import AssetBrowser from 'common/components/AssetBrowser';
-import FeedbackPanel from 'common/components/AssetBrowser/components/feedback_panel';
+import { FeedbackPanel } from 'common/components/AssetBrowser/components';
+import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import reducer from 'common/components/AssetBrowser/reducers';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 
 const middleware = [thunk];
 
@@ -25,11 +26,23 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
+const tabs = {
+  [constants.MY_ASSETS_TAB]: {
+    component: ResultsAndFilters
+  },
+  [constants.SHARED_TO_ME_TAB]: {
+    component: ResultsAndFilters
+  },
+  [constants.ALL_ASSETS_TAB]: {
+    component: ResultsAndFilters
+  }
+};
+
 const assetBrowser = (
   <AssetBrowser
-    actionElement={ActionDropdown}
     showFilters
-    showSearchField />
+    showSearchField
+    tabs={tabs} />
 );
 
 ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-asset-browser'));

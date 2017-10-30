@@ -65,6 +65,6 @@ export const updateQueryString = ({ getState, shouldClearSearch = false }) => {
   }
 };
 
-export const getQueryParameter = ({ key, defaultValue }) => {
+export const getQueryParameter = (key, defaultValue) => {
   return _.get(url.parse(window.location.href, true), `query.${key}`, defaultValue);
 };

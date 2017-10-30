@@ -10,7 +10,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowSource, params }) => {
   let sourceId;
 
   const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
-  const { output_schema_id: outputSchemaId } = revision;
+  const { output_schema_id: outputSchemaId, blob_id: blobId } = revision;
   const outputSchema = entities.output_schemas[outputSchemaId];
 
   // can't just do !!outputSchemaId because it could be 0 possibly?
@@ -26,6 +26,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowSource, params }) => {
   return {
     atShowSource,
     sourceId,
+    blobId,
     outputSchemaId,
     inputSchemaId
   };

@@ -16,48 +16,44 @@ export class Header extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'renderTab');
+    _.bindAll(this, 'renderTabByKey');
   }
 
-  // See ../lib/constants.js for tabName values
-  renderTab(tabName, text) {
-    if (_(this.props.tabsToHide).includes(tabName)) return;
+  renderTabByKey(tab) {
+    const { activeTab, changeTab } = this.props;
 
-    const activeClass = (tabName === this.props.activeTab) ? 'active' : '';
+    const scope = 'shared.asset_browser.header.asset_tabs';
+    const displayText = I18n.t(_.snakeCase(tab), { scope });
+    const tabClasses = classNames('asset-tab', _.kebabCase(tab), {
+      'active': tab === activeTab
+    });
+
+    const handleTabClick = (e) => {
+      e.preventDefault();
+      changeTab(tab);
+    };
 
     return (
       <a
+        key={tab}
         href="#"
-        className={`asset-tab ${_.kebabCase(tabName)} ${activeClass}`}
-        onClick={() => this.props.changeTab(tabName)}
-        onKeyDown={handleEnter(() => this.props.changeTab(tabName), true)}>
-        {text}
+        className={tabClasses}
+        onClick={handleTabClick}
+        onKeyDown={handleEnter(() => changeTab(tab), true)}>
+        {displayText}
       </a>
     );
   }
 
   render() {
-    const { isMobile, showAssetCounts } = this.props;
-    const rights = _.get(window.serverConfig, 'currentUser.rights');
-
-    const allAssetsTab = _.includes(rights, 'can_see_all_assets_tab_siam') ?
-      this.renderTab(ALL_ASSETS_TAB, I18n.t('shared.asset_browser.header.asset_tabs.all_assets')) : null;
-    const myAssetsTab = this.renderTab(
-      MY_ASSETS_TAB, I18n.t('shared.asset_browser.header.asset_tabs.my_assets')
-    );
-    const sharedToMeTab = this.renderTab(
-      SHARED_TO_ME_TAB, I18n.t('shared.asset_browser.header.asset_tabs.shared_to_me')
-    );
+    const { isMobile, showAssetCounts, tabs } = this.props;
+    const headerClassnames = classNames('header', { 'mobile': isMobile });
 
     const assetTabs = (
       <div className="asset-tabs">
-        {myAssetsTab}
-        {sharedToMeTab}
-        {allAssetsTab}
+        {_.keys(tabs).map((tab) => this.renderTabByKey(tab))}
       </div>
     );
-
-    const headerClassnames = classNames('header', { 'mobile': isMobile });
 
     return (
       <div className={headerClassnames}>
@@ -72,11 +68,8 @@ export class Header extends Component {
 Header.propTypes = {
   activeTab: PropTypes.string.isRequired,
   changeTab: PropTypes.func.isRequired,
-  isMobile: PropTypes.bool.isRequired
-};
-
-Header.defaultProps = {
-  tabsToHide: []
+  isMobile: PropTypes.bool.isRequired,
+  tabs: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({

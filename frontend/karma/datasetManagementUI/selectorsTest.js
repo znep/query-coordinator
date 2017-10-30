@@ -346,4 +346,42 @@ describe('Selectors', () => {
       assert.equal(latestOutputSchema.id, 1);
     });
   });
+
+  describe('currentBlobSource', () => {
+    it('returns the source set at blob_id', () => {
+      const entities = {
+        revisions: {
+          0: { id: 0, blob_id: 1, revision_seq: 0}
+        },
+        sources: {
+          1: { id: 30 },
+          2: { id: 2 }
+        }
+      };
+
+      assert.deepEqual(Selectors.currentBlobSource(entities, 0), { id: 30 })
+    });
+
+
+    it('returns undefined if there are no sources', () => {
+      const entities = {
+        revisions: {
+          0: { id: 0 }
+        },
+        sources: {}
+      };
+      assert.equal(Selectors.currentBlobSource(entities), undefined);
+    });
+
+    it('returns undefined if theRevision.blob_id is null', () => {
+      const entities = {
+        revisions: {
+          0: { id: 0, blob_id: null }
+        },
+        sources: { id: 30 }
+      };
+      assert.equal(Selectors.currentBlobSource(entities), undefined);
+    });
+
+  });
 });

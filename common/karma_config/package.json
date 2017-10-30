@@ -8,7 +8,7 @@
     "build": "webpack",
     "prebuild": "rimraf dist",
     "check-dependencies": "check-dependencies",
-    "lint": "eslint --ignore-path ../.eslintignore -c ../.eslintrc.json ../",
+    "lint": "NODE_PATH=`pwd`/node_modules eslint --ignore-path ../.eslintignore -c ../.eslintrc.js ../",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "karma start karma.conf.js -v --singleRun false",
     "watch-browser": "karma start karma.conf.js -v --singleRun false --browsers Chrome"

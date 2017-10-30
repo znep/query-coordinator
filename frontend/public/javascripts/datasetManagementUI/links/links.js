@@ -31,6 +31,8 @@ export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
+export const showBlobPreview = (params, blobId) => `${revisionBase(params)}/sources/${blobId}/preview`;
+
 export const showParseOptions = params => {
   const { sourceId, inputSchemaId, outputSchemaId } = params;
   return (

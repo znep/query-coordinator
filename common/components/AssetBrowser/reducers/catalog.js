@@ -7,9 +7,9 @@ const defaultOrder = {
   value: 'lastUpdatedDate'
 };
 
-const order = _.isEmpty(getQueryParameter({ key: 'orderColumn' })) ? defaultOrder : {
-  ascending: getQueryParameter({ key: 'orderDirection' }) === 'asc',
-  value: getQueryParameter({ key: 'orderColumn' })
+const order = _.isEmpty(getQueryParameter('orderColumn')) ? defaultOrder : {
+  ascending: getQueryParameter('orderDirection') === 'asc',
+  value: getQueryParameter('orderColumn')
 };
 
 const getInitialState = () => _.merge({
@@ -18,7 +18,7 @@ const getInitialState = () => _.merge({
   fetchingResultsError: false,
   initialResultsFetched: false,
   order,
-  pageNumber: parseInt(getQueryParameter({ key: 'page', defaultValue: 1 })),
+  pageNumber: parseInt(getQueryParameter('page', 1)),
   results: [],
   resultSetSize: 0
 }, _.get(window, 'initialState.catalog'));

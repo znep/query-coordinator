@@ -19,6 +19,7 @@ class ApprovalsController < AdministrationController
       :initial_tab => 'myQueue',
       :filters_enabled => true
     }
+    @approvers = User.find_with_right('configure_approvals')
   end
 
   private

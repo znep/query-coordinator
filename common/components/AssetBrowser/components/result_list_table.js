@@ -20,8 +20,8 @@ export class ResultListTable extends Component {
   }
 
   onColumnHeaderClick(columnName) {
-    // Sorting on visibility is not supported by Cetera
-    if (!_.includes(['visibility', 'actions'], columnName)) {
+    // Sorting on the following columns is not supported by Cetera
+    if (!_.includes(['actions', 'approval_requested', 'status', 'visibility'], columnName)) {
       this.props.changeSortOrder(columnName);
     }
   }

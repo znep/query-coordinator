@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
-import 'babel-polyfill-safe';
 import _ from 'lodash';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { mapStateToProps } from 'containers/PublishButtonContainer';
 import dotProp from 'dot-prop-immutable';
 
-describe('containers/PublishingContainer', () => {
+describe('containers/PublishButtonContainer', () => {
   const state = {
     ui: {
       forms: {
@@ -17,16 +17,24 @@ describe('containers/PublishingContainer', () => {
           displayType: 'draft'
         }
       },
+      sources: {
+        '30': {
+          finished_at: 'lately'
+        }
+      },
       revisions: {
         '111': {
           id: 111,
           output_schema_id: 14,
-          revision_seq: 1
+          revision_seq: 1,
+          href: []
         }
       },
       output_schemas: {
         '14': {
-          id: 14
+          id: 14,
+          completed_at: 'now',
+          finished_at: 'now'
         }
       },
       output_columns: {},
@@ -65,6 +73,25 @@ describe('containers/PublishingContainer', () => {
       const props = mapStateToProps(newState, ownProps);
 
       assert.isFalse(props.dataSatisfied);
+    });
+
+    it('returns dataSatisfied as true if there is a blob set on the revision', () => {
+      const blob_revisions = {
+        '111': {
+          id: 111,
+          blob_id: 30,
+          revision_seq: 1,
+          href: []
+        }
+      }
+      const newState = dotProp.set(state, 'entities.revisions', blob_revisions);
+      const props = mapStateToProps(newState, ownProps);
+      assert.isTrue(props.dataSatisfied);
+    });
+
+    it('returns dataSatisfied as true if there is an output_schema set on the revision', () => {
+      const props = mapStateToProps(state, ownProps);
+      assert.isTrue(props.dataSatisfied);
     });
 
     it('returns dataSatisfied as true if usaid feature flag enabled', () => {

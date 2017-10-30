@@ -13,6 +13,7 @@ export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
 function getContentType(fileType) {
+  // TODO: boo, not true for blobs
   // Substitute .json for .geojson content type
   // because that's the only json variant we support -
   // if the user has a file `foo.json`, we'll translate

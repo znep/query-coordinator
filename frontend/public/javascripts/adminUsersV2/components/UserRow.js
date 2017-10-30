@@ -120,7 +120,7 @@ export class UserRow extends React.Component {
 
   renderActionMenu() {
     return (
-      <td>{this.renderEditControl()}</td>
+      <td className="action-menu-cell">{this.renderEditControl()}</td>
     );
   }
 

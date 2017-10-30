@@ -39,6 +39,7 @@ function Table({
   unSetRowIdentifier,
   moveLeft,
   moveRight,
+  formatColumn,
   showShortcut,
   onClickError
 }) {
@@ -67,6 +68,7 @@ function Table({
               unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
               moveLeft={() => moveLeft(outputSchema, column)}
               moveRight={() => moveRight(outputSchema, column)}
+              formatColumn={() => formatColumn(outputSchema, column)}
               columnCount={outputColumns.length} />
           )}
         </tr>
@@ -118,6 +120,7 @@ Table.propTypes = {
   apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
+  formatColumn: PropTypes.func.isRequired,
   outputColumns: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.number.isRequired,

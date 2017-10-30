@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import styles from 'styles/SetupAutomation.scss';
 import Highlight from 'react-syntax-highlight';

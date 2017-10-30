@@ -1,18 +1,25 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import geojson2wkt from 'geojson2wkt';
 import styles from './TableCell.scss';
 import classNames from 'classnames';
+
+import renderNumber from './NumberCell';
+import TextCell from './TextCell';
+import DateCell from './DateCell';
+import LocationCell from './LocationCell';
+import GeospatialCell from './GeospatialCell';
+
 
 class TableCell extends Component {
 
   shouldComponentUpdate(nextProps) {
-    return this.props.cell !== nextProps.cell;
+    return this.props.cell !== nextProps.cell || !_.isEqual(this.props.format, nextProps.format);
   }
 
   render() {
     const { cell, type, failed } = this.props;
+    const format = this.props.format || {}; // hack for undefined formats ;_;
 
     if (!cell) {
       return (<td className={styles.notYetLoaded} />);
@@ -42,7 +49,7 @@ class TableCell extends Component {
     } else {
       return (
         <td className={classNames(styles.base, { [styles.transformFailed]: failed })}>
-          <div>{renderCellValue(cell.ok, type)}</div>
+          {renderCellValue(cell.ok, type, format)}
         </td>
       );
 
@@ -50,27 +57,40 @@ class TableCell extends Component {
   }
 }
 
-function renderLocation({ latitude, longitude }) {
-  return `Location(${latitude}, ${longitude})`;
-}
-
-function renderCellValue(value, type) {
+function renderCellValue(value, type, format) {
+  const props = { value, format };
   switch (type) {
     case 'location':
-      return renderLocation(value);
+      return (<LocationCell {...props} />);
+    case 'text':
+      return (<TextCell {...props} />);
+    case 'number':
+      // This one is a little funky because there are several different
+      // classes that render numbers differently, like a CurrencyCell, PercentCell,
+      // etc, and I didn't want to mix a switch based on formats into this switch
+      // which is based on actual data types, so the switch based on formats happens
+      // in renderNumber, and it returns the correct renderer based on the formatting
+      // rules for that column
+      return renderNumber(props);
+    case 'calendar_date':
+      return (<DateCell {...props} />);
+    case 'point':
+    case 'multipoint':
+    case 'line':
+    case 'multiline':
+    case 'polygon':
+    case 'multipolygon':
+      return (<GeospatialCell {...props} />);
     default:
-      if (value.type) {
-        return geojson2wkt.convert(value);
-      } else {
-        return `${value}`;
-      }
+      return (<div>{_.toString(value)}</div>);
   }
 }
 
 TableCell.propTypes = {
   cell: PropTypes.object,
   failed: PropTypes.bool,
-  type: PropTypes.string
+  type: PropTypes.string,
+  format: PropTypes.object
 };
 
 export default TableCell;

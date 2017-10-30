@@ -2308,6 +2308,18 @@ en:
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
       start_import: Start Import
+    format_column:
+      title: "{name} display formatting"
+      right: Right
+      left: Left
+      center: Center
+      hide_thousands: Hide thousands separator
+      override_thousands: Override Thousands Separator
+      override_decimal: Override Decimal Separator
+      formatting_preview: Formatting Preview
+      specify_precision: Specify decimal precision
+      display_format: Display Format
+      alignment: Alignment
     automate_this:
       copy_code: Copy this code
       title: Set Up Automation
@@ -2375,6 +2387,7 @@ en:
         error_exists_scanning: Error found so far
         errors_exist: Errors total
         errors_exist_scanning: Errors found so far
+        formatting: Column Formatting
         ignore_column: Ignore - don't import
         ignored_column: Ignored - column won't be imported
         import_column: Import Column

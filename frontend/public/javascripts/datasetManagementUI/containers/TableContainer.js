@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter, browserHistory } from 'react-router';
 import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
+import * as ModalActions from 'reduxStuff/actions/modal';
 import { currentAndIgnoredOutputColumns } from 'selectors';
 import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
@@ -92,6 +93,13 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       dispatch(ShowActions.moveColumnToPosition(outputSchema, column, column.position + 1)).then(
         redirectToNewOutputschema(dispatch, params)
       ),
+
+    formatColumn: (outputSchema, column) =>
+      dispatch(ModalActions.showModal('FormatColumn', {
+        outputSchema,
+        column,
+        params
+      })),
 
     onClickError: (path, transform, displayState) => {
       const linkPath = DisplayState.inErrorMode(displayState, transform)

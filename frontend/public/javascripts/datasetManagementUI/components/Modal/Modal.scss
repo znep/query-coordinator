@@ -6,7 +6,8 @@
 }
 
 .errorsHelp,
-.shortcut {
+.shortcut,
+.formatColumn {
   :global {
     .modal-container {
       width: 840px;
@@ -43,7 +44,7 @@
   }
 }
 
-.shortcut {
+.shortcut, .formatColumn {
   :global {
     .modal-content {
       max-height: none;
@@ -65,6 +66,7 @@
     }
   }
 }
+
 
 .publishConfirmation {
   text-align: center;

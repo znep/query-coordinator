@@ -8,6 +8,8 @@ import PublishConfirmation from 'containers/PublishConfirmationContainer';
 import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
 import GeocodeShortcut from 'components/GeocodeShortcut/GeocodeShortcut';
 import SetupAutomation from 'containers/SetupAutomationContainer';
+import FormatColumn from 'containers/FormatColumnContainer';
+
 import styles from './Modal.scss';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
@@ -47,6 +49,13 @@ const getModalProps = (props, contentComponentName, payload) => {
         ...props,
         children: [<RowIdentifierError key={1} result={payload} />],
         className: styles.rowIdentifierError
+      };
+
+    case 'FormatColumn':
+      return {
+        ...props,
+        children: [<FormatColumn key={1} {...payload} />],
+        className: styles.formatColumn
       };
 
     case 'SetupAutomation':

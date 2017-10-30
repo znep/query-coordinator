@@ -143,6 +143,10 @@
     margin-bottom: ms(-1);
   }
 
+  .checkbox.disabled {
+    opacity: .5;
+    cursor: not-allowed !important;
+  }
   .checkbox {
     input[type=checkbox] {
       display: block;

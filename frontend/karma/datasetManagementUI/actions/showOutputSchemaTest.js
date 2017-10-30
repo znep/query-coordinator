@@ -236,8 +236,8 @@ describe('showOutputSchema actions', () => {
           },
         },
         output_columns: {
-          0: { id: 0, transform_id: 0, field_name: 'a', display_name: 'a', position: 0 },
-          1: { id: 1, transform_id: 1, field_name: 'b', display_name: 'b', position: 1 }
+          0: { id: 0, transform_id: 0, field_name: 'a', display_name: 'a', position: 0, format: {} },
+          1: { id: 1, transform_id: 1, field_name: 'b', display_name: 'b', position: 1, format: {} }
         },
         output_schema_columns: {
           '0-0': { output_schema_id: 0, output_column_id: 0 },
@@ -257,6 +257,7 @@ describe('showOutputSchema actions', () => {
           field_name: "a",
           is_primary_key: false,
           position: 0,
+          format: {},
           transform: {
             transform_expr: "`a`"
           }
@@ -267,6 +268,7 @@ describe('showOutputSchema actions', () => {
           field_name: "b",
           is_primary_key: false,
           position: 1,
+          format: {},
           transform: {
             transform_expr: "to_number(b)"
           }

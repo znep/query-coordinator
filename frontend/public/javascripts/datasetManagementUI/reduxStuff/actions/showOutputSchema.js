@@ -227,7 +227,8 @@ export function buildNewOutputColumn(outputColumn, genTransform) {
     transform: {
       transform_expr: genTransform(outputColumn)
     },
-    is_primary_key: outputColumn.is_primary_key
+    is_primary_key: outputColumn.is_primary_key,
+    format: outputColumn.format
   };
 }
 

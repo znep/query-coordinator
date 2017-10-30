@@ -21,14 +21,16 @@ class TableBody extends Component {
 
   shouldComponentUpdate(nextProps) {
     const nextStuff = {
-      columns: nextProps.columns.map(c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)),
+      columns: nextProps.columns.map(
+        c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
+      ),
       displayState: nextProps.displayState,
       apiCalls: nextProps.apiCalls
     };
 
     const currentStuff = {
       columns: this.props.columns.map(
-        c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)
+        c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
       ),
       displayState: this.props.displayState,
       apiCalls: this.props.apiCalls
@@ -60,7 +62,7 @@ class TableBody extends Component {
     }
     return rowIndices.map(rowIdx => ({
       rowIdx,
-      transforms: this.props.columns.map(column => {
+      columns: this.props.columns.map(column => {
         const transform = column.transform;
         if (column.ignored) {
           return {
@@ -72,7 +74,8 @@ class TableBody extends Component {
             ? this.props.entities.col_data[transform.id][rowIdx]
             : null;
           return {
-            id: transform.id,
+            tid: transform.id,
+            format: column.format,
             cell
           };
         }
@@ -84,13 +87,14 @@ class TableBody extends Component {
   renderNormalRow(row) {
     return (
       <tr key={row.rowIdx}>
-        {row.transforms.map((transform, offset) => {
-          const t = this.props.entities.transforms[transform.id];
+        {row.columns.map((column, offset) => {
+          const t = this.props.entities.transforms[column.tid];
           const type = t ? t.output_soql_type : null;
           const hasFailed = t ? !!t.failed_at : false;
           return (<TableCell
             key={`${row.rowIdx}-${offset}`}
-            cell={transform.cell}
+            cell={column.cell}
+            format={column.format}
             failed={hasFailed}
             type={type} />);
         })}

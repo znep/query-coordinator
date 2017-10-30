@@ -18,21 +18,21 @@ describe('components/TableCell', () => {
   });
 
   it('renders text', () => {
-    const element = shallow(<TableCell cell={{ ok: 'foobar' }} />);
+    const element = shallow(<TableCell cell={{ ok: 'foobar' }} type={'text'} />);
     assert.isTrue(element.exists());
-    assert.equal(element.find('div').text(), 'foobar');
+    assert.isTrue(element.find('TextCell').exists());
   });
 
   it('renders a boolean', () => {
-    const element = shallow(<TableCell cell={{ ok: true }} />);
+    const element = shallow(<TableCell cell={{ ok: true }} type={'boolean'} />);
     assert.isTrue(element.exists());
     assert.equal(element.find('div').text(), 'true');
   });
 
   it('renders a number', () => {
-    const element = shallow(<TableCell cell={{ ok: 42 }} />);
+    const element = shallow(<TableCell cell={{ ok: 42 }} type={'number'} />);
     assert.isTrue(element.exists());
-    assert.equal(element.find('div').text(), '42');
+    assert.isTrue(element.find('NumberCell').exists());
   });
 
   it('adds an error class when there is one', () => {
@@ -40,55 +40,16 @@ describe('components/TableCell', () => {
     assert.isTrue(element.hasClass('transformFailed'));
   });
 
-  describe('geo values', () => {
-
-    it('renders a point as WKT', () => {
-      const cellValue = {
-        ok: {
-          type: 'Point',
-          coordinates: [10, 20]
-        }
-      };
-      const element = shallow(<TableCell cell={cellValue} />);
-      assert.isTrue(element.exists());
-      assert.equal(element.find('div').text(), 'POINT(10 20)');
-    });
-
-    it('renders a multipolygon as WKT', () => {
-      const cellValue = {
-        ok: {
-          type: 'MultiPolygon',
-          coordinates: [
-            [
-              [
-                [10, 20],
-                [20, 30],
-                [30, 40],
-                [10, 20]
-              ]
-            ],
-            [
-              [
-                [50, 60],
-                [70, 80],
-                [90, 100],
-                [50, 60]
-              ]
-            ]
-          ]
-        }
-      };
-      const element = shallow(<TableCell cell={cellValue} />);
-      assert.isTrue(element.exists());
-      assert.equal(
-        element.find('div').text(),
-        'MULTIPOLYGON(((10 20, 20 30, 30 40, 10 20)), ((50 60, 70 80, 90 100, 50 60)))'
-      );
-    });
-
-    // could add tests for all geo types, but they're all handled by the GeoJSON2WKT library
-    // so at that point we're just testing the library
-
+  it('renders a geospatial cell when type=point', () => {
+    const cellValue = {
+      ok: {
+        type: 'Point',
+        coordinates: [10, 20]
+      }
+    };
+    const element = shallow(<TableCell cell={cellValue} type={'point'} />);
+    assert.isTrue(element.exists());
+    assert.isTrue(element.find('GeospatialCell').exists());
   });
 
 });

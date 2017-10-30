@@ -1,0 +1,63 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.formatContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formatColumn {
+  :global {
+    .btn-primary {
+      margin-left: 1em;
+    }
+  }
+}
+
+
+.formatter {
+  width: 50%;
+
+  form {
+    label {
+      display: block;
+    }
+    :global {
+      .dropdown-container {
+        width: 100%;
+        margin-left: 2px;
+      }
+    }
+  }
+}
+.previewer {
+  margin-left: 1em;
+}
+
+.formatPreviewWrap {
+  width: 273px;
+}
+
+.formatPreview {
+  overflow: hidden;
+  border: 1px solid $light-grey-4;
+  min-height: 420px;
+  tbody {
+    max-height: 420px;
+  }
+}
+
+.noCommas, .thousandsSeparator, .decimalSeparator {
+  composes: checkbox from global;
+}
+
+.disabled {
+  composes: disabled from global;
+}
+
+.precisionValue {
+  margin: 1em;
+  line-height: 21px;
+  vertical-align: top;
+}

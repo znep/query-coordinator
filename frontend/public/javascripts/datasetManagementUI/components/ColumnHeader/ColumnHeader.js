@@ -73,6 +73,11 @@ export class ColumnHeader extends Component {
     this.props.moveRight();
   }
 
+  onFormatColumn() {
+    if (this.isFormatDisabled()) return;
+    this.props.formatColumn();
+  }
+
   isDropColumnDisabled() {
     return this.isInProgress() || this.props.outputColumn.is_primary_key;
   }
@@ -95,6 +100,10 @@ export class ColumnHeader extends Component {
 
   isMoveRightDisabled() {
     return this.isInProgress() || this.props.outputColumn.position >= this.props.columnCount;
+  }
+
+  isFormatDisabled() {
+    return this.isInProgress() || this.props.outputColumn.ignored;
   }
 
   isInProgress() {
@@ -130,6 +139,13 @@ export class ColumnHeader extends Component {
       ];
     }
     return [
+      {
+        title: 'formatting',
+        value: 'onFormatColumn',
+        icon: 'socrata-icon-paragraph-left',
+        disabled: this.isFormatDisabled(),
+        render: DropdownWithIcon
+      },
       {
         title: 'ignore_column',
         value: 'onDropColumn',
@@ -273,6 +289,7 @@ ColumnHeader.propTypes = {
   unSetRowIdentifier: PropTypes.func.isRequired,
   moveLeft: PropTypes.func.isRequired,
   moveRight: PropTypes.func.isRequired,
+  formatColumn: PropTypes.func.isRequired,
   columnCount: PropTypes.number.isRequired,
   params: PropTypes.object.isRequired
 };

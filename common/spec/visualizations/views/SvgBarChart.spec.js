@@ -45,7 +45,7 @@ describe('SvgBarChart', () => {
 
   const multiSeriesTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null
     ],
     rows: [
       ['10', 10, 10, 10],
@@ -60,7 +60,8 @@ describe('SvgBarChart', () => {
       ['30', [null, null], [null, null], [null, null]],
       ['40', [null, null], [null, null], [null, null]],
       ['50', [null, null], [null, null], [null, null]]
-    ]
+    ],
+    columnFormats: {}
   };
 
   const zerosTestData = {
@@ -77,7 +78,7 @@ describe('SvgBarChart', () => {
 
   const oneHundredPercentStackedTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null, null
     ],
     rows: [
       ['10', 10, 10, 10, 10]
@@ -86,7 +87,7 @@ describe('SvgBarChart', () => {
 
   const oneHundredPercentNegativeStackedTestData = {
     columns: [
-      'dimension', 'measure'
+      'dimension', null, null, null, null
     ],
     rows: [
       ['10', 10, 10, -10, -10]
@@ -376,8 +377,40 @@ describe('SvgBarChart', () => {
       removeBarChart(barChart);
     });
     it('should show multiple bars', () => {
-      barChart = createBarChart();
+      // Add a series.
+      barChart = createBarChart(null, {
+        series: {
+          1: {
+            color: {
+              primary: 'gray',
+              secondary: null,
+              highlight: '#44aa00'
+            },
+            dataSource: {
+              datasetUid: 'example',
+              domain: 'example.com',
+              dimension: {
+                columnName: 'latitude',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            label: 'Series 1',
+            type: 'barChart',
+            unit: {
+              one: 'unit_one',
+              other: 'unit_other'
+            }
+          }
+        }
+      });
       barChart.chart.render(null, multiSeriesTestData);
+      assert.isTrue(barChart.chart.isMultiSeries());
       const $bars = barChart.element.find('.dimension-group:first > .bar');
       assert.equal($bars.length, 3);
     });

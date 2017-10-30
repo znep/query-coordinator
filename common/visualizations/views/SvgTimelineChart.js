@@ -17,6 +17,8 @@ import {
   LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
+import { getMeasures } from '../helpers/measure';
+
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
@@ -46,7 +48,6 @@ const RECOMMENDED_TICK_DISTANCE = 150;
 
 function SvgTimelineChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
-  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
   const self = this;
   const parseDate = d3.
     time.
@@ -69,9 +70,9 @@ function SvgTimelineChart($element, vif, options) {
   let lastRenderedStartDate;
   let lastRenderedZoomTranslateOffsetFromEnd;
   let maxYValue;
-  let measureLabels;
   let minYValue;
   let precision;
+  let measures;
   let referenceLines;
 
   _.extend(this, new SvgVisualization($element, vif, options));
@@ -166,26 +167,10 @@ function SvgTimelineChart($element, vif, options) {
   // predictibility as opposed to rendering performance).
   function mapDataTableToDataTablesBySeries(dataTable) {
     const dataTableDimensionIndex = dataTable.columns.indexOf('dimension');
-    const columns = dataTable.columns.slice(dataTableDimensionIndex + 1);
 
-    if (self.isMultiSeries()) {
-      measureLabels = columns.map((column, index) => {
-        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
+    measures = getMeasures(self, dataToRender);
 
-        if (_.isEmpty(measureColumnName)) {
-          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
-        }
-
-        const measureColumnFormat = dataTable.columnFormats[measureColumnName];
-        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
-      });
-    } else {
-      measureLabels = columns.map((column) => {
-        return self.isGrouping() ? column || noValueLabel : column;
-      });
-    }
-
-    const dataTablesBySeries = measureLabels.map((measureLabel, i) => {
+    const dataTablesBySeries = measures.map((measure, i) => {
       const dataTableMeasureIndex = dataTableDimensionIndex + 1 + i;
       const rows = dataTable.rows.map((row) => {
         return [
@@ -195,8 +180,9 @@ function SvgTimelineChart($element, vif, options) {
       });
 
       return {
-        columns: ['dimension', measureLabel],
-        rows: rows
+        columns: ['dimension', measure.tagValue],
+        rows: rows,
+        measure
       };
     });
 
@@ -405,6 +391,7 @@ function SvgTimelineChart($element, vif, options) {
 
     function renderValues() {
       dataToRenderBySeries.forEach(function(seriesData, seriesIndex) {
+        const measure = dataToRenderBySeries[seriesIndex].measure;
         const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
 
         // If we *are not* drawing a line chart, we need to draw the area fill
@@ -420,8 +407,8 @@ function SvgTimelineChart($element, vif, options) {
             // Note that temporarily, the type variant defaults to 'area' if it
             // is not set, but direction from UX is to never show a shaded area,
             // only the area's top contour. As such, we make the area itself
-            // transparent (instead of getting a color from the VIF or defaults
-            // using self.getSecondaryColorBySeriesIndex()).
+            // transparent (instead of getting a color from the VIF or via the
+            // measure palette.
             attr(
               'fill',
               'transparent'
@@ -434,6 +421,8 @@ function SvgTimelineChart($element, vif, options) {
             attr('opacity', '0.1');
         }
 
+        const color = measure.getColor();
+
         // We draw the line for all type variants of timeline chart.
         let seriesLineSvg = viewportSvg.
           select(`.series-${seriesIndex}-${seriesTypeVariant}-line`);
@@ -442,10 +431,7 @@ function SvgTimelineChart($element, vif, options) {
           attr('d', d3LineSeries[seriesIndex]).
           attr('clip-path', `url(#${d3ClipPathId})`).
           attr('fill', 'none').
-          attr(
-            'stroke',
-            getColorByVariantAndSeriesIndex('primary', seriesIndex)
-          ).
+          attr('stroke', color).
           attr('stroke-width', LINE_STROKE_WIDTH);
 
         const seriesDotsPathSvg = viewportSvg.
@@ -493,14 +479,8 @@ function SvgTimelineChart($element, vif, options) {
               d3YScale(d[seriesMeasureIndex]) :
               -100;
           }).
-          attr(
-            'fill',
-            getColorByVariantAndSeriesIndex('primary', seriesIndex)
-          ).
-          attr(
-            'stroke',
-            getColorByVariantAndSeriesIndex('primary', seriesIndex)
-          );
+          attr('fill', color).
+          attr('stroke', color);
       });
     }
 
@@ -564,7 +544,7 @@ function SvgTimelineChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measureLabels, referenceLines });
+        const legendItems = self.getLegendItems({ measures, referenceLines });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -1075,50 +1055,6 @@ function SvgTimelineChart($element, vif, options) {
       every((type) => type === 'line');
   }
 
-  function getColorByVariantAndSeriesIndex(colorVariant, seriesIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-    const usingColorPalette = _.get(
-      self.getVif(),
-      'series[0].color.palette',
-      false
-    );
-
-    function getColorFromPalette() {
-      const palette = usingColorPalette === 'custom' ?
-        self.getColorPaletteByColumnTitles(measureLabels) :
-        self.getColorPaletteBySeriesIndex(seriesIndex);
-
-      return palette[seriesIndex];
-    }
-
-    function getColorFromVif() {
-
-      switch (colorVariant) {
-
-        case 'primary':
-          return self.getPrimaryColorBySeriesIndex(seriesIndex);
-
-        case 'secondary':
-          return self.getSecondaryColorBySeriesIndex(seriesIndex);
-
-        default:
-          throw new Error(
-            `Unable to select unrecognized color variant "${colorVariant}""`
-          );
-      }
-    }
-
-    return (isGrouping) ?
-      getColorFromPalette() :
-      getColorFromVif();
-  }
-
   function getMinYValue(data, referenceLines) {
     const minMeasureValue = d3.min(data);
 
@@ -1284,13 +1220,13 @@ function SvgTimelineChart($element, vif, options) {
 
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
+        const measure = dataToRenderBySeries[seriesIndex].measure;
         const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
-        const column = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
 
         const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
           text(label).
-          css('color', getColorByVariantAndSeriesIndex('primary', seriesIndex));
+          css('color', measure.getColor());
 
         let datumValueString;
 

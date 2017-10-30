@@ -1,10 +1,12 @@
-const utils = require('common/js_utils');
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
 const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('common/i18n').default;
+
+import { getMeasures } from '../helpers/measure';
+import Palette, { COLOR_VARY_BY } from '../helpers/palettes';
 
 const MINIMUM_PIE_CHART_WIDTH = 100;
 const MAX_HORIZONTAL_LEGEND_SIZE = 250;
@@ -40,8 +42,10 @@ function SvgPieChart($element, vif, options) {
   let outerWidth = 0; // width of pie
   let svg; // main svg element
   let color; // renderData and renderLegend uses this
-  let colorPalette;
   let centerDot; // hidden circle at the center of pie
+  let pieData; // Result of D3's pie chart helper.
+  let dimensionIndex;
+  let legend;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -75,9 +79,11 @@ function SvgPieChart($element, vif, options) {
 
   this.invalidateSize = () => {
     if ($chartElement && dataToRender) {
-      // Not re-rendering whole chart just resizing and repositioning
-      resizePie();
-      resizeLegend();
+      renderPie();
+      // TODO D3 is smart enough to not rerender things that don't need to be rerendered.
+      // A separate resizeLegend is premature optimization - we can simplify and avoid
+      // bugs by having all rendering happen inside of renderLegend().
+      resizeLegend(legend);
     }
   };
 
@@ -113,12 +119,19 @@ function SvgPieChart($element, vif, options) {
     determineSize();
 
     // creating pie
-    let pie = d3.layout.pie().value(d => d[1]).sort(null);
+    pieData = d3.layout.pie().value(d => d[1]).sort(null);
     let total = dataToRender[0].rows.map(d => d[1]).reduce((acc, d) => acc + d, 0);
 
     // not compatible with multiple series
-    const dimensionIndex = dataToRender[0].columns.indexOf('dimension');
+    const measures = getMeasures(self, dataToRender[0]);
+    dimensionIndex = dataToRender[0].columns.indexOf('dimension');
     const measureIndex = dataToRender[0].columns.indexOf('measure');
+    const measure = measures[0];
+    measure.palette = new Palette({
+      vif: self.getVif(),
+      seriesIndex: measure.seriesIndex,
+      colorVaryBy: COLOR_VARY_BY.DIMENSION
+    });
 
     // create main svg element
     // append a "g" to group slices
@@ -130,19 +143,19 @@ function SvgPieChart($element, vif, options) {
       attr('class', 'slices');
 
     // Color from custom palette
-    let columnLabels = dataToRender[0].rows.map((val) => val[0]);
-    colorPalette = getColorFromPalette(columnLabels);
-    color = (index) => d3.rgb(colorPalette[index]);
+    color = (datum, index) => {
+      return d3.rgb(measure.getColor(index, datum.data[dimensionIndex]));
+    };
 
     // pie slices
     let arcs = g.datum(dataToRender[0].rows).selectAll('g.slice-group').
-      data(pie).
+      data(pieData).
       enter().
       append('svg:g').
       attr('class', 'slice-group').
       attr('data-index', (d, i) => i);
 
-    arcs.
+    let arcPaths = arcs.
       append('path').
       attr('class', 'slice').
       attr('data-index', (d, i) => i).
@@ -155,8 +168,7 @@ function SvgPieChart($element, vif, options) {
           (100 * d.data[measureIndex]) / total :
           null;
       }).
-      /* eslint-enable no-unused-vars */
-      attr('fill', (d, i) => color(i));
+      attr('fill', color);
 
     // invisible dot at the center of pie
     // hack solution to find "true" center of pie chart.
@@ -165,7 +177,7 @@ function SvgPieChart($element, vif, options) {
       attr('r', 0.1).
       attr('fill-opacity', 0);
 
-    attachPieEvents();
+    attachPieEvents(arcs);
 
     if (self.getShowLegend(true)) {
       renderLegend();
@@ -175,24 +187,63 @@ function SvgPieChart($element, vif, options) {
       renderArcLabels(self.getShowValueLabelsAsPercent());
     }
 
-    resizePie();
-  }
+    determineSize();
 
-  /**
-   * Get Pie Colors
-   */
-  function getColorFromPalette(columnLabels) {
-    const usingColorPalette = _.get(
-      self.getVif(),
-      'series[0].color.palette',
-      false
-    );
+    svg.
+      attr('width', width).
+      attr('height', height);
 
-    const palette = usingColorPalette === 'custom' ?
-      self.getColorPaletteByColumnTitles(columnLabels) :
-      self.getColorPaletteBySeriesIndex(0);
+    // pie radius
+    const radius = outerWidth / 2;
 
-    return palette;
+    let leftOffset;
+    let topOffset;
+
+    if (isHorizontalLayout()) {
+      leftOffset = horizontalLayoutOffsets().pieLeft;
+      topOffset = horizontalLayoutOffsets().pieTop;
+    } else {
+      leftOffset = verticalLayoutOffsets().pieLeft;
+      topOffset = verticalLayoutOffsets().pieTop;
+    }
+
+    svg.select('g.slices').
+      attr(
+        'transform',
+        `translate(${leftOffset}, ${topOffset})`
+      );
+
+    // pie arc
+    let arc = getArc(radius);
+
+    // flyout's bigger arc
+    let textLabelArc = getArc(radius * MARGINS.textLabelArcMultiplier);
+
+    // apply arcs
+    arcPaths.
+      attr('d', arc);
+
+    // align labels
+    // use textLabelArc for positioning
+    svg.selectAll('g.slice-group text').
+      attr('transform', (d) => `translate(${textLabelArc.centroid(d)})`);
+
+    const arcRadius = arc.outerRadius()();
+
+    // Show/hide labels according to length of each slice
+    const labelVisibilityThreshold =
+      self.getShowValueLabelsAsPercent()
+        ? PERCENT_LABEL_THRESHOLD
+        : VALUE_LABEL_THRESHOLD;
+
+    svg.selectAll('g.slice-group path').
+      each(function(d) {
+        const length = calculateArcLength(arcRadius, d.startAngle, d.endAngle);
+        const textEl = d3.select(this.parentNode).select('text');
+        const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
+
+        textEl.style('visibility', visibility);
+      });
   }
 
   /**
@@ -200,9 +251,10 @@ function SvgPieChart($element, vif, options) {
    */
   function renderLegend() {
     // create legend rows with a domain created with data and decorate rows
-    const domain = dataToRender[0].rows.map((val, i) => i);
-    const legend = svg.selectAll('.legend').
-      data(domain).
+    legend = svg.
+      datum(dataToRender[0].rows).
+      selectAll('.legend').
+      data(pieData).
       enter().
       append('g').
       attr('class', 'legend-row');
@@ -214,8 +266,9 @@ function SvgPieChart($element, vif, options) {
       style('fill', color).
       style('stroke', color);
 
-    const getText = index => {
-      const columnValue = _.get(dataToRender, `0.rows.${index}.0`);
+    const getText = (datum) => {
+      const data = datum.data;
+      const columnValue = _.get(data, dimensionIndex);
 
       if (_.isNil(columnValue)) {
         return noValueLabel;
@@ -234,8 +287,8 @@ function SvgPieChart($element, vif, options) {
       attr('data-text', getText).
       text(getText);
 
-    attachLegendEvents();
-    resizeLegend();
+    attachLegendEvents(legend);
+    resizeLegend(legend);
   }
 
   /**
@@ -270,81 +323,16 @@ function SvgPieChart($element, vif, options) {
   }
 
   /**
-   * Resize and reposition pie
-   */
-  function resizePie() {
-    determineSize();
-
-    svg.
-      attr('width', width).
-      attr('height', height);
-
-    // pie radius
-    const radius = outerWidth / 2;
-
-    let leftOffset;
-    let topOffset;
-
-    if (isHorizontalLayout()) {
-
-      leftOffset = horizontalLayoutOffsets().pieLeft;
-      topOffset = horizontalLayoutOffsets().pieTop;
-    } else {
-
-      leftOffset = verticalLayoutOffsets().pieLeft;
-      topOffset = verticalLayoutOffsets().pieTop;
-    }
-
-    svg.select('g.slices').
-      attr(
-        'transform',
-        `translate(${leftOffset}, ${topOffset})`
-      );
-
-    // pie arc
-    let arc = getArc(radius);
-
-    // flyout's bigger arc
-    let textLabelArc = getArc(radius * MARGINS.textLabelArcMultiplier);
-
-    // apply arcs
-    svg.selectAll('path').
-      attr('d', arc);
-
-    // align labels
-    // use textLabelArc for positioning
-    svg.selectAll('g.slice-group text').
-      attr('transform', (d) => `translate(${textLabelArc.centroid(d)})`);
-
-    const arcRadius = arc.outerRadius()();
-
-    // Show/hide labels according to length of each slice
-    const labelVisibilityThreshold =
-      self.getShowValueLabelsAsPercent()
-        ? PERCENT_LABEL_THRESHOLD
-        : VALUE_LABEL_THRESHOLD;
-
-    svg.selectAll('g.slice-group path').
-      each(function(d) {
-        const length = calculateArcLength(arcRadius, d.startAngle, d.endAngle);
-        const textEl = d3.select(this.parentNode).select('text');
-        const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
-
-        textEl.style('visibility', visibility);
-      });
-  }
-
-  /**
    * Resize and reposition legend
    */
-  function resizeLegend() {
+  function resizeLegend(legend) {
 
     if (isHorizontalLayout()) {
 
       svg.selectAll('.legend-row').
         attr(
           'transform',
-          (index) => {
+          (d, index) => {
 
             return `translate(${horizontalLayoutOffsets().legendLeft}, ` +
               `${horizontalLayoutOffsets().legendTop(index)})`;
@@ -562,10 +550,10 @@ function SvgPieChart($element, vif, options) {
   /**
    * Attach pie events
    */
-  function attachPieEvents() {
+  function attachPieEvents(arcs) {
 
     // bind flyout to slices
-    svg.selectAll('.slice-group').
+    arcs.
       on('mouseover', (d, index) => {
         const pathElement = svg.select(`.slice[data-index="${index}"]`)[0][0];
 
@@ -631,18 +619,13 @@ function SvgPieChart($element, vif, options) {
   /**
    * Attach legend events
    */
-  function attachLegendEvents() {
-
+  function attachLegendEvents(legend) {
     // bind flyout to legend rows
-    svg.selectAll('.legend-row').
+    legend.
       on('mouseover', (d, index) => {
-        const pathElement = svg.select(`.slice-group[data-index="${index}"]`);
-        // delegate event to svg path
-        pathElement.on('mouseover').call(
-          pathElement.node(),
-          pathElement.datum(),
-          index
-        );
+        // Delegate to slice.
+        var evt = new MouseEvent('mouseover');
+        svg.node().querySelector(`.slice-group[data-index="${index}"]`).dispatchEvent(evt);
       }).
       on('mouseleave', hideFlyout);
   }

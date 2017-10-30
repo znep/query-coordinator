@@ -19,8 +19,8 @@ export function getColumnFormats(columns) {
 
 
 // Formats a value from the dataset for rendering within the chart as HTML.
-export function formatValueHTML(value, column, dataToRender, forceHumane = false) {
-  const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
+export function formatValueHTML(value, columnName, dataToRender, forceHumane = false) {
+  const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${columnName}`, {}));
 
   if (!formatInfo.renderTypeName) {
     formatInfo.renderTypeName = 'number';

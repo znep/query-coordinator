@@ -110,8 +110,6 @@ This method will return the series index of the first series for which the label
 ###### `<visualization>.getTypeVariantBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getUnitOneBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getUnitOtherBySeriesIndex(seriesIndex)`
-###### `<visualization>.getPrimaryColorBySeriesIndex(seriesIndex)`
-###### `<visualization>.getSecondaryColorBySeriesIndex(seriesIndex)`
 ###### `<visualization>.getHighlightColorBySeriesIndex(seriesIndex)`
 These methods all retrieve specific configuration values from the current vif. Since all of these properties can vary by series, the `seriesIndex` argument is required.
 
@@ -252,3 +250,13 @@ The FlyoutRenderer should be instantiated by the host application to handle all 
   dark: true
 }
 ```
+
+## Appendix: The Palette class
+Built-in and custom palettes are handled centrally by the private `Palette` class and its internal helper
+classes `StandardPalette` and `CustomPalette`. They understand how to look up custom colors based on measure
+names or grouping values, and encapsulate color rotation schemes.
+
+## Appendix: The Measure class
+Each SvgVisualization uses instances of the private `Measure` class to keep track of the measures to be
+displayed. Along with `getMeasures()`, this centralizes coloration schemes, palette selection and label
+formatting.

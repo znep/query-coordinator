@@ -18,6 +18,8 @@ import {
   LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
+import { getMeasures } from '../helpers/measure';
+
 const MARGINS = {
   TOP: 16,
   RIGHT: 24,
@@ -74,6 +76,7 @@ function SvgHistogram($element, vif, options) {
   var d3DimensionXScale;
   var d3YScale;
   let referenceLines;
+  let measures;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -223,6 +226,7 @@ function SvgHistogram($element, vif, options) {
       ))
     );
 
+    measures = getMeasures(self, dataToRender[0]);
     referenceLines = self.getReferenceLines();
 
     var chartSvg;
@@ -481,13 +485,12 @@ function SvgHistogram($element, vif, options) {
       // index from the individual datum bound to the element.
       function getPrimaryColorOrNone() {
         var seriesIndex = this.getAttribute('data-series-index');
-        var primaryColor = self.getPrimaryColorBySeriesIndex(
-          seriesIndex
-        );
-
-        return (primaryColor !== null) ?
-          primaryColor :
-          'none';
+        // To implement this, we simply need a way of looking up measures by seriesIndex.
+        // This is easily done naively via _.find(measures, { seriesIndex });
+        // For more speed, consider caching _.indexBy(measures, 'seriesIndex');
+        // Anyway, not implemented for now because we only support one series.
+        utils.assert(seriesIndex === '0', 'Multiple series not supported in this chart yet');
+        return measures[0].getColor();
       }
 
       bucketGroupSvgs.selectAll('.column-underlay').
@@ -957,7 +960,7 @@ function SvgHistogram($element, vif, options) {
 
   function showColumnFlyout(columnElement, datum, seriesIndex) {
 
-    utils.assertIsOneOfTypes(seriesIndex, 'number');
+    utils.assert(seriesIndex === 0, 'Multiple series not supported in this chart yet');
 
     var titleHTML = bucketTitleHTML(datum);
     var label = seriesLabel(seriesIndex);
@@ -973,7 +976,7 @@ function SvgHistogram($element, vif, options) {
         );
     var $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
       text(label).
-      css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
+      css('color', measures[0].getColor());
     var $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     var $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
     var $table = $('<table>', { 'class': 'socrata-flyout-table' });

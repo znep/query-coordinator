@@ -10,15 +10,11 @@ const { FilterBar, SocrataIcon } = require('common/components');
 // Project Imports
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
-const CustomColorPaletteManager = require('../dataProviders/CustomColorPaletteManager');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
 
 // Constants
 import {
-  DEFAULT_PRIMARY_COLOR,
-  DEFAULT_SECONDARY_COLOR,
   DEFAULT_HIGHLIGHT_COLOR,
-  COLOR_PALETTES,
   AXIS_LABEL_FONT_FAMILY,
   AXIS_LABEL_FONT_SIZE,
   AXIS_LABEL_COLOR,
@@ -396,8 +392,7 @@ function SvgVisualization($element, vif, options) {
     self.$container.find('.socrata-legend-menu').click((event) => event.stopPropagation);
   };
 
-  this.getLegendItems = function({ dataTableDimensionIndex, measureLabels, referenceLines }) {
-
+  this.getLegendItems = function({ measures, referenceLines }) {
     const referenceLinesWithLabels = _.filter(referenceLines, (line) => !_.isEmpty(line.label));
     const referenceLineItems = referenceLinesWithLabels.map((line) => {
       return {
@@ -409,12 +404,12 @@ function SvgVisualization($element, vif, options) {
 
     let measureItems = [];
 
-    if (measureLabels) {
-      const measureLabelsWithLabels = _.filter(measureLabels, (label) => !_.isEmpty(label));
-      measureItems = measureLabelsWithLabels.map((label, i) => {
-        const color = self.getColor(dataTableDimensionIndex, i, measureLabels);
+    if (measures) {
+      const measuresWithLabels = _.filter(measures, (measure) => !_.isEmpty(measure.labelHtml));
+      measureItems = measuresWithLabels.map((measure) => {
+        const color = measure.getColor(vif);
         return {
-          label,
+          label: measure.labelHtml,
           color,
           dashed: false
         };
@@ -629,55 +624,6 @@ function SvgVisualization($element, vif, options) {
     }
   };
 
-  this.getPrimaryColorBySeriesIndex = function(seriesIndex) {
-    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
-      self.getVif(),
-      seriesIndex
-    );
-    const palette = _.get(
-      self.getVif(),
-      `series[${actualSeriesIndex}].color.palette`,
-      null
-    );
-
-    // If a palette is defined (and is valid) then use the series index as an
-    // index into the palette.
-    if (
-      palette !== null &&
-      COLOR_PALETTES.hasOwnProperty(palette) &&
-      _.isArray(COLOR_PALETTES[palette]) &&
-      COLOR_PALETTES[palette].length >= seriesIndex
-    ) {
-      return COLOR_PALETTES[palette][seriesIndex];
-    // Otherwise, look for an explicit primary color.
-    } else {
-
-      const primaryColor = _.get(
-        self.getVif(),
-        `series[${seriesIndex}].color.primary`
-      );
-
-      return (!_.isUndefined(primaryColor)) ?
-        primaryColor :
-        DEFAULT_PRIMARY_COLOR;
-    }
-  };
-
-  this.getSecondaryColorBySeriesIndex = function(seriesIndex) {
-    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
-      self.getVif(),
-      seriesIndex
-    );
-    const secondaryColor = _.get(
-      self.getVif(),
-      `series[${actualSeriesIndex}].color.secondary`
-    );
-
-    return (!_.isUndefined(secondaryColor)) ?
-      secondaryColor :
-      DEFAULT_SECONDARY_COLOR;
-  };
-
   this.getHighlightColorBySeriesIndex = function(seriesIndex) {
     const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
       self.getVif(),
@@ -713,74 +659,6 @@ function SvgVisualization($element, vif, options) {
       self.getVif(),
       'configuration.xAxisScalingMode',
       defaultXAxisScalingModeForChartType
-    );
-  };
-
-  this.getColor = function(dimensionIndex, measureIndex, measureLabels) {
-    utils.assertIsNumber(dimensionIndex);
-    utils.assertIsNumber(measureIndex);
-    utils.assertIsArray(measureLabels);
-
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-
-    const usingColorPalette = _.get(
-      self.getVif(),
-      `series[${self.isGrouping() ? 0 : dimensionIndex}].color.palette`,
-      false
-    );
-
-    function getColorFromPalette() {
-      const palette = usingColorPalette === 'custom' ?
-        self.getColorPaletteByColumnTitles(measureLabels) :
-        self.getColorPaletteBySeriesIndex(0);
-
-      return palette[measureIndex];
-    }
-
-    function getPrimaryColorOrNone() {
-      const primaryColor = self.getPrimaryColorBySeriesIndex(measureIndex);
-
-      return (primaryColor !== null) ?
-        primaryColor :
-        'none';
-    }
-
-    return usingColorPalette ?
-      getColorFromPalette() :
-      getPrimaryColorOrNone();
-  };
-
-  this.getColorPaletteBySeriesIndex = function(seriesIndex) {
-    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
-      self.getVif(),
-      seriesIndex
-    );
-    const colorPalette = _.get(
-      self.getVif(),
-      `series[${actualSeriesIndex}].color.palette`,
-      null
-    );
-
-    return _.get(COLOR_PALETTES, colorPalette, COLOR_PALETTES.categorical);
-  };
-
-  this.getColorPaletteByColumnTitles = function(displayedColumnTitles) {
-    const currentVizType = _.get(self.getVif(), 'series[0].type');
-    const columnName = currentVizType === 'pieChart' ?
-      _.get(self.getVif(), 'series[0].dataSource.dimension.columnName') :
-      _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-
-    const currentPalette = _.get(self.getVif(), `series[0].color.customPalette.${columnName}`);
-
-    return CustomColorPaletteManager.getDisplayedColorsFromCustomPalette(
-      displayedColumnTitles,
-      currentPalette
     );
   };
 
@@ -836,15 +714,6 @@ function SvgVisualization($element, vif, options) {
     } else {
       return value;
     }
-  };
-
-  this.getOrdinalDomainFromMeasureLabels = function(labels) {
-
-    var rg = [];
-    for (var i = 0; i < labels.length; i++) {
-      rg.push(i);
-    }
-    return rg;
   };
 
   this.getShowDimensionLabels = function() {

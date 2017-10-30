@@ -42,7 +42,8 @@ var jsLoaderBaseConfig = {
 
 function withHotModuleEntries(entry) {
   return _.mapValues(entry, function(v) {
-    return getHotModuleEntries().concat(_.castArray(v));
+    const hotModuleEntries = getHotModuleEntries().concat(_.castArray(v));
+    return ['babel-polyfill-safe', ...hotModuleEntries];
   });
 }
 

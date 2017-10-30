@@ -1,6 +1,5 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
-import 'babel-polyfill-safe';
 import App, { createRolesAdminStore } from './components/RolesAdmin';
 import forEach from 'lodash/fp/forEach';
 import getOr from 'lodash/fp/getOr';

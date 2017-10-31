@@ -134,23 +134,6 @@ export class Settings extends Component {
       );
     };
 
-    const reapprovalCheckbox = () => {
-      const checked = this.reapprovalPolicyMapping[
-        this.state.automaticApprovalConfiguration[type].reapprovalPolicy
-      ];
-
-      return (
-        <div>
-          <input
-            type="checkbox"
-            id={idFor('reapproval')}
-            name={`approval-configuration-${type}-reapprove`}
-            onChange={this.handleReapprovalPolicyChange}
-            checked={checked} />
-        </div>
-      );
-    };
-
     const iconName = (() => {
       switch (type) {
         case 'official': return 'official2';
@@ -169,12 +152,6 @@ export class Settings extends Component {
               <label className="radioLabel" htmlFor={idFor('sendToQueue')}>
                 {I18n.t('automatic_approval.send_to_my_queue', { scope })}
               </label>
-              <div className="checkboxWrapper">
-                {reapprovalCheckbox()}
-                <label htmlFor={idFor('reapproval')}>
-                  {I18n.t('automatic_approval.require_on_republish', { scope })}
-                </label>
-              </div>
             </div>
           </li>
           <li>
@@ -196,6 +173,26 @@ export class Settings extends Component {
     );
   }
 
+  renderReapprovalCheckbox() {
+    const checked = this.state.reapprovalPolicy;
+
+    return (
+      <div className="checkboxWrapper">
+        <div>
+          <input
+            type="checkbox"
+            id="approval-configuration-reapproval"
+            name="approval-configuration-reapprove"
+            onChange={this.handleReapprovalPolicyChange}
+            checked={checked} />
+        </div>
+        <label htmlFor="approval-configuration-reapproval">
+          {I18n.t('automatic_approval.require_on_republish', { scope })}
+        </label>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings">
@@ -205,6 +202,7 @@ export class Settings extends Component {
             {this.renderAutomaticApprovalConfiguration('official')}
             {this.renderAutomaticApprovalConfiguration('community')}
           </div>
+          {this.renderReapprovalCheckbox()}
           {this.renderApproverConfiguration()}
           <div className="actions">
             <button className="btn btn-sm">{I18n.t('cancel', { scope })}</button>

@@ -1,11 +1,9 @@
-import _ from 'lodash';
-
 /* eslint react/jsx-indent: 0 */
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Links from 'links/links';
@@ -43,17 +41,19 @@ export class ColumnHeader extends Component {
   onDropColumn() {
     // button is disabled but click handler still fires
     // so we need to guard against this stuff twice
-    if (this.isDropColumnDisabled()) return;
-    this.props.dropColumn();
-  }
+    if (this.isDropColumnDisabled()) {
+      return;
+    }
 
-  onAddColumn() {
-    this.props.addColumn();
+    this.props.dropColumn();
   }
 
   onRowId() {
     // guard against disabled but not actually click handler
-    if (this.isRowIdDisabled()) return;
+    if (this.isRowIdDisabled()) {
+      return;
+    }
+
     this.props.validateThenSetRowIdentifier();
   }
 
@@ -69,12 +69,16 @@ export class ColumnHeader extends Component {
   }
 
   onMoveRight() {
-    if (this.isMoveRightDisabled()) return;
+    if (this.isMoveRightDisabled()) {
+      return;
+    }
     this.props.moveRight();
   }
 
   onFormatColumn() {
-    if (this.isFormatDisabled()) return;
+    if (this.isFormatDisabled()) {
+      return;
+    }
     this.props.formatColumn();
   }
 
@@ -83,15 +87,11 @@ export class ColumnHeader extends Component {
   }
 
   isRowIdDisabled() {
-    return this.isInProgress() ||
-      this.props.outputColumn.is_primary_key ||
-      this.props.outputColumn.ignored;
+    return this.isInProgress() || this.props.outputColumn.is_primary_key || this.props.outputColumn.ignored;
   }
 
   isUnsetRowIdDisabled() {
-    return this.isInProgress() ||
-      !this.props.outputColumn.is_primary_key ||
-      this.props.outputColumn.ignored;
+    return this.isInProgress() || !this.props.outputColumn.is_primary_key || this.props.outputColumn.ignored;
   }
 
   isMoveLeftDisabled() {
@@ -114,30 +114,12 @@ export class ColumnHeader extends Component {
     return false;
   }
 
-
   optionsFor() {
     const column = this.props.outputColumn;
     if (column.transform && column.transform.failed_at) {
       return [];
     }
 
-    if (column.ignored) {
-      return [
-        {
-          title: 'import_column',
-          value: 'onAddColumn',
-          icon: 'socrata-icon-plus3',
-          render: DropdownWithIcon
-        },
-        {
-          title: 'set_row_id',
-          value: 'onRowId',
-          icon: 'socrata-icon-id',
-          disabled: true,
-          render: DropdownWithIcon
-        }
-      ];
-    }
     return [
       {
         title: 'formatting',
@@ -147,7 +129,7 @@ export class ColumnHeader extends Component {
         render: DropdownWithIcon
       },
       {
-        title: 'ignore_column',
+        title: 'drop_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
         disabled: this.isDropColumnDisabled(),
@@ -283,7 +265,6 @@ ColumnHeader.propTypes = {
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
   canTransform: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   unSetRowIdentifier: PropTypes.func.isRequired,
@@ -294,4 +275,4 @@ ColumnHeader.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export default withRouter(ColumnHeader);
+export default ColumnHeader;

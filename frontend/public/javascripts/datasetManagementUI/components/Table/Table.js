@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ColumnHeader from 'components/ColumnHeader/ColumnHeader';
+import ColumnHeader from 'containers/ColumnHeaderContainer';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
@@ -31,49 +31,30 @@ function Table({
   outputSchema,
   outputColumns,
   displayState,
-  apiCallsByColumnId,
-  updateColumnType,
-  addColumn,
-  dropColumn,
-  validateThenSetRowIdentifier,
-  unSetRowIdentifier,
-  moveLeft,
-  moveRight,
-  formatColumn,
   showShortcut,
   onClickError
 }) {
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const showFlyouts = true;
   const numRowErrors = inputSchema.num_row_errors;
-  const canTransform = (
-    entities.sources[inputSchema.source_id] &&
-    !entities.sources[inputSchema.source_id].failed_at
-  );
+  const canTransform =
+    entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
+
   return (
     <table className={styles.table}>
       <thead>
         <tr>
-          {outputColumns.map(column =>
+          {outputColumns.map(column => (
             <ColumnHeader
               key={column.id}
               canTransform={canTransform}
               outputSchema={outputSchema}
               outputColumn={column}
-              updateColumnType={updateColumnType}
-              activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
-              addColumn={() => addColumn(outputSchema, column)}
-              dropColumn={() => dropColumn(outputSchema, column)}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
-              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
-              moveLeft={() => moveLeft(outputSchema, column)}
-              moveRight={() => moveRight(outputSchema, column)}
-              formatColumn={() => formatColumn(outputSchema, column)}
               columnCount={outputColumns.length} />
-          )}
+          ))}
         </tr>
         <tr className={styles.columnStatuses}>
-          {outputColumns.map(column =>
+          {outputColumns.map(column => (
             <TransformStatus
               key={column.id}
               path={path}
@@ -86,14 +67,15 @@ function Table({
               showShortcut={showShortcut}
               flyouts={showFlyouts}
               onClickError={() => onClickError(path, column.transform, displayState)} />
-          )}
+          ))}
         </tr>
-        {numRowErrors > 0 &&
+        {numRowErrors > 0 && (
           <RowErrorsLink
             path={path}
             displayState={displayState}
             numRowErrors={numRowErrors}
-            inRowErrorMode={inRowErrorMode} />}
+            inRowErrorMode={inRowErrorMode} />
+        )}
       </thead>
       <TableBody
         entities={entities}
@@ -109,18 +91,9 @@ Table.propTypes = {
   path: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
-  dropColumn: PropTypes.func.isRequired,
-  validateThenSetRowIdentifier: PropTypes.func.isRequired,
-  unSetRowIdentifier: PropTypes.func.isRequired,
-  moveLeft: PropTypes.func.isRequired,
-  moveRight: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
-  apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
-  formatColumn: PropTypes.func.isRequired,
   outputColumns: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.number.isRequired,

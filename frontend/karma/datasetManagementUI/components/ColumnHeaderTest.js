@@ -18,6 +18,8 @@ describe('components/ColumnHeader', () => {
   };
 
   const defaultProps = {
+    canTransform: true,
+    columnCount: 1,
     outputSchema: {
       id: 52
     },
@@ -34,8 +36,11 @@ describe('components/ColumnHeader', () => {
     },
     activeApiCallInvolvingThis: false,
     updateColumnType: _.noop,
-    addColumn: _.noop,
     dropColumn: _.noop,
+    unSetRowIdentifier: _.noop,
+    moveLeft: _.noop,
+    moveRight: _.noop,
+    formatColumn: _.noop,
     validateThenSetRowIdentifier: _.noop,
     showShortcut: _.noop,
     params: testParams
@@ -85,33 +90,6 @@ describe('components/ColumnHeader', () => {
     assert.isAtLeast(dropdown.find('.socrata-icon-eye-blocked').length, 1);
 
     assert.equal(dropdown.find('.socrata-icon-add').length, 0);
-  });
-
-  it('renders an Add Column button when ignored', () => {
-    const props = {
-      ...defaultProps,
-      outputColumn: {
-        ...defaultProps.outputColumn,
-        transform: {
-          output_soql_type: 'text'
-        },
-        inputColumns: [{
-          soql_type: 'text'
-        }],
-        ignored: true
-      },
-      updateColumnType: _.noop,
-      addColumn: _.noop,
-      dropColumn: _.noop
-    };
-
-    const component = shallow(<ColumnHeader {...props} />);
-
-    const dropdown = component.find('Dropdown').dive().find('Picklist').dive();
-
-    assert.equal(dropdown.find('.socrata-icon-eye-blocked').length, 0);
-
-    assert.equal(dropdown.find('.socrata-icon-plus3').length, 1);
   });
 
   // testing fix for EN-12896
@@ -177,8 +155,6 @@ describe('components/ColumnHeader', () => {
       };
 
       const element = document.createElement('tr');
-      console.log(withGeoInput.outputColumn.inputColumns[0])
-
 
       const component = shallow(<ColumnHeader {...withGeoInput} />);
 

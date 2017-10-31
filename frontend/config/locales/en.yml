@@ -2399,6 +2399,7 @@ en:
         move_left: Move Left
         can_geocode: Data in this column can be geocoded
         click_for_options: Click for more options
+        drop_column: Remove column
         type_display_names:
           checkbox: True/False
           date: Date & Time (with timezone)

@@ -95,15 +95,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2017-03-07T19:24:41.000Z",
                     "createdAt" : "2017-03-07T19:08:21.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -239,15 +230,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2017-03-07T19:24:41.000Z",
                     "createdAt" : "2017-03-07T19:08:21.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1616,15 +1598,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2017-03-07T19:24:41.000Z",
                     "createdAt" : "2017-03-07T19:08:21.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1764,15 +1737,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2017-03-07T19:24:41.000Z",
                     "createdAt" : "2017-03-07T19:08:21.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,

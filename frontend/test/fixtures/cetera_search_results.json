@@ -5,12 +5,6 @@
       "resource" :
       {
         "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
-        "view_count" :
-        {
-          "page_views_last_week" : 687,
-          "page_views_total" : 71629,
-          "page_views_last_month" : 2944
-        },
         "updatedAt" : "2016-02-23T19:15:44.434000",
         "id" : "3k2p-39jp",
         "createdAt" : "2010-10-08T09:53:37.670000",
@@ -52,12 +46,6 @@
       "resource" :
       {
         "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
-        "view_count" :
-        {
-          "page_views_last_week" : 687,
-          "page_views_total" : 71629,
-          "page_views_last_month" : 2944
-        },
         "updatedAt" : "2016-02-23T19:15:44.434000",
         "id" : "3k2p-39jp",
         "createdAt" : "2010-10-08T09:53:37.670000",
@@ -99,12 +87,6 @@
       "resource" :
       {
         "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
-        "view_count" :
-        {
-          "page_views_last_week" : 687,
-          "page_views_total" : 71629,
-          "page_views_last_month" : 2944
-        },
         "updatedAt" : "2016-02-23T19:15:44.434000",
         "id" : "3k2p-39jp",
         "createdAt" : "2010-10-08T09:53:37.670000",
@@ -146,12 +128,6 @@
       "resource" :
       {
         "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
-        "view_count" :
-        {
-          "page_views_last_week" : 687,
-          "page_views_total" : 71629,
-          "page_views_last_month" : 2944
-        },
         "updatedAt" : "2016-02-23T19:15:44.434000",
         "id" : "3k2p-39jp",
         "createdAt" : "2010-10-08T09:53:37.670000",
@@ -193,12 +169,6 @@
       "resource" :
       {
         "description" : "This dataset includes sales data for fleet equipment that was sold in the current and previous two years. This dataset does not include sales data for Seattle City Light (SCL) fleet equipment.",
-        "view_count" :
-        {
-          "page_views_last_week" : 652,
-          "page_views_total" : 51894,
-          "page_views_last_month" : 3158
-        },
         "updatedAt" : "2016-01-28T00:57:00.157000",
         "id" : "y6ef-jf2w",
         "createdAt" : "2014-02-06T08:40:51.513000",

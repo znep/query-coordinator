@@ -4,7 +4,7 @@ const svgFontPath = path.resolve(storytellerRoot, '../common/resources/fonts/svg
 const { getStyleguideIncludePaths } = require(path.resolve(storytellerRoot, '../common/webpack/shared_config'));
 
 function withExtraBabelPlugins(extraPlugins) {
-  const babelPlugins = ['babel-plugin-transform-object-rest-spread'].concat(extraPlugins || [])
+  const babelPlugins = ['babel-plugin-transform-class-properties'].concat(extraPlugins || [])
 
   return {
     entry: {
@@ -40,7 +40,7 @@ function withExtraBabelPlugins(extraPlugins) {
           query: {
             // Manually resolve these plugins and presets to work around
             // webpack require path issues.
-            presets: ['babel-preset-es2015', 'babel-preset-react'].map(require.resolve),
+            presets: ['babel-preset-stage-3', 'babel-preset-es2015', 'babel-preset-react'].map(require.resolve),
             plugins: babelPlugins.map(require.resolve)
           }
         },

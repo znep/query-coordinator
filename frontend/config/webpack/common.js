@@ -97,7 +97,7 @@ function getSvgAndFontLoaders() {
 }
 
 function getBabelLoader(extraPlugins = []) {
-  const babelPlugins = [ 'babel-plugin-transform-object-rest-spread', 'react-hot-loader/babel' ].concat(extraPlugins);
+  const babelPlugins = [ 'babel-plugin-transform-class-properties', 'react-hot-loader/babel' ].concat(extraPlugins);
 
   return _.extend({}, jsLoaderBaseConfig, {
     loader: 'babel',
@@ -105,6 +105,7 @@ function getBabelLoader(extraPlugins = []) {
       // Manually resolve these plugins and presets to work around
       // webpack require path issues.
       presets: [
+        'babel-preset-stage-3',
         'babel-preset-es2015',
         'babel-preset-react'
       ].map(require.resolve),

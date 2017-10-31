@@ -44,15 +44,6 @@ export default {
               'recordid',
               'airtemperature'
             ],
-            'view_count' :
-            {
-              'page_views_total' : 189175,
-              'page_views_total_log' : 17.52936954579258,
-              'page_views_last_week' : 22,
-              'page_views_last_week_log' : 4.523561956057013,
-              'page_views_last_month_log' : 6.066089190457772,
-              'page_views_last_month' : 66
-            },
             'updatedAt' : '2017-05-16T23:24:39.000Z'
           },
           'classification' :
@@ -184,15 +175,6 @@ export default {
               'incident_location'
             ],
             'id' : '3k2p-39jp',
-            'view_count' :
-            {
-              'page_views_total' : 115504,
-              'page_views_total_log' : 16.817595779057132,
-              'page_views_last_week_log' : 8.614709844115207,
-              'page_views_last_week' : 391,
-              'page_views_last_month_log' : 10.711666973564347,
-              'page_views_last_month' : 1676
-            },
             'updatedAt' : '2017-05-16T23:25:56.000Z'
           },
           'classification' :
@@ -241,15 +223,6 @@ export default {
             'type' : 'dataset',
             'updatedAt' : '2017-03-30T15:49:30.000Z',
             'createdAt' : '2014-02-06T16:40:51.000Z',
-            'view_count' :
-            {
-              'page_views_last_week' : 500,
-              'page_views_last_month' : 2076,
-              'page_views_total' : 88186,
-              'page_views_last_week_log' : 8.968666793195208,
-              'page_views_last_month_log' : 11.020285500844647,
-              'page_views_total_log' : 16.42827837753359
-            },
             'page_views' :
             {
               'page_views_last_week' : 500,
@@ -327,15 +300,6 @@ export default {
             'type' : 'dataset',
             'updatedAt' : '2017-03-31T18:39:32.000Z',
             'createdAt' : '2014-03-25T17:01:36.000Z',
-            'view_count' :
-            {
-              'page_views_last_week' : 503,
-              'page_views_last_month' : 2097,
-              'page_views_total' : 80655,
-              'page_views_last_week_log' : 8.977279923499918,
-              'page_views_last_month_log' : 11.034798962577268,
-              'page_views_total_log' : 16.299494239009366
-            },
             'page_views' :
             {
               'page_views_last_week' : 503,
@@ -488,15 +452,6 @@ export default {
               'offense_code_extension'
             ],
             'id' : '7ais-f98f',
-            'view_count' :
-            {
-              'page_views_total' : 70288,
-              'page_views_total_log' : 16.101011309428216,
-              'page_views_last_week_log' : 8.169925001442312,
-              'page_views_last_week' : 287,
-              'page_views_last_month_log' : 10.122827994807668,
-              'page_views_last_month' : 1114
-            },
             'updatedAt' : '2017-05-16T23:27:06.000Z'
           },
           'classification' :
@@ -581,15 +536,6 @@ export default {
               'type'
             ],
             'id' : 'kzjm-xkqj',
-            'view_count' :
-            {
-              'page_views_total' : 55675,
-              'page_views_total_log' : 15.764767945128023,
-              'page_views_last_week_log' : 5.20945336562895,
-              'page_views_last_week' : 36,
-              'page_views_last_month_log' : 7.7414669864011465,
-              'page_views_last_month' : 213
-            },
             'updatedAt' : '2017-05-16T23:28:12.000Z'
           },
           'classification' :

@@ -34,6 +34,9 @@ const tabs = {
   }
 };
 
+const showManageAssets = _.includes(serverConfig.currentUser.flags, 'admin') ||
+  !_.isEmpty(window.serverConfig.currentUser.roleName);
+
 const components = (
   <Localization locale={serverConfig.locale || 'en'}>
     <AssetBrowser
@@ -43,7 +46,7 @@ const components = (
       showAssetCounts={false}
       showFilters={false}
       showHeader
-      showManageAssets={!_.isEmpty(window.serverConfig.currentUser.roleName)}
+      showManageAssets={showManageAssets}
       showPager={false}
       showSearchField
       tabs={tabs} />

@@ -129,6 +129,8 @@ administration-activity-feed:
 - screen-administration-activity-feed
 - jquery-ui-1.8.4.custom
 - ui.daterangepicker
+administration-activity-feed-soql:
+- activity-feed/index
 administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:

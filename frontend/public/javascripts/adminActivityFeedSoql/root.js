@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import App from './components/App/App';
+import App from './components/App';
 
 // This file exists because we need to give our app root to webpack's module.hot.accept
 // to watch as a dependency (see https://github.com/gaearon/react-hot-loader/tree/master/docs#migration-to-30).

@@ -1,0 +1,58 @@
+@import "activity-feed/topbar";
+@import "activity-feed/result_list_table";
+@import "variables/breakpoints";
+
+.catalog-results {
+  position: relative;
+
+  &.mobile {
+    width: 100%;
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: scroll;
+    }
+  }
+
+  .catalog-results-spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba($dark-grey-1, 0.1);
+  }
+
+  .catalog-footer {
+    padding: 0 $horizontal_margin;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .pagination-and-result-count {
+      .pager {
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 1rem;
+      }
+
+      .result-count {
+        display: inline-block;
+        float: none;
+      }
+    }
+
+    .asset-inventory-link-wrapper {
+      float: right;
+      margin: 0.5rem 0;
+
+      form {
+        margin: 0;
+      }
+    }
+  }
+}

@@ -224,7 +224,7 @@ namespace :test do
 
       task :update_admin_activity_feed_soql_translations do
         translation_map = {
-          '': 'screens.admin.jobs'
+          '': 'screens.admin.activity_feed'
         }
 
         update_translations(

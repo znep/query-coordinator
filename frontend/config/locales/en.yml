@@ -3414,6 +3414,44 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      activity_feed:
+        asset_types:
+          blob: File or Document
+          calendar: Calendar
+          chart: Chart
+          datalens: Data Lens
+          data_lens: Data Lens
+          dataset: Dataset
+          draft: Draft Dataset
+          federated_href: Federated External Dataset
+          filter: Filtered View
+          file: File or Document
+          form: Form
+          href: External Dataset
+          map: Map
+          new_view: Data Lens
+          pulse: Pulse
+          story: Story
+          working_copy: Working Copy
+        columns:
+          actions: Actions
+          date: Date
+          event: Event
+          initiated_by: Initiated By
+          item_affected: Item Affected
+          type: Type
+        events:
+          user_added: User Added
+          user_removed: User Removed
+          user_role_changed: User Role Changed
+          draft_created: Draft Created
+          asset_metadata_changed: AssetMetadataChanged
+          data_updated: Data Updated Success
+          data_updated_failure: Data Updated Failure
+          data_updated_partial_failure: Data Updated Partial Failure
+          draft_published: Draft Published
+          asset_permissions_changed_visibility_public: Asset Permissions Changed Visibility Public
+          asset_permissions_changed_visibility_private: private
       assets:
         asset_inventory: Assets
       canvas:
@@ -4018,6 +4056,7 @@ en:
         pagination:
           next: Next
           previous: Previous
+        render_error: There was a problem rendering this page.
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

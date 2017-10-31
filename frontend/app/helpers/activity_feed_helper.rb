@@ -20,6 +20,19 @@ module ActivityFeedHelper
     javascript_tag "window.translations = #{activity_feed_translations.to_json}"
   end
 
+  def render_activity_feed_translations_soql
+    parts = [
+      LocalePart.screens.admin.activity_feed,
+      LocalePart.plugins.daterangepicker,
+      LocalePart.table,
+      LocalePart.shared.components.filter_bar
+    ]
+
+    translations = LocaleCache.render_translations parts
+
+    javascript_tag "window.translations = #{translations.to_json}"
+  end
+
   def date_and_relative_day(time)
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"
   end

@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 
-import App from 'components/App/App';
+import App from 'components/App';
 
 describe('App', () => {
 

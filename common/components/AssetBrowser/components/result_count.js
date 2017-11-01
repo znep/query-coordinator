@@ -5,9 +5,9 @@ import _ from 'lodash';
 import I18n from 'common/i18n';
 import utils from 'common/js_utils';
 
-const getResultCountLabel = (viewCount) => {
-  const resultLabel = I18n.t('shared.asset_browser.result', { count: viewCount });
-  return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${resultLabel}` : '';
+const getResultCountLabel = (count) => {
+  const resultLabel = I18n.t('shared.asset_browser.result', { count: count });
+  return _.isNumber(count) ? `${utils.formatNumber(count)} ${resultLabel}` : '';
 };
 
 export class ResultCount extends Component {

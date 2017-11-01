@@ -225,6 +225,7 @@ export class CatalogResults extends Component {
     ) : null;
 
     // If there's nothing inside the footer, don't render it at all.
+    // TODO: When this expression get any longer, convert to .any() or .all() style.
     if (!showPager && !showResultCount && !this.showAssetInventoryLink()) {
       return;
     }

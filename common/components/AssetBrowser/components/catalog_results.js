@@ -290,6 +290,7 @@ CatalogResults.defaultProps = {
   currentQuery: '',
   fetchingResults: false,
   fetchingResultsError: false,
+  initialResultsFetched: false,
   pageNumber: 1,
   pageSize: DEFAULT_RESULTS_PER_PAGE
 };

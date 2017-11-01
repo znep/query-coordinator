@@ -14,7 +14,7 @@
   }
 
   .introduction {
-    margin-top: 24.27px;
+    margin-top: 1.5em;
 
     .section-title {
       font-size: 120%;
@@ -29,7 +29,7 @@
     display: flex;
     justify-content: flex-end;
     border-top: solid 0.5px $light-grey-2;
-    margin-top: 1em;
+    margin-top: 3em;
     margin-bottom: 2em;
     padding-top: 1em;
 
@@ -38,44 +38,10 @@
     }
   }
 
-  .approver-configuration {
-    margin-left: 23px;
-    width: 52em;
-
-    p {
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-
-    .user-setting {
-      display: flex;
-
-      &:hover {
-        background-color: #dbeef9;
-      }
-
-      width: 45em;
-      margin: 0 auto;
-
-      label.name {
-        flex: 2 1 auto;
-      }
-
-      div {
-        margin: 0 0.4em;
-      }
-
-      label.helper {
-        white-space: nowrap;
-      }
-    }
-  }
-
   .automatically-approve {
     display: flex;
 
     margin-top: 2em;
-    margin-bottom: 2em;
 
     .approval-configuration {
       width: 50%;
@@ -117,16 +83,51 @@
             font-size: 80%;
           }
         }
+      }
+    }
+  }
 
-        div.checkboxWrapper {
-          display: flex;
-          margin-top: 0.8em;
-          margin-left: 0.5em;
+  .checkboxWrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1.5em;
+    margin-left: 6em;
 
-          label {
-            margin-left: 0.5em;
-          }
-        }
+    > label {
+      margin-left: 0.5em;
+    }
+  }
+
+  .approver-configuration {
+    margin-top: 3em;
+    margin-left: 23px;
+    width: 52em;
+
+    p {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .user-setting {
+      display: flex;
+
+      &:hover {
+        background-color: $header-link-hover-color;
+      }
+
+      width: 45em;
+      margin: 0 auto;
+
+      label.name {
+        flex: 2 1 auto;
+      }
+
+      div {
+        margin: 0 0.4em;
+      }
+
+      label.helper {
+        white-space: nowrap;
       }
     }
   }

@@ -87,6 +87,10 @@ http://www.socrata.com
   <%= render_mixpanel_tracker %>
   <%= render_pendo_tracker %>
 
+  <%- if @render_styleguide_on_legacy_pages -%>
+    <%= rendered_stylesheet_tag 'styleguide-no-tag-level' %>
+  <%- end -%>
+
   <%= get_favicon_tag %>
 </head>
 

@@ -61,7 +61,7 @@ export class AddUserModal extends Component {
   }
 
   render() {
-    const { I18n, errors = [], showModal } = this.props;
+    const { I18n, errors = [], showModal, submittingUsers } = this.props;
     const { selectedRoleId } = this.state;
     const hasError = !_.isEmpty(errors);
     const modalProps = {
@@ -107,13 +107,18 @@ export class AddUserModal extends Component {
 
           <ModalFooter>
             <div>
-              <button type="button" className="btn btn-secondary add-user-cancel" onClick={this.cancelModal}>
+              <button
+                type="button"
+                className="btn btn-secondary add-user-cancel"
+                onClick={this.cancelModal}
+                disabled={submittingUsers}>
                 {I18n.translate('users.add_new_users.cancel')}
               </button>
               <button
                 type="button"
                 className="btn btn-primary add-user-confirm"
-                onClick={this.submitNewUsers}>
+                onClick={this.submitNewUsers}
+                disabled={submittingUsers}>
                 {I18n.translate('users.add_new_users.add_users')}
               </button>
             </div>
@@ -128,14 +133,16 @@ export class AddUserModal extends Component {
 
 AddUserModal.propTypes = {
   errors: PropTypes.array,
-  showModal: PropTypes.bool.isRequired
+  showModal: PropTypes.bool.isRequired,
+  submittingUsers: PropTypes.bool
 };
 
 const mapStateToProps = state => {
   const errors = _.get(state, 'ui.addUserErrors', []);
   return {
     showModal: state.ui.showAddUserUi,
-    errors
+    errors,
+    submittingUsers: state.ui.submittingUsers
   };
 };
 

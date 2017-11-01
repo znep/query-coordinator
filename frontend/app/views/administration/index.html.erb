@@ -17,7 +17,7 @@
         <%= t('section_headers.data_and_assets', :scope => 'screens.admin.index') %>
       </h2>
       <ul class="admin-link-list">
-        <%= admin_section_link('activity_log', user_can_see_activity_feed?, 'admin/activity_feed') %>
+        <%= admin_section_link('activity_log', user_can_see_activity_feed?, '/admin/activity_feed') %>
         <%= admin_section_link('site_analytics', true, '/admin/analytics') %>
         <%= admin_section_link('datasets', user_can_see_asset_inventory? && !use_internal_asset_manager?, '/admin/datasets') %>
         <%= admin_section_link('datasets', use_internal_asset_manager?, '/admin/assets') %>

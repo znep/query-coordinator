@@ -47,9 +47,7 @@ export class Picklist extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setSelectedOptionBasedOnValue(nextProps);
-    }
+    this.setSelectedOptionBasedOnValue(nextProps);
   }
 
   onClickOption(selectedOption, event) {

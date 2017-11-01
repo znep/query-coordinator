@@ -171,7 +171,6 @@
 
     .dropdown-button-actions {
       background-color: #f6f6f6;
-      color: #5e5e5e;
       border: thin solid #c8c8c8;
       left: 0;
       list-style: none;
@@ -185,6 +184,10 @@
     .dropdown-button-item {
       white-space: nowrap;
       cursor: pointer;
+
+      button {
+        color: #5e5e5e;
+      }
 
       &:hover {
         background-color: #eaf4f9;

@@ -54,6 +54,11 @@ export const hydrateEmbed = (element) => {
     const width = element.getAttribute('data-width') || DEFAULT_WIDTH;
     const height = element.getAttribute('data-height') || DEFAULT_HEIGHT;
 
+    // Create a container to properly namespace styles; for embeds
+    // 'namespaced_embed_styles.scss' is used to avoid style clobbering
+    const embedContainer = document.createElement('div');
+    embedContainer.classList.add('socrata-embed-container');
+
     const target = $(
       '<div>',
       {
@@ -66,7 +71,9 @@ export const hydrateEmbed = (element) => {
     target.height(height);
     target.addClass('rendered');
     target.data('vif', vif); // For debugging help.
-    $(element).replaceWith(target);
+
+    embedContainer.appendChild(target[0]);
+    $(element).replaceWith(embedContainer);
 
     try {
       new VisualizationRenderer(vif, target, {

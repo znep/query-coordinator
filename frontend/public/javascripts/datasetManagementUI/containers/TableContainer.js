@@ -1,12 +1,10 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import { currentAndIgnoredOutputColumns } from 'selectors';
+import * as Selectors from 'selectors';
 import * as DisplayState from 'lib/displayState';
 import * as Links from 'links/links';
 import Table from 'components/Table/Table';
-
-const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
 
 // TODO: this is wrong...this only gets a single input column....not all
 const getInputColumns = (entities, outputColumns) =>
@@ -21,8 +19,13 @@ const getInputColumns = (entities, outputColumns) =>
     };
   });
 
-// TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
-// fails; should probably redirect or display some message to the user
+function getOutputColumns(entities, osid) {
+  return _.chain(Selectors.columnsForOutputSchema(entities, osid))
+    .thru(oc => getInputColumns(entities, oc))
+    .sortBy('position')
+    .value();
+}
+
 const mapStateToProps = ({ entities }, { path, inputSchema, outputSchema, displayState, showShortcut }) => {
   return {
     entities,
@@ -31,10 +34,7 @@ const mapStateToProps = ({ entities }, { path, inputSchema, outputSchema, displa
     outputSchema,
     displayState,
     showShortcut,
-    outputColumns: getInputColumns(
-      entities,
-      combineAndSort(currentAndIgnoredOutputColumns(entities, outputSchema.id))
-    )
+    outputColumns: getOutputColumns(entities, outputSchema.id)
   };
 };
 

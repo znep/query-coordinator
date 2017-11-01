@@ -59,7 +59,6 @@ function Table({
               key={column.id}
               path={path}
               transform={column.transform}
-              isIgnored={column.ignored || false}
               displayState={displayState}
               columnId={column.id}
               totalRows={inputSchema.total_rows}

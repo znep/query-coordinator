@@ -1,4 +1,4 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 import uuid from 'uuid';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as Links from 'links/links';
@@ -8,7 +8,6 @@ import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
-  ADD_COLUMN,
   DROP_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
@@ -22,7 +21,7 @@ import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
-import { getUniqueName, getUniqueFieldName } from 'lib/util';
+// import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
@@ -103,42 +102,42 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
-  const { entities } = getState();
-
-  const call = {
-    operation: ADD_COLUMN,
-    callParams: {
-      outputSchemaId: outputSchema.id,
-      outputColumnId: outputColumn.id
-    }
-  };
-
-  // check for clashes with existing columns
-  const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
-
-  const { existingFieldNames, existingDisplayNames } = current.reduce(
-    (acc, oc) => {
-      return {
-        existingFieldNames: [...acc.existingFieldNames, oc.field_name],
-        existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
-      };
-    },
-    { existingFieldNames: [], existingDisplayNames: [] }
-  );
-
-  const newOutputColumn = {
-    ...outputColumn,
-    field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
-    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
-  };
-
-  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
-    buildNewOutputColumn(oc, sameTransform(entities))
-  );
-
-  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
-};
+// export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
+//   const { entities } = getState();
+//
+//   const call = {
+//     operation: ADD_COLUMN,
+//     callParams: {
+//       outputSchemaId: outputSchema.id,
+//       outputColumnId: outputColumn.id
+//     }
+//   };
+//
+//   // check for clashes with existing columns
+//   const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
+//
+//   const { existingFieldNames, existingDisplayNames } = current.reduce(
+//     (acc, oc) => {
+//       return {
+//         existingFieldNames: [...acc.existingFieldNames, oc.field_name],
+//         existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
+//       };
+//     },
+//     { existingFieldNames: [], existingDisplayNames: [] }
+//   );
+//
+//   const newOutputColumn = {
+//     ...outputColumn,
+//     field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
+//     display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
+//   };
+//
+//   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
+//     buildNewOutputColumn(oc, sameTransform(entities))
+//   );
+//
+//   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
+// };
 
 export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const { entities } = getState();
@@ -150,7 +149,8 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
       outputColumnId: column.id
     }
   };
-  const { current } = Selectors.currentAndIgnoredOutputColumns(entities, outputSchema.id);
+
+  const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
 
   const newOutputColumns = current
     .filter(oc => oc.id !== column.id)
@@ -177,7 +177,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const unsetRowIdentifier = (outputSchema) => (dispatch, getState) => {
+export const unsetRowIdentifier = outputSchema => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -212,11 +212,10 @@ export const moveColumnToPosition = (outputSchema, column, positionBaseOne) => (
 
   const newOutputColumns = columns
     .map(oc => buildNewOutputColumn(oc, sameTransform(entities)))
-    .map((oc, i) => ({ ...oc, position: (i + 1) }));
+    .map((oc, i) => ({ ...oc, position: i + 1 }));
 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
-
 
 export function buildNewOutputColumn(outputColumn, genTransform) {
   return {
@@ -241,16 +240,14 @@ function sameTransform(entities) {
 }
 
 export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColumn, newType) {
-  const oldOutputColumns = Selectors.columnsForOutputSchema(
-    entities,
-    oldOutputSchema.id
-  ).map(oc => (
-  // This was a lovely bug!
-  // When changing the type of a primary key column, we need to make it a non-pk, because
-  // type conversion could lead to duplicate or null values; in fact, this is true of any
-  // transformation
-    oc.id === oldColumn.id ? { ...oc, is_primary_key: false } : oc
-  ));
+  const oldOutputColumns = Selectors.columnsForOutputSchema(entities, oldOutputSchema.id).map(oc => {
+    // This was a lovely bug!
+    // When changing the type of a primary key column, we need to make it a non-pk, because
+    // type conversion could lead to duplicate or null values; in fact, this is true of any
+    // transformation
+
+    return oc.id === oldColumn.id ? { ...oc, is_primary_key: false } : oc;
+  });
 
   // Input columns are presently always text.  This will eventually
   // change, and then we'll need the input column here instead of

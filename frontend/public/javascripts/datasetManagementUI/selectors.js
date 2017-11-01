@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
 import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
-import { stripToTextAst, stripToNumberAst, stripToBooleanAst, stripToDatetimeAst } from 'lib/ast';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
@@ -68,6 +67,22 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
       };
     })
     .sortBy('position')
+    .value();
+}
+
+export function allColumnsWithOSID(entities) {
+  return _.chain(entities.output_schema_columns)
+    .map(oc => ({
+      ...entities.output_columns[oc.output_column_id],
+      outputSchemaId: oc.output_schema_id
+    }))
+    .map(oc => ({
+      ...oc,
+      transform: entities.transforms[oc.transform_id],
+      is_primary_key: oc.is_primary_key || false
+    }))
+    .map(oc => _.omit(oc, 'transform_id'))
+    .orderBy('outputSchemaId', 'desc')
     .value();
 }
 
@@ -140,45 +155,45 @@ export function rowLoadOperationsInProgress(apiCalls) {
 
 // hooray this thing is still wrong, and will always be wrong - each time we add a new
 // feature we get to re-write it to make it right for our specific use case
-export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
-  const outputSchema = entities.output_schemas[outputSchemaId];
-  const osIds = Object.values(entities.output_schemas)
-    .filter(os => os.input_schema_id === outputSchema.input_schema_id)
-    .map(os => os.id);
-
-  const firstOutputSchemaId = Math.min(...osIds);
-
-  const actualColumns = columnsForOutputSchema(entities, outputSchemaId);
-  const firstColumns = columnsForOutputSchema(entities, firstOutputSchemaId);
-
-  const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
-    const ast = oc.transform.parsed_expr;
-    return _.uniqWith(
-      [ast, stripToTextAst(ast), stripToNumberAst(ast), stripToBooleanAst(ast), stripToDatetimeAst(ast)],
-      _.isEqual
-    );
-  });
-
-  const isAstUsed = ast => !!_.find(outputColumnsStrippedAsts, a => _.isEqual(a, ast));
-
-  const isUnreferenced = outputColumn => {
-    const ast = outputColumn.transform.parsed_expr;
-    return (
-      !isAstUsed(ast) &&
-      !isAstUsed(stripToTextAst(ast)) &&
-      !isAstUsed(stripToNumberAst(ast)) &&
-      !isAstUsed(stripToBooleanAst(ast)) &&
-      !isAstUsed(stripToDatetimeAst(ast))
-    );
-  };
-
-  const unreferencedOutputColumns = firstColumns.filter(isUnreferenced);
-
-  return {
-    current: actualColumns,
-    ignored: unreferencedOutputColumns.map(oc => ({ ...oc, ignored: true }))
-  };
-}
+// export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
+//   const outputSchema = entities.output_schemas[outputSchemaId];
+//   const osIds = Object.values(entities.output_schemas)
+//     .filter(os => os.input_schema_id === outputSchema.input_schema_id)
+//     .map(os => os.id);
+//
+//   const firstOutputSchemaId = Math.min(...osIds);
+//
+//   const actualColumns = columnsForOutputSchema(entities, outputSchemaId);
+//   const firstColumns = columnsForOutputSchema(entities, firstOutputSchemaId);
+//
+//   const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
+//     const ast = oc.transform.parsed_expr;
+//     return _.uniqWith(
+//       [ast, stripToTextAst(ast), stripToNumberAst(ast), stripToBooleanAst(ast), stripToDatetimeAst(ast)],
+//       _.isEqual
+//     );
+//   });
+//
+//   const isAstUsed = ast => !!_.find(outputColumnsStrippedAsts, a => _.isEqual(a, ast));
+//
+//   const isUnreferenced = outputColumn => {
+//     const ast = outputColumn.transform.parsed_expr;
+//     return (
+//       !isAstUsed(ast) &&
+//       !isAstUsed(stripToTextAst(ast)) &&
+//       !isAstUsed(stripToNumberAst(ast)) &&
+//       !isAstUsed(stripToBooleanAst(ast)) &&
+//       !isAstUsed(stripToDatetimeAst(ast))
+//     );
+//   };
+//
+//   const unreferencedOutputColumns = firstColumns.filter(isUnreferenced);
+//
+//   return {
+//     current: actualColumns,
+//     ignored: unreferencedOutputColumns.map(oc => ({ ...oc, ignored: true }))
+//   };
+// }
 
 export const latestOutputSchemaForSource = (entities, sourceId) => {
   const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];

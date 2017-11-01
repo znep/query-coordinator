@@ -87,11 +87,11 @@ export class ColumnHeader extends Component {
   }
 
   isRowIdDisabled() {
-    return this.isInProgress() || this.props.outputColumn.is_primary_key || this.props.outputColumn.ignored;
+    return this.isInProgress() || this.props.outputColumn.is_primary_key;
   }
 
   isUnsetRowIdDisabled() {
-    return this.isInProgress() || !this.props.outputColumn.is_primary_key || this.props.outputColumn.ignored;
+    return this.isInProgress() || !this.props.outputColumn.is_primary_key;
   }
 
   isMoveLeftDisabled() {
@@ -103,7 +103,7 @@ export class ColumnHeader extends Component {
   }
 
   isFormatDisabled() {
-    return this.isInProgress() || this.props.outputColumn.ignored;
+    return this.isInProgress();
   }
 
   isInProgress() {
@@ -181,7 +181,7 @@ export class ColumnHeader extends Component {
       params,
       canTransform
     } = this.props;
-    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis || !canTransform;
+    const isDisabled = activeApiCallInvolvingThis || !canTransform;
 
     let convertibleTo = [];
     if (outputColumn.inputColumns.length === 1) {
@@ -209,26 +209,25 @@ export class ColumnHeader extends Component {
       }
     };
 
-    const header =
-      !outputColumn.transform || outputColumn.ignored ? (
+    const header = !outputColumn.transform ? (
+      <span
+        className={styles.colName}
+        id={`column-field-name-${outputColumn.id}`}
+        title={outputColumn.display_name}>
+        {outputColumn.display_name}
+      </span>
+    ) : (
+      <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
         <span
           className={styles.colName}
-          id={`column-field-name-${outputColumn.id}`}
+          data-cheetah-hook="col-name"
+          id={`column-display-name-${outputColumn.id}`}
           title={outputColumn.display_name}>
           {outputColumn.display_name}
+          <SocrataIcon name="edit" className={styles.icon} />
         </span>
-      ) : (
-        <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
-          <span
-            className={styles.colName}
-            data-cheetah-hook="col-name"
-            id={`column-display-name-${outputColumn.id}`}
-            title={outputColumn.display_name}>
-            {outputColumn.display_name}
-            <SocrataIcon name="edit" className={styles.icon} />
-          </span>
-        </Link>
-      );
+      </Link>
+    );
 
     const className = classNames(styles.columnHeader, {
       [styles.columnHeaderDisabled]: isDisabled

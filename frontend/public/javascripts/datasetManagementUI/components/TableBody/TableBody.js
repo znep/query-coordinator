@@ -64,21 +64,14 @@ class TableBody extends Component {
       rowIdx,
       columns: this.props.columns.map(column => {
         const transform = column.transform;
-        if (column.ignored) {
-          return {
-            id: `column_${column.id}`,
-            cell: null
-          };
-        } else {
-          const cell = this.props.entities.col_data[transform.id]
-            ? this.props.entities.col_data[transform.id][rowIdx]
-            : null;
-          return {
-            tid: transform.id,
-            format: column.format,
-            cell
-          };
-        }
+        const cell = this.props.entities.col_data[transform.id]
+          ? this.props.entities.col_data[transform.id][rowIdx]
+          : null;
+        return {
+          tid: transform.id,
+          format: column.format,
+          cell
+        };
       }),
       rowError: props.entities.row_errors[`${props.inputSchemaId}-${rowIdx}`]
     }));
@@ -91,12 +84,14 @@ class TableBody extends Component {
           const t = this.props.entities.transforms[column.tid];
           const type = t ? t.output_soql_type : null;
           const hasFailed = t ? !!t.failed_at : false;
-          return (<TableCell
-            key={`${row.rowIdx}-${offset}`}
-            cell={column.cell}
-            format={column.format}
-            failed={hasFailed}
-            type={type} />);
+          return (
+            <TableCell
+              key={`${row.rowIdx}-${offset}`}
+              cell={column.cell}
+              format={column.format}
+              failed={hasFailed}
+              type={type} />
+          );
         })}
       </tr>
     );

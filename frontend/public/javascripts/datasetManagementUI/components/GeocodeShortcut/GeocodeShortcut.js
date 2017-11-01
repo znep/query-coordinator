@@ -1,8 +1,6 @@
-import _ from 'lodash';
-
 /* eslint react/jsx-indent: 0 */
 import PropTypes from 'prop-types';
-
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { connect } from 'react-redux';
@@ -190,10 +188,7 @@ export class GeocodeShortcut extends Component {
     }
     return {
       mappings: generateDefaultMappings(
-        Selectors.columnsForInputSchema(
-          this.props.entities,
-          _.toNumber(this.props.params.inputSchemaId)
-        ),
+        Selectors.columnsForInputSchema(this.props.entities, _.toNumber(this.props.params.inputSchemaId)),
         this.getOutputColumns()
       )
     };
@@ -233,21 +228,29 @@ export class GeocodeShortcut extends Component {
   }
 
   getOutputColumns() {
-    const { current, ignored } = Selectors.currentAndIgnoredOutputColumns(
-      this.props.entities,
-      this.getOutputSchema().id
-    );
-
-    return current.concat(ignored);
+    // TODO: refine this selector; will break if you have multiple oc's with the
+    // same mapping (if e.g. you change a col name)
+    return Selectors.allColumnsWithOSID(this.props.entities);
   }
 
   maybeSetColumnsHidden() {
+    // console.log('os', this.getOutputSchema());
+
+    // console.log('ocols unfiltered', this.relevantArgsForComposition());
+    //
+    // console.log(
+    //   'ocols',
+    //   this.relevantArgsForComposition()
+    //     .filter(oc => !!oc)
+    //     .filter(oc => !_.isString(oc))
+    // );
+    const { id: currentOutputSchemaId } = this.getOutputSchema();
     // Restore the checkbox state from the output schema state
     const shouldHideOriginal = _.every(
       this.relevantArgsForComposition()
         .filter(oc => !!oc) // filter out nones
         .filter(oc => !_.isString(oc)) // filter out constants
-        .map(oc => oc.ignored) // are all the things that are left ignored?
+        .map(oc => oc.outputSchemaId !== currentOutputSchemaId) // are all the things that are left not in current os?
     );
 
     this.setState({
@@ -310,14 +313,29 @@ export class GeocodeShortcut extends Component {
   }
 
   genDesiredColumns() {
-    let existingColumns = this.getOutputColumns();
+    // will be all cols + the generated geo one or just the geo one, depending
+    // on if the user checked the "Do Not Import Original Cols" box
+    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
+
     const anyMappings = _.some(
       this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
     );
 
+    const cols = this.relevantArgsForComposition().filter(oc => !!oc);
+
+    // If the user checked "Do Not Import Original Cols" box...
     if (this.state.shouldHideOriginal) {
-      const columnIdsToHide = this.relevantArgsForComposition().filter(oc => !!oc).map(oc => oc.id);
+      // filter out the original cols from the ones we plan to show on the SchemaPreview page...
+      const columnIdsToHide = cols.map(oc => oc.id);
+
       existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
+    } else {
+      // otherwise add them back
+      const columnsToShow = cols;
+
+      const existingColIds = existingColumns.map(oc => oc.id);
+
+      existingColumns = columnsToShow.filter(oc => !existingColIds.includes(oc.id)).concat(existingColumns);
     }
 
     let desiredColumns;
@@ -359,10 +377,7 @@ export class GeocodeShortcut extends Component {
 
   createNewOutputSchema() {
     return this.props
-      .newOutputSchema(
-        _.toNumber(this.props.params.inputSchemaId),
-        this.genDesiredColumns()
-      )
+      .newOutputSchema(_.toNumber(this.props.params.inputSchemaId), this.genDesiredColumns())
       .then(resp => {
         const { resource: { id: outputSchemaId } } = resp;
         this.setOutputSchema(outputSchemaId);
@@ -407,10 +422,7 @@ export class GeocodeShortcut extends Component {
   }
 
   isOutputschemaStateDesired() {
-    return (
-      this.isPreviewable() &&
-      this.genDesiredColumns().length === this.getOutputColumns().filter(oc => !oc.ignored).length
-    );
+    return this.isPreviewable() && this.genDesiredColumns().length === this.getOutputColumns().length;
   }
 
   render() {
@@ -471,35 +483,37 @@ export class GeocodeShortcut extends Component {
     const relevantColumns = this.relevantArgsForComposition();
     const anySelected = relevantColumns.length > 0 && _.some(relevantColumns);
 
-    const content = !this.state.configurationError
-      ? <div className={styles.content}>
-          <div className={styles.formWrap}>
-            <form>
-              {fieldSet(this.state.composedFrom, mappings, this.setMapping, outputColumns)}
+    const content = !this.state.configurationError ? (
+      <div className={styles.content}>
+        <div className={styles.formWrap}>
+          <form>
+            {fieldSet(this.state.composedFrom, mappings, this.setMapping, outputColumns)}
 
-              <HideOriginal
-                shouldHideOriginal={shouldHideOriginal}
-                toggleHideOriginal={this.toggleHideOriginal} />
+            <HideOriginal
+              shouldHideOriginal={shouldHideOriginal}
+              toggleHideOriginal={this.toggleHideOriginal} />
 
-              <ErrorHandling
-                shouldConvertToNull={shouldConvertToNull}
-                toggleConvertToNull={this.toggleConvertToNull} />
-            </form>
-          </div>
-          <ColumnPreview
-            entities={entities}
-            anySelected={anySelected}
-            outputColumn={outputColumn}
-            inputSchema={inputSchema}
-            displayState={displayState}
-            isPreviewable={this.isPreviewable()}
-            onPreview={onPreview}
-            onClickError={this.toggleErrorDisplayState}
-            params={params} />
+            <ErrorHandling
+              shouldConvertToNull={shouldConvertToNull}
+              toggleConvertToNull={this.toggleConvertToNull} />
+          </form>
         </div>
-      : <div className={classNames(flashMessageStyles.error, styles.configurationError)}>
-          {this.state.configurationError}
-        </div>;
+        <ColumnPreview
+          entities={entities}
+          anySelected={anySelected}
+          outputColumn={outputColumn}
+          inputSchema={inputSchema}
+          displayState={displayState}
+          isPreviewable={this.isPreviewable()}
+          onPreview={onPreview}
+          onClickError={this.toggleErrorDisplayState}
+          params={params} />
+      </div>
+    ) : (
+      <div className={classNames(flashMessageStyles.error, styles.configurationError)}>
+        {this.state.configurationError}
+      </div>
+    );
 
     return (
       <div>

@@ -48,6 +48,7 @@ const components = (
       showHeader
       showManageAssets={showManageAssets}
       showPager={false}
+      showResultCount
       showSearchField
       tabs={tabs} />
   </Localization>

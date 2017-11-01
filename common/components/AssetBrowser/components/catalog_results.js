@@ -124,7 +124,7 @@ export class CatalogResults extends Component {
       <div className="manage-assets-link">
         <a href={`/admin/assets?tab=${constants.MY_ASSETS_TAB}`}>
           <button className="btn btn-primary all-assets-button">
-            {I18n.t('shared.asset_browser.view_and_manage_assets')}
+            {I18n.t('shared.asset_browser.view_all')}
             <SocrataIcon name="arrow-right" />
           </button>
         </a>
@@ -190,7 +190,8 @@ export class CatalogResults extends Component {
       pageNumber,
       pageSize,
       resultSetSize,
-      showPager
+      showPager,
+      showResultCount
     } = this.props;
 
     if (fetchingResults) {
@@ -224,13 +225,15 @@ export class CatalogResults extends Component {
     ) : null;
 
     // If there's nothing inside the footer, don't render it at all.
-    if (!showPager && !this.showAssetInventoryLink()) {
+    // TODO: When this expression get any longer, convert to .any() or .all() style.
+    if (!showPager && !showResultCount && !this.showAssetInventoryLink()) {
       return;
     }
 
     return (
       <div className="catalog-footer">
         {pager}
+        {showResultCount && <ResultCount {...resultCountProps} />}
         {renderedAssetInventoryLink}
       </div>
     );
@@ -288,6 +291,7 @@ CatalogResults.defaultProps = {
   currentQuery: '',
   fetchingResults: false,
   fetchingResultsError: false,
+  initialResultsFetched: false,
   pageNumber: 1,
   pageSize: DEFAULT_RESULTS_PER_PAGE
 };

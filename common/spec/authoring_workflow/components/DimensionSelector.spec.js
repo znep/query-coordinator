@@ -5,84 +5,84 @@ import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { DimensionSelector } from 'common/authoring_workflow/components/DimensionSelector';
 
-describe('DimensionSelector', function() {
-  describe('rendering', function() {
-    var component;
+describe('DimensionSelector', () => {
+  describe('rendering', () => {
+    let component;
 
-    describe('without data', function() {
-      beforeEach(function() {
+    describe('without data', () => {
+      beforeEach(() => {
         component = renderComponent(DimensionSelector, defaultProps({
           metadata: { data: null }
         }));
       });
 
-      it('does not render a picklist', function() {
-        expect(component).to.be.null;
+      it('does not render a picklist', () => {
+        assert.isNull(component);
       });
     });
 
-    describe('with data', function() {
-      beforeEach(function() {
+    describe('with data', () => {
+      beforeEach(() => {
         component = renderComponent(DimensionSelector, defaultProps());
       });
 
-      it('renders dimension selection', function() {
-        expect(component.querySelector('#dimension-selection')).to.exist;
+      it('renders dimension selection', () => {
+        assert.isOk(component.querySelector('#dimension-selection'));
       });
     });
   });
 
-  describe('events', function() {
+  describe('events', () => {
 
     describe('onSelectDimension', () => {
-      var props;
-      var component;
-      var overrides = {
-        onSelectDimension: sinon.stub(),
-        onSelectOrderBy: () => {}
-      };
 
-      var emitsPicklistEvent = function(selector, eventName) {
-        it(`should emit an ${eventName} event.`, function() {
-          var option = component.querySelector(`${selector} .picklist-option`);
+      describe('when changing the dimension dropdown', () => {
+        const eventName = 'onSelectDimension';
+        it(`should emit an ${eventName} event.`, (done) => {
+          let props;
+          let component;
+          const overrides = {
+            onSelectDimension: (dim) => {
+              const column = props.metadata.data.columns[0];
+              // There is a funky mapping between metadata and dimensions.
+              assert.equal(dim.title, column.name);
+              assert.equal(dim.value, column.fieldName);
+              assert.equal(dim.type, column.renderTypeName);
+              done();
+            },
+            onSelectOrderBy: () => {}
+          };
+          props = defaultProps(overrides);
+          component = renderComponent(DimensionSelector, props);
+
+          const option = component.querySelector('#dimension-selection .picklist-option');
           TestUtils.Simulate.click(option);
-          sinon.assert.calledOnce(props[eventName]);
         });
-      };
-
-      beforeEach(function() {
-        props = defaultProps(overrides);
-        component = renderComponent(DimensionSelector, props);
-      });
-
-      describe('when changing the dimension dropdown', function() {
-        emitsPicklistEvent('#dimension-selection', 'onSelectDimension');
       });
     });
 
     describe('onSelectOrderBy', () => {
-      var props;
-      var component;
-      var overrides = {
-        onSelectDimension: () => {},
-        onSelectOrderBy: sinon.stub()
-      };
 
-      var emitsPicklistEvent = function(selector, eventName) {
-        it(`should emit an ${eventName} event.`, function() {
-          var option = component.querySelector(`${selector} .picklist-option`);
+      describe('when changing the dimension dropdown', () => {
+        const eventName = 'onSelectOrderBy';
+        it(`should emit an ${eventName} event.`, (done) => {
+          let props;
+          let component;
+          const overrides = {
+            onSelectDimension: () => {},
+            onSelectOrderBy: (parameter, sort) => {
+              // DimensionSelector has hard coded strings for these values.
+              assert.equal(parameter, 'measure');
+              assert.equal(sort, 'desc');
+              done();
+            }
+          };
+          props = defaultProps(overrides);
+          component = renderComponent(DimensionSelector, props);
+
+          const option = component.querySelector('#dimension-selection .picklist-option');
           TestUtils.Simulate.click(option);
-          sinon.assert.calledOnce(props[eventName]);
         });
-      };
-
-      beforeEach(function() {
-        props = defaultProps(overrides);
-        component = renderComponent(DimensionSelector, props);
-      });
-
-      describe('when changing the dimension dropdown', function() {
-        emitsPicklistEvent('#dimension-selection', 'onSelectOrderBy');
       });
     });
   });

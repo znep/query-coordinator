@@ -13,19 +13,22 @@ describe('Picklist', () => {
   // for certain comparisons (i.e. isSelected in renderOptions), which can lead to problems.
   const theOneAndOnlyIcon = <SocrataIcon name="official2" />;
 
+  const defaultOptions = [
+    { title: 'John Henry', value: 'john-henry', icon: theOneAndOnlyIcon },
+    { title: 'Railroads', value: 'railroads', icon: theOneAndOnlyIcon },
+    { title: 'Steel', value: 'steel' }
+  ];
+
   // If the incoming props contain a "value" key, that is used to selected item(s) in the picklist
   function getProps(props) {
     return _.defaultsDeep({}, props, {
-      options: [
-        { title: 'John Henry', value: 'john-henry', icon: theOneAndOnlyIcon },
-        { title: 'Railroads', value: 'railroads', icon: theOneAndOnlyIcon },
-        { title: 'Steel', value: 'steel' }
-      ],
+      options: defaultOptions,
       onSelection: _.noop,
       onChange: _.noop
     });
   }
 
+  // NOTE: There are a number of redundant calls to renderComponent in nested blocks.
   beforeEach(() => {
     element = renderComponent(Picklist, getProps());
   });
@@ -171,17 +174,18 @@ describe('Picklist', () => {
   describe('events', () => {
     let props;
 
-    beforeEach(() => {
-      props = { onSelection: sinon.stub(), onChange: sinon.stub() };
-      element = renderComponent(Picklist, getProps(props));
-    });
-
     describe('when clicking an option', () => {
-      it('emits an onSelection event', () => {
+      it('emits an onSelection event', (done) => {
+        props = {
+          onSelection: (selectedOption) => {
+            assert.equal(selectedOption.value, defaultOptions[0].value);
+            done();
+          }
+        };
+        element = renderComponent(Picklist, getProps(props));
         const option = element.querySelector('.picklist-option');
 
         Simulate.click(option);
-        assert.isTrue(props.onSelection.calledOnce);
       });
     });
 
@@ -190,6 +194,8 @@ describe('Picklist', () => {
       const selectedOptionSelector = 'picklist-option-selected';
 
       beforeEach(() => {
+        props = { onSelection: sinon.stub(), onChange: sinon.stub() };
+        element = renderComponent(Picklist, getProps(props));
         options = element.querySelectorAll('.picklist-option');
         Simulate.focus(element);
       });
@@ -222,8 +228,7 @@ describe('Picklist', () => {
       describe('when pressing up', () => {
         const event = { keyCode: UP };
 
-        // NOTE: There is no longer a case when nothing is selected (or there shouldn't be).
-        xdescribe('when nothing is selected', () => {
+        describe('when nothing is selected', () => {
           it('selects the first option', () => {
             const lastOption = _.last(options);
 
@@ -240,7 +245,8 @@ describe('Picklist', () => {
           it('does nothing', () => {
             const firstOption = _.first(options);
 
-            // NOTE: The first element should already be selected.
+            assert.isFalse($(firstOption).hasClass(selectedOptionSelector));
+            Simulate.click(firstOption);
             assert.isTrue($(firstOption).hasClass(selectedOptionSelector));
 
             Simulate.keyDown(element, event);
@@ -264,8 +270,7 @@ describe('Picklist', () => {
       describe('when pressing down', () => {
         const event = { keyCode: DOWN };
 
-        // NOTE: There is no longer a case when nothing is selected (or there shouldn't be).
-        xdescribe('when nothing is selected', () => {
+        describe('when nothing is selected', () => {
           it('selects the first option', () => {
             const firstOption = _.first(options);
 

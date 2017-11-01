@@ -190,7 +190,8 @@ export class CatalogResults extends Component {
       pageNumber,
       pageSize,
       resultSetSize,
-      showPager
+      showPager,
+      showResultCount
     } = this.props;
 
     if (fetchingResults) {
@@ -224,13 +225,14 @@ export class CatalogResults extends Component {
     ) : null;
 
     // If there's nothing inside the footer, don't render it at all.
-    if (!showPager && !this.showAssetInventoryLink()) {
+    if (!showPager && !showResultCount && !this.showAssetInventoryLink()) {
       return;
     }
 
     return (
       <div className="catalog-footer">
         {pager}
+        {showResultCount && <ResultCount {...resultCountProps} />}
         {renderedAssetInventoryLink}
       </div>
     );

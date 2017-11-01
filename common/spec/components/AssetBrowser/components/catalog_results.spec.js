@@ -1,15 +1,29 @@
 import React from 'react';
 import { assert } from 'chai';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 
 import { CatalogResults } from 'common/components/AssetBrowser/components/catalog_results';
 import ResultListTable from 'common/components/AssetBrowser/components/result_list_table';
 import * as constants from 'common/components/AssetBrowser/lib/constants.js';
 
+const store = {
+  subscribe: () => {},
+  dispatch: () => {},
+  getState: () => ({
+    'catalog': {
+      'columns': ['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility'],
+      'order': 'lastUpdatedDate',
+      'results': []
+    }
+  })
+};
+
 describe('components/CatalogResults', () => {
   const catalogResultsProps = (options = {}) => ({
+    activeTab: 'myAssets',
     changePage: () => {},
     changeQ: () => {},
     clearAllFilters: () => {},
@@ -35,6 +49,50 @@ describe('components/CatalogResults', () => {
   it('renders a table', () => {
     const element = shallow(<CatalogResults {...catalogResultsProps()} />);
     assert.lengthOf(element.find(ResultListTable), 1);
+  });
+
+  describe('showPager', () => {
+    it('renders the pager when true', () => {
+      const element = mount(
+        <Provider store={store}>
+          <CatalogResults {...catalogResultsProps({showPager: true})} />
+        </Provider>,
+        { context: store }
+      );
+      assert.lengthOf(element.find('.pagination-and-result-count .pager'), 1);
+    });
+
+    it('does not render the pager when false', () => {
+      const element = mount(
+        <Provider store={store}>
+          <CatalogResults {...catalogResultsProps({showPager: false})} />
+        </Provider>,
+        { context: store }
+      );
+      assert.lengthOf(element.find('.pagination-and-result-count .pager'), 0);
+    });
+  });
+
+  describe('showResultCount', () => {
+    it('renders the result count when true', () => {
+      const element = mount(
+        <Provider store={store}>
+          <CatalogResults {...catalogResultsProps({showResultCount: true})} />
+        </Provider>,
+        { context: store }
+      );
+      assert.lengthOf(element.find('.result-count'), 1);
+    });
+
+    it('does not render the result count when false', () => {
+      const element = mount(
+        <Provider store={store}>
+          <CatalogResults {...catalogResultsProps({showResultCount: false})} />
+        </Provider>,
+        { context: store }
+      );
+      assert.lengthOf(element.find('.result-count'), 0);
+    });
   });
 
   describe('enableAssetInventoryLink', () => {

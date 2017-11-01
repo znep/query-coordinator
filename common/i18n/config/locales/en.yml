@@ -140,6 +140,9 @@ en:
         done: Done
         filters: Filters
         reset_filters: Reset Filters
+      result:
+        one: Result
+        other: Results
       result_count:
         no_results: No results
         of: of

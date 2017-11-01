@@ -55,7 +55,7 @@ describe('components/CatalogResults', () => {
     it('renders the pager when true', () => {
       const element = mount(
         <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({showPager: true})} />
+          <CatalogResults {...catalogResultsProps({ showPager: true })} />
         </Provider>,
         { context: store }
       );
@@ -65,7 +65,7 @@ describe('components/CatalogResults', () => {
     it('does not render the pager when false', () => {
       const element = mount(
         <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({showPager: false})} />
+          <CatalogResults {...catalogResultsProps({ showPager: false })} />
         </Provider>,
         { context: store }
       );
@@ -77,7 +77,7 @@ describe('components/CatalogResults', () => {
     it('renders the result count when true', () => {
       const element = mount(
         <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({showResultCount: true})} />
+          <CatalogResults {...catalogResultsProps({ showResultCount: true })} />
         </Provider>,
         { context: store }
       );
@@ -87,7 +87,7 @@ describe('components/CatalogResults', () => {
     it('does not render the result count when false', () => {
       const element = mount(
         <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({showResultCount: false})} />
+          <CatalogResults {...catalogResultsProps({ showResultCount: false })} />
         </Provider>,
         { context: store }
       );

@@ -124,7 +124,7 @@ export class CatalogResults extends Component {
       <div className="manage-assets-link">
         <a href={`/admin/assets?tab=${constants.MY_ASSETS_TAB}`}>
           <button className="btn btn-primary all-assets-button">
-            {I18n.t('shared.asset_browser.view_and_manage_assets')}
+            {I18n.t('shared.asset_browser.view_all')}
             <SocrataIcon name="arrow-right" />
           </button>
         </a>

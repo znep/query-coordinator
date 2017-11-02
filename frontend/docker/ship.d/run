@@ -36,12 +36,6 @@ else
   echo "Warning: Unable to start nginx since the executable isn't installed"
 fi
 
-# Emergency fix for gem native extensions. Our builder worker (where the gems are built)
-# seems to differ from the container actually running the frontend artifact. We are going
-# to keep working on the root cause in the next couple days, but we need this to allow us
-# to deploy hotfixes.
-GEM_HOME="${APP_DIR}/vendor/bundle/ruby/2.3.0/" gem pristine --extensions
-
 # Using exec to replace the current bash script running with PID1 with Unicorn
 # This allows docker to send signals to unicorn, allowing for graceful shutdown
 # The unicorn -N option ignores unicorn specific middleware to mute redundant logs.

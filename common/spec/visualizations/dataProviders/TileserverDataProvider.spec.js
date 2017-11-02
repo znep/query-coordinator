@@ -15,7 +15,7 @@ describe('TileserverDataProvider', function() {
     featuresPerTile: VALID_FEATURES_PER_TILE
   };
 
-  var VALID_WHERE_CLAUSE = '%60source%60%3D%27Voice+In%27';
+  var VALID_WHERE_CLAUSE = "(`issue_description` = 'PARKS & FORESTRY')";
   var VALID_ZOOM = 10;
   var VALID_X = 1;
   var VALID_Y = 1;
@@ -28,7 +28,7 @@ describe('TileserverDataProvider', function() {
     VALID_X,
     VALID_Y
   );
-  var WHERE_CLAUSE_PATTERN = VALID_WHERE_CLAUSE.replace(/\+/, '\\+');
+  var WHERE_CLAUSE_PATTERN = /\(%60issue_description%60%20%3D%20'PARKS%20%26%20FORESTRY'\)/;
 
   describe('constructor', function() {
 
@@ -139,7 +139,7 @@ describe('TileserverDataProvider', function() {
 
       it('should return a function that gets a URL', function(done) {
 
-        var tileGetter = tileserverDataProvider.buildTileGetter('', false);
+        var tileGetter = tileserverDataProvider.buildTileGetter('');
 
         assert.isFunction(tileGetter);
 
@@ -157,11 +157,11 @@ describe('TileserverDataProvider', function() {
       });
     });
 
-    describe('when called with a present where clause', function() {
+    describe('when called with a where clause', function() {
 
       it('should return a function that gets a URL including the specified where clause', function(done) {
 
-        var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, false);
+        var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE);
 
         assert.isFunction(tileGetter);
 
@@ -197,6 +197,26 @@ describe('TileserverDataProvider', function() {
 
       tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
     });
+
+    it('should escape special characters in the where clause', function(done) {
+      var SPECIAL_CHARS = ' %#$&+,/:;=?@';
+      var tileGetter = tileserverDataProvider.buildTileGetter(SPECIAL_CHARS);
+      var SPECIAL_CHARS_PATTERN = /%20%25%23%24%26%2B%2C%2F%3A%3B%3D%3F%40/;
+
+      assert.isFunction(tileGetter);
+
+      onXhrSend = (request) => {
+        assert.equal(request.method, 'GET');
+
+        assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
+        assert.match(request.url, new RegExp(TILE_PATTERN));
+        assert.match(request.url, new RegExp(SPECIAL_CHARS_PATTERN));
+        done();
+      };
+
+      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+
+    });
   });
 
   describe('caching behavior', () => {
@@ -209,7 +229,7 @@ describe('TileserverDataProvider', function() {
 
     it('only sends one request', (done) => {
 
-      let tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, false);
+      let tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE);
 
       let counter = 0;
       onXhrSend = (request) => {

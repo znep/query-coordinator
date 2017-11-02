@@ -254,7 +254,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
         payload.latLng.lng,
         payload.latLng.lat,
         generateWithinBoxClause(columnName, payload.queryBounds),
-        whereClause ? ' AND ' + whereClause : ''
+        whereClause ? ' AND ' + encodeURIComponent(whereClause) : ''
       );
 
     var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);

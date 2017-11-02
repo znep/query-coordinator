@@ -5701,6 +5701,7 @@ en:
           subtitle: Manage the permissions of this %{view_type}
           success: Your permissions have been saved
           title: Permissions
+          title_with_access_manager: Manage Access
           validation:
             valid_saved: This view must be valid and saved
         print:

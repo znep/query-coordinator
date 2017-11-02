@@ -292,6 +292,24 @@ en:
       view_card:
         external_content: External Content
     site_chrome:
+      access_manager:
+        accept: OK
+        audience:
+          organization:
+            subtitle: Everyone in my Organization can view and edit
+            title: Organization
+          private:
+            subtitle: Only specific people in my Organization can view and edit
+            title: Private
+          public:
+            subtitle: Only specific people in my Organization can edit
+            title: Public
+        cancel: Cancel
+        change: Change
+        header:
+          subtitle: Who can see this dataset?
+          title: Manage Access
+        save: Save
       admin:
         data_catalog:
           title: Data Catalog

@@ -1,27 +1,34 @@
 <div class="datasetPermissions commonForm">
-  <div class="formSection">
-    <p class="formHeader">
-      <%= t('screens.ds.grid_sidebar.permissions.status_html', visibility: (@view.is_public? ? t('core.visibility.public').capitalize : t('core.visibility.private').capitalize)) %>
-    </p>
-    <div class="sectionContent togglePermissionsForm">
-      <div class="line inputFirst">
-        <div class="inputWrapper">
-          <input type="radio" id="public" name="dataset-public"
-                <%= raw('checked="checked"') if @view.is_public? %>
-                 class="toggleDatasetPermissions" value="makePublic"/>
+  <%- if FeatureFlags.derive(nil, request).enable_access_manager_modal -%>
+    <div class="formSection">
+      <button class="btn btn-primary" onClick="window.socrata.showAccessManager()"><%= t('screens.ds.grid_sidebar.permissions.title_with_access_manager') %></button>
+    </div>
+  <%- else -%>
+    <div class="formSection">
+      <p class="formHeader">
+        <%= t('screens.ds.grid_sidebar.permissions.status_html', visibility: (@view.is_public? ? t('core.visibility.public').capitalize : t('core.visibility.private').capitalize)) %>
+      </p>
+      <div class="sectionContent togglePermissionsForm">
+        <div class="line inputFirst">
+          <div class="inputWrapper">
+            <input type="radio" id="public" name="dataset-public"
+                  <%= raw('checked="checked"') if @view.is_public? %>
+                  class="toggleDatasetPermissions" value="makePublic"/>
+          </div>
+          <label for="public"><%= t('core.visibility.public').capitalize %></label>
         </div>
-        <label for="public"><%= t('core.visibility.public').capitalize %></label>
-      </div>
-      <div class="line inputFirst">
-        <div class="inputWrapper">
-          <input type="radio" id="private" name="dataset-public"
-                 <%= raw('checked="checked"') unless @view.is_public? %>
-                 class="toggleDatasetPermissions" value="makePrivate" />
+        <div class="line inputFirst">
+          <div class="inputWrapper">
+            <input type="radio" id="private" name="dataset-public"
+                  <%= raw('checked="checked"') unless @view.is_public? %>
+                  class="toggleDatasetPermissions" value="makePrivate" />
+          </div>
+          <label for="private"><%= t('core.visibility.private').capitalize %></label>
         </div>
-        <label for="private"><%= t('core.visibility.private').capitalize %></label>
       </div>
     </div>
-  </div>
+  <%- end -%>
+
   <%- disabled_features = @view.disabled_features -%>
   <%- unless disabled_features.blank? || @view.is_api? -%>
     <div class="formSection disabledFeatureFlags">

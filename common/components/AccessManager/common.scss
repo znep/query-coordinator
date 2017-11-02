@@ -1,0 +1,11 @@
+$default-font-path: 'socrata-components/dist/fonts/';
+@import '~common/styleguide/variables/_colors.scss';
+@import '~common/styleguide/variables/_typography.scss';
+@import '~common/styleguide/partials/_typography.scss';
+@import '~common/styleguide/variables/_breakpoints.scss';
+
+@mixin base {
+  color: $dark-grey-1;
+  font-family: $default-font-stack;
+  line-height: $default-line-height;
+}

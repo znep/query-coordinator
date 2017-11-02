@@ -21,6 +21,7 @@ const mapStateStateToProps = ({ entities, ui }, { params }) => {
   return {
     hrefs,
     schemaExists: !!revision.output_schema_id,
+    blobExists: !!revision.blob_id,
     errors: ui.forms.hrefForm.errors,
     revisionId
   };
@@ -30,6 +31,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   hrefs: stateProps.hrefs,
   errors: stateProps.errors,
   schemaExists: stateProps.schemaExists,
+  blobExists: stateProps.blobExists,
   syncStateToStore: state => {
     return stateProps.revisionId == null ? _.noop : dispatch(editRevision(stateProps.revisionId, state));
   },

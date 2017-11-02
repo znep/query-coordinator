@@ -1,0 +1,70 @@
+<% content_for :head do %>
+  <title>Example Usage: Blobby Datasets</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section" id="checkbox">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Blobby Datasets</h2>
+  <div class="styleguide-example" id="preview-image">
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+  <div class="styleguide-example" id="download-without-manage">
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+  </div>
+  <div class="styleguide-example" id="download-with-manage">
+  <div class="styleguide-code-example" id="styleguide-code-example-3"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= render_demos_javascript_environment %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    const props1 = {
+      isPreviewable: true,
+      previewUrl: '/images/map_cluster_large.png',
+      previewType: 'image',
+      blobName: 'alt_text_is_blobname'
+    };
+
+    ReactDOM.render(
+      React.createElement(components.BlobPreview, props1),
+      document.getElementById('preview-image')
+    );
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    const props2 = {
+      showDownloadSection: true,
+      showManageSection: false,
+      blobFilename: 'the_filename.png',
+      downloadLink: '/images/map_cluster_large.png',
+      editBlobSourceLink: '/unused',
+    };
+
+    ReactDOM.render(
+      React.createElement(components.BlobDownload, props2),
+      document.getElementById('download-without-manage')
+    );
+  </script>
+
+  <script type="text/javascript" id="example-3">
+    const props3 = {
+      showDownloadSection: true,
+      showManageSection: true,
+      blobFilename: 'the_filename.png',
+      downloadLink: '/images/map_cluster_large.png',
+      editBlobSourceLink: 'http://snuffleupadata.com',
+    };
+
+    ReactDOM.render(
+      React.createElement(components.BlobDownload, props3),
+      document.getElementById('download-with-manage')
+    );
+  </script>
+<% end %>

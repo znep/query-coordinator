@@ -219,6 +219,13 @@ en:
           hidden: Hidden
           hidden_from_catalog: Hidden from catalog
     components:
+      blobs:
+        preview: Preview
+        download:
+          download: Download
+          edit_prompt_button: Edit Source
+          edit_prompt_message: Edit the source file for this dataset.
+          title: Download this Resource
       color_picker:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color

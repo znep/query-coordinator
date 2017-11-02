@@ -1848,13 +1848,6 @@ en:
       resource_type: Resource Type
       title: Access this Dataset via SODA API
     back: Back
-    blob_download:
-      download: Download
-      edit_prompt_button: Edit Source
-      edit_prompt_message: Edit the source file for this dataset.
-      title: Download this Resource
-    blob_preview:
-      title: Preview
     bootstrap_button: Create a Visualization
     bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?

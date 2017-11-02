@@ -6,58 +6,18 @@ import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import * as Links from 'links/links';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import BlobPreview from 'containers/BlobPreviewContainer';
+import BlobDownload from 'containers/BlobDownloadContainer';
 import SaveBlobButton from 'components/SaveBlobButton/SaveBlobButton';
 import { updateRevision, editRevision, shapeRevision } from 'reduxStuff/actions/revisions';
-import { exportSource } from 'links/dsmapiLinks';
 import FlashMessage from 'containers/FlashMessageContainer';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 
-// TODO: clean up, internationalize as part of EN-19664
+// TODO: clean up, internationalize as part of EN-19639
 export class ShowBlobPreview extends Component {
-  getBlobType() {
-    const contentType = this.props.source.content_type;
-    // should match definitions in frontend/app/models/displays/blob.rb
-    const googleViewables = [
-      'application/pdf',
-      'application/vndms-powerpoint',
-      'image/tiff',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ];
-    const imageViewables = ['image/jpeg', 'image/gif', 'image/png'];
-    if (
-      _.some(googleViewables, ct => {
-        return contentType.match(ct);
-      })
-    ) {
-      return 'google_viewer';
-    } else if (
-      _.some(imageViewables, ct => {
-        return contentType.match(ct);
-      })
-    ) {
-      return 'image';
-    } else {
-      return 'link';
-    }
-  }
-
-  getBlobPreview(previewUrl, filename) {
-    switch (this.getBlobType()) {
-      case 'image':
-        return <img src={previewUrl} alt={filename} />;
-      case 'google_viewer':
-        var location = document.location;
-        var url = `${location.protocol}//${location.hostname}${previewUrl}`;
-        return <iframe src={`//docs.google.com/gview?url=${url}&embedded=true`} />;
-      default:
-        return null;
-    }
-  }
-
   render() {
     const { source, revision, goHome, saveCurrentBlob } = this.props;
-    const previewUrl = exportSource(revision.revision_seq, source.id);
+
     return (
       <div className="blobPreview">
         <Modal fullScreen onDismiss={goHome}>
@@ -67,16 +27,12 @@ export class ShowBlobPreview extends Component {
           <ModalContent className="content content">
             <FlashMessage />
             <section>
-              <h1>Preview</h1>
-              <div>{this.getBlobPreview(previewUrl, source.filename)}</div>
+              <BlobPreview source={source} revision={revision} />
               <div>
-                <p>{source.filename}</p>
-                <p>Filetype: {source.content_type}</p>
-                <p>Filesize: {source.filesize}</p>
-                <a href={previewUrl}>
-                  <button>Download</button>
-                </a>
+                <p id="source-filetype">Filetype: {source.content_type}</p>
+                <p id="source-filesize">Filesize: {source.filesize}</p>
               </div>
+              <BlobDownload source={source} revision={revision} />
             </section>
           </ModalContent>
           <ModalFooter>

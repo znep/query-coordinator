@@ -1,61 +1,35 @@
 import { expect, assert } from 'chai';
-import { BlobPreview } from 'components/BlobPreview';
+import { mapStateToProps } from 'components/BlobPreview';
 
 describe('components/BlobPreview', function() {
-  function getProps(props) {
-    return _.defaultsDeep({}, props, {
-      view: {
-        isBlobby: true,
-        blobId: 'guid',
-        blobType: 'image'
-      }
-    });
-  }
+  const defaultState = {
+    view: {
+      isBlobby: true,
+      blobId: 'guid',
+      blobType: 'image'
+    }
+  };
 
-  it('renders an element if the view is blobby', function() {
-    var element = renderComponent(BlobPreview, getProps());
-    assert.ok(element);
+  it('sets isPreviewable to true when view is blobby', () => {
+    assert.isTrue(mapStateToProps(defaultState).isPreviewable);
   });
 
-  it('does not render an element if the view is not blobby', function() {
-    var element = renderComponent(BlobPreview, getProps({
-      view: {
-        isBlobby: false
-      }
-    }));
-
-    assert.isNull(element);
+  it('sets isPreviewable to false when view is not blobby', () => {
+    const newState = {view: {...defaultState.view, isBlobby: false}}
+    assert.isFalse(mapStateToProps(newState).isPreviewable);
   });
 
-  it('does not render an element if the blob has an unknown type', function() {
-    var element = renderComponent(BlobPreview, getProps({
-      view: {
-        blobType: 'a catchy mp3 file'
-      }
-    }));
-
-    assert.isNull(element);
+  it('sets previewUrl to include the view elements', () => {
+    const returnedProps = mapStateToProps(defaultState)
+    assert.include(returnedProps.previewUrl, defaultState.view.id);
+    assert.include(returnedProps.previewUrl, defaultState.view.blobId);
   });
 
-  describe('preview', function() {
-    it('renders an image if the blob is an image', function() {
-      var element = renderComponent(BlobPreview, getProps());
-      var image = element.querySelector('img');
-      assert.ok(image);
-      expect(image.getAttribute('src')).to.contain('guid');
-    });
+  it('sets previewType to view.blobType', () => {
+    assert.equal(mapStateToProps(defaultState).previewType, defaultState.view.blobType);
+  });
 
-    it('renders an iframe if the blob is a document', function() {
-      var element = renderComponent(BlobPreview, getProps({
-        view: {
-          blobType: 'google_viewer'
-        }
-      }));
-
-      var iframe = element.querySelector('iframe');
-      assert.ok(iframe);
-      expect(iframe.getAttribute('src')).to.contain('docs.google.com');
-      expect(iframe.getAttribute('src')).to.contain('guid');
-    });
+  it('sets blobName to view.name', () => {
+    assert.equal(mapStateToProps(defaultState).blobName, defaultState.view.blobName);
   });
 });

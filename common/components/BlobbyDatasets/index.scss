@@ -1,0 +1,28 @@
+// The styles for BlobDownload (dataset-download-section) are in
+// common/styleguide/partials/_dataset-download-section.scss because
+// DSLP Href datasets depend on them
+
+.blob-preview {
+  padding: 11px;
+  overflow: hidden;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+    padding: 11px 0;
+  }
+
+  img {
+    max-height: 500px;
+    max-width: 100%;
+    width: auto;
+  }
+
+  iframe {
+    border: 1px $light-grey-4 solid;
+    border-bottom-width: 2px;
+    width: 100%;
+    height: 500px;
+  }
+}

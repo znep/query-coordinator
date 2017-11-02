@@ -157,9 +157,18 @@
 
     <div class="sidebarOptionsContainer clearfix">
       <ul id="sidebarOptions" class="clearfix">
-        <% sidebar_links.each do |link| %>
-          <li><%= sidebar_link(link) %></li>
-        <% end %>
+        <li><%= sidebar_link('edit') %></li>
+        <li><%= sidebar_link('manage') %></li>
+        <li><%= sidebar_link('moreViews') %></li>
+        <li><%= sidebar_link('filter', include_alert_icon = true) %></li>
+        <li><%= sidebar_link('visualize') %></li>
+        <li><%= sidebar_link('export') %></li>
+        <li><%= sidebar_link('discuss') %></li>
+        <li><%= sidebar_link('embed') %></li>
+        <li><%= sidebar_link('about') %></li>
+        <%- if !enable_2017_grid_view_refresh_for_current_request? -%>
+          <li class="hide"><%= sidebar_link('more') %></li>
+        <%- end -%>
       </ul>
     </div>
   </div>
@@ -270,8 +279,6 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    blist.sidebarLinks = <%= raw json_escape(sidebar_links.to_json) %>;
-
     $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({metric: 'main', model: blist.dataset}); });
 
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
@@ -282,16 +289,6 @@
 
     blist.sidebarPosition = '<%= sidebar_position %>';
     blist.defaultPane = '<%= default_pane %>';
-
-    <% if FeatureFlags.derive(nil, request)[:grid_view_anchors_for_panes] %>
-      if (window.location.hash.length > 0) {
-        var matching = blist.sidebarLinks.filter(function(link) {
-          if(window.location.hash == link['href']) {
-            blist.defaultPane = link['pane'];
-          }
-        });
-      }
-    <% end %>
 
     $.extend(blist.configuration, <%= raw json_escape(configuration.to_json) %>);
 
@@ -330,8 +327,6 @@
 
   <script type="text/javascript">
     if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
-    $(document).ready(() => {
-      if (window.lastAccessed) { window.lastAccessed.add('<%= @view.id %>'); }
-    });
+    $(document).ready(() => { if (window.lastAccessed) { window.lastAccessed.add('<%= @view.id %>'); } });
   </script>
 <% end %>

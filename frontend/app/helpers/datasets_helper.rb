@@ -366,38 +366,17 @@ module DatasetsHelper
     )
   end
 
-
-  DEFAULT_PANES = ['edit', 'manage', 'moreViews', 'filter', 'visualize', 'export', 'discuss', 'embed', 'about']
-
-  MORE_PANE = 'more'
-
-  def sidebar_links()
-    panes = DEFAULT_PANES.clone
-
-    if !enable_2017_grid_view_refresh_for_current_request?
-      panes << MORE_PANE
-    end
-
-    panes.map { |pane|
-      {
-        :pane => pane,
-        :href => "##{pane[0].capitalize}#{pane[1..-1]}",
-        :title => t("screens.ds.grid_sidebar.tabs.#{pane.underscore}"),
-        :include_alert_icon => pane == 'filter'
-      }
-    }
-  end
-
-  def sidebar_link(link)
-    span = content_tag(:span, '', :class => 'icon') << link[:title]
-    span << content_tag(:span, '', :class => 'alertIcon') if link[:include_alert_icon]
-    pane = link[:pane]
+  def sidebar_link(pane, include_alert_icon = false)
+    translated_title = t("screens.ds.grid_sidebar.tabs.#{pane.underscore}")
+    link = "##{pane[0].capitalize}#{pane[1..-1]}"
+    span = content_tag(:span, '', :class => 'icon') << translated_title
+    span << content_tag(:span, '', :class => 'alertIcon') if include_alert_icon
     pane = 'feed' if pane == 'discuss' # Goddamnit Jeff!
     if pane == 'more' # Goddamnit Jeff!
       aria_label = t('screens.ds.grid_sidebar.tabs.more_asset_actions')
-      content_tag(:a, span, :href => link[:href], :title => link[:title], :class => 'other', :'aria-label' => aria_label)
+      content_tag(:a, span, :href => link, :title => translated_title, :class => 'other', :'aria-label' => aria_label)
     else
-      content_tag(:a, span, :href => link[:href], :title => link[:title], :class => link[:pane], 'data-paneName' => link[:pane])
+      content_tag(:a, span, :href => link, :title => translated_title, :class => pane, 'data-paneName' => pane)
     end
   end
 

@@ -410,11 +410,6 @@ $(function() {
       $opts.find('li').removeClass('active');
 
       var $activeLink = $('#sidebarOptions').find('a[data-paneName=' + primaryPane + ']');
-
-      if (window.blist.feature_flags.grid_view_anchors_for_panes) {
-        window.location.hash = $activeLink.attr('href');
-      }
-
       if ($activeLink.length > 0) {
         $opts.css('background-color', $activeLink.css('background-color'));
         $activeLink.closest('li').addClass('active');
@@ -425,10 +420,6 @@ $(function() {
     onSidebarClosed: function() {
       $('#sidebarOptions').css('background-color', 'transparent').
       find('li').removeClass('active');
-
-      if (window.blist.feature_flags.grid_view_anchors_for_panes) {
-        window.location.hash = '';
-      }
     },
     columnChoosers: $columnChoosersDomForType,
     renderTypeManager: blist.$container.renderTypeManager(),

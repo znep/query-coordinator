@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import FormatPreview from './FormatPreview';
 import TextColumnFormat from './TextColumnFormat';

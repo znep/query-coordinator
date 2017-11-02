@@ -5,7 +5,7 @@ import AssetBrowser from 'common/components/AssetBrowser';
 import { ApprovalActionButtons } from 'common/components/AssetBrowser/components';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
-import { Settings } from 'common/components/AssetBrowser/components/approvals/settings';
+import SettingsContainer from 'common/components/AssetBrowser/components/approvals/settings/settings_container';
 
 export default class Approvals extends Component {
   render() {
@@ -26,7 +26,7 @@ export default class Approvals extends Component {
 
     if (_.includes(serverConfig.currentUser.rights, 'configure_approvals')) {
       tabs[constants.SETTINGS_TAB] = {
-        component: Settings
+        component: SettingsContainer
       };
     }
 

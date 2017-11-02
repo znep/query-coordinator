@@ -2318,7 +2318,6 @@ en:
       title: Import From URL
       unknown_error: An unknown error occurred
       url_prompt: Enter the URL of a data file hosted by an external service.
-      start_import: Start Import
     format_column:
       title: "{name} display formatting"
       right: Right

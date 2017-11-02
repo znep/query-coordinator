@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
 
 import airbrake from 'common/airbrake';
 import { dateLocalize } from 'common/locale';
 import Approvals from './components/approvals';
+import { AppContainer } from 'react-hot-loader';
 
 if (_.get(window, 'serverConfig.environment') !== 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));

@@ -60,7 +60,7 @@ export default function RowDetails({ rowCount, columnCount, rowLabel }) {
           {I18n.common.dataset_contents.row_display_unit}
         </dt>
 
-        <dd className="metadata-pair-value">
+        <dd itemProp="variableMeasured" className="metadata-pair-value">
           {rowLabel}
         </dd>
       </div>

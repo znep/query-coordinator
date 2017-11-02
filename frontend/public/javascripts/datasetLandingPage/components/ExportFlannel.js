@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
+import { getDownloadLink, getDownloadType } from 'common/downloadLinks';
 
 const featuredLinksList = ['csv', 'csv_for_excel'];
 
@@ -29,38 +30,9 @@ export default class ExportFlannel extends PureComponent {
 
   renderDownloadLink(format) {
     const { view, onDownloadData } = this.props;
-    let extension = format;
-    let type = format.toUpperCase();
-    const params = {
-      accessType: 'DOWNLOAD'
-    };
 
-    switch (format) { // eslint-disable-line default-case
-      case 'csv_for_excel':
-        extension = 'csv';
-        type = 'CSV for Excel';
-        params.bom = 'true';
-        params.format = 'true';
-        break;
-
-      case 'csv_for_excel_europe':
-        extension = 'csv';
-        type = 'CSV for Excel (Europe)';
-        params.bom = 'true';
-        params.format = 'true';
-        params.delimiter = ';';
-        break;
-
-      case 'tsv_for_excel':
-        extension = 'tsv';
-        type = 'TSV for Excel';
-        params.bom = 'true';
-        break;
-    }
-
-    // Construct the query string, url, and label
-    const queryString = $.param(params);
-    const url = `/api/views/${view.id}/rows.${extension}?${queryString}`;
+    const url = getDownloadLink(view.id, format);
+    const type = getDownloadType(format);
     const label = I18n.export[format] || format.toUpperCase();
 
     return (

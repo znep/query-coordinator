@@ -149,7 +149,7 @@ class InfoPane extends Component {
     return (
       <div className={descriptionContainerClassName}>
         <div className="entry-description" ref={(el) => this.description = el}>
-          <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
+          <div itemProp="description" dangerouslySetInnerHTML={{ __html: purify(description) }} />
           {moreToggle}
           {lessToggle}
         </div>
@@ -291,7 +291,9 @@ class InfoPane extends Component {
               <div className="entry-title">
                 <h1 className="info-pane-name">
                   {privateIcon}
-                  {nameElement}
+                  <span itemProp="name">
+                    {nameElement}
+                  </span>
                 </h1>
 
                 {provenanceBadge}

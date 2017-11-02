@@ -1,5 +1,6 @@
 require 'version_middleware'
 require 'time'
+require 'json'
 
 unless defined?(Frontend)
   class Frontend
@@ -13,10 +14,12 @@ describe VersionMiddleware do
   let(:app) { double(:app) }
   let(:revision_number) { 'abcdefg' }
   let(:revision_date) { 'the timestamp' }
+  let(:cheetah_revision_number) { 'currentSHAofCheetahMaster' }
 
   before do
     stub_const('REVISION_NUMBER', revision_number)
     stub_const('REVISION_DATE', revision_date)
+    stub_const('CHEETAH_REVISION_NUMBER', cheetah_revision_number)
   end
 
   subject { VersionMiddleware.new(app) }
@@ -84,7 +87,12 @@ describe VersionMiddleware do
           expect(subject.call(environment_hash_with_version_json)).to eql([
             '200',
             {'Content-Type' => 'application/json'},
-            ["{\"facility\":\"frontend\",\"revision\":\"abcdefg\",\"timestamp\":\"the timestamp\"}"]
+            [{
+              facility: 'frontend',
+              revision: 'abcdefg',
+              timestamp: 'the timestamp',
+              cheetahRevision: 'currentSHAofCheetahMaster'
+            }.to_json]
           ])
         end
 
@@ -100,19 +108,32 @@ describe VersionMiddleware do
           expect(subject.call(environment_hash_with_version_json)).to eql([
             '200',
             {'Content-Type' => 'application/json'},
-            ["{\"facility\":\"frontend\",\"revision\":\"#{revision_number}\",\"timestamp\":\"#{revision_date}\",\"version\":\"1.2.3\"}"]
+            [{
+              facility: 'frontend',
+              revision: revision_number,
+              timestamp: revision_date,
+              cheetahRevision: cheetah_revision_number,
+              version: '1.2.3'
+            }.to_json]
           ])
         end
 
         context 'when revision does not exist' do
           let(:revision_number) { nil }
           let(:revision_date) { nil }
+          let(:cheetah_revision_number) { '' }
 
           it 'returns a JSON payload without revision information' do
             expect(subject.call(environment_hash_with_version_json)).to eql([
               '200',
               {'Content-Type' => 'application/json'},
-              ["{\"facility\":\"frontend\",\"revision\":null,\"timestamp\":null,\"version\":\"1.2.3\"}"]
+              [{
+                facility: 'frontend',
+                revision: nil,
+                timestamp: nil,
+                cheetahRevision: '',
+                version: '1.2.3'
+              }.to_json]
             ])
           end
         end

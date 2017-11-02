@@ -8,13 +8,15 @@ class VersionController < ApplicationController
       format.html do
         @revision_number = REVISION_NUMBER
         @revision_date = Time.at(REVISION_DATE) if REVISION_DATE
+        @cheetah_revision_number = CHEETAH_REVISION_NUMBER
       end
       format.json do
         render json: {
           facility: 'frontend',
           version: Frontend.version,
           revision: REVISION_NUMBER,
-          timestamp: REVISION_DATE
+          timestamp: REVISION_DATE,
+          cheetahRevision: CHEETAH_REVISION_NUMBER
         }
       end
     end

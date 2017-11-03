@@ -271,19 +271,27 @@ export class FilterItem extends Component {
     const CONTROL = 'control';
 
     const closeIfBlurred = (which) => {
-      _.defer(() => {
-        const focused = document.activeElement;
-        let container;
-        if (which === CONFIG) {
-          container = this.configContainer;
-        } else if (which === CONTROL) {
-          container = this.controlContainer;
-        }
-        const hasFocus = $.contains(container, focused);
-        if (!hasFocus) {
-          this.closeAll();
-        }
-      });
+
+      // NOTE: While this works well for keyboard nav,
+      // it fails on clicks (even if the click happens
+      // inside the component)
+      // Leaving this code commented in for now, as this
+      // change is a hotfix for a more serious bug introduced
+      // in EN-19848
+      // TODO EN-19856 to fix keyboard blur -> closes container
+      // _.defer(() => {
+      //   const focused = document.activeElement;
+      //   let container;
+      //   if (which === CONFIG) {
+      //     container = this.configContainer;
+      //   } else if (which === CONTROL) {
+      //     container = this.controlContainer;
+      //   }
+      //   const hasFocus = $.contains(container, focused);
+      //   if (!hasFocus) {
+      //     this.closeAll();
+      //   }
+      // });
     };
 
     // NOTE: You can't use ref'd values right away.

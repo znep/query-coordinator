@@ -4,7 +4,6 @@ import ApprovalActionButtons from 'common/components/AssetBrowser/components/app
 import AssetCounts from 'common/components/AssetBrowser/components/asset_counts';
 import AssetInventoryLink from 'common/components/AssetBrowser/components/asset_inventory_link';
 import CatalogResults from 'common/components/AssetBrowser/components/catalog_results';
-import FeedbackPanel from 'common/components/AssetBrowser/components/feedback_panel';
 import Header from 'common/components/AssetBrowser/components/header';
 import Provenance from 'common/components/AssetBrowser/components/provenance';
 import ResultCount from 'common/components/AssetBrowser/components/result_count';
@@ -22,7 +21,6 @@ module.exports = {
   AssetCounts,
   AssetInventoryLink,
   CatalogResults,
-  FeedbackPanel,
   Header,
   Provenance,
   ResultCount,

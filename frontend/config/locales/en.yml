@@ -2180,7 +2180,7 @@ en:
         title: You are about to make your dataset public
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'
-        data_satisfied: Added a data file
+        data_satisfied: Added a data file, and finished validation
         make_accessible: Make the dataset accessible to others
         metadata_satisfied: Filled out all required metadata
         publish_dataset: Publish Dataset

@@ -26,7 +26,7 @@ describe('components/Notification', () => {
         <span className="details-msg">Test Message</span>
       </Notification>
     );
-    assert.isAtLeast(component.find('CSSTransitionGroup').length, 1);
+    assert.isAtLeast(component.find('CSSTransition').length, 1);
   });
 
   it('correctly toggles details', () => {
@@ -40,11 +40,12 @@ describe('components/Notification', () => {
         <span className="details-msg">Test Message</span>
       </Notification>
     );
-    assert.equal(component.find('.details-msg').length, 1);
+
+    assert.isTrue(component.find('CSSTransition').prop('in'));
     component.find('.detailsToggle').simulate('click');
-    assert.equal(component.find('.details-msg').length, 0);
+    assert.isFalse(component.find('CSSTransition').prop('in'));
     component.find('.detailsToggle').simulate('click');
-    assert.equal(component.find('.details-msg').length, 1);
+    assert.isTrue(component.find('CSSTransition').prop('in'));
   });
 
   it('correctly displays in-progress state', () => {
@@ -72,9 +73,8 @@ describe('components/Notification', () => {
         <span className="details-msg">Test Message</span>
       </Notification>
     );
-
     assert.equal(component.find('.detailsToggle').length, 1);
-    assert.equal(component.find('CSSTransitionGroup').length, 1);
+    assert.equal(component.find('CSSTransition').length, 1);
     assert.equal(component.find('ProgressBar').length, 1);
   });
 });

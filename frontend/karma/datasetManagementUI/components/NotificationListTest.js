@@ -20,7 +20,8 @@ describe('components/NotificationList', () => {
   const component = shallow(<NotificationList {...defaultProps} />);
 
   it('renders a css animation', () => {
-    assert.equal(component.find('CSSTransitionGroup').length, 1);
+
+    assert.equal(component.find('TransitionGroup').length, 1);
   });
 
   it('renders the correct number of notifications', () => {

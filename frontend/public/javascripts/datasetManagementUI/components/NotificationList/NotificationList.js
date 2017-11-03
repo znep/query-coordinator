@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { CSSTransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import UploadNotification from 'containers/UploadNotificationContainer';
 import AttachmentNotification from 'components/AttachmentNotification/AttachmentNotification';
 
@@ -12,34 +12,48 @@ import styles from './NotificationList.scss';
 // that status out are handled farther down the component tree.
 const NotificationList = ({ notifications }) => {
   const items = notifications.map((notification, i) => {
+    let item;
+
     switch (notification.kind) {
       case 'source':
-        return <UploadNotification notification={notification} key={i} />;
+        item = <UploadNotification notification={notification} key={i} />;
+        break;
       case 'attachment':
-        return (<AttachmentNotification
+        item = (<AttachmentNotification
           filename={notification.subject}
           percent={notification.percent}
           status={notification.status}
           error={notification.error}
           key={i} />);
+        break;
       default:
-        return null;
+        item = null;
     }
+
+    if (!item) {
+      return null;
+    }
+
+    return (
+      <CSSTransition
+        key={i}
+        classNames={{
+          enter: styles.enter,
+          enterActive: styles.enterActive,
+          exit: styles.exit,
+          exitActive: styles.exitActive
+        }}
+        timeout={{ enter: 500, exit: 500 }}>
+        {item}
+      </CSSTransition>
+    );
   });
 
   return (
     <div className={styles.list}>
-      <CSSTransitionGroup
-        transitionName={{
-          enter: styles.enter,
-          enterActive: styles.enterActive,
-          leave: styles.leave,
-          leaveActive: styles.leaveActive
-        }}
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={500}>
+      <TransitionGroup>
         {items}
-      </CSSTransitionGroup>
+      </TransitionGroup>
     </div>
   );
 };

@@ -7,6 +7,20 @@ import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
 import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
 import styles from './Table.scss';
+import { CSSTransition } from 'react-transition-group';
+
+export const FadeOut = ({ children, ...props }) => (
+  <CSSTransition
+    {...props}
+    timeout={500}
+    appear
+    classNames={{
+      exit: styles.fadeExit,
+      exitActive: styles.fadeExitActive
+    }}>
+    {children}
+  </CSSTransition>
+);
 
 // these are the types that mean something might be vaguely geo-y. they come from clads.
 // view them by doing:
@@ -45,27 +59,31 @@ function Table({
       <thead>
         <tr>
           {outputColumns.map(column => (
-            <ColumnHeader
-              key={column.id}
-              canTransform={canTransform}
-              outputSchema={outputSchema}
-              outputColumn={column}
-              columnCount={outputColumns.length} />
+            <FadeOut key={column.id}>
+              <ColumnHeader
+                key={column.id}
+                canTransform={canTransform}
+                outputSchema={outputSchema}
+                outputColumn={column}
+                columnCount={outputColumns.length} />
+            </FadeOut>
           ))}
         </tr>
         <tr className={styles.columnStatuses}>
           {outputColumns.map(column => (
-            <TransformStatus
-              key={column.id}
-              path={path}
-              transform={column.transform}
-              displayState={displayState}
-              columnId={column.id}
-              totalRows={inputSchema.total_rows}
-              shortcuts={genShortcuts(column)}
-              showShortcut={showShortcut}
-              flyouts={showFlyouts}
-              onClickError={() => onClickError(path, column.transform, displayState)} />
+            <FadeOut key={column.id}>
+              <TransformStatus
+                key={column.id}
+                path={path}
+                transform={column.transform}
+                displayState={displayState}
+                columnId={column.id}
+                totalRows={inputSchema.total_rows}
+                shortcuts={genShortcuts(column)}
+                showShortcut={showShortcut}
+                flyouts={showFlyouts}
+                onClickError={() => onClickError(path, column.transform, displayState)} />
+            </FadeOut>
           ))}
         </tr>
         {numRowErrors > 0 && (

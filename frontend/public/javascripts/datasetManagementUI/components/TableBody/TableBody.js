@@ -6,6 +6,8 @@ import RowError from 'components/RowError/RowError';
 import * as DisplayState from 'lib/displayState';
 import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import styles from './TableBody.scss';
+import { TransitionGroup } from 'react-transition-group';
+import { FadeOut } from 'components/Table/Table';
 
 class TableBody extends Component {
   componentDidMount() {
@@ -99,13 +101,17 @@ class TableBody extends Component {
 
   render() {
     const data = this.getData();
-    const rows = data.map(
-      row => (row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row))
-    );
+    const rows = data.map(row => {
+      return (
+        <FadeOut key={row.rowIdx}>
+          {row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row)}
+        </FadeOut>
+      );
+    });
 
     return (
       <tbody className={styles.tableBody} tabIndex="0">
-        {rows}
+        <TransitionGroup>{rows}</TransitionGroup>
       </tbody>
     );
   }

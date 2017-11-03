@@ -26,6 +26,7 @@ class VersionMiddleware
       result[:facility] = 'frontend'
       result[:revision] = REVISION_NUMBER
       result[:timestamp] = REVISION_DATE
+      result[:cheetahRevision] = CHEETAH_REVISION_NUMBER
       result[:version] = Frontend.version
     rescue
     end

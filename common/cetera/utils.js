@@ -245,7 +245,7 @@ export const ceteraUtils = (() => {
           previewImageUrl: ceteraResult.preview_image_url,
           tags: ceteraResult.classification.tags,
           type: mapResultType(ceteraResultResource.type),
-          viewCount: parseInt(ceteraResultResource.view_count.page_views_total, 10)
+          viewCount: parseInt(ceteraResultResource.page_views.page_views_total, 10)
         };
       });
     }

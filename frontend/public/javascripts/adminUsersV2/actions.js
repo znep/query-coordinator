@@ -103,6 +103,18 @@ const loadRoles = () => {
         id: id.toString(),
         isDefault
       };
+    }).sort((a, b) => {
+      if (a.isDefault === b.isDefault) {
+        if (a.name < b.name) {
+          return -1;
+        } else if (a.name > b.name) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return a.isDefault ? -1 : 1;
+      }
     })
   );
 };

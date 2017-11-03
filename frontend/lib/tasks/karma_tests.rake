@@ -50,6 +50,7 @@ namespace :test do
     # ADD NEW TEST SUITES HERE
     {
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
+      'adminActivityFeedSoql' => 'update_admin_activity_feed_soql_translations',
       'adminGoals' => 'update_admin_goals_translations',
       'adminUsersV2' => 'update_admin_users_v2_translations',
       'authentication' => 'update_authentication_translations',
@@ -75,6 +76,7 @@ namespace :test do
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
       'test:karma:translations:update_admin_activity_feed_translations',
+      'test:karma:translations:update_admin_activity_feed_soql_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_users_v2_translations',
       'test:karma:translations:update_authentication_translations',
@@ -220,6 +222,17 @@ namespace :test do
         )
       end
 
+      task :update_admin_activity_feed_soql_translations do
+        translation_map = {
+          '': 'screens.admin.jobs'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/adminActivityFeedSoql/mockTranslations.js'
+        )
+      end
+
       task :update_admin_users_v2_translations do
         translation_map = {
           '': 'users'
@@ -269,6 +282,7 @@ namespace :test do
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
       'karma:adminActivityFeed',
+      'karma:adminActivityFeedSoql',
       'karma:adminUsersV2',
       'karma:catalogLandingPage',
       'karma:common',

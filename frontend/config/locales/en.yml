@@ -1848,13 +1848,6 @@ en:
       resource_type: Resource Type
       title: Access this Dataset via SODA API
     back: Back
-    blob_download:
-      download: Download
-      edit_prompt_button: Edit Source
-      edit_prompt_message: Edit the source file for this dataset.
-      title: Download this Resource
-    blob_preview:
-      title: Preview
     bootstrap_button: Create a Visualization
     bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
@@ -2163,6 +2156,7 @@ en:
         processing_succeeded: Data processing successfully finished
         started_processing: started data processing
         opened_revision: opened a revision
+        changed_parse_options: changed the file parsing options
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2186,7 +2180,7 @@ en:
         title: You are about to make your dataset public
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'
-        data_satisfied: Added a data file
+        data_satisfied: Added a data file, and finished validation
         make_accessible: Make the dataset accessible to others
         metadata_satisfied: Filled out all required metadata
         publish_dataset: Publish Dataset
@@ -2490,6 +2484,8 @@ en:
       submessage: ...or click Browse to choose a file from your computer
       upload_link: Upload a Data File
       url_link: Import Data from URL
+      total_rows: "{0} row, {1} column dataset"
+      in_progress: Still in Progress
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.
@@ -5709,6 +5705,7 @@ en:
           subtitle: Manage the permissions of this %{view_type}
           success: Your permissions have been saved
           title: Permissions
+          title_with_access_manager: Manage Access
           validation:
             valid_saved: This view must be valid and saved
         print:
@@ -6562,7 +6559,7 @@ en:
       remove_pending_user: Remove
       remove_role: Remove
       reset_password: Reset Password
-      resend_pending_user_email: Resend email
+      resend_pending_user_email: Resend invite
     add_new_users:
       add_users: Add User(s)
       subtitle: Add a single user or multiple users with the same role.
@@ -6576,9 +6573,9 @@ en:
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: No role selected
       no_emails_provided: No email addresses provided
-      own_role: Unable to change your own role.
+      own_role: Unable to change/remove your own role.
       server_error_html: An error has occurred while performing this action.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
-      unkown: An unknown error has occurred.
+      unknown: An unknown error has occurred.
     export_as_csv: Export as CSV
     headers:
       actions: Actions
@@ -6593,7 +6590,7 @@ en:
       unknown: unknown
     notifications:
       pending_user_removed: Pending user removed!
-      resent_email_success: Pending user email resent!
+      resent_email_success: Pending user invite resent!
       add_user_success: Successfully added user!
       password_reset: Password reset.
       role_changed: User's role successfully changed.

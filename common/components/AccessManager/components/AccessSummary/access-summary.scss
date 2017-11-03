@@ -1,0 +1,20 @@
+.audience-container {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 2%;
+  padding-right: 10%;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+}
+
+.change-audience-button {
+  padding-left: 25px;
+  padding-right: 25px;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

@@ -87,6 +87,10 @@ http://www.socrata.com
   <%= render_mixpanel_tracker %>
   <%= render_pendo_tracker %>
 
+  <%- if @render_styleguide_on_legacy_pages -%>
+    <%= rendered_stylesheet_tag 'styleguide-no-tag-level' %>
+  <%- end -%>
+
   <%= get_favicon_tag %>
 </head>
 
@@ -143,6 +147,8 @@ http://www.socrata.com
           <%= yield :admin_header %>
         </div>
       <%- end %>
+
+      <div id="access-manager-container"></div>
 
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>

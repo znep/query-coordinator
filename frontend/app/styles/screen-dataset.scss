@@ -418,6 +418,17 @@ body.grid-view-classic {
 body.grid-view-2017-refresh {
   font-family: 'Open Sans', sans-serif;
 
+  .bt-content {
+    & ul, & ol {
+      list-style: none;
+      padding-left: 0;
+    }
+  }
+  
+  .emailDatasetDialog .textWrapper {
+    box-sizing: border-box;
+  }
+
   #datasetBar {
     position: relative;
     display: block;
@@ -760,6 +771,7 @@ body.grid-view-2017-refresh {
             border: solid 1px #c8c8c8;
             border-radius: 2px;
             overflow: hidden;
+            padding-left: 0;
 
             li {
               display: block;
@@ -1578,6 +1590,9 @@ body.grid-view-2017-refresh {
   $lightGrey: #c8c8c8;
   $lightestGrey: #f8f8f8;
 
+  font-size: 62.5%;
+  box-sizing: content-box;
+
   #grid-view-column-editor,
   #grid-view-row-editor {
     position: fixed;
@@ -1610,6 +1625,7 @@ body.grid-view-2017-refresh {
       background: #fff;
       box-shadow: 0 0 10px -4px #555;
       z-index: 2;
+      overflow-y: hidden;
 
       .header {
         position: relative;
@@ -1640,7 +1656,7 @@ body.grid-view-2017-refresh {
 
         .cancel {
           position: absolute;
-          top: 1.5em;
+          top: 1em;
           right: 1em;
           color: #919191;
           background-color: transparent;
@@ -1780,7 +1796,9 @@ body.grid-view-2017-refresh {
     .modal {
 
       .header {
-        padding: $headerVerticalPadding 1em;
+        padding-top: $headerVerticalPadding;
+        padding-left: 1em;
+        padding-right: 1em;
         height: $headerHeight;
       }
 

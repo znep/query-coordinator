@@ -8,6 +8,7 @@ en:
           title_private: Visibility changed to private.
       all_assets_button: View All Assets
       view_and_manage_assets: View and Manage Assets
+      view_all: View All
       asset_inventory_dataset_link:
         asset_inventory_dataset: Asset Inventory Dataset
         disabled_tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
@@ -139,6 +140,9 @@ en:
         done: Done
         filters: Filters
         reset_filters: Reset Filters
+      result:
+        one: Result
+        other: Results
       result_count:
         no_results: No results
         of: of
@@ -215,6 +219,13 @@ en:
           hidden: Hidden
           hidden_from_catalog: Hidden from catalog
     components:
+      blobs:
+        preview: Preview
+        download:
+          download: Download
+          edit_prompt_button: Edit Source
+          edit_prompt_message: Edit the source file for this dataset.
+          title: Download this Resource
       color_picker:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color
@@ -281,6 +292,24 @@ en:
       view_card:
         external_content: External Content
     site_chrome:
+      access_manager:
+        accept: OK
+        audience:
+          organization:
+            subtitle: Everyone in my Organization can view and edit
+            title: Organization
+          private:
+            subtitle: Only specific people in my Organization can view and edit
+            title: Private
+          public:
+            subtitle: Only specific people in my Organization can edit
+            title: Public
+        cancel: Cancel
+        change: Change
+        header:
+          subtitle: Who can see this dataset?
+          title: Manage Access
+        save: Save
       admin:
         data_catalog:
           title: Data Catalog

@@ -3,11 +3,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MostRecentlyUsed from 'common/most_recently_used';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
+import AccessManagerModalToggle from 'common/components/AccessManagerModalToggle';
 import 'common/notifications/main';
 
 /** ***************************************************************************************************/
 /*
- * This adds a "lastAccessed" objecdt on window that is used for keeping track when users access a dataset
+ * This adds a "lastAccessed" object on window that is used for keeping track when users access a dataset
  * by adding a 4x4 and timestamp.
  */
 /** ***************************************************************************************************/
@@ -57,3 +58,29 @@ window.autocomplete = function(containerSelector, options, defaultState) {
 
   ReactDOM.render(<StatefulAutocomplete defaultState={defaultState} options={options} />, rootNode);
 };
+
+/** ***************************************************************************************************/
+/*
+ * This renders the <AccessManagerModalToggle /> component into the "access-manager-component"
+ * if "window.blist.dataset.id" is available.
+ *
+ * This component adds a "window.socrata.showAccessManager()" function when it mountas
+ * that can be called to show the access manager modal.
+ */
+/** ***************************************************************************************************/
+if (_.get(window, 'blist.feature_flags.enable_access_manager_modal', false)) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const datasetUid = _.get(window, 'blist.dataset.id', null);
+    const accessManagerRoot = document.getElementById('access-manager-container');
+
+    if (accessManagerRoot && datasetUid) {
+      const config = {
+        assetUid: datasetUid
+      };
+
+      ReactDOM.render(<AccessManagerModalToggle config={config} />, accessManagerRoot);
+    } else {
+      console.warn(`Couldn't render access manager; datasetUid: ${datasetUid}, accessManagerRoot: ${accessManagerRoot}`);
+    }
+  });
+}

@@ -10,6 +10,7 @@
 .sass-cache
 .vimrc
 REVISION
+CHEETAH_REVISION
 dev-server/*.pid
 dev-server/logs
 frontend.iml

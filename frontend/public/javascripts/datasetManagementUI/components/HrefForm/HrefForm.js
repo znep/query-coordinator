@@ -290,10 +290,10 @@ class HrefForm extends Component {
   }
 
   render() {
-    const { errors, schemaExists } = this.props;
+    const { errors, schemaExists, blobExists } = this.props;
 
-    if (schemaExists) {
-      return <SourceMessage schemaExists={schemaExists} />;
+    if (schemaExists || blobExists) {
+      return <SourceMessage sourceExists />;
     }
 
     return (
@@ -338,7 +338,8 @@ HrefForm.propTypes = {
   markFormClean: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  schemaExists: PropTypes.bool.isRequired
+  schemaExists: PropTypes.bool.isRequired,
+  blobExists: PropTypes.bool.isRequired
 };
 
 export default HrefForm;

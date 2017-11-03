@@ -15,6 +15,7 @@ describe('components/UserRow', () => {
     ...singleRowState,
     onRoleChange: sinon.spy(),
     onRemoveUserRole: sinon.spy(),
+    onResetPassword: sinon.spy(),
     I18n: I18nJS
   };
 

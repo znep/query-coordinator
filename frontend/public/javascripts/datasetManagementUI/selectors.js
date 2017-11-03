@@ -195,6 +195,10 @@ export function rowLoadOperationsInProgress(apiCalls) {
 //   };
 // }
 
+export const inputSchemas = (entities, sourceId) => {
+  return _.filter(entities.input_schemas, { source_id: sourceId });
+};
+
 export const latestOutputSchemaForSource = (entities, sourceId) => {
   const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];
 

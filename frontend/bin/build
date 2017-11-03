@@ -45,6 +45,25 @@ gem install httparty -v '0.15.6'
 # Write REVISION file
 git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
 
+# write current Cheetah revision to a file
+
+cheetah_revision_file="${WORKSPACE}/frontend/CHEETAH_REVISION"
+
+# get current SHA from HEAD:master
+echo 'Getting latest Cheetah revision from api.github...'
+current_cheetah_revision=$(curl -sH "Authorization: token $GITHUB_API_TOKEN" \
+  https://api.github.com/repos/socrata/cheetah/branches/master | jq -r '.commit.sha')
+
+# will return "null" if $GITHUB_API_TOKEN not set/incorrect OR in the rare case of object not found
+# assure file is removed in this case and downstream logic will set cheetahRevision to ''
+if [ $current_cheetah_revision == "null" ]; then
+  echo 'WARNING >> Call to api.github failed. Make sure $GITHUB_API_TOKEN is set. cheetahRevision will get set to empty string'
+  rm -f $cheetah_revision_file
+else
+  echo "Recording current Cheetah revision: $current_cheetah_revision to $cheetah_revision_file"
+  echo $current_cheetah_revision > $cheetah_revision_file
+fi
+
 # Package assets
 npm run build:prod
 

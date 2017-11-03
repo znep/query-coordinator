@@ -175,6 +175,7 @@
     "redux": "3.7.2",
     "redux-debounced": "0.3.0",
     "redux-logger": "2.6.1",
+    "redux-saga": "0.16.0",
     "redux-thunk": "2.2.0",
     "rx": "2.5.0",
     "rx-angular": "0.0.14",

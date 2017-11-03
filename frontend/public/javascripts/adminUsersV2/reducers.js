@@ -116,6 +116,21 @@ const ui = (state = initialUiState, action) => {
         };
       }
       return state;
+    case SUBMIT_NEW_USERS:
+      if (action.stage === START) {
+        return {
+          ...state,
+          submittingUsers: true
+        };
+      } else if (action.stage === COMPLETE_SUCCESS || action.stage === COMPLETE_FAIL) {
+        return {
+          ...state,
+          submittingUsers: false
+        };
+      } else {
+        console.warn('unknown stage, ', action.stage);
+        return state;
+      }
     default:
       return state;
   }

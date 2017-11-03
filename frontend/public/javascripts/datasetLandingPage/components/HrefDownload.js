@@ -15,9 +15,7 @@ export class HrefDownload extends Component {
 
     return (
       <div className="alert default edit-prompt">
-        <span className="edit-prompt-message">
-          {I18n.href_download.edit_prompt_message}
-        </span>
+        <span className="edit-prompt-message">{I18n.href_download.edit_prompt_message}</span>
 
         <a href={localizeLink(view.editMetadataUrl)} className="btn btn-sm btn-default edit-prompt-button">
           {I18n.href_download.edit_prompt_button}
@@ -34,15 +32,11 @@ export class HrefDownload extends Component {
     }
 
     const content = _.map(allAccessPoints, (accessPoint, i) => {
-      let buttons = _.map(accessPoint.urls, (url, mimeType) =>
-        <a
-          className="btn btn-primary btn-sm download all-caps"
-          href={url}
-          target="_blank"
-          key={mimeType}>
+      let buttons = _.map(accessPoint.urls, (url, mimeType) => (
+        <a className="btn btn-primary btn-sm download all-caps" href={url} target="_blank" key={mimeType}>
           {mimeType}
         </a>
-      );
+      ));
 
       if (accessPoint.describedBy) {
         buttons.push(
@@ -58,26 +52,16 @@ export class HrefDownload extends Component {
 
       return (
         <div key={i} className="download-object">
-          <div className="download-title">
-            {accessPoint.title}
-          </div>
+          <div className="download-title">{accessPoint.title}</div>
 
-          <p className="download-description">
-            {accessPoint.description}
-          </p>
+          <p className="download-description">{accessPoint.description}</p>
 
-          <div className="download-buttons">
-            {buttons}
-          </div>
+          <div className="download-buttons">{buttons}</div>
         </div>
       );
     });
 
-    return (
-      <div className="section-content">
-        {content}
-      </div>
-    );
+    return <div className="section-content">{content}</div>;
   }
 
   render() {
@@ -89,10 +73,8 @@ export class HrefDownload extends Component {
     }
 
     return (
-      <section className="landing-page-section href-download download-section">
-        <h2 className="landing-page-section-header">
-          {I18n.href_download.title}
-        </h2>
+      <section className="landing-page-section href-download dataset-download-section">
+        <h2 className="landing-page-section-header">{I18n.href_download.title}</h2>
 
         {this.renderManagePrompt()}
         {this.renderContent()}

@@ -3,16 +3,20 @@ const storytellerRoot = path.resolve(__dirname, '..');
 const svgFontPath = path.resolve(storytellerRoot, '../common/resources/fonts/svg');
 const { getStyleguideIncludePaths } = require(path.resolve(storytellerRoot, '../common/webpack/shared_config'));
 
+function withBabelPolyfill(entry) {
+  return ['babel-polyfill-safe', entry];
+}
+
 function withExtraBabelPlugins(extraPlugins) {
-  const babelPlugins = ['babel-plugin-transform-class-properties'].concat(extraPlugins || [])
+  const babelPlugins = ['babel-plugin-transform-class-properties'].concat(extraPlugins || []);
 
   return {
     entry: {
-      admin: './app/assets/javascripts/admin',
-      view: './app/assets/javascripts/view',
-      editor: './app/assets/javascripts/editor',
-      tile: './app/assets/javascripts/tile',
-      new: './app/assets/javascripts/new'
+      admin: withBabelPolyfill('./app/assets/javascripts/admin'),
+      view: withBabelPolyfill('./app/assets/javascripts/view'),
+      editor: withBabelPolyfill('./app/assets/javascripts/editor'),
+      tile: withBabelPolyfill('./app/assets/javascripts/tile'),
+      new: withBabelPolyfill('./app/assets/javascripts/new')
     },
     output: {
       filename: '[name].js',

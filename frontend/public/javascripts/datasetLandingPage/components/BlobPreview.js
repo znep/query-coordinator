@@ -1,53 +1,21 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { BlobPreview } from 'common/components';
 
-export class BlobPreview extends Component {
-  renderPreview() {
-    const { view } = this.props;
+export function mapStateToProps(state) {
+  const { view } = state;
 
-    const href = `/api/views/${view.id}/files/${view.blobId}`;
-
-    switch (view.blobType) {
-      case 'image':
-        return <img src={href} alt={view.name} />;
-
-      case 'google_viewer':
-        var location = document.location;
-        var url = `${location.protocol}//${location.hostname}${href}`;
-
-        return <iframe src={`//docs.google.com/gview?url=${url}&embedded=true`} />;
-
-      default:
-        return null;
-    }
+  if (!view.isBlobby) {
+    return {
+      isPreviewable: false
+    };
   }
 
-  render() {
-    const { isBlobby, blobType } = this.props.view;
-
-    if (!isBlobby || (blobType !== 'image' && blobType !== 'google_viewer')) {
-      return null;
-    }
-
-    return (
-      <section className="landing-page-section blob-preview">
-        <h2 className="landing-page-section-header">
-          {I18n.blob_preview.title}
-        </h2>
-
-        {this.renderPreview()}
-      </section>
-    );
-  }
-}
-
-BlobPreview.propTypes = {
-  view: PropTypes.object.isRequired
-};
-
-function mapStateToProps(state) {
-  return _.pick(state, 'view');
+  return {
+    isPreviewable: true,
+    previewUrl: `/api/views/${view.id}/files/${view.blobId}`,
+    previewType: view.blobType,
+    blobName: view.name
+  };
 }
 
 export default connect(mapStateToProps)(BlobPreview);

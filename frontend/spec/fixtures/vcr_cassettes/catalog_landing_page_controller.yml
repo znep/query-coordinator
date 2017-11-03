@@ -1287,15 +1287,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-10-13T19:33:54.000Z",
                     "createdAt" : "2016-10-13T19:33:06.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 2,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 1.5849625007211563
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1421,15 +1412,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-08T20:56:55.000Z",
                     "createdAt" : "2016-12-08T20:56:12.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 1,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 1.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1528,15 +1510,6 @@ http_interactions:
                     "type" : "datalens",
                     "updatedAt" : "2016-05-17T21:57:37.000Z",
                     "createdAt" : "2016-05-17T21:57:29.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1653,15 +1626,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-08T17:56:09.000Z",
                     "createdAt" : "2016-12-08T17:55:00.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1760,15 +1724,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-08T18:45:52.000Z",
                     "createdAt" : "2016-12-08T18:44:46.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1867,15 +1822,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-10-13T16:29:18.000Z",
                     "createdAt" : "2016-10-13T16:27:24.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -1977,15 +1923,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-09T18:46:47.000Z",
                     "createdAt" : "2016-10-13T19:26:06.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -2168,15 +2105,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-20T22:43:11.000Z",
                     "createdAt" : "2016-07-08T22:52:34.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -2287,15 +2215,6 @@ http_interactions:
                     "type" : "dataset",
                     "updatedAt" : "2016-12-05T20:44:56.000Z",
                     "createdAt" : "2016-03-15T00:42:18.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,
@@ -2397,15 +2316,6 @@ http_interactions:
                     "type" : "datalens",
                     "updatedAt" : "2016-12-22T23:27:33.000Z",
                     "createdAt" : "2016-12-21T00:09:24.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
                     "page_views" :
                       {
                         "page_views_last_week" : 0,

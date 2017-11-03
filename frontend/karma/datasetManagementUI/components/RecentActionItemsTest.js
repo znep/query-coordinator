@@ -53,25 +53,47 @@ describe('components/RecentActionItems', () => {
     const props = {
       createdAt: new Date('2017-08-31T20:20:01.942Z'),
       createdBy: 'user',
-      source_type: {
-        type: 'upload'
+      source: {
+        source_type: {
+          type: 'upload'
+        }
       }
     };
 
-    const component = shallow(<SourceActivity details={props} />);
+
 
     it('renders the right icon', () => {
+      const component = shallow(<SourceActivity details={props} />);
       assert.equal(component.find('SocrataIcon').prop('name'), 'data');
     });
 
     it('renders the right message', () => {
+      const component = shallow(<SourceActivity details={props} />);
       assert.equal(
-        component.find('p').text(),
+        component.find('p').first().text(),
         `${props.createdBy} uploaded a file`
       );
     });
 
+    it('renders a change message when there is a previous source', () => {
+      const component = shallow(<SourceActivity details={{
+        ...props,
+        previousSource: {
+          source_type: {
+            type: 'upload'
+          }
+        }
+      }} />);
+
+      assert.equal(
+        component.find('p').first().text(),
+        `${props.createdBy} changed the file parsing options`
+      );
+    });
+
+
     it('renders a timestamp', () => {
+      const component = shallow(<SourceActivity details={props} />);
       assert.equal(component.find('RecentActionsTimestamp').length, 1);
     });
   });

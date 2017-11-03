@@ -529,13 +529,10 @@
         this._blobs = [];
         if ($.subKeyDefined(this, 'metadata.accessPoints')) {
           _.each(this.metadata.accessPoints, function(v, k) {
-            if (!k.endsWith('Size')) {
-              ds._blobs.push({
-                href: v,
-                type: k.toUpperCase(),
-                size: ds.metadata.accessPoints[k + 'Size']
-              });
-            }
+            ds._blobs.push({
+              href: v,
+              type: k.toUpperCase()
+            });
           });
           this._blobs = _.sortBy(this._blobs, 'type');
         } else if ($.subKeyDefined(this, 'metadata.href')) {

@@ -274,7 +274,6 @@ body.grid-view-classic {
  * body, and the updated ones are under the '.grid-view-2017-refresh' class.
  */
 body.grid-view-2017-refresh {
-
   #gridSidebar {
     position: absolute;
     top: 0;
@@ -284,6 +283,25 @@ body.grid-view-2017-refresh {
     background-color: #f8f8f8;
     border: 0 solid #ccc;
     box-shadow: 8px 0 -30px #5e5e5e;
+
+    & ul, & ol {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .menu {
+      background-color: transparent;
+      top: auto;
+      left: auto;
+      bottom: 1px;
+      right: 5px;
+      width: auto;
+      overflow: visible;
+
+      & > * {
+        margin: 0;
+      }
+    }
 
     .outerPane {
       border-left: 1px solid #cecece;
@@ -540,7 +558,7 @@ body.grid-view-2017-refresh {
       .uniform.radio {
         position: relative !important;
         float: left !important;
-        margin: 0 8px 0 0 !important;
+        margin: 5px 8px 0 0 !important;
         padding: 0 !important;
 
         span {
@@ -597,6 +615,10 @@ body.grid-view-2017-refresh {
        * Form layout
        */
       .formSection {
+
+        .formHeader {
+          line-height: 10px !important;
+        }
 
         label {
           margin: 4px 0 4px 4px;
@@ -1313,7 +1335,7 @@ body.grid-view-2017-refresh {
                 .filterOptionsLabel {
                   font-size: 12px;
                   right: 24px;
-                  bottom: 7px;
+                  bottom: 2px;
                 }
 
                 .text-column-filter-operator-notice {

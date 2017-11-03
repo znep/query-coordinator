@@ -16,6 +16,10 @@ rescue
   REVISION_DATE = nil
 end
 
+cheetah_revision_file = File.join(Rails.root, 'CHEETAH_REVISION')
+# default to '' instead of nil since this is how we had to implement it for Core
+CHEETAH_REVISION_NUMBER = File.exist?(cheetah_revision_file) && File.read(cheetah_revision_file).chomp || ''
+
 begin
   VIDEO_LIST = YAML.load_file(File.join(Rails.root, 'config/videos.yml'))
 rescue

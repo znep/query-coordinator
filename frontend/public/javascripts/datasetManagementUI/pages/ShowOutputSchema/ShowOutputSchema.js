@@ -103,7 +103,6 @@ export function mapStateToProps(state, ownProps) {
 
   const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   const canApplyRevision = Selectors.allTransformsDone(columns);
-
   const fatalError = !!source.failed_at || _.some(columns.map(c => c.transform.failed_at));
 
   const parseOptionsForm = state.ui.forms.parseOptionsForm;

@@ -47,9 +47,7 @@ export class Picklist extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setSelectedOptionBasedOnValue(nextProps);
-    }
+    this.setSelectedOptionBasedOnValue(nextProps);
   }
 
   onClickOption(selectedOption, event) {
@@ -117,11 +115,6 @@ export class Picklist extends Component {
   }
 
   onFocus() {
-    const { options } = this.props;
-    if (this.state.selectedIndex === -1 && options.length > 0) {
-      this.setNavigationPointer(0);
-      this.setChangedOption(options[0]);
-    }
     this.props.onFocus();
     this.setState({ focused: true });
   }

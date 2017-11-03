@@ -9,6 +9,8 @@ class Administration::ActivityFeedController < AdministrationController
   end
 
   def index
+    return soql_index if FeatureFlags.derive(nil, request).enable_activity_log_soql
+
     page_size = 30
     all_threshold = 8
     page_idx = params.fetch(:page, 1).to_i
@@ -91,6 +93,11 @@ class Administration::ActivityFeedController < AdministrationController
     rescue ImportStatusService::ServerError
       return render_500
     end
+  end
+
+  def soql_index
+
+    render 'soql_index'
   end
 
   private

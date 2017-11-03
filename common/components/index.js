@@ -19,7 +19,12 @@ import TabsFactory from './legacy/Tabs';
 import ToggleFactory from './legacy/Toggle';
 import TourFactory from './legacy/Tour';
 
-import { AccordionContainer, AccordionPane, Scrolls, ScrollView } from './Accordion';
+import {
+  AccordionContainer,
+  AccordionPane,
+  Scrolls,
+  ScrollView
+} from './Accordion';
 import AssetBrowser from './AssetBrowser';
 import AssetTypeIcon from './AssetTypeIcon';
 import ColorPicker from './ColorPicker';
@@ -37,7 +42,13 @@ import FilterItem from './FilterBar/FilterItem';
 import SocrataIcon from './SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './Modal';
 import SideMenu, { MenuListItem, ExpandableMenuListItem } from './SideMenu';
-import { Flannel, FlannelHeader, FlannelContent, FlannelFooter } from './Flannel';
+import {
+  Flannel,
+  FlannelHeader,
+  FlannelContent,
+  FlannelFooter
+} from './Flannel';
+import { BlobDownload, BlobPreview } from './BlobbyDatasets';
 import MetadataTable from './MetadataTable';
 import Checkbox from './Checkbox';
 
@@ -63,6 +74,8 @@ module.exports = {
   AccordionPane,
   AssetBrowser,
   AssetTypeIcon,
+  BlobDownload,
+  BlobPreview,
   Checkbox,
   ColorPicker,
   DateRangePicker,

@@ -48,6 +48,27 @@ echo "DOCKER_BUILD_ARGS=\"-f storyteller/Dockerfile --build-arg ARTIFACTORY_USER
 # Write REVISION file
 echo ${SERVICE_SHA} > "$WORKSPACE/storyteller/REVISION"
 
+# write current Cheetah revision to a file
+
+# don't include $WORKSPACE in path since we are already in the workspace
+# and whitespace in the workspace name causes an "ambiguous redirect" error when we try and write to it
+cheetah_revision_file="storyteller/CHEETAH_REVISION"
+
+# get current SHA from HEAD:master
+echo 'Getting latest Cheetah revision from api.github...'
+current_cheetah_revision=$(curl -sH "Authorization: token $GITHUB_API_TOKEN" \
+  https://api.github.com/repos/socrata/cheetah/branches/master | jq -r '.commit.sha')
+
+# will return "null" if $GITHUB_API_TOKEN not set/incorrect OR in the rare case of object not found
+# assure file is removed in this case and downstream logic will set cheetahRevision to ''
+if [ $current_cheetah_revision == "null" ]; then
+  echo 'WARNING >> Call to api.github failed. Make sure $GITHUB_API_TOKEN is set. cheetahRevision will get set to empty string'
+  rm -f $cheetah_revision_file
+else
+  echo "Recording current Cheetah revision: $current_cheetah_revision to $cheetah_revision_file"
+  echo $current_cheetah_revision > $cheetah_revision_file
+fi
+
 echo "AUTO_DEPLOY=${AUTO_DEPLOY}"
 if [ "${AUTO_DEPLOY}" = "true" ]; then
   ./ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties

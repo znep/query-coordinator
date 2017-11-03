@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import _ from 'lodash';
 
-import { getResultCountLabel } from 'frontend/public/javascripts/common/helpers/viewCardHelpers';
 import I18n from 'common/i18n';
+import utils from 'common/js_utils';
+
+const getResultCountLabel = (count) => {
+  const resultLabel = I18n.t('shared.asset_browser.result', { count: count });
+  return _.isNumber(count) ? `${utils.formatNumber(count)} ${resultLabel}` : '';
+};
 
 export class ResultCount extends Component {
   render() {

@@ -58,6 +58,10 @@ class DatasetsController < ApplicationController
     @page_custom_chrome = ''
     @suppress_content_wrapper = true
 
+    if enable_2017_grid_view_refresh_for_current_request?
+      @render_styleguide_on_legacy_pages = true
+    end
+
     # NBE/OBE redirect & flash messages
     if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url

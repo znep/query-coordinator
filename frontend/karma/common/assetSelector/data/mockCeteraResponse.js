@@ -4,15 +4,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 2697,
-                "page_views_total_log" : 11.397674632948268,
-                "page_views_last_week_log" : 2.321928094887362,
-                "page_views_last_month" : 25,
-                "page_views_last_week" : 4,
-                "page_views_last_month_log" : 4.700439718141093
-              },
             "obe_fxf" : null,
             "description" : "Results from 131 Community Caucuses, five large group workshops, the Youth Summit and via the web for Mayor Mike McGinn’s Youth and Families Initiative.",
             "name" : "Youth and Family Initiative All Top Priorities",
@@ -86,15 +77,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 1112,
-                "page_views_total_log" : 10.12023787734196,
-                "page_views_last_week_log" : 3.5849625007211565,
-                "page_views_last_month" : 46,
-                "page_views_last_week" : 11,
-                "page_views_last_month_log" : 5.554588851677638
-              },
             "obe_fxf" : null,
             "description" : "Private schools in Seattle",
             "name" : "Private Schools",
@@ -232,15 +214,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 959,
-                "page_views_total_log" : 9.90689059560852,
-                "page_views_last_week_log" : 3.5849625007211565,
-                "page_views_last_month" : 50,
-                "page_views_last_week" : 11,
-                "page_views_last_month_log" : 5.672425341971496
-              },
             "obe_fxf" : null,
             "description" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
             "name" : "Public Schools",
@@ -453,15 +426,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 820,
-                "page_views_total_log" : 9.681238411777805,
-                "page_views_last_week_log" : 1.0,
-                "page_views_last_month" : 4,
-                "page_views_last_week" : 1,
-                "page_views_last_month_log" : 2.321928094887362
-              },
             "obe_fxf" : null,
             "description" : "Families & Education Levy III\t\t\r\nProjected Expenditures for seven-year levy (Original Plan)\t\t\r\n\r\n7-year levy (2nd half of 2005 through 1st half of 2012)\t\t\r\nLevy programs increase 1 1/2%/year once program is fully ramped up\t\t\r\nLevy admin is capped at 5%/year\t\t\r\nCrossing Guard program expires mid-2008",
             "name" : "Families & Education Levy III Expenditures",
@@ -539,15 +503,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 658,
-                "page_views_total_log" : 9.364134655008051,
-                "page_views_last_week_log" : 2.807354922057604,
-                "page_views_last_month" : 28,
-                "page_views_last_week" : 6,
-                "page_views_last_month_log" : 4.857980995127573
-              },
             "obe_fxf" : null,
             "description" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
             "name" : "Seattle schools",
@@ -760,15 +715,6 @@ export default {
       {
         "resource" :
           {
-            "view_count" :
-              {
-                "page_views_total" : 564,
-                "page_views_total_log" : 9.142107057302551,
-                "page_views_last_week_log" : 1.0,
-                "page_views_last_month" : 4,
-                "page_views_last_week" : 1,
-                "page_views_last_month_log" : 2.321928094887362
-              },
             "obe_fxf" : null,
             "description" : "Families & Education Levy III Estimated Revenues\r\n7-year levy (2nd half of 2005 through 1st half of 2012)\t\t\r\nLevy programs increase 1 1/2%/year once program is fully ramped up\t\t\r\nLevy admin is capped at 5%/year\t\t\r\nCrossing Guard program expires mid-2008",
             "name" : "Families & Education Levy III Estimated Revenues",

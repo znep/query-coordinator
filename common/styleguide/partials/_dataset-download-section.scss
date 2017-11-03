@@ -1,4 +1,15 @@
-.download-section {
+.dataset-download-section {
+  &.blob-download {
+    padding: 11px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin: 0;
+      padding: 11px 0;
+    }
+  }
+
   .edit-prompt {
     display: flex;
     margin-bottom: 22px;

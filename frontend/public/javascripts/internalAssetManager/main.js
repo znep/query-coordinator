@@ -9,7 +9,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
 import AssetBrowser from 'common/components/AssetBrowser';
-import { FeedbackPanel } from 'common/components/FeedbackPanel';
+import { FeedbackPanel } from 'common/components/AssetBrowser/components';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import reducer from 'common/components/AssetBrowser/reducers';
 import * as constants from 'common/components/AssetBrowser/lib/constants';

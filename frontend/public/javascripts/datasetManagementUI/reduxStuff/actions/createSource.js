@@ -58,21 +58,17 @@ function updateSource(params, source, changes) {
       callParams: { sourceId: source.id }
     };
 
-    dispatch(listenForOutputSchema(source.id, params));
-
     dispatch(apiCallStarted(callId, call));
 
     return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
-      method: 'PATCH',
+      method: 'POST',
       body: JSON.stringify(changes)
     })
       .then(checkStatus)
       .then(getJson)
       .then(resp => {
         const { resource } = resp;
-
         dispatch(apiCallSucceeded(callId));
-        dispatch(sourceUpdate(source.id, resource));
         return resource;
       })
       .catch(err => {
@@ -84,12 +80,15 @@ function updateSource(params, source, changes) {
 
 export function updateSourceParseOptions(params, source, parseOptions) {
   return dispatch => {
-    return dispatch(listenForOutputSchema(source.id))
-      .receive('ok', () => {
-        return dispatch(updateSource(params, source, { parse_options: parseOptions }));
+    dispatch(updateSource(params, source, { parse_options: parseOptions }))
+      .then(resource => {
+        dispatch(listenForInputSchema(resource.id, params));
+        return resource;
       })
-      .receive('error', (reason) => {
-        console.error('Failed to join source channel!', reason);
+      .then(normalizeCreateSourceResponse)
+      .then(normalized => {
+        dispatch(createSourceSuccess(normalized));
+        return normalized;
       });
   };
 }
@@ -132,7 +131,7 @@ export function createUploadSource(file, params) {
       );
 
       // listen on source channel, which puts other stuff into store
-      dispatch(listenForOutputSchema(resource.id, params));
+      dispatch(listenForInputSchema(resource.id, params));
 
       // send bytes to created upload
       return dispatch(uploadFile(resource.id, file));
@@ -157,7 +156,7 @@ export function createURLSource(url, params) {
 
       dispatch(addNotification('source', resource.id));
 
-      dispatch(listenForOutputSchema(resource.id, params));
+      dispatch(listenForInputSchema(resource.id, params));
     });
   };
 }
@@ -175,26 +174,27 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) 
   };
 }
 
-function sourceUpdate(sourceId, changes) {
-  // oh ffs....we did this to ourselves.
-  // TODO: fix this garbage
-  if (_.isString(changes.created_at)) {
-    changes.created_at = parseDate(changes.created_at);
-  }
-  if (_.isString(changes.finished_at)) {
-    changes.finished_at = parseDate(changes.finished_at);
-  }
-  return {
-    type: SOURCE_UPDATE,
-    sourceId,
-    changes
-  };
-}
 
-function listenForOutputSchema(sourceId, params) {
+function listenForInputSchema(sourceId, params) {
+  const sourceUpdate = (changes) => {
+    // oh ffs....we did this to ourselves.
+    // TODO: fix this garbage
+    if (_.isString(changes.created_at)) {
+      changes.created_at = parseDate(changes.created_at);
+    }
+    if (_.isString(changes.finished_at)) {
+      changes.finished_at = parseDate(changes.finished_at);
+    }
+    return {
+      type: SOURCE_UPDATE,
+      sourceId,
+      changes
+    };
+  };
+
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
-    channel.on('insert_input_schema', is => {
+    channel.on('insert_input_schema', (is) => {
       const [os] = is.output_schemas;
 
       const payload = normalizeInsertInputSchemaEvent(is, sourceId);
@@ -207,7 +207,7 @@ function listenForOutputSchema(sourceId, params) {
     });
 
     channel.on('update', changes => {
-      dispatch(sourceUpdate(sourceId, changes));
+      dispatch(sourceUpdate(changes));
 
       // This isn't a great place to do this - figure out a nicer way
       // TODO: aaurhgghiguhuhgghghgh

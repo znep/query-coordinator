@@ -40,16 +40,26 @@ export const shapeRevisions = (revisions, revisionSeq) => {
 };
 
 // shapeSources :: [Sources] -> [Activity]
-export const shapeSources = sources =>
-  sources.length === 0
+export const shapeSources = sources => {
+  return sources.length === 0
     ? [Activity.Empty]
-    : sources.map(source =>
-        Activity.Source({
-          createdAt: source.created_at || CREATED_AT_FALLBACK,
-          createdBy: source.created_by.display_name || CREATED_BY_FALLBACK,
-          ...source
-        })
-      );
+    : sources.map(source => {
+      // Previous is the source that references this same file, but is different (ie:
+      // parse-options have changed). It will be included to the activity so it can more
+      // accurately indicate what happened
+      const previousSources = sources.filter(s => s.id < source.id && s.blob === source.blob);
+      let previous;
+      if (previousSources.length > 0) {
+        previous = _.last(_.orderBy(previousSources, s => s.id));
+      }
+      return Activity.Source({
+        createdAt: source.created_at || CREATED_AT_FALLBACK,
+        createdBy: source.created_by.display_name || CREATED_BY_FALLBACK,
+        source,
+        previousSource: previous
+      });
+    });
+};
 
 // shapeOutputSchemas :: [OutputSchema] -> [InputSchema] -> [Sources]  -> [Activity]
 export const shapeOutputSchemas = (oss, iss, ss) =>

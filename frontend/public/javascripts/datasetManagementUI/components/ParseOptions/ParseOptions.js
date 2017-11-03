@@ -31,6 +31,12 @@ class ParseOptions extends Component {
     this.setColumnHeader = this.setColumnHeader.bind(this);
   }
 
+  componentDidMount() {
+    // Make sure when the component shows, we're using the parse_options
+    // from the source, and not some old form state that may be hanging around
+    this._updateParseOptions(this.props.source.parse_options);
+  }
+
   getOption(option) {
     return this.props.form.parseOptions[option];
   }
@@ -186,7 +192,8 @@ class ParseOptions extends Component {
 
 ParseOptions.propTypes = {
   form: PropTypes.object.isRequired,
-  setFormState: PropTypes.func.isRequired
+  setFormState: PropTypes.func.isRequired,
+  source: PropTypes.object.isRequired
 };
 
 export default ParseOptions;

@@ -9,6 +9,8 @@
 @import "common/styleguide/variables/colors";
 @import "common/styleguide/partials/pager";
 
+// @import "common/feedback-panel"; // TODO figure out what to do for this case
+
 body {
   margin: 0;
   background: $light-grey-6;

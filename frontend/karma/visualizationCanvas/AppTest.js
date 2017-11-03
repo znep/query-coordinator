@@ -6,7 +6,7 @@ import { getStore } from './testStore';
 import mockFilter from './data/mockFilter';
 import mockView from './data/mockView';
 import mockVif from './data/mockVif';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 
 describe('App', function() {
   let server;
@@ -153,10 +153,6 @@ describe('App', function() {
       }).prop('isReadOnly'));
     });
 
-    // it('does not render an AddVisualizationButton', () => {
-    // redundant since we've already confirmed the edit bar is not rendered
-    // });
-
     it('renders any visualizations', () => {
       assert.isTrue(element.find('Connect(Visualizations)').exists());
     });
@@ -186,7 +182,7 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = shallow(<PureApp mode={ModeStates.VIEW} onNameChanged={() => {}}/>);
+      element = shallow(<PureApp mode={ModeStates.VIEW} onNameChanged={() => {}} />);
     });
 
     it('does not render a preview bar', () => {
@@ -222,10 +218,6 @@ describe('App', function() {
         }
       }).prop('isReadOnly'));
     });
-
-    // it('does not render an AddVisualizationButton', () => {
-    // redundant since we've already confirmed the edit bar is not rendered
-    // });
 
     it('renders any visualizations', () => {
       assert.isTrue(element.find('Connect(Visualizations)').exists());

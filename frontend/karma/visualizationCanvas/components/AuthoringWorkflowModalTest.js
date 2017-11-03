@@ -78,16 +78,4 @@ describe('AuthoringWorkflowModal', () => {
       assert.equal(element.find('.authoring-modal').length, 0);
     });
   });
-
-  // it('removes the AuthoringWorkflow on unmount', () => {
-  // const reactElement = React.createElement(
-  //   AuthoringWorkflowModal,
-  //   getProps()
-  // );
-  // const element = TestUtils.renderIntoDocument(reactElement);
-  // const node = ReactDOM.findDOMNode(element);
-  // element.componentWillUnmount();
-  // double check it's nowhere on the document
-  // assert.isNull(document.querySelector('.authoring-modal'));
-  // });
 });

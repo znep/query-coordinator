@@ -117,10 +117,10 @@ export class RelatedViewList extends Component {
       height: this.getHeight()
     };
 
-    const animatedViews = relatedViews.map(view => {
+    const animatedViews = relatedViews.map((view, idx) => {
       return (
         <CSSTransition
-          component="div"
+          key={idx}
           className="media-results related-views"
           style={style}
           onScroll={this.onScrollList}

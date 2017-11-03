@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { MeasureResultCard } from './MeasureResultCard';
+import MeasureResultCard from './MeasureResultCard';
 
 function mapStateToProps(state) {
   return { measure: _.get(state, 'editor.measure') };

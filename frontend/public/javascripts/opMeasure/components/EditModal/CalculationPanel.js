@@ -35,6 +35,14 @@ export class CalculationPanel extends Component {
       'sum-calculation': true
     });
 
+    const isRate = calculationType === CalculationTypeNames.RATE;
+    const rateButtonClassName = classNames({
+      'btn': true,
+      'btn-default': true,
+      'btn-primary': isRate,
+      'rate-calculation': true
+    });
+
     const isRecentValue = calculationType === CalculationTypeNames.RECENT_VALUE;
     const recentValueButtonClassName = classNames({
       'btn': true,
@@ -55,6 +63,12 @@ export class CalculationPanel extends Component {
         disabled: !hasDataSource,
         onClick: () => this.props.onSetCalculationType(CalculationTypeNames.SUM),
         label: I18n.t('open_performance.calculation_types.sum')
+      },
+      {
+        classNames: rateButtonClassName,
+        disabled: !hasDataSource,
+        onClick: () => this.props.onSetCalculationType(CalculationTypeNames.RATE),
+        label: I18n.t('open_performance.calculation_types.rate')
       },
       {
         classNames: recentValueButtonClassName,
@@ -84,17 +98,21 @@ export class CalculationPanel extends Component {
           return (<calculationTypes.Count />);
         case CalculationTypeNames.SUM:
           return (<calculationTypes.Sum />);
+        case CalculationTypeNames.RATE:
+          return (<calculationTypes.Rate />);
         case CalculationTypeNames.RECENT_VALUE:
           return (<calculationTypes.RecentValue />);
         default:
           throw new Error(`Unknown calculation type: ${calculationType}`);
       }
     } else {
-      return (<div className="no-data-source">
-        <h2>
-          {I18n.t('open_performance.measure.edit_modal.calculation.data_source_needed')}
-        </h2>
-      </div>);
+      return (
+        <div className="no-data-source">
+          <h2>
+            {I18n.t('open_performance.measure.edit_modal.calculation.data_source_needed')}
+          </h2>
+        </div>
+      );
     }
   }
 

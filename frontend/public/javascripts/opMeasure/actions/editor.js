@@ -78,6 +78,31 @@ export const setValueColumn = (fieldName) => ({
   fieldName
 });
 
+export const SET_AGGREGATION_TYPE = 'SET_AGGREGATION_TYPE';
+export const setAggregationType = (aggregationType) => ({
+  type: SET_AGGREGATION_TYPE,
+  aggregationType
+});
+
+
+export const SET_NUMERATOR_COLUMN = 'SET_NUMERATOR_COLUMN';
+export const setNumeratorColumn = (fieldName) => ({
+  type: SET_NUMERATOR_COLUMN,
+  fieldName
+});
+
+export const SET_DENOMINATOR_COLUMN = 'SET_DENOMINATOR_COLUMN';
+export const setDenominatorColumn = (fieldName) => ({
+  type: SET_DENOMINATOR_COLUMN,
+  fieldName
+});
+
+export const SET_FIXED_DENOMINATOR = 'SET_FIXED_DENOMINATOR';
+export const setFixedDenominator = (denominator) => ({
+  type: SET_FIXED_DENOMINATOR,
+  denominator
+});
+
 export const SET_DATE_COLUMN = 'SET_DATE_COLUMN';
 export const setDateColumn = (fieldName) => ({
   type: SET_DATE_COLUMN,
@@ -87,6 +112,18 @@ export const setDateColumn = (fieldName) => ({
 export const TOGGLE_EXCLUDE_NULL_VALUES = 'TOGGLE_EXCLUDE_NULL_VALUES';
 export const toggleExcludeNullValues = (excludeNullValues) => ({
   type: TOGGLE_EXCLUDE_NULL_VALUES,
+  excludeNullValues
+});
+
+export const TOGGLE_NUMERATOR_EXCLUDE_NULL_VALUES = 'TOGGLE_NUMERATOR_EXCLUDE_NULL_VALUES';
+export const toggleNumeratorExcludeNullValues = (excludeNullValues) => ({
+  type: TOGGLE_NUMERATOR_EXCLUDE_NULL_VALUES,
+  excludeNullValues
+});
+
+export const TOGGLE_DENOMINATOR_EXCLUDE_NULL_VALUES = 'TOGGLE_DENOMINATOR_EXCLUDE_NULL_VALUES';
+export const toggleDenominatorExcludeNullValues = (excludeNullValues) => ({
+  type: TOGGLE_DENOMINATOR_EXCLUDE_NULL_VALUES,
   excludeNullValues
 });
 

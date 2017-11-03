@@ -73,6 +73,24 @@ export default (state = initialState(), action) => {
       assertIsOneOfTypes(action.fieldName, 'string');
       return updateMeasureProperty(state, 'metric.arguments.valueColumn', action.fieldName);
 
+    case actions.editor.SET_AGGREGATION_TYPE:
+      assertIsOneOfTypes(action.aggregationType, 'string');
+      return updateMeasureProperty(state, 'metric.arguments.aggregationType', action.aggregationType);
+
+    case actions.editor.SET_NUMERATOR_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+      return updateMeasureProperty(state, 'metric.arguments.numeratorColumn', action.fieldName);
+
+    case actions.editor.SET_DENOMINATOR_COLUMN:
+      assertIsOneOfTypes(action.fieldName, 'string');
+      // Cant have both Denominator Column and Fixed Denominator
+      _.unset(state, 'measure.metric.arguments.fixedDenominator');
+      return updateMeasureProperty(state, 'metric.arguments.denominatorColumn', action.fieldName);
+
+    case actions.editor.SET_FIXED_DENOMINATOR:
+      _.unset(state, 'measure.metric.arguments.denominatorColumn');
+      return updateMeasureProperty(state, 'metric.arguments.fixedDenominator', action.denominator);
+
     case actions.editor.SET_DATE_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
 
@@ -85,6 +103,17 @@ export default (state = initialState(), action) => {
       const currentValue = _.get(state, 'measure.metric.arguments.excludeNullValues');
       return updateMeasureProperty(state, 'metric.arguments.excludeNullValues', !currentValue);
     }
+
+    case actions.editor.TOGGLE_NUMERATOR_EXCLUDE_NULL_VALUES: {
+      const currentValue = _.get(state, 'measure.metric.arguments.numeratorExcludeNullValues');
+      return updateMeasureProperty(state, 'metric.arguments.numeratorExcludeNullValues', !currentValue);
+    }
+
+    case actions.editor.TOGGLE_DENOMINATOR_EXCLUDE_NULL_VALUES: {
+      const currentValue = _.get(state, 'measure.metric.arguments.denominatorExcludeNullValues');
+      return updateMeasureProperty(state, 'metric.arguments.denominatorExcludeNullValues', !currentValue);
+    }
+
     case actions.editor.SET_DECIMAL_PLACES:
       return updateMeasureProperty(state, 'metric.display.decimalPlaces', action.places);
 

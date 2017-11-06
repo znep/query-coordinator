@@ -391,7 +391,7 @@ function SvgTimelineChart($element, vif, options) {
 
     function renderValues() {
       dataToRenderBySeries.forEach(function(seriesData, seriesIndex) {
-        const measure = dataToRenderBySeries[seriesIndex].measure;
+        const { measure } = seriesData;
         const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
 
         // If we *are not* drawing a line chart, we need to draw the area fill
@@ -739,17 +739,25 @@ function SvgTimelineChart($element, vif, options) {
       let ticks = Math.floor(width / RECOMMENDED_TICK_DISTANCE);
       d3XAxis.ticks(ticks);
     }
+    const vif = self.getVif();
+    const columnName = _.get(vif, 'series[0].dataSource.measure.columnName');
+    const renderType = _.get(dataToRender, `columnFormats.${columnName}.renderTypeName`);
+
+    let formatter;
+    if (renderType === 'money') {
+      formatter = ColumnFormattingHelpers.createMoneyFormatter(columnName, dataToRender);
+    } else {
+      formatter = (d) => {
+        // This is a workaround for a bug in D3 v3.x, (fixed in v4.x): https://github.com/d3/d3/issues/1722
+        return Math.abs(parseFloat(d)) < 0.00000001 ? utils.formatNumber(0) : utils.formatNumber(d);
+      };
+    }
 
     d3YAxis = d3.svg.axis().
       scale(d3YScale).
       orient('left').
-      tickFormat((d) => {
-        // This is a workaround for a bug in D3 v3.x, (fixed in v4.x): https://github.com/d3/d3/issues/1722
-        return Math.abs(parseFloat(d)) < 0.00000001 ? utils.formatNumber(0) : utils.formatNumber(d);
-      });
+      tickFormat(formatter);
 
-
-    const vif = self.getVif();
     const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
     if (isCount) {
       const span = maxYValue - minYValue;

@@ -24,7 +24,7 @@ export function createMoneyFormatter(column, dataToRender) {
   const formatter = (d) => {
     const v = DataTypeFormatter.renderNumberCellHTML(d, formatInfo);
     return `${DataTypeFormatter.CURRENCY_SYMBOLS[formatInfo.format.currency]}${v}`;
-  }
+  };
 
   return formatter;
 }

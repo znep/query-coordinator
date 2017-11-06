@@ -141,7 +141,12 @@ class Publishing extends React.Component {
         title = SubI18n.failure.title;
         body = SubI18n.failure.body;
         progressBarType = 'error';
-        message = null;
+        message = (<div>
+          <span>{SubI18n.failure.include_request_id}</span>
+          <pre>
+            request_id = {taskSet.request_id}
+          </pre>
+        </div>);
         icon = <SocrataIcon className={styles.failure} name="close-circle" />;
         button = (
           <div>
@@ -190,10 +195,9 @@ class Publishing extends React.Component {
               type={progressBarType}
               ariaLabel="progress publishing" />
           </div>
-          {taskSet.status !== ApplyRevision.TASK_SET_FAILURE &&
-            <div className={styles.statusMessage}>
-              {message}
-            </div>}
+          <div className={styles.statusMessage}>
+            {message}
+          </div>
         </ModalContent>
         <ModalFooter className={styles.modalFooter}>
           {button}

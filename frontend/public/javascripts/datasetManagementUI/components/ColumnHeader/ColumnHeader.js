@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import { Link } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
@@ -15,9 +14,14 @@ const Translations = I18n.show_output_schema.column_header;
 
 function DropdownWithIcon(dropdownProps) {
   const { icon, title, disabled } = dropdownProps;
-  const klass = classNames(styles.colDropdownItem, { [styles.colDropdownItemDisabled]: disabled });
+  const classNames = [styles.colDropdownItem];
+
+  if (disabled) {
+    classNames.push(styles.colDropdownItemDisabled);
+  }
+
   return (
-    <div className={klass}>
+    <div className={classNames.join(' ')}>
       <SocrataIcon className={icon} name={title} />
       {Translations[title]}
     </div>
@@ -34,6 +38,7 @@ export class ColumnHeader extends Component {
     return (
       !_.isEqual(nextProps.outputColumn, this.props.outputColumn) ||
       nextProps.outputSchema.id !== this.props.outputSchema.id ||
+      nextProps.isDropping !== this.props.isDropping ||
       nextProps.activeApiCallInvolvingThis !== this.props.activeApiCallInvolvingThis
     );
   }
@@ -45,7 +50,13 @@ export class ColumnHeader extends Component {
       return;
     }
 
-    this.props.dropColumn();
+    this.props.setDropping();
+
+    setTimeout(() => {
+      this.props.dropColumn().then(() => {
+        this.props.resetDropping();
+      });
+    }, 300);
   }
 
   onRowId() {
@@ -179,8 +190,10 @@ export class ColumnHeader extends Component {
       updateColumnType,
       activeApiCallInvolvingThis,
       params,
-      canTransform
+      canTransform,
+      isDropping
     } = this.props;
+
     const isDisabled = activeApiCallInvolvingThis || !canTransform;
 
     let convertibleTo = [];
@@ -229,12 +242,18 @@ export class ColumnHeader extends Component {
       </Link>
     );
 
-    const className = classNames(styles.columnHeader, {
-      [styles.columnHeaderDisabled]: isDisabled
-    });
+    const classNames = [styles.columnHeader];
+
+    if (isDisabled) {
+      classNames.push(styles.columnHeaderDisabled);
+    }
+
+    if (isDropping) {
+      classNames.push(styles.dropping);
+    }
 
     return (
-      <th key={outputColumn.id} className={className}>
+      <th key={outputColumn.id} className={classNames.join(' ')}>
         {header}
         <div className={styles.colDropdown}>
           <Dropdown {...dropdownProps} />
@@ -259,6 +278,9 @@ export class ColumnHeader extends Component {
 }
 
 ColumnHeader.propTypes = {
+  isDropping: PropTypes.bool,
+  setDropping: PropTypes.func,
+  resetDropping: PropTypes.func,
   outputSchema: PropTypes.object.isRequired,
   outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,

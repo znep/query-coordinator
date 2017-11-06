@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import styles from './TableCell.scss';
 
-
 const formatMapping = {
   'align.left': styles.formatAlignLeft,
   'align.right': styles.formatAlignRight,
@@ -12,23 +11,28 @@ const formatMapping = {
 
 class TypedCell extends Component {
   lookupClasses() {
-    return _.compact(_.map(this.props.format, (value, key) => {
-      return formatMapping[`${key}.${value}`];
-    })).join(' ');
+    return _.compact(
+      _.map(this.props.format, (value, key) => {
+        return formatMapping[`${key}.${value}`];
+      })
+    );
   }
 
   render() {
-    return (
-      <div className={this.lookupClasses()}>
-        {this.props.value}
-      </div>
-    );
+    const classNames = this.lookupClasses();
+
+    if (this.props.isDropping) {
+      classNames.push(styles.dropping);
+    }
+
+    return <div className={classNames.join(' ')}>{this.props.value}</div>;
   }
 }
 
 TypedCell.propTypes = {
   value: PropTypes.string,
-  format: PropTypes.object
+  format: PropTypes.object,
+  isDropping: PropTypes.bool
 };
 
 export default TypedCell;

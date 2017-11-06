@@ -1,26 +1,12 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import ColumnHeader from 'containers/ColumnHeaderContainer';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
 import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
 import styles from './Table.scss';
-import { CSSTransition } from 'react-transition-group';
-
-export const FadeOut = ({ children, ...props }) => (
-  <CSSTransition
-    {...props}
-    timeout={500}
-    appear
-    classNames={{
-      exit: styles.fadeExit,
-      exitActive: styles.fadeExitActive
-    }}>
-    {children}
-  </CSSTransition>
-);
 
 // these are the types that mean something might be vaguely geo-y. they come from clads.
 // view them by doing:
@@ -38,69 +24,96 @@ function genShortcuts(column) {
   return shortcuts;
 }
 
-function Table({
-  entities,
-  path,
-  inputSchema,
-  outputSchema,
-  outputColumns,
-  displayState,
-  showShortcut,
-  onClickError
-}) {
-  const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
-  const showFlyouts = true;
-  const numRowErrors = inputSchema.num_row_errors;
-  const canTransform =
-    entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
+class Table extends Component {
+  constructor() {
+    super();
+    this.state = {
+      dropping: null
+    };
 
-  return (
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          {outputColumns.map(column => (
-            <FadeOut key={column.id}>
+    this.setDropping = this.setDropping.bind(this);
+    this.resetDropping = this.resetDropping.bind(this);
+  }
+
+  setDropping(colId) {
+    this.setState({
+      dropping: colId
+    });
+  }
+
+  resetDropping() {
+    this.setState({
+      dropping: null
+    });
+  }
+
+  render() {
+    const {
+      entities,
+      path,
+      inputSchema,
+      outputSchema,
+      outputColumns,
+      displayState,
+      showShortcut,
+      onClickError
+    } = this.props;
+
+    const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
+    const showFlyouts = true;
+    const numRowErrors = inputSchema.num_row_errors;
+    const canTransform =
+      entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
+
+    return (
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            {outputColumns.map(column => (
               <ColumnHeader
                 key={column.id}
+                isDropping={this.state.dropping === column.id}
+                setDropping={() => this.setDropping(column.id)}
+                resetDropping={this.resetDropping}
                 canTransform={canTransform}
                 outputSchema={outputSchema}
                 outputColumn={column}
                 columnCount={outputColumns.length} />
-            </FadeOut>
-          ))}
-        </tr>
-        <tr className={styles.columnStatuses}>
-          {outputColumns.map(column => (
-            <FadeOut key={column.id}>
+            ))}
+          </tr>
+          <tr className={styles.columnStatuses}>
+            {outputColumns.map(column => (
               <TransformStatus
                 key={column.id}
                 path={path}
                 transform={column.transform}
                 displayState={displayState}
                 columnId={column.id}
+                isDropping={this.state.dropping === column.id}
                 totalRows={inputSchema.total_rows}
                 shortcuts={genShortcuts(column)}
                 showShortcut={showShortcut}
                 flyouts={showFlyouts}
                 onClickError={() => onClickError(path, column.transform, displayState)} />
-            </FadeOut>
-          ))}
-        </tr>
-        {numRowErrors > 0 && (
-          <RowErrorsLink
-            path={path}
-            displayState={displayState}
-            numRowErrors={numRowErrors}
-            inRowErrorMode={inRowErrorMode} />
-        )}
-      </thead>
-      <TableBody
-        entities={entities}
-        columns={outputColumns}
-        displayState={displayState}
-        inputSchemaId={inputSchema.id} />
-    </table>
-  );
+            ))}
+          </tr>
+          {numRowErrors > 0 && (
+            <RowErrorsLink
+              path={path}
+              displayState={displayState}
+              numRowErrors={numRowErrors}
+              inRowErrorMode={inRowErrorMode} />
+          )}
+        </thead>
+        <TableBody
+          entities={entities}
+          columns={outputColumns}
+          displayState={displayState}
+          dropping={this.state.dropping}
+          inputSchemaId={inputSchema.id} />
+      </table>
+    );
+  }
 }
 
 Table.propTypes = {

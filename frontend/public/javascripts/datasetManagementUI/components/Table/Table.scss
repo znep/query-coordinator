@@ -2,15 +2,6 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.fadeExit {
-  opacity: 1;
-}
-
-.fadeExitActive {
-  opacity: 0;
-  transition: opacity 800ms ease-in;
-}
-
 .table {
   display: inline-flex;
   flex-direction: column;

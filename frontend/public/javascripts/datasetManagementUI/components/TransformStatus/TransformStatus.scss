@@ -2,6 +2,10 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.dropping {
+  opacity: 0.1;
+}
+
 .colErrors,
 .colFailed {
   font-weight: normal;
@@ -50,7 +54,6 @@
   z-index: 100;
   text-align: left;
   width: 100% !important;
-
 }
 
 .statusText {

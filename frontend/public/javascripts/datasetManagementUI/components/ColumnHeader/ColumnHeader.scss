@@ -2,6 +2,10 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.dropping {
+  opacity: 0.1;
+}
+
 .dropdownButton {
   composes: btn from global;
   composes: btn-xs from global;
@@ -21,13 +25,11 @@
     position: absolute;
     right: 0.45em;
     top: 0.25em;
-
   }
   :global {
     .picklist-option {
       padding: 0px;
     }
-
   }
   .colDropdownItem {
     padding: 10px;
@@ -67,7 +69,6 @@
   select:disabled {
     opacity: 0.6;
   }
-
 }
 
 .columnHeader:hover {
@@ -97,4 +98,3 @@
   composes: socrata-icon-id from global;
   color: $primary-base;
 }
-

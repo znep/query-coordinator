@@ -72,7 +72,15 @@ export class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, displayState, columnId, showShortcut, onClickError } = this.props;
+    const {
+      transform,
+      totalRows,
+      displayState,
+      columnId,
+      showShortcut,
+      onClickError,
+      isDropping
+    } = this.props;
 
     const inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
 
@@ -124,6 +132,10 @@ export class TransformStatus extends Component {
       };
     }
 
+    if (isDropping) {
+      thClasses = [thClasses, styles.dropping].join(' ');
+    }
+
     return (
       <th className={thClasses} key={transform.id} data-cheetah-hook="col-errors" {...extraProps}>
         <div className={styles.columnProgressBar}>
@@ -156,6 +168,7 @@ export class TransformStatus extends Component {
 }
 
 TransformStatus.propTypes = {
+  isDropping: PropTypes.bool,
   transform: PropTypes.object.isRequired,
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,

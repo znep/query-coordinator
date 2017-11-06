@@ -6,8 +6,6 @@ import RowError from 'components/RowError/RowError';
 import * as DisplayState from 'lib/displayState';
 import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import styles from './TableBody.scss';
-import { TransitionGroup } from 'react-transition-group';
-import { FadeOut } from 'components/Table/Table';
 
 class TableBody extends Component {
   componentDidMount() {
@@ -27,7 +25,8 @@ class TableBody extends Component {
         c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
       ),
       displayState: nextProps.displayState,
-      apiCalls: nextProps.apiCalls
+      apiCalls: nextProps.apiCalls,
+      dropping: nextProps.dropping
     };
 
     const currentStuff = {
@@ -35,7 +34,8 @@ class TableBody extends Component {
         c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
       ),
       displayState: this.props.displayState,
-      apiCalls: this.props.apiCalls
+      apiCalls: this.props.apiCalls,
+      dropping: this.props.dropping
     };
 
     return !_.isEqual(nextStuff, currentStuff);
@@ -71,6 +71,7 @@ class TableBody extends Component {
           : null;
         return {
           tid: transform.id,
+          id: column.id,
           format: column.format,
           cell
         };
@@ -80,6 +81,8 @@ class TableBody extends Component {
   }
 
   renderNormalRow(row) {
+    const { dropping } = this.props;
+
     return (
       <tr key={row.rowIdx}>
         {row.columns.map((column, offset) => {
@@ -88,6 +91,7 @@ class TableBody extends Component {
           const hasFailed = t ? !!t.failed_at : false;
           return (
             <TableCell
+              isDropping={dropping === column.id}
               key={`${row.rowIdx}-${offset}`}
               cell={column.cell}
               format={column.format}
@@ -102,22 +106,19 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map(row => {
-      return (
-        <FadeOut key={row.rowIdx}>
-          {row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row)}
-        </FadeOut>
-      );
+      return row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row);
     });
 
     return (
       <tbody className={styles.tableBody} tabIndex="0">
-        <TransitionGroup>{rows}</TransitionGroup>
+        {rows}
       </tbody>
     );
   }
 }
 
 TableBody.propTypes = {
+  dropping: PropTypes.number,
   entities: PropTypes.object.isRequired,
   apiCalls: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,

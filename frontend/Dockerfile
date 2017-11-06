@@ -12,6 +12,12 @@ RUN mkdir -p $APP_DIR && mkdir -p $APP_DIR/public/cache && chown socrata:socrata
 
 WORKDIR $APP_DIR
 
+# We copy the .rbenv install from the build-worker_frontend to the frontend container in the
+# frontend/bin/jenkins/build-frontend script. However, the rbenv install has absolute symlinks to
+# /home/jenkins, as that's where it was originally installed. All these files are now in /opt/frontend,
+# so symlink them.
+RUN ln -s /opt/frontend /home/jenkins
+
 # This step _extracts_ the contents of the tarball _into_ $APP_BASE_DIR, it does not copy the file itself.
 ADD platform-ui.tgz $APP_BASE_DIR
 

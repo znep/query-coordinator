@@ -17,9 +17,21 @@ export function getColumnFormats(columns) {
   }, {});
 }
 
+export function createMoneyFormatter(column, dataToRender) {
+  const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
+  delete formatInfo.format.precision;
+  formatInfo.format.forceHumane = true;
+  const formatter = (d) => {
+    const v = DataTypeFormatter.renderNumberCellHTML(d, formatInfo);
+    return `${DataTypeFormatter.CURRENCY_SYMBOLS[formatInfo.format.currency]}${v}`;
+  }
+
+  return formatter;
+}
 
 // Formats a value from the dataset for rendering within the chart as HTML.
 export function formatValueHTML(value, columnName, dataToRender, forceHumane = false) {
+  // NOTE: Seems kind of expensive to do a cloneDeep on every single format call.
   const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${columnName}`, {}));
 
   if (!formatInfo.renderTypeName) {

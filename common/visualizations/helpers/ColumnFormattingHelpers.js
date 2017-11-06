@@ -19,6 +19,8 @@ export function getColumnFormats(columns) {
 
 export function createMoneyFormatter(column, dataToRender) {
   const formatInfo = _.cloneDeep(_.get(dataToRender, `columnFormats.${column}`, {}));
+  // Using fixed precision caused rounding errors, so we are letting precision
+  // get determined by the general renderNumberCellHTML.
   delete formatInfo.format.precision;
   formatInfo.format.forceHumane = true;
   const formatter = (d) => {

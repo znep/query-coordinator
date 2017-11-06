@@ -4,39 +4,37 @@ import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './OutputSchemaSidebar.scss';
 import sidebarStyles from '../MetadataContent/MetadataContent.scss';
 import SchemaActions from 'components/SchemaActions/SchemaActions';
-import classNames from 'classnames';
-import { Link } from 'react-router';
+import { IndexLink, Link } from 'react-router';
 import * as Links from 'links/links';
 
 const SubI18n = I18n.show_output_schema;
 
 const OutputSchemaSidebar = props => {
-  const { params, page, showShortcut } = props;
-
-  const outputSchemaClass = classNames(sidebarStyles.tab, {
-    [sidebarStyles.selected]: page === 'output_schema'
-  });
-
-  const parseOptionsClass = classNames(sidebarStyles.tab, {
-    [sidebarStyles.selected]: page === 'parse_options'
-  });
-
+  const { params, showShortcut } = props;
+  // TODO: switch the geo modal thing into a page
   return (
-    <div className={classNames(sidebarStyles.sidebar, styles.outputSchemaSidebar)}>
-      <Link
+    <div className={[sidebarStyles.sidebar, styles.outputSchemaSidebar].join(' ')}>
+      <IndexLink
         to={Links.showOutputSchema(params, params.sourceId, params.inputSchemaId, params.outputSchemaId)}
-        className={outputSchemaClass}>
+        className={sidebarStyles.tab}
+        activeClassName={sidebarStyles.selected}>
         <SocrataIcon name="table" />
         {SubI18n.preview_table}
-      </Link>
-      <Link to={Links.showParseOptions(params)} className={parseOptionsClass}>
+      </IndexLink>
+      <Link
+        to={Links.showParseOptions(params)}
+        className={sidebarStyles.tab}
+        activeClassName={sidebarStyles.selected}>
         <SocrataIcon name="question" />
         {SubI18n.specify_headers}
       </Link>
-      <span onClick={() => showShortcut('geocode')} className={sidebarStyles.tab}>
+      <Link
+        onClick={() => showShortcut('geocode')}
+        className={sidebarStyles.tab}
+        activeClassName={sidebarStyles.selected}>
         <SocrataIcon name="geo" />
         {SubI18n.geocode}
-      </span>
+      </Link>
       <SchemaActions />
     </div>
   );
@@ -44,7 +42,6 @@ const OutputSchemaSidebar = props => {
 
 OutputSchemaSidebar.propTypes = {
   params: PropTypes.object.isRequired,
-  page: PropTypes.string.isRequired,
   showShortcut: PropTypes.func.isRequired
 };
 

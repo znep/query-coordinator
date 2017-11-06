@@ -14,29 +14,30 @@ import ReadyToImport from 'containers/ReadyToImportContainer';
 import * as ModalActions from 'reduxStuff/actions/modal';
 import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
-import TablePane from './TablePane';
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
-import ParseOptionsPane from './ParseOptionsPane';
 import SaveParseOptionsButton from './SaveParseOptionsButton';
 import styles from './ShowOutputSchema.scss';
 
 export class ShowOutputSchema extends Component {
-  isOnParseOptionsPage() {
-    return this.props.params.option === 'parse_options';
-  }
-
-  contentForOption() {
-    if (this.isOnParseOptionsPage()) {
-      return <ParseOptionsPane {...this.props} />;
-    }
-    return <TablePane {...this.props} />;
-  }
-
   saveButtonForOption() {
-    if (this.isOnParseOptionsPage()) {
-      return <SaveParseOptionsButton {...this.props} />;
+    let currentPage;
+
+    if (this.props.location) {
+      currentPage = this.props.location.pathname
+        .split('?')
+        .shift()
+        .split('/')
+        .pop();
     }
-    return <SaveOutputSchemaButton {...this.props} />;
+
+    switch (currentPage) {
+      case 'parse_options':
+        return <SaveParseOptionsButton {...this.props} />;
+      case 'add_column':
+        return <div>hay</div>;
+      default:
+        return <SaveOutputSchemaButton {...this.props} />;
+    }
   }
 
   render() {
@@ -49,17 +50,16 @@ export class ShowOutputSchema extends Component {
             <SourceBreadcrumbs />
           </ModalHeader>
           <ModalContent>
-            <OutputSchemaSidebar
-              params={params}
-              page={params.option || 'output_schema'}
-              showShortcut={showShortcut} />
-            {this.contentForOption()}
+            <OutputSchemaSidebar params={params} showShortcut={showShortcut} />
+            {this.props.children &&
+              React.cloneElement(this.props.children, {
+                ...this.props
+              })}
           </ModalContent>
 
           <ModalFooter>
             {canApplyRevision ? <ReadyToImport /> : null}
             {fatalError ? <FatalError /> : null}
-
             {!fatalError ? this.saveButtonForOption() : null}
           </ModalFooter>
         </Modal>
@@ -69,6 +69,10 @@ export class ShowOutputSchema extends Component {
 }
 
 ShowOutputSchema.propTypes = {
+  children: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequrired
+  }),
   revision: PropTypes.object.isRequired,
   source: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,

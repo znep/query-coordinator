@@ -2119,6 +2119,15 @@ en:
       columns: Columns
       rows: Rows
       title: Data Preview
+    blob_preview:
+      whats_this: What's This?
+      filetype: Filetype
+      filesize: Filesize
+      non_parsable_format: This is not a parsable data format. It will be added to your asset list under "Files and Documents", and can be downloaded and previewed by users when shared.
+      not_expecting: Not the data you were expecting?
+      get_help: Get help with possible errors
+      choose_new: choose a new data source
+      or: or
     export_errors: Export Errors
     home_pane:
       add_column_metadata: Add Column Metadata
@@ -2223,7 +2232,6 @@ en:
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
-      supported_uploads: 'Supported file types:'
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
@@ -2233,7 +2241,6 @@ en:
       new_file: Upload a New File
       new_url_source: Import from a URL
       previous: Previous uploads
-      supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
     metadata_manage:
       column_metadata_label: Column Descriptions
@@ -2473,7 +2480,7 @@ en:
       subtitle: This will create a link to a dataset on another server. Your data will not be imported.
       title: Link to an External Dataset
     show_uploads:
-      filetypes: Supported file types are
+      filetypes: Parseable file types are
       flash_error_message: Unsupported file type
       from_url: URL Source
       message: Drag a New Data File Here

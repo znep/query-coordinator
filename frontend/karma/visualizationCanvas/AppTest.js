@@ -6,7 +6,6 @@ import { getStore } from './testStore';
 import mockFilter from './data/mockFilter';
 import mockView from './data/mockView';
 import mockVif from './data/mockVif';
-import { shallow } from 'enzyme';
 
 describe('App', function() {
   let server;
@@ -32,31 +31,6 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = shallow(<PureApp mode={ModeStates.EDIT} onNameChanged={() => {}}/>)
-    });
-
-    it('renders an edit bar', () => {
-      assert.isTrue(element.find('Connect(EditBar)').exists());
-    });
-
-    it('does not render a preview bar', () => {
-      assert.isFalse(element.find('Connect(PreviewBar)').exists());
-    });
-
-    it('does not display site chrome', () => {
-      assert.equal(element.find('.hide-site-chrome').length, 0)
-    });
-
-    it('renders an InfoPane', () => {
-      assert.isTrue(element.find('Connect(InfoPaneComponent)').exists());
-    });
-
-    it('renders an editable filter bar', () => {
-      assert.isTrue(element.find('Connect(FilterBar)').exists());
-      assert.isFalse(element.find('Connect(FilterBar)').prop('isReadOnly'));
-    });
-
-    it('renders an AddVisualizationButton', () => {
       const store = getStore({
         mode: ModeStates.EDIT,
         shareModal: {
@@ -65,47 +39,90 @@ describe('App', function() {
         authoringWorkflow: {
           isActive: false
         }
-      });
+      })
 
-      assert.isTrue(element.find('Connect(EditBar)').dive({
-        context: {
-          store: store
-        }
-      }).dive().find('Connect(AddVisualizationButton)').exists());
+      element = element = renderComponentWithStore(App, {}, store)
+    });
+
+    it('renders an edit bar', () => {
+      assert.ok(element.querySelector('.edit-bar'));
+    });
+
+    it('does not render a preview bar', () => {
+      assert.isNull(element.querySelector('.preview-bar'));
+      assert.isNull(document.querySelector('.preview-mode'));
+    });
+
+    it('does not display site chrome', () => {
+      assert.ok(document.querySelector('.hide-site-chrome'));
+    });
+
+    it('renders an InfoPane', () => {
+      assert.ok(element.querySelector('.info-pane'));
+    });
+
+    it('renders an editable filter bar', () => {
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.ok(element.querySelector('.btn-add-filter'));
+    });
+
+    it('renders an AddVisualizationButton', () => {
+      assert.ok(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
-      assert.isTrue(element.find('Connect(Visualizations)').exists());
+      const store =  getStore({
+        mode: ModeStates.EDIT,
+        shareModal: {
+          isActive: false
+        },
+        authoringWorkflow: {
+          isActive: false
+        },
+        vifs: [mockVif]
+      });
+      element = renderComponentWithStore(App, {}, store);
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('renders edit visualization buttons', () => {
       const store = getStore({
         mode: ModeStates.EDIT,
+        authoringWorkflow: {
+          isActive: false
+        },
+        shareModal: {
+          isActive: false
+        },
+        vifs: [mockVif, mockVif]
+      });
+      element = renderComponentWithStore(App, {}, store);
+      const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
+      assert.equal(editVisualizationButtons.length, 2);
+    });
+
+    it('renders a Table', () => {
+      assert.ok(element.querySelector('.table-contents'));
+    });
+
+    it('renders an Edit Menu', () => {
+      assert.ok(element.querySelector('.edit-menu'));
+    });
+
+    it('renders an AuthoringWorkflow', () => {
+      const store = getStore({
+        mode: ModeStates.EDIT,
         shareModal: {
           isActive: false
         },
         authoringWorkflow: {
-          isActive: false
+          isActive: true,
+          vif: mockVif
         }
       });
 
-      assert.isTrue(element.find('Connect(Visualizations)').dive({
-        context: {
-          store: store
-        }
-      }).prop('isEditable'));
-    });
-
-    it('renders a Table', () => {
-      assert.isTrue(element.find('Connect(Table)').exists());
-    });
-
-    it('renders an Edit Menu', () => {
-      assert.isTrue(element.find('Connect(EditMenu)').exists());
-    });
-
-    it('renders an AuthoringWorkflow', () => {
-      assert.isTrue(element.find('Connect(AuthoringWorkflowModal)').exists());
+      element = renderComponentWithStore(App, {}, store);
+      assert.ok(element.querySelector('.authoring-workflow-modal'));
     });
   });
 
@@ -113,26 +130,6 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = shallow(<PureApp mode={ModeStates.PREVIEW} onNameChanged={() => {}}/>);
-    });
-
-    it('renders a preview bar', () => {
-      assert.isTrue(element.find('Connect(PreviewBar)').exists());
-    });
-
-    it('does not renders an edit bar', () => {
-      assert.isFalse(element.find('Connect(EditBar)').exists());
-    });
-
-    it('does not render an Edit Menu', () => {
-      assert.isFalse(element.find('Connect(EditMenu)').exists());
-    });
-
-    it('renders an InfoPane', () => {
-      assert.isTrue(element.find('Connect(InfoPaneComponent)').exists());
-    });
-
-    it('renders a presentational filter bar', () => {
       const store = getStore({
         mode: ModeStates.PREVIEW,
         shareModal: {
@@ -145,16 +142,50 @@ describe('App', function() {
         filters: [mockFilter]
       });
 
-      assert.isTrue(element.find('Connect(FilterBar)').exists());
-      assert.isTrue(element.find('Connect(FilterBar)').dive({
-        context: {
-          store: store
-        }
-      }).prop('isReadOnly'));
+      element = renderComponentWithStore(App, {}, store);
+    });
+
+    it('renders a preview bar', () => {
+      assert.ok(element.querySelector('.preview-bar'));
+      assert.ok(document.querySelector('.preview-mode'));
+    });
+
+    it('does not renders an edit bar', () => {
+      assert.isNull(element.querySelector('.edit-bar'));
+    });
+
+    it('does not render an Edit Menu', () => {
+      assert.isNull(element.querySelector('.edit-menu'));
+    });
+
+    it('displays site chrome', () => {
+      assert.isNull(document.querySelector('.hide-site-chrome'));
+    });
+
+    it('renders an InfoPane', () => {
+      assert.ok(element.querySelector('.info-pane'));
+    });
+
+    it('renders a presentational filter bar', () => {
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.isNull(element.querySelector('.add-filter-button'));
+    });
+
+    it('does not render an AddVisualizationButton', () => {
+      assert.isNull(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
-      assert.isTrue(element.find('Connect(Visualizations)').exists());
+      const store = getStore({
+        mode: ModeStates.PREVIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      });
+
+      element = renderComponentWithStore(App, {}, store);
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
@@ -166,15 +197,12 @@ describe('App', function() {
         }
       });
 
-      assert.isFalse(element.find('Connect(Visualizations)').dive({
-        context: {
-          store: store
-        }
-      }).prop('isEditable'));
+      element = renderComponentWithStore(App, {}, store);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
-      assert.isTrue(element.find('Connect(Table)').exists());
+      assert.ok(element.querySelector('.table-contents'));
     });
   });
 
@@ -182,26 +210,6 @@ describe('App', function() {
     let element;
 
     beforeEach(() => {
-      element = shallow(<PureApp mode={ModeStates.VIEW} onNameChanged={() => {}} />);
-    });
-
-    it('does not render a preview bar', () => {
-      assert.isFalse(element.find('Connect(PreviewBar)').exists());
-    });
-
-    it('does not renders an edit bar', () => {
-      assert.isFalse(element.find('Connect(EditBar)').exists());
-    });
-
-    it('does not render an Edit Menu', () => {
-      assert.isFalse(element.find('Connect(EditMenu)').exists());
-    });
-
-    it('renders an InfoPane', () => {
-      assert.isTrue(element.find('Connect(InfoPaneComponent)').exists());
-    });
-
-    it('renders a presentational filter bar', () => {
       const store = getStore({
         mode: ModeStates.VIEW,
         view: mockView,
@@ -209,18 +217,51 @@ describe('App', function() {
         shareModal: {
           isActive: false
         }
-      });
+      })
 
-      assert.isTrue(element.find('Connect(FilterBar)').exists());
-      assert.isTrue(element.find('Connect(FilterBar)').dive({
-        context: {
-          store: store
-        }
-      }).prop('isReadOnly'));
+      element = renderComponentWithStore(App, {}, store);
+    });
+
+    it('does not render a preview bar', () => {
+      assert.isNull(element.querySelector('.preview-bar'));
+      assert.isNull(document.querySelector('.preview-mode'));
+    });
+
+    it('does not renders an edit bar', () => {
+      assert.isNull(element.querySelector('.edit-bar'));
+    });
+
+    it('does not render an Edit Menu', () => {
+      assert.isNull(element.querySelector('.edit-menu'));
+    });
+
+    it('displays site chrome', () => {
+      assert.isNull(document.querySelector('.hide-site-chrome'));
+    });
+
+    it('renders an InfoPane', () => {
+      assert.ok(element.querySelector('.info-pane'));
+    });
+
+    it('renders a presentational filter bar', () => {
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.isNull(element.querySelector('.add-filter-button'));
+    });
+
+    it('does not render an AddVisualizationButton', () => {
+      assert.isNull(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
-      assert.isTrue(element.find('Connect(Visualizations)').exists());
+      const store = getStore({
+        mode: ModeStates.VIEW,
+        vifs: [mockVif],
+        shareModal: {
+          isActive: false
+        }
+      })
+      element = renderComponentWithStore(App, {}, store);
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
@@ -232,15 +273,12 @@ describe('App', function() {
         }
       });
 
-      assert.isFalse(element.find('Connect(Visualizations)').dive({
-        context: {
-          store: store
-        }
-      }).prop('isEditable'));
+      element = renderComponentWithStore(App, {}, store);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
-      assert.isTrue(element.find('Connect(Table)').exists());
+      assert.ok(element.querySelector('.table-contents'));
     });
   });
 });

@@ -69,7 +69,7 @@ export class TransformStatus extends Component {
       return 'failed';
     } else if (isIgnored) {
       return 'isIgnored';
-    } else if (transform.completed_at || oldDoneCheck) {
+    } else if (transform.finished_at || oldDoneCheck) {
       return 'done';
     } else {
       return 'inProgress';

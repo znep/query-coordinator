@@ -1,9 +1,13 @@
 
 /** Returns whether the given permission is a "public" permission */
-export const isPublicPermission = permission => (permission['public'] || permission.scope === 'public') && (permission.type === 'read' || permission.type === 'write');
+export const isPublicPermission = (permission) => (
+  (permission.public || permission.scope === 'public') && (permission.type === 'read' || permission.type === 'write')
+);
 
 /** Returns whether the given permission is an "organization" permission */
-export const isOrganizationPermission = permission => permission.scope === 'organization' && permission.type === 'read';
+export const isOrganizationPermission = (permission) => (
+  permission.scope === 'organization' && permission.type === 'read'
+);
 
 /**
  * Gets the "audience scope" of an asset given a list of permissions.

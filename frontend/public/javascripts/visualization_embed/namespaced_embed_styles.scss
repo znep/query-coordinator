@@ -1,0 +1,19 @@
+// Flyouts and RowInspector need to remain outside of the namespace since they are added
+// to the bottom of the page outside of .socrata-embed-container
+
+// Not sure why socrata-icons doesn't work within the namespace, but the icons and font families
+// are all reasonably namespaced with "socrata-*" so collisions should be unlikely
+@import "frontend/app/styles/socrata-icons";
+@import "common/styleguide/partials/_socrata_flyout";
+@import "common/visualizations/views/styles/rowInspector";
+
+// Socrata-icons MUST come before styleguide. Otherwise,
+// you will get icons showing up twice (styleguide has a
+// compatibility shim for old-style socrata-icons that is
+// sensitive to style load order).
+.socrata-embed-container {
+  @import "common/styleguide/styleguide-no-tag-level";
+  @import "frontend/app/styles/visualizations-import-shim";
+}
+
+

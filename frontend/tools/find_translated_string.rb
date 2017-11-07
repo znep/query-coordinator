@@ -10,10 +10,20 @@
 
 require 'yaml'
 require 'shellwords'
+require 'optparse'
 
 GIT_ROOT = `git rev-parse --show-toplevel`.chomp
 FRONTEND = File.join(GIT_ROOT, 'frontend')
 LOCALE_DIR = File.join(FRONTEND, 'config/locales')
+
+options = { :locale => 'en'}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} [options]"
+
+  opts.on('-l', '--locale LOCALE', "Specify a LOCALE (eg. fr, default #{options[:locale]})") do |l|
+    options[:locale] = l
+  end
+end.parse!
 
 class Hash
   def paths_for_value(search)
@@ -44,11 +54,11 @@ class String
   end
 end
 
-def run(criterion, locale: 'en')
+def run(criterion, locale = 'en')
   data = (@data ||= {})[locale] ||= YAML.load_file(File.join(LOCALE_DIR, "#{locale}.yml"))
   data.paths_for_value(criterion).each do |path|
     puts "#{path.join('.').green}: #{data.dig(*path)}"
   end
 end
 
-run(Shellwords.join(ARGV)) if __FILE__ == $0
+run(Shellwords.join(ARGV), options[:locale]) if __FILE__ == $0

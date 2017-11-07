@@ -54,7 +54,7 @@ describe('components/DragDropUpload', () => {
     }, 100);
   });
 
-  it('displays an error if dropped file has unsupported extension', done => {
+  it('sends parse_source: false if dropped file has unsupported extension', done => {
     const fakeStore = mockStore(state);
 
     const component = shallow(
@@ -73,19 +73,14 @@ describe('components/DragDropUpload', () => {
     setTimeout(() => {
       const actions = fakeStore.getActions();
 
-      const wrongAction = actions.filter(
+      const expectedAction = actions.filter(
         action =>
-          action.operation === 'CREATE_UPLOAD' &&
-          action.params.filename === 'testfile.csv'
+          action.operation === 'CREATE_SOURCE' &&
+          action.callParams.source_type.filename === 'testfile.png' &&
+          action.callParams.parse_options.parse_source === false
       );
 
-      const rightAction = actions.filter(
-        action =>
-          action.type === 'SHOW_FLASH_MESSAGE' && action.kind === 'error'
-      );
-
-      assert.equal(wrongAction.length, 0);
-      assert.equal(rightAction.length, 1);
+      assert.equal(expectedAction.length, 1);
       done();
     }, 100);
   });

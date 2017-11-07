@@ -22,9 +22,9 @@ export const BlobFileInfo = ({ source, sourcesLink }) => {
       {/* blob-preview is a styleguide/common class */}
       <h2>{I18n.blob_preview.whats_this}</h2>
       <div className={styles.blobFileInfo}>
-        <span id="sourceFiletype">
+        {source.content_type && <span id="sourceFiletype">
           <b>{I18n.blob_preview.filetype}:</b> {source.content_type}
-        </span>
+        </span>}
         <br />
         <span id="sourceFilesize">
           <b>{I18n.blob_preview.filesize}:</b> {bytes(source.filesize)}

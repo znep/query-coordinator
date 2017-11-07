@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import TablePreview from 'components/TablePreview/TablePreview';
-import * as Actions from 'reduxStuff/actions/createSource';
 
 function mapStateToProps({ entities }, { params }) {
   return {
@@ -10,12 +9,4 @@ function mapStateToProps({ entities }, { params }) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    createUpload: (file, params) => {
-      dispatch(Actions.createUploadSource(file, params));
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TablePreview);
+export default connect(mapStateToProps)(TablePreview);

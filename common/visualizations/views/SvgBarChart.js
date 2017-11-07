@@ -250,7 +250,6 @@ function SvgBarChart($element, vif, options) {
     );
 
     measures = getMeasures(self, dataToRender);
-
     referenceLines = self.getReferenceLines();
 
     let width;
@@ -995,12 +994,6 @@ function SvgBarChart($element, vif, options) {
      */
     try {
 
-      const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex, referenceLines);
-      const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex, referenceLines);
-
-      const dataMinSummedXValue = getMinSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
-      const dataMaxSummedXValue = getMaxSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
-
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
@@ -1027,11 +1020,17 @@ function SvgBarChart($element, vif, options) {
 
       } else if (isStacked) {
 
+        const dataMinSummedXValue = getMinSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMaxSummedXValue = getMaxSummedXValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
         positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
 
       } else {
+
+        const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex, referenceLines);
 
         minXValue = measureAxisMinValue || Math.min(dataMinXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
@@ -1465,7 +1464,7 @@ function SvgBarChart($element, vif, options) {
         }
       );
 
-    chartSvg.selectAll('.reference-line-underlay').
+    seriesSvg.selectAll('.reference-line-underlay').
       // NOTE: The below function depends on this being set by d3, so it is
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
@@ -1833,7 +1832,13 @@ function SvgBarChart($element, vif, options) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+      const renderType = _.get(dataToRender, `columnFormats.${column}.renderTypeName`);
+
+      if (renderType === 'money') {
+        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, dataToRender);
+      } else {
+        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+      }
     }
 
     const axis = d3.svg.axis().

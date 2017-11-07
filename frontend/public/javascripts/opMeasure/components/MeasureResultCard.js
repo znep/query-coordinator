@@ -2,121 +2,27 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { calculateMeasure } from '../measureCalculator';
-import { CalculationTypeNames } from '../lib/constants';
+import I18n from 'common/i18n';
+
+import withComputedMeasure from './withComputedMeasure';
 
 // Calculates and displays a measure as a tile
 export class MeasureResultCard extends Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-
-  componentWillMount() {
-    this.checkProps(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.checkProps(nextProps);
-  }
-
-  // When the measure changes, we need to initiate a backend request. If there is
-  // already an outstanding request, we defer processing the new measure until
-  // the outstanding request completes.
-  onMeasureChanged() {
-    if (this.state.dataRequestInFlight) {
-      // Do nothing - makeRequest() will automatically call checkProps()
-      // when the request completes. That will cause onMeasureChanged to be
-      // called again (if the measure has indeed changed).
-      return;
-    }
-
-    this.setState(
-      (prevState, props) => ({
-        lastRequestedMeasure: props.measure,
-        dataRequestInFlight: true
-      }),
-      this.makeRequest
-    );
-  }
-
-  // Called whenever props change or the component receives initial props.
-  checkProps(props) {
-    const measureHasChanged = !_.isEqual(this.state.lastRequestedMeasure, props.measure);
-
-    if (measureHasChanged) {
-      this.onMeasureChanged();
-    }
-  }
-
-  isReadyToCalculate(measure) {
-    const calculationType = _.get(measure, 'metric.type');
-
-    if (_.isEmpty(calculationType)) {
-      return false;
-    }
-
-    const allNotNil = (keyPaths) => {
-      return _.every(keyPaths, (attr) => {
-        return !_.isNil(_.get(measure, attr));
-      });
-    };
-
-    switch (calculationType) {
-      case CalculationTypeNames.COUNT:
-        return allNotNil(['metric.dataSource.uid']);
-      case CalculationTypeNames.SUM:
-        return allNotNil([
-          'metric.dataSource.uid',
-          'metric.arguments.column'
-        ]);
-      case CalculationTypeNames.RECENT_VALUE:
-        return allNotNil([
-          'metric.dataSource.uid',
-          'metric.arguments.valueColumn',
-          'metric.arguments.dateColumn'
-        ]);
-      default:
-        throw new Error(`Unknown calculation type: ${calculationType}`);
-    }
-  }
-
-  makeRequest() {
-    const { measure } = this.props;
-    if (this.isReadyToCalculate(measure)) {
-      this.props.calculateMeasure(measure).then(
-        (result) => {
-          this.setState(
-            {
-              dataResponse: result,
-              dataRequestInFlight: false
-            },
-            () => this.checkProps(this.props)
-          );
-        },
-        () => {
-          this.setState({
-            dataRequestInFlight: false
-          });
-        }
-      );
-    } else {
-      this.setState(
-        {
-          dataResponse: null,
-          dataRequestInFlight: false
-        },
-        () => this.checkProps(this.props)
-      );
-    }
-  }
 
   renderData() {
-    const { dataResponse, dataRequestInFlight } = this.state;
+    const { computedMeasure, dataRequestInFlight, placeholder } = this.props;
+    const result = _.get(computedMeasure, 'result');
+    const dividingByZero = _.get(computedMeasure, 'dividingByZero');
 
-    if (dataResponse) {
+    if (dividingByZero) {
       return (
-        <div className="measure-result-big-number">{dataResponse}</div>
+        <div className="measure-dividing-by-zero">
+          {I18n.t('open_performance.measure.dividing_by_zero')}
+        </div>
+      );
+    } else if (result) {
+      return (
+        <div className="measure-result-big-number">{result}</div>
       );
     } else if (dataRequestInFlight) {
       return (
@@ -124,7 +30,7 @@ export class MeasureResultCard extends Component {
       );
     } else {
       return (
-        <div className="measure-result-placeholder">PLACEHOLDER measure not set up</div>
+        <div className="measure-result-placeholder">{placeholder}</div>
       );
     }
   }
@@ -132,18 +38,19 @@ export class MeasureResultCard extends Component {
   render() {
     const subtitle = _.get(this.props, 'measure.metric.display.label', '');
 
-    return (<div className="measure-result-card">
-      {this.renderData()}
-      <div className="measure-result-subtitle">
-        {subtitle}
+    return (
+      <div className="measure-result-card">
+        {this.renderData()}
+        <div className="measure-result-subtitle">
+          {subtitle}
+        </div>
       </div>
-    </div>);
+    );
   }
 }
 
-// Passing in calculateMeasure as a prop to allow for dependency injection in tests
 MeasureResultCard.defaultProps = {
-  calculateMeasure: calculateMeasure
+  placeholder: ''
 };
 
 MeasureResultCard.propTypes = {
@@ -153,5 +60,9 @@ MeasureResultCard.propTypes = {
       label: PropTypes.string
     })
   }).isRequired,
-  calculateMeasure: PropTypes.func
+  placeholder: PropTypes.string,
+  computedMeasure: PropTypes.object, // See withComputedMeasure.
+  dataRequestInFlight: PropTypes.bool
 };
+
+export default withComputedMeasure()(MeasureResultCard);

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import barChartVif from './barChartVif';
 import regionMapVif from './regionMapVif';
 import columnChartVif from './columnChartVif';
+import comboChartVif from './comboChartVif';
 import pieChartVif from './pieChartVif';
 import featureMapVif from './featureMapVif';
 import histogramVif from './histogramVif';
@@ -12,6 +13,7 @@ export default () => _.cloneDeep({
   barChart: barChartVif,
   regionMap: regionMapVif,
   columnChart: columnChartVif,
+  comboChart: comboChartVif,
   pieChart: pieChartVif,
   featureMap: featureMapVif,
   histogram: histogramVif,

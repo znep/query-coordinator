@@ -59,7 +59,7 @@ const removeFutureUser = (id) => {
 };
 
 const resendFutureUserEmail = (email) => {
-  const apiPath = `/api/future_accounts?method=resendEmail&email=${email}`;
+  const apiPath = `/api/future_accounts?method=resendEmail&email=${encodeURIComponent(email)}`;
   const fetchOptions = {
     credentials: 'same-origin',
     headers: defaultHeaders,

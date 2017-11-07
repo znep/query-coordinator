@@ -3,6 +3,7 @@ import I18n from 'common/i18n';
 export const INPUT_DEBOUNCE_MILLISECONDS = 700;
 export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
 export const MAXIMUM_MEASURES = 12;
+export const MAXIMUM_COMBO_CHART_MEASURES = 6;
 
 export const COLUMN_TYPES = [
   {
@@ -11,7 +12,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'calendar_date',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'timelineChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'timelineChart', 'comboChart'],
     icon: 'icon-date'
   },
   {
@@ -36,17 +37,17 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'money',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart', 'histogram'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart', 'histogram', 'comboChart'],
     icon: 'icon-dollar'
   },
   {
     type: 'number',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram', 'comboChart'],
     icon: 'icon-number'
   },
   {
     type: 'percent',
-    preferredVisualizationTypes: ['barChart', 'columnChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'comboChart'],
     icon: 'icon-number'
   },
   {
@@ -60,7 +61,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'text',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart', 'comboChart'],
     icon: 'icon-text'
   }
 ];
@@ -86,26 +87,32 @@ export const VISUALIZATION_TYPES = [
   },
   {
     type: 'histogram',
-    icon: 'icon-distribution',
     title: I18n.t('shared.visualizations.charts.histogram.title'),
+    icon: 'icon-distribution',
     preferredDimensionTypes: ['money', 'number']
   },
   {
+    type: 'comboChart',
+    title: I18n.t('shared.visualizations.charts.combo_chart.title'),
+    icon: 'icon-combo-chart',
+    preferredDimensionTypes: ['calendar_date']
+  },
+  {
     type: 'regionMap',
-    icon: 'icon-region',
     title: I18n.t('shared.visualizations.charts.region_map.title'),
+    icon: 'icon-region',
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'featureMap',
-    icon: 'icon-map',
     title: I18n.t('shared.visualizations.charts.feature_map.title'),
+    icon: 'icon-map',
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'timelineChart',
-    icon: 'icon-line-chart',
     title: I18n.t('shared.visualizations.charts.timeline_chart.title'),
+    icon: 'icon-line-chart',
     preferredDimensionTypes: ['calendar_date']
   }
 ];
@@ -249,6 +256,8 @@ export const TIMELINE_PRECISION = [
   }
 ];
 
+export const COMBO_CHART_COLUMN = 'comboChart.column';
+export const COMBO_CHART_LINE = 'comboChart.line';
 export const DEFAULT_PRIMARY_COLOR = '#71abd9';
 export const DEFAULT_SECONDARY_COLOR = '#71abd9';
 

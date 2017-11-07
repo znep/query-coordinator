@@ -2167,17 +2167,15 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
-      publish_confirmation_usaid:
-        button: Done
+      publish_confirmation:
+        body: It will be accessible to anyone through your data catalog.
+        button_public: Publish Now
+        button_private: Done
         private: Private
         private_msg: Only accessible to people within your organization.
         public: Public
         public_msg: Publically accessible. Discoverable through the public catalog.
         title: Choose your audience
-      publish_confirmation:
-        body: It will be accessible to anyone through your data catalog.
-        button: Publish Now
-        title: You are about to make your dataset public
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'
         data_satisfied: Added a data file, and finished validation
@@ -2186,7 +2184,8 @@ en:
         publish_dataset: Publish Dataset
       publish_modal:
         failure:
-          body: Our site is having trouble right now. Please wait and try again.
+          body: Our site is having trouble right now. Please wait and try again, or contact support.
+          include_request_id: "When contacting support, please include the following Request ID for debugging:"
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
@@ -3091,11 +3090,13 @@ en:
       rate: Rate
       recent_value: Recent Value
     measure:
+      dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
         cancel: Cancel
         title: Configure Measure
         calculation:
+          choose_aggregation: Choose aggregation...
           choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
           date_column: Date Column
@@ -3104,21 +3105,35 @@ en:
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
+          exclude_nulls: Exclude Null Values
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
           title: Metric Calculation
           types:
             count:
-              exclude_nulls: Exclude Null Values
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
-              help_title: Help with Count
+              help_title: How is Count Calculated?
               title: Count Options
+            rate:
+              aggregation_subtitle: Configure math for numerator and denominator
+              aggregation_title: Set Aggregation
+              denominator_subtitle: Number of equal parts numerator will be divided into.
+              denominator_title: Set Denominator
+              direct_input_subtitle: Enter an exact value as your denominator below.
+              direct_input_title: Don't want to choose a column?
+              fraction_no_values: Set numerator and denominator to view sample fraction
+              fraction_not_available: PLACEHOLDER - please set aggregation.
+              help_body: This calculation type displays a rate or percentage. It is calculated by dividing the value of the numerator (the top value) by the value of the denominator (the bottom value). The selected columns for each can either be summed or counted. You can also choose to enter an exact value as the denominator.
+              help_title: How is Rate Calculated?
+              numerator_subtitle: Number of pieces/units of data
+              numerator_title: Set Numerator
+              sample_fraction: Sample Fraction
             recent_value:
               column_condition: Column Condition
               date_column: Date Column
               help_body: Chooses the most recent value of a column, given the condition and date column selected.
-              help_title: Help with Exact Values
+              help_title: How is Recent Value Calculated?
               title: Select an Exact Value by Date
               value_column: Value Column
             sum:

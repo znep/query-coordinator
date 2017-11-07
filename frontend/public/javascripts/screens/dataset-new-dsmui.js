@@ -23,7 +23,7 @@ function updateButtonDisplay() {
   }
 }
 
-function handleError(xhr, textStatus, errorThrown, fromApi) {
+function handleError(xhr, textStatus, errorThrown, fromApi, reason) {
   // TODO: airbrake this
   console.error(
     'An error occurred while making a request to ' + fromApi + '.',
@@ -33,6 +33,9 @@ function handleError(xhr, textStatus, errorThrown, fromApi) {
   );
   var message = $('#error-message');
   message.show();
+  if (reason) {
+    message.text(reason);
+  }
   inProgress = false;
 
   updateButtonDisplay();
@@ -101,7 +104,7 @@ function createDataset() {
       });
     },
     error: function(xhr, textStatus, errorThrown) {
-      handleError(xhr, textStatus, errorThrown, 'core');
+      handleError(xhr, textStatus, errorThrown, 'core', xhr.responseJSON.message);
     }
   });
   return false;

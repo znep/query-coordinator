@@ -29,7 +29,7 @@ import { getMeasures } from '../helpers/measure';
 // The LEFT margin has been removed because it will be dynamically calculated.
 const MARGINS = {
   TOP: 32,
-  RIGHT: 32,
+  RIGHT: 50,
   BOTTOM: 0
 };
 const MINIMUM_LABEL_WIDTH = 35;
@@ -65,7 +65,6 @@ function SvgColumnChart($element, vif, options) {
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
   let measures;
-
   let referenceLines;
 
   _.extend(this, new SvgVisualization($element, vif, options));
@@ -159,7 +158,6 @@ function SvgColumnChart($element, vif, options) {
     );
 
     measures = getMeasures(self, dataToRender);
-
     referenceLines = self.getReferenceLines();
 
     let width;
@@ -763,12 +761,6 @@ function SvgColumnChart($element, vif, options) {
 
     try {
 
-      const dataMinSummedYValue = getMinSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
-      const dataMaxSummedYValue = getMaxSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
-
-      const dataMinYValue = getMinYValue(dataToRender, dataTableDimensionIndex, referenceLines);
-      const dataMaxYValue = getMaxYValue(dataToRender, dataTableDimensionIndex, referenceLines);
-
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
@@ -795,6 +787,9 @@ function SvgColumnChart($element, vif, options) {
 
       } else if (isStacked) {
 
+        const dataMinSummedYValue = getMinSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMaxSummedYValue = getMaxSummedYValue(groupedDataToRender, dataTableDimensionIndex, referenceLines);
+
         if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
           minYValue = Math.min(dataMinSummedYValue, 0);
         } else if (measureAxisMinValue) {
@@ -814,6 +809,9 @@ function SvgColumnChart($element, vif, options) {
         positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
 
       } else {
+
+        const dataMinYValue = getMinYValue(dataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMaxYValue = getMaxYValue(dataToRender, dataTableDimensionIndex, referenceLines);
 
         if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
           minYValue = Math.min(dataMinYValue, 0);
@@ -886,7 +884,7 @@ function SvgColumnChart($element, vif, options) {
     clipPathSvg.append('rect').
       attr('x', 0).
       attr('y', 0).
-      attr('width', viewportWidth + leftMargin + rightMargin).
+      attr('width', viewportWidth).
       attr('height', viewportHeight + topMargin + bottomMargin);
 
     viewportSvg.append('g').
@@ -1160,6 +1158,7 @@ function SvgColumnChart($element, vif, options) {
               this.getAttribute('data-measure-index'),
               10
             );
+
             const measure = measures[measureIndex];
 
             // d3's .datum() method gives us the entire row, whereas everywhere
@@ -1239,7 +1238,7 @@ function SvgColumnChart($element, vif, options) {
           }
         );
 
-    chartSvg.selectAll('.reference-line-underlay').
+    seriesSvg.selectAll('.reference-line-underlay').
       // NOTE: The below function depends on this being set by d3, so it is
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {
@@ -1507,7 +1506,13 @@ function SvgColumnChart($element, vif, options) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+      const renderType = _.get(dataToRender, `columnFormats.${column}.renderTypeName`);
+
+      if (renderType === 'money') {
+        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, dataToRender);
+      } else {
+        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+      }
     }
 
     const yAxis = d3.svg.axis().

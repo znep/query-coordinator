@@ -162,6 +162,7 @@ export class VisualizationTypeSelector extends Component {
           {this.renderVisualizationTypeButton('pieChart')}
           {this.renderVisualizationTypeButton('timelineChart')}
           {this.renderVisualizationTypeButton('histogram')}
+          {this.renderVisualizationTypeButton('comboChart')}
           {this.renderVisualizationTypeButton('featureMap')}
           {this.renderVisualizationTypeButton('regionMap')}
         </div>

@@ -35,7 +35,7 @@ const generateCustomColorPalette = (vifAuthoring) => {
     'To create a custom color palette you need a valid chart type and custom palette configuration'
   );
 
-  if (_.includes(['barChart', 'columnChart', 'timelineChart'], visualizationType)) {
+  if (_.includes(['barChart', 'columnChart', 'timelineChart', 'comboChart'], visualizationType)) {
     const getData = visualizationType === 'timelineChart' ?
       TimeDataManager.getData :
       CategoricalDataManager.getData;

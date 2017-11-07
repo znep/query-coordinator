@@ -61,6 +61,23 @@ export const getSeries = createSelector(
   (vif) => _.get(vif, 'series', [])
 );
 
+export const getUseSecondaryAxisForColumns = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.useSecondaryAxisForColumns', false)
+);
+
+export const getUseSecondaryAxisForLines = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.useSecondaryAxisForLines', false)
+);
+
+export const getUseSecondaryAxis = createSelector(
+  getCurrentVif,
+  (vif) =>
+    _.get(vif, 'configuration.useSecondaryAxisForColumns', false) ||
+    _.get(vif, 'configuration.useSecondaryAxisForLines', false)
+);
+
 export const getTitle = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'title', null)
@@ -182,14 +199,24 @@ export const getXAxisScalingMode = createSelector(
   (vif) => _.get(vif, 'configuration.xAxisScalingMode')
 );
 
+export const getMeasureAxisMaxValue = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.measureAxisMaxValue', null)
+);
+
 export const getMeasureAxisMinValue = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'configuration.measureAxisMinValue', null)
 );
 
-export const getMeasureAxisMaxValue = createSelector(
+export const getSecondaryMeasureAxisMaxValue = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'configuration.measureAxisMaxValue', null)
+  (vif) => _.get(vif, 'configuration.secondaryMeasureAxisMaxValue', null)
+);
+
+export const getSecondaryMeasureAxisMinValue = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.secondaryMeasureAxisMinValue', null)
 );
 
 export const getDimensionGroupingColumnName = createSelector(
@@ -282,7 +309,10 @@ export const getShowOtherCategory = createSelector(
 
 export const getVisualizationType = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].type', null)
+  (vif) => {
+    const type = _.get(vif, 'series[0].type', null);
+    return _.isNull(type) ? null : type.split('.')[0];
+  }
 );
 
 export const hasVisualizationType = createSelector(
@@ -389,6 +419,30 @@ export const isValidColumnChartVif = createSelector(
   }
 );
 
+export const isComboChart = createSelector(
+  getVisualizationType,
+  (visualizationType) => {
+    const parts = (visualizationType || '').split('.');
+    const type = (parts.length > 0) ? parts[0] : visualizationType;
+
+    return type === 'comboChart';
+  }
+);
+
+export const isValidComboChartVif = createSelector(
+  getDimension,
+  getMeasure,
+  getDatasetUid,
+  getDomain,
+  (dimension, measure, datasetUid, domain) => {
+    var hasDimension = _.isString(_.get(dimension, 'columnName'));
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
+  }
+);
+
 export const isHistogram = createSelector(
   getVisualizationType,
   (type) => type === 'histogram'
@@ -471,6 +525,8 @@ export const isInsertableVisualization = createSelector(
   isValidRegionMapVif,
   isColumnChart,
   isValidColumnChartVif,
+  isComboChart,
+  isValidComboChartVif,
   isPieChart,
   isValidPieChartVif,
   isFeatureMap,
@@ -487,6 +543,8 @@ export const isInsertableVisualization = createSelector(
     validRegionMap,
     isColumnChart,
     validColumnChart,
+    isComboChart,
+    validComboChart,
     isPieChart,
     validPieChart,
     isFeatureMap,
@@ -501,6 +559,7 @@ export const isInsertableVisualization = createSelector(
       isBarChart && validBarChart ||
       isRegionMap && validRegionMap ||
       isColumnChart && validColumnChart ||
+      isComboChart && validComboChart ||
       isPieChart && validPieChart ||
       isFeatureMap && validFeatureMap ||
       isTimelineChart && validTimelineChart ||

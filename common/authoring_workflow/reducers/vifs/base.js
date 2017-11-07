@@ -82,7 +82,10 @@ export default function(state, action) {
       break;
 
     case actions.APPEND_SERIES:
-      appendSeries(state, { isInitialLoad: action.isInitialLoad });
+      appendSeries(state, {
+        isInitialLoad: action.isInitialLoad,
+        seriesIndex: action.seriesIndex
+      });
       break;
 
     case actions.REMOVE_SERIES:

@@ -35,9 +35,7 @@ function render(type) {
     },
     measureAxisScaleControl: 'custom',
     onClickAddReferenceLine: sinon.spy(),
-    onSelectChartSorting: sinon.spy(),
-    onMeasureAxisMinValueChange: sinon.spy(),
-    onMeasureAxisMaxValueChange: sinon.spy()
+    onSelectChartSorting: sinon.spy()
   });
 
   return {
@@ -118,36 +116,6 @@ describe('AxisAndScalePane', () => {
     describe('events', () => {
       describe('when changing the chart sorting order', () => {
         emitsEvent('#chart-sorting-selection .picklist-option', 'onSelectChartSorting', 'click');
-      });
-    });
-  }
-
-  function rendersScaleAndEmitsEvents() {
-    describe('rendering', () => {
-      it('renders automatic selection', () => {
-        expect(component.querySelector('#measure-axis-scale-automatic')).to.exist;
-      });
-
-      it('renders custom selection', () => {
-        expect(component.querySelector('#measure-axis-scale-custom')).to.exist;
-      });
-
-      it('renders min input', () => {
-        expect(component.querySelector('#measure-axis-scale-custom-min')).to.exist;
-      });
-
-      it('renders max input', () => {
-        expect(component.querySelector('#measure-axis-scale-custom-max')).to.exist;
-      });
-    });
-
-    describe('events', () => {
-      describe('when clicking #measure-axis-scale-custom-min', () => {
-        emitsEvent('#measure-axis-scale-custom-min', 'onMeasureAxisMinValueChange');
-      });
-
-      describe('when clicking #measure-axis-scale-custom-max', () => {
-        emitsEvent('#measure-axis-scale-custom-max', 'onMeasureAxisMaxValueChange');
       });
     });
   }

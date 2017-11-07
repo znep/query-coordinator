@@ -167,7 +167,7 @@ Rails.application.routes.draw do
     scope :controller => 'approvals' do
       get '/admin/approvals',
         :action => 'show',
-        :constraints => FeatureFlags::RoutingConstraint.new(:enable_approvals_beta)
+        :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
     end
 
     scope :path => '/admin', :controller => 'administration' do

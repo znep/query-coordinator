@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'common/components';
@@ -117,24 +117,17 @@ export class RelatedViewList extends Component {
       height: this.getHeight()
     };
 
-    const animatedViews = relatedViews.map((view, idx) => {
-      return (
-        <CSSTransition
-          key={idx}
-          className="media-results related-views"
-          style={style}
-          onScroll={this.onScrollList}
-          classNames="related-views"
-          timeout={{ enter: 400, exit: 400 }}>
-          {view}
-        </CSSTransition>
-      );
-    });
-
     return (
-      <TransitionGroup>
-        {animatedViews}
-      </TransitionGroup>
+      <CSSTransitionGroup
+        component="div"
+        className="media-results related-views"
+        style={style}
+        onScroll={this.onScrollList}
+        transitionName="related-views"
+        transitionEnterTimeout={400}
+        transitionLeaveTimeout={400}>
+        {relatedViews}
+      </CSSTransitionGroup>
     );
   }
 

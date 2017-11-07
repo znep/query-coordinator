@@ -152,10 +152,11 @@ export function setDimension(dimension) {
 }
 
 export const APPEND_SERIES = 'APPEND_SERIES';
-export function appendSeries({ isInitialLoad }) {
+export function appendSeries({ isInitialLoad, seriesIndex = -1 }) {
   return {
     type: APPEND_SERIES,
-    isInitialLoad
+    isInitialLoad,
+    seriesIndex
   };
 }
 
@@ -164,6 +165,15 @@ export function removeSeries(seriesIndex) {
   return {
     type: REMOVE_SERIES,
     seriesIndex
+  };
+}
+
+export const SET_SERIES_TYPE = 'SET_SERIES_TYPE';
+export function setSeriesType(seriesIndex, seriesType) {
+  return {
+    type: SET_SERIES_TYPE,
+    seriesIndex,
+    seriesType
   };
 }
 
@@ -623,6 +633,14 @@ export function setXAxisScalingMode(shouldFit) {
   };
 }
 
+export const SET_MEASURE_AXIS_MAX_VALUE = 'SET_MEASURE_AXIS_MAX_VALUE';
+export function setMeasureAxisMaxValue(measureAxisMaxValue) {
+  return {
+    type: SET_MEASURE_AXIS_MAX_VALUE,
+    measureAxisMaxValue
+  };
+}
+
 export const SET_MEASURE_AXIS_MIN_VALUE = 'SET_MEASURE_AXIS_MIN_VALUE';
 export function setMeasureAxisMinValue(measureAxisMinValue) {
   return {
@@ -631,11 +649,19 @@ export function setMeasureAxisMinValue(measureAxisMinValue) {
   };
 }
 
-export const SET_MEASURE_AXIS_MAX_VALUE = 'SET_MEASURE_AXIS_MAX_VALUE';
-export function setMeasureAxisMaxValue(measureAxisMaxValue) {
+export const SET_SECONDARY_MEASURE_AXIS_MAX_VALUE = 'SET_SECONDARY_MEASURE_AXIS_MAX_VALUE';
+export function setSecondaryMeasureAxisMaxValue(measureAxisMaxValue) {
   return {
-    type: SET_MEASURE_AXIS_MAX_VALUE,
+    type: SET_SECONDARY_MEASURE_AXIS_MAX_VALUE,
     measureAxisMaxValue
+  };
+}
+
+export const SET_SECONDARY_MEASURE_AXIS_MIN_VALUE = 'SET_SECONDARY_MEASURE_AXIS_MIN_VALUE';
+export function setSecondaryMeasureAxisMinValue(measureAxisMinValue) {
+  return {
+    type: SET_SECONDARY_MEASURE_AXIS_MIN_VALUE,
+    measureAxisMinValue
   };
 }
 
@@ -787,6 +813,22 @@ export function setLimitCountAndShowOtherCategory(limitCount, showOtherCategory)
     type: SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
     limitCount,
     showOtherCategory
+  };
+}
+
+export const SET_USE_SECONDARY_AXIS_FOR_COLUMNS = 'SET_USE_SECONDARY_AXIS_FOR_COLUMNS';
+export function setUseSecondaryAxisForColumns(useSecondaryAxis) {
+  return {
+    type: SET_USE_SECONDARY_AXIS_FOR_COLUMNS,
+    useSecondaryAxis
+  };
+}
+
+export const SET_USE_SECONDARY_AXIS_FOR_LINES = 'SET_USE_SECONDARY_AXIS_FOR_LINES';
+export function setUseSecondaryAxisForLines(useSecondaryAxis) {
+  return {
+    type: SET_USE_SECONDARY_AXIS_FOR_LINES,
+    useSecondaryAxis
   };
 }
 

@@ -15,6 +15,7 @@ import {
   hasReferenceLineLabels,
   isBarChart,
   isColumnChart,
+  isComboChart,
   isFeatureMap,
   isGroupingOrMultiSeries,
   isHistogram,
@@ -173,6 +174,10 @@ export class LegendsAndFlyoutsPane extends Component {
     return [this.renderUnits(), this.renderLegends()];
   }
 
+  renderComboChartControls() {
+    return [this.renderUnits(), this.renderLegends()];
+  }
+
   renderPieChartControls() {
     return [this.renderUnits(), this.renderLegends()];
   }
@@ -243,6 +248,8 @@ export class LegendsAndFlyoutsPane extends Component {
         configuration = this.renderRegionMapControls();
       } else if (isColumnChart(vifAuthoring)) {
         configuration = this.renderColumnChartControls();
+      } else if (isComboChart(vifAuthoring)) {
+        configuration = this.renderComboChartControls();
       } else if (isHistogram(vifAuthoring)) {
         configuration = this.renderHistogramControls();
       } else if (isFeatureMap(vifAuthoring)) {

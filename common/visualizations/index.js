@@ -20,6 +20,7 @@ import SvgTimelineChart from './SvgTimelineChart';
 import SvgHistogram from './SvgHistogram';
 import SampleChart from './SampleChart';
 import SvgBarChart from './SvgBarChart';
+import SvgComboChart from './SvgComboChart';
 
 module.exports = {
   ChoroplethMap,
@@ -30,6 +31,7 @@ module.exports = {
   SampleChart,
   SvgBarChart,
   SvgColumnChart,
+  SvgComboChart,
   SvgFeatureMap,
   SvgHistogram,
   SvgPieChart,

@@ -168,6 +168,7 @@ const TIME_FORMATS = {
 // return unsafe strings. Do not place them into the DOM
 // directly. Consider using an *HTML renderer.
 module.exports = {
+  CURRENCY_SYMBOLS,
   // Before exporting any *UnsafePlainText functions, think
   // carefully about the potential security impact.
   renderCellHTML,

@@ -14,11 +14,11 @@
   transition: transform 500ms;
 }
 
-.exit {
+.leave {
   transform: translate(0);
 }
 
-.exitActive {
+.leaveActive {
   transform: translate(400px);
   transition: transform 500ms;
 }

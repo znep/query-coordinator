@@ -347,26 +347,26 @@ div.container.landing-page-container {
       }
     }
 
-    &.related-views-enter {
-      opacity: 0.01;
-    }
-
-    &.related-views-enter.related-views-enter-active {
-      opacity: 1;
-      transition: opacity 400ms;
-    }
-
-    &.related-views-exit {
-      opacity: 1;
-    }
-
-    &.related-views-exit.related-views-exit-active {
-      opacity: .01;
-      transition: opacity 400ms;
-    }
-
     &.related-views {
       transition: height 300ms;
+
+      .related-views-enter {
+        opacity: .01;
+      }
+
+      .related-views-enter.related-views-enter-active {
+        opacity: 1;
+        transition: opacity 400ms;
+      }
+
+      .related-views-leave {
+        opacity: 1;
+      }
+
+      .related-views-leave.related-views-leave-active {
+        opacity: .01;
+        transition: opacity 400ms;
+      }
     }
 
     @media(max-width: $medium) {

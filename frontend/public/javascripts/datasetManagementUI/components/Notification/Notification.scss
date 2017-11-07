@@ -38,12 +38,12 @@
 
 .cf:before,
 .cf:after {
-  content: ' ';
-  display: table;
+    content: " ";
+    display: table;
 }
 
 .cf:after {
-  clear: both;
+    clear: both;
 }
 
 .messageArea {
@@ -117,8 +117,8 @@
 }
 
 .enter {
-  max-height: 0;
-  overflow: hidden;
+    max-height: 0;
+    overflow: hidden;
 }
 
 .enterActive {
@@ -126,12 +126,12 @@
   transition: max-height 500ms ease-in;
 }
 
-.exit {
+.leave {
   max-height: 350px;
   overflow: hidden;
 }
 
-.exitActive {
+.leaveActive {
   max-height: 0;
   transition: max-height 500ms ease-out;
 }

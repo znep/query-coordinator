@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import ProgressBar from 'components/ProgressBar/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './Notification.scss';
@@ -87,29 +87,28 @@ class Notification extends Component {
             <ProgressBar percent={percentCompleted || 0} type={status} className={styles.progressBar} />
           </div>}
         {children &&
-          <CSSTransition
-            in={detailsOpen}
-            mountOnEnter
-            unmountOnExit
-            classNames={{
+          <CSSTransitionGroup
+            transitionName={{
               enter: styles.enter,
               enterActive: styles.enterActive,
-              exit: styles.exit,
-              exitActive: styles.exitActive
+              leave: styles.leave,
+              leaveActive: styles.leaveActive
             }}
-            timeout={{ exit: 500, enter: 500 }}>
-            <div>
-              {children}
-              <div className={styles.btnContainer}>
-                <button className={styles.button} onClick={() => removeNotification(id)}>
-                  Dismiss
-                </button>
-                <a target="_blank" href="https://support.socrata.com" className={styles.contactBtn}>
-                  Contact Support
-                </a>
-              </div>
-            </div>
-          </CSSTransition>}
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            {detailsOpen &&
+              <div>
+                {children}
+                <div className={styles.btnContainer}>
+                  <button className={styles.button} onClick={() => removeNotification(id)}>
+                    Dismiss
+                  </button>
+                  <a target="_blank" href="https://support.socrata.com" className={styles.contactBtn}>
+                    Contact Support
+                  </a>
+                </div>
+              </div>}
+          </CSSTransitionGroup>}
       </div>
     );
   }

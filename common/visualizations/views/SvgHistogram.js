@@ -870,7 +870,7 @@ function SvgHistogram($element, vif, options) {
         }
       );
 
-    chartSvg.selectAll('.reference-line-underlay').
+    seriesSvg.selectAll('.reference-line-underlay').
       // NOTE: The below function depends on this being set by d3, so it is
       // not possible to use the () => {} syntax here.
       on('mousemove', function() {

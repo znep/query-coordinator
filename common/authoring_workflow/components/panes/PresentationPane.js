@@ -36,7 +36,7 @@ export class PresentationPane extends Component {
       'renderLabels',
       'renderShowValueLabels',
       'renderShowPercentLabels',
-      'renderBarChartVisualizationLabels',
+      'renderComboChartVisualizationLabels',
       'renderVisualizationLabels',
       'renderShowSourceDataLink',
       'renderTitleField',
@@ -265,7 +265,7 @@ export class PresentationPane extends Component {
     const valueLabels = valueLabelsVisible ? this.renderShowValueLabels() : null;
     const valueLabelsAsPercent = selectors.isPieChart(vifAuthoring) ? this.renderShowPercentLabels() : null;
 
-    const dimensionLabelsVisible = selectors.isBarChart(vifAuthoring) || selectors.isColumnChart(vifAuthoring);
+    const dimensionLabelsVisible = selectors.isBarChart(vifAuthoring) || selectors.isColumnChart(vifAuthoring) || selectors.isComboChart(vifAuthoring);
     const dimensionLabels = dimensionLabelsVisible ? this.renderDimensionLabels() : null;
 
     return (
@@ -332,51 +332,95 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderBarChartVisualizationLabels() {
-    const { vifAuthoring, onChangeLabelTop, onChangeLabelLeft } = this.props;
+  renderComboChartVisualizationLabels() {
+    const { vifAuthoring } = this.props;
+
+    const usePrimaryAxis =
+      !selectors.getUseSecondaryAxisForColumns(vifAuthoring) ||
+      !selectors.getUseSecondaryAxisForLines(vifAuthoring);
+
+    const useSecondaryAxis =
+      selectors.getUseSecondaryAxisForColumns(vifAuthoring) ||
+      selectors.getUseSecondaryAxisForLines(vifAuthoring);
+
+    return this.renderVisualizationLabels({
+      bottom: true,
+      left: usePrimaryAxis,
+      right: useSecondaryAxis
+    });
+  }
+
+  renderVisualizationLabels({ bottom = false, left = false, right = false, top = false }) {
+    const {
+      onChangeLabelBottom,
+      onChangeLabelLeft,
+      onChangeLabelRight,
+      onChangeLabelTop,
+      vifAuthoring
+    } = this.props;
+
     const axisLabels = selectors.getAxisLabels(vifAuthoring);
-    const topAxisLabel = _.get(axisLabels, 'top', '');
-    const leftAxisLabel = _.get(axisLabels, 'left', '');
+
+    const bottomLabel = bottom ?
+      this.renderVisualizationLabel(
+        'label-bottom',
+        onChangeLabelBottom,
+        I18n.t('shared.visualizations.panes.presentation.fields.bottom_axis_title.title'),
+        _.get(axisLabels, 'bottom', '')
+      ) : null;
+
+    const leftLabel = left ?
+      this.renderVisualizationLabel(
+        'label-left',
+        onChangeLabelLeft,
+        I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title'),
+        _.get(axisLabels, 'left', '')
+      ) : null;
+
+    const rightLabel = right ?
+      this.renderVisualizationLabel(
+        'label-right',
+        onChangeLabelRight,
+        I18n.t('shared.visualizations.panes.presentation.fields.right_axis_title.title'),
+        _.get(axisLabels, 'right', '')
+      ) : null;
+
+    const topLabel = top ?
+      this.renderVisualizationLabel(
+        'label-top',
+        onChangeLabelTop,
+        I18n.t('shared.visualizations.panes.presentation.fields.top_axis_title.title'),
+        _.get(axisLabels, 'top', '')
+      ) : null;
 
     return (
       <AccordionPane key="axis-labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.axis_titles')}>
-        <div className="authoring-field">
-          <label className="block-label" htmlFor="label-top">
-            {I18n.t('shared.visualizations.panes.presentation.fields.top_axis_title.title')}
-          </label>
-          <DebouncedInput value={topAxisLabel} onChange={onChangeLabelTop} id="label-top" className="text-input" />
-        </div>
-        <div className="authoring-field">
-          <label className="block-label" htmlFor="label-left">
-            {I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title')}
-          </label>
-          <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
-        </div>
+        {leftLabel}
+        {rightLabel}
+        {bottomLabel}
+        {topLabel}
       </AccordionPane>
     );
   }
 
-  renderVisualizationLabels() {
-    const { vifAuthoring, onChangeLabelLeft, onChangeLabelBottom } = this.props;
-    const axisLabels = selectors.getAxisLabels(vifAuthoring);
-    const leftAxisLabel = _.get(axisLabels, 'left', '');
-    const bottomAxisLabel = _.get(axisLabels, 'bottom', '');
+  renderVisualizationLabel(id, onChange, title, value) {
+    const labelAttributes = {
+      className: 'block-label',
+      htmlFor: id
+    };
+
+    const inputAttributes = {
+      className: 'text-input',
+      id,
+      onChange,
+      value
+    };
 
     return (
-      <AccordionPane key="axis-labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.axis_titles')}>
-        <div className="authoring-field">
-          <label className="block-label" htmlFor="label-left">
-            {I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title')}
-          </label>
-          <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
-        </div>
-        <div className="authoring-field">
-          <label className="block-label" htmlFor="label-bottom">
-            {I18n.t('shared.visualizations.panes.presentation.fields.bottom_axis_title.title')}
-          </label>
-          <DebouncedInput value={bottomAxisLabel} onChange={onChangeLabelBottom} id="label-bottom" className="text-input" />
-        </div>
-      </AccordionPane>
+      <div className="authoring-field">
+        <label {...labelAttributes}>{title}</label>
+        <DebouncedInput {...inputAttributes} />
+      </div>
     );
   }
 
@@ -440,7 +484,7 @@ export class PresentationPane extends Component {
     return [
       this.renderColorPalette(),
       this.renderLabels(),
-      this.renderBarChartVisualizationLabels()
+      this.renderVisualizationLabels({ left: true, top: true })
     ];
   }
 
@@ -448,7 +492,7 @@ export class PresentationPane extends Component {
     return [
       this.renderPrimaryColor(),
       this.renderLabels(),
-      this.renderBarChartVisualizationLabels()
+      this.renderVisualizationLabels({ left: true, top: true })
     ];
   }
 
@@ -456,7 +500,7 @@ export class PresentationPane extends Component {
     return [
       this.renderColorPalette(),
       this.renderLabels(),
-      this.renderVisualizationLabels()
+      this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
@@ -464,28 +508,44 @@ export class PresentationPane extends Component {
     return [
       this.renderPrimaryColor(),
       this.renderLabels(),
-      this.renderVisualizationLabels()
+      this.renderVisualizationLabels({ bottom: true, left: true })
+    ];
+  }
+
+  renderGroupedComboChartControls() {
+    return [
+      this.renderColorPalette(),
+      this.renderLabels(),
+      this.renderComboChartVisualizationLabels()
+    ];
+  }
+
+  renderComboChartControls() {
+    return [
+      this.renderPrimaryColor(),
+      this.renderLabels(),
+      this.renderComboChartVisualizationLabels()
     ];
   }
 
   renderHistogramControls() {
     return [
       this.renderPrimaryColor(),
-      this.renderVisualizationLabels()
+      this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
   renderTimelineChartControls() {
     return [
       this.renderPrimaryColor(),
-      this.renderVisualizationLabels()
+      this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
   renderGroupedTimelineChartControls() {
     return [
       this.renderColorPalette(),
-      this.renderVisualizationLabels()
+      this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
@@ -662,6 +722,14 @@ export class PresentationPane extends Component {
         configuration = this.renderColumnChartControls();
       }
 
+    } else if (selectors.isComboChart(vifAuthoring)) {
+
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
+        configuration = this.renderGroupedComboChartControls();
+      } else {
+        configuration = this.renderComboChartControls();
+      }
+
     } else if (selectors.isTimelineChart(vifAuthoring)) {
 
       if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
@@ -758,6 +826,10 @@ function mapDispatchToProps(dispatch) {
 
     onChangeLabelLeft: (event) => {
       dispatch(actions.setLabelLeft(event.target.value));
+    },
+
+    onChangeLabelRight: (event) => {
+      dispatch(actions.setLabelRight(event.target.value));
     },
 
     onSelectColorScale: colorScale => {

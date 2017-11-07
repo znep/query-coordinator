@@ -1,0 +1,24 @@
+.socrata-visualization-container {
+
+  .combo-chart {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    .column {
+      cursor: default;
+    }
+
+    .line-series {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 3px;
+    }
+
+    .circle-series {
+      cursor: default;
+    }
+  }
+}

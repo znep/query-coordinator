@@ -10,11 +10,13 @@ import {
   isLoading
 } from '../../selectors/metadata';
 import {
+  getSeries,
   getTreatNullValuesAsZero,
   getVisualizationType,
   hasErrorBars,
   isBarChart,
   isColumnChart,
+  isComboChart,
   isGroupingOrMultiSeries,
   isMultiSeries,
   isPieChart,
@@ -26,6 +28,7 @@ import {
 
 import { AccordionContainer, AccordionPane } from 'common/components';
 import BlockLabel from '../shared/BlockLabel';
+import ComboChartMeasureSelector from '../ComboChartMeasureSelector';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
 import DisplayOptions from '../DisplayOptions';
@@ -117,12 +120,18 @@ export class DataPane extends Component {
 
   renderDisplayOptions() {
     const { vifAuthoring } = this.props;
-    const shouldRender = isBarChart(vifAuthoring) || isPieChart(vifAuthoring) || isColumnChart(vifAuthoring);
+    const shouldRender =
+      isBarChart(vifAuthoring) ||
+      isPieChart(vifAuthoring) ||
+      isColumnChart(vifAuthoring) ||
+      isComboChart(vifAuthoring);
+
     const visualizationType = getVisualizationType(vifAuthoring);
     const translationKeys = {
       barChart: 'bar_chart_limit',
       pieChart: 'pie_chart_limit',
-      columnChart: 'column_chart_limit'
+      columnChart: 'column_chart_limit',
+      comboChart: 'combo_chart_limit'
     };
     const translationKey = translationKeys[visualizationType];
 
@@ -135,15 +144,37 @@ export class DataPane extends Component {
 
   renderErrorBarsOptions() {
     const { vifAuthoring } = this.props;
-    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) &&
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isComboChart(vifAuthoring)) &&
       !isGroupingOrMultiSeries(vifAuthoring);
 
     return shouldRender ? (
       <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.error_bars')}>
         <ErrorBarsOptions />
       </AccordionPane>
-    ) :
-    null;
+    ) : null;
+  }
+
+  renderMeasureSelector() {
+    const { vifAuthoring } = this.props;
+
+    const attributes = {
+      series: getSeries(vifAuthoring).map((seriesItem, index) => {
+        return _.extend({ seriesIndex: index }, seriesItem);
+      })
+    };
+
+    const measureSelector = isComboChart(vifAuthoring) ?
+      <ComboChartMeasureSelector {...attributes} /> :
+      <MeasureSelector {...attributes} />;
+
+    return (
+      <div className="measure-list-container">
+        <BlockLabel
+          title={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.title')}
+          description={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.description')} />
+        {measureSelector}
+      </div>
+    );
   }
 
   render() {
@@ -160,6 +191,7 @@ export class DataPane extends Component {
     const timelineOptions = this.renderTimelineOptions();
     const displayOptions = this.renderDisplayOptions();
     const errorBarsOptions = this.renderErrorBarsOptions();
+    const measureSelector = this.renderMeasureSelector();
 
     const sections = (
       <AccordionContainer>
@@ -175,7 +207,7 @@ export class DataPane extends Component {
             <DimensionSelector />
           </div>
           <div className="authoring-field">
-            <MeasureSelector />
+            {measureSelector}
           </div>
           <div className="authoring-field">
             <RegionSelector />

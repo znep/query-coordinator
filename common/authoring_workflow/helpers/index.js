@@ -127,7 +127,7 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
   }
 };
 
-export const appendSeries = (state, { isInitialLoad }) => {
+export const appendSeries = (state, { isInitialLoad, seriesIndex }) => {
 
   // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
   // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
@@ -162,9 +162,13 @@ export const appendSeries = (state, { isInitialLoad }) => {
   _.set(clonedSeries, 'color.primary', colors[index]);
   _.set(clonedSeries, 'color.secondary', colors[index]);
 
-  // Append the series
+  // Add the series
   //
-  state.series.push(clonedSeries);
+  if (seriesIndex == -1) {
+    state.series.push(clonedSeries); // append
+  } else {
+    state.series.splice(seriesIndex, 0, clonedSeries); // insert at seriesIndex
+  }
 
   // Adjust any other properties in the vif for multi-series
   //

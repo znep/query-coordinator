@@ -16,6 +16,10 @@
       }
     }
 
+    .bar {
+      cursor: default;
+    }
+
     .label-width-dragger {
       $dragger-width: 5px;
       // Transparent but still interactive region left of the visible drag handle.

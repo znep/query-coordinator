@@ -7,16 +7,19 @@ import I18n from 'common/i18n';
 import {
   setLimitCountAndShowOtherCategory,
   setLimitNoneAndShowOtherCategory,
-  setShowOtherCategory
+  setShowOtherCategory,
+  setTreatNullValuesAsZero
 } from '../actions';
 
 import {
   getAnyDimension,
   getLimitCount,
   getShowOtherCategory,
+  getTreatNullValuesAsZero,
   getVisualizationType,
   isBarChart,
   isColumnChart,
+  isComboChart,
   isPieChart
 } from '../selectors/vifAuthoring';
 
@@ -48,10 +51,37 @@ export class DisplayOptions extends Component {
   renderTimelinePrecisionSelector() {
     const { metadata, vifAuthoring } = this.props;
     const column = getAnyDimension(vifAuthoring);
-    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) &&
+    const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isComboChart(vifAuthoring)) &&
       isDimensionTypeCalendarDate(metadata, column);
 
-    return shouldRender ? <TimelinePrecisionSelector /> : null;
+    return shouldRender ? (
+      <div>
+        <TimelinePrecisionSelector />
+        {this.renderTreatNullValuesAsZero()}
+      </div>
+     ) : null;
+  }
+
+  renderTreatNullValuesAsZero() {
+    const { vifAuthoring } = this.props;
+    const inputAttributes = {
+      id: 'treat-null-values-as-zero',
+      type: 'checkbox',
+      onChange: this.props.onChangeTreatNullValuesAsZero,
+      defaultChecked: getTreatNullValuesAsZero(vifAuthoring)
+    };
+
+    return (
+      <div className="authoring-field checkbox">
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor="treat-null-values-as-zero">
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {I18n.t('shared.visualizations.panes.data.fields.treat_null_values_as_zero.title')}
+        </label>
+      </div>
+    );
   }
 
   renderPieChartDescription() {
@@ -80,7 +110,8 @@ export class DisplayOptions extends Component {
     const translationKeys = {
       barChart: 'bar_chart_limit',
       pieChart: 'pie_chart_limit',
-      columnChart: 'column_chart_limit'
+      columnChart: 'column_chart_limit',
+      comboChart: 'combo_chart_limit'
     };
     const translationKey = translationKeys[visualizationType];
     const limitCountDisabled = (limitCount === null);
@@ -198,10 +229,10 @@ export class DisplayOptions extends Component {
   render() {
     return (
       <div>
+        {this.renderTimelinePrecisionSelector()}
         {this.renderGroupedStackedSelector()}
         {this.renderLimitCountSelector()}
         {this.renderPieChartDescription()}
-        {this.renderTimelinePrecisionSelector()}
       </div>
     );
   }
@@ -234,6 +265,11 @@ function mapDispatchToProps(dispatch) {
     onChangeShowOtherCategory: (event) => {
       const showOtherCategory = event.target.checked;
       dispatch(setShowOtherCategory(showOtherCategory));
+    },
+
+    onChangeTreatNullValuesAsZero: (event) => {
+      const treatNullValuesAsZero = event.target.checked;
+      dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
     }
   };
 }

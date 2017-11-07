@@ -184,9 +184,11 @@ function SvgVisualization($element, vif, options) {
 
     const xAxisBox = containerSvg.select('.x.axis').node();
     const yAxisBox = containerSvg.select('.y.axis').node();
+    const secondaryYAxisBox = containerSvg.select('.y.secondaryAxis').node();
 
     const xAxisHeight = xAxisBox ? xAxisBox.getBBox().height : 0;
     const yAxisWidth = yAxisBox ? yAxisBox.getBBox().width : 0;
+    const secondaryYAxisWidth = secondaryYAxisBox ? secondaryYAxisBox.getBBox().width : 0;
 
     const chartMidY = viewportRect.y + (viewportRect.height - xAxisHeight) / 2.0;
     const chartMidX = viewportRect.x + (viewportRect.width - yAxisWidth) / 2.0;
@@ -236,7 +238,7 @@ function SvgVisualization($element, vif, options) {
       axisLabels.right,
       'socrata-visualization-right-axis-title',
       (element) => {
-        const left = chartMaxX - (AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN);
+        const left = chartMaxX + secondaryYAxisWidth + AXIS_LABEL_TEXT_MARGIN;
         element.attr('transform', `translate(${left}, ${chartMidY}) rotate(90)`);
       }
     );
@@ -543,6 +545,7 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.isInRange = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
+  this.isOneHundredPercentStacked = () => _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
   this.isStacked = () => _.get(self.getVif(), 'series[0].stacked', false);
 
   this.hasErrorBars = () =>
@@ -674,47 +677,35 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
-  this.getMeasureAxisMinValue = function() {
-    const value = _.get(
-      self.getVif(),
-      'configuration.measureAxisMinValue',
-      null
-    );
+  this.getMeasureAxisMinValue = () => {
+    const value = _.get(self.getVif(), 'configuration.measureAxisMinValue', null);
+    return validateAxisValue(value, 'measure_axis_min_value_should_be_numeric');
+  };
+
+  this.getMeasureAxisMaxValue = () => {
+    const value = _.get(self.getVif(), 'configuration.measureAxisMaxValue', null);
+    return validateAxisValue(value, 'measure_axis_max_value_should_be_numeric');
+  };
+
+  this.getSecondaryMeasureAxisMinValue = () => {
+    const value = _.get(self.getVif(), 'configuration.secondaryMeasureAxisMinValue', null);
+    return validateAxisValue(value, 'measure_axis_min_value_should_be_numeric');
+  };
+
+  this.getSecondaryMeasureAxisMaxValue = () => {
+    const value = _.get(self.getVif(), 'configuration.secondaryMeasureAxisMaxValue', null);
+    return validateAxisValue(value, 'measure_axis_max_value_should_be_numeric');
+  };
+
+  function validateAxisValue(value, key) {
     const check = isFinite(value) && parseFloat(value);
 
     if (value !== null && (check === false || isNaN(check))) {
-      throw new Error(
-        I18n.t(
-          'shared.visualizations.charts.common.validation.errors.' +
-          'measure_axis_min_value_should_be_numeric'
-        )
-      );
+      throw new Error(I18n.t('shared.visualizations.charts.common.validation.errors.' + key));
     } else {
       return value;
     }
-  };
-
-  this.getMeasureAxisMaxValue = function() {
-    const value = _.get(
-      self.getVif(),
-      'configuration.measureAxisMaxValue',
-      null
-    );
-    const check = isFinite(value) && parseFloat(value);
-
-    if (value !== null && (check === false || isNaN(check))) {
-
-      throw new Error(
-        I18n.t(
-          'shared.visualizations.charts.common.validation.errors.' +
-          'measure_axis_max_value_should_be_numeric'
-        )
-      );
-
-    } else {
-      return value;
-    }
-  };
+  }
 
   this.getShowDimensionLabels = function() {
 

@@ -18,6 +18,8 @@ import {
   isValidBarChartVif,
   isColumnChart,
   isValidColumnChartVif,
+  isComboChart,
+  isValidComboChartVif,
   isPieChart,
   isValidPieChartVif,
   isHistogram,
@@ -94,6 +96,7 @@ export class VisualizationPreview extends Component {
     const isValidFeatureMap = isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring);
     const isValidRegionMap = isRegionMap(vifAuthoring) && isValidRegionMapVif(vifAuthoring);
     const isValidHistogram = isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring);
+    const isValidComboChart = isComboChart(vifAuthoring) && isValidComboChartVif(vifAuthoring);
 
     return isValidBarChart ||
       isValidColumnChart ||
@@ -101,13 +104,15 @@ export class VisualizationPreview extends Component {
       isValidPieChart ||
       isValidFeatureMap ||
       isValidRegionMap ||
-      isValidHistogram;
+      isValidHistogram ||
+      isValidComboChart;
   }
 
   renderVisualization() {
     const { vif, vifAuthoring } = this.props;
     const hasType = hasVisualizationType(vifAuthoring);
     const hasDimension = hasVisualizationDimension(vifAuthoring);
+    const isValid = this.isVifValid();
 
     return hasType && hasDimension && this.isVifValid() ?
       <components.Visualization vif={vif} /> :

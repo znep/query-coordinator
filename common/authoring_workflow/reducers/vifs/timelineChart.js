@@ -44,7 +44,6 @@ export default function timelineChart(state, action) {
       break;
     }
 
-
     case actions.SET_TREAT_NULL_VALUES_AS_ZERO:
       setBooleanValueOrDeleteProperty(state, 'configuration.treatNullValuesAsZero', action.treatNullValuesAsZero);
       break;

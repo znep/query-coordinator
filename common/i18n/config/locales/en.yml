@@ -505,6 +505,8 @@ en:
           error_domain_includes_zero: The chart dimension includes or crosses zero. This is not displayable on a logarithmic scale. Please use a linear scale or use filters to limit the data to a valid range.
           error_exceeded_max_bucket_count: For optimal performance and legibility histograms are limited to {0} buckets. Use filters to render a more specific chart.
           title: Histogram
+        combo_chart:
+          title: Combo Chart
         pie_chart:
           error_limit_out_of_bounds: Please choose a value between {0} and {1}.
           title: Pie Chart
@@ -592,6 +594,9 @@ en:
             reference_line_placeholder: Reference Line {0}
           subheaders:
             reference_lines: Reference Lines
+        dual_axis_options:
+          subheaders:
+            dual_axis_options: Dual Axis Options
         data:
           fields:
             bar_chart_limit:
@@ -604,6 +609,19 @@ en:
               none: Show all
               subtitle: Number of columns to display
               title: Column Display Options
+            combo_chart_limit:
+              count: Show
+              none: Show all
+              subtitle: Number of columns to display
+              title: Chart Display Options
+            combo_chart_measure_axis_options:
+              primary_axis: Left Axis
+              secondary_axis: Right Axis
+            combo_chart_measure_selector:
+              column: Column
+              description: A measure is a numeric field or the count of rows associated with the selected dimension.
+              line: Line
+              title: Measure
             dimension:
               description: A dimension is a field that orders, groups, or categorizes your data, such as dates and categories. The dimension is often shown on the x-axis or as points on a map.
               empty_selection: Select a dimension from the list below
@@ -622,6 +640,11 @@ en:
               stacked: Stacked
               one_hundred_percent_stacked: 100% Stacked
               title: Multi-Series Display Options
+            dual_axis_options:
+              column: Column
+              line: Line
+              primary_axis: Left Axis
+              secondary_axis: Right Axis
             error_bars:
               bar_color: Bar Color
               lower_bound_column: Lower Bound Column

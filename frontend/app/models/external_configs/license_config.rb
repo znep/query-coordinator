@@ -55,7 +55,8 @@ class LicenseConfig < ExternalConfig
     @licenses.
       reject { |license| license[:hide_selector] }.
       map { |license|
-        license[:name] = I18n.t('core.see_terms_of_use') if license[:id] == 'SEE_TERMS_OF_USE'
+        translation_key = "core.licenses.#{license[:id].downcase}"
+        license[:name] = I18n.exists?(translation_key) ? I18n.t(translation_key) : license[:name]
         license
       }.
       unshift(no_license)
@@ -70,6 +71,6 @@ class LicenseConfig < ExternalConfig
   end
 
   def no_license
-    { id: '', name: "-- #{I18n.t 'core.no_license'} --" }
+    { id: '', name: "-- #{I18n.t 'core.licenses.no_license'} --" }
   end
 end

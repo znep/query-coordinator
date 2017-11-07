@@ -16,6 +16,7 @@ import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
 import SaveParseOptionsButton from './SaveParseOptionsButton';
+import SaveColButton from './SaveColButton';
 import styles from './ShowOutputSchema.scss';
 
 export class ShowOutputSchema extends Component {
@@ -33,8 +34,13 @@ export class ShowOutputSchema extends Component {
     switch (currentPage) {
       case 'parse_options':
         return <SaveParseOptionsButton {...this.props} />;
-      case 'add_column':
-        return <div>hay</div>;
+      case 'add_col':
+        return (
+          <SaveColButton
+            handleClick={this.props.addCol}
+            isDirty={this.props.addColForm.isDirty}
+            callParams={{ outputSchemaId: this.props.outputSchema.id }} />
+        );
       default:
         return <SaveOutputSchemaButton {...this.props} />;
     }
@@ -82,9 +88,11 @@ ShowOutputSchema.propTypes = {
   canApplyRevision: PropTypes.bool.isRequired,
   fatalError: PropTypes.bool.isRequired,
   parseOptionsForm: PropTypes.object.isRequired,
+  addColForm: PropTypes.object.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
+  addCol: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.shape({
@@ -111,6 +119,8 @@ export function mapStateToProps(state, ownProps) {
 
   const parseOptionsForm = state.ui.forms.parseOptionsForm;
 
+  const addColForm = state.ui.forms.addColForm;
+
   return {
     revision,
     source,
@@ -120,6 +130,7 @@ export function mapStateToProps(state, ownProps) {
     columns,
     canApplyRevision,
     fatalError,
+    addColForm,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     params
@@ -141,7 +152,17 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
     saveCurrentParseOptions: (params, source, parseOptions) => {
       dispatch(updateSourceParseOptions(params, source, parseOptions));
     },
+    addCol: () =>
+      dispatch(Actions.addCol(stateProps.addColForm.state, ownProps.params)).then(resp => {
+        const { resource: os } = resp;
 
+        const newParams = {
+          ...ownProps.params,
+          outputSchemaId: os.id
+        };
+
+        browserHistory.push(Links.showAddCol(newParams));
+      }),
     showShortcut: name => {
       dispatch(
         ModalActions.showModal(name, {

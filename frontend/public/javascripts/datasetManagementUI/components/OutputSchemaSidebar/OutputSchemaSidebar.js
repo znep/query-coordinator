@@ -35,6 +35,12 @@ const OutputSchemaSidebar = props => {
         <SocrataIcon name="geo" />
         {SubI18n.geocode}
       </Link>
+      <Link
+        to={Links.showAddCol(params)}
+        className={sidebarStyles.tab}
+        activeClassName={sidebarStyles.selected}>
+        Add Column
+      </Link>
       <SchemaActions />
     </div>
   );

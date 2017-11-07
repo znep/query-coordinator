@@ -41,6 +41,14 @@ export const showParseOptions = params => {
   );
 };
 
+export const showAddCol = params => {
+  const { sourceId, inputSchemaId, outputSchemaId } = params;
+  return (
+    `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/add_col`
+  );
+};
+
 export const showColumnErrors = (
   params,
   sourceId,

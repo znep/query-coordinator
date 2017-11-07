@@ -8,6 +8,7 @@ import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
+import AddColPane from 'pages/ShowOutputSchema/AddColPane';
 import ShowBlobPreview from 'pages/ShowBlobPreview/ShowBlobPreview';
 import ShowSource from 'pages/ShowSource/ShowSource';
 import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
@@ -67,6 +68,7 @@ export default function rootRoute(store) {
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
+        <Route path="add_col" component={AddColPane} />
       </Route>
       <Route path="sources/:sourceId/preview" component={ShowBlobPreview} onEnter={checkIfPublished(store)} />
       <Route

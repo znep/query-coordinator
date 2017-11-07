@@ -29,6 +29,11 @@ const initialState = {
   hrefForm: {
     isDirty: false,
     errors: []
+  },
+  addColForm: {
+    isDirty: false,
+    errors: {},
+    state: {}
   }
 };
 

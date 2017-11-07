@@ -1,4 +1,4 @@
-// import _ from 'lodash';
+import _ from 'lodash';
 import uuid from 'uuid';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as Links from 'links/links';
@@ -9,6 +9,7 @@ import {
   apiCallSucceeded,
   apiCallFailed,
   DROP_COLUMN,
+  ADD_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
   NEW_OUTPUT_SCHEMA,
@@ -19,9 +20,10 @@ import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
+import * as FormActions from 'reduxStuff/actions/forms';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
-// import { getUniqueName, getUniqueFieldName } from 'lib/util';
+import { validateFieldName, validateDisplayName } from 'containers/AddColFormContainer';
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
@@ -101,43 +103,6 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
-
-// export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
-//   const { entities } = getState();
-//
-//   const call = {
-//     operation: ADD_COLUMN,
-//     callParams: {
-//       outputSchemaId: outputSchema.id,
-//       outputColumnId: outputColumn.id
-//     }
-//   };
-//
-//   // check for clashes with existing columns
-//   const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
-//
-//   const { existingFieldNames, existingDisplayNames } = current.reduce(
-//     (acc, oc) => {
-//       return {
-//         existingFieldNames: [...acc.existingFieldNames, oc.field_name],
-//         existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
-//       };
-//     },
-//     { existingFieldNames: [], existingDisplayNames: [] }
-//   );
-//
-//   const newOutputColumn = {
-//     ...outputColumn,
-//     field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
-//     display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
-//   };
-//
-//   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
-//     buildNewOutputColumn(oc, sameTransform(entities))
-//   );
-//
-//   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
-// };
 
 export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const { entities } = getState();
@@ -339,5 +304,81 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
       .catch(error => {
         dispatch(apiCallFailed(callId, error));
       });
+  };
+}
+
+function validateColForm(data, fieldNames, dispayNames) {
+  return {
+    fieldName: validateFieldName(data.fieldName, fieldNames),
+    displayName: validateDisplayName(data.displayName, dispayNames)
+  };
+}
+
+function getNames(entities, osid) {
+  const columns = Selectors.columnsForOutputSchema(entities, osid);
+
+  return {
+    fieldNames: columns.map(col => col.field_name),
+    displayNames: columns.map(col => col.display_name)
+  };
+}
+
+function getPosition(entities, osid) {
+  const columns = Selectors.columnsForOutputSchema(entities, osid);
+
+  if (columns && Array.isArray(columns)) {
+    return Math.max(...columns.map(col => col.position)) + 1;
+  } else {
+    return 1;
+  }
+}
+
+function snakeCase(colData) {
+  return {
+    field_name: colData.fieldName,
+    display_name: colData.displayName,
+    position: colData.position,
+    description: colData.description,
+    is_primary_key: false,
+    format: null,
+    transform: { transform_expr: 'to_text(null)' }
+  };
+}
+
+export function addCol(colData, params) {
+  return (dispatch, getState) => {
+    const { entities } = getState();
+
+    const osid = _.toNumber(params.outputSchemaId);
+
+    const { fieldNames, displayNames } = getNames(entities, osid);
+
+    const validationErrors = validateColForm(colData, fieldNames, displayNames);
+
+    dispatch(FormActions.setFormErrors('addColForm', validationErrors));
+
+    if (validationErrors.fieldName.length || validationErrors.displayName.length) {
+      return;
+    }
+
+    const call = {
+      operation: ADD_COLUMN,
+      callParams: {
+        outputSchemaId: osid
+      }
+    };
+
+    const os = entities.output_schemas[osid];
+
+    const newCol = snakeCase({
+      ...colData,
+      position: getPosition(entities, osid)
+    });
+
+    const currentCols = Selectors.columnsForOutputSchema(entities, osid);
+
+    const newCols = [...currentCols, newCol];
+
+    return dispatch(createNewOutputSchema(os.input_schema_id, newCols, call));
   };
 }

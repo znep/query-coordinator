@@ -1,0 +1,31 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.form {
+  width: 50%;
+  padding: 10px;
+}
+
+.form fieldset > select {
+  width: 100%;
+}
+
+.form label {
+  display: block;
+}
+
+.errorMessage {
+  color: $error-text;
+  font-size: 0.8em;
+  margin-bottom: 0.33em;
+}
+
+.errorList {
+  list-style-type: none;
+  -webkit-padding-start: 0;
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}

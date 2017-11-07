@@ -758,6 +758,17 @@ class DatasetsController < ApplicationController
     render 'visualization_canvas', :layout => 'styleguide'
   end
 
+  # Poke spandex to create autocomplete results
+  def setup_autocomplete
+    response = PageMetadataManager.new.request_soda_fountain_secondary_index(
+      params[:id],
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+    status = response['status'].to_i rescue :no_content # "204 No Content"
+    render text: nil, status: status
+  end
+
   # Convert a wkt to a wkid.
   def wkt_to_wkid
     json = JSON.parse(Net::HTTP.get(URI("http://prj2epsg.org/search.json?mode=wkt&terms=#{CGI.escape params[:wkt]}")))

@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+
 import { FilterBar } from 'common/components';
+import spandexSubscriber from 'common/spandex/subscriber';
+
 import { setFilters } from '../actions';
 import { getFilterableColumns, getSoqlDataProvider } from '../selectors/metadata';
 
@@ -20,7 +23,8 @@ const mapStateToProps = (state) => {
     columns,
     filters,
     isReadOnly: false,
-    isValidTextFilterColumnValue
+    isValidTextFilterColumnValue,
+    spandex: _.pick(metadata, ['datasetUid', 'domain'])
   };
 };
 
@@ -28,4 +32,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ onUpdate: setFilters }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  spandexSubscriber()
+)(FilterBar);

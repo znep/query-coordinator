@@ -17,6 +17,7 @@ describe('SearchablePicklist', () => {
       options: mockPicklistOptions,
       value: '',
       hasSearchError: false,
+      hideExactMatchPrompt: false,
       onChangeSearchTerm: _.noop,
       onSelection: _.noop,
       onBlur: _.noop
@@ -31,7 +32,6 @@ describe('SearchablePicklist', () => {
 
   const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
   const getSearchButton = (element) => element.querySelector('.input-group-btn button');
-  const getSearchLink = (element) => element.querySelector('.alert.info a');
   const getPicklist = (element) => element.querySelector('.picklist');
   const getSelectedOptions = (element) => element.querySelector('.searchable-picklist-selected-options');
   const getSearchInputSpinner = (element) => element.querySelector('.spinner-default');
@@ -194,67 +194,6 @@ describe('SearchablePicklist', () => {
         }, 10);
       });
     });
-
-    describe('when adding an arbitrary value using the search link', () => {
-      it('invokes canAddSearch', (done) => {
-        const element = renderComponent(SearchablePicklist, getProps({
-          canAddSearchTerm: () => done()
-        }));
-        simulateTextInput(element);
-
-        Simulate.click(getSearchLink(element));
-      });
-
-      it('adds a loading spinner', (done) => {
-        const element = renderComponent(SearchablePicklist, getProps({
-          canAddSearchTerm: () => {
-            return new Promise(() => {
-              _.defer(() => {
-                assert.notDeepEqual(getSearchInputSpinner(element), null);
-                done();
-              });
-            });
-          }
-        }));
-        simulateTextInput(element);
-
-        Simulate.click(getSearchLink(element));
-      });
-
-      it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
-        const element = renderComponent(SearchablePicklist, getProps({
-          canAddSearchTerm: () => {
-            return new Promise((resolve) => {
-              _.delay(resolve, 10);
-              _.delay(() => assert.notDeepEqual(getSearchInputSpinner(element), null), 5);
-              _.delay(() => {
-                assert.deepEqual(getSearchInputSpinner(element), null);
-                done();
-              }, 15);
-            });
-          }
-        }));
-        simulateTextInput(element);
-
-        Simulate.click(getSearchLink(element));
-      });
-
-      it('shows an error if the search term cannot be added', (done) => {
-        const element = renderComponent(SearchablePicklist, getProps({
-          canAddSearchTerm: () => {
-            return Promise.reject();
-          }
-        }));
-        simulateTextInput(element);
-
-        Simulate.click(getSearchLink(element));
-
-        _.delay(() => {
-          assert.notDeepEqual(getSearchWarning(element), null);
-          done();
-        }, 10);
-      });
-    });
   });
 
   describe('picklist', () => {
@@ -294,7 +233,7 @@ describe('SearchablePicklist', () => {
         }
       }));
       simulateTextInput(element);
-      Simulate.click(getSearchLink(element));
+      Simulate.click(getSearchButton(element));
 
       _.delay(() => {
         assert.notEqual(getSearchWarning(element), null);

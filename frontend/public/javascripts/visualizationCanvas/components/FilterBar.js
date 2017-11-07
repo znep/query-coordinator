@@ -1,20 +1,30 @@
 import _ from 'lodash';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import { FilterBar } from 'common/components';
-import { setFilters } from '../actions';
-import { dataProviders } from 'common/visualizations';
 
-export function mapStateToProps({ columnStats, view, filters, parentView }) {
+import { FilterBar } from 'common/components';
+import { dataProviders } from 'common/visualizations';
+import spandexSubscriber from 'common/spandex/subscriber';
+
+import { setFilters } from '../actions';
+
+export function mapStateToProps(state) {
+  const {
+    columnStats,
+    filters,
+    parentView,
+    view
+  } = state;
 
   // Merge columns with column stats
   const columnsWithColumnStats = _.merge([], columnStats, view.columns);
 
-  const metadataProvider = new dataProviders.MetadataProvider(
-    {
-      domain: serverConfig.domain,
-      datasetUid: parentView.id
-    }, true);
+  const metadataConfig = {
+    datasetUid: parentView.id,
+    domain: serverConfig.domain
+  };
+
+  const metadataProvider = new dataProviders.MetadataProvider(metadataConfig, true);
 
   // Get displayable columns only, subcolumns and system columns are omitted
   const displayableColumns = metadataProvider.getDisplayableColumns({
@@ -31,10 +41,7 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
   });
 
   const isValidTextFilterColumnValue = (column, term) => {
-    const soqlDataProvider = new dataProviders.SoqlDataProvider({
-      domain: serverConfig.domain,
-      datasetUid: parentView.id
-    });
+    const soqlDataProvider = new dataProviders.SoqlDataProvider(metadataConfig);
 
     return soqlDataProvider.match(column.fieldName, term);
   };
@@ -42,7 +49,8 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
   return {
     columns,
     filters: displayableFilters,
-    isValidTextFilterColumnValue
+    isValidTextFilterColumnValue,
+    spandex: metadataConfig
   };
 }
 
@@ -52,4 +60,7 @@ export function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  spandexSubscriber()
+)(FilterBar);

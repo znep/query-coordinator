@@ -201,12 +201,16 @@ export class SearchablePicklist extends Component {
   }
 
   renderPrompt() {
-    return (this.state.textEntered && !this.state.isError) ?
+    const { hideExactMatchPrompt } = this.props;
+    const { isError, textEntered } = this.state;
+
+    if (hideExactMatchPrompt) {
+      return null;
+    }
+
+    return (textEntered && !isError) ?
       <div className="alert info">
         {I18n.t('shared.components.filter_bar.text_filter.exact_search_prompt_main')}
-        <a href="" onClick={this.onSearch}>
-          {I18n.t('shared.components.filter_bar.text_filter.exact_search_prompt_link')}
-        </a>
       </div> :
       null;
   }
@@ -227,16 +231,17 @@ export class SearchablePicklist extends Component {
 }
 
 SearchablePicklist.propTypes = {
+  canAddSearchTerm: PropTypes.func,
+  hideExactMatchPrompt: PropTypes.bool,
+  hideSearchInput: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.object),
+  selectedOptions: PropTypes.arrayOf(PropTypes.object),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  selectedOptions: PropTypes.arrayOf(PropTypes.object),
-  onChangeSearchTerm: PropTypes.func.isRequired,
-  onSelection: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
+  onChangeSearchTerm: PropTypes.func.isRequired,
   onClickSelectedOption: PropTypes.func,
-  canAddSearchTerm: PropTypes.func,
-  hideSearchInput: PropTypes.bool
+  onSelection: PropTypes.func.isRequired
 };
 
 export default SearchablePicklist;

@@ -1260,4 +1260,31 @@ describe('utils.js', function() {
       });
     });
   });
+
+  describe('sift', function() {
+    const object1 = { foo: { bar: 'foo and bar' } };
+    const object2 = { a: { b: { c: 'abc' } }, d: { e: 'de' } };
+
+    describe('given an object with the desired key', function() {
+      it('should return it', function() {
+        assert.equal(utils.sift(object1, 'foo.bar'), 'foo and bar');
+      });
+    });
+
+    describe('given an object without the desired key', function() {
+      it('should return undefined', function() {
+        assert.equal(utils.sift(object1, 'blargh'), undefined);
+      });
+    });
+
+    describe('given multiple search paths', function() {
+      it('should search all of them', function() {
+        assert.equal(utils.sift(object2, 'x.y.z', 'd.e'), 'de');
+      });
+
+      it('should return the first success', function() {
+        assert.equal(utils.sift(object2, 'a.b.c', 'd.e'), 'abc');
+      });
+    });
+  });
 });

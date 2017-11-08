@@ -1,11 +1,15 @@
+/*eslint no-undef: "grecaptcha"*/
+
 blist.namespace.fetch('blist.nominations');
 
 $(function() {
   var saveNomination = function(attachmentId) {
     var nomination = {
       title: $dialog.find('#nominateTitle').val(),
-      description: $dialog.find('#nominateDescription').val()
+      description: $dialog.find('#nominateDescription').val(),
+      captcha: $dialog.find('#g-recaptcha-response').val()
     };
+
     var editId = $dialog.attr('data-editId');
 
     var error = function(xhr) {
@@ -117,7 +121,9 @@ $(function() {
     $dialog.toggleClass('isEdit', !$.isBlank(nomId)).
     attr('data-editId', nomId || '');
     $dialog.find('.mainError').text('');
-
+    if (window.grecaptcha) {
+      window.grecaptcha.reset();
+    }
     $dialog.jqmShow();
   };
 

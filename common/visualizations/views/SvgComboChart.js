@@ -59,6 +59,8 @@ const MINIMUM_LABEL_WIDTH = 35;
 
 function SvgComboChart($element, vif, options) {
   const self = this;
+  // Embeds needs to wait to define noValueLabel until after hydration.
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
 
   let $chartElement;
   let dataToRender;
@@ -761,7 +763,7 @@ function SvgComboChart($element, vif, options) {
       const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
 
       if (self.getShowLegend()) {
-        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measureLabels, referenceLines });
+        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measures, referenceLines });
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
 
@@ -1926,17 +1928,20 @@ function SvgComboChart($element, vif, options) {
     );
   }
 
-  function showColumnFlyout(columnElement, { measureIndex, color, label, value, percent }) {
-    const titleHTML = columnElement.getAttribute('data-dimension-value-html') || LABEL_NO_VALUE;
-    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+  function showColumnFlyout(columnElement, { measure, value, percent }) {
+    const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
+    const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
 
     const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
-      append($('<td>', { 'colspan': 2 }).
-      html(titleHTML));
+      append(
+        $('<td>', { 'colspan': 2 }).html(
+          (titleHTML) ? titleHTML : ''
+        )
+      );
 
     const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
-      text(label).
-      css('color', color);
+      html(measure.labelHtml).
+      css('color', measure.getColor());
 
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
@@ -1946,7 +1951,7 @@ function SvgComboChart($element, vif, options) {
     let payload = null;
 
     if (value === null) {
-      valueHTML = LABEL_NO_VALUE;
+      valueHTML = noValueLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueHTML = formatValueHTML(value, column, dataToRender, true);

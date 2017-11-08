@@ -22,6 +22,7 @@ class DomainUpdater
         socrata.visualization.choroplethMap
         socrata.visualization.regionMap
         socrata.visualization.columnChart
+        socrata.visualization.comboChart
         socrata.visualization.histogram
         socrata.visualization.pieChart
         socrata.visualization.table

@@ -1117,8 +1117,9 @@ export default function AssetSelectorStore() {
       // height has been previously set and remember it so that it can be added
       // back into the new component properties after they have been reset.
       const layoutHeight = _.get(_state, 'componentProperties.layout.height');
+      const visualizationType = visualization.series[0].type.split('.')[0];
 
-      _state.componentType = `socrata.visualization.${visualization.series[0].type}`;
+      _state.componentType = `socrata.visualization.${visualizationType}`;
       _state.componentProperties = {
         vif: visualization,
         dataset: _state.componentProperties.dataset,

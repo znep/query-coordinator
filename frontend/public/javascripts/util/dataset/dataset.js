@@ -3122,7 +3122,9 @@
       ds.metadata.jsonQuery = ds.metadata.jsonQuery || {};
 
       var jsonQueryChanged = !_.isEqual($.deepCompact(oldJsonQuery), $.deepCompact(ds.metadata.jsonQuery));
-      var hasOldJsonQuery = !_.isUndefined(oldJsonQuery);
+      var hasOldJsonQuery = blist.feature_flags.relax_jsonquery_existence_check ?
+        !_.isEmpty(oldJsonQuery) :
+        !_.isUndefined(oldJsonQuery);
       var hasNewJsonQuery = !_.isEmpty(ds.metadata.jsonQuery);
       var hasNoQuery = _.isEmpty(ds.query);
 

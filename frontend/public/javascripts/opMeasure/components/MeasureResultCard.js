@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import classnames from 'classnames';
 
 import I18n from 'common/i18n';
 
@@ -13,6 +14,7 @@ export class MeasureResultCard extends Component {
     const { computedMeasure, dataRequestInFlight, placeholder } = this.props;
     const result = _.get(computedMeasure, 'result');
     const dividingByZero = _.get(computedMeasure, 'dividingByZero');
+    const asPercent = _.get(this.props, 'measure.metric.display.asPercent', false);
 
     if (dividingByZero) {
       return (
@@ -21,8 +23,12 @@ export class MeasureResultCard extends Component {
         </div>
       );
     } else if (result) {
+      const resultClassNames = classnames(
+        'measure-result-big-number',
+        { percent: asPercent }
+      );
       return (
-        <div className="measure-result-big-number">{result}</div>
+        <div className={resultClassNames}>{result}</div>
       );
     } else if (dataRequestInFlight) {
       return (
@@ -57,7 +63,10 @@ MeasureResultCard.propTypes = {
   measure: PropTypes.shape({
     // Add more as additional parts of the measure are used.
     metric: PropTypes.shape({
-      label: PropTypes.string
+      display: PropTypes.shape({
+        label: PropTypes.string,
+        asPercent: PropTypes.bool
+      })
     })
   }).isRequired,
   placeholder: PropTypes.string,

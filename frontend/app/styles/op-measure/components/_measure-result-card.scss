@@ -13,6 +13,13 @@
 
   .measure-result-big-number {
     font-size: 42px;
+
+    &.percent {
+      &:after {
+        display: inline;
+        content: '%';
+      }
+    }
   }
 
   .measure-result-subtitle {

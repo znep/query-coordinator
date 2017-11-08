@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
+import { CalculationTypeNames } from 'lib/constants';
 import { CalculationPreview, mapStateToProps } from 'components/EditModal/CalculationPreview';
 
 describe('CalculationPreview', () => {
@@ -58,6 +59,35 @@ describe('CalculationPreview', () => {
 
       sinon.assert.calledWithExactly(props.onChangeUnitLabel, 'Mega Bux');
       sinon.assert.calledOnce(props.onChangeUnitLabel);
+    });
+  });
+
+  describe('display as percent checkbox', () => {
+    _(CalculationTypeNames).values().each((calculationType) => {
+      const shouldShow = calculationType === CalculationTypeNames.RATE;
+
+      describe(`${calculationType} measures`, () => {
+        it(shouldShow ? 'should show' : 'should not show', () => {
+          assert.lengthOf(
+            shallow(<CalculationPreview calculationType={calculationType} />).
+              find('.metric-display-as-percent'),
+            shouldShow ? 1 : 0
+          );
+        });
+      });
+    });
+
+    it('calls onToggleDisplayAsPercent when clicked', () => {
+      const props = {
+        onToggleDisplayAsPercent: sinon.stub(),
+        calculationType: CalculationTypeNames.RATE,
+      };
+
+      const element = shallow(<CalculationPreview {...props} />);
+
+      element.find('.metric-display-as-percent Checkbox').props().onChange();
+
+      sinon.assert.calledOnce(props.onToggleDisplayAsPercent);
     });
   });
 });

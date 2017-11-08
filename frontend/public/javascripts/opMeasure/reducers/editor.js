@@ -120,6 +120,11 @@ export default (state = initialState(), action) => {
     case actions.editor.SET_UNIT_LABEL:
       return updateMeasureProperty(state, 'metric.display.label', action.label);
 
+    case actions.editor.TOGGLE_DISPLAY_AS_PERCENT: {
+      const currentValue = _.get(state, 'measure.metric.display.asPercent');
+      return updateMeasureProperty(state, 'metric.display.asPercent', !currentValue);
+    }
+
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 

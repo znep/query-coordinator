@@ -341,7 +341,7 @@ function snakeCase(colData) {
     description: colData.description,
     is_primary_key: false,
     format: null,
-    transform: { transform_expr: 'to_text(null)' }
+    transform: { transform_expr: colData.transformExpr }
   };
 }
 

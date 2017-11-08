@@ -6,6 +6,7 @@ import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
 import styles from './AddColForm.scss';
+import { soqlProperties } from 'lib/soqlTypes';
 
 function makeFieldName(displayName) {
   // First replace swaps all whitespace for '_'
@@ -18,6 +19,10 @@ function makeFieldName(displayName) {
     .replace(/\s/g, '_')
     .replace(/\W/g, '_')
     .replace(/__+/g, '_');
+}
+
+function makeTransformExpr(fieldName, transform) {
+  return `${transform}(\`${fieldName}\`)`;
 }
 
 const ErrorList = ({ errors = [] }) => {
@@ -36,6 +41,48 @@ ErrorList.propTypes = {
   errors: PropTypes.array
 };
 
+const SoqlTypePill = ({ name, handleClick, isSelected }) => {
+  const classNames = [styles.pill];
+
+  if (isSelected) {
+    classNames.push(styles.selected);
+  }
+
+  return (
+    <span className={classNames.join(' ')} onClick={handleClick}>
+      {name}
+    </span>
+  );
+};
+
+SoqlTypePill.propTypes = {
+  name: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool.isRequired
+};
+
+const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => {
+  const pills = Object.keys(transforms).map(key => (
+    <SoqlTypePill
+      name={key}
+      isSelected={transforms[key] === currentTransform}
+      handleClick={() => handleClick(transforms[key])} />
+  ));
+
+  return (
+    <div>
+      <label>Type</label>
+      {pills}
+    </div>
+  );
+};
+
+SoqlTypePillBox.propTypes = {
+  transforms: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  currentTransform: PropTypes.string.isRequired
+};
+
 class AddColForm extends Component {
   constructor() {
     super();
@@ -43,18 +90,36 @@ class AddColForm extends Component {
     this.state = {
       displayName: '',
       description: '',
-      transform: '',
+      transform: 'to_text',
       fieldName: '',
-      position: ''
+      position: '',
+      sourceColumnId: '',
+      transformExpr: 'to_text(null)'
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handlePillClick = this.handlePillClick.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.displayName !== nextState.displayName) {
       this.setState({
         fieldName: makeFieldName(nextState.displayName)
+      });
+    }
+
+    if (
+      this.state.transform !== nextState.transform ||
+      this.state.sourceColumnId !== nextState.sourceColumnId
+    ) {
+      const ic = this.props.inputColumns[this.state.sourceColumnId];
+
+      if (!ic) {
+        return;
+      }
+
+      this.setState({
+        transformExpr: makeTransformExpr(ic.field_name, nextState.transform)
       });
     }
 
@@ -72,7 +137,16 @@ class AddColForm extends Component {
     };
   }
 
+  handlePillClick(val) {
+    this.setState({
+      transform: val
+    });
+  }
+
   render() {
+    const ic = this.props.inputColumns[this.state.sourceColumnId];
+    const transforms = ic ? soqlProperties[ic.soql_type].conversions : soqlProperties.text.conversions;
+
     return (
       <form className={styles.form}>
         <Fieldset title="Add Column" subtitle="Add a column to your schema">
@@ -96,13 +170,17 @@ class AddColForm extends Component {
             inErrorState={false}
             value={this.state.description}
             handleChange={this.handleChange('description')} />
-          <label htmlFor="transform">Type</label>
+          <label htmlFor="sourceColumnId">Source Column</label>
           <Select
-            name="transform"
-            value={this.state.transform}
+            name="sourceColumnId"
+            value={this.state.sourceColumnId}
             inErrorState={false}
-            handleChange={this.handleChange('transform')}
-            options={[{ value: 1, title: 'first' }, { value: 2, title: 'second' }]} />
+            handleChange={this.handleChange('sourceColumnId')}
+            options={this.props.selectOptions} />
+          <SoqlTypePillBox
+            transforms={transforms}
+            currentTransform={this.state.transform}
+            handleClick={this.handlePillClick} />
         </Fieldset>
       </form>
     );
@@ -111,6 +189,8 @@ class AddColForm extends Component {
 
 AddColForm.propTypes = {
   errors: PropTypes.object.isRequired,
+  inputColumns: PropTypes.object.isRequired,
+  selectOptions: PropTypes.array.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   syncToStore: PropTypes.func.isRequired
 };

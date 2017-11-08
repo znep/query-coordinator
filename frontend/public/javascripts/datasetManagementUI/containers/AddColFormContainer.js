@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import * as FormActions from 'reduxStuff/actions/forms';
 import AddColForm from 'components/AddColForm/AddColForm';
 
@@ -46,13 +48,32 @@ export function validateDisplayName(val, existingDisplayNames) {
   return errors;
 }
 
-const mapStateToProps = ({ ui }) => ({
-  errors: ui.forms.addColForm.errors
-});
+function shapeFormState(state) {
+  return _.omit(state, ['transform', 'sourceColumnId']);
+}
+
+const mapStateToProps = ({ ui, entities }, { params }) => {
+  const isid = _.toNumber(params.inputSchemaId);
+  const selectOptions = [
+    { title: 'No Source Column', value: 'null' },
+    ...Object.values(entities.input_columns)
+      .filter(ic => ic.input_schema_id === isid)
+      .map(col => ({
+        title: col.field_name,
+        value: col.id
+      }))
+  ];
+
+  return {
+    errors: ui.forms.addColForm.errors,
+    inputColumns: entities.input_columns,
+    selectOptions
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
-  syncToStore: state => dispatch(FormActions.setFormState('addColForm', state)),
+  syncToStore: state => dispatch(FormActions.setFormState('addColForm', shapeFormState(state))),
   markFormDirty: () => dispatch(FormActions.markFormDirty('addColForm'))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddColForm);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddColForm));

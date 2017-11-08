@@ -28,7 +28,7 @@ export class MeasureResultCard extends Component {
         { percent: asPercent }
       );
       return (
-        <div className={resultClassNames}>{result}</div>
+        <div className={resultClassNames} title={result}>{result}</div>
       );
     } else if (dataRequestInFlight) {
       return (

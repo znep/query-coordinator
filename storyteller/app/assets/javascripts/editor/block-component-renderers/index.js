@@ -10,6 +10,7 @@ import './componentImage';
 import './componentSocrataVisualizationClassic';
 import './componentSocrataVisualizationBarChart';
 import './componentSocrataVisualizationColumnChart';
+import './componentSocrataVisualizationComboChart';
 import './componentSocrataVisualizationFeatureMap';
 import './componentSocrataVisualizationHistogram';
 import './componentSocrataVisualizationPieChart';

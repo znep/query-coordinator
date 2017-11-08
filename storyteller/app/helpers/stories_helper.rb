@@ -69,6 +69,7 @@ module StoriesHelper
       'socrata.visualization.regionMap' => 'component_socrata_visualization_region_map',
       'socrata.visualization.barChart' => 'component_socrata_visualization_bar_chart',
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
+      'socrata.visualization.comboChart' => 'component_socrata_visualization_combo_chart',
       'socrata.visualization.histogram' => 'component_socrata_visualization_histogram',
       'socrata.visualization.pieChart' => 'component_socrata_visualization_pie_chart',
       'socrata.visualization.table' => 'component_socrata_visualization_table',

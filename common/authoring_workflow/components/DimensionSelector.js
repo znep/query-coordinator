@@ -88,6 +88,10 @@ export class DimensionSelector extends Component {
   onChangeDimension(dimension) {
     const { onSelectDimension, onSelectOrderBy } = this.props;
 
+    if (dimension == null) {
+      return;
+    }
+
     onSelectDimension(dimension);
 
     if (dimension.type === 'calendar_date') {

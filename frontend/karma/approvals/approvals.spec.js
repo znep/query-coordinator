@@ -22,7 +22,7 @@ const approvalsProps = (options = {}) => ({
   ...options
 });
 
-describe.only('<Approvals />', () => {
+describe('<Approvals />', () => {
   let ceteraStub;
 
   beforeEach(() => {

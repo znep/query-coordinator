@@ -44,14 +44,14 @@ module DatasetsHelper
 
   def license_options(selected_license = '')
     licenses = ExternalConfig.for(:license).merged_licenses
-    licenses["-- #{t 'core.no_license'} --"] = ''
+    licenses["-- #{t 'core.licenses.no_license'} --"] = ''
 
     options_for_select(licenses.sort_by(&:first), selected_license)
   end
 
   def licenses()
     licenses = ExternalConfig.for(:license).merged_licenses
-    licenses["-- #{t 'core.no_license'} --"] = ''
+    licenses["-- #{t 'core.licenses.no_license'} --"] = ''
     licenses.to_a.sort_by(&:first)
   end
 

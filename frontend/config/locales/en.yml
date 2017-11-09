@@ -1698,6 +1698,10 @@ en:
     interstitial:
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
+    licenses:
+      nbogl: New Brunswick Open Government Licence
+      no_license: No License
+      see_terms_of_use: See Terms of Use
     maintenance_notice: This Socrata-powered site may be unavailable for routine maintenance from %{start} to %{finish}.
     map_layers:
       aerial: Aerial
@@ -1722,7 +1726,6 @@ en:
       terrain: Terrain
     no_category: No category
     no_js: Disable Javascript on this page
-    no_license: No License
     numbers:
       eight: eight
       five: five
@@ -1749,7 +1752,6 @@ en:
       scientific: 'Scientific: 1.0204e+3'
       standard: 'Standard: 1020.4'
     required: Required
-    see_terms_of_use: See Terms of Use
     share_types:
       contributor: Contributor
       owner: Owner

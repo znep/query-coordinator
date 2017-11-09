@@ -1,18 +1,17 @@
-// Vendor Imports
 const $ = require('jquery');
 const _ = require('lodash');
-const utils = require('common/js_utils');
-const I18n = require('common/i18n').default;
 const React = require('react');
 const ReactDOM = require('react-dom');
-const { FilterBar, SocrataIcon } = require('common/components');
 
-// Project Imports
+const utils = require('common/js_utils');
+const I18n = require('common/i18n').default;
+const { FilterBar, SocrataIcon } = require('common/components');
+const spandexSubscriber = require('common/spandex/subscriber').default;
+
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
 
-// Constants
 import {
   DEFAULT_HIGHLIGHT_COLOR,
   AXIS_LABEL_FONT_FAMILY,
@@ -133,8 +132,10 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.renderFilterBar = function() {
+    const dataSource = _.get(this.getVif(), 'series[0].dataSource', {});
+
     const $filterBarContainer = self.$container.find('.socrata-visualization-filter-bar-container');
-    const filters = _.get(this.getVif(), 'series[0].dataSource.filters', []);
+    const filters = dataSource.filters || [];
     const allHidden = _.every(filters, (filter) => filter.isHidden);
 
     if (!this.getColumns() || !this.shouldDisplayFilterBar() || filters.length === 0 || allHidden) {
@@ -149,6 +150,7 @@ function SvgVisualization($element, vif, options) {
       columns: this.getColumns(),
       filters,
       isReadOnly: true,
+      spandex: _.pick(dataSource, ['datasetUid', 'domain']),
       onUpdate: (newFilters) => {
         const newVif = _.cloneDeep(this.getVif());
         _.each(newVif.series, (series) => {
@@ -160,7 +162,10 @@ function SvgVisualization($element, vif, options) {
       }
     };
 
-    ReactDOM.render(React.createElement(FilterBar, props), $filterBarContainer[0]);
+    ReactDOM.render(
+      React.createElement(spandexSubscriber()(FilterBar), props),
+      $filterBarContainer[0]
+    );
   };
 
   let topAxisLabelElement = null;

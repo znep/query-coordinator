@@ -1,9 +1,9 @@
+import _ from 'lodash';
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { assert } from 'chai';
-import * as sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import sinon from 'sinon';
 
 import Approvals from 'approvals/components/approvals';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
@@ -15,7 +15,7 @@ import { useTestTranslations } from 'common/i18n';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';
 import mockCeteraFetchResponse from './data/mock_cetera_fetch_response';
 
-const store = configureMockStore([thunk])();
+const store = configureMockStore()();
 
 const approvalsProps = (options = {}) => ({
   store: store,
@@ -27,7 +27,7 @@ describe('<Approvals />', () => {
 
   beforeEach(() => {
     useTestTranslations(sharedTranslations.en);
-    ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
+    ceteraStub = sinon.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
   });
 
   afterEach(() => {
@@ -50,10 +50,8 @@ describe('<Approvals />', () => {
         wrapper.find('.catalog-filters').length,
         'filters should be present'
       );
-      // An unfortunate consequence of using css modules is non-deterministic class names, so we fall
-      // back to matching against one of the internal elements of the autocomplete search component.
       assert(
-        wrapper.find('.socrata-icon-search').length,
+        wrapper.find('.autocomplete').length,
         'autocomplete search bar should be present'
       );
     });
@@ -61,10 +59,9 @@ describe('<Approvals />', () => {
 
   describe('tabs', () => {
     describe('when the user has the "configure_approvals" right', () => {
-      let currentUser = window.serverConfig.currentUser;
+      let currentUser = JSON.parse(JSON.stringify(window.serverConfig.currentUser));
 
       beforeEach(() => {
-        currentUser = window.serverConfig.currentUser;
         window.serverConfig.currentUser.rights = ['configure_approvals'];
       });
 

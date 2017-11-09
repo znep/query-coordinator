@@ -1,8 +1,8 @@
 export default {
-  "airbrakeEnvironment": "development",
+  "airbrakeEnvironment": "test",
   "airbrakeKey": null,
   "airbrakeProjectId": null,
-  "csrfToken": "jvvDyhpcQQhSGfauxTTPZ0MY2jrIEzsD1mKkbPuSSj77wOCu+rDmQM3whKHGFuVl4eU1XpKhUL8Y3J/bHFGeaQ==",
+  "csrfToken": "a+very+long_token+equalsqquals==",
   "currentUser": {
     "id": "tugg-ikce",
     "createdAt": 1491599832,
@@ -72,7 +72,7 @@ export default {
     ]
   },
   "domain": "localhost",
-  "environment": "development",
+  "environment": "test",
   "featureFlags": {
     "disable_authority_badge": "none",
     "enable_internal_asset_manager_my_assets": true,
@@ -80,6 +80,6 @@ export default {
   },
   "locale": "en",
   "localePrefix": "",
-  "recaptchaKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
-  "usersnapProjectID": "6afbcc90-6522-4475-b3b0-635c7a9874a5"
+  "recaptchaKey": "1231231231231231231231231231231_ABCABCAB",
+  "usersnapProjectID": "12312312-1234-1234-a3b3-123123123123"
 }

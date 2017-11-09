@@ -49,12 +49,15 @@ describe('models/metadataTable', () => {
   });
 
   describe('shapeCustomMetadata', () => {
-    // corresponds to the metadata field on the revision
+    // corresponds to the viewLikeObj constructed by shapeRevisionForProps
     const metadata = {
       privateMetadata: {
         custom_fields: {
           secretFieldset: {
             secretField: 'whoa so private'
+          },
+          sharedFieldset: {
+            privateShared: 'also so private'
           }
         }
       },
@@ -62,6 +65,9 @@ describe('models/metadataTable', () => {
         custom_fields: {
           regularFieldset: {
             regular: 'eh not that private'
+          },
+          sharedFieldset: {
+            regularShared: 'sup'
           }
         }
       }
@@ -84,6 +90,17 @@ describe('models/metadataTable', () => {
             name: 'regular'
           }
         ]
+      },
+      {
+        name: 'sharedFieldset',
+        fields: [
+          {
+            name: 'regularShared'
+          },
+          {
+            name: 'privateShared'
+          }
+        ]
       }
     ];
 
@@ -92,7 +109,8 @@ describe('models/metadataTable', () => {
 
       assert.deepEqual(mergedFieldsets, {
         regularFieldset: { regular: 'eh not that private' },
-        secretFieldset: { secretField: 'whoa so private' }
+        secretFieldset: { secretField: 'whoa so private' },
+        sharedFieldset: {regularShared: 'sup', privateShared: 'also so private'}
       });
     });
   });

@@ -22,22 +22,35 @@ import SaveParseOptionsButton from './SaveParseOptionsButton';
 import SaveColButton from './SaveColButton';
 import styles from './ShowOutputSchema.scss';
 
+function getCurrentPane(location) {
+  let currentPane;
+
+  if (location && location.pathname) {
+    currentPane = location.pathname
+      .split('?')
+      .shift()
+      .split('/')
+      .pop();
+  }
+
+  switch (currentPane) {
+    case 'parse_options':
+      return 'parseOptions';
+    case 'add_col':
+      return 'addColumn';
+    default:
+      return 'tablePreview';
+  }
+}
+
 export class ShowOutputSchema extends Component {
   saveButtonForOption() {
-    let currentPage;
+    const currentPane = getCurrentPane(this.props.location);
 
-    if (this.props.location) {
-      currentPage = this.props.location.pathname
-        .split('?')
-        .shift()
-        .split('/')
-        .pop();
-    }
-
-    switch (currentPage) {
-      case 'parse_options':
+    switch (currentPane) {
+      case 'parseOptions':
         return <SaveParseOptionsButton {...this.props} />;
-      case 'add_col':
+      case 'addColumn':
         return (
           <SaveColButton
             handleClick={this.props.addCol}
@@ -52,13 +65,17 @@ export class ShowOutputSchema extends Component {
   render() {
     const { canApplyRevision, fatalError, goToRevisionBase, params, showShortcut } = this.props;
 
+    const currentPane = getCurrentPane(this.props.location);
+    const onTablePreview = currentPane === 'tablePreview';
+
     return (
       <div className={styles.outputSchemaContainer}>
         <Modal fullScreen onDismiss={goToRevisionBase}>
           <ModalHeader onDismiss={goToRevisionBase}>
             <SourceBreadcrumbs />
           </ModalHeader>
-          <ModalContent>
+
+          <ModalContent className={styles.modalContent}>
             <OutputSchemaSidebar params={params} showShortcut={showShortcut} />
             {this.props.children &&
               React.cloneElement(this.props.children, {
@@ -66,9 +83,9 @@ export class ShowOutputSchema extends Component {
               })}
           </ModalContent>
 
-          <ModalFooter>
-            {canApplyRevision ? <ReadyToImport /> : null}
-            {fatalError ? <FatalError /> : null}
+          <ModalFooter className={onTablePreview ? styles.modalFooter : styles.modalFooterAlt}>
+            {canApplyRevision && onTablePreview ? <ReadyToImport /> : null}
+            {fatalError && onTablePreview ? <FatalError /> : null}
             {!fatalError ? this.saveButtonForOption() : null}
           </ModalFooter>
         </Modal>

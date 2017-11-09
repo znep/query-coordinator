@@ -22,7 +22,11 @@ function makeFieldName(displayName) {
 }
 
 function makeTransformExpr(fieldName, transform) {
-  return `${transform}(\`${fieldName}\`)`;
+  if (fieldName === 'null') {
+    return `${transform}(${fieldName})`;
+  } else {
+    return `${transform}(\`${fieldName}\`)`;
+  }
 }
 
 const ErrorList = ({ errors = [] }) => {
@@ -62,9 +66,10 @@ SoqlTypePill.propTypes = {
 };
 
 const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => {
-  const pills = Object.keys(transforms).map(key => (
+  const pills = Object.keys(transforms).map((key, idx) => (
     <SoqlTypePill
       name={key}
+      key={idx}
       isSelected={transforms[key] === currentTransform}
       handleClick={() => handleClick(transforms[key])} />
   ));

@@ -48,7 +48,7 @@ class AddColPane extends Component {
 }
 
 AddColPane.propTypes = {
-  flashVisible: PropTypes.bool.isRequired
+  flashVisible: PropTypes.bool
 };
 
 export default AddColPane;

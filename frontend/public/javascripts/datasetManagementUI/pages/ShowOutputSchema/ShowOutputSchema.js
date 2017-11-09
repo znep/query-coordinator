@@ -210,34 +210,4 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   };
 }
 
-// This madness is to to keep the entire ShowOutputSchema from re-rendering ever
-// time form state changes. We have to map the form state to the props of this component
-// because of the evil modal-submit button. If we can get rid of that, we can get rid
-// of this.
-const wrapper = Wrapped => {
-  return class extends Component {
-    shouldComponentUpdate(nextProps) {
-      const stuffToOmit = [
-        'addColForm',
-        'addCol',
-        'showShortcut',
-        'saveCurrentParseOptions',
-        'saveCurrentOutputSchema',
-        'goToRevisionBase'
-      ];
-      const otherNewProps = _.omit(nextProps, stuffToOmit);
-      const otherOldProps = _.omit(this.props, stuffToOmit);
-
-      return (
-        !_.isEqual(otherNewProps, otherOldProps) ||
-        nextProps.addColForm.isDirty !== this.props.addColForm.isDirty
-      );
-    }
-
-    render() {
-      return <Wrapped {...this.props} />;
-    }
-  };
-};
-
-export default connect(mapStateToProps, null, mergeProps)(wrapper(ShowOutputSchema));
+export default connect(mapStateToProps, null, mergeProps)(ShowOutputSchema);

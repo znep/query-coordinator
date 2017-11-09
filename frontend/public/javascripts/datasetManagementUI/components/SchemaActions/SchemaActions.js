@@ -28,7 +28,10 @@ const mapStateToProps = ({ entities }, { params }) => ({
   iss: entities.input_schemas
 });
 
-// See note in ShowOutputSchema.js
+// This madness is to to keep the entire component from re-rendering every
+// time form state changes. We have to map the form state to the props of ShowOutputSchema
+// because of the external modal-submit button. If we can get rid of that, we can get rid
+// of this.
 function wrapper(Wrapped) {
   return class extends Component {
     shouldComponentUpdate(nextProps) {

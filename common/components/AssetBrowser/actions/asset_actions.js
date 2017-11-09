@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 import { defaultHeaders, checkStatus, reload } from 'common/http';
 import ceteraUtils from 'common/cetera/utils';
+import I18n from 'common/i18n';
 
 const performingAction = (actionType) => ({ type: 'PERFORMING_ACTION', actionType });
 const performingActionSuccess = (actionType) => ({ type: 'PERFORMING_ACTION_SUCCESS', actionType });
@@ -8,8 +9,8 @@ const performingActionFailure = (actionType, response) => (
   { type: 'PERFORMING_ACTION_FAILURE', actionType, response }
 );
 
-export const showAlert = (titleLocaleKey, bodyLocaleKey, time = 7000) => ( // Time to display alert is in ms
-  { type: 'SHOW_ALERT', titleLocaleKey, bodyLocaleKey, time }
+export const showAlert = (title, body, time = 7000) => ( // Time to display alert is in ms
+  { type: 'SHOW_ALERT', title, body, time }
 );
 
 export const hideAlert = () => (
@@ -83,16 +84,25 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
 
   dispatch(performingAction(ACTION_TYPE));
 
-  const alertBodyLocaleKey = 'shared.asset_browser.alert_messages.visibility_changed.body';
-  const alertTitleLocaleKey = (visibilityValue === 'yes' || visibilityValue.indexOf('public') > -1) ?
-    'shared.asset_browser.alert_messages.visibility_changed.title_public' :
-    'shared.asset_browser.alert_messages.visibility_changed.title_private';
+  const scope = 'shared.asset_browser.alert_messages.visibility_changed';
+  const alertTitleKey = (visibilityValue === 'yes' || visibilityValue.indexOf('public') > -1) ?
+    'title_public' : 'title_private';
 
   return fetch(apiPath, fetchOptions).
     then(checkStatus).
-    then(() => dispatch(showAlert(alertTitleLocaleKey, alertBodyLocaleKey))).
+    then(() => dispatch(showAlert(I18n.t(alertTitleKey, { scope }), I18n.t('body', { scope })))).
     then(() => dispatch(closeModal())).
     then(() => { document.body.click(); }). // Close action dropdown menu
     then(() => dispatch(performingActionSuccess(ACTION_TYPE))).
     catch(() => dispatch(performingActionFailure(ACTION_TYPE)));
 };
+
+// Approvals actions (see approval_action_buttons)
+// Note: these are purely action creators; they are using Sagas for their requests rather than thunks
+export const approveResource = (resourceId, name, notes) => (
+  { type: 'APPROVE_RESOURCE_REQUESTED', resourceId, name, state: 'approved', notes }
+);
+
+export const rejectResource = (resourceId, name, notes) => (
+  { type: 'REJECT_RESOURCE_REQUESTED', resourceId, name, state: 'rejected', notes }
+);

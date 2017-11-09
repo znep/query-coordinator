@@ -1,4 +1,4 @@
-import { fetchResults } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import { fetchResults } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
 import { clearAllFilters } from 'common/components/AssetBrowser/actions/filters';
 import { getUnfilteredState } from 'common/components/AssetBrowser/reducers/filters';

@@ -10,7 +10,7 @@ import { AssetBrowser } from 'common/components';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import { dateLocalize } from 'common/locale';
 import Localization from 'common/i18n/components/Localization';
-import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import { getCurrentUserId } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
 
 const middleware = [thunk];
@@ -27,10 +27,20 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 
 const tabs = {
   [constants.MY_ASSETS_TAB]: {
-    component: ResultsAndFilters
+    component: ResultsAndFilters,
+    props: {
+      baseFilters: {
+        forUser: getCurrentUserId()
+      }
+    }
   },
   [constants.SHARED_TO_ME_TAB]: {
-    component: ResultsAndFilters
+    component: ResultsAndFilters,
+    props: {
+      baseFilters: {
+        sharedTo: getCurrentUserId()
+      }
+    }
   }
 };
 
@@ -40,7 +50,6 @@ const showManageAssets = _.includes(serverConfig.currentUser.flags, 'admin') ||
 const components = (
   <Localization locale={serverConfig.locale || 'en'}>
     <AssetBrowser
-      baseFilters={getCurrentUserFilter()}
       enableAssetInventoryLink={false}
       pageSize={5}
       showAssetCounts={false}

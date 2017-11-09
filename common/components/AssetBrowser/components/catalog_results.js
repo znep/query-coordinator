@@ -5,7 +5,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 
 import ceteraUtils from 'common/cetera/utils';
-import * as ceteraHelpers from 'common/components/AssetBrowser/lib/cetera_helpers';
+import * as ceteraHelpers from 'common/components/AssetBrowser/lib/helpers/cetera';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
@@ -86,15 +86,14 @@ export class CatalogResults extends Component {
     const {
       activeTab,
       allFilters,
-      baseFilters,
       changeQ,
-      clearAllFilters,
       clearSearch,
       currentQuery,
       isMobile,
       page,
       showManageAssets,
       showSearchField,
+      tabs,
       toggleFilters
     } = this.props;
 
@@ -112,10 +111,7 @@ export class CatalogResults extends Component {
     };
 
     const clearFiltersProps = {
-      allFilters,
       buttonStyle: true,
-      baseFilters,
-      clearAllFilters,
       clearSearch,
       showTitle: false
     };
@@ -262,11 +258,9 @@ CatalogResults.propTypes = {
   actionElement: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
   allFilters: PropTypes.object,
-  baseFilters: PropTypes.object,
   changePage: PropTypes.func.isRequired,
   changeQ: PropTypes.func.isRequired,
   clearSearch: PropTypes.func,
-  clearAllFilters: PropTypes.func.isRequired,
   currentQuery: PropTypes.string,
   enableAssetInventoryLink: PropTypes.bool,
   fetchInitialResults: PropTypes.func.isRequired,
@@ -280,6 +274,7 @@ CatalogResults.propTypes = {
   pageNumber: PropTypes.number,
   pageSize: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired,
+  tabs: PropTypes.object.isRequired,
   toggleFilters: PropTypes.func.isRequired,
   updatePageSize: PropTypes.func.isRequired
 };
@@ -287,7 +282,6 @@ CatalogResults.propTypes = {
 CatalogResults.defaultProps = {
   actionElement: ActionDropdown,
   allFilters: {},
-  baseFilters: {},
   currentQuery: '',
   fetchingResults: false,
   fetchingResultsError: false,
@@ -308,13 +302,13 @@ const mapStateToProps = (state) => ({
   order: state.catalog.order,
   pageNumber: state.catalog.pageNumber,
   reduxState: state,
-  resultSetSize: state.catalog.resultSetSize
+  resultSetSize: state.catalog.resultSetSize,
+  tabs: state.tabs
 });
 
 const mapDispatchToProps = (dispatch) => ({
   changePage: (pageNumber) => dispatch(pager.changePage(pageNumber)),
   changeQ: (query) => dispatch(filters.changeQ(query)),
-  clearAllFilters: (shouldClearSearch, baseFilters) => dispatch(filters.clearAllFilters(shouldClearSearch, baseFilters)),
   clearSearch: () => dispatch(filters.clearSearch()),
   fetchInitialResults: (parameters) => dispatch(ceteraHelpers.fetchInitialResults(parameters)),
   toggleFilters: () => dispatch(mobile.toggleFilters()),

@@ -188,20 +188,20 @@ $result_list_row_bg_hover_color: $primary-light;
         &.name {
           width: 29%
         }
-        &.approval-requested {
-          width: 19%;
-        }
         &.owner {
           width: 14%;
         }
         &.status {
           width: 14%;
         }
+        &.submitted_at {
+          width: 19%;
+        }
         &.actions {
           width: 18%;
         }
 
-        &.actions, &.approval-requested, &.status {
+        &.actions, &.status {
           cursor: not-allowed;
         }
       }
@@ -209,8 +209,35 @@ $result_list_row_bg_hover_color: $primary-light;
       tbody {
         tr.result-list-row {
           .actions {
-            .approval-action-buttons button:first-of-type {
-              margin-right: 0.5rem;
+            .approval-action-buttons {
+              > div {
+                display: inline-block;
+
+                button:first-of-type {
+                  margin-right: 0.5rem;
+                }
+              }
+
+              .flannel-content {
+                margin: 0;
+                padding: 1rem;
+                overflow: hidden;
+                width: 350px;
+
+                p {
+                  margin: 0.3rem 0;
+                  font-weight: 100;
+                }
+
+                textarea {
+                  width: 100%;
+                }
+
+                .ok-button {
+                  float: right;
+                  margin: 0;
+                }
+              }
             }
           }
         }

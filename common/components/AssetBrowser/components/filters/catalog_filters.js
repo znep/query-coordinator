@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
-import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 import I18n from 'common/i18n';
 
 import ClearFilters from './clear_filters';
@@ -36,7 +35,7 @@ export class CatalogFilters extends Component {
   }
 
   render() {
-    const { activeTab, allFilters, clearAllFilters } = this.props;
+    const { activeTab } = this.props;
 
     const { filterContentOpen } = this.state;
 
@@ -67,7 +66,7 @@ export class CatalogFilters extends Component {
 
     const filterHeader = (
       <div className="catalog-filters-header">
-        <ClearFilters allFilters={allFilters} clearAllFilters={clearAllFilters} />
+        <ClearFilters />
         {closeFiltersButton}
       </div>
     );
@@ -99,17 +98,11 @@ export class CatalogFilters extends Component {
 }
 
 CatalogFilters.propTypes = {
-  allFilters: PropTypes.object,
-  clearAllFilters: PropTypes.func.isRequired
+  activeTab: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  activeTab: state.header.activeTab,
-  allFilters: state.filters
+  activeTab: state.header.activeTab
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  clearAllFilters: () => dispatch(filterActions.clearAllFilters())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CatalogFilters);
+export default connect(mapStateToProps)(CatalogFilters);

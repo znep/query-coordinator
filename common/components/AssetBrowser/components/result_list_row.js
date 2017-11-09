@@ -7,6 +7,7 @@ import _ from 'lodash';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import I18n from 'common/i18n';
 
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 import Provenance from './provenance';
 import VisibilityCell from './visibility_cell';
 
@@ -23,6 +24,8 @@ export class ResultListRow extends Component {
     let { link } = this.props;
     const {
       actionElement,
+      activeTab,
+      approvals,
       description,
       isOwner,
       isPublished,
@@ -33,6 +36,8 @@ export class ResultListRow extends Component {
       uid,
       updatedAt
     } = this.props;
+
+    const scope = 'shared.asset_browser.result_list_table';
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -55,6 +60,24 @@ export class ResultListRow extends Component {
 
     if (columnName === 'actions') {
       return cellTag(React.createElement(actionElement, this.props));
+    }
+
+    const approval = approvals[0] || {};
+     // TODO: what do we do when there are multiple approvals?
+    if (approvals.length > 1) {
+      console.warn(`There are multiple approval records for resource ${name} (${uid})!`);
+      console.dir(approvals);
+    }
+
+    if (columnName === 'submitted_at') {
+      const approvalRequestedDateString = moment(approval.submitted_at).format('LL');
+      return cellTag(approvalRequestedDateString);
+    }
+
+    if (columnName === 'status') {
+      const state = approval.state || 'not_ready';
+      const approvalStatus = I18n.t(`approval_status_values.${state}`, { scope });
+      return cellTag(approvalStatus);
     }
 
     if (columnName === 'name') {
@@ -108,8 +131,14 @@ export class ResultListRow extends Component {
   }
 }
 
+ResultListRow.defaultProps = {
+  approvals: []
+};
+
 ResultListRow.propTypes = {
   actionElement: PropTypes.func,
+  activeTab: PropTypes.string.isRequired,
+  approvals: PropTypes.array,
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
   datalensStatus: PropTypes.string,
@@ -135,6 +164,7 @@ ResultListRow.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  activeTab: state.header.activeTab,
   columns: state.catalog.columns
 });
 

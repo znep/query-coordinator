@@ -62,8 +62,8 @@ export default (state, action) => {
     return {
       ...state,
       alert: {
-        titleLocaleKey: action.titleLocaleKey,
-        bodyLocaleKey: action.bodyLocaleKey,
+        title: action.title,
+        body: action.body,
         time: action.time
       }
     };

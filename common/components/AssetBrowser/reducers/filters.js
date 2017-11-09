@@ -3,7 +3,6 @@ import _ from 'lodash';
 import utils from 'common/js_utils';
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 import { ALL_ASSETS_TAB, MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
-import { getCurrentUserFilter } from 'common/components/AssetBrowser/lib/cetera_helpers';
 
 /*
  * Since we're now storing some of the redux state in the URL, that means that we've distributed "truth" into
@@ -47,10 +46,9 @@ export const getInitialState = () => {
 // platform-ui/frontend/public/javascripts/internalAssetManager/actions/filters.js
 export const getCurrentQuery = () => getQueryParameter('q', '');
 
-export const getUnfilteredState = (state, baseFilters = {}) => ({
+export const getUnfilteredState = (state) => ({
   assetTypes: null,
   authority: null,
-  baseFilters,
   category: null,
   customFacets: {},
   domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
@@ -92,13 +90,6 @@ export default (state, action) => {
     return {
       ...state,
       authority: action.value
-    };
-  }
-
-  if (action.type === 'CHANGE_BASE_FILTER') {
-    return {
-      ...state,
-      baseFilter: action.baseFilter
     };
   }
 
@@ -155,7 +146,7 @@ export default (state, action) => {
   }
 
   if (action.type === 'CLEAR_ALL_FILTERS') {
-    return getUnfilteredState(state, action.baseFilters);
+    return getUnfilteredState(state);
   }
 
 /*
@@ -173,8 +164,7 @@ export default (state, action) => {
           ...state,
           showAuthorityFilter: false,
           showOwnedByFilter: false
-        },
-        getCurrentUserFilter()
+        }
       );
     }
     if (action.newTab === ALL_ASSETS_TAB) {

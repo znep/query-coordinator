@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as Links from 'links/links';
 import { Link, withRouter } from 'react-router';
-// sourceId, inputSchemaId, outputSchemaId, pageNo
+
 const SchemaActions = ({ oss, iss, params }) => {
   const items = oss.map(os => (
     <li>
@@ -27,4 +28,17 @@ const mapStateToProps = ({ entities }, { params }) => ({
   iss: entities.input_schemas
 });
 
-export default withRouter(connect(mapStateToProps)(SchemaActions));
+// See note in ShowOutputSchema.js
+function wrapper(Wrapped) {
+  return class extends Component {
+    shouldComponentUpdate(nextProps) {
+      return !_.isEqual(this.props, nextProps);
+    }
+
+    render() {
+      return <Wrapped {...this.props} />;
+    }
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(wrapper(SchemaActions)));

@@ -11,7 +11,7 @@ const store = (state = {}) => ({
   getState: () => state
 });
 
-describe.only('components/SchemaDotOrgMarkup', () => {
+describe('components/SchemaDotOrgMarkup', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       view: mockView

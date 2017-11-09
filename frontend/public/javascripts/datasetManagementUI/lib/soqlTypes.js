@@ -144,7 +144,7 @@ export const conversionsToCanonicalName = conversion => {
     case 'to_boolean':
       return 'checkbox';
     case 'to_floating_timestamp':
-      return 'calendar date';
+      return 'calendar_date';
     default:
       return 'text';
   }

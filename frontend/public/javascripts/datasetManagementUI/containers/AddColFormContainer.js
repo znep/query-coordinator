@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import * as FormActions from 'reduxStuff/actions/forms';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import AddColForm from 'components/AddColForm/AddColForm';
 
 function isUnique(val, vals) {
@@ -75,7 +76,9 @@ const mapStateToProps = ({ ui, entities }, { params }) => {
 const mapDispatchToProps = dispatch => ({
   syncToStore: state => dispatch(FormActions.setFormState('addColForm', shapeFormState(state))),
   markFormDirty: () => dispatch(FormActions.markFormDirty('addColForm')),
-  toggleClearInternalState: () => dispatch(FormActions.clearInternalState('addColForm', false))
+  resetFormErrors: () => dispatch(FormActions.setFormErrors('addColForm', {})),
+  toggleClearInternalState: () => dispatch(FormActions.clearInternalState('addColForm', false)),
+  hideFlash: () => dispatch(FlashActions.hideFlashMessage())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddColForm));

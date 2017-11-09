@@ -9,6 +9,10 @@
   margin-top: 0;
 }
 
+.name {
+  color: $primary-dark;
+}
+
 .fig figcaption {
   font-size: 18px;
   font-weight: 600;
@@ -32,6 +36,7 @@ th {
   line-height: 1;
   width: 33.3%;
   white-space: nowrap;
+  font-size: 13px;
 }
 
 .table tr:nth-child(odd) {

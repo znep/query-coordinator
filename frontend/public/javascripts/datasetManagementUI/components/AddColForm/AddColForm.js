@@ -141,6 +141,8 @@ class AddColForm extends Component {
   }
 
   componentWillUnmount() {
+    this.props.hideFlash();
+    this.props.resetFormErrors();
     this.props.syncToStore({});
   }
 
@@ -206,11 +208,13 @@ class AddColForm extends Component {
 AddColForm.propTypes = {
   errors: PropTypes.object.isRequired,
   clearInternalState: PropTypes.bool.isRequired,
+  resetFormErrors: PropTypes.func.isRequired,
   inputColumns: PropTypes.object.isRequired,
   selectOptions: PropTypes.array.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   syncToStore: PropTypes.func.isRequired,
-  toggleClearInternalState: PropTypes.func.isRequired
+  toggleClearInternalState: PropTypes.func.isRequired,
+  hideFlash: PropTypes.func.isRequired
 };
 
 export default AddColForm;

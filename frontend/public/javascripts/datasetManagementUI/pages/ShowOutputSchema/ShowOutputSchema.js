@@ -15,6 +15,7 @@ import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
 import * as ModalActions from 'reduxStuff/actions/modal';
 import * as FormActions from 'reduxStuff/actions/forms';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
@@ -146,6 +147,7 @@ export function mapStateToProps(state, ownProps) {
     source,
     inputSchema,
     outputSchema,
+    flashVisible: state.ui.flashMessage.visible,
     parseOptionsForm,
     columns,
     canApplyRevision,
@@ -173,20 +175,28 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
       dispatch(updateSourceParseOptions(params, source, parseOptions));
     },
     addCol: () =>
-      dispatch(Actions.addCol(stateProps.addColForm.state, ownProps.params)).then(resp => {
-        const { resource: os } = resp;
+      dispatch(Actions.addCol(stateProps.addColForm.state, ownProps.params))
+        .then(resp => {
+          const { resource: os } = resp;
 
-        const newParams = {
-          ...ownProps.params,
-          outputSchemaId: os.id
-        };
+          const newParams = {
+            ...ownProps.params,
+            outputSchemaId: os.id
+          };
 
-        dispatch(FormActions.setFormState('addColForm', {}));
+          dispatch(FormActions.setFormState('addColForm', {}));
 
-        dispatch(FormActions.clearInternalState('addColForm', true));
+          dispatch(FormActions.clearInternalState('addColForm', true));
 
-        browserHistory.push(Links.showAddCol(newParams));
-      }),
+          dispatch(FlashActions.showFlashMessage('success', 'New column created.'));
+
+          browserHistory.push(Links.showAddCol(newParams));
+        })
+        .catch(() =>
+          dispatch(
+            FlashActions.showFlashMessage('error', 'Failed to create column. Please see errors below.')
+          )
+        ),
     showShortcut: name => {
       dispatch(
         ModalActions.showModal(name, {

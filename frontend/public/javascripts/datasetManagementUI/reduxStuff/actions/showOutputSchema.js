@@ -21,6 +21,7 @@ import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
 import * as FormActions from 'reduxStuff/actions/forms';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
 import { validateFieldName, validateDisplayName } from 'containers/AddColFormContainer';
@@ -358,7 +359,8 @@ export function addCol(colData, params) {
     dispatch(FormActions.setFormErrors('addColForm', validationErrors));
 
     if (validationErrors.fieldName.length || validationErrors.displayName.length) {
-      return;
+      dispatch(FlashActions.showFlashMessage('error', 'Failed to create column. Please see errors below.'));
+      return Promise.reject();
     }
 
     const call = {

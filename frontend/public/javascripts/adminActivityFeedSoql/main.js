@@ -60,7 +60,7 @@ _.defer(function() {
     console.error(`Fatal error when rendering: ${e.stack}`);
 
     ReactDOM.render(
-      <div className="alert error alert-full-width-top">{I18n.t('screens.admin.jobs.render_error')}</div>,
+      <div className="alert error alert-full-width-top">{I18n.t('common.render_error')}</div>,
       document.querySelector('.placeholder-wrapper')
     );
 

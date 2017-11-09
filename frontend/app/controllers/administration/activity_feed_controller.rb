@@ -97,7 +97,7 @@ class Administration::ActivityFeedController < AdministrationController
 
   def soql_index
 
-    render 'soql_index'
+    render 'soql_index', :layout => 'styleguide'
   end
 
   private

@@ -2,7 +2,6 @@
   <title><%= t('screens.admin.jobs.index_page.title') %> | <%= get_site_title %></title>
   <%= render_admin_session_data %>
   <%= render_admin_server_config %>
-  <%= render_admin_activity_feed_initial_data %>
   <%= render_mixpanel_config %>
 
   <%= rendered_stylesheet_tag 'styleguide' %>
@@ -22,11 +21,11 @@
   </div>
 </div>
 
-<% content_for :translations do %>
-  <%= render_activity_feed_translations_soql %>
-<% end %>
-
-<% content_for :js_footer do %>
+<% content_for :scripts do %>
+  <% translations_for('common', 'screens.admin.activity_feed', 'plugins.daterangepicker', 'table', 'shared.components.filter_bar') %>
+  <script type="text/javascript">
+    window.I18n = window.translations;
+  </script>
   <%= render_admin_qualtrics %>
   <%= include_webpack_bundle 'admin-activity-feed-soql/main.js' %>
 <% end %>

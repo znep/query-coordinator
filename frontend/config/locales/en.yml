@@ -668,6 +668,7 @@ en:
       views: Views
     more: Show More
     none: None
+    render_error: There was a problem rendering this page.
     schema_preview:
       api_field_name: API Field Name
       column_name: Column Name
@@ -3473,6 +3474,10 @@ en:
           draft_published: Draft Published
           asset_permissions_changed_visibility_public: Asset Permissions Changed Visibility Public
           asset_permissions_changed_visibility_private: private
+        no_results: No results
+        result_count:
+          one: "%{first}-%{last} of 1 result"
+          other: "%{first}-%{last} of %{count} results"
       assets:
         asset_inventory: Assets
       canvas:

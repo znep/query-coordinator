@@ -3111,6 +3111,7 @@ en:
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
+            display_as_percent: Display as percent
           exclude_nulls: Exclude Null Values
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.

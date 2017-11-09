@@ -5,15 +5,48 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
+import { Checkbox } from 'common/components';
 
-import { setUnitLabel, setDecimalPlaces } from '../../actions/editor';
-
+import { setUnitLabel, setDecimalPlaces, toggleDisplayAsPercent } from '../../actions/editor';
+import { CalculationTypeNames } from '../../lib/constants';
 import EditedMeasureResultCard from '../EditedMeasureResultCard';
 
 // Right hand preview and display options for calculation
 export class CalculationPreview extends Component {
+  renderDisplayAsPercent() {
+    const {
+      calculationType,
+      displayAsPercent,
+      onToggleDisplayAsPercent
+    } = this.props;
+
+    if (calculationType !== CalculationTypeNames.RATE) {
+      return null;
+    }
+
+    const displayAsPercentId = 'metric_display_as_percent';
+    const displayAsPercentAttributes = {
+      id: displayAsPercentId,
+      onChange: onToggleDisplayAsPercent,
+      checked: displayAsPercent
+    };
+
+    return (
+      <div className="metric-display-as-percent">
+        <Checkbox {...displayAsPercentAttributes} >
+          {I18n.t('open_performance.measure.edit_modal.calculation.display_options.display_as_percent')}
+        </Checkbox>
+      </div>
+    );
+  }
+
   render() {
-    const { onChangeUnitLabel, unitLabel, onChangeDecimalPlaces, decimalPlaces } = this.props;
+    const {
+      onChangeUnitLabel,
+      unitLabel,
+      onChangeDecimalPlaces,
+      decimalPlaces
+    } = this.props;
 
     const decimalPlacesId = 'metric_decimal_places';
     const decimalPlacesAttributes = {
@@ -57,33 +90,50 @@ export class CalculationPreview extends Component {
             </label>
             <input {...rowUnitAttributes} />
           </div>
+          {this.renderDisplayAsPercent()}
         </div>
       </div>
     );
   }
 }
 
+CalculationPreview.defaultProps = {
+  unitLabel: '',
+  onToggleDisplayAsPercent: _.noop,
+  onChangeUnitLabel: _.noop,
+  onChangeDecimalPlaces: _.noop,
+  displayAsPercent: false
+};
+
 CalculationPreview.propTypes = {
+  calculationType: PropTypes.string,
   decimalPlaces: PropTypes.number,
-  onChangeDecimalPlaces: PropTypes.func.isRequired,
-  onChangeUnitLabel: PropTypes.func.isRequired,
-  unitLabel: PropTypes.string.isRequired
+  displayAsPercent: PropTypes.bool,
+  onChangeDecimalPlaces: PropTypes.func,
+  onChangeUnitLabel: PropTypes.func,
+  onToggleDisplayAsPercent: PropTypes.func,
+  unitLabel: PropTypes.string
 };
 
 export function mapStateToProps(state) {
-  const unitLabel = _.get(state, 'editor.measure.metric.display.label', '');
+  const calculationType = _.get(state, 'editor.measure.metric.type');
   const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
+  const displayAsPercent = _.get(state, 'editor.measure.metric.display.asPercent', false);
+  const unitLabel = _.get(state, 'editor.measure.metric.display.label', '');
 
   return {
-    unitLabel,
-    decimalPlaces
+    calculationType,
+    decimalPlaces,
+    displayAsPercent,
+    unitLabel
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     onChangeUnitLabel: setUnitLabel,
-    onChangeDecimalPlaces: setDecimalPlaces
+    onChangeDecimalPlaces: setDecimalPlaces,
+    onToggleDisplayAsPercent: toggleDisplayAsPercent
   }, dispatch);
 }
 

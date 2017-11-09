@@ -122,6 +122,7 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
   } = _.get(measure, 'metric.arguments', {});
 
   const decimalPlaces = _.get(measure, 'metric.display.decimalPlaces');
+  const asPercent = _.get(measure, 'metric.display.asPercent');
 
   if (!dataProvider) {
     return {};
@@ -177,7 +178,9 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     calculation.dividingByZero = denominator.isZero();
   }
   if (numerator && denominator) {
-    calculation.result = numerator.dividedBy(denominator).toFixed(decimalPlaces);
+    calculation.result = numerator.dividedBy(denominator).
+      times(asPercent ? '100' : '1').
+      toFixed(decimalPlaces);
   }
 
   return calculation;

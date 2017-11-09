@@ -4,7 +4,8 @@
 
 .form {
   width: 50%;
-  padding: 10px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .form fieldset > select {

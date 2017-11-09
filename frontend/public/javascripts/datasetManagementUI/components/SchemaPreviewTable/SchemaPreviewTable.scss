@@ -1,0 +1,43 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.fig {
+  max-width: 50%;
+  overflow-x: scroll;
+  display: inline-block;
+  margin-top: 0;
+}
+
+.fig figcaption {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23px;
+  margin-top: 0.5em;
+  margin-bottom: 5px;
+}
+
+.newCol {
+  color: $primary-dark;
+}
+
+.table {
+  border-collapse: collapse;
+}
+
+.table td,
+th {
+  padding: 18px 10px;
+  text-align: left;
+  line-height: 1;
+  width: 33.3%;
+  white-space: nowrap;
+}
+
+.table tr:nth-child(odd) {
+  background-color: $light-grey-4;
+}
+
+.th {
+  background-color: $white;
+}

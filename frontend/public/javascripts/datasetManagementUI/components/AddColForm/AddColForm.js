@@ -114,12 +114,14 @@ class AddColForm extends Component {
     ) {
       const ic = this.props.inputColumns[this.state.sourceColumnId];
 
-      if (!ic) {
-        return;
+      let fieldName = 'null';
+
+      if (ic) {
+        fieldName = ic.field_name;
       }
 
       this.setState({
-        transformExpr: makeTransformExpr(ic.field_name, nextState.transform)
+        transformExpr: makeTransformExpr(fieldName, nextState.transform)
       });
     }
 

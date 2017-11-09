@@ -333,7 +333,7 @@ function getPosition(entities, osid) {
   }
 }
 
-function snakeCase(colData) {
+export function snakeCase(colData) {
   return {
     field_name: colData.fieldName,
     display_name: colData.displayName,

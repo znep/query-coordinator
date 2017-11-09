@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import AddColForm from 'containers/AddColFormContainer';
+import SchemaPreivewTable from 'containers/SchemaPreviewTableContainer';
+import styles from './ShowOutputSchema.scss';
 
 const AddColPane = () => (
-  <div>
+  <div className={styles.addColPane}>
     <AddColForm />
+    <SchemaPreivewTable />
   </div>
 );
 

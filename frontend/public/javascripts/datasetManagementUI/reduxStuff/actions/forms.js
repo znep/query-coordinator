@@ -49,3 +49,10 @@ export const setFormState = (formName, state) => ({
   formName,
   state
 });
+
+export const CLEAR_INTERNAL_STATE = 'CLEAR_INTERNAL_STATE';
+export const clearInternalState = (formName, val) => ({
+  type: CLEAR_INTERNAL_STATE,
+  formName,
+  val
+});

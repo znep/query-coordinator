@@ -83,22 +83,32 @@ SoqlTypePillBox.propTypes = {
   currentTransform: PropTypes.string.isRequired
 };
 
+const initialState = {
+  displayName: '',
+  description: '',
+  transform: 'to_text',
+  fieldName: '',
+  position: '',
+  sourceColumnId: '',
+  transformExpr: 'to_text(null)'
+};
+
 class AddColForm extends Component {
   constructor() {
     super();
 
-    this.state = {
-      displayName: '',
-      description: '',
-      transform: 'to_text',
-      fieldName: '',
-      position: '',
-      sourceColumnId: '',
-      transformExpr: 'to_text(null)'
-    };
+    this.state = initialState;
 
     this.handleChange = this.handleChange.bind(this);
     this.handlePillClick = this.handlePillClick.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.clearInternalState) {
+      this.setState(initialState);
+
+      this.props.toggleClearInternalState();
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -128,6 +138,10 @@ class AddColForm extends Component {
     if (!_.isEqual(nextState, this.state)) {
       this.props.syncToStore(nextState);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.syncToStore({});
   }
 
   handleChange(name) {
@@ -191,10 +205,12 @@ class AddColForm extends Component {
 
 AddColForm.propTypes = {
   errors: PropTypes.object.isRequired,
+  clearInternalState: PropTypes.bool.isRequired,
   inputColumns: PropTypes.object.isRequired,
   selectOptions: PropTypes.array.isRequired,
   markFormDirty: PropTypes.func.isRequired,
-  syncToStore: PropTypes.func.isRequired
+  syncToStore: PropTypes.func.isRequired,
+  toggleClearInternalState: PropTypes.func.isRequired
 };
 
 export default AddColForm;

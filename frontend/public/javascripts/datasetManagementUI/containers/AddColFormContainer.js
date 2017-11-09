@@ -67,13 +67,15 @@ const mapStateToProps = ({ ui, entities }, { params }) => {
   return {
     errors: ui.forms.addColForm.errors,
     inputColumns: entities.input_columns,
+    clearInternalState: ui.forms.addColForm.clearInternalState,
     selectOptions
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   syncToStore: state => dispatch(FormActions.setFormState('addColForm', shapeFormState(state))),
-  markFormDirty: () => dispatch(FormActions.markFormDirty('addColForm'))
+  markFormDirty: () => dispatch(FormActions.markFormDirty('addColForm')),
+  toggleClearInternalState: () => dispatch(FormActions.clearInternalState('addColForm', false))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddColForm));

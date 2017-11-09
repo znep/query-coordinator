@@ -12,6 +12,7 @@ import * as DisplayState from 'lib/displayState';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import ReadyToImport from 'containers/ReadyToImportContainer';
 import * as ModalActions from 'reduxStuff/actions/modal';
+import * as FormActions from 'reduxStuff/actions/forms';
 import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
@@ -160,6 +161,10 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
           ...ownProps.params,
           outputSchemaId: os.id
         };
+
+        dispatch(FormActions.setFormState('addColForm', {}));
+
+        dispatch(FormActions.clearInternalState('addColForm', true));
 
         browserHistory.push(Links.showAddCol(newParams));
       }),

@@ -33,7 +33,7 @@ const postFutureUsers = (emails, roleId) => {
   body.set('addresses', emails);
   body.set('roleId', roleId);
   const fetchOptions = {
-    body,
+    body: body.toString(),
     credentials: 'same-origin',
     headers: _.merge({}, defaultHeaders, { 'Content-Type': 'application/x-www-form-urlencoded' }),
     method: 'POST'

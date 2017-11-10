@@ -9,6 +9,7 @@ import filters from './filters';
 import header from './header';
 import mobile from './mobile';
 import settings from './settings';
+import tabs from './tabs';
 import windowDimensions from './window_dimensions';
 
 export default combineReducers({
@@ -21,5 +22,6 @@ export default combineReducers({
   header,
   mobile,
   settings,
+  tabs,
   windowDimensions
 });

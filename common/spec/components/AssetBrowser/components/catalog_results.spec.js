@@ -17,6 +17,9 @@ const store = {
       'columns': ['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility'],
       'order': 'lastUpdatedDate',
       'results': []
+    },
+    'header': {
+      activeTab: 'myAssets'
     }
   })
 };

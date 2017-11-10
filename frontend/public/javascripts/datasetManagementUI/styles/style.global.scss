@@ -17,6 +17,13 @@
   margin-top: 32px;
 }
 
+.dataset-download-section .section-content {
+  border: 1px $light-grey-4 solid;
+  border-bottom-width: 2px;
+  display: flex;
+  align-items: flex-start;
+}
+
 .container .landing-page-section .section-content {
   background: $white;
   border: 1px $light-grey-4 solid;

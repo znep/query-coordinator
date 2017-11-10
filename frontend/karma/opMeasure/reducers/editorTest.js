@@ -179,6 +179,18 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('TOGGLE_DISPLAY_AS_PERCENT', () => {
+    it('toggles display.asPercent in the measure metric', () => {
+      assert.notNestedProperty(state, 'measure.metric.display.asPercent');
+
+      state = reducer(state, actions.editor.toggleDisplayAsPercent());
+      assert.nestedPropertyVal(state, 'measure.metric.display.asPercent', true);
+
+      state = reducer(state, actions.editor.toggleDisplayAsPercent());
+      assert.nestedPropertyVal(state, 'measure.metric.display.asPercent', false);
+    });
+  });
+
   describe('TOGGLE_EXCLUDE_NULL_VALUES', () => {
     it('toggles arguments.excludeNullValues in the measure metric', () => {
       assert.notNestedProperty(state, 'measure.metric.arguments.excludeNullValues');

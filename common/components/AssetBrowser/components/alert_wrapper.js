@@ -1,14 +1,13 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import SocrataIcon from 'common/components/SocrataIcon';
-import I18n from 'common/i18n';
 
 import { hideAlert } from '../actions/asset_actions';
 
-export class AlertWrapper extends React.Component {
+export class AlertWrapper extends Component {
   render() {
     if (_.isEmpty(this.props.alert)) {
       if (this.hideAlertTimeout) {
@@ -18,10 +17,7 @@ export class AlertWrapper extends React.Component {
       return null;
     }
 
-    const { titleLocaleKey, bodyLocaleKey, time } = this.props.alert;
-
-    const title = I18n.t(titleLocaleKey);
-    const body = I18n.t(bodyLocaleKey);
+    const { title, body, time } = this.props.alert;
 
     this.hideAlertTimeout = setTimeout(this.props.hideAlert, time);
 
@@ -38,9 +34,9 @@ export class AlertWrapper extends React.Component {
 
 AlertWrapper.propTypes = {
   alert: PropTypes.shape({
-    bodyLocaleKey: PropTypes.string,
+    body: PropTypes.string,
     time: PropTypes.number,
-    titleLocaleKey: PropTypes.string
+    title: PropTypes.string
   }),
   hideAlert: PropTypes.func.isRequired
 };

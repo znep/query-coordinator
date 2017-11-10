@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ShowBlobPreview } from 'pages/ShowBlobPreview/ShowBlobPreview';
+import { ShowBlobPreview, BlobFileInfo } from 'pages/ShowBlobPreview/ShowBlobPreview';
 import BlobPreview from 'containers/BlobPreviewContainer';
 import BlobDownload from 'containers/BlobDownloadContainer';
 import sinon from 'sinon';
@@ -37,11 +37,26 @@ describe('ShowBlobPreview', () => {
     assert.isTrue(component.find(BlobDownload).first().exists());
   })
 
-  it('contains information about the file', () => {
-    const filetypeText = component.find('#source-filetype').first().text();
-    const filesizeText = component.find('#source-filesize').first().text();
-    assert.include(filetypeText, props.source.content_type);
-    assert.include(filesizeText, props.source.filesize);
+  it('has a BlobFileInfo element', () => {
+    assert.lengthOf(component.find(BlobFileInfo), 1);
+    assert.isTrue(component.find(BlobFileInfo).first().exists());
   })
+
+  describe('BlobFileInfo', () => {
+
+    const blobInfoComponent = shallow(<BlobFileInfo source={props.source} sourcesLink="/sources/link" />)
+
+    it('contains information about the file', () => {
+      const filetypeText = blobInfoComponent.find('#sourceFiletype').first().text();
+      const filesizeText = blobInfoComponent.find('#sourceFilesize').first().text();
+      assert.include(filetypeText, props.source.content_type);
+      assert.include(filesizeText, props.source.filesize);
+    })
+
+    it('contains an informative alert', () => {
+      assert.lengthOf(blobInfoComponent.find('.alert'), 1);
+      assert.isTrue(blobInfoComponent.find('.alert').first().exists());
+    })
+  });
 
 })

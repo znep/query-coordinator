@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import I18nJS from 'i18n-js';
 import pluralization from '../pluralization';
+import { sift } from 'common/js_utils';
 
 export default class Localization extends React.Component {
   constructor(props) {
@@ -71,8 +72,8 @@ Localization.defaultProps = {
   // EN-18438: for Data Lens, `datalensTranslations` are the latest translations containing the common/shared
   // keys. This is only because `window.translations` was already in use in the case of our Angular app.
   // For every other app, `window.translations` is the new set of translations containing common/shared keys.
-  translations: window.datalensTranslations || window.translations || _.get(window, 'blist.translations'),
-  locale: _.get(window, 'serverConfig.locale', _.get(window, 'blist.locale', 'en'))
+  translations: sift(window, 'datalensTranslations', 'translations', 'blist.translations'),
+  locale: sift(window, 'serverConfig.locale', 'blist.locale') || 'en'
 };
 
 Localization.propTypes = {

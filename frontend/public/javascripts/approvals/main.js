@@ -19,7 +19,10 @@ const tabs = {
   [constants.MY_QUEUE_TAB]: {
     component: ResultsAndFilters,
     props: {
-      actionElement: ApprovalActionButtons
+      actionElement: ApprovalActionButtons,
+      baseFilters: {
+        approvalStatus: 'pending'
+      }
     }
   },
   [constants.HISTORY_TAB]: {

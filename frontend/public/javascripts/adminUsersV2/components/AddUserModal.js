@@ -24,9 +24,15 @@ export class AddUserModal extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    // reset internal state when modal is going from hidden => visible
+    if (this.props.showModal === false && nextProps.showModal == true) {
+      this.setState({ selectedRoleId: undefined });
+    }
+  }
+
   cancelModal() {
     const { onCancelAddUser } = this.props;
-    this.setState({ selectedRoleId: undefined });
     onCancelAddUser();
   }
 

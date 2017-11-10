@@ -1,5 +1,6 @@
 import url from 'url';
 import _ from 'lodash';
+import I18n from 'common/i18n';
 
 let parsedCurrentUrl = null;
 
@@ -15,9 +16,12 @@ function parseCurrentUrl() {
 /** Get the URL for performing the actual catalog search */
 export function getBrowseUrl(searchTerm) {
   const currentUrl = parseCurrentUrl();
+  const currentUrlIsBrowse =
+    currentUrl.pathname.match(new RegExp(`(\/${I18n.locale})?\/browse`));
 
-  if (currentUrl.pathname !== '/browse') {
-    currentUrl.pathname = '/browse';
+  if (!currentUrlIsBrowse) {
+    const shouldPrefixLocale = new RegExp(`^\/(${I18n.locale})\/`).test(currentUrl);
+    currentUrl.pathname = `${shouldPrefixLocale && `/${I18n.locale}`}/browse`;
     currentUrl.query = { };
   }
 

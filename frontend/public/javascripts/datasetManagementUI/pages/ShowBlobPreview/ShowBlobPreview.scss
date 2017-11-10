@@ -1,0 +1,42 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.blobPreview {
+  composes: blob-preview from global;
+}
+
+.alertInfo {
+  composes: alert from global;
+  composes: info from global;
+}
+
+.blobPreviewContainer {
+  position: relative;
+
+  .leftSection {
+    padding-left: 3em;
+    padding-right: 5em;
+    border-right: 1px solid $light-grey-5;
+    max-width: 68em;
+    width: 60%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .rightSection {
+    padding-right: 3em;
+    padding-left: 1em;
+    width: calc(40% - 1px);
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .blobFileInfo {
+    margin-bottom: 1em;
+  }
+}

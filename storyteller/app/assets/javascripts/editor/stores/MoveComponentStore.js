@@ -100,6 +100,7 @@ export default function MoveComponentStore() {
       'socrata.visualization.regionMap',
       'socrata.visualization.choroplethMap', // legacy
       'socrata.visualization.columnChart',
+      'socrata.visualization.comboChart',
       'socrata.visualization.barChart',
       'socrata.visualization.pieChart',
       'socrata.visualization.timelineChart',

@@ -22,7 +22,7 @@ function isDataSatisfied({ entities, ui }, params) {
   const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const blob = Selectors.currentBlobSource(entities, revisionSeq);
   if (outputSchema) {
-    dataSatisfied = !!outputSchema.completed_at;
+    dataSatisfied = !!outputSchema.finished_at;
   } else if (blob) {
     dataSatisfied = !!blob.finished_at;
   } else {

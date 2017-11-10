@@ -77,7 +77,7 @@ describe('createSource actions', () => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, true, params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
@@ -97,7 +97,7 @@ describe('createSource actions', () => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, true, params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(

@@ -195,11 +195,12 @@ export class FilterItem extends Component {
   renderFilterControl() {
     const { isControlOpen } = this.state;
     const {
-      filter,
       column,
       controlSize,
+      filter,
       isReadOnly,
-      isValidTextFilterColumnValue
+      isValidTextFilterColumnValue,
+      spandex
     } = this.props;
 
     if (!isControlOpen) {
@@ -207,16 +208,17 @@ export class FilterItem extends Component {
     }
 
     const filterProps = {
-      filter,
       column,
       controlSize,
+      filter,
       isReadOnly,
       isValidTextFilterColumnValue,
+      ref: ref => this.filterControl = ref,
+      spandex,
+      onClear: this.props.onClear,
       onClickConfig: this.toggleConfig,
       onRemove: this.onRemove,
-      onUpdate: this.onUpdate,
-      onClear: this.props.onClear,
-      ref: ref => this.filterControl = ref
+      onUpdate: this.onUpdate
     };
 
     // This used to be a switch statement, but the babel
@@ -321,6 +323,11 @@ export class FilterItem extends Component {
 }
 
 FilterItem.propTypes = {
+  column: PropTypes.shape({
+    dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
   filter: PropTypes.shape({
     'function': PropTypes.string.isRequired,
     columnName: PropTypes.string.isRequired,
@@ -330,16 +337,17 @@ FilterItem.propTypes = {
     ]),
     isHidden: PropTypes.bool
   }).isRequired,
-  column: PropTypes.shape({
-    dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
   isReadOnly: PropTypes.bool.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
+  isValidTextFilterColumnValue: PropTypes.func,
+  spandex: PropTypes.shape({
+    available: PropTypes.bool,
+    datasetUid: PropTypes.string.isRequired,
+    domain: PropTypes.string.isRequired,
+    provider: PropTypes.object // i.e. PropTypes.instanceOf(SpandexDataProvider)
+  }),
   onClear: PropTypes.func,
-  isValidTextFilterColumnValue: PropTypes.func
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
 };
 
 export default FilterItem;

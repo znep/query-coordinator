@@ -120,7 +120,7 @@ export class ColumnHeader extends Component {
   isInProgress() {
     const transform = this.props.outputColumn.transform;
     if (transform) {
-      return !transform.completed_at;
+      return !transform.finished_at;
     }
     return false;
   }

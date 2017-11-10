@@ -31,6 +31,33 @@ describe('MeasureResultCard', () => {
     assert.equal(bigNumber.text(), '33.00');
   });
 
+  it('adds "percent" class to result only if the measure is a percentage', () => {
+    const computedMeasure = {
+      result: '33.00'
+    };
+
+    const defaultPercentMeasure = {};
+    assert.lengthOf(
+      shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={defaultPercentMeasure} />).
+        find('.measure-result-big-number.percent'),
+      0
+    );
+
+    const explicitNonPercent = _.set({}, 'metric.display.asPercent', false);
+    assert.lengthOf(
+      shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={explicitNonPercent} />).
+        find('.measure-result-big-number.percent'),
+      0
+    );
+
+    const percentMeasure = _.set({}, 'metric.display.asPercent', true);
+    assert.lengthOf(
+      shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={percentMeasure} />).
+        find('.measure-result-big-number.percent'),
+      1
+    );
+  });
+
   it('renders a spinner if dataRequestInFlight is set', () => {
     const element = shallow(<MeasureResultCard dataRequestInFlight {...getProps()} />);
     assert.lengthOf(element.find('.spinner'), 1);

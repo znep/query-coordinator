@@ -133,6 +133,11 @@ export const setDecimalPlaces = (places) => ({
   places
 });
 
+export const TOGGLE_DISPLAY_AS_PERCENT = 'TOGGLE_DISPLAY_AS_PERCENT';
+export const toggleDisplayAsPercent = () => ({
+  type: TOGGLE_DISPLAY_AS_PERCENT
+});
+
 export const SET_UNIT_LABEL = 'SET_UNIT_LABEL';
 export const setUnitLabel = (label) => ({
   type: SET_UNIT_LABEL,

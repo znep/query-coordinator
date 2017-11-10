@@ -13,7 +13,6 @@ A high-level component that serves as a user interface for searching for assets 
 
 Prop | Type | Default | Description
 --- | :---: | :---: | ---
-`baseFilters` | `object` | `{}` | Set of filters applied to all Cetera interactions. `baseFilters` are merged with and take precedence over user specified filters. For example on the My Assets tab and on the user profile page, a `baseFilters` entry on `ownedBy` is set to `currentUser`.
 `onAssetSelected` | `func` | `null` | Callback function invoked when a user has selected an individual asset.
 `pageSize` | `number` | `10` | Number of records shown per page.
 `showAuthorityFilter` | `bool` | `true` | Show the authority filter (official / community) in the filter panel.
@@ -22,4 +21,4 @@ Prop | Type | Default | Description
 `showManageAssets` | `bool` | `false` | Show the link to SIAM _(myAssets tab is preselected)_.
 `showOwnedByFilter` | `bool` | `true` | Show the owned by filter in the filter panel.
 `showSearchField` | `bool` | `true` | Show the autocomplete search field.
-`tabs` | `obj` |  | Mapping of tab translation key to a React component containing the tab's content.
+`tabs` | `obj` |  | Mapping of tab translation key to an object with the following keys: `component` - the React component containing the tab's content. `props` - Mapping of properties for the entire tab. For example, tab-wide baseFilters for catalog results.

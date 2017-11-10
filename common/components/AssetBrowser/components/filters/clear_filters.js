@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import ActiveFilterCount from './active_filter_count';
-
 import I18n from 'common/i18n';
+import * as filterActions from 'common/components/AssetBrowser/actions/filters';
+
+import ActiveFilterCount from './active_filter_count';
 
 // This export is used in platform-ui/frontend/karma/internalAssetManager/components/clear_filters.spec.js
 export class ClearFilters extends Component {
@@ -35,21 +36,30 @@ export class ClearFilters extends Component {
       buttonStyle ? 'q' : null
     ].concat(customFacetKeyPaths);
 
-    return _(filterKeyPaths).map((filter) => getFilterValue(filter)).compact().value();
+    const activeFilters = {};
+
+    _.each(filterKeyPaths, (filterKey) => {
+      const filterValue = getFilterValue(filterKey);
+      if (filterValue) {
+        activeFilters[filterKey] = filterValue;
+      }
+    });
+
+    return activeFilters;
   }
 
   clearAllFiltersAndQuery() {
-    const { clearAllFilters, baseFilters } = this.props;
-    clearAllFilters({ shouldClearSearch: true, baseFilters });
+    this.props.clearAllFilters({ shouldClearSearch: true });
   }
 
   clearAllFilters() {
-    const { clearAllFilters, baseFilters } = this.props;
-    clearAllFilters({ shouldClearSearch: false, baseFilters });
+    this.props.clearAllFilters({ shouldClearSearch: false });
   }
 
   activeFilterCount() {
-    const { allFilters, baseFilters } = this.props;
+    const { activeTab, allFilters, tabs } = this.props;
+
+    const baseFilters = _.get(tabs, `${activeTab}.props.baseFilters`) || {};
 
     // If baseFilters are present, don't count them among the "active" filters that the user has specified.
     if (!_.isEmpty(baseFilters)) {
@@ -57,7 +67,7 @@ export class ClearFilters extends Component {
         reject((key) => _.isEqual(allFilters[key], baseFilters[key])).
         reject((key) => _.isEmpty(this.activeFilters()[key])).value().length;
     } else {
-      return this.activeFilters().length;
+      return _.keys(this.activeFilters()).length;
     }
   }
 
@@ -131,18 +141,27 @@ export class ClearFilters extends Component {
 }
 
 ClearFilters.propTypes = {
-  allFilters: PropTypes.object,
-  baseFilters: PropTypes.object,
+  activeTab: PropTypes.string.isRequired,
+  allFilters: PropTypes.object.isRequired,
   buttonStyle: PropTypes.bool,
   clearAllFilters: PropTypes.func.isRequired,
-  showTitle: PropTypes.bool
+  showTitle: PropTypes.bool,
+  tabs: PropTypes.object.isRequired
 };
 
 ClearFilters.defaultProps = {
-  allFilters: {},
-  baseFilters: {},
   buttonStyle: false,
   showTitle: true
 };
 
-export default connect()(ClearFilters);
+const mapStateToProps = (state) => ({
+  activeTab: state.header.activeTab,
+  allFilters: state.filters,
+  tabs: state.tabs
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  clearAllFilters: (shouldClearSearch) => dispatch(filterActions.clearAllFilters(shouldClearSearch))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClearFilters);

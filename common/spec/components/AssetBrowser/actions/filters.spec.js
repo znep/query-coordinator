@@ -48,7 +48,11 @@ describe('actions/filters', () => {
 
     it('clears the filters', () => {
       const baseFilters = { baseFiltersMock: true };
-      const store = mockStore({ filters: { onlyRecentlyViewed: true } });
+      const store = mockStore({
+        activeTab: 'MY_QUEUE_TAB',
+        filters: { onlyRecentlyViewed: true },
+        tabs: { 'MY_QUEUE_TAB': { props: { baseFilters } } }
+      });
 
       // Please note: this giant list of actions resulting from a single
       // operations is an anti-pattern. Don't take it as a good example.
@@ -57,14 +61,14 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CLEAR_ALL_FILTERS', baseFilters },
+        { type: 'CLEAR_ALL_FILTERS' },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
         { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.clearAllFilters({ baseFilters })).then(() => {
+      return store.dispatch(Actions.clearAllFilters()).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -220,16 +224,9 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'FETCH_RESULTS' },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_Q', value: 'asdf-1234' },
         { type: 'CHANGE_SORT_ORDER', order: undefined },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
         { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];

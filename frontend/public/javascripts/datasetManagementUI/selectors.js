@@ -99,7 +99,7 @@ export function treeForOutputSchema(entities, outputSchemaId) {
 
 export function allTransformsDone(columnsWithTransforms = []) {
   return columnsWithTransforms
-    .map(col => !!col.transform.completed_at)
+    .map(col => !!col.transform.finished_at)
     .reduce((acc, bool) => acc && bool, true);
 }
 

@@ -2,6 +2,16 @@ en:
   shared:
     asset_browser:
       alert_messages:
+        resource_approved:
+          body: This may take a few moments to take effect.
+          title: "%{resourceName} has been approved."
+          error_body: Please try again and contact support@socrata.com if the problem persists.
+          error_title: "Error approving %{resourceName}."
+        resource_rejected:
+          body: This may take a few moments to take effect.
+          title: "%{resourceName} has been rejected."
+          error_body: Please try again and contact support@socrata.com if the problem persists.
+          error_title: "Error rejecting %{resourceName}."
         visibility_changed:
           body: This may take a few moments to take effect.
           title_public: Visibility changed to public.
@@ -195,16 +205,33 @@ en:
         approval_action_buttons:
           approve: Approve
           reject: Reject
+          flannel:
+            approve:
+              alt: Approve this resource
+              title: Approved
+              description: Publish as requested; may be added to public catalog.
+              note: "Note:"
+            reject:
+              alt: Reject this resource
+              title: Rejected
+              description: Not approved for publishing at this time.
+              note: "Note:"
+            ok: OK
+        approval_status_values:
+          approved: Approved
+          not_ready: Not ready
+          pending: Requested...
+          rejected: Rejected
         columns:
           access_level: Access Level
           actions: Actions
-          approval_requested: Approval Requested
           category: Category
           discoverable: Discoverable
           last_updated_date: Last Updated
           name: Name
           owner: Owner
           status: Status
+          submitted_at: Approval Requested
           type: Type
           visibility: Visibility
         visibility_values:
@@ -253,8 +280,7 @@ en:
         reset: Reset
         search: Search options
         text_filter:
-          exact_search_prompt_link: exact match search.
-          exact_search_prompt_main: 'Don''t see your search below? Try an '
+          exact_search_prompt_main: 'Don''t see your value below? Try an exact match search, including case.'
           is: is
           is_not: is not
           keyword_not_found: Your input wasn't found in this column's data. Please try again with the exact value including case.

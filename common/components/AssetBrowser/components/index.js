@@ -1,6 +1,7 @@
 import ActionDropdown from 'common/components/AssetBrowser/components/action_dropdown';
 import AlertWrapper from 'common/components/AssetBrowser/components/alert_wrapper';
 import ApprovalActionButtons from 'common/components/AssetBrowser/components/approval_action_buttons';
+import AssetBrowserWrapper from 'common/components/AssetBrowser/components/asset_browser_wrapper';
 import AssetCounts from 'common/components/AssetBrowser/components/asset_counts';
 import AssetInventoryLink from 'common/components/AssetBrowser/components/asset_inventory_link';
 import CatalogResults from 'common/components/AssetBrowser/components/catalog_results';
@@ -18,6 +19,7 @@ module.exports = {
   ActionDropdown,
   AlertWrapper,
   ApprovalActionButtons,
+  AssetBrowserWrapper,
   AssetCounts,
   AssetInventoryLink,
   CatalogResults,

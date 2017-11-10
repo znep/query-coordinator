@@ -1,4 +1,4 @@
-import { fetchResults } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import { fetchResults } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
 
 export const changePage = (pageNumber) => (dispatch, getState) => {

@@ -4,6 +4,10 @@ import { BlobPreview } from 'common/components';
 import { exportSource } from 'links/dsmapiLinks';
 
 function getBlobType(contentType) {
+  if (!contentType) {
+    // sometimes its null
+    return 'no_preview';
+  }
   // should match definitions in frontend/app/models/displays/blob.rb
   const googleViewables = [
     'application/pdf',

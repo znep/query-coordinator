@@ -12,6 +12,8 @@ export const getCurrentUserFilter = () => {
   };
 };
 
+export const getCurrentUserId = () => _.get(getCurrentUserFilter(), 'ownedBy.id');
+
 const translateColumnToMixpanelEvent = (columnName) => {
   switch (columnName) {
     case 'asset type':
@@ -62,13 +64,15 @@ const translateParamsToMixpanelEvent = (params) => {
 
 // This function is exported so that other services may use it to translate a given set of filters
 // into the corresponding set of query parameters to pass to Cetera for search queries.
-// This function is used both here in this module as well as in the CatalogResults component.
 export const translateFiltersToQueryParameters = (filters) => {
   const {
     activeTab,
+    approvalStatus,
     assetTypes,
     authority,
     category,
+    forUser,
+    ids,
     onlyRecentlyViewed,
     order,
     ownedBy,
@@ -76,6 +80,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     pageSize,
     published,
     q,
+    sharedTo,
     tag,
     visibility
   } = filters;
@@ -106,15 +111,12 @@ export const translateFiltersToQueryParameters = (filters) => {
 
   const customMetadataFilters = (filters.action === 'CLEAR_ALL_FILTERS') ? {} : filters.customFacets;
 
-  const forUser = activeTab === MY_ASSETS_TAB ? getCurrentUserFilter().ownedBy.id : _.get(ownedBy, 'id');
-
-  const sharedTo = activeTab === SHARED_TO_ME_TAB ? getCurrentUserFilter().ownedBy.id : undefined;
-
   return {
+    approvalStatus,
     category,
     customMetadataFilters,
-    forUser,
-    idFilters: lastAccessedUids,
+    forUser: forUser || _.get(ownedBy, 'id'),
+    idFilters: ids || lastAccessedUids,
     limit: pageSize,
     mixpanelContext: {
       eventName: translateParamsToMixpanelEvent(filters),
@@ -137,13 +139,16 @@ export const translateFiltersToQueryParameters = (filters) => {
 // current state will be used instead. If you wish values in the parameters object to override the current
 // state, you _must_ provide the override value in the parameters object.
 export const mergedCeteraQueryParameters = (getState, parameters = {}) => {
+  const activeTab = _.get(getState(), 'header.activeTab');
+  const baseFilters = _.get(getState(), `tabs.${activeTab}.props.baseFilters`);
+
   return translateFiltersToQueryParameters(_.merge(
     {},
     getState().catalog,
     getState().filters,
     getState().header,
     parameters,
-    parameters.baseFilters
+    baseFilters
   ));
 };
 
@@ -184,7 +189,7 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
 
       dispatch(ceteraActions.updateCatalogResults(response, onlyRecentlyViewed, sortByRecentlyViewed));
       dispatch(ceteraActions.fetchingResultsSuccess());
-      onSuccess();
+      onSuccess(response.results.length > 0);
 
       fetchAssetCounts(dispatch, getState, parameters);
     } else {

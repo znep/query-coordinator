@@ -1,4 +1,7 @@
 require 'timeout'
+require 'system'
+require 'thread/pool'
+require 'open3'
 
 namespace :test do
 
@@ -25,7 +28,7 @@ namespace :test do
         puts "Executing the following command with no timeout:\n#{cmd}"
         fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
       else
-        timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 600
+        timeout_secs = (ENV['KARMA_TIMEOUT_SECONDS'] || 600).to_i
 
         puts "Executing the following command with #{timeout_secs} second timeout:\n#{cmd}"
         begin
@@ -90,9 +93,59 @@ namespace :test do
     ]
     desc 'parallel'
     task :parallel => parallel_deps do
-      cmd = 'node karma/parallelize.js'
-      puts cmd
-      exit($?.exitstatus) unless system(cmd)
+      # Janky means of finding all of the karma tests to run in parallel
+      tasks = Rake.application.tasks.find_all do |task|
+        task.name =~ /karma/ && task.arg_names.include?(:reporter) &&
+          !%w(test:karma test:karma:all).include?(task.name)
+      end
+      logs = {}
+      output = nil
+      max_threads = (ENV['KARMA_MAX_THREADS'] || System::CPU.count).to_i
+      Thread.abort_on_exception = true
+      Thread::Pool.abort_on_exception = true
+      failure = false
+
+      puts("\n################################################################")
+      puts("## PARALLEL TASKS: #{tasks.map(&:name).join(', ')}")
+      puts("################################################################\n")
+
+      begin
+        # https://github.com/meh/ruby-thread
+        Thread.pool(max_threads).tap do |pool|
+          tasks.each do |task|
+            pool.process do
+              break if failure
+
+              puts("STARTING PARALLEL TASK: #{task.name}")
+              # Capturing each task output to prevent it being interleaved in the terminal output while run
+              output, errors, status = Open3.capture3("bundle exec rake #{task.name}")
+              logs[task.name] = { stdout: output, stderr: errors, status: status }
+
+              unless status.success?
+                failure = true
+                puts("Exiting due to non-zero exit status: #{status.inspect} from task: #{task.name}")
+                pool.shutdown!
+              end
+            end
+          end
+          pool.shutdown
+        end
+      rescue => e
+        failure = true
+        $stderr.puts("Encountered exception: #{e}")
+      end
+
+      logs.each do |task, logs|
+        %i(stdout stderr).each do |log|
+          puts("\n################################################################")
+          puts("## BEGIN #{log.upcase} FOR PARALLEL TASK: #{task}")
+          puts(logs[log])
+          puts("## END #{log.upcase} FOR PARALLEL TASK: #{task}")
+          puts("################################################################\n")
+        end
+      end
+
+      Process.exit(1) if failure
     end
 
     desc 'mock translations in support of Karma tests'

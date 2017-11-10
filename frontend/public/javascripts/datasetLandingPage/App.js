@@ -14,13 +14,15 @@ import RowDetails from './components/RowDetails';
 import SchemaPreview from './components/SchemaPreview';
 import DatasetPreview from './components/DatasetPreview';
 import RelatedViewList from './components/RelatedViewList';
+import SchemaDotOrgMarkup, { Taxonomy } from './components/SchemaDotOrgMarkup';
 
 export class App extends Component {
   renderDatasetContainer() {
     return (
-      <div>
+      <div itemScope itemType={Taxonomy.DATASET}>
         <PublishNotice />
         <PrivateNotice />
+        <SchemaDotOrgMarkup />
 
         <Responsive>
           <InfoPane />
@@ -43,9 +45,10 @@ export class App extends Component {
 
   renderBlobContainer() {
     return (
-      <div>
+      <div itemScope itemType={Taxonomy.DATASET}>
         <PublishNotice />
         <PrivateNotice />
+        <SchemaDotOrgMarkup />
         <InfoPane />
 
         <div className="container landing-page-container">
@@ -60,9 +63,10 @@ export class App extends Component {
 
   renderHrefContainer() {
     return (
-      <div>
+      <div itemScope itemType={Taxonomy.DATASET}>
         <PublishNotice />
         <PrivateNotice />
+        <SchemaDotOrgMarkup />
         <InfoPane />
 
         <div className="container landing-page-container">

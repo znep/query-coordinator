@@ -67,15 +67,28 @@
     },
 
     moderate: function(status, successCallback, errorCallback) {
-      this.makeRequest({
-        url: this.selfUrl,
-        data: JSON.stringify({
-          status: status
-        }),
-        type: 'PUT',
-        success: successCallback,
-        error: errorCallback
-      });
+      if (blist.feature_flags.captcha_on_nominations) {
+        this.makeRequest({
+          url: this.selfUrl,
+          params: {
+            method: 'moderate',
+            status: status
+          },
+          type: 'PUT',
+          success: successCallback,
+          error: errorCallback
+        });
+      } else {
+        this.makeRequest({
+          url: this.selfUrl,
+          data: JSON.stringify({
+            status: status
+          }),
+          type: 'PUT',
+          success: successCallback,
+          error: errorCallback
+        });
+      }
     },
 
     rate: function(isUp, successCallback, errorCallback) {
@@ -122,7 +135,8 @@
       id: true,
       description: true,
       status: true,
-      title: true
+      title: true,
+      captcha: true
     }
   });
 

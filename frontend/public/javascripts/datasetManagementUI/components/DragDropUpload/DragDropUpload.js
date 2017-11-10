@@ -47,9 +47,9 @@ export class DragDropUpload extends Component {
     const { dispatch } = this.props;
     const file = e.dataTransfer.files[0];
 
-    if (file && this.isValidFile(file)) {
+    if (file) {
       dispatch(hideFlashMessage());
-      dispatch(createUploadSource(file, this.props.params));
+      dispatch(createUploadSource(file, this.canBeParsed(file), this.props.params));
     } else {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     }
@@ -59,7 +59,7 @@ export class DragDropUpload extends Component {
     });
   }
 
-  isValidFile(file) {
+  canBeParsed(file) {
     const matches = file.name.match(/(\.[^\.]+)$/);
 
     if (!matches) {
@@ -100,10 +100,12 @@ export class DragDropUpload extends Component {
                 id="file"
                 name="file"
                 type="file"
-                accept={enabledFileExtensions.join(',')}
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
-                onChange={e => dispatch(createUploadSource(e.target.files[0], params))} />
+                onChange={e =>
+                  dispatch(
+                    createUploadSource(e.target.files[0], this.canBeParsed(e.target.files[0]), params)
+                  )} />
             </div>
           </div>
         </div>

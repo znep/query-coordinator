@@ -1,13 +1,15 @@
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import I18n from 'common/i18n';
+
 import Dropdown from '../Dropdown';
 import SocrataIcon from '../SocrataIcon';
 import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
 import FilterHeader from './FilterHeader';
 import { getTextFilter } from './filters';
-import I18n from 'common/i18n';
 
 class TextFilter extends Component {
   constructor(props) {
@@ -26,6 +28,7 @@ class TextFilter extends Component {
     this.state = {
       value: '',
       selectedValues,
+      autocompleteSuggestedValues: null,
       isNegated: _.toLower(filter.joinOn) === 'and',
       isValidating: false
     };
@@ -35,6 +38,7 @@ class TextFilter extends Component {
       'onSelectOption',
       'onUnselectOption',
       'updateSelectedValues',
+      'updateAutocompleteSuggestedValues',
       'resetFilter',
       'updateFilter',
       'isDirty',
@@ -54,6 +58,18 @@ class TextFilter extends Component {
   }
 
   onChangeSearchTerm(searchTerm) {
+    const { column, spandex } = this.props;
+
+    if (spandex.available) {
+      spandex.provider.fetchSuggestions(column.fieldName, searchTerm).
+        then((searchResults) => {
+          this.updateAutocompleteSuggestedValues(searchResults);
+        }).
+        catch((error) => {
+          console.error(`Spandex believed to be available for ${spandex.datasetUid} but encountered error while fetching suggestions:`);
+          console.error(error);
+        });
+    }
     this.setState({ value: searchTerm });
   }
 
@@ -71,8 +87,17 @@ class TextFilter extends Component {
     });
   }
 
+  updateAutocompleteSuggestedValues(nextAutocompleteSuggestedValues) {
+    this.setState({
+      autocompleteSuggestedValues: _.map(nextAutocompleteSuggestedValues, (value) => {
+        return { item: value };
+      })
+    });
+  }
+
   // Remove existing selected values and clear the search term.
   resetFilter() {
+    this.state.autocompleteSuggestedValues = null;
     this.updateSelectedValues([]);
 
     if (this.state.value !== '') {
@@ -184,8 +209,8 @@ class TextFilter extends Component {
   }
 
   render() {
-    const { column, controlSize, isReadOnly, onRemove } = this.props;
-    const { value, selectedValues, isValidating } = this.state;
+    const { column, controlSize, isReadOnly, spandex, onRemove } = this.props;
+    const { value, selectedValues, autocompleteSuggestedValues, isValidating } = this.state;
 
     // Create the "null" suggestion to allow filtering on empty values.
     const nullOption = {
@@ -195,27 +220,26 @@ class TextFilter extends Component {
       render: this.renderSuggestedOption
     };
 
-    const options = _.chain(column.top).
-      filter((text) => _.toLower(text.item).match(_.toLower(value))).
-      map((text) => {
-        return {
-          title: text.item,
-          value: text.item,
-          group: I18n.t('shared.components.filter_bar.text_filter.suggested_values'),
-          render: this.renderSuggestedOption
-        };
-      }).
+    const optionValues = _.isNil(autocompleteSuggestedValues) ?
+      column.top :
+      autocompleteSuggestedValues;
+    const options = _.chain(optionValues).
+      filter((text) => _.toLower(text.item).match(_.toLower(_.escapeRegExp(value)))).
+      map((text) => ({
+        title: text.item,
+        value: text.item,
+        group: I18n.t('shared.components.filter_bar.text_filter.suggested_values'),
+        render: this.renderSuggestedOption
+      })).
       value();
 
-    const selectedOptions = _.map(selectedValues, (selectedValue) => {
-      return {
-        title: _.isNull(selectedValue) ?
-          I18n.t('shared.components.filter_bar.text_filter.no_value') :
-          selectedValue,
-        value: selectedValue,
-        render: this.renderSelectedOption
-      };
-    });
+    const selectedOptions = _.map(selectedValues, (selectedValue) => ({
+      title: _.isNull(selectedValue) ?
+        I18n.t('shared.components.filter_bar.text_filter.no_value') :
+        selectedValue,
+      value: selectedValue,
+      render: this.renderSelectedOption
+    }));
 
     const picklistProps = {
       onBlur: _.noop,
@@ -228,7 +252,8 @@ class TextFilter extends Component {
       selectedOptions,
       size: controlSize,
       onClickSelectedOption: this.onUnselectOption,
-      canAddSearchTerm: this.canAddSearchTerm
+      canAddSearchTerm: this.canAddSearchTerm,
+      hideExactMatchPrompt: spandex.available
     };
 
     const footerProps = {
@@ -253,15 +278,21 @@ class TextFilter extends Component {
 }
 
 TextFilter.propTypes = {
-  filter: PropTypes.object.isRequired,
   column: PropTypes.object.isRequired,
   controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+  filter: PropTypes.object.isRequired,
   isReadOnly: PropTypes.bool,
   isValidTextFilterColumnValue: PropTypes.func,
+  spandex: PropTypes.shape({
+    available: PropTypes.bool,
+    datasetUid: PropTypes.string.isRequired,
+    domain: PropTypes.string.isRequired,
+    provider: PropTypes.object // i.e. PropTypes.instanceOf(SpandexDataProvider)
+  }),
+  value: PropTypes.string,
   onClickConfig: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  value: PropTypes.string
+  onUpdate: PropTypes.func.isRequired
 };
 
 TextFilter.defaultProps = {

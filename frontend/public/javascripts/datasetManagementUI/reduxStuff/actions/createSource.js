@@ -119,9 +119,10 @@ export function createViewSource(params) {
 }
 
 // Upload Source
-export function createUploadSource(file, params) {
+export function createUploadSource(file, parseFile, params) {
   const callParams = {
-    source_type: { type: 'upload', filename: file.name }
+    source_type: { type: 'upload', filename: file.name },
+    parse_options: { parse_source: parseFile }
   };
   return dispatch => {
     return dispatch(createSource(params, callParams)).then(resource => {
@@ -130,11 +131,19 @@ export function createUploadSource(file, params) {
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
-      // listen on source channel, which puts other stuff into store
-      dispatch(listenForInputSchema(resource.id, params));
+      if (parseFile) {
+        // listen on source channel, which puts other stuff into store
+        dispatch(listenForInputSchema(resource.id, params));
+      }
 
       // send bytes to created upload
-      return dispatch(uploadFile(resource.id, file));
+      return dispatch(uploadFile(resource.id, file)).then(bytesSource => {
+        if (!parseFile) {
+          dispatch(sourceUpdate(resource.id, bytesSource.resource));
+          browserHistory.push(Links.showBlobPreview(params, resource.id));
+        }
+        return bytesSource;
+      });
     });
   };
 }
@@ -174,24 +183,24 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) 
   };
 }
 
+function sourceUpdate(sourceId, changes) {
+  // oh ffs....we did this to ourselves.
+  // TODO: fix this garbage
+  if (_.isString(changes.created_at)) {
+    changes.created_at = parseDate(changes.created_at);
+  }
+  if (_.isString(changes.finished_at)) {
+    changes.finished_at = parseDate(changes.finished_at);
+  }
+  return {
+    type: SOURCE_UPDATE,
+    sourceId,
+    changes
+  };
+}
+
 
 function listenForInputSchema(sourceId, params) {
-  const sourceUpdate = (changes) => {
-    // oh ffs....we did this to ourselves.
-    // TODO: fix this garbage
-    if (_.isString(changes.created_at)) {
-      changes.created_at = parseDate(changes.created_at);
-    }
-    if (_.isString(changes.finished_at)) {
-      changes.finished_at = parseDate(changes.finished_at);
-    }
-    return {
-      type: SOURCE_UPDATE,
-      sourceId,
-      changes
-    };
-  };
-
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
     channel.on('insert_input_schema', (is) => {
@@ -207,7 +216,7 @@ function listenForInputSchema(sourceId, params) {
     });
 
     channel.on('update', changes => {
-      dispatch(sourceUpdate(changes));
+      dispatch(sourceUpdate(sourceId, changes));
 
       // This isn't a great place to do this - figure out a nicer way
       // TODO: aaurhgghiguhuhgghghgh

@@ -30,15 +30,18 @@ const shapeRevisionForProps = revision => ({
   metadata: {
     ...revision.metadata.metadata,
     attachments: revision.attachments.map(a => ({ ...a, assetId: a.asset_id }))
+  },
+  privateMetadata: {
+    ...revision.metadata.privateMetadata
   }
 });
 
 // MetadataTable component doesn't distinguish between private and non-private
 // custom metadata. So we have to do some data-massaging here before passing
 // custom metadata info to it.
-export const shapeCustomMetadata = (metadata = {}, customFieldsets = []) => {
-  const privateCustomMetadata = _.get(metadata, 'privateMetadata.custom_fields', {});
-  const nonPrivateCustomMetadata = _.get(metadata, 'metadata.custom_fields', {});
+export const shapeCustomMetadata = (viewlikeObj = {}, customFieldsets = []) => {
+  const privateCustomMetadata = _.get(viewlikeObj, 'privateMetadata.custom_fields', {});
+  const nonPrivateCustomMetadata = _.get(viewlikeObj, 'metadata.custom_fields', {});
   const combinedCustomMetadata = _.merge(nonPrivateCustomMetadata, privateCustomMetadata);
   const currentAvailableFields = customFieldsets.map(fieldset => fieldset.name);
   // Necessary in case user deletes a field but we still have data for it.
@@ -69,7 +72,7 @@ export const makeProps = (entities, params) => {
 
     if (viewlikeObj.metadata && viewlikeObj.customMetadataFieldsets) {
       customMetadataFieldsets = shapeCustomMetadata(
-        viewlikeObj.metadata,
+        viewlikeObj,
         viewlikeObj.customMetadataFieldsets
       );
     }

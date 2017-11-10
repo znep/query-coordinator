@@ -13,9 +13,10 @@ class ApprovalsController < AdministrationController
   end
 
   def show
+    # TODO: refactor some of this into the <AssetBrowser /> component props?
     @asset_browser_config = {
       :app_name => 'approvals',
-      :columns => %w(type name approval_requested owner status actions),
+      :columns => %w(type name submitted_at owner status actions),
       :initial_tab => 'myQueue',
       :filters_enabled => true
     }

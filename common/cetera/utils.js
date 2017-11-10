@@ -88,6 +88,7 @@ export const ceteraUtils = (() => {
 
   // Query param string used for multiple Cetera queries (results query, facet counts query).
   const ceteraQueryString = ({
+    approvalStatus = null,
     category = null,
     customMetadataFilters = {},
     derivedFrom = null,
@@ -106,6 +107,7 @@ export const ceteraUtils = (() => {
     visibility = null
   }) => {
     const parameters = {
+      approval_status: approvalStatus,
       categories: category,
       ...customMetadataFilters,
       derived_from: derivedFrom,

@@ -1,0 +1,366 @@
+<% content_for :head do %>
+    <title>Example Usage: SvgComboChart.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <%= rendered_stylesheet_tag 'visualizations' %>
+    <style type="text/css">
+      div[id^=combo-chart-] {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+      }
+    </style>
+  <% end %>
+  
+  <% content_for :scripts do %>
+    <%= render_demos_javascript_environment %>
+  
+    <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
+  
+    <script type="text/javascript">
+  
+      $(document).ready(function() {
+  
+        /**
+         * Set up VIFs
+         */
+  
+        var DIMENSION = 'district_name';
+        var MEASURE = 'proficient_2';
+        var MEASURE_AGGREGATION = null;
+        var DATASET_UID = 'mu6e-brbz';
+        var DOMAIN = 'data.iowa.gov';
+        var FILTERS = [
+          {
+            columnName: 'topic',
+            function: 'binaryOperator',
+            arguments: {
+              operator: '=',
+              operand: 'Math'
+            }
+          },
+          {
+            columnName: 'grade',
+            function: 'binaryOperator',
+            arguments: {
+              operator: '=',
+              operand: '3'
+            }
+          },
+          {
+            columnName: 'school_year',
+            function: 'binaryOperator',
+            arguments: {
+              operator: '=',
+              operand: '2014'
+            }
+          }
+        ];
+  
+        var comboChart1Vif = 
+        {
+          'format': {
+            'type': 'visualization_interchange_format',
+            'version': 2
+          },
+          'configuration': {
+            'viewSourceDataLink': true,
+            'showDimensionLabels': true,
+            'xAxisScalingMode': 'pan',
+            'showLegend': true,
+            'axisLabels': {
+              'left': 'LEFT',
+              'right': 'RIGHT'
+            },
+            'useSecondaryAxisForLines': true
+          },
+          'description': 'And description!',
+          'series': [
+            {
+              'color': {
+                'primary': '#a6cee3',
+                'secondary': '#a6cee3',
+                'highlight': '#cccccc',
+                'palette': 'alternate1'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': null,
+                  'aggregationFunction': 'count'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.column',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            },
+            {
+              'color': {
+                'primary': '#5b9ec9',
+                'secondary': '#5b9ec9',
+                'highlight': '#cccccc',
+                'palette': 'alternate1'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': null,
+                  'aggregationFunction': 'count'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.column',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            },
+            {
+              'color': {
+                'primary': '#2d82af',
+                'secondary': '#2d82af',
+                'highlight': '#cccccc',
+                'palette': 'alternate1'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': null,
+                  'aggregationFunction': 'count'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.line',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            }
+          ],
+          'title': 'Two Columns and One Line Combo Chart'
+        };
+
+        var comboChart2Vif = 
+        {
+          'format': {
+            'type': 'visualization_interchange_format',
+            'version': 2
+          },
+          'configuration': {
+            'viewSourceDataLink': true,
+            'showDimensionLabels': true,
+            'xAxisScalingMode': 'pan',
+            'showLegend': true,
+            'axisLabels': {
+              'left': 'LEFT',
+              'right': 'RIGHT',
+              'bottom': 'BOTTOM'
+            },
+            'useSecondaryAxisForColumns': true
+          },
+          'description': 'And description!',
+          'series': [
+            {
+              'color': {
+                'primary': '#5b9ec9',
+                'secondary': '#5b9ec9',
+                'highlight': '#cccccc',
+                'palette': 'categorical'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': null,
+                  'aggregationFunction': 'count'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.column',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            },
+            {
+              'color': {
+                'primary': '#2d82af',
+                'secondary': '#2d82af',
+                'highlight': '#cccccc',
+                'palette': 'categorical'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': null,
+                  'aggregationFunction': 'count'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.line',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            },
+            {
+              'color': {
+                'primary': '#3b87a2',
+                'secondary': '#3b87a2',
+                'highlight': '#cccccc',
+                'palette': 'categorical'
+              },
+              'dataSource': {
+                'datasetUid': 'r6t9-rak2',
+                'dimension': {
+                  'columnName': 'category',
+                  'aggregationFunction': null
+                },
+                'domain': 'dataspace.demo.socrata.com',
+                'measure': {
+                  'columnName': 'supervisor_district',
+                  'aggregationFunction': 'sum'
+                },
+                'orderBy': {
+                  'parameter': 'measure',
+                  'sort': 'desc'
+                },
+                'type': 'socrata.soql',
+                'filters': []
+              },
+              'label': null,
+              'type': 'comboChart.line',
+              'unit': {
+                'one': 'case',
+                'other': 'cases'
+              }
+            }
+          ],
+          'title': 'Two Lines and One Column Combo Chart'
+        };
+
+        /**
+         * Instantiate the plugins
+         */
+  
+        var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+  
+        var $comboChart1Element = $('#combo-chart-1');
+        $comboChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+        $comboChart1Element.on(
+          'SOCRATA_VISUALIZATION_VIF_UPDATED',
+          handleVifUpdated
+        );
+        $comboChart1Element.socrataSvgComboChart(comboChart1Vif);
+
+        var $comboChart2Element = $('#combo-chart-2');
+        $comboChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+        $comboChart2Element.on(
+          'SOCRATA_VISUALIZATION_VIF_UPDATED',
+          handleVifUpdated
+        );
+        $comboChart2Element.socrataSvgComboChart(comboChart2Vif);
+
+        /**
+         * Handle plugin events
+         */
+  
+        function handleFlyout(event) {
+          var payload = event.originalEvent.detail;
+  
+          // Render/hide a flyout
+          if (payload !== null) {
+  
+            flyoutRenderer.render(payload);
+  
+          } else {
+  
+            flyoutRenderer.clear();
+          }
+        }
+  
+        function handleVifUpdated(event) {
+          var payload = event.originalEvent.detail;
+          var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+  
+          renderVifEvent.originalEvent = {
+            detail: payload
+          };
+  
+          $(this).trigger(renderVifEvent);
+        }
+  
+        /**
+         * How to destroy the plugin:
+         */
+  
+        // $comboChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+        // $comboChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+        // $comboChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+      });
+    </script>
+  <% end %>
+  
+  <a href="/internal">Internal Panel Home</a><br>
+  <a href="/internal/demos/visualizations">Back to demo list</a>
+  <div id="combo-chart-1"></div>
+  <div id="combo-chart-2"></div>

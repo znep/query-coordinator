@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { CSSTransitionGroup } from 'react-transition-group';
 import _ from 'lodash';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { CSSTransitionGroup } from 'react-transition-group';
 import classNames from 'classnames';
+
 import I18n from 'common/i18n';
+
 import SocrataIcon from '../SocrataIcon';
 import AddFilter from './AddFilter';
 import FilterItem from './FilterItem';
@@ -47,6 +49,7 @@ export class FilterBar extends Component {
       'renderCollapsedFilters'
     ]);
   }
+
   componentDidMount() {
     this.setMaxVisibleFilters();
 
@@ -298,10 +301,11 @@ export class FilterBar extends Component {
     const { isExpanded } = this.state;
     const {
       columns,
-      filters,
       controlSize,
+      filters,
       isReadOnly,
-      isValidTextFilterColumnValue
+      isValidTextFilterColumnValue,
+      spandex
     } = this.props;
 
     // We are mapping and then compacting here, instead of first filtering out the filters we
@@ -316,12 +320,13 @@ export class FilterBar extends Component {
         const column = _.find(columns, { fieldName: filter.columnName });
         const props = {
           column,
-          filter,
           controlSize,
+          filter,
           isReadOnly,
-          onUpdate: _.partialRight(this.onFilterUpdate, index),
+          isValidTextFilterColumnValue,
+          spandex,
           onRemove: _.partial(this.onFilterRemove, index),
-          isValidTextFilterColumnValue
+          onUpdate: _.partialRight(this.onFilterUpdate, index)
         };
 
         return <FilterItem key={index} {...props} />;
@@ -422,7 +427,18 @@ FilterBar.propTypes = {
    * That way, it can implement this functionality itself (we need the view UID).
    * Under this regime, we could also fetch the column stats ourselves inside the component.
    */
-  isValidTextFilterColumnValue: PropTypes.func
+  isValidTextFilterColumnValue: PropTypes.func,
+
+  /**
+   * A namespace containing information about Spandex access and availability.
+   * See the SpandexSubscriber HOC for more details.
+   */
+  spandex: PropTypes.shape({
+    available: PropTypes.bool,
+    datasetUid: PropTypes.string.isRequired,
+    domain: PropTypes.string.isRequired,
+    provider: PropTypes.object // i.e. PropTypes.instanceOf(SpandexDataProvider)
+  })
 };
 
 FilterBar.defaultProps = {

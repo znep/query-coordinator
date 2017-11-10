@@ -8,6 +8,8 @@ import {
   __RewireAPI__ as actionsAPI
 } from 'common/components/AssetBrowser/actions/asset_actions';
 import { mockResponse } from 'common/spec/helpers';
+import { useTestTranslations } from 'common/i18n';
+import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 const mockStore = configureMockStore([thunk]);
 
@@ -15,6 +17,8 @@ describe('actions/assetActions', () => {
   let reloadStub;
 
   beforeEach(() => {
+    useTestTranslations(sharedTranslations.en);
+
     reloadStub = sinon.stub();
 
     actionsAPI.__Rewire__(
@@ -89,8 +93,8 @@ describe('actions/assetActions', () => {
         { type: 'PERFORMING_ACTION', actionType: 'changeVisibility' },
         {
           type: 'SHOW_ALERT',
-          bodyLocaleKey: 'shared.asset_browser.alert_messages.visibility_changed.body',
-          titleLocaleKey: 'shared.asset_browser.alert_messages.visibility_changed.title_public',
+          body: 'This may take a few moments to take effect.',
+          title: 'Visibility changed to public.',
           time: 7000
         },
         { type: 'CLOSE_MODAL' },
@@ -102,7 +106,8 @@ describe('actions/assetActions', () => {
       const newVisibility = 'public.read';
 
       return store.dispatch(changeVisibility(uid, assetType, newVisibility)).then(() => {
-        assert.deepEqual(store.getActions(), expectedActions);
+        const storeActions = store.getActions();
+        assert.deepEqual(storeActions, expectedActions);
       });
     });
   });

@@ -6,7 +6,7 @@ import mixpanel from 'common/mixpanel';
 import {
   fetchResults,
   mergedCeteraQueryParameters
-} from 'common/components/AssetBrowser/lib/cetera_helpers.js';
+} from 'common/components/AssetBrowser/lib/helpers/cetera.js';
 import getState from 'common/components/AssetBrowser/reducers/catalog';
 import ceteraUtils from 'common/cetera/utils';
 import {
@@ -15,8 +15,8 @@ import {
   SHARED_TO_ME_TAB
 } from 'common/components/AssetBrowser/lib/constants';
 
-import mockCeteraFacetCountsResponse from '../data/mock_cetera_facet_counts_response';
-import mockCeteraFetchResponse from '../data/mock_cetera_fetch_response';
+import mockCeteraFacetCountsResponse from '../components/AssetBrowser/data/mock_cetera_facet_counts_response';
+import mockCeteraFetchResponse from '../components/AssetBrowser/data/mock_cetera_fetch_response';
 
 describe('cetera_helpers', () => {
   let ceteraStub;
@@ -35,48 +35,34 @@ describe('cetera_helpers', () => {
   });
 
   describe('mergedCeteraQueryParameters', () => {
-    it('does not have a sharedTo filter if activeTab is null', () => {
-      const parameters = { activeTab: null };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.sharedTo);
-    });
+    describe('baseFilters', () => {
+      it('overrides normal filters', () => {
+        const state = () => ({
+          header: {
+            activeTab: ALL_ASSETS_TAB
+          },
+          tabs: {
+            [ALL_ASSETS_TAB]: {
+              props: {
+                baseFilters: {
+                  assetTypes: 'charts',
+                  forUser: 'abcd-1234'
+                }
+              }
+            }
+          }
+        });
+        const parameters = {
+          assetTypes: 'datasets',
+          forUser: 'efgh-5678',
+          q: 'foo'
+        };
 
-    it('does not have a sharedTo filter if activeTab is "All Assets"', () => {
-      const parameters = { activeTab: ALL_ASSETS_TAB };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.sharedTo);
-    });
-
-    it('does not have a sharedTo filter if activeTab is "My Assets"', () => {
-      const parameters = { activeTab: MY_ASSETS_TAB };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.sharedTo);
-    });
-
-    it('does have a sharedTo filter if activeTab is "Shared To Me"', () => {
-      window.serverConfig.currentUser = { 'id': 'abcd-1234' };
-
-      const parameters = { activeTab: SHARED_TO_ME_TAB };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.equal(result.sharedTo, 'abcd-1234');
-    });
-
-    it('does not have a forUser filter if activeTab is null', () => {
-      const parameters = { activeTab: null };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.forUser);
-    });
-
-    it('does not have a forUser filter if activeTab is "All Assets"', () => {
-      const parameters = { activeTab: ALL_ASSETS_TAB };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.forUser);
-    });
-
-    it('does not have a forUser filter if activeTab is "Shared To Me"', () => {
-      const parameters = { activeTab: SHARED_TO_ME_TAB };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.isUndefined(result.forUser);
+        const result = mergedCeteraQueryParameters(state, parameters);
+        assert.equal(result.only, 'charts');
+        assert.equal(result.forUser, 'abcd-1234');
+        assert.equal(result.q, 'foo');
+      });
     });
 
     it('adds custom facet filters', () => {

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { fetchResults } from 'common/components/AssetBrowser/lib/cetera_helpers';
+import { fetchResults } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import { clearPage } from './pager';
 import { clearSortOrder } from './sort_order';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
@@ -126,13 +126,6 @@ export const changeOwner = (option) => (dispatch, getState) => {
   }
 };
 
-export const changeBaseFilter = (baseFilters) => () => {
-  return {
-    action: 'CHANGE_BASE_FILTER',
-    baseFilters
-  };
-};
-
 export const changeTag = (option) => (dispatch, getState) => {
   const tag = option.value;
 
@@ -218,7 +211,7 @@ export const changeQ = (value) => {
       return fetchResults(
         dispatch,
         getState,
-        { action: 'CHANGE_Q', ids, pageNumber: 1, order: undefined }, onSuccess
+        { action: 'CHANGE_Q', ids, q: null, pageNumber: 1, order: undefined }, onSuccess
       );
     };
   } else {
@@ -263,9 +256,8 @@ export const clearSearch = () => (dispatch, getState) => {
 
 export const clearAllFilters = (options = {}) => (dispatch, getState) => {
   const shouldClearSearch = _.get(options, 'shouldClearSearch', false);
-  const baseFilters = _.get(options, 'baseFilters', {});
   const onSuccess = () => {
-    dispatch({ type: 'CLEAR_ALL_FILTERS', baseFilters });
+    dispatch({ type: 'CLEAR_ALL_FILTERS' });
     if (shouldClearSearch) {
       dispatch({ type: 'CLEAR_SEARCH' });
       dispatch(autocompleteActions.clearSearch()); // For autocomplete to update its text input
@@ -275,7 +267,7 @@ export const clearAllFilters = (options = {}) => (dispatch, getState) => {
   };
 
   const initialState = {
-    ...getUnfilteredState(getState(), baseFilters),
+    ...getUnfilteredState(getState()),
     action: 'CLEAR_ALL_FILTERS',
     pageNumber: 1,
     q: getCurrentQuery()

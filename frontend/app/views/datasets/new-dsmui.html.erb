@@ -1,6 +1,7 @@
+
 <% content_for :head do %>
-  <title><%= t('dataset_management_ui.create.title') %></title>
-  <%= render_dataset_management_ui_server_config %>
+  <title><%= t("#{@il8n_prefix}.title") %></title>
+  <%= render_dataset_management_ui_server_config(nil, @data_asset) %>
   <%= rendered_stylesheet_tag 'dataset-new-dsmui' %>
 <% end %>
 
@@ -10,8 +11,10 @@
     <div class="modal-container">
       <div id="error-message" class="alert error"><%= raw(t('dataset_management_ui.create.errors.unknown')) %></div>
       <header class="modal-header">
-        <h1 class="h1 modal-header-title"><%= t('dataset_management_ui.create.header') %></h1>
-        <div class="modal-header-subtitle"><%= t('dataset_management_ui.create.explanation') %></div>
+        <h1 class="h1 modal-header-title">
+          <%= t("#{@il8n_prefix}.header") %>
+        </h1>
+        <div class="modal-header-subtitle"><%= t("#{@il8n_prefix}.explanation") %></div>
       </header>
 
       <form id="dataset-form">
@@ -19,8 +22,8 @@
           <input id="dataset-title-input"
                   class="text-input []"
                   type="text"
-                  aria-label="<%= t('dataset_management_ui.create.placeholder') %>"
-                  placeholder="<%= t('dataset_management_ui.create.placeholder') %>"
+                  aria-label="<%= t("#{@il8n_prefix}.placeholder") %>"
+                  placeholder="<%= t("#{@il8n_prefix}.placeholder") %>"
                   autofocus>
         </section>
 
@@ -28,17 +31,19 @@
           <input type="submit"
                   id="create-text"
                   class="btn btn-primary btn-lg btn-block"
-                  value="<%= t('dataset_management_ui.create.title') %>" />
+                  value="<%= t("#{@il8n_prefix}.title") %>" />
           <button id="create-text-disabled"
                   class="btn btn-primary btn-lg btn-block"
                   disabled />
-            <%= t('dataset_management_ui.create.title') %>
+            <%= t("#{@il8n_prefix}.title") %>
           </button>
           <button id="create-spinner"
                   class="btn btn-primary btn-lg btn-block btn-busy"
                   onClick="return false;">
             <span class="spinner-default spinner-btn-primary" />
-            <span class="spinner-label"><%= t('dataset_management_ui.create.title') %></span>
+            <span class="spinner-label">
+                <%= t("#{@il8n_prefix}.title") %>
+            </span>
           </button>
         </footer>
       </form>

@@ -144,10 +144,13 @@
                   <div class="create-resource-panel jq-dropdown-panel">
 
                     <div class="create-resource-buttons">
-                      <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
-                        <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
-                        <span class="icon"></span>
-                      </a>
+                      <%- if !FeatureFlags.derive(nil, request).usaid_features_enabled -%>
+                        <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                      <%- end -%>
+
 
                       <%- if current_user_can_create_story? -%>
                       <a id="create-story-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
@@ -163,16 +166,36 @@
                       </a>
                       <%- end -%>
 
-                      <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
-                      <a id="create-tabular-beta"
-                          class="button createTabular secondary-button next"
-                          href="<%= new_dataset_path(beta: true) %>"
-                          title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
-                        <%= opts[:browse_in_container] ?
-                              t('controls.browse.actions.create_tabular_beta_short') :
-                              t('controls.browse.actions.create_tabular_beta_verb') %>
-                        <span class="icon"></span>
-                      </a>
+
+                      <%- if FeatureFlags.derive(nil, request).usaid_features_enabled -%>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true, data_asset: false) %>"
+                            title="Dataset">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_dataset_shorter') :
+                                t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true, data_asset: true) %>"
+                            title="Data Asset">
+                            <%= opts[:browse_in_container] ?
+                                  t('controls.browse.actions.create_data_asset_shorter') :
+                                  t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                      <%- elsif FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true) %>"
+                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_tabular_beta_short') :
+                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                          <span class="icon"></span>
+                        </a>
                       <%- end -%>
                     </div>
                   </div>

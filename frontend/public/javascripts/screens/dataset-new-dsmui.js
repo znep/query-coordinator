@@ -60,6 +60,8 @@ function handleRevisionError(
 
 function createDataset() {
   var datasetTitle = document.getElementById('dataset-title-input').value;
+  const revisionData = { action: {type: 'replace'}, is_parent: window.serverConfig.isDataAsset};
+
   if (inProgress || datasetTitle == '') return false;
   inProgress = true;
   updateButtonDisplay();
@@ -86,7 +88,7 @@ function createDataset() {
         headers: headers,
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        data: JSON.stringify({ action: {type: 'replace'} }),
+        data: JSON.stringify(revisionData),
         success: function() {
           document.location =
             (locale ? locale[0] : '/') + 'd/' + newView.id + '/revisions/0';

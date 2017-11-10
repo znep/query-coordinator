@@ -1,5 +1,5 @@
 module DatasetManagementUiHelper
-  def dataset_management_ui_server_config(websocket_token)
+  def dataset_management_ui_server_config(websocket_token, is_data_asset = nil)
     {
       environment: Rails.env,
       csrfToken: form_authenticity_token.to_s,
@@ -11,12 +11,14 @@ module DatasetManagementUiHelper
       currentUser: User.current_user,
       localePrefix: locale_prefix,
       featureFlags: feature_flags_as_json,
-      usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a'
+      usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a',
+      isDataAsset: is_data_asset.nil? ? is_data_asset : is_data_asset == true
+
     }
   end
 
-  def render_dataset_management_ui_server_config(websocket_token = nil)
-    config = dataset_management_ui_server_config(websocket_token)
+  def render_dataset_management_ui_server_config(websocket_token = nil, is_data_asset = nil)
+    config = dataset_management_ui_server_config(websocket_token, is_data_asset)
     javascript_tag("var serverConfig = #{json_escape(config.to_json)};")
   end
 

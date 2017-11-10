@@ -905,6 +905,7 @@ en:
         create_dataset: Create or upload your own dataset
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
+        create_data_asset_shorter: Data Asset
         create_dataset_verb: Create
         create_measure_short: Measure
         create_measure_verb: Create
@@ -2113,10 +2114,16 @@ en:
     create:
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
-      explanation: To get started, choose a name for your dataset
-      header: Create a New Dataset
-      placeholder: Dataset Name
-      title: Create Dataset
+      dataset:
+        explanation: To get started, choose a name for your dataset
+        header: Create a New Dataset
+        placeholder: Dataset Name
+        title: Create Dataset
+      data_asset:
+        explanation: To get started, choose a name for your data asset
+        header: Create a New Data Asset
+        placeholder: Data Asset Name
+        title: Create Data Asset
     data_preview:
       columns: Columns
       rows: Rows

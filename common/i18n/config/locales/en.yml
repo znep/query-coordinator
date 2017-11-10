@@ -366,6 +366,7 @@ en:
         close_button_aria_label: Close
         create_menu:
           dataset: Dataset
+          data_asset: Data Asset
           dataset_beta: Tabular Dataset (beta)
           default_measure_title: Untitled Measure
           default_story_title: Untitled Story

@@ -4,7 +4,6 @@ import $ from 'jquery';
 import SocrataVisualizations from 'common/visualizations';
 import MostRecentlyUsed from 'common/most_recently_used';
 import { Analytics } from 'common/analytics';
-import { defaultHeaders } from 'common/http';
 import 'common/notifications/main';
 import 'common/site_wide';
 
@@ -179,13 +178,7 @@ $(document).on('ready', function() {
 
     analytics.flushMetrics();
 
-    // Using the old accessor for the CSRF token, since Storyteller doesn't use
-    // the newer serverConfig object like the common Analytics module expects.
-    var pageViewHeaders = {
-      ...defaultHeaders,
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-    };
-    analytics.registerPageView(Environment.STORY_UID, pageViewHeaders);
+    analytics.registerPageView(Environment.STORY_UID);
   }
 
   if (Environment.CURRENT_USER && Environment.STORY_UID) {

@@ -90,12 +90,8 @@ export const Analytics = function() {
    * track stuff like referrers.
    *
    * @param uid The 4x4 of the view
-   * @param headers A hash of headers to include with the request (default: the
-   *                default headers from common/http). This parameter should be
-   *                removed once we settle on a unified way of injecting and
-   *                retrieving things like app tokens and CSRF tokens.
    */
-  this.registerPageView = _.memoize((uid, headers = defaultHeaders) => {
+  this.registerPageView = _.memoize((uid) => {
     if (!/^\w{4}-\w{4}$/.test(uid)) {
       return;
     }
@@ -104,7 +100,7 @@ export const Analytics = function() {
 
     $.post({
       url: coreMetricsUrl,
-      headers
+      headers: defaultHeaders
     });
   });
 

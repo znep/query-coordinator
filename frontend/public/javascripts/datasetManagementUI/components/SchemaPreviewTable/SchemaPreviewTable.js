@@ -18,13 +18,13 @@ const SchemaPreviewTable = ({ outputColumns }) => {
 
   return (
     <figure className={styles.fig}>
-      <figcaption>Schema Preview</figcaption>
+      <figcaption>{I18n.add_col.schema_preview}</figcaption>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.th}>Display Name</th>
-            <th className={styles.th}>Type</th>
-            <th className={styles.th}>Icon</th>
+            <th className={styles.th}>{I18n.add_col.display_name}</th>
+            <th className={styles.th}>{I18n.add_col.type}</th>
+            <th className={styles.th}>{I18n.add_col.icon}</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

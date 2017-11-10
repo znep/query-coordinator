@@ -45,7 +45,7 @@ class OutputSchemaSidebar extends Component {
           to={Links.showAddCol(params)}
           className={sidebarStyles.tab}
           activeClassName={sidebarStyles.selected}>
-          Add Column
+          {SubI18n.add_col}
         </Link>
         <SchemaActions />
       </div>

@@ -21,15 +21,15 @@ export function validateFieldName(val, existingFieldNames) {
   const errors = [];
 
   if (!isUnique(val, existingFieldNames)) {
-    errors.push('not unique');
+    errors.push(I18n.add_col.error_not_unique);
   }
 
   if (!hasValue(val)) {
-    errors.push('no value');
+    errors.push(I18n.add_col.error_no_value);
   }
 
   if (!isValidFieldName(val)) {
-    errors.push('invalid name');
+    errors.push(I18n.add_col.error_invalid_name);
   }
 
   return errors;
@@ -39,11 +39,11 @@ export function validateDisplayName(val, existingDisplayNames) {
   const errors = [];
 
   if (!isUnique(val, existingDisplayNames)) {
-    errors.push('not unique');
+    errors.push(I18n.add_col.error_not_unique);
   }
 
   if (!hasValue(val)) {
-    errors.push('no value');
+    errors.push(I18n.add_col.error_no_value);
   }
 
   return errors;
@@ -53,10 +53,10 @@ function shapeFormState(state) {
   return _.omit(state, ['transform', 'sourceColumnId']);
 }
 
-const mapStateToProps = ({ ui, entities }, { params }) => {
+export const mapStateToProps = ({ ui, entities }, { params }) => {
   const isid = _.toNumber(params.inputSchemaId);
   const selectOptions = [
-    { title: 'No Source Column', value: 'null' },
+    { title: I18n.add_col.no_source_col, value: 'null' },
     ...Object.values(entities.input_columns)
       .filter(ic => ic.input_schema_id === isid)
       .map(col => ({

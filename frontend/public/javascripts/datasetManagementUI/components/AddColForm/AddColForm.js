@@ -9,7 +9,7 @@ import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
 import styles from './AddColForm.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
-function makeFieldName(displayName) {
+export function makeFieldName(displayName) {
   // First 'replace' swaps all whitespace for '_'
   // Second 'replace' swaps all non-alphanumerics/non-underscores for '_'
   // The second replace could result in several consecutive underscores: e.g.
@@ -22,7 +22,7 @@ function makeFieldName(displayName) {
     .replace(/__+/g, '_');
 }
 
-function makeTransformExpr(fieldName, transform) {
+export function makeTransformExpr(fieldName, transform) {
   if (fieldName === 'null') {
     return `${transform}(${fieldName})`;
   } else {
@@ -133,28 +133,28 @@ class AddColForm extends Component {
 
     return (
       <form className={styles.form}>
-        <Fieldset title="Add Column" subtitle="Add a column to your schema">
-          <label htmlFor="displayName">Display Name</label>
+        <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
+          <label htmlFor="displayName">{I18n.add_col.display_name}</label>
           <TextInput
             name="displayName"
             inErrorState={this.props.errors.displayName ? !!this.props.errors.displayName.length : false}
             value={this.state.displayName}
             handleChange={this.handleChange('displayName')} />
           <ErrorList errors={this.props.errors.displayName} />
-          <label htmlFor="fieldName">Field Name</label>
+          <label htmlFor="fieldName">{I18n.add_col.field_name}</label>
           <TextInput
             name="fieldName"
             value={this.state.fieldName}
             inErrorState={this.props.errors.fieldName ? !!this.props.errors.fieldName.length : false}
             handleChange={this.handleChange('fieldName')} />
           <ErrorList errors={this.props.errors.fieldName} />
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">{I18n.add_col.description}</label>
           <TextArea
             name="description"
             inErrorState={false}
             value={this.state.description}
             handleChange={this.handleChange('description')} />
-          <label htmlFor="sourceColumnId">Source Column</label>
+          <label htmlFor="sourceColumnId">{I18n.add_col.source_column}</label>
           <Select
             name="sourceColumnId"
             value={this.state.sourceColumnId}

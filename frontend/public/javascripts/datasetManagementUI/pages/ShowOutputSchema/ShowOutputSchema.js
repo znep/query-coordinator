@@ -186,15 +186,11 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
 
           dispatch(FormActions.clearInternalState('addColForm', true));
 
-          dispatch(FlashActions.showFlashMessage('success', 'New column created.'));
+          dispatch(FlashActions.showFlashMessage('success', I18n.add_col.success_flash_message));
 
           browserHistory.push(Links.showAddCol(newParams));
         })
-        .catch(() =>
-          dispatch(
-            FlashActions.showFlashMessage('error', 'Failed to create column. Please see errors below.')
-          )
-        ),
+        .catch(() => dispatch(FlashActions.showFlashMessage('error', I18n.add_col.error_flash_message))),
     showShortcut: name => {
       dispatch(
         ModalActions.showModal(name, {

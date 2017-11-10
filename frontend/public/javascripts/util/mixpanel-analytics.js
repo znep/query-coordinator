@@ -1,7 +1,5 @@
 //Track clicking certain links on the page
 $(document).ready(function() {
-  'use strict';
-
   // Return early if blist doesn't exist (for instance, if we're in Data Lens)
   if (_.isUndefined(window.blist)) {
     return;

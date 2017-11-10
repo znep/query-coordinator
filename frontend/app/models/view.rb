@@ -1535,6 +1535,10 @@ class View < Model
     is_blobby? || is_geo?
   end
 
+  def is_activity_feed_dataset?
+    metadata.try(:activityFeedDataset).to_s == 'true'
+  end
+
   def can_email?
     is_tabular?
   end

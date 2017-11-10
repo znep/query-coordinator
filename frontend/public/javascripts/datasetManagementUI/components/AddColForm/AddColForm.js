@@ -5,15 +5,16 @@ import Fieldset from 'components/Fieldset/Fieldset';
 import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
+import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
 import styles from './AddColForm.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
 function makeFieldName(displayName) {
-  // First replace swaps all whitespace for '_'
-  // Second removes all non-alphanumerics/non-underscores
+  // First 'replace' swaps all whitespace for '_'
+  // Second 'replace' swaps all non-alphanumerics/non-underscores for '_'
   // The second replace could result in several consecutive underscores: e.g.
   // 'this is @ field name' -> 'this_is_@_field_name' -> 'this_is__field_name'.
-  // So we run the third replace to find consecutive underscores and replace them
+  // So we run the third 'replace' to find consecutive underscores and replace them
   // with a single underscore.
   return displayName
     .replace(/\s/g, '_')
@@ -45,49 +46,6 @@ ErrorList.propTypes = {
   errors: PropTypes.array
 };
 
-const SoqlTypePill = ({ name, handleClick, isSelected }) => {
-  const classNames = [styles.pill];
-
-  if (isSelected) {
-    classNames.push(styles.selected);
-  }
-
-  return (
-    <span className={classNames.join(' ')} onClick={handleClick}>
-      {name}
-    </span>
-  );
-};
-
-SoqlTypePill.propTypes = {
-  name: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  isSelected: PropTypes.bool.isRequired
-};
-
-const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => {
-  const pills = Object.keys(transforms).map((key, idx) => (
-    <SoqlTypePill
-      name={key}
-      key={idx}
-      isSelected={transforms[key] === currentTransform}
-      handleClick={() => handleClick(transforms[key])} />
-  ));
-
-  return (
-    <div>
-      <label>Type</label>
-      {pills}
-    </div>
-  );
-};
-
-SoqlTypePillBox.propTypes = {
-  transforms: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  currentTransform: PropTypes.string.isRequired
-};
-
 const initialState = {
   displayName: '',
   description: '',
@@ -103,12 +61,15 @@ class AddColForm extends Component {
     super();
 
     this.state = initialState;
-
     this.handleChange = this.handleChange.bind(this);
     this.handlePillClick = this.handlePillClick.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
+    // Kind of a hack for the submit button not being a child of the component
+    // (which we could avoid if we moved it out of the modal footer >:{). The
+    // button toggles a flag in the reduxstate, which resets the internal
+    // state of this component
     if (newProps.clearInternalState) {
       this.setState(initialState);
 

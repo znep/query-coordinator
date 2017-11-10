@@ -64,9 +64,7 @@ export class TransformStatus extends Component {
   determineColStatus(transform) {
     if (transform.failed_at) {
       return 'failed';
-    } else if (transform.completed_at) {
-      return 'isIgnored';
-    } else if (transform.finished_at || oldDoneCheck) {
+    } else if (transform.finished_at || transform.completed_at) {
       return 'done';
     } else {
       return 'inProgress';

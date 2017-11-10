@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
-import { soqlProperties, conversionsToCanonicalName } from 'lib/soqlTypes';
+import { soqlProperties } from 'lib/soqlTypes';
 import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
@@ -52,6 +52,9 @@ export class ColumnHeader extends Component {
 
     this.props.setDropping();
 
+    // Can't really animate dropping a column since we decided to make the api
+    // response / ui for this row-based. The best we can do is change the opacity
+    // and put a slight delay on dropping it from the ui.
     setTimeout(() => {
       this.props.dropColumn().then(() => {
         this.props.resetDropping();
@@ -202,14 +205,18 @@ export class ColumnHeader extends Component {
 
       const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
       convertibleTo = Object.keys(inputColumnTypeInfo.conversions);
-    } else if (outputColumn.transform && outputColumn.transform.parsed_expr) {
-      const isCreatedColumn = outputColumn.transform.parsed_expr.args[0] === null;
-
-      if (isCreatedColumn) {
-        const canonicalName = conversionsToCanonicalName(outputColumn.transform.parsed_expr.function_name);
-        convertibleTo = Object.keys(soqlProperties[canonicalName].conversions);
-      }
     }
+
+    // TODO: add this back if/when we figure out a way to convert in dsmui without
+    // needing an input column. The current codepath intentionally throws an error.
+    // else if (outputColumn.transform && outputColumn.transform.parsed_expr) {
+    //   const isCreatedColumn = outputColumn.transform.parsed_expr.args[0] === null;
+    //
+    //   if (isCreatedColumn) {
+    //     const canonicalName = conversionsToCanonicalName(outputColumn.transform.parsed_expr.function_name);
+    //     convertibleTo = Object.keys(soqlProperties[canonicalName].conversions);
+    //   }
+    // }
 
     const types = convertibleTo.map(type => ({
       humanName: Translations.type_display_names[type.toLowerCase()],

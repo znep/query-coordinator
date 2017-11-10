@@ -4,9 +4,9 @@ import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './SchemaPreviewTable.scss';
 
 const SchemaPreviewTable = ({ outputColumns }) => {
-  const rows = outputColumns.map(oc => {
+  const rows = outputColumns.map((oc, idx) => {
     return (
-      <tr className={oc.newCol ? styles.newCol : ''} key={oc.id}>
+      <tr className={oc.newCol ? styles.newCol : ''} key={idx}>
         <td className={styles.name}>{oc.display_name}</td>
         <td>{oc.transform.output_soql_type}</td>
         <td>

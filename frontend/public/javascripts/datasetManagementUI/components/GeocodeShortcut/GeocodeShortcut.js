@@ -234,16 +234,6 @@ export class GeocodeShortcut extends Component {
   }
 
   maybeSetColumnsHidden() {
-    // console.log('os', this.getOutputSchema());
-
-    // console.log('ocols unfiltered', this.relevantArgsForComposition());
-    //
-    // console.log(
-    //   'ocols',
-    //   this.relevantArgsForComposition()
-    //     .filter(oc => !!oc)
-    //     .filter(oc => !_.isString(oc))
-    // );
     const { id: currentOutputSchemaId } = this.getOutputSchema();
     // Restore the checkbox state from the output schema state
     const shouldHideOriginal = _.every(

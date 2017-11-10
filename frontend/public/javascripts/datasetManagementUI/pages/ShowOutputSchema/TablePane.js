@@ -115,27 +115,19 @@ class TablePane extends Component {
           }}>
           <div className={styles.dataPreview}>
             <div className={styles.titleWrapper}>
-              <h2 className={styles.previewHeader}>
-                {I18n.data_preview.title}
-              </h2>
+              <h2 className={styles.previewHeader}>{I18n.data_preview.title}</h2>
               {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
             </div>
             <div className={styles.datasetAttribute}>
               <div className={styles.datasetAttribute}>
-                <p>
-                  {I18n.data_preview.rows}
-                </p>
+                <p>{I18n.data_preview.rows}</p>
                 <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
                   {commaify(rowsTransformed)}
                 </p>
               </div>
               <div className={styles.datasetAttribute}>
-                <p>
-                  {I18n.data_preview.columns}
-                </p>
-                <p className={styles.attribute}>
-                  {columns.length}
-                </p>
+                <p>{I18n.data_preview.columns}</p>
+                <p className={styles.attribute}>{columns.length}</p>
               </div>
             </div>
           </div>
@@ -168,13 +160,13 @@ class TablePane extends Component {
 }
 
 TablePane.propTypes = {
-  columns: PropTypes.array.isRequired,
-  inputSchema: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired,
-  params: PropTypes.object.isRequired,
-  numLoadsInProgress: PropTypes.number.isRequired,
-  showShortcut: PropTypes.func.isRequired
+  columns: PropTypes.array,
+  inputSchema: PropTypes.object,
+  outputSchema: PropTypes.object,
+  displayState: PropTypes.object,
+  params: PropTypes.object,
+  numLoadsInProgress: PropTypes.number,
+  showShortcut: PropTypes.func
 };
 
 export default TablePane;

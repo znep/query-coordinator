@@ -1,0 +1,20 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.pill {
+  background-color: $primary-base;
+  color: $white;
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 0.5em;
+  padding: 0.2em 1em;
+  min-width: 80px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.selected {
+  box-shadow: 0 0 2px 2px $primary-dark;
+}

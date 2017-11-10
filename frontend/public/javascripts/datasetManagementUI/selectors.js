@@ -153,48 +153,6 @@ export function rowLoadOperationsInProgress(apiCalls) {
     .length;
 }
 
-// hooray this thing is still wrong, and will always be wrong - each time we add a new
-// feature we get to re-write it to make it right for our specific use case
-// export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
-//   const outputSchema = entities.output_schemas[outputSchemaId];
-//   const osIds = Object.values(entities.output_schemas)
-//     .filter(os => os.input_schema_id === outputSchema.input_schema_id)
-//     .map(os => os.id);
-//
-//   const firstOutputSchemaId = Math.min(...osIds);
-//
-//   const actualColumns = columnsForOutputSchema(entities, outputSchemaId);
-//   const firstColumns = columnsForOutputSchema(entities, firstOutputSchemaId);
-//
-//   const outputColumnsStrippedAsts = _.flatMap(actualColumns, oc => {
-//     const ast = oc.transform.parsed_expr;
-//     return _.uniqWith(
-//       [ast, stripToTextAst(ast), stripToNumberAst(ast), stripToBooleanAst(ast), stripToDatetimeAst(ast)],
-//       _.isEqual
-//     );
-//   });
-//
-//   const isAstUsed = ast => !!_.find(outputColumnsStrippedAsts, a => _.isEqual(a, ast));
-//
-//   const isUnreferenced = outputColumn => {
-//     const ast = outputColumn.transform.parsed_expr;
-//     return (
-//       !isAstUsed(ast) &&
-//       !isAstUsed(stripToTextAst(ast)) &&
-//       !isAstUsed(stripToNumberAst(ast)) &&
-//       !isAstUsed(stripToBooleanAst(ast)) &&
-//       !isAstUsed(stripToDatetimeAst(ast))
-//     );
-//   };
-//
-//   const unreferencedOutputColumns = firstColumns.filter(isUnreferenced);
-//
-//   return {
-//     current: actualColumns,
-//     ignored: unreferencedOutputColumns.map(oc => ({ ...oc, ignored: true }))
-//   };
-// }
-
 export const inputSchemas = (entities, sourceId) => {
   return _.filter(entities.input_schemas, { source_id: sourceId });
 };

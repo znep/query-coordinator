@@ -20,8 +20,8 @@ export function getBrowseUrl(searchTerm) {
     currentUrl.pathname.match(new RegExp(`(\/${I18n.locale})?\/browse`));
 
   if (!currentUrlIsBrowse) {
-    const shouldPrefixLocale = new RegExp(`^\/(${I18n.locale})\/`).test(currentUrl);
-    currentUrl.pathname = `${shouldPrefixLocale && `/${I18n.locale}`}/browse`;
+    const shouldPrefixLocale = new RegExp(`^\/(${I18n.locale})`).test(currentUrl.pathname);
+    currentUrl.pathname = shouldPrefixLocale ? `${`/${I18n.locale}`}/browse` : '/browse';
     currentUrl.query = { };
   }
 

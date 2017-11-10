@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Table from './Table';
 import Footer from './Footer';
+import Tabs from './Tabs';
 
 class App extends Component {
 
@@ -9,7 +10,7 @@ class App extends Component {
     return (
       <div>
         <div className="header">
-
+          <Tabs />
         </div>
         <div className="results-and-filters">
           <div className="catalog-results">

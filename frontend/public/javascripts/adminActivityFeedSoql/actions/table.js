@@ -1,4 +1,5 @@
 import * as api from '../lib/api';
+import * as commonActions from './common';
 
 const types = {
   FETCH_DATA: 'FETCH_DATA',
@@ -15,7 +16,8 @@ const fetchData = () => (dispatch, getState) => {
 
   const options = {
     offset: (state.pagination.page - 1) * state.pagination.pageSize,
-    limit: state.pagination.pageSize
+    limit: state.pagination.pageSize,
+    filters: state.filters
   };
 
   return api.
@@ -23,7 +25,8 @@ const fetchData = () => (dispatch, getState) => {
     then((data) => {
 
       dispatch(storeData(data));
-    });
+    }).
+    catch(commonActions.apiException);
 };
 
 export {

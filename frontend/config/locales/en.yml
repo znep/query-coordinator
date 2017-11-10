@@ -3445,6 +3445,10 @@ en:
       your: Your Rating
     admin:
       activity_feed:
+        tabs:
+          all: All Activity
+          failure: Data Update Failures
+          deleted: Deleted Assets
         asset_types:
           blob: File or Document
           calendar: Calendar

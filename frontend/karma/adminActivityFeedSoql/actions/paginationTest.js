@@ -6,7 +6,11 @@ import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
 import * as paginationActions from 'actions/pagination';
 
-const initialState = {};
+const initialState = {
+  filters: {
+    activeTab: 'all'
+  }
+};
 
 const mockStore = configureStore([
   thunk

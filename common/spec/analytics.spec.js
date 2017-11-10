@@ -139,11 +139,5 @@ describe('analytics.js', function() {
       analytics.registerPageView('test-test');
       assert.equal(server.requests[0].requestHeaders['X-CSRF-Token'], 'mockCsrfToken');
     });
-
-    // TODO: Remove this capability; see file under test
-    it('allows other headers to be set', function() {
-      analytics.registerPageView('test-test', { 'X-Test-Header': 'Test Value' });
-      assert.equal(server.requests[0].requestHeaders['X-Test-Header'], 'Test Value');
-    });
   });
 });

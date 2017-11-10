@@ -1,15 +1,36 @@
 import _ from 'lodash';
+import { get as getCookie } from 'browser-cookies';
 
 if (_.isUndefined(window.serverConfig)) {
   console.warn('WARNING: window.serverConfig is undefined.');
 }
 
+// Because consistency is hard.
+export function csrfToken() {
+  const tokens = [
+    _.get(window, 'serverConfig.csrfToken'),
+    getCookie('socrata-csrf-token'),
+    _.get(document.querySelector('meta[name="csrf-token"]'), 'content')
+  ];
+  return _.first(_.compact(tokens));
+}
+
+// Like, really hard, y'all.
+export function appToken() {
+  const tokens = [
+    _.get(window, 'serverConfig.appToken'),
+    _.get(window, 'socrata.siteChrome.appToken'),
+    _.get(window, 'blist.configuration.appToken')
+  ];
+  return _.first(_.compact(tokens));
+}
+
 export const defaultHeaders = _.omitBy({
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'X-CSRF-Token': _.get(window, 'serverConfig.csrfToken'),
-  'X-App-Token': _.get(window, 'serverConfig.appToken')
-}, _.isUndefined);
+  'X-CSRF-Token': csrfToken(),
+  'X-App-Token': appToken()
+}, _.isNil);
 
 // Used to throw errors from non-200 responses when using fetch.
 export function checkStatus(response) {

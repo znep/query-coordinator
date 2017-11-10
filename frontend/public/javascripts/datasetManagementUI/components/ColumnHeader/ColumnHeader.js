@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
-import { soqlProperties } from 'lib/soqlTypes';
+import { soqlProperties, conversionsToCanonicalName } from 'lib/soqlTypes';
 import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
@@ -201,7 +201,14 @@ export class ColumnHeader extends Component {
       const inputColumn = outputColumn.inputColumns[0];
 
       const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
-      convertibleTo = _.keys(inputColumnTypeInfo.conversions);
+      convertibleTo = Object.keys(inputColumnTypeInfo.conversions);
+    } else if (outputColumn.transform && outputColumn.transform.parsed_expr) {
+      const isCreatedColumn = outputColumn.transform.parsed_expr.args[0] === null;
+
+      if (isCreatedColumn) {
+        const canonicalName = conversionsToCanonicalName(outputColumn.transform.parsed_expr.function_name);
+        convertibleTo = Object.keys(soqlProperties[canonicalName].conversions);
+      }
     }
 
     const types = convertibleTo.map(type => ({

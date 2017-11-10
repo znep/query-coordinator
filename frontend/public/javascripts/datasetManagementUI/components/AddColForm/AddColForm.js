@@ -127,7 +127,7 @@ class AddColForm extends Component {
       this.state.transform !== nextState.transform ||
       this.state.sourceColumnId !== nextState.sourceColumnId
     ) {
-      const ic = this.props.inputColumns[this.state.sourceColumnId];
+      const ic = this.props.inputColumns[nextState.sourceColumnId];
 
       let fieldName = 'null';
 

@@ -289,6 +289,88 @@ socrata.sampleVifsByChartType = {
     'title': 'Column Chart Example'
   },
 
+  comboChart:
+  {
+    'format': {
+      'type': 'visualization_interchange_format',
+      'version': 2
+    },
+    'configuration': {
+      'viewSourceDataLink': true,
+      'showDimensionLabels': true,
+      'xAxisScalingMode': 'pan',
+      'axisLabels': {}
+    },
+    'description': '',
+    'series': [
+      {
+        'color': {
+          'primary': '#5b9ec9',
+          'secondary': '#5b9ec9',
+          'highlight': '#cccccc',
+          'palette': 'categorical'
+        },
+        'dataSource': {
+          'datasetUid': 'r6t9-rak2',
+          'dimension': {
+            'columnName': 'category',
+            'aggregationFunction': null
+          },
+          'domain': 'dataspace.demo.socrata.com',
+          'measure': {
+            'columnName': null,
+            'aggregationFunction': 'count'
+          },
+          'orderBy': {
+            'parameter': 'measure',
+            'sort': 'desc'
+          },
+          'type': 'socrata.soql',
+          'filters': []
+        },
+        'label': null,
+        'type': 'comboChart.column',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      },
+      {
+        'color': {
+          'primary': '#2d82af',
+          'secondary': '#2d82af',
+          'highlight': '#cccccc',
+          'palette': 'categorical'
+        },
+        'dataSource': {
+          'datasetUid': 'r6t9-rak2',
+          'dimension': {
+            'columnName': 'category',
+            'aggregationFunction': null
+          },
+          'domain': 'dataspace.demo.socrata.com',
+          'measure': {
+            'columnName': null,
+            'aggregationFunction': 'count'
+          },
+          'orderBy': {
+            'parameter': 'measure',
+            'sort': 'desc'
+          },
+          'type': 'socrata.soql',
+          'filters': []
+        },
+        'label': null,
+        'type': 'comboChart.line',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      }
+    ],
+    'title': 'Combo Chart Example'
+  },
+
   featureMap: {
     'format': {
       'type': 'visualization_interchange_format',

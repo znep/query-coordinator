@@ -1,0 +1,48 @@
+.clear-filters-wrapper {
+  float: left;
+  margin: 0.5rem;
+  color: $dark-grey-1;
+
+  .title {
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  .title + span {
+    font-size: 12px;
+    position: relative;
+    top: -1px;
+    padding-right: 5px;
+  }
+
+  .active-filter-count {
+    margin: auto 5px;
+    color: $dark-grey-0;
+  }
+
+  .clear-all-filters {
+    cursor: pointer;
+    margin: auto 3px;
+    position: relative;
+    top: 3px;
+    font-size: 150%;
+    line-height: 1rem;
+  }
+
+  .filter-section.clear-all-filters {
+    margin: 0.5rem 0;
+  }
+
+  &.button {
+    display: inline-block;
+    background-color: $light-grey-3;
+    color: $white;
+    padding: 4px 4px 6px 14px;
+    margin: 4px 10px;
+    cursor: pointer;
+
+    .clear-all-filters {
+      color: $white;
+    }
+  }
+}

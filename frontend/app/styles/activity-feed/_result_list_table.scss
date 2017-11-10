@@ -1,0 +1,116 @@
+@import "variables/colors";
+@import "activity-feed/action_dropdown";
+@import "activity-feed/action_modal";
+
+$result_list_row_bg_color: $white;
+$result_list_row_bg_hover_color: $primary-light;
+
+.activity-feed-app {
+  table.result-list-table {
+    table-layout: fixed;
+    min-width: 985px; // below this point, the percentage-width column headers start to
+                      // collide with the asc/desc arrow.
+    width: 100%;
+    margin: 0;
+
+    &.table-borderless thead {
+      tr {
+        th {
+          &:last-of-type {
+            border-right: none;
+          }
+        }
+      }
+    }
+
+    thead {
+      tr {
+        th {
+          white-space: nowrap;
+          background: $light-grey-5;
+          border: 1px solid $light-grey-3;
+          cursor: pointer;
+          user-select: none;
+          position: relative;
+
+          &.active {
+            font-weight: 600;
+            background: $light-grey-4;
+          }
+
+          // Fixed percentage widths for columns. If a new column is added,
+          // these will need to be re-calculated to add up to 100%.
+          &.type {
+            width: 6%;
+          }
+          &.initiated-by {
+            width: 15%;
+          }
+          &.event {
+            width: 20%;
+          }
+          &.item-affected {
+            width: 35%
+          }
+          &.date {
+            width: 18%;
+          }
+          &.actions {
+            width: 6%;
+            cursor: not-allowed;
+          }
+
+          .ascending-arrow, .descending-arrow {
+            display: none;
+            position: absolute;
+            right: 0.5rem;
+          }
+
+          &.ascending {
+            .ascending-arrow {
+              display: inline-block;
+            }
+          }
+
+          &.descending {
+            .descending-arrow {
+              display: inline-block;
+            }
+          }
+
+        }
+      }
+    }
+
+    tr.result-list-row {
+      background: $result_list_row_bg_color;
+
+      &:hover {
+        background: $result_list_row_bg_hover_color;
+      }
+
+      td {
+        &.type {
+          text-align: center;
+
+          span.socrata-icon {
+            height: 20px;
+            width: 20px;
+          }
+        }
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        span.socrata-icon {
+          line-height: normal;
+        }
+
+        &.actions {
+          overflow: visible; // Prevent action flyout from being cut off
+        }
+      }
+
+    }
+  }
+}

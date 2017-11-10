@@ -1,0 +1,241 @@
+@import "activity-feed/mobile_catalog_filters";
+
+$filter-content-width: 260px;
+
+/* $dark-grey-1 in common/styleguide/variables/_colors, but for some godawful reason, it doesn't
+ * align with the variables set in /frontend/app/styles/_styleguide-colors.scss
+ * I tried removing that import altogether and changing SIAM to only import the former, newer, common
+ * file, but it would require a larger change - webpack config change for the SASS compiler, and changing
+ * some variable names ($primary-base > $primary, not sure if there are others).
+*/
+$dark-grey-1: #5e5e5e;
+
+.catalog-filters {
+  background: $light-grey-4;
+  border-left: 1px solid $light-grey-3;
+  flex: none;
+  margin-left: auto;
+  z-index: 2; // styleguide table can spill on top of this in small window sizes
+
+  .filter-content-toggle {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    color: $primary-text;
+
+    &.open-filters {
+      padding: 0.8rem 0.3rem;
+    }
+  }
+
+  .filter-content {
+    width: $filter-content-width;
+
+    &.hidden {
+      display: none;
+    }
+
+    .catalog-filters-header {
+      padding: 0.5rem $horizontal_margin;
+      border-bottom: 1px solid $light-grey-3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 59px;
+    }
+
+    .filter-section {
+      margin: 0 $horizontal_margin;
+
+      &.authority {
+        .picklist-option {
+          .picklist-title > .socrata-icon {
+            color: $dark-grey-1;
+
+            &.socrata-icon-official2 {
+              color: $alternate-1;
+              width: 21px;
+              height: 21px;
+            }
+            &.socrata-icon-community {
+              color: $primary-base;
+            }
+          }
+        }
+        .picklist-option-selected {
+          .picklist-title > .socrata-icon {
+            &.socrata-icon-community {
+              color: white;
+            }
+          }
+        }
+      }
+
+      label {
+        user-select: none;
+
+        &.filter-label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          margin: 0.25rem 0;
+        }
+      }
+
+      .dropdown-container {
+        width: 100%;
+
+        .dropdown-placeholder {
+          border-color: $primary-light;
+          outline-color: $primary-base;
+
+          &.dropdown-selected > .socrata-icon {
+            &.socrata-icon-official2 {
+              color: $alternate-1;
+              width: 21px;
+              height: 21px;
+            }
+            &.socrata-icon-community {
+              color: $primary-base;
+            }
+          }
+        }
+
+        &.dropdown-focused {
+          .dropdown-placeholder {
+            border-color: $primary-light;
+            outline-color: $primary-base;
+          }
+          .dropdown-caret {
+            color: $primary-text;
+          }
+        }
+
+        .dropdown-placeholder {
+          &.dropdown-selected {
+            &:not(.default) {
+              span:not(.socrata-icon) {
+                color: $primary-text;
+              }
+            }
+
+            .socrata-icon {
+              color: $dark-grey-1;
+            }
+          }
+        }
+
+        .picklist-option {
+          &:hover {
+            background-color: $primary-light;
+          }
+
+          &.picklist-option-selected {
+            background-color: $primary-base;
+          }
+        }
+      }
+
+      .checkbox {
+        .fake-checkbox {
+          background: $white;
+        }
+
+        label {
+          font-size: 13px;
+        }
+      }
+
+      &.recently-viewed {
+        margin-bottom: 1.5rem;
+      }
+
+      .searchbox-filter {
+        position: relative;
+
+        .text-input {
+          width: 100%;
+          padding-left: 2rem;
+          font-size: 13px;
+
+          &::-ms-clear {
+            display: none;
+          }
+
+          &.searchbox-selected {
+            color: $primary-text;
+          }
+        }
+
+        .search-icon {
+          position: absolute;
+          top: 0.45rem;
+          left: 0.5rem;
+          font-size: 18px;
+          color: $light-grey-2;
+        }
+
+        .picklist-wrapper {
+          width: 100%;
+          max-height: 300px;
+          overflow-y: auto;
+          position: absolute;
+          margin-top: -0.5rem;
+          z-index: 100;
+
+          .picklist-option {
+            &:hover {
+              background-color: $primary-light;
+            }
+
+            &.picklist-option-selected {
+              background-color: $primary-base;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.catalog-filters.mobile {
+  &.modal-full {
+    // Copied from DSLP
+    $admin-header-z-index: 9999;
+    z-index: $admin-header-z-index + 101;
+  }
+
+  .filter-content {
+    width: 100%;
+  }
+
+  .filter-content .filter-section .dropdown-container .dropdown-placeholder {
+    border-color: $light-grey-3;
+  }
+
+  .clear-filters-wrapper {
+    float: none;
+    margin: 0;
+  }
+
+  .modal-header .done-button {
+    text-decoration: none;
+    float: right;
+  }
+
+  .modal-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    a.reset-filters {
+      text-decoration: none;
+      color: $dark-grey-1;
+
+      .socrata-icon {
+        margin-right: 0.3rem;
+      }
+    }
+  }
+}

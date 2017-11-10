@@ -1,5 +1,7 @@
 import activityFeed from 'reducers';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-export function getDefaultStore() {
-  return redux.createStore(activityFeed);
+export default function getDefaultStore(initialState = {}) {
+  return createStore(activityFeed, initialState, applyMiddleware(thunk));
 }

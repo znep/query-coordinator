@@ -76,7 +76,10 @@ describe('<Approvals />', () => {
         // statement in your test code and then in the browser you can do this in the JS console:
         // $('body').html(mount(<Approvals />).html())
         // This will replace the body of the document with the HTML of the React component under test.
-        assert(wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length);
+        assert(
+          wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length,
+          'Expected the Settings tab to be rendered'
+        );
       });
     })
 
@@ -86,7 +89,10 @@ describe('<Approvals />', () => {
       });
       it('does not render the settings tab', () => {
         const wrapper = mount(<Approvals {...approvalsProps()} />);
-        assert(wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length <= 0);
+        assert(
+          wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length <= 0,
+          'Expected the Settings tab to NOT be rendered'
+        );
       });
     })
   });

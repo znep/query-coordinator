@@ -28,6 +28,18 @@ describe('components/SchemaDotOrgMarkup', () => {
     );
   }
 
+  // Since Jenkins multithreads these tests, we can't be sure of the port
+  // that the tests will run on -- thus, strip the port out.
+  function stripPort(link) {
+    const port = /:[0-9]{4}/;
+    return link.replace(port, '');
+  }
+
+  function stripPorts(links) {
+    return _.map(_.compact(links), (link) =>
+      stripPort(link));
+  }
+
   describe('Keywords', () => {
     it('has the expected keywords when tags is empty but category exists', () => {
       const view = {
@@ -78,12 +90,12 @@ describe('components/SchemaDotOrgMarkup', () => {
       const view = {};
       const element = getElement(view);
 
-      const expectedURL = 'http://localhost:9876/context.html'; // :shakefist: karma!!!
+      const expectedURL = 'http://localhost/context.html';
 
       const nodes = element.find('meta[itemProp="url"]').getNodes();
 
       assert.equal(nodes.length, 1);
-      assert.equal(nodes[0].getAttribute('content'), expectedURL);
+      assert.equal(stripPort(nodes[0].getAttribute('content')), expectedURL);
     });
   });
 
@@ -92,12 +104,12 @@ describe('components/SchemaDotOrgMarkup', () => {
       const view = {};
       const element = getElement(view);
 
-      const expectedURL = 'http://localhost:9876/d/four-four';
+      const expectedURL = 'http://localhost/d/four-four';
 
       const nodes = element.find('meta[itemProp="sameAs"]').getNodes();
 
       assert.equal(nodes.length, 1);
-      assert.equal(nodes[0].getAttribute('content'), expectedURL);
+      assert.equal(stripPort(nodes[0].getAttribute('content')), expectedURL);
     });
   });
 
@@ -125,15 +137,15 @@ describe('components/SchemaDotOrgMarkup', () => {
       assert.deepEqual(formats.sort(), ['text/csv', 'text/csv', 'text/csv', 'application/json',
                                         'application/rdfxml', 'application/rssxml',
                                         'text/tab-separated-values', 'application/xml'].sort());
-      assert.deepEqual(urls.sort(), [
-        'https://localhost:9876/api/views/four-four/rows.csv?accessType=DOWNLOAD',
-        'https://localhost:9876/api/views/four-four/rows.json?accessType=DOWNLOAD',
-        'https://localhost:9876/api/views/four-four/rows.rdf?accessType=DOWNLOAD',
-        'https://localhost:9876/api/views/four-four/rows.rss?accessType=DOWNLOAD',
-        'https://localhost:9876/api/views/four-four/rows.xml?accessType=DOWNLOAD',
-        'https://localhost:9876/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true',
-        'https://localhost:9876/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B',
-        'https://localhost:9876/api/views/four-four/rows.tsv?accessType=DOWNLOAD&bom=true'
+      assert.deepEqual(stripPorts(urls.sort()), [
+        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD',
+        'https://localhost/api/views/four-four/rows.json?accessType=DOWNLOAD',
+        'https://localhost/api/views/four-four/rows.rdf?accessType=DOWNLOAD',
+        'https://localhost/api/views/four-four/rows.rss?accessType=DOWNLOAD',
+        'https://localhost/api/views/four-four/rows.xml?accessType=DOWNLOAD',
+        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true',
+        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B',
+        'https://localhost/api/views/four-four/rows.tsv?accessType=DOWNLOAD&bom=true'
       ].sort());
     });
 

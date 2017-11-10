@@ -224,16 +224,9 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'FETCH_RESULTS' },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_Q', value: 'asdf-1234' },
         { type: 'CHANGE_SORT_ORDER', order: undefined },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
         { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values },
         { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
         { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];

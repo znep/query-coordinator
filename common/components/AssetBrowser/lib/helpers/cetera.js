@@ -72,6 +72,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     authority,
     category,
     forUser,
+    ids,
     onlyRecentlyViewed,
     order,
     ownedBy,
@@ -115,7 +116,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     category,
     customMetadataFilters,
     forUser: forUser || _.get(ownedBy, 'id'),
-    idFilters: lastAccessedUids,
+    idFilters: ids || lastAccessedUids,
     limit: pageSize,
     mixpanelContext: {
       eventName: translateParamsToMixpanelEvent(filters),
@@ -188,7 +189,7 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
 
       dispatch(ceteraActions.updateCatalogResults(response, onlyRecentlyViewed, sortByRecentlyViewed));
       dispatch(ceteraActions.fetchingResultsSuccess());
-      onSuccess();
+      onSuccess(response.results.length > 0);
 
       fetchAssetCounts(dispatch, getState, parameters);
     } else {

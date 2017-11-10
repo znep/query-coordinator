@@ -211,7 +211,7 @@ export const changeQ = (value) => {
       return fetchResults(
         dispatch,
         getState,
-        { action: 'CHANGE_Q', ids, pageNumber: 1, order: undefined }, onSuccess
+        { action: 'CHANGE_Q', ids, q: null, pageNumber: 1, order: undefined }, onSuccess
       );
     };
   } else {

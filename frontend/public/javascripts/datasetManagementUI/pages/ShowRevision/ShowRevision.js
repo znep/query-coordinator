@@ -9,19 +9,19 @@ import TablePreview from 'containers/TablePreviewContainer';
 import RowDetails from 'components/RowDetails/RowDetails';
 import styles from './ShowRevision.scss';
 
-export function ShowRevision({ params, readFromCore, isPublishedDataset }) {
+export function ShowRevision({ params, readFromCore, isPublishedDataset, isParentRevision }) {
   return (
     <div className={styles.homeContainer}>
       <div className={styles.homeContent}>
         <MetadataTable />
         <div className={styles.schemaPreviewContainer}>
           <SchemaPreview readFromCore={readFromCore} />
-          <RowDetails
+          {isParentRevision || <RowDetails
             fourfour={params.fourfour}
             revisionSeq={_.toNumber(params.revisionSeq)}
-            isPublishedDataset={isPublishedDataset} />
+            isPublishedDataset={isPublishedDataset} />}
         </div>
-        {isPublishedDataset || (
+        {isPublishedDataset || isParentRevision || (
           <section className={styles.tableContainer}>
             <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
             <TablePreview params={params} />
@@ -36,7 +36,8 @@ export function ShowRevision({ params, readFromCore, isPublishedDataset }) {
 ShowRevision.propTypes = {
   params: PropTypes.object.isRequired,
   isPublishedDataset: PropTypes.bool.isRequired,
-  readFromCore: PropTypes.bool.isRequired
+  readFromCore: PropTypes.bool.isRequired,
+  isParentRevision: PropTypes.bool
 };
 
 const mapStateToProps = ({ entities }, { params }) => {
@@ -46,12 +47,14 @@ const mapStateToProps = ({ entities }, { params }) => {
   );
 
   const isPublishedDataset = view.displayType !== 'draft';
+  const isParentRevision = revision.is_parent;
 
   // use == in case osid is 0
   return {
     params,
     isPublishedDataset,
-    readFromCore: isPublishedDataset && revision.output_schema_id == null
+    readFromCore: isPublishedDataset && revision.output_schema_id == null,
+    isParentRevision
   };
 };
 

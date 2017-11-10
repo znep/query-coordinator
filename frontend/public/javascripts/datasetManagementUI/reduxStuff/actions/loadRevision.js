@@ -128,7 +128,8 @@ export function getCurrentRevision(params) {
         created_at: parseDate(resource.created_at),
         created_by: resource.created_by,
         closed_at: resource.closed_at ? parseDate(resource.closed_at) : null,
-        attachments: resource.attachments
+        attachments: resource.attachments,
+        is_parent: resource.is_parent
       };
     });
 }

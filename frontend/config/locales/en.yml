@@ -2498,6 +2498,7 @@ en:
       submessage: ...or click Browse to choose a file from your computer
       upload_link: Upload a Data File
       url_link: Import Data from URL
+      external_source: Link to an External Data Source
       total_rows: "{0} row, {1} column dataset"
       in_progress: Still in Progress
     show_upsert:

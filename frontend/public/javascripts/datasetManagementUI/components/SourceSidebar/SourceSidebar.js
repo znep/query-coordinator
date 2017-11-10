@@ -149,7 +149,7 @@ SourceList.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const SourceSidebar = ({ entities, sources, params }) => {
+const SourceSidebar = ({ entities, sources, params, hideHrefLink }) => {
   return (
     <section className={styles.sidebar}>
       <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
@@ -158,9 +158,11 @@ const SourceSidebar = ({ entities, sources, params }) => {
       <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
         {I18n.show_uploads.url_link}
       </Link>
-      <Link to={Links.hrefSource(params)} className={styles.tab} activeClassName={styles.selected}>
-        Link to an External Data Source
-      </Link>
+      {hideHrefLink || (
+        <Link to={Links.hrefSource(params)} className={styles.tab} activeClassName={styles.selected}>
+          {I18n.show_uploads.external_source}
+        </Link>
+      )}
       {!!sources.length && <SourceList entities={entities} sources={sources} params={params} />}
     </section>
   );
@@ -169,7 +171,8 @@ const SourceSidebar = ({ entities, sources, params }) => {
 SourceSidebar.propTypes = {
   sources: PropTypes.arrayOf(sourceProptype),
   entities: PropTypes.object.isRequired,
-  params: PropTypes.object.isRequired
+  params: PropTypes.object.isRequired,
+  hideHrefLink: PropTypes.bool.isRequired
 };
 
 export default SourceSidebar;

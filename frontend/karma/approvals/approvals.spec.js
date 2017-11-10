@@ -59,7 +59,7 @@ describe('<Approvals />', () => {
 
   describe('tabs', () => {
     describe('when the user has the "configure_approvals" right', () => {
-      let currentUser = JSON.parse(JSON.stringify(window.serverConfig.currentUser));
+      let currentUser = _.cloneDeep(window.serverConfig.currentUser);
 
       beforeEach(() => {
         window.serverConfig.currentUser.rights = ['configure_approvals'];

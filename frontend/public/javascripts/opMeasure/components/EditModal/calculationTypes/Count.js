@@ -5,18 +5,41 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-import { Checkbox } from 'common/components';
-import { toggleExcludeNullValues } from '../../../actions/editor';
+import { Checkbox, Dropdown, SocrataIcon } from 'common/components';
+import { toggleExcludeNullValues, setColumn } from '../../../actions/editor';
 
 export class Count extends Component {
 
   // Left-hand pane with count-specific options.
   renderConfigPane() {
-    const { onToggleExcludeNullValues, excludeNullValues } = this.props;
+    const {
+      displayableFilterableColumns,
+      excludeNullValues,
+      onSelectColumn,
+      onToggleExcludeNullValues
+    } = this.props;
+
+    const dropdownOptions = {
+      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
+      onSelection: (option) => {
+        onSelectColumn(option.value);
+      },
+      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
+        title: numberCol.name,
+        value: numberCol.fieldName,
+        icon: <SocrataIcon name="number" />
+      })),
+      value: this.props.columnFieldName,
+      id: 'count-column'
+    };
+
     return (
       <div className="metric-config">
+        <div className="column-dropdown">
+          <Dropdown {...dropdownOptions} />
+        </div>
         <Checkbox id="exclude-null-values" onChange={onToggleExcludeNullValues} checked={excludeNullValues}>
-          {I18n.t('open_performance.measure.edit_modal.calculation.types.count.exclude_nulls')}
+          {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
         </Checkbox>
       </div>
     );
@@ -44,21 +67,33 @@ export class Count extends Component {
 }
 
 Count.propTypes = {
+  columnFieldName: PropTypes.string,
+  displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
+    renderTypeName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    fieldName: PropTypes.string.isRequired
+  })),
   excludeNullValues: PropTypes.bool.isRequired,
-  onToggleExcludeNullValues: PropTypes.func.isRequired
+  onToggleExcludeNullValues: PropTypes.func.isRequired,
+  onSelectColumn: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
+  const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
   const excludeNullValues = _.get(state, 'editor.measure.metric.arguments.excludeNullValues', false);
+  const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
 
   return {
-    excludeNullValues
+    columnFieldName,
+    excludeNullValues,
+    displayableFilterableColumns
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onToggleExcludeNullValues: toggleExcludeNullValues
+    onToggleExcludeNullValues: toggleExcludeNullValues,
+    onSelectColumn: setColumn
   }, dispatch);
 }
 

@@ -10,6 +10,7 @@ const FlyoutRenderer = require('./FlyoutRenderer');
 const Pager = require('./Pager');
 const RowInspector = require('./RowInspector');
 const SvgColumnChart = require('./SvgColumnChart');
+const SvgComboChart = require('./SvgComboChart');
 const SvgHistogram = require('./SvgHistogram');
 const SvgTimelineChart = require('./SvgTimelineChart');
 const SvgPieChart = require('./SvgPieChart');
@@ -19,6 +20,7 @@ const SampleChart = require('./SampleChart');
 
 module.exports = {
   SvgBarChart,
+  SvgComboChart,
   ChoroplethMap,
   SvgRegionMap,
   ChoroplethMapUtils,

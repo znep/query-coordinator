@@ -6,13 +6,7 @@ import hydrateEmbeds from './hydrator';
 import enLocale from 'common/i18n/config/locales/en.yml';
 import I18n from 'common/i18n';
 
-// Socrata-icons MUST come before styleguide. Otherwise,
-// you will get icons showing up twice (styleguide has a
-// compatibility shim for old-style socrata-icons that is
-// sensitive to style load order).
-import 'frontend/app/styles/socrata-icons.scss';
-import 'common/styleguide/styleguide-no-tag-level.scss';
-import 'frontend/app/styles/visualizations-import-shim.scss';
+import './namespaced_embed_styles.scss';
 
 I18n.translations = enLocale;
 

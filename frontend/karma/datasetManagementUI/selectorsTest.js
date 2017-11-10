@@ -284,8 +284,8 @@ describe('Selectors', () => {
   describe('allTransformsDone', () => {
     it('returns false when transforms not done', () => {
       const columnsWithTransforms = [
-        { transform: { completed_at: null } },
-        { transform: { completed_at: '2017-06-13T18:43:32' } }
+        { transform: { finished_at: null } },
+        { transform: { finished_at: '2017-06-13T18:43:32' } }
       ];
 
       const result = Selectors.allTransformsDone(columnsWithTransforms);
@@ -295,17 +295,17 @@ describe('Selectors', () => {
     it('returns false when transform progress not defined yet', () => {
       const columnsWithTransforms = [
         { transform: {} },
-        { transform: { completed_at: '2017-06-13T18:43:32' } }
+        { transform: { finished_at: '2017-06-13T18:43:32' } }
       ];
 
       const result = Selectors.allTransformsDone(columnsWithTransforms);
       assert.isFalse(result);
     });
 
-    it('returns true when all transforms have a truthy completed_at', () => {
+    it('returns true when all transforms have a truthy finished_at', () => {
       const columnsWithTransforms = [
-        { transform: { completed_at: '2017-06-13T18:43:32' } },
-        { transform: { completed_at: '2017-06-13T18:43:32' } }
+        { transform: { finished_at: '2017-06-13T18:43:32' } },
+        { transform: { finished_at: '2017-06-13T18:43:32' } }
       ];
       const result = Selectors.allTransformsDone(columnsWithTransforms);
       assert.isTrue(result);

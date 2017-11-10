@@ -38,3 +38,11 @@ export function formatDateWithLocale(date) {
     locale(getLocale()).
     format(dateFormat);
 }
+
+// Where rawdate is seconds-since-epoch (how core returns
+// timestamps to us)
+export function formatRawDateAsISO8601(rawdate) {
+  return moment(rawdate * 1000).
+    tz(getTimezone()).
+    toISOString();
+}

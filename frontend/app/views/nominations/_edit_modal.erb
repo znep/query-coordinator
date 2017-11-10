@@ -13,6 +13,9 @@
         class="textPrompt" title="<%= t('controls.nominate.description_prompt') %>"></textarea>
     </div>
     <span class="required"><%= t('controls.nominate.required') %></span>
+    <% if FeatureFlags.derive[:captcha_on_nominations] %>
+      <%= render 'accounts/recaptcha2' %>
+    <% end %>
   </form>
   <div class="mainError"></div>
   <ul class="actions">

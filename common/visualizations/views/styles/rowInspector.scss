@@ -512,17 +512,18 @@ $action-btn-disabled-font-color: #c6c1bf;
       border-color: $socrata-row-inspector-chart-background-color transparent transparent transparent;
     }
   }
+
+  .action-btn {
+    @include action-button($action-btn-font-color, $action-btn-bg-color, $action-btn-border-color);
+
+    &:hover {
+      @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color);
+    }
+
+    &:disabled {
+      @include action-button($action-btn-disabled-font-color, $action-btn-disabled-bg-color, $action-btn-disabled-border-color);
+    }
+  }
 }
 
-.action-btn {
-  @include action-button($action-btn-font-color, $action-btn-bg-color, $action-btn-border-color);
-
-  &:hover {
-    @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color);
-  }
-
-  &:disabled {
-    @include action-button($action-btn-disabled-font-color, $action-btn-disabled-bg-color, $action-btn-disabled-border-color);
-  }
-}
 

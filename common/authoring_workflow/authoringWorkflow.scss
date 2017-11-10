@@ -296,7 +296,8 @@
       margin: 12px 0;
 
       &.disabled {
-        color: #bbbbbb;
+        color: #bbb;
+        cursor: not-allowed;
       }
 
       .input-range-slider {
@@ -494,65 +495,124 @@
       }
     }
 
-    .measure-list {
+    .tabs-list {
+      border-bottom: 1px solid #c8c8c8;
+      display: flex;
       list-style: none;
-      margin: 0;
+      margin: 0 0 10px;
       padding: 0;
-      width: 100%;
 
-      .measure-list-item {
-        display: flex;
-        margin: 0;
-        padding: 0;
+      li {
+        margin: 0 5px 0 0;
 
-        .dropdown-focused {
-          .dropdown-placeholder {
-            border-color: #00be9b;
-            outline: none;
+        a {
+          border-bottom: 4px solid transparent;
+          color: #636A71;
+          cursor: pointer;
+          display: block;
+          padding: 5px 10px;
+
+          span {
+            margin-right: 5px;
           }
-        }
 
-        .measure-column-selector-dropdown-container {
-          flex: 1 1 100%;
-          overflow: hidden;
-        }
+          &.selected {
+            border-bottom-color: #288dc1;
 
-        .measure-aggregation-selector-dropdown-container {
-          flex: 0 0 80px;
-          margin-left: -1px;
-        }
+            span {
+              color: #307395;
+            }
+          }
 
-        .measure-delete-link-container {
-          display: table;
-          flex: 0 0 25px;
-          margin: 0 0 0 10px;
-
-          .measure-delete-link {
-            color: #5e5e5e;
-            cursor: pointer;
-            display: table-cell;
-            font-size: 25px;
-            height: 46px;
-            vertical-align: middle;
+          &:hover, &:focus {
+            background: #F5F5F5;
+            border-bottom-color: #8E98A1;
           }
         }
       }
     }
 
-    .measure-add-measure-link-container {
-      margin: 5px 0;
+    .dual-axis-container {
 
-      a {
-        cursor: pointer;
-        text-decoration: none;
+      .secondary-axis-container {
 
-        .socrata-icon-add {
-          margin: 0 5px;
-        }
-
-        &.disabled {
-          color: #777;
+        &.disabled{
+          color: #bbb;
           cursor: not-allowed;
+        }
+      }
+    }
+
+    .measure-axis-bounds-label {
+      display: block;
+      margin: 10px 0;
+    }
+
+    .measure-list-container {
+      .block-label {
+        margin: 20px 0 10px;
+      }
+
+      .measure-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+
+        .measure-list-item {
+          display: flex;
+          margin: 0;
+          padding: 0;
+
+          .dropdown-focused {
+            .dropdown-placeholder {
+              border-color: #00be9b;
+              outline: none;
+            }
+          }
+
+          .measure-column-selector-dropdown-container {
+            flex: 1 1 100%;
+            overflow: hidden;
+          }
+
+          .measure-aggregation-selector-dropdown-container {
+            flex: 0 0 80px;
+            margin-left: -1px;
+          }
+
+          .measure-delete-link-container {
+            display: table;
+            flex: 0 0 25px;
+            margin: 0 0 0 10px;
+
+            .measure-delete-link {
+              color: #5e5e5e;
+              cursor: pointer;
+              display: table-cell;
+              font-size: 25px;
+              height: 46px;
+              vertical-align: middle;
+            }
+          }
+        }
+      }
+
+      .measure-add-measure-link-container {
+        margin: 5px 0;
+
+        a {
+          cursor: pointer;
+          text-decoration: none;
+
+          .socrata-icon-add {
+            margin: 0 5px;
+          }
+
+          &.disabled {
+            color: #777;
+            cursor: not-allowed;
+          }
         }
       }
     }
@@ -667,7 +727,8 @@
     #grouping-display-grouped-container, #grouping-display-stacked-container, #grouping-display-100-percent-stacked-container {
 
       &.disabled {
-        opacity: 0.25;
+        color: #bbb;
+        cursor: not-allowed;
       }
     }
 
@@ -714,12 +775,17 @@
     #limit-none-container {
 
       &.disabled {
-        opacity: 0.25;
+        color: #bbb;
+        cursor: not-allowed;
       }
     }
 
     #limit-count-container {
-      margin-top: 0.5rem;
+      margin-top: 0;
+
+      input[type=radio] {
+        height: 0;
+      }
     }
 
     #limit-count-value-container {
@@ -727,7 +793,8 @@
       margin: 0;
 
       &.disabled {
-        opacity: 0.25;
+        color: #bbb;
+        cursor: not-allowed;
       }
     }
 

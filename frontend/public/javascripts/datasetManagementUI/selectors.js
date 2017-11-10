@@ -84,7 +84,7 @@ export function treeForOutputSchema(entities, outputSchemaId) {
 
 export function allTransformsDone(columnsWithTransforms = []) {
   return columnsWithTransforms
-    .map(col => !!col.transform.completed_at)
+    .map(col => !!col.transform.finished_at)
     .reduce((acc, bool) => acc && bool, true);
 }
 
@@ -179,6 +179,10 @@ export function currentAndIgnoredOutputColumns(entities, outputSchemaId) {
     ignored: unreferencedOutputColumns.map(oc => ({ ...oc, ignored: true }))
   };
 }
+
+export const inputSchemas = (entities, sourceId) => {
+  return _.filter(entities.input_schemas, { source_id: sourceId });
+};
 
 export const latestOutputSchemaForSource = (entities, sourceId) => {
   const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];

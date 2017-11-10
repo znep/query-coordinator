@@ -577,4 +577,12 @@ describe PageMetadataManager do
     end
 
   end
+
+  describe '#need_autocomplete_secondary_index?' do
+    it 'needs tests'
+  end
+
+  describe '#request_soda_fountain_secondary_index' do
+    it 'needs tests'
+  end
 end

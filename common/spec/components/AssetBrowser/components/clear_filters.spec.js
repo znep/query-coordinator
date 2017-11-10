@@ -10,9 +10,11 @@ import { ClearFilters } from 'common/components/AssetBrowser/components/filters/
 const store = configureMockStore([thunk])();
 
 const clearFilterProps = (options = {}) => ({
+  activeTab: 'allAssets',
   allFilters: {},
   buttonStyle: false,
   clearAllFilters: () => {},
+  header: { activeTab: 'allAssets' },
   store: store,
   ...options
 });

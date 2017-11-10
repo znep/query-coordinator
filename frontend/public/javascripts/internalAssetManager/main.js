@@ -9,9 +9,10 @@ import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
 import AssetBrowser from 'common/components/AssetBrowser';
-import { FeedbackPanel } from 'common/components/AssetBrowser/components';
+import { FeedbackPanel } from 'common/components/FeedbackPanel';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import reducer from 'common/components/AssetBrowser/reducers';
+import { getCurrentUserId } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
 
 const middleware = [thunk];
@@ -28,10 +29,20 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 
 const tabs = {
   [constants.MY_ASSETS_TAB]: {
-    component: ResultsAndFilters
+    component: ResultsAndFilters,
+    props: {
+      baseFilters: {
+        forUser: getCurrentUserId()
+      }
+    }
   },
   [constants.SHARED_TO_ME_TAB]: {
-    component: ResultsAndFilters
+    component: ResultsAndFilters,
+    props: {
+      baseFilters: {
+        sharedTo: getCurrentUserId()
+      }
+    }
   },
   [constants.ALL_ASSETS_TAB]: {
     component: ResultsAndFilters
@@ -68,7 +79,7 @@ _.defer(() => {
 
   // Hot Module Replacement API
   if (module.hot) {
-    module.hot.accept('common/components/AssetBrowser/components/feedback_panel', () => {
+    module.hot.accept('common/components/FeedbackPanel', () => {
       ReactDOM.render(
         <AppContainer>
           {feedbackPanel}

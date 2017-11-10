@@ -22,7 +22,7 @@ export const RevisionActivity = ({ details }) => (
       <SocrataIcon name="plus2" className={styles.icon} />
     </div>
     <div>
-      <p>
+      <p className={styles.activityDetails}>
         <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
@@ -40,32 +40,46 @@ RevisionActivity.propTypes = {
   }).isRequired
 };
 
-const sourceActionLabel = source => {
+const sourceActionLabel = (source, previousSource) => {
+  if (previousSource) return SubI18n.changed_parse_options;
   if (source.source_type && source.source_type.type === 'url') return SubI18n.added_a_url_source;
   if (source.source_type && source.source_type.type === 'upload') return SubI18n.added_an_upload;
 };
 
-export const SourceActivity = ({ details: source }) => (
-  <div className={styles.activity} data-activity-type="source">
-    <div className={styles.timeline}>
-      <SocrataIcon name="data" className={styles.icon} />
+const sourceActionDetails = (source) => {
+  if (source.source_type && source.source_type.type === 'url') return source.source_type.url;
+  if (source.source_type && source.source_type.type === 'upload') return source.source_type.filename;
+};
+
+export const SourceActivity = ({ details }) => {
+  const { source, previousSource } = details;
+  return (
+    <div className={styles.activity} data-activity-type="source">
+      <div className={styles.timeline}>
+        <SocrataIcon name="data" className={styles.icon} />
+      </div>
+      <div>
+        <p className={styles.activityDetails}>
+          <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
+            {details.createdBy}
+          </a>{' '}
+          {sourceActionLabel(source, previousSource)}
+        </p>
+        <p className={styles.muted}>
+          {sourceActionDetails(source, previousSource)}
+        </p>
+        <RecentActionsTimestamp date={details.createdAt} />
+      </div>
     </div>
-    <div>
-      <p>
-        <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
-          {source.createdBy}
-        </a>{' '}
-        {sourceActionLabel(source)}
-      </p>
-      <RecentActionsTimestamp date={source.createdAt} />
-    </div>
-  </div>
-);
+  );
+};
 
 SourceActivity.propTypes = {
   details: PropTypes.shape({
     createdAt: PropTypes.object,
-    createdBy: PropTypes.string
+    createdBy: PropTypes.string,
+    source: PropTypes.object,
+    previousSource: PropTypes.object
   }).isRequired
 };
 
@@ -75,7 +89,7 @@ export const OutputSchemaActivity = ({ details, params }) => (
       <SocrataIcon name="edit" className={styles.icon} />
     </div>
     <div>
-      <p>
+      <p className={styles.activityDetails}>
         <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
@@ -104,7 +118,7 @@ export const TaskSetActivity = ({ details }) => (
       <SocrataIcon name="dataset" className={styles.icon} />
     </div>
     <div>
-      <p>
+      <p className={styles.activityDetails}>
         <a href={`/profile/${window.serverConfig.currentUser.id}`} className={styles.createdBy}>
           {details.createdBy}
         </a>{' '}
@@ -128,7 +142,7 @@ export const TaskSetFinishedActivity = ({ details }) => (
       <SocrataIcon name="checkmark3" className={styles.icon} />
     </div>
     <div>
-      <p>{SubI18n.processing_succeeded}</p>
+      <p className={styles.activityDetails}>{SubI18n.processing_succeeded}</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
   </div>
@@ -147,7 +161,7 @@ export const TaskSetFailedActivity = ({ details }) => (
       <SocrataIcon name="failed" className={styles.icon} />
     </div>
     <div>
-      <p>{SubI18n.processing_failed}</p>
+      <p className={styles.activityDetails}>{SubI18n.processing_failed}</p>
       <RecentActionsTimestamp date={details.createdAt} />
     </div>
   </div>

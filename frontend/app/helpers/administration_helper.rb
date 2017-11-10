@@ -224,7 +224,7 @@ module AdministrationHelper
 
   def user_can_review_approvals?
     _user = (current_user || User.new)
-    feature_flag?('enable_approvals_beta', request) &&
+    feature_flag?('use_fontana_approvals', request) &&
       (_user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS))
   end
 

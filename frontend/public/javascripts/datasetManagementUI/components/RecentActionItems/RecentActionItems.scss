@@ -6,6 +6,7 @@
   composes: small from global;
 }
 
+
 .timeline {
   width: 1.5em;
 }
@@ -30,15 +31,25 @@
   }
 }
 
+.muted {
+  composes: small from global;
+  color: $light-grey-1;
+  font-weight: 100;
+  margin: 0em;
+}
+
 .activity {
   text-align: left;
   padding: 0.5em 1em;
   display: flex;
 
-  p {
+  .activityDetails {
     margin: 0em;
     font-weight: 600;
   }
+
+
+
 
   .createdBy {
     font-weight: bold;

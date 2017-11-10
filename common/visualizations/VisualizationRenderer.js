@@ -8,6 +8,7 @@ import { migrateVif } from './helpers/VifHelpers';
 // import these to make sure the jquery plugins have been initialized
 import './SvgBarChart';
 import './SvgColumnChart';
+import './SvgComboChart';
 import './SvgFeatureMap';
 import './SvgHistogram';
 import './SvgPieChart';
@@ -55,7 +56,7 @@ export const VisualizationRenderer = function(vif, element, options) {
   };
 
   const initializeVisualization = () => {
-    const visualizationType = _.get(this.vif, 'series[0].type', null);
+    const visualizationType = _.get(this.vif, 'series[0].type', '').split('.')[0];
 
     switch (visualizationType) {
       case 'barChart':
@@ -64,6 +65,10 @@ export const VisualizationRenderer = function(vif, element, options) {
 
       case 'columnChart':
         $element.socrataSvgColumnChart(this.vif, options);
+        break;
+
+      case 'comboChart':
+        $element.socrataSvgComboChart(this.vif, options);
         break;
 
       case 'featureMap':

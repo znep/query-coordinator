@@ -126,6 +126,10 @@
       margin-bottom: 16px;
     }
 
+    .option-title {
+      font-weight: 600;
+    }
+
     .no-data-source {
       $box-height: 300px;
 
@@ -207,5 +211,63 @@
         }
       }
     }
+
+    .rate-metric-numerator, .rate-metric-denominator {
+      color: $dark-grey-2;
+      font-size: 32px;
+      text-align: center;
+      margin-left: 25px;
+      margin-right: 25px;
+      &:empty {
+        height: 53px; // Need to keep dimensions even if no content present.
+      }
+
+    }
+
+    .rate-metric-numerator {
+      border-bottom: 2px solid $dark-grey-2;
+    }
+
+    .rate-metric-dividing-by-zero {
+      color: $warning;
+    }
+
+    .rate-metric-call-to-action {
+      visibility: hidden;
+      position: relative;
+      top: -32px;
+      text-align: center;
+      font-style: italic;
+      font-size: 10px;
+      color: $alternate-4-text;
+      margin-left: 35%;
+      margin-right: 35%;
+
+      &.visible {
+        visibility: visible;
+      }
+    }
+
+    .rate-metric-denominator-direct-input {
+      h5 {
+        margin-top: 15px;
+      }
+    }
+
+    #numerator-column, #denominator-column {
+      max-width: 100%; // Prevent overflow with long column name.
+    }
+  }
+
+  .socrata-accordion-pane {
+    border: 1px solid $light-grey-4;
+  }
+
+  .socrata-accordion-pane-content {
+    background: transparent;
+  }
+
+  .socrata-accordion-pane-title {
+    border: none;
   }
 }

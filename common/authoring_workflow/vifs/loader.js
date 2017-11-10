@@ -20,6 +20,7 @@ const paths = {
   errorBarsUpperBoundColumnName: 'series[0].errorBars.upperBoundColumnName',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
+  labelRight: 'configuration.axisLabels.right',
   labelTop: 'configuration.axisLabels.top',
   dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   limit: 'series[0].dataSource.limit',
@@ -41,7 +42,10 @@ const paths = {
   referenceLineValue: 'referenceLines[{0}].value',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[{0}].color.secondary',
+  secondaryMeasureAxisMaxValue: 'configuration.secondaryMeasureAxisMaxValue',
+  secondaryMeasureAxisMinValue: 'configuration.secondaryMeasureAxisMinValue',
   series: 'series',
+  seriesType: 'series[{0}].type',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
   shapefileUid: 'configuration.shapefile.uid',
@@ -56,6 +60,8 @@ const paths = {
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
   unitOne: 'series[{0}].unit.one',
   unitOther: 'series[{0}].unit.other',
+  useSecondaryAxisForColumns: 'configuration.useSecondaryAxisForColumns',
+  useSecondaryAxisForLines: 'configuration.useSecondaryAxisForLines',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
   zeroColor: 'configuration.legend.zeroColor'
@@ -85,6 +91,11 @@ export const load = (dispatch, vif) => {
 
       if (i > 0) { // the first series already exists in the vif templates, no need to create it.
         dispatch(actions.appendSeries({ isInitialLoad: true }));
+      }
+
+      const seriesTypePath = paths.seriesType.format(i);
+      if (has(seriesTypePath)) {
+        dispatch(actions.setSeriesType(i, get(seriesTypePath)));
       }
 
       const measureColumnNamePath = paths.measureColumnName.format(i);
@@ -202,6 +213,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setLabelLeft(get(paths.labelLeft)));
   }
 
+  if (has(paths.labelRight)) {
+    dispatch(actions.setLabelRight(get(paths.labelRight)));
+  }
+
   if (has(paths.labelTop)) {
     dispatch(actions.setLabelTop(get(paths.labelTop)));
   }
@@ -232,6 +247,13 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
   }
 
+  if (has(paths.secondaryMeasureAxisMaxValue)) {
+    dispatch(actions.setSecondaryMeasureAxisMaxValue(get(paths.secondaryMeasureAxisMaxValue)));
+  }
+
+  if (has(paths.secondaryMeasureAxisMinValue)) {
+    dispatch(actions.setSecondaryMeasureAxisMinValue(get(paths.secondaryMeasureAxisMinValue)));
+  }
   if (has(paths.negativeColor)) {
     dispatch(actions.setNegativeColor(get(paths.negativeColor)));
   }
@@ -302,12 +324,24 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
   }
 
+  if (has(paths.useSecondaryAxisForColumns)) {
+    dispatch(actions.setUseSecondaryAxisForColumns(get(paths.useSecondaryAxisForColumns)));
+  }
+
+  if (has(paths.useSecondaryAxisForLines)) {
+    dispatch(actions.setUseSecondaryAxisForLines(get(paths.useSecondaryAxisForLines)));
+  }
+
   if (has(paths.viewSourceDataLink)) {
     dispatch(actions.setViewSourceDataLink(get(paths.viewSourceDataLink)));
   }
 
   if (has(paths.visualizationType)) {
-    dispatch(actions.setVisualizationType(get(paths.visualizationType)));
+    const visualizationType = get(paths.visualizationType);
+    const parts = (visualizationType || '').split('.');
+    const type = (parts.length > 0) ? parts[0] : visualizationType;
+
+    dispatch(actions.setVisualizationType(type));
   }
 
   if (has(paths.zeroColor)) {

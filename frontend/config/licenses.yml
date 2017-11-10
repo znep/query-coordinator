@@ -126,6 +126,8 @@
 - id: USGOV_WORKS
   name: Public Domain U.S. Government
   terms_link: https://www.usa.gov/government-works
+- id: NBOGL
+  name: New Brunswick Open Government Licence
 - id: NIST_SRD
   name: National Institute of Standards and Technology Licensing
   terms_link: http://www.nist.gov/data/license.cfm

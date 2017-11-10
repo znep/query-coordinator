@@ -9,11 +9,13 @@ section.sidebar {
 
 .sourceList {
   padding: 1em;
+  padding-left: 0.5em;
   list-style-type: none;
 
   li {
-    color: $primary-base;
     margin-bottom: 1em;
+    padding-left: 0.5em;
+    border-left: 1px solid $light-grey-4;
 
     a {
       text-decoration: none;
@@ -23,6 +25,10 @@ section.sidebar {
       margin: 0px;
       color: $light-grey-2;
     }
+  }
+
+  li:hover {
+    border-left: 1px solid $primary-base;
   }
 }
 

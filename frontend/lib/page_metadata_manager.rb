@@ -43,8 +43,22 @@ class PageMetadataManager
     )
   end
 
+  def need_autocomplete_secondary_index?(dataset_id, request_options = {})
+    url = "/views/#{dataset_id}/replication.json"
+    need_secondary_index = begin
+      response = CoreServer::Base.connection.get_request(url, request_options)
+      response['autocomplete_replication_up_to_date'].blank?
+    rescue => error
+      true
+    end
+  end
+
+  # TODO PageMetadataManager doesn't seem like the right place for this.
   # This is where we poke spandex to index the dataset so search cards can autocomplete
   def request_soda_fountain_secondary_index(dataset_id, request_options = {})
+    return unless need_autocomplete_secondary_index?(dataset_id, request_options)
+
+    response = nil
     secondary_group_identifier = APP_CONFIG.secondary_group_identifier
     unless secondary_group_identifier.blank?
       soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
@@ -55,6 +69,7 @@ class PageMetadataManager
       }.reverse_merge(request_options)
 
       response = soda_fountain_secondary.issue_request(options)
+
       if response.fetch(:status) !~ /^2[0-9][0-9]$/
         report_error(
           "Error requesting secondary index for #{dataset_id} - \n" +
@@ -62,6 +77,8 @@ class PageMetadataManager
         )
       end
     end
+
+    response
   end
 
   # Retrieve page metadata

@@ -11,54 +11,49 @@ import {
   setReferenceLineColor,
   setReferenceLineLabel,
   setReferenceLineValue,
-  setOrderBy,
-  setMeasureAxisMinValue,
-  setMeasureAxisMaxValue
+  setOrderBy
 } from '../../actions';
 import {
   getAnyDimension,
   getReferenceLines,
   getOrderBy,
-  getMeasureAxisMinValue,
-  getMeasureAxisMaxValue,
   isBarChart,
   isColumnChart,
+  isComboChart,
   isHistogram,
   isOneHundredPercentStacked,
   isTimelineChart,
   isPieChart
 } from '../../selectors/vifAuthoring';
 import { isDimensionTypeCalendarDate } from '../../selectors/metadata';
-import EmptyPane from './EmptyPane';
 import DebouncedInput from '../shared/DebouncedInput';
+import DualAxisOptions from '../DualAxisOptions';
+import EmptyPane from './EmptyPane';
+import MeasureAxisOptionsDual from '../MeasureAxisOptionsDual';
+import MeasureAxisOptionsSingle from '../MeasureAxisOptionsSingle';
 import TextInputButton from '../shared/TextInputButton';
 
 export class AxisAndScalePane extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      measureAxisScaleControl: props.measureAxisScaleControl || 'automatic'
-    };
-
     _.bindAll(this, [
+      'getExpandedStateKey',
+      'renderAddReferenceLineLink',
+      'renderBarChartControls',
+      'renderColumnChartControls',
+      'renderComboChartControls',
       'renderChartSortingOption',
       'renderChartSorting',
-      'onMeasureAxisScaleControlChange',
-      'renderMeasureAxisScaleControl',
+      'renderEmptyPane',
+      'renderHistogramControls',
+      'renderPieChartControls',
       'renderReferenceLinesControls',
       'renderReferenceLinesControlsAtIndex',
       'renderReferenceLinesLabelTextInputButton',
       'renderReferenceLinesLabelInput',
-      'getExpandedStateKey',
-      'renderAddReferenceLineLink',
       'renderTimelinePrecisionOption',
-      'renderBarChartControls',
-      'renderColumnChartControls',
-      'renderHistogramControls',
-      'renderTimelineChartControls',
-      'renderPieChartControls',
-      'renderEmptyPane'
+      'renderTimelineChartControls'
     ]);
   }
 
@@ -98,94 +93,26 @@ export class AxisAndScalePane extends Component {
     );
   }
 
-  onMeasureAxisScaleControlChange(event) {
-    this.setState({
-      measureAxisScaleControl: event.target.value
-    });
-
-    if (event.target.value == 'automatic') {
-      this.props.onMeasureAxisControlAuto();
-    }
-  }
-
-  renderMeasureAxisScaleControl() {
-    const {
-      vifAuthoring,
-      onMeasureAxisMinValueChange,
-      onMeasureAxisMaxValueChange
-    } = this.props;
-
-    let limitMax = getMeasureAxisMaxValue(vifAuthoring);
-    if (_.isNull(limitMax)) {
-      limitMax = '';
-    }
-
-    let limitMin = getMeasureAxisMinValue(vifAuthoring);
-    if (_.isNull(limitMin)) {
-      limitMin = '';
-    }
-
-    const isAuto = (this.state.measureAxisScaleControl == 'automatic') &&
-      !limitMin &&
-      !limitMax;
-
-    const boundariesPart = (
-      <div className="double-column-input-group">
-        <div>
-          <label className="block-label" htmlFor="measure-axis-scale-custom-min">
-            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.minimum')}
-          </label>
-          <DebouncedInput type="number" value={limitMin} onChange={onMeasureAxisMinValueChange} className="text-input" id="measure-axis-scale-custom-min" />
-        </div>
-        <div>
-          <label className="block-label" htmlFor="measure-axis-scale-custom-max">
-            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.maximum')}
-          </label>
-          <DebouncedInput type="number" value={limitMax} onChange={onMeasureAxisMaxValueChange} className="text-input" id="measure-axis-scale-custom-max" />
-        </div>
-      </div>
-    );
-
-    const isDisabled = isOneHundredPercentStacked(vifAuthoring);
-    const containerAttributes = {
-      className: `${isDisabled ? 'authoring-field radiobutton disabled' : 'authoring-field radiobutton'}`
-    };
+  renderMeasureAxisOptions() {
+    const { vifAuthoring } = this.props;
+    const measureAxisOptions = isComboChart(vifAuthoring) ?
+      <MeasureAxisOptionsDual /> :
+      <MeasureAxisOptionsSingle />;
 
     return (
       <AccordionPane title={I18n.t('shared.visualizations.panes.axis_and_scale.subheaders.scale')}>
-        {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.title')}
-        <div {...containerAttributes}>
-          <div>
-            <input
-              type="radio"
-              name="measure-axis-scale"
-              id="measure-axis-scale-automatic"
-              value="automatic"
-              onChange={this.onMeasureAxisScaleControlChange}
-              checked={isAuto}
-              disabled={isDisabled} />
-            <label htmlFor="measure-axis-scale-automatic">
-              <span className="fake-radiobutton" />
-              <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.automatic')}</div>
-            </label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              name="measure-axis-scale"
-              id="measure-axis-scale-custom"
-              value="custom"
-              onChange={this.onMeasureAxisScaleControlChange}
-              checked={!isAuto}
-              disabled={isDisabled} />
-            <label htmlFor="measure-axis-scale-custom">
-              <span className="fake-radiobutton" />
-              <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.custom')}</div>
-            </label>
-          </div>
-        </div>
+        <label className="measure-axis-bounds-label">
+          {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.title')}
+        </label>
+        {measureAxisOptions}
+      </AccordionPane>
+    );
+  }
 
-        {!isAuto ? boundariesPart : null}
+  renderDualAxisControls() {
+    return (
+      <AccordionPane title={I18n.t('shared.visualizations.panes.dual_axis_options.subheaders.dual_axis_options')}>
+        <DualAxisOptions />
       </AccordionPane>
     );
   }
@@ -340,12 +267,12 @@ export class AxisAndScalePane extends Component {
 
   renderBarChartControls() {
     const chartSorting = this.renderChartSorting();
-    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const measureAxisOptions = this.renderMeasureAxisOptions();
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <AccordionContainer>
-        {measureAxisScaleControl}
+        {measureAxisOptions}
         {chartSorting}
         {referenceLinesControls}
       </AccordionContainer>
@@ -354,12 +281,28 @@ export class AxisAndScalePane extends Component {
 
   renderColumnChartControls() {
     const chartSorting = this.renderChartSorting();
-    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const measureAxisOptions = this.renderMeasureAxisOptions();
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <AccordionContainer>
-        {measureAxisScaleControl}
+        {measureAxisOptions}
+        {chartSorting}
+        {referenceLinesControls}
+      </AccordionContainer>
+    );
+  }
+
+  renderComboChartControls() {
+    const chartSorting = this.renderChartSorting();
+    const measureAxisOptions = this.renderMeasureAxisOptions();
+    const referenceLinesControls = this.renderReferenceLinesControls();
+    const dualAxisControls = this.renderDualAxisControls();
+
+    return (
+      <AccordionContainer>
+        {dualAxisControls}
+        {measureAxisOptions}
         {chartSorting}
         {referenceLinesControls}
       </AccordionContainer>
@@ -367,24 +310,24 @@ export class AxisAndScalePane extends Component {
   }
 
   renderHistogramControls() {
-    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const measureAxisOptions = this.renderMeasureAxisOptions();
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <AccordionContainer>
-        {measureAxisScaleControl}
+        {measureAxisOptions}
         {referenceLinesControls}
       </AccordionContainer>
     );
   }
 
   renderTimelineChartControls() {
-    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+    const measureAxisOptions = this.renderMeasureAxisOptions();
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <AccordionContainer>
-        {measureAxisScaleControl}
+        {measureAxisOptions}
         {referenceLinesControls}
       </AccordionContainer>
     );
@@ -413,6 +356,8 @@ export class AxisAndScalePane extends Component {
       configuration = this.renderBarChartControls();
     } else if (isColumnChart(vifAuthoring)) {
       configuration = this.renderColumnChartControls();
+    } else if (isComboChart(vifAuthoring)) {
+      configuration = this.renderComboChartControls();
     } else if (isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {
@@ -469,19 +414,6 @@ function mapDispatchToProps(dispatch) {
 
     onSelectChartSorting: (chartSorting) => {
       dispatch(setOrderBy(chartSorting.orderBy));
-    },
-
-    onMeasureAxisMinValueChange: (event) => {
-      dispatch(setMeasureAxisMinValue(event.target.value));
-    },
-
-    onMeasureAxisMaxValueChange: (event) => {
-      dispatch(setMeasureAxisMaxValue(event.target.value));
-    },
-
-    onMeasureAxisControlAuto: () => {
-      dispatch(setMeasureAxisMinValue());
-      dispatch(setMeasureAxisMaxValue());
     }
   };
 }

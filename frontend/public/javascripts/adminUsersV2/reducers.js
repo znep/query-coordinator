@@ -122,14 +122,11 @@ const ui = (state = initialUiState, action) => {
           ...state,
           submittingUsers: true
         };
-      } else if (action.stage === COMPLETE_SUCCESS || action.stage === COMPLETE_FAIL) {
+      } else {
         return {
           ...state,
           submittingUsers: false
         };
-      } else {
-        console.warn('unknown stage, ', action.stage);
-        return state;
       }
     default:
       return state;

@@ -112,15 +112,15 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setDimensionLabelAreaSize', 'dimensionLabelAreaSize', 'configuration.dimensionLabelAreaSize', ['barChart']);
       shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['barChart']);
-      shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart', 'histogram']);
-      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['barChart', 'columnChart', 'timelineChart', 'histogram']);
-      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', []);
+      shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart', 'histogram', 'comboChart']);
+      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['barChart', 'columnChart', 'timelineChart', 'histogram', 'comboChart']);
+      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['comboChart']);
 
       shouldSetVif('setShowValueLabels', true, 'configuration.showValueLabels', ['barChart', 'pieChart']);
       shouldSetVif('setShowValueLabelsAsPercent', true, 'configuration.showValueLabelsAsPercent', ['pieChart']);
 
-      shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
+      shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
 
       shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 

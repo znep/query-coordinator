@@ -16,6 +16,7 @@ import '../editor/block-component-renderers/componentHero';
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
 import '../editor/block-component-renderers/componentSocrataVisualizationBarChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';
+import '../editor/block-component-renderers/componentSocrataVisualizationComboChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationHistogram';
 import '../editor/block-component-renderers/componentSocrataVisualizationPieChart';
@@ -126,6 +127,10 @@ $(document).on('ready', function() {
 
         case 'socrata.visualization.columnChart':
           $element.componentSocrataVisualizationColumnChart(props);
+          break;
+
+        case 'socrata.visualization.comboChart':
+          $element.componentSocrataVisualizationComboChart(props);
           break;
 
         case 'socrata.visualization.pieChart':

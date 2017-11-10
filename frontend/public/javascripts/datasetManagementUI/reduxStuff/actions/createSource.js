@@ -58,21 +58,17 @@ function updateSource(params, source, changes) {
       callParams: { sourceId: source.id }
     };
 
-    dispatch(listenForOutputSchema(source.id, params));
-
     dispatch(apiCallStarted(callId, call));
 
     return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
-      method: 'PATCH',
+      method: 'POST',
       body: JSON.stringify(changes)
     })
       .then(checkStatus)
       .then(getJson)
       .then(resp => {
         const { resource } = resp;
-
         dispatch(apiCallSucceeded(callId));
-        dispatch(sourceUpdate(source.id, resource));
         return resource;
       })
       .catch(err => {
@@ -84,12 +80,15 @@ function updateSource(params, source, changes) {
 
 export function updateSourceParseOptions(params, source, parseOptions) {
   return dispatch => {
-    return dispatch(listenForOutputSchema(source.id))
-      .receive('ok', () => {
-        return dispatch(updateSource(params, source, { parse_options: parseOptions }));
+    dispatch(updateSource(params, source, { parse_options: parseOptions }))
+      .then(resource => {
+        dispatch(listenForInputSchema(resource.id, params));
+        return resource;
       })
-      .receive('error', (reason) => {
-        console.error('Failed to join source channel!', reason);
+      .then(normalizeCreateSourceResponse)
+      .then(normalized => {
+        dispatch(createSourceSuccess(normalized));
+        return normalized;
       });
   };
 }
@@ -120,9 +119,10 @@ export function createViewSource(params) {
 }
 
 // Upload Source
-export function createUploadSource(file, params) {
+export function createUploadSource(file, parseFile, params) {
   const callParams = {
-    source_type: { type: 'upload', filename: file.name }
+    source_type: { type: 'upload', filename: file.name },
+    parse_options: { parse_source: parseFile }
   };
   return dispatch => {
     return dispatch(createSource(params, callParams)).then(resource => {
@@ -131,11 +131,19 @@ export function createUploadSource(file, params) {
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
-      // listen on source channel, which puts other stuff into store
-      dispatch(listenForOutputSchema(resource.id, params));
+      if (parseFile) {
+        // listen on source channel, which puts other stuff into store
+        dispatch(listenForInputSchema(resource.id, params));
+      }
 
       // send bytes to created upload
-      return dispatch(uploadFile(resource.id, file));
+      return dispatch(uploadFile(resource.id, file)).then(bytesSource => {
+        if (!parseFile) {
+          dispatch(sourceUpdate(resource.id, bytesSource.resource));
+          browserHistory.push(Links.showBlobPreview(params, resource.id));
+        }
+        return bytesSource;
+      });
     });
   };
 }
@@ -157,7 +165,7 @@ export function createURLSource(url, params) {
 
       dispatch(addNotification('source', resource.id));
 
-      dispatch(listenForOutputSchema(resource.id, params));
+      dispatch(listenForInputSchema(resource.id, params));
     });
   };
 }
@@ -191,10 +199,11 @@ function sourceUpdate(sourceId, changes) {
   };
 }
 
-function listenForOutputSchema(sourceId, params) {
+
+function listenForInputSchema(sourceId, params) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
-    channel.on('insert_input_schema', is => {
+    channel.on('insert_input_schema', (is) => {
       const [os] = is.output_schemas;
 
       const payload = normalizeInsertInputSchemaEvent(is, sourceId);

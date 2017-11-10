@@ -118,7 +118,7 @@ function normalizeTransforms(os, totalRows) {
       [transform.id]: {
         ...transform,
         error_indices: [],
-        contiguous_rows_processed: transform.completed_at ? totalRows : 0
+        contiguous_rows_processed: transform.finished_at ? totalRows : 0
       },
       ...acc
     }),
@@ -163,7 +163,7 @@ function getNormalizedTransforms(resource) {
         [transform.id]: {
           ...transform,
           error_indices: [],
-          contiguous_rows_processed: transform.completed_at ? totalRows : 0
+          contiguous_rows_processed: transform.finished_at ? totalRows : 0
         },
         ...acc
       }),

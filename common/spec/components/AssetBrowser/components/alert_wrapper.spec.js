@@ -8,9 +8,9 @@ import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 const alertWrapperProps = (props = {}) => ({
   alert: {
-    bodyLocaleKey: 'shared.asset_browser.alert_messages.visibility_changed.body',
+    body: 'This may take a few moments to take effect.',
     time: 100,
-    titleLocaleKey: 'shared.asset_browser.alert_messages.visibility_changed.title_public'
+    title: 'Visibility changed to public.'
   },
   hideAlert: () => {},
   ...props
@@ -41,7 +41,7 @@ describe('components/AlertWrapper', () => {
     assert.isTrue(wrapper.hasClass('alert-wrapper'));
   });
 
-  it('renders the correct alert text for the given locale keys', () => {
+  it('renders the alert title and body', () => {
     const wrapper = shallow(<AlertWrapper {...alertWrapperProps()} />);
     assert.equal(wrapper.text(), 'Visibility changed to public. This may take a few moments to take effect.<SocrataIcon />');
   });

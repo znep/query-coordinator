@@ -131,7 +131,7 @@ describe('manageMetadata actions', () => {
   describe('saveColumnMetadata', () => {
     beforeEach(done => {
       store
-        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, params))
+        .dispatch(createUploadSource({ name: 'petty_crimes.csv' }, true, params))
         .then(() => done());
     });
 

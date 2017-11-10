@@ -1,9 +1,10 @@
 import _ from 'lodash';
 
 import mixpanel from 'common/mixpanel';
+import utils from 'common/js_utils';
+
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
-import utils from 'common/js_utils';
 import * as windowLocation from './lib/windowLocation';
 
 const AUTHORING_WORKFLOW_INITIAL_STATE = {

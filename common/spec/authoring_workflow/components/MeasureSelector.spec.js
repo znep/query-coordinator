@@ -25,35 +25,43 @@ var nonNumericMetadata = {
 
 var validVifAuthoring = {
   vifs: {
-    columnChart: { series: [{ dataSource: { measure: { columnName: 'columnName' } } }] }
+    columnChart: {
+      series: [
+        { dataSource: { measure: { columnName: 'columnName' } }, seriesIndex: 0 }
+      ]
+    }
   }
 };
 
 var validVifAuthoringMultiSeries = {
   vifs: {
-    columnChart: { series: [
-      { dataSource: { measure: { columnName: 'columnName0' } } },
-      { dataSource: { measure: { columnName: 'columnName1' } } }
-    ] }
+    columnChart: {
+      series: [
+        { dataSource: { measure: { columnName: 'columnName0' } }, seriesIndex: 0 },
+        { dataSource: { measure: { columnName: 'columnName1' } }, seriesIndex: 1 }
+      ]
+    }
   }
 };
 
 var validVifAuthoringMultiSeriesMax = {
   vifs: {
-    columnChart: { series: [
-      { dataSource: { measure: { columnName: 'columnName0' } } },
-      { dataSource: { measure: { columnName: 'columnName1' } } },
-      { dataSource: { measure: { columnName: 'columnName2' } } },
-      { dataSource: { measure: { columnName: 'columnName3' } } },
-      { dataSource: { measure: { columnName: 'columnName4' } } },
-      { dataSource: { measure: { columnName: 'columnName5' } } },
-      { dataSource: { measure: { columnName: 'columnName6' } } },
-      { dataSource: { measure: { columnName: 'columnName7' } } },
-      { dataSource: { measure: { columnName: 'columnName8' } } },
-      { dataSource: { measure: { columnName: 'columnName9' } } },
-      { dataSource: { measure: { columnName: 'columnName10' } } },
-      { dataSource: { measure: { columnName: 'columnName11' } } }
-    ] }
+    columnChart: {
+      series: [
+        { dataSource: { measure: { columnName: 'columnName0' } }, seriesIndex: 0 },
+        { dataSource: { measure: { columnName: 'columnName1' } }, seriesIndex: 1 },
+        { dataSource: { measure: { columnName: 'columnName2' } }, seriesIndex: 2 },
+        { dataSource: { measure: { columnName: 'columnName3' } }, seriesIndex: 3 },
+        { dataSource: { measure: { columnName: 'columnName4' } }, seriesIndex: 4 },
+        { dataSource: { measure: { columnName: 'columnName5' } }, seriesIndex: 5 },
+        { dataSource: { measure: { columnName: 'columnName6' } }, seriesIndex: 6 },
+        { dataSource: { measure: { columnName: 'columnName7' } }, seriesIndex: 7 },
+        { dataSource: { measure: { columnName: 'columnName8' } }, seriesIndex: 8 },
+        { dataSource: { measure: { columnName: 'columnName9' } }, seriesIndex: 9 },
+        { dataSource: { measure: { columnName: 'columnName10' } }, seriesIndex: 10 },
+        { dataSource: { measure: { columnName: 'columnName11' } }, seriesIndex: 11 }
+      ]
+    }
   }
 };
 
@@ -61,10 +69,11 @@ describe('MeasureSelector', function() {
   describe('rendering', function() {
     var component;
 
-    describe('without data', function() {
+    describe('without metadata data', function() {
       beforeEach(function() {
         component = renderComponent(MeasureSelector, defaultProps({
-          metadata: { data: null }
+          metadata: { data: null },
+          series: validVifAuthoring.vifs.columnChart.series
         }));
       });
 
@@ -76,7 +85,8 @@ describe('MeasureSelector', function() {
     describe('with data', function() {
       beforeEach(function() {
         component = renderComponent(MeasureSelector, defaultProps({
-          metadata: validMetadata
+          metadata: validMetadata,
+          series: validVifAuthoring.vifs.columnChart.series
         }));
       });
 
@@ -89,7 +99,8 @@ describe('MeasureSelector', function() {
         beforeEach(function() {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: validMetadata,
-            vifAuthoring: validVifAuthoring
+            vifAuthoring: validVifAuthoring,
+            series: validVifAuthoring.vifs.columnChart.series
           }));
         });
 
@@ -102,7 +113,8 @@ describe('MeasureSelector', function() {
         beforeEach(function() {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: nonNumericMetadata,
-            vifAuthoring: validVifAuthoring
+            vifAuthoring: validVifAuthoring,
+            series: validVifAuthoring.vifs.columnChart.series
           }));
         });
 
@@ -123,7 +135,8 @@ describe('MeasureSelector', function() {
         beforeEach(function() {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: validMetadata,
-            vifAuthoring: validVifAuthoringMultiSeriesMax
+            vifAuthoring: validVifAuthoringMultiSeriesMax,
+            series: validVifAuthoringMultiSeriesMax.vifs.columnChart.series
           }));
         });
 
@@ -188,7 +201,8 @@ describe('MeasureSelector', function() {
       onSetMeasureColumn: sinon.stub(),
       onSetMeasureAggregation: sinon.stub(),
       onAddMeasure: sinon.stub(),
-      onRemoveMeasure: sinon.stub()
+      onRemoveMeasure: sinon.stub(),
+      series: validVifAuthoringMultiSeries.vifs.columnChart.series
     };
 
     var emitsDropdownEvent = function(selector, eventName) {

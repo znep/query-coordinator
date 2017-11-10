@@ -21,7 +21,7 @@ export class ResultListTable extends Component {
 
   onColumnHeaderClick(columnName) {
     // Sorting on the following columns is not supported by Cetera
-    if (!_.includes(['actions', 'approval_requested', 'status', 'visibility'], columnName)) {
+    if (!_.includes(['actions', 'status', 'visibility'], columnName)) {
       this.props.changeSortOrder(columnName);
     }
   }
@@ -29,6 +29,7 @@ export class ResultListTable extends Component {
   resultListRowProps(result) {
     return _.merge(
       {
+        approvals: result.metadata.approvals,
         category: result.classification.domain_category,
         datalensStatus: result.metadata.datalens_status,
         grants: result.metadata.grants,

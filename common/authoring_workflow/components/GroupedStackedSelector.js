@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import I18n from 'common/i18n';
 import {
   hasDimensionGroupingColumnName,
+  isComboChart,
   isMultiSeries,
   isOneHundredPercentStacked,
   isStacked
@@ -104,6 +105,12 @@ export class GroupedStackedSelector extends Component {
   }
 
   renderOneHundredPercentStackedContainer({ checked, disabled }) {
+    const shouldRender = !isComboChart(this.props.vifAuthoring);
+
+    if (!shouldRender) {
+      return null;
+    }
+
     const containerAttributes = {
       id: 'grouping-display-100-percent-stacked-container',
       className: `${disabled ? 'disabled' : ''}`

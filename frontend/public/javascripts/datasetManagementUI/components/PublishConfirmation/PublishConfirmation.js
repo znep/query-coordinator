@@ -30,7 +30,7 @@ class PublishConfirmation extends Component {
     return (
       <div>
         <h2>
-          {I18n.home_pane.publish_confirmation_usaid.title}
+          {I18n.home_pane.publish_confirmation.title}
         </h2>
         <ModalContent>
           <span
@@ -38,20 +38,20 @@ class PublishConfirmation extends Component {
             className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
             <h3>
-              {I18n.home_pane.publish_confirmation_usaid.public}
+              {I18n.home_pane.publish_confirmation.public}
             </h3>
             <SocrataIcon className={styles.icon} name="public-open" />
-            {I18n.home_pane.publish_confirmation_usaid.public_msg}
+            {I18n.home_pane.publish_confirmation.public_msg}
           </span>
           <span
             onClick={() => setPermission('private')}
             className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
             <h3>
-              {I18n.home_pane.publish_confirmation_usaid.private}
+              {I18n.home_pane.publish_confirmation.private}
             </h3>
             <SocrataIcon className={styles.icon} name="private" />
-            {I18n.home_pane.publish_confirmation_usaid.private_msg}
+            {I18n.home_pane.publish_confirmation.private_msg}
           </span>
         </ModalContent>
         <ModalFooter className={styles.modalFooter}>
@@ -64,8 +64,8 @@ class PublishConfirmation extends Component {
             forceDisable={btnDisabled}
             onClick={() => dispatchApplyRevision()}>
             {publicSelected
-              ? I18n.home_pane.publish_confirmation.button
-              : I18n.home_pane.publish_confirmation_usaid.button}
+              ? I18n.home_pane.publish_confirmation.button_public
+              : I18n.home_pane.publish_confirmation.button_private}
           </ApiCallButton>
         </ModalFooter>
       </div>

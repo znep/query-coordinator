@@ -1698,6 +1698,10 @@ en:
     interstitial:
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
+    licenses:
+      nbogl: New Brunswick Open Government Licence
+      no_license: No License
+      see_terms_of_use: See Terms of Use
     maintenance_notice: This Socrata-powered site may be unavailable for routine maintenance from %{start} to %{finish}.
     map_layers:
       aerial: Aerial
@@ -1722,7 +1726,6 @@ en:
       terrain: Terrain
     no_category: No category
     no_js: Disable Javascript on this page
-    no_license: No License
     numbers:
       eight: eight
       five: five
@@ -1749,7 +1752,6 @@ en:
       scientific: 'Scientific: 1.0204e+3'
       standard: 'Standard: 1020.4'
     required: Required
-    see_terms_of_use: See Terms of Use
     share_types:
       contributor: Contributor
       owner: Owner
@@ -2119,6 +2121,15 @@ en:
       columns: Columns
       rows: Rows
       title: Data Preview
+    blob_preview:
+      whats_this: What's This?
+      filetype: Filetype
+      filesize: Filesize
+      non_parsable_format: This is not a parsable data format. It will be added to your asset list under "Files and Documents", and can be downloaded and previewed by users when shared.
+      not_expecting: Not the data you were expecting?
+      get_help: Get help with possible errors
+      choose_new: choose a new data source
+      or: or
     export_errors: Export Errors
     home_pane:
       add_column_metadata: Add Column Metadata
@@ -2156,6 +2167,7 @@ en:
         processing_succeeded: Data processing successfully finished
         started_processing: started data processing
         opened_revision: opened a revision
+        changed_parse_options: changed the file parsing options
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2166,26 +2178,25 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
-      publish_confirmation_usaid:
-        button: Done
+      publish_confirmation:
+        body: It will be accessible to anyone through your data catalog.
+        button_public: Publish Now
+        button_private: Done
         private: Private
         private_msg: Only accessible to people within your organization.
         public: Public
         public_msg: Publically accessible. Discoverable through the public catalog.
         title: Choose your audience
-      publish_confirmation:
-        body: It will be accessible to anyone through your data catalog.
-        button: Publish Now
-        title: You are about to make your dataset public
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'
-        data_satisfied: Added a data file
+        data_satisfied: Added a data file, and finished validation
         make_accessible: Make the dataset accessible to others
         metadata_satisfied: Filled out all required metadata
         publish_dataset: Publish Dataset
       publish_modal:
         failure:
-          body: Our site is having trouble right now. Please wait and try again.
+          body: Our site is having trouble right now. Please wait and try again, or contact support.
+          include_request_id: "When contacting support, please include the following Request ID for debugging:"
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
@@ -2223,7 +2234,6 @@ en:
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
-      supported_uploads: 'Supported file types:'
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
@@ -2233,7 +2243,6 @@ en:
       new_file: Upload a New File
       new_url_source: Import from a URL
       previous: Previous uploads
-      supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
     metadata_manage:
       column_metadata_label: Column Descriptions
@@ -2473,7 +2482,7 @@ en:
       subtitle: This will create a link to a dataset on another server. Your data will not be imported.
       title: Link to an External Dataset
     show_uploads:
-      filetypes: Supported file types are
+      filetypes: Parseable file types are
       flash_error_message: Unsupported file type
       from_url: URL Source
       message: Drag a New Data File Here
@@ -2482,6 +2491,8 @@ en:
       submessage: ...or click Browse to choose a file from your computer
       upload_link: Upload a Data File
       url_link: Import Data from URL
+      total_rows: "{0} row, {1} column dataset"
+      in_progress: Still in Progress
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.
@@ -3087,11 +3098,13 @@ en:
       rate: Rate
       recent_value: Recent Value
     measure:
+      dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
         cancel: Cancel
         title: Configure Measure
         calculation:
+          choose_aggregation: Choose aggregation...
           choose_column: Choose a column...
           data_source_needed: A data source is required for this calculation.
           date_column: Date Column
@@ -3100,21 +3113,36 @@ en:
             title: Display Options
             unit_label: Unit Label
             unit_label_placeholder: Per ...
+            display_as_percent: Display as percent
+          exclude_nulls: Exclude Null Values
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
           title: Metric Calculation
           types:
             count:
-              exclude_nulls: Exclude Null Values
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
-              help_title: Help with Count
+              help_title: How is Count Calculated?
               title: Count Options
+            rate:
+              aggregation_subtitle: Configure math for numerator and denominator
+              aggregation_title: Set Aggregation
+              denominator_subtitle: Number of equal parts numerator will be divided into.
+              denominator_title: Set Denominator
+              direct_input_subtitle: Enter an exact value as your denominator below.
+              direct_input_title: Don't want to choose a column?
+              fraction_no_values: Set numerator and denominator to view sample fraction
+              fraction_not_available: PLACEHOLDER - please set aggregation.
+              help_body: This calculation type displays a rate or percentage. It is calculated by dividing the value of the numerator (the top value) by the value of the denominator (the bottom value). The selected columns for each can either be summed or counted. You can also choose to enter an exact value as the denominator.
+              help_title: How is Rate Calculated?
+              numerator_subtitle: Number of pieces/units of data
+              numerator_title: Set Numerator
+              sample_fraction: Sample Fraction
             recent_value:
               column_condition: Column Condition
               date_column: Date Column
               help_body: Chooses the most recent value of a column, given the condition and date column selected.
-              help_title: Help with Exact Values
+              help_title: How is Recent Value Calculated?
               title: Select an Exact Value by Date
               value_column: Value Column
             sum:

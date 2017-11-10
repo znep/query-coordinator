@@ -722,7 +722,7 @@ describe('DataTypeFormatter', function() {
           renderTypeName: 'number',
           format: {
             precisionStyle: 'currency',
-            currency: '£',
+            currencyStyle: 'GBP',
             decimalSeparator: ',',
             groupSeparator: '.'
           }
@@ -1218,7 +1218,7 @@ describe('DataTypeFormatter', function() {
       var cellContent = DataTypeFormatter.renderMultipleChoiceCellHTML(
         'abcd-1234',
         {
-          dropDown: {
+          dropDownList: {
             values: [
               {
                 description: 'foo',

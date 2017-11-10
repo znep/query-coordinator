@@ -366,7 +366,7 @@ body {
 /* AssetBrowser overrides */
 .asset-browser {
   .header {
-    min-height: unset;
+    min-height: auto;
     margin: 0;
   }
   $profile-asset-browser-min-width: 650px;

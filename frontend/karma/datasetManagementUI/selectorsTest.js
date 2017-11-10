@@ -232,55 +232,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('currentAndIgnoredOutputColumns', () => {
-    const outputSchemaIds = Object.keys(entities.output_schemas)
-      .map(_.toNumber)
-      .filter(key => !!key);
-    const currentOutputSchemaId = Math.max(...outputSchemaIds);
-
-    const output = Selectors.currentAndIgnoredOutputColumns(
-      entities,
-      currentOutputSchemaId
-    );
-
-    it('puts all columns in current output schema into current array', () => {
-      const currentOutputColumnIds = _.chain(entities.output_schema_columns)
-        .filter(osc => osc.output_schema_id === currentOutputSchemaId)
-        .reduce((innerAcc, osc) => {
-          return [...innerAcc, osc.output_column_id];
-        }, [])
-        .value();
-
-      const CurrentIdsFromSelector = output.current.map(oc => oc.id);
-
-      assert.deepEqual(currentOutputColumnIds, CurrentIdsFromSelector);
-    });
-
-    it('puts ignored columns in ignored array', () => {
-      assert.equal(output.ignored.length, 2);
-    });
-
-    it('omits column from ignored array if a current column exists with same transform id', () => {
-      const currentTransformIds = output.current.map(oc => oc.transform_id);
-      const ignoredTransformIds = output.ignored.map(oc => oc.transform_id);
-      ignoredTransformIds.forEach(tid =>
-        assert.notInclude(currentTransformIds, tid)
-      );
-    });
-
-    it('does not have columns in ignored array that share the same transform id', () => {
-      const ignoredTransformIds = output.ignored.map(oc => oc.transform_id);
-
-      ignoredTransformIds.forEach(tid => {
-        const tidIdx = _.findIndex(ignoredTransformIds, id => id === tid);
-        const withoutCurrent = ignoredTransformIds.filter(
-          (id, idx) => idx !== tidIdx
-        );
-        assert.notInclude(withoutCurrent, tid);
-      });
-    });
-  });
-
   describe('allTransformsDone', () => {
     it('returns false when transforms not done', () => {
       const columnsWithTransforms = [

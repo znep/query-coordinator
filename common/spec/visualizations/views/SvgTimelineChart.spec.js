@@ -252,6 +252,56 @@ describe('SvgTimelineChart', () => {
       });
     });
 
+    describe('when the measure column has percent format', () => {
+      beforeEach(() => {
+        const overrideVIF = {
+          series: [
+            {
+              dataSource: {
+                measure: {
+                  columnName: 'TestColumn',
+                  aggregationFunction: 'sum'
+                }
+              }
+            }
+          ]
+        };
+        timelineChart = createTimelineChart(overrideVIF);
+        timelineChart.chart.render(null, {
+          columnFormats: {
+            TestColumn: {
+              format: {
+                view: 'percent_bar_and_text'
+              }
+            }
+          },
+          columns: ['dimension', 'measure'],
+          rows: [
+            ['2017-09-01T09:45:00.000', .11],
+            ['2017-09-02T09:45:00.000', .15],
+            ['2017-09-03T09:45:00.000', .2],
+            ['2017-09-04T09:45:00.000', .1],
+            ['2017-09-06T09:45:00.000', .5],
+            ['2017-09-07T09:45:00.000', .2],
+            ['2017-09-08T09:45:00.000', .2],
+            ['2017-09-09T09:45:00.000', .2],
+            ['2017-09-10T09:45:00.000', .1]
+          ],
+          precision: 'day'
+        });
+      });
+
+      it('y-axis ticks should be percent formatted', () => {
+        const ticks = timelineChart.$element.find('.y.axis .tick text');
+
+        assert.isAtLeast(ticks.length, 1);
+
+        ticks.each((i, e) => {
+          assert.match(e.textContent, /^[0-9.]+%$/);
+        });
+      });
+    });
+
     describe('when rendering multi-series', () => {
       beforeEach(() => {
         // override by adding "grouping" to dimension

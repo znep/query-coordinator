@@ -1,6 +1,6 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import "common/styleguide/variables/_colors.scss";
+@import 'common/styleguide/variables/_colors.scss';
 
 .base {
   text-align: center;
@@ -8,7 +8,7 @@
   border-bottom: 2px solid;
   width: 100%;
   position: relative;
-  padding-right: 2em;
+  padding: 1em 2em 1em 1em;
 }
 
 .success {

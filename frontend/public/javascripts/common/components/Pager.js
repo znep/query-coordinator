@@ -4,6 +4,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { ENTER } from 'common/dom_helpers/keycodes';
 import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
+import I18n from 'common/i18n';
 
 export class Pager extends React.Component {
   constructor(props) {
@@ -104,7 +105,7 @@ export class Pager extends React.Component {
       linkTabIndex: prevLinkDisabled ? -1 : 0,
       onClick: (e) => this.prevLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.prevLinkClick(e)),
-      text: _.get(I18n, 'common.asset_selector.results_container.pager.previous_page')
+      text: I18n.t('common.asset_selector.results_container.pager.previous_page')
     });
 
     const nextLinkDisabled = this.props.currentPage === this.lastPage();
@@ -115,7 +116,7 @@ export class Pager extends React.Component {
       linkTabIndex: nextLinkDisabled ? -1 : 0,
       onClick: (e) => this.nextLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.nextLinkClick(e)),
-      text: _.get(I18n, 'common.asset_selector.results_container.pager.next_page')
+      text: I18n.t('common.asset_selector.results_container.pager.next_page')
     });
 
     const currentPageInputClasses = classNames('current-page-input', 'inline-block', {
@@ -123,14 +124,14 @@ export class Pager extends React.Component {
     });
 
     const errorAltText = this.state.pageIsInvalid &&
-      _.get(I18n, 'common.asset_selector.results_container.pager.invalid_page_error').
+      I18n.t('common.asset_selector.results_container.pager.invalid_page_error').
         format({
           first: 1,
           last: this.lastPage()
         });
 
     const pageNumberText =
-      `${_.get(I18n, 'common.asset_selector.results_container.pager.page')} ${this.props.currentPage}`;
+      `${I18n.t('common.asset_selector.results_container.pager.page')} ${this.props.currentPage}`;
 
     const currentPageInput = (
       <div className={currentPageInputClasses}>
@@ -146,7 +147,7 @@ export class Pager extends React.Component {
       </div>
     );
 
-    const lastPageText = _.get(I18n, 'common.asset_selector.results_container.pager.last_page');
+    const lastPageText = I18n.t('common.asset_selector.results_container.pager.last_page');
 
     const lastPageLink = (
       <a
@@ -166,7 +167,7 @@ export class Pager extends React.Component {
       <div className="pager">
         {prevLink}
         {currentPageInput}
-        {` ${_.get(I18n, 'common.asset_selector.results_container.of')} `}
+        {` ${I18n.t('common.asset_selector.results_container.of')} `}
         {lastPageLink}
         {nextLink}
       </div>

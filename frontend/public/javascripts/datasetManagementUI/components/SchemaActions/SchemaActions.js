@@ -1,20 +1,22 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import * as Links from 'links/links';
-import { Link, withRouter } from 'react-router';
+import { RecentActionsTimestamp } from 'components/RecentActionItems/RecentActionItems';
+import { Link } from 'react-router';
+import styles from './SchemaActions.scss';
 
 const SchemaActions = ({ oss, iss, params }) => {
-  const items = oss.map(os => (
-    <li>
-      {os.id} -{' '}
-      <Link to={Links.showOutputSchema(params, iss[os.input_schema_id].source_id, os.input_schema_id, os.id)}>
-        Restore
+  const items = oss.map((os, idx) => (
+    <li key={idx}>
+      {os.created_by.display_name} changed the schema <RecentActionsTimestamp date={os.created_at} /> -{' '}
+      <Link
+        className={styles.restoreLink}
+        to={Links.showOutputSchema(params, iss[os.input_schema_id].source_id, os.input_schema_id, os.id)}>
+        restore
       </Link>
     </li>
   ));
-  return <ul>{items}</ul>;
+  return <ul className={styles.container}>{items}</ul>;
 };
 
 SchemaActions.propTypes = {
@@ -23,25 +25,4 @@ SchemaActions.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities }, { params }) => ({
-  oss: Object.values(entities.output_schemas).filter(os => os.id !== Number(params.outputSchemaId)),
-  iss: entities.input_schemas
-});
-
-// This madness is to to keep the entire component from re-rendering every
-// time form state changes. We have to map the form state to the props of ShowOutputSchema
-// because of the external modal-submit button. If we can get rid of that, we can get rid
-// of this.
-function wrapper(Wrapped) {
-  return class extends Component {
-    shouldComponentUpdate(nextProps) {
-      return !_.isEqual(this.props, nextProps);
-    }
-
-    render() {
-      return <Wrapped {...this.props} />;
-    }
-  };
-}
-
-export default withRouter(connect(mapStateToProps)(wrapper(SchemaActions)));
+export default SchemaActions;

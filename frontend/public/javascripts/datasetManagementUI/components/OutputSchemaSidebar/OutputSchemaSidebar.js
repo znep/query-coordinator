@@ -4,7 +4,7 @@ import _ from 'lodash';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './OutputSchemaSidebar.scss';
 import sidebarStyles from '../MetadataContent/MetadataContent.scss';
-import SchemaActions from 'components/SchemaActions/SchemaActions';
+import SchemaActions from 'containers/SchemaActionsContainer';
 import { IndexLink, Link } from 'react-router';
 import * as Links from 'links/links';
 

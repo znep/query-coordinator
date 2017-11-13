@@ -1,0 +1,19 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  composes: small from global;
+  color: $black;
+  overflow-y: scroll;
+  height: calc(100% - 390px);
+  list-style-type: none;
+}
+
+.container > li {
+  margin-bottom: 1em;
+}
+
+.restoreLink {
+  color: $primary-base !important;
+}

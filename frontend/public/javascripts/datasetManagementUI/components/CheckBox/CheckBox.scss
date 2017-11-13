@@ -1,7 +1,6 @@
 .checkbox {
   composes: checkbox from global;
-  width: 100%;
-  min-width: 250px;
+  margin: 0px 1em;
 
   @media (max-width: 1000px) {
     width: 100%;

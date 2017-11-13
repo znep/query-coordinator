@@ -668,6 +668,7 @@ en:
       views: Views
     more: Show More
     none: None
+    render_error: There was a problem rendering this page.
     schema_preview:
       api_field_name: API Field Name
       column_name: Column Name
@@ -905,6 +906,7 @@ en:
         create_dataset: Create or upload your own dataset
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
+        create_data_asset_shorter: Data Asset
         create_dataset_verb: Create
         create_measure_short: Measure
         create_measure_verb: Create
@@ -2113,10 +2115,16 @@ en:
     create:
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
-      explanation: To get started, choose a name for your dataset
-      header: Create a New Dataset
-      placeholder: Dataset Name
-      title: Create Dataset
+      dataset:
+        explanation: To get started, choose a name for your dataset
+        header: Create a New Dataset
+        placeholder: Dataset Name
+        title: Create Dataset
+      data_asset:
+        explanation: To get started, choose a name for your data asset
+        header: Create a New Data Asset
+        placeholder: Data Asset Name
+        title: Create Data Asset
     data_preview:
       columns: Columns
       rows: Rows
@@ -2167,7 +2175,7 @@ en:
         processing_succeeded: Data processing successfully finished
         started_processing: started data processing
         opened_revision: opened a revision
-        changed_parse_options: changed the file parsing options
+        changed_parse_options: changed the file configuration
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2275,6 +2283,7 @@ en:
           licenses_title: Licensing & Attribution
           tags_title: Categories and Tags
           attachments_title: Attachments
+          row_label_title: Row Label
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -2332,6 +2341,7 @@ en:
       use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
       activity_log: See a log of your updates here
     parse_options:
+      title: File Configuration Options
       header_count: Header Count
       column_header: Header Row Position
       encoding: Character Encoding
@@ -2348,7 +2358,7 @@ en:
       add_col: Add Column
       geocode: Add georeference
       preview_table: Preview Data Table
-      specify_headers: Specify Headers
+      specify_headers: File Configurations
       additional_errors:
         singular: Additional error
         plural: Additional errors
@@ -2510,6 +2520,7 @@ en:
       submessage: ...or click Browse to choose a file from your computer
       upload_link: Upload a Data File
       url_link: Import Data from URL
+      external_source: Link to an External Data Source
       total_rows: "{0} row, {1} column dataset"
       in_progress: Still in Progress
     show_upsert:
@@ -3454,6 +3465,48 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      activity_feed:
+        asset_types:
+          blob: File or Document
+          calendar: Calendar
+          chart: Chart
+          datalens: Data Lens
+          data_lens: Data Lens
+          dataset: Dataset
+          draft: Draft Dataset
+          federated_href: Federated External Dataset
+          filter: Filtered View
+          file: File or Document
+          form: Form
+          href: External Dataset
+          map: Map
+          new_view: Data Lens
+          pulse: Pulse
+          story: Story
+          working_copy: Working Copy
+        columns:
+          actions: Actions
+          date: Date
+          event: Event
+          initiated_by: Initiated By
+          item_affected: Item Affected
+          type: Type
+        events:
+          user_added: User Added
+          user_removed: User Removed
+          user_role_changed: User Role Changed
+          draft_created: Draft Created
+          asset_metadata_changed: AssetMetadataChanged
+          data_updated: Data Updated Success
+          data_updated_failure: Data Updated Failure
+          data_updated_partial_failure: Data Updated Partial Failure
+          draft_published: Draft Published
+          asset_permissions_changed_visibility_public: Asset Permissions Changed Visibility Public
+          asset_permissions_changed_visibility_private: private
+        no_results: No results
+        result_count:
+          one: "%{first}-%{last} of 1 result"
+          other: "%{first}-%{last} of %{count} results"
       assets:
         asset_inventory: Assets
       canvas:
@@ -4058,6 +4111,7 @@ en:
         pagination:
           next: Next
           previous: Previous
+        render_error: There was a problem rendering this page.
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

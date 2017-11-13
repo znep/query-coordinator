@@ -1,7 +1,5 @@
 //Track clicking certain links on the page
 $(document).ready(function() {
-  'use strict';
-
   // Return early if blist doesn't exist (for instance, if we're in Data Lens)
   if (_.isUndefined(window.blist)) {
     return;
@@ -37,6 +35,7 @@ $(document).ready(function() {
     'Encountered Error Message',
     'Expanded Column Info',
     'Expanded Details',
+    'Fetched initial results',
     'Filtered Assets by Asset Type',
     'Filtered Assets by Authority',
     'Filtered Assets by Category',
@@ -65,14 +64,20 @@ $(document).ready(function() {
 
   // This is duplicated in angular/common/values.js and common/mixpanel.js
   var MIXPANEL_PROPERTIES = [
+    'activeTab',
+    'ascending',
+    'approvalStatus',
     'Catalog Version',
     'Chart/Map Type',
     'Click Position',
     'Content Type',
     'Dataset Owner',
+    'displayName',
     'Display Type',
     'Domain',
     'Expanded Target',
+    'fetchingResults',
+    'fetchingResultsError',
     'Facet Name',
     'Facet Type',
     'Facet Type Name',
@@ -80,6 +85,8 @@ $(document).ready(function() {
     'Footer Item Type',
     'From Page',
     'Header Item Type',
+    'id',
+    'initialResultsFetched',
     'Ingress Step',
     'IP',
     'Item Position',
@@ -89,9 +96,12 @@ $(document).ready(function() {
     'Name',
     'New URL',
     'Next Action',
+    'pageNumber',
     'Page Number',
+    'pageSize',
     'Pane Name',
     'On Page',
+    'onlyRecentlyViewed',
     'Product',
     'Properties',
     'Provider',
@@ -102,6 +112,7 @@ $(document).ready(function() {
     'Result Count',
     'Result Ids',
     'Result Number',
+    'resultSetSize',
     'Request Id',
     'Session Id',
     'Sidebar Name',
@@ -112,6 +123,7 @@ $(document).ready(function() {
     'User Id',
     'User Owns Dataset',
     'User Role Name',
+    'value',
     'View Id',
     'View Type',
     'Visualization Type',

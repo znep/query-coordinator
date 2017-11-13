@@ -28,15 +28,9 @@ class URLSource extends Component {
     });
   }
 
-  onError({ reason, message }) {
-    let fieldError;
-
-    if (_.isString(reason)) {
-      fieldError = reason;
-    } else {
-      const [urlError] = _.flatMap(reason, value => value);
-      fieldError = urlError;
-    }
+  onError({ params, message }) {
+    const [urlError] = _.flatMap(params, value => value);
+    const fieldError = urlError;
 
     this.setState({
       error: fieldError || message || SubI18n.unknown_error

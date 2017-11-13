@@ -34,6 +34,21 @@ describe('components/Forms/DatasetForm', () => {
         ]
       },
       {
+        title: 'Row Label',
+        subtitle: 'Row Label Stuff',
+        fields: [
+          {
+            data: {
+              name: 'row_label',
+              label: 'Row Label',
+              isPrivate: false,
+              isRequired: false,
+              placeholder: 'Enter a row label'
+            }
+          }
+        ]
+      },
+      {
         title: 'Categories and Tags',
         subtitle: 'Categorize your dataset to make it easier to find.',
         fields: [
@@ -312,7 +327,7 @@ describe('components/Forms/DatasetForm', () => {
   it('renders correctly', () => {
     const component = shallow(<DatasetForm {...defaultProps} />);
     assert.lengthOf(component.find('form'), 1);
-    assert.lengthOf(component.find('Fieldset'), 6);
-    assert.lengthOf(component.find('withRouter(Connect(Field))'), 10);
+    assert.lengthOf(component.find('Fieldset'), 7);
+    assert.lengthOf(component.find('withRouter(Connect(Field))'), 11);
   });
 });

@@ -22,11 +22,11 @@ const FatalError = props => {
 
   if (source.failed_at) {
     message = SubI18n.source_error;
-    const reason = source.failure_details;
+    const failure = source.failure_details;
 
-    if (reason) {
-      details = reason.message;
-      requestId = reason.request_id;
+    if (failure) {
+      details = failure.message;
+      requestId = failure.request_id;
     }
   } else if (failedColumn) {
     message = SubI18n.transform_error;

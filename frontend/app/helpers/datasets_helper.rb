@@ -467,7 +467,8 @@ module DatasetsHelper
       !view.is_tabular? && derived_view_publication_enabled?,
       !view.can_edit?,
       current_user.blank?,
-      view.is_immutable?
+      view.is_immutable?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
@@ -477,21 +478,24 @@ module DatasetsHelper
       !view.is_blist?,
       !view.has_rights?(ViewRights::ADD_COLUMN),
       view.is_immutable?,
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
   def hide_edit_column?
     [
       !view.is_unpublished?,
-      !enable_2017_grid_view_refresh_for_current_request?
+      !enable_2017_grid_view_refresh_for_current_request?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
   def hide_add_row?
     [
       !view.is_unpublished?,
-      !enable_2017_grid_view_refresh_for_current_request?
+      !enable_2017_grid_view_refresh_for_current_request?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
@@ -504,7 +508,8 @@ module DatasetsHelper
       view.is_href?,
       !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
       view.geoParent.present?,
-      !view.has_rights?(ViewRights::ADD)
+      !view.has_rights?(ViewRights::ADD),
+      view.is_activity_feed_dataset?
     ].any?
   end
 

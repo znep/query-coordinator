@@ -112,6 +112,11 @@ describe('components/MetadataTable', () => {
           name: 'totally legit download me',
           assetId: 'some-asset',
           filename: 'win32.scr'
+        },
+        {
+          blobId: '',
+          assetId: 'another-asset',
+          filename: 'win32.scr'
         }
       ];
 
@@ -121,7 +126,7 @@ describe('components/MetadataTable', () => {
 
       const nodes = wrapper.find('.attachment a');
 
-      assert.lengthOf(nodes, 2);
+      assert.lengthOf(nodes, 3);
       assert.equal(
         nodes.at(0).text(),
         'a-filename.png'
@@ -138,6 +143,11 @@ describe('components/MetadataTable', () => {
       assert.equal(
         nodes.at(1).prop('href'),
         '/api/views/test-view/files/some-asset?download=true&filename=win32.scr'
+      );
+
+      assert.equal(
+        nodes.at(2).prop('href'),
+        '/api/views/test-view/files/another-asset?download=true&filename=win32.scr'
       );
     });
 

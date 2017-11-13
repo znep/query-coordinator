@@ -87,7 +87,7 @@ describe('components/RecentActionItems', () => {
 
       assert.equal(
         component.find('p').first().text(),
-        `${props.createdBy} changed the file parsing options`
+        `${props.createdBy} changed the file configuration`
       );
     });
 

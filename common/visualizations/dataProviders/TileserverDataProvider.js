@@ -92,7 +92,7 @@ function TileserverDataProvider(config, useCache = false) {
         url += `$limit=${featuresPerTile}`;
 
         if (!_.isEmpty(whereClause)) {
-          url += `&$where=${whereClause}`;
+          url += `&$where=${encodeURIComponent(whereClause)}`;
         }
 
         return _getArrayBuffer(

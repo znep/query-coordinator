@@ -10,6 +10,7 @@ export const mapStateToProps = ({ entities }, { params }) => {
   let sources;
 
   const revisionSeq = _.toNumber(params.revisionSeq);
+  const revision = Selectors.currentRevision(entities, revisionSeq);
   const pendingOrSuccessfulSources = _.chain(entities.sources)
     .values()
     .filter(source => !source.failed_at)
@@ -27,7 +28,8 @@ export const mapStateToProps = ({ entities }, { params }) => {
 
   return {
     sources: _.orderBy(sources, ['finished_at'], ['desc']),
-    entities
+    entities,
+    hideHrefLink: revision.is_parent === false
   };
 };
 

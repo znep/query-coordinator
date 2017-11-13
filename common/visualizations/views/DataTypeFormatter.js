@@ -306,6 +306,11 @@ function renderBooleanCellHTML(cellContent) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCellUnsafePlainText(input, column) {
+
+  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
+    return '';
+  }
+
   const amount = parseFloat(input);
 
   // NOTE: use safeAmount if you need to do any mathematical operations prior to
@@ -321,15 +326,14 @@ function renderNumberCellUnsafePlainText(input, column) {
     precision: undefined,
     forceHumane: false, // NOTE: only used internally, cannot be set on columns
     noCommas: false,
-    currency: I18n.t('shared.visualizations.charts.common.currency_symbol'),
+    currency: _.get(
+      CURRENCY_SYMBOLS,
+      _.get(column, 'format.currencyStyle')
+    ) || I18n.t('shared.visualizations.charts.common.currency_symbol'),
     decimalSeparator: utils.getDecimalCharacter(locale),
     groupSeparator: utils.getGroupCharacter(locale),
     mask: null
   }, column.format || {});
-
-  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
-    return '';
-  }
 
   format.commaifyOptions = {
     decimalCharacter: format.decimalSeparator,
@@ -679,7 +683,7 @@ function renderMultipleChoiceCellHTML(cellContent, column) {
     return '';
   }
 
-  const selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
+  const selectedOption = _.find(_.get(column, 'dropDownList.values', []), function(option) {
     return _.isEqual(option.id, cellContent);
   });
 

@@ -22,6 +22,8 @@ class DatasetsController < ApplicationController
       return render_forbidden('You do not have permission to create new datasets')
     end
     if FeatureFlags.derive(nil, request).enable_dataset_management_ui && params[:beta]
+      @data_asset = params[:data_asset].nil? ? nil : params[:data_asset].downcase == "true"
+      @il8n_prefix = @data_asset ? "dataset_management_ui.create.data_asset" : "dataset_management_ui.create.dataset"
       render 'datasets/new-dsmui', layout: 'styleguide'
     else
       render 'new' # jquery wizard

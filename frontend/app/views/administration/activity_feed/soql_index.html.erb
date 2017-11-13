@@ -2,17 +2,18 @@
   <title><%= t('screens.admin.jobs.index_page.title') %> | <%= get_site_title %></title>
   <%= render_admin_session_data %>
   <%= render_admin_server_config %>
-  <%= render_admin_activity_feed_initial_data %>
   <%= render_mixpanel_config %>
 
+  <%= rendered_stylesheet_tag 'styleguide' %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-activity-feed-soql' %>
 <% end %>
 
 <% content_for :breadcrumb do %>
   <%= t('screens.admin.jobs.index_page.title') %>
 <% end %>
 
-<div id="app">
+<div id="app" class="activity-feed-app">
   <div class="placeholder-wrapper">
     <div class="main-spinner">
       <div class="spinner-default spinner-large"></div>
@@ -20,7 +21,11 @@
   </div>
 </div>
 
-<% content_for :js_footer do %>
+<% content_for :scripts do %>
+  <% translations_for('common', 'screens.admin.activity_feed', 'plugins.daterangepicker', 'table', 'shared.components.filter_bar') %>
+  <script type="text/javascript">
+    window.I18n = window.translations;
+  </script>
   <%= render_admin_qualtrics %>
   <%= include_webpack_bundle 'admin-activity-feed-soql/main.js' %>
 <% end %>

@@ -748,8 +748,11 @@ function SvgTimelineChart($element, vif, options) {
       formatter = ColumnFormattingHelpers.createMoneyFormatter(columnName, dataToRender);
     } else {
       formatter = (d) => {
+        // NOTE: We used to call utils.formatNumber, but that doesn't handle all the
+        //       column formatting options.
         // This is a workaround for a bug in D3 v3.x, (fixed in v4.x): https://github.com/d3/d3/issues/1722
-        return Math.abs(parseFloat(d)) < 0.00000001 ? utils.formatNumber(0) : utils.formatNumber(d);
+        const v = Math.abs(parseFloat(d)) < 0.00000001 ? 0 : d;
+        return ColumnFormattingHelpers.formatValueHTML(v, columnName, dataToRender);
       };
     }
 

@@ -11,7 +11,7 @@ const AttachmentNotification = ({ percent, filename, status, error }) => {
 
   if (error) {
     message = (<span className={styles.message}>
-      {error.reason || error.english}
+      {error.message}
     </span>);
   } else {
     message = (<span className={styles.message}>

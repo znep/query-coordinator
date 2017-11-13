@@ -65,6 +65,7 @@ namespace :test do
       'opMeasure' => 'update_op_measure_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
 
+      'approvals' => nil,
       'exampleTestSuite' => nil,
       'oldUx' => nil,
       'visualization_embed' => nil
@@ -277,7 +278,7 @@ namespace :test do
 
       task :update_admin_activity_feed_soql_translations do
         translation_map = {
-          '': 'screens.admin.jobs'
+          '': 'screens.admin.activity_feed'
         }
 
         update_translations(
@@ -337,6 +338,7 @@ namespace :test do
       'karma:adminActivityFeed',
       'karma:adminActivityFeedSoql',
       'karma:adminUsersV2',
+      'karma:approvals',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',

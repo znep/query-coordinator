@@ -1,0 +1,59 @@
+.action-dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 0.5rem;
+
+  .action-dropdown-button {
+    border: none;
+    background: none;
+    color: $primary-text;
+    cursor: pointer;
+
+    &:hover, &:active, &:focus, &.active {
+      color: $white;
+      background: $primary-dark;
+    }
+  }
+
+  .action-dropdown-content {
+    position: absolute;
+    z-index: 1000;
+    border: 1px solid $light-grey-3;
+    background: $light-grey-6;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0 0 8px -2px $grey;
+    min-height: 1rem;
+    min-width: 10rem;
+
+    .action-dropdown-spinner-container {
+      text-align: center;
+
+      .spinner-default {
+        margin-top: 0.5rem;
+      }
+    }
+
+    .error-message, .no-actions-possible {
+      text-align: left;
+      color: $light-grey-6;
+      background-color: $grey;
+      padding: 1.2rem 0.75rem;
+    }
+
+    a {
+      display: block;
+      color: inherit;
+      padding: 0.5rem;
+      margin: 0;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover, &:active, &:focus {
+        background: $primary-light;
+      }
+    }
+  }
+}

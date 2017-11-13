@@ -89,9 +89,7 @@ describe('components/SchemaDotOrgMarkup', () => {
     it("doesn't rely on the view at all to get the URL to the current page", () => {
       const view = {};
       const element = getElement(view);
-
       const expectedURL = 'http://localhost/context.html';
-
       const nodes = element.find('meta[itemProp="url"]').getNodes();
 
       assert.equal(nodes.length, 1);
@@ -103,9 +101,7 @@ describe('components/SchemaDotOrgMarkup', () => {
     it('renders the permalink correctly', () => {
       const view = {};
       const element = getElement(view);
-
       const expectedURL = 'http://localhost/d/four-four';
-
       const nodes = element.find('meta[itemProp="sameAs"]').getNodes();
 
       assert.equal(nodes.length, 1);
@@ -137,6 +133,7 @@ describe('components/SchemaDotOrgMarkup', () => {
       assert.deepEqual(formats.sort(), ['text/csv', 'text/csv', 'text/csv', 'application/json',
                                         'application/rdfxml', 'application/rssxml',
                                         'text/tab-separated-values', 'application/xml'].sort());
+
       assert.deepEqual(stripPorts(urls.sort()), [
         'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD',
         'https://localhost/api/views/four-four/rows.json?accessType=DOWNLOAD',

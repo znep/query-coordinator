@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { all, call, put, takeEvery } from 'redux-saga/effects';
 import _ from 'lodash';
 

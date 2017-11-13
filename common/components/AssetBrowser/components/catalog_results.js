@@ -141,7 +141,7 @@ export class CatalogResults extends Component {
       'mobile': isMobile
     });
 
-    const searchField = showSearchField ? <Autocomplete {...autocompleteOptions} /> : null;
+    const searchField = showSearchField ? <Autocomplete {...autocompleteOptions} className="autocomplete" /> : null;
 
     return (
       <div className={topbarClassnames}>

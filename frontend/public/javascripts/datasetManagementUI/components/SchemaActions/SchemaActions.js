@@ -7,7 +7,7 @@ import styles from './SchemaActions.scss';
 
 const SchemaActions = ({ oss, iss, params }) => {
   const items = oss.map((os, idx) => (
-    <li key={idx}>
+    <li key={idx} className={os.isCurrent ? styles.currentSchema : styles.schema}>
       {os.created_by.display_name} changed the schema <RecentActionsTimestamp date={os.created_at} /> -{' '}
       <Link
         className={styles.restoreLink}

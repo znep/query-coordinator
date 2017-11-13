@@ -17,3 +17,13 @@
 .restoreLink {
   color: $primary-base !important;
 }
+
+.schema {
+  padding-left: 8px;
+  border-left: 4px solid $dark-grey-2;
+}
+
+.currentSchema {
+  composes: schema;
+  border-left: 4px solid $primary-base;
+}

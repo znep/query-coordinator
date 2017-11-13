@@ -25,7 +25,8 @@ class TableBody extends Component {
         c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
       ),
       displayState: nextProps.displayState,
-      apiCalls: nextProps.apiCalls
+      apiCalls: nextProps.apiCalls,
+      dropping: nextProps.dropping
     };
 
     const currentStuff = {
@@ -33,7 +34,8 @@ class TableBody extends Component {
         c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
       ),
       displayState: this.props.displayState,
-      apiCalls: this.props.apiCalls
+      apiCalls: this.props.apiCalls,
+      dropping: this.props.dropping
     };
 
     return !_.isEqual(nextStuff, currentStuff);
@@ -64,39 +66,38 @@ class TableBody extends Component {
       rowIdx,
       columns: this.props.columns.map(column => {
         const transform = column.transform;
-        if (column.ignored) {
-          return {
-            id: `column_${column.id}`,
-            cell: null
-          };
-        } else {
-          const cell = this.props.entities.col_data[transform.id]
-            ? this.props.entities.col_data[transform.id][rowIdx]
-            : null;
-          return {
-            tid: transform.id,
-            format: column.format,
-            cell
-          };
-        }
+        const cell = this.props.entities.col_data[transform.id]
+          ? this.props.entities.col_data[transform.id][rowIdx]
+          : null;
+        return {
+          tid: transform.id,
+          id: column.id,
+          format: column.format,
+          cell
+        };
       }),
       rowError: props.entities.row_errors[`${props.inputSchemaId}-${rowIdx}`]
     }));
   }
 
   renderNormalRow(row) {
+    const { dropping } = this.props;
+
     return (
       <tr key={row.rowIdx}>
         {row.columns.map((column, offset) => {
           const t = this.props.entities.transforms[column.tid];
           const type = t ? t.output_soql_type : null;
           const hasFailed = t ? !!t.failed_at : false;
-          return (<TableCell
-            key={`${row.rowIdx}-${offset}`}
-            cell={column.cell}
-            format={column.format}
-            failed={hasFailed}
-            type={type} />);
+          return (
+            <TableCell
+              isDropping={dropping === column.id}
+              key={`${row.rowIdx}-${offset}`}
+              cell={column.cell}
+              format={column.format}
+              failed={hasFailed}
+              type={type} />
+          );
         })}
       </tr>
     );
@@ -104,9 +105,9 @@ class TableBody extends Component {
 
   render() {
     const data = this.getData();
-    const rows = data.map(
-      row => (row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row))
-    );
+    const rows = data.map(row => {
+      return row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row);
+    });
 
     return (
       <tbody className={styles.tableBody} tabIndex="0">
@@ -117,6 +118,7 @@ class TableBody extends Component {
 }
 
 TableBody.propTypes = {
+  dropping: PropTypes.number,
   entities: PropTypes.object.isRequired,
   apiCalls: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { TransformStatus } from 'components/TransformStatus/TransformStatus'; // eslint-disable-line no-unused-vars
+import { TransformStatus } from 'components/TransformStatus/TransformStatus';
 import { normal } from 'lib/displayState';
 import { shallow } from 'enzyme';
 import React from 'react';
@@ -29,6 +29,7 @@ describe('components/TransformStatus', () => {
     columnId: 50,
     totalRows: 5000,
     transform: {
+      completed_at: '2017-11-10T18:48:31.893Z',
       output_soql_type: 'text',
       contiguous_rows_processed: 5000
     }

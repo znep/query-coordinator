@@ -6,10 +6,8 @@ import configureStore from 'redux-mock-store';
 import {
   updateColumnType,
   outputColumnsWithChangedType,
-  addColumn,
   dropColumn
 } from 'reduxStuff/actions/showOutputSchema';
-import { currentOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reduxStuff/reducers/rootReducer';
 import mockSocket from '../testHelpers/mockSocket';
@@ -31,68 +29,6 @@ const params = {
 };
 
 describe('showOutputSchema actions', () => {
-
-  describe('addColumn', () => {
-    let unmock;
-    let recordedActions = [];
-
-    before(done => {
-      unmock = mockAPI();
-
-      const os = _.values(state.entities.output_schemas)[0];
-      const column = _.values(state.entities.output_columns)[0];
-
-      const store = createStore(
-        rootReducer,
-        state,
-        applyMiddleware(thunk.withExtraArgument(socket))
-      );
-
-      store
-        .dispatch(addColumn(os, column, params))
-        .then(() => {
-          return store.getState();
-        })
-        .then(stateAfterAddColumn => {
-          const fakeStore = mockStore(stateAfterAddColumn);
-          return fakeStore
-            .dispatch(addColumn(os, column, params))
-            .then(() => fakeStore.getActions());
-        })
-        .then(actions => {
-          recordedActions = actions;
-          done();
-        })
-        .catch(err => {
-          done(err);
-        });
-    });
-
-    after(() => {
-      unmock();
-    });
-
-    it('adds a new output schema to the store', () => {
-      const expectedAction = recordedActions.filter(
-        action =>
-          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
-          _.has(action, 'outputSchema')
-      );
-
-      assert.isAtLeast(expectedAction.length, 1);
-    });
-
-    it('adds the added column to the store', () => {
-      const expectedAction = recordedActions.filter(
-        action =>
-          action.type === 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS' &&
-          _.has(action, 'outputColumns')
-      );
-
-      assert.isAtLeast(expectedAction.length, 1);
-    });
-  });
-
   describe('dropColumn', () => {
     let unmock;
     let recordedActions = [];

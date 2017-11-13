@@ -1,8 +1,6 @@
-import _ from 'lodash';
-
 /* eslint react/jsx-indent: 0 */
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link, withRouter } from 'react-router';
@@ -18,10 +16,11 @@ import styles from './TransformStatus.scss';
 
 const SubI18n = I18n.show_output_schema.column_header;
 
-const GeospatialShortcut = ({ showShortcut, flyoutId }) =>
+const GeospatialShortcut = ({ showShortcut, flyoutId }) => (
   <Link className={styles.geoBadge} onClick={() => showShortcut('geocode')} data-flyout={flyoutId}>
     <span className={styles.geoIcon}>Geo</span>
-  </Link>;
+  </Link>
+);
 
 GeospatialShortcut.propTypes = {
   showShortcut: PropTypes.func.isRequired,
@@ -62,14 +61,10 @@ export class TransformStatus extends Component {
     }
   }
 
-  determineColStatus(isIgnored, transform, totalRows) {
-    // TODO delete this when dsmapi pr goes in
-    const oldDoneCheck = transform.contiguous_rows_processed === totalRows;
+  determineColStatus(transform) {
     if (transform.failed_at) {
       return 'failed';
-    } else if (isIgnored) {
-      return 'isIgnored';
-    } else if (transform.finished_at || oldDoneCheck) {
+    } else if (transform.finished_at || transform.completed_at) {
       return 'done';
     } else {
       return 'inProgress';
@@ -82,9 +77,9 @@ export class TransformStatus extends Component {
       totalRows,
       displayState,
       columnId,
-      isIgnored,
       showShortcut,
-      onClickError
+      onClickError,
+      isDropping
     } = this.props;
 
     const inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
@@ -93,7 +88,7 @@ export class TransformStatus extends Component {
 
     const percentage = Math.round(rowsProcessed / totalRows * 100);
 
-    const colStatus = this.determineColStatus(isIgnored, transform, totalRows);
+    const colStatus = this.determineColStatus(transform);
 
     const hasErrors = this.hasTransformErrors();
 
@@ -119,11 +114,6 @@ export class TransformStatus extends Component {
         progressbarPercent = 0;
         statusTextMessage = SubI18n.transform_failed;
         break;
-      case 'isIgnored':
-        thClasses = styles.disabledColumn;
-        progressbarPercent = 100;
-        statusTextMessage = SubI18n.ignored_column;
-        break;
       case 'done':
         thClasses = styles.colErrors;
         progressbarPercent = percentage;
@@ -142,6 +132,10 @@ export class TransformStatus extends Component {
       };
     }
 
+    if (isDropping) {
+      thClasses = [thClasses, styles.dropping].join(' ');
+    }
+
     return (
       <th className={thClasses} key={transform.id} data-cheetah-hook="col-errors" {...extraProps}>
         <div className={styles.columnProgressBar}>
@@ -151,18 +145,21 @@ export class TransformStatus extends Component {
             ariaLabeledBy={`column-display-name-${columnId}`} />
         </div>
         <div className={styles.colAttributes}>
-          {this.showGeocodeShortcut() &&
-            <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} showShortcut={showShortcut} />}
+          {this.showGeocodeShortcut() && (
+            <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} showShortcut={showShortcut} />
+          )}
           <GeoFlyout transform={transform} />
-          {hasErrors
-            ? <Link
+          {hasErrors ? (
+            <Link
               className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
               onClick={onClickError}
               data-flyout={getErrorFlyoutId(transform)}>
-                <ErrorPill number={transform.error_count} />
-                {errorStatusMessage}
-              </Link>
-            : <StatusText message={statusTextMessage} status={colStatus} />}
+              <ErrorPill number={transform.error_count} />
+              {errorStatusMessage}
+            </Link>
+          ) : (
+            <StatusText message={statusTextMessage} status={colStatus} />
+          )}
           {hasErrors && <ErrorFlyout transform={transform} />}
         </div>
       </th>
@@ -171,8 +168,8 @@ export class TransformStatus extends Component {
 }
 
 TransformStatus.propTypes = {
+  isDropping: PropTypes.bool,
   transform: PropTypes.object.isRequired,
-  isIgnored: PropTypes.bool.isRequired,
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,
   totalRows: PropTypes.number,

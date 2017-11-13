@@ -16,7 +16,7 @@ describe('TablePane', () => {
     const component = shallow(<TablePane {...defaultProps} />);
 
     it('renders Table', () => {
-      assert.equal(component.find('withRouter(Connect(Table))').length, 1);
+      assert.equal(component.find('Connect(Table)').length, 1);
     });
 
     it('renders the Pagerbar if needed', () => {

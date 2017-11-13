@@ -125,11 +125,6 @@ const defaultProps = {
       }
     }
   ],
-  apiCallsByColumnId: {},
-  updateColumnType: () => {},
-  addColumn: () => {},
-  dropColumn: () => {},
-  validateThenSetRowIdentifier: () => {},
   onClickError: () => {},
   showShortcut: () => {}
 };
@@ -138,7 +133,7 @@ describe('components/Table', () => {
   it('renders a column header for each output column', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.equal(
-      component.find('withRouter(ColumnHeader)').length,
+      component.find('withRouter(Connect(ColumnHeader))').length,
       defaultProps.outputColumns.length
     );
   });
@@ -154,14 +149,6 @@ describe('components/Table', () => {
   it('renders a table body component', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.isTrue(component.find('Connect(TableBody)').exists());
-  });
-
-  it('renders a disabled ColumnHeader if column is ignored', () => {
-    const component = shallow(<Table {...defaultProps} />);
-    assert.isTrue(
-      component.find('withRouter(ColumnHeader)').last().prop('outputColumn')
-        .ignored
-    );
   });
 
   it('renders a row-errors link if the input schema says there are row errors', () => {

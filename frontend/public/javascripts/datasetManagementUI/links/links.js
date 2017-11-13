@@ -37,7 +37,15 @@ export const showParseOptions = params => {
   const { sourceId, inputSchemaId, outputSchemaId } = params;
   return (
     `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
-    `/output/${outputSchemaId}/option/parse_options`
+    `/output/${outputSchemaId}/parse_options`
+  );
+};
+
+export const showAddCol = params => {
+  const { sourceId, inputSchemaId, outputSchemaId } = params;
+  return (
+    `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/add_col`
   );
 };
 

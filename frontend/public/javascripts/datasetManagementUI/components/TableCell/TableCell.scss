@@ -2,6 +2,10 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.dropping {
+  opacity: 0.1;
+}
+
 .base {
   height: 29px;
   font-size: 12px;
@@ -73,7 +77,6 @@
 .transformFailed {
   opacity: 0.5;
 }
-
 
 // FORMATTING
 

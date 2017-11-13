@@ -1,11 +1,8 @@
-import _ from 'lodash';
-
 /* eslint react/jsx-indent: 0 */
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import React, { Component } from 'react';
-import classNames from 'classnames';
-import { Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Links from 'links/links';
@@ -17,9 +14,14 @@ const Translations = I18n.show_output_schema.column_header;
 
 function DropdownWithIcon(dropdownProps) {
   const { icon, title, disabled } = dropdownProps;
-  const klass = classNames(styles.colDropdownItem, { [styles.colDropdownItemDisabled]: disabled });
+  const classNames = [styles.colDropdownItem];
+
+  if (disabled) {
+    classNames.push(styles.colDropdownItemDisabled);
+  }
+
   return (
-    <div className={klass}>
+    <div className={classNames.join(' ')}>
       <SocrataIcon className={icon} name={title} />
       {Translations[title]}
     </div>
@@ -36,6 +38,7 @@ export class ColumnHeader extends Component {
     return (
       !_.isEqual(nextProps.outputColumn, this.props.outputColumn) ||
       nextProps.outputSchema.id !== this.props.outputSchema.id ||
+      nextProps.isDropping !== this.props.isDropping ||
       nextProps.activeApiCallInvolvingThis !== this.props.activeApiCallInvolvingThis
     );
   }
@@ -43,17 +46,19 @@ export class ColumnHeader extends Component {
   onDropColumn() {
     // button is disabled but click handler still fires
     // so we need to guard against this stuff twice
-    if (this.isDropColumnDisabled()) return;
-    this.props.dropColumn();
-  }
+    if (this.isDropColumnDisabled()) {
+      return;
+    }
 
-  onAddColumn() {
-    this.props.addColumn();
+    this.props.dropColumn();
   }
 
   onRowId() {
     // guard against disabled but not actually click handler
-    if (this.isRowIdDisabled()) return;
+    if (this.isRowIdDisabled()) {
+      return;
+    }
+
     this.props.validateThenSetRowIdentifier();
   }
 
@@ -69,12 +74,16 @@ export class ColumnHeader extends Component {
   }
 
   onMoveRight() {
-    if (this.isMoveRightDisabled()) return;
+    if (this.isMoveRightDisabled()) {
+      return;
+    }
     this.props.moveRight();
   }
 
   onFormatColumn() {
-    if (this.isFormatDisabled()) return;
+    if (this.isFormatDisabled()) {
+      return;
+    }
     this.props.formatColumn();
   }
 
@@ -83,15 +92,11 @@ export class ColumnHeader extends Component {
   }
 
   isRowIdDisabled() {
-    return this.isInProgress() ||
-      this.props.outputColumn.is_primary_key ||
-      this.props.outputColumn.ignored;
+    return this.isInProgress() || this.props.outputColumn.is_primary_key;
   }
 
   isUnsetRowIdDisabled() {
-    return this.isInProgress() ||
-      !this.props.outputColumn.is_primary_key ||
-      this.props.outputColumn.ignored;
+    return this.isInProgress() || !this.props.outputColumn.is_primary_key;
   }
 
   isMoveLeftDisabled() {
@@ -103,7 +108,7 @@ export class ColumnHeader extends Component {
   }
 
   isFormatDisabled() {
-    return this.isInProgress() || this.props.outputColumn.ignored;
+    return this.isInProgress();
   }
 
   isInProgress() {
@@ -114,30 +119,12 @@ export class ColumnHeader extends Component {
     return false;
   }
 
-
   optionsFor() {
     const column = this.props.outputColumn;
     if (column.transform && column.transform.failed_at) {
       return [];
     }
 
-    if (column.ignored) {
-      return [
-        {
-          title: 'import_column',
-          value: 'onAddColumn',
-          icon: 'socrata-icon-plus3',
-          render: DropdownWithIcon
-        },
-        {
-          title: 'set_row_id',
-          value: 'onRowId',
-          icon: 'socrata-icon-id',
-          disabled: true,
-          render: DropdownWithIcon
-        }
-      ];
-    }
     return [
       {
         title: 'formatting',
@@ -147,7 +134,7 @@ export class ColumnHeader extends Component {
         render: DropdownWithIcon
       },
       {
-        title: 'ignore_column',
+        title: 'drop_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
         disabled: this.isDropColumnDisabled(),
@@ -197,17 +184,30 @@ export class ColumnHeader extends Component {
       updateColumnType,
       activeApiCallInvolvingThis,
       params,
-      canTransform
+      canTransform,
+      isDropping
     } = this.props;
-    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis || !canTransform;
+
+    const isDisabled = activeApiCallInvolvingThis || !canTransform;
 
     let convertibleTo = [];
     if (outputColumn.inputColumns.length === 1) {
       const inputColumn = outputColumn.inputColumns[0];
 
       const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
-      convertibleTo = _.keys(inputColumnTypeInfo.conversions);
+      convertibleTo = Object.keys(inputColumnTypeInfo.conversions);
     }
+
+    // TODO: add this back if/when we figure out a way to convert in dsmui without
+    // needing an input column. The current codepath intentionally throws an error.
+    // else if (outputColumn.transform && outputColumn.transform.parsed_expr) {
+    //   const isCreatedColumn = outputColumn.transform.parsed_expr.args[0] === null;
+    //
+    //   if (isCreatedColumn) {
+    //     const canonicalName = conversionsToCanonicalName(outputColumn.transform.parsed_expr.function_name);
+    //     convertibleTo = Object.keys(soqlProperties[canonicalName].conversions);
+    //   }
+    // }
 
     const types = convertibleTo.map(type => ({
       humanName: Translations.type_display_names[type.toLowerCase()],
@@ -227,33 +227,38 @@ export class ColumnHeader extends Component {
       }
     };
 
-    const header =
-      !outputColumn.transform || outputColumn.ignored ? (
+    const header = !outputColumn.transform ? (
+      <span
+        className={styles.colName}
+        id={`column-field-name-${outputColumn.id}`}
+        title={outputColumn.display_name}>
+        {outputColumn.display_name}
+      </span>
+    ) : (
+      <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
         <span
           className={styles.colName}
-          id={`column-field-name-${outputColumn.id}`}
+          data-cheetah-hook="col-name"
+          id={`column-display-name-${outputColumn.id}`}
           title={outputColumn.display_name}>
           {outputColumn.display_name}
+          <SocrataIcon name="edit" className={styles.icon} />
         </span>
-      ) : (
-        <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
-          <span
-            className={styles.colName}
-            data-cheetah-hook="col-name"
-            id={`column-display-name-${outputColumn.id}`}
-            title={outputColumn.display_name}>
-            {outputColumn.display_name}
-            <SocrataIcon name="edit" className={styles.icon} />
-          </span>
-        </Link>
-      );
+      </Link>
+    );
 
-    const className = classNames(styles.columnHeader, {
-      [styles.columnHeaderDisabled]: isDisabled
-    });
+    const classNames = [styles.columnHeader];
+
+    if (isDisabled) {
+      classNames.push(styles.columnHeaderDisabled);
+    }
+
+    if (isDropping) {
+      classNames.push(styles.dropping);
+    }
 
     return (
-      <th key={outputColumn.id} className={className}>
+      <th key={outputColumn.id} className={classNames.join(' ')}>
         {header}
         <div className={styles.colDropdown}>
           <Dropdown {...dropdownProps} />
@@ -278,12 +283,14 @@ export class ColumnHeader extends Component {
 }
 
 ColumnHeader.propTypes = {
+  isDropping: PropTypes.bool,
+  setDropping: PropTypes.func,
+  resetDropping: PropTypes.func,
   outputSchema: PropTypes.object.isRequired,
   outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
   canTransform: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   unSetRowIdentifier: PropTypes.func.isRequired,
@@ -294,4 +301,4 @@ ColumnHeader.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export default withRouter(ColumnHeader);
+export default ColumnHeader;

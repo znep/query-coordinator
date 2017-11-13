@@ -4,8 +4,7 @@ import React from 'react';
 import { ShowOutputSchema, mapStateToProps } from 'pages/ShowOutputSchema/ShowOutputSchema';
 import dotProp from 'dot-prop-immutable';
 import {
-  ShowOutputSchemaProps,
-  ShowOutputSchemaErrorProps
+  ShowOutputSchemaProps
 } from '../data/defaultProps';
 import state from '../data/initialState';
 
@@ -13,10 +12,14 @@ describe('ShowOutputSchema page', () => {
   describe('rendering', () => {
     const defaultProps = ShowOutputSchemaProps;
 
-    const component = shallow(<ShowOutputSchema {...defaultProps} />);
+    const component = shallow(
+      <ShowOutputSchema {...defaultProps}>
+        <span className='boop'>boop</span>
+      </ShowOutputSchema>
+    );
 
-    it('renders Table', () => {
-      assert.equal(component.find('TablePane').length, 1);
+    it('renders its children', () => {
+      assert.isAtLeast(component.find('.boop').length, 1);
     });
 
     it('renders ReadyToImport', () => {

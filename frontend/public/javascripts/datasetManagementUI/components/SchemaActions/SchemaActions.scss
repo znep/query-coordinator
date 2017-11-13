@@ -1,0 +1,31 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  composes: small from global;
+  color: $black;
+  overflow-y: scroll;
+  height: calc(100% - 390px);
+  list-style-type: none;
+  padding-left: 4px;
+}
+
+.container > li {
+  margin-bottom: 1em;
+  padding-right: 8px;
+}
+
+.restoreLink {
+  color: $primary-base !important;
+}
+
+.schema {
+  padding-left: 8px;
+  border-left: 4px solid $dark-grey-2;
+}
+
+.currentSchema {
+  composes: schema;
+  border-left: 4px solid $primary-base;
+}

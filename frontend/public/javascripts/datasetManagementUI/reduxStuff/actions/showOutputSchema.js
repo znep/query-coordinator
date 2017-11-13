@@ -8,8 +8,8 @@ import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
-  ADD_COLUMN,
   DROP_COLUMN,
+  ADD_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
   NEW_OUTPUT_SCHEMA,
@@ -20,9 +20,11 @@ import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
+import * as FormActions from 'reduxStuff/actions/forms';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
 import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
-import { getUniqueName, getUniqueFieldName } from 'lib/util';
+import { validateFieldName, validateDisplayName } from 'containers/AddColFormContainer';
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
@@ -103,43 +105,6 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
-  const { entities } = getState();
-
-  const call = {
-    operation: ADD_COLUMN,
-    callParams: {
-      outputSchemaId: outputSchema.id,
-      outputColumnId: outputColumn.id
-    }
-  };
-
-  // check for clashes with existing columns
-  const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
-
-  const { existingFieldNames, existingDisplayNames } = current.reduce(
-    (acc, oc) => {
-      return {
-        existingFieldNames: [...acc.existingFieldNames, oc.field_name],
-        existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
-      };
-    },
-    { existingFieldNames: [], existingDisplayNames: [] }
-  );
-
-  const newOutputColumn = {
-    ...outputColumn,
-    field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
-    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
-  };
-
-  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].map(oc =>
-    buildNewOutputColumn(oc, sameTransform(entities))
-  );
-
-  return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
-};
-
 export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const { entities } = getState();
 
@@ -150,7 +115,8 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
       outputColumnId: column.id
     }
   };
-  const { current } = Selectors.currentAndIgnoredOutputColumns(entities, outputSchema.id);
+
+  const current = Selectors.columnsForOutputSchema(entities, outputSchema.id);
 
   const newOutputColumns = current
     .filter(oc => oc.id !== column.id)
@@ -177,7 +143,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
 
-export const unsetRowIdentifier = (outputSchema) => (dispatch, getState) => {
+export const unsetRowIdentifier = outputSchema => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -212,11 +178,10 @@ export const moveColumnToPosition = (outputSchema, column, positionBaseOne) => (
 
   const newOutputColumns = columns
     .map(oc => buildNewOutputColumn(oc, sameTransform(entities)))
-    .map((oc, i) => ({ ...oc, position: (i + 1) }));
+    .map((oc, i) => ({ ...oc, position: i + 1 }));
 
   return dispatch(createNewOutputSchema(outputSchema.input_schema_id, newOutputColumns, call));
 };
-
 
 export function buildNewOutputColumn(outputColumn, genTransform) {
   return {
@@ -241,16 +206,14 @@ function sameTransform(entities) {
 }
 
 export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColumn, newType) {
-  const oldOutputColumns = Selectors.columnsForOutputSchema(
-    entities,
-    oldOutputSchema.id
-  ).map(oc => (
-  // This was a lovely bug!
-  // When changing the type of a primary key column, we need to make it a non-pk, because
-  // type conversion could lead to duplicate or null values; in fact, this is true of any
-  // transformation
-    oc.id === oldColumn.id ? { ...oc, is_primary_key: false } : oc
-  ));
+  const oldOutputColumns = Selectors.columnsForOutputSchema(entities, oldOutputSchema.id).map(oc => {
+    // This was a lovely bug!
+    // When changing the type of a primary key column, we need to make it a non-pk, because
+    // type conversion could lead to duplicate or null values; in fact, this is true of any
+    // transformation
+
+    return oc.id === oldColumn.id ? { ...oc, is_primary_key: false } : oc;
+  });
 
   // Input columns are presently always text.  This will eventually
   // change, and then we'll need the input column here instead of
@@ -342,5 +305,82 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
       .catch(error => {
         dispatch(apiCallFailed(callId, error));
       });
+  };
+}
+
+function validateColForm(data, fieldNames, dispayNames) {
+  return {
+    fieldName: validateFieldName(data.fieldName, fieldNames),
+    displayName: validateDisplayName(data.displayName, dispayNames)
+  };
+}
+
+function getNames(entities, osid) {
+  const columns = Selectors.columnsForOutputSchema(entities, osid);
+
+  return {
+    fieldNames: columns.map(col => col.field_name),
+    displayNames: columns.map(col => col.display_name)
+  };
+}
+
+function getPosition(entities, osid) {
+  const columns = Selectors.columnsForOutputSchema(entities, osid);
+
+  if (columns && Array.isArray(columns)) {
+    return Math.max(...columns.map(col => col.position)) + 1;
+  } else {
+    return 1;
+  }
+}
+
+export function snakeCase(colData) {
+  return {
+    field_name: colData.fieldName,
+    display_name: colData.displayName,
+    position: colData.position,
+    description: colData.description,
+    is_primary_key: false,
+    format: null,
+    transform: { transform_expr: colData.transformExpr }
+  };
+}
+
+export function addCol(colData, params) {
+  return (dispatch, getState) => {
+    const { entities } = getState();
+
+    const osid = _.toNumber(params.outputSchemaId);
+
+    const { fieldNames, displayNames } = getNames(entities, osid);
+
+    const validationErrors = validateColForm(colData, fieldNames, displayNames);
+
+    dispatch(FormActions.setFormErrors('addColForm', validationErrors));
+
+    if (validationErrors.fieldName.length || validationErrors.displayName.length) {
+      dispatch(FlashActions.showFlashMessage('error', 'Failed to create column. Please see errors below.'));
+      return Promise.reject();
+    }
+
+    const call = {
+      operation: ADD_COLUMN,
+      callParams: {
+        outputSchemaId: osid
+      }
+    };
+
+    const os = entities.output_schemas[osid];
+
+    const newCol = snakeCase({
+      ...colData,
+      position: getPosition(entities, osid)
+    });
+
+    const currentCols = Selectors.columnsForOutputSchema(entities, osid);
+
+    const newCols = [...currentCols, newCol];
+
+    return dispatch(createNewOutputSchema(os.input_schema_id, newCols, call));
   };
 }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
-import ColumnHeader from 'components/ColumnHeader/ColumnHeader';
+import React, { Component } from 'react';
+import ColumnHeader from 'containers/ColumnHeaderContainer';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
@@ -24,84 +24,96 @@ function genShortcuts(column) {
   return shortcuts;
 }
 
-function Table({
-  entities,
-  path,
-  inputSchema,
-  outputSchema,
-  outputColumns,
-  displayState,
-  apiCallsByColumnId,
-  updateColumnType,
-  addColumn,
-  dropColumn,
-  validateThenSetRowIdentifier,
-  unSetRowIdentifier,
-  moveLeft,
-  moveRight,
-  formatColumn,
-  showShortcut,
-  onClickError
-}) {
-  const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
-  const showFlyouts = true;
-  const numRowErrors = inputSchema.num_row_errors;
-  const canTransform = (
-    entities.sources[inputSchema.source_id] &&
-    !entities.sources[inputSchema.source_id].failed_at
-  );
-  return (
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          {outputColumns.map(column =>
-            <ColumnHeader
-              key={column.id}
-              canTransform={canTransform}
-              outputSchema={outputSchema}
-              outputColumn={column}
-              updateColumnType={updateColumnType}
-              activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
-              addColumn={() => addColumn(outputSchema, column)}
-              dropColumn={() => dropColumn(outputSchema, column)}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)}
-              unSetRowIdentifier={() => unSetRowIdentifier(outputSchema)}
-              moveLeft={() => moveLeft(outputSchema, column)}
-              moveRight={() => moveRight(outputSchema, column)}
-              formatColumn={() => formatColumn(outputSchema, column)}
-              columnCount={outputColumns.length} />
-          )}
-        </tr>
-        <tr className={styles.columnStatuses}>
-          {outputColumns.map(column =>
-            <TransformStatus
-              key={column.id}
+class Table extends Component {
+  constructor() {
+    super();
+    this.state = {
+      dropping: null
+    };
+
+    this.setDropping = this.setDropping.bind(this);
+    this.resetDropping = this.resetDropping.bind(this);
+  }
+
+  setDropping(colId) {
+    this.setState({
+      dropping: colId
+    });
+  }
+
+  resetDropping() {
+    this.setState({
+      dropping: null
+    });
+  }
+
+  render() {
+    const {
+      entities,
+      path,
+      inputSchema,
+      outputSchema,
+      outputColumns,
+      displayState,
+      showShortcut,
+      onClickError
+    } = this.props;
+
+    const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
+    const showFlyouts = true;
+    const numRowErrors = inputSchema.num_row_errors;
+    const canTransform =
+      entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
+
+    return (
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            {outputColumns.map(column => (
+              <ColumnHeader
+                key={column.id}
+                isDropping={this.state.dropping === column.id}
+                setDropping={() => this.setDropping(column.id)}
+                resetDropping={this.resetDropping}
+                canTransform={canTransform}
+                outputSchema={outputSchema}
+                outputColumn={column}
+                columnCount={outputColumns.length} />
+            ))}
+          </tr>
+          <tr className={styles.columnStatuses}>
+            {outputColumns.map(column => (
+              <TransformStatus
+                key={column.id}
+                path={path}
+                transform={column.transform}
+                displayState={displayState}
+                columnId={column.id}
+                isDropping={this.state.dropping === column.id}
+                totalRows={inputSchema.total_rows}
+                shortcuts={genShortcuts(column)}
+                showShortcut={showShortcut}
+                flyouts={showFlyouts}
+                onClickError={() => onClickError(path, column.transform, displayState)} />
+            ))}
+          </tr>
+          {numRowErrors > 0 && (
+            <RowErrorsLink
               path={path}
-              transform={column.transform}
-              isIgnored={column.ignored || false}
               displayState={displayState}
-              columnId={column.id}
-              totalRows={inputSchema.total_rows}
-              shortcuts={genShortcuts(column)}
-              showShortcut={showShortcut}
-              flyouts={showFlyouts}
-              onClickError={() => onClickError(path, column.transform, displayState)} />
+              numRowErrors={numRowErrors}
+              inRowErrorMode={inRowErrorMode} />
           )}
-        </tr>
-        {numRowErrors > 0 &&
-          <RowErrorsLink
-            path={path}
-            displayState={displayState}
-            numRowErrors={numRowErrors}
-            inRowErrorMode={inRowErrorMode} />}
-      </thead>
-      <TableBody
-        entities={entities}
-        columns={outputColumns}
-        displayState={displayState}
-        inputSchemaId={inputSchema.id} />
-    </table>
-  );
+        </thead>
+        <TableBody
+          entities={entities}
+          columns={outputColumns}
+          displayState={displayState}
+          dropping={this.state.dropping}
+          inputSchemaId={inputSchema.id} />
+      </table>
+    );
+  }
 }
 
 Table.propTypes = {
@@ -109,18 +121,9 @@ Table.propTypes = {
   path: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
-  dropColumn: PropTypes.func.isRequired,
-  validateThenSetRowIdentifier: PropTypes.func.isRequired,
-  unSetRowIdentifier: PropTypes.func.isRequired,
-  moveLeft: PropTypes.func.isRequired,
-  moveRight: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
-  apiCallsByColumnId: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,
   showShortcut: PropTypes.func.isRequired,
-  formatColumn: PropTypes.func.isRequired,
   outputColumns: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.number.isRequired,

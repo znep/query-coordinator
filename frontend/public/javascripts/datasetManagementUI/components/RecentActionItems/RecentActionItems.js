@@ -8,7 +8,7 @@ import styles from './RecentActionItems.scss';
 
 const SubI18n = I18n.home_pane.home_pane_sidebar;
 
-const RecentActionsTimestamp = ({ date }) => (
+export const RecentActionsTimestamp = ({ date }) => (
   <span className={styles.timestamp}>{moment.utc(date).fromNow()}</span>
 );
 

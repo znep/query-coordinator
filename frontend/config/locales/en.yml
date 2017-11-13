@@ -2355,6 +2355,7 @@ en:
       header_count_gt_error: Header Count must be greater than or equal to Header Row Position
       must_be_an_int: Must be an integer
     show_output_schema:
+      add_col: Add Column
       geocode: Add georeference
       preview_table: Preview Data Table
       specify_headers: File Configurations
@@ -2362,6 +2363,7 @@ en:
         singular: Additional error
         plural: Additional errors
       click_to_view: Click to view
+      redirect_error: Successfully contacted server but could not redirect to new schema
       fatal_error:
         unknown_error: An unknown error occurred
         source_error: There was an error with the data source
@@ -2411,6 +2413,7 @@ en:
         move_left: Move Left
         can_geocode: Data in this column can be geocoded
         click_for_options: Click for more options
+        drop_column: Remove column
         type_display_names:
           checkbox: True/False
           date: Date & Time (with timezone)
@@ -2491,6 +2494,22 @@ en:
       save_success: Data saved successfully.
       subtitle: This will create a link to a dataset on another server. Your data will not be imported.
       title: Link to an External Dataset
+    add_col:
+      fieldset_title: Add Column
+      fieldset_subtitle: Add a column to your schema
+      display_name: Display Name
+      field_name: Field Name
+      description: Description
+      source_column: Source Column
+      type: Type
+      icon: Icon
+      schema_preview: Schema Preview
+      success_flash_message: New column created.
+      error_flash_message: Failed to create column. Please see errors below.
+      error_not_unique: not unique
+      error_no_value: no value
+      error_invalid_name: invalid name
+      no_source_col: No Source Column
     show_uploads:
       filetypes: Parseable file types are
       flash_error_message: Unsupported file type

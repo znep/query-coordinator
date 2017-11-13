@@ -22,15 +22,14 @@ why are the canonical names different
 than the names in the transform functions
  */
 
-const addIdentityTransforms = (typePropertiesList) => (
-  typePropertiesList.map((typeInfo) => ({
+const addIdentityTransforms = typePropertiesList =>
+  typePropertiesList.map(typeInfo => ({
     ...typeInfo,
     conversions: {
       ...typeInfo.conversions,
       [typeInfo.canonicalName]: `to_${typeInfo.canonicalName}`
     }
-  }))
-);
+  }));
 
 const soqlPropertiesList = addIdentityTransforms([
   {
@@ -128,10 +127,25 @@ const soqlPropertiesList = addIdentityTransforms([
   }
 ]);
 
-export const soqlProperties =
-  soqlPropertiesList.reduce((acc, typespec) => ({
+export const soqlProperties = soqlPropertiesList.reduce(
+  (acc, typespec) => ({
     ...acc,
     [typespec.canonicalName]: typespec
-  }), {});
+  }),
+  {}
+);
 
 export const soqlTypes = Object.keys(soqlProperties);
+
+export const conversionsToCanonicalName = conversion => {
+  switch (conversion) {
+    case 'to_number':
+      return 'number';
+    case 'to_boolean':
+      return 'checkbox';
+    case 'to_floating_timestamp':
+      return 'calendar_date';
+    default:
+      return 'text';
+  }
+};

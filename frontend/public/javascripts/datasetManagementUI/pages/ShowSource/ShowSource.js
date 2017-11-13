@@ -207,12 +207,12 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         }
       })
       .catch(err =>
-        err.response.json().then(({ message, reason }) => {
-          if (!message || !reason) {
+        err.response.json().then(({ message, params }) => {
+          if (!message || !params) {
             return;
           }
 
-          const errs = _.chain(reason.href)
+          const errs = _.chain(params.href)
             .filter(href => !_.isEmpty(href))
             .flatMap(href => href.urls)
             .value();

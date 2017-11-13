@@ -370,8 +370,8 @@ export class GeocodeShortcut extends Component {
       })
       .catch(resp => {
         const { body } = resp;
-        if (body && body.reason) {
-          const message = _.flatMap(Object.values(body.reason), errors => errors);
+        if (body && body.params) {
+          const message = _.flatMap(Object.values(body.params), errors => errors);
           this.props.showError(message);
         } else {
           console.error(resp);

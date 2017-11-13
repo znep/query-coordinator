@@ -91,7 +91,7 @@ export class ManageMetadata extends Component {
           error.response.json().then(err => {
             dispatch(showFormErrors('datasetForm'));
             dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-            const failure = classify(err.reason);
+            const failure = classify(err.params);
             if (failure && failure.fieldName && failure.fieldset) {
               dispatch(appendFormError('datasetForm', failure));
             }

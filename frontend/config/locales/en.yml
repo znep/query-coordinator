@@ -2175,7 +2175,7 @@ en:
         processing_succeeded: Data processing successfully finished
         started_processing: started data processing
         opened_revision: opened a revision
-        changed_parse_options: changed the file parsing options
+        changed_parse_options: changed the file configuration
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata
@@ -2340,6 +2340,7 @@ en:
       use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
       activity_log: See a log of your updates here
     parse_options:
+      title: File Configuration Options
       header_count: Header Count
       column_header: Header Row Position
       encoding: Character Encoding
@@ -2355,7 +2356,7 @@ en:
     show_output_schema:
       geocode: Add georeference
       preview_table: Preview Data Table
-      specify_headers: Specify Headers
+      specify_headers: File Configurations
       additional_errors:
         singular: Additional error
         plural: Additional errors

@@ -38,7 +38,7 @@ const OutputSchemaSidebar = props => {
       <Link
         to={Links.showParseOptions(params)}
         className={parseOptionsClass}>
-        <SocrataIcon name="question" />
+        <SocrataIcon name="settings" />
         {SubI18n.specify_headers}
       </Link>
       <span

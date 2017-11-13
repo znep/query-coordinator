@@ -138,7 +138,7 @@ class ParseOptions extends Component {
           <div className={styles.optionsForm}>
             <form>
               <Fieldset
-                title={"File Parsing Options"}
+                title={SubI18n.title}
                 subtitle={"Manage how your file will be interpreted"}>
                 <ParseOption
                   name={'header_count'}

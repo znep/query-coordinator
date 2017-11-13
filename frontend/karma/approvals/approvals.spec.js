@@ -6,10 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import sinon from 'sinon';
 
 import Approvals from 'approvals/components/approvals';
-import * as constants from 'common/components/AssetBrowser/lib/constants';
 import { Settings } from 'common/components/AssetBrowser/components/approvals/settings';
-import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
-import { ApprovalActionButtons } from 'common/components/AssetBrowser/components';
 
 import { useTestTranslations } from 'common/i18n';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';
@@ -44,7 +41,7 @@ describe('<Approvals />', () => {
       );
       assert(
         wrapper.find('.catalog-results .asset-counts').length <= 0,
-        'asset counts should be present'
+        'asset counts should not be present'
       );
       assert(
         wrapper.find('.catalog-filters').length,

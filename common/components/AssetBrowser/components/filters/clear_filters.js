@@ -8,7 +8,7 @@ import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 
 import ActiveFilterCount from './active_filter_count';
 
-// This export is used in platform-ui/frontend/karma/internalAssetManager/components/clear_filters.spec.js
+// This export is used in platform-ui/frontend/karma/internal_asset_manager/components/clear_filters.spec.js
 export class ClearFilters extends Component {
   constructor(props) {
     super(props);

@@ -9,7 +9,7 @@ module.exports = _.defaultsDeep(
   {
     context: path.resolve(
       common.frontendRoot,
-      'public/javascripts/internalAssetManager'
+      'public/javascripts/internal_asset_manager'
     ),
     entry: common.withHotModuleEntries({
       main: './main'
@@ -37,7 +37,7 @@ module.exports = _.defaultsDeep(
     },
     resolve: _.extend(
       { alias: { jquery: 'jQuery' } },
-      common.getStandardResolve(['public/javascripts/internalAssetManager'])
+      common.getStandardResolve(['public/javascripts/internal_asset_manager'])
     ),
     plugins: common.plugins.concat(common.getManifestPlugin(identifier))
   },

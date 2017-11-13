@@ -2353,6 +2353,7 @@ en:
         singular: Additional error
         plural: Additional errors
       click_to_view: Click to view
+      redirect_error: Successfully contacted server but could not redirect to new schema
       fatal_error:
         unknown_error: An unknown error occurred
         source_error: There was an error with the data source

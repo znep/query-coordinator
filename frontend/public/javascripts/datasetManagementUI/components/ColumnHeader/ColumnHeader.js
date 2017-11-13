@@ -50,16 +50,7 @@ export class ColumnHeader extends Component {
       return;
     }
 
-    this.props.setDropping();
-
-    // Can't really animate dropping a column since we decided to make the api
-    // response / ui for this row-based. The best we can do is change the opacity
-    // and put a slight delay on dropping it from the ui.
-    setTimeout(() => {
-      this.props.dropColumn().then(() => {
-        this.props.resetDropping();
-      });
-    }, 300);
+    this.props.dropColumn();
   }
 
   onRowId() {

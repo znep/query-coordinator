@@ -7,6 +7,7 @@ import * as Selectors from 'selectors';
 import Table from 'containers/TableContainer';
 import PagerBar from 'containers/PagerBarContainer';
 import ErrorPointer from 'components/ErrorPointer/ErrorPointer';
+import FlashMessage from 'containers/FlashMessageContainer';
 import styles from './ShowOutputSchema.scss';
 
 const COL_WIDTH_PX = 250; // matches style on td in Table.scss
@@ -107,6 +108,9 @@ class TablePane extends Component {
 
     return (
       <div className={styles.contentWrap}>
+        <div className={styles.flashContainer}>
+          <FlashMessage />
+        </div>
         <div
           className={styles.pointerWrap}
           onScroll={this.throttledSetSize}
@@ -166,7 +170,8 @@ TablePane.propTypes = {
   displayState: PropTypes.object,
   params: PropTypes.object,
   numLoadsInProgress: PropTypes.number,
-  showShortcut: PropTypes.func
+  showShortcut: PropTypes.func,
+  flashVisible: PropTypes.bool
 };
 
 export default TablePane;

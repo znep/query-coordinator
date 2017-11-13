@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import * as ModalActions from 'reduxStuff/actions/modal';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
@@ -25,15 +26,37 @@ const mapStateToProps = ({ ui }, { outputColumn }) => {
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const { params, outputSchema, outputColumn } = ownProps;
 
+  function RedirectError() {
+    this.name = 'RedirectError';
+    this.message = I18n.show_output_schema.redirect_error;
+  }
+
+  RedirectError.prototype = new Error();
+
   const redirectToNewOutputschema = resp => {
     if (resp && resp.resource) {
       dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
+    } else {
+      throw new RedirectError();
     }
   };
 
   const dispatchProps = {
-    dropColumn: () =>
-      dispatch(ShowActions.dropColumn(outputSchema, outputColumn)).then(redirectToNewOutputschema),
+    dropColumn: () => {
+      ownProps.setDropping();
+      return dispatch(ShowActions.dropColumn(outputSchema, outputColumn))
+        .then(redirectToNewOutputschema)
+        .then(ownProps.resetDropping)
+        .catch(e => {
+          if (e.name === 'RedirectError') {
+            dispatch(FlashActions.showFlashMessage('error', e.message));
+          } else {
+            dispatch(
+              FlashActions.showFlashMessage('error', I18n.show_output_schema.fatal_error.unknown_error)
+            );
+          }
+        });
+    },
 
     updateColumnType: (oldSchema, oldColumn, newType) =>
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType)).then(redirectToNewOutputschema),

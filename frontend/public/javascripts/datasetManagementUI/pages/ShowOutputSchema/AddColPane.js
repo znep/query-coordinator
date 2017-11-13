@@ -14,6 +14,7 @@ class AddColPane extends Component {
     };
   }
 
+  // TODO : factor all this out into a WithFlashMessage HOC
   getHeight(node) {
     if (!node) {
       return;

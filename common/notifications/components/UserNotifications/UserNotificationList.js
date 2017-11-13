@@ -40,7 +40,7 @@ class UserNotificationList extends Component {
         activityType={notification.activityType}
         createdAt={notification.createdAt}
         type={notification.type}
-        title={notification.title}
+        activityUniqueKey={notification.activityUniqueKey}
         messageBody={notification.messageBody}
         link={notification.link}
         userName={notification.userName}

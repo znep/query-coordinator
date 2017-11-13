@@ -84,14 +84,15 @@ class UserNotification extends React.Component {
   renderNotificationTitle() {
     const {
       link,
-      title,
-      messageBody
+      activityUniqueKey,
+      messageBody,
+      I18n
     } = this.props;
     const notificationTitle = (
       <div>
         <strong className="user-notification-title">
           {this.renderAlertLabel()}
-          {title}
+          {I18n.t(activityUniqueKey, { scope: 'shared_site_chrome_notifications' })}
         </strong>
 
         <span className="notification-body">{messageBody}</span>
@@ -149,7 +150,7 @@ UserNotification.propTypes = {
   onClearUserNotification: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  activityUniqueKey: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   userProfileLink: PropTypes.string.isRequired
 };

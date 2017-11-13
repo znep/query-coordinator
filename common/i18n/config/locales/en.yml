@@ -406,6 +406,81 @@ en:
         filter_all_notifications_tab_text: all
         filter_status_notifications_tab_text: status
         filter_alert_notifications_tab_text: alert
+        working_copy_initial_view_published_default_key: Working Copy Initial View Published
+        draft_working_copy_initial_view_published: Draft Published
+        data_lens_working_copy_initial_view_published: Data Lens Published
+        dataset_working_copy_initial_view_published: Dataset Published
+        chart_working_copy_initial_view_published: Chart Published
+        map_working_copy_initial_view_published: Map Published
+        assetinventory_working_copy_initial_view_published: Asset Inventory Published
+        draft_initial_view_published_default_key: Asset Initial View Published
+        draft_draft_initial_view_published: Dataset Published
+        data_lens_draft_initial_view_published: Data Lens Published
+        dataset_draft_initial_view_published: Dataset Published
+        chart_draft_initial_view_published: Chart Published
+        map_draft_initial_view_published: Map Published
+        assetinventory_draft_initial_view_published: Asset Inventory Published
+        working_copy_view_published_default_key: Working Copy View Published
+        draft_working_copy_view_published: Draft Updated
+        data_lens_working_copy_view_published: Data Lens Updated
+        dataset_working_copy_view_published: Dataset Updated
+        chart_working_copy_view_published: Chart Updated
+        map_working_copy_view_published: Map Updated
+        assetinventory_working_copy_view_published: Asset Inventory Updated
+        draft_view_published_default_key: Asset View Published
+        draft_draft_view_published: Dataset Updated
+        data_lens_draft_view_published: Data Lens Updated
+        dataset_draft_view_published: Dataset Updated
+        chart_draft_view_published: Chart Updated
+        map_draft_view_published: Map Updated
+        assetinventory_draft_view_published: Asset Inventory Updated
+        approval_changed_rejected: Publishing Request Rejected
+        approval_changed_approved: Publishing Request Approved
+        view_created: Draft Created
+        working_copy_created: Working Copy Created
+        draft_created: Draft Created
+        view_metadata_changed: Metadata Updated
+        asset_metadata_changed: Metadata Updated
+        view_owner_changed_default_key: View Owner Changed
+        draft_view_owner_changed: Draft Owner Changed
+        data_lens_view_owner_changed: Data Lens Owner Changed
+        dataset_view_owner_changed: Dataset Owner Changed
+        chart_view_owner_changed: Chart Owner Changed
+        map_view_owner_changed: Map Owner Changed
+        assetinventory_view_owner_changed: Asset Inventory Owner Changed
+        asset_owner_changed_default_key: Asset Owner Changed
+        draft_asset_owner_changed: Draft Owner Changed
+        data_lens_asset_owner_changed: Data Lens Owner Changed
+        dataset_asset_owner_changed: Dataset Owner Changed
+        chart_asset_owner_changed: Chart Owner Changed
+        map_asset_owner_changed: Map Owner Changed
+        assetinventory_asset_owner_changed: Asset Inventory Owner Changed
+        view_permissions_changed: Permissions Updated
+        asset_permissions_changed: Permissions Updated
+        collaborator_added_default_key: Asset Shared
+        draft_collaborator_added: Draft Shared
+        data_lens_collaborator_added: Data Lens Shared
+        dataset_collaborator_added: Dataset Shared
+        chart_collaborator_added: Chart Shared
+        map_collaborator_added: Map Shared
+        assetinventory_collaborator_added: Asset Inventory Shared
+        collaborator_removed_default_key: Asset Unshared
+        draft_collaborator_removed: Draft Unshared
+        data_lens_collaborator_removed: Data Lens Unshared
+        dataset_collaborator_removed: Dataset Unshared
+        chart_collaborator_removed: Chart Unshared
+        map_collaborator_removed: Map Unshared
+        assetinventory_collaborator_removed: Asset Inventory Unshared
+        collaborator_changed_default_key: Asset Access Changed
+        draft_collaborator_changed: Draft Access Changed
+        data_lens_collaborator_changed: Data Lens Access Changed
+        dataset_collaborator_changed: Dataset Access Changed
+        chart_collaborator_changed: Chart Access Changed
+        map_collaborator_changed: Map Access Changed
+        assetinventory_collaborator_changed: Asset Inventory Access Changed
+        user_added: User Added
+        user_removed: User Removed
+        user_role_changed: User Role Changed
         alert_setting_modal:
           subscribe_email: Subscribe to email notifications
           tab:

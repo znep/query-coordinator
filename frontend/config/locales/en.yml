@@ -2283,6 +2283,7 @@ en:
           licenses_title: Licensing & Attribution
           tags_title: Categories and Tags
           attachments_title: Attachments
+          row_label_title: Row Label
       errors:
         missing_name: Dataset name is required.
       required_note: Required field

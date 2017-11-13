@@ -90,6 +90,28 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
   );
 };
 
+
+// fieldsetRowLabel : String -> Fieldset
+const fieldsetRowLabel = (rowLabelValue) => {
+  const rowLabelDescriptor = FieldDescriptor(
+    'metadata.rowLabel',
+    rowLabelValue,
+    I18n.edit_metadata.row_label,
+    I18n.edit_metadata.row_label_prompt,
+    false,
+    false,
+    false
+  );
+
+  const fields = [Field.Text(rowLabelDescriptor)];
+
+  return Fieldset(
+    I18n.metadata_manage.dataset_tab.titles.row_label_title,
+    I18n.edit_metadata.row_label_help,
+    fields
+  );
+};
+
 // fieldsetAttachments : [Attachment] -> Fieldset
 const fieldsetAttachments = (attachments) => {
   const attachmentsDescriptor = FieldDescriptor(
@@ -235,16 +257,18 @@ export const makeRegularFieldsets = revision => {
     licenseId,
     attribution,
     attributionLink,
-    privateMetadata
+    privateMetadata,
+    metadata
   } = revision.metadata;
 
   const email = privateMetadata ? privateMetadata.contactEmail : null;
-
+  const rowLabel = metadata ? metadata.rowLabel : null;
   const tagsValue = tags || [];
   const attachments = revision.attachments;
 
   return [
     fieldsetTitleAndDesc(name, description),
+    fieldsetRowLabel(rowLabel),
     fieldsetCategoryAndTags(category, tagsValue),
     fieldsetLicense(licenseId, attribution, attributionLink),
     fieldsetEmail(email),
@@ -324,10 +348,10 @@ const validateAttachments = fieldset => {
 const validateRegularFieldsets = fieldsets =>
   Validation.of()
     .concat(validateFieldsetTitleAndDesc(fieldsets[0]))
-    .concat(validateFieldsetCategoryAndTags(fieldsets[1]))
-    .concat(validateFieldsetLicense(fieldsets[2]))
-    .concat(validateFieldsetEmail(fieldsets[3]))
-    .concat(validateAttachments(fieldsets[4]));
+    .concat(validateFieldsetCategoryAndTags(fieldsets[2]))
+    .concat(validateFieldsetLicense(fieldsets[3]))
+    .concat(validateFieldsetEmail(fieldsets[4]))
+    .concat(validateAttachments(fieldsets[5]));
 
 // validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {

@@ -256,6 +256,7 @@ export const datasetMetadata = metadata => {
       custom_fields: privateCustomMetadata
     },
     metadata: {
+      ...metadata.metadata,
       custom_fields: customMetadata
     }
   };

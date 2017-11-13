@@ -251,7 +251,7 @@ class MetadataTable extends Component {
     if (coreView.metadata && !_.isEmpty(coreView.metadata.attachments)) {
       const attachmentRows = _.map(coreView.metadata.attachments, (attachment, i) => {
         const displayName = attachment.name || attachment.filename;
-        const href = _.isUndefined(attachment.assetId) ?
+        const href = attachment.blobId ?
           `/api/assets/${attachment.blobId}?download=true` :
           `/api/views/${coreView.id}/files/${attachment.assetId}?download=true&filename=${attachment.filename}`;
 

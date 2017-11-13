@@ -25,10 +25,12 @@ function extractOutputSchemas(source) {
   // TODO: ok to grab created_by from the source? the one on the output schema
   // seems to be null on view sources
 
-  return _.flatMap(source.schemas, is => is.output_schemas.map(os => ({
-    ...os,
-    created_by: source.created_by
-  })));
+  return _.flatMap(source.schemas, is =>
+    is.output_schemas.map(os => ({
+      ...os,
+      created_by: source.created_by
+    }))
+  );
 }
 
 function extractOutputColumns(resource) {
@@ -76,7 +78,8 @@ function normalizeOutputSchemas(oss) {
     (acc, os) => ({
       [os.id]: {
         ..._.omit(os, 'output_columns'),
-        created_at: os.created_at ? parseDate(os.created_at) : null
+        created_at: os.created_at ? parseDate(os.created_at) : null,
+        finished_at: os.finished_at ? parseDate(os.finished_at) : null
       },
       ...acc
     }),

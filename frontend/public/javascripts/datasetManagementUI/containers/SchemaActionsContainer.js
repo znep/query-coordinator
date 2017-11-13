@@ -8,6 +8,7 @@ const mapStateToProps = ({ entities }, { params }) => {
     ...os,
     isCurrent: os.id === Number(params.outputSchemaId)
   }));
+
   return {
     oss: _.orderBy(schemas, 'finished_at', 'desc'),
     iss: entities.input_schemas

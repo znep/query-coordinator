@@ -8,10 +8,12 @@
   overflow-y: scroll;
   height: calc(100% - 390px);
   list-style-type: none;
+  padding-left: 4px;
 }
 
 .container > li {
   margin-bottom: 1em;
+  padding-right: 8px;
 }
 
 .restoreLink {

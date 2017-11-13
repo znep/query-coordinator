@@ -8,12 +8,15 @@ import styles from './SchemaActions.scss';
 const SchemaActions = ({ oss, iss, params }) => {
   const items = oss.map((os, idx) => (
     <li key={idx} className={os.isCurrent ? styles.currentSchema : styles.schema}>
-      {os.created_by.display_name} changed the schema <RecentActionsTimestamp date={os.created_at} /> -{' '}
-      <Link
-        className={styles.restoreLink}
-        to={Links.showOutputSchema(params, iss[os.input_schema_id].source_id, os.input_schema_id, os.id)}>
-        restore
-      </Link>
+      {os.created_by.display_name} changed the schema <RecentActionsTimestamp date={os.created_at} />
+      {os.isCurrent || ' - '}
+      {os.isCurrent || (
+        <Link
+          className={styles.restoreLink}
+          to={Links.showOutputSchema(params, iss[os.input_schema_id].source_id, os.input_schema_id, os.id)}>
+          restore
+        </Link>
+      )}
     </li>
   ));
   return <ul className={styles.container}>{items}</ul>;

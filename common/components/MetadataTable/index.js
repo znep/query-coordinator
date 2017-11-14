@@ -213,9 +213,9 @@ class MetadataTable extends Component {
     // into variations of the original name. For example USAID wishes to see "Described By" => "Data Dictionary".
     // In order to facilitate this, we only add transformation to en.yml for the words or phrases that need to
     // be transformed. The defaults object provides the un-transformed value when no transformation is available.
-    const transformedLabel = (name) => {
+    const transformLabel = (name) => {
       const translationKey = name.replace(/ /g, '_').toLowerCase();
-      const defaults = [ { message: name } ];
+      const defaults = [{ message: name }];
       return I18n.t(translationKey, { scope: 'dataset_landing_page.metadata.transforms', defaults });
     };
 
@@ -225,7 +225,7 @@ class MetadataTable extends Component {
           if (_.isString(value) || _.isNumber(value)) {
             return (
               <tr key={name}>
-                <td>{transformedLabel(name)}</td>
+                <td>{transformLabel(name)}</td>
                 <td>
                   <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
                     {value}

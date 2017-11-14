@@ -349,7 +349,7 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
       dataTable.rows,
       (row) => !_.isNull(row[1]) && !_.isUndefined(row[1])
     );
-    const arbitraryGrouping = arbitraryGroupingRow ? arbitraryGroupingRow[1] : "";
+    const arbitraryGrouping = arbitraryGroupingRow ? arbitraryGroupingRow[1] : '';
     const monotonicRowsWithGrouping = monotonicRows.map((row) => {
       const [dimension, measure] = row;
       return [dimension, arbitraryGrouping, measure];

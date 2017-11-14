@@ -168,7 +168,7 @@ function getData(vif, options) {
               const dimension = row[idxDimension];
               const grouping = row[idxGrouping];
               const measure = row[idxMeasure];
-              if (_.isUndefined(result[grouping] )) {
+              if (_.isUndefined(result[grouping])) {
                 result[grouping] = [];
               }
               result[grouping].push([dimension, measure]);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const getInitialState = () => _.get(window, 'initialState.assetInventoryViewModel', {
+const getInitialState = () => (window.socrata.initialState.assetInventoryViewModel || {
   asset_inventory: {
     button_disabled: true,
     show_initialize_button: false

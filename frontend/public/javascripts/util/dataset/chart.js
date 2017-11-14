@@ -174,6 +174,11 @@
   };
 
   Dataset.modules.chart = {
+    _setupPolaroidImageCapturing: function() {
+      var polaroidDelay = _.get(this, 'displayFormat.seriesColumns', []).length ? 20000 : 10000;
+      this._super(polaroidDelay);
+    },
+
     _checkValidity: function() {
       if (!this._super()) {
         return false;

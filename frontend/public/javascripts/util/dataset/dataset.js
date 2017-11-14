@@ -4068,6 +4068,9 @@
       });
     },
 
+    // See util/dataset/map.js and util/dataset/chart.js for examples of asset
+    // types which override the timeout value. NOTE: timeout must be less than
+    // the render timeout of Polaroid!
     _setupPolaroidImageCapturing: function(timeout) {
       this.bind('request_finish', _.debounce(function() {
         console.log('Render complete.');

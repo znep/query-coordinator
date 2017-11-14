@@ -4,7 +4,7 @@ import uuid from 'uuid';
 import isURLHelper from 'validator/lib/isURL';
 import * as Selectors from 'selectors';
 import HrefForm from 'components/HrefForm/HrefForm';
-import { updateRevision } from 'reduxStuff/actions/revisions';
+import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
 import * as FormActions from 'reduxStuff/actions/forms';
 import * as FlashActions from 'reduxStuff/actions/flashMessage';
 
@@ -187,20 +187,22 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   saveHrefs: hrefs => {
     const serverHrefs = { href: shapeHrefState(hrefs) };
 
-    return dispatch(updateRevision(serverHrefs, ownProps.params)).catch(err =>
-      err.response.json().then(({ message, params }) => {
-        if (!message || !params) {
-          return;
-        }
+    return dispatch(updateRevision(serverHrefs, ownProps.params))
+      .then(resp => dispatch(editRevision(resp.resource.id, { href: resp.resource.href })))
+      .catch(err =>
+        err.response.json().then(({ message, params }) => {
+          if (!message || !params) {
+            return;
+          }
 
-        const errs = _.chain(params.href)
-          .filter(href => !_.isEmpty(href))
-          .flatMap(href => href.urls)
-          .value();
+          const errs = _.chain(params.href)
+            .filter(href => !_.isEmpty(href))
+            .flatMap(href => href.urls)
+            .value();
 
-        throw new UrlError(errs);
-      })
-    );
+          throw new UrlError(errs);
+        })
+      );
   },
   ...ownProps
 });

@@ -57,10 +57,8 @@ class HrefForm extends Component {
         currentId: this.props.hrefs.length + 1
       });
     } else {
-      const datasetNum = this.state.hrefs.length + 1;
-
       this.setState({
-        hrefs: [this.initializeHref(datasetNum)]
+        hrefs: [this.initializeHref()]
       });
     }
   }
@@ -121,7 +119,7 @@ class HrefForm extends Component {
   initializeHref(datasetNum, id) {
     const idIsDefined = id != null;
 
-    const datasetTitle = I18n.show_sources.dataset_title.format(datasetNum);
+    const datasetTitle = datasetNum ? I18n.show_sources.dataset_title.format(datasetNum) : '';
 
     const href = {
       id: idIsDefined ? id : this.state.currentId,
@@ -182,7 +180,7 @@ class HrefForm extends Component {
   handleRemoveFirstDataset(id) {
     this.props.markFormDirty();
 
-    const newHref = this.initializeHref(1, id);
+    const newHref = this.initializeHref(null, id);
 
     const newHrefs = [...this.state.hrefs.filter(h => h.id !== id), newHref];
 

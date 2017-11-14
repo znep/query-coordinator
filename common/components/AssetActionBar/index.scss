@@ -1,0 +1,26 @@
+@import "components/publication_action/index";
+@import "components/publication_state/index";
+
+.asset-action-bar {
+  background-color: $header-bg-color;
+  padding: 0.2em;
+  display: flex;
+  justify-content: flex-end;
+
+  .socrata-icon {
+    margin-right: 0.2em;
+  }
+}
+
+.asset-action-bar-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  cursor: default;
+
+  .action_datasets_show & {
+    z-index: 1;
+  }
+}

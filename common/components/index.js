@@ -35,6 +35,7 @@ import EditBar from './EditBar';
 import EditableText from './EditableText';
 import ExternalViewCard from './ViewCard/ExternalViewCard';
 import FilterBar from './FilterBar';
+import AssetActionBar from './AssetActionBar';
 import InfoPane from './InfoPane';
 import Slider from './Slider';
 import DateRangePicker from './DateRangePicker';

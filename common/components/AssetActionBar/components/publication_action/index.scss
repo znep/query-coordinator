@@ -1,0 +1,32 @@
+.asset-action-bar .publication-state .publication-action {
+  display: flex;
+  flex-direction: column;
+
+  background-color: white;
+  padding: 0.6em;
+
+  border: solid 1px black;
+
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+
+  z-index: 4;
+
+  .last-saved {
+    padding: 0.4em;
+    border-bottom: solid 1px gray;
+    margin-bottom: 0.4em;
+
+    white-space: nowrap;
+    min-width: 15em;
+  }
+
+  button {
+    margin-top: 0.4em;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+}

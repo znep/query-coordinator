@@ -253,6 +253,28 @@ en:
           edit_prompt_button: Edit Source
           edit_prompt_message: Edit the source file for this dataset.
           title: Download this Resource
+      asset_action_bar:
+        components:
+          publication_action:
+            draft_new:
+              last_saved: Changes last saved %{when}
+              primary_action_text: Publish Dataset
+            draft_old:
+              last_saved: Changes last saved %{when}
+              primary_action_text: Publish Draft
+              revert_published: Revert to last published version
+              view_published: View published version
+            pending:
+              last_saved: Submitted for approval %{when}
+              primary_action_text: Withdraw approval request
+            published:
+              last_saved: Published %{when}
+              primary_action_text: Edit Dataset
+        publication_state:
+          draft: Draft
+          pending: Pending
+          published: Published
+        share: Share
       color_picker:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color

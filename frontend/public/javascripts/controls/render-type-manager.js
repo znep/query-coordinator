@@ -286,6 +286,7 @@
 
   typeConfigs.api = typeConfigs.table;
   typeConfigs.assetinventory = typeConfigs.table;
+  typeConfigs.metadata_table = typeConfigs.table;
 
   $.fn.renderTypeManager = function(options) {
     // Check if object was already created

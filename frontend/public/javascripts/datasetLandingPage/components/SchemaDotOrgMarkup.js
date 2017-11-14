@@ -182,7 +182,7 @@ export class SchemaDotOrgMarkup extends Component {
     if (attributionMeta == null & attributionLinkMeta == null) { return null; }
 
     return (
-      <div itemScope itemProp={ItemProps.DATA_PROVIDED_BY} itemScope={Taxonomy.ORGANIZATION}>
+      <div itemScope itemProp={ItemProps.DATA_PROVIDED_BY} itemType={Taxonomy.ORGANIZATION}>
         {attributionMeta}
         {attributionLinkMeta}
       </div>

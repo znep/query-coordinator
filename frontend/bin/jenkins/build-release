@@ -29,6 +29,7 @@ fi
 # copy bundle packages from docker image to build directory
 cp -r ~/vendor/bundle vendor/ || mkdir -p vendor
 cp -r ~/node_modules . || mkdir -p node_modules
+cp -r ~/.rbenv .
 
 sudo cp /tmp/build_home/.npmrc ${HOME}/.npmrc
 sudo chown jenkins ${HOME}/.npmrc

@@ -69,23 +69,14 @@ export default function rootRoute(store) {
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
         <Route path="add_col" component={AddColPane} />
+        <Route path="column_errors(/:errorsTransformId)" component={TablePane}>
+          <Route path="page/:pageNo" component={TablePane} />
+        </Route>
+        <Route path="row_errors" component={TablePane}>
+          <Route path="page/:pageNo" component={TablePane} />
+        </Route>
       </Route>
       <Route path="sources/:sourceId/preview" component={ShowBlobPreview} onEnter={checkIfPublished(store)} />
-      <Route
-        path={
-          'sources/:sourceId/schemas/:inputSchemaId/output/' +
-          ':outputSchemaId/column_errors/:errorsTransformId'
-        }
-        component={ShowOutputSchema}
-        onEnter={checkIfPublished(store)}>
-        <Route path="page/:pageNo" component={ShowOutputSchema} />
-      </Route>
-      <Route
-        path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
-        component={ShowOutputSchema}
-        onEnter={checkIfPublished(store)}>
-        <Route path="page/:pageNo" component={ShowOutputSchema} />
-      </Route>
       <Route path="*" component={NoMatch} />
     </Route>
   );

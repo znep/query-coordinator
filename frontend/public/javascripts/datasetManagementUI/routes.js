@@ -78,13 +78,15 @@ export default function rootRoute(store) {
         }
         component={ShowOutputSchema}
         onEnter={checkIfPublished(store)}>
-        <Route path="page/:pageNo" component={ShowOutputSchema} />
+        <IndexRoute component={TablePane} />
+        <Route path="page/:pageNo" component={TablePane} />
       </Route>
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
         component={ShowOutputSchema}
         onEnter={checkIfPublished(store)}>
-        <Route path="page/:pageNo" component={ShowOutputSchema} />
+        <IndexRoute component={TablePane} />
+        <Route path="page/:pageNo" component={TablePane} />
       </Route>
       <Route path="*" component={NoMatch} />
     </Route>

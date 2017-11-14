@@ -7,6 +7,7 @@ import _ from 'lodash';
 // for the functions here
 
 // EXTRACTORS
+// TODO: actually use the num_row_errors response from server when it gets added
 function extractInputSchemas(source) {
   return source.schemas.map(schema => ({
     id: schema.id,

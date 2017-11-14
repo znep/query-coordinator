@@ -4,7 +4,9 @@ import { withRouter } from 'react-router';
 import SchemaActions from 'components/SchemaActions/SchemaActions';
 
 const mapStateToProps = ({ entities }, { params }) => {
-  const schemas = Object.values(entities.output_schemas).map(os => ({
+  const schemas = Object.values(entities.output_schemas)
+  .filter(os => os.input_schema_id === Number(params.inputSchemaId))
+  .map(os => ({
     ...os,
     isCurrent: os.id === Number(params.outputSchemaId)
   }));

@@ -5,7 +5,7 @@
 .container {
   composes: small from global;
   color: $black;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100% - 390px);
   list-style-type: none;
   padding-left: 4px;

@@ -4,6 +4,7 @@
 
 .timestamp {
   composes: small from global;
+  color: $light-grey-1 !important; // fuuuuuuuuuuuuuuck you styleguide
 }
 
 .timeline {

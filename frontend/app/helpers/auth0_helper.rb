@@ -6,6 +6,8 @@ require 'securerandom'
 require 'uri'
 
 module Auth0Helper
+  include SiteChromeConsumerHelpers
+
   SOCIAL_DOMAINS = %w(twitter facebook google_oauth2 windowslive yahoo).freeze
 
   def gen_cookie(uid)
@@ -303,7 +305,8 @@ module Auth0Helper
       companyName: CurrentDomain.strings.company,
       signUpDisclaimer: CurrentDomain.strings.disclaimer,
       params: sanitized_email_and_screen_name,
-      disableSignInAutocomplete: feature?('fedramp')
+      disableSignInAutocomplete: feature?('fedramp'),
+      showSignup: show_signup?
     }
   end
 

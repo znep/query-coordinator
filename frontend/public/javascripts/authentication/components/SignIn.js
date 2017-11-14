@@ -15,6 +15,29 @@ class SignIn extends React.Component {
     }
   }
 
+  renderSignUpLink = () => {
+    const { options } = this.props;
+    const {
+      toggleViewMode,
+      showSignup
+    } = options;
+
+    if (showSignup === false) {
+      return null;
+    }
+
+    return (
+      <div styleName="signup-container">
+        {I18n.t('screens.sign_in.dont_have_account')}{' '}
+        <a
+          onClick={toggleViewMode}
+          styleName="signup-link">
+            {I18n.t('screens.sign_in.sign_up')}
+        </a>
+      </div>
+    );
+  }
+
   render() {
     const {
       doAuth0Authorize,
@@ -24,7 +47,7 @@ class SignIn extends React.Component {
       onLoginError,
       onLoginStart
     } = this.props;
-    const { toggleViewMode } = options;
+
     return (
       <div styleName="inner-container">
         <div styleName="form-container">
@@ -38,15 +61,7 @@ class SignIn extends React.Component {
         </div>
 
         {this.renderSocialSignIn(doAuth0Authorize)}
-
-        <div styleName="signup-container">
-          {I18n.t('screens.sign_in.dont_have_account')}{' '}
-          <a
-            onClick={toggleViewMode}
-            styleName="signup-link">
-              {I18n.t('screens.sign_in.sign_up')}
-          </a>
-        </div>
+        {this.renderSignUpLink()}
       </div>
     );
   }

@@ -33,6 +33,9 @@ export default
     // Whether to show social login
     showSocial: PropTypes.bool,
 
+    // Whether or not to show the "Sign Up" link
+    showSignup: PropTypes.bool,
+
     // Whether or not to hide the "Sign in with Socrata ID" button
     hideSocrataId: PropTypes.bool,
 

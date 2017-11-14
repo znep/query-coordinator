@@ -119,6 +119,15 @@ module SiteChromeConsumerHelpers
     site_chrome_controller_instance(request, response).footer(args)
   end
 
+  def show_signup?
+    show_signup = site_chrome_instance.general[:show_signup]
+    if show_signup.nil?
+      true # default to true
+    else
+      show_signup.downcase == 'true'
+    end
+  end
+
   private
 
   def site_chrome_controller_instance(request, response)

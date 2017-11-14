@@ -1,29 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
-import { UPDATE_REVISION } from 'reduxStuff/actions/apiCalls';
+import styles from 'components/ApiCallButton/ApiCallButton.scss';
 
-const SaveButtons = ({ handleSave, handleSaveAndExit, callParams, isDirty }) => (
+const SaveButtons = ({ saveHrefForm, isDirty }) => (
   <div>
-    <ApiCallButton
-      forceDisable={!isDirty}
-      onClick={handleSave}
-      operation={UPDATE_REVISION}
-      callParams={callParams} />
-    <ApiCallButton
-      forceDisable={!isDirty}
-      onClick={handleSaveAndExit}
-      operation={UPDATE_REVISION}
-      callParams={callParams}>
+    <button className={styles.baseBtn} onClick={() => saveHrefForm(false)} disabled={!isDirty}>
+      {I18n.common.save}
+    </button>
+    <button className={styles.baseBtn} onClick={() => saveHrefForm(true)} disabled={!isDirty}>
       {I18n.show_sources.save_and_exit}
-    </ApiCallButton>
+    </button>
   </div>
 );
 
 SaveButtons.propTypes = {
-  handleSave: PropTypes.func.isRequired,
-  handleSaveAndExit: PropTypes.func.isRequired,
-  callParams: PropTypes.object.isRequired,
+  saveHrefForm: PropTypes.func.isRequired,
   isDirty: PropTypes.bool.isRequired
 };
 

@@ -7,8 +7,9 @@ import {
   SET_FORM_ERRORS,
   SET_FORM_STATE,
   APPEND_FORM_ERROR,
-  APPEND_FORM_ERRORS,
-  CLEAR_INTERNAL_STATE
+  CLEAR_INTERNAL_STATE,
+  SET_SHOULD_FORM_SAVE,
+  SET_SHOULD_EXIT
 } from 'reduxStuff/actions/forms';
 
 const initialState = {
@@ -29,6 +30,8 @@ const initialState = {
   },
   hrefForm: {
     isDirty: false,
+    shouldSave: false,
+    shouldExit: false,
     errors: []
   },
   addColForm: {
@@ -65,14 +68,14 @@ const forms = (state = initialState, action) => {
         action.error
       ]);
 
-    case APPEND_FORM_ERRORS:
-      return dotProp.set(state, `${action.formName}.errors`, existingErrors => [
-        ...existingErrors,
-        ...action.errors
-      ]);
-
     case CLEAR_INTERNAL_STATE:
       return dotProp.set(state, `${action.formName}.clearInternalState`, action.val);
+
+    case SET_SHOULD_FORM_SAVE:
+      return dotProp.set(state, `${action.formName}.shouldSave`, action.shouldSave);
+
+    case SET_SHOULD_EXIT:
+      return dotProp.set(state, `${action.formName}.shouldExit`, action.shouldExit);
 
     default:
       return state;

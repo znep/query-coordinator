@@ -4,15 +4,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import isURLHelper from 'validator/lib/isURL';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import SourceSidebar from 'containers/SourceSidebarContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
 import SaveButtons from './SaveButtons';
-import { updateRevision } from 'reduxStuff/actions/revisions';
-import { markFormClean, appendFormErrors, setFormErrors } from 'reduxStuff/actions/forms';
-import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
+import * as FormActions from 'reduxStuff/actions/forms';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './ShowSource.scss';
@@ -22,9 +19,8 @@ export const ShowSource = ({
   goHome,
   children,
   onHrefPage,
-  handleSave,
-  handleSaveAndExit,
-  callParams,
+  schemaExists,
+  saveHrefForm,
   hrefFormDirty
 }) => (
   <div className={styles.showUpload}>
@@ -45,15 +41,12 @@ export const ShowSource = ({
           </div>
         )}
       </ModalContent>
-      {onHrefPage && (
-        <ModalFooter>
-          <SaveButtons
-            handleSave={handleSave}
-            handleSaveAndExit={handleSaveAndExit}
-            callParams={callParams}
-            isDirty={hrefFormDirty} />
-        </ModalFooter>
-      )}
+      {onHrefPage &&
+        !schemaExists && (
+          <ModalFooter>
+            <SaveButtons saveHrefForm={saveHrefForm} isDirty={hrefFormDirty} />
+          </ModalFooter>
+        )}
     </Modal>
   </div>
 );
@@ -63,87 +56,10 @@ ShowSource.propTypes = {
   goHome: PropTypes.func.isRequired,
   children: PropTypes.object.isRequired,
   onHrefPage: PropTypes.bool.isRequired,
-  handleSave: PropTypes.func.isRequired,
-  handleSaveAndExit: PropTypes.func.isRequired,
-  callParams: PropTypes.object.isRequired,
+  schemaExists: PropTypes.bool.isRequired,
+  saveHrefForm: PropTypes.func.isRequired,
   hrefFormDirty: PropTypes.bool.isRequired
 };
-
-const removeEmptyValues = hrefURLObj => _.omitBy(hrefURLObj, val => !val.url);
-
-const findDupes = hrefURLObj => {
-  const filetypes = Object.values(hrefURLObj)
-    .map(val => val.filetype)
-    .filter(ft => ft);
-
-  const dupes = filetypes.filter(filetype => {
-    const firstIdx = _.findIndex(filetypes, ft => ft === filetype);
-    const withCurrentOmitted = filetypes.filter((ft, idx) => firstIdx !== idx);
-    return withCurrentOmitted.includes(filetype);
-  });
-
-  return [...new Set(dupes)];
-};
-
-const findInvalidURLs = hrefURLObj => {
-  const urls = Object.values(hrefURLObj)
-    .map(val => val.url)
-    .filter(url => !!url);
-
-  return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
-};
-
-const findEmpties = (href, hrefURLObj) =>
-  _.map(hrefURLObj, (val, uuid) => {
-    if (val.url && !val.filetype) {
-      return { hrefId: href.id, type: 'emptyError', id: uuid };
-    } else {
-      return null;
-    }
-  });
-
-const validate = hrefs => {
-  const dupes = _.chain(hrefs)
-    .map(href => ({ hrefId: href.id, type: 'dupeFiletypeError', dupes: findDupes(href.urls) }))
-    .filter(err => err.dupes.length)
-    .value();
-
-  const badUrls = _.chain(hrefs)
-    .flatMap(href => findInvalidURLs(href.urls))
-    .thru(urls => (urls.length ? [{ type: 'urlError', urls }] : []))
-    .value();
-
-  const empties = _.chain(hrefs)
-    .flatMap(href => findEmpties(href, href.urls))
-    .filter(err => err)
-    .value();
-
-  return [...dupes, ...badUrls, ...empties];
-};
-
-const makeExtKeys = hrefURLObj =>
-  Object.keys(hrefURLObj).reduce((acc, uuid) => {
-    const entry = hrefURLObj[uuid];
-
-    return {
-      ...acc,
-      [entry.filetype]: entry.url
-    };
-  }, {});
-
-const hrefIsEmpty = href => {
-  const hasUrls = !_.isEmpty(href.urls);
-
-  return !(hasUrls || href.title || href.description || href.data_dictionary_type || href.data_dictionary);
-};
-
-const shapeHrefState = rawState =>
-  rawState
-    .map(href => ({
-      ...href,
-      urls: makeExtKeys(removeEmptyValues(href.urls))
-    }))
-    .filter(href => !hrefIsEmpty(href));
 
 export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // selector returns undefined if there are no sources
@@ -169,68 +85,21 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // user can source something
   return {
     onHrefPage,
+    schemaExists: !!revision.output_schema_id,
     hrefFormDirty,
     hrefs,
     inProgress: !!source && (!source.finished_at && !source.failed_at)
   };
 };
 
-const mergeProps = (stateProps, { dispatch }, ownProps) => {
-  let errors = [];
-
-  if (stateProps.hrefFormDirty) {
-    errors = validate(stateProps.hrefs);
-  }
-
-  const callParams = {
-    href: errors.length ? [] : shapeHrefState(stateProps.hrefs)
-  };
-
-  const goHome = () => browserHistory.push(Links.revisionBase(ownProps.params));
-
-  const save = (andExit = false) => {
-    if (errors.length) {
-      dispatch(showFlashMessage('error', I18n.show_sources.save_error));
-      dispatch(setFormErrors('hrefForm', errors));
-      return;
-    }
-
-    return dispatch(updateRevision(callParams, ownProps.params))
-      .then(() => {
-        dispatch(showFlashMessage('success', I18n.show_sources.save_success));
-        dispatch(markFormClean('hrefForm'));
-        dispatch(setFormErrors('hrefForm', []));
-      })
-      .then(() => {
-        if (andExit) {
-          goHome();
-        }
-      })
-      .catch(err =>
-        err.response.json().then(({ message, params }) => {
-          if (!message || !params) {
-            return;
-          }
-
-          const errs = _.chain(params.href)
-            .filter(href => !_.isEmpty(href))
-            .flatMap(href => href.urls)
-            .value();
-
-          dispatch(appendFormErrors('hrefForm', [{ type: 'urlError', urls: errs }]));
-          dispatch(showFlashMessage('error', message));
-        })
-      );
-  };
-
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    ...stateProps,
-    ...ownProps,
-    goHome,
-    handleSave: () => save(),
-    handleSaveAndExit: () => save(true),
-    callParams
+    goHome: () => browserHistory.push(Links.revisionBase(ownProps.params)),
+    saveHrefForm: andExit => {
+      dispatch(FormActions.setShouldExit('hrefForm', !!andExit));
+      dispatch(FormActions.setShouldFormSave('hrefForm', true));
+    }
   };
 };
 
-export default connect(mapStateToProps, null, mergeProps)(ShowSource);
+export default connect(mapStateToProps, mapDispatchToProps)(ShowSource);

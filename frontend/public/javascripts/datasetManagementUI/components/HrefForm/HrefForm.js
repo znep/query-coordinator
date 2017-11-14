@@ -5,6 +5,8 @@ import uuid from 'uuid';
 import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
 import { validate } from 'containers/HrefFormContainer';
+import { browserHistory } from 'react-router';
+import * as Links from 'links/links';
 import styles from './HrefForm.scss';
 
 // This form strives to let the UI derrive from the data, so in order to control
@@ -13,8 +15,8 @@ import styles from './HrefForm.scss';
 // it creates an empty href and puts it in the array. This way, if we have no saved
 // data, we can still show the user an empty form.
 
-// Once the form mounts, it checks dsmapi to see if there is any saved href data
-// on the revision. If there is, it overwrites the empty href we put into the state
+// The form then checks dsmapi to see if there is any saved href data on the
+// revision. If there is, it overwrites the empty href we put into the state
 // earlier. If not, then it does nothing.
 
 // Finally, because of the stupid modal thing, the button that submits this form
@@ -107,6 +109,10 @@ class HrefForm extends Component {
           this.setState({
             saveInProgress: false
           });
+
+          if (this.props.shouldExit) {
+            browserHistory.push(Links.revisionBase(this.props.params));
+          }
         });
     }
   }
@@ -329,6 +335,7 @@ HrefForm.propTypes = {
   hrefs: PropTypes.arrayOf(PropTypes.object),
   params: PropTypes.object.isRequired,
   shouldSave: PropTypes.bool.isRequired,
+  shouldExit: PropTypes.bool.isRequired,
   saveHrefs: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,

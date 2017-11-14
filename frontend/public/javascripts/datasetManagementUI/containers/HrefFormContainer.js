@@ -11,7 +11,7 @@ import * as FlashActions from 'reduxStuff/actions/flashMessage';
 // DATA SHAPING STUFF
 function namespaceURLs(href) {
   if (_.isEmpty(href.urls)) {
-    // Check if the href saved on the serve was saved with no urls--ie, a url key
+    // Check if the href saved on the server was saved with no urls--ie, a url key
     // with the value of {}. If so, create an empty url obj and insert it
 
     return {
@@ -167,6 +167,7 @@ const mapStateStateToProps = ({ entities, ui }, { params }) => {
   return {
     hrefs: hrefs.map(namespaceURLs).map((href, idx) => addHrefIds(href, idx + 1)),
     shouldSave: ui.forms.hrefForm.shouldSave,
+    shouldExit: ui.forms.hrefForm.shouldExit,
     schemaExists: !!revision.output_schema_id,
     blobExists: !!revision.blob_id,
     revisionId
@@ -178,6 +179,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   schemaExists: stateProps.schemaExists,
   blobExists: stateProps.blobExists,
   shouldSave: stateProps.shouldSave,
+  shouldExit: stateProps.shouldExit,
   markFormDirty: () => dispatch(FormActions.markFormDirty('hrefForm')),
   markFormClean: () => dispatch(FormActions.markFormClean('hrefForm')),
   toggleShouldSaveOff: () => dispatch(FormActions.setShouldFormSave('hrefForm', false)),

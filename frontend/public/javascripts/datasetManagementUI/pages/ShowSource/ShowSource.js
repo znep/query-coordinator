@@ -14,7 +14,15 @@ import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import styles from './ShowSource.scss';
 
-export const ShowSource = ({ inProgress, goHome, children, onHrefPage, saveHrefForm, hrefFormDirty }) => (
+export const ShowSource = ({
+  inProgress,
+  goHome,
+  children,
+  onHrefPage,
+  schemaExists,
+  saveHrefForm,
+  hrefFormDirty
+}) => (
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
@@ -33,11 +41,12 @@ export const ShowSource = ({ inProgress, goHome, children, onHrefPage, saveHrefF
           </div>
         )}
       </ModalContent>
-      {onHrefPage && (
-        <ModalFooter>
-          <SaveButtons saveHrefForm={saveHrefForm} isDirty={hrefFormDirty} />
-        </ModalFooter>
-      )}
+      {onHrefPage &&
+        !schemaExists && (
+          <ModalFooter>
+            <SaveButtons saveHrefForm={saveHrefForm} isDirty={hrefFormDirty} />
+          </ModalFooter>
+        )}
     </Modal>
   </div>
 );
@@ -47,6 +56,7 @@ ShowSource.propTypes = {
   goHome: PropTypes.func.isRequired,
   children: PropTypes.object.isRequired,
   onHrefPage: PropTypes.bool.isRequired,
+  schemaExists: PropTypes.bool.isRequired,
   saveHrefForm: PropTypes.func.isRequired,
   hrefFormDirty: PropTypes.bool.isRequired
 };
@@ -75,6 +85,7 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
   // user can source something
   return {
     onHrefPage,
+    schemaExists: !!revision.output_schema_id,
     hrefFormDirty,
     hrefs,
     inProgress: !!source && (!source.finished_at && !source.failed_at)
@@ -84,7 +95,10 @@ export const mapStateToProps = ({ entities, ui }, { params, routes }) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     goHome: () => browserHistory.push(Links.revisionBase(ownProps.params)),
-    saveHrefForm: () => dispatch(FormActions.setShouldFormSave('hrefForm', true))
+    saveHrefForm: andExit => {
+      dispatch(FormActions.setShouldExit('hrefForm', !!andExit));
+      dispatch(FormActions.setShouldFormSave('hrefForm', true));
+    }
   };
 };
 

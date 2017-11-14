@@ -6,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import * as Actions from 'actions';
 import reducerCreator from 'reducers';
 
-import { futureUsers, initialState, usersResponse, rolesResponse } from './helpers/stateFixtures';
+import { invitedUsers, initialState, usersResponse, rolesResponse } from './helpers/stateFixtures';
 
 describe('reducers', () => {
 
@@ -39,7 +39,7 @@ describe('reducers', () => {
       const store = mockStore({ users: [], roles: []});
 
       fetchMock.get('/api/catalog/v1/users?domain=localhost&limit=10000&order=screen_name', usersResponse);
-      fetchMock.get('/api/future_accounts', futureUsers);
+      fetchMock.get('/api/future_accounts', invitedUsers);
       fetchMock.get('/api/roles', rolesResponse);
 
       store

@@ -7,21 +7,21 @@ import DropdownButton, { DropdownItem } from './DropdownButton';
 import * as Actions from '../actions';
 import _ from 'lodash';
 
-export class FutureUserRow extends React.Component {
+export class InvitedUserRow extends React.Component {
   constructor() {
     super();
     _.bindAll(this, ['renderEditControl']);
   }
 
   renderEditControl() {
-    const { I18n, removeFutureUser, resendPendingUserEmail } = this.props;
+    const { I18n, removeInvitedUser, resendInvitedUserEmail } = this.props;
     return (
       <DropdownButton>
-        <DropdownItem onClick={() => removeFutureUser()}>
-          {I18n.translate('users.actions.remove_pending_user')}
+        <DropdownItem onClick={() => removeInvitedUser()}>
+          {I18n.translate('users.actions.remove_invited_user')}
         </DropdownItem>
-        <DropdownItem onClick={() => resendPendingUserEmail()}>
-          {I18n.translate('users.actions.resend_pending_user_email')}
+        <DropdownItem onClick={() => resendInvitedUserEmail()}>
+          {I18n.translate('users.actions.resend_invited_user_email')}
         </DropdownItem>
       </DropdownButton>
     );
@@ -40,12 +40,11 @@ export class FutureUserRow extends React.Component {
   }
 }
 
-FutureUserRow.propTypes = {
-  id: PropTypes.number.isRequired,
+InvitedUserRow.propTypes = {
   email: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   invited: PropTypes.string.isRequired,
   invitedLabel: PropTypes.string.isRequired,
-  pendingRoleId: PropTypes.number.isRequired,
   role: PropTypes.string.isRequired,
   I18n: PropTypes.object.isRequired
 };
@@ -60,9 +59,9 @@ const mapStateToProps = (state, { createdAt }) => {
 
 const mapDispatchToProps = (dispatch, { email, id }) => {
   return {
-    removeFutureUser: () => Actions.removeFutureUser(id)(dispatch),
-    resendPendingUserEmail: () => Actions.resendPendingUserEmail(email)(dispatch)
+    removeInvitedUser: () => Actions.removeInvitedUser(id)(dispatch),
+    resendInvitedUserEmail: () => Actions.resendInvitedUserEmail(email)(dispatch)
   };
 };
 
-export const LocalizedFutureUserRow = connectLocalization(connect(mapStateToProps, mapDispatchToProps)(FutureUserRow));
+export const LocalizedInvitedUserRow = connectLocalization(connect(mapStateToProps, mapDispatchToProps)(InvitedUserRow));

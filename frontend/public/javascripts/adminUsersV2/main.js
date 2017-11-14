@@ -26,22 +26,21 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const reducer = createReducer(window.serverConfig, getQueryParamFilters());
 const store = createStore(reducer, composeEnhancers(applyMiddleware(...middleware)));
 
-ReactDOM.render(
-  <AppContainer>
-    <App store={store} />
-  </AppContainer>,
-  document.querySelector('#app')
-);
+const render = (Component) => {
+  ReactDOM.render(
+    <AppContainer>
+      <Component store={store} />
+    </AppContainer>,
+    document.querySelector('#app')
+  );
+};
+
+render(App);
 
 // Hot Module Replacement API
 if (module.hot) {
   module.hot.accept('./app', () => {
     const NextApp = require('./app').default; //eslint-disable-line
-    ReactDOM.render(
-      <AppContainer>
-        <NextApp store={store} />
-      </AppContainer>,
-      document.querySelector('#app')
-    );
+    render(NextApp);
   });
 }

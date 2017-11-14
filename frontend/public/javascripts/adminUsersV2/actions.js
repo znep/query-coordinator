@@ -84,14 +84,14 @@ const loadUsers = ({query, filters} = {}) => {
     then(convertUserListFromApi);
 };
 
-const loadFutureUsers = () =>
+const loadInvitedUsers = () =>
   CoreFutureAccountsApi.getFutureUsers().
     then(values => values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))).
     then(users => users.sort((a, b) => {
       return b.createdAt - a.createdAt;
     })).
     catch(error => {
-      console.warn('Unable to load future users, showing empty list.', error);
+      console.warn('Unable to load invited users, showing empty list.', error);
       return [];
     });
 
@@ -129,13 +129,13 @@ export const loadData = () => (dispatch, getState) => {
   };
 
   dispatch({ ...ACTION, stage: START });
-  return Promise.all([loadUsers({filters, query}), loadRoles(), loadFutureUsers()]).then(([users, roles, futureUsers]) => {
+  return Promise.all([loadUsers({filters, query}), loadRoles(), loadInvitedUsers()]).then(([users, roles, invitedUsers]) => {
     dispatch({
       ...ACTION,
       stage: COMPLETE_SUCCESS,
       users,
       roles,
-      futureUsers
+      invitedUsers
     });
   });
 };
@@ -197,7 +197,7 @@ export const removeUserRole = (userId, roleId) => dispatch => {
     err => {
       console.error(err);
       dispatch({ ...ACTION, stage: COMPLETE_FAIL });
-      if (err.status == 400) {
+      if (err.status === 400) {
         err.json().then(
           data => {
             if (data.message === 'Cannot change your own role') {
@@ -239,13 +239,13 @@ export const SUBMIT_NEW_USERS = 'SUBMIT_NEW_USERS';
 const postNewUsers = (emails, roleId, dispatch) => {
   CoreFutureAccountsApi.postFutureUsers(emails, roleId).
     then(createdEmails => {
-      const futureUsers = createdEmails.map((email, i) => ({
+      const invitedUsers = createdEmails.map((email, i) => ({
         createdAt: Date.now() / 1000,
         email,
         id: Date.now() + i,
         pendingRoleId: roleId
       }));
-      dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { futureUsers } });
+      dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { invitedUsers } });
       dispatch(toggleAddUserUi(false));
       dispatch(showNotification({ translationKey: 'users.notifications.add_user_success' }, 'success'));
     }).
@@ -276,30 +276,30 @@ export const submitNewUsers = (emails, id) => dispatch => {
   });
 };
 
-export const REMOVE_FUTURE_USER = 'REMOVE_FUTURE_USER';
-export const removeFutureUser = (id) => dispatch => {
-  dispatch({ type: REMOVE_FUTURE_USER, stage: START, payload: { id }});
+export const REMOVE_INVITED_USER = 'REMOVE_INVITED_USER';
+export const removeInvitedUser = (id) => dispatch => {
+  dispatch({ type: REMOVE_INVITED_USER, stage: START, payload: { id }});
   CoreFutureAccountsApi.removeFutureUser(id).
     then(() => {
-      dispatch({ type: REMOVE_FUTURE_USER, stage: COMPLETE_SUCCESS, payload: { id }});
-      dispatch(showNotification({ translationKey: 'users.notifications.pending_user_removed' }, 'success'));
+      dispatch({ type: REMOVE_INVITED_USER, stage: COMPLETE_SUCCESS, payload: { id }});
+      dispatch(showNotification({ translationKey: 'users.notifications.invited_user_removed' }, 'success'));
     }).
     catch(error => {
-      dispatch({ type: REMOVE_FUTURE_USER, stage: COMPLETE_FAIL, payload: { id, error }});
+      dispatch({ type: REMOVE_INVITED_USER, stage: COMPLETE_FAIL, payload: { id, error }});
       dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
     });
 };
 
-export const RESEND_FUTURE_USER_EMAIL = 'RESEND_FUTURE_USER_EMAIL';
-export const resendPendingUserEmail = email => dispatch => {
-  dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: START, payload: { email }});
+export const RESEND_INVITED_USER_EMAIL = 'RESEND_INVITED_USER_EMAIL';
+export const resendInvitedUserEmail = email => dispatch => {
+  dispatch({ type: RESEND_INVITED_USER_EMAIL, stage: START, payload: { email }});
   CoreFutureAccountsApi.resendFutureUserEmail(email).
   then(() => {
-    dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_SUCCESS, payload: { email }});
+    dispatch({ type: RESEND_INVITED_USER_EMAIL, stage: COMPLETE_SUCCESS, payload: { email }});
     dispatch(showNotification({ translationKey: 'users.notifications.resent_email_success' }, 'success'));
   }).
   catch(error => {
-    dispatch({ type: RESEND_FUTURE_USER_EMAIL, stage: COMPLETE_FAIL, payload: { email, error }});
+    dispatch({ type: RESEND_INVITED_USER_EMAIL, stage: COMPLETE_FAIL, payload: { email, error }});
     dispatch(showNotification({ translationKey: 'users.errors.server_error_html' }, 'error'));
   });
 };

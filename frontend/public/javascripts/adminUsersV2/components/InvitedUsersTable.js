@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { LocalizedFutureUserRow } from './FutureUserRow';
+import { LocalizedInvitedUserRow } from './InvitedUserRow';
 import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
-export class FutureUsersTable extends React.Component {
+export class InvitedUsersTable extends React.Component {
   constructor(props) {
     super(props);
 
@@ -13,7 +13,7 @@ export class FutureUsersTable extends React.Component {
   }
 
   userToRow(user) {
-    return <LocalizedFutureUserRow {...user} key={user.id} />;
+    return <LocalizedInvitedUserRow {...user} key={user.id} />;
   }
 
   renderHeaderRow() {
@@ -32,14 +32,14 @@ export class FutureUsersTable extends React.Component {
   }
 
   renderDataRows() {
-    return <tbody>{this.props.futureUsers.map(this.userToRow)}</tbody>;
+    return <tbody>{this.props.invitedUsers.map(this.userToRow)}</tbody>;
   }
 
   render() {
     return (
       <table
         className="result-list-table table table-discrete table-condensed table-borderless"
-        id="future-users-table"
+        id="invited-users-table"
       >
         {this.renderHeaderRow()}
         {this.renderDataRows()}
@@ -48,29 +48,29 @@ export class FutureUsersTable extends React.Component {
   }
 }
 
-FutureUsersTable.propTypes = {
-  futureUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+InvitedUsersTable.propTypes = {
+  invitedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
   I18n: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, props) => {
   const { I18n } = props;
   const { roles } = state;
-  const futureUsers = state.futureUsers.map(futureUser => {
-    const role = roles.find(r => _.toString(r.id) === _.toString(futureUser.pendingRoleId));
+  const invitedUsers = state.invitedUsers.map(invitedUser => {
+    const role = roles.find(r => _.toString(r.id) === _.toString(invitedUser.pendingRoleId));
     if (role.isDefault) {
       return {
-        ...futureUser,
+        ...invitedUser,
         role: I18n.t(`roles.default_roles.${role.name}.name`)
       };
     } else {
       return {
-        ...futureUser,
+        ...invitedUser,
         role: role.name
       };
     }
   });
-  return { futureUsers };
+  return { invitedUsers };
 };
 
-export const ConnectedFutureUsersTable = connectLocalization(connect(mapStateToProps)(FutureUsersTable));
+export const ConnectedInvitedUsersTable = connectLocalization(connect(mapStateToProps)(InvitedUsersTable));

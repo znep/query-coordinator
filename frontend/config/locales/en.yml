@@ -6657,10 +6657,10 @@ en:
     pm: pm
   users:
     actions:
-      remove_pending_user: Remove
+      remove_invited_user: Remove
       remove_role: Remove
       reset_password: Reset Password
-      resend_pending_user_email: Resend invite
+      resend_invited_user_email: Resend invite
     add_new_users:
       add_users: Add User(s)
       subtitle: Add a single user or multiple users with the same role.
@@ -6689,10 +6689,13 @@ en:
     last_active:
       today: today
       unknown: unknown
+    navigation:
+      invited_users: Invited Users
+      users: Users
     notifications:
-      pending_user_removed: Pending user removed!
-      resent_email_success: Pending user invite resent!
-      add_user_success: Successfully added user!
+      invited_user_removed: Invited user removed.
+      resent_email_success: Invited user invitation resent.
+      add_user_success: Successfully added user.
       password_reset: Password reset.
       role_changed: User's role successfully changed.
       role_removed: User's role removed.

@@ -21,7 +21,7 @@ CSVExportButton.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  href: _.get(state, 'config.csvUrl')
+  href: _.get(state, 'config.routes.csvUrl')
 });
 
 export const LocalizedCSVExportButton = connect(mapStateToProps)(connectLocalization(CSVExportButton));

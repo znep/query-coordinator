@@ -3,9 +3,11 @@ import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReduc
 import {
   COMPLETE_FAIL,
   COMPLETE_SUCCESS,
-  LOAD_DATA, REMOVE_FUTURE_USER,
+  LOAD_DATA,
+  REMOVE_INVITED_USER,
   ROLE_FILTER_CHANGED,
-  SET_ADD_USER_ERRORS, SHOW_NOTIFICATION,
+  SET_ADD_USER_ERRORS,
+  SHOW_NOTIFICATION,
   START,
   SUBMIT_NEW_USERS,
   TOGGLE_ADD_USER_UI,
@@ -133,21 +135,21 @@ const ui = (state = initialUiState, action) => {
   }
 };
 
-const futureUsers = (state = [], action) => {
+const invitedUsers = (state = [], action) => {
   switch (action.type) {
     case LOAD_DATA:
       if (action.stage === COMPLETE_SUCCESS) {
-        return action.futureUsers;
+        return action.invitedUsers;
       }
       return state;
-    case REMOVE_FUTURE_USER:
+    case REMOVE_INVITED_USER:
       if (action.stage === COMPLETE_SUCCESS) {
         return state.filter(user => user.id !== _.get(action, 'payload.id', null));
       }
       return state;
     case SUBMIT_NEW_USERS:
       if (action.stage === COMPLETE_SUCCESS) {
-        return _.get(action, 'payload.futureUsers', []).concat(state);
+        return _.get(action, 'payload.invitedUsers', []).concat(state);
       }
       return state;
     default:
@@ -188,7 +190,7 @@ export default (initialConfig, initialFilters) =>
   combineReducers({
     ui,
     users,
-    futureUsers,
+    invitedUsers,
     roles,
     config: config(initialConfig),
     autocomplete,

@@ -3,21 +3,21 @@ import { shallow } from 'enzyme';
 import React from 'react';
 
 import { Dropdown } from 'common/components';
-import { FutureUserRow } from 'components/FutureUserRow';
+import { InvitedUserRow } from 'components/InvitedUserRow';
 import I18nJS from 'i18n-js';
 
-import { futureUsers } from '../helpers/stateFixtures';
+import { invitedUsers } from '../helpers/stateFixtures';
 
-describe('components/FutureUserRow', () => {
+describe('components/InvitedUserRow', () => {
   const defaultProps = {
-    ...futureUsers[0],
+    ...invitedUsers[0],
     invited: '[invited date]',
     invitedLabel: '[invited label]',
     I18n: I18nJS
   };
 
-  it('renders a row with a future user', () => {
-    const component = shallow(<FutureUserRow {...defaultProps} />);
+  it('renders a row with an invited user', () => {
+    const component = shallow(<InvitedUserRow {...defaultProps} />);
     expect(component.find('td')).to.have.length(4);
   });
 

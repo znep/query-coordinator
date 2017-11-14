@@ -380,7 +380,7 @@ export const initialState = {
   ]
 };
 
-export const futureUsers = [
+export const invitedUsers = [
   {
     "id": 1,
     "createdAt": 1506712824,

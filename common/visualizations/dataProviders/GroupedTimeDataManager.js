@@ -94,7 +94,10 @@ function getData(vif, options) {
 
     const makeGroupingVif = (filters, extras = {}) => {
       const groupingVif = _.cloneDeep(state.vif);
-      _.set(groupingVif, ['series', 0, 'dataSource', 'filters'], filters);
+      const filterPath = ['series', 0, 'dataSource', 'filters'];
+      const currentFilters = _.get(groupingVif, filterPath, []);
+      const newFilters = currentFilters.concat(filters);
+      _.set(groupingVif, filterPath, newFilters);
       return Object.assign(groupingVif, extras);
     };
 

@@ -8,12 +8,11 @@ import airbrake from 'common/airbrake';
 import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
-import AssetBrowser from 'common/components/AssetBrowser';
 import { FeedbackPanel } from 'common/components/FeedbackPanel';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import reducer from 'common/components/AssetBrowser/reducers';
-import { getCurrentUserId } from 'common/components/AssetBrowser/lib/helpers/cetera';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
+import InternalAssetManager from './components/internal_asset_manager';
 
 const middleware = [thunk];
 
@@ -27,36 +26,7 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-const tabs = {
-  [constants.MY_ASSETS_TAB]: {
-    component: ResultsAndFilters,
-    props: {
-      baseFilters: {
-        forUser: getCurrentUserId()
-      }
-    }
-  },
-  [constants.SHARED_TO_ME_TAB]: {
-    component: ResultsAndFilters,
-    props: {
-      baseFilters: {
-        sharedTo: getCurrentUserId()
-      }
-    }
-  },
-  [constants.ALL_ASSETS_TAB]: {
-    component: ResultsAndFilters
-  }
-};
-
-const assetBrowser = (
-  <AssetBrowser
-    showFilters
-    showSearchField
-    tabs={tabs} />
-);
-
-ReactDOM.render(assetBrowser, document.querySelector('#internal-asset-manager-asset-browser'));
+ReactDOM.render(<InternalAssetManager />, document.querySelector('#internal-asset-manager-asset-browser'));
 
 const store = createStore(reducer, applyMiddleware(...middleware));
 
@@ -65,7 +35,7 @@ if (module.hot) {
   module.hot.accept('common/components/AssetBrowser', () => {
     ReactDOM.render(
       <AppContainer>
-        {assetBrowser}
+        <InternalAssetManager />
       </AppContainer>,
       document.querySelector('#internal-asset-manager-asset-browser')
     );

@@ -43,7 +43,7 @@ export const getInitialState = () => {
 };
 
 // This function should _only_ be used for keeping track of user changes to the query. See also changeQ() in
-// platform-ui/frontend/public/javascripts/internalAssetManager/actions/filters.js
+// platform-ui/frontend/public/javascripts/internal_asset_manager/actions/filters.js
 export const getCurrentQuery = () => getQueryParameter('q', '');
 
 export const getUnfilteredState = (state) => ({

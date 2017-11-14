@@ -18,7 +18,7 @@ if (module.hot) {
   module.hot.accept('common/components/AssetBrowser', () => {
     ReactDOM.render(
       <AppContainer>
-        {Approvals}
+        <Approvals />,
       </AppContainer>,
       document.querySelector('#approvals-content')
     );

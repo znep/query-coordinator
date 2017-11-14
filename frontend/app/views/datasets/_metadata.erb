@@ -23,7 +23,9 @@
           form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]"
           form_id = sanitize_to_id form_name
         -%>
-          <%= label_tag(form_name, field.name, class: required && 'required') %>
+          <%# For most labels, the I18n.t() call does nothing, but for the specific case of "described_by" %>
+          <%# we translate that to "Data Dictionary" to make certain customers (cough USAID) less sad. %>
+          <%= label_tag(form_name, t("screens.edit_metadata.#{field.name.gsub(' ', '_').underscore}"), class: required && 'required') %>
 
           <%- if type == 'fixed' -%>
             <%- options  = (['']+field['options']+[existing_value]).uniq

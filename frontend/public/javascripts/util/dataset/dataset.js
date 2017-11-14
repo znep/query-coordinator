@@ -626,12 +626,40 @@
     replaceGrant: function(oldGrant, newGrant, successCallback, errorCallback) {
       var ds = this;
 
-      var grantDeleted = function() {
-        ds.createGrant(newGrant, successCallback, errorCallback);
+      var grantUpdated = function(response) {
+        ds.grants = ds.grants || [];
+        ds.grants.push(response);
+        if (_.isFunction(successCallback)) {
+          successCallback();
+        }
       };
 
-      // Core server only accepts creation or deletion for grants, so...
-      ds.removeGrant(oldGrant, grantDeleted, errorCallback);
+      var fallback = function(error) {
+        if (error.status == 404) {
+          var grantDeleted = function() {
+            ds.createGrant(newGrant, successCallback, errorCallback);
+          };
+
+          // Core server only accepts creation or deletion for grants, so...
+          ds.removeGrant(oldGrant, grantDeleted, errorCallback);
+        }
+      };
+
+      var updateGrant = {
+        'oldGrant': oldGrant,
+        'newGrant': newGrant
+      };
+
+      ds.makeRequest({
+        url: '/api/views/' + ds.id + '/grants',
+        params: {
+          method: 'update'
+        },
+        type: 'PUT',
+        data: JSON.stringify(updateGrant),
+        success: grantUpdated,
+        error: fallback
+      });
     },
 
     makePublic: function(successCallback, errorCallback) {

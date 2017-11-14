@@ -152,7 +152,7 @@ export function mapStateToProps(state, ownProps) {
     fatalError,
     addColForm,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
-    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
+    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'location'])),
     params
   };
 }

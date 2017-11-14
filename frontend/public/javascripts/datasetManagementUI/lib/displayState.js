@@ -24,12 +24,12 @@ export const rowErrors = (pageNo, outputSchemaId) => ({
   outputSchemaId
 });
 
-export function fromUiUrl({ params, route }) {
+export function fromUiUrl({ params, location }) {
   const pageNo = _.toNumber(params.pageNo || '1');
   const outputSchemaId = _.toNumber(params.outputSchemaId);
   if (params.errorsTransformId) {
     return columnErrors(_.toNumber(params.errorsTransformId), pageNo, outputSchemaId);
-  } else if (route.path.indexOf('row_errors') > 0) {
+  } else if (location.pathname.indexOf('row_errors') > 0) {
     return rowErrors(pageNo, outputSchemaId);
   } else {
     return normal(pageNo, outputSchemaId);

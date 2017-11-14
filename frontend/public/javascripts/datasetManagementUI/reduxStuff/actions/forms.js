@@ -36,13 +36,6 @@ export const appendFormError = (formName, error) => ({
   error
 });
 
-export const APPEND_FORM_ERRORS = 'APPEND_FORM_ERRORS';
-export const appendFormErrors = (formName, errors) => ({
-  type: APPEND_FORM_ERRORS,
-  formName,
-  errors
-});
-
 export const SET_FORM_STATE = 'SET_FORM_STATE';
 export const setFormState = (formName, state) => ({
   type: SET_FORM_STATE,
@@ -55,4 +48,11 @@ export const clearInternalState = (formName, val) => ({
   type: CLEAR_INTERNAL_STATE,
   formName,
   val
+});
+
+export const SET_SHOULD_FORM_SAVE = 'TOGGLE_FORM_SAVE';
+export const setShouldFormSave = (formName, bool) => ({
+  type: SET_SHOULD_FORM_SAVE,
+  formName,
+  shouldSave: bool
 });

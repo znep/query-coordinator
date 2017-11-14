@@ -11,18 +11,18 @@ class URLField extends Component {
     const { handleChangeUrl, handleXClick, value, errors, hrefId, uuid } = this.props;
 
     const urlErrors = _.chain(errors)
-      .filter(err => err.type === 'urlError')
+      .filter(err => err.name === 'UrlError')
       .flatMap(err => err.urls)
       .value();
 
     const dupeErrors = _.chain(errors)
-      .filter(err => err.type === 'dupeFiletypeError')
+      .filter(err => err.name === 'DuplicateFiletypeError')
       .filter(err => err.hrefId === hrefId)
       .flatMap(err => err.dupes)
       .value();
 
     const emptyErrors = _.chain(errors)
-      .filter(err => err.type === 'emptyError')
+      .filter(err => err.name === 'EmptyError')
       .filter(err => err.hrefId === hrefId)
       .filter(err => err.id === uuid)
       .value();
@@ -54,7 +54,8 @@ class URLField extends Component {
               handleChangeUrl({
                 url: e.target.value,
                 filetype: getExtension(getBasename(e.target.value))
-              })} />
+              })
+            } />
           {urlInErrorState && <div className={styles.error}>{I18n.show_sources.error_url}</div>}
         </div>
         <div className={styles.filetypeFieldArea}>
@@ -68,7 +69,8 @@ class URLField extends Component {
               handleChangeUrl({
                 ...value,
                 filetype: e.target.value
-              })} />
+              })
+            } />
           {filetypeInErrorState && <div className={styles.error}>{errorMessage}</div>}
         </div>
         <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={handleXClick} />

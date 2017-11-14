@@ -4,13 +4,8 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
-import { getCurrentRevision } from 'reduxStuff/actions/loadRevision';
+import { validate } from 'containers/HrefFormContainer';
 import styles from './HrefForm.scss';
-
-function hrefIsEmpty(href) {
-  const hasAnyUrls = !!Object.values(href.urls).filter(val => val.url && val.href).length;
-  return !(href.title || href.description || href.data_dictionary_type || href.data_dictionary || hasAnyUrls);
-}
 
 // This form strives to let the UI derrive from the data, so in order to control
 // the UI, it changes the data--namely the "hrefs" array. When the component loads,
@@ -23,21 +18,21 @@ function hrefIsEmpty(href) {
 // earlier. If not, then it does nothing.
 
 // Finally, because of the stupid modal thing, the button that submits this form
-// does not live inside of this form. So we need a way to get the form state out
-// of this form so that it can be shared with sibling components. We do this
-// by syncing the local state of this form to the redux store. That way, we can
-// connect the button that submits the form to the store, pull out the form data,
-// and send it to the server. It may be better to change this behavior and instead
-// of storing form state in local component state and the redux store, just store it
-// in the redux store. But for now, using local state as a buffer works well considering
-// that the "Add URL" and "Add Dataset" buttons would have to stick empty values into
-// the redux store otherwise.
+// does not live inside of this form. So we need a way to signal this form to send
+// its local state to DSMAPI from outside the form itself. We do that by putting
+// a tripwire variable in the redux store called shouldSave. The save button in the
+// modal footer toggles this to true. This variable is mapped to the props of this
+// component, so changing it triggers the 'componentWillReceiveProps' lifecycle method,
+// in which we send the form data and toggle the tripwire variable back to false.
 class HrefForm extends Component {
   constructor() {
     super();
+
     this.state = {
       hrefs: [],
-      currentId: 1
+      currentId: 1,
+      saveInProgress: false,
+      errors: []
     };
 
     _.bindAll(this, [
@@ -53,67 +48,68 @@ class HrefForm extends Component {
   }
 
   componentWillMount() {
-    const datasetNum = this.state.hrefs.length + 1;
+    // TODO: possible race condition?
+    const hrefsFromServer = !!this.props.hrefs.length;
 
-    this.setState({
-      hrefs: [this.initializeHref(datasetNum)]
-    });
+    if (hrefsFromServer) {
+      this.setState({
+        hrefs: this.props.hrefs,
+        currentId: this.props.hrefs.length + 1
+      });
+    } else {
+      const datasetNum = this.state.hrefs.length + 1;
+
+      this.setState({
+        hrefs: [this.initializeHref(datasetNum)]
+      });
+    }
   }
 
-  componentDidMount() {
-    getCurrentRevision(this.props.params).then(r => {
-      if (r && r.href && r.href.length) {
-        const newHrefs = r.href.map((href, idx) => ({ ...href, id: idx + 1 })).map(href => {
-          if (_.isEmpty(href.urls)) {
-            return {
-              ...href,
-              urls: {
-                [uuid()]: {
-                  url: '',
-                  filetype: ''
-                }
-              }
-            };
-          } else {
-            return {
-              ...href,
-              urls: Object.keys(href.urls).reduce(
-                (acc, key) => ({
-                  ...acc,
-                  [uuid()]: {
-                    url: href.urls[key],
-                    filetype: key
-                  }
-                }),
-                {}
-              )
-            };
-          }
-        });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.shouldSave && !this.state.saveInProgress) {
+      this.props.toggleShouldSaveOff();
 
+      this.setState({
+        saveInProgress: true
+      });
+
+      const errors = validate(this.state.hrefs);
+
+      if (errors.length) {
+        this.props.showFlash('error', I18n.show_sources.save_error);
+        this.props.setFormErrors(errors);
         this.setState({
-          hrefs: newHrefs,
-          currentId: r.href.length + 1
+          errors,
+          saveInProgress: false
         });
+
+        return;
       }
-    });
-  }
 
-  componentWillUpdate(nextProps, nextState) {
-    const { syncStateToStore, hrefs: oldHrefs } = this.props;
-    const { hrefs: newHrefs } = nextState;
-
-    const nonEmptyOldHrefs = oldHrefs.filter(href => !hrefIsEmpty(href));
-    const nonEmptyNewHrefs = newHrefs.filter(href => !hrefIsEmpty(href));
-
-    const oldUrls = nonEmptyOldHrefs.map(href => href.urls);
-    const newUrls = nonEmptyNewHrefs.map(href => href.urls);
-
-    // this lifecycle method is called on props and state changes; we use it to
-    // sync local state to the store because of the stupid modal save button
-    // that we must use to submit this form
-    if (!_.isEqual(nonEmptyOldHrefs, nonEmptyNewHrefs) || !_.isEqual(oldUrls, newUrls)) {
-      syncStateToStore({ href: nonEmptyNewHrefs });
+      this.props
+        .saveHrefs(this.state.hrefs)
+        .then(() => {
+          this.props.showFlash('success', I18n.show_sources.save_success);
+          this.props.markFormClean();
+          this.props.setFormErrors([]);
+          this.setState({
+            errors: []
+          });
+        })
+        .catch(err => {
+          const newErrors = [...this.state.errors, err];
+          this.props.showFlash('success', I18n.show_sources.save_success);
+          this.props.setFormErrors(newErrors);
+          this.setState({
+            errors: newErrors
+          });
+        })
+        .then(() => {
+          // using this in the absence of Promise.finally
+          this.setState({
+            saveInProgress: false
+          });
+        });
     }
   }
 
@@ -151,7 +147,7 @@ class HrefForm extends Component {
   }
 
   handleAddDataset() {
-    // hanlder for the button that adds a new dataset fieldset
+    // handler for the button that adds a new dataset fieldset
     const datasetNum = this.state.hrefs.length + 1;
 
     this.props.markFormDirty();
@@ -290,7 +286,8 @@ class HrefForm extends Component {
   }
 
   render() {
-    const { errors, schemaExists, blobExists } = this.props;
+    const { schemaExists, blobExists } = this.props;
+    const { errors } = this.state;
 
     if (schemaExists || blobExists) {
       return <SourceMessage sourceExists />;
@@ -333,11 +330,14 @@ class HrefForm extends Component {
 HrefForm.propTypes = {
   hrefs: PropTypes.arrayOf(PropTypes.object),
   params: PropTypes.object.isRequired,
-  syncStateToStore: PropTypes.func.isRequired,
+  shouldSave: PropTypes.bool.isRequired,
+  saveHrefs: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
+  setFormErrors: PropTypes.func.isRequired,
+  toggleShouldSaveOff: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.object).isRequired,
+  showFlash: PropTypes.func.isRequired,
   schemaExists: PropTypes.bool.isRequired,
   blobExists: PropTypes.bool.isRequired
 };

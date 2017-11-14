@@ -13,7 +13,7 @@ function extractInputSchemas(source) {
     name: schema.name,
     total_rows: schema.total_rows,
     source_id: source.id,
-    num_row_errors: 0
+    num_row_errors: schema.num_row_errors || 0
   }));
 }
 

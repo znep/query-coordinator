@@ -73,7 +73,7 @@ describe('ShowOutputSchema page', () => {
     it('returns row errors displayState on row errors path', () => {
       const newProps = dotProp.set(
         ownProps,
-        'route.path',
+        'location.pathname',
         'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors'
       );
 

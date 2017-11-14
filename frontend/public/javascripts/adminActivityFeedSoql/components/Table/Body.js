@@ -24,7 +24,7 @@ class Body extends Component {
     return (
       <td scope="row" className="type">
         <AssetTypeIcon
-          displayType={data.asset_type}
+          displayType={data.asset_type || 'dataset'}
           tooltip={assetTypeTooltip} />
       </td>
     );

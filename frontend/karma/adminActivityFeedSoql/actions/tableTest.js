@@ -12,6 +12,9 @@ const initialState = {
     pageSize: 10,
     offset: 0,
     page: 1
+  },
+  filters: {
+    activeTab: 'all'
   }
 };
 

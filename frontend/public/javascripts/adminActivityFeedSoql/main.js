@@ -14,9 +14,14 @@ import store from './store';
 import * as actions from './actions';
 import Root from './root';
 
+import { MOBILE_BREAKPOINT } from './constants';
+
 if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
+
+const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+mql.addListener((e) => store.dispatch(actions.common.changeDimensions(e.matches)));
 
 store.dispatch(actions.pagination.fetchRowCount());
 store.dispatch(actions.table.fetchData());

@@ -19,6 +19,9 @@ export default function table(state, action) {
     case actions.pagination.types.STORE_PAGE:
       return Object.assign({}, state, { page: action.page });
 
+    case actions.pagination.types.RESET_PAGE:
+      return Object.assign({}, state, { page: 1 });
+
     default:
       return state;
   }

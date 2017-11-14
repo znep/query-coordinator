@@ -6,6 +6,7 @@ import * as api from 'lib/api';
 import * as mockData from '../data/mockFetchTable';
 
 describe('lib/api', () => {
+
   describe('.fetchRowCount', () => {
     let fetchRowCountStub;
     const responseData = [{"COLUMN_ALIAS_GUARD__count":"3"}];
@@ -23,8 +24,14 @@ describe('lib/api', () => {
     });
 
     it('should return row count', (done) => {
+      const options = {
+        filters: {
+          activeTab: 'all'
+        }
+      };
+
       api.
-        fetchRowCount().
+        fetchRowCount(options).
         then((rowCount) => {
           sinon.assert.calledOnce(fetchRowCountStub);
           assert.equal(responseData[0]['COLUMN_ALIAS_GUARD__count'], rowCount);
@@ -48,11 +55,13 @@ describe('lib/api', () => {
       fetchTableStub.restore();
     });
 
-
     it('should return events', (done) => {
       const options = {
         offset: 0,
-        limit: 10
+        limit: 10,
+        filters: {
+          activeTab: 'all'
+        }
       };
 
       api.

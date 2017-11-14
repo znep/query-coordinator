@@ -4,7 +4,8 @@ import * as tableActions from './table';
 
 const types = {
   STORE_ROW_COUNT: 'STORE_ROW_COUNT',
-  STORE_PAGE: 'STORE_PAGE'
+  STORE_PAGE: 'STORE_PAGE',
+  RESET_PAGE: 'RESET_PAGE'
 };
 
 const storeRowCount = (rowCount) => ({
@@ -12,9 +13,15 @@ const storeRowCount = (rowCount) => ({
   rowCount
 });
 
-const fetchRowCount = () => (dispatch) => {
+const fetchRowCount = () => (dispatch, getState) => {
+  const state = getState();
+
+  const options = {
+    filters: state.filters
+  };
+
   return api.
-    fetchRowCount().
+    fetchRowCount(options).
     then((rowCount) => {
       dispatch(storeRowCount(parseInt(rowCount, 10)));
     }).
@@ -31,10 +38,15 @@ const changePage = (page) => (dispatch) => {
   dispatch(tableActions.fetchData());
 };
 
+const resetPage = () => ({
+  type: types.RESET_PAGE
+});
+
 export {
   types,
   fetchRowCount,
   storeRowCount,
   changePage,
-  storePage
+  storePage,
+  resetPage
 };

@@ -29,15 +29,6 @@
   var Dataset = ServerModel.extend({
     _init: function(v) {
 
-      switch (blist.feature_flags.ignore_metadata_jsonquery_property_in_view) {
-        case 'frontend':
-        case 'all':
-          if (v.hasOwnProperty('metadata') && v.metadata.hasOwnProperty('jsonQuery')) {
-            delete v.metadata.jsonQuery;
-          }
-          break;
-      }
-
       this._super();
 
       this.registerEvent(['columns_changed', 'valid', 'query_change',
@@ -340,18 +331,12 @@
       var vizIds = $.isBlank(ds.visibleColumns) ? null :
         _.pluck(ds.visibleColumns, 'id');
       var dsSaved = function(newDS) {
-        switch (blist.feature_flags.ignore_metadata_jsonquery_property_in_view) {
-          case 'frontend':
-          case 'backend':
-          case 'all':
-            var nds = new Dataset(newDS);
-            var originalQuery = nds._getQueryGrouping();
-            nds._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
-            break;
-          case 'none':
-            // no need to sync queries
-            break;
-        }
+        // core always removes metadata.jsonQuery while frontend still depends on it.
+        // This recreate metadata.jsonQuery from view.query
+        var nds = new Dataset(newDS);
+        var originalQuery = nds._getQueryGrouping();
+        nds._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
+
         ds._savedRowSet = ds._activeRowSet;
         ds._update(newDS, true, false, true);
         if (!$.isBlank(vizIds) &&

@@ -25,7 +25,8 @@ export function createMoneyFormatter(column, dataToRender) {
   formatInfo.format.forceHumane = true;
   const formatter = (d) => {
     const v = DataTypeFormatter.renderNumberCellHTML(d, formatInfo);
-    return `${DataTypeFormatter.CURRENCY_SYMBOLS[formatInfo.format.currency]}${v}`;
+    const currencySymbol = DataTypeFormatter.getCurrencySymbol(formatInfo.format);
+    return `${currencySymbol}${v}`;
   };
 
   return formatter;

@@ -85,7 +85,8 @@ export default (pollInterval = DEFAULT_INTERVAL, pollTimeout = DEFAULT_TIMEOUT) 
 
       // Ping the replication endpoint and update our knowledge of availability.
       checkReplicationStatus() {
-        const url = `/api/views/${this.props.spandex.datasetUid}/replication.json`;
+        const { datasetUid, domain } = this.props.spandex;
+        const url = `https://${domain}/api/views/${datasetUid}/replication.json`;
         const fetchOptions = {
           headers: defaultHeaders,
           credentials: 'same-origin'
@@ -106,7 +107,8 @@ export default (pollInterval = DEFAULT_INTERVAL, pollTimeout = DEFAULT_TIMEOUT) 
           return false;
         }
 
-        const url = `/datasets/${this.props.spandex.datasetUid}/setup_autocomplete`;
+        const { datasetUid, domain } = this.props.spandex;
+        const url = `https://${domain}/datasets/${datasetUid}/setup_autocomplete`;
         const fetchOptions = {
           method: 'POST',
           headers: defaultHeaders,

@@ -89,7 +89,7 @@ describe('spandexSubscriber', () => {
 
         _.defer(() => {
           sinon.assert.calledOnce(fetch);
-          sinon.assert.calledWithExactly(fetch, '/api/views/test-test/replication.json', sinon.match.object);
+          sinon.assert.calledWithExactly(fetch, 'https://example.com/api/views/test-test/replication.json', sinon.match.object);
 
           const instance = element.instance();
           assert.include(instance.props.spandex, { available: 'foo' });
@@ -112,7 +112,7 @@ describe('spandexSubscriber', () => {
 
         _.defer(() => {
           sinon.assert.calledOnce(fetch);
-          sinon.assert.calledWithExactly(fetch, '/datasets/test-test/setup_autocomplete', sinon.match.object);
+          sinon.assert.calledWithExactly(fetch, 'https://example.com/datasets/test-test/setup_autocomplete', sinon.match.object);
 
           const instance = element.instance();
           assert.include(instance.props.spandex, { available: false });

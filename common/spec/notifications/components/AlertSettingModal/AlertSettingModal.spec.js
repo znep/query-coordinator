@@ -40,19 +40,22 @@ describe('AlertSettingModal', () => {
     const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
     const setPreference = sinon.stub(AlertPreferenceAPI, 'set').returns(Promise.resolve({ status: 200 }));
     const saveButton = element.querySelector('.save-button');
-    assert.isNotNull(saveButton);
-    TestUtils.Simulate.click(saveButton);
-    sinon.assert.calledOnce(setPreference);
-    setPreference.restore();
+    AlertPreferenceAPI.get().then((res) => {
+      assert.isNotNull(saveButton);
+      TestUtils.Simulate.click(saveButton);
+      sinon.assert.calledOnce(setPreference);
+      setPreference.restore();
+    });
   });
 
   it('on cancel should close the modal', () => {
     const spy = sinon.spy();
     const element = renderLocalizationElement(AlertSettingModal, { onClose: spy });
     const cancelButton = element.querySelector('.cancel-button');
-    assert.isNotNull(cancelButton);
-    TestUtils.Simulate.click(cancelButton);
-    sinon.assert.calledOnce(spy);
+    AlertPreferenceAPI.get().then((res) => {
+      assert.isNotNull(cancelButton);
+      TestUtils.Simulate.click(cancelButton);
+      sinon.assert.calledOnce(spy);
+    });
   });
-
 });

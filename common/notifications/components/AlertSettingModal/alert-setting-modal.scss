@@ -13,11 +13,33 @@ $divider-color: #e8eaeb;
   }
 
   .alert-setting-modal-content {
+    max-height: calc(100vh - 190px) !important;
+
+    .user-preferences-error-message-wrapper {
+      div {
+        padding: 20px;
+        text-align: center;
+      }
+    }
+
+    .user-preferences-loading-wrapper {
+      min-height: 110px;
+      position: relative;
+    }
+
     table {
       width: 100%;
 
       & :global(.column-description) {
         text-align: center;
+      }
+
+      & :global(th.column-description) {
+        min-width: 160px;
+      }
+
+      & :global(th.column-type) {
+        min-width: 220px;
       }
 
       tr {
@@ -28,19 +50,17 @@ $divider-color: #e8eaeb;
           font-weight: normal;
           font-size: 13px;
           padding: 5px 5px 5px 0px;
+
         }
 
-        th:first-child, td:first-child {
+        th:first-child,
+        td:first-child {
           padding-left: 0px;
         }
 
         td {
           padding: 10px 0px;
           vertical-align: middle;
-
-          &:first-child {
-            width: 55%;
-          }
 
           .preference-name {
             font-size: 14px;

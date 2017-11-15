@@ -7,7 +7,9 @@ import PreferenceContent from './PreferenceContent';
 import cssModules from 'react-css-modules';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import AlertPreferenceAPI from '../../api/AlertPreferenceAPI';
+import ErrorMessage from 'common/notifications/components/ErrorMessage';
 import Spinner from '../Spinner';
+import I18n from 'common/i18n';
 
 class AlertSettingModal extends Component {
 
@@ -17,19 +19,35 @@ class AlertSettingModal extends Component {
     this.state = {
       selectedTab: 'notification',
       preferences: {},
-      showSpinner: false
+      showSpinner: false,
+      userPreferencesLoaded: false,
+      failedLoadingUserPreferences: false
     };
+
     this.onTabChange = this.onTabChange.bind(this);
     this.onAlertNotificationChange = this.onAlertNotificationChange.bind(this);
     this.saveAlertSettings = this.saveAlertSettings.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    let userPreferencesLoaded = false;
+    let failedLoadingUserPreferences = false;
+
+    this.setState({ userPreferencesLoaded, failedLoadingUserPreferences });
+
     AlertPreferenceAPI.get().then((response) => {
       const preferences = response;
-      this.setState({ preferences });
-    });
+      userPreferencesLoaded = true;
+      failedLoadingUserPreferences = false;
 
+      this.setState({ preferences, userPreferencesLoaded, failedLoadingUserPreferences });
+    }).
+    catch((error) => {
+      failedLoadingUserPreferences = true;
+      userPreferencesLoaded = false;
+
+      this.setState({ userPreferencesLoaded, failedLoadingUserPreferences });
+    });
   }
 
   onAlertNotificationChange(category, notificationType, subCategoryType) {
@@ -59,13 +77,32 @@ class AlertSettingModal extends Component {
   }
 
   renderNotificationTabContent() { // eslint-disable-line react/sort-comp
-    const { currentUserRole, isSuperAdmin } = this.props;
+    const { userPreferencesLoaded, failedLoadingUserPreferences } = this.state;
+
+    if (userPreferencesLoaded) {
+      const { currentUserRole, isSuperAdmin } = this.props;
+
+      return (
+        <PreferenceContent
+          currentUserRole={currentUserRole}
+          isSuperAdmin={isSuperAdmin}
+          onAlertNotificationChange={this.onAlertNotificationChange}
+          preferences={this.state.preferences} />
+      );
+    } else if (failedLoadingUserPreferences) {
+      const errorText = I18n.t('error_loading_preferences_text_html', { scope: 'shared_site_chrome_notifications.alert_setting_modal' });
+
+      return (
+        <div styleName="user-preferences-error-message-wrapper">
+          <ErrorMessage text={errorText} />
+        </div>
+      );
+    }
+
     return (
-      <PreferenceContent
-        currentUserRole={currentUserRole}
-        isSuperAdmin={isSuperAdmin}
-        onAlertNotificationChange={this.onAlertNotificationChange}
-        preferences={this.state.preferences} />
+      <div styleName="user-preferences-loading-wrapper">
+        <Spinner />
+      </div>
     );
   }
 
@@ -86,28 +123,54 @@ class AlertSettingModal extends Component {
     });
   }
 
+  renderTabs() {
+    const { userPreferencesLoaded, selectedTab } = this.state;
+
+    if (userPreferencesLoaded) {
+      return <Tabs onTabChange={this.onTabChange} selectedTab={selectedTab} />;
+    }
+  }
+
   renderTabContent() {
     return this.renderNotificationTabContent();
+  }
+
+  renderModalFooter() {
+    const { userPreferencesLoaded } = this.state;
+
+    if (userPreferencesLoaded) {
+      const { onClose } = this.props;
+
+      return (
+        <ModalFooter>
+          <div styleName="cancel-button" className="cancel-button" onClick={onClose}>Cancel</div>
+          <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>Save</div>
+        </ModalFooter>
+      );
+    }
   }
 
   render() {
     const { onClose } = this.props;
     const containerStyle = {
-      'maxWidth': '80%',
-      'padding': '2rem'
+      'maxWidth': '800px',
+      'maxHeight': 'calc(100vh - 40px)',
+      'padding': '20px',
+      'margin': '20px auto',
+      'bottom': 'auto'
     };
+
     return (
       <Modal styleName="alert-setting-modal" onDismiss={onClose} containerStyle={containerStyle}>
         <ModalHeader title="Settings" onDismiss={onClose} />
+
         <ModalContent styleName="alert-setting-modal-content">
-          <Tabs onTabChange={this.onTabChange} selectedTab={this.state.selectedTab} />
+          {this.renderTabs()}
           {this.renderTabContent()}
           {this.state.showSpinner ? <Spinner /> : null}
         </ModalContent>
-        <ModalFooter>
-          <div styleName="cancel-button" className="cancel-button" onClick={onClose}>Cancel</div>
-          <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>Save</div>
-        </ModalFooter>
+
+        {this.renderModalFooter()}
       </Modal>
     );
   }

@@ -504,6 +504,7 @@ en:
         user_removed: User Removed
         user_role_changed: User Role Changed
         alert_setting_modal:
+          error_loading_preferences_text_html: "<strong>Sorry!</strong> User preferences are unavailable right now. Please contact Socrata support."
           subscribe_email: Subscribe to email notifications
           tab:
             notification: Notifications & Alerts

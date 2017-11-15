@@ -296,6 +296,70 @@ describe('DataTypeFormatter', function() {
 
   });
 
+  describe('getCurrencySymbol()', () => {
+    const { getCurrencySymbol } = DataTypeFormatter;
+    // Defining a shorthand function proxy to access I18n, rather than a
+    // constant, because this code runs before
+    // the beforeEach call, which is called at the start of each it() block.
+    const defaultSymbol = () => I18n.t('shared.visualizations.charts.common.currency_symbol');
+
+    describe('when format is undefined', () => {
+      it('returns default symbol for locale', () => {
+        const symbol = getCurrencySymbol();
+        assert.equal(symbol, defaultSymbol());
+      });
+    });
+    describe('when format has no currency nor currencyStyle', () => {
+      it('defaults to locale\'s currency symbol', () => {
+        const symbol = getCurrencySymbol({});
+        assert.equal(symbol, defaultSymbol());
+      });
+    });
+
+    describe('when format has currency defined', () => {
+      it('returns matching symbol for currency', () => {
+        let symbol = getCurrencySymbol({
+          currency: 'USD'
+        });
+        assert.equal(symbol, '$');
+
+        symbol = getCurrencySymbol({
+          currency: 'EUR'
+        });
+        assert.equal(symbol, '€');
+      });
+    });
+
+    describe('when format has currencyStyle defined', () => {
+      it('returns matching symbol for currencyStyle', () => {
+        let symbol = getCurrencySymbol({
+          currencyStyle: 'USD'
+        });
+        assert.equal(symbol, '$');
+
+        symbol = getCurrencySymbol({
+          currencyStyle: 'EUR'
+        });
+        assert.equal(symbol, '€');
+      });
+    });
+
+    describe('when currency is unknown', () => {
+      it('return default symbol for locale', () => {
+        let symbol = getCurrencySymbol({
+          currency: 'XXX'
+        });
+        assert.equal(symbol, defaultSymbol());
+
+        symbol = getCurrencySymbol({
+          currencyStyle: 'XXX'
+        });
+        assert.equal(symbol, defaultSymbol());
+      });
+    });
+
+  });
+
   describe('number cell formatting', function() {
 
     var NUMBER_DATA = [
@@ -742,7 +806,7 @@ describe('DataTypeFormatter', function() {
             renderTypeName: 'number',
             format: {
               precisionStyle: 'currency',
-              currency: '£'
+              currency: 'GBP'
             }
           };
           NUMBER_DATA.forEach(function(value) {

@@ -204,6 +204,22 @@ body {
 }
 
 .dataset-landing-page {
+  @media(min-width: $medium) {
+    // Special treatment for cards in the dataset landing page to always force push the second cell to the right
+    .result-card {
+      .entry-content {
+        .entry-main {
+          border-right: 0 none;
+        }
+
+        .entry-meta.second {
+          border-left: 1px solid $light-grey-4;
+          float: right;
+        }
+      }
+    }
+  }
+
   // Styleguide polyfill
   .spinner-large {
     width: 64px;

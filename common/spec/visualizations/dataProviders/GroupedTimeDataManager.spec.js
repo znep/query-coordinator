@@ -93,7 +93,7 @@ describe('GroupedTimeDataManager', () => {
     I18n.translations.en = allLocales.en;
 
     groupingQueryVifs = {
-      '{"configuration":{},"format":{"type":"visualization_interchange_format","version":2},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","filters":[{"function":"in","columnName":"blood_alcohol_level","arguments":["0.01","0.02","0.03","0.04","0.05","0.06","0.07","0.08","0.09","0.1","0.11","Apostrophe\'s escaped"]}],"measure":{"columnName":null,"aggregationFunction":"count"},"precision":"month","type":"socrata.soql"},"type":"timelineChart"}],"requireGroupingInSelect":true,"groupingColumnName":"blood_alcohol_level"}': {
+      '{"configuration":{},"format":{"type":"visualization_interchange_format","version":2},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"in","columnName":"blood_alcohol_level","arguments":["0.01","0.02","0.03","0.04","0.05","0.06","0.07","0.08","0.09","0.1","0.11","Apostrophe\'s escaped"]}],"measure":{"columnName":null,"aggregationFunction":"count"},"precision":"month","type":"socrata.soql"},"type":"timelineChart"}],"requireGroupingInSelect":true,"groupingColumnName":"blood_alcohol_level"}': {
         columns: ['dimension', 'grouping', 'measure'],
         rows: [
           // 0.01

@@ -23,10 +23,10 @@ export function createMoneyFormatter(column, dataToRender) {
   // get determined by the general renderNumberCellHTML.
   delete formatInfo.format.precision;
   formatInfo.format.forceHumane = true;
-  const formatter = (d) => {
-    const v = DataTypeFormatter.renderNumberCellHTML(d, formatInfo);
+  const formatter = (value) => {
+    const formattedValue = DataTypeFormatter.renderNumberCellHTML(value, formatInfo);
     const currencySymbol = DataTypeFormatter.getCurrencySymbol(formatInfo.format);
-    return `${currencySymbol}${v}`;
+    return `${currencySymbol}${formattedValue}`;
   };
 
   return formatter;

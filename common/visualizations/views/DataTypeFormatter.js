@@ -304,13 +304,7 @@ function renderBooleanCellHTML(cellContent) {
 function getCurrencySymbol(format) {
   // For the purposes of getting a currency symbol, we NEVER want it to return undefined.
   // Not sure if we should default the symbol to $, but it's likely to end up that way from I18n.
-  let localeDefault = I18n.t('shared.visualizations.charts.common.currency_symbol');
-  // TODO: Is there a method on I18n for hasTranslation(path)?
-  // It might be fairly hard for the translation to be missing, but we definitely don't
-  // want to see [missing "en.shared.visualizations.charts.common.currency_symbol" translation]
-  if (localeDefault.match(/\[missing.*translation\]/)) {
-    localeDefault = '';
-  }
+  let localeDefault = I18n.t('shared.visualizations.charts.common.currency_symbol', { defaultValue: '' });
   if (!format) {
     return localeDefault;
   }

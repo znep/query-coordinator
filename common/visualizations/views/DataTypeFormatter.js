@@ -168,7 +168,7 @@ const TIME_FORMATS = {
 // return unsafe strings. Do not place them into the DOM
 // directly. Consider using an *HTML renderer.
 module.exports = {
-  CURRENCY_SYMBOLS,
+  getCurrencySymbol,
   // Before exporting any *UnsafePlainText functions, think
   // carefully about the potential security impact.
   renderCellHTML,
@@ -301,6 +301,18 @@ function renderBooleanCellHTML(cellContent) {
   return _.escape(_.isBoolean(cellContent) && cellContent ? '✓' : '');
 }
 
+function getCurrencySymbol(format) {
+  // For the purposes of getting a currency symbol, we NEVER want it to return undefined.
+  // Not sure if we should default the symbol to $, but it's likely to end up that way from I18n.
+  let localeDefault = I18n.t('shared.visualizations.charts.common.currency_symbol', { defaultValue: '' });
+  if (!format) {
+    return localeDefault;
+  }
+  // Direction from Chris L. is to use currencyStyle as primary field, fallback to currency, then locale default.
+  const currency = format.currencyStyle || format.currency;
+  return CURRENCY_SYMBOLS[currency] || localeDefault;
+}
+
 /**
 * Render a number based on column specified formatting.
 * This has lots of possible options, so we delegate to helpers.
@@ -326,10 +338,6 @@ function renderNumberCellUnsafePlainText(input, column) {
     precision: undefined,
     forceHumane: false, // NOTE: only used internally, cannot be set on columns
     noCommas: false,
-    currency: _.get(
-      CURRENCY_SYMBOLS,
-      _.get(column, 'format.currencyStyle')
-    ) || I18n.t('shared.visualizations.charts.common.currency_symbol'),
     decimalSeparator: utils.getDecimalCharacter(locale),
     groupSeparator: utils.getGroupCharacter(locale),
     mask: null
@@ -519,7 +527,7 @@ function renderMoneyCellHTML(cellContent, column) {
     // 'false' and the value true if it does not.
     return _.get(formatToCheck, 'humane', 'false').toLowerCase() !== 'false';
   };
-  const currencySymbol = CURRENCY_SYMBOLS[format.currency];
+  const currencySymbol = getCurrencySymbol(format);
   const amount = parseFloat(cellContent);
 
   if (_.isFinite(amount)) {
@@ -917,7 +925,8 @@ function _renderCurrencyNumber(amount, format) {
 
   const sign = isNegative ? '-' : '';
 
-  return `${format.currency}${sign}${value}`;
+  const currencySymbol = getCurrencySymbol(format);
+  return `${currencySymbol}${sign}${value}`;
 }
 
 function _renderFinancialNumber(amount, format) {

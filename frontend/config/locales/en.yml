@@ -2002,6 +2002,8 @@ en:
       tags: Tags
       title: About this Dataset
       topics: Topics
+      transforms:
+        described_by: Data Dictionary
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More

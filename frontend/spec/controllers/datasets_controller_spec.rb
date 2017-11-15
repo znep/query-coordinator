@@ -436,6 +436,25 @@ describe DatasetsController do
         get :edit_metadata, :category => 'Personal', :view_name => 'Problems', :id => 'data-lens', :view => payload
       end
     end
+
+    context 'I18n transforms' do
+      render_views
+
+      let(:view) do
+        View.new(JSON.parse('{"id":"k466-pv3f","name":"Airline Passenger and Freight Traffic (T100) - Traffic Statistics April 2010","averageRating":0,"createdAt":1500929923,"description":"The Air Carrier Statistics database, also known as the T-100 data bank, contains domestic and international airline market and segment data. certificated U.S. air carriers report monthly air carrier traffic information using Form T-100. Foreign carriers having at least one point of service in the United States or one of its territories report monthly air carrier traffic information using Form T-100(f). The data is collected by the Office of Airline Information, Bureau of Transportation Statistics, Research and Innovative Technology Administration.","displayType":"federated","domainCName":"localhost","downloadCount":0,"hideFromCatalog":false,"hideFromDataJson":false,"newBackend":false,"numberOfComments":0,"oid":1905,"provenance":"official","publicationAppendEnabled":false,"publicationDate":1500929930,"publicationGroup":1896,"publicationStage":"published","rowsUpdatedAt":1500929923,"tableId":1896,"totalTimesRated":0,"viewCount":0,"viewLastModified":1500929930,"viewType":"href","columns":[],"federatedCatalogEntry":{"id":722,"createdAt":1500929923,"federatedCatalogSelectionExternalId":"145.90","federatedCatalogSelectionId":623,"federatedCatalogSource":"https://www.transportation.gov/sites/dot.gov/files/docs/data.json","federatedCatalogSourceId":12,"federatedCatalogSourceType":"open_data_metadata_v1_1","viewId":1905,"viewUid":"k466-pv3f"},"grants":[{"inherited":false,"type":"viewer","flags":["public"]}],"metadata":{"additionalAccessPoints":[{"urls":{"application/zip":"http://apps.bts.gov/publications/green_book/current/GREENBOOK.201004.REL02.09JUL2010.zip"},"title":"Traffic Statistics April 2010"}],"custom_fields":{"Common Core":{"Contact Name":"Jennifer Rodes","Update Frequency":"R/P1M","Temporal Applicability":"R/1990-01-01/P1M","License":"http://www.usa.gov/publicdomain/label/1.0/","Program Code":["021:000"],"Publisher":"Research and Innovative Technology Administration","Is Quality Data":true,"Bureau Code":["021:53"],"Contact Email":"mailto:Jennifer.Rodes@dot.gov","Language":["en-US"],"Described By":"http://www.transtats.bts.gov/DL_SelectFields.asp%3FTable_ID=310\u0026DB_Short_Name=Air%20Carriers","References":"http://www.transtats.bts.gov/DL_SelectFields.asp%3FTable_ID=310\u0026DB_Short_Name=Air%20Carriers","Issued":"2002-10-13","Last Update":"2017-04-19","Theme":"Transportation","Collection":"DOT-145","Unique Identifier":"145.90","Geographic Coverage":"Airports","Access Level Comment":"domestic data no restriction\nForeign\u003c-\u003edomestic not to be released until 3 months after domestic data release\nForeign\u003c-\u003eforeign 3 yeers not available to public.","Public Access Level":"restricted public"}},"accessPoints":{"application/zip":"http://apps.bts.gov/publications/green_book/current/GREENBOOK.201004.REL02.09JUL2010.zip"}},"owner":{"id":"tugg-ikce","displayName":"Randy Antler","screenName":"Randy Antler"},"query":{},"rights":["read","write","add","delete","grant","add_column","remove_column","update_column","update_view","delete_view"],"tableAuthor":{"id":"tugg-ikce","displayName":"Randy Antler","screenName":"Randy Antler"},"tags":["air freight","departures performed","departures scheduled","market","mile","passenger","revenue","seats available","segment"],"flags":["default"]}'))
+      end
+
+      it 'should transform the label "Described By" to "Data Dictionary"', :verify_stubs => false do
+        VCR.use_cassette('edit_metadata') do
+          allow_any_instance_of(ApplicationHelper).to receive(:view_path).and_return('not used')
+          stub_user(subject)
+          allow(subject).to receive(:get_view).and_return(view)
+          get :edit_metadata, :category => view.category, :view_name => view.view, :id => view.id
+          expect(response.body).to match(%r(<label class="false" for="view_metadata_custom_fields_Common_Core_Described_By">Data Dictionary</label>))
+        end
+      end
+    end
+
   end
 
   describe 'entering DSMP' do

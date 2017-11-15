@@ -118,10 +118,9 @@
       <%- end -%>
     <%- end -%>
 
-    <%= render :partial => 'edit_license' %>
+    <%= render 'edit_license' %>
 
-    <%= render :partial => 'metadata', :locals =>
-        {:meta_fields => @view.merged_metadata['custom_fields'], :fieldsets => merge_custom_metadata(@view)} %>
+    <%= render 'metadata', :meta_fields => @view.merged_metadata['custom_fields'], :fieldsets => merge_custom_metadata(@view) %>
 
     <%- if (!@view.data['northWest'].nil?) -%>
 

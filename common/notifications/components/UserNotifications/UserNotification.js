@@ -125,7 +125,7 @@ class UserNotification extends React.Component {
           {this.renderNotificationTitle()}
 
           <p styleName="timestamp" className="notification-timestamp">
-            <span>{moment.utc(createdAt).fromNow()}</span>
+            <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
             <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
             {this.renderUserLink()}
           </p>

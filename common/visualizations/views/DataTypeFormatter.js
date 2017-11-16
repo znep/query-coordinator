@@ -318,20 +318,24 @@ function getCurrencySymbol(format) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCellUnsafePlainText(input, column) {
+  const amount = parseFloat(input);
 
-  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
+  // EN-19953 - Data Inconsistencies in Grid View Refresh
+  //
+  // Although we were able to mostly pretend that invalid data did not
+  // exist when we were working on Stories and VizCan, it turns out that
+  // quite a few customer datasets have invalid data that they expect
+  // to be rendered as an empty cell and not, e.g., 'NaN'.
+  //
+  // In this case we will avoid rendering 'NaN' to table cells by only
+  // actually trying to render the number if the column we are rendering
+  // is of type number but the value we are looking is not finite by
+  // to lodash's determination.
+  if (!_.isFinite(amount)) {
     return '';
   }
 
-  const amount = parseFloat(input);
-
-  // NOTE: use safeAmount if you need to do any mathematical operations prior to
-  // returning a renderable value.
-  let safeAmount;
-  if (_.isFinite(amount)) {
-    safeAmount = new BigNumber(input);
-  }
-
+  const safeAmount = new BigNumber(input);
   const locale = utils.getLocale(window);
   const format = _.extend({
     precisionStyle: 'standard',

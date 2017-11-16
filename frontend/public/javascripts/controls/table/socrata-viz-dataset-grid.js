@@ -46,7 +46,36 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
       totalRowCount
     ) {
       var serializedView = view.cleanCopyIncludingRenderTypeName();
-      var columns = _.get(serializedView, 'columns', []);
+      // EN-19953 - Data Inconsistencies in Grid View Refresh
+      //
+      // It turns out that view.cleanCopyIncludingRenderTypeName() returns
+      // columns that are hidden. This causes us to attempt to render hidden
+      // columnns in the Socrata Viz table, but since there are more columns
+      // than values returned by the API, and since we do the value -> column
+      // mapping based on column index, this causes the values for a column
+      // following a hidden column to be rendered under the title of the
+      // hidden column (since it shows up in the table header).
+      //
+      // We can avoid this by instead filtering out hidden columns here
+      // before we try to map row values to columns in the data table we
+      // construct.
+      //
+      // Do note that it's frustating and error-prone that the view lists
+      // columns that are not actually present in the API response. I
+      // believe there are good (or at least logical) reasons for this to be
+      // the case but if someone reading this in the future is looking into
+      // how to improve the views API and how it relates to query responses
+      // then please try to keep this in mind!
+      var columns = _.get(serializedView, 'columns', []).filter(function(column) {
+        const flags = _.get(column, 'flags', []);
+
+        return (
+          _.get(column, 'fieldName[0]', '') !== ':' &&
+          (
+            !_.isArray(flags) || (_.isArray(flags) && flags.indexOf('hidden') === -1)
+          )
+        );
+      });
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
       var rowIdKey = (isNewBackend) ? 'id' : 'uuid';

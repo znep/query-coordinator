@@ -172,12 +172,20 @@ function SvgTimelineChart($element, vif, options) {
 
     const dataTablesBySeries = measures.map((measure, i) => {
       const dataTableMeasureIndex = dataTableDimensionIndex + 1 + i;
-      const rows = dataTable.rows.map((row) => {
+      let rows = dataTable.rows.map((row) => {
         return [
           row[dataTableDimensionIndex],
           row[dataTableMeasureIndex]
         ];
       });
+
+      // Results with no precision are not bucketed and may have null dimension
+      // values. If so, filter them out.
+      const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
+
+      if (precision === 'none') {
+        rows = rows.filter((row) => !_.isNull(row[dataTableDimensionIndex]));
+      }
 
       return {
         columns: ['dimension', measure.tagValue],

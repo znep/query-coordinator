@@ -1097,8 +1097,9 @@ module ApplicationHelper
       return false
     end
 
-    # Hack to deal with lack of support for cetera_profile_search == true and not yet having a design
-    # for the profile embedded catalog that isn't browse2.
+    # Hack to deal with the overloaded meaning of "using_cetera?" in different contexts. This is specifcally
+    # for the profile embedded catalog that is the old browse code, not the new AssetBrowser component.
+    # When we turn on enable_internal_asset_manager_on_profile for all customers, this can be removed.
     return false if defined?(controller_name) && controller_name == 'profile'
 
     # Hack to deal with consumers of the asset picker (i.e. StoryTeller) needing the old browse view.
@@ -1112,10 +1113,6 @@ module ApplicationHelper
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
     !!FeatureFlags.derive(nil, req, nil).cetera_search
-  end
-
-  def using_cetera_profile_search?
-    FeatureFlags.derive(nil, request, nil)[:cetera_profile_search]
   end
 
   def boost_official_views?

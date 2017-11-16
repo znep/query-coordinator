@@ -24,9 +24,9 @@ describe ProfileController do
       )
     end
 
-    context 'when cetera_search is true and cetera_profile_search is false' do
+    context 'when cetera_search is true' do
       before do
-        rspec_stub_feature_flags_with(:cetera_search => true, :cetera_profile_search => false)
+        rspec_stub_feature_flags_with(:cetera_search => true)
         stub_site_chrome
         allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332912)
       end

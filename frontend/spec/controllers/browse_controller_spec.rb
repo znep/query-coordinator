@@ -108,11 +108,11 @@ describe BrowseController do
       end
     end
 
-    context 'when cetera_search is true and cetera_profile_search is false' do
+    context 'when cetera_search is true' do
       render_views
 
       before do
-        rspec_stub_feature_flags_with(:cetera_search => true, :cetera_profile_search => false)
+        rspec_stub_feature_flags_with(:cetera_search => true)
       end
 
       it 'should not use browse2 when rendering the asset picker' do

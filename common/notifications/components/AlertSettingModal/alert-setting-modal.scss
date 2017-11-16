@@ -83,16 +83,21 @@ $divider-color: #e8eaeb;
 
           .email-option {
             font-size: 12px;
+
+            input[type=checkbox],
+            span {
+              vertical-align: middle;
+            }
+
+            input[type=checkbox] {
+              height: 15px;
+              margin: 0 5px 0 0;
+              width: 15px;
+            }
           }
         }
       }
     }
-  }
-
-  input[type=checkbox] {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
   }
 
   .cancel-button {

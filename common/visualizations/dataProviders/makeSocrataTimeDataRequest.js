@@ -40,6 +40,8 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
   let queryString;
 
+  const requireGroupingInSelect = vif.requireGroupingInSelect;
+
   // If there is no aggregation, we do not select the dimension with a
   // `date_trunc` function, but rather just ask for the actual values.
   if (isUnaggregatedQuery) {
@@ -48,6 +50,16 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
       `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
       `${measure} AS ${SoqlHelpers.measureAlias()}`,
       whereClause,
+      `LIMIT ${limit}`
+    ].join(' ');
+  } else if (requireGroupingInSelect) {
+    queryString = [
+      'SELECT',
+      `${options.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+      `${vif.groupingColumnName} AS ${SoqlHelpers.groupingAlias()},`,
+      `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${options.dateTruncFunction}(${groupByClause}), ${SoqlHelpers.groupingAlias()}`,
       `LIMIT ${limit}`
     ].join(' ');
   } else {
@@ -64,11 +76,17 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
   return soqlDataProvider.query(
     queryString,
     SoqlHelpers.dimensionAlias(),
-    SoqlHelpers.measureAlias()
+    SoqlHelpers.measureAlias(),
+    null,
+    null,
+    (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
   ).
     then((queryResponse) => {
       const dimensionIndex = queryResponse.columns.indexOf(
         SoqlHelpers.dimensionAlias()
+      );
+      const groupingIndex = queryResponse.columns.indexOf(
+        SoqlHelpers.groupingAlias()
       );
       const measureIndex = queryResponse.columns.indexOf(
         SoqlHelpers.measureAlias()
@@ -84,6 +102,9 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
 
       queryResponse.columns[dimensionIndex] = 'dimension';
       queryResponse.columns[measureIndex] = 'measure';
+      if (groupingIndex !== -1) {
+        queryResponse.columns[groupingIndex] = 'grouping';
+      }
 
       // The dimension comes back as an ISO-8601 date, which means we can sort
       // dimension values lexically. This sort puts the dates in ascending
@@ -109,7 +130,6 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
       let rows;
 
       if (typeVariant === 'area') {
-
         // If there are no values in a specific interval (according to the
         // date_trunc_* function) then we will not get a response row for that
         // interval.
@@ -131,7 +151,6 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
           queryResponse
         );
       } else {
-
         rows = addBlankRowAfterLastRow(
           vif,
           dimensionIndex,
@@ -144,6 +163,7 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
         rows,
         precision: options.precision
       };
+
     });
 }
 
@@ -211,8 +231,20 @@ function incrementDateByPrecision(startDate, precision) {
 // discontinuities in the data; otherwise intervals with no value (which are not
 // returned by the SoQL API and must be inferred) will not be rendered, but
 // rather interpolated over, which misrepresents the data.
+//
+// XXX: This tightly-coupled code needed a workaround to handle grouped results
+// correctly. Tough cookies. The idea is: grouped results just need a single
+// entry, with no specified group, for each "monotonic" time interval. However,
+// they typically come in with more than one existing entry for each time
+// interval already present. The existing algorithm here can only handle single
+// dimension values, and cannot easily be forced to operate in other ways.
 function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
-  const rows = dataTable.rows;
+  let rows;
+  if (vif.requireGroupingInSelect) {
+    rows = _.uniqBy(dataTable.rows, (row) => row[0]);
+  } else {
+    rows = dataTable.rows;
+  }
 
   if (rows.length === 0) {
     return rows;
@@ -307,7 +339,33 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
     monotonicRows[monotonicRows.length - 1][1] = null;
   }
 
-  return monotonicRows;
+  if (vif.requireGroupingInSelect) {
+    // Now, we take the monotonic rows, transform them into 3-column results to
+    // include grouping, remove entries we already have in the original, and
+    // append /that/ to the original rows result. Also, yay linear search. This
+    // assumes layout and ignores different column indices. Then again, so does
+    // the rest of "forceDimensionMonotonicity".
+    const arbitraryGroupingRow = _.find(
+      dataTable.rows,
+      (row) => !_.isNull(row[1]) && !_.isUndefined(row[1])
+    );
+    const arbitraryGrouping = arbitraryGroupingRow ? arbitraryGroupingRow[1] : '';
+    const monotonicRowsWithGrouping = monotonicRows.map((row) => {
+      const [dimension, measure] = row;
+      return [dimension, arbitraryGrouping, measure];
+    });
+    const monotonicRowsNotPresentInOriginal = _.filter(
+      monotonicRowsWithGrouping,
+      (row) => {
+        return !_.some(dataTable.rows, (originalRow) => {
+          return originalRow[0] === row[0];
+        });
+      }
+    );
+    return dataTable.rows.concat(monotonicRowsNotPresentInOriginal);
+  } else {
+    return monotonicRows;
+  }
 }
 
 // This is necessary to get line variant series to render the last point in the

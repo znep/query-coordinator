@@ -1,14 +1,17 @@
 import _ from 'lodash';
+import $ from 'jquery';
 
 import UserNotificationAPI from 'common/notifications/api/UserNotificationAPI';
 import { mockResponse } from '../helpers';
 import { fakeUserNotifications } from '../data';
+import { NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 
 let notificationStub = null;
 let userNotificationAPI = null;
 const userId = 'tugg-ikce';
+let offset = 1;
 
-describe('User Notification Store', () => {
+describe('User Notification API', () => {
   beforeEach(() => {
     notificationStub = sinon.stub(window, 'fetch').
       returns(Promise.resolve(mockResponse(fakeUserNotifications, 200)));
@@ -22,11 +25,15 @@ describe('User Notification Store', () => {
     userNotificationAPI = new UserNotificationAPI(userId);
     sinon.assert.calledOnce(notificationStub);
 
-    const request = window.fetch.args[0][1];
+    const params = {
+      limit: NOTIFICATIONS_PER_PAGE,
+      offset: offset
+    };
+    const queryString = $.param(params);
 
     assert.equal(
       window.fetch.args[0][0],
-      '/api/notifications_and_alerts/notifications'
+      `/api/notifications_and_alerts/notifications?${queryString}`
     );
   });
 

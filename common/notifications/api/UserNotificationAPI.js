@@ -1,8 +1,9 @@
 import 'whatwg-fetch';
 import { Socket } from 'phoenix';
 import _ from 'lodash';
+import $ from 'jquery';
 
-import { STATUS_ACTIVITY_TYPES } from 'common/notifications/constants';
+import { STATUS_ACTIVITY_TYPES, NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 
 class NotificationAPI {
   constructor(userId, callback) {
@@ -22,8 +23,12 @@ class NotificationAPI {
     this._channel = socket.channel(channelId, {});
 
     let self = this;
-    this._getExistingNotifications().then(function(response) {
+    self._offset = 1;
+    self._totalNotificationsCount = 0;
+    this._loadNotifications(self._offset).then(function(response) {
       self._notifications = self._transformNotifications(_.get(response, 'data', []));
+      self._totalNotificationsCount = _.get(response, 'count', 0);
+      self._offset += _.size(self._notifications);
       self.update();
       self._channel.join().
         receive('ok', (resp) => {
@@ -42,24 +47,36 @@ class NotificationAPI {
     this._callback = callback;
   }
 
-  _getExistingNotifications() {
-    return fetch('/api/notifications_and_alerts/notifications', { credentials: 'same-origin' })
-      .then((response) => response.json());
+  _loadNotifications(offset) {
+    const params = {
+      limit: NOTIFICATIONS_PER_PAGE,
+      offset: offset
+    };
+    const queryString = $.param(params);
+
+    return fetch(`/api/notifications_and_alerts/notifications?${queryString}`, {
+      credentials: 'same-origin'
+    })
+    .then((response) => response.json());
   }
 
   _onNewNotification(notification) {
     this._notifications.unshift(this._transformNotification(notification));
+    this._offset++;
     this.update();
   }
 
   _onNotificationDelete(notificationId) {
     let index = this._notifications.findIndex((n) => n.id === notificationId);
     this._notifications.splice(index, 1);
+    this._offset--;
     this.update();
   }
 
   _onDeleteAllNotifications() {
     this._notifications = [];
+    this._totalNotificationsCount = 0;
+    this._offset = 1;
     this.update();
   }
 
@@ -87,6 +104,18 @@ class NotificationAPI {
       method: 'DELETE',
       credentials: 'same-origin'
     });
+  }
+
+  loadMoreNotifications() {
+    let self = this;
+    this._loadNotifications(self._offset).then(function(response) {
+      const newNotifications = self._transformNotifications(_.get(response, 'data', []));
+      self._offset += _.size(newNotifications);
+      self._totalNotificationsCount = _.get(response, 'count', 0);
+      self._notifications = _.union(self._notifications, newNotifications);
+
+      self.update();
+    }, function() {});
   }
 
   markNotificationAsRead(notificationId) {
@@ -187,6 +216,7 @@ class NotificationAPI {
     if (_.isEmpty(notifications)) {
       return notifications;
     }
+
     const transformedNotifications = [];
 
     _.each(notifications, (notification) => {
@@ -198,7 +228,8 @@ class NotificationAPI {
 
   update() {
     if (this._callback) {
-      this._callback(this._notifications);
+      const hasMoreNotifications = this._offset < this._totalNotificationsCount;
+      this._callback(this._notifications, hasMoreNotifications);
     }
   }
 }

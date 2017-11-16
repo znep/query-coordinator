@@ -27,7 +27,8 @@ class Notifications extends Component {
       unreadProductNotificationCount: 0,
       unreadUserNotificationCount: 0,
       userNotifications: [],
-      isSecondaryPanelOpen: false
+      isSecondaryPanelOpen: false,
+      hasMoreNotifications: false
     };
 
     if (props.options.showUserNotifications && props.userid) {
@@ -50,7 +51,8 @@ class Notifications extends Component {
       'markAllProductNotificationsAsRead',
       'clearAllUserNotifications',
       'onClearUserNotification',
-      'renderNotificationPanel'
+      'renderNotificationPanel',
+      'onLoadMoreUserNotifications'
     );
   }
 
@@ -121,15 +123,12 @@ class Notifications extends Component {
     }
   }
 
-  onNotificationsUpdate(notifications) {
-    const unReadNotificationsCount = _.isEmpty(notifications) ? 0 : notifications.filter(notification => {
+  onNotificationsUpdate(userNotifications, hasMoreNotifications) {
+    const unreadUserNotificationCount = _.isEmpty(userNotifications) ? 0 : userNotifications.filter(notification => {
       return _.isUndefined(notification.read) || notification.read === false;
     }).length;
 
-    this.setState({
-      userNotifications: notifications,
-      unreadUserNotificationCount: unReadNotificationsCount
-    });
+    this.setState({ userNotifications, unreadUserNotificationCount, hasMoreNotifications });
   }
 
   filterUserNotifications(filterUserNotificationsBy) {
@@ -139,6 +138,10 @@ class Notifications extends Component {
   clearAllUserNotifications() {
     this.userNotificationAPI.deleteAllNotifications();
     this.setState({ openClearAllUserNotificationsPrompt: false });
+  }
+
+  onLoadMoreUserNotifications() {
+    this.userNotificationAPI.loadMoreNotifications();
   }
 
   toggleClearAllUserNotificationsPrompt(toggle) {
@@ -255,6 +258,7 @@ class Notifications extends Component {
         areNotificationsLoading,
         filterUserNotificationsBy,
         hasError,
+        hasMoreNotifications,
         isSecondaryPanelOpen,
         openClearAllUserNotificationsPrompt,
         productNotifications,
@@ -276,10 +280,12 @@ class Notifications extends Component {
             filterUserNotifications={this.filterUserNotifications}
             filterUserNotificationsBy={filterUserNotificationsBy}
             hasError={hasError}
+            hasMoreNotifications={hasMoreNotifications}
             isSuperAdmin={isSuperAdmin}
             isSecondaryPanelOpen={isSecondaryPanelOpen}
             markAllProductNotificationsAsRead={this.markAllProductNotificationsAsRead}
             onClearUserNotification={this.onClearUserNotification}
+            onLoadMoreUserNotifications={this.onLoadMoreUserNotifications}
             onToggleReadUserNotification={this.onToggleReadUserNotification}
             openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
             productNotifications={productNotifications}
@@ -299,11 +305,6 @@ class Notifications extends Component {
   }
 
   render() {
-    const {
-      unreadProductNotificationCount,
-      unreadUserNotificationCount
-    } = this.state;
-
     return (
       <div styleName="container">
         <div id="socrata-notifications-container">

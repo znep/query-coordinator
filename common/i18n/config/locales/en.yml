@@ -412,6 +412,7 @@ en:
         product_updates: Product Updates
         user_notifications: Notifications
         view_older: View Older News
+        load_more_items: Load more items...
         mark_as_read: Mark as read
         mark_as_unread: Mark as unread
         clear_notification_text: Clear this notification

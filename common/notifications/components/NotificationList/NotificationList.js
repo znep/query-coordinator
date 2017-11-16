@@ -51,7 +51,9 @@ class NotificationList extends Component {
       const {
         filterUserNotifications,
         filterUserNotificationsBy,
+        hasMoreNotifications,
         onClearUserNotification,
+        onLoadMoreUserNotifications,
         onToggleReadUserNotification,
         userNotifications,
         showProductNotifications
@@ -65,7 +67,9 @@ class NotificationList extends Component {
           tabs={FILTER_TABS}>
           <UserNotificationList
             filterNotificationsBy={filterUserNotificationsBy}
+            hasMoreNotifications={hasMoreNotifications}
             onClearUserNotification={onClearUserNotification}
+            onLoadMoreUserNotifications={onLoadMoreUserNotifications}
             onToggleReadUserNotification={onToggleReadUserNotification}
             userNotifications={userNotifications} />
         </Tabs>
@@ -166,10 +170,12 @@ NotificationList.propTypes = {
   currentUserRole: PropTypes.string,
   filterUserNotificationsBy: PropTypes.string.isRequired,
   hasError: PropTypes.bool.isRequired,
+  hasMoreNotifications: PropTypes.bool.isRequired,
   isSuperAdmin: PropTypes.bool.isRequired,
   isSecondaryPanelOpen: PropTypes.bool.isRequired,
   markAllProductNotificationsAsRead: PropTypes.func.isRequired,
   onClearUserNotification: PropTypes.func.isRequired,
+  onLoadMoreUserNotifications: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
   openClearAllUserNotificationsPrompt: PropTypes.bool.isRequired,
   productNotifications: PropTypes.array.isRequired,

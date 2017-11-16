@@ -22,3 +22,4 @@ export const STATUS_ACTIVITY_TYPES = [
   'CollaboratorChanged',
   'DraftCreated'
 ];
+export const NOTIFICATIONS_PER_PAGE = 25;

@@ -20,6 +20,7 @@ export const STATUS_ACTIVITY_TYPES = [
   'DraftPublished',
   'AssetOwnerChanged',
   'CollaboratorChanged',
-  'DraftCreated'
+  'DraftCreated',
+  'DataSubmittedForReview'
 ];
 export const NOTIFICATIONS_PER_PAGE = 25;

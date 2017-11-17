@@ -23,10 +23,7 @@ module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
     link: function($scope) {
       var dataset$ = $scope.$observe('dataset');
 
-      var sourceDatasetId$ = $scope.page.isFromDerivedView ?
-        dataset$.pluck('id') :
-        dataset$.pluck('obeId');
-
+      var sourceDatasetId$ = dataset$.pluck('id');
       var sourceDatasetURL$ = sourceDatasetId$.
         filter(_.isPresent).
         map(function(id) {

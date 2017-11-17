@@ -135,7 +135,7 @@ describe('infoPane', function() {
         obeId: 'what-nooo'
       });
 
-      expect(self.element.scope().sourceDatasetURL).to.equal('/d/what-nooo');
+      expect(self.element.scope().sourceDatasetURL).to.equal('/d/asdf-fdsa');
     });
 
     it('should be a URL containing the derived id if based on a derived view', function() {

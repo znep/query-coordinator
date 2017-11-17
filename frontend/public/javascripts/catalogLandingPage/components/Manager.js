@@ -12,7 +12,6 @@ import ManagerSectionHeader from './ManagerSectionHeader';
 import MarkdownHelpFlannel from './MarkdownHelpFlannel';
 import * as Actions from '../actions/header';
 import airbrake from 'common/airbrake';
-import { FeatureFlags } from 'common/feature_flags';
 import { fetchTranslation } from 'common/locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
@@ -206,13 +205,6 @@ export class Manager extends React.Component {
       value: this.props.header[section]
     });
 
-    const descriptionMarkdownEnabled = FeatureFlags.
-      value('enable_markdown_for_catalog_landing_page_description');
-
-    // EN-15607: When a user hits the Enter key on a description field, do nothing if markdown is enabled
-    // because they can enter a new line. If markdown is disabled, then save the form on Enter.
-    const onDescriptionEnter = descriptionMarkdownEnabled ? _.noop : this.saveOnEnter;
-
     const descriptionPlaceholder = formatWithFilter('manager.description.placeholder',
       'manager.description.placeholder_no_filter');
 
@@ -220,33 +212,30 @@ export class Manager extends React.Component {
       ...metadataInputProps('description'),
       'aria-label': descriptionPlaceholder,
       maxLength: 1000,
-      onKeyDown: handleEnter(onDescriptionEnter),
+      // EN-15607: When a user hits the Enter key, do nothing because markdown is enabled.
+      onKeyDown: handleEnter(_.noop),
       placeholder: descriptionPlaceholder
     };
 
-    let markdownSupported = '';
     let markdownHelp = '';
-    if (descriptionMarkdownEnabled) {
-      const markdownAccepted = { __html: _.get(I18n, 'manager.description.markdown_accepted') };
+    const markdownAccepted = { __html: _.get(I18n, 'manager.description.markdown_accepted') };
 
-      markdownSupported = (
-        <div onClick={this.onToggleMarkdownHelp} className="acceptsMarkdown">
-          <span dangerouslySetInnerHTML={markdownAccepted} />
-          <i className="socrata-icon-info"></i>
-        </div>);
+    const markdownSupported = (
+      <div onClick={this.onToggleMarkdownHelp} className="acceptsMarkdown">
+        <span dangerouslySetInnerHTML={markdownAccepted} />
+        <i className="socrata-icon-info"></i>
+      </div>
+    );
 
-      if (this.state.showingMarkdownHelp) {
-        const element = document.getElementsByClassName('acceptsMarkdown')[0];
-        markdownHelp = (<MarkdownHelpFlannel
-          target={element}
-          onDismiss={this.onToggleMarkdownHelp} />);
-      }
+    if (this.state.showingMarkdownHelp) {
+      const element = document.querySelector('.acceptsMarkdown');
+      markdownHelp = (
+        <MarkdownHelpFlannel target={element} onDismiss={this.onToggleMarkdownHelp} />
+      );
     }
 
     // EN-15512: Use a textarea tag if description markdown is enabled
-    const description = descriptionMarkdownEnabled ?
-        (<div><textarea {...descriptionProps} />{markdownSupported}{markdownHelp}</div>) :
-        (<input {...descriptionProps} />);
+    const description = <div><textarea {...descriptionProps} />{markdownSupported}{markdownHelp}</div>;
 
     const assetSelectorTitle = formatWithFilter('manager.asset_selector.header_title_with_filter',
       'common.asset_selector.header_title');

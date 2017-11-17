@@ -6,7 +6,6 @@ export default {
     csrfToken: 'supersecuretoken',
     defaultToCatalogLandingPage: true,
     enable_catalog_landing_page: true,
-    enable_markdown_for_catalog_landing_page_description: false,
     recaptchaKey: 'superdupersecurekey'
   },
   locale: 'en',

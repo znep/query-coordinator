@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { FeatureFlags } from 'common/feature_flags';
 import CollaboratorsDataProvider, { __RewireAPI__ as CollaboratorsDataProviderApi } from 'editor/CollaboratorsDataProvider';
 
 describe('CollaboratorsDataProvider', () => {
@@ -12,9 +11,6 @@ describe('CollaboratorsDataProvider', () => {
     environment = {
       STORY_UID: 'exam-ples'
     };
-    FeatureFlags.useTestFixture({
-      enable_deprecated_user_search_api: false
-    });
 
     mockHttpRequest = sinon.stub().returns(new Promise(_.noop));
     CollaboratorsDataProviderApi.__Rewire__('httpRequest', mockHttpRequest);

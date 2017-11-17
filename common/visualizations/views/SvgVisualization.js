@@ -163,7 +163,9 @@ function SvgVisualization($element, vif, options) {
     };
 
     ReactDOM.render(
-      React.createElement(spandexSubscriber()(FilterBar), props),
+      // EN-20390 - Don't poke spandex for now until we can figure out a more sustainable approach
+      // React.createElement(spandexSubscriber()(FilterBar), props),
+      React.createElement(FilterBar, props),
       $filterBarContainer[0]
     );
   };

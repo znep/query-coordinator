@@ -465,17 +465,11 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
   var generateSelectAndDefaultFromColumnList = function(columnList, name) {
     var labels = {
       address: $.t(LOCALIZATION_PREFIX + 'address_label'),
-      address_default: $.t(LOCALIZATION_PREFIX + 'address_default_label'),
       locality: $.t(LOCALIZATION_PREFIX + 'locality_label'),
-      locality_default: $.t(LOCALIZATION_PREFIX + 'locality_default_label'),
       subregion: $.t(LOCALIZATION_PREFIX + 'subregion_label'),
-      subregion_default: $.t(LOCALIZATION_PREFIX + 'subregion_default_label'),
       region: $.t(LOCALIZATION_PREFIX + 'region_label'),
-      region_default: $.t(LOCALIZATION_PREFIX + 'region_default_label'),
       postal_code: $.t(LOCALIZATION_PREFIX + 'postal_code_label'),
-      postal_code_default: $.t(LOCALIZATION_PREFIX + 'postal_code_default_label'),
-      country: $.t(LOCALIZATION_PREFIX + 'country_label'),
-      country_default: $.t(LOCALIZATION_PREFIX + 'country_default_label')
+      country: $.t(LOCALIZATION_PREFIX + 'country_label')
     };
 
     return (
@@ -513,7 +507,7 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
         '</div>' +
       '</div>' +
       '<div class="nbe-geocoding-option line clearfix input">' +
-        '<label for="' + name + '-default">' + labels[name + '_default'] + '</label>' +
+        '<label for="' + name + '-default">' + $.t(LOCALIZATION_PREFIX + 'default_label') + '</label>' +
         '<input type="text" name="' + name + '-default" placeholder="' + $.t(LOCALIZATION_PREFIX + 'default_placeholder') + '" />' +
       '</div>'
     );
@@ -542,13 +536,13 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
           '<div class="nbe-geocoding-fields sectionContent" name="nbe-geocoding-fields">' +
             generateSelectAndDefaultFromColumnList(columns, 'address') +
             generateSelectAndDefaultFromColumnList(columns, 'locality') +
-            generateSelectAndDefaultFromColumnList(columns, 'subregion') +
             generateSelectAndDefaultFromColumnList(columns, 'region') +
             generateSelectAndDefaultFromColumnList(columns, 'postal_code') +
             generateSelectAndDefaultFromColumnList(columns, 'country') +
+            generateSelectAndDefaultFromColumnList(columns, 'subregion') +
           '</div>' +
         '</div>' +
-        '<div class="nbe-geocoding-buttons finishButtons">' +
+        '<div class="nbe-geocoding-buttons finishButtons clearfix">' +
           '<a id="nbe-geocoding-submit" href="#" class="button arrowButton requiresLogin submit">' +
             $.t('core.dialogs.create') +
           '</a>' +
@@ -712,5 +706,6 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
     }
   });
 
+  $('.controlPane.addColumn').parent('.panes').scrollTop(0);
   $('.controlPane.addColumn').append($nbeGeocodingModal);
 }

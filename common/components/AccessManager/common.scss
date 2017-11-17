@@ -1,5 +1,6 @@
 $default-font-path: 'socrata-components/dist/fonts/';
 @import '~common/styleguide/variables/_colors.scss';
+@import '~common/styleguide/variables/_mixins.scss';
 @import '~common/styleguide/variables/_typography.scss';
 @import '~common/styleguide/partials/_typography.scss';
 @import '~common/styleguide/variables/_breakpoints.scss';

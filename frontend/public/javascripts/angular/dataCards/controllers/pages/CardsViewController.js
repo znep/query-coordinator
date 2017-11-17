@@ -144,7 +144,7 @@ module.exports = function CardsViewController(
 
   $scope.page = page;
   $scope.siteChromeEnabled = ServerConfig.get('siteChromeEnabled');
-  $scope.pageHeaderEnabled = ServerConfig.get('show_newux_page_header') && !$scope.siteChromeEnabled;
+  $scope.pageHeaderEnabled = !$scope.siteChromeEnabled;
   $scope.$bindObservable('hideFromCatalog', page.observe('hideFromCatalog'));
   $scope.$bindObservable('hideFromDataJson', page.observe('hideFromDataJson'));
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));

@@ -534,7 +534,27 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             // the infini-scrolling table somewhat responsive.
             self._view.bucketSize = PAGE_SIZE;
             self._view.bind('query_change', renderTableFromScratch);
-            self._view.bind('columns_changed', renderTableFromScratch);
+            self._view.bind(
+              'columns_changed',
+              function() {
+                // EN-19727 - Editing Column Order Freezes Edit Pane
+                //
+                // A lot of the pane components do not handle state changes well,
+                // but because of the way the panes work (every component gets
+                // re-instantiated every time you close and re-open the pane) that
+                // doesn't usually cause problems. In this case, however, the widget
+                // that allows for column reordering (awesomereorder) is getting its
+                // state messed up after you reorder columns and click apply (which
+                // apparently no longer causes the sidebar to be hidden). In this case
+                // the easiest and most robust solution seems to be just to hide the
+                // sidebar when the user clicks apply to reorder columns (which was,
+                // apparently, the behavior of the 'classic' grid view), as hiding
+                // it will cause the state to be flushed and rendered once more
+                // operable.
+                blist.datasetPage.sidebar.hide();
+                renderTableFromScratch();
+              }
+            );
             self._view.bind('conditionalformatting_change', updateConditionalFormatting);
 
             $datasetGrid = self.$dom();

@@ -4,19 +4,6 @@
   }
 }
 
-@mixin btn-disabled {
-  color: $btn-disabled-color;
-  border-color: $btn-disabled-border-color;
-  background-color: $btn-disabled-background-color;
-  cursor: not-allowed;
-
-  &.btn-dark {
-    color: $btn-disabled-dark-color;
-    border-color: $btn-disabled-dark-border-color;
-    background-color: $btn-disabled-dark-background-color;
-  }
-}
-
 .btn {
   display: inline-block;
   padding: ms(-3) ms(0);

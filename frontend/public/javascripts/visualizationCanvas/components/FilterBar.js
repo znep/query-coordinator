@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import { bindActionCreators, compose } from 'redux';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { FilterBar } from 'common/components';
 import { dataProviders } from 'common/visualizations';
-import spandexSubscriber from 'common/spandex/subscriber';
 
 import { setFilters } from '../actions';
 
@@ -60,7 +59,9 @@ export function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  spandexSubscriber()
-)(FilterBar);
+// EN-20390 - Don't poke spandex for now until we can figure out a more sustainable approach
+// export default compose(
+//   connect(mapStateToProps, mapDispatchToProps),
+//   spandexSubscriber()
+// )(FilterBar);
+export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);

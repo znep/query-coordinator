@@ -503,6 +503,13 @@ en:
         user_added: User Added
         user_removed: User Removed
         user_role_changed: User Role Changed
+        submitted_for_review_default_key: Asset Submitted for Review
+        draft_submitted_for_review: Dataset Submitted for Review
+        data_lens_submitted_for_review: Data Lens Submitted for Review
+        dataset_submitted_for_review: Dataset Submitted for Review
+        chart_submitted_for_review: Chart Submitted for Review
+        map_submitted_for_review: Map Submitted for Review
+        assetinventory_submitted_for_review: Asset Inventory Submitted for Review
         alert_setting_modal:
           subscribe_email: Subscribe to email notifications
           tab:

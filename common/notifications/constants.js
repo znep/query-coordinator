@@ -20,5 +20,6 @@ export const STATUS_ACTIVITY_TYPES = [
   'DraftPublished',
   'AssetOwnerChanged',
   'CollaboratorChanged',
-  'DraftCreated'
+  'DraftCreated',
+  'DataSubmittedForReview'
 ];

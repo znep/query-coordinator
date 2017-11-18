@@ -1091,6 +1091,36 @@ body.grid-view-2017-refresh {
             .formHeader {
               margin-top: 13px;
             }
+
+            .loadingShares,
+            .itemsList,
+            .noShares {
+              font-size: 13px !important;
+              margin: 0 !important;
+
+              .line {
+                padding: 6px 0;
+
+                .removeShareLink {
+                  margin-top: 5px;
+                  padding-left: 0;
+                }
+
+                .profileImage {
+                  top: 0;
+                }
+
+                .nameWrapper {
+                  margin: 0;
+                  width: 33%;
+                  text-overflow: ellipsis;
+                }
+
+                .selector.uniform {
+                  top: 0;
+                }
+              }
+            }
           }
         }
 
@@ -1185,7 +1215,6 @@ body.grid-view-2017-refresh {
               width: 80%;
 
               .pubDate {
-                margin-bottom: 8px;
                 font-size: 15px;
                 font-weight: 400;
               }
@@ -1193,7 +1222,7 @@ body.grid-view-2017-refresh {
               .name {
                 margin: 0;
                 padding: 0;
-                font-size: 15px;
+                font-size: 13px;
                 font-weight: 400;
               }
             }
@@ -1901,28 +1930,25 @@ body.grid-view-2017-refresh {
         .downloadsSectionContent {
           margin: 0;
           padding: 0;
+          font-family: 'Open Sans', sans-serif;
+          font-size: 12px !important;
+          font-weight: 400 !important;
+          border-radius: 0;
 
-          .downloadsTable {
+          .formHeader {
+            padding: 8px;
+          }
 
-            .gridListWrapper {
-              font-family: 'Open Sans', sans-serif;
-              font-size: 12px !important;
-              font-weight: 400 !important;
-              border-radius: 0;
+          .gridListWrapper {
+            border-left: none !important;
+            border-right: none !important;
+            border-radius: 0 !important;
+          }
 
-              table {
+          table {
 
-                thead {
-
-                  tr {
-
-                    th {
-                      background: #c8c8c8;
-                      border-radius: 0;
-                    }
-                  }
-                }
-              }
+            thead {
+              display: none;
             }
           }
         }
@@ -2143,7 +2169,18 @@ body.grid-view-2017-refresh {
                     height: 63px;
                   }
                 }
+
+                &.selected {
+                  background-color: rgba(0,0,0,0.1);
+                }
               }
+            }
+
+            .privateDatasetMessage {
+              margin: 8px 0 0 0 !important;
+              font-size: 13px !important;
+              font-weight: 400 !important;
+              border-radius: 0 !important;
             }
           }
         }

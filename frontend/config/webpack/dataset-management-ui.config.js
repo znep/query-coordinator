@@ -49,12 +49,12 @@ module.exports = _.defaultsDeep(
                 'public/javascripts/datasetManagementUI'
               )
             ],
-            loader: 'style?sourceMap!css!postcss!sass'
+            loader: 'style?sourceMap!css?importLoaders=2!postcss!sass'
           },
           {
             test: /^((?!\.global).)*(scss|css)$/,
             loader:
-              'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
+              'style?sourceMap!css?modules&camelCase=true&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=2!postcss!sass'
           }
         ]
       })

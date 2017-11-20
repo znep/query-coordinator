@@ -2874,7 +2874,9 @@ if (!blist.feature_flags.enable_2017_grid_view_refresh) {
         // Row positioning information
         rowHeight = measuredInnerDims.height;
         rowOffset = measuredOuterDims.height;
-        style('rowStyle').height = rowOffset + 'px';
+        if (rowOffset > 0) {
+          style('rowStyle').height = rowOffset + 'px';
+        }
 
         // Reset scaling factor, since many things may have changed
         scalingFactor = 1;

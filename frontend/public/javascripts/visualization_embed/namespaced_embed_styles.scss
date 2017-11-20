@@ -4,6 +4,7 @@
 // Not sure why socrata-icons doesn't work within the namespace, but the icons and font families
 // are all reasonably namespaced with "socrata-*" so collisions should be unlikely
 @import "frontend/app/styles/socrata-icons";
+@import 'common/styleguide/variables/mixins';
 @import "common/styleguide/partials/_socrata_flyout";
 @import "common/visualizations/views/styles/rowInspector";
 
@@ -15,5 +16,3 @@
   @import "common/styleguide/styleguide-no-tag-level";
   @import "frontend/app/styles/visualizations-import-shim";
 }
-
-

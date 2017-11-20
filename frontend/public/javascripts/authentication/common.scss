@@ -2,6 +2,7 @@ $default-font-path: "common/resources/fonts/dist/";
 
 @import "modular-scale";
 @import "bourbon";
+@import "common/styleguide/variables/mixins.scss";
 @import "common/styleguide/variables/colors.scss";
 @import "common/styleguide/variables/layout.scss";
 @import "common/styleguide/variables/typography.scss";

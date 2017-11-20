@@ -18,7 +18,7 @@
           <% end %>
 
           <% unless current_user_can_see_admin_link? %>
-            <div class="collapsible-search" data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-autocomplete-collapsible="true">
+            <div class="collapsible-search" data-autocomplete="true" data-autocomplete-collapsible="true">
               <span class="socrata-icon-search collapsible-search-toggle"
                 title="<%= t('shared.site_chrome.header.search') %>" role="button" tabindex="0">
               </span>

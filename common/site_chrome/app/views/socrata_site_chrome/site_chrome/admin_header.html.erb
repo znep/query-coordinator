@@ -55,7 +55,7 @@
       <% end %>
 
       <div class="site-chrome-admin-search collapsible-search"
-        data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
+        data-autocomplete="true"
         data-autocomplete-collapsible="true"
         data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
         <span class="socrata-icon-search collapsible-search-toggle"

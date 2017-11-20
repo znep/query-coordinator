@@ -8,4 +8,9 @@ namespace :assets do
     puts("Running NPM command: #{command}")
     fail($?.exitstatus) unless system(command)
   end
+
+  desc 'compiles styleguide partials into plain css'
+  task :compile_styleguide_modules do
+    sh './public/javascripts/datasetManagementUI/compile_css.sh'
+  end
 end

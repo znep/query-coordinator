@@ -302,6 +302,20 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                       currentTotalRowCount
                     )
                   );
+
+                  // EN-19522 - Grid Refresh: pagination disappears after search
+                  //
+                  // The layout engine for the grid view page attempts to be too
+                  // clever and ends up placing the bottom of the table, and the
+                  // various footer elements, off the bottom of the page. If the
+                  // page were able to be scrolled anyway, that wouldn't be much
+                  // more than just an annoying problem, but actually the very
+                  // same layout engine also sets overflow: hidden on the body.
+                  //
+                  // In this case, we just fix the layout bug after it is
+                  // triggered by telling the thing layout engine to try again
+                  // after the search results have been loaded.
+                  window.blist.datasetPage.adjustSize();
                 }
               );
             }

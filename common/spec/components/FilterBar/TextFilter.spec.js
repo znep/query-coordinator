@@ -81,7 +81,7 @@ describe('TextFilter', () => {
       Simulate.change(searchInput);
     }
 
-    describe('without Spandex autocomplete', () => {
+    describe('without Spandex autocomplete (unavailable)', () => {
       let fetchSuggestionsStub;
       let element;
 
@@ -107,6 +107,24 @@ describe('TextFilter', () => {
       it('does not fetch autocomplete suggestions', () => {
         simulateTextInput(element, 'Example');
         sinon.assert.notCalled(fetchSuggestionsStub);
+      });
+    });
+
+    describe('without Spandex autocomplete (not subscribed)', () => {
+      let fetchSuggestionsStub;
+      let element;
+
+      beforeEach(() => {
+        fetchSuggestionsStub = sinon.stub().rejects();
+        const props = getProps({ column: mockTextColumn });
+        _.unset(props, 'spandex');
+
+        element = renderComponent(TextFilter, props);
+      });
+
+      it('displays a message about exact match on change', () => {
+        simulateTextInput(element, 'Example');
+        assert.isNotNull(getSearchPrompt(element));
       });
     });
 

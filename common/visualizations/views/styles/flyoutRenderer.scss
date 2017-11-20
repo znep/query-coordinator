@@ -1,5 +1,6 @@
 // This is probably already on the page, as _most_ consumers of visualizations also pull in
 // styleguide-no-tag-level. However, this isn't a strict requirement.
+@import 'common/styleguide/variables/mixins';
 @import 'common/styleguide/partials/socrata_flyout';
 
 // N.B.: For the moment, tag-level styleguide is NOT loaded for embeds.
@@ -14,4 +15,3 @@
   line-height: 1.25;
   font-family: "Open Sans", "Helvetica", sans-serif; // TODO how to load Open Sans? Do we care?
 }
-

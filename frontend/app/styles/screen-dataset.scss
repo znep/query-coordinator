@@ -1604,6 +1604,10 @@ body.grid-view-2017-refresh {
     font-family: $fontStack;
     z-index: 9997;
 
+    input {
+      box-sizing: content-box !important;
+    }
+
     .overlay {
       position: relative;
       display: block;

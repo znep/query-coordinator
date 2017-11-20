@@ -1350,27 +1350,69 @@ ul.autocompleteComboDropdown {
   background-color: #f7f7f7;
   z-index: 1;
 
-  .nbe-geocoding-option.line {
-    margin-bottom: 0;
+  & > .paneContent > div > label {
+    display: inline-block;
+  }
 
-    &.input {
-      margin-top: 0;
-      margin-bottom: 2em;
+  #create-geocoded-point-column-fields {
 
-      label {
-        position: relative;
-        display: block;
-        float: left;
-        width: auto;
-        top: 0;
-        overflow: visible;
+    .nbe-geocoding-option.line {
+      margin-bottom: 0;
+
+      &.select {
+
+        label {
+          font-weight: 600 !important;
+        }
       }
 
-      input {
-        float: right;
-        margin-right: 6px;
-        width: 56.75%;
+      &.input {
+        margin-top: 0;
+        margin-bottom: 2em;
+
+        label {
+          position: relative;
+          display: block;
+          float: left;
+          width: auto;
+          top: 0;
+          overflow: visible;
+        }
+
+        input {
+          float: right;
+          margin: 0 6px 4px 0;
+          padding: 0.5em;
+          width: 51%;
+          color: #5e5e5e;
+          font-family: 'Open Sans', sans-serif;
+          font-size: 13.5px;
+          font-weight: 400 !important;
+          border-radius: 1px;
+          box-shadow: none;
+          box-sizing: border-box;
+        }
+
+        ::-webkit-input-placeholder,
+        ::-moz-placeholder,
+        :-ms-placeholder {
+          color: #c8c8c8;
+        }
       }
+    }
+  }
+
+  .nbe-geocoding-buttons {
+    margin-top: 15px;
+
+    #nbe-geocoding-submit,
+    #nbe-geocoding-cancel {
+      width: auto;
+      float: right;
+    }
+
+    #nbe-geocoding-submit {
+      margin-left: 15px;
     }
   }
 }

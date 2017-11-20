@@ -32,7 +32,7 @@ namespace :manifest do
       from_tag = ENV['FROM_TAG'] || tags[1]
 
       if args.auto.present? && args.auto == 'true'
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>EMAIL BEGIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
+        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>MANIFEST BEGIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
       else
         puts "Default comparison is #{from_tag} .. #{to_tag}"
         puts "Press <Enter> to continue, or 'n' to choose a previous tag"
@@ -86,7 +86,7 @@ namespace :manifest do
       # this section, with everything but storyteller
       manifest_output << "\n\n\n------- Git log\n\n" << `git log #{git_log_flags} #{git_log_revision_range} -- :/ ':(exclude)../storyteller'`
       puts manifest_output
-      puts "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>EMAIL END<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n" if (args.auto.present? && args.auto == 'true')
+      puts "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>MANIFEST END<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n" if (args.auto.present? && args.auto == 'true')
 
      # Write the manifest to a file
       if args.output_file.present?

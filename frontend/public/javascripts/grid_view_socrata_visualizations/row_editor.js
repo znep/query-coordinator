@@ -374,7 +374,13 @@ module.exports = function(options) {
 
         $.uploadDialog().
           show(
-            'https://localhost/views/' + window.blist.dataset.id + '/files.txt',
+            (
+              'https://' +
+              window.location.host +
+              '/views/' +
+              window.blist.dataset.id +
+              '/files.txt'
+            ),
             function(fileId) {
 
               $target.attr('data-file-id', fileId);

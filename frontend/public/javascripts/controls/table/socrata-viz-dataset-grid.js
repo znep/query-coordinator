@@ -46,7 +46,36 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
       totalRowCount
     ) {
       var serializedView = view.cleanCopyIncludingRenderTypeName();
-      var columns = _.get(serializedView, 'columns', []);
+      // EN-19953 - Data Inconsistencies in Grid View Refresh
+      //
+      // It turns out that view.cleanCopyIncludingRenderTypeName() returns
+      // columns that are hidden. This causes us to attempt to render hidden
+      // columnns in the Socrata Viz table, but since there are more columns
+      // than values returned by the API, and since we do the value -> column
+      // mapping based on column index, this causes the values for a column
+      // following a hidden column to be rendered under the title of the
+      // hidden column (since it shows up in the table header).
+      //
+      // We can avoid this by instead filtering out hidden columns here
+      // before we try to map row values to columns in the data table we
+      // construct.
+      //
+      // Do note that it's frustating and error-prone that the view lists
+      // columns that are not actually present in the API response. I
+      // believe there are good (or at least logical) reasons for this to be
+      // the case but if someone reading this in the future is looking into
+      // how to improve the views API and how it relates to query responses
+      // then please try to keep this in mind!
+      var columns = _.get(serializedView, 'columns', []).filter(function(column) {
+        const flags = _.get(column, 'flags', []);
+
+        return (
+          _.get(column, 'fieldName[0]', '') !== ':' &&
+          (
+            !_.isArray(flags) || (_.isArray(flags) && flags.indexOf('hidden') === -1)
+          )
+        );
+      });
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
       var rowIdKey = (isNewBackend) ? 'id' : 'uuid';
@@ -273,6 +302,20 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                       currentTotalRowCount
                     )
                   );
+
+                  // EN-19522 - Grid Refresh: pagination disappears after search
+                  //
+                  // The layout engine for the grid view page attempts to be too
+                  // clever and ends up placing the bottom of the table, and the
+                  // various footer elements, off the bottom of the page. If the
+                  // page were able to be scrolled anyway, that wouldn't be much
+                  // more than just an annoying problem, but actually the very
+                  // same layout engine also sets overflow: hidden on the body.
+                  //
+                  // In this case, we just fix the layout bug after it is
+                  // triggered by telling the thing layout engine to try again
+                  // after the search results have been loaded.
+                  window.blist.datasetPage.adjustSize();
                 }
               );
             }
@@ -505,7 +548,27 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             // the infini-scrolling table somewhat responsive.
             self._view.bucketSize = PAGE_SIZE;
             self._view.bind('query_change', renderTableFromScratch);
-            self._view.bind('columns_changed', renderTableFromScratch);
+            self._view.bind(
+              'columns_changed',
+              function() {
+                // EN-19727 - Editing Column Order Freezes Edit Pane
+                //
+                // A lot of the pane components do not handle state changes well,
+                // but because of the way the panes work (every component gets
+                // re-instantiated every time you close and re-open the pane) that
+                // doesn't usually cause problems. In this case, however, the widget
+                // that allows for column reordering (awesomereorder) is getting its
+                // state messed up after you reorder columns and click apply (which
+                // apparently no longer causes the sidebar to be hidden). In this case
+                // the easiest and most robust solution seems to be just to hide the
+                // sidebar when the user clicks apply to reorder columns (which was,
+                // apparently, the behavior of the 'classic' grid view), as hiding
+                // it will cause the state to be flushed and rendered once more
+                // operable.
+                blist.datasetPage.sidebar.hide();
+                renderTableFromScratch();
+              }
+            );
             self._view.bind('conditionalformatting_change', updateConditionalFormatting);
 
             $datasetGrid = self.$dom();

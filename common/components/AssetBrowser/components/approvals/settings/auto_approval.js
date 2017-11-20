@@ -36,7 +36,7 @@ const AutoApproval = (props) => {
     <div className="approval-configuration">
       <ApprovalConfigurationHeader {...props} />
       <ul>
-        {options.map( (opt) =>
+        {options.map((opt) =>
           <OptionContainer
             key={opt.optionName}
             {...props}

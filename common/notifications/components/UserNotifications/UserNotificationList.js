@@ -50,18 +50,42 @@ class UserNotificationList extends Component {
     );
   }
 
+  renderLoadMoreUserNotificationLink() {
+    const { hasMoreNotifications } = this.props;
+
+    if (hasMoreNotifications) {
+      const { onLoadMoreUserNotifications, I18n } = this.props;
+
+      return (
+        <div
+          className="load-more-user-notifications"
+          styleName="load-more-user-notifications-link-wrapper">
+          <button styleName="load-more-user-notifications-link" onClick={onLoadMoreUserNotifications}>
+            {I18n.t('load_more_items', { scope: 'shared_site_chrome_notifications' })}
+          </button>
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
-      <ul styleName="socrata-user-notification-list">
-        {this.renderUserNotifications()}
-      </ul>
+      <div>
+        <ul styleName="socrata-user-notification-list">
+          {this.renderUserNotifications()}
+        </ul>
+
+        {this.renderLoadMoreUserNotificationLink()}
+      </div>
     );
   }
 }
 
 UserNotificationList.propTypes = {
   filterNotificationsBy: PropTypes.string.isRequired,
+  hasMoreNotifications: PropTypes.bool.isRequired,
   onClearUserNotification: PropTypes.func.isRequired,
+  onLoadMoreUserNotifications: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired
 };
 

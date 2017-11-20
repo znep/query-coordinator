@@ -302,6 +302,35 @@ describe('SvgTimelineChart', () => {
       });
     });
 
+    describe('when dimension row contains a null', () => {
+      beforeEach(() => {
+        overrideVIF = {
+          series: [
+            {
+              dataSource: {
+                precision: 'none'
+              }
+            }
+          ]
+        };
+
+        timelineChart = createTimelineChart(overrideVIF);
+        timelineChart.chart.render(null, {
+          columns: ['dimension', 'measure'],
+          rows: [
+            ['2017-09-01T09:45:00.000', 1],
+            ['2017-09-02T09:45:00.000', 1],
+            [null, 2]
+          ]
+        });
+      });
+
+      it('should render two circles', () => {
+        const circles = timelineChart.$element.find('circle');
+        assert.equal(circles.length, 2);
+      });
+    });
+
     describe('when rendering multi-series', () => {
       beforeEach(() => {
         // override by adding "grouping" to dimension

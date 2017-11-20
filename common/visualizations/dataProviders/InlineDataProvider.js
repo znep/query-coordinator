@@ -30,11 +30,27 @@ function InlineDataProvider(vifWithInlineData) {
   };
 
   this.getColumns = () => {
-    const columnsOrEmptyArray = _.cloneDeep(
-      _.sortBy(_.get(seriesDataSource, 'view.columns', []), 'position')
+    // EN-19953 - Data Inconsistencies in Grid View Refresh
+    //
+    // A view's columns include hidden columns, but query results do not include
+    // values for hidden columns. Because a lot of what we do at the visualization
+    // level with data table objects is based on column indices, this means that
+    // we will get unexpected results if we unwittingly pass hidden columns
+    // to the visualization code. We therefore want to filter out hidden columns
+    // before we pass the rest on to whatever is using the InlineDataProvider.
+    const columnsOrEmptyArray = _.sortBy(
+      _.get(seriesDataSource, 'view.columns', []).filter(function(column) {
+        const flags = _.get(column, 'flags', []);
+
+        return (
+          column.fieldName.charAt(0) !== ':' &&
+          (!_.isArray(flags) || (_.isArray(flags) && flags.indexOf('hidden') === -1))
+        );
+      }),
+      'position'
     );
 
-    return columnsOrEmptyArray;
+    return _.cloneDeep(columnsOrEmptyArray);
   };
 
   this.getStartIndex = () => {

@@ -5,11 +5,6 @@
     <dt>Column list (from core)</dt>
     <dd><%= link_to nil, "/api/views/#{@view.id}/columns.json" %></dd>
 
-    <% unless FeatureFlags.derive(:disable_metadata_v1_endpoint) -%>
-      <dt>Dataset Metadata</dt>
-      <dd><%= link_to nil, "/metadata/v1/dataset/#{@view.id}" %></dd>
-    <% end -%>
-
     <dt>Geocoding queue (for entire domain)</dt>
     <dd><%= link_to nil, "/api/geocoding/#{@view.id}?method=pending" %></dd>
 
@@ -37,12 +32,6 @@
 
   <% ## Data Lens-specific debugging information %>
   <% if @view.data_lens? -%>
-
-    <% unless FeatureFlags.derive(:disable_metadata_v1_endpoint) -%>
-      <dt>Dataset Metadata</dt>
-      <dd><%= link_to nil, "/metadata/v1/dataset/#{@view.id}" %></dd>
-    <% end -%>
-
     <dt title="Hover on the grid icon to see if rollups are being used">View with data_lens_debug</dt>
     <dd><%= link_to nil, "#{view_url(@view)}?debug_data_lens=true" %></dd>
   <% end -%>

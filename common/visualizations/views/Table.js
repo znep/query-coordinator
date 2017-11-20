@@ -773,7 +773,7 @@ module.exports = function Table(element, originalVif, locale) {
     const data = _.escape($target.text());
 
     // IE will incorrectly set isOverflowing to true for empty cells.
-    if (isOverflowing && String(data).length > 0) {
+    if (isOverflowing && !_.isEmpty(String(data).replace(/\s/g, ''))) {
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_CELL_FLYOUT',

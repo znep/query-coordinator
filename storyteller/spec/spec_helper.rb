@@ -342,8 +342,7 @@ Signaller::Test::Helpers.defaults = {
   'enable_getty_images_gallery' => true,
   'enable_filtered_tables_in_ax' => true,
   'enable_storyteller_mixpanel' => true,
-  'show_govstat_header' => false,
-  'browse_autocomplete' => false
+  'show_govstat_header' => false
 }
 
 # Set feature flags to the given values. Example:

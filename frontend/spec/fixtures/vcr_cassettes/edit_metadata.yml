@@ -1,0 +1,207 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=metadata
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 14 Nov 2017 22:58:33 GMT
+      X-Socrata-Requestid:
+      - tsuyjs86jh5d8zec0opjhbsb
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 13,
+          "name" : "Metadata configuration",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "metadata",
+          "updatedAt" : 1492794981
+        } ]
+    http_version: 
+  recorded_at: Tue, 14 Nov 2017 22:58:33 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/rdfTerms.json?type=class
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 14 Nov 2017 22:58:33 GMT
+      X-Socrata-Requestid:
+      - 6s4bd895y1va09ggs7gyt2qoi
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 1,
+          "name" : "--Row--",
+          "class" : true,
+          "CName" : "_na--Row--",
+          "CNamespace" : "_na",
+          "displayName" : "--Row--",
+          "namespace" : ""
+        }, {
+          "id" : 48,
+          "name" : "Location",
+          "class" : true,
+          "CName" : "http://purl.org/dc/terms/Location",
+          "CNamespace" : "http://purl.org/dc/terms/",
+          "displayName" : "",
+          "namespace" : "Dublin Core"
+        }, {
+          "id" : 49,
+          "name" : "Period",
+          "class" : true,
+          "CName" : "http://purl.org/dc/terms/Period",
+          "CNamespace" : "http://purl.org/dc/terms/",
+          "displayName" : "",
+          "namespace" : "Dublin Core"
+        }, {
+          "id" : 50,
+          "name" : "Policy",
+          "class" : true,
+          "CName" : "http://purl.org/dc/terms/Policy",
+          "CNamespace" : "http://purl.org/dc/terms/",
+          "displayName" : "",
+          "namespace" : "Dublin Core"
+        }, {
+          "id" : 51,
+          "name" : "Resource",
+          "class" : true,
+          "CName" : "http://purl.org/dc/terms/Resource",
+          "CNamespace" : "http://purl.org/dc/terms/",
+          "displayName" : "",
+          "namespace" : "Dublin Core"
+        }, {
+          "id" : 52,
+          "name" : "Standard",
+          "class" : true,
+          "CName" : "http://purl.org/dc/terms/Standard",
+          "CNamespace" : "http://purl.org/dc/terms/",
+          "displayName" : "",
+          "namespace" : "Dublin Core"
+        }, {
+          "id" : 3,
+          "name" : "Agent",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Agent",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 4,
+          "name" : "Document",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Document",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 5,
+          "name" : "Group",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Group",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 6,
+          "name" : "Image",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Image",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 7,
+          "name" : "Organization",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Organization",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 8,
+          "name" : "Person",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Person",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 9,
+          "name" : "Project",
+          "class" : true,
+          "CName" : "http://xmlns.com/foaf/0.1/Project",
+          "CNamespace" : "http://xmlns.com/foaf/0.1/",
+          "displayName" : "",
+          "namespace" : "Friend of a Friend"
+        }, {
+          "id" : 43,
+          "name" : "Point",
+          "class" : true,
+          "CName" : "http://www.w3.org/2003/01/geo/wgs84_pos#Point",
+          "CNamespace" : "http://www.w3.org/2003/01/geo/wgs84_pos#",
+          "displayName" : "",
+          "namespace" : "Geo"
+        }, {
+          "id" : 42,
+          "name" : "SpatialThing",
+          "class" : true,
+          "CName" : "http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing",
+          "CNamespace" : "http://www.w3.org/2003/01/geo/wgs84_pos#",
+          "displayName" : "",
+          "namespace" : "Geo"
+        } ]
+    http_version: 
+  recorded_at: Tue, 14 Nov 2017 22:58:34 GMT
+recorded_with: VCR 3.0.3

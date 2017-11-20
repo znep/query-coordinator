@@ -28,7 +28,7 @@ class PreferenceContent extends Component {
             onChange={() => onAlertNotificationChange(category, null, collaboratorsKey)}
             id="collaborators-changes"
             type="checkbox" />
-          {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.collaborators_change')}
+          <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.collaborators_change')}</span>
         </label>
       );
     }
@@ -50,7 +50,7 @@ class PreferenceContent extends Component {
                 type="checkbox"
                 checked={_.get(subCategoryData, ['meta_data_change', 'enable'], false)}
                 onChange={(event) => onAlertNotificationChange(category, null, 'meta_data_change')} />
-              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.meta_data_change')}
+              <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.meta_data_change')}</span>
             </label>
 
             <label className="inline-label" styleName="email-option" htmlFor="data-change">
@@ -59,7 +59,7 @@ class PreferenceContent extends Component {
                 onChange={() => onAlertNotificationChange(category, null, 'data_change')}
                 id="data-change"
                 type="checkbox" />
-              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.data_change')}
+              <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.data_change')}</span>
             </label>
 
             <label className="inline-label" styleName="email-option" htmlFor="permission-change">
@@ -68,7 +68,7 @@ class PreferenceContent extends Component {
                 onChange={() => onAlertNotificationChange(category, null, 'permission_change')}
                 id="permission-change"
                 type="checkbox" />
-              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.permission_change')}
+              <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.all_assets.permission_change')}</span>
             </label>
             {collaboratorsTag}
           </div>
@@ -87,7 +87,7 @@ class PreferenceContent extends Component {
               id="notify-subscribe-all-assets"
               type="checkbox"
               onChange={() => onAlertNotificationChange(category, 'email')} />
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
           </label>
         </td>
       </tr>
@@ -121,7 +121,7 @@ class PreferenceContent extends Component {
                   type="checkbox"
                   checked={_.get(subCategoryData, ['asset_review', 'enable'], false)}
                   onChange={(event) => onAlertNotificationChange(category, null, 'asset_review')} />
-                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_review')}
+                <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_review')}</span>
               </label>
 
               <label className="inline-label" styleName="email-option" htmlFor="asset-approved">
@@ -130,7 +130,7 @@ class PreferenceContent extends Component {
                   onChange={() => onAlertNotificationChange(category, null, 'asset_approved')}
                   id="asset-approved"
                   type="checkbox" />
-                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_approved')}
+                <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_approved')}</span>
               </label>
 
               <label className="inline-label" styleName="email-option" htmlFor="asset-rejected">
@@ -139,7 +139,7 @@ class PreferenceContent extends Component {
                   onChange={() => onAlertNotificationChange(category, null, 'asset_rejected')}
                   id="asset-rejected"
                   type="checkbox" />
-                {I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_rejected')}
+                <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.routing_and_approval.asset_rejected')}</span>
               </label>
             </div>
           </td>
@@ -159,7 +159,7 @@ class PreferenceContent extends Component {
                 id="notify-subscribe-routing-approval"
                 type="checkbox"
                 onChange={() => onAlertNotificationChange(category, 'email')} />
-              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+              <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
             </label>
           </td>
         </tr>
@@ -203,7 +203,7 @@ class PreferenceContent extends Component {
                 id="notify-subscribe-user-accounts"
                 type="checkbox"
                 onChange={() => onAlertNotificationChange(category, 'email')} />
-              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+              <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
             </label>
           </td>
         </tr>
@@ -238,7 +238,7 @@ class PreferenceContent extends Component {
               id="notify-subscribe-delete-assets"
               type="checkbox"
               onChange={() => onAlertNotificationChange(category, 'email')} />
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
           </label>
         </td>
       </tr>
@@ -272,7 +272,7 @@ class PreferenceContent extends Component {
               id="notify-subscribe-my-assets"
               type="checkbox"
               onChange={() => onAlertNotificationChange(category, 'email')} />
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
           </label>
         </td>
       </tr>
@@ -307,7 +307,7 @@ class PreferenceContent extends Component {
               id="notify-subscribe-watch-list"
               type="checkbox"
               onChange={() => onAlertNotificationChange(category, 'email')} />
-            {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            <span>{I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}</span>
           </label>
         </td>
       </tr>

@@ -19,14 +19,7 @@
     Long term solution is to re-implement the autocomplete functionality into the common React searchbar.
   -->
 
-  <div
-    class="search-with-autocomplete"
-    data-autocomplete="<%= FeatureFlags.derive(nil, request).browse_autocomplete %>">
-  </div>
-
-  <% unless FeatureFlags.derive(nil, request).browse_autocomplete %>
-    <div id="search-content"></div>
-  <% end %>
+  <div class="search-with-autocomplete" data-autocomplete="true"></div>
 
   <%= render 'datasets/catalog', :opts => @processed_browse %>
 </div>

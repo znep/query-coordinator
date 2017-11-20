@@ -60,7 +60,7 @@ class TextFilter extends Component {
   onChangeSearchTerm(searchTerm) {
     const { column, spandex } = this.props;
 
-    if (spandex.available) {
+    if (spandex && spandex.available) {
       spandex.provider.fetchSuggestions(column.fieldName, searchTerm).
         then((searchResults) => {
           this.updateAutocompleteSuggestedValues(searchResults);
@@ -253,7 +253,7 @@ class TextFilter extends Component {
       size: controlSize,
       onClickSelectedOption: this.onUnselectOption,
       canAddSearchTerm: this.canAddSearchTerm,
-      hideExactMatchPrompt: spandex.available
+      hideExactMatchPrompt: spandex && spandex.available
     };
 
     const footerProps = {

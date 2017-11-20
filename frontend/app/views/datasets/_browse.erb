@@ -170,20 +170,20 @@
                       <%- if FeatureFlags.derive(nil, request).usaid_features_enabled -%>
                         <a id="create-tabular-beta"
                             class="button createTabular secondary-button next"
-                            href="<%= new_dataset_path(beta: true, data_asset: false) %>"
-                            title="Dataset">
-                          <%= opts[:browse_in_container] ?
-                                t('controls.browse.actions.create_dataset_shorter') :
-                                t('controls.browse.actions.create_dataset_verb') %>
-                          <span class="icon"></span>
-                        </a>
-                        <a id="create-tabular-beta"
-                            class="button createTabular secondary-button next"
                             href="<%= new_dataset_path(beta: true, data_asset: true) %>"
                             title="Data Asset">
                             <%= opts[:browse_in_container] ?
                                   t('controls.browse.actions.create_data_asset_shorter') :
                                   t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true, data_asset: false) %>"
+                            title="Dataset">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_dataset_shorter') :
+                                t('controls.browse.actions.create_dataset_verb') %>
                           <span class="icon"></span>
                         </a>
                       <%- elsif FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>

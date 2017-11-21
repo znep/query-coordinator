@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { localizeLink } from 'common/locale';
 import mixpanel from 'common/mixpanel';
 import utils from 'common/js_utils';
 
@@ -7,12 +8,22 @@ import * as actions from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
 import * as windowLocation from './lib/windowLocation';
 
+import { isLoggedIn } from '../common/user';
+
 const AUTHORING_WORKFLOW_INITIAL_STATE = {
   isActive: false
 };
 
 const SHARE_MODAL_INITIAL_STATE = {
   isActive: false
+};
+
+const SIGNIN_MODAL_CLOSED_STATE = {
+  isActive: false
+};
+
+const SIGNIN_MODAL_OPEN_STATE = {
+  isActive: true
 };
 
 const EDIT_PATH_REGEX = /\/edit\/?$/;
@@ -61,10 +72,12 @@ const setMapNotification = (state, index) => {
 const initialState = () => {
   const state = window.initialState;
   const isEphemeral = _.isNil(state.view.id);
+  const signinModalState = isLoggedIn() ? SIGNIN_MODAL_CLOSED_STATE : SIGNIN_MODAL_OPEN_STATE;
 
   _.assign(state, {
     authoringWorkflow: AUTHORING_WORKFLOW_INITIAL_STATE,
     shareModal: SHARE_MODAL_INITIAL_STATE,
+    signinModal: signinModalState,
     mode: isEphemeral || EDIT_PATH_REGEX.test(window.location.pathname) ? ModeStates.EDIT : ModeStates.VIEW,
     isEditMenuActive: false,
     isEphemeral,
@@ -280,6 +293,37 @@ export default (state = initialState(), action) => {
       return {
         ...state,
         shareModal: SHARE_MODAL_INITIAL_STATE
+      };
+
+    case actions.CLOSE_SIGNIN_MODAL:
+      return {
+        ...state,
+        signinModal: SIGNIN_MODAL_CLOSED_STATE,
+        alert: {
+          isActive: true,
+          translationKey: 'visualization_canvas.alert_not_signed_in',
+          type: 'warning'
+        }
+      };
+
+    case actions.SIGNIN_FROM_MODAL:
+      // Redirect with a small delay so that we can trigger Mixpanel events.
+      _.delay(() => {
+        const loginUrl = localizeLink(`/login?return_to=${encodeURIComponent(windowLocation.pathname())}`);
+
+        window.onbeforeunload = null;
+        windowLocation.assign(loginUrl);
+      }, 500);
+
+      return {
+        ...state,
+        isDirty: false
+      };
+
+    case actions.DISMISS_ALERT:
+      return {
+        ...state,
+        alert: null
       };
 
     case actions.SET_EMBED_SIZE:

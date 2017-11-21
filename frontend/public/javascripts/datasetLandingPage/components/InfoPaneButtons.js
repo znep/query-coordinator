@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { isLoggedIn } from '../../common/user';
 import { localizeLink } from 'common/locale';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -46,10 +45,6 @@ export default class InfoPaneButtons extends Component {
       return null;
     }
 
-    const url = isLoggedIn() ?
-      localizeLink(view.bootstrapUrl) :
-      localizeLink(`/login?return_to=${encodeURIComponent(view.bootstrapUrl)}`);
-
     return (
       <li>
         <a
@@ -57,7 +52,7 @@ export default class InfoPaneButtons extends Component {
           role="button"
           data-id={view.id}
           className="option"
-          href={url}
+          href={view.bootstrapUrl}
           onClick={onClickVisualizeAndFilter}>
           {I18n.explore_data.visualize_and_filter}
         </a>

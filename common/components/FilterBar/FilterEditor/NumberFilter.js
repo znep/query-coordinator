@@ -1,13 +1,15 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Slider from '../Slider';
-import FilterHeader from './FilterHeader';
-import FilterFooter from './FilterFooter';
+
 import I18n from 'common/i18n';
 import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 import { getPrecision, roundToPrecision } from 'common/numbers';
-import { getDefaultFilterForColumn } from './filters';
+
+import Slider from '../../Slider';
+import FilterHeader from '../FilterHeader';
+import FilterFooter from '../FilterFooter';
+import { getDefaultFilterForColumn } from '../filters';
 
 class NumberFilter extends Component {
   constructor(props) {
@@ -195,6 +197,10 @@ class NumberFilter extends Component {
   }
 
   renderNullValueCheckbox() {
+    if (this.props.hideNullValueCheckbox) {
+      return null;
+    }
+
     const { value } = this.state;
     const nullToggleId = _.uniqueId('include-nulls-');
     const inputAttributes = {
@@ -206,28 +212,30 @@ class NumberFilter extends Component {
     };
 
     return (
-      <form>
-        <div className="checkbox">
-          <input {...inputAttributes} />
-          <label className="inline-label" htmlFor={nullToggleId}>
-            <span className="fake-checkbox">
-              <span className="icon-checkmark3"></span>
-            </span>
-            {I18n.t('shared.components.filter_bar.range_filter.include_null_values')}
-          </label>
-        </div>
-      </form>
+      <div className="checkbox">
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor={nullToggleId}>
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3" />
+          </span>
+          {I18n.t('shared.components.filter_bar.range_filter.include_null_values')}
+        </label>
+      </div>
     );
   }
 
   render() {
     const { column, isReadOnly, onClickConfig, onRemove } = this.props;
 
-    const headerProps = {
-      name: column.name,
-      isReadOnly,
-      onClickConfig
-    };
+    let header = this.props.header;
+    if (!header) {
+      const headerProps = {
+        name: column.name,
+        isReadOnly,
+        onClickConfig
+      };
+      header = <FilterHeader {...headerProps} />;
+    }
 
     const footerProps = {
       disableApplyFilter: this.shouldDisableApply(),
@@ -240,7 +248,7 @@ class NumberFilter extends Component {
     return (
       <div className="filter-controls number-filter">
         <div className="range-filter-container">
-          <FilterHeader {...headerProps} />
+          {header}
           {this.renderSlider()}
           {this.renderInputFields()}
           {this.renderNullValueCheckbox()}
@@ -251,14 +259,20 @@ class NumberFilter extends Component {
   }
 }
 
+NumberFilter.defaultProps = {
+  hideNullValueCheckbox: false
+};
+
 NumberFilter.propTypes = {
   filter: PropTypes.object.isRequired,
   column: PropTypes.shape({
     rangeMin: PropTypes.number.isRequired,
     rangeMax: PropTypes.number.isRequired
   }),
+  header: PropTypes.element,
+  hideNullValueCheckbox: PropTypes.bool,
   isReadOnly: PropTypes.bool,
-  onClickConfig: PropTypes.func.isRequired,
+  onClickConfig: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired
 };

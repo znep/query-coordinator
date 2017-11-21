@@ -1,13 +1,11 @@
 @import "variables/colors.scss";
 
-.filter-bar-filter {
-  .calendar-date-filter {
-    .range-separator {
-      margin: 0 3px;
-    }
-    .text-input {
-      width: 100%;
-    }
+.filter-controls.calendar-date-filter {
+  .range-separator {
+    margin: 0 3px;
+  }
+  .text-input {
+    width: 100%;
   }
 }
 

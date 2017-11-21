@@ -22,5 +22,5 @@ FilterHeader.propTypes = {
   children: PropTypes.node,
   isReadOnly: PropTypes.bool,
   name: PropTypes.string,
-  onClickConfig: PropTypes.func.isRequired
+  onClickConfig: PropTypes.func
 };

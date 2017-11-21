@@ -6,7 +6,19 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
-import { Checkbox, Dropdown, SocrataIcon, AccordionContainer, AccordionPane } from 'common/components';
+import {
+  AccordionContainer,
+  AccordionPane,
+  Checkbox,
+  Dropdown,
+  Flannel,
+  FlannelContent,
+  SocrataIcon
+} from 'common/components';
+import FilterEditor from 'common/components/FilterBar/FilterEditor';
+
+import ColumnDropdown from '../ColumnDropdown';
+
 import {
   setAggregationType,
   setDenominatorColumn,
@@ -20,19 +32,100 @@ import withComputedMeasure from '../../withComputedMeasure';
 import { CalculationTypeNames } from '../../../lib/constants';
 
 export class Rate extends Component {
+  constructor() {
+    super();
+
+    this.state = {};
+  }
+
+  onClickSetColumnConditions = () => {
+    this.setState({ columnConditionsFlyoutOpen: true });
+  }
+
+  onSetColumnConditions = () => {
+    // We get passed the conditions in this callback.
+    // In the next batch of work, we should actually
+    // _do_ something with the conditions.
+    this.setState({ columnConditionsFlyoutOpen: false });
+  }
+
+  renderNumeratorColumnConditionsFlyout() {
+    const { numeratorColumn } = this.props;
+    const { columnConditionsFlyoutOpen } = this.state;
+
+    if (!columnConditionsFlyoutOpen || !numeratorColumn) {
+      return null;
+    }
+
+    const header = (
+      <div>
+        <h6>
+          <SocrataIcon name="number" />
+          {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.conditions.header.number')}
+        </h6>
+        {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.conditions.subheader')}
+      </div>
+    );
+
+    const filterProps = {
+      filter: {},
+      column: numeratorColumn,
+      onRemove: () => this.onSetColumnConditions(null),
+      onUpdate: this.onSetColumnConditions,
+      header,
+      hideNullValueCheckbox: true
+    };
+
+    const flannelProps = {
+      id: 'rate-metric-numerator-column-conditions',
+      title: 'asd',
+      isOpen: true,
+      onDismiss: () => this.setState({ columnConditionsFlyoutOpen: false }),
+      target: () => this.numeratorColumnConditionsLinkRef
+    };
+
+    return (
+      <Flannel {...flannelProps}>
+        <FlannelContent>
+          <FilterEditor {...filterProps} />
+        </FlannelContent>
+      </Flannel>
+    );
+  }
+
+  renderNumeratorColumnConditions() {
+    const { numeratorColumn } = this.props;
+
+    if (!numeratorColumn) {
+      return null;
+    }
+
+    return (
+      <a
+        role="button"
+        href="#"
+        ref={(ref) => this.numeratorColumnConditionsLinkRef = ref}
+        onClick={this.onClickSetColumnConditions}>
+        {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions')}
+      </a>
+    );
+  }
 
   renderConfigPane() {
     const {
       aggregationType,
-      displayableFilterableColumns,
-      onToggleNumeratorExcludeNullValues,
-      onToggleDenominatorExcludeNullValues,
-      onSelectAggregationType,
-      numeratorExcludeNullValues,
       denominatorExcludeNullValues,
+      displayableFilterableColumns,
       fixedDenominator,
-      onChangeFixedDenominator
+      measure,
+      numeratorExcludeNullValues,
+      onChangeFixedDenominator,
+      onSelectAggregationType,
+      onToggleDenominatorExcludeNullValues,
+      onToggleNumeratorExcludeNullValues
     } = this.props;
+
+    const showExcludeNullValues = aggregationType === 'count';
 
     const aggregationDropdownOptions = {
       placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_aggregation'),
@@ -51,31 +144,21 @@ export class Rate extends Component {
     };
 
     const numeratorColumnDropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        this.props.onSelectNumeratorColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="number" />
-      })),
-      value: this.props.numeratorColumnFieldName,
-      id: 'numerator-column'
+      columnFieldName: this.props.numeratorColumnFieldName,
+      displayableFilterableColumns,
+      id: 'numerator-column',
+      measure,
+      measureArgument: 'numerator',
+      onSelectColumn: this.props.onSelectNumeratorColumn
     };
 
     const denominatorColumnDropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        this.props.onSelectDenominatorColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="number" />
-      })),
-      value: this.props.denominatorColumnFieldName,
-      id: 'denominator-column'
+      columnFieldName: this.props.denominatorColumnFieldName,
+      displayableFilterableColumns,
+      id: 'denominator-column',
+      measure,
+      measureArgument: 'denominator',
+      onSelectColumn: this.props.onSelectDenominatorColumn
     };
 
     const fixedDenominatorId = 'fixed-denominator-input';
@@ -86,8 +169,6 @@ export class Rate extends Component {
       onChange: (event) => onChangeFixedDenominator(event.target.value),
       value: fixedDenominator
     };
-
-    const showExcludeNullValues = aggregationType === 'count';
 
     return (
       <div className="metric-config">
@@ -104,7 +185,7 @@ export class Rate extends Component {
             <div className="option-subtitle">
               {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.numerator_subtitle')}
             </div>
-            <Dropdown {...numeratorColumnDropdownOptions} />
+            <ColumnDropdown {...numeratorColumnDropdownOptions} />
             {
               showExcludeNullValues ? <Checkbox
                 id="exclude-null-values-numerator"
@@ -113,13 +194,14 @@ export class Rate extends Component {
                 {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
               </Checkbox> : null
             }
+            {this.renderNumeratorColumnConditions()}
           </AccordionPane>
           <AccordionPane
             title={I18n.t('open_performance.measure.edit_modal.calculation.types.rate.denominator_title')}>
             <div className="option-subtitle">
               {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.denominator_subtitle')}
             </div>
-            <Dropdown {...denominatorColumnDropdownOptions} />
+            <ColumnDropdown {...denominatorColumnDropdownOptions} />
             {
               showExcludeNullValues ? <Checkbox
                 id="exclude-null-values-denominator"
@@ -139,6 +221,7 @@ export class Rate extends Component {
             <input {...fixedDenominatorAttributes} />
           </AccordionPane>
         </AccordionContainer>
+        {this.renderNumeratorColumnConditionsFlyout()}
       </div>
     );
   }
@@ -207,12 +290,14 @@ Rate.propTypes = {
     fieldName: PropTypes.string.isRequired
   })),
   fixedDenominator: PropTypes.string,
+  measure: PropTypes.object.isRequired,
   onSelectAggregationType: PropTypes.func.isRequired,
   onSelectDenominatorColumn: PropTypes.func.isRequired,
   onSelectNumeratorColumn: PropTypes.func.isRequired,
   onToggleNumeratorExcludeNullValues: PropTypes.func.isRequired,
   onToggleDenominatorExcludeNullValues: PropTypes.func.isRequired,
   onChangeFixedDenominator: PropTypes.func.isRequired,
+  numeratorColumn: PropTypes.object, // TODO connect the filter
   numeratorColumnFieldName: PropTypes.string,
   numeratorExcludeNullValues: PropTypes.bool.isRequired
 };
@@ -230,6 +315,11 @@ function mapStateToProps(state) {
   const numeratorExcludeNullValues = _.get(
     state, 'editor.measure.metric.arguments.numeratorExcludeNullValues', false
   );
+  const numeratorColumn = _.find(displayableFilterableColumns, { fieldName: numeratorColumnFieldName });
+
+  if (numeratorColumnFieldName && !numeratorColumn) {
+    throw new Error(`Numerator column not in filterable column set: ${numeratorColumnFieldName}`);
+  }
 
   return {
     aggregationType,
@@ -237,6 +327,7 @@ function mapStateToProps(state) {
     denominatorExcludeNullValues,
     displayableFilterableColumns,
     fixedDenominator,
+    numeratorColumn,
     numeratorColumnFieldName,
     numeratorExcludeNullValues,
     measure

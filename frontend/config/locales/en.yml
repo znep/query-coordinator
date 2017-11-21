@@ -3158,6 +3158,11 @@ en:
             rate:
               aggregation_subtitle: Configure math for numerator and denominator
               aggregation_title: Set Aggregation
+              conditions:
+                header:
+                  number: Range
+                  text: Category selection
+                subheader: Limit this column based on its contents.
               denominator_subtitle: Number of equal parts numerator will be divided into.
               denominator_title: Set Denominator
               direct_input_subtitle: Enter an exact value as your denominator below.
@@ -3169,6 +3174,7 @@ en:
               numerator_subtitle: Number of pieces/units of data
               numerator_title: Set Numerator
               sample_fraction: Sample Fraction
+              set_column_conditions: Set Column Conditions
             recent_value:
               column_condition: Column Condition
               date_column: Date Column

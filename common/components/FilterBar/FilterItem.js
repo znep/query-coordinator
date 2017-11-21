@@ -4,10 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import $ from 'jquery';
-import CalendarDateFilter from './CalendarDateFilter';
-import CheckboxFilter from './CheckboxFilter';
-import NumberFilter from './NumberFilter';
-import TextFilter from './TextFilter';
+import FilterEditor from './FilterEditor';
 import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
 import I18n from 'common/i18n';
@@ -193,7 +190,7 @@ export class FilterItem extends Component {
   }
 
   renderFilterControl() {
-    const { isControlOpen } = this.state;
+    const { isControlOpen, isLeftAligned } = this.state;
     const {
       column,
       controlSize,
@@ -213,7 +210,6 @@ export class FilterItem extends Component {
       filter,
       isReadOnly,
       isValidTextFilterColumnValue,
-      ref: ref => this.filterControl = ref,
       spandex,
       onClear: this.props.onClear,
       onClickConfig: this.toggleConfig,
@@ -221,23 +217,21 @@ export class FilterItem extends Component {
       onUpdate: this.onUpdate
     };
 
-    // This used to be a switch statement, but the babel
-    // transpiler crashed in Storyteller when trying to
-    // compile. Transforming to an if/else resolved the
-    // crash.
-    if (column.dataTypeName === 'calendar_date') {
-      return (<CalendarDateFilter {...filterProps} />);
-    } else if (column.dataTypeName === 'money') {
-      return (<NumberFilter {...filterProps} />);
-    } else if (column.dataTypeName === 'number') {
-      return (<NumberFilter {...filterProps} />);
-    } else if (column.dataTypeName === 'text') {
-      return (<TextFilter {...filterProps} />);
-    } else if (column.dataTypeName === 'checkbox') {
-      return (<CheckboxFilter {...filterProps} />);
-    } else {
-      return null;
-    }
+    const spanProps = {
+      className: classNames({
+        left: isLeftAligned,
+        right: !isLeftAligned
+      }),
+      ref: (ref) => this.filterControl = ref
+    };
+
+    return (
+      // Need the extra span - otherwise ref could be null depending
+      // on internal implementation of FilterEditor
+      <span {...spanProps}>
+        <FilterEditor {...filterProps} />
+      </span>
+    );
   }
 
   renderFilterControlToggle() {

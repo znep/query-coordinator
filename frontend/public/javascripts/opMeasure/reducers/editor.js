@@ -1,8 +1,9 @@
 import _ from 'lodash';
 
-import { assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
+import { assert, assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
 import actions from '../actions';
 import { CalculationTypeNames } from '../lib/constants';
+import { isColumnUsableWithMeasureArgument } from '../measureCalculator';
 
 // Convenience mutator for the measure being edited.
 // warning: _.merge will ignore undefined values so in the scenario where a value is
@@ -73,9 +74,36 @@ export default (state = initialState(), action) => {
       assertIsOneOfTypes(action.fieldName, 'string');
       return updateMeasureProperty(state, 'metric.arguments.valueColumn', action.fieldName);
 
-    case actions.editor.SET_AGGREGATION_TYPE:
+    case actions.editor.SET_AGGREGATION_TYPE: {
       assertIsOneOfTypes(action.aggregationType, 'string');
-      return updateMeasureProperty(state, 'metric.arguments.aggregationType', action.aggregationType);
+      assert(
+        _.get(state, 'measure.metric.type') === 'rate',
+        'This action only makes sense for rate measures today.'
+      );
+
+      const newState = updateMeasureProperty(
+        state,
+        'metric.arguments.aggregationType',
+        action.aggregationType
+      );
+
+      // Changing aggregation type changes the set of columns that are valid for the numerator
+      // and denominator (i.e., it makes sense to count on a date column, but it does not make
+      // sense to sum a date column).
+      // If the numerator/denominator columns are valid, keep them. If not, clear them.
+      let { numeratorColumn, denominatorColumn } = _.get(state, 'measure.metric.arguments') || {};
+      numeratorColumn = _.find(state.dataSourceViewMetadata.columns, { fieldName: numeratorColumn });
+      denominatorColumn = _.find(state.dataSourceViewMetadata.columns, { fieldName: denominatorColumn });
+
+      if (!isColumnUsableWithMeasureArgument(numeratorColumn, newState.measure, 'numerator')) {
+        _.unset(newState, 'measure.metric.arguments.numeratorColumn');
+      }
+      if (!isColumnUsableWithMeasureArgument(denominatorColumn, newState.measure, 'denominator')) {
+        _.unset(newState, 'measure.metric.arguments.denominatorColumn');
+      }
+
+      return newState;
+    }
 
     case actions.editor.SET_NUMERATOR_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');

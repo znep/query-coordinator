@@ -16,6 +16,19 @@ $max-filter-width: 130px;
     }
   }
 
+  form {
+    margin: 0;
+  }
+
+  .filter-controls {
+    position: absolute;
+    top: 100%;
+    margin-top: -1px;
+    border-radius: 1px;
+    border: 1px solid $light-grey-3;
+    z-index: $filter-z-index;
+  }
+
   .filter-control-container {
     display: inline-block;
     position: relative;
@@ -46,81 +59,14 @@ $max-filter-width: 130px;
           width: 15px;
         }
       }
-
-      &.left + .filter-controls {
-        left: 0;
-      }
-
-      &.right + .filter-controls {
-        right: 0;
-      }
     }
 
-    .filter-controls {
-      position: absolute;
-      top: 100%;
-      width: 300px;
-      margin-top: -1px;
-      background: $white;
-      border-radius: 1px;
-      border: 1px solid $light-grey-3;
-      z-index: $filter-z-index;
+    > .left .filter-controls {
+      left: 0;
+    }
 
-      .filter-control-title {
-        position: relative;
-        margin: 8px;
-
-        h3 {
-          font-size: 12px;
-          font-weight: normal;
-          letter-spacing: 0;
-        }
-
-        .config-btn {
-          position: absolute;
-          padding: 0;
-          top: 1px;
-          right: 0;
-
-          &:hover {
-            color: $grey;
-          }
-
-          .socrata-icon-settings {
-            width: 20px;
-            height: 20px;
-          }
-        }
-      }
-
-      .range-filter-container {
-        padding: 8px;
-        margin-bottom: 10px;
-
-        .filter-control-title {
-          margin: 0;
-          margin-bottom: 8px;
-        }
-
-        .range-text-inputs-container {
-          .range-input {
-            flex-grow: 4;
-            max-width: 150px;
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-
-          .range-separator {
-            flex-grow: 1;
-            margin: 8px;
-            text-align: center;
-          }
-        }
-
-        .date-range-picker {
-          margin-top: 15px;
-        }
-      }
+    > .right .filter-controls {
+      right: 0;
     }
   }
 
@@ -198,6 +144,72 @@ $max-filter-width: 130px;
           left: 1%;
         }
       }
+    }
+  }
+}
+
+.filter-controls {
+  width: 300px;
+  background: $white;
+  font-size: 12px;
+
+  .filter-control-title {
+    position: relative;
+    margin: 8px;
+
+    h3 {
+      font-size: 12px;
+      font-weight: normal;
+      letter-spacing: 0;
+    }
+
+    .config-btn {
+      position: absolute;
+      padding: 0;
+      top: 1px;
+      right: 0;
+
+      &:hover {
+        color: $grey;
+      }
+
+      .socrata-icon-settings {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .range-filter-container {
+    padding: 8px;
+    margin-bottom: 10px;
+
+    input {
+      font-size: 12px; // Override styleguide.
+    }
+
+    .filter-control-title {
+      margin: 0;
+      margin-bottom: 8px;
+    }
+
+    .range-text-inputs-container {
+      .range-input {
+        flex-grow: 4;
+        max-width: 150px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .range-separator {
+        flex-grow: 1;
+        margin: 8px;
+        text-align: center;
+      }
+    }
+
+    .date-range-picker {
+      margin-top: 15px;
     }
   }
 }

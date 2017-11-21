@@ -1,13 +1,12 @@
-@import "variables/colors.scss";
+@import "partials/forms";
 
-.filter-bar-filter {
-  .number-filter {
-    .range-input {
-      width: 45%;
-    }
-
-    form {
-      margin: 10px 0 0 0;
-    }
+.filter-controls.number-filter {
+  // We opted to not wrap this control in a form, because in some usages
+  // this control is already in a form context (and you can't have a form
+  // inside a form). Since we're really only using the form as a styling
+  // element, just include the form mixin to make the checkbox look right.
+  @include form;
+  .range-input {
+    width: 45%;
   }
 }

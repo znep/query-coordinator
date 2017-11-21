@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
-import CheckboxFilter from 'components/FilterBar/CheckboxFilter';
+import CheckboxFilter from 'components/FilterBar/FilterEditor/CheckboxFilter';
 import { mockBinaryOperatorFilter, mockCheckboxColumn } from './data';
 
 describe('CheckboxFilter', () => {

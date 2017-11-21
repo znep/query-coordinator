@@ -5,26 +5,21 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-import { Dropdown, SocrataIcon } from 'common/components';
+import ColumnDropdown from '../ColumnDropdown';
 import { setColumn } from '../../../actions/editor';
 
 export class Sum extends Component {
   // Left-hand pane with count-specific options.
   renderConfigPane() {
-    const { displayableFilterableColumns } = this.props;
+    const { columnFieldName, displayableFilterableColumns, measure, onSelectColumn } = this.props;
 
     const dropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        this.props.onSelectColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="number" />
-      })),
-      value: this.props.columnFieldName,
-      id: 'sum-column'
+      columnFieldName,
+      displayableFilterableColumns,
+      id: 'sum-column',
+      measure,
+      measureArgument: 'valueColumn',
+      onSelectColumn
     };
 
     return (
@@ -33,7 +28,7 @@ export class Sum extends Component {
           {I18n.t('open_performance.measure.edit_modal.calculation.types.sum.title')}
         </h5>
         <div className="column-dropdown">
-          <Dropdown {...dropdownOptions} />
+          <ColumnDropdown {...dropdownOptions} />
         </div>
       </div>
     );
@@ -65,6 +60,7 @@ Sum.propTypes = {
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
+  measure: PropTypes.object,
   onSelectColumn: PropTypes.func.isRequired
 };
 
@@ -74,7 +70,8 @@ function mapStateToProps(state) {
 
   return {
     columnFieldName,
-    displayableFilterableColumns
+    displayableFilterableColumns,
+    measure: state.editor.measure
   };
 }
 

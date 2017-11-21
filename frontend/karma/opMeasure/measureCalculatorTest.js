@@ -1,10 +1,87 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import { CalculationTypeNames } from 'lib/constants';
-import { calculateMeasure, calculateRateMeasure } from 'measureCalculator';
+import { calculateMeasure, calculateRateMeasure, isColumnUsableWithMeasureArgument } from 'measureCalculator';
 
 describe('measureCalculator', () => {
   const nullDataProvider = {};
+
+  describe('isColumnUsableWithMeasureArgument', () => {
+    const countMeasure = _.set({}, 'metric.type', CalculationTypeNames.COUNT);
+    const sumMeasure = _.set({}, 'metric.type', CalculationTypeNames.SUM);
+    const countRateMeasure = _.set({}, 'metric.type', CalculationTypeNames.RATE);
+    _.set(countRateMeasure, 'metric.arguments.aggregationType', 'count');
+    const sumRateMeasure = _.set({}, 'metric.type', CalculationTypeNames.RATE);
+    _.set(sumRateMeasure, 'metric.arguments.aggregationType', 'sum');
+    const recentValueMeasure = _.set({}, 'metric.type', CalculationTypeNames.RECENT_VALUE);
+
+    const dateCol = { renderTypeName: 'calendar_date' };
+    const numberCol = { renderTypeName: 'number' };
+    const moneyCol = { renderTypeName: 'money' };
+    const textCol = { renderTypeName: 'text' };
+
+    const scenario = (column, measure, argument, expectedValue) => {
+      describe(`measure argument: ${argument}`, () => {
+        it(`returns ${expectedValue} for ${column.renderTypeName}`, () => {
+          assert.equal(
+            isColumnUsableWithMeasureArgument(column, measure, argument),
+            expectedValue
+          );
+        });
+      });
+    };
+
+    describe('count measure', () => {
+      scenario(dateCol, countMeasure, 'valueColumn', true);
+      scenario(numberCol, countMeasure, 'valueColumn', true);
+      scenario(moneyCol, countMeasure, 'valueColumn', true);
+      scenario(textCol, countMeasure, 'valueColumn', true);
+    });
+
+    describe('sum measure', () => {
+      scenario(dateCol, sumMeasure, 'valueColumn', false);
+      scenario(numberCol, sumMeasure, 'valueColumn', true);
+      scenario(moneyCol, sumMeasure, 'valueColumn', true);
+      scenario(textCol, sumMeasure, 'valueColumn', false);
+    });
+
+    describe('count rate measure', () => {
+      scenario(dateCol, countRateMeasure, 'numeratorColumn', true);
+      scenario(numberCol, countRateMeasure, 'numeratorColumn', true);
+      scenario(moneyCol, countRateMeasure, 'numeratorColumn', true);
+      scenario(textCol, countRateMeasure, 'numeratorColumn', true);
+
+      scenario(dateCol, countRateMeasure, 'denominatorColumn', true);
+      scenario(numberCol, countRateMeasure, 'denominatorColumn', true);
+      scenario(moneyCol, countRateMeasure, 'denominatorColumn', true);
+      scenario(textCol, countRateMeasure, 'denominatorColumn', true);
+    });
+
+    describe('sum rate measure', () => {
+      scenario(dateCol, sumRateMeasure, 'numeratorColumn', false);
+      scenario(numberCol, sumRateMeasure, 'numeratorColumn', true);
+      scenario(moneyCol, sumRateMeasure, 'numeratorColumn', true);
+      scenario(textCol, sumRateMeasure, 'numeratorColumn', false);
+
+      scenario(dateCol, sumRateMeasure, 'denominatorColumn', false);
+      scenario(numberCol, sumRateMeasure, 'denominatorColumn', true);
+      scenario(moneyCol, sumRateMeasure, 'denominatorColumn', true);
+      scenario(textCol, sumRateMeasure, 'denominatorColumn', false);
+    });
+
+    describe('recent value measure', () => {
+      scenario(dateCol, recentValueMeasure, 'valueColumn', false);
+      scenario(numberCol, recentValueMeasure, 'valueColumn', true);
+      scenario(moneyCol, recentValueMeasure, 'valueColumn', true);
+      scenario(textCol, recentValueMeasure, 'valueColumn', false);
+
+      scenario(dateCol, recentValueMeasure, 'dateColumn', true);
+      scenario(numberCol, recentValueMeasure, 'dateColumn', false);
+      scenario(moneyCol, recentValueMeasure, 'dateColumn', false);
+      scenario(textCol, recentValueMeasure, 'dateColumn', false);
+    });
+
+  });
 
   describe('calculateRateMeasure', () => {
     describe('denominator is zero', () => {

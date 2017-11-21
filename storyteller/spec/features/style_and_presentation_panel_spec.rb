@@ -11,10 +11,7 @@ RSpec.describe 'style and presentation panel', type: :feature, js: true do
     stub_core_view('hasb-lock')
     stub_current_domain
 
-    set_feature_flags(
-      'enable_getty_images_gallery' => true,
-      'enable_deprecated_user_search_api' => false
-    )
+    set_feature_flags('enable_getty_images_gallery' => true)
 
     visit '/s/magic-thing/hasb-lock/edit'
 

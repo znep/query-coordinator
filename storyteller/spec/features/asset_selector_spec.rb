@@ -9,10 +9,7 @@ RSpec.describe 'asset selector', type: :feature, js: true do
     stub_core_view('hero-that')
     stub_current_domain
 
-    set_feature_flags(
-      'enable_getty_images_gallery' => enable_getty_images_gallery,
-      'enable_deprecated_user_search_api' => false
-    )
+    set_feature_flags('enable_getty_images_gallery' => enable_getty_images_gallery)
 
     visit '/s/magic-thing/hero-that/edit'
   end

@@ -338,7 +338,6 @@ end
 # Feature flag values used for tests, unless overriden via set_feature_flags.
 # Special note: Need to add feature flags here when site chrome adds a new FF dependency
 Signaller::Test::Helpers.defaults = {
-  'enable_deprecated_user_search_api' => false,
   'enable_getty_images_gallery' => true,
   'enable_filtered_tables_in_ax' => true,
   'enable_storyteller_mixpanel' => true,

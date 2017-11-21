@@ -1,12 +1,14 @@
 import _ from 'lodash';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import DateRangePicker from '../DateRangePicker';
-import FilterHeader from './FilterHeader';
-import FilterFooter from './FilterFooter';
+
 import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
-import { getDefaultFilterForColumn } from './filters';
-import moment from 'moment';
+
+import DateRangePicker from '../../DateRangePicker';
+import FilterHeader from '../FilterHeader';
+import FilterFooter from '../FilterFooter';
+import { getDefaultFilterForColumn } from '../filters';
 
 class CalendarDateFilter extends Component {
   constructor(props) {

@@ -5,6 +5,30 @@ import { SoqlDataProvider } from 'common/visualizations/dataProviders';
 import { CalculationTypeNames } from '../lib/constants';
 import { assertIsOneOfTypes } from 'common/js_utils';
 
+// Returns true if the given column can be used
+// with the given measure, false otherwise.
+export const isColumnUsableWithMeasureArgument = (column, measure, argument) => {
+  if (!column) { return false; }
+
+  const type = _.get(measure, 'metric.type');
+  const renderTypeName = _.get(column, 'renderTypeName');
+  const columnIsNumeric = renderTypeName === 'number' || renderTypeName === 'money';
+
+  if (type === CalculationTypeNames.RECENT_VALUE) {
+    // Special enough to be clearer as a separate path.
+    return (argument === 'dateColumn' && renderTypeName === 'calendar_date') ||
+      (argument === 'valueColumn' && columnIsNumeric);
+  } else {
+    // All other types
+    const aggregationType = _.get(measure, 'metric.arguments.aggregationType');
+    const needsNumericColumn =
+      (type === 'rate' && aggregationType === 'sum') ||
+      (type === 'sum');
+
+    return columnIsNumeric || !needsNumericColumn;
+  }
+};
+
 const setupSoqlDataProvider = (measure) => {
   const datasetUid = _.get(measure, 'metric.dataSource.uid');
   if (!datasetUid) {

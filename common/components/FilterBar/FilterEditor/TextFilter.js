@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 
 import I18n from 'common/i18n';
 
-import Dropdown from '../Dropdown';
-import SocrataIcon from '../SocrataIcon';
-import SearchablePicklist from './SearchablePicklist';
-import FilterFooter from './FilterFooter';
-import FilterHeader from './FilterHeader';
-import { getTextFilter } from './filters';
+import Dropdown from '../../Dropdown';
+import SocrataIcon from '../../SocrataIcon';
+import SearchablePicklist from '../SearchablePicklist';
+import FilterFooter from '../FilterFooter';
+import FilterHeader from '../FilterHeader';
+import { getTextFilter } from '../filters';
 
 class TextFilter extends Component {
   constructor(props) {

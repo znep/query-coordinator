@@ -21,6 +21,59 @@ describe('Edit modal reducer', () => {
     state = undefined;
   });
 
+  describe('SET_AGGREGATION_TYPE', () => {
+    it('throws if measure type is not "rate"', () => {
+      state = reducer(state, actions.editor.setCalculationType('count'));
+      assert.throws(() => {
+        reducer(state, actions.editor.setAggregationType('sum'))
+      });
+    });
+
+    it('removes columns from arguments if they are incompatible with the new aggregation type', () => {
+      state.dataSourceViewMetadata = {
+        columns: [
+          { fieldName: 'date', renderTypeName: 'calendar_date' },
+          { fieldName: 'text', renderTypeName: 'text' },
+          { fieldName: 'number', renderTypeName: 'number' },
+          { fieldName: 'money', renderTypeName: 'money' }
+        ]
+      };
+
+      // Full tests for isColumnUsableWithMeasureArgument exist in the measureCalculator tests.
+      state = reducer(state, actions.editor.setCalculationType('rate'));
+      state = reducer(state, actions.editor.setNumeratorColumn('date'));
+      state = reducer(state, actions.editor.setDenominatorColumn('text'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'date');
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'text');
+
+      // Check count calculations. They are OK with any column types.
+      state = reducer(state, actions.editor.setAggregationType('count'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'date'); // Same as before
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'text'); // Same as before
+
+      // Now check going from count to sum. Sum calculations require a numerical type.
+      // Our current columns are date and text, so both should be removed once we select sum.
+      state = reducer(state, actions.editor.setAggregationType('sum'));
+      assert.notNestedProperty(state, 'measure.metric.arguments.numeratorColumn'); // Gone (was date).
+      assert.notNestedProperty(state, 'measure.metric.arguments.denominatorColumn'); // Gone (was text).
+
+      // Now, verify that sum accepts both Money and Number (those being numerical types).
+      state = reducer(state, actions.editor.setAggregationType('count'));
+      state = reducer(state, actions.editor.setNumeratorColumn('number'));
+      state = reducer(state, actions.editor.setDenominatorColumn('money'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number'); // Test sanity.
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money'); // Test sanity.
+      state = reducer(state, actions.editor.setAggregationType('sum'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number'); // Numeric type, so should still be set.
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money'); // Numeric type, so should still be set.
+
+      // Finally, ensure selecting count does not inadvertently clear out numeric types.
+      state = reducer(state, actions.editor.setAggregationType('count'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number');
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money');
+    });
+  });
+
   describe('SET_DATA_SOURCE_UID', () => {
     it('updates the data source uid in the measure metric', () => {
       const dataSource = {

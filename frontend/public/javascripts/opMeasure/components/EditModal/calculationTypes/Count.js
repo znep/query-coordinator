@@ -5,7 +5,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-import { Checkbox, Dropdown, SocrataIcon } from 'common/components';
+import { Checkbox } from 'common/components';
+
+import ColumnDropdown from '../ColumnDropdown';
 import { toggleExcludeNullValues, setColumn } from '../../../actions/editor';
 
 export class Count extends Component {
@@ -13,30 +15,27 @@ export class Count extends Component {
   // Left-hand pane with count-specific options.
   renderConfigPane() {
     const {
+      columnFieldName,
       displayableFilterableColumns,
       excludeNullValues,
+      measure,
       onSelectColumn,
       onToggleExcludeNullValues
     } = this.props;
 
     const dropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        onSelectColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="number" />
-      })),
-      value: this.props.columnFieldName,
-      id: 'count-column'
+      columnFieldName,
+      displayableFilterableColumns,
+      id: 'count-column',
+      measure,
+      measureArgument: 'valueColumn',
+      onSelectColumn
     };
 
     return (
       <div className="metric-config">
         <div className="column-dropdown">
-          <Dropdown {...dropdownOptions} />
+          <ColumnDropdown {...dropdownOptions} />
         </div>
         <Checkbox id="exclude-null-values" onChange={onToggleExcludeNullValues} checked={excludeNullValues}>
           {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
@@ -74,6 +73,7 @@ Count.propTypes = {
     fieldName: PropTypes.string.isRequired
   })),
   excludeNullValues: PropTypes.bool.isRequired,
+  measure: PropTypes.object,
   onToggleExcludeNullValues: PropTypes.func.isRequired,
   onSelectColumn: PropTypes.func.isRequired
 };
@@ -86,7 +86,8 @@ function mapStateToProps(state) {
   return {
     columnFieldName,
     excludeNullValues,
-    displayableFilterableColumns
+    displayableFilterableColumns,
+    measure: state.editor.measure
   };
 }
 

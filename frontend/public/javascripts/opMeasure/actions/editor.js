@@ -20,7 +20,7 @@ export const receiveDataSourceMetadata = (rowCount, dataSourceViewMetadata, disp
 );
 
 export const setDataSource = (dataSourceString) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     const uid = _.get(dataSourceString.match(TRAILING_UID_REGEX), '1');
     dispatch(setDataSourceUid(uid));
 
@@ -39,18 +39,14 @@ export const setDataSource = (dataSourceString) => {
     });
 
     const metadataPromise = metadataProvider.getDatasetMetadata();
-    const rowCountPromise = soqlDataProvider.getRowCount();
 
-    return Promise.all([
-      metadataPromise,
-      rowCountPromise
-    ]).then(([dataSourceViewMetadata, rowCount]) => {
-      return metadataProvider.getDisplayableFilterableColumns(dataSourceViewMetadata).
-        then((displayableFilterableColumns) => {
-          dispatch(
-            receiveDataSourceMetadata(rowCount, dataSourceViewMetadata, displayableFilterableColumns));
-        });
-    });
+    dispatch(
+      receiveDataSourceMetadata(
+        await soqlDataProvider.getRowCount(),
+        await metadataPromise,
+        await metadataProvider.getDisplayableFilterableColumns(await metadataPromise)
+      )
+    );
   };
 };
 

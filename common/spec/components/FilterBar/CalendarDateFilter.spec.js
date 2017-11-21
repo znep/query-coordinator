@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import CalendarDateFilter from 'components/FilterBar/CalendarDateFilter';
+import CalendarDateFilter from 'components/FilterBar/FilterEditor/CalendarDateFilter';
 import { mockTimeRangeFilter, mockCalendarDateColumn } from './data';
 import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';

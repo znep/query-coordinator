@@ -1,3 +1,5 @@
+@import 'variables/colors';
+
 .authoring-modal {
   .modal-header {
     z-index: 60;
@@ -468,7 +470,7 @@
       [class^=icon] {
         margin-right: 5px;
         background: white;
-        color: #00be9b;
+        color: $alternate-3;
         border-radius: 50%;
         display: inline-block;
         width: 24px;

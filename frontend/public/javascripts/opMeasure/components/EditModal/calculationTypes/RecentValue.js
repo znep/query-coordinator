@@ -5,41 +5,39 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-import { Dropdown, SocrataIcon } from 'common/components';
+import ColumnDropdown from '../ColumnDropdown';
 import { setValueColumn, setDateColumn } from '../../../actions/editor';
 
 export class RecentValue extends Component {
   // Left-hand pane with count-specific options.
   renderConfigPane() {
-    const { displayableFilterableColumns } = this.props;
+    const {
+      dateColumnFieldName,
+      displayableFilterableColumns,
+      measure,
+      onSelectDateColumn,
+      onSelectValueColumn,
+      valueColumnFieldName
+    } = this.props;
 
     const valueColDropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        this.props.onSelectValueColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'number' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="number" />
-      })),
-      value: this.props.valueColumnFieldName,
-      labelledBy: 'value-column'
+      columnFieldName: valueColumnFieldName,
+      displayableFilterableColumns,
+      labelledBy: 'value-column',
+      measure,
+      measureArgument: 'valueColumn',
+      onSelectColumn: onSelectValueColumn
     };
 
     const dateColDropdownOptions = {
-      placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
-      onSelection: (option) => {
-        this.props.onSelectDateColumn(option.value);
-      },
-      options: _.filter(displayableFilterableColumns, { renderTypeName: 'calendar_date' }).map(numberCol => ({
-        title: numberCol.name,
-        value: numberCol.fieldName,
-        icon: <SocrataIcon name="date" />
-      })),
-      value: this.props.dateColumnFieldName,
-      labelledBy: 'date-column'
+      columnFieldName: dateColumnFieldName,
+      displayableFilterableColumns,
+      labelledBy: 'date-column',
+      measure,
+      measureArgument: 'dateColumn',
+      onSelectColumn: onSelectDateColumn
     };
+
 
     return (
       <div className="metric-config">
@@ -50,11 +48,11 @@ export class RecentValue extends Component {
           <label className="block-label" id={valueColDropdownOptions.labelledBy}>
             {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.value_column')}
           </label>
-          <Dropdown {...valueColDropdownOptions} />
+          <ColumnDropdown {...valueColDropdownOptions} />
           <label className="block-label" id={dateColDropdownOptions.labelledBy}>
             {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.date_column')}
           </label>
-          <Dropdown {...dateColDropdownOptions} />
+          <ColumnDropdown {...dateColDropdownOptions} />
         </div>
       </div>
     );
@@ -86,6 +84,7 @@ RecentValue.propTypes = {
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
+  measure: PropTypes.object.isRequired,
   onSelectDateColumn: PropTypes.func.isRequired,
   onSelectValueColumn: PropTypes.func.isRequired,
   valueColumnFieldName: PropTypes.string
@@ -99,6 +98,7 @@ function mapStateToProps(state) {
   return {
     dateColumnFieldName,
     displayableFilterableColumns,
+    measure: state.editor.measure,
     valueColumnFieldName
   };
 }

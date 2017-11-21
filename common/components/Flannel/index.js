@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ESCAPE, TAB, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 import * as a11y from 'common/a11y';
+import classNames from 'classnames';
 
 /* eslint-disable */
 export class Flannel extends Component {
@@ -118,18 +119,26 @@ export class Flannel extends Component {
     } else {
       document.body.classList.remove('modal-open');
 
-      const targetElement = this.getTarget();
-      const targetDimensions = targetElement.getBoundingClientRect();
-
-      left = targetDimensions.left;
-      top = targetDimensions.top + targetElement.offsetHeight + 10;
-
       const flannelWidth = this.flannelRef.getBoundingClientRect().width;
       const bodyWidth = document.body.offsetWidth; // Without scrollbar
-      const exceedsBodyWidth = left + flannelWidth > bodyWidth;
+      const targetElement = this.getTarget();
 
-      if (exceedsBodyWidth && windowWidth > mobileWidthBreakpoint) {
-        left -= flannelWidth - targetDimensions.width;
+      if (targetElement && targetElement.getBoundingClientRect) {
+        const targetRect = targetElement.getBoundingClientRect();
+
+        left = targetRect.left;
+        top = targetRect.top + targetElement.offsetHeight + 10;
+
+        const exceedsBodyWidth = left + flannelWidth > bodyWidth;
+
+        if (exceedsBodyWidth && windowWidth > mobileWidthBreakpoint) {
+          left -= flannelWidth - targetRect.width;
+        }
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('Target element not available. Defaulting to center of screen.');
+        left = (bodyWidth - flannelWidth) / 2;
+        top = 30; // Arbitrary.
       }
     }
 
@@ -142,7 +151,7 @@ export class Flannel extends Component {
 
     const flannelAttributes = {
       id,
-      className: `socrata-flannel ${className}`,
+      className: classNames('socrata-flannel', className),
       ref: (ref) => this.flannelRef = ref,
       style: { left, top },
       onKeyUp: this.tryFocusTrap,

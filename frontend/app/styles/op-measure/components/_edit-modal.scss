@@ -212,6 +212,23 @@
       }
     }
 
+    #rate-metric-numerator-column-conditions {
+      .socrata-flannel-content {
+        padding: 0;
+      }
+
+      h6 {
+        margin-bottom: 5px;
+      }
+
+      .socrata-icon {
+        margin-right: 5px;
+        path {
+          fill: $alternate-3;
+        }
+      }
+    }
+
     .rate-metric-numerator, .rate-metric-denominator {
       color: $dark-grey-2;
       font-size: 32px;

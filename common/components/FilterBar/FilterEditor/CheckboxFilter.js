@@ -1,13 +1,15 @@
 import _ from 'lodash';
-import Dropdown from '../Dropdown';
-import FilterFooter from './FilterFooter';
-import FilterHeader from './FilterHeader';
-import I18n from 'common/i18n';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SearchablePicklist from './SearchablePicklist';
-import SocrataIcon from '../SocrataIcon';
-import { getCheckboxFilter } from './filters';
+
+import I18n from 'common/i18n';
+
+import Dropdown from '../../Dropdown';
+import FilterFooter from '../FilterFooter';
+import FilterHeader from '../FilterHeader';
+import SearchablePicklist from '../SearchablePicklist';
+import SocrataIcon from '../../SocrataIcon';
+import { getCheckboxFilter } from '../filters';
 
 export class CheckboxFilter extends Component {
   constructor(props) {

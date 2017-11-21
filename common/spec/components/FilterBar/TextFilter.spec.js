@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
-import TextFilter from 'components/FilterBar/TextFilter';
+import TextFilter from 'components/FilterBar/FilterEditor/TextFilter';
 import { mockBinaryOperatorFilter, mockTextColumn } from './data';
 
 describe('TextFilter', () => {

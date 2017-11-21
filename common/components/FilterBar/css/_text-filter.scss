@@ -1,75 +1,75 @@
 @import "variables/colors.scss";
 
-.filter-bar-filter {
-  .text-filter {
-    .filter-control-title {
-      margin: 8px;
-      margin-top: 0;
-      margin-bottom: 0;
+.filter-controls.text-filter {
+  padding-top: 8px;
 
-      h3 {
-        display: inline-block;
-        margin: 3px 5px 3px 2px;
+  .filter-control-title {
+    margin: 8px;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    h3 {
+      display: inline-block;
+      margin: 3px 5px 3px 2px;
+      font-size: 12px;
+      font-weight: normal;
+      letter-spacing: 0;
+      vertical-align: text-bottom;
+    }
+
+    .dropdown-container {
+      vertical-align: bottom;
+
+      .dropdown-placeholder {
+        padding: 3px 40px 3px 10px;
         font-size: 12px;
-        font-weight: normal;
-        letter-spacing: 0;
-        vertical-align: text-bottom;
+        text-transform: uppercase;
+        color: $primary-text;
+        border-color: transparent;
+        border-bottom-color: $light-grey-2;
+        min-width: 80px;
+
+        .dropdown-caret {
+          width: 12px;
+          right: 2px;
+          top: 3px;
+        }
       }
 
-      .dropdown-container {
-        vertical-align: bottom;
-
-        .dropdown-placeholder {
-          padding: 3px 40px 3px 10px;
-          font-size: 12px;
+      .dropdown-options-list {
+        .picklist-option {
+          padding: 3px 10px;
           text-transform: uppercase;
+          font-size: 12px;
           color: $primary-text;
-          border-color: transparent;
-          border-bottom-color: $light-grey-2;
-          min-width: 80px;
 
-          .dropdown-caret {
-            width: 12px;
-            right: 2px;
-            top: 3px;
+          &.picklist-option-selected, &:active {
+            color: $white;
           }
         }
+      }
 
-        .dropdown-options-list {
-          .picklist-option {
-            padding: 3px 10px;
-            text-transform: uppercase;
-            font-size: 12px;
-            color: $primary-text;
-
-            &.picklist-option-selected, &:active {
-              color: $white;
-            }
-          }
-        }
-
-        &.dropdown-focused {
-          .dropdown-placeholder {
-            border-bottom-color: transparent;
-          }
+      &.dropdown-focused {
+        .dropdown-placeholder {
+          border-bottom-color: transparent;
         }
       }
     }
+  }
 
-    .searchable-picklist {
-      .alert,
-      .picklist {
-        border-left: none;
-        border-right: none;
-      }
+  .searchable-picklist {
+    .alert,
+    .picklist {
+      border-left: none;
+      border-right: none;
+    }
 
-      .picklist {
-        max-height: none;
-      }
+    .picklist {
+      max-height: none;
+    }
 
-      .picklist-group-header {
-        padding: 6px 10px;
-      }
+    .picklist-group-header {
+      padding: 6px 10px;
     }
   }
 }

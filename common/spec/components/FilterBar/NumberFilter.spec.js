@@ -1,9 +1,14 @@
+import $ from 'jquery';
 import _ from 'lodash';
-import NumberFilter from 'components/FilterBar/NumberFilter';
-import { mockValueRangeFilter, mockNumberColumn } from './data';
+import React from 'react';
+import { shallow } from 'enzyme';
 import { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../../helpers';
-import $ from 'jquery';
+import FilterHeader from 'components/FilterBar/FilterHeader';
+import FilterFooter from 'components/FilterBar/FilterFooter';
+import Slider from 'components/Slider';
+import NumberFilter from 'components/FilterBar/FilterEditor/NumberFilter';
+import { mockValueRangeFilter, mockNumberColumn } from './data';
 
 describe('NumberFilter', () => {
   function getProps(props) {
@@ -16,68 +21,69 @@ describe('NumberFilter', () => {
     });
   }
 
-  const getTitle = (element) => element.querySelector('.filter-control-title');
-  const getSlider = (element) => element.querySelector('.input-range-slider');
-  const getInputs = (element) => element.querySelectorAll('.range-input');
-  const getCheckbox = (element) => element.querySelector('.include-nulls-toggle');
-  const getFooter = (element) => element.querySelector('.filter-footer');
-  const getApplyButton = (element) => element.querySelector('.apply-btn');
-  const getResetButton = (element) => element.querySelector('.reset-btn');
-
-  it('renders a title', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    assert.isNotNull(getTitle(element));
+  it('renders a header', () => {
+    const element = shallow(<NumberFilter {...getProps()} />);
+    assert.lengthOf(element.find(FilterHeader), 1);
   });
 
   it('renders a slider', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    assert.isNotNull(getSlider(element));
+    const element = shallow(<NumberFilter {...getProps()} />);
+    assert.lengthOf(element.find(Slider), 1);
   });
 
-  it('renders two input fields', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    assert.lengthOf(getInputs(element), 2);
-  });
-
-  it('renders a checkbox', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    assert.isNotNull(getCheckbox(element));
+  it('renders a checkbox only if hideNullValueCheckbox is not set to true', () => {
+    let element = shallow(<NumberFilter {...getProps()} />);
+    assert.lengthOf(element.find('.include-nulls-toggle'), 1);
+    element = shallow(<NumberFilter {...getProps({ hideNullValueCheckbox: false })} />);
+    assert.lengthOf(element.find('.include-nulls-toggle'), 1);
+    element = shallow(<NumberFilter {...getProps({ hideNullValueCheckbox: true })} />);
+    assert.lengthOf(element.find('.include-nulls-toggle'), 0);
   });
 
   it('renders a footer', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    assert.isNotNull(getFooter(element));
+    const element = shallow(<NumberFilter {...getProps()} />);
+    assert.lengthOf(element.find(FilterFooter), 1);
   });
 
   it('computes the proper step based on the minimum precision of the range', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    const inputs = getInputs(element);
-    assert.deepEqual(_.map(inputs, 'step'), ['0.01', '0.01']);
+    const element = shallow(<NumberFilter {...getProps()} />);
+    const inputs = element.find('.range-input');
+    assert.lengthOf(inputs, 2);
+    assert.equal(inputs.at(0).prop('step'), '0.01');
+    assert.equal(inputs.at(1).prop('step'), '0.01');
   });
 
-  it('disables the apply button if the range is identical to the existing range', () => {
-    const element = renderComponent(NumberFilter, getProps());
-    const input = getInputs(element)[0];
-    const originalValue = input.value;
-
-    assert.isDefined($(getApplyButton(element)).attr('disabled'));
-
-    input.value = 2;
-    Simulate.change(input);
-
-    assert.isUndefined($(getApplyButton(element)).attr('disabled'));
-
-    input.value = originalValue;
-    Simulate.change(input);
-
-    assert.isDefined($(getApplyButton(element)).attr('disabled'));
-  });
-
+  // These tests actually render the element because they rely on browser-native <input>
+  // behavior (i.e., no Enzyme here).
   describe('when changed', () => {
     let spy;
     let element;
     let start;
     let end;
+
+    const getApplyButton = (element) => element.querySelector('.apply-btn');
+    const getResetButton = (element) => element.querySelector('.reset-btn');
+    const getInputs = (element) => element.querySelectorAll('.range-input');
+    const getIncludeNullsToggle = (element) => element.querySelector('.include-nulls-toggle');
+
+    it('disables the apply button if the range is identical to the existing range', () => {
+      const element = renderComponent(NumberFilter, getProps());
+      const input = getInputs(element)[0];
+      const originalValue = input.value;
+
+      assert.isDefined($(getApplyButton(element)).attr('disabled'));
+
+      input.value = 2;
+      Simulate.change(input);
+
+      assert.isUndefined($(getApplyButton(element)).attr('disabled'));
+
+      input.value = originalValue;
+      Simulate.change(input);
+
+      assert.isDefined($(getApplyButton(element)).attr('disabled'));
+    });
+
 
     beforeEach(() => {
       spy = sinon.spy();
@@ -157,7 +163,7 @@ describe('NumberFilter', () => {
     });
 
     it('updates filter with new includeNullValues value when checkbox clicked', () => {
-      const checkbox = getCheckbox(element);
+      const checkbox = getIncludeNullsToggle(element);
       Simulate.change(checkbox, { target: { checked: false } });
       Simulate.click(getApplyButton(element));
       const filter = spy.firstCall.args[0];

@@ -427,9 +427,6 @@
     "name" : "enable_feedback",
     "value" : "false"
   }, {
-    "name" : "show_newux_page_header",
-    "value" : "true"
-  }, {
     "name" : "current_page_metadata_version",
     "value" : "1"
   }, {

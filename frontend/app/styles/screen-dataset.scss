@@ -798,10 +798,10 @@ body.grid-view-2017-refresh {
                   background-repeat: no-repeat;
                 }
 
-                &.chart {
+                &.template {
 
                   .icon {
-                    background-position: 0 -13px;
+                    background-position: 0 0;
                   }
                 }
 
@@ -812,10 +812,17 @@ body.grid-view-2017-refresh {
                   }
                 }
 
-                &.fatrow {
+                &.chart {
 
                   .icon {
-                    background-position: 0 -65px;
+                    background-position: 0 -13px;
+                  }
+                }
+
+                &.calendar {
+
+                  .icon {
+                    background-position: 0 -26px;
                   }
                 }
 
@@ -826,10 +833,10 @@ body.grid-view-2017-refresh {
                   }
                 }
 
-                &.template {
+                &.fatrow {
 
                   .icon {
-                    background-position: 0 0;
+                    background-position: 0 -65px;
                   }
                 }
 

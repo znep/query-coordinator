@@ -2,10 +2,11 @@
   <%= rendered_stylesheet_tag 'display-form' %>
 <% end %>
 
+<%# TODO Refactor the unreadable mess below and use proper form tag helper %>
 <form class="formView socrataForm commonForm" method="POST"
   <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
   <%- if form_columns.any? {|c| c.client_type == 'document' || c.client_type == 'photo'} -%>
-  enctype="multipart/form-data"
+    enctype="multipart/form-data"
   <%- end -%>
   <%- success_redirect = @view.display.options.successRedirect -%>
   <%- def_success_redirect = view_form_success_url(@view) -%>
@@ -21,15 +22,14 @@
       </div>
     <%- end -%>
   <%- end -%>
-  <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
-    <%= render 'accounts/recaptcha2' %>
-  <%- end -%>
+
+  <%= render 'accounts/recaptcha2' %>
+
   <div class="submitLine">
     <input type="submit" value="Submit" />
   </div>
   <%- if local_assigns[:show_powered_tag] -%>
-  <a href="http://www.socrata.com/" class="poweredLink"
-    target="_blank">Powered by Socrata</a>
+    <a href="http://www.socrata.com/" class="poweredLink" target="_blank">Powered by Socrata</a>
   <%- end -%>
 </form>
 

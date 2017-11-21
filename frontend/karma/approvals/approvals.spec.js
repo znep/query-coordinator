@@ -6,7 +6,6 @@ import configureMockStore from 'redux-mock-store';
 import sinon from 'sinon';
 
 import Approvals from 'approvals/components/approvals';
-import { Settings } from 'common/components/AssetBrowser/components/approvals/settings';
 
 import { useTestTranslations } from 'common/i18n';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';

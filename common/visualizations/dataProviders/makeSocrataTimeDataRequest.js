@@ -286,12 +286,12 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
 
     case 'month':
       duration = moment.duration(endDateMoment.diff(startDateMoment));
-      monotonicRowCount = Math.ceil(duration.asMonths()) + 1;
+      monotonicRowCount = Math.round(duration.asMonths()) + 1;
       break;
 
     case 'day':
       duration = moment.duration(endDateMoment.diff(startDateMoment));
-      monotonicRowCount = Math.ceil(duration.asDays() + 1);
+      monotonicRowCount = Math.round(duration.asDays() + 1);
       break;
 
     default:

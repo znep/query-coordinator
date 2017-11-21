@@ -585,12 +585,9 @@ module BrowseActions
       browse_options[:hide_catalog_rss] = true
     end
 
-    # Set browse partial paths
-    if using_cetera? && using_cetera_profile_search?
-      browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
-      browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
-    # Applies if the user not on the profile page. @profile_search_method is set in profile controller
-    elsif using_cetera? && @profile_search_method.nil?
+    # Set browse partial paths. Applies if the user not on the profile page.
+    # @profile_search_method is set in profile controller
+    if using_cetera? && @profile_search_method.nil?
       browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
       browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
     else

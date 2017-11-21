@@ -1,7 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { Manager } from 'components/Manager';
-import { FeatureFlags } from 'common/feature_flags';
 import _ from 'lodash';
 
 describe('components/Manager', () => {
@@ -52,13 +51,7 @@ describe('components/Manager', () => {
   });
 
   describe('description input', () => {
-    it('renders an input tag if enable_markdown_for_catalog_landing_page_description is false', () => {
-      const element = renderComponentWithStore(Manager, getProps());
-      assert.isNotNull(element.querySelector('input.text-input.input-description'));
-    });
-
-    it('renders a textarea tag if enable_markdown_for_catalog_landing_page_description is true', () => {
-      window.serverConfig.featureFlags.enable_markdown_for_catalog_landing_page_description = true;
+    it('renders a textarea tag', () => {
       const element = renderComponentWithStore(Manager, getProps());
       assert.isNotNull(element.querySelector('textarea.text-input.input-description'));
     });

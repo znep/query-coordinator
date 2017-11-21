@@ -30,7 +30,6 @@ module CatalogLandingPageHelper
       :clp_move_description_below_featured_content,
       :default_to_catalog_landing_page,
       :enable_catalog_landing_page,
-      :enable_markdown_for_catalog_landing_page_description,
       :stories_enabled
     )
 

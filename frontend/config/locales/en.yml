@@ -3177,8 +3177,12 @@ en:
             rate:
               aggregation_subtitle: Configure math for numerator and denominator
               aggregation_title: Set Aggregation
+              condition_text_prefix: "Condition:"
               conditions:
                 header:
+                  calendar_date: Date range
+                  checkbox: Category selection
+                  money: Range ($)
                   number: Range
                   text: Category selection
                 subheader: Limit this column based on its contents.

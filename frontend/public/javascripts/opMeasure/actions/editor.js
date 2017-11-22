@@ -87,6 +87,12 @@ export const setNumeratorColumn = (fieldName) => ({
   fieldName
 });
 
+export const SET_NUMERATOR_COLUMN_CONDITION = 'SET_NUMERATOR_COLUMN_CONDITION';
+export const setNumeratorColumnCondition = (condition) => ({
+  type: SET_NUMERATOR_COLUMN_CONDITION,
+  condition
+});
+
 export const SET_DENOMINATOR_COLUMN = 'SET_DENOMINATOR_COLUMN';
 export const setDenominatorColumn = (fieldName) => ({
   type: SET_DENOMINATOR_COLUMN,

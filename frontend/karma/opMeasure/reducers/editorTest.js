@@ -135,6 +135,24 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('SET_NUMERATOR_COLUMN_CONDITION', () => {
+    it('throws if the calculation type is not rate', () => {
+      assert.throws(() => {
+        state = reducer(state, actions.editor.setCalculationType('count'));
+        reducer(state, actions.editor.setNumeratorColumnCondition({}))
+      });
+    });
+
+    it('updates the appropriate argument', () => {
+      state = reducer(state, actions.editor.setCalculationType('rate'));
+      assert.notNestedProperty(state, 'measure.metric.arguments.numeratorColumnCondition');
+
+      const newCondition = { type: 'mock' };
+      state = reducer(state, actions.editor.setNumeratorColumnCondition(newCondition));
+      assert.deepEqual(state.measure.metric.arguments.numeratorColumnCondition, newCondition);
+    });
+  });
+
   describe('SET_COLUMN', () => {
     it('updates the column in metric arguments with the column field name', () => {
       const columnFieldName = 'yay im a column';

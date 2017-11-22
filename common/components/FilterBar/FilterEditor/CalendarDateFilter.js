@@ -156,11 +156,15 @@ class CalendarDateFilter extends Component {
   render() {
     const { column, isReadOnly, onClickConfig, onRemove } = this.props;
 
-    const headerProps = {
-      name: column.name,
-      isReadOnly,
-      onClickConfig
-    };
+    let header = this.props.header;
+    if (!header) {
+      const headerProps = {
+        name: column.name,
+        isReadOnly,
+        onClickConfig
+      };
+      header = <FilterHeader {...headerProps} />;
+    }
 
     const footerProps = {
       disableApplyFilter: this.shouldDisableApply(),
@@ -173,7 +177,7 @@ class CalendarDateFilter extends Component {
     return (
       <div className="filter-controls calendar-date-filter" ref={(el) => this.dateFilter = el}>
         <div className="range-filter-container">
-          <FilterHeader {...headerProps} />
+          {header}
           {this.renderDateRangePicker()}
         </div>
         <FilterFooter {...footerProps} />
@@ -183,13 +187,14 @@ class CalendarDateFilter extends Component {
 }
 
 CalendarDateFilter.propTypes = {
-  filter: PropTypes.object.isRequired,
   column: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired,
+  header: PropTypes.element,
   isReadOnly: PropTypes.bool,
-  onClickConfig: PropTypes.func.isRequired,
+  onClear: PropTypes.func,
+  onClickConfig: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  onClear: PropTypes.func
+  onUpdate: PropTypes.func.isRequired
 };
 
 export default CalendarDateFilter;

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -16,16 +17,19 @@ import {
   SocrataIcon
 } from 'common/components';
 import FilterEditor from 'common/components/FilterBar/FilterEditor';
+import { getFilterToggleText } from 'common/components/FilterBar/filters';
+import { getIconForDataType } from 'common/icons';
 
 import ColumnDropdown from '../ColumnDropdown';
 
 import {
   setAggregationType,
   setDenominatorColumn,
+  setFixedDenominator,
   setNumeratorColumn,
-  toggleNumeratorExcludeNullValues,
+  setNumeratorColumnCondition,
   toggleDenominatorExcludeNullValues,
-  setFixedDenominator
+  toggleNumeratorExcludeNullValues
 } from '../../../actions/editor';
 
 import withComputedMeasure from '../../withComputedMeasure';
@@ -42,46 +46,63 @@ export class Rate extends Component {
     this.setState({ columnConditionsFlyoutOpen: true });
   }
 
-  onSetColumnConditions = () => {
-    // We get passed the conditions in this callback.
-    // In the next batch of work, we should actually
-    // _do_ something with the conditions.
+  onFilterChanged = (condition) => {
     this.setState({ columnConditionsFlyoutOpen: false });
+    this.props.onSelectNumeratorColumnCondition(condition);
+  }
+
+  onFilterFlannelDismiss = (event) => {
+    /*
+      The third-party library used for DateRangePicker adds the calendar element on the page body but not
+      within the Flannel div element. As a result, clicking on the calendar is considered to be outside of
+      the Flannel div element and causes the flannel to think it should be dismissed. We know better.
+    */
+    const isInsideDatePicker = event && $(event.target).closest('.react-datepicker').length > 0;
+    // Close if outside datepicker.
+    this.setState({ columnConditionsFlyoutOpen: isInsideDatePicker });
   }
 
   renderNumeratorColumnConditionsFlyout() {
-    const { numeratorColumn } = this.props;
+    const { numeratorColumn, numeratorColumnCondition } = this.props;
     const { columnConditionsFlyoutOpen } = this.state;
 
     if (!columnConditionsFlyoutOpen || !numeratorColumn) {
       return null;
     }
 
+    // eslint-disable-next-line max-len
+    const headerText = I18n.t(`open_performance.measure.edit_modal.calculation.types.rate.conditions.header.${numeratorColumn.dataTypeName}`);
+
     const header = (
-      <div>
+      <div className="rate-metric-numerator-column-condition-header">
         <h6>
-          <SocrataIcon name="number" />
-          {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.conditions.header.number')}
+          <SocrataIcon name={getIconForDataType(numeratorColumn.dataTypeName)} />
+          {headerText}
         </h6>
         {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.conditions.subheader')}
       </div>
     );
 
     const filterProps = {
-      filter: {},
+      filter: numeratorColumnCondition || {},
       column: numeratorColumn,
-      onRemove: () => this.onSetColumnConditions(null),
-      onUpdate: this.onSetColumnConditions,
+      onRemove: () => this.onFilterChanged(null),
+      onUpdate: this.onFilterChanged,
       header,
       hideNullValueCheckbox: true
     };
 
     const flannelProps = {
       id: 'rate-metric-numerator-column-conditions',
-      title: 'asd',
+      // The calendar_date filter editor's date pickers open on focus. If we autofocus
+      // those, the date picker will open as soon as the user starts editing the filter. This
+      // is very confusing. However, for all other types, focusing the first textbox/slider/etc
+      // is helpful.
+      autoFocus: numeratorColumn.dataTypeName !== 'calendar_date',
+      title: I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions'),
       isOpen: true,
-      onDismiss: () => this.setState({ columnConditionsFlyoutOpen: false }),
-      target: () => this.numeratorColumnConditionsLinkRef
+      onDismiss: this.onFilterFlannelDismiss,
+      target: () => this.numeratorColumnConditionLinkRef
     };
 
     return (
@@ -94,19 +115,26 @@ export class Rate extends Component {
   }
 
   renderNumeratorColumnConditions() {
-    const { numeratorColumn } = this.props;
+    const { numeratorColumn, numeratorColumnCondition } = this.props;
 
     if (!numeratorColumn) {
       return null;
+    }
+
+    let text = I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions');
+    if (numeratorColumnCondition) {
+      const condition = getFilterToggleText(numeratorColumnCondition, numeratorColumn);
+      // eslint-disable-next-line max-len
+      text = `${I18n.t('open_performance.measure.edit_modal.calculation.types.rate.condition_text_prefix')} ${condition}`;
     }
 
     return (
       <a
         role="button"
         href="#"
-        ref={(ref) => this.numeratorColumnConditionsLinkRef = ref}
+        ref={(ref) => this.numeratorColumnConditionLinkRef = ref}
         onClick={this.onClickSetColumnConditions}>
-        {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions')}
+        {text}
       </a>
     );
   }
@@ -294,10 +322,12 @@ Rate.propTypes = {
   onSelectAggregationType: PropTypes.func.isRequired,
   onSelectDenominatorColumn: PropTypes.func.isRequired,
   onSelectNumeratorColumn: PropTypes.func.isRequired,
+  onSelectNumeratorColumnCondition: PropTypes.func.isRequired,
   onToggleNumeratorExcludeNullValues: PropTypes.func.isRequired,
   onToggleDenominatorExcludeNullValues: PropTypes.func.isRequired,
   onChangeFixedDenominator: PropTypes.func.isRequired,
-  numeratorColumn: PropTypes.object, // TODO connect the filter
+  numeratorColumn: PropTypes.object,
+  numeratorColumnCondition: PropTypes.object,
   numeratorColumnFieldName: PropTypes.string,
   numeratorExcludeNullValues: PropTypes.bool.isRequired
 };
@@ -316,6 +346,7 @@ function mapStateToProps(state) {
     state, 'editor.measure.metric.arguments.numeratorExcludeNullValues', false
   );
   const numeratorColumn = _.find(displayableFilterableColumns, { fieldName: numeratorColumnFieldName });
+  const numeratorColumnCondition = _.get(state, 'editor.measure.metric.arguments.numeratorColumnCondition');
 
   if (numeratorColumnFieldName && !numeratorColumn) {
     throw new Error(`Numerator column not in filterable column set: ${numeratorColumnFieldName}`);
@@ -328,6 +359,7 @@ function mapStateToProps(state) {
     displayableFilterableColumns,
     fixedDenominator,
     numeratorColumn,
+    numeratorColumnCondition,
     numeratorColumnFieldName,
     numeratorExcludeNullValues,
     measure
@@ -339,6 +371,7 @@ function mapDispatchToProps(dispatch) {
     onSelectAggregationType: setAggregationType,
     onSelectDenominatorColumn: setDenominatorColumn,
     onSelectNumeratorColumn: setNumeratorColumn,
+    onSelectNumeratorColumnCondition: setNumeratorColumnCondition,
     onToggleNumeratorExcludeNullValues: toggleNumeratorExcludeNullValues,
     onToggleDenominatorExcludeNullValues: toggleDenominatorExcludeNullValues,
     onChangeFixedDenominator: setFixedDenominator

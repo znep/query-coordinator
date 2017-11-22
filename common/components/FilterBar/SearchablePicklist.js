@@ -110,29 +110,27 @@ export class SearchablePicklist extends Component {
 
     return (
       <div className="searchable-picklist-input-container">
-        <form>
-          <span className="input-group">
-            <input
-              className="searchable-picklist-input"
-              type="text"
-              aria-label={I18n.t('shared.components.filter_bar.search')}
-              value={value || ''}
-              ref={(el) => this.search = el}
-              onKeyPress={this.onKeyPressSearch}
-              onChange={this.onChangeSearchTerm}
-              aria-invalid={isError}
-              disabled={isValidating} />
-            {loadingSpinner}
-            <span className="input-group-btn">
-              <button
-                className={buttonClassName}
-                onClick={this.onSearch}
-                disabled={isValidating}>
-                <SocrataIcon name="search" />
-              </button>
-            </span>
+        <span className="input-group">
+          <input
+            className="searchable-picklist-input"
+            type="text"
+            aria-label={I18n.t('shared.components.filter_bar.search')}
+            value={value || ''}
+            ref={(el) => this.search = el}
+            onKeyPress={this.onKeyPressSearch}
+            onChange={this.onChangeSearchTerm}
+            aria-invalid={isError}
+            disabled={isValidating} />
+          {loadingSpinner}
+          <span className="input-group-btn">
+            <button
+              className={buttonClassName}
+              onClick={this.onSearch}
+              disabled={isValidating}>
+              <SocrataIcon name="search" />
+            </button>
           </span>
-        </form>
+        </span>
       </div>
     );
   }

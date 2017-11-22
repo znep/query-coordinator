@@ -97,6 +97,7 @@ export default (state = initialState(), action) => {
 
       if (!isColumnUsableWithMeasureArgument(numeratorColumn, newState.measure, 'numerator')) {
         _.unset(newState, 'measure.metric.arguments.numeratorColumn');
+        _.unset(newState, 'measure.metric.arguments.numeratorColumnCondition');
       }
       if (!isColumnUsableWithMeasureArgument(denominatorColumn, newState.measure, 'denominator')) {
         _.unset(newState, 'measure.metric.arguments.denominatorColumn');
@@ -105,9 +106,23 @@ export default (state = initialState(), action) => {
       return newState;
     }
 
-    case actions.editor.SET_NUMERATOR_COLUMN:
+    case actions.editor.SET_NUMERATOR_COLUMN: {
+      assert(
+        _.get(state, 'measure.metric.type') === 'rate',
+        'This action only makes sense for rate measures.'
+      );
       assertIsOneOfTypes(action.fieldName, 'string');
-      return updateMeasureProperty(state, 'metric.arguments.numeratorColumn', action.fieldName);
+      const newState = updateMeasureProperty(state, 'metric.arguments.numeratorColumn', action.fieldName);
+      _.unset(newState, 'measure.metric.arguments.numeratorColumnCondition');
+      return newState;
+    }
+
+    case actions.editor.SET_NUMERATOR_COLUMN_CONDITION:
+      assert(
+        _.get(state, 'measure.metric.type') === 'rate',
+        'This action only makes sense for rate measures today.'
+      );
+      return updateMeasureProperty(state, 'metric.arguments.numeratorColumnCondition', action.condition);
 
     case actions.editor.SET_DENOMINATOR_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');

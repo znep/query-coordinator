@@ -6,15 +6,12 @@ import { ESCAPE, TAB, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers
 import * as a11y from 'common/a11y';
 import classNames from 'classnames';
 
-/* eslint-disable */
 export class Flannel extends Component {
-/* eslint-enable */
   constructor(props) {
     super(props);
 
     this.state = {
-      top: 0,
-      left: 0,
+      position: {},
       previouslyFocusedElement: document.activeElement
     };
 
@@ -35,7 +32,9 @@ export class Flannel extends Component {
 
   componentDidMount() {
     this.positionSelf();
-    a11y.focusFirstActionableElement(this.flannelRef);
+    if (this.props.autoFocus) {
+      a11y.focusFirstActionableElement(this.flannelRef);
+    }
   }
 
   componentWillUnmount() {
@@ -57,13 +56,13 @@ export class Flannel extends Component {
     const outsideTarget = $eventTarget.closest(this.getTarget()).length === 0;
 
     if (outsideFlannel && outsideTarget) {
-      this.props.onDismiss();
+      this.props.onDismiss(event);
     }
   }
 
   onKeyUpDocument(event) {
     if (event.keyCode === ESCAPE) {
-      this.props.onDismiss();
+      this.props.onDismiss(event);
     }
   }
 
@@ -77,7 +76,7 @@ export class Flannel extends Component {
     const outsideFlannel = $activeElement.closest(this.flannelRef).length === 0;
 
     if (outsideFlannel) {
-      this.props.onDismiss();
+      this.props.onDismiss(event);
     }
   }
 
@@ -107,53 +106,67 @@ export class Flannel extends Component {
   }
 
   positionSelf() {
-    let left;
-    let top;
+    let position = {};
     const mobileWidthBreakpoint = 420;
     const windowWidth = window.innerWidth; // With scrollbar
 
     if (windowWidth <= mobileWidthBreakpoint) {
       document.body.classList.add('modal-open');
-      left = 0;
-      top = 0;
+      position = { top: 0, left: 0 };
     } else {
       document.body.classList.remove('modal-open');
 
-      const flannelWidth = this.flannelRef.getBoundingClientRect().width;
+      const flannelRect = this.flannelRef.getBoundingClientRect();
       const bodyWidth = document.body.offsetWidth; // Without scrollbar
+      // Supposed to be without scrollbar, but this is inconsistent. Subtract a nerf factor.
+      const bodyHeight = document.body.offsetHeight - 15;
       const targetElement = this.getTarget();
 
       if (targetElement && targetElement.getBoundingClientRect) {
+        // Position below the target element, left-justified.
+        // Don't let it go off screen.
         const targetRect = targetElement.getBoundingClientRect();
 
-        left = targetRect.left;
-        top = targetRect.top + targetElement.offsetHeight + 10;
+        let left = targetRect.left;
+        let top = targetRect.top + targetElement.offsetHeight + 10;
 
-        const exceedsBodyWidth = left + flannelWidth > bodyWidth;
+        const exceedsBodyWidth = left + flannelRect.width > bodyWidth;
+        const exceedsBodyHeight = top + flannelRect.height > bodyHeight;
 
-        if (exceedsBodyWidth && windowWidth > mobileWidthBreakpoint) {
-          left -= flannelWidth - targetRect.width;
+        if (exceedsBodyWidth) {
+          position.right = 0;
+        } else {
+          position.left = left;
         }
+
+        if (exceedsBodyHeight) {
+          position.bottom = 0;
+        } else {
+          position.top = top;
+        }
+
       } else {
         // eslint-disable-next-line no-console
         console.warn('Target element not available. Defaulting to center of screen.');
-        left = (bodyWidth - flannelWidth) / 2;
-        top = 30; // Arbitrary.
+        position = {
+          left: (bodyWidth - flannelRect.width) / 2,
+          top: (bodyHeight - flannelRect.height) / 2
+        };
       }
     }
 
-    this.setState({ left, top });
+    this.setState({ position });
   }
 
   render() {
     const { id, children, className, title } = this.props;
-    const { top, left } = this.state;
+    const { position } = this.state;
 
     const flannelAttributes = {
       id,
       className: classNames('socrata-flannel', className),
       ref: (ref) => this.flannelRef = ref,
-      style: { left, top },
+      style: position,
       onKeyUp: this.tryFocusTrap,
       role: 'dialog',
       'aria-label': title
@@ -166,6 +179,8 @@ export class Flannel extends Component {
 Flannel.propTypes = {
   // A top-level HTML attribute corresponding to id for easier targeting.
   id: PropTypes.string,
+  // If set (default) , the flannel will automatically focus its first actionable child on mount.
+  autoFocus: PropTypes.bool,
   // Implicit React children handled by React.
   children: PropTypes.node,
   // A top-level HTML attribute corresponding to class for easier targeting.
@@ -176,6 +191,8 @@ Flannel.propTypes = {
   // - The user hits escape.
   // - The user clicks outside of the flannel.
   // The actual close functionality is left to the consumer of this component.
+  // The event responsible for triggering the dismiss behavior is provided as the only argument. It may
+  // be used to apply further logic to the behavior governing flannel dismissal.
   onDismiss: PropTypes.func,
   // A flannel is mounted on the bottom of a target element.
   // This element can be a React element, raw HTMLElement, or a function
@@ -191,6 +208,7 @@ Flannel.propTypes = {
 };
 
 Flannel.defaultProps = {
+  autoFocus: true,
   onDismiss: _.noop
 };
 

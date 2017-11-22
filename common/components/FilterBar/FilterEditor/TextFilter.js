@@ -155,8 +155,10 @@ class TextFilter extends Component {
   }
 
   renderHeader() {
-    const { column, controlSize, isReadOnly, onClickConfig } = this.props;
+    const { column, controlSize, isReadOnly, onClickConfig, header } = this.props;
     const { isValidating } = this.state;
+
+    if (header) { return header; }
 
     const headerProps = {
       name: column.name,
@@ -281,18 +283,19 @@ TextFilter.propTypes = {
   column: PropTypes.object.isRequired,
   controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
   filter: PropTypes.object.isRequired,
+  header: PropTypes.element,
   isReadOnly: PropTypes.bool,
   isValidTextFilterColumnValue: PropTypes.func,
+  onClickConfig: PropTypes.func,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
   spandex: PropTypes.shape({
     available: PropTypes.bool,
     datasetUid: PropTypes.string.isRequired,
     domain: PropTypes.string.isRequired,
     provider: PropTypes.object // i.e. PropTypes.instanceOf(SpandexDataProvider)
   }),
-  value: PropTypes.string,
-  onClickConfig: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired
+  value: PropTypes.string
 };
 
 TextFilter.defaultProps = {

@@ -32,16 +32,20 @@ LabelledCheckmark.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
+function PublishReadinessFlyout(
+  { metadataSatisfied, dataSatisfied, parenthoodSatisfied, requiresParenthood }) {
   return (
     <div id={FLYOUT_ID} className={styles.flyout}>
       <section className={styles.flyoutContent}>
-        {metadataSatisfied && dataSatisfied ? (
+        {metadataSatisfied && dataSatisfied && parenthoodSatisfied ? (
           SubI18n.make_accessible
         ) : (
           <div>
             {SubI18n.cant_publish_until}
             <ul>
+              {!requiresParenthood || <li>
+                <LabelledCheckmark checked={parenthoodSatisfied} text={SubI18n.parenthood_satisfied} />
+              </li>}
               <li>
                 <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
               </li>
@@ -58,7 +62,9 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
 
 PublishReadinessFlyout.propTypes = {
   metadataSatisfied: PropTypes.bool.isRequired,
-  dataSatisfied: PropTypes.bool.isRequired
+  dataSatisfied: PropTypes.bool.isRequired,
+  parenthoodSatisfied: PropTypes.bool.isRequired,
+  requiresParenthood: PropTypes.bool.isRequired
 };
 
 class PublishButton extends Component {
@@ -77,8 +83,15 @@ class PublishButton extends Component {
   }
 
   render() {
-    const { publishDataset, metadataSatisfied, dataSatisfied, publishing } = this.props;
-    const readyToPublish = metadataSatisfied && dataSatisfied;
+    const {
+      publishDataset,
+      metadataSatisfied,
+      dataSatisfied,
+      parenthoodSatisfied,
+      publishing,
+      requiresParenthood
+    } = this.props;
+    const readyToPublish = metadataSatisfied && dataSatisfied && parenthoodSatisfied;
 
     return (
       <div
@@ -96,6 +109,8 @@ class PublishButton extends Component {
         <PublishReadinessFlyout
           dataSatisfied={dataSatisfied}
           metadataSatisfied={metadataSatisfied}
+          parenthoodSatisfied={parenthoodSatisfied}
+          requiresParenthood={requiresParenthood}
           hide={publishing} />
       </div>
     );
@@ -105,7 +120,9 @@ class PublishButton extends Component {
 PublishButton.propTypes = {
   metadataSatisfied: PropTypes.bool.isRequired,
   dataSatisfied: PropTypes.bool.isRequired,
+  parenthoodSatisfied: PropTypes.bool.isRequired,
   publishing: PropTypes.bool.isRequired,
+  requiresParenthood: PropTypes.bool.isRequired,
   publishDataset: PropTypes.func.isRequired
 };
 

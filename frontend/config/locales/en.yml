@@ -2217,7 +2217,6 @@ en:
           data_asset_processing: Your dataset is being processed & will be submitted for review shortly
           title_public: Your dataset is being processed & will be public shortly
           title_private: Your dataset is being processed and will remain private
-          title_data_asset:
         successful:
           body: You can't currently make any more changes from here.
           title: This dataset is published

@@ -8,7 +8,7 @@ RSpec.describe 'I18n' do
 
   it 'does not have missing en keys' do
     expect(missing_keys).to be_empty,
-      "Missing #{missing_keys.leaves.count} i18n keys, run 'i18n-tasks missing en' to show them"
+      "Missing #{missing_keys.leaves.count} i18n keys, run 'i18n-tasks missing en' to show them. You may first need to run 'bin/pull_translations'."
   end
 
   # We might want to test for unused keys at some point, but meh for now.

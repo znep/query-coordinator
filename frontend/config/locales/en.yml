@@ -2202,6 +2202,7 @@ en:
         data_satisfied: Added a data file, and finished validation
         make_accessible: Make the dataset accessible to others
         metadata_satisfied: Filled out all required metadata
+        parenthood_satisfied: Associated your dataset with a data asset
         publish_dataset: Publish Dataset
       publish_modal:
         failure:

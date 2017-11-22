@@ -31,6 +31,16 @@ function isDataSatisfied({ entities, ui }, params) {
   return dataSatisfied;
 }
 
+// do not allow publishing of is_parent: false revisions w/o an external link (pointing to a parent) on USAID
+function isParenthoodSatisfied(rev, isUSAID) {
+  if (isUSAID && rev.is_parent === false) {
+    return !!rev.metadata.metadata.additionalAccessPoints &&
+      rev.metadata.metadata.additionalAccessPoints.length > 0;
+  } else {
+    return true;
+  }
+}
+
 function isPublishing(taskSets) {
   return !!_.chain(taskSets)
     .filter(set => set.status === ApplyRevision.TASK_SET_IN_PROGRESS)
@@ -39,13 +49,18 @@ function isPublishing(taskSets) {
 }
 
 export function mapStateToProps(state, { params }) {
+  const rev = Selectors.currentRevision(state.entities, _.toNumber(params.revisionSeq));
+  const isUSAID = window.serverConfig.featureFlags.usaid_features_enabled;
+
   const dataSatisfied = isDataSatisfied(state, params);
   const publishing = isPublishing(state.entities.task_sets);
-
+  const parenthoodSatisfied = isParenthoodSatisfied(rev, isUSAID);
   return {
     metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
     dataSatisfied,
-    publishing
+    parenthoodSatisfied,
+    publishing,
+    requiresParenthood: isUSAID && rev.is_parent === false
   };
 }
 

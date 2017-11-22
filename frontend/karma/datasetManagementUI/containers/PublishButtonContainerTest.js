@@ -129,5 +129,76 @@ describe('containers/PublishButtonContainer', () => {
 
       assert.isTrue(props.publishing);
     });
+
+    describe('usaid and parenthood', () => {
+      it('returns parenthoodSatisfied as true if dealing with a is_parent: true or nil dataset', () => {
+        window.serverConfig.featureFlags.usaid_features_enabled = true;
+        const props = mapStateToProps(state, ownProps);
+        assert.isTrue(props.parenthoodSatisfied);
+
+        const newState = dotProp.set(
+          state,
+          `entities.revisions.111.is_parent`,
+          true
+        );
+
+        const newProps = mapStateToProps(newState, ownProps);
+        assert.isTrue(newProps.parenthoodSatisfied);
+        assert.isFalse(newProps.requiresParenthood);
+      });
+
+      it('returns parenthoodSatisfied as true if usaid ff is false', () => {
+        window.serverConfig.featureFlags.usaid_features_enabled = false;
+
+        const newState = dotProp.set(
+          state,
+          `entities.revisions.111.is_parent`,
+          false
+        );
+
+        const newProps = mapStateToProps(newState, ownProps);
+        assert.isTrue(newProps.parenthoodSatisfied);
+        assert.isFalse(newProps.requiresParenthood);
+      });
+
+      it('returns parenthoodSatisfied as false if is_parent is false and linkless', () => {
+        window.serverConfig.featureFlags.usaid_features_enabled = true;
+
+        let newState = dotProp.set(
+          state,
+          `entities.revisions.111.is_parent`,
+          false
+        );
+        newState = dotProp.set(
+          newState,
+          `entities.revisions.111.metadata`,
+          {'metadata': {}}
+        );
+
+        const newProps = mapStateToProps(newState, ownProps);
+        assert.isFalse(newProps.parenthoodSatisfied);
+        assert.isTrue(newProps.requiresParenthood);
+      });
+
+      it('returns parenthoodSatisfied as true if is_parent is false and has link', () => {
+        window.serverConfig.featureFlags.usaid_features_enabled = true;
+
+        let newState = dotProp.set(
+          state,
+          `entities.revisions.111.is_parent`,
+          false
+        );
+        newState = dotProp.set(
+          newState,
+          `entities.revisions.111.metadata`,
+          {'metadata': {'additionalAccessPoints': [{}]}}
+        );
+
+        const newProps = mapStateToProps(newState, ownProps);
+        assert.isTrue(newProps.parenthoodSatisfied);
+        assert.isTrue(newProps.requiresParenthood);
+      });
+    })
+
   });
 });

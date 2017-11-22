@@ -63,9 +63,7 @@ class PublishConfirmation extends Component {
             operation={APPLY_REVISION}
             forceDisable={btnDisabled}
             onClick={() => dispatchApplyRevision()}>
-            {publicSelected
-              ? I18n.home_pane.publish_confirmation.button_public
-              : I18n.home_pane.publish_confirmation.button_private}
+              {I18n.home_pane.publish_confirmation.button}
           </ApiCallButton>
         </ModalFooter>
       </div>

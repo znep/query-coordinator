@@ -2190,8 +2190,7 @@ en:
       process_data: Process Data
       publish_confirmation:
         body: It will be accessible to anyone through your data catalog.
-        button_public: Publish Now
-        button_private: Done
+        button: Done
         private: Private
         private_msg: Only accessible to people within your organization.
         public: Public
@@ -2199,11 +2198,14 @@ en:
         title: Choose your audience
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'
+        cant_submit_until: 'You can''t submit until you have:'
         data_satisfied: Added a data file, and finished validation
         make_accessible: Make the dataset accessible to others
         metadata_satisfied: Filled out all required metadata
         parenthood_satisfied: Associated your dataset with a data asset
         publish_dataset: Publish Dataset
+        submit_for_review: Submit for Review
+        submit_for_review_flyout: Submit this for review
       publish_modal:
         failure:
           body: Our site is having trouble right now. Please wait and try again, or contact support.
@@ -2211,11 +2213,16 @@ en:
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
+          dataset_processing: Your dataset is being processed & will be submitted for review shortly
+          data_asset_processing: Your dataset is being processed & will be submitted for review shortly
           title_public: Your dataset is being processed & will be public shortly
           title_private: Your dataset is being processed and will remain private
+          title_data_asset:
         successful:
           body: You can't currently make any more changes from here.
           title: This dataset is published
+          dataset_submitted_title: This dataset has been submitted for review.
+          data_asset_submitted_title: This data asset has been submitted for review.
         to_primer: Go to Primer
         progress_messages:
           initializing: Initializing

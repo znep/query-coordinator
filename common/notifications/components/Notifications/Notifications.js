@@ -252,7 +252,8 @@ class Notifications extends Component {
         showProductNotifications,
         showUserNotifications,
         currentUserRole,
-        isSuperAdmin
+        isSuperAdmin,
+        currentDomainFeatures
       } = this.props.options;
       const {
         areNotificationsLoading,
@@ -298,6 +299,7 @@ class Notifications extends Component {
             userNotifications={userNotifications}
             unreadProductNotificationCount={unreadProductNotificationCount}
             unreadUserNotificationCount={unreadUserNotificationCount}
+            currentDomainFeatures={currentDomainFeatures}
             viewOlderLink={viewOlderLink} />
         </div>
       );

@@ -80,12 +80,17 @@ class AlertSettingModal extends Component {
     const { userPreferencesLoaded, failedLoadingUserPreferences } = this.state;
 
     if (userPreferencesLoaded) {
-      const { currentUserRole, isSuperAdmin } = this.props;
+      const {
+        currentUserRole,
+        isSuperAdmin,
+        currentDomainFeatures
+      } = this.props;
 
       return (
         <PreferenceContent
           currentUserRole={currentUserRole}
           isSuperAdmin={isSuperAdmin}
+          currentDomainFeatures={currentDomainFeatures}
           onAlertNotificationChange={this.onAlertNotificationChange}
           preferences={this.state.preferences} />
       );

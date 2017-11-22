@@ -61,7 +61,8 @@ describe('PreferenceContent', () => {
 
     it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
-      const element = renderLocalizationElement(PreferenceContent, { onAlertNotificationChange: onAlertNotificationChange });
+      const element = renderLocalizationElement(PreferenceContent,
+        { onAlertNotificationChange: onAlertNotificationChange });
       var subscribeAllAsset = element.querySelector('#notify-subscribe-delete-assets');
       TestUtils.Simulate.change(subscribeAllAsset);
       sinon.assert.calledOnce(onAlertNotificationChange);
@@ -93,7 +94,8 @@ describe('PreferenceContent', () => {
 
     it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
-      const element = renderLocalizationElement(PreferenceContent, { onAlertNotificationChange: onAlertNotificationChange });
+      const element = renderLocalizationElement(PreferenceContent,
+        { onAlertNotificationChange: onAlertNotificationChange });
       var subscribeAllAsset = element.querySelector('#notify-subscribe-my-assets');
       TestUtils.Simulate.change(subscribeAllAsset);
       sinon.assert.calledOnce(onAlertNotificationChange);
@@ -103,19 +105,40 @@ describe('PreferenceContent', () => {
   describe('Routing & Approval', () => {
 
     it('should render Routing & Approval contents', () => {
-      const element = renderLocalizationElement(PreferenceContent, { isSuperAdmin: true });
+      const props = {
+        currentDomainFeatures: { routing_approval: true },
+        isSuperAdmin: true
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
       assert.isNotNull(element.querySelector('#notify-subscribe-routing-approval'));
     });
 
     it('should not render Routing & Approval contents if user is not admin', () => {
-      const element = renderLocalizationElement(PreferenceContent, { isSuperAdmin: false });
+      const props = {
+        currentDomainFeatures: { routing_approval: true },
+        isSuperAdmin: false
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
+      assert.isNull(element.querySelector('#notify-subscribe-routing-approval'));
+    });
+
+    it('should not render Routing & Approval contents if routing_and_approval feature is disabled', () => {
+      const props = {
+        currentDomainFeatures: { routing_approval: false },
+        isSuperAdmin: true
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
       assert.isNull(element.querySelector('#notify-subscribe-routing-approval'));
     });
 
     it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
-      const element = renderLocalizationElement(PreferenceContent,
-        { onAlertNotificationChange: onAlertNotificationChange, isSuperAdmin: true });
+      const props = {
+        currentDomainFeatures: { routing_approval: true },
+        isSuperAdmin: true,
+        onAlertNotificationChange: onAlertNotificationChange
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
       var subscribeAllAsset = element.querySelector('#notify-subscribe-routing-approval');
       TestUtils.Simulate.change(subscribeAllAsset);
       sinon.assert.calledOnce(onAlertNotificationChange);
@@ -123,5 +146,38 @@ describe('PreferenceContent', () => {
 
   });
 
+  describe('New Assets', () => {
+    it('should not render new assets contents if user is not admin', () => {
+      const props = {
+        currentDomainFeatures: { routing_approval: false },
+        isSuperAdmin: false
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
+      assert.isNull(element.querySelector('#notify-subscribe-new-assets'));
+    });
+
+    it('should not render new assets content if routing_approval feature is enabled', () => {
+      const props = {
+        currentDomainFeatures: { routing_approval: true },
+        isSuperAdmin: false
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
+      assert.isNull(element.querySelector('#notify-subscribe-new-assets'));
+    });
+
+    it('should update preference when subscription value changes', () => {
+      var onAlertNotificationChange = sinon.spy();
+      const props = {
+        currentDomainFeatures: { routing_approval: false },
+        isSuperAdmin: true,
+        onAlertNotificationChange: onAlertNotificationChange
+      };
+      const element = renderLocalizationElement(PreferenceContent, props);
+      var subscribeAllAsset = element.querySelector('#notify-subscribe-new-assets');
+      TestUtils.Simulate.change(subscribeAllAsset);
+      sinon.assert.calledOnce(onAlertNotificationChange);
+    });
+
+  });
 
 });

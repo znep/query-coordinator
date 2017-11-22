@@ -51,6 +51,7 @@ module SocrataSiteChrome
       Signaller.for(flag: flag).value(on_domain: request.host) rescue nil
     end
 
+
     def header_title
       localized('header.site_name', site_chrome_instance.locales)
     end

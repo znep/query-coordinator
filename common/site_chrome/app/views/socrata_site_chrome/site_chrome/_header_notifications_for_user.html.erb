@@ -21,6 +21,7 @@
           showProductNotifications: false,
           showUserNotifications: true,
           currentUserRole: <%== current_user_role.to_json %>,
+          currentDomainFeatures: <%== CurrentDomain.features.to_json %>,
           isSuperAdmin: <%== is_superadmin? %>
         };
 

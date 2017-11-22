@@ -94,6 +94,52 @@ class PreferenceContent extends Component {
     );
   }
 
+  renderNewAssets() {
+    const {
+      onAlertNotificationChange,
+      preferences,
+      isSuperAdmin,
+      currentUserRole
+    } = this.props;
+    const category = 'new_assets';
+    const categoryData = _.get(preferences, category, {});
+    if (!isSuperAdmin && currentUserRole !== 'administrator') {
+      return null;
+    } else {
+      return (
+        <tr>
+          <td>
+            <div styleName="preference-name">
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.new_assets.title')}
+            </div>
+            <div styleName="preference-description">
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.new_assets.description')}
+            </div>
+          </td>
+          <td className="column-description">
+            <OnOffSwitch
+              enableSwitch={categoryData.enable_product_notification}
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
+          </td>
+
+          <td>
+            <label
+              className="inline-label"
+              styleName="email-option"
+              htmlFor="notify-subscribe-new-assets">
+              <input
+                checked={categoryData.enable_email}
+                id="notify-subscribe-new-assets"
+                type="checkbox"
+                onChange={() => onAlertNotificationChange(category, 'email')} />
+              {I18n.t('shared_site_chrome_notifications.alert_setting_modal.subscribe_email')}
+            </label>
+          </td>
+        </tr>
+      );
+    }
+  }
+
   renderRotingAndApproval() {
     // only for admin
     const {
@@ -315,6 +361,9 @@ class PreferenceContent extends Component {
   }
 
   render() {
+    const { currentDomainFeatures } = this.props;
+    const showRoutingAndApproval = _.get(currentDomainFeatures, 'routing_approval', false);
+
     return (
       <div>
         <div className="table-wrapper">
@@ -345,7 +394,7 @@ class PreferenceContent extends Component {
             </thead>
             <tbody>
             {this.renderWatchList()}
-            {this.renderRotingAndApproval()}
+            {showRoutingAndApproval ? this.renderRotingAndApproval() : this.renderNewAssets()}
             {this.renderAllAssets()}
             {this.renderMyAssets()}
             {this.renderDeleteAssets()}

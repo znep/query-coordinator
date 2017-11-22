@@ -545,6 +545,9 @@ en:
             asset_review: Notify me when any asset is published and submitted for review
             asset_approved: Notify me when any asset is approved
             asset_rejected: Notify me when any asset is rejected
+          new_assets:
+            title: New Assets
+            description: Notify me when any new asset is published
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

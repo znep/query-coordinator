@@ -112,7 +112,8 @@ class NotificationList extends Component {
       isSecondaryPanelOpen,
       showProductNotificationsAsSecondaryPanel,
       showProductNotifications,
-      showUserNotifications
+      showUserNotifications,
+      currentDomainFeatures
     } = this.props;
 
     if ((showProductNotifications && !showUserNotifications) || (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
@@ -127,6 +128,7 @@ class NotificationList extends Component {
         forUserNotifications={false}
         currentUserRole={currentUserRole}
         showUserNotifications={showUserNotifications}
+        currentDomainFeatures={currentDomainFeatures}
         isSuperAdmin={isSuperAdmin} />);
     } else if (showUserNotifications) {
       const {
@@ -144,6 +146,7 @@ class NotificationList extends Component {
         toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
         showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
+        currentDomainFeatures={currentDomainFeatures}
         isSuperAdmin={isSuperAdmin} />);
     }
   }

@@ -33,15 +33,17 @@ LabelledCheckmark.propTypes = {
 };
 
 function PublishReadinessFlyout(
-  { metadataSatisfied, dataSatisfied, parenthoodSatisfied, requiresParenthood }) {
+  { metadataSatisfied, dataSatisfied, parenthoodSatisfied, requiresParenthood, isUSAID }) {
+  const buttonText = isUSAID ? SubI18n.submit_for_review_flyout : SubI18n.make_accessible;
+  const flyoutText = isUSAID ? SubI18n.cant_submit_until : SubI18n.cant_publish_until;
   return (
     <div id={FLYOUT_ID} className={styles.flyout}>
       <section className={styles.flyoutContent}>
         {metadataSatisfied && dataSatisfied && parenthoodSatisfied ? (
-          SubI18n.make_accessible
+           buttonText
         ) : (
           <div>
-            {SubI18n.cant_publish_until}
+            {flyoutText}
             <ul>
               {!requiresParenthood || <li>
                 <LabelledCheckmark checked={parenthoodSatisfied} text={SubI18n.parenthood_satisfied} />
@@ -64,7 +66,8 @@ PublishReadinessFlyout.propTypes = {
   metadataSatisfied: PropTypes.bool.isRequired,
   dataSatisfied: PropTypes.bool.isRequired,
   parenthoodSatisfied: PropTypes.bool.isRequired,
-  requiresParenthood: PropTypes.bool.isRequired
+  requiresParenthood: PropTypes.bool.isRequired,
+  isUSAID: PropTypes.bool.isRequired
 };
 
 class PublishButton extends Component {
@@ -92,6 +95,7 @@ class PublishButton extends Component {
       requiresParenthood
     } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied && parenthoodSatisfied;
+    const isUSAID = window.serverConfig.featureFlags.usaid_features_enabled;
 
     return (
       <div
@@ -103,7 +107,8 @@ class PublishButton extends Component {
             className={styles.publishButton}
             onClick={() => publishDataset('PublishConfirmation')}
             disabled={!readyToPublish || publishing}>
-            {SubI18n.publish_dataset}
+            {isUSAID && SubI18n.submit_for_review}
+            {isUSAID || SubI18n.publish_dataset}
           </button>
         </div>
         <PublishReadinessFlyout
@@ -111,6 +116,7 @@ class PublishButton extends Component {
           metadataSatisfied={metadataSatisfied}
           parenthoodSatisfied={parenthoodSatisfied}
           requiresParenthood={requiresParenthood}
+          isUSAID={isUSAID}
           hide={publishing} />
       </div>
     );

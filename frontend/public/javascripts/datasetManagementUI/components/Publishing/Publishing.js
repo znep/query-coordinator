@@ -86,6 +86,28 @@ function inProgressMessage(rowsToBeUpserted, taskSet) {
   }
 }
 
+function getProcessingTitle(revision) {
+  if (window.serverConfig.featureFlags.usaid_features_enabled) {
+    return revision.is_parent
+      ? SubI18n.publishing.data_asset_processing
+      : SubI18n.publishing.dataset_processing;
+  } else {
+    return revision.permission === 'public'
+      ? SubI18n.publishing.title_public
+      : SubI18n.publishing.title_private;
+  }
+}
+
+function getSuccessfulMessage(revision) {
+  if (window.serverConfig.featureFlags.usaid_features_enabled) {
+    return revision.is_parent
+      ? SubI18n.successful.data_asset_submitted_title
+      : SubI18n.successful.dataset_submitted_title;
+  } else {
+    return SubI18n.successful.title;
+  }
+}
+
 const TICK_MS = 500;
 
 class Publishing extends React.Component {
@@ -125,7 +147,7 @@ class Publishing extends React.Component {
 
     switch (taskSet.status) {
       case ApplyRevision.TASK_SET_SUCCESSFUL:
-        title = SubI18n.successful.title;
+        title = getSuccessfulMessage(revision);
         body = SubI18n.successful.body;
         progressBarType = 'success';
         message = SubI18n.progress_messages.done;
@@ -167,10 +189,7 @@ class Publishing extends React.Component {
 
       default:
         // in progress
-        title =
-          revision.permission === 'public'
-            ? SubI18n.publishing.title_public
-            : SubI18n.publishing.title_private;
+        title = getProcessingTitle(revision);
         body = SubI18n.publishing.body;
         progressBarType = 'inProgress';
         message = inProgressMessage(rowsToBeUpserted, taskSet);

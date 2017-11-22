@@ -23,11 +23,11 @@ class NotificationAPI {
     this._channel = socket.channel(channelId, {});
 
     let self = this;
-    self._offset = 1;
+    self._offset = 0;
     self._totalNotificationsCount = 0;
     this._loadNotifications(self._offset).then(function(response) {
       self._notifications = self._transformNotifications(_.get(response, 'data', []));
-      self._totalNotificationsCount = _.get(response, 'count', 0);
+      self._totalNotificationsCount = _.get(response, 'count.total', 0);
       self._offset += _.size(self._notifications);
       self.update();
       self._channel.join().
@@ -76,7 +76,7 @@ class NotificationAPI {
   _onDeleteAllNotifications() {
     this._notifications = [];
     this._totalNotificationsCount = 0;
-    this._offset = 1;
+    this._offset = 0;
     this.update();
   }
 
@@ -111,7 +111,7 @@ class NotificationAPI {
     this._loadNotifications(self._offset).then(function(response) {
       const newNotifications = self._transformNotifications(_.get(response, 'data', []));
       self._offset += _.size(newNotifications);
-      self._totalNotificationsCount = _.get(response, 'count', 0);
+      self._totalNotificationsCount = _.get(response, 'count.total', 0);
       self._notifications = _.union(self._notifications, newNotifications);
 
       self.update();

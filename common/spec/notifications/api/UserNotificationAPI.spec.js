@@ -9,7 +9,7 @@ import { NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 let notificationStub = null;
 let userNotificationAPI = null;
 const userId = 'tugg-ikce';
-let offset = 1;
+let offset = 0;
 
 describe('User Notification API', () => {
   beforeEach(() => {

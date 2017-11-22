@@ -104,10 +104,11 @@ namespace :test do
       max_threads = (ENV['KARMA_MAX_THREADS'] || System::CPU.count).to_i
       Thread.abort_on_exception = true
       Thread::Pool.abort_on_exception = true
-      failure = false
+      any_task_failed = false
 
       puts("\n################################################################")
-      puts("## PARALLEL TASKS: #{tasks.map(&:name).join(', ')}")
+      puts("## Distributing #{tasks.length} tasks across max #{max_threads} threads:")
+      puts("## #{tasks.map(&:name).join(', ')}")
       puts("################################################################\n")
 
       begin
@@ -115,15 +116,16 @@ namespace :test do
         Thread.pool(max_threads).tap do |pool|
           tasks.each do |task|
             pool.process do
-              break if failure
+              break if any_task_failed
 
               puts("STARTING PARALLEL TASK: #{task.name}")
               # Capturing each task output to prevent it being interleaved in the terminal output while run
               output, errors, status = Open3.capture3("bundle exec rake #{task.name}")
+              puts("COMPLETED PARALLEL TASK: #{task.name}")
               logs[task.name] = { stdout: output, stderr: errors, status: status }
 
               unless status.success?
-                failure = true
+                any_task_failed = true
                 puts("Exiting due to non-zero exit status: #{status.inspect} from task: #{task.name}")
                 pool.shutdown!
               end
@@ -132,21 +134,30 @@ namespace :test do
           pool.shutdown
         end
       rescue => e
-        failure = true
+        any_task_failed = true
         $stderr.puts("Encountered exception: #{e}")
       end
 
       logs.each do |task, logs|
+        this_task_success = logs[:status].success?
+
+        # On overall failure, suppress output of passing tasks to reduce noise.
+        if any_task_failed && this_task_success
+          puts("## Omitting logs for passing task: #{task}")
+          next
+        end
+
+        pass_fail = this_task_success ? 'pass' : 'fail'
         %i(stdout stderr).each do |log|
           puts("\n################################################################")
-          puts("## BEGIN #{log.upcase} FOR PARALLEL TASK: #{task}")
+          puts("## BEGIN #{log.upcase} FOR PARALLEL TASK: #{task} (#{pass_fail})")
           puts(logs[log])
-          puts("## END #{log.upcase} FOR PARALLEL TASK: #{task}")
+          puts("## END #{log.upcase} FOR PARALLEL TASK: #{task} (#{pass_fail})")
           puts("################################################################\n")
         end
       end
 
-      Process.exit(1) if failure
+      Process.exit(1) if any_task_failed
     end
 
     desc 'mock translations in support of Karma tests'

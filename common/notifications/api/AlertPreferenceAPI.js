@@ -24,11 +24,11 @@ function checkStatus(response) {
 }
 
 
-function defaultHeaders() {
-  return _.omitBy({
+function getDefaultHeaders() {
+  return {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
-  }, _.isUndefined);
+  };
 }
 
 function encodePreferenceFormat(preferences) {
@@ -84,7 +84,7 @@ export const AlertPreferenceAPI = (() => {
     get: () => {
       return fetch('/api/notifications_and_alerts/preferences', {
         method: 'GET',
-        headers: defaultHeaders(),
+        headers: getDefaultHeaders(),
         credentials: 'same-origin'
       }).
       then(checkStatus).
@@ -97,7 +97,7 @@ export const AlertPreferenceAPI = (() => {
       let encodePreferences = encodePreferenceFormat(preferences);
       return fetch('/api/notifications_and_alerts/preferences', {
         method: 'POST',
-        headers: defaultHeaders(),
+        headers: getDefaultHeaders(),
         credentials: 'same-origin',
         body: JSON.stringify({ preferences: encodePreferences })
       }).

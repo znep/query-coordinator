@@ -148,8 +148,13 @@ class AlertSettingModal extends Component {
 
       return (
         <ModalFooter>
-          <div styleName="cancel-button" className="cancel-button" onClick={onClose}>Cancel</div>
-          <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>Save</div>
+          <div styleName="cancel-button" className="cancel-button" onClick={onClose}>
+            {I18n.t('cancel', { scope: 'shared_site_chrome_notifications.alert_setting_modal' })}
+          </div>
+
+          <div styleName="save-button" className="save-button" onClick={this.saveAlertSettings}>
+            {I18n.t('save', { scope: 'shared_site_chrome_notifications.alert_setting_modal' })}
+          </div>
         </ModalFooter>
       );
     }
@@ -167,7 +172,9 @@ class AlertSettingModal extends Component {
 
     return (
       <Modal styleName="alert-setting-modal" onDismiss={onClose} containerStyle={containerStyle}>
-        <ModalHeader title="Settings" onDismiss={onClose} />
+        <ModalHeader
+          title={I18n.t('settings', { scope: 'shared_site_chrome_notifications.alert_setting_modal' })}
+          onDismiss={onClose} />
 
         <ModalContent styleName="alert-setting-modal-content">
           {this.renderTabs()}

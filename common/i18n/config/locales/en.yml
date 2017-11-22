@@ -512,6 +512,9 @@ en:
         map_submitted_for_review: Map Submitted for Review
         assetinventory_submitted_for_review: Asset Inventory Submitted for Review
         alert_setting_modal:
+          settings: Settings
+          save: Save
+          cancel: Cancel
           error_loading_preferences_text_html: "<strong>Sorry!</strong> User preferences are unavailable right now. Please contact Socrata support."
           subscribe_email: Subscribe to email notifications
           tab:

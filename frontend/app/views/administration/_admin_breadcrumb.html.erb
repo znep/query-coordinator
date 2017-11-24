@@ -7,7 +7,7 @@
     <%- end %>
     <%- if current_user.try(:is_superadmin?) -%>
       <a class="internal-link" href="<%= url_for :controller => '/internal', :action => 'index' %>">
-        <i class="socrata-icon-logo"></i> <span><%= t('screens.admin.index.internal') %></span>
+        <i class="socrata-icon-logo"></i> <span class="internal-link-text"><%= t('screens.admin.index.internal') %></span>
       </a>
     <%- end %>
   </h1>

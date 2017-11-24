@@ -50,11 +50,11 @@
     align-items: flex-end;
 
     &.mobile {
-      display: block;
-      min-height: 5.5rem;
+      display: flex;
 
       > div {
         display: block;
+        align-self: flex-end;
       }
     }
 

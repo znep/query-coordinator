@@ -1,5 +1,6 @@
 const types = {
-  CHANGE_DIMENSIONS: 'CHANGE_DIMENSIONS'
+  CHANGE_DIMENSIONS: 'CHANGE_DIMENSIONS',
+  TOGGLE_FILTERS: 'TOGGLE_FILTERS'
 };
 
 const changeDimensions = (isMobile) => ({
@@ -9,4 +10,11 @@ const changeDimensions = (isMobile) => ({
 
 const apiException = () => {};
 
-export { types, apiException, changeDimensions };
+const toggleFilters = () => ({ type: types.TOGGLE_FILTERS });
+
+export {
+  types,
+  apiException,
+  changeDimensions,
+  toggleFilters
+};

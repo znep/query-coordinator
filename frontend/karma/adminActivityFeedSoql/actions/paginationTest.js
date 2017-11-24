@@ -17,7 +17,7 @@ const mockStore = configureStore([
 ]);
 
 describe('pagination actions', () => {
-  const responseData = [{"COLUMN_ALIAS_GUARD__count":"3"}];
+  const responseData = [{'COLUMN_ALIAS_GUARD__count':'3'}];
   let store;
   let fetchRowCountStub;
 

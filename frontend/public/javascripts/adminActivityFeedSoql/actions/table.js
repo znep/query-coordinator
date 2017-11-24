@@ -24,7 +24,7 @@ const fetchData = () => (dispatch, getState) => {
     fetchTable(options).
     then((data) => {
 
-      dispatch(storeData(data));
+      return dispatch(storeData(data));
     }).
     catch(commonActions.apiException);
 };

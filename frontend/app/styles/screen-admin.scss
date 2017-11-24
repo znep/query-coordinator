@@ -209,6 +209,12 @@ $site-chrome-admin-header-height: 46px;
       font-size: 15px;
       font-weight: normal;
 
+      @media (max-width : 600px) {
+        .internal-link-text {
+          display: none;
+        }
+      }
+
       &:hover {
         text-decoration: none;
 

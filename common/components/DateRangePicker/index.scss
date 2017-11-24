@@ -31,6 +31,9 @@
     line-height: 3.5;
   }
 
+  .react-datepicker-popper {
+    z-index: 51; 
+  }
 }
 
 // EN-16294: Override sizes, because rem units depend on the root element, not parent.

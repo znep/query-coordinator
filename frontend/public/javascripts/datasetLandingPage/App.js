@@ -30,6 +30,7 @@ export class App extends Component {
 
         <div className="container landing-page-container">
           <FeaturedContent />
+          <HrefDownload />
           <MetadataTable />
           <RowDetails />
           <SchemaPreview />
@@ -54,6 +55,7 @@ export class App extends Component {
         <div className="container landing-page-container">
           <BlobPreview />
           <FeaturedContent />
+          <HrefDownload />
           <BlobDownload />
           <MetadataTable />
         </div>

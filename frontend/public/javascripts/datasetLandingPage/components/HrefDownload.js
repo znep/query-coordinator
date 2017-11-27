@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
 import { localizeLink } from 'common/locale';
+import { FeatureFlags } from 'common/feature_flags';
+import _ from 'lodash';
 
 export class HrefDownload extends Component {
   renderManagePrompt() {
     const { view } = this.props;
+    const showEditLinks = userHasRight(Rights.edit_others_datasets) &&
+      !FeatureFlags.value('usaid_features_enabled');
 
-    if (!userHasRight(Rights.edit_others_datasets)) {
+    if (!showEditLinks) {
       return null;
     }
 
@@ -67,14 +71,16 @@ export class HrefDownload extends Component {
   render() {
     const { view } = this.props;
     const { isHref } = view;
+    const { allAccessPoints } = this.props.view;
+    const hideHrefTitle = FeatureFlags.value('usaid_features_enabled') && view.metadata.isParent === false;
 
-    if (!isHref) {
+    if (!isHref && _.isEmpty(allAccessPoints)) {
       return null;
     }
 
     return (
       <section className="landing-page-section href-download dataset-download-section">
-        <h2 className="landing-page-section-header">{I18n.href_download.title}</h2>
+        {hideHrefTitle || <h2 className="landing-page-section-header">{I18n.href_download.title}</h2>}
 
         {this.renderManagePrompt()}
         {this.renderContent()}

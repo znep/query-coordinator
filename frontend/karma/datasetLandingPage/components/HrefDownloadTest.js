@@ -2,8 +2,20 @@ import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { HrefDownload } from 'components/HrefDownload';
 import mockServerConfig from 'data/mockServerConfig';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/HrefDownload', function() {
+  beforeEach(() => {
+    FeatureFlags.useTestFixture({
+      usaid_features_enabled: false
+    });
+  });
+
+  afterEach(() => {
+    FeatureFlags.useTestFixture({});
+  });
+
+
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       view: {
@@ -40,15 +52,26 @@ describe('components/HrefDownload', function() {
     assert.ok(element.querySelector('.section-content'));
   });
 
-  it('does not render an element if the view is not an href', function() {
+  it('does not render an element if the view is not an href and has no accessPoints', function() {
     var element = renderComponent(HrefDownload, getProps({
       view: {
-        isHref: false
+        isHref: false,
+        allAccessPoints: null
       }
     }));
 
     assert.isNull(element);
   });
+
+  it('does render an element if the view is not href but has accessPoints', function() {
+    var element = renderComponent(HrefDownload, getProps({
+      view: {
+        isHref: false,
+      }
+    }));    assert.ok(element);
+    assert.ok(element.querySelector('h2'));
+    assert.ok(element.querySelector('.section-content'));
+  })
 
   describe('edit prompt', function() {
     afterEach(function() {
@@ -65,6 +88,19 @@ describe('components/HrefDownload', function() {
       window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(HrefDownload, getProps());
       assert.ok(element.querySelector('.edit-prompt'));
+    });
+
+    it('is not visible if the usaid_features_enabled flag is true', function() {
+      FeatureFlags.useTestFixture({
+        usaid_features_enabled: true
+      });
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
+
+
+      var element = renderComponent(HrefDownload, getProps({
+        view: { metadata: { isParent: false } }
+      }));
+      assert.isNull(element.querySelector('.edit-prompt'));
     });
 
     it('has a button that links to the edit page', function() {

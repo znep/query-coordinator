@@ -1,4 +1,5 @@
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 section.sidebar {
   flex: 0 0 24%;

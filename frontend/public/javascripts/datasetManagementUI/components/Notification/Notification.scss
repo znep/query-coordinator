@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .notification {
   padding: 6px 10px 10px;
@@ -17,11 +16,11 @@
   }
 
   &.success {
-    border-top-color: $success-base;
+    border-top-color: $success;
   }
 
   &.error {
-    border-top-color: $error-base;
+    border-top-color: $error;
   }
 
   .btnContainer {
@@ -38,12 +37,12 @@
 
 .cf:before,
 .cf:after {
-    content: " ";
-    display: table;
+  content: ' ';
+  display: table;
 }
 
 .cf:after {
-    clear: both;
+  clear: both;
 }
 
 .messageArea {
@@ -71,7 +70,7 @@
 }
 
 .errorMessage {
-  color: $error-base;
+  color: $error;
   font-weight: bold;
 }
 
@@ -89,7 +88,7 @@
 
 .errorIcon {
   composes: icon;
-  color: $error-base;
+  color: $error;
 }
 
 .progressIcon {
@@ -117,8 +116,8 @@
 }
 
 .enter {
-    max-height: 0;
-    overflow: hidden;
+  max-height: 0;
+  overflow: hidden;
 }
 
 .enterActive {

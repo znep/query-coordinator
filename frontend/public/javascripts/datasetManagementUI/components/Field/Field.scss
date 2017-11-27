@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .privateMessage {
   font-size: 13px;
@@ -20,8 +19,8 @@
   composes: label;
 
   &::after {
-    content: "*";
-    color: $alternate-1-base;
+    content: '*';
+    color: $alternate-1;
     padding: 0.25em;
     font-size: 14px;
   }

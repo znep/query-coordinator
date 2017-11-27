@@ -1,4 +1,5 @@
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .container {
   background-color: $white;

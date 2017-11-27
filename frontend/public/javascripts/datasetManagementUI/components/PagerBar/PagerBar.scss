@@ -1,4 +1,5 @@
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .pagerBar {
   min-height: 36px;
@@ -24,7 +25,6 @@
     }
   }
 }
-
 
 .pageLoading {
   composes: spinner-default from global;

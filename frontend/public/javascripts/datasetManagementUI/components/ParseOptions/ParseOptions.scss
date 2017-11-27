@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .parseOptions {
   fieldset {
@@ -11,7 +10,8 @@
 .optionsPanes {
   display: flex;
 }
-.optionsPreview, .optionsForm {
+.optionsPreview,
+.optionsForm {
   display: inline-block;
 }
 .optionsPreview {
@@ -26,7 +26,7 @@
 
 .theHeaderRow {
   td.previewCell {
-    background-color: $alternate-2-base !important;
+    background-color: $alternate-2 !important;
   }
 }
 .inHeaderRange {
@@ -39,8 +39,8 @@
   background-color: $light-grey-5;
 }
 
-
-.annotationCell, .indexCell {
+.annotationCell,
+.indexCell {
   text-align: right;
   background-color: $white !important;
   font-style: italic;

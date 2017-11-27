@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .statusIcon {
   padding: 0 0.5em 1px;
@@ -17,7 +16,7 @@
 .disabledIcon {
   composes: warning from global;
   composes: statusIcon;
-  background-color: $alternate-1-base !important;
+  background-color: $alternate-1 !important;
 }
 
 .spinner {

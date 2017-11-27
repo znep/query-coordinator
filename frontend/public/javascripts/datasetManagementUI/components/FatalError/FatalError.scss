@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .fatalError {
   padding: 1em 0px;
@@ -14,5 +13,5 @@
 
 .errorDetails {
   padding: 0px 0.5em;
-  color: $alternate-4-base;
+  color: $alternate-4;
 }

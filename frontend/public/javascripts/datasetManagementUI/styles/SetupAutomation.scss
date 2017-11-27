@@ -1,4 +1,5 @@
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .icon {
   color: $dark-grey-1;
@@ -39,9 +40,6 @@
     margin: 0px 0px 0px 8px;
   }
 }
-
-
-
 
 :global {
   /* Base16 Atelier Savanna Dark - Theme */

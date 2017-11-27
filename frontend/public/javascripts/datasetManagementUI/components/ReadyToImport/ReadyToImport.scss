@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .footerBtn {
   min-width: 120px;
@@ -21,11 +20,10 @@
 }
 
 .readyToImport {
-  &>p {
+  & > p {
     display: inline-block;
     margin: 0px 0.5em 0px 7px;
   }
-
 
   .importableRows {
     color: $primary-text;

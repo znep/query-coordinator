@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .content {
   display: flex;
@@ -104,7 +103,6 @@
 .configurationError {
   margin: 1em 0px;
 }
-
 
 .picklist {
   margin: 0px;

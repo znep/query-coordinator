@@ -1,4 +1,5 @@
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .modalFooter {
   margin-bottom: 1.75em;
@@ -21,12 +22,12 @@
 
 .success {
   composes: statusIcon;
-  color: $success-base;
+  color: $success;
 }
 
 .failure {
   composes: statusIcon;
-  color: $error-base;
+  color: $error;
 }
 
 .button {

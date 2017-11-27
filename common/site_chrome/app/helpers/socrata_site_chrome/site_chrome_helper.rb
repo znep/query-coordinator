@@ -435,6 +435,10 @@ module SocrataSiteChrome
     def app_token
       SocrataSiteChrome.configuration.app_token
     end
-  end
 
+    def feature_set
+      SocrataSiteChrome::FeatureSet.new(request.host).feature_set.to_h
+    end
+
+  end
 end

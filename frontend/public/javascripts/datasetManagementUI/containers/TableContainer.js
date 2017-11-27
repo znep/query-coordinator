@@ -21,7 +21,7 @@ const getInputColumns = (entities, outputColumns) =>
 
 function getOutputColumns(entities, osid) {
   return _.chain(Selectors.columnsForOutputSchema(entities, osid))
-    .thru(oc => getInputColumns(entities, oc))
+    .thru(ocs => getInputColumns(entities, ocs))
     .sortBy('position')
     .value();
 }

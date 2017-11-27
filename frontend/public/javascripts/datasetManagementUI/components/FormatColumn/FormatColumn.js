@@ -18,9 +18,14 @@ class FormatColumn extends Component {
     };
     _.bindAll(this, ['onUpdateFormat', 'onRemoveFormat']);
   }
+
   componentWillMount() {
+    if (!this.props.outputColumn) {
+      return;
+    }
+
     this.setState({
-      format: this.props.column.format || {} // hack until dsmapi fills in true defaults,
+      format: this.props.outputColumn.format || {} // hack until dsmapi fills in true defaults,
     });
   }
 
@@ -68,49 +73,42 @@ class FormatColumn extends Component {
   }
 
   render() {
-    const { onDismiss, onSave, column } = this.props;
+    const { onDismiss, onSave, outputColumn } = this.props;
     const { format } = this.state;
     const headerProps = {
-      title: SubI18n.title.format({ name: column.display_name }),
+      title: SubI18n.title.format({ name: outputColumn.display_name }),
       onDismiss
     };
 
-    const formatter = this.getFormatter(column, format);
+    const formatter = this.getFormatter(outputColumn, format);
 
     return (
       <div className={styles.formatColumn}>
         <ModalHeader {...headerProps} />
         <ModalContent>
           <div className={styles.formatContent}>
-            <div className={styles.formatter}>
-              {formatter}
-            </div>
+            <div className={styles.formatter}>{formatter}</div>
             <div className={styles.previewer}>
               <FormatPreview {...this.props} format={format} />
             </div>
           </div>
         </ModalContent>
         <ModalFooter>
-          <button
-            className="btn btn-default"
-            onClick={onDismiss}>
+          <button className="btn btn-default" onClick={onDismiss}>
             {I18n.common.cancel}
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => onSave(format)}>
+          <button className="btn btn-primary" onClick={() => onSave(format)}>
             {I18n.common.save}
           </button>
         </ModalFooter>
       </div>
     );
-
   }
 }
 
 FormatColumn.propTypes = {
   outputSchema: PropTypes.object.isRequired,
-  column: PropTypes.object.isRequired,
+  outputColumn: PropTypes.object.isRequired,
   onDismiss: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   entities: PropTypes.object.isRequired,

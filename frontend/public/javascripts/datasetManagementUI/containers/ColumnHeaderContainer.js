@@ -25,7 +25,6 @@ const mapStateToProps = ({ ui }, { outputColumn }) => {
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const { params, outputSchema, outputColumn } = ownProps;
-
   function RedirectError() {
     this.name = 'RedirectError';
     this.message = I18n.show_output_schema.redirect_error;

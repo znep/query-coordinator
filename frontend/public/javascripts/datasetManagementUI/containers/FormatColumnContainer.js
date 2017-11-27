@@ -7,22 +7,22 @@ import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 function mapStateToProps({ entities }, props) {
   const inputSchema = entities.input_schemas[props.outputSchema.input_schema_id];
   return {
-    ...props,
     entities,
     inputSchema
   };
 }
 
 function mergeProps(stateProps, { dispatch }, ownProps) {
-  const { column, outputSchema, entities, params } = stateProps;
+  const { entities } = stateProps;
+  const { outputColumn, outputSchema, params } = ownProps;
   return {
     ...stateProps,
     ...ownProps,
     onDismiss: () => dispatch(hideModal()),
-    onSave: (format) => {
+    onSave: format => {
       const outputColumns = Selectors.columnsForOutputSchema(entities, outputSchema.id);
       const desiredColumns = outputColumns.map(oc => {
-        if (oc.id === column.id) {
+        if (oc.id === outputColumn.id) {
           return {
             ...ShowActions.cloneOutputColumn(oc),
             format
@@ -31,10 +31,7 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
           return ShowActions.cloneOutputColumn(oc);
         }
       });
-      dispatch(ShowActions.newOutputSchema(
-        outputSchema.input_schema_id,
-        desiredColumns
-      )).then(resp => {
+      dispatch(ShowActions.newOutputSchema(outputSchema.input_schema_id, desiredColumns)).then(resp => {
         dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
         dispatch(hideModal());
       });

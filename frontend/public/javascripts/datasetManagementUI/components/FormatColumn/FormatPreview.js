@@ -6,7 +6,7 @@ import styles from './FormatColumn.scss';
 const SubI18n = I18n.format_column;
 
 const FormatPreview = ({
-  column,
+  outputColumn,
   format,
   inputSchema,
   outputSchema,
@@ -22,7 +22,7 @@ const FormatPreview = ({
           <table>
             <TableBody
               entities={entities}
-              columns={[{ ...column, format }]}
+              columns={[{ ...outputColumn, format }]}
               displayState={displayState}
               inputSchemaId={inputSchema.id} />
           </table>
@@ -34,7 +34,7 @@ const FormatPreview = ({
 
 FormatPreview.propTypes = {
   entities: PropTypes.object.isRequired,
-  column: PropTypes.object.isRequired,
+  outputColumn: PropTypes.object.isRequired,
   format: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired

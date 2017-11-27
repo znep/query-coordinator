@@ -20,7 +20,7 @@ describe('components/FormatColumn', () => {
       outputSchemaId: 137
     },
     entities: entities,
-    column: os.output_columns[0],
+    outputColumn: os.output_columns[0],
     outputSchema: os,
     inputSchema: entities.input_schemas[os.input_schema_id],
     onDismiss: sinon.spy(),
@@ -40,12 +40,12 @@ describe('components/FormatColumn', () => {
   });
 
   it('renders TextColumnFormat when type == text', () => {
-    const component = shallow(<FormatColumn {...{...defaultProps, column: os.output_columns[1] }} />);
+    const component = shallow(<FormatColumn {...{...defaultProps, outputColumn: os.output_columns[1] }} />);
     assert.isTrue(component.find('TextColumnFormat').exists());
   });
 
   it('renders DatetimeColumnFormat when type == text', () => {
-    const component = shallow(<FormatColumn {...{...defaultProps, column: os.output_columns[2] }} />);
+    const component = shallow(<FormatColumn {...{...defaultProps, outputColumn: os.output_columns[2] }} />);
     assert.isTrue(component.find('DatetimeColumnFormat').exists());
   });
 });

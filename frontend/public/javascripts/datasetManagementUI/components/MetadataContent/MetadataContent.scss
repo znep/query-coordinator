@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .sidebar {
   display: block;
@@ -11,11 +10,13 @@
   width: 250px;
   border-right: 1px solid $light-grey-4;
 
-  a, a:visited, a:hover, span {
+  a,
+  a:visited,
+  a:hover,
+  span {
     text-decoration: none;
     color: $black;
   }
-
 
   @media (max-width: 750px) {
     position: static;

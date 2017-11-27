@@ -1,26 +1,26 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
 .typeIconDisabled {
   color: $grey !important;
 }
 .date {
-  color: #B26B00;
+  color: #b26b00;
 }
 .text {
   color: #204490;
 }
 .number {
-  color: #0098C8;
+  color: #0098c8;
 }
 .boolean {
-  color: #894BAA;
+  color: #894baa;
 }
 .fixedTimestamp {
-  color: #B26B00;
+  color: #b26b00;
 }
 .floatingTimestamp {
-  color: #B26B00;
+  color: #b26b00;
 }
 .location {
   color: $primary-base;

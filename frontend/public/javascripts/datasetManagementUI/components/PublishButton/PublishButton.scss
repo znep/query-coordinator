@@ -1,5 +1,5 @@
-@import 'app/styles/styleguide-colors';
-
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 .publishButton {
   composes: btn from global;
   composes: btn-primary from global;
@@ -45,7 +45,7 @@
 .checked {
   composes: socrata-icon-checkmark-alt from global;
   composes: checkedOrUnchecked;
-  color: $success-base;
+  color: $success;
 }
 
 .notChecked {

@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .table {
   display: inline-flex;
@@ -32,7 +31,7 @@
     tr {
       border-top-width: 0;
       border-bottom-width: 0;
-      background-color: #f6f6f6;
+      background-color: $light-grey-6;
     }
 
     .col-processed {

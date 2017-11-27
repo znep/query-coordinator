@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .list {
   margin: 0;
@@ -8,11 +7,13 @@
   list-style: none;
   display: inline-block;
 
-
   .active {
     color: $dark-grey-1;
 
-    a, a:visited, a:hover, a:active {
+    a,
+    a:visited,
+    a:hover,
+    a:active {
       color: $dark-grey-1;
     }
   }
@@ -23,16 +24,21 @@
     font-weight: 600;
     font-size: 13pt;
 
-    a, a:visited, a:hover, a:active {
+    a,
+    a:visited,
+    a:hover,
+    a:active {
       color: $light-grey-2;
       font-weight: 600;
     }
 
-    a, a:visited {
+    a,
+    a:visited {
       text-decoration: none;
     }
 
-    a:hover, a:active {
+    a:hover,
+    a:active {
       text-decoration: underline;
     }
   }

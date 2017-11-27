@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .nav {
   margin: 1em 0em 1em 0em;
@@ -20,7 +19,7 @@
 .navBtnEnabled {
   composes: navBtn;
   composes: enabled from global;
-  border-bottom: 3px solid $alternate-2-base !important;
+  border-bottom: 3px solid $alternate-2 !important;
 }
 
 .navBtn:focus {

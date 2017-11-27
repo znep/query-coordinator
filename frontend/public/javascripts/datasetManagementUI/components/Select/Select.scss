@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import "common/styleguide/variables/_colors.scss";
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .select {
   -webkit-appearance: none;
@@ -13,13 +12,13 @@
   padding: 11px 15px;
   width: 90%;
   border-radius: 0;
-  border: 1px solid #c8c8c8;
+  border: 1px solid $light-grey-3;
   padding-right: 2.3em;
   margin-bottom: 13px;
 }
 
 .select::-ms-expand {
-    display: none; /* remove default arrow in IE 10 and 11 */
+  display: none; /* remove default arrow in IE 10 and 11 */
 }
 
 .selectError {

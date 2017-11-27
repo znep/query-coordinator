@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .message {
   font-weight: 600;
@@ -33,7 +32,7 @@
     height: 1px;
     width: calc(100% + 20px);
     margin: 0 -10px 0.3rem;
-    content: ".";
+    content: '.';
     overflow: hidden;
   }
 

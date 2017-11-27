@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .container {
 }
@@ -44,7 +43,8 @@
   }
 }
 
-.shortcut, .formatColumn {
+.shortcut,
+.formatColumn {
   :global {
     .modal-content {
       max-height: none;
@@ -66,7 +66,6 @@
     }
   }
 }
-
 
 .publishConfirmation {
   text-align: center;
@@ -94,4 +93,3 @@
 div.publishing {
   z-index: 9000; // Allow interaction with the header bar.
 }
-

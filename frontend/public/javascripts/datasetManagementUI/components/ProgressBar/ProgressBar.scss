@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .container {
   height: 100%;
@@ -15,34 +14,36 @@
 .progressBarSuccess {
   composes: progressBar;
 
-  $semi-transparent-white: rgba(255,255,255,.15);
-  background: $success-base linear-gradient(
-    -45deg,
-    $semi-transparent-white 25%,
-    transparent 25%,
-    transparent 50%,
-    $semi-transparent-white 50%,
-    $semi-transparent-white 75%,
-    transparent 75%,
-    transparent
-  );
+  $semi-transparent-white: rgba(255, 255, 255, 0.15);
+  background: $success
+    linear-gradient(
+      -45deg,
+      $semi-transparent-white 25%,
+      transparent 25%,
+      transparent 50%,
+      $semi-transparent-white 50%,
+      $semi-transparent-white 75%,
+      transparent 75%,
+      transparent
+    );
   background-size: 20px 20px;
 }
 
 .progressBarError {
   composes: progressBar;
 
-  $semi-transparent-white: rgba(255,255,255,.15);
-  background: $error-base linear-gradient(
-    -45deg,
-    $semi-transparent-white 25%,
-    transparent 25%,
-    transparent 50%,
-    $semi-transparent-white 50%,
-    $semi-transparent-white 75%,
-    transparent 75%,
-    transparent
-  );
+  $semi-transparent-white: rgba(255, 255, 255, 0.15);
+  background: $error
+    linear-gradient(
+      -45deg,
+      $semi-transparent-white 25%,
+      transparent 25%,
+      transparent 50%,
+      $semi-transparent-white 50%,
+      $semi-transparent-white 75%,
+      transparent 75%,
+      transparent
+    );
   background-size: 20px 20px;
 }
 
@@ -60,17 +61,18 @@
 .progressBarInProgress {
   composes: progressBar;
   animation: slide 10s infinite linear forwards;
-  $semi-transparent-white: rgba(255,255,255,.15);
-  background: $primary-base linear-gradient(
-    -45deg,
-    $semi-transparent-white 25%,
-    transparent 25%,
-    transparent 50%,
-    $semi-transparent-white 50%,
-    $semi-transparent-white 75%,
-    transparent 75%,
-    transparent
-  );
+  $semi-transparent-white: rgba(255, 255, 255, 0.15);
+  background: $primary-base
+    linear-gradient(
+      -45deg,
+      $semi-transparent-white 25%,
+      transparent 25%,
+      transparent 50%,
+      $semi-transparent-white 50%,
+      $semi-transparent-white 75%,
+      transparent 75%,
+      transparent
+    );
   background-size: 20px 20px;
 }
 

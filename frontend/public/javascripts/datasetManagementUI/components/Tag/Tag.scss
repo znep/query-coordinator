@@ -1,15 +1,14 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .cf:before,
 .cf:after {
-    content: " ";
-    display: table;
+  content: ' ';
+  display: table;
 }
 
 .cf:after {
-    clear: both;
+  clear: both;
 }
 
 .icon {

@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .container {
   padding-bottom: 3.5em;
@@ -44,8 +43,8 @@
   color: $dark-grey-1;
 
   &::before {
-    content: "*";
-    color: $alternate-1-base;
+    content: '*';
+    color: $alternate-1;
     padding: 0.25em;
     font-size: 14px;
   }

@@ -1,6 +1,5 @@
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
-@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
-@import 'app/styles/styleguide-colors';
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
 
 .formatContent {
   display: flex;
@@ -14,7 +13,6 @@
     }
   }
 }
-
 
 .formatter {
   width: 50%;
@@ -48,7 +46,9 @@
   }
 }
 
-.noCommas, .thousandsSeparator, .decimalSeparator {
+.noCommas,
+.thousandsSeparator,
+.decimalSeparator {
   composes: checkbox from global;
 }
 

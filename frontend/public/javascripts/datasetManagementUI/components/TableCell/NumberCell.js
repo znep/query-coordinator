@@ -11,12 +11,13 @@ class NumberCell extends Component {
     return _.toNumber(this.props.format.precision);
   }
 
+  // this returns a string
   toFixed() {
     const num = _.toNumber(this.props.value);
     if (_.isInteger(this.getPrecision())) {
       return num.toFixed(this.getPrecision());
     }
-    return num;
+    return `${num}`;
   }
 
   toText() {
@@ -42,7 +43,7 @@ NumberCell.propTypes = {
 class ScientificCell extends NumberCell {
   render() {
     const decimalPlaces = this.props.format.decimalPlaces;
-    const num = this.toFixed();
+    const num = _.toNumber(this.props.value);
     let text = '';
     if (decimalPlaces !== undefined) {
       text = num.toExponential(decimalPlaces);

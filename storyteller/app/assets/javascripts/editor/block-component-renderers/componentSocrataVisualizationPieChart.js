@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 import '../componentBase';
 import Constants from '../Constants';
-import StorytellerUtils from '../../StorytellerUtils';
+import StorytellerUtils from 'StorytellerUtils';
+import { vifsAreEquivalent } from 'VifUtils';
 import { assert, assertHasProperty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
@@ -65,25 +66,20 @@ function _updateVisualization($element, props) {
 
   const { componentData } = props;
   const $componentContent = $element.find('.component-content');
+  const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
+  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
-  $element.attr('data-rendered-vif', JSON.stringify(vif));
+  if (areNotEquivalent) {
+    $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-  vif.unit = {
-    one: 'record',
-    other: 'records'
-  };
+    if (!vif.unit) {
+      vif.unit = {
+        one: 'record',
+        other: 'records'
+      };
+    }
 
-  if ($element.find('.pie-chart').length) {
-    $element[0].dispatchEvent(
-      new CustomEvent(
-        'SOCRATA_VISUALIZATION_RENDER_VIF',
-        {
-          detail: vif
-        }
-      )
-    );
-  } else {
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
     $componentContent.socrataSvgPieChart(vif, { displayFilterBar: true });

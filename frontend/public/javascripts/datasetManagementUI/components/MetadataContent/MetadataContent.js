@@ -7,19 +7,27 @@ import * as Links from 'links/links';
 import MetadataEditor from 'containers/MetadataEditorContainer';
 import styles from './MetadataContent.scss';
 
+const datasetMetadataEnabled = !window.serverConfig.featureFlags.usaid_features_enabled;
+
 // TODO : should probably abstract sidebar to its own component
 const MetadataContent = (
   { outputSchemaId, onDatasetTab, params, onSidebarTabClick, columnsExist } // eslint-disable-line
 ) => (
   <div>
     <div className={styles.sidebar}>
-      <Link
-        to={Links.datasetMetadataForm(params)}
-        className={styles.tab}
-        onClick={() => onSidebarTabClick(params.fourfour)}
-        activeClassName={styles.selected}>
-        {I18n.metadata_manage.dataset_metadata_label}
-      </Link>
+      {datasetMetadataEnabled ? (
+        <Link
+          to={Links.datasetMetadataForm(params)}
+          className={styles.tab}
+          onClick={() => onSidebarTabClick(params.fourfour)}
+          activeClassName={styles.selected}>
+          {I18n.metadata_manage.dataset_metadata_label}
+        </Link>
+      ) : (
+        <span className={styles.disabled} >
+          {I18n.metadata_manage.dataset_metadata_label}
+        </span>
+      )}
       {columnsExist ? (
         <Link
           to={Links.columnMetadataForm(params, outputSchemaId)}
@@ -37,6 +45,7 @@ const MetadataContent = (
     <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={outputSchemaId} />
   </div>
 );
+
 
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,

@@ -34,4 +34,20 @@ describe('components/MetadataContent', () => {
     const component = shallow(<MetadataContent {...newProps} />);
     assert.isNotOk(component.find('Link').last().hasClass('disabled'));
   });
+
+  it('shows an enabled columns tab if usaid ff is off', () => {
+    const component = shallow(<MetadataContent {...defaultProps} />);
+    assert.isNotOk(component.find('Link').last().hasClass('disabled'));
+  });
+
+  it('shows a disabled metadata tab if usaid ff is on', () => {
+    window.serverConfig.featureFlags.usaid_features_enabled = true;
+    const newProps = {
+      ...defaultProps,
+      columnsExist: true,
+      store: createStore(reducer, initialState, applyMiddleware(thunk))
+    };
+    const component = shallow(<MetadataContent {...newProps} />);
+    assert.isOk(component.find('.sidebar span.disabled'));
+  });
 });

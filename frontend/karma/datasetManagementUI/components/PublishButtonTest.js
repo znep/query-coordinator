@@ -45,7 +45,7 @@ describe('"Publish Dataset" button and flyout', () => {
     assert.isTrue(component.find('button[disabled=true]').exists());
   });
 
-  it('is disabled when an is_parent: false usaid dataset has no external links'), () => {
+  it('is disabled when requiresParenthood: true and parenthoodSatisfied: false', () => {
     const updatedProps = {
       ...defaultProps,
       dataSatisfied: true,
@@ -54,5 +54,7 @@ describe('"Publish Dataset" button and flyout', () => {
       parenthoodSatisfied: false,
       requiresParenthood: true
     };
-  }
+    const component = shallow(<PublishButton {...updatedProps} />);
+    assert.isTrue(component.find('button[disabled=true]').exists());
+  });
 });

@@ -5,7 +5,7 @@ export default {
   },
   configuration: {
     viewSourceDataLink: true,
-    xAxisScalingMode: 'fit'
+    xAxisScalingMode: 'pan'
   },
   description: '',
   series: [

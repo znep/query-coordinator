@@ -13,5 +13,11 @@
     .overlay {
       pointer-events: all;
     }
+
+    path {
+      pointer-events: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
   }
 }

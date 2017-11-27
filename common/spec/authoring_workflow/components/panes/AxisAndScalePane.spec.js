@@ -4,7 +4,7 @@ import renderComponent from '../../renderComponent';
 import { AxisAndScalePane } from 'common/authoring_workflow/components/panes/AxisAndScalePane';
 import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
 
-function render(type) {
+function render(type, dimensionColumnName) {
   const referenceLines = [
     {
       color: '#ba001e',
@@ -29,8 +29,26 @@ function render(type) {
       vifs: {
         columnChart: { referenceLines },
         barChart: { referenceLines },
-        timelineChart: { referenceLines },
+        timelineChart: {
+          referenceLines,
+          series: [{
+            dataSource: {
+              dimension: {
+                columnName: dimensionColumnName,
+                aggregationFunction: null
+              }
+            }
+          }]
+        },
         histogram: { referenceLines }
+      }
+    },
+    metadata: {
+      data: {
+        columns: [
+          { name: 'number', fieldName: 'number', renderTypeName: 'number' },
+          { name: 'calendar_Date', fieldName: 'calendar_date', renderTypeName: 'calendar_date' }
+        ]
       }
     },
     measureAxisScaleControl: 'custom',
@@ -50,9 +68,9 @@ describe('AxisAndScalePane', () => {
   let props;
   let referenceLines;
 
-  function setUpVisualization(type) {
+  function setUpVisualization(type, dimensionColumnName = null) {
     return () => {
-      const renderedParts = render(type);
+      const renderedParts = render(type, dimensionColumnName);
 
       component = renderedParts.component;
       props = renderedParts.props;
@@ -109,7 +127,7 @@ describe('AxisAndScalePane', () => {
   function rendersChartSortingAndEmitsEvents() {
     describe('rendering', () => {
       it('renders a dropdown with chart sorting options', () => {
-        expect(component.querySelector('#chart-sorting-selection')).to.exist;
+        assert.isNotNull(component.querySelector('#chart-sorting-selection'));
       });
     });
 
@@ -130,7 +148,7 @@ describe('AxisAndScalePane', () => {
 
     describe('rendering', () => {
       it('renders an empty pane info message', () => {
-        expect(component.querySelector('.authoring-empty-pane')).to.exist;
+        assert.isNotNull(component.querySelector('.authoring-empty-pane'));
       });
     });
   });
@@ -159,10 +177,25 @@ describe('AxisAndScalePane', () => {
   });
 
   describe('timelineChart', () => {
-    beforeEach(setUpVisualization('timelineChart'));
 
-    // TODO: EN-9281 rendersScaleAndEmitsEvents();
-    rendersReferenceLinesAndEmitsEvents();
+    describe('when dimension is not a calendar_date', () => {
+      beforeEach(setUpVisualization('timelineChart'));
+      rendersChartSortingAndEmitsEvents();
+      rendersReferenceLinesAndEmitsEvents();
+
+      it('does render a dropdown with chart sorting options', () => {
+        assert.isNotNull(component.querySelector('#chart-sorting-selection'));
+      });
+    });
+
+    describe('when dimension is a calendar_date', () => {
+      beforeEach(setUpVisualization('timelineChart', 'calendar_date'));
+      rendersReferenceLinesAndEmitsEvents();
+
+      it('does not render a dropdown with chart sorting options', () => {
+        assert.isNull(component.querySelector('#chart-sorting-selection'));
+      });
+    });
   });
 
   describe('pieChart', () => {

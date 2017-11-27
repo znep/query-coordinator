@@ -663,8 +663,9 @@ function SvgComboChart($element, vif, options) {
         return measure.getColor();
       };
 
+      const halfBandWidth = Math.round(d3DimensionXScale.rangeBand() / 2.0);
       const getLine = (d) => d3.svg.line().x(getX).y(getY)(d);
-      const getX = (d) => d3DimensionXScale(dimensionValues[d.dimensionIndex]) + Math.max((d3DimensionXScale.rangeBand() - 1) / 2, 0);
+      const getX = (d) => d3DimensionXScale(dimensionValues[d.dimensionIndex]) + halfBandWidth;
       const getY = (d) => d3LineYScale(d.value);
       const getDimensionIndex = (d) => d.dimensionIndex;
       const getSeriesIndex = (d) => d.seriesIndex;
@@ -842,7 +843,7 @@ function SvgComboChart($element, vif, options) {
     const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
 
     numberOfGroups = dataToRender.rows.length;
-    numberOfItemsPerGroup = columnDataToRender.rows[0].length - 1;
+    numberOfItemsPerGroup = Math.max(columnDataToRender.rows[0].length - 1, 1);
 
     // When we do allow panning we get a little more sophisticated; primarily
     // we will attempt to adjust the width we give to d3 to account for the
@@ -1060,10 +1061,14 @@ function SvgComboChart($element, vif, options) {
     clipPathSvg = chartSvg.append('clipPath').
       attr('id', d3ClipPathId);
 
+    let clipPathWidth = isUsingSecondaryAxis() ?
+      viewportWidth :
+      viewportWidth + leftMargin + rightMargin;
+
     clipPathSvg.append('rect').
       attr('x', 0).
       attr('y', 0).
-      attr('width', viewportWidth).
+      attr('width', clipPathWidth).
       attr('height', viewportHeight + topMargin + bottomMargin);
 
     viewportSvg.append('g').
@@ -1342,9 +1347,7 @@ function SvgComboChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
             const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
-
             const measure = measures[measureIndex];
 
             // d3's .datum() method gives us the entire row, whereas everywhere
@@ -1370,8 +1373,7 @@ function SvgComboChart($element, vif, options) {
         }
       );
 
-    chartSvg.
-      selectAll('.x.axis .tick text').
+    chartSvg.selectAll('.x.axis .tick text').
         on(
           'mousemove',
           (datum, dimensionIndex, measureIndex) => {
@@ -1398,17 +1400,22 @@ function SvgComboChart($element, vif, options) {
               // Don't use a strict equality comparison in the filter as getAttribute returns a string and
               // dimensionValue may not be a string.
               //
-              const dimensionGroup = d3.select(
+              const groupElement = d3.select(
                 _(xAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
                   filter((group) => group.getAttribute('data-dimension-value-html') == dimensionValue).
                   first()
               );
 
-              if (dimensionGroup.empty()) {
+              if (groupElement.empty()) {
                 return;
               }
 
-              showGroupFlyout(dimensionGroup, dimensionValues, dataToRender);
+              showGroupFlyout({
+                groupElement,
+                dimensionValues,
+                dataToRender,
+                chartSvg
+              });
             }
           }
         ).
@@ -1836,7 +1843,10 @@ function SvgComboChart($element, vif, options) {
     });
   }
 
-  function showGroupFlyout(groupElement, dimensionValues, dataToRender) {
+  function showGroupFlyout({ groupElement, dimensionValues, dataToRender, chartSvg }) {
+
+    // Content
+    //
     const titleHTML = groupElement.attr('data-dimension-value-html') || LABEL_NO_VALUE;
     const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
     append($('<td>', { 'colspan': 2 }).
@@ -1890,6 +1900,8 @@ function SvgComboChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
+    // Payload
+    //
     payload = {
       content: $table,
       rightSideHint: false,
@@ -1908,16 +1920,22 @@ function SvgComboChart($element, vif, options) {
       // y-axis (where all values in the group are <= 0) and the horizontal
       // center of the group in question.
       const flyoutElementBoundingClientRect = groupElement[0][0].getBoundingClientRect();
-      const flyoutElementWidth = flyoutElementBoundingClientRect.width;
       const flyoutElementTopOffset = flyoutElementBoundingClientRect.top;
       const flyoutElementLeftOffset = flyoutElementBoundingClientRect.left;
+
+      const columns = groupElement.selectAll('rect.column')[0].length;
+      const flyoutTopOffset = (columns != 1) ?
+        chartSvg.select('.y.grid').node().getBoundingClientRect().height :
+        0;
+
+      const halfBandWidth = Math.round(d3DimensionXScale.rangeBand() / 2.0);
 
       _.set(
         payload,
         'flyoutOffset',
         {
-          top: flyoutElementTopOffset,
-          left: flyoutElementLeftOffset + (flyoutElementWidth / 2) - 1
+          top: flyoutElementTopOffset + flyoutTopOffset,
+          left: flyoutElementLeftOffset + halfBandWidth
         }
       );
     }

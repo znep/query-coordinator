@@ -15,6 +15,7 @@ import {
 } from '../../actions';
 import {
   getAnyDimension,
+  getDimension,
   getReferenceLines,
   getOrderBy,
   isBarChart,
@@ -322,12 +323,19 @@ export class AxisAndScalePane extends Component {
   }
 
   renderTimelineChartControls() {
+    const { metadata, vifAuthoring } = this.props;
+    const dimension = getDimension(vifAuthoring);
+    const chartSorting = !isDimensionTypeCalendarDate(metadata, dimension) ?
+      this.renderChartSorting() :
+      null;
+
     const measureAxisOptions = this.renderMeasureAxisOptions();
     const referenceLinesControls = this.renderReferenceLinesControls();
 
     return (
       <AccordionContainer>
         {measureAxisOptions}
+        {chartSorting}
         {referenceLinesControls}
       </AccordionContainer>
     );

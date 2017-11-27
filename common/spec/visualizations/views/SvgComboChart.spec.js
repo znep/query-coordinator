@@ -93,6 +93,28 @@ describe('SvgComboChart', () => {
     ]
   };
 
+  const timescaleTestData = {
+    columns: ['dimension', 'measure'],
+    rows: [
+      ['2017-09-01T09:45:00.000', 10],
+      ['2017-09-02T09:45:00.000', 20],
+      ['2017-09-03T09:45:00.000', 30],
+      ['2017-09-04T09:45:00.000', 40],
+      ['2017-09-05T09:45:00.000', 50]
+    ],
+    columnFormats: {
+      dimension_date_column: {
+        dataTypeName: 'calendar_date',
+        fieldName: 'dimension_date_column',
+        name: 'Dimension Date',
+        renderTypeName: 'calendar_date',
+        format: {
+          view: 'date_time'
+        }
+      }
+    }
+  };
+
   const createComboChart = (width, overrideVIF) => {
 
     if (!width) {
@@ -535,6 +557,58 @@ describe('SvgComboChart', () => {
         let value = _.get(column, 'attributes.height.value', null);
         return value === '0';
       }));
+    });
+  });
+
+  describe('when rendering calendar_dates', () => {
+
+    const overrideVIF = {
+      series: [
+        {
+          dataSource: {
+            dimension: {
+              columnName: 'dimension_date_column',
+              aggregationFunction: null
+            }
+          }
+        }
+      ]
+    };
+
+    let comboChart;
+
+    afterEach(() => {
+      removeComboChart(comboChart);
+    });
+
+    it('renders date tick marks by year', () => {
+
+      const data = _.assign({}, timescaleTestData, { precision: 'year' });
+      comboChart = createComboChart(640, overrideVIF);
+      comboChart.chart.render(null, data);
+
+      const $tickLabels = comboChart.element.find('.x.axis text');
+      assert.equal($tickLabels.first().text(), '2017');
+    });
+
+    it('renders date tick marks by month', () => {
+
+      const data = _.assign({}, timescaleTestData, { precision: 'month' });
+      comboChart = createComboChart(640, overrideVIF);
+      comboChart.chart.render(null, data);
+
+      const $tickLabels = comboChart.element.find('.x.axis text');
+      assert.equal($tickLabels.first().text(), '2017/09');
+    });
+
+    it('renders date tick marks by day', () => {
+
+      const data = _.assign({}, timescaleTestData, { precision: 'day' });
+      comboChart = createComboChart(640, overrideVIF);
+      comboChart.chart.render(null, data);
+
+      const $tickLabels = comboChart.element.find('.x.axis text');
+      assert.equal($tickLabels.first().text(), '2017/09…');
     });
   });
 });

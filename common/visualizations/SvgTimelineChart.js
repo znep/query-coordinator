@@ -127,6 +127,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
     const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
     const precision = _.get(newVif, 'series[0].dataSource.precision');
+    const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
@@ -135,27 +136,31 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
 
     $.fn.socrataSvgTimelineChart.validateVif(newVif).
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
-      then((columns) => {
+      then((columns) => Promise.all([columns, datasetMetadataProvider.getDatasetMetadata()])).
+      then((resolutions) => {
+        const [columns, datasetMetadata] = resolutions;
+        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+        const columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
+        const isCalendarDate = isDimensionCalendarDate(dimensionColumnName, columnFormats);
 
-        const getData = (precision !== 'none') ?
+        const getData = isCalendarDate && (precision !== 'none') ?
           TimeDataManager.getData(newVif) :
           CategoricalDataManager.getData(newVif);
 
-        return Promise.all([
-          Promise.resolve(columns),
-          getData,
-          datasetMetadataProvider.getDatasetMetadata()
-        ]);
+        return Promise.all([columns, getData, columnFormats]);
       }).
       then((resolutions) => {
-        const [newColumns, newData, datasetMetadata] = resolutions;
+        const [newColumns, newData, columnFormats] = resolutions;
 
-        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
-        newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
-
+        newData.columnFormats = columnFormats;
         renderVisualization(newVif, newData, newColumns);
       }).
       catch(handleError);
+  }
+
+  function isDimensionCalendarDate(dimensionColumnName, columnFormats) {
+    const columnFormat = columnFormats[dimensionColumnName];
+    return !_.isUndefined(columnFormat) && (columnFormat.dataTypeName === 'calendar_date');
   }
 
   function renderVisualization(vifToRender, dataToRender, columnsToRender) {
@@ -230,7 +235,6 @@ $.fn.socrataSvgTimelineChart.validateVif = (vif) =>
   getSoqlVifValidator(vif).then(validator =>
     validator.
       requireAtLeastOneSeries().
-      requireCalendarDateDimension().
       toPromise()
   );
 

@@ -884,7 +884,7 @@ function SvgColumnChart($element, vif, options) {
     clipPathSvg.append('rect').
       attr('x', 0).
       attr('y', 0).
-      attr('width', viewportWidth).
+      attr('width', viewportWidth + leftMargin + rightMargin).
       attr('height', viewportHeight + topMargin + bottomMargin);
 
     viewportSvg.append('g').

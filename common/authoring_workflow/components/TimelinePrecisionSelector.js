@@ -4,14 +4,21 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
-import { getPrecision } from '../selectors/vifAuthoring';
+import { isDimensionTypeCalendarDate } from '../selectors/metadata';
+import { getDimension, getPrecision } from '../selectors/vifAuthoring';
 import { setPrecision } from '../actions';
 import { TIMELINE_PRECISION } from '../constants';
 
 export class TimelinePrecisionSelector extends Component {
 
   render() {
-    const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
+    const {
+      metadata,
+      onSelectTimelinePrecision,
+      timelinePrecision,
+      vifAuthoring
+    } = this.props;
+
     const defaultPrecision = getPrecision(vifAuthoring) || null;
 
     const options = _.map(timelinePrecision, (option) => {
@@ -19,7 +26,11 @@ export class TimelinePrecisionSelector extends Component {
       return option;
     });
 
+    const dimension = getDimension(vifAuthoring);
+    const disabled = !isDimensionTypeCalendarDate(metadata, dimension);
+
     const attributes = {
+      disabled,
       id: 'timeline-precision-selection',
       onSelection: onSelectTimelinePrecision,
       options,
@@ -48,7 +59,7 @@ TimelinePrecisionSelector.propTypes = {
 };
 
 const mapStateToProps = state => {
-  return _.pick(state, ['vifAuthoring']);
+  return _.pick(state, ['metadata', 'vifAuthoring']);
 };
 
 const mapDispatchToProps = dispatch => ({

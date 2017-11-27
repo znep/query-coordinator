@@ -6,7 +6,7 @@ export default () => ({
   'configuration': {
     'showLegend': true,
     'viewSourceDataLink': true,
-    'xAxisScalingMode': 'fit'
+    'xAxisScalingMode': 'pan'
   },
   'description': '',
   'series': [

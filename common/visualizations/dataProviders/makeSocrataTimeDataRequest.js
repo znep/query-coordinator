@@ -80,91 +80,101 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
     null,
     null,
     (requireGroupingInSelect ? SoqlHelpers.groupingAlias() : null)
-  ).
-    then((queryResponse) => {
-      const dimensionIndex = queryResponse.columns.indexOf(
-        SoqlHelpers.dimensionAlias()
-      );
-      const groupingIndex = queryResponse.columns.indexOf(
-        SoqlHelpers.groupingAlias()
-      );
-      const measureIndex = queryResponse.columns.indexOf(
-        SoqlHelpers.measureAlias()
-      );
-      const typeComponents = _.get(vif, `series[${seriesIndex}].type`, '').
-        split('.');
-      const typeVariant = _.defaultTo(typeComponents[1], 'area');
-      const treatNullValuesAsZero = _.get(
+  ).then(dealWithQueryResponse(vif, seriesIndex, options));
+}
+
+function dealWithQueryResponse(vif, seriesIndex, options) {
+  return (queryResponse) => {
+    const dimensionIndex = queryResponse.columns.indexOf(
+      SoqlHelpers.dimensionAlias()
+    );
+    const groupingIndex = queryResponse.columns.indexOf(
+      SoqlHelpers.groupingAlias()
+    );
+    const measureIndex = queryResponse.columns.indexOf(
+      SoqlHelpers.measureAlias()
+    );
+    const typeComponents = _.get(vif, `series[${seriesIndex}].type`, '').
+      split('.');
+    const chartType = typeComponents[0];
+    const typeVariant = _.defaultTo(typeComponents[1], 'area');
+    const treatNullValuesAsZero = _.get(
+      vif,
+      'configuration.treatNullValuesAsZero',
+      false
+    );
+
+    queryResponse.columns[dimensionIndex] = 'dimension';
+    queryResponse.columns[measureIndex] = 'measure';
+    if (groupingIndex !== -1) {
+      queryResponse.columns[groupingIndex] = 'grouping';
+    }
+
+    // The dimension comes back as an ISO-8601 date, which means we can sort
+    // dimension values lexically. This sort puts the dates in ascending
+    // order, and the following forEach will cast numbers-as-strings to
+    // numbers and undefined measure values as null.
+    queryResponse.rows.
+      sort((a, b) => (a[dimensionIndex] <= b[dimensionIndex]) ? -1 : 1).
+      // Note that because we are using a forEach and then assigning to the
+      // argument provided by the forEach, we cannot use e.g. _.sortBy since
+      // the collection it returns will be a clone of the original, not a
+      // reference to it, and as such the reassignment-in-place will be done
+      // on something that gets thrown away.
+      forEach((row) => {
+        const value = row[measureIndex];
+
+        if (_.isUndefined(value)) {
+          row[measureIndex] = (treatNullValuesAsZero) ? 0 : null;
+        } else {
+          row[measureIndex] = Number(value);
+        }
+      });
+
+    let rows;
+
+    // Previously makeSocrataTimeDataRequest was only used by timelineCharts
+    // of line and area variations, and only timelineChart.line needs to add
+    // a blank row.  Now, time data can be requested by column, bar, timeline
+    // and combo charts, so we specifically check for timelineChart.line.
+    if ((chartType === 'timelineChart') && (typeVariant === 'line')) {
+
+      rows = addBlankRowAfterLastRow(
         vif,
-        'configuration.treatNullValuesAsZero',
-        false
+        dimensionIndex,
+        queryResponse.rows
       );
 
-      queryResponse.columns[dimensionIndex] = 'dimension';
-      queryResponse.columns[measureIndex] = 'measure';
-      if (groupingIndex !== -1) {
-        queryResponse.columns[groupingIndex] = 'grouping';
-      }
+    } else {
 
-      // The dimension comes back as an ISO-8601 date, which means we can sort
-      // dimension values lexically. This sort puts the dates in ascending
-      // order, and the following forEach will cast numbers-as-strings to
-      // numbers and undefined measure values as null.
-      queryResponse.rows.
-        sort((a, b) => (a[dimensionIndex] <= b[dimensionIndex]) ? -1 : 1).
-        // Note that because we are using a forEach and then assigning to the
-        // argument provided by the forEach, we cannot use e.g. _.sortBy since
-        // the collection it returns will be a clone of the original, not a
-        // reference to it, and as such the reassignment-in-place will be done
-        // on something that gets thrown away.
-        forEach((row) => {
-          const value = row[measureIndex];
+      // If there are no values in a specific interval (according to the
+      // date_trunc_* function) then we will not get a response row for that
+      // interval.
+      //
+      // This complicates our ability to render gaps in the timeline for these
+      // intervals, since d3 will just interpolate over them.
+      //
+      // The solution is to explicitly provide null values for intervals with
+      // no values, which means that we need to expand the result rows into an
+      // equivalent set in which the domain is monotonically increasing.
+      //
+      // This is only necessary for (or relevant to) area charts, however,
+      // since the normal interpolation behavior is actually what we want for
+      // the 'line' variant (a simple line chart, not an area chart).
+      rows = forceDimensionMonotonicity(
+        vif,
+        seriesIndex,
+        options.precision,
+        queryResponse
+      );
+    }
 
-          if (_.isUndefined(value)) {
-            row[measureIndex] = (treatNullValuesAsZero) ? 0 : null;
-          } else {
-            row[measureIndex] = Number(value);
-          }
-        });
-
-      let rows;
-
-      if (typeVariant === 'area') {
-        // If there are no values in a specific interval (according to the
-        // date_trunc_* function) then we will not get a response row for that
-        // interval.
-        //
-        // This complicates our ability to render gaps in the timeline for these
-        // intervals, since d3 will just interpolate over them.
-        //
-        // The solution is to explicitly provide null values for intervals with
-        // no values, which means that we need to expand the result rows into an
-        // equivalent set in which the domain is monotonically increasing.
-        //
-        // This is only necessary for (or relevant to) area charts, however,
-        // since the normal interpolation behavior is actually what we want for
-        // the 'line' variant (a simple line chart, not an area chart).
-        rows = forceDimensionMonotonicity(
-          vif,
-          seriesIndex,
-          options.precision,
-          queryResponse
-        );
-      } else {
-        rows = addBlankRowAfterLastRow(
-          vif,
-          dimensionIndex,
-          queryResponse.rows
-        );
-      }
-
-      return {
-        columns: queryResponse.columns,
-        rows,
-        precision: options.precision
-      };
-
-    });
+    return {
+      columns: queryResponse.columns,
+      rows,
+      precision: options.precision
+    };
+  };
 }
 
 function incrementDateByPrecision(startDate, precision) {
@@ -268,37 +278,31 @@ function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
   ];
 
   let monotonicRowCount;
+
+  switch (precision) {
+    case 'year':
+      const years = Math.floor(endDateMoment.diff(startDateMoment, 'years', true));
+      monotonicRowCount = years + 1; // adding 1 includes the end year
+      break;
+
+    case 'month':
+      const months = Math.floor(endDateMoment.diff(startDateMoment, 'months', true));
+      monotonicRowCount = months + 1; // adding 1 includes the end month
+      break;
+
+    case 'day':
+      const days = Math.floor(endDateMoment.diff(startDateMoment, 'days', true));
+      monotonicRowCount = days + 1; // adding 1 includes the end day
+      break;
+
+    default:
+      throw new Error(`Invalid precision: "${precision}"`);
+  }
+
   let i = 1;
   let lastRowStartDate;
   let nextRowStartDate;
   let lastRowVisited = 0;
-  let duration;
-
-  switch (precision) {
-    case 'year':
-      // Just do full year subtraction here.  If our timespan included a leap year,
-      // moment's duration.asYears() returned a fractional year (i.e. 5.002), which
-      // we were ceil-ing and getting an extra year in our monotonicRowCount.
-      //
-      const years = endDateMoment.toDate().getFullYear() - startDateMoment.toDate().getFullYear();
-      monotonicRowCount = years + 1;
-      break;
-
-    case 'month':
-      duration = moment.duration(endDateMoment.diff(startDateMoment));
-      monotonicRowCount = Math.round(duration.asMonths()) + 1;
-      break;
-
-    case 'day':
-      duration = moment.duration(endDateMoment.diff(startDateMoment));
-      monotonicRowCount = Math.round(duration.asDays() + 1);
-      break;
-
-    default:
-      throw new Error(
-        'Invalid precision: "{0}"'.format(precision)
-      );
-  }
 
   while (i < monotonicRowCount) {
     lastRowStartDate = monotonicRows[i - 1][0];

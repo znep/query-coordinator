@@ -206,15 +206,11 @@
             var localePrefix = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
             const bootstrapUrl = localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id);
 
-            const url = _.isObject(blist.currentUser) ?
-              bootstrapUrl :
-              localePrefix + '/login?return_to=' + encodeURIComponent(bootstrapUrl);
-
             var label = cpObj.$dom().find('.chartTypeSelection > label.formHeader');
 
             var newVizButton = $.tag({
               tagName: 'a',
-              href: url,
+              href: bootstrapUrl,
               'class': 'visualization-canvas-button',
               contents: $.t('screens.ds.grid_sidebar.visualization_canvas.button')
             });

@@ -162,6 +162,30 @@ export const setEmbedSize = (size) => ({
   size
 });
 
+/**
+ * Closes the signin modal.
+ */
+export const CLOSE_SIGNIN_MODAL = 'CLOSE_SIGNIN_MODAL';
+export const closeSigninModal = () => ({
+  type: CLOSE_SIGNIN_MODAL
+});
+
+/**
+ * Redirects the user to sign in
+ */
+export const SIGNIN_FROM_MODAL = 'SIGNIN_FROM_MODAL';
+export const signin = () => ({
+  type: SIGNIN_FROM_MODAL
+});
+
+/**
+ * Dismisses alert box
+ */
+export const DISMISS_ALERT = 'DISMISS_ALERT';
+export const dismissAlert = () => ({
+  type: DISMISS_ALERT
+});
+
 export const save = () => {
   return (dispatch, getState) => {
     const state = getState();

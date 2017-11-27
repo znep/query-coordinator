@@ -34,18 +34,38 @@ const INITIAL_STATES = {
 
 describe('Reducer', () => {
   let state;
+  let assignStub;
 
   // Prevent individual tests from interacting with each other.
   afterEach(() => {
     state = undefined;
+    assignStub = undefined;
+    window.serverConfig.currentUser = undefined;
+    window.serverConfig.localePrefix = undefined;
   });
+
+  const rewireLocation = (pathname) => {
+    beforeEach(() => {
+      assignStub = sinon.stub();
+      reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant(pathname)});
+    });
+
+    afterEach(() => {
+      reducerAPI.__ResetDependency__('windowLocation');
+    });
+  };
 
   // Shared examples
   const sharedExamples = {
-    beforeEachSetInitialState(initialState) {
+    beforeEachSetInitialState(initialState, loggedIn = false) {
       beforeEach(() => {
+        if (loggedIn) {
+          window.serverConfig.currentUser = { id: 'four-four' };
+        }
+        window.serverConfig.localePrefix = '';
         window.initialState = _.cloneDeep(initialState);
         state = reducer();
+
       });
     },
 
@@ -75,10 +95,103 @@ describe('Reducer', () => {
   };
 
   describe('starting from an empty ephemeral view', () => {
-    sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif);
+    describe('when logged in', () => {
 
-    sharedExamples.itSetsDataSourceUrl();
-    sharedExamples.itSetsVisualizationUrlTo(null);
+      sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif, true);
+
+      sharedExamples.itSetsDataSourceUrl();
+      sharedExamples.itSetsVisualizationUrlTo(null);
+
+      it('sets up signinModal to not be active', () => {
+        assert.isFalse(state.signinModal.isActive);
+      });
+    });
+
+    describe('when not logged in', () => {
+      sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif, false);
+
+      sharedExamples.itSetsDataSourceUrl();
+      sharedExamples.itSetsVisualizationUrlTo(null);
+
+      it('sets up signinModal to be active', () => {
+        assert.isTrue(state.signinModal.isActive);
+      });
+
+      describe('SIGNIN_FROM_MODAL', () => {
+        beforeEach(() => {
+          state = reducer(state, actions.signin());
+        });
+
+        it('sets up isDirty in state', () => {
+          assert.isFalse(state.isDirty);
+        });
+
+        describe('redirects to login', () => {
+          rewireLocation('wombats-in-space.com');
+
+          it('constructs a login path and redirects to it', (done) => {
+            const loginPath = `/login?return_to=${encodeURIComponent('wombats-in-space.com')}`;
+
+            assignStub.callsFake((args) => {
+              assert.equal(args, loginPath);
+              done();
+            });
+          });
+        });
+
+        describe('with localePrefix', () => {
+          const localePrefix = '/aa'
+          const testPathname = 'wombats-in-space.com/d/four-four/visualization';
+
+          beforeEach(() => {
+            window.serverConfig.localePrefix = localePrefix;
+          });
+
+          rewireLocation(testPathname);
+
+          it('constructs a login path with locale and redirects to it', (done) => {
+            const loginPath = `${localePrefix}/login?return_to=${encodeURIComponent(testPathname)}`;
+
+            assignStub.callsFake((args) => {
+              assert.equal(args, loginPath);
+              done();
+            });
+          });
+        });
+      });
+
+      describe('CLOSE_SIGNIN_MODAL', () => {
+        beforeEach(() => {
+          state = reducer(state, actions.closeSigninModal());
+        });
+
+        it('sets up isActive in state', () => {
+          assert.isFalse(state.signinModal.isActive);
+        });
+
+        it('sets up alert in state',() => {
+          assert.deepEqual(state.alert, {
+            isActive: true,
+            translationKey: 'visualization_canvas.alert_not_signed_in',
+            type: 'warning'
+          })
+        });
+
+        describe('then DISMISS_ALERT', () => {
+          beforeEach(() => {
+            state = reducer(state, actions.dismissAlert());
+          });
+
+          it('removes alert from state', () => {
+            assert.isNull(state.alert);
+          });
+
+          it('keeps signinModal inactive', () => {
+            assert.isFalse(state.signinModal.isActive);
+          });
+        });
+      });
+    });
   });
 
   describe('starting from an ephemeral view with a vif', () => {
@@ -244,18 +357,6 @@ describe('Reducer', () => {
     });
 
     describe('ENTER_EDIT_MODE', () => {
-      let assignStub;
-
-      const rewireLocation = (pathname) => {
-        beforeEach(() => {
-          assignStub = sinon.stub();
-          reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant(pathname)});
-        });
-
-        afterEach(() => {
-          reducerAPI.__ResetDependency__('windowLocation');
-        });
-      };
 
       rewireLocation('wombats-in-space.com/edit');
 
@@ -458,27 +559,20 @@ describe('Reducer', () => {
       });
 
       describe('if isEphemeral', () => {
-        let assignStub;
         sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif);
 
-        beforeEach(() => {
-          assignStub = sinon.stub();
-          reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant('wombats-in-space.com')});
-        })
+        rewireLocation('wombats-in-space.com');
 
-        afterEach(() => {
-          reducerAPI.__ResetDependency__('windowLocation');
-        })
-
-        // The 505ms delay is here to account for a delay in the reducer for mixpanel events
         it('constructs a saved path and redirects to path/edit', (done) => {
           reducer(state, actions.handleSaveSuccess(response));
+
           const newPath = `/dataset/${utils.convertToUrlComponent(response.name)}/${response.id}/edit`;
-          _.delay(() => {
-            assert.isTrue(assignStub.withArgs(newPath).calledOnce);
+
+          assignStub.callsFake((args) => {
+            assert.equal(args, newPath);
             done();
-          }, 505);
-        })
+          });
+        });
       });
     });
 

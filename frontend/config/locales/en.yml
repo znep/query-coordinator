@@ -6715,6 +6715,7 @@ en:
       all: All Roles
   visualization_canvas:
     add_visualization: Add Visualization
+    alert_not_signed_in: You will not be able to save this visualization because you are not logged in.
     default_row_label: row
     dismiss: Dismiss
     edit_menu:
@@ -6754,5 +6755,10 @@ en:
         wide: Wide
       title: Share and Embed
       web_link: Web Link
+    signin_modal:
+      description: Visualizations that you create cannot be saved to your account unless you first sign in. If you do not wish to save, you may continue without signing in.
+      dismiss_button: No Thanks
+      sign_in_button: Sign In
+      title: Sign in to Save Visualization?
     unsaved_changes: Are you sure you want to close without saving changes?
     visualization_error: There was a problem rendering this visualization.

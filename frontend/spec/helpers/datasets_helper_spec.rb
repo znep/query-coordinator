@@ -10,6 +10,7 @@ describe DatasetsHelper do
     :is_geo? => false,
     :is_blobby? => false,
     :is_href? => false,
+    :is_activity_feed_dataset? => false,
     :flag? => true,
     :has_rights? => true
   }
@@ -109,6 +110,8 @@ describe DatasetsHelper do
         allow(helper).to receive_messages(:current_user => nil)
         allow(view).to receive_messages(:is_published? => true, :is_blist? => true, :can_edit? => true, :is_immutable? => false)
         expect(helper.hide_redirect?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_redirect?).to eq(true)
       end
 
       it 'allow edit/create working copy on derived views' do
@@ -144,6 +147,8 @@ describe DatasetsHelper do
         expect(helper.hide_add_column?).to eq(true)
         allow(view).to receive_messages(:is_unpublished? => true, :is_blist? => true, :has_rights? => true, :is_immutable? => false, :geoParent => Model.new)
         expect(helper.hide_add_column?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_add_column?).to eq(true)
       end
     end
 
@@ -160,6 +165,8 @@ describe DatasetsHelper do
         allow(view).to receive_messages(:is_unpublished? => true, :new_backend? => false )
         allow(FeatureFlags).to receive(:derive).and_return(Hashie::Mash.new(:ingress_strategy => 'nbe'))
         expect(helper.hide_append_replace?).to be_falsey
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_append_replace?).to eq(true)
       end
     end
 
@@ -302,6 +309,8 @@ describe DatasetsHelper do
         expect(helper.hide_update_column?).to eq(true)
         allow(view).to receive_messages(:is_snapshotted? => true, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_api? => false)
         expect(helper.hide_update_column?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_update_column?).to eq(true)
       end
     end
 
@@ -319,6 +328,8 @@ describe DatasetsHelper do
         expect(helper.hide_show_hide_columns?).to eq(true)
         allow(view).to receive_messages(:is_snapshotted? => true, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_geo? => false)
         expect(helper.hide_show_hide_columns?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_show_hide_columns?).to eq(true)
       end
     end
 
@@ -332,6 +343,8 @@ describe DatasetsHelper do
         expect(helper.hide_sharing?).to eq(true)
         allow(view).to receive_messages(:is_snapshotted? => false, :has_rights? => true, :geoParent => Model.new)
         expect(helper.hide_sharing?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_sharing?).to eq(true)
       end
     end
 
@@ -344,6 +357,8 @@ describe DatasetsHelper do
         allow(view).to receive_messages(:is_snapshotted? => false, :has_rights? => false, :geoParent => nil)
         expect(helper.hide_permissions?).to eq(true)
         allow(view).to receive_messages(:is_snapshotted? => false, :has_rights? => true, :geoParent => Model.new)
+        expect(helper.hide_permissions?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
         expect(helper.hide_permissions?).to eq(true)
       end
     end
@@ -360,6 +375,8 @@ describe DatasetsHelper do
         allow(CurrentDomain).to receive_messages(:user_can? => true)
         allow(view).to receive_messages(:geoParent => Model.new)
         expect(helper.hide_plagiarize?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+        expect(helper.hide_plagiarize?).to eq(true)
       end
     end
 
@@ -370,6 +387,8 @@ describe DatasetsHelper do
         allow(view).to receive_messages(:has_rights? => false, :geoParent => nil)
         expect(helper.hide_delete_dataset?).to eq(true)
         allow(view).to receive_messages(:has_rights? => false, :geoParent => Model.new)
+        expect(helper.hide_delete_dataset?).to eq(true)
+        allow(view).to receive_messages(:is_activity_feed_dataset? => true)
         expect(helper.hide_delete_dataset?).to eq(true)
       end
     end

@@ -595,14 +595,16 @@ module DatasetsHelper
       view.is_api?,
       view.geoParent.present?,
       view.is_api_geospatial?,
-      enable_2017_grid_view_refresh_for_current_request?
+      enable_2017_grid_view_refresh_for_current_request?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
   def hide_edit_update_column?
     [
       !view.is_unpublished?,
-      !enable_2017_grid_view_refresh_for_current_request?
+      !enable_2017_grid_view_refresh_for_current_request?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
@@ -613,7 +615,8 @@ module DatasetsHelper
       view.is_form?,
       view.is_geo?,
       view.is_api_geospatial?,
-      enable_2017_grid_view_refresh_for_current_request?
+      enable_2017_grid_view_refresh_for_current_request?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
@@ -621,7 +624,8 @@ module DatasetsHelper
     [
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::GRANT),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
@@ -629,21 +633,24 @@ module DatasetsHelper
     [
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::UPDATE_VIEW),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
   def hide_plagiarize?
     [
       !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 
   def hide_delete_dataset?
     [
       !view.has_rights?(ViewRights::DELETE_VIEW),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_activity_feed_dataset?
     ].any?
   end
 

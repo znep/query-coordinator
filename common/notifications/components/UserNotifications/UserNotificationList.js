@@ -17,7 +17,7 @@ class UserNotificationList extends Component {
       onToggleReadUserNotification,
       I18n
     } = this.props;
-
+    const isTransientNotification = false;
     const notifications = userNotifications.filter((notification) => (
       _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy)
     ));
@@ -37,6 +37,7 @@ class UserNotificationList extends Component {
         key={notification.id}
         id={notification.id}
         isRead={notification.read}
+        isTransientNotification={isTransientNotification}
         activityType={notification.activityType}
         createdAt={notification.createdAt}
         type={notification.type}
@@ -68,9 +69,29 @@ class UserNotificationList extends Component {
     }
   }
 
+  renderSeeMoreNotificationsLink() {
+    const { hasEnqueuedUserNotifications } = this.props;
+
+    if (hasEnqueuedUserNotifications) {
+      const { onSeeNewUserNotifications, I18n } = this.props;
+
+      return (
+        <div
+          className="see-new-user-notifications"
+          styleName="see-new-user-notifications-link-wrapper">
+          <button styleName="see-new-user-notifications-link" onClick={onSeeNewUserNotifications}>
+            {I18n.t('see_new_notifications', { scope: 'shared_site_chrome_notifications' })}
+          </button>
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
+        {this.renderSeeMoreNotificationsLink()}
+
         <ul styleName="socrata-user-notification-list">
           {this.renderUserNotifications()}
         </ul>
@@ -84,8 +105,10 @@ class UserNotificationList extends Component {
 UserNotificationList.propTypes = {
   filterNotificationsBy: PropTypes.string.isRequired,
   hasMoreNotifications: PropTypes.bool.isRequired,
+  hasEnqueuedUserNotifications: PropTypes.bool.isRequired,
   onClearUserNotification: PropTypes.func.isRequired,
   onLoadMoreUserNotifications: PropTypes.func.isRequired,
+  onSeeNewUserNotifications: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired
 };
 

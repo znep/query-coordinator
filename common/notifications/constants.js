@@ -24,3 +24,4 @@ export const STATUS_ACTIVITY_TYPES = [
   'DataSubmittedForReview'
 ];
 export const NOTIFICATIONS_PER_PAGE = 25;
+export const FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS = 4 * 1000;

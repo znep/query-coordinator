@@ -25,10 +25,7 @@ describe('User Notification API', () => {
     userNotificationAPI = new UserNotificationAPI(userId);
     sinon.assert.calledOnce(notificationStub);
 
-    const params = {
-      limit: NOTIFICATIONS_PER_PAGE,
-      offset: offset
-    };
+    const params = { limit: NOTIFICATIONS_PER_PAGE, offset };
     const queryString = $.param(params);
 
     assert.equal(

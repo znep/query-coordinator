@@ -169,6 +169,12 @@ header#site-chrome-header[template="rally"] {
               float: left;
               padding: 5px 0;
 
+              #site-chrome-header-notifications {
+                .transient-notifications-list {
+                  top: $banner_height;
+                }
+              }
+
               #socrata-notifications-container {
                 z-index: 101;
                 position: relative;

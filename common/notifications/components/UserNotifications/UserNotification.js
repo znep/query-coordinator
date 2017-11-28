@@ -8,9 +8,44 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
+import { FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS } from 'common/notifications/constants';
 import styles from './user-notification.scss';
 
 class UserNotification extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fadeAwayTimeoutId: null
+    };
+  }
+
+  componentWillMount() {
+    const { isTransientNotification } = this.props;
+
+    if (isTransientNotification) {
+      const { id, moveTransientNotificationIntoPanel } = this.props;
+      let { fadeAwayTimeoutId } = this.state;
+
+      fadeAwayTimeoutId = setTimeout(() => {
+        moveTransientNotificationIntoPanel(id);
+      }, FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS);
+
+      this.setState({ fadeAwayTimeoutId });
+    }
+  }
+
+  componentWillUnmount() {
+    const { isTransientNotification } = this.props;
+    let { fadeAwayTimeoutId } = this.state;
+
+    if (isTransientNotification && !_.isNull(fadeAwayTimeoutId)) {
+      clearTimeout(fadeAwayTimeoutId);
+      fadeAwayTimeoutId = null;
+      this.setState({ fadeAwayTimeoutId });
+    }
+  }
+
   renderAlertLabel() {
     const {
       type,
@@ -19,6 +54,14 @@ class UserNotification extends React.Component {
 
     if (_.isEqual(type, 'alert')) {
       return <em>{I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')}</em>;
+    }
+  }
+
+  renderSocrataLogo() {
+    const { isTransientNotification } = this.props;
+
+    if (isTransientNotification) {
+      return <SocrataIcon name="logo" className="socrata-icon-logo-color" />;
     }
   }
 
@@ -110,6 +153,7 @@ class UserNotification extends React.Component {
     const {
       id,
       isRead,
+      isTransientNotification,
       type,
       createdAt,
       I18n
@@ -118,22 +162,29 @@ class UserNotification extends React.Component {
 
     return (
       <li
-        styleName={classNames('notification-item', type, { 'unread': isUnread })}
-        className={classNames('user-notification-item clearfix', { 'unread': isUnread })}
+        styleName={classNames('notification-item', type, {
+          'unread': isUnread,
+          'transient': isTransientNotification
+        })}
+        className={classNames('user-notification-item', { 'unread': isUnread })}
         data-notification-id={id}>
-        <div styleName="notification-info">
-          {this.renderNotificationTitle()}
+        {this.renderSocrataLogo()}
 
-          <p styleName="timestamp" className="notification-timestamp">
-            <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
-            <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
-            {this.renderUserLink()}
-          </p>
-        </div>
+        <div styleName="notification-wrapper" className="clearfix">
+          <div styleName="notification-info">
+            {this.renderNotificationTitle()}
 
-        <div styleName="actions-wrapper">
-          {this.renderUnreadIcon()}
-          {this.renderClearIcon()}
+            <p styleName="timestamp" className="notification-timestamp">
+              <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
+              <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
+              {this.renderUserLink()}
+            </p>
+          </div>
+
+          <div styleName="actions-wrapper">
+            {this.renderUnreadIcon()}
+            {this.renderClearIcon()}
+          </div>
         </div>
       </li>
     );
@@ -146,6 +197,7 @@ UserNotification.propTypes = {
   createdAt: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   isRead: PropTypes.bool.isRequired,
+  isTransientNotification: PropTypes.bool.isRequired,
   link: PropTypes.string,
   onClearUserNotification: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
@@ -153,6 +205,10 @@ UserNotification.propTypes = {
   activityUniqueKey: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   userProfileLink: PropTypes.string.isRequired
+};
+
+UserNotification.defaultProps = {
+  moveTransientNotificationIntoPanel: () => {}
 };
 
 export default connectLocalization(cssModules(UserNotification, styles, { allowMultiple: true }));

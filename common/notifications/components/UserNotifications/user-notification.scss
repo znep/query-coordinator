@@ -14,6 +14,74 @@
     margin-bottom: 3px;
   }
 
+  &.transient {
+    background-color: $transient-notification-background-color;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    opacity: 0;
+    padding: 8px;
+    pointer-events: none;
+    position: relative;
+    right: -50%;
+    transition: all 0.3s;
+
+    &:first-child,
+    &:nth-child(2) {
+      opacity: 1;
+      pointer-events: auto;
+      right: 0;
+    }
+
+    &:before {
+      border-radius: 0;
+      bottom: 8px;
+      height: auto;
+      left: 47px;
+      top: 8px;
+    }
+
+    & :global(.socrata-icon-logo-ring) {
+      color: $primary;
+      fill: $primary;
+    }
+
+    & :global(.socrata-icon-logo-pie) {
+      color: $alternate-1;
+      fill: $alternate-1;
+    }
+
+    & :global(.socrata-icon-logo-color) {
+      float: left;
+      height: 28px;
+      margin-top: 8px;
+      width: 28px;
+
+      & svg {
+        height: 28px;
+        width: 28px;
+      }
+
+      &:before {
+        display: none;
+      }
+    }
+
+    .notification-wrapper {
+      background-color: $notification-item-background-color;
+      -moz-border-radius: 0 3px 3px 0;
+      -webkit-border-radius: 0 3px 3px 0;
+      border-radius: 0 3px 3px 0;
+      float: right;
+      padding: 5px 5px 5px 11px;
+      width: calc(100% - 39px);
+
+      .notification-info {
+        text-align: left;
+      }
+    }
+  }
+
   &.status {
     &:before {
       background-color: $status-notification-indicator-background-color;
@@ -59,7 +127,7 @@
     }
   }
 
-  & :global(.socrata-icon) {
+  & :global(:not(.socrata-icon-logo-color).socrata-icon) {
     color: $checkmark-un-read-state-color;
     fill: $checkmark-un-read-state-color;
     height: 14px;
@@ -80,6 +148,10 @@
       display: none;
     }
   }
+}
+
+.notification-wrapper {
+
 }
 
 .notification-info {

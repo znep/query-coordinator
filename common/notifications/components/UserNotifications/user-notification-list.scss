@@ -19,27 +19,58 @@ $viewOlderLinksHeight: $footerBarHeight;
   }
 }
 
+.see-new-user-notifications-link-wrapper,
 .load-more-user-notifications-link-wrapper {
   height: $viewOlderLinksHeight;
-  padding: 8px 0;
   text-align: center;
+
+  .see-new-user-notifications-link,
+  .load-more-user-notifications-link {
+    border: 0 none;
+    cursor: pointer;
+    height: 30px;
+  }
+}
+
+.see-new-user-notifications-link-wrapper {
+  left: 0;
+  padding: 8px 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+
+  .see-new-user-notifications-link {
+    background: $see-new-user-notifications-link-background-color;
+    border-radius: 15px;
+    color: $see-new-user-notifications-link-text-color;
+    display: inline-block;
+    font-size: 12px;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 5px 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      background: $see-new-user-notifications-link-hover-background-color;
+    }
+  }
+}
+
+.load-more-user-notifications-link-wrapper {
+  padding: 8px 0;
 
   .load-more-user-notifications-link {
     background-color: transparent;
-    border: 0 none;
     color: $view-older-notifications-link-color;
-    cursor: pointer;
     font-size: 13px;
-    height: 30px;
     padding: 5px 0;
 
     &:hover,
     &:focus {
       text-decoration: underline;
-    }
-
-    &:visited {
-      color: $view-older-notifications-link-color;
     }
   }
 }

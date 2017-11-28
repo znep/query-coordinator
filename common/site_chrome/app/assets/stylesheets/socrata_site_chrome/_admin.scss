@@ -15,8 +15,20 @@ $header_height_small: 32px;
   font-family: 'Open Sans', 'Helvetica', sans-serif;
   justify-content: space-between;
 
+  #site-chrome-header-notifications {
+    .transient-notifications-list {
+      top: $header_height;
+    }
+  }
+
   &.site-chrome-small {
     height: $header_height_small;
+
+    #site-chrome-header-notifications {
+      .transient-notifications-list {
+        top: $header_height_small;
+      }
+    }
 
     .site-chrome-admin-title,
     .site-chrome-admin-menus,

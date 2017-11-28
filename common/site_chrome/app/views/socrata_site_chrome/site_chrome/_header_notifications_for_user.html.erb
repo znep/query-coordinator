@@ -22,7 +22,8 @@
           showUserNotifications: true,
           currentUserRole: <%== current_user_role.to_json %>,
           currentDomainFeatures: <%== feature_set.to_json %>,
-          isSuperAdmin: <%== is_superadmin? %>
+          isSuperAdmin: <%== is_superadmin? %>,
+          showTransientNotifications: <%= get_feature_flag('in_product_transient_notifications') %>
         };
 
         window.headerNotifications('#site-chrome-header-notifications',

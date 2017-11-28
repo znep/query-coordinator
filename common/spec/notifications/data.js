@@ -43,6 +43,7 @@ export const fakeZeroNotifications = {
 
 
 export const fakeUserNotifications = {
+  count: { unread: 4, total: 4 },
   data:[
     {
       user_id: 'tugg-ikce',

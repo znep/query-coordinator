@@ -25,9 +25,11 @@ class NotificationAPI {
     let self = this;
     self._offset = 0;
     self._totalNotificationsCount = 0;
+    self._enqueuedNotifications = [];
     this._loadNotifications(self._offset).then(function(response) {
       self._notifications = self._transformNotifications(_.get(response, 'data', []));
       self._totalNotificationsCount = _.get(response, 'count.total', 0);
+      self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
       self._offset += _.size(self._notifications);
       self.update();
       self._channel.join().
@@ -48,10 +50,7 @@ class NotificationAPI {
   }
 
   _loadNotifications(offset) {
-    const params = {
-      limit: NOTIFICATIONS_PER_PAGE,
-      offset: offset
-    };
+    const params = { limit: NOTIFICATIONS_PER_PAGE, offset };
     const queryString = $.param(params);
 
     return fetch(`/api/notifications_and_alerts/notifications?${queryString}`, {
@@ -61,34 +60,71 @@ class NotificationAPI {
   }
 
   _onNewNotification(notification) {
-    this._notifications.unshift(this._transformNotification(notification));
+    this._enqueuedNotifications.unshift(this._transformNotification(notification));
+    this._totalNotificationsCount++;
+    this._unreadNotificationsCount++;
     this._offset++;
     this.update();
   }
 
   _onNotificationDelete(notificationId) {
-    let index = this._notifications.findIndex((n) => n.id === notificationId);
-    this._notifications.splice(index, 1);
+    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
+
+    if (notificationIndex !== -1) {
+      if (this._notifications[notificationIndex].read === false) {
+        this._unreadNotificationsCount--;
+      }
+
+      this._notifications.splice(notificationIndex, 1);
+    } else {
+      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
+
+      if (this._enqueuedNotifications[enqueuedNotificationIndex].read === false) {
+        this._unreadNotificationsCount--;
+      }
+
+      this._enqueuedNotifications.splice(enqueuedNotificationIndex, 1);
+    }
+
+    this._totalNotificationsCount--;
     this._offset--;
     this.update();
   }
 
   _onDeleteAllNotifications() {
     this._notifications = [];
+    this._enqueuedNotifications = [];
     this._totalNotificationsCount = 0;
+    this._unreadNotificationsCount = 0;
     this._offset = 0;
     this.update();
   }
 
   _onNotificationMarkedAsRead(notificationId) {
-    let index = this._notifications.findIndex((n) => n.id === notificationId);
-    this._notifications[index].read = true;
+    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
+
+    if (notificationIndex !== -1) {
+      this._notifications[notificationIndex].read = true;
+    } else {
+      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
+      this._enqueuedNotifications[enqueuedNotificationIndex].read = true;
+    }
+
+    this._unreadNotificationsCount--;
     this.update();
   }
 
   _onNotificationMarkedAsUnRead(notificationId) {
-    let index = this._notifications.findIndex((n) => n.id === notificationId);
-    this._notifications[index].read = false;
+    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
+
+    if (notificationIndex !== -1) {
+      this._notifications[notificationIndex].read = false;
+    } else {
+      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
+      this._enqueuedNotifications[enqueuedNotificationIndex].read = false;
+    }
+
+    this._unreadNotificationsCount++;
     this.update();
   }
 
@@ -112,10 +148,17 @@ class NotificationAPI {
       const newNotifications = self._transformNotifications(_.get(response, 'data', []));
       self._offset += _.size(newNotifications);
       self._totalNotificationsCount = _.get(response, 'count.total', 0);
+      self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
       self._notifications = _.union(self._notifications, newNotifications);
 
       self.update();
     }, function() {});
+  }
+
+  seeNewNotifications() {
+    this._notifications = this._enqueuedNotifications.concat(this._notifications);
+    this._enqueuedNotifications = [];
+    this.update();
   }
 
   markNotificationAsRead(notificationId) {
@@ -229,7 +272,7 @@ class NotificationAPI {
   update() {
     if (this._callback) {
       const hasMoreNotifications = this._offset < this._totalNotificationsCount;
-      this._callback(this._notifications, hasMoreNotifications);
+      this._callback(this._notifications, this._enqueuedNotifications, hasMoreNotifications, this._unreadNotificationsCount);
     }
   }
 }

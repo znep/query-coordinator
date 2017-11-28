@@ -9,6 +9,7 @@ import { getProductNotifications, updateProductNotificationLastSeen } from 'comm
 import NotificationList from 'common/notifications/components/NotificationList/NotificationList';
 import UserNotificationAPI from 'common/notifications/api/UserNotificationAPI';
 import Bell from 'common/notifications/components/Bell/Bell';
+import TransientNotifications from 'common/notifications/components/UserNotifications/TransientNotifications';
 import { DEFAULT_FILTER_TAB } from 'common/notifications/constants';
 import styles from './notifications.scss';
 
@@ -27,8 +28,11 @@ class Notifications extends Component {
       unreadProductNotificationCount: 0,
       unreadUserNotificationCount: 0,
       userNotifications: [],
+      transientNotifications: [],
+      enqueuedUserNotifications: [],
       isSecondaryPanelOpen: false,
-      hasMoreNotifications: false
+      hasMoreNotifications: false,
+      hasEnqueuedUserNotifications: false
     };
 
     if (props.options.showUserNotifications && props.userid) {
@@ -52,11 +56,13 @@ class Notifications extends Component {
       'clearAllUserNotifications',
       'onClearUserNotification',
       'renderNotificationPanel',
-      'onLoadMoreUserNotifications'
+      'onSeeNewUserNotifications',
+      'onLoadMoreUserNotifications',
+      'moveTransientNotificationIntoPanel'
     );
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {
       showProductNotifications,
       showUserNotifications
@@ -65,14 +71,10 @@ class Notifications extends Component {
 
     if (showProductNotifications) {
       if (showUserNotifications) {
-      // TODO fix this linter warning properly.
-      // Don't use setState here!
-        this.setState({ showProductNotificationsAsSecondaryPanel: true }); // eslint-disable-line react/no-did-mount-set-state
+        this.setState({ showProductNotificationsAsSecondaryPanel: true });
       }
 
-      // TODO fix this linter warning properly.
-      // Don't use setState here!
-      this.setState({ areNotificationsLoading: true }); // eslint-disable-line react/no-did-mount-set-state
+      this.setState({ areNotificationsLoading: true });
 
       getProductNotifications((response) => {
         if (response.notifications && response.viewOlderLink) {
@@ -123,12 +125,42 @@ class Notifications extends Component {
     }
   }
 
-  onNotificationsUpdate(userNotifications, hasMoreNotifications) {
-    const unreadUserNotificationCount = _.isEmpty(userNotifications) ? 0 : userNotifications.filter(notification => {
-      return _.isUndefined(notification.read) || notification.read === false;
-    }).length;
+  onNotificationsUpdate(userNotifications, enqueuedUserNotifications, hasMoreNotifications, unreadUserNotificationCount) {
+    const { showTransientNotifications } = this.props.options;
+    const { showNotificationPanel } = this.state;
+    let transientNotifications = [];
+    let hasEnqueuedUserNotifications = false;
 
-    this.setState({ userNotifications, unreadUserNotificationCount, hasMoreNotifications });
+    if (!showNotificationPanel && showTransientNotifications) {
+      transientNotifications = enqueuedUserNotifications;
+      enqueuedUserNotifications = [];
+    } else {
+      hasEnqueuedUserNotifications = !_.isEmpty(enqueuedUserNotifications);
+    }
+
+    this.setState({
+      userNotifications,
+      enqueuedUserNotifications,
+      unreadUserNotificationCount,
+      hasMoreNotifications,
+      hasEnqueuedUserNotifications,
+      transientNotifications
+    });
+  }
+
+  moveTransientNotificationIntoPanel(notificationId) {
+    const { userNotifications, transientNotifications } = this.state;
+    const notificationIndex = transientNotifications.findIndex((n) => _.isEqual(n.id, notificationId));
+
+    if (notificationIndex !== -1) {
+      userNotifications.unshift(transientNotifications[notificationIndex]);
+      transientNotifications.splice(notificationIndex, 1);
+
+      this.setState({
+        userNotifications,
+        transientNotifications
+      });
+    }
   }
 
   filterUserNotifications(filterUserNotificationsBy) {
@@ -144,6 +176,10 @@ class Notifications extends Component {
     this.userNotificationAPI.loadMoreNotifications();
   }
 
+  onSeeNewUserNotifications() {
+    this.userNotificationAPI.seeNewNotifications();
+  }
+
   toggleClearAllUserNotificationsPrompt(toggle) {
     this.setState({ openClearAllUserNotificationsPrompt: toggle });
   }
@@ -153,10 +189,14 @@ class Notifications extends Component {
   }
 
   onToggleReadUserNotification(notificationId, toggle) {
+    const { showTransientNotifications } = this.props.options;
+    const { showNotificationPanel } = this.state;
+    const fromEnqueuedUserNotifications = !showNotificationPanel && showTransientNotifications;
+
     if (toggle) {
-      this.userNotificationAPI.markNotificationAsRead(notificationId);
+      this.userNotificationAPI.markNotificationAsRead(notificationId, fromEnqueuedUserNotifications);
     } else {
-      this.userNotificationAPI.markNotificationAsUnRead(notificationId);
+      this.userNotificationAPI.markNotificationAsUnRead(notificationId, fromEnqueuedUserNotifications);
     }
   }
 
@@ -175,12 +215,34 @@ class Notifications extends Component {
         document.querySelector('body').style.overflow = 'hidden';
       }
 
-      this.setState({ showNotificationPanel });
+      const { showTransientNotifications } = this.props.options;
+      let { transientNotifications } = this.state;
+
+      if (showTransientNotifications && !_.isEmpty(transientNotifications)) {
+        const enqueuedUserNotifications = transientNotifications;
+        const hasEnqueuedUserNotifications = !_.isEmpty(enqueuedUserNotifications);
+        transientNotifications = [];
+
+        this.setState({
+          showNotificationPanel,
+          enqueuedUserNotifications,
+          hasEnqueuedUserNotifications,
+          transientNotifications
+        });
+      } else {
+        this.setState({ showNotificationPanel });
+      }
     } else {
       this.removeKeyboardEvents();
 
       if (lockScrollbar) {
         document.querySelector('body').style.overflow = '';
+      }
+
+      const { showTransientNotifications } = this.props.options;
+
+      if (showTransientNotifications) {
+        this.onSeeNewUserNotifications();
       }
 
       this.setState({
@@ -190,7 +252,6 @@ class Notifications extends Component {
         filterUserNotificationsBy: DEFAULT_FILTER_TAB
       });
     }
-
   }
 
   hasUnreadNotifications() {
@@ -230,7 +291,6 @@ class Notifications extends Component {
     } else {
       this.setState({ isSecondaryPanelOpen });
     }
-
   }
 
   renderSidebarOverlay() {
@@ -260,6 +320,7 @@ class Notifications extends Component {
         filterUserNotificationsBy,
         hasError,
         hasMoreNotifications,
+        hasEnqueuedUserNotifications,
         isSecondaryPanelOpen,
         openClearAllUserNotificationsPrompt,
         productNotifications,
@@ -282,11 +343,13 @@ class Notifications extends Component {
             filterUserNotificationsBy={filterUserNotificationsBy}
             hasError={hasError}
             hasMoreNotifications={hasMoreNotifications}
+            hasEnqueuedUserNotifications={hasEnqueuedUserNotifications}
             isSuperAdmin={isSuperAdmin}
             isSecondaryPanelOpen={isSecondaryPanelOpen}
             markAllProductNotificationsAsRead={this.markAllProductNotificationsAsRead}
             onClearUserNotification={this.onClearUserNotification}
             onLoadMoreUserNotifications={this.onLoadMoreUserNotifications}
+            onSeeNewUserNotifications={this.onSeeNewUserNotifications}
             onToggleReadUserNotification={this.onToggleReadUserNotification}
             openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
             productNotifications={productNotifications}
@@ -306,6 +369,21 @@ class Notifications extends Component {
     }
   }
 
+  renderTransientNotifications() {
+    const { showTransientNotifications } = this.props.options;
+    const { showNotificationPanel, transientNotifications } = this.state;
+
+    if (!showNotificationPanel && showTransientNotifications && !_.isEmpty(transientNotifications)) {
+      return (
+        <TransientNotifications
+          transientNotifications={transientNotifications}
+          onClearUserNotification={this.onClearUserNotification}
+          moveTransientNotificationIntoPanel={this.moveTransientNotificationIntoPanel}
+          onToggleReadUserNotification={this.onToggleReadUserNotification} />
+      );
+    }
+  }
+
   render() {
     return (
       <div styleName="container">
@@ -314,6 +392,7 @@ class Notifications extends Component {
             hasUnreadNotifications={this.hasUnreadNotifications()}
             toggleNotificationPanel={this.toggleNotificationPanel} />
 
+          {this.renderTransientNotifications()}
           {this.renderNotificationPanel()}
         </div>
       </div>
@@ -328,6 +407,7 @@ Notifications.propTypes = {
     lockScrollbar: PropTypes.bool,
     scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,
+    showTransientNotifications: PropTypes.bool.isRequired,
     showUserNotifications: PropTypes.bool.isRequired
   }).isRequired
 };

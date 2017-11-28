@@ -11,7 +11,8 @@ import { FeatureFlags } from 'common/feature_flags';
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
 
-const editThruDSMUI = window.serverConfig.featureFlags.enable_dsmui_edit_metadata;
+const editThruDSMUI = FeatureFlags.value('enable_dsmui_edit_metadata') === true;
+const isUSAID = FeatureFlags.value('usaid_features_enabled') === true;
 
 function mapStateToProps(state) {
   const view = state.view || {};
@@ -37,12 +38,22 @@ function mapStateToProps(state) {
     };
   }, {});
 
+  const editMetadataUrl = () => {
+    if (isUSAID) {
+      return `/publisher/edit?view=${coreView.id}`;
+    } else if (editThruDSMUI) {
+      return '#';
+    } else {
+      return view.editMetadataUrl;
+    }
+  };
+
   // EN-19924: USAID special feature. Only enable Associated Assets if the USAID feature flag is on,
   // and we are on a Primer page for a published table or blob
   const associatedAssetsAreEnabled = () => {
     const { viewType, displayType, publicationStage } = coreView;
 
-    if (!FeatureFlags.value('usaid_features_enabled')) return false;
+    if (!isUSAID) return false;
     if (publicationStage !== 'published') return false;
 
     if (viewType === 'blobby') return true;
@@ -64,7 +75,7 @@ function mapStateToProps(state) {
     coreView,
     customMetadataFieldsets,
     disableContactDatasetOwner: view.disableContactDatasetOwner,
-    editMetadataUrl: editThruDSMUI ? '#' : view.editMetadataUrl,
+    editMetadataUrl: editMetadataUrl(),
     statsUrl: view.statsUrl,
     view: view,
     renderWatchDatasetButton() {
@@ -81,7 +92,7 @@ function mergeProps(stateProps, { dispatch }) {
   return {
     ...stateProps,
     onClickEditMetadata: e => {
-      if (editThruDSMUI) {
+      if (editThruDSMUI && !isUSAID) {
         e.preventDefault();
         dispatch(createDSMAPIRevision(stateProps.view.id));
       }

@@ -9,7 +9,7 @@ import { DOWN, ENTER, SPACE } from './keycodes_deprecated';
 export const handleKeyPress = (handler, preventDefault) => {
   return (event) => {
     // Enter or Space key code
-    if (event.keyCode === ENTER || event.keyCode === SPACE) {
+    if (event.keyCode === ENTER || event.keyCode === SPACE || event.key === 'Enter' || event.key === ' ') {
       if (preventDefault) {
         event.preventDefault();
       }
@@ -21,7 +21,7 @@ export const handleKeyPress = (handler, preventDefault) => {
 
 export const handleEnter = (handler, preventDefault) => {
   return (event) => {
-    if (event.keyCode === ENTER) {
+    if (event.keyCode === ENTER || event.key === 'Enter') {
       if (preventDefault) {
         event.preventDefault();
       }
@@ -33,7 +33,8 @@ export const handleEnter = (handler, preventDefault) => {
 
 export const handleDownArrow = (handler, preventDefault) => {
   return (event) => {
-    if (event.keyCode === DOWN) {
+    // See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8860571/
+    if (event.keyCode === DOWN || event.key === 'ArrowDown' || event.key === 'Down') {
       if (preventDefault) {
         event.preventDefault();
       }

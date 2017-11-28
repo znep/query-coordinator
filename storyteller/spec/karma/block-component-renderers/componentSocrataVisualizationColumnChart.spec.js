@@ -76,12 +76,36 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataColumnChart with the correct arguments', function() {
+    it('should call into socrataSvgColumnChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataColumnChartStub,
         validComponentData.value.vif,
         sinon.match.any
       );
+    });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgColumnChart with the correct arguments if changed', function() {
+        socrataColumnChartStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationColumnChart(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataColumnChartStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataColumnChartStub.reset();
+
+        $component.componentSocrataVisualizationColumnChart(getProps());
+
+        sinon.assert.notCalled(socrataColumnChartStub);
+      });
     });
   });
 });

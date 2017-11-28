@@ -74,12 +74,36 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataTimelineChart with the correct arguments', function() {
+    it('should call into socrataSvgTimelineChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataTimelineChartStub,
         validComponentData.value.vif,
         sinon.match.any
       );
+    });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgTimelineChart with the correct arguments if changed', function() {
+        socrataTimelineChartStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationTimelineChart(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataTimelineChartStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataTimelineChartStub.reset();
+
+        $component.componentSocrataVisualizationTimelineChart(getProps());
+
+        sinon.assert.notCalled(socrataTimelineChartStub);
+      });
     });
   });
 });

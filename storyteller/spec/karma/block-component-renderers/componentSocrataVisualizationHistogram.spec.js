@@ -77,12 +77,36 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataHistogram with the correct arguments', function() {
+    it('should call into socrataSvgHistogram with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataHistogramStub,
         validComponentData.value.vif,
         sinon.match.any
       );
+    });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgHistogram with the correct arguments if changed', function() {
+        socrataHistogramStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationHistogram(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataHistogramStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataHistogramStub.reset();
+
+        $component.componentSocrataVisualizationHistogram(getProps());
+
+        sinon.assert.notCalled(socrataHistogramStub);
+      });
     });
   });
 });

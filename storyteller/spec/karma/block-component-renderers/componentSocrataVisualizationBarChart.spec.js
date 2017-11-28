@@ -83,5 +83,29 @@ describe('componentSocrataVisualizationBarChart jQuery plugin', function() {
         sinon.match.any
       );
     });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgBarChart with the correct arguments if changed', function() {
+        socrataBarChartStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationBarChart(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataBarChartStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataBarChartStub.reset();
+
+        $component.componentSocrataVisualizationBarChart(getProps());
+
+        sinon.assert.notCalled(socrataBarChartStub);
+      });
+    });
   });
 });

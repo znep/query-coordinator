@@ -2196,7 +2196,7 @@ en:
         private: Private
         private_msg: Only accessible to people within your organization.
         public: Public
-        public_msg: Publically accessible. Discoverable through the public catalog.
+        public_msg: Publicly accessible. Discoverable through the public catalog.
         title: Choose your audience
       publish_dataset_button:
         cant_publish_until: 'You can''t publish until you have:'

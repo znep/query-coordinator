@@ -1,6 +1,8 @@
 import { formatDateWithLocale } from 'common/dates';
 import utils from 'common/js_utils';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
+import _ from 'lodash';
+import I18n from 'common/i18n';
 
 export function getDateLabel(updatedAt) {
   return formatDateWithLocale(typeof updatedAt === 'object' ? updatedAt : new Date(updatedAt));
@@ -8,17 +10,17 @@ export function getDateLabel(updatedAt) {
 
 export const getViewCountLabel = (viewCount) => {
   const viewLabelTranslation = viewCount === 1 ?
-    _.get(I18n, 'common.view_widget.view') : _.get(I18n, 'common.view_widget.views');
+    I18n.t('common.view_widget.view') : I18n.t('common.view_widget.views');
   return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${viewLabelTranslation}` : '';
 };
 
 export const getResultCountLabel = (resultCount) => {
   const resultLabelTranslation = resultCount === 1 ?
-    _.get(I18n, 'common.result_count_label.one') : _.get(I18n, 'common.result_count_label.other');
+    I18n.t('common.result_count_label.one') : I18n.t('common.result_count_label.other');
   return _.isNumber(resultCount) ? `${utils.formatNumber(resultCount)} ${resultLabelTranslation}` : '';
 };
 
-export const getAriaLabel = (view) => `${_.get(I18n, 'related_views.view')} ${view.name}`;
+export const getAriaLabel = (view) => `${I18n.t('related_views.view')} ${view.name}`;
 
 export function getViewCardPropsForView(view) {
   return {

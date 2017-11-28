@@ -47,10 +47,8 @@ export function shapeRevision(apiResponse) {
   return revision;
 }
 
-export function updateRevision(update, params) {
+export function updateRevision(update, params, callId = uuid()) {
   return dispatch => {
-    const callId = uuid();
-
     dispatch(
       apiCallStarted(callId, {
         operation: UPDATE_REVISION,

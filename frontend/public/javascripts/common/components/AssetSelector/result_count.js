@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import I18n from 'common/i18n';
 import { getResultCountLabel } from '../../helpers/viewCardHelpers';
 
 export class ResultCount extends React.Component {
@@ -13,7 +14,7 @@ export class ResultCount extends React.Component {
     return (
       <div className="result-count">
         {pageResults.first}-{pageResults.last}
-        {` ${_.get(I18n, 'common.asset_selector.results_container.of')} `}
+        {` ${I18n.t('common.asset_selector.results_container.of')} `}
         {getResultCountLabel(total)}
       </div>
     );

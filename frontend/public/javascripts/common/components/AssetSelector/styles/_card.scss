@@ -1,4 +1,4 @@
-@import "variables/breakpoints";
+@import "common/styleguide/variables/breakpoints";
 
 .asset-selector {
   .results-container .centered-content .card-container {
@@ -16,11 +16,11 @@
         }
       }
 
-      @media(max-width: $medium) {
+      @include mobile {
         flex: 0 0 260px;
       }
 
-      @media(min-width: $medium) {
+      @include desktop {
         &:nth-child(3n) {
           margin-right: 0;
         }

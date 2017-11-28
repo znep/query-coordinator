@@ -54,7 +54,7 @@ export class HrefDownload extends Component {
         );
       }
 
-      return (
+      return _.isEmpty(accessPoint) ? null : (
         <div key={i} className="download-object">
           <div className="download-title">{accessPoint.title}</div>
 

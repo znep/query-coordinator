@@ -10,6 +10,7 @@ import Linkify from 'react-linkify';
 import moment from 'moment-timezone';
 import I18n from 'common/i18n';
 import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes';
+import AssociatedAssets from 'frontend/public/javascripts/common/components/AssociatedAssets';
 
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
@@ -28,6 +29,10 @@ const handleInvokeKey = (handler, preventDefault) => (
 class MetadataTable extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      associatedAssetsModalIsOpen: false
+    };
 
     _.bindAll(this, 'toggleTable');
   }
@@ -129,7 +134,7 @@ class MetadataTable extends Component {
 
   renderHeader() {
     let editMetadata;
-    const { editMetadataUrl, localizeLink, renderWatchDatasetButton } = this.props;
+    const { editMetadataUrl, enableAssociatedAssets, localizeLink, renderWatchDatasetButton } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
     const watchDatasetButton = renderWatchDatasetButton ? renderWatchDatasetButton() : null;
     if (editMetadataUrl) {
@@ -143,12 +148,27 @@ class MetadataTable extends Component {
       );
     }
 
+    const onClickAssociatedAssetsButton = (e) => {
+      e.preventDefault();
+      this.setState({ associatedAssetsModalIsOpen: true });
+    };
+
+    const associatedAssetsButton = enableAssociatedAssets && (
+      <a
+        href="#"
+        className="btn btn-sm btn-default btn-alternate-2 associated-assets-button"
+        onClick={onClickAssociatedAssetsButton}>
+        {I18n.t('common.metadata.associated_assets.button_text')}
+      </a>
+    );
+
     return (
       <div className="landing-page-header-wrapper">
         <h2 className="landing-page-section-header">
           {I18n.t('common.metadata.title')}
         </h2>
         <div className="button-group">
+          {associatedAssetsButton}
           {editMetadata}
           {watchDatasetButton}
         </div>
@@ -157,8 +177,16 @@ class MetadataTable extends Component {
   }
 
   render() {
-    const { coreView, disableContactDatasetOwner, statsUrl, customMetadataFieldsets, localizeLink } =
-      this.props;
+    const {
+      coreView,
+      customMetadataFieldsets,
+      disableContactDatasetOwner,
+      enableAssociatedAssets,
+      localizeLink,
+      onSaveAssociatedAssets,
+      associatedAssetsApiCalls,
+      statsUrl
+    } = this.props;
     const onClickStats = this.props.onClickStats || _.noop;
 
     let attachments;
@@ -403,6 +431,17 @@ class MetadataTable extends Component {
       );
     }
 
+    const associatedAssetsProps = {
+      apiCalls: associatedAssetsApiCalls,
+      modalIsOpen: this.state.associatedAssetsModalIsOpen,
+      onDismiss: () => { this.setState({ associatedAssetsModalIsOpen: false }); },
+      onSave: (associatedAssets) => {
+        onSaveAssociatedAssets(associatedAssets);
+      },
+      uid: coreView.id
+    };
+    const associatedAssetsModal = enableAssociatedAssets && <AssociatedAssets {...associatedAssetsProps} />;
+
     return (
       <div className="metadata-table-wrapper">
         <section className="landing-page-section">
@@ -578,12 +617,14 @@ class MetadataTable extends Component {
             </div>
           </div>
         </section>
+        {associatedAssetsModal}
       </div>
     );
   }
 }
 
 MetadataTable.defaultProps = {
+  enableAssociatedAssets: false,
   localizeLink: _.identity
 };
 
@@ -637,8 +678,12 @@ MetadataTable.propTypes = {
     }),
     viewCount: PropTypes.number,
     downloadCount: PropTypes.number
-  }).isRequired
+  }).isRequired,
 
+  // EN-19924: USAID special feature
+  associatedAssetsApiCalls: PropTypes.array,
+  enableAssociatedAssets: PropTypes.bool,
+  onSaveAssociatedAssets: PropTypes.func
 };
 
 export default MetadataTable;

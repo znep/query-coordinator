@@ -37,7 +37,29 @@ function mapStateToProps(state) {
     };
   }, {});
 
+  // EN-19924: USAID special feature. Only enable Associated Assets if the USAID feature flag is on,
+  // and we are on a Primer page for a published table or blob
+  const associatedAssetsAreEnabled = () => {
+    const { viewType, displayType, publicationStage } = coreView;
+
+    if (!FeatureFlags.value('usaid_features_enabled')) return false;
+    if (publicationStage !== 'published') return false;
+
+    if (viewType === 'blobby') return true;
+    if (viewType === 'tabular' && displayType === 'table') return true;
+
+    /*
+      11/20/17
+      This is the case where the user is on a Primer page for an href child, updating its parent.
+      We pushed back on USAID to implement this functionality farther down the line.
+    */
+    // if (viewType === 'href') return true;
+
+    return false;
+  };
+
   return ({
+    enableAssociatedAssets: associatedAssetsAreEnabled(),
     localizeLink,
     coreView,
     customMetadataFieldsets,
@@ -104,6 +126,12 @@ function mergeProps(stateProps, { dispatch }) {
       };
 
       dispatch(emitMixpanelEvent(payload));
+    },
+
+    onSaveAssociatedAssets: (associatedAssets) => {
+      const associatedAssetIds = _.map(associatedAssets, (asset) => asset.id);
+      console.log(associatedAssetIds);
+      // TODO: make onSave action for this
     }
   };
 }

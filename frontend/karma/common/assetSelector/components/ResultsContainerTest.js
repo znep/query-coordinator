@@ -2,12 +2,18 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import 'babel-polyfill';
 import _ from 'lodash';
-import { ResultsContainer } from 'components/assetSelector/ResultsContainer';
+import { ResultsContainer } from 'components/AssetSelector/results_container';
 
 import ceteraUtils from 'common/cetera/utils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
+import { useTestTranslations } from 'common/i18n';
+import mockTranslations from '../../mockTranslations';
 
 describe('ResultsContainer', () => {
+  beforeEach(() => {
+    useTestTranslations(mockTranslations);
+  });
+
   const defaultProps = {
     additionalTopbarComponents: [],
     catalogQuery: {
@@ -131,6 +137,7 @@ describe('ResultsContainer', () => {
       only: undefined,
       order: 'relevance',
       pageNumber: 1,
+      published: undefined,
       q: undefined
     };
 

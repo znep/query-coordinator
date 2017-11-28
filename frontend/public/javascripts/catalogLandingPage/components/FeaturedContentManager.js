@@ -6,9 +6,8 @@ import _ from 'lodash';
 
 import FeaturedContentViewCardManager from './FeaturedContentViewCardManager';
 import FeaturedContentViewCardPlaceholder from './FeaturedContentViewCardPlaceholder';
-import { AssetSelector } from '../../common/components/assetSelector/AssetSelector';
-import { ExternalResourceEditor } from
-  '../../common/components/externalResourceEditor/ExternalResourceEditor';
+import AssetSelector from '../../common/components/AssetSelector';
+import ExternalResourceEditor from '../../common/components/ExternalResourceEditor';
 
 import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
 

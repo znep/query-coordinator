@@ -9,12 +9,17 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/catalogLandingPage'),
   entry: common.withHotModuleEntries({'main': './main', 'manage': './manage', 'catalog': './catalog'}),
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/catalogLandingPage/.eslintrc.json'),
-  externals: {
-    jquery: true
-  },
   module: {
-    loaders: common.getStandardLoaders()
+    loaders: common.getStandardLoaders([], {
+      substituteStyleLoaders: {
+        test: /^((?!\.global).)*(scss|css)$/,
+        loaders: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      }
+    })
   },
   resolve: _.extend(
     {

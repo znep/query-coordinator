@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash';
-import ResultsContainer from './ResultsContainer';
-import { Modal, ModalHeader, ModalContent } from 'common/components';
+import { ResultsContainer } from './results_container';
+import { Modal, ModalHeader, ModalContent } from 'common/components/Modal';
 
-export class AssetSelector extends React.Component {
+import './styles/index.scss';
+
+export class AssetSelector extends Component {
   render() {
     const {
       additionalTopbarComponents,

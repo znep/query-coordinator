@@ -1,8 +1,6 @@
 <%= content_for :head do %>
-  <%= rendered_stylesheet_tag('asset-selector') %>
   <%= rendered_stylesheet_tag('base') %>
   <%= rendered_stylesheet_tag('catalog-landing-page') %>
-  <%= rendered_stylesheet_tag('external-resource-editor') %>
   <title>
     <%= I18n.t('catalog_landing_page.title', :params => @clp_title_param_string) %> | <%= get_site_title %>
   </title>

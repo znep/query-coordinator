@@ -337,6 +337,9 @@ en:
         aria_close: Close menu
       modal:
         aria_close: Close modal
+      searchbar:
+        clear: Clear search query
+        search: Search
       view_card:
         external_content: External Content
     site_chrome:

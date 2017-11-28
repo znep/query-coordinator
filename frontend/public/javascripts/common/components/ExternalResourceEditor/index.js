@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import BackButton from '../BackButton';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard, Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { VALID_URL_REGEX } from 'common/http/constants';
 
-export class ExternalResourceEditor extends React.Component {
+import './styles/index.scss';
+
+export class ExternalResourceEditor extends Component {
   constructor(props) {
     super(props);
 

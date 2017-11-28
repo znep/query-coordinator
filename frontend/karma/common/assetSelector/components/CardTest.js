@@ -1,8 +1,14 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { Card } from 'components/assetSelector/Card';
+import { Card } from 'components/AssetSelector/card';
+import { useTestTranslations } from 'common/i18n';
+import mockTranslations from '../../mockTranslations';
 
 describe('Card', () => {
+  beforeEach(() => {
+    useTestTranslations(mockTranslations);
+  });
+
   const defaultProps = {
     categories: ['Fun'],
     description: 'jorts and other denim articles of clothing',

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ViewCard } from 'common/components';
+import ViewCard from 'common/components/ViewCard';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
 import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';

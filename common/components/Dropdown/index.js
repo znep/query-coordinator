@@ -9,7 +9,7 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import Picklist from 'common/components/Picklist';
 import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes';
 
-class Dropdown extends Component {
+export class Dropdown extends Component {
   constructor(props) {
     super(props);
 

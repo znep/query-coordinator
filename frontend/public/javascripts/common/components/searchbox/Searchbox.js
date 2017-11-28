@@ -1,8 +1,16 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
+import I18n from 'common/i18n';
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 
+import './_searchbox.scss';
+
 export class Searchbox extends React.Component {
+  static scope() {
+    return 'common.components.searchbar';
+  }
+
   constructor(props) {
     super(props);
 
@@ -47,10 +55,10 @@ export class Searchbox extends React.Component {
 
     const clearSearchButton = (query ?
       <button
-        aria-label={_.get(I18n, 'common.searchbox.clear')}
+        aria-label={I18n.t('clear', { scope: Searchbox.scope() })}
         className="clear-search socrata-icon-close-2"
         onClick={this.clearQuery}
-        title={_.get(I18n, 'common.searchbox.clear')} /> : null
+        title={I18n.t('clear', { scope: Searchbox.scope() })} /> : null
     );
 
     const inputProps = {
@@ -88,7 +96,7 @@ Searchbox.defaultProps = {
   defaultQuery: '',
   onChange: _.noop,
   onClear: _.noop,
-  placeholder: _.get(I18n, 'common.searchbox.placeholder')
+  placeholder: I18n.t('search', { scope: Searchbox.scope() })
 };
 
 export default Searchbox;

@@ -9,6 +9,9 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/catalogLandingPage'),
   entry: common.withHotModuleEntries({'main': './main', 'manage': './manage', 'catalog': './catalog'}),
   output: common.getOutput(identifier),
+  externals: {
+    jquery: true
+  },
   module: {
     loaders: common.getStandardLoaders([], {
       substituteStyleLoaders: {

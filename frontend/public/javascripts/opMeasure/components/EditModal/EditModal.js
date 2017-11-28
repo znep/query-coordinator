@@ -103,10 +103,10 @@ export class EditModal extends Component {
         </ModalContent>
         <ModalFooter className="measure-edit-modal-footer">
           <div className="btn-group">
-            <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>
+            <button type="button" className="btn btn-sm btn-default cancel" onClick={this.onCancel}>
               {I18n.t('open_performance.measure.edit_modal.cancel')}
             </button>
-            <button className="btn btn-sm btn-primary done" onClick={this.onComplete}>
+            <button type="button" className="btn btn-sm btn-primary done" onClick={this.onComplete}>
               {I18n.t('open_performance.measure.edit_modal.accept')}
             </button>
           </div>

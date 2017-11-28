@@ -18,7 +18,7 @@ function mapStateToProps(state) {
   const renderEditButton = () => {
     if (state.view.mode === ModeStates.VIEW) { // TODO: add rights check here
       return (
-        <button className="btn btn-simple btn-sm btn-edit" onClick={navigateToEdit}>
+        <button type="button" className="btn btn-simple btn-sm btn-edit" onClick={navigateToEdit}>
           {I18n.t('open_performance.edit')}
         </button>
       );

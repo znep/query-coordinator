@@ -9,7 +9,7 @@ export default function FilterFooter(props) {
   // Use an empty div instead of null so flexbox works properly
   const removeButton = isReadOnly ?
     <div /> :
-    <button className="btn btn-sm btn-transparent remove-btn" onClick={onClickRemove}>
+    <button type="button" className="btn btn-sm btn-transparent remove-btn" onClick={onClickRemove}>
       <SocrataIcon name="close-2" />
       {I18n.t('shared.components.filter_bar.remove')}
     </button>;
@@ -18,10 +18,11 @@ export default function FilterFooter(props) {
     <div className="filter-footer">
       {removeButton}
       <div className="apply-btn-container">
-        <button className="btn btn-sm btn-transparent reset-btn" onClick={onClickReset}>
+        <button type="button" className="btn btn-sm btn-transparent reset-btn" onClick={onClickReset}>
           {I18n.t('shared.components.filter_bar.reset')}
         </button>
         <button
+          type="button"
           className="btn btn-sm btn-alternate-2 apply-btn"
           onClick={onClickApply}
           disabled={disableApplyFilter}>

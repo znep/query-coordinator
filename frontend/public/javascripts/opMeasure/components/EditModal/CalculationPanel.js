@@ -80,6 +80,7 @@ export class CalculationPanel extends Component {
 
     return calculationTypeButtonConfigs.map((btn, index) =>
       <button
+        type="button"
         key={index}
         className={btn.classNames}
         disabled={btn.disabled}

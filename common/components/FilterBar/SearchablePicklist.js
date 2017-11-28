@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import I18n from 'common/i18n';
-import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 
@@ -55,9 +54,9 @@ export class SearchablePicklist extends Component {
   }
 
   onKeyPressSearch(event) {
-    isolateEventByKeys(event, [ENTER]);
-
-    if (event.keyCode === ENTER) {
+    if (event.key === 'Enter') {
+      event.stopPropagation();
+      event.preventDefault();
       this.onSearch(event);
     }
   }
@@ -124,6 +123,7 @@ export class SearchablePicklist extends Component {
           {loadingSpinner}
           <span className="input-group-btn">
             <button
+              type="button"
               className={buttonClassName}
               onClick={this.onSearch}
               disabled={isValidating}>

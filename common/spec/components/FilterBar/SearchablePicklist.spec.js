@@ -4,7 +4,6 @@ import { Simulate } from 'react-dom/test-utils';
 
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
-import { ENTER } from 'common/dom_helpers/keycodes';
 
 import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';
@@ -86,7 +85,7 @@ describe('SearchablePicklist', () => {
         const searchInput = getSearchInput(element);
 
         searchInput.value = searchTerm;
-        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { key: 'Enter' });
       });
 
       it('adds a loading spinner', (done) => {
@@ -101,7 +100,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { key: 'Enter' });
       });
 
       it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
@@ -118,7 +117,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { key: 'Enter' });
       });
 
       it('shows an error if the search term cannot be added', (done) => {
@@ -128,7 +127,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { key: 'Enter' });
 
         _.delay(() => {
           assert.notDeepEqual(getSearchWarning(element), null);

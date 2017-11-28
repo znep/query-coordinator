@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
+import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes_deprecated';
 
 import DateRangePicker from '../../DateRangePicker';
 import FilterHeader from '../FilterHeader';

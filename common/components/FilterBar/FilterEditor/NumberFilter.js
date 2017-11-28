@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
-import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
+import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes_deprecated';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 
 import Slider from '../../Slider';

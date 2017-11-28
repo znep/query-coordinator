@@ -8,7 +8,7 @@ import FilterEditor from './FilterEditor';
 import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
 import I18n from 'common/i18n';
-import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes';
+import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
 import { getFilterToggleText } from './filters';
 
 export class FilterItem extends Component {

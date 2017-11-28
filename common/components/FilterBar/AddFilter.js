@@ -6,7 +6,7 @@ import Picklist from '../Picklist';
 import SocrataIcon from '../SocrataIcon';
 import { getIconForDataType } from 'common/icons';
 import I18n from 'common/i18n';
-import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers/keycodes';
+import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers/keycodes_deprecated';
 
 export class AddFilter extends Component {
   constructor(props) {

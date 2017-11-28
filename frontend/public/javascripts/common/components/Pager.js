@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ENTER } from 'common/dom_helpers/keycodes';
+import { ENTER } from 'common/dom_helpers/keycodes_deprecated';
 import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
 import I18n from 'common/i18n';
 

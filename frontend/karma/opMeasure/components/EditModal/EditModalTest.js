@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 
-import { ESCAPE } from 'common/dom_helpers/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import { cancelEditModal, acceptEditModalChanges } from 'actions/editor';
 import EditModal from 'components/EditModal/EditModal';
 

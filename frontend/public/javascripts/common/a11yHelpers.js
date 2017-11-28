@@ -1,4 +1,4 @@
-import { ENTER, SPACE } from 'common/dom_helpers/keycodes';
+import { ENTER, SPACE } from 'common/dom_helpers/keycodes_deprecated';
 
 // Checks if event is a space or an enter
 export const handleKeyPress = (handler, preventDefault) => (

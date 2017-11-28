@@ -8,7 +8,7 @@ import ExternalResourceForm from './FeaturedContentModal/ExternalResourceForm';
 import FeaturedItemSelector from './FeaturedContentModal/FeaturedItemSelector';
 import StoryForm from './FeaturedContentModal/StoryForm';
 import ViewSelectorModal from './FeaturedContentModal/ViewSelectorModal';
-import { ESCAPE } from 'common/dom_helpers/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
 export class FeaturedContentModal extends Component {

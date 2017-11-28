@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import { FeedbackPanel } from 'components/FeedbackPanel';
-import { ESCAPE } from 'common/dom_helpers/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import { Simulate } from 'react-dom/test-utils';
 
 import mockServerConfig from 'mockServerConfig';

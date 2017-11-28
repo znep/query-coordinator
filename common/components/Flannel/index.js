@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ESCAPE, TAB, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers/keycodes';
+import { ESCAPE, TAB, isOneOfKeys, isolateEventByKeys } from 'common/dom_helpers/keycodes_deprecated';
 import * as a11y from 'common/a11y';
 import classNames from 'classnames';
 

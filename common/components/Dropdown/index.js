@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import SocrataUtils from 'common/js_utils';
 import SocrataIcon from 'common/components/SocrataIcon';
 import Picklist from 'common/components/Picklist';
-import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes';
+import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
 
 export class Dropdown extends Component {
   constructor(props) {

@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 
 import Flannel from 'components/Flannel';
 import { renderComponent } from '../../helpers';
-import { ESCAPE } from 'common/dom_helpers/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 
 describe('Flannel', () => {
   let container;

@@ -4,7 +4,7 @@ import { Simulate } from 'react-dom/test-utils';
 import $ from 'jquery';
 import EditableText from 'components/EditableText';
 import { renderComponent } from '../helpers';
-import { ENTER, ESCAPE } from 'common/dom_helpers/keycodes';
+import { ENTER, ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 
 describe('EditableText', () => {
   let container;

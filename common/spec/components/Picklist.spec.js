@@ -4,7 +4,7 @@ import React from 'react';
 import TestUtils, { Simulate } from 'react-dom/test-utils';
 import { renderComponent } from '../helpers';
 import Picklist from 'components/Picklist';
-import { UP, DOWN, ESCAPE, ENTER } from 'common/dom_helpers/keycodes';
+import { UP, DOWN, ESCAPE, ENTER } from 'common/dom_helpers/keycodes_deprecated';
 import { SocrataIcon } from 'common/components';
 
 describe('Picklist', () => {

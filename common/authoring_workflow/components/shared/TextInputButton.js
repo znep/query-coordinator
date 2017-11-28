@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import DebouncedInput from './DebouncedInput';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ENTER, ESCAPE, isolateEventByKeys } from 'common/dom_helpers/keycodes';
+import { ENTER, ESCAPE, isolateEventByKeys } from 'common/dom_helpers/keycodes_deprecated';
 
 export class TextInputButton extends Component {
   constructor(props) {

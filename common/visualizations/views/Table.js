@@ -5,7 +5,7 @@ const classNames = require('classnames');
 const SvgVisualization = require('./SvgVisualization.js');
 const DataTypeFormatter = require('./DataTypeFormatter.js');
 const I18n = require('common/i18n').default;
-const { ENTER, SPACE, TAB } = require('common/dom_helpers/keycodes');
+const { ENTER, SPACE, TAB } = require('common/dom_helpers/keycodes_deprecated');
 
 const MINIMUM_COLUMN_WIDTH = 64;
 

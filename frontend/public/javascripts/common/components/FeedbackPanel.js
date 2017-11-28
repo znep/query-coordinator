@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import usersnap from '../usersnap';
 import zendesk from '../zendesk';
-import { ESCAPE } from 'common/dom_helpers/keycodes';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 
 function t(key) {
   return I18n.common.feedback[key];

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { ESCAPE, TAB, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes';
+import { ESCAPE, TAB, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
 import {
   focusFirstActionableElement,
   getFirstActionableElement,

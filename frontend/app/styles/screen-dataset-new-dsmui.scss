@@ -2,6 +2,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: rgb(230,230,230);
 }
 
 div.container {
@@ -9,6 +10,9 @@ div.container {
 
   .modal {
     z-index: auto;
+    &.modal-overlay {
+      background-color: rgb(230,230,230);
+    }
   }
 
   .modal-overlay {

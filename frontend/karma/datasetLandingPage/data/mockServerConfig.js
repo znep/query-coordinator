@@ -5,6 +5,8 @@ export default {
   featureFlags: {
     csrfToken: 'supersecuretoken',
     stories_enabled: true,
+    usaid_features_enabled: false,
+    enable_dsmui_edit_metadata: false,
     recaptchaKey: 'superdupersecurekey'
   },
   locale: 'en',

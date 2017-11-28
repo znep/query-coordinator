@@ -36,12 +36,6 @@ op-measure:
 datasets-common:
 - common/datasets
 
-asset-selector:
-- common/asset-selector/asset-selector
-
-external-resource-editor:
-- common/external-resource-editor/external-resource-editor
-
 dataset-management-ui:
 - dataset-management-ui/dataset-management-ui
 

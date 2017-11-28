@@ -1,7 +1,14 @@
 import { expect, assert } from 'chai';
-import { ResultCount } from 'components/assetSelector/ResultCount';
+import { ResultCount } from 'components/AssetSelector/result_count';
+
+import { useTestTranslations } from 'common/i18n';
+import mockTranslations from '../../mockTranslations';
 
 describe('ResultCount', function() {
+  beforeEach(() => {
+    useTestTranslations(mockTranslations);
+  });
+
   const defaultProps = {
     currentPage: 1,
     resultsPerPage: 6,

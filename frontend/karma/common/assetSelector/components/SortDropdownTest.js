@@ -1,9 +1,15 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { SortDropdown } from 'components/assetSelector/SortDropdown';
+import { SortDropdown } from 'components/AssetSelector/sort_dropdown';
 import _ from 'lodash';
+import { useTestTranslations } from 'common/i18n';
+import mockTranslations from '../../mockTranslations';
 
 describe('SortDropdown', function() {
+  beforeEach(() => {
+    useTestTranslations(mockTranslations);
+  });
+
   const defaultProps = {
     onSelection: undefined,
     value: 'relevance'

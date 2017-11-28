@@ -19,7 +19,7 @@ import purify from 'common/purify';
  * other elements may be rendered as an overlay centered over the main content by specifying them
  * as children of the component.
  */
-class ViewCard extends Component {
+export class ViewCard extends Component {
   constructor(props) {
     super(props);
 

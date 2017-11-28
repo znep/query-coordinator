@@ -1,8 +1,7 @@
-@import "variables/breakpoints";
-@import "common/mixins";
-@import "common/asset-selector/card";
+@import "common/styleguide/variables/breakpoints";
 @import "common/styleguide/partials/pager";
-@import "../public/javascripts/common/components/searchbox/searchbox";
+@import "./mixins";
+@import "./card";
 
 .asset-selector {
   .results-container {
@@ -97,7 +96,7 @@
         overflow: hidden;
         position: relative;
 
-        @media(max-width: $medium) {
+        @include mobile {
           flex-flow: row nowrap;
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;

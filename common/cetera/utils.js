@@ -72,7 +72,7 @@ export const ceteraUtils = (() => {
     console.warn('WARNING: window.serverConfig is undefined.');
   }
 
-  const domain = _.get(window, 'serverConfig.domain'); // TODO: federation?
+  const domain = _.get(window, 'serverConfig.domain', window.location.hostname); // TODO: federation?
 
   const assetTypeMapping = (assetType) => (assetType === 'new_view' ? 'datalenses' : assetType);
 

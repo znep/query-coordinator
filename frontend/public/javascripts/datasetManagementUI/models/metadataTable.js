@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import * as Links from 'links/links';
 import { FeatureFlags } from 'common/feature_flags';
+import * as Links from 'links/links';
 
 export const getRevision = (rSeq, revisions) =>
   _.chain(revisions)
@@ -79,9 +79,11 @@ export const makeProps = (entities, params) => {
     }
 
     const isUSAID = FeatureFlags.value('usaid_features_enabled');
+    const enableAssociatedAssets = isUSAID && r.is_parent === false;
 
     return {
       editMetadataUrl: isUSAID ? `/publisher/edit?view=${r.fourfour}` : '#',
+      enableAssociatedAssets,
       statsUrl: null,
       disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
       coreView: viewlikeObj,
@@ -91,7 +93,8 @@ export const makeProps = (entities, params) => {
           e.preventDefault();
           browserHistory.push(Links.metadata(params));
         }
-      }
+      },
+      revision: r
     };
   }
 };

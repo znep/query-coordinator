@@ -8,6 +8,8 @@ var identifier = path.basename(__filename, '.config.js');
 
 var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
 
+var USAID_COMPONENTS_FILEPATH_REGEXP = 'AssociatedAssets|AssetSelector|ExternalResourceEditor|common\/components\/searchbox';
+
 const addPolyfill = () => {
   let entry = common.withHotModuleEntries({ main: './main' });
   entry.main = ['babel-polyfill'].concat(entry.main);
@@ -52,9 +54,15 @@ module.exports = _.defaultsDeep(
             loader: 'style?sourceMap!css!postcss!sass'
           },
           {
-            test: /^((?!\.global).)*(scss|css)$/,
+            test: new RegExp('^((?!\.global|' + USAID_COMPONENTS_FILEPATH_REGEXP + ').)*(scss|css)$'),
             loader:
               'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
+          },
+          // EN-19965: USAID sadtimes. Whitelist common components' stylesheets that are not CSS-modularized
+          // to use the non CSS-module stylesheet loaders.
+          {
+            test: new RegExp('(' + USAID_COMPONENTS_FILEPATH_REGEXP + ').*\.(scss|css)$'),
+            loader: 'style?sourceMap!css!postcss!sass'
           }
         ]
       })

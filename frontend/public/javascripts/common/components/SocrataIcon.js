@@ -6,7 +6,7 @@ React component for socrata icons. Used like so:
 <SocrataIcon name='arrow-right' className='custom-className' size='lg' />
 */
 
-const SocrataIcon = ({ name, className, size, onIconClick }) => {
+export const SocrataIcon = ({ name, className, size, onIconClick }) => {
   let classNames = []; // eslint-disable-line prefer-const
 
   classNames.push(`socrata-icon-${name}`);

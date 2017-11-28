@@ -645,6 +645,8 @@ en:
       title: Feedback
     less: Show Less
     metadata:
+      associated_assets:
+        button_text: Associate with other assets
       attachments: Attachments
       category: Category
       creation_date: Date Created

@@ -1,9 +1,9 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ExternalResourceForm } from 'components/externalResourceEditor/ExternalResourceForm';
+import { ExternalResourceForm } from 'components/ExternalResourceEditor/ExternalResourceForm';
 import _ from 'lodash';
 
-describe('externalResourceEditor/ExternalResourceForm', () => {
+describe('ExternalResourceEditor/ExternalResourceForm', () => {
   const defaultProps = {
     description: '',
     onFieldChange: _.noop,

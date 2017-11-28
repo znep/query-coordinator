@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Dropdown } from 'common/components';
+import Dropdown from 'common/components/Dropdown';
 import _ from 'lodash';
 
 const DEFAULT_SORT = 'relevance';

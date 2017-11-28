@@ -1,0 +1,49 @@
+@import "common/styleguide/variables/colors";
+
+.associated-assets {
+  ul.associated-asset-links {
+    list-style-type: none;
+
+    li.associated-asset-link {
+      padding: 0.5rem;
+      border-bottom: 1px dashed $light-grey-3;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+      &:last-of-type {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .remove-asset {
+        margin-right: 0.5rem;
+        color: $error-text;
+      }
+
+      .name {
+      }
+
+      .description {
+        margin: 0.5rem 0 0.5rem 1.5rem;
+      }
+    }
+  }
+
+  .action-buttons {
+    clear: both;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+
+    .save-button {
+      margin-left: 0.5rem;
+
+      .spinner-default {
+        margin-left: 0.5rem;
+        position: relative;
+        top: 3px;
+      }
+    }
+  }
+}

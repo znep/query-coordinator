@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ExternalResourceEditor } from 'components/externalResourceEditor/ExternalResourceEditor';
+import { ExternalResourceEditor } from 'components/ExternalResourceEditor';
 
-describe('externalResourceEditor/ExternalResourceEditor', () => {
+describe('ExternalResourceEditor', () => {
   function defaultProps() {
     return {
       modalIsOpen: true,

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import { fetchTranslation } from 'common/locale';
 
-export class ExternalResourceForm extends React.Component {
+export class ExternalResourceForm extends Component {
   constructor(props) {
     super(props);
 

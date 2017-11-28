@@ -3,13 +3,13 @@ import React from 'react';
 import _ from 'lodash';
 import ceteraUtils from 'common/cetera/utils';
 import BackButton from '../BackButton';
-import Card from './Card';
-import NoResults from './NoResults';
+import Card from './card';
+import NoResults from './no_results';
 import Pager from '../Pager';
-import ResultCount from './ResultCount';
+import ResultCount from './result_count';
 import Searchbox from '../searchbox/Searchbox';
-import SortDropdown from './SortDropdown';
-import Spinner from './Spinner';
+import SortDropdown from './sort_dropdown';
+import Spinner from './spinner';
 import I18n from 'common/i18n';
 
 export class ResultsContainer extends React.Component {
@@ -55,6 +55,7 @@ export class ResultsContainer extends React.Component {
           only: assetTypeFilter,
           order: this.state.sort,
           pageNumber,
+          published: catalogQuery.published,
           q: this.state.query
         }).
         then((response) => {
@@ -86,39 +87,42 @@ export class ResultsContainer extends React.Component {
   }
 
   render() {
+    const { currentPage, errorMessage, fetchingResults, results, resultCount, sort } = this.state;
+    const { additionalTopbarComponents, onClose, onSelect, resultsPerPage } = this.props;
+
     let resultContent;
 
-    if (this.state.fetchingResults) {
+    if (fetchingResults) {
       resultContent = <Spinner />;
-    } else if (this.state.errorMessage) {
-      resultContent = <div className="alert error">{this.state.errorMessage}</div>;
-    } else if (!this.state.results.length) {
+    } else if (errorMessage) {
+      resultContent = <div className="alert error">{errorMessage}</div>;
+    } else if (!results.length) {
       resultContent = <NoResults />;
     } else {
       resultContent = (
         <div>
           <div className="top-controls">
             <ResultCount
-              currentPage={this.state.currentPage}
-              resultsPerPage={this.props.resultsPerPage}
-              total={this.state.resultCount} />
+              currentPage={currentPage}
+              resultsPerPage={resultsPerPage}
+              total={resultCount} />
 
             <SortDropdown
               onSelection={this.changeSort}
-              value={this.state.sort} />
+              value={sort} />
           </div>
 
           <div className="card-container">
-            {this.state.results.map((result, i) =>
-              <Card key={i} {...result} onClose={this.props.onClose} onSelect={this.props.onSelect} />
+            {results.map((result, i) =>
+              <Card key={i} {...result} onClose={onClose} onSelect={onSelect} />
             )}
           </div>
 
           <Pager
             changePage={this.changePage}
-            currentPage={this.state.currentPage}
-            resultCount={this.state.resultCount}
-            resultsPerPage={this.props.resultsPerPage} />
+            currentPage={currentPage}
+            resultCount={resultCount}
+            resultsPerPage={resultsPerPage} />
         </div>
       );
     }
@@ -127,8 +131,8 @@ export class ResultsContainer extends React.Component {
       <div className="results-container">
         <div className="centered-content">
           <div className="results-topbar">
-            <BackButton onClick={this.props.onClose} />
-            {this.props.additionalTopbarComponents.map((component) => component)}
+            <BackButton onClick={onClose} />
+            {additionalTopbarComponents.map((component) => component)}
             <Searchbox
               onSearch={this.changeQuery}
               placeholder={I18n.t('common.asset_selector.results_container.search')} />

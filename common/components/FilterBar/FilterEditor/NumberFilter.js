@@ -197,10 +197,6 @@ class NumberFilter extends Component {
   }
 
   renderNullValueCheckbox() {
-    if (this.props.hideNullValueCheckbox) {
-      return null;
-    }
-
     const { value } = this.state;
     const nullToggleId = _.uniqueId('include-nulls-');
     const inputAttributes = {
@@ -259,10 +255,6 @@ class NumberFilter extends Component {
   }
 }
 
-NumberFilter.defaultProps = {
-  hideNullValueCheckbox: false
-};
-
 NumberFilter.propTypes = {
   filter: PropTypes.object.isRequired,
   column: PropTypes.shape({
@@ -270,7 +262,6 @@ NumberFilter.propTypes = {
     rangeMax: PropTypes.number.isRequired
   }),
   header: PropTypes.element,
-  hideNullValueCheckbox: PropTypes.bool,
   isReadOnly: PropTypes.bool,
   onClickConfig: PropTypes.func,
   onRemove: PropTypes.func.isRequired,

@@ -115,8 +115,8 @@ export const calculateCountMeasure = async (measure) => {
     return {};
   }
 
-  const columnCondition = _.get(measure, 'metric.arguments.excludeNullValues') ?
-    excludeNullsFilter(column) : null;
+  const columnCondition = _.get(measure, 'metric.arguments.includeNullValues') ?
+    null : excludeNullsFilter(column);
 
   const result = await count(
     dataProvider,
@@ -165,19 +165,16 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
   const {
     aggregationType,
     numeratorColumn,
+    numeratorColumnCondition,
     denominatorColumn,
-    numeratorExcludeNullValues,
-    denominatorExcludeNullValues,
     fixedDenominator
   } = _.get(measure, 'metric.arguments', {});
 
-  if (aggregationType !== CalculationTypeNames.COUNT) {
+  const denominatorIncludeNullValues = _.get(measure, 'metric.arguments.denominatorIncludeNullValues', true);
+
+  if (aggregationType && aggregationType !== CalculationTypeNames.COUNT) {
     assert(
-      !numeratorExcludeNullValues,
-      'Excluding null values from non-count Rate measure numerator is nonsensical'
-    );
-    assert(
-      !denominatorExcludeNullValues,
+      denominatorIncludeNullValues,
       'Excluding null values from non-count Rate measure numerator is nonsensical'
     );
   }
@@ -194,12 +191,6 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     null :
     Promise.resolve(fixedDenominator);
 
-  // Column condition takes precedence over numeratorExcludeNullValues.
-  let numeratorColumnCondition = _.get(measure, 'metric.arguments.numeratorColumnCondition');
-  if (numeratorExcludeNullValues) {
-    numeratorColumnCondition = numeratorColumnCondition || excludeNullsFilter(numeratorColumn);
-  }
-
   // Come up with promises for numerator and denominator.
   // If either numerator or denominator have the possibility
   // of calculating, we should proceed. The app will provide
@@ -211,8 +202,8 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
         count(dataProvider, numeratorColumn, numeratorColumnCondition) :
         null;
 
-      const denominatorColumnCondition = denominatorExcludeNullValues ?
-        excludeNullsFilter(denominatorColumn) : null;
+      const denominatorColumnCondition = denominatorIncludeNullValues ?
+        null : excludeNullsFilter(denominatorColumn);
 
       denominatorPromise = denominatorPromise ||
         (denominatorColumn ? count(dataProvider, denominatorColumn, denominatorColumnCondition) : null);

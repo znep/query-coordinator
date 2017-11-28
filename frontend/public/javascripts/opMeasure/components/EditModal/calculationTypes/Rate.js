@@ -28,8 +28,7 @@ import {
   setFixedDenominator,
   setNumeratorColumn,
   setNumeratorColumnCondition,
-  toggleDenominatorExcludeNullValues,
-  toggleNumeratorExcludeNullValues
+  toggleDenominatorIncludeNullValues
 } from '../../../actions/editor';
 
 import withComputedMeasure from '../../withComputedMeasure';
@@ -88,8 +87,7 @@ export class Rate extends Component {
       column: numeratorColumn,
       onRemove: () => this.onFilterChanged(null),
       onUpdate: this.onFilterChanged,
-      header,
-      hideNullValueCheckbox: true
+      header
     };
 
     const flannelProps = {
@@ -142,18 +140,16 @@ export class Rate extends Component {
   renderConfigPane() {
     const {
       aggregationType,
-      denominatorExcludeNullValues,
+      denominatorIncludeNullValues,
       displayableFilterableColumns,
       fixedDenominator,
       measure,
-      numeratorExcludeNullValues,
       onChangeFixedDenominator,
       onSelectAggregationType,
-      onToggleDenominatorExcludeNullValues,
-      onToggleNumeratorExcludeNullValues
+      onToggleDenominatorIncludeNullValues
     } = this.props;
 
-    const showExcludeNullValues = aggregationType === 'count';
+    const showIncludeNullValues = aggregationType === 'count';
 
     const aggregationDropdownOptions = {
       placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_aggregation'),
@@ -214,14 +210,6 @@ export class Rate extends Component {
               {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.numerator_subtitle')}
             </div>
             <ColumnDropdown {...numeratorColumnDropdownOptions} />
-            {
-              showExcludeNullValues ? <Checkbox
-                id="exclude-null-values-numerator"
-                onChange={onToggleNumeratorExcludeNullValues}
-                checked={numeratorExcludeNullValues}>
-                {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
-              </Checkbox> : null
-            }
             {this.renderNumeratorColumnConditions()}
           </AccordionPane>
           <AccordionPane
@@ -231,11 +219,11 @@ export class Rate extends Component {
             </div>
             <ColumnDropdown {...denominatorColumnDropdownOptions} />
             {
-              showExcludeNullValues ? <Checkbox
-                id="exclude-null-values-denominator"
-                onChange={onToggleDenominatorExcludeNullValues}
-                checked={denominatorExcludeNullValues}>
-                {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
+              showIncludeNullValues ? <Checkbox
+                id="include-null-values-denominator"
+                onChange={onToggleDenominatorIncludeNullValues}
+                checked={denominatorIncludeNullValues}>
+                {I18n.t('open_performance.measure.edit_modal.calculation.include_nulls')}
               </Checkbox> : null
             }
             <label htmlFor={fixedDenominatorId} className="rate-metric-denominator-direct-input">
@@ -311,7 +299,7 @@ export class Rate extends Component {
 Rate.propTypes = {
   aggregationType: PropTypes.string,
   denominatorColumnFieldName: PropTypes.string,
-  denominatorExcludeNullValues: PropTypes.bool.isRequired,
+  denominatorIncludeNullValues: PropTypes.bool.isRequired,
   displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
     renderTypeName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -323,28 +311,23 @@ Rate.propTypes = {
   onSelectDenominatorColumn: PropTypes.func.isRequired,
   onSelectNumeratorColumn: PropTypes.func.isRequired,
   onSelectNumeratorColumnCondition: PropTypes.func.isRequired,
-  onToggleNumeratorExcludeNullValues: PropTypes.func.isRequired,
-  onToggleDenominatorExcludeNullValues: PropTypes.func.isRequired,
+  onToggleDenominatorIncludeNullValues: PropTypes.func.isRequired,
   onChangeFixedDenominator: PropTypes.func.isRequired,
   numeratorColumn: PropTypes.object,
   numeratorColumnCondition: PropTypes.object,
-  numeratorColumnFieldName: PropTypes.string,
-  numeratorExcludeNullValues: PropTypes.bool.isRequired
+  numeratorColumnFieldName: PropTypes.string
 };
 
 function mapStateToProps(state) {
   const measure = _.get(state, 'editor.measure');
   const aggregationType = _.get(state, 'editor.measure.metric.arguments.aggregationType');
   const denominatorColumnFieldName = _.get(state, 'editor.measure.metric.arguments.denominatorColumn');
-  const denominatorExcludeNullValues = _.get(
-    state, 'editor.measure.metric.arguments.denominatorExcludeNullValues', false
+  const denominatorIncludeNullValues = _.get(
+    state, 'editor.measure.metric.arguments.denominatorIncludeNullValues', true
   );
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
   const fixedDenominator = _.get(state, 'editor.measure.metric.arguments.fixedDenominator', '');
   const numeratorColumnFieldName = _.get(state, 'editor.measure.metric.arguments.numeratorColumn');
-  const numeratorExcludeNullValues = _.get(
-    state, 'editor.measure.metric.arguments.numeratorExcludeNullValues', false
-  );
   const numeratorColumn = _.find(displayableFilterableColumns, { fieldName: numeratorColumnFieldName });
   const numeratorColumnCondition = _.get(state, 'editor.measure.metric.arguments.numeratorColumnCondition');
 
@@ -355,13 +338,12 @@ function mapStateToProps(state) {
   return {
     aggregationType,
     denominatorColumnFieldName,
-    denominatorExcludeNullValues,
+    denominatorIncludeNullValues,
     displayableFilterableColumns,
     fixedDenominator,
     numeratorColumn,
     numeratorColumnCondition,
     numeratorColumnFieldName,
-    numeratorExcludeNullValues,
     measure
   };
 }
@@ -372,8 +354,7 @@ function mapDispatchToProps(dispatch) {
     onSelectDenominatorColumn: setDenominatorColumn,
     onSelectNumeratorColumn: setNumeratorColumn,
     onSelectNumeratorColumnCondition: setNumeratorColumnCondition,
-    onToggleNumeratorExcludeNullValues: toggleNumeratorExcludeNullValues,
-    onToggleDenominatorExcludeNullValues: toggleDenominatorExcludeNullValues,
+    onToggleDenominatorIncludeNullValues: toggleDenominatorIncludeNullValues,
     onChangeFixedDenominator: setFixedDenominator
   }, dispatch);
 }

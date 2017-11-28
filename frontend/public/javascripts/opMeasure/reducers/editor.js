@@ -13,6 +13,40 @@ const updateMeasureProperty = (state, propertyPath, value) => ({
   measure: _.merge({}, state.measure, _.set({}, propertyPath, value))
 });
 
+const setCalculationType = (state, type) => {
+  // Changing type clears everything under 'metric' other than the data source.
+  // This is by design.
+  assert(
+    _.includes(_.values(CalculationTypeNames), type),
+    `Unknown calculation type given: ${type}`
+  );
+
+  const currentDataSource = _.get(state, 'measure.metric.dataSource');
+  const newState = {
+    ...state
+  };
+
+  _.set(newState, 'measure.metric', {
+    type,
+    dataSource: currentDataSource
+  });
+
+  // Set some defaults for calculation types.
+  switch (type) {
+    case CalculationTypeNames.COUNT:
+      _.set(newState, 'measure.metric.arguments.includeNullValues', true);
+      break;
+    case CalculationTypeNames.RATE:
+      // TODO Reconcile the fact that it doesn't always make sense to include null
+      // values in the denominator (i.e., sums).
+      _.set(newState, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+      break;
+    default: // pass
+  }
+
+  return newState;
+};
+
 // Initial state for the edit modal reducer.
 const initialState = _.constant({
   isEditing: false,
@@ -51,19 +85,7 @@ export default (state = initialState(), action) => {
       };
 
     case actions.editor.SET_CALCULATION_TYPE: {
-      // Changing type clears everything under 'metric' other than the data source -
-      // should we revisit this when we have more than one calculation type implemented?
-      const currentDataSource = _.get(state, 'measure.metric.dataSource');
-      const newState = {
-        ...state
-      };
-
-      _.set(newState, 'measure.metric', {
-        type: action.calculationType,
-        dataSource: currentDataSource
-      });
-
-      return newState;
+      return setCalculationType(state, action.calculationType);
     }
 
     case actions.editor.SET_COLUMN:
@@ -142,19 +164,14 @@ export default (state = initialState(), action) => {
     case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);
 
-    case actions.editor.TOGGLE_EXCLUDE_NULL_VALUES: {
-      const currentValue = _.get(state, 'measure.metric.arguments.excludeNullValues');
-      return updateMeasureProperty(state, 'metric.arguments.excludeNullValues', !currentValue);
+    case actions.editor.TOGGLE_INCLUDE_NULL_VALUES: {
+      const currentValue = _.get(state, 'measure.metric.arguments.includeNullValues', true);
+      return updateMeasureProperty(state, 'metric.arguments.includeNullValues', !currentValue);
     }
 
-    case actions.editor.TOGGLE_NUMERATOR_EXCLUDE_NULL_VALUES: {
-      const currentValue = _.get(state, 'measure.metric.arguments.numeratorExcludeNullValues');
-      return updateMeasureProperty(state, 'metric.arguments.numeratorExcludeNullValues', !currentValue);
-    }
-
-    case actions.editor.TOGGLE_DENOMINATOR_EXCLUDE_NULL_VALUES: {
-      const currentValue = _.get(state, 'measure.metric.arguments.denominatorExcludeNullValues');
-      return updateMeasureProperty(state, 'metric.arguments.denominatorExcludeNullValues', !currentValue);
+    case actions.editor.TOGGLE_DENOMINATOR_INCLUDE_NULL_VALUES: {
+      const currentValue = _.get(state, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+      return updateMeasureProperty(state, 'metric.arguments.denominatorIncludeNullValues', !currentValue);
     }
 
     case actions.editor.SET_DECIMAL_PLACES:
@@ -185,7 +202,7 @@ export default (state = initialState(), action) => {
       // If no calculation type is set, defaults to 'count'
       const currentType = _.get(nextState, 'measure.metric.type');
       if (_.isEmpty(currentType)) {
-        nextState = updateMeasureProperty(nextState, 'metric.type', CalculationTypeNames.COUNT);
+        nextState = setCalculationType(nextState, CalculationTypeNames.COUNT);
       }
 
       return nextState;

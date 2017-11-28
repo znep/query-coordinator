@@ -229,13 +229,23 @@ describe('Edit modal reducer', () => {
       assert.nestedPropertyVal(state, 'measure.metric.type', 'count' );
     });
 
-    it('removes all values in "measure.metric" except for dataSource uid', () => {
+    it('sets default arguments', () => {
+      state = reducer(state, actions.editor.setCalculationType('count'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
+
+      state = reducer(state, actions.editor.setCalculationType('rate'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+    });
+
+    it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
       state = reducer(state, actions.editor.setCalculationType('sum'));
       _.set(state, 'measure.metric.arguments.column', 'some column');
+      _.set(state, 'measure.metric.arguments.something', 'what');
       _.set(state, 'measure.metric.dataSource.uid', 'test-test');
 
       state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.notNestedProperty(state, 'measure.metric.arguments');
+      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+      assert.notNestedProperty(state, 'measure.metric.arguments.something');
       assert.equal(state.measure.metric.dataSource.uid, 'test-test');
     });
   });
@@ -262,15 +272,15 @@ describe('Edit modal reducer', () => {
     });
   });
 
-  describe('TOGGLE_EXCLUDE_NULL_VALUES', () => {
-    it('toggles arguments.excludeNullValues in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.arguments.excludeNullValues');
+  describe('TOGGLE_INCLUDE_NULL_VALUES', () => {
+    it('toggles arguments.includeNullValues in the measure metric, with a default implied value of true', () => {
+      assert.notNestedProperty(state, 'measure.metric.arguments.includeNullValues');
 
-      state = reducer(state, actions.editor.toggleExcludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.excludeNullValues', true);
+      state = reducer(state, actions.editor.toggleIncludeNullValues());
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', false);
 
-      state = reducer(state, actions.editor.toggleExcludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.excludeNullValues', false);
+      state = reducer(state, actions.editor.toggleIncludeNullValues());
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
     });
   });
 

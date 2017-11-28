@@ -31,13 +31,9 @@ describe('NumberFilter', () => {
     assert.lengthOf(element.find(Slider), 1);
   });
 
-  it('renders a checkbox only if hideNullValueCheckbox is not set to true', () => {
+  it('renders the include-nulls-toggle checkbox', () => {
     let element = shallow(<NumberFilter {...getProps()} />);
     assert.lengthOf(element.find('.include-nulls-toggle'), 1);
-    element = shallow(<NumberFilter {...getProps({ hideNullValueCheckbox: false })} />);
-    assert.lengthOf(element.find('.include-nulls-toggle'), 1);
-    element = shallow(<NumberFilter {...getProps({ hideNullValueCheckbox: true })} />);
-    assert.lengthOf(element.find('.include-nulls-toggle'), 0);
   });
 
   it('renders a footer', () => {

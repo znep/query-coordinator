@@ -184,15 +184,10 @@ describe('measureCalculator', () => {
         });
 
         it('throws if nulls are excluded', () => {
-          const sumWithExcludeInNumerator = _.set(_.cloneDeep(sumFixed),
-            'metric.arguments.numeratorExcludeNullValues',
-            true
-          );
           const sumWithExcludeInDenominator = _.set(_.cloneDeep(sumFixed),
-            'metric.arguments.denominatorExcludeNullValues',
-            true
+            'metric.arguments.denominatorIncludeNullValues',
+            false
           );
-          assert.throws(() => calculateRateMeasure(sumWithExcludeInNumerator, dataProvider));
           assert.throws(() => calculateRateMeasure(sumWithExcludeInDenominator, dataProvider));
         });
 
@@ -254,7 +249,10 @@ describe('measureCalculator', () => {
             'numeratorCol'
           );
           // This will differentiate the queries for mocking purposes.
-          numeratorAndDenominator.metric.arguments.numeratorExcludeNullValues = true;
+          _.set(numeratorAndDenominator,
+            'metric.arguments.numeratorColumnCondition',
+            { function: 'valueRange', arguments: { start: 3, end: 5 } }
+          );
           const dataProvider = {
             rawQuery: async () => [{
               '__measure_count_alias__': '100' // Numerator

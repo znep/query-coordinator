@@ -8,7 +8,7 @@ import I18n from 'common/i18n';
 import { Checkbox } from 'common/components';
 
 import ColumnDropdown from '../ColumnDropdown';
-import { toggleExcludeNullValues, setColumn } from '../../../actions/editor';
+import { toggleIncludeNullValues, setColumn } from '../../../actions/editor';
 
 export class Count extends Component {
 
@@ -17,10 +17,10 @@ export class Count extends Component {
     const {
       columnFieldName,
       displayableFilterableColumns,
-      excludeNullValues,
+      includeNullValues,
       measure,
       onSelectColumn,
-      onToggleExcludeNullValues
+      onToggleIncludeNullValues
     } = this.props;
 
     const dropdownOptions = {
@@ -37,8 +37,8 @@ export class Count extends Component {
         <div className="column-dropdown">
           <ColumnDropdown {...dropdownOptions} />
         </div>
-        <Checkbox id="exclude-null-values" onChange={onToggleExcludeNullValues} checked={excludeNullValues}>
-          {I18n.t('open_performance.measure.edit_modal.calculation.exclude_nulls')}
+        <Checkbox id="include-null-values" onChange={onToggleIncludeNullValues} checked={includeNullValues}>
+          {I18n.t('open_performance.measure.edit_modal.calculation.include_nulls')}
         </Checkbox>
       </div>
     );
@@ -72,20 +72,20 @@ Count.propTypes = {
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
-  excludeNullValues: PropTypes.bool.isRequired,
+  includeNullValues: PropTypes.bool.isRequired,
   measure: PropTypes.object,
-  onToggleExcludeNullValues: PropTypes.func.isRequired,
+  onToggleIncludeNullValues: PropTypes.func.isRequired,
   onSelectColumn: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
-  const excludeNullValues = _.get(state, 'editor.measure.metric.arguments.excludeNullValues', false);
+  const includeNullValues = _.get(state, 'editor.measure.metric.arguments.includeNullValues', true);
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
 
   return {
     columnFieldName,
-    excludeNullValues,
+    includeNullValues,
     displayableFilterableColumns,
     measure: state.editor.measure
   };
@@ -93,7 +93,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onToggleExcludeNullValues: toggleExcludeNullValues,
+    onToggleIncludeNullValues: toggleIncludeNullValues,
     onSelectColumn: setColumn
   }, dispatch);
 }

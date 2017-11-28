@@ -51,12 +51,14 @@
               <%- end -%>
             </div>
             <div class="accessPointButtons">
-              <%- accessPoint['urls'].each do |format, url| -%>
-                <a class="button" href="<%= url %>" target="_blank">
-                  <%- size = accessPoint['size'].is_a?(Numeric) ?
-                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
-                  <%= format.upcase %> <%= size %>
-                </a>
+              <%- if accessPoint['urls'].present? -%>
+                <%- accessPoint['urls'].each do |format, url| -%>
+                  <a class="button" href="<%= url %>" target="_blank">
+                    <%- size = accessPoint['size'].is_a?(Numeric) ?
+                      number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                    <%= format.upcase %> <%= size %>
+                  </a>
+                <%- end -%>
               <%- end -%>
               <%- if accessPoint['describedBy'].present? -%>
               <a class="button" href="<%= accessPoint['describedBy'] %>" target="_blank">
@@ -66,19 +68,21 @@
             </div>
           </li>
         <%- else -%>
-          <%- accessPoint['urls'].each do |format, url| -%>
-            <li>
-              <span class="accessPointTitle">
-                <%= url %>
-              </span>
-              <div class="accessPointButtons">
-                <a class="button" href="<%= url %>" target="_blank">
-                  <%- size = accessPoint['size'].is_a?(Numeric) ?
-                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
-                  <%= format.upcase %> <%= size %>
-                </a>
-              </div>
-            </li>
+        <%- if accessPoint['urls'].present? -%>
+            <%- accessPoint['urls'].each do |format, url| -%>
+              <li>
+                <span class="accessPointTitle">
+                  <%= url %>
+                </span>
+                <div class="accessPointButtons">
+                  <a class="button" href="<%= url %>" target="_blank">
+                    <%- size = accessPoint['size'].is_a?(Numeric) ?
+                      number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                    <%= format.upcase %> <%= size %>
+                  </a>
+                </div>
+              </li>
+            <%- end -%>
           <%- end -%>
         <%- end -%>
       <%- end -%>

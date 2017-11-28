@@ -72,8 +72,8 @@ namespace :manifest do
       common_log_cmd = "git log #{git_log_flags} #{git_log_revision_range} #{common_log_query}"
       common_log_output = `#{common_log_cmd}`
 
-      common_summary = jira_summary(common_log_output, 'Common Tickets:')
-      frontend_summary = jira_summary(frontend_log_output, 'Frontend Tickets:')
+      common_summary = jira_summary(common_log_output, 'Common Tickets')
+      frontend_summary = jira_summary(frontend_log_output, 'Frontend Tickets')
       manifest_output << "#{frontend_summary}\n\n#{common_summary}"
 
       commits_without_jira_tickets = get_commits_without_jira("#{frontend_log_output} #{common_log_output}").join("\n")
@@ -102,8 +102,13 @@ namespace :manifest do
 end
 
 def jira_summary(git_log_output, section_header)
+  ticket_list = jira_tickets(git_log_output)
   commits_summary = "------- #{section_header}\n"
-  commits_summary << jira_query( jira_tickets(git_log_output) )
+  if ticket_list.length > 0
+    commits_summary << jira_query( ticket_list )
+  else
+    commits_summary << "No changes"
+  end
 end
 
 def jira_query(jira_tickets)
@@ -119,6 +124,7 @@ end
 # Returns an array of jira tickets ['EN-123', 'EN-456', ...]
 def jira_tickets(git_log_output)
   tickets = git_log_output.lines.map { |line| line.scan(JIRA_TICKET_REGEX) }
+  return [] unless tickets && tickets.length > 0
   tickets.flatten!.uniq! # get rid of [] entries for non-matching lines
   tickets.map { |ticket| ticket.gsub!(/EN\W/i, 'EN-') } # "en 14590" => "EN-14590"
 end

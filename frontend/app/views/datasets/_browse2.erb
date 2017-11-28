@@ -221,8 +221,13 @@
 
             # HREF
             when 'href'
-              result_display_type_icon_class = 'icon-external'
-              result_display_title = t('controls.browse.browse2.display_types.href')
+              if feature_flag?(:usaid_features_enabled, request)
+                result_display_type_icon_class = 'socrata-icon-db-collection'
+                result_display_title = t('controls.browse.browse2.display_types.data_asset')
+              else
+                result_display_type_icon_class = 'icon-external'
+                result_display_title = t('controls.browse.browse2.display_types.href')
+              end
 
             # DATA_LENS
             when 'data_lens', 'visualization'

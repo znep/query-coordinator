@@ -972,6 +972,7 @@ en:
           blob: File or Document
           calendar: Calendar
           chart: Chart
+          data_asset: Data Asset
           data_lens: Data Lens
           dataset: Dataset
           draft: Draft Dataset
@@ -1095,6 +1096,7 @@ en:
           blob: Files and Documents
           calendars: Calendars
           charts: Charts
+          data_assets: Data Assets
           data_lens: Data Lens pages
           datasets: Datasets
           draft: Draft Datasets

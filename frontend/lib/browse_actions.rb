@@ -14,6 +14,8 @@ module BrowseActions
   attr_reader :request_params
 
   def standard_view_types
+    href_translation_key = feature_flag?(:usaid_features_enabled, request) ? 'data_assets' : 'href'
+
     [
       { text: t('controls.browse.facets.view_types.data_lens'), value: 'new_view', class: 'typeDataLens', icon_font_class: 'icon-cards' },
       { text: t('controls.browse.facets.view_types.datasets'), value: 'datasets', class: 'typeBlist' },
@@ -21,7 +23,7 @@ module BrowseActions
       { text: t('controls.browse.facets.view_types.maps'), value: 'maps', class: 'typeMap' },
       { text: t('controls.browse.facets.view_types.calendars'), value: 'calendars', class: 'typeCalendar' },
       { text: t('controls.browse.facets.view_types.filters'), value: 'filters', class: 'typeFilter' },
-      { text: t('controls.browse.facets.view_types.href'), value: 'href', class: 'typeHref' },
+      { text: t("controls.browse.facets.view_types.#{href_translation_key}"), value: 'href', class: 'typeHref' },
       { text: t('controls.browse.facets.view_types.blob'), value: 'blob', class: 'typeBlob' },
       { text: t('controls.browse.facets.view_types.forms'), value: 'forms', class: 'typeForm' }
     ]

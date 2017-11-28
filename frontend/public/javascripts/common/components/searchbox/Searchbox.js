@@ -8,7 +8,7 @@ import './_searchbox.scss';
 
 export class Searchbox extends React.Component {
   static scope() {
-    return 'common.components.searchbar';
+    return 'common.searchbox';
   }
 
   constructor(props) {
@@ -96,7 +96,7 @@ Searchbox.defaultProps = {
   defaultQuery: '',
   onChange: _.noop,
   onClear: _.noop,
-  placeholder: I18n.t('search', { scope: Searchbox.scope() })
+  placeholder: I18n.t('placeholder', { scope: Searchbox.scope() })
 };
 
 export default Searchbox;

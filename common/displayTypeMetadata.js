@@ -49,6 +49,9 @@ function getIconNameForDisplayType(displayType, isPublished = true) {
     case 'table':
       return isPublished ? 'dataset' : 'working-copy';
 
+    case 'data_asset':
+      return 'db-collection';
+
     default:
       return 'data';
   }

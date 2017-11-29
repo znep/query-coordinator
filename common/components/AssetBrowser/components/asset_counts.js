@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
 import * as filtersActions from 'common/components/AssetBrowser/actions/filters';
 
@@ -21,12 +22,16 @@ export class AssetCounts extends Component {
 
     const sortedAssetCounts = _(assetCounts).toPairs().sortBy(0).fromPairs().value();
 
+    const usaidFeaturesEnabled = FeatureFlags.value('usaid_features_enabled');
+
     const assetCountItems = _.map(sortedAssetCounts, (assetCount, assetType) => {
       if (assetCount === 0) return;
       let assetTypeName;
 
       if (filters.assetTypes === 'workingCopies') {
         assetTypeName = assetTypeTranslation('workingCopies', assetCount);
+      } else if (assetType === 'hrefs' && usaidFeaturesEnabled) {
+        assetTypeName = assetTypeTranslation('data_assets', assetCount);
       } else {
         assetTypeName = assetTypeTranslation(assetType, assetCount);
       }

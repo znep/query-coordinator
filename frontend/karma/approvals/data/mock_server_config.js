@@ -76,7 +76,8 @@ export default {
   "featureFlags": {
     "disable_authority_badge": "none",
     "enable_internal_asset_manager_my_assets": true,
-    "stories_enabled": true
+    "stories_enabled": true,
+    "usaid_features_enabled": false
   },
   "locale": "en",
   "localePrefix": "",

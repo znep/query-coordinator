@@ -30,7 +30,8 @@ module AssetBrowserHelper
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :disable_authority_badge,
       :enable_internal_asset_manager_my_assets,
-      :stories_enabled
+      :stories_enabled,
+      :usaid_features_enabled
     )
 
     server_config = {

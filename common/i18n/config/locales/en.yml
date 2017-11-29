@@ -28,6 +28,7 @@ en:
         calendar: Calendar
         chart: Chart
         datalens: Data Lens
+        data_asset: Data Asset
         data_lens: Data Lens
         dataset: Dataset
         draft: Draft Dataset
@@ -55,6 +56,7 @@ en:
             charts: Charts
             datasets: Datasets
             "datalenses,visualizations": Data Lens Pages
+            data_assets: Data Assets
             external: External Datasets
             files: Files and Documents
             filtered: Filtered Views
@@ -121,6 +123,9 @@ en:
           datasets:
             one: Dataset
             other: Datasets
+          data_assets:
+            one: Data Asset
+            other: Data Assets
           files:
             one: File/Doc
             other: Files/Docs

@@ -76,12 +76,36 @@ describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataComboChart with the correct arguments', function() {
+    it('should call into socrataSvgComboChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataComboChartStub,
         validComponentData.value.vif,
         sinon.match.any
       );
+    });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgComboChart with the correct arguments if changed', function() {
+        socrataComboChartStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationComboChart(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataComboChartStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataComboChartStub.reset();
+
+        $component.componentSocrataVisualizationComboChart(getProps());
+
+        sinon.assert.notCalled(socrataComboChartStub);
+      });
     });
   });
 });

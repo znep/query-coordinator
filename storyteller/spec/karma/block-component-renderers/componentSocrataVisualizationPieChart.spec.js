@@ -3,14 +3,14 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
-import componentSocrataVisualizationHistogram
-  from 'editor/block-component-renderers/componentSocrataVisualizationHistogram';
+import componentSocrataVisualizationPieChart
+  from 'editor/block-component-renderers/componentSocrataVisualizationPieChart';
 /* eslint-enable no-unused-vars */
 
-describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
+describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
   var $component;
   var validComponentData = {
-    type: 'socrata.visualization.histogram',
+    type: 'socrata.visualization.pieChart',
     value: {
       layout: {
         height: 300
@@ -21,7 +21,7 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
         datasetUid: 'test-test',
         domain: 'example.com',
         filters: [],
-        type: 'histogram'
+        type: 'pieChart'
       }
     }
   };
@@ -41,20 +41,20 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram(); });
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram(1); });
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram(null); });
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram(undefined); });
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram({}); });
-    assert.throws(function() { $component.componentSocrataVisualizationHistogram([]); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart(); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart(1); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart(null); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart(undefined); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart({}); });
+    assert.throws(function() { $component.componentSocrataVisualizationPieChart([]); });
   });
 
   describe('given a type that is not supported', function() {
     it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
-      badData.type = 'notSocrata.notVisualization.notHistogram';
+      badData.type = 'notSocrata.notVisualization.notPieChart';
       assert.throws(function() {
-        $component.componentSocrataVisualizationHistogram(getProps({
+        $component.componentSocrataVisualizationPieChart(getProps({
           componentData: badData
         }));
       });
@@ -62,50 +62,50 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    var socrataHistogramStub;
+    var socrataPieChartStub;
 
     beforeEach(function() {
-      socrataHistogramStub = sinon.stub($.fn, 'socrataSvgHistogram');
-      $component = $component.componentSocrataVisualizationHistogram(getProps());
+      socrataPieChartStub = sinon.stub($.fn, 'socrataSvgPieChart');
+      $component = $component.componentSocrataVisualizationPieChart(getProps());
     });
 
     afterEach(function() {
-      socrataHistogramStub.restore();
+      socrataPieChartStub.restore();
     });
 
     it('should return a jQuery object for chaining', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataSvgHistogram with the correct arguments', function() {
+    it('should call into socrataSvgPieChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
-        socrataHistogramStub,
+        socrataPieChartStub,
         validComponentData.value.vif,
         sinon.match.any
       );
     });
 
     describe('when updating', function() {
-      it('should call into socrataSvgHistogram with the correct arguments if changed', function() {
-        socrataHistogramStub.reset();
+      it('should call into socrataSvgPieChart with the correct arguments if changed', function() {
+        socrataPieChartStub.reset();
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationHistogram(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationPieChart(getProps({ componentData: changedData }));
 
         sinon.assert.calledWithExactly(
-          socrataHistogramStub,
+          socrataPieChartStub,
           changedData.value.vif,
           sinon.match.any
         );
       });
 
       it('should do nothing if unchanged', function() {
-        socrataHistogramStub.reset();
+        socrataPieChartStub.reset();
 
-        $component.componentSocrataVisualizationHistogram(getProps());
+        $component.componentSocrataVisualizationPieChart(getProps());
 
-        sinon.assert.notCalled(socrataHistogramStub);
+        sinon.assert.notCalled(socrataPieChartStub);
       });
     });
   });

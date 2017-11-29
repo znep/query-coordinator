@@ -76,6 +76,30 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
         sinon.match.any
       );
     });
+
+    describe('when updating', function() {
+      it('should call into socrataSvgRegionMap with the correct arguments if changed', function() {
+        socrataSvgRegionMapStub.reset();
+
+        var changedData = _.cloneDeep(validComponentData);
+        _.set(changedData, 'value.vif.columnName', 'test2');
+        $component.componentSocrataVisualizationRegionMap(getProps({ componentData: changedData }));
+
+        sinon.assert.calledWithExactly(
+          socrataSvgRegionMapStub,
+          changedData.value.vif,
+          sinon.match.any
+        );
+      });
+
+      it('should do nothing if unchanged', function() {
+        socrataSvgRegionMapStub.reset();
+
+        $component.componentSocrataVisualizationRegionMap(getProps());
+
+        sinon.assert.notCalled(socrataSvgRegionMapStub);
+      });
+    });
   });
 
   describe('legacy choropleth', function() {
@@ -111,6 +135,30 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
           validChoroplethComponentData.value.vif,
           sinon.match.any
         );
+      });
+
+      describe('when updating', function() {
+        it('should call into socrataSvgRegionMap with the correct arguments if changed', function() {
+          socrataSvgRegionMapStub.reset();
+
+          var changedData = _.cloneDeep(validComponentData);
+          _.set(changedData, 'value.vif.columnName', 'test2');
+          $component.componentSocrataVisualizationRegionMap(getProps({ componentData: changedData }));
+
+          sinon.assert.calledWithExactly(
+            socrataSvgRegionMapStub,
+            changedData.value.vif,
+            sinon.match.any
+          );
+        });
+
+        it('should do nothing if unchanged', function() {
+          socrataSvgRegionMapStub.reset();
+
+          $component.componentSocrataVisualizationRegionMap(getProps());
+
+          sinon.assert.notCalled(socrataSvgRegionMapStub);
+        });
       });
     });
   });

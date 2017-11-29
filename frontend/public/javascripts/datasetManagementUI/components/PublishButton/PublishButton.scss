@@ -16,6 +16,7 @@
   composes: flyout from global;
   composes: flyout-hidden from global;
   max-width: none;
+  z-index: 1;
 }
 
 .flyoutContent {

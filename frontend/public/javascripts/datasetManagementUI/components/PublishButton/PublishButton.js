@@ -15,7 +15,7 @@ function LabelledCheckmark({ checked, text }) {
   } else {
     checkmark = (
       <svg className={styles.notChecked}>
-        <circle />
+        <circle r="7" cx="7.5" cy="7.5" />
       </svg>
     );
   }

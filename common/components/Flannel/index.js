@@ -54,8 +54,11 @@ export class Flannel extends Component {
     const $eventTarget = $(event.target);
     const outsideFlannel = $eventTarget.closest(this.flannelRef).length === 0;
     const outsideTarget = $eventTarget.closest(this.getTarget()).length === 0;
+    // If clicking the target caused it to be removed from the DOM (say, a "clear input" button),
+    // we can't know for sure if it was within the Flannel. Safest bet is to do nothing.
+    const isRooted = event.target && document.contains(event.target);
 
-    if (outsideFlannel && outsideTarget) {
+    if (outsideFlannel && outsideTarget && isRooted) {
       this.props.onDismiss(event);
     }
   }

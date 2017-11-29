@@ -113,7 +113,35 @@ describe('Flannel', () => {
   it('dismisses itself when clicking outside', () => {
     renderFlannel();
     document.body.click();
-    assert.equal(onDismissSpy.called, true);
+    sinon.assert.calledOnce(onDismissSpy);
+  });
+
+  describe('self-removing element', () => {
+    // I.e., a self-removing clear button.
+    let selfRemovingButton;
+
+    beforeEach(() => {
+      // I.e., a self-removing clear button.
+      selfRemovingButton = document.createElement('button');
+      document.body.appendChild(selfRemovingButton);
+    });
+
+    afterEach(() => {
+      selfRemovingButton.remove();
+    });
+
+    it('does not dismiss itself if the clicked element is not rooted', () => {
+      renderFlannel();
+
+      // Just test sanity.
+      selfRemovingButton.click();
+      sinon.assert.calledOnce(onDismissSpy);
+      onDismissSpy.reset();
+
+      // Actual test.
+      selfRemovingButton.addEventListener('click', () => { selfRemovingButton.remove(); });
+      sinon.assert.notCalled(onDismissSpy);
+    });
   });
 
   it('dismisses itself when ESC is pressed', () => {

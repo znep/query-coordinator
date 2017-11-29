@@ -6,7 +6,7 @@
   left: -0px;
   background: $white;
   height: 100%;
-  z-index: 101;
+  z-index: 1003; // must be higher than ShowOutputSchema for IE or links become unclickable
 
   :global {
     /* lol, because styleguide icons don't have a common class...

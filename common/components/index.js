@@ -52,6 +52,8 @@ import {
 import { BlobDownload, BlobPreview } from './BlobbyDatasets';
 import MetadataTable from './MetadataTable';
 import Checkbox from './Checkbox';
+import MultiSelect from './MultiSelect';
+import SimpleMultiSelect from './SimpleMultiSelect';
 
 module.exports = {
   attachTo: function(element) {
@@ -98,10 +100,12 @@ module.exports = {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  MultiSelect,
   Picklist,
   Scrolls,
   ScrollView,
   SideMenu,
+  SimpleMultiSelect,
   Slider,
   SocrataIcon,
   ViewCard

@@ -1,0 +1,184 @@
+$multiselect-width: 400px;
+$multiselect-options-height: 150px;
+$multiselect-options-spinner-size: 50px;
+$multiselect-remove-icon-hover-color: #a17b19;
+
+.multiselect-root {
+  width: $multiselect-width;
+}
+
+.multiselect-form-container {
+  position: relative;
+  display: flex;
+  background: $white;
+
+  width: $multiselect-width;
+  max-width: $multiselect-width;
+  min-width: $multiselect-width;
+
+  height: 100%;
+  min-height: 45px;
+
+  padding-top: 5px;
+  padding-bottom: 4px;
+
+  border: solid 1px $light-grey-3;
+  border-radius: 1px;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+  cursor: text;
+
+  &.focused {
+    box-shadow: inset 0 0 2px 1px tint($primary, 50%);
+  }
+}
+
+.multiselect-form {
+  display: flex;
+  padding-left: 2px;
+  flex-wrap: wrap;
+}
+
+.multiselect-search-icon-container {
+  margin-top: 2px;
+  height: 100%;
+}
+
+.multiselect-search-icon {
+  margin-left: 9px;
+  width: 20px;
+  height: 20px;
+
+  & svg {
+    & path {
+      fill: $light-grey-1;
+    }
+  }
+}
+
+.multiselect-input {
+  width: 150px;
+  height: 35px;
+  font-size: 17px !important;
+  padding-left: 5px;
+  border: none;
+  background: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.multiselect-pill {
+  display: flex;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 5px;
+
+  padding-left: 7px;
+  padding-right: 3px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+  border-radius: 3px;
+
+  background: $primary-dark;
+  color: $primary-light;
+  cursor: default;
+}
+
+.multiselect-pill-remove-button {
+  cursor: pointer;
+  height: 24px;
+  background: none;
+  margin-left: 6px;
+  border-left: 1px solid $light-grey-2;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+
+  & svg {
+    use, polygon {
+      fill: $primary-light;
+      transition: fill 0.3s;
+    }
+  }
+
+  &:hover {
+    & svg {
+      use, polygon {
+        fill: $multiselect-remove-icon-hover-color;
+      }
+    }
+  }
+}
+
+.multiselect-pill-remove-icon {
+  width: 20px;
+  height: 100%;
+}
+
+.multiselect-pill-icon {
+  width: 17px;
+  height: 100%;
+  margin-right: 4px;
+
+  & svg use, & svg path {
+    fill: $primary-light !important;
+  }
+}
+
+.multiselect-options-container {
+  background-color: $white;
+  border: 2px solid tint($primary, 50%);
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+
+  position: absolute;
+  z-index: 1000;
+
+  width: 700px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: $multiselect-options-height;
+  min-height: $multiselect-options-height;
+  max-height: $multiselect-options-height;
+  overflow-y: scroll;
+}
+
+.multiselect-options-spinner {
+  width: $multiselect-options-spinner-size;
+  height: $multiselect-options-spinner-size;
+  border-width: 7px;
+  margin-left: calc(50% - $multiselect-options-spinner-size);
+  margin-top: calc(50% - $multiselect-options-spinner-size);
+}
+
+.multiselect-options-no-results {
+  font-size: 15px !important;
+  margin-left: 17px;
+  margin-top: 6px;
+}
+
+.multiselect-option {  
+  padding: 9px;
+  cursor: pointer;
+}
+
+.multiselect-option-active {
+  @extend .multiselect-option;
+
+  background-color: $primary-light;
+  color: $primary-text;
+  outline: none;
+}
+
+.multiselect-selected-options-count {
+  position: absolute;
+  bottom: 0;
+  right: 6px;
+  font-size: 13px;
+}

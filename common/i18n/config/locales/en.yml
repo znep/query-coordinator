@@ -337,6 +337,8 @@ en:
         aria_close: Close menu
       modal:
         aria_close: Close modal
+      multiselect:
+        no_results: No results found
       searchbar:
         clear: Clear search query
         search: Search

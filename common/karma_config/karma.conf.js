@@ -18,10 +18,12 @@ var webpackConfig = {
         query: {
           cacheDirectory: './babelCache',
           presets: [
-            'babel-preset-es2015', 'babel-preset-react'
+            'babel-preset-stage-3',
+            'babel-preset-es2015',
+            'babel-preset-react'
           ].map(nodeResolve),
           plugins: [
-            'babel-plugin-transform-object-rest-spread',
+            'babel-plugin-transform-class-properties',
             'babel-plugin-rewire'
           ].map(nodeResolve)
         }

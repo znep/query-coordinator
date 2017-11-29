@@ -14,16 +14,10 @@
   }
 }
 
-.rowErrors {
-  flex-grow: 2;
-}
-
-.typeErrors {
-  flex-grow: 1;
-}
-
+// need to specify a unit (%) on flex-basis for ie11
 .rowErrors,
-.typeErros {
+.typeErrors {
+  flex: 1 0 0%;
   display: inline-block;
 }
 

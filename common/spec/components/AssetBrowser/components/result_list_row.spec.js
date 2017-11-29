@@ -1,8 +1,11 @@
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
 import { assert } from 'chai';
 import { ResultListRow } from 'common/components/AssetBrowser/components/result_list_row';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/ResultListRow', () => {
+  beforeEach(() => FeatureFlags.updateTestFixture({ usaid_features_enabled: false }));
+
   const resultListRowProps = (options = {}) => ({
     category: 'Fun',
     columns: ['type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'],

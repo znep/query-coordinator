@@ -2,12 +2,14 @@ import React from 'react';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
+import { FeatureFlags } from 'common/feature_flags';
 
 const calendarIcon = <AssetTypeIcon displayType="calendar" />;
 const chartIcon = <AssetTypeIcon displayType="chart" />;
 const datasetIcon = <AssetTypeIcon displayType="dataset" />;
 const datalensIcon = <AssetTypeIcon displayType="datalens" />;
-const externalIcon = <AssetTypeIcon displayType="href" />;
+const externalIcon = FeatureFlags.value('usaid_features_enabled') ?
+  <AssetTypeIcon displayType="data_asset" /> : <AssetTypeIcon displayType="href" />;
 const fileIcon = <AssetTypeIcon displayType="attachment" />;
 const filteredIcon = <AssetTypeIcon displayType="filter" />;
 const formIcon = <AssetTypeIcon displayType="form" />;
@@ -27,7 +29,12 @@ export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.datasets'), value: 'datasets', icon: datasetIcon },
   { title: getTranslation('asset_types.options.datalenses,visualizations'),
     value: 'datalenses,visualizations', icon: datalensIcon },
-  { title: getTranslation('asset_types.options.external'), value: 'hrefs', icon: externalIcon },
+  {
+    title: (FeatureFlags.value('usaid_features_enabled') ?
+      getTranslation('asset_types.options.data_assets') : getTranslation('asset_types.options.external')),
+    value: 'hrefs',
+    icon: externalIcon
+  },
   { title: getTranslation('asset_types.options.files'), value: 'files', icon: fileIcon },
   { title: getTranslation('asset_types.options.filtered'), value: 'filters', icon: filteredIcon },
   { title: getTranslation('asset_types.options.forms'), value: 'forms', icon: formIcon },

@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
+import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
 
 import * as constants from 'common/components/AssetBrowser/lib/constants';
@@ -99,9 +100,16 @@ export class ResultListRow extends Component {
       if (type === 'dataset' && !isPublished) {
         assetTypeTooltip = I18n.t('shared.asset_browser.asset_types.working_copy');
       }
+      if (type === 'href' && FeatureFlags.value('usaid_features_enabled')) {
+        assetTypeTooltip = I18n.t('shared.asset_browser.asset_types.data_asset');
+      }
+
+      const displayType = (FeatureFlags.value('usaid_features_enabled') && type === 'href') ?
+        'data_asset' : type;
+
       return cellTag(
         <AssetTypeIcon
-          displayType={type}
+          displayType={displayType}
           isPublished={isPublished}
           tooltip={assetTypeTooltip} />
       );

@@ -27,6 +27,13 @@
   border-right-width: 0px;
 }
 
+// removes x inserted into text input fields in ie11
+.textInput::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 form .textInput {
   line-height: 22px;
 }

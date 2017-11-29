@@ -436,9 +436,10 @@ module SocrataSiteChrome
       SocrataSiteChrome.configuration.app_token
     end
 
-    def feature_set
-      SocrataSiteChrome::FeatureSet.new(request.host).feature_set.to_h
+    def current_domain_features_map
+      SocrataSiteChrome::FeatureSet.new(request.host).feature_set.to_h.
+        fetch('properties', []).
+        each_with_object({}) { |property, hsh| hsh[property['name']] = property['value'] }
     end
-
   end
 end

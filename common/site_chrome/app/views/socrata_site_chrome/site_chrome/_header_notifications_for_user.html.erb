@@ -21,7 +21,7 @@
           showProductNotifications: false,
           showUserNotifications: true,
           currentUserRole: <%== current_user_role.to_json %>,
-          currentDomainFeatures: <%== feature_set.to_json %>,
+          currentDomainFeatures: <%== current_domain_features_map.to_json %>,
           isSuperAdmin: <%== is_superadmin? %>,
           showTransientNotifications: <%= get_feature_flag('in_product_transient_notifications') %>
         };

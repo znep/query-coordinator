@@ -1,5 +1,8 @@
 export function parseDate(dateStr) {
-  if (dateStr && dateStr.indexOf('Z') === -1) {
+  if (!dateStr) {
+    return null;
+  }
+  if (typeof dateStr === 'string' && dateStr.indexOf('Z') === -1) {
     return new Date(`${dateStr}Z`);
   }
   return new Date(dateStr);

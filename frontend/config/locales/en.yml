@@ -3205,6 +3205,11 @@ en:
           tab_title: General Info
         methods_and_analysis:
           tab_title: Methods and Analysis
+        reporting_period:
+          start_date_label: Period start date
+          tab_title: Reporting Period
+          title: Configure Reporting Period
+          type_label: Period type
       reporting_period: Reporting Period
     preview: Preview
     render_error: There was a problem rendering this page.

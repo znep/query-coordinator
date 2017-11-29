@@ -153,6 +153,9 @@ export default (state = initialState(), action) => {
       return updateMeasureProperty(state, 'metric.display.asPercent', !currentValue);
     }
 
+    case actions.editor.SET_START_DATE:
+      return updateMeasureProperty(state, 'metric.reportingPeriod.startDate', action.startDate);
+
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 

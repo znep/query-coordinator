@@ -917,8 +917,8 @@ en:
         create_resource_verb: Create
         create_story_short: Story
         create_story_verb: Create
-        create_tabular_beta: Create a tabular Dataset (beta)
-        create_tabular_beta_short: Tabular Dataset (beta)
+        create_tabular_beta: Create a Dataset (preview)
+        create_tabular_beta_short: Dataset (preview)
         create_tabular_beta_verb: Create (beta)
         dataset_subscribe: Subscribe to changes on this view
         delete:

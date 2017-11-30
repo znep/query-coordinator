@@ -1040,6 +1040,10 @@ module ApplicationHelper
       current_user.has_right?(UserRights::CREATE_STORY)
   end
 
+  def current_user_can_see_dsmp_preview?
+    Signaller.for(flag: "dsmp_preview").value(on_domain: request.host) rescue nil
+  end
+
   def current_user_can_create_measure?
     # TODO: Pending the future of rights management, add an appropriate rights check.
     op_standalone_measures_enabled?

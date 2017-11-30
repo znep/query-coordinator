@@ -399,7 +399,7 @@ en:
         create_menu:
           dataset: Dataset
           data_asset: Data Asset
-          dataset_beta: Tabular Dataset (beta)
+          dataset_beta: Dataset (Preview)
           default_measure_title: Untitled Measure
           default_story_title: Untitled Story
           measure: Measure

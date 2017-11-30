@@ -5,9 +5,6 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { Provider } from 'react-redux';
 
-import settingsSagas from './sagas/settings';
-import { all } from 'redux-saga/effects';
-
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
@@ -35,12 +32,6 @@ export class AssetBrowser extends Component {
 
     this.store = createStore(reducer, applyMiddleware(...middlewares));
 
-    // combine all the sagas together
-    function* sagas() {
-      yield all([
-        ...settingsSagas
-      ]);
-    }
     sagaMiddleware.run(sagas);
   }
 

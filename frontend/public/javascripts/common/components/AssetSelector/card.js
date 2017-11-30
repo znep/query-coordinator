@@ -6,6 +6,7 @@ import ViewCard from 'common/components/ViewCard';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
 import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
+import { FeatureFlags } from 'common/feature_flags';
 
 export class Card extends React.Component {
   constructor(props) {
@@ -43,12 +44,16 @@ export class Card extends React.Component {
   viewCardProps() {
     const { description, id, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
 
+    // EN-19924: USAID sadtimes
+    const displayType = (FeatureFlags.value('usaid_features_enabled') && type === 'href') ?
+      'data_asset' : type;
+
     return {
       name,
       id,
       description,
       url: link,
-      icon: getIconClassForDisplayType(type),
+      icon: getIconClassForDisplayType(displayType),
       metadataLeft: getDateLabel(updatedAt),
       metadataRight: getViewCountLabel(viewCount),
       imageUrl: previewImageUrl,

@@ -433,6 +433,7 @@ class MetadataTable extends Component {
 
     const associatedAssetsProps = {
       apiCalls: associatedAssetsApiCalls,
+      isDraft: coreView.displayType === 'draft',
       modalIsOpen: this.state.associatedAssetsModalIsOpen,
       onDismiss: () => { this.setState({ associatedAssetsModalIsOpen: false }); },
       onSave: (associatedAssets) => {

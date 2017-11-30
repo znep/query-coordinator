@@ -24,12 +24,18 @@ export class AssociatedAssets extends Component {
   }
 
   componentDidMount() {
+    const { isDraft } = this.props;
+
+    const viewEndpoint = isDraft ?
+      `/api/publishing/v1/revision/${this.props.uid}/0` : `/api/views/${this.props.uid}`;
     // Fetch existing associated assets. This should probably not be in this file
-    fetchJson(`/api/publishing/v1/revision/${this.props.uid}/0`, {
+    fetchJson(viewEndpoint, {
       credentials: 'same-origin',
       headers: defaultHeaders
     }).then(response => {
-      const additionalAccessPoints = _.get(response, 'resource.metadata.metadata.additionalAccessPoints');
+      const additionalAccessPoints = isDraft ?
+        _.get(response, 'resource.metadata.metadata.additionalAccessPoints') :
+        _.get(response, 'metadata.additionalAccessPoints');
       if (additionalAccessPoints && !_.isEmpty(_.first(additionalAccessPoints))) {
         const { uid, urls } = _.first(additionalAccessPoints);
         const name = _.first(Object.keys(urls));
@@ -192,6 +198,7 @@ export class AssociatedAssets extends Component {
 
 AssociatedAssets.propTypes = {
   apiCalls: PropTypes.array,
+  isDraft: PropTypes.bool.isRequired,
   modalIsOpen: PropTypes.bool,
   onDismiss: PropTypes.func,
   onSave: PropTypes.func.isRequired,

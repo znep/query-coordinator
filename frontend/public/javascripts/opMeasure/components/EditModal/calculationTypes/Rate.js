@@ -19,6 +19,7 @@ import {
 import FilterEditor from 'common/components/FilterBar/FilterEditor';
 import { getFilterToggleText } from 'common/components/FilterBar/filters';
 import { getIconForDataType } from 'common/icons';
+import { SoqlDataProvider } from 'common/visualizations/dataProviders';
 
 import ColumnDropdown from '../ColumnDropdown';
 
@@ -62,7 +63,7 @@ export class Rate extends Component {
   }
 
   renderNumeratorColumnConditionsFlyout() {
-    const { numeratorColumn, numeratorColumnCondition } = this.props;
+    const { measure, numeratorColumn, numeratorColumnCondition } = this.props;
     const { columnConditionsFlyoutOpen } = this.state;
 
     if (!columnConditionsFlyoutOpen || !numeratorColumn) {
@@ -82,12 +83,24 @@ export class Rate extends Component {
       </div>
     );
 
+    const isValidTextFilterColumnValue = (column, term) => {
+      const datasetUid = _.get(measure, 'metric.dataSource.uid');
+      const soqlDataProvider = new SoqlDataProvider({
+        datasetUid: _.get(measure, 'metric.dataSource.uid'),
+        domain: window.location.hostname
+      });
+
+      return soqlDataProvider.match(column.fieldName, term);
+    };
+
+
     const filterProps = {
-      filter: numeratorColumnCondition || {},
       column: numeratorColumn,
+      filter: numeratorColumnCondition || {},
+      header,
+      isValidTextFilterColumnValue,
       onRemove: () => this.onFilterChanged(null),
-      onUpdate: this.onFilterChanged,
-      header
+      onUpdate: this.onFilterChanged
     };
 
     const flannelProps = {

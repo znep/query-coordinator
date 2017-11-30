@@ -69,6 +69,16 @@ export class Flannel extends Component {
     }
   }
 
+  // Certain header elements are position:fixed and have a z-index sufficient to overlay the flannel.
+  // We want to avoid those.
+  getMinTopPosition() {
+    // We assume these stack vertically.
+    return _.sumBy(
+      document.querySelectorAll('#site-chrome-admin-header, nav.edit-bar'),
+      (element) => $(element).height()
+    );
+  }
+
   getTarget() {
     const { target } = this.props;
     return _.isFunction(target) ? target() : target;
@@ -106,16 +116,6 @@ export class Flannel extends Component {
     if (previouslyFocusedElement instanceof Element) {
       previouslyFocusedElement.focus();
     }
-  }
-
-  // Certain header elements are position:fixed and have a z-index sufficient to overlay the flannel.
-  // We want to avoid those.
-  getMinTopPosition() {
-    // We assume these stack vertically.
-    return _.sumBy(
-      document.querySelectorAll('#site-chrome-admin-header, nav.edit-bar'),
-      (element) => $(element).height()
-    );
   }
 
   positionSelf() {

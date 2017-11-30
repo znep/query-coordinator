@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# cause all platform-ui PR checks to fail fast in the event that the Frontend build is broken
+# and you don't want it's Jenkins queue to get backed up while you troubleshoot it
+#
+# set DISABLE_PLATFORM_UI_PR_BUILDING = true in https://jenkins-build.socrata.com/configure (you must be an admin on Build Jenkins)
+#
+# impacts jobs on https://jenkins-build.socrata.com
+#   platform-ui-common-pull-request-lint
+#   platform-ui-common-pull-request-builder/configure
+#   storyteller-pull-request-builder
+#   frontend-pull-request-test/configure
+#   storyteller-pull-request-rubocop
+
+if [ "${DISABLE_PLATFORM_UI_PR_BUILDING}" = "true" ]; then
+  echo
+  echo '#############################################################################################################'
+  echo 'The Frontend build is currently in a broken state and has been temporarily disabled while we fix the problem.'
+  echo 'Please be patient and "retest this please" your PR once the issues are fixed.'
+  echo 'Consult The Quality Team if you have any questions or information relevant to the current predicament.'
+  echo '#############################################################################################################'
+  echo
+  
+  exit 1
+fi

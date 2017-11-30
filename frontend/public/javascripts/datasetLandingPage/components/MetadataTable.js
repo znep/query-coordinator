@@ -3,6 +3,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { createDSMAPIRevision } from '../actions/metadataTable';
+import { associateChildToParent } from '../actions/associateCollections';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
 import { localizeLink } from 'common/locale';
 import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
@@ -25,8 +26,7 @@ function mapStateToProps(state) {
   const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
     const currentAvailableFields = fieldset.fields.map(field => field.name);
 
-    // Have to perform this check in case user deletes a field but we still have
-    // data for it.
+    // Have to perform this check in case user deletes a field but we still have data for it.
     const customFields = _.pickBy(fieldset.existing_fields, (v, k) =>
       currentAvailableFields.includes(k));
 
@@ -70,6 +70,7 @@ function mapStateToProps(state) {
   };
 
   return ({
+    associatedAssetsApiCalls: state.associateCollections,
     enableAssociatedAssets: associatedAssetsAreEnabled(),
     localizeLink,
     coreView,
@@ -77,7 +78,6 @@ function mapStateToProps(state) {
     disableContactDatasetOwner: view.disableContactDatasetOwner,
     editMetadataUrl: editMetadataUrl(),
     statsUrl: view.statsUrl,
-    view: view,
     renderWatchDatasetButton() {
       if (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled) {
         return (<WatchDatasetButton view={view} />);
@@ -139,10 +139,11 @@ function mergeProps(stateProps, { dispatch }) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onSaveAssociatedAssets: (associatedAssets) => {
-      const associatedAssetIds = _.map(associatedAssets, (asset) => asset.id);
-      console.log(associatedAssetIds);
-      // TODO: make onSave action for this
+    onSaveAssociatedAssets: associatedAssets => {
+      const associatedAssetId = _.get(associatedAssets[0], 'id');
+      if (associatedAssetId) {
+        dispatch(associateChildToParent(associatedAssetId, stateProps.coreView));
+      }
     }
   };
 }

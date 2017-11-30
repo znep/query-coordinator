@@ -3,10 +3,12 @@ import { expect, assert } from 'chai';
 import { Card } from 'components/AssetSelector/card';
 import { useTestTranslations } from 'common/i18n';
 import mockTranslations from '../../mockTranslations';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('Card', () => {
   beforeEach(() => {
     useTestTranslations(mockTranslations);
+    FeatureFlags.useTestFixture({ usaid_features_enabled: false });
   });
 
   const defaultProps = {

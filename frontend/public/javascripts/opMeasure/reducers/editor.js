@@ -146,7 +146,7 @@ export default (state = initialState(), action) => {
         _.get(state, 'measure.metric.type') === 'rate',
         'This action only makes sense for rate measures today.'
       );
-      return updateMeasureProperty(state, 'metric.arguments.numeratorColumnCondition', action.condition);
+      return _.set(state, 'measure.metric.arguments.numeratorColumnCondition', action.condition);
 
     case actions.editor.SET_DENOMINATOR_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');

@@ -162,13 +162,15 @@ describe('Edit modal reducer', () => {
       });
     });
 
-    it('updates the appropriate argument', () => {
+    it('replaces the appropriate argument', () => {
       state = reducer(state, actions.editor.setCalculationType('rate'));
-      assert.notNestedProperty(state, 'measure.metric.arguments.numeratorColumnCondition');
 
-      const newCondition = { type: 'mock' };
-      state = reducer(state, actions.editor.setNumeratorColumnCondition(newCondition));
-      assert.deepEqual(state.measure.metric.arguments.numeratorColumnCondition, newCondition);
+      const newCondition1 = { type: 'mock1', foo: 'bar' };
+      state = reducer(state, actions.editor.setNumeratorColumnCondition(newCondition1));
+
+      const newCondition2 = { type: 'mock2' };
+      state = reducer(state, actions.editor.setNumeratorColumnCondition(_.cloneDeep(newCondition2)));
+      assert.deepEqual(state.measure.metric.arguments.numeratorColumnCondition, newCondition2);
     });
   });
 

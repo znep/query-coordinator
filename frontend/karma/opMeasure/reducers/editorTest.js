@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
+import { CalculationTypeNames } from 'lib/constants';
 import reducer from 'reducers/editor';
 import actions from 'actions';
 
@@ -116,6 +117,24 @@ describe('Edit modal reducer', () => {
       state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
 
       assert.deepEqual(state.dataSourceViewMetadata, viewMetadata);
+    });
+
+    it('resets metric config to default', () => {
+      const viewMetadata = {
+        id: 'xxxx-xxxx',
+        columns: []
+      };
+
+      _.set(state, 'measure.metric.dataSource', {
+        uid: 'test-test'
+      });
+
+      _.set(state, 'measure.metric.type', CalculationTypeNames.SUM);
+      _.set(state, 'measure.metric.arguments.foo', 'hello');
+
+      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
+      assert.equal(state.measure.metric.type, CalculationTypeNames.COUNT);
+      assert.notNestedProperty(state, 'measure.metric.arguments.foo');
     });
 
     it('throws if not given a number for the rowCount', () => {

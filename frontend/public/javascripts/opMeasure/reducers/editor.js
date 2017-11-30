@@ -73,17 +73,19 @@ export default (state = initialState(), action) => {
       });
       return newState;
     }
-    case actions.editor.RECEIVE_DATA_SOURCE_METADATA:
+    case actions.editor.RECEIVE_DATA_SOURCE_METADATA: {
       assertIsNumber(action.rowCount);
       assertIsOneOfTypes(action.dataSourceViewMetadata, 'object');
 
-      return {
+      const newState = {
         ...state,
         cachedRowCount: action.rowCount,
         dataSourceViewMetadata: action.dataSourceViewMetadata,
         displayableFilterableColumns: action.displayableFilterableColumns
       };
 
+      return setCalculationType(newState, CalculationTypeNames.COUNT); // Clear any existing measure config.
+    }
     case actions.editor.SET_CALCULATION_TYPE: {
       return setCalculationType(state, action.calculationType);
     }

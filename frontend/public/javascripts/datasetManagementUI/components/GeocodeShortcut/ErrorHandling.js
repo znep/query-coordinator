@@ -16,7 +16,7 @@ const ErrorHandling = ({ toggleConvertToNull, shouldConvertToNull }) =>
         onChange={toggleConvertToNull}
         checked={shouldConvertToNull} />
       <label htmlFor="as-null">
-        <span className={styles.fakeRadioButton + " fake-radiobutton"} />
+        <span className={styles.fakeRadioButton} />
         {SubI18n.treat_as_empty}
         <p className={styles.labelSubtitle}>
           {SubI18n.what_is_forgive}
@@ -31,7 +31,7 @@ const ErrorHandling = ({ toggleConvertToNull, shouldConvertToNull }) =>
         onChange={toggleConvertToNull}
         checked={!shouldConvertToNull} />
       <label htmlFor="as-error">
-        <span className={styles.fakeRadioButton + " fake-radiobutton"} />
+        <span className={styles.fakeRadioButton} />
         {SubI18n.skip_row}
       </label>
       <p className={styles.labelSubtitle}>

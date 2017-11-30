@@ -73,6 +73,12 @@
   composes: btn-primary from global;
 }
 
+.fakeCheckbox{
+  composes: fake-checkbox from global;
+}
+.fakeRadioButton{
+  composes: fake-radiobutton from global;
+}
 .fakeCheckbox, .fakeRadioButton {
   margin-left: 3px;
 }

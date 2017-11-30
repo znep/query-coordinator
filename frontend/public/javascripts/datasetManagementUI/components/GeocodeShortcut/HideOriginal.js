@@ -10,7 +10,7 @@ const HideOriginal = ({ toggleHideOriginal, shouldHideOriginal }) => {
     <div className={styles.hideOriginal}>
       <input id="hide-original" type="checkbox" checked={checked} />
       <label htmlFor="hide-original" onClick={toggleHideOriginal}>
-        <span className={ styles.fakeCheckbox + " fake-checkbox"}>
+        <span className={styles.fakeCheckbox}>
           <span className="socrata-icon-checkmark3" />
         </span>
         {SubI18n.hide_original_columns}

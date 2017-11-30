@@ -38,26 +38,34 @@ function mapStateToProps(state) {
     };
   }, {});
 
+
+  // TODO: move this into dataset_landing_page.rb#edit_metadata_url
   const editMetadataUrl = () => {
-    if (isUSAID) {
-      return `/publisher/edit?view=${coreView.id}`;
-    } else if (editThruDSMUI) {
-      return '#';
-    } else {
-      return view.editMetadataUrl;
+    // editMetadataUrl being null indicates the button should not appear
+    if (view.editMetadataUrl) {
+      if (isUSAID) {
+        return `/publisher/edit?view=${coreView.id}`;
+      } else if (editThruDSMUI) {
+        return '#';
+      }
     }
+    return view.editMetadataUrl;
   };
 
   // EN-19924: USAID special feature. Only enable Associated Assets if the USAID feature flag is on,
   // and we are on a Primer page for a published table or blob
   const associatedAssetsAreEnabled = () => {
-    const { viewType, displayType, publicationStage } = coreView;
+    // if editMetadataUrl is null, a user does not have permissions to edit the view
+    if (view.editMetadataUrl) {
+      const { viewType, displayType, publicationStage } = view.coreView;
 
-    if (!isUSAID) return false;
-    if (publicationStage !== 'published') return false;
+      if (!isUSAID) return false;
+      if (publicationStage !== 'published') return false;
 
-    if (viewType === 'blobby') return true;
-    if (viewType === 'tabular' && displayType === 'table') return true;
+      if (viewType === 'blobby') return true;
+      if (viewType === 'tabular' && displayType === 'table') return true;
+    }
+
 
     /*
       11/20/17

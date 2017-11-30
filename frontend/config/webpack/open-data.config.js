@@ -138,7 +138,6 @@ module.exports = _.defaultsDeep({
       './component/data/repeater.js',
       './component/data/simple-table.js',
       './component/data/table.js',
-      './component/data/tabular-export.js',
       './component/data/visualization.js',
       './component/actions/button.js',
       './component/actions/download.js',

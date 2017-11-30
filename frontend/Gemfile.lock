@@ -71,10 +71,6 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    axlsx (1.3.6)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (>= 0.9.5)
     builder (3.2.3)
     byebug (9.0.6)
     cetera-ruby (0.5.2)
@@ -153,7 +149,6 @@ GEM
     hashdiff (0.3.0)
     hashie (2.1.2)
     highline (1.7.8)
-    htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httparty (0.15.6)
@@ -328,7 +323,6 @@ GEM
     rspec-support (3.5.0)
     ruby-progressbar (1.8.1)
     ruby_dep (1.5.0)
-    rubyzip (1.2.0)
     safe_yaml (1.0.4)
     sanitize (4.4.0)
       crass (~> 1.0.2)
@@ -436,7 +430,6 @@ DEPENDENCIES
   airbrake (~> 6.2.0)
   asset-inventory (~> 1.1.1)
   awesome_print
-  axlsx (~> 1.3.4)
   byebug
   cetera-ruby (= 0.5.2)
   clipboard

@@ -123,12 +123,6 @@ class Page < Model
     @timings.to_a.compact
   end
 
-  def generate_file(type)
-    [Canvas2::CanvasWidget.from_config_root(content, self)].flatten.map do |w|
-      w.generate_file(type)
-    end.join('')
-  end
-
   def index_path
     path = @update_data['path'] || @data['path']
     path.gsub(':[^/]+', ':')

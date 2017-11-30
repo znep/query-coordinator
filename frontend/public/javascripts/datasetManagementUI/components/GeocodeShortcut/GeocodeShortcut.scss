@@ -58,6 +58,9 @@
 
 .compositionSelector {
   margin-bottom: 1em;
+  .compositionButton, .compositionSelected {
+    outline: none;
+  }
 }
 
 .compositionButton {
@@ -68,6 +71,16 @@
 .compositionSelected {
   composes: btn from global;
   composes: btn-primary from global;
+}
+
+.fakeCheckbox{
+  composes: fake-checkbox from global;
+}
+.fakeRadioButton{
+  composes: fake-radiobutton from global;
+}
+.fakeCheckbox, .fakeRadioButton {
+  margin-left: 3px;
 }
 
 .hideOriginal {

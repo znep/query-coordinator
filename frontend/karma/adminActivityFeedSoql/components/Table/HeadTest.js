@@ -18,36 +18,36 @@ describe('Table/Head renders cell header', () => {
 
   it('type', () => {
     assert.equal(
-      element.querySelector('th.type').textContent,
-      mockTranslations.columns.type
+      element.querySelector('th.asset-type').textContent,
+      mockTranslations.columns.asset_type
     );
   });
 
   it('initiated_by', () => {
     assert.equal(
-      element.querySelector('th.initiated-by').textContent,
-      mockTranslations.columns.initiated_by
+      element.querySelector('th.acting-user-name').textContent,
+      mockTranslations.columns.acting_user_name
     );
   });
 
   it('event', () => {
     assert.equal(
-      element.querySelector('th.event').textContent,
-      mockTranslations.columns.event
+      element.querySelector('th.activity-type').textContent,
+      mockTranslations.columns.activity_type
     );
   });
 
   it('item_affected', () => {
     assert.equal(
-      element.querySelector('th.item-affected').textContent,
-      mockTranslations.columns.item_affected
+      element.querySelector('th.dataset-name').textContent,
+      mockTranslations.columns.dataset_name
     );
   });
 
   it('date', () => {
     assert.equal(
-      element.querySelector('th.date').textContent,
-      mockTranslations.columns.date
+      element.querySelector('th.created-at').textContent,
+      mockTranslations.columns.created_at
     );
   });
 

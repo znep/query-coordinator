@@ -40,20 +40,20 @@ $result_list_row_bg_hover_color: $primary-light;
 
           // Fixed percentage widths for columns. If a new column is added,
           // these will need to be re-calculated to add up to 100%.
-          &.type {
+          &.asset-type {
             width: 6%;
           }
-          &.initiated-by {
+          &.acting-user-name {
             width: 15%;
           }
-          &.event {
+          &.activity-type {
             width: 20%;
           }
-          &.item-affected {
-            width: 35%
+          &.dataset-name {
+            width: 34%
           }
-          &.date {
-            width: 18%;
+          &.created-at {
+            width: 19%;
           }
           &.actions {
             width: 6%;

@@ -75,9 +75,11 @@ export function putMetadata(fourfour, metadata) {
   }).then(checkStatus).then(getJson);
 }
 
-export function mergeNewAccessPoints(view, newAccessPoints) {
+export function mergeNewAccessPoint(view, newAccessPoint) {
   const oldMetadata = view.metadata || {};
-  const additionalAccessPoints = (oldMetadata.additionalAccessPoints || []).concat(newAccessPoints);
+  const currentAccessPoints = oldMetadata.additionalAccessPoints || [];
+  const filteredAccessPoints = _.filter(currentAccessPoints, (point) => point.uid !== newAccessPoint.uid);
+  const additionalAccessPoints = filteredAccessPoints.concat(newAccessPoint);
   return { ...oldMetadata, additionalAccessPoints };
 }
 
@@ -85,6 +87,15 @@ function linkFor(fourfour, name, category) {
   const location = document.location;
   const path = `/${category || 'dataset'}/${name}/${fourfour}`;
   return encodeURI(`${location.protocol}//${location.hostname}${path}`);
+}
+
+function nameForChild(viewInfo) {
+  const accessLvl = _.get(viewInfo, ['metadata', 'custom_fields', 'Proposed Access Level', 'Proposed Access Level']);
+  if (accessLvl === 'Restricted Public' || accessLvl === 'Private') {
+    return `${viewInfo.name} (Restricted)`;
+  } else {
+    return viewInfo.name;
+  }
 }
 
 export function accessPointFor(viewInfo, isParent) {
@@ -98,7 +109,7 @@ export function accessPointFor(viewInfo, isParent) {
   } else {
     return {
       urls: { dataset: linkFor(viewInfo.id, name, viewInfo.category) },
-      title: name,
+      title: nameForChild(viewInfo),
       description: viewInfo.description,
       uid: viewInfo.id
     };
@@ -133,9 +144,11 @@ export function getParentUid(childRevision) {
   }
 }
 
-export function parentHasChild(parentView, childUid) {
+export function parentHasAccessPoint(parentView, accessPoint) {
   if (parentView.metadata && parentView.metadata.additionalAccessPoints) {
-    return _.some(parentView.metadata.additionalAccessPoints, (href) => href.uid === childUid);
+    return _.some(parentView.metadata.additionalAccessPoints, (point) => {
+      return point.uid === accessPoint.uid && point.title === accessPoint.title && point.urls.dataset === accessPoint.urls.dataset;
+    });
   }
   return false;
 }

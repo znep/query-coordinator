@@ -6,8 +6,8 @@ import {
   accessPointFor,
   getParentUid,
   getView,
-  mergeNewAccessPoints,
-  parentHasChild,
+  mergeNewAccessPoint,
+  parentHasAccessPoint,
   putMetadata,
   removeChildFromParent
 } from 'common/usaid_collections/associateCollections';
@@ -21,13 +21,13 @@ export function associateChildToParent(parentUid, currentRevision, revisionParam
     );
 
     return getView(parentUid).then(parentView => {
-      if (!parentHasChild(parentView, currentRevision.fourfour)) {
+      const childAccessPoint = accessPointFor({
+        ...currentRevision.metadata,
+        id: currentRevision.fourfour
+      }, false);
+      if (!parentHasAccessPoint(parentView, childAccessPoint)) {
         // update parent view, adding child
-        const childAccessPoint = accessPointFor({
-          ...currentRevision.metadata,
-          id: currentRevision.fourfour
-        }, false);
-        const newParentMetadata = mergeNewAccessPoints(parentView, [childAccessPoint]);
+        const newParentMetadata = mergeNewAccessPoint(parentView, childAccessPoint);
         putMetadata(parentUid, newParentMetadata).catch((err) => {
           dispatch(apiCallFailed(callId, err));
         });

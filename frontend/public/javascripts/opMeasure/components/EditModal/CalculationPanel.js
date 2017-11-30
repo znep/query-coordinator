@@ -22,7 +22,7 @@ export class CalculationPanel extends Component {
     const isCount = calculationType === CalculationTypeNames.COUNT;
     const countButtonClassName = classNames({
       'btn': true,
-      'btn-default': true,
+      'btn-default': !isCount,
       'btn-primary': isCount,
       'count-calculation': true
     });
@@ -30,7 +30,7 @@ export class CalculationPanel extends Component {
     const isSum = calculationType === CalculationTypeNames.SUM;
     const sumButtonClassName = classNames({
       'btn': true,
-      'btn-default': true,
+      'btn-default': !isSum,
       'btn-primary': isSum,
       'sum-calculation': true
     });
@@ -38,7 +38,7 @@ export class CalculationPanel extends Component {
     const isRate = calculationType === CalculationTypeNames.RATE;
     const rateButtonClassName = classNames({
       'btn': true,
-      'btn-default': true,
+      'btn-default': !isRate,
       'btn-primary': isRate,
       'rate-calculation': true
     });
@@ -46,7 +46,7 @@ export class CalculationPanel extends Component {
     const isRecentValue = calculationType === CalculationTypeNames.RECENT_VALUE;
     const recentValueButtonClassName = classNames({
       'btn': true,
-      'btn-default': true,
+      'btn-default': !isRecentValue,
       'btn-primary': isRecentValue,
       'recent-calculation': true
     });

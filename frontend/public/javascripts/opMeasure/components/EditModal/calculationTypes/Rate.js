@@ -84,7 +84,6 @@ export class Rate extends Component {
     );
 
     const isValidTextFilterColumnValue = (column, term) => {
-      const datasetUid = _.get(measure, 'metric.dataSource.uid');
       const soqlDataProvider = new SoqlDataProvider({
         datasetUid: _.get(measure, 'metric.dataSource.uid'),
         domain: window.location.hostname

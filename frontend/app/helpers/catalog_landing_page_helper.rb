@@ -30,7 +30,8 @@ module CatalogLandingPageHelper
       :clp_move_description_below_featured_content,
       :default_to_catalog_landing_page,
       :enable_catalog_landing_page,
-      :stories_enabled
+      :stories_enabled,
+      :usaid_features_enabled
     )
 
     server_config = {

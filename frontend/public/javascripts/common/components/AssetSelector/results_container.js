@@ -66,7 +66,8 @@ export class ResultsContainer extends React.Component {
             this.setState({ fetchingResults: false, results: [], resultCount: 0, errorMessage: response });
           }
         }).
-        catch(() => {
+        catch(e => {
+          console.error(e);
           this.setState({ fetchingResults: false });
         });
 

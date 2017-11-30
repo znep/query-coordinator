@@ -14,6 +14,7 @@ import GeneralPanel from './GeneralPanel';
 import DataPanel from './DataPanel';
 import MethodsPanel from './MethodsPanel';
 import CalculationPanel from './CalculationPanel';
+import ReportingPeriodPanel from './ReportingPeriodPanel';
 
 // Modal for editing several aspects of the measure, grouped into tabs/panels.
 export class EditModal extends Component {
@@ -145,6 +146,11 @@ EditModal.defaultProps = {
     title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
     icon: 'puzzle',
     panelComponent: CalculationPanel
+  }, {
+    id: 'reporting-period',
+    title: I18n.t('open_performance.measure.edit_modal.reporting_period.tab_title'),
+    icon: 'date',
+    panelComponent: ReportingPeriodPanel
   }],
   onCancel: _.noop,
   onComplete: _.noop

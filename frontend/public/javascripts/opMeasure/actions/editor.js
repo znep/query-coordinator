@@ -140,6 +140,12 @@ export const setUnitLabel = (label) => ({
   label
 });
 
+export const SET_START_DATE = 'SET_START_DATE';
+export const setStartDate = (startDate) => ({
+  type: SET_START_DATE,
+  startDate
+});
+
 export const SET_METHODS = 'SET_METHODS';
 export const setMethods = (methods) => ({
   type: SET_METHODS,

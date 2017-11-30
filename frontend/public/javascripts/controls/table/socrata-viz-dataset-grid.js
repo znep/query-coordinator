@@ -78,16 +78,19 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
       });
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
-      var rowIdKey = (isNewBackend) ? 'id' : 'uuid';
+      var useSoda1Semantics = (
+        window.blist.feature_flags.force_soda1_usage_in_javascript_dataset_model ||
+        !isNewBackend
+      );
+      var rowIdentifier = (useSoda1Semantics) ? 'uuid' : 'id';
       var rowIds = rows.map(function(row) {
-        return String(_.get(row, ['metadata', rowIdKey], null));
+        return String(_.get(row, ['metadata', rowIdentifier], null));
       });
+      var columnIdentifier = (useSoda1Semantics) ? 'id' : 'fieldName';
       var transformedRows = rows.map(function(row) {
 
         return columnsSortedByPosition.map(function(column) {
-          var identifier = (isNewBackend) ? column.fieldName : column.id;
-
-          return _.get(row, ['data', identifier], null);
+          return _.get(row, ['data', column[columnIdentifier]], null);
         });
       });
 

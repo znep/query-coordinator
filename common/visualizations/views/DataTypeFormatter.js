@@ -485,9 +485,13 @@ function renderGeoCellHTML(cellContent) {
 */
 function renderWKTCellHTML(cellContent) {
 
-  return (_.isEmpty(cellContent)) ?
-    '' :
-    _.escape(wkt.stringify(cellContent));
+  if (_.isEmpty(cellContent)) {
+    return '';
+  } else if (_.isString(cellContent)) {
+    return _.escape(cellContent);
+  } else {
+    return _.escape(wkt.stringify(cellContent));
+  }
 }
 
 /**

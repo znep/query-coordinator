@@ -2768,7 +2768,9 @@
     _determineUseSODA2: function() {
       var ds = this;
 
-      if (ds.newBackend || blist.configuration.useSoda2) {
+      if (blist.feature_flags.force_soda1_usage_in_javascript_dataset_model) {
+        ds._useSODA2 = false;
+      } else if (ds.newBackend || blist.configuration.useSoda2) {
         ds._useSODA2 = true;
       } else {
         ds._useSODA2 = false;

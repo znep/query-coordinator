@@ -270,12 +270,16 @@
       };
 
       if (len && !$.isBlank(start)) {
-        // In NBE, we want to make fewer, but larger, requests for rows.
+        // In NBE + SODA2, we want to make fewer, but larger, requests for rows.
         // Current strategy is to bucket in chunks of 1000.
         //
         // This code block ignores things like "rowsLoading" because there's not an
         // apparent need for it.
-        if (rs._dataset.newBackend && false !== blist.feature_flags.nbe_bucket_size) {
+        if (
+          !blist.feature_flags.force_soda1_usage_in_javascript_dataset_model &&
+          blist.feature_flags.nbe_bucket_size !== false &&
+          rs._dataset.newBackend
+        ) {
           var bucketSize = rs._dataset.bucketSize;
           var bucket = {
             start: Math.floor(finish / bucketSize) * bucketSize,
@@ -1220,15 +1224,26 @@
       var fullLoad = options.fullLoad;
       var sortOrderForRequest = options.sortOrderForRequest;
 
-      var params = rs._dataset.newBackend ? {
-          $select: ':*,*'
-        } :
-        rs._dataset._useSODA2 ? {
-          $$exclude_system_fields: false
-        } : {
+      var params;
+
+      if (blist.feature_flags.force_soda1_usage_in_javascript_dataset_model) {
+
+        params = {
           method: 'getByIds',
           asHashes: true
         };
+      } else {
+
+        params = rs._dataset.newBackend ? {
+            $select: ':*,*'
+          } :
+          rs._dataset._useSODA2 ? {
+            $$exclude_system_fields: false
+          } : {
+            method: 'getByIds',
+            asHashes: true
+          };
+      }
 
       var start;
       if (_.isNumber(startOrIds) && _.isNumber(len)) {

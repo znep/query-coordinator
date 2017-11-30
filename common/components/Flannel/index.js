@@ -56,7 +56,7 @@ export class Flannel extends Component {
     const outsideTarget = $eventTarget.closest(this.getTarget()).length === 0;
     // If clicking the target caused it to be removed from the DOM (say, a "clear input" button),
     // we can't know for sure if it was within the Flannel. Safest bet is to do nothing.
-    const isRooted = event.target && document.contains(event.target);
+    const isRooted = event.target && document.body.contains(event.target);
 
     if (outsideFlannel && outsideTarget && isRooted) {
       this.props.onDismiss(event);
@@ -108,6 +108,16 @@ export class Flannel extends Component {
     }
   }
 
+  // Certain header elements are position:fixed and have a z-index sufficient to overlay the flannel.
+  // We want to avoid those.
+  getMinTopPosition() {
+    // We assume these stack vertically.
+    return _.sumBy(
+      document.querySelectorAll('#site-chrome-admin-header, nav.edit-bar'),
+      (element) => $(element).height()
+    );
+  }
+
   positionSelf() {
     let position = {};
     const mobileWidthBreakpoint = 420;
@@ -132,6 +142,7 @@ export class Flannel extends Component {
 
         let left = targetRect.left;
         let top = targetRect.top + targetElement.offsetHeight + 10;
+        top = Math.max(top, this.getMinTopPosition());
 
         const exceedsBodyWidth = left + flannelRect.width > bodyWidth;
         const exceedsBodyHeight = top + flannelRect.height > bodyHeight;

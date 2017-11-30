@@ -42,42 +42,40 @@
   <%= include_webpack_bundle 'component_example_pages/main.js' %>
 
   <script type="text/javascript" id="example-1">
-    $(() => {
-      let targetBtn;
+    $(function() {
+      var targetBtn;
 
-      const {
-        Flannel,
-        FlannelHeader,
-        FlannelContent,
-        FlannelFooter,
-        SocrataIcon
-      } = components;
+      var Flannel = components.Flannel;
+      var FlannelHeader = components.FlannelHeader;
+      var FlannelContent = components.FlannelContent;
+      var FlannelFooter = components.FlannelFooter;
+      var SocrataIcon = components.SocrataIcon;
 
-      const title = 'Access this Dataset via SODA API';
+      var title = 'Access this Dataset via SODA API';
 
-      const openHereButtonProps = {
+      var openHereButtonProps = {
        className: "btn btn-primary",
-       ref: (ref) => targetBtn = ref,
+       ref: function(ref) { targetBtn = ref },
        onClick: renderFlannel,
        'aria-haspopup': true,
        'aria-owns': 'flannel-example'
       };
 
-      const moveTargetButtonProps = {
+      var moveTargetButtonProps = {
        className: "btn",
        onClick: moveTarget
       };
 
-      const props = {
+      var props = {
         id: 'flannel-example',
-        title,
-        target: () => targetBtn,
+        title: title,
+        target: function() { return targetBtn },
         isOpen: false,
         onDismiss: maybeCloseFlannel
       };
 
-      const headerProps = {
-        title,
+      var headerProps = {
+        title: title,
         onDismiss: maybeCloseFlannel
       };
 

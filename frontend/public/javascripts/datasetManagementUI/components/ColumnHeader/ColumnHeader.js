@@ -7,6 +7,9 @@ import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
+import * as ModalActions from 'reduxStuff/actions/modal';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
+import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 import { Dropdown } from 'common/components';
 import styles from './ColumnHeader.scss';
 
@@ -33,10 +36,37 @@ DropdownWithIcon.proptypes = {
   title: PropTypes.string.isRequired
 };
 
+function RedirectError() {
+  this.name = 'RedirectError';
+  this.message = I18n.show_output_schema.redirect_error;
+}
+
+RedirectError.prototype = new Error();
+
+const redirectToNewOutputschema = (dispatch, params) => resp => {
+  if (resp && resp.resource) {
+    dispatch(ShowActions.redirectToOutputSchema(params, resp.resource.id));
+  } else {
+    throw new RedirectError();
+  }
+};
+
 export class ColumnHeader extends Component {
+  constructor(props) {
+    super(props);
+
+    this.dropColumn = this.dropColumn.bind(this);
+    this.validateThenSetRowIdentifier = this.validateThenSetRowIdentifier.bind(this);
+    this.unSetRowIdentifier = this.unSetRowIdentifier.bind(this);
+    this.moveLeft = this.moveLeft.bind(this);
+    this.moveRight = this.moveRight.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
+    this.updateColumnType = this.updateColumnType.bind(this);
+  }
+
   shouldComponentUpdate(nextProps) {
     return (
-      !_.isEqual(nextProps.outputColumn, this.props.outputColumn) ||
+      nextProps.outputColumn.transform.finished_at !== this.props.outputColumn.transform.finished_at ||
       nextProps.outputSchema.id !== this.props.outputSchema.id ||
       nextProps.isDropping !== this.props.isDropping ||
       nextProps.activeApiCallInvolvingThis !== this.props.activeApiCallInvolvingThis
@@ -50,7 +80,7 @@ export class ColumnHeader extends Component {
       return;
     }
 
-    this.props.dropColumn();
+    this.dropColumn();
   }
 
   onRowId() {
@@ -59,36 +89,36 @@ export class ColumnHeader extends Component {
       return;
     }
 
-    this.props.validateThenSetRowIdentifier();
+    this.validateThenSetRowIdentifier();
   }
 
   onUnsetRowId() {
     // guard against disabled but not actually click handler
     if (this.isUnsetRowIdDisabled()) return;
-    this.props.unSetRowIdentifier();
+    this.unSetRowIdentifier();
   }
 
   onMoveLeft() {
     if (this.isMoveLeftDisabled()) return;
-    this.props.moveLeft();
+    this.moveLeft();
   }
 
   onMoveRight() {
     if (this.isMoveRightDisabled()) {
       return;
     }
-    this.props.moveRight();
+    this.moveRight();
   }
 
   onFormatColumn() {
     if (this.isFormatDisabled()) {
       return;
     }
-    this.props.formatColumn();
+    this.formatColumn();
   }
 
   isDropColumnDisabled() {
-    return this.isInProgress() || this.props.outputColumn.is_primary_key;
+    return this.props.outputColumn.is_primary_key;
   }
 
   isRowIdDisabled() {
@@ -100,15 +130,95 @@ export class ColumnHeader extends Component {
   }
 
   isMoveLeftDisabled() {
-    return this.isInProgress() || this.props.outputColumn.position <= 1;
+    return this.props.outputColumn.position <= 1;
   }
 
   isMoveRightDisabled() {
-    return this.isInProgress() || this.props.outputColumn.position >= this.props.columnCount;
+    return this.props.outputColumn.position >= this.props.columnCount;
   }
 
   isFormatDisabled() {
-    return this.isInProgress();
+    return false;
+  }
+
+  dropColumn() {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    this.props.setDropping();
+    return dispatch(ShowActions.dropColumn(outputSchema, outputColumn))
+      .then(redirectToNewOutputschema(dispatch, params))
+      .then(this.props.resetDropping)
+      .catch(e => {
+        if (e.name === 'RedirectError') {
+          dispatch(FlashActions.showFlashMessage('error', e.message));
+        } else {
+          dispatch(
+            FlashActions.showFlashMessage('error', I18n.show_output_schema.fatal_error.unknown_error)
+          );
+        }
+      });
+  }
+
+  updateColumnType(newType) {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    return dispatch(
+      ShowActions.updateColumnType(outputSchema, outputColumn, newType)
+    ).then(
+      redirectToNewOutputschema(dispatch, params)
+    );
+  }
+
+  validateThenSetRowIdentifier() {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    return dispatch(
+      ShowActions.validateThenSetRowIdentifier(outputSchema, outputColumn)
+    ).then(
+      redirectToNewOutputschema(dispatch, params)
+    );
+  }
+
+  unSetRowIdentifier() {
+    const { dispatch, params, outputSchema } = this.props;
+
+    return dispatch(
+      ShowActions.unsetRowIdentifier(outputSchema)
+    ).then(
+      redirectToNewOutputschema(dispatch, params)
+    );
+  }
+
+  moveLeft() {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    return dispatch(
+      ShowActions.moveColumnToPosition(outputSchema, outputColumn, outputColumn.position - 1)
+    ).then(
+      redirectToNewOutputschema(dispatch, params)
+    );
+  }
+
+  moveRight() {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    return dispatch(
+      ShowActions.moveColumnToPosition(outputSchema, outputColumn, outputColumn.position + 1)
+    ).then(
+      redirectToNewOutputschema(dispatch, params)
+    );
+  }
+
+  formatColumn() {
+    const { dispatch, params, outputSchema, outputColumn } = this.props;
+
+    return dispatch(
+      ModalActions.showModal('FormatColumn', {
+        outputSchema,
+        outputColumn,
+        params
+      })
+    );
   }
 
   isInProgress() {
@@ -181,7 +291,6 @@ export class ColumnHeader extends Component {
     const {
       outputSchema,
       outputColumn,
-      updateColumnType,
       activeApiCallInvolvingThis,
       params,
       canTransform,
@@ -270,7 +379,7 @@ export class ColumnHeader extends Component {
           disabled={isSelectorDisabled}
           value={this.columnType()}
           aria-label={`col-type-${outputColumn.field_name}`}
-          onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, params)}>
+          onChange={event => this.updateColumnType(event.target.value)}>
           {orderedTypes.map(type => (
             <option key={type.systemName} value={type.systemName}>
               {type.humanName}
@@ -284,19 +393,13 @@ export class ColumnHeader extends Component {
 
 ColumnHeader.propTypes = {
   isDropping: PropTypes.bool,
+  dispatch: PropTypes.func,
   setDropping: PropTypes.func,
   resetDropping: PropTypes.func,
   outputSchema: PropTypes.object.isRequired,
   outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
   canTransform: PropTypes.bool.isRequired,
-  updateColumnType: PropTypes.func.isRequired,
-  dropColumn: PropTypes.func.isRequired,
-  validateThenSetRowIdentifier: PropTypes.func.isRequired,
-  unSetRowIdentifier: PropTypes.func.isRequired,
-  moveLeft: PropTypes.func.isRequired,
-  moveRight: PropTypes.func.isRequired,
-  formatColumn: PropTypes.func.isRequired,
   columnCount: PropTypes.number.isRequired,
   params: PropTypes.object.isRequired
 };

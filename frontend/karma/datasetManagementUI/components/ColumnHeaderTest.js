@@ -51,29 +51,6 @@ describe('components/ColumnHeader', () => {
     assert.isTrue(component.exists());
   });
 
-  it('handles column type changing', () => {
-    const spy = sinon.spy();
-
-    const props = {
-      ...defaultProps,
-      updateColumnType: spy,
-      addColumn: _.noop,
-      dropColumn: _.noop
-    };
-
-    const component = shallow(<ColumnHeader {...props} />);
-
-    const select = component.find('select').first();
-
-    select.simulate('change', { target: { value: 'number' } });
-
-    assert.deepEqual(spy.args[0], [
-      defaultProps.outputSchema,
-      defaultProps.outputColumn,
-      'number',
-      defaultProps.params
-    ]);
-  });
 
   it('renders an Ignore Column button when not ignored', () => {
     const props = {
@@ -92,42 +69,6 @@ describe('components/ColumnHeader', () => {
     assert.equal(dropdown.find('.socrata-icon-add').length, 0);
   });
 
-  // testing fix for EN-12896
-  it('handles column type changing after output schema changes', () => {
-    const spy = sinon.spy();
-
-    const props = {
-      ...defaultProps,
-      updateColumnType: spy,
-      addColumn: _.noop,
-      dropColumn: _.noop
-    };
-
-    const newProps = {
-      outputSchema: {
-        id: 53
-      },
-      params: {
-        ...testParams,
-        outputSchemaId: '53'
-      }
-    };
-
-    const component = shallow(<ColumnHeader {...props} />);
-
-    component.setProps(newProps);
-
-    const select = component.find('select').first();
-
-    select.simulate('change', { target: { value: 'number' } });
-
-    assert.deepEqual(spy.args[0], [
-      newProps.outputSchema,
-      defaultProps.outputColumn,
-      'number',
-      newProps.params
-    ]);
-  });
 
   describe('type list', () => {
     it('renders correct list of types for a text input column', () => {

@@ -10,6 +10,7 @@ import { EDIT_INPUT_COLUMN } from 'reduxStuff/actions/inputColumns';
 import { UPDATE_PROGRESS } from 'reduxStuff/actions/uploadFile';
 import { SOURCE_UPDATE } from 'reduxStuff/actions/createSource';
 import { EDIT_REVISION, SET_REVISION_VALUE } from 'reduxStuff/actions/revisions';
+import withBatching from './batching';
 
 const views = (state = {}, action) => {
   switch (action.type) {
@@ -144,6 +145,7 @@ const transforms = (state = {}, action) => {
   }
 };
 
+
 const taskSets = (state = {}, action) => {
   switch (action.type) {
     case ADD_TASK_SET:
@@ -172,7 +174,7 @@ export default combineReducers({
   output_schemas: outputSchemas,
   output_columns: outputColumns,
   output_schema_columns: outputSchemaColumns,
-  transforms: transforms,
+  transforms: withBatching(transforms),
   task_sets: taskSets,
   email_interests: emailInterests,
   row_errors: rowErrors,

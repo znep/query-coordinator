@@ -6,3 +6,4 @@ export function editTransform(id, payload) {
     payload
   };
 }
+

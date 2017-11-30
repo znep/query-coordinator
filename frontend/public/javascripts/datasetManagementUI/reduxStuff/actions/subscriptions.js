@@ -4,9 +4,10 @@ import { editTransform } from 'reduxStuff/actions/transforms';
 import { editInputSchema } from 'reduxStuff/actions/inputSchemas';
 import { editInputColumn } from 'reduxStuff/actions/inputColumns';
 import { editRevision } from 'reduxStuff/actions/revisions';
+import { batchActions } from 'reduxStuff/actions/batching';
 import { parseDate } from 'lib/parseDate';
 
-const PROGRESS_THROTTLE_TIME = 250;
+const PROGRESS_THROTTLE_TIME = 1000;
 
 export function subscribeToAllTheThings(is) {
   return dispatch => {
@@ -107,42 +108,41 @@ export function subscribeToTotalRows(is) {
 // max_ptr channel will give us a more detailed picture of that process, which
 // allows us to create the progress bar.
 export function subscribeToTransforms(os) {
+
+
   return (dispatch, getState, socket) => {
+
+    var batchedActions = [];
+    const flushTransformUpdates = _.throttle(() => {
+      dispatch(batchActions(batchedActions));
+      batchedActions = [];
+    }, PROGRESS_THROTTLE_TIME);
+
+    const onTransformAction = (action) => {
+      batchedActions.push(action);
+      flushTransformUpdates();
+    };
+
+
     os.output_columns.forEach(oc => {
       // we only want to subscribe to transforms that are NOT completed since,
       // if completed, we don't need to know about their progress. This check
       // is the reason this will be more efficient than what we are curently doing
       if (!oc.transform.finished_at) {
+        const transform = oc.transform;
         const channel = socket.channel(`transform:${oc.transform.id}`);
 
-        const maxPtrHandler = ({ end_row_offset }) =>
-          dispatch(
-            editTransform(oc.transform.id, {
-              contiguous_rows_processed: end_row_offset
-            })
-          );
+        channel.on('update', ({ finished_at }) => onTransformAction(
+          editTransform(oc.transform.id, { finished_at })
+        ));
 
-        const updateHandler = ({ finished_at }) =>
-          dispatch(
-            editTransform(oc.transform.id, {
-              finished_at
-            })
-          );
+        channel.on('max_ptr', ({ end_row_offset }) => onTransformAction(
+          editTransform(transform.id, { contiguous_rows_processed: end_row_offset })
+        ));
 
-        const transformErrorHandler = ({ count }) =>
-          dispatch(
-            editTransform(oc.transform.id, {
-              error_count: count
-            })
-          );
-
-        channel.on('update', updateHandler);
-
-        // DSMAPI sends these messages too fast for the frontend, which causes
-        // too many rerenders and makes UI laggy, so gotta throttle
-        channel.on('max_ptr', _.throttle(maxPtrHandler, PROGRESS_THROTTLE_TIME));
-
-        channel.on('errors', _.throttle(transformErrorHandler, PROGRESS_THROTTLE_TIME));
+        channel.on('errors', ({ count }) => onTransformAction(
+          editTransform(oc.transform.id, { error_count: count })
+        ));
 
         channel.join();
       }

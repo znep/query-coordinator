@@ -276,6 +276,32 @@
     }
   }
 
+  #reporting-period-panel {
+    .reporting-period-start {
+      $spacer: 13px;
+
+      position: relative;
+      margin-top: 1em;
+
+      .date-picker-input {
+        height: 40px;
+        max-width: 145px;
+        padding-left: 20px + $spacer;
+        padding-right: $spacer;
+      }
+
+      .socrata-icon {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: $spacer;
+        left: $spacer;
+        z-index: 1;
+      }
+    }
+
+  }
+
   .socrata-accordion-pane {
     border: 1px solid $light-grey-4;
   }

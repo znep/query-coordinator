@@ -32,7 +32,8 @@ module CatalogLandingPageHelper
       :default_to_catalog_landing_page,
       :enable_catalog_landing_page,
       :enable_markdown_for_catalog_landing_page_description,
-      :stories_enabled
+      :stories_enabled,
+      :usaid_features_enabled
     )
 
     server_config = {

@@ -186,14 +186,14 @@
                                 t('controls.browse.actions.create_dataset_verb') %>
                           <span class="icon"></span>
                         </a>
-                      <%- elsif FeatureFlags.derive(nil, request).enable_dataset_management_ui && current_user_can_see_dsmp_preview? -%>
+                      <%- elsif FeatureFlags.derive(nil, request).enable_dataset_management_ui || current_user_can_see_dsmp_preview? -%>
                         <a id="create-tabular-beta"
                             class="button createTabular secondary-button next"
                             href="<%= new_dataset_path(beta: true) %>"
-                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                            title="<%= t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") %>">
                           <%= opts[:browse_in_container] ?
-                                t('controls.browse.actions.create_tabular_beta_short') :
-                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") :
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_verb") %>
                           <span class="icon"></span>
                         </a>
                       <%- end -%>
@@ -327,14 +327,14 @@
                         </a>
                         <%- end -%>
 
-                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui && current_user_can_see_dsmp_preview? -%>
+                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui || current_user_can_see_dsmp_preview? -%>
                         <a id="create-tabular-beta-footer"
                             class="button createTabular secondary-button next"
                             href="<%= new_dataset_path(beta: true) %>"
-                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                            title="<%= t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") %>">
                           <%= opts[:browse_in_container] ?
-                                t('controls.browse.actions.create_tabular_beta_short') :
-                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") :
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_verb") %>
                           <span class="icon"></span>
                         </a>
                         <%- end -%>
@@ -397,14 +397,14 @@
                         </a>
                         <%- end -%>
 
-                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui && current_user_can_see_dsmp_preview? -%>
+                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui || current_user_can_see_dsmp_preview? -%>
                         <a id="create-tabular-beta"
                             class="button createTabular secondary-button next"
                             href="<%= new_dataset_path(beta: true) %>"
-                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                            title="<%= t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") %>">
                           <%= opts[:browse_in_container] ?
-                                t('controls.browse.actions.create_tabular_beta_short') :
-                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_short") :
+                                t("controls.browse.actions.create_dataset_#{current_user_can_see_dsmp_preview? ? 'preview' : 'beta'}_verb") %>
                           <span class="icon"></span>
                         </a>
                         <%- end -%>

@@ -1041,7 +1041,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_dsmp_preview?
-    Signaller.for(flag: "dsmp_preview").value(on_domain: request.host) rescue nil
+    FeatureFlags.derive(nil, request)[:dsmp_preview] || false
   end
 
   def current_user_can_create_measure?

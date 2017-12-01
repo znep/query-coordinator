@@ -3533,6 +3533,60 @@ en:
           draft_published: Draft Published
           asset_permissions_changed_visibility_public: Asset Permissions Changed Visibility Public
           asset_permissions_changed_visibility_private: private
+        filters:
+          asset_types:
+            label: Asset Types
+            options:
+              all: All
+              calendars: Calendars
+              charts: Charts
+              datasets: Datasets
+              "datalenses,visualizations": Data Lens Pages
+              external: External Datasets
+              files: Files and Documents
+              filtered: Filtered Views
+              forms: Forms
+              maps: Maps
+              stories: Stories
+              working_copies: Working Copies
+          clear: Clear
+          data_range:
+            label: Date
+          desktop:
+            expand: Expand Filters
+            contract: Contract Filters
+            hide: Hide
+          events:
+            label: Event
+            options:
+              all: All
+              approval_changed: Approval Changed
+              asset_created: Asset Created
+              asset_deleted: Asset Deleted
+              asset_metadata_changed: Asset Metadata Changed
+              asset_owner_changed: Asset Owner Changed
+              asset_permissions_changed: Asset Permissions Changed
+              collabrator_added: Collabrator Added
+              collabrator_removed: Collabrator Removed
+              data_update_started: Data Update Started
+              data_update_in_progress: Data Update In Progress
+              data_update_success: Data Update Success
+              data_update_success_with_data_errors: Data Update Success With Data Errors
+              data_update_failure: Data Update Failure
+              draft_created: Draft Created
+              draft_deleted: Draft Deleted
+              draft_published: Draft Published
+              user_added: User Added
+              user_removed: User Removed
+              user_role_changed: User Role Changed
+          header:
+            title:
+              clear_filters_only: Filters
+              clear_filter_and_search: Clear All
+        mobile:
+          done: Done
+          filters: Filters
+          reset_filters: Reset Filters
         no_results: No results
         result_count:
           one: "%{first}-%{last} of 1 result"

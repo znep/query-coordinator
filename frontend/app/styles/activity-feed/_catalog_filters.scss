@@ -15,7 +15,7 @@ $dark-grey-1: #5e5e5e;
   border-left: 1px solid $light-grey-3;
   flex: none;
   margin-left: auto;
-  z-index: 2; // styleguide table can spill on top of this in small window sizes
+  z-index: auto;
 
   .filter-content-toggle {
     cursor: pointer;
@@ -114,12 +114,13 @@ $dark-grey-1: #5e5e5e;
 
         .dropdown-placeholder {
           &.dropdown-selected {
-            &:not(.default) {
-              span:not(.socrata-icon) {
-                color: $primary-text;
-              }
+            &:not(.default) span:not(.socrata-icon) {
+              color: $dark-grey-1;
             }
 
+            .placeholder {
+              color: $dark-grey-1;
+            }
             .socrata-icon {
               color: $dark-grey-1;
             }
@@ -195,6 +196,28 @@ $dark-grey-1: #5e5e5e;
           }
         }
       }
+
+      .date-range-picker {
+        padding-left: 0;
+        padding-right: 0;
+
+        .socrata-icon-date {
+          top: 13px;
+          left: 8px;
+          width: 13px;
+          height: 13px;
+        }
+
+        .text-input {
+          font-size: 13px;
+          max-width: 105px;
+          padding-left: 24px;
+        }
+
+        .range-separator {
+          line-height: 2.5;
+        }
+      }
     }
   }
 }
@@ -208,6 +231,16 @@ $dark-grey-1: #5e5e5e;
 
   .filter-content {
     width: 100%;
+    font-size: 15px;
+    height: 100vh;
+
+    .date-range-picker {
+      display: flex;
+
+      .text-input {
+        max-width: 150px;
+      }
+    }
   }
 
   .filter-content .filter-section .dropdown-container .dropdown-placeholder {

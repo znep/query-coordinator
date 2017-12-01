@@ -45,14 +45,10 @@ class Tabs extends PureComponent {
   }
 
   render() {
-    const { isMobile } = this.props;
-    const headerClassnames = classNames('header', { 'mobile': isMobile });
 
     return (
-      <div className={headerClassnames}>
-        <div className="asset-tabs">
-          {['all', 'failure', 'deleted'].map(this.renderTabByKey)}
-        </div>
+      <div className="asset-tabs">
+        {['all', 'failure', 'deleted'].map(this.renderTabByKey)}
       </div>
     );
   }

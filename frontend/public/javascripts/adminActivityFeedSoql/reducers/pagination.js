@@ -7,7 +7,7 @@ const initialState = {
   rowCount: 0
 };
 
-export default function table(state, action) {
+export default function pagination(state, action) {
   if (typeof state === 'undefined') {
     return initialState;
   }

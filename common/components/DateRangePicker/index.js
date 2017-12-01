@@ -40,7 +40,7 @@ export class DateRangePicker extends Component {
   }
 
   renderDatePickerStart(startDate, endDate) {
-    const props = {
+    const props = Object.assign({
       fixedHeight: true,
       className: 'text-input date-picker-input start',
       selected: startDate,
@@ -49,7 +49,7 @@ export class DateRangePicker extends Component {
       startDate,
       endDate,
       onChange: this.onChangeStartDate
-    };
+    }, this.props.datePickerOverrides);
 
     return (
       <div className="date-range-picker-start">
@@ -60,7 +60,7 @@ export class DateRangePicker extends Component {
   }
 
   renderDatePickerEnd(startDate, endDate) {
-    const props = {
+    const props = Object.assign({
       fixedHeight: true,
       className: 'text-input date-picker-input end',
       selected: endDate,
@@ -69,7 +69,7 @@ export class DateRangePicker extends Component {
       startDate,
       endDate,
       onChange: this.onChangeEndDate
-    };
+    }, this.props.datePickerOverrides);
 
     return (
       <div className="date-range-picker-end">
@@ -94,6 +94,10 @@ export class DateRangePicker extends Component {
   }
 }
 
+DateRangePicker.defaultProps = {
+  datePickerOverrides: {}
+};
+
 DateRangePicker.propTypes = {
   /**
   * Contains two values:
@@ -108,7 +112,12 @@ DateRangePicker.propTypes = {
   /**
   * The onChange handler is fired when a date is selected in the calendar
   */
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+
+  /**
+   * Prop overriders for react-datepicker
+   */
+  datePickerOverrides: PropTypes.object
 };
 
 export default DateRangePicker;

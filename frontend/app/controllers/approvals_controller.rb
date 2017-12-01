@@ -24,7 +24,12 @@ class ApprovalsController < AdministrationController
   end
 
   def settings
-    @approvers = User.find_with_right('configure_approvals')
+    @approvers = User.find_with_right(UserRights::CONFIGURE_APPROVALS).map do |why_do_we_hate_ourselves|
+      User.find(why_do_we_hate_ourselves.id)
+    end
+    @approvers.concat(User.find_with_right(UserRights::REVIEW_APPROVALS).map do |why_do_we_hate_ourselves|
+      User.find(why_do_we_hate_ourselves.id)
+    end).uniq!(&:id).sort_by(&:displayName)
   end
 
   private

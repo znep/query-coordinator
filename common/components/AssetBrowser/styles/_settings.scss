@@ -1,16 +1,13 @@
-.asset-browser .settings {
-  display: flex;
-  justify-content: center;
+.approvals_settings {
 
-  font-size: 90%;
-
-  .settingsContainer {
-    margin-left: 4rem;
-    max-width: 84em;
+  section {
+    width: 30%;
+    margin: 0 auto;
+    font-size: 80%;
   }
 
-  .section-title {
-    font-weight: bold;
+  p {
+    margin: 0 0 1rem 0;
   }
 
   .introduction {
@@ -21,114 +18,93 @@
     }
   }
 
-  p:first-of-type {
-    margin-top: 10px;
-  }
-
   .actions {
     display: flex;
     justify-content: flex-end;
-    border-top: solid 0.5px $light-grey-2;
-    margin-top: 3em;
-    margin-bottom: 2em;
-    padding-top: 1em;
+    margin: 3rem 1rem 2rem 0;
+    padding-top: 1rem;
 
     button {
-      margin-left: 0.8em;
+      margin-left: 0.8rem;
     }
   }
 
-  .automatically-approve {
-    display: flex;
+  .settings_group {
+    margin: 0rem 0 2rem 0;
 
-    margin-top: 2em;
+    .socrata-icon-official2,
+    .socrata-icon-community {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      margin-right: 0.3em;
+      float: right;
+      font-size: 200%;
+      top: 0;
+    }
 
-    .approval-configuration {
-      width: 50%;
+    .socrata-icon-official2 {
+      color: $alternate-1;
+    }
+    .socrata-icon-community {
+      color: $primary-base;
+    }
 
-      .configuration-title {
-        font-weight: bold;
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style-type: none;
+      display: flex;
+      margin-top: 0.25rem;
+      background-color: #eee;
+      padding: 0.33rem;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+
+      &.selected {
+        background-color: #E7F3FC;
+        border: 1px solid #A5D4F2;
       }
 
-      .socrata-icon {
+      input {
         position: relative;
-        top: -4px;
-        width: 20px;
-        height: 20px;
-        margin-right: 0.3em;
+        top: 3px;
+
+        &.embiggen {
+          font-size: 200%;
+          top: 12px;
+        }
       }
 
-      .socrata-icon-official2 {
-        color: $alternate-1;
-      }
-      .socrata-icon-community {
-        color: $primary-base;
-      }
+      label.radio_label {
+        display: inline-block;
+        margin-left: 0.5em;
 
-      ul {
-        margin: 0;
-        padding-left: 23px;
-      }
-
-      li {
-        list-style-type: none;
-        display: flex;
-        margin-top: 0.8em;
-
-        label.radioLabel {
-          display: inline-block;
-          margin-left: 0.5em;
-
-          div {
-            font-size: 80%;
-          }
+        div {
+          font-size: 80%;
         }
       }
     }
-  }
 
-  .checkboxWrapper {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 1.5em;
-    margin-left: 6em;
+    .subtext {
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
 
-    > label {
-      margin-left: 0.5em;
+    .learn_more {
+      margin-top: 1rem;
+    }
+
+    .email_address {
+      color: #aaa;
     }
   }
 
-  .approver-configuration {
-    margin-top: 3em;
-    margin-left: 23px;
-    width: 52em;
-
-    p {
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-
-    .user-setting {
-      display: flex;
-
-      &:hover {
-        background-color: $header-link-hover-color;
-      }
-
-      width: 45em;
-      margin: 0 auto;
-
-      label.name {
-        flex: 2 1 auto;
-      }
-
-      div {
-        margin: 0 0.4em;
-      }
-
-      label.helper {
-        white-space: nowrap;
-      }
-    }
+  .checkbox_label {
+    margin-left: 0.5em;
   }
+
 }

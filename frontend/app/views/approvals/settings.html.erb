@@ -1,5 +1,5 @@
 <%= content_for :head do %>
-  <title><%= I18n.t('approvals.title') %> | <%= get_site_title %></title>
+  <title><%= I18n.t('approvals.settings.title') %> | <%= get_site_title %></title>
 <%- end %>
 
 <% content_for :breadcrumb do %>
@@ -16,100 +16,120 @@
     </button>
   </div>
 
-  <div class="introduction">
-    <p class="first_paragraph">
-      Set the approval process for how assets get published on this site. You can set all assets to be approved or rejected automatically, or require manual approval.
-    </p>
-    <p class="second_paragraph">Only approved assets display on your site's Data Catalog.</p>
-  </div>
-
-  <form action="/admin/approvals/settings" method="PUT">
-    <div class="official_assets">
-      <div class="configuration_title">
-        <h4>
-          Official asset settings
-          <span class="socrata-icon-official2" />
-        </h4>
-        <p>Assets published by roled users (publishers, designers, etc.)...</p>
-      </div>
-      <div class="configuration_options">
-        <ul>
-          <li>
-            <input type="radio" name="official_approval_strategy" value="automatically" id="official_automatic" />
-            <label for="official_automatic">Is automatically approved and appears in the data catalog</label>
-          </li>
-          <li>
-            <input type="radio" name="official_approval_strategy" value="manually" id="official_manual" />
-            <label for="official_manual">Requires manual pproval to appear in the data catalog</label>
-          </li>
-        </ul>
-      </div>
+  <section>
+    <div class="introduction">
+      <p class="first_paragraph">
+        Set the approval process for how assets get published on this site. You can set all assets to be approved or rejected automatically, or require manual approval.
+      </p>
+      <p class="second_paragraph">Only approved assets display on your site's Data Catalog.</p>
     </div>
 
-    <div class="community_assets">
-      <div class="configuration_title">
-        <h4>
-          Community asset settings
-          <span class="socrata-icon-community" />
-        </h4>
-        <p>Content pbulished on this site by the public...</p>
-      </div>
-      <div class="configuration_options">
-        <ul>
-          <li>
-            <input type="radio" name="community_approval_strategy" value="automatically" id="approve_automatically" />
-            <label for="approve_automatically">Is automatically approved and appears in the data catalog</label>
-          </li>
-          <li>
-            <input type="radio" name="community_approval_strategy" value="manually" id="approve_manually" />
-            <label for="approve_manually">Requires manual approval to appear in the data catalog</label>
-          </li>
-          <li>
-            <input type="radio" name="community_approval_strategy" value="rejected" id="reject_automatically" />
-            <label for="reject_automatically">Is automatically rejected and does not appear in the data catalog</label>
-          </li>
-        </ul>
+    <form action="/admin/approvals/settings" method="PUT">
 
-        <div class="learn_more">
-          <span class="socrata-icon-question" />
-          <a href="/learn_more_community_cntent">
-            Learn more about Community content
-          </a>
+      <div class="official_assets settings_group">
+        <div class="configuration_title">
+          <h6>
+            Official asset settings
+            <span class="socrata-icon-official2" />
+          </h6>
+          <p>Assets published by roled users (publishers, designers, etc.)...</p>
+        </div>
+        <div class="configuration_options">
+          <ul>
+            <li>
+              <input type="radio" name="official_approval_strategy" value="automatically" id="official_automatic" />
+              <label class="radio_label" for="official_automatic">Is automatically approved and appears in the data catalog</label>
+            </li>
+            <li>
+              <input type="radio" name="official_approval_strategy" value="manually" id="official_manual" />
+              <label class="radio_label" for="official_manual">Requires manual approval to appear in the data catalog</label>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <div class="configuration_title">
-        <h4>
-          Re-approval
-        </h4>
-        <p>Content pbulished on this site by the public...</p>
+      <div class="community_assets settings_group">
+        <div class="configuration_title">
+          <h6>
+            Community asset settings
+            <span class="socrata-icon-community" />
+          </h6>
+          <p>Content published on this site by the public...</p>
+        </div>
+        <div class="configuration_options">
+          <ul>
+            <li>
+              <input type="radio" name="community_approval_strategy" value="automatically" id="approve_automatically" />
+              <label class="radio_label" for="approve_automatically">Is automatically approved and appears in the data catalog</label>
+            </li>
+            <li>
+              <input type="radio" name="community_approval_strategy" value="manually" id="approve_manually" />
+              <label class="radio_label" for="approve_manually">Requires manual approval to appear in the data catalog</label>
+            </li>
+            <li>
+              <input type="radio" name="community_approval_strategy" value="rejected" id="reject_automatically" />
+              <label class="radio_label" for="reject_automatically">Is automatically rejected and does not appear in the data catalog</label>
+            </li>
+          </ul>
+
+          <div class="learn_more">
+            <span class="socrata-icon-question" />
+            <a href="/learn_more_community_cntent">
+              Learn more about Community content
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="configuration_options">
-        <ul>
-          <li>
-            <input type="checkbox" name="reapproval_strategy" value="manual" id="reapproval_strategy" />
-            <label for="reapproval_strategy">Working copies of approved assets require re-approval to appear in the data catalog</label>
-          </li>
-        </ul>
+
+      <div class="settings_group">
+        <div class="configuration_title">
+          <h6>
+            Re-approval
+          </h6>
+        </div>
+        <div class="configuration_options">
+          <ul>
+            <li>
+              <input class="embiggen" type="checkbox" name="reapproval_strategy" value="manual" id="reapproval_strategy" />
+              <label class="checkbox_label" for="reapproval_strategy">Working copies of approved assets require re-approval to appear in the data catalog</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </form>
+
+    <div class="settings_group">
+      <div class="configuration_title">
+        <h6>
+          Approvers
+        </h6>
+      </div>
+      <div class="approver_list">
+        <div class="subtext">The following people on this site can approve assets:</div>
+        <% @approvers.each do |approver| %>
+          <div>
+            <span class="full_name"><%= approver.displayName %></span>
+            <span class="email_address"><%= approver.email %></span>
+          </div>
+        <% end %>
       </div>
     </div>
-  </form>
 
-
-  <div class="configuration_title">
-    <h4>
-      Re-approval
-    </h4>
-  </div>
-  <div class="approver_list">
-    <div>The following people on this site can approve assets:</div>
-    <% @approvers.each do |approver| %>
-      <span class="full_name"><%= approver.full_name %></span>
-      <span class="email_address"><%= approver.email %></span>
-    <% end %>
-  </div>
-
-  <div>
-    <a href="/admin/users">Go to User Settings</a>
-  </div>
+    <div>
+      <a href="/admin/users">Go to User Settings</a>
+    </div>
+  </section>
 </div>
+
+<% content_for :scripts do %>
+<script>
+  $(document).ready(function() {
+    $('.approvals_settings input').on('change', function(event) {
+      $('.approvals_settings li').removeClass('selected');
+      if (event.target.checked) {
+        $(event.target).parent('li').addClass('selected');
+      }
+    });
+  });
+</script>
+<% end %>

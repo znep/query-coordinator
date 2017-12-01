@@ -432,6 +432,7 @@ en:
       breadcrumbs:
         approvals: Approvals
     settings:
+      title: Settings
       introduction:
         header: About Approvals and Approval Requests
         paragraph_1: The Approval feature is part of the publishing process and allows site Administrators to create a multi-stage process for dataset publishing review and approval.

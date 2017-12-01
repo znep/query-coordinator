@@ -166,7 +166,6 @@ const mapStateStateToProps = ({ entities, ui }, { params }) => {
 
   return {
     hrefs: hrefs.map(namespaceURLs).map((href, idx) => addHrefIds(href, idx + 1)),
-    shouldSave: ui.forms.hrefForm.shouldSave,
     shouldExit: ui.forms.hrefForm.shouldExit,
     schemaExists: !!revision.output_schema_id,
     blobExists: !!revision.blob_id,
@@ -178,11 +177,9 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   hrefs: stateProps.hrefs,
   schemaExists: stateProps.schemaExists,
   blobExists: stateProps.blobExists,
-  shouldSave: stateProps.shouldSave,
   shouldExit: stateProps.shouldExit,
   markFormDirty: () => dispatch(FormActions.markFormDirty('hrefForm')),
   markFormClean: () => dispatch(FormActions.markFormClean('hrefForm')),
-  toggleShouldSaveOff: () => dispatch(FormActions.setShouldFormSave('hrefForm', false)),
   setFormErrors: errors => dispatch(FormActions.setFormErrors('hrefForm', errors)),
   showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
   clearFlash: () => dispatch(FlashActions.hideFlashMessage()),

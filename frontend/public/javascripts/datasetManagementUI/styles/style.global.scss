@@ -45,9 +45,12 @@
   .modal-footer {
     position: static;
 
+    label,
     button {
       min-width: 120px;
       margin-left: 12px;
+      line-height: 1.25;
+      text-align: center;
     }
   }
 }

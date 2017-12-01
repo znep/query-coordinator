@@ -50,14 +50,7 @@ export const clearInternalState = (formName, val) => ({
   val
 });
 
-export const SET_SHOULD_FORM_SAVE = 'SET_SHOULD_FORM_SAVE';
-export const setShouldFormSave = (formName, bool) => ({
-  type: SET_SHOULD_FORM_SAVE,
-  formName,
-  shouldSave: bool
-});
-
-export const SET_SHOULD_EXIT = 'SET_SHOULD_EXITE';
+export const SET_SHOULD_EXIT = 'SET_SHOULD_EXIT';
 export const setShouldExit = (formName, bool) => ({
   type: SET_SHOULD_EXIT,
   formName,

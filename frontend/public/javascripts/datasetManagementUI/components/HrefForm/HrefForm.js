@@ -18,14 +18,6 @@ import styles from './HrefForm.scss';
 // The form then checks dsmapi to see if there is any saved href data on the
 // revision. If there is, it overwrites the empty href we put into the state
 // earlier. If not, then it does nothing.
-
-// Finally, because of the stupid modal thing, the button that submits this form
-// does not live inside of this form. So we need a way to signal this form to send
-// its local state to DSMAPI from outside the form itself. We do that by putting
-// a tripwire variable in the redux store called shouldSave. The save button in the
-// modal footer toggles this to true. This variable is mapped to the props of this
-// component, so changing it triggers the 'componentWillReceiveProps' lifecycle method,
-// in which we send the form data and toggle the tripwire variable back to false.
 class HrefForm extends Component {
   constructor() {
     super();
@@ -33,7 +25,6 @@ class HrefForm extends Component {
     this.state = {
       hrefs: [],
       currentId: 1,
-      saveInProgress: false,
       errors: []
     };
 
@@ -45,7 +36,8 @@ class HrefForm extends Component {
       'handleRemoveFirstDataset',
       'handleRemoveOtherDataset',
       'handleRemoveFirstURL',
-      'handleRemoveOtherURL'
+      'handleRemoveOtherURL',
+      'handleSubmit'
     ]);
   }
 
@@ -65,61 +57,49 @@ class HrefForm extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.shouldSave && !this.state.saveInProgress) {
-      this.props.toggleShouldSaveOff();
-
-      this.setState({
-        saveInProgress: true
-      });
-
-      const errors = validate(this.state.hrefs);
-
-      if (errors.length) {
-        this.props.showFlash('error', I18n.show_sources.save_error);
-        this.props.setFormErrors(errors);
-        this.setState({
-          errors,
-          saveInProgress: false
-        });
-
-        return;
-      }
-
-      this.props
-        .saveHrefs(this.state.hrefs)
-        .then(() => {
-          this.props.showFlash('success', I18n.show_sources.save_success);
-          this.props.markFormClean();
-          this.props.setFormErrors([]);
-          this.setState({
-            errors: []
-          });
-        })
-        .catch(err => {
-          const newErrors = [...this.state.errors, err];
-          this.props.showFlash('success', I18n.show_sources.save_success);
-          this.props.setFormErrors(newErrors);
-          this.setState({
-            errors: newErrors
-          });
-        })
-        .then(() => {
-          // using this in the absence of Promise.finally
-          this.setState({
-            saveInProgress: false
-          });
-
-          if (this.props.shouldExit) {
-            browserHistory.push(Links.revisionBase(this.props.params));
-          }
-        });
-    }
-  }
-
   componentWillUnmount() {
     const { clearFlash } = this.props;
     clearFlash();
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const errors = validate(this.state.hrefs);
+
+    if (errors.length) {
+      this.props.showFlash('error', I18n.show_sources.save_error);
+      this.props.setFormErrors(errors);
+      this.setState({
+        errors
+      });
+
+      return;
+    }
+
+    this.props
+      .saveHrefs(this.state.hrefs)
+      .then(() => {
+        this.props.showFlash('success', I18n.show_sources.save_success);
+        this.props.markFormClean();
+        this.props.setFormErrors([]);
+        this.setState({
+          errors: []
+        });
+      })
+      .catch(err => {
+        const newErrors = [...this.state.errors, err];
+        this.props.showFlash('success', I18n.show_sources.save_success);
+        this.props.setFormErrors(newErrors);
+        this.setState({
+          errors: newErrors
+        });
+      })
+      .then(() => {
+        // using this in the absence of Promise.finally
+        if (this.props.shouldExit) {
+          browserHistory.push(Links.revisionBase(this.props.params));
+        }
+      });
   }
 
   initializeHref(datasetNum, id) {
@@ -301,7 +281,7 @@ class HrefForm extends Component {
       <section className={styles.container}>
         <h2 className={styles.bigHeading}>{I18n.show_sources.title}</h2>
         <div className={styles.subtitle}>{I18n.show_sources.subtitle}</div>
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={this.handleSubmit}>
           <h3 className={styles.mediumHeading}>{I18n.show_sources.add_ext_dataset}</h3>
           {this.state.hrefs.map((href, idx) => (
             <DatasetFieldset
@@ -322,6 +302,7 @@ class HrefForm extends Component {
                 this.handleAddURL(href.id);
               }} />
           ))}
+          <input type="submit" id="submit-href-form" className={styles.hidden} />
         </form>
         <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
           {I18n.show_sources.add_dataset}
@@ -334,13 +315,11 @@ class HrefForm extends Component {
 HrefForm.propTypes = {
   hrefs: PropTypes.arrayOf(PropTypes.object),
   params: PropTypes.object.isRequired,
-  shouldSave: PropTypes.bool.isRequired,
   shouldExit: PropTypes.bool.isRequired,
   saveHrefs: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
   setFormErrors: PropTypes.func.isRequired,
-  toggleShouldSaveOff: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
   showFlash: PropTypes.func.isRequired,
   schemaExists: PropTypes.bool.isRequired,

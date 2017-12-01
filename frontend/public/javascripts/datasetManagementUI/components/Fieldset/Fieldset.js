@@ -30,7 +30,7 @@ const Fieldset = ({ children, title, subtitle, closable, closeCallback, containe
 };
 
 Fieldset.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
   children: PropTypes.any,
   containerClass: PropTypes.string,

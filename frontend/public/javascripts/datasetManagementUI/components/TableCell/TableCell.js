@@ -5,7 +5,7 @@ import styles from './TableCell.scss';
 import classNames from 'classnames';
 
 import renderNumber from './NumberCell';
-import TextCell from './TextCell';
+import renderText from './TextCell';
 import DateCell from './DateCell';
 import LocationCell from './LocationCell';
 import GeospatialCell from './GeospatialCell';
@@ -77,7 +77,7 @@ function renderCellValue(value, type, format, isDropping) {
     case 'location':
       return <LocationCell {...props} />;
     case 'text':
-      return <TextCell {...props} />;
+      return renderText(props);
     case 'number':
       // This one is a little funky because there are several different
       // classes that render numbers differently, like a CurrencyCell, PercentCell,

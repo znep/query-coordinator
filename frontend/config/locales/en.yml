@@ -2346,6 +2346,10 @@ en:
       specify_precision: Specify decimal precision
       display_format: Display Format
       alignment: Alignment
+      render_type: Render as
+      normal: Normal
+      url: URL
+      email: Email
     automate_this:
       copy_code: Copy this code
       title: Set Up Automation

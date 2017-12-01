@@ -1,23 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Dropdown } from 'common/components';
-import SocrataIcon from '../../../common/components/SocrataIcon';
+import DropdownWithIcon from '../DropdownWithIcon/DropdownWithIcon';
 
 const SubI18n = I18n.format_column;
-
-function DropdownWithIcon({ icon, title }) {
-  return (
-    <div>
-      <SocrataIcon className={icon} name={title} />
-      {title}
-    </div>
-  );
-}
-
-DropdownWithIcon.propTypes = {
-  icon: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired
-};
 
 
 function Alignment({ onChange, format }) {

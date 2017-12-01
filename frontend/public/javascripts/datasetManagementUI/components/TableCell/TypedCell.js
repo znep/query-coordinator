@@ -30,7 +30,7 @@ class TypedCell extends Component {
 }
 
 TypedCell.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.any,
   format: PropTypes.object,
   isDropping: PropTypes.bool
 };

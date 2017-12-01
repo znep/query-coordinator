@@ -8,11 +8,6 @@ const headersForDomain = (domain) => {
   const isSameDomain = domain === window.location.hostname;
 
   const headers = {
-    // TODO/EN-9041: The Curated Regions API currently returns an error
-    // if you ask for 'application/json; charset=utf-8' as we do in
-    // other places in the code. We are temporarily updating this to
-    // ask for 'application/json' temporarily, and should restore the
-    // charset clause once the bug in the Curated Regions API is fixed.
     'Accept': 'application/json'
   };
 

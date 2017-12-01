@@ -294,7 +294,7 @@ function SoqlDataProvider(config, useCache = false) {
     const isSameDomain = domain === window.location.hostname;
 
     const headers = {
-      'Accept': 'application/json; charset=utf-8'
+      'Accept': 'application/json'
     };
 
     // TODO EN-15459 EN-15483: Once Core correctly responds to OPTIONS,

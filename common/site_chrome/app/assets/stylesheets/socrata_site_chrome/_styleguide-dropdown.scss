@@ -31,7 +31,7 @@ header#site-chrome-header, footer#site-chrome-footer {
     border-radius: 1px;
     list-style: none;
     padding: 0;
-    box-shadow: rgba(0, 0, 0, 0.23) 0 0 15px;
+    box-shadow: 0 0 15px $header_dropdown_box_shadow_color;
 
     opacity: 0;
     pointer-events: none;

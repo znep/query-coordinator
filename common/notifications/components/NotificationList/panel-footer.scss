@@ -62,7 +62,7 @@
   background-color: $panel-footer-prompt-background-color;
   border-radius: 5px;
   bottom: $footerBarHeight + 10px;
-  box-shadow: 0 0 1px 1px rgba($panel-footer-prompt-shadow-color, 0.25);
+  box-shadow: 0 0 1px 1px $panel-footer-prompt-shadow-color;
   color: $notification-item-text-color;
   left: 0;
   padding: 10px;

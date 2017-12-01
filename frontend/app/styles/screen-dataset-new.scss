@@ -77,6 +77,41 @@
       }
     }
   }
+
+  // dsmp_preview /////////////////////////////////////
+  li {
+    a.dsmpPreview {
+      margin-top: 8px;
+      display: inline-block;
+      color: #1c6387;
+      background-color: #eaf4f9;
+      border: 1px solid #288dc1;
+      outline: none;
+      text-shadow: none;
+      font-size: 1.2em;
+      height: auto;
+      width: 100%;
+      padding: 0.6em 0;
+      text-decoration: none;
+      transition: background-color .2s, color .2s, border-color .2s;
+      &:hover {
+        background-color: lighten(#eaf4f9, 2%);
+        border-color: darken(#288dc1, 15%);
+        color: lighten(#1c6387, 2%);
+      }
+      .socrata-icon-eye {
+        font-size: 1.3em;
+        vertical-align: text-bottom;
+        display: inline-block;
+        margin-right: 3px;
+      }
+      span.text {
+        position: relative;
+        top: -1px;
+      }
+    }
+  }
+  // end dsmp_preview ///////////////////////////////////
 }
 
 .importTypeList, .uploadTypeList {

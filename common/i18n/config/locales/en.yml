@@ -448,6 +448,7 @@ en:
         chart_working_copy_initial_view_published: Chart Published
         map_working_copy_initial_view_published: Map Published
         assetinventory_working_copy_initial_view_published: Asset Inventory Published
+        story_working_copy_initial_view_published: Story Published
         draft_initial_view_published_default_key: Asset Initial View Published
         draft_draft_initial_view_published: Dataset Published
         data_lens_draft_initial_view_published: Data Lens Published
@@ -455,6 +456,7 @@ en:
         chart_draft_initial_view_published: Chart Published
         map_draft_initial_view_published: Map Published
         assetinventory_draft_initial_view_published: Asset Inventory Published
+        story_draft_initial_view_published: Story Published
         working_copy_view_published_default_key: Working Copy View Published
         draft_working_copy_view_published: Draft Updated
         data_lens_working_copy_view_published: Data Lens Updated
@@ -462,6 +464,7 @@ en:
         chart_working_copy_view_published: Chart Updated
         map_working_copy_view_published: Map Updated
         assetinventory_working_copy_view_published: Asset Inventory Updated
+        story_working_copy_view_published: Story Updated
         draft_view_published_default_key: Asset View Published
         draft_draft_view_published: Dataset Updated
         data_lens_draft_view_published: Data Lens Updated
@@ -469,6 +472,7 @@ en:
         chart_draft_view_published: Chart Updated
         map_draft_view_published: Map Updated
         assetinventory_draft_view_published: Asset Inventory Updated
+        story_draft_view_published: Story Updated
         approval_changed_rejected: Publishing Request Rejected
         approval_changed_approved: Publishing Request Approved
         view_created: Draft Created
@@ -483,6 +487,7 @@ en:
         chart_view_owner_changed: Chart Owner Changed
         map_view_owner_changed: Map Owner Changed
         assetinventory_view_owner_changed: Asset Inventory Owner Changed
+        story_view_owner_changed: Story Owner Changed
         asset_owner_changed_default_key: Asset Owner Changed
         draft_asset_owner_changed: Draft Owner Changed
         data_lens_asset_owner_changed: Data Lens Owner Changed
@@ -490,6 +495,7 @@ en:
         chart_asset_owner_changed: Chart Owner Changed
         map_asset_owner_changed: Map Owner Changed
         assetinventory_asset_owner_changed: Asset Inventory Owner Changed
+        story_asset_owner_changed: Story Owner Changed
         view_permissions_changed: Permissions Updated
         asset_permissions_changed: Permissions Updated
         collaborator_added_default_key: Asset Shared
@@ -499,6 +505,7 @@ en:
         chart_collaborator_added: Chart Shared
         map_collaborator_added: Map Shared
         assetinventory_collaborator_added: Asset Inventory Shared
+        story_collaborator_added: Story Shared
         collaborator_removed_default_key: Asset Unshared
         draft_collaborator_removed: Draft Unshared
         data_lens_collaborator_removed: Data Lens Unshared
@@ -506,6 +513,7 @@ en:
         chart_collaborator_removed: Chart Unshared
         map_collaborator_removed: Map Unshared
         assetinventory_collaborator_removed: Asset Inventory Unshared
+        story_collaborator_removed: Story Unshared
         collaborator_changed_default_key: Asset Access Changed
         draft_collaborator_changed: Draft Access Changed
         data_lens_collaborator_changed: Data Lens Access Changed
@@ -513,6 +521,7 @@ en:
         chart_collaborator_changed: Chart Access Changed
         map_collaborator_changed: Map Access Changed
         assetinventory_collaborator_changed: Asset Inventory Access Changed
+        story_collaborator_changed: Story Access Changed
         user_added: User Added
         user_removed: User Removed
         user_role_changed: User Role Changed
@@ -523,6 +532,7 @@ en:
         chart_submitted_for_review: Chart Submitted for Review
         map_submitted_for_review: Map Submitted for Review
         assetinventory_submitted_for_review: Asset Inventory Submitted for Review
+        story_submitted_for_review: Story Submitted for Review
         alert_setting_modal:
           settings: Settings
           save: Save

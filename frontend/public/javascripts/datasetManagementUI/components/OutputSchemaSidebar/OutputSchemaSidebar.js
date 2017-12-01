@@ -31,7 +31,7 @@ class OutputSchemaSidebar extends Component {
           to={Links.showParseOptions(params)}
           className={sidebarStyles.tab}
           activeClassName={sidebarStyles.selected}>
-          <SocrataIcon name="question" />
+          <SocrataIcon name="settings" />
           {SubI18n.specify_headers}
         </Link>
         <Link

@@ -230,7 +230,10 @@ export class GeocodeShortcut extends Component {
   getOutputColumns() {
     // TODO: refine this selector; will break if you have multiple oc's with the
     // same mapping (if e.g. you change a col name)
-    return Selectors.allColumnsWithOSID(this.props.entities);
+    return Selectors.columnsForOutputSchema(
+      this.props.entities,
+      this.getOutputSchema().id
+    );
   }
 
   maybeSetColumnsHidden() {
@@ -305,23 +308,26 @@ export class GeocodeShortcut extends Component {
   genDesiredColumns() {
     // will be all cols + the generated geo one or just the geo one, depending
     // on if the user checked the "Do Not Import Original Cols" box
-    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
+    let existingColumns = Selectors.columnsForOutputSchema(
+      this.props.entities,
+      this.getOutputSchema().id
+    );
 
     const anyMappings = _.some(
       this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
     );
 
-    const cols = this.relevantArgsForComposition().filter(oc => !!oc);
+    const colsOrConstants = this.relevantArgsForComposition().filter(oc => !!oc);
 
     // If the user checked "Do Not Import Original Cols" box...
     if (this.state.shouldHideOriginal) {
       // filter out the original cols from the ones we plan to show on the SchemaPreview page...
-      const columnIdsToHide = cols.map(oc => oc.id);
+      const columnIdsToHide = colsOrConstants.map(oc => oc.id);
 
       existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
     } else {
-      // otherwise add them back
-      const columnsToShow = cols;
+      // otherwise add the things in the list that are columns, ignoring all the constants
+      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform_expr);
 
       const existingColIds = existingColumns.map(oc => oc.id);
 

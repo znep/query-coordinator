@@ -70,21 +70,6 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
     .value();
 }
 
-export function allColumnsWithOSID(entities) {
-  return _.chain(entities.output_schema_columns)
-    .map(oc => ({
-      ...entities.output_columns[oc.output_column_id],
-      outputSchemaId: oc.output_schema_id
-    }))
-    .map(oc => ({
-      ...oc,
-      transform: entities.transforms[oc.transform_id],
-      is_primary_key: oc.is_primary_key || false
-    }))
-    .map(oc => _.omit(oc, 'transform_id'))
-    .orderBy('outputSchemaId', 'desc')
-    .value();
-}
 
 export function treeForOutputSchema(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];

@@ -712,6 +712,7 @@ function renderMultipleChoiceCellHTML(cellContent, column) {
 
 
 function renderTimestampCellUnsafePlainText(cellContent, column) {
+
   if (!_.isString(cellContent) && !_.isNumber(cellContent)) {
     return '';
   }
@@ -721,7 +722,30 @@ function renderTimestampCellUnsafePlainText(cellContent, column) {
     cellContent = (cellContent * 1000);
   }
 
-  const time = moment(cellContent);
+  let time;
+
+  // EN-18426 - Grouping on year in an FCC dataset returns unexpected results
+  //
+  // When we do aggregations involving a date_trunc or whatever we return timestamp
+  // dates that are equivalent to "YYYY-01-01T00:00:00Z". This causes ther timestamp
+  // renderer to display results in the browser's timezone that are incorrect (e.g.
+  // an aggregation on year will always show the actual grouping year - 1 for users
+  // that are on the negative side of zulu time. This is because all dates are
+  // converted to UTC by the backend in order to do the aggregation.
+  //
+  // One fix for this, which is implemented below, is to treat the value as UTC if
+  // we know that the column is aggregated, which will cause the rendering to show
+  // the correct grouping value instead of the one represented in the browser's
+  // local timezone.
+  const treatAggregatedDatesAsUTC = _.get(window, 'blist.feature_flags.treat_aggregated_dates_as_utc', false);
+  const columnIsAggregated = _.get(column, 'format.group_function', false);
+
+  if (treatAggregatedDatesAsUTC && columnIsAggregated) {
+    time = moment(cellContent).utc();
+  } else {
+    time = moment(cellContent);
+  }
+
   if (!time.isValid()) {
     return '';
   }
@@ -732,20 +756,16 @@ function renderTimestampCellUnsafePlainText(cellContent, column) {
   if (formatString) {
     // Option A: format using user-specified format string
     return time.format(formatString);
-
   } else if (formatStyle) {
     // Option B: format using preferred builtin style
     const fallbackFormat = TIME_FORMATS.date_time;
     return time.format(TIME_FORMATS[formatStyle] || fallbackFormat);
-
   } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
     // Option C: infer date-only string format when the time is exactly midnight
     return time.format(TIME_FORMATS.default_date);
-
   } else {
     // Option D: use date-with-time format
     return time.format(TIME_FORMATS.default_date_time);
-
   }
 }
 

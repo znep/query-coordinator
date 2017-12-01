@@ -113,14 +113,33 @@
       height: $headerHeightSmall;
       line-height: $headerHeightSmall !important;
       width: 30px;
+
+      & :global(.socrata-icon) {
+        display: inline-block;
+        vertical-align: top;
+      }
     }
 
     .header-icon {
       font-size: 15px;
+
+      & :global(.socrata-icon) {
+        margin-top: 7px;
+
+        &,
+        & svg {
+          height: 16px;
+          width: 16px;
+        }
+      }
     }
 
     .close-panel-link {
       font-size: 10px;
+
+      & :global(.socrata-icon) {
+        margin-top: 10px;
+      }
     }
   }
 }

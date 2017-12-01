@@ -25,7 +25,7 @@ $panelHeaderHeight: 30px;
   }
 
   &.secondary-panel {
-    background-color: $panel-footer-prompt-shadow-color;
+    background-color: $secondary-panel-background-color;
     bottom: $footerBarHeight;
     color: $view-older-notifications-link-color;
     height: $panelHeaderHeight;

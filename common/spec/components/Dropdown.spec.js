@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from 'components/Dropdown';
 import Picklist from 'components/Picklist';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 // TODO Write a full test suite.
 // Missing specs:
@@ -60,7 +60,7 @@ describe('Dropdown', () => {
       it('calls the Dropdown onSelection prop', () => {
         const onSelectionStub = sinon.stub();
 
-        const element = shallow(<Dropdown onSelection={onSelectionStub} />);
+        const element = mount(<Dropdown onSelection={onSelectionStub} />);
         const picklist = element.find(Picklist);
         picklist.props().onSelection();
         sinon.assert.calledOnce(onSelectionStub);

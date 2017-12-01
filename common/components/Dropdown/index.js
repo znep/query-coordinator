@@ -42,20 +42,27 @@ export class Dropdown extends Component {
     ]);
   }
 
-  componentDidMount() {
-    this.toggleScrollEvents(true);
-    this.toggleIsolateScrolling(true);
-    this.toggleDocumentMouseDown(true);
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState({
       selectedOption: this.getSelectedOption(nextProps)
     });
   }
 
-  componentWillUpdate() {
-    this.positionPicklist();
+  shouldComponentUpdate(nextProps, nextState) {
+    // Only render when something visible happens
+    return (this.state.focused !== nextState.focused || this.state.opened !== nextState.opened);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    // Only attach event handlers when the picklist is visible
+    // And detach them when it is not
+    if (this.state.focused !== nextState.focused || this.state.opened !== nextState.opened) {
+      this.toggleScrollEvents(nextState.opened);
+      this.toggleIsolateScrolling(nextState.opened);
+      this.toggleDocumentMouseDown(nextState.opened);
+      // Do not position the picklist if it is not visible (getBoundingClientRect triggers a reflow)
+      this.positionPicklist();
+    }
   }
 
   componentDidUpdate() {
@@ -77,6 +84,7 @@ export class Dropdown extends Component {
    */
   onMouseDown(event) {
     const mousedDownOnOptions = event.target === this.optionsRef;
+    if (mousedDownOnOptions === this.state.mousedDownOnOptions) { return; }
 
     if (mousedDownOnOptions) {
       event.preventDefault();

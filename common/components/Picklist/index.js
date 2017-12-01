@@ -9,7 +9,7 @@ export class Picklist extends Component {
     super(props);
 
     this.state = {
-      selectedIndex: -1,
+      selectedIndex: 0,
       selectedOption: null,
       focused: false
     };
@@ -41,8 +41,10 @@ export class Picklist extends Component {
       const option = this.picklist.querySelector('.picklist-option-selected');
       const index = _.indexOf(options, option);
 
-      this.setScrollPositionToOption(index);
-      this.setNavigationPointer(index);
+      if (index > 0) {
+        this.setScrollPositionToOption(index);
+        this.setNavigationPointer(index);
+      }
     }
   }
 

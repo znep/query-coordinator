@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Children } from 'react';
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import bindAll from 'lodash/fp/bindAll';
 
 export class DropdownItem extends React.Component {
+  static propTypes = {
+    children: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
+  };
+
   render() {
     const { children, onClick } = this.props;
 
@@ -17,45 +21,46 @@ export class DropdownItem extends React.Component {
   }
 }
 
-DropdownItem.propTypes = {
-  children: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired
-};
-
 class DropdownButton extends React.Component {
+  static propTypes = {
+    children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    isDisabled: PropTypes.bool
+  };
+
   constructor() {
     super();
     this.state = {
       showDropdown: false
     };
-    bindAll(['hideDropdown', 'toggleDropdown', 'toggleDocumentMouseDown', 'onMouseDown'], this);
-  }
-
-  componentDidMount() {
-    this.toggleDocumentMouseDown(true);
   }
 
   componentWillUnmount() {
     this.toggleDocumentMouseDown(false);
   }
 
-  onMouseDown(ev) {
-    if (!(this.dropdownRef === ev.target || this.dropdownRef.contains(ev.target))) {
-      this.setState({ showDropdown: false });
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.showDropdown !== nextState.showDropdown) {
+      this.toggleDocumentMouseDown(nextState.showDropdown);
     }
   }
 
-  toggleDocumentMouseDown(isMounted) {
+  onMouseDown = (ev) => {
+    if (!(this.dropdownRef === ev.target || this.dropdownRef.contains(ev.target))) {
+      this.setState({ showDropdown: false });
+    }
+  };
+
+  toggleDocumentMouseDown = (isMounted) => {
     window.document[isMounted ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
-  }
+  };
 
-  hideDropdown() {
+  hideDropdown = () => {
     this.setState({ showDropdown: false });
-  }
+  };
 
-  toggleDropdown() {
+  toggleDropdown = () => {
     this.setState({ showDropdown: !this.state.showDropdown });
-  }
+  };
 
   render() {
     const { children, isDisabled } = this.props;
@@ -82,10 +87,5 @@ class DropdownButton extends React.Component {
     );
   }
 }
-
-DropdownButton.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-  isDisabled: PropTypes.bool
-};
 
 export default DropdownButton;

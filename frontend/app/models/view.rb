@@ -1147,9 +1147,13 @@ class View < Model
       # If additionalAccessPoints is present, we can assume that the links in accessPoints are
       # already inside additionalAccessPoints. Otherwise, we create an array with a single hash
       # for accessPoints.
-      metadata.additionalAccessPoints.present? ?
-        metadata.additionalAccessPoints :
-        [ { 'title' => nil, 'description' => nil, 'urls' => metadata.accessPoints || {} } ]
+      if metadata.additionalAccessPoints.present?
+        metadata.additionalAccessPoints
+      elsif metadata.accessPoints.present?
+        [ { 'title' => nil, 'description' => nil, 'urls' => metadata.accessPoints } ]
+      else
+        []
+      end
     else
       []
     end

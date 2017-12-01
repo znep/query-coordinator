@@ -1,3 +1,6 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
 .baseBtn {
   composes: btn from global;
   composes: btn-primary from global;
@@ -27,4 +30,12 @@
 .spinner {
   composes: spinner-default from global;
   composes: spinner-btn-primary from global;
+}
+
+.disabled:hover,
+.disabled {
+  color: $grey;
+  border-color: $light-grey-1;
+  background-color: $light-grey-3;
+  cursor: not-allowed;
 }

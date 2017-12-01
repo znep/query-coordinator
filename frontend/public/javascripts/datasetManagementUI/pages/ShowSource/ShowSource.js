@@ -97,7 +97,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     goHome: () => browserHistory.push(Links.revisionBase(ownProps.params)),
     saveHrefForm: andExit => {
       dispatch(FormActions.setShouldExit('hrefForm', !!andExit));
-      dispatch(FormActions.setShouldFormSave('hrefForm', true));
     }
   };
 };

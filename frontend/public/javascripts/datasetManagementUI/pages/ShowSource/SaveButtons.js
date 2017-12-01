@@ -4,12 +4,19 @@ import styles from 'components/ApiCallButton/ApiCallButton.scss';
 
 const SaveButtons = ({ saveHrefForm, isDirty }) => (
   <div>
-    <button className={styles.baseBtn} onClick={() => saveHrefForm(false)} disabled={!isDirty}>
+    <label
+      htmlFor="submit-href-form"
+      className={`${styles.baseBtn} ${isDirty ? '' : styles.disabled}`}
+      onClick={isDirty ? () => saveHrefForm(false) : e => e.preventDefault()}
+      disabled={!isDirty}>
       {I18n.common.save}
-    </button>
-    <button className={styles.baseBtn} onClick={() => saveHrefForm(true)} disabled={!isDirty}>
+    </label>
+    <label
+      htmlFor="submit-href-form"
+      className={`${styles.baseBtn} ${isDirty ? '' : styles.disabled}`}
+      onClick={isDirty ? () => saveHrefForm(true) : e => e.preventDefault()}>
       {I18n.show_sources.save_and_exit}
-    </button>
+    </label>
   </div>
 );
 

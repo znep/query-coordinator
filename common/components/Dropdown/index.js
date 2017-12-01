@@ -17,8 +17,7 @@ export class Dropdown extends Component {
       selectedOption: this.getSelectedOption(props),
       focused: false,
       opened: false,
-      mousedDownOnOptions: false,
-      keyupOnOptions: false
+      mousedDownOnDropdown: false
     };
 
     _.bindAll(this, [
@@ -31,11 +30,10 @@ export class Dropdown extends Component {
       'onKeyUpPlaceholder',
       'onFocusPicklist',
       'onBlurPicklist',
-      'onClickOption',
+      'onSelectOption',
       'getSelectedOption',
       'openPicklist',
       'positionPicklist',
-      'toggleDocumentMouseDown',
       'toggleIsolateScrolling',
       'toggleScrollEvents',
       'renderPlaceholder'
@@ -65,33 +63,15 @@ export class Dropdown extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.state.opened) {
-      this.picklistRef.picklist.focus();
-    }
-  }
-
   componentWillUnmount() {
     this.toggleScrollEvents(false);
     this.toggleIsolateScrolling(false);
     this.toggleDocumentMouseDown(false);
   }
 
-  /**
-   * Safari and IE blur when the scrollbar is clicked to initiate
-   * a scrolling action. This event handler prevents any clicks within the
-   * dropdown from kicking off a blur.
+  /*
+   * document-level event listeners
    */
-  onMouseDown(event) {
-    const mousedDownOnOptions = event.target === this.optionsRef;
-    if (mousedDownOnOptions === this.state.mousedDownOnOptions) { return; }
-
-    if (mousedDownOnOptions) {
-      event.preventDefault();
-    }
-
-    this.setState({ mousedDownOnOptions });
-  }
 
   /**
    * Looks up the DOM tree from the target and determine if the
@@ -109,30 +89,67 @@ export class Dropdown extends Component {
     }
   }
 
-  onClickPlaceholder() {
-    this.onAnyScroll();
-    this.setState({ opened: !this.state.opened });
+  /**
+   * Safari and IE blur when the scrollbar is clicked to initiate a scrolling action.
+   * This handler  will detect mouseDown on any part of the dropdown or picklist (most importantly
+   * on the scrollbar itself) and set mousedDownOnDropdown to true.
+   * mousedDownOnDropdown is consumed by onBlurPicklist() which will ignore the blur event from the picklist
+   * if it's set to true
+   * */
+  onMouseDown(event) {
+    if (event && this.state.opened) {
+      const dropdownOptionsList = _.find(this.dropdownRef.children, (elem) => {
+        return elem.classList.contains('dropdown-options-list');
+      });
+      const dropdownRect = dropdownOptionsList.getBoundingClientRect();
+      const [mouseX, mouseY] = [event.clientX, event.clientY];
+
+      const xWithinDropdown = mouseX >= dropdownRect.left && mouseX <= dropdownRect.right;
+      const yWithinDropdown = mouseY >= dropdownRect.top && mouseY <= dropdownRect.bottom;
+
+      const mousedDownOnDropdown = xWithinDropdown && yWithinDropdown;
+
+      // Close the dropdown if outside click detected
+      if (!mousedDownOnDropdown) {
+        this.setState({ opened: false, focused: true });
+      }
+
+      this.setState({ mousedDownOnDropdown });
+    }
   }
+
+  /*
+   * component-level event listeners
+   */
 
   onFocusPlaceholder() {
     this.setState({ focused: true });
   }
 
+  onClickPlaceholder() {
+    this.onAnyScroll();
+    this.setState({ opened: !this.state.opened }, () => {
+      if (this.state.opened) {
+        this.picklistRef.picklist.focus();
+      }
+    });
+  }
+
   /**
-   * The state variable mousedDownOnOptions determines
+   * The state variable mousedDownOnDropdown determines
    * whether or not the blur we received should be
    * responded to. Mousedown is set to off regardless of
    * how we respond to ready for the next blur.
    */
   onBlurPlaceholder() {
-    if (!this.state.mousedDownOnOptions) {
+    if (!this.state.mousedDownOnDropdown) {
       this.optionsRef.scrollTop = 0;
       this.setState({ focused: false });
     } else if (!this.state.opened && this.placeholderRef) {
       this.placeholderRef.focus();
     }
 
-    this.setState({ mousedDownOnOptions: false });
+    this.setState({ mousedDownOnDropdown: false });
   }
 
   onKeyDownPlaceholder(event) {
@@ -154,15 +171,22 @@ export class Dropdown extends Component {
   }
 
   onBlurPicklist() {
-    this.setState({ focused: true, opened: false });
-    if (this.placeholderRef) {
-      this.placeholderRef.focus();
+    if (!this.state.mousedDownOnDropdown) {
+      this.setState({ focused: true, opened: false }, () => {
+        if (this.placeholderRef) {
+          this.placeholderRef.focus();
+        }
+      });
     }
   }
 
-  onClickOption(selectedOption) {
+  onSelectOption(selectedOption) {
     this.props.onSelection(selectedOption);
-    this.setState({ selectedOption, focused: true, opened: false });
+    this.setState({ selectedOption, focused: true, opened: false }, () => {
+      if (this.placeholderRef) {
+        this.placeholderRef.focus();
+      }
+    });
   }
 
   getSelectedOption(props) {
@@ -177,6 +201,8 @@ export class Dropdown extends Component {
     this.setState({
       opened: true,
       selectedOption
+    }, () => {
+      this.picklistRef.picklist.focus();
     });
   }
 
@@ -222,10 +248,6 @@ export class Dropdown extends Component {
     }
   }
 
-  toggleDocumentMouseDown(onOrOff) {
-    document[onOrOff ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
-  }
-
   /**
    * When scrolling the options, we don't want the outer containers
    * to accidentally scroll once the start or end of the options is
@@ -233,6 +255,10 @@ export class Dropdown extends Component {
    */
   toggleIsolateScrolling(onOrOff) {
     SocrataUtils.isolateScrolling($(this.optionsRef), onOrOff);
+  }
+
+  toggleDocumentMouseDown(onOrOff) {
+    document[onOrOff ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
   }
 
   /**
@@ -348,7 +374,7 @@ export class Dropdown extends Component {
       disabled,
       value,
       ref: ref => this.picklistRef = ref,
-      onSelection: this.onClickOption,
+      onSelection: this.onSelectOption,
       onFocus: this.onFocusPicklist,
       onBlur: this.onBlurPicklist,
       size

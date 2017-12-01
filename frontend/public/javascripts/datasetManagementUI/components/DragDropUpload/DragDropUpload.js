@@ -90,9 +90,6 @@ export class DragDropUpload extends Component {
             <div className={styles.content}>
               <h2>{I18n.show_uploads.message}</h2>
               <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
-              <div className={styles.fileTypes}>
-                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
-              </div>
               <label id="upload-label" className={styles.uploadButton} htmlFor="file">
                 Browse
               </label>
@@ -106,6 +103,10 @@ export class DragDropUpload extends Component {
                   dispatch(
                     createUploadSource(e.target.files[0], this.canBeParsed(e.target.files[0]), params)
                   )} />
+              <div className={styles.fileTypes}>
+                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
+              </div>
+              <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
             </div>
           </div>
         </div>

@@ -90,9 +90,10 @@
 
   .fileTypes {
     color: $dark-grey-1;
+    font-size: 0.8em;
   }
 }
 
-.content > * {
+.content > div, .content > label {
   margin-bottom: 0.4em;
 }

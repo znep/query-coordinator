@@ -5,6 +5,8 @@ import cssModules from 'react-css-modules';
 import styles from './alert-setting-modal.scss';
 import OnOffSwitch from './OnOffSwitch';
 import I18n from 'common/i18n';
+import EmailSettings from './EmailSettings';
+import NotificationSettings from './NotificationSettings';
 
 class PreferenceContent extends Component {
   renderAllAssets() {
@@ -361,7 +363,12 @@ class PreferenceContent extends Component {
   }
 
   render() {
-    const { currentDomainFeatures } = this.props;
+    const {
+      currentDomainFeatures,
+      settings,
+      onSettingsChange,
+      showTransientNotifications
+    } = this.props;
     const showRoutingAndApproval = _.get(currentDomainFeatures, 'routing_approval', false);
 
     return (
@@ -402,6 +409,11 @@ class PreferenceContent extends Component {
             </tbody>
           </table>
         </div>
+        <EmailSettings settings={settings} onSettingsChange={onSettingsChange} />
+        <NotificationSettings
+          showTransientNotifications={showTransientNotifications}
+          settings={settings}
+          onSettingsChange={onSettingsChange} />
       </div>
     );
   }
@@ -409,7 +421,10 @@ class PreferenceContent extends Component {
 
 PreferenceContent.propTypes = {
   preferences: PropTypes.object.isRequired,
-  onAlertNotificationChange: PropTypes.func
+  settings: PropTypes.object.isRequired,
+  onAlertNotificationChange: PropTypes.func,
+  showTransientNotifications: PropTypes.bool,
+  onSettingsChange: PropTypes.func
 };
 
 export default cssModules(PreferenceContent, styles, { allowMultiple: true });

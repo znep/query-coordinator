@@ -11,10 +11,14 @@ describe('AlertPreferenceAPI', () => {
 
     describe('successful response', () => {
       let mockResponse = new Response(
-        JSON.stringify({ data:[
-          { 'name': 'test_asset' },
-          { 'name': 'test_all_asset', type: 'meta-test', 'value': 'true' }
-        ] }), { status: 200 }
+        JSON.stringify({
+          data: {
+            subscription_preferences: [
+              { 'name': 'test_asset' },
+              { 'name': 'test_all_asset', type: 'meta-test', 'value': 'true' }
+            ]
+          }
+        }), { status: 200 }
       );
 
       beforeEach(() => {
@@ -27,12 +31,15 @@ describe('AlertPreferenceAPI', () => {
 
       it('should hit preference url as get method and return decoded preference', () => {
         let expectedOutput = {
-          test_asset: { enable_email: false, enable_product_notification: false },
-          test_all_asset: {
-            enable_email: false,
-            enable_product_notification: false,
-            sub_categories: { 'meta-test': { enable: true } }
-          }
+          subscription_preferences: {
+            test_asset: { enable_email: false, enable_product_notification: false },
+            test_all_asset: {
+              enable_email: false,
+              enable_product_notification: false,
+              sub_categories: { 'meta-test': { enable: true } }
+            }
+          },
+          settings: {}
         };
         return AlertPreferenceAPI.get().then((res) => {
           const request = window.fetch.args[0][1];

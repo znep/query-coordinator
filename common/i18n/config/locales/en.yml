@@ -545,6 +545,8 @@ en:
             feature: FEATURE
             product_alerts: IN-PRODUCT ALERTS
             email_notifications: EMAIL NOTIFICATIONS
+            email_settings: EMAIL SETTINGS
+            notification_settings: NOTIFICATION SETTINGS
           watch_list:
             title: Watch List
             description: "Notify me when updates are made to my Watched assets; manage these items in the Watch List"
@@ -573,6 +575,20 @@ en:
           new_assets:
             title: New Assets
             description: Notify me when any new asset is published
+          email_digest:
+            title: Subscribe to Email Notifications
+            description: Send an email digest of all Notifications & alerts instead of individual emails
+            real_time: Real Time
+            monthly: Monthly
+            daily: Daily
+            weekly: Weekly
+            hourly: Hourly
+          email_mute:
+            title: Mute all Emails
+            description: Stop receiving email notifications
+          in_product_transient:
+            title: In-Product Transient Notifications
+            description: Stop receiving in-product transient notifications
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

@@ -47,8 +47,8 @@ $divider-color: #e8eaeb;
         border-bottom: 1px solid $divider-color;
 
         th {
-          font-weight: normal;
-          font-size: 13px;
+          font-weight: bold;
+          font-size: 14px;
           padding: 5px 5px 5px 0px;
 
         }
@@ -118,5 +118,54 @@ $divider-color: #e8eaeb;
     padding: 5px 10px;
     text-align: center;
     width: 70px;
+  }
+
+  .button-groups {
+    margin-left: 12px;
+    margin-top: -4px !important;
+    &:after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    button {
+      background-color: #fff;
+      border: 1px solid #f2f2f2;
+      border-radius: 0px;
+      color: #696a6a;
+      padding: 7px 3px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      float: left;
+      font-size: 12px;
+
+      &:not(:last-child) {
+        border-right: none;
+      }
+
+      &:hover {
+        background-color: #288dc1;
+        color: #fff;
+      }
+
+      &.selected {
+        background-color: #288dc1;
+        color: #fff;
+      }
+    }
+  }
+
+  .settings-table {
+    thead{
+      tr th{
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+    .option-column {
+       width: 54%;
+    }
   }
 }

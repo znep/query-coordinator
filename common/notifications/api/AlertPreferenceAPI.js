@@ -60,23 +60,38 @@ function decodePreferenceFormat(preferences) {
   if (_.isEmpty(preferences)) {
     return {};
   }
-  let decodedPreferences = {};
-  let preferencesGroupedByName = _.groupBy(preferences, 'name');
+  let subscriptionPreferences = _.get(preferences, 'subscription_preferences', []);
+  let decodedSubscriptionPreferences = {};
+  let preferencesGroupedByName = _.groupBy(subscriptionPreferences, 'name');
   _.each(preferencesGroupedByName, (preferenceData, name) => {
-    decodedPreferences[name] = {};
-    decodedPreferences[name] = {
+    decodedSubscriptionPreferences[name] = {};
+    decodedSubscriptionPreferences[name] = {
       enable_email: _.get(preferenceData[0], 'enable_email_notification', false),
       enable_product_notification: _.get(preferenceData[0], 'enable_product_notification', false)
     };
     if (_.some(preferenceData, 'type')) {
-      decodedPreferences[name].sub_categories = {};
+      decodedSubscriptionPreferences[name].sub_categories = {};
       _.each(preferenceData, (preference) => {
         const enableValue = _.get(preference, 'value', 'false');
-        decodedPreferences[name].sub_categories[preference.type] = { enable: (enableValue == 'true') };
+        decodedSubscriptionPreferences[name].sub_categories[preference.type] = { enable: (enableValue == 'true') };
       });
     }
   });
-  return decodedPreferences;
+  return {
+    subscription_preferences: decodedSubscriptionPreferences,
+    settings: decodeSettings(_.get(preferences, 'settings', {}))
+  };
+}
+
+function decodeSettings(settings) {
+  if (_.isEmpty(settings)) {
+    return {};
+  }
+  return _.groupBy(settings, 'name');
+}
+
+function encodeSettings(settings) {
+  return _.flattenDeep(_.values(settings));
 }
 
 export const AlertPreferenceAPI = (() => {
@@ -93,13 +108,13 @@ export const AlertPreferenceAPI = (() => {
         return decodePreferenceFormat(response.data);
       });
     },
-    set: (preferences) => {
+    set: (preferences, settings) => {
       let encodePreferences = encodePreferenceFormat(preferences);
       return fetch('/api/notifications_and_alerts/preferences', {
         method: 'POST',
         headers: getDefaultHeaders(),
         credentials: 'same-origin',
-        body: JSON.stringify({ preferences: encodePreferences })
+        body: JSON.stringify({ subscription_preferences: encodePreferences, settings: encodeSettings(settings) })
       }).
       then(checkStatus).
       then((response) => response.json()).

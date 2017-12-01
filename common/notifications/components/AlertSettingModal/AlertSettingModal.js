@@ -19,6 +19,7 @@ class AlertSettingModal extends Component {
     this.state = {
       selectedTab: 'notification',
       preferences: {},
+      settings: {},
       showSpinner: false,
       userPreferencesLoaded: false,
       failedLoadingUserPreferences: false
@@ -26,6 +27,7 @@ class AlertSettingModal extends Component {
 
     this.onTabChange = this.onTabChange.bind(this);
     this.onAlertNotificationChange = this.onAlertNotificationChange.bind(this);
+    this.onSettingsChange = this.onSettingsChange.bind(this);
     this.saveAlertSettings = this.saveAlertSettings.bind(this);
   }
 
@@ -36,11 +38,12 @@ class AlertSettingModal extends Component {
     this.setState({ userPreferencesLoaded, failedLoadingUserPreferences });
 
     AlertPreferenceAPI.get().then((response) => {
-      const preferences = response;
+      const preferences = _.get(response, 'subscription_preferences', {});
+      const settings = _.get(response, 'settings', {});
       userPreferencesLoaded = true;
       failedLoadingUserPreferences = false;
 
-      this.setState({ preferences, userPreferencesLoaded, failedLoadingUserPreferences });
+      this.setState({ preferences, userPreferencesLoaded, failedLoadingUserPreferences, settings });
     }).
     catch((error) => {
       failedLoadingUserPreferences = true;
@@ -72,6 +75,19 @@ class AlertSettingModal extends Component {
     this.setState({ preferences });
   }
 
+  onSettingsChange(category, options) {
+    let { settings } = this.state;
+    let categoryData = _.get(settings, category + '[0]', {});
+
+    categoryData.name = category;
+    categoryData.enable = (_.isUndefined(options.enable) ? categoryData.enable : options.enable);
+    categoryData.value = (_.isUndefined(options.value) ? categoryData.value : options.value);
+    categoryData.type = (_.isUndefined(options.type) ? categoryData.type : options.type);
+
+    settings[category] = [categoryData];
+    this.setState({ settings });
+  }
+
   onTabChange(selectedTab) {
     this.setState({ selectedTab });
   }
@@ -83,7 +99,8 @@ class AlertSettingModal extends Component {
       const {
         currentUserRole,
         isSuperAdmin,
-        currentDomainFeatures
+        currentDomainFeatures,
+        showTransientNotifications
       } = this.props;
 
       return (
@@ -92,6 +109,9 @@ class AlertSettingModal extends Component {
           isSuperAdmin={isSuperAdmin}
           currentDomainFeatures={currentDomainFeatures}
           onAlertNotificationChange={this.onAlertNotificationChange}
+          onSettingsChange={this.onSettingsChange}
+          settings={this.state.settings}
+          showTransientNotifications={showTransientNotifications}
           preferences={this.state.preferences} />
       );
     } else if (failedLoadingUserPreferences) {
@@ -112,12 +132,12 @@ class AlertSettingModal extends Component {
   }
 
   saveAlertSettings() {
-    const { preferences } = this.state;
+    const { preferences, settings } = this.state;
     const { onClose } = this.props;
     let { showSpinner } = this.state;
     showSpinner = true;
     this.setState({ showSpinner });
-    AlertPreferenceAPI.set(preferences).then(() => {
+    AlertPreferenceAPI.set(preferences, settings).then(() => {
       showSpinner = false;
       this.setState({ showSpinner });
       onClose();
@@ -189,7 +209,8 @@ class AlertSettingModal extends Component {
 }
 
 AlertSettingModal.propTypes = {
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  showTransientNotifications: PropTypes.bool
 };
 
 export default cssModules(AlertSettingModal, styles, { allowMultiple: true });

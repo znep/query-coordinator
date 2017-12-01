@@ -35,7 +35,8 @@ class PanelFooter extends Component {
     const {
       currentUserRole,
       isSuperAdmin,
-      currentDomainFeatures
+      currentDomainFeatures,
+      showTransientNotifications
     } = this.props;
 
     if (showAlertSettingModal) {
@@ -44,6 +45,7 @@ class PanelFooter extends Component {
           onClose={this.closeModal}
           isSuperAdmin={isSuperAdmin}
           currentDomainFeatures={currentDomainFeatures}
+          showTransientNotifications={showTransientNotifications}
           currentUserRole={currentUserRole} />
       );
     }
@@ -173,7 +175,8 @@ PanelFooter.propTypes = {
   hasUserNotifications: PropTypes.bool,
   markAllProductNotificationsAsRead: PropTypes.func,
   openClearAllUserNotificationsPrompt: PropTypes.bool,
-  toggleClearAllUserNotificationsPrompt: PropTypes.func
+  toggleClearAllUserNotificationsPrompt: PropTypes.func,
+  showTransientNotifications: PropTypes.bool
 };
 
 PanelFooter.defaultProp = {
@@ -183,7 +186,8 @@ PanelFooter.defaultProp = {
   hasUserNotifications: false,
   markAllProductNotificationsAsRead: () => {},
   openClearAllUserNotificationsPrompt: false,
-  toggleClearAllUserNotificationsPrompt: () => {}
+  toggleClearAllUserNotificationsPrompt: () => {},
+  showTransientNotifications: false
 };
 
 export default connectLocalization(cssModules(PanelFooter, styles));

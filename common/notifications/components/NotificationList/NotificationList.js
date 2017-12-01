@@ -117,7 +117,8 @@ class NotificationList extends Component {
       showProductNotificationsAsSecondaryPanel,
       showProductNotifications,
       showUserNotifications,
-      currentDomainFeatures
+      currentDomainFeatures,
+      showTransientNotifications
     } = this.props;
 
     if ((showProductNotifications && !showUserNotifications) || (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
@@ -133,6 +134,7 @@ class NotificationList extends Component {
         currentUserRole={currentUserRole}
         showUserNotifications={showUserNotifications}
         currentDomainFeatures={currentDomainFeatures}
+        showTransientNotifications={showTransientNotifications}
         isSuperAdmin={isSuperAdmin} />);
     } else if (showUserNotifications) {
       const {
@@ -151,6 +153,7 @@ class NotificationList extends Component {
         showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
         currentDomainFeatures={currentDomainFeatures}
+        showTransientNotifications={showTransientNotifications}
         isSuperAdmin={isSuperAdmin} />);
     }
   }
@@ -197,7 +200,8 @@ NotificationList.propTypes = {
   userNotifications: PropTypes.array.isRequired,
   unreadProductNotificationCount: PropTypes.number.isRequired,
   unreadUserNotificationCount: PropTypes.number.isRequired,
-  viewOlderLink: PropTypes.string
+  viewOlderLink: PropTypes.string,
+  showTransientNotifications: PropTypes.bool
 };
 
 export default connectLocalization(cssModules(NotificationList, styles, { allowMultiple: true }));

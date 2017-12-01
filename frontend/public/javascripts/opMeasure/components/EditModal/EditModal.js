@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
@@ -90,9 +91,20 @@ export class EditModal extends Component {
   }
 
   render() {
-    if (!this.props.isEditing) {
+    const { isEditing, measure, pristineMeasure } = this.props;
+    const isUnmodified = _.isEqual(measure, pristineMeasure);
+
+    if (!isEditing) {
       return null;
     }
+
+    const saveBtnClasses = classNames(
+      'btn',
+      'btn-sm',
+      'btn-primary',
+      'done',
+      { 'btn-disabled': isUnmodified }
+    );
 
     return (
       <Modal className="measure-edit-modal" fullScreen onDismiss={this.onCancel}>
@@ -106,7 +118,11 @@ export class EditModal extends Component {
             <button type="button" className="btn btn-sm btn-default cancel" onClick={this.onCancel}>
               {I18n.t('open_performance.measure.edit_modal.cancel')}
             </button>
-            <button type="button" className="btn btn-sm btn-primary done" onClick={this.onComplete}>
+            <button
+              type="button"
+              className={saveBtnClasses}
+              disabled={isUnmodified}
+              onClick={this.onComplete}>
               {I18n.t('open_performance.measure.edit_modal.accept')}
             </button>
           </div>
@@ -119,6 +135,7 @@ export class EditModal extends Component {
 EditModal.propTypes = {
   isEditing: PropTypes.bool,
   measure: PropTypes.object,
+  pristineMeasure: PropTypes.object,
   tabs: PropTypes.array,
   onCancel: PropTypes.func,
   onComplete: PropTypes.func

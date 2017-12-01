@@ -11,7 +11,8 @@ export function getStore(state) {
       view: window.initialState,
       editor: {
         isEditing: true,
-        measure: window.initialState.measure
+        measure: window.initialState.measure,
+        pristineMeasure: window.initialState.measure
       }
     },
     state

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TextInput from 'components/TextInput/TextInput';
 import { getBasename, getExtension } from 'lib/util';
 import SocrataIcon from '../../../common/components/SocrataIcon';
+import { DuplicateExtension, BadUrl, MissingValue } from 'containers/HrefFormContainer';
 import styles from './URLField.scss';
 
 class URLField extends Component {
@@ -11,20 +12,20 @@ class URLField extends Component {
     const { handleChangeUrl, handleXClick, value, errors, hrefId, uuid } = this.props;
 
     const urlErrors = _.chain(errors)
-      .filter(err => err.name === 'UrlError')
+      .filter(err => err instanceof BadUrl)
       .flatMap(err => err.urls)
       .value();
 
     const dupeErrors = _.chain(errors)
-      .filter(err => err.name === 'DuplicateFiletypeError')
+      .filter(err => err instanceof DuplicateExtension)
       .filter(err => err.hrefId === hrefId)
-      .flatMap(err => err.dupes)
+      .flatMap(err => err.extensions)
       .value();
 
-    const emptyErrors = _.chain(errors)
-      .filter(err => err.name === 'EmptyError')
+    const missingValueErrors = _.chain(errors)
+      .filter(err => err instanceof MissingValue)
       .filter(err => err.hrefId === hrefId)
-      .filter(err => err.id === uuid)
+      .filter(err => err.urlId === uuid)
       .value();
 
     const urlInErrorState = urlErrors.length ? urlErrors.includes(value.url) : false;
@@ -32,7 +33,7 @@ class URLField extends Component {
     let filetypeInErrorState = false;
     let errorMessage = '';
 
-    if (emptyErrors.length) {
+    if (missingValueErrors.length) {
       filetypeInErrorState = true;
       errorMessage = I18n.show_sources.error_no_empties;
     } else if (dupeErrors.length) {

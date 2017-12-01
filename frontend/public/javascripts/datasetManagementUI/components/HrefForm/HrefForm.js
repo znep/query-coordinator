@@ -4,7 +4,6 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
-import { validate } from 'containers/HrefFormContainer';
 import { browserHistory } from 'react-router';
 import * as Links from 'links/links';
 import styles from './HrefForm.scss';
@@ -64,20 +63,9 @@ class HrefForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const errors = validate(this.state.hrefs);
-
-    if (errors.length) {
-      this.props.showFlash('error', I18n.show_sources.save_error);
-      this.props.setFormErrors(errors);
-      this.setState({
-        errors
-      });
-
-      return;
-    }
 
     this.props
-      .saveHrefs(this.state.hrefs)
+      .validateAndSaveHrefs(this.state.hrefs)
       .then(() => {
         this.props.showFlash('success', I18n.show_sources.save_success);
         this.props.markFormClean();
@@ -87,16 +75,15 @@ class HrefForm extends Component {
         });
       })
       .catch(err => {
-        const newErrors = [...this.state.errors, err];
-        this.props.showFlash('success', I18n.show_sources.save_success);
-        this.props.setFormErrors(newErrors);
+        const errors = [...this.state.errors, ...err.errors];
+        this.props.showFlash('error', I18n.show_sources.save_error);
         this.setState({
-          errors: newErrors
+          errors
         });
       })
       .then(() => {
-        // using this in the absence of Promise.finally
-        if (this.props.shouldExit) {
+        // using this .then in the absence of Promise.finally
+        if (this.props.shouldExit && !this.state.errors.length) {
           browserHistory.push(Links.revisionBase(this.props.params));
         }
       });
@@ -316,7 +303,7 @@ HrefForm.propTypes = {
   hrefs: PropTypes.arrayOf(PropTypes.object),
   params: PropTypes.object.isRequired,
   shouldExit: PropTypes.bool.isRequired,
-  saveHrefs: PropTypes.func.isRequired,
+  validateAndSaveHrefs: PropTypes.func.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   markFormClean: PropTypes.func.isRequired,
   setFormErrors: PropTypes.func.isRequired,

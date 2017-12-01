@@ -112,7 +112,7 @@ export const validate = hrefs => {
   const dupes = _.chain(hrefs)
     .map(href => ({ hrefId: href.id, dupes: findDupes(href.urls) }))
     .filter(err => err.dupes.length)
-    .map(err => new DuplicateExtension(err.dupes, err.id))
+    .map(err => new DuplicateExtension(err.dupes, err.hrefId))
     .value();
 
   const badUrls = _.chain(hrefs)

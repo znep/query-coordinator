@@ -83,7 +83,7 @@ class HrefForm extends Component {
       })
       .then(() => {
         // using this .then in the absence of Promise.finally
-        if (this.props.shouldExit) {
+        if (this.props.shouldExit && !this.state.errors.length) {
           browserHistory.push(Links.revisionBase(this.props.params));
         }
       });

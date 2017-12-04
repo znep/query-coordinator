@@ -46,13 +46,13 @@ export class DragDropUpload extends Component {
     this.preventDefault(e);
     const { dispatch } = this.props;
     const file = e.dataTransfer.files[0];
-    const item = _.get(e, "dataTransfer.items.0");
+    const item = _.get(e, 'dataTransfer.items.0');
     let entry;
 
     if (item && item.getAsEntry) {
-      entry = item.getAsEntry()
+      entry = item.getAsEntry();
     } else if (item && item.webkitGetAsEntry) {
-      entry = item.webkitGetAsEntry()
+      entry = item.webkitGetAsEntry();
     }
 
     if (entry && entry.isDirectory) {

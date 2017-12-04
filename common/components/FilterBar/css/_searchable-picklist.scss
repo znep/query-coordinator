@@ -1,6 +1,12 @@
 @import "variables/colors.scss";
 
 .searchable-picklist {
+  // We opted to not wrap this control in a form, because in some usages
+  // this control is already in a form context (and you can't have a form
+  // inside a form). Since we're really only using the form as a styling
+  // element, just include the form mixin to make the search box look right.
+  @include form;
+
   font-size: 12px;
 
   .searchable-picklist-input-container {

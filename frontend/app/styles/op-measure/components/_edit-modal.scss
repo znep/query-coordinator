@@ -1,4 +1,6 @@
 .measure-edit-modal {
+  overflow: hidden;
+
   .measure-edit-modal-content {
     display: flex;
     flex-direction: row;
@@ -149,6 +151,9 @@
       float: left;
       width: $column-width / 2;
       margin-bottom: $metric-definition-margin;
+
+      // Mostly for column condition display, but user-provided strings are shown throughout.
+      word-break: break-word;
     }
 
     .metric-preview {
@@ -212,19 +217,25 @@
       }
     }
 
+    .text-filter .rate-metric-numerator-column-condition-header {
+      margin-left: 8px;
+    }
+
     #rate-metric-numerator-column-conditions {
+
       .socrata-flannel-content {
         padding: 0;
       }
 
-      h6 {
-        margin-bottom: 5px;
-      }
-
-      .socrata-icon {
-        margin-right: 5px;
-        path {
-          fill: $alternate-3;
+      .rate-metric-numerator-column-condition-header {
+        h6 {
+          margin-bottom: 5px;
+          .socrata-icon {
+            margin-right: 5px;
+            path {
+              fill: $alternate-3;
+            }
+          }
         }
       }
     }

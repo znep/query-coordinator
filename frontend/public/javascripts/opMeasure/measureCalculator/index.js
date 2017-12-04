@@ -1,9 +1,9 @@
 // Calculates measures via direct SoQL calls.
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import { SoqlDataProvider } from 'common/visualizations/dataProviders';
+import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProviders';
 import { CalculationTypeNames } from '../lib/constants';
-import { assertIsOneOfTypes } from 'common/js_utils';
+import { assert, assertIsOneOfTypes } from 'common/js_utils';
 
 // Returns true if the given column can be used
 // with the given measure, false otherwise.
@@ -45,24 +45,47 @@ const setupSoqlDataProvider = (measure) => {
 
 /* Helper functions. Should use BigNumbers where possible. */
 
+const whereClauseFromColumnCondition = (fieldName, columnCondition) => {
+  return SoqlHelpers.filterToWhereClauseComponent({
+    columnName: fieldName,
+    ...columnCondition
+  });
+};
+
 // Returns: BigNumber.
-const count = async (dataProvider, fieldName, excludeNullValues) => {
-  if (!excludeNullValues) {
+const count = async (dataProvider, fieldName, columnCondition) => {
+  if (_.isEmpty(columnCondition)) {
+    // Can short circuit with faster query here.
     return new BigNumber(await dataProvider.getRowCount());
   }
 
   const countAlias = '__measure_count_alias__';
-  const data = await dataProvider.rawQuery(`select count(${fieldName}) as ${countAlias}`);
+  let query = `select count(${fieldName}) as ${countAlias}`;
+  if (columnCondition) {
+    query = `${query} where ${whereClauseFromColumnCondition(fieldName, columnCondition)}`;
+  }
+  const data = await dataProvider.rawQuery(query);
   return new BigNumber(data[0][countAlias]);
 };
 
 // Returns: BigNumber.
-const sum = async (dataProvider, fieldName) => {
+const sum = async (dataProvider, fieldName, columnCondition) => {
   const sumAlias = '__measure_sum_alias__';
 
-  const data = await dataProvider.rawQuery(`select sum(${fieldName}) as ${sumAlias}`);
+  let query = `select sum(${fieldName}) as ${sumAlias}`;
+  if (columnCondition) {
+    query = `${query} where ${whereClauseFromColumnCondition(fieldName, columnCondition)}`;
+  }
+
+  const data = await dataProvider.rawQuery(query);
   return new BigNumber(data[0][sumAlias]);
 };
+
+const excludeNullsFilter = (fieldName) => ({
+  columnName: fieldName,
+  'function': 'isNull',
+  arguments: { isNull: false }
+});
 
 /* Measure types
  * Should generally return objects like:
@@ -92,10 +115,13 @@ export const calculateCountMeasure = async (measure) => {
     return {};
   }
 
+  const columnCondition = _.get(measure, 'metric.arguments.includeNullValues') ?
+    null : excludeNullsFilter(column);
+
   const result = await count(
     dataProvider,
     column,
-    _.get(measure, 'metric.arguments.excludeNullValues')
+    columnCondition
   );
 
   return {
@@ -139,11 +165,19 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
   const {
     aggregationType,
     numeratorColumn,
+    numeratorColumnCondition,
     denominatorColumn,
-    numeratorExcludeNullValues,
-    denominatorExcludeNullValues,
     fixedDenominator
   } = _.get(measure, 'metric.arguments', {});
+
+  const denominatorIncludeNullValues = _.get(measure, 'metric.arguments.denominatorIncludeNullValues', true);
+
+  if (aggregationType && aggregationType !== CalculationTypeNames.COUNT) {
+    assert(
+      denominatorIncludeNullValues,
+      'Excluding null values from non-count Rate measure numerator is nonsensical'
+    );
+  }
 
   const decimalPlaces = _.get(measure, 'metric.display.decimalPlaces');
   const asPercent = _.get(measure, 'metric.display.asPercent');
@@ -163,17 +197,21 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
   // partial results in edit mode even if half of the fraction
   // is not fully-specified.
   switch (aggregationType) {
-    case CalculationTypeNames.COUNT:
+    case CalculationTypeNames.COUNT: {
       numeratorPromise = numeratorColumn ?
-        count(dataProvider, numeratorColumn, numeratorExcludeNullValues) :
+        count(dataProvider, numeratorColumn, numeratorColumnCondition) :
         null;
 
+      const denominatorColumnCondition = denominatorIncludeNullValues ?
+        null : excludeNullsFilter(denominatorColumn);
+
       denominatorPromise = denominatorPromise ||
-        (denominatorColumn ? count(dataProvider, denominatorColumn, denominatorExcludeNullValues) : null);
+        (denominatorColumn ? count(dataProvider, denominatorColumn, denominatorColumnCondition) : null);
       break;
+    }
     case CalculationTypeNames.SUM:
       numeratorPromise = numeratorColumn ?
-        sum(dataProvider, numeratorColumn) :
+        sum(dataProvider, numeratorColumn, numeratorColumnCondition) :
         null;
 
       denominatorPromise = denominatorPromise ||

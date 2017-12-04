@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import I18n from 'common/i18n';
-import { ENTER, isolateEventByKeys } from 'common/dom_helpers/keycodes';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 
@@ -55,9 +54,9 @@ export class SearchablePicklist extends Component {
   }
 
   onKeyPressSearch(event) {
-    isolateEventByKeys(event, [ENTER]);
-
-    if (event.keyCode === ENTER) {
+    if (event.key === 'Enter') {
+      event.stopPropagation();
+      event.preventDefault();
       this.onSearch(event);
     }
   }
@@ -110,29 +109,28 @@ export class SearchablePicklist extends Component {
 
     return (
       <div className="searchable-picklist-input-container">
-        <form>
-          <span className="input-group">
-            <input
-              className="searchable-picklist-input"
-              type="text"
-              aria-label={I18n.t('shared.components.filter_bar.search')}
-              value={value || ''}
-              ref={(el) => this.search = el}
-              onKeyPress={this.onKeyPressSearch}
-              onChange={this.onChangeSearchTerm}
-              aria-invalid={isError}
-              disabled={isValidating} />
-            {loadingSpinner}
-            <span className="input-group-btn">
-              <button
-                className={buttonClassName}
-                onClick={this.onSearch}
-                disabled={isValidating}>
-                <SocrataIcon name="search" />
-              </button>
-            </span>
+        <span className="input-group">
+          <input
+            className="searchable-picklist-input"
+            type="text"
+            aria-label={I18n.t('shared.components.filter_bar.search')}
+            value={value || ''}
+            ref={(el) => this.search = el}
+            onKeyPress={this.onKeyPressSearch}
+            onChange={this.onChangeSearchTerm}
+            aria-invalid={isError}
+            disabled={isValidating} />
+          {loadingSpinner}
+          <span className="input-group-btn">
+            <button
+              type="button"
+              className={buttonClassName}
+              onClick={this.onSearch}
+              disabled={isValidating}>
+              <SocrataIcon name="search" />
+            </button>
           </span>
-        </form>
+        </span>
       </div>
     );
   }

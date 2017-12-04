@@ -15,6 +15,7 @@ export class PreviewBar extends PureComponent {
     return (
       <div className="preview-bar">
         <button
+          type="button"
           className="btn btn-transparent btn-back"
           onClick={onClickExit}
           aria-label={I18n.t('open_performance.exit_preview_mode')}
@@ -23,6 +24,7 @@ export class PreviewBar extends PureComponent {
         </button>
         <span>{I18n.t('open_performance.preview')}</span>
         <button
+          type="button"
           className="btn btn-transparent btn-exit"
           onClick={onClickExit}
           aria-label={I18n.t('open_performance.exit_preview_mode')}>

@@ -155,6 +155,25 @@ describe('measureCalculator', () => {
           const response = await calculateRateMeasure(countFixedWithNumerator, dataProvider);
           assert.propertyVal(response, 'result', '5');
         });
+
+        it('includes column condition in query', (done) => {
+          const countWithCondition = _.set(_.cloneDeep(countFixed),
+            'metric.arguments.numeratorColumn',
+            'numeratorCol'
+          );
+          _.set(countWithCondition,
+            'metric.arguments.numeratorColumnCondition',
+            { function: 'valueRange', arguments: { start: 3, end: 5 } }
+          );
+
+          const dataProvider = {
+            rawQuery: (query) => {
+              assert.include(query, '(`numeratorCol` >= 3 AND `numeratorCol` < 5)');
+              done();
+            }
+          };
+          calculateRateMeasure(countWithCondition, dataProvider);
+        });
       });
       describe('sum aggregation', () => {
         const sumFixed = {};
@@ -162,6 +181,14 @@ describe('measureCalculator', () => {
         _.set(sumFixed, 'metric.arguments', {
           aggregationType: CalculationTypeNames.SUM,
           fixedDenominator: '20'
+        });
+
+        it('throws if nulls are excluded', () => {
+          const sumWithExcludeInDenominator = _.set(_.cloneDeep(sumFixed),
+            'metric.arguments.denominatorIncludeNullValues',
+            false
+          );
+          assert.throws(() => calculateRateMeasure(sumWithExcludeInDenominator, dataProvider));
         });
 
         it('returns the fixed denominator in the response', async () => {
@@ -222,7 +249,10 @@ describe('measureCalculator', () => {
             'numeratorCol'
           );
           // This will differentiate the queries for mocking purposes.
-          numeratorAndDenominator.metric.arguments.numeratorExcludeNullValues = true;
+          _.set(numeratorAndDenominator,
+            'metric.arguments.numeratorColumnCondition',
+            { function: 'valueRange', arguments: { start: 3, end: 5 } }
+          );
           const dataProvider = {
             rawQuery: async () => [{
               '__measure_count_alias__': '100' // Numerator
@@ -257,8 +287,6 @@ describe('measureCalculator', () => {
             'metric.arguments.numeratorColumn',
             'numeratorCol'
           );
-          // This will differentiate the queries for mocking purposes.
-          numeratorAndDenominator.metric.arguments.numeratorExcludeNullValues = true;
           const dataProvider = {
             rawQuery: async (query) => {
               return query.indexOf('denominatorCol') < 0 ?
@@ -270,6 +298,25 @@ describe('measureCalculator', () => {
           assert.propertyVal(response, 'result', '3');
           assert.propertyVal(response, 'numerator', '300');
           assert.propertyVal(response, 'denominator', '100');
+        });
+
+        it('includes column condition in query', (done) => {
+          const sumWithCondition = _.set(_.cloneDeep(sumComputed),
+            'metric.arguments.numeratorColumn',
+            'numeratorCol'
+          );
+          _.set(sumWithCondition,
+            'metric.arguments.numeratorColumnCondition',
+            { function: 'valueRange', arguments: { start: 3, end: 5 } }
+          );
+
+          const dataProvider = {
+            rawQuery: (query) => {
+              assert.include(query, '(`numeratorCol` >= 3 AND `numeratorCol` < 5)');
+              done();
+            }
+          };
+          calculateRateMeasure(sumWithCondition, dataProvider);
         });
       });
     });

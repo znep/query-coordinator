@@ -1,8 +1,24 @@
 <% content_for :head do %>
-  <title>Example Usage: EditBar</title>
+  <title>Example Usage: Flannel</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
   <%= rendered_stylesheet_tag 'component_example_pages' %>
 <% end %>
+
+<style type="text/css">
+  .moving-target {
+    background: green;
+    cursor: crosshair;
+  }
+
+  .moving-target * {
+    visibility: hidden;
+  }
+
+  #safe-target {
+    background: orange;
+    margin-left: 30em;
+  }
+</style>
 
 <section class="styleguide-section">
   <p>
@@ -15,6 +31,9 @@
   <p><b>Note!</b> The props are well-documented in the
     <a href="https://github.com/socrata/platform-ui/blob/master/common/components/Flannel/index.js">Flannel PropTypes</a>.
   </p>
+  <div id="safe-target">
+    Clicking in here won't close the flannel (unlike other places outside the flannel).
+  </div>
   <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
 </section>
 
@@ -23,48 +42,64 @@
   <%= include_webpack_bundle 'component_example_pages/main.js' %>
 
   <script type="text/javascript" id="example-1">
-    $(() => {
-      let btn;
+    $(function() {
+      var targetBtn;
 
-      const {
-        Flannel,
-        FlannelHeader,
-        FlannelContent,
-        FlannelFooter,
-        SocrataIcon
-      } = components;
+      var Flannel = components.Flannel;
+      var FlannelHeader = components.FlannelHeader;
+      var FlannelContent = components.FlannelContent;
+      var FlannelFooter = components.FlannelFooter;
+      var SocrataIcon = components.SocrataIcon;
 
-      const title = 'Access this Dataset via SODA API';
+      var title = 'Access this Dataset via SODA API';
 
-      const buttonProps = {
+      var openHereButtonProps = {
        className: "btn btn-primary",
-       ref: (ref) => btn = ref,
+       ref: function(ref) { targetBtn = ref },
        onClick: renderFlannel,
        'aria-haspopup': true,
        'aria-owns': 'flannel-example'
       };
 
-      const props = {
-        id: 'flannel-example',
-        title,
-        target: () => btn,
-        isOpen: false,
-        onDismiss: closeFlannel
+      var moveTargetButtonProps = {
+       className: "btn",
+       onClick: moveTarget
       };
 
-      const headerProps = {
-        title,
-        onDismiss: closeFlannel
+      var props = {
+        id: 'flannel-example',
+        title: title,
+        target: function() { return targetBtn },
+        isOpen: false,
+        onDismiss: maybeCloseFlannel
+      };
+
+      var headerProps = {
+        title: title,
+        onDismiss: maybeCloseFlannel
       };
 
       function renderButton() {
         ReactDOM.render(
           React.createElement('div', null, [
-            React.createElement('button', buttonProps, 'Click me!'),
+            React.createElement('button', openHereButtonProps, 'Open flannel here'),
+            React.createElement('button', moveTargetButtonProps, 'Move target (or press "m")'),
             React.createElement('div', {id: 'flannel-container'})
           ]),
           document.getElementById('btn-flannel-container')
         );
+      }
+
+      function moveTarget() {
+        $(document.documentElement).one('click', function(event) {
+          $(this).
+            toggleClass('moving-target', false);
+          $(targetBtn).
+            css('position', 'absolute').
+            css('left', event.offsetX).
+            css('top', event.offsetY);
+        }).
+        toggleClass('moving-target', true);
       }
 
       function renderFlannel() {
@@ -77,10 +112,21 @@
         );
       }
 
-      function closeFlannel() {
+      function maybeCloseFlannel(event) {
+        if (event && event.target.getAttribute('id') === 'safe-target') {
+          return; // Don't close the flannel.
+        }
         ReactDOM.unmountComponentAtNode(document.getElementById('flannel-container'));
       }
 
+      $(document.documentElement).on(
+        'keyup',
+        function(event) {
+          if (event.key === 'm') {
+            moveTarget();
+          }
+        }
+      );
       renderButton();
     });
   </script>

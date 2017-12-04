@@ -75,7 +75,7 @@ export class SummaryPane extends Component {
     if (mode === ModeStates.EDIT) {
       editButton = (
         <div className="btn-group">
-          <button className="btn btn-alternate-2 btn-sm btn-edit" onClick={onClickEdit}>
+          <button type="button" className="btn btn-alternate-2 btn-sm btn-edit" onClick={onClickEdit}>
             {I18n.t('open_performance.edit')}
           </button>
         </div>

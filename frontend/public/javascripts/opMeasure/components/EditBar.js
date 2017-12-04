@@ -22,7 +22,7 @@ export class EditBar extends PureComponent {
     return (
       <SocrataComponentsEditBar {...editBarProps}>
         <div className="edit-bar-child">
-          <button className="btn btn-transparent btn-preview" onClick={onClickPreview}>
+          <button type="button" className="btn btn-transparent btn-preview" onClick={onClickPreview}>
             {I18n.t('open_performance.preview')}
             <span className="socrata-icon-preview" role="presentation" />
           </button>

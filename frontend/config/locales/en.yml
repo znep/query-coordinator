@@ -3164,21 +3164,25 @@ en:
             unit_label: Unit Label
             unit_label_placeholder: Per ...
             display_as_percent: Display as percent
-          exclude_nulls: Exclude Null Values
+          include_nulls: Include missing or null values
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
           title: Metric Calculation
           types:
             count:
-              help_body: This calculation type counts the number of rows in the selected data source.  Checking "Exclude Null Values" will skip over the cells that do not contain a value.
+              help_body: This calculation type counts the number of rows in the selected data source.  Checking "Include missing or null values" will skip over the cells that do not contain a value.
               help_title: How is Count Calculated?
               title: Count Options
             rate:
               aggregation_subtitle: Configure math for numerator and denominator
               aggregation_title: Set Aggregation
+              condition_text_prefix: "Condition:"
               conditions:
                 header:
+                  calendar_date: Date range
+                  checkbox: Category selection
+                  money: Range ($)
                   number: Range
                   text: Category selection
                 subheader: Limit this column based on its contents.

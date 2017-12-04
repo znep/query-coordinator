@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
+import { CalculationTypeNames } from 'lib/constants';
 import reducer from 'reducers/editor';
 import actions from 'actions';
 
@@ -118,6 +119,24 @@ describe('Edit modal reducer', () => {
       assert.deepEqual(state.dataSourceViewMetadata, viewMetadata);
     });
 
+    it('resets metric config to default', () => {
+      const viewMetadata = {
+        id: 'xxxx-xxxx',
+        columns: []
+      };
+
+      _.set(state, 'measure.metric.dataSource', {
+        uid: 'test-test'
+      });
+
+      _.set(state, 'measure.metric.type', CalculationTypeNames.SUM);
+      _.set(state, 'measure.metric.arguments.foo', 'hello');
+
+      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
+      assert.equal(state.measure.metric.type, CalculationTypeNames.COUNT);
+      assert.notNestedProperty(state, 'measure.metric.arguments.foo');
+    });
+
     it('throws if not given a number for the rowCount', () => {
       _.set(state, 'measure.metric.dataSource', {
         uid: 'test-test'
@@ -132,6 +151,26 @@ describe('Edit modal reducer', () => {
       });
 
       assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata(100, 'im not really an object')));
+    });
+  });
+
+  describe('SET_NUMERATOR_COLUMN_CONDITION', () => {
+    it('throws if the calculation type is not rate', () => {
+      assert.throws(() => {
+        state = reducer(state, actions.editor.setCalculationType('count'));
+        reducer(state, actions.editor.setNumeratorColumnCondition({}))
+      });
+    });
+
+    it('replaces the appropriate argument', () => {
+      state = reducer(state, actions.editor.setCalculationType('rate'));
+
+      const newCondition1 = { type: 'mock1', foo: 'bar' };
+      state = reducer(state, actions.editor.setNumeratorColumnCondition(newCondition1));
+
+      const newCondition2 = { type: 'mock2' };
+      state = reducer(state, actions.editor.setNumeratorColumnCondition(_.cloneDeep(newCondition2)));
+      assert.deepEqual(state.measure.metric.arguments.numeratorColumnCondition, newCondition2);
     });
   });
 
@@ -211,13 +250,23 @@ describe('Edit modal reducer', () => {
       assert.nestedPropertyVal(state, 'measure.metric.type', 'count' );
     });
 
-    it('removes all values in "measure.metric" except for dataSource uid', () => {
+    it('sets default arguments', () => {
+      state = reducer(state, actions.editor.setCalculationType('count'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
+
+      state = reducer(state, actions.editor.setCalculationType('rate'));
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+    });
+
+    it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
       state = reducer(state, actions.editor.setCalculationType('sum'));
       _.set(state, 'measure.metric.arguments.column', 'some column');
+      _.set(state, 'measure.metric.arguments.something', 'what');
       _.set(state, 'measure.metric.dataSource.uid', 'test-test');
 
       state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.notNestedProperty(state, 'measure.metric.arguments');
+      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+      assert.notNestedProperty(state, 'measure.metric.arguments.something');
       assert.equal(state.measure.metric.dataSource.uid, 'test-test');
     });
   });
@@ -244,15 +293,15 @@ describe('Edit modal reducer', () => {
     });
   });
 
-  describe('TOGGLE_EXCLUDE_NULL_VALUES', () => {
-    it('toggles arguments.excludeNullValues in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.arguments.excludeNullValues');
+  describe('TOGGLE_INCLUDE_NULL_VALUES', () => {
+    it('toggles arguments.includeNullValues in the measure metric, with a default implied value of true', () => {
+      assert.notNestedProperty(state, 'measure.metric.arguments.includeNullValues');
 
-      state = reducer(state, actions.editor.toggleExcludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.excludeNullValues', true);
+      state = reducer(state, actions.editor.toggleIncludeNullValues());
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', false);
 
-      state = reducer(state, actions.editor.toggleExcludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.excludeNullValues', false);
+      state = reducer(state, actions.editor.toggleIncludeNullValues());
+      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
     });
   });
 

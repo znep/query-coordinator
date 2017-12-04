@@ -116,7 +116,9 @@ export class CheckboxFilter extends Component {
   }
 
   renderHeader() {
-    const { column, isReadOnly, onClickConfig } = this.props;
+    const { column, isReadOnly, onClickConfig, header } = this.props;
+
+    if (header) { return header; }
 
     const attributes = {
       isReadOnly,
@@ -221,11 +223,12 @@ export class CheckboxFilter extends Component {
 }
 
 CheckboxFilter.propTypes = {
-  filter: PropTypes.object.isRequired,
   column: PropTypes.object.isRequired,
   controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+  filter: PropTypes.object.isRequired,
+  header: PropTypes.element,
   isReadOnly: PropTypes.bool,
-  onClickConfig: PropTypes.func.isRequired,
+  onClickConfig: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   value: PropTypes.string

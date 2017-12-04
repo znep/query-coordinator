@@ -103,4 +103,37 @@ describe('components/DragDropUpload', () => {
     assert.isTrue(initialState);
     assert.isFalse(updatedState);
   });
+
+  it('prints an error if dropping a directory', () => {
+    const fakeStore = mockStore(state);
+    const fakeEvt = {
+      dataTransfer: {
+        files: [],
+        items: [{ webkitGetAsEntry() {
+          return { isDirectory: true }
+        } }]
+      },
+      preventDefault: () => {},
+      stopPropagation: () => {}
+    };
+    const component = shallow(
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
+      {
+        context: { store: fakeStore }
+      }
+    );
+
+    component.find('.dropZone').simulate('drop', fakeEvt);
+
+    setTimeout(() => {
+      const actions = fakeStore.getActions();
+      const expectedAction = actions.filter(
+        action =>
+          action.type === 'SHOW_FLASH_MESSAGE' &&
+          action.message === 'Directory uploads are not supported'
+      );
+      assert.equal(expectedAction.length, 1);
+      done();
+    }, 100);
+  });
 });

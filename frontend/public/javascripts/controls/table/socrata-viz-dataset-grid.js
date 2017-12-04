@@ -82,7 +82,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
         window.blist.feature_flags.force_soda1_usage_in_javascript_dataset_model ||
         !isNewBackend
       );
-      var rowIdentifier = (useSoda1Semantics) ? 'uuid' : 'id';
+      var rowIdentifier = (isNewBackend) ? 'id' : 'uuid';
       var rowIds = rows.map(function(row) {
         return String(_.get(row, ['metadata', rowIdentifier], null));
       });

@@ -393,6 +393,8 @@ function renderWKTInputLine(column, value) {
   if (_.isNull(value)) {
     $inputLine.find('input.value').attr('disabled', true);
     $inputLine.find('input.is-null').value(true);
+  } else if (_.isString(value)) {
+    $inputLine.find('input.value').value(value);
   } else {
     $inputLine.find('input.value').value(WKT.stringify(value));
   }

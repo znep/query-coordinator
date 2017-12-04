@@ -195,12 +195,26 @@
       // which made the chart load blank. So de-dupe request
       if (!chartObj._gettingAggs) {
         chartObj._gettingAggs = true;
-        chartObj._primaryView.getAggregates(function() {
+
+        if (blist.feature_flags.enable_2017_grid_view_refresh && blist.dataset.newBackend) {
+          // EN-20712 - Support classic viz on NBE-only datasets
+          //
+          // For experimental classic-viz-on-NBE-only-datasets support, just don't
+          // ask for column aggregates because they seem to be expected to be used
+          // for column totals, which is a feature we are deprecating in the grid
+          // view refresh.
           calculateSegmentSizes(chartObj, customAggs);
           chartObj.columnsLoaded();
           chartObj.ready();
           delete chartObj._gettingAggs;
-        }, customAggs);
+        } else {
+          chartObj._primaryView.getAggregates(function() {
+            calculateSegmentSizes(chartObj, customAggs);
+            chartObj.columnsLoaded();
+            chartObj.ready();
+            delete chartObj._gettingAggs;
+          }, customAggs);
+        }
       }
 
       return false;

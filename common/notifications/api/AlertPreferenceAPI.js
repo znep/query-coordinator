@@ -79,11 +79,12 @@ function decodePreferenceFormat(preferences) {
   });
   return {
     subscription_preferences: decodedSubscriptionPreferences,
-    settings: decodeSettings(_.get(preferences, 'settings', {}))
+    settings: decodeSettings(preferences)
   };
 }
 
-function decodeSettings(settings) {
+function decodeSettings(preferences) {
+  let settings = _.get(preferences, 'settings', {});
   if (_.isEmpty(settings)) {
     return {};
   }

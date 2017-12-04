@@ -21,7 +21,7 @@ class EmailSettings extends Component {
             {I18n.t('title', { scope: 'shared_site_chrome_notifications.alert_setting_modal.email_digest' })}
           </div>
           <div styleName="preference-description">
-            {I18n.t('description', { scope:'shared_site_chrome_notifications.alert_setting_modal.email_digest' })}
+            {I18n.t('description', { scope: 'shared_site_chrome_notifications.alert_setting_modal.email_digest' })}
           </div>
         </td>
 
@@ -111,8 +111,8 @@ class EmailSettings extends Component {
               </tr>
             </thead>
             <tbody>
-            {this.renderEmailDigest()}
-            {this.renderEmailMuteButton()}
+              {this.renderEmailDigest()}
+              {this.renderEmailMuteButton()}
             </tbody>
           </table>
         </div>

@@ -130,12 +130,11 @@ $divider-color: #e8eaeb;
     }
 
     button {
-      background-color: #fff;
-      border: 1px solid #f2f2f2;
+      background-color: $white;
+      border: 1px solid $light-grey-3;
       border-radius: 0px;
-      color: #696a6a;
+      color: $model-content-color;
       padding: 7px 3px;
-      border: 1px solid rgba(0, 0, 0, 0.2);
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
       cursor: pointer;
       float: left;
@@ -146,13 +145,13 @@ $divider-color: #e8eaeb;
       }
 
       &:hover {
-        background-color: #288dc1;
-        color: #fff;
+        background-color: $primary;
+        color: $white;
       }
 
       &.selected {
-        background-color: #288dc1;
-        color: #fff;
+        background-color: $primary;
+        color: $white;
       }
     }
   }
@@ -165,7 +164,7 @@ $divider-color: #e8eaeb;
       }
     }
     .option-column {
-       width: 54%;
+      width: 54%;
     }
   }
 }

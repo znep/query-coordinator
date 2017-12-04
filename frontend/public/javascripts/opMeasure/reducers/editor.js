@@ -1,9 +1,13 @@
 import _ from 'lodash';
 
 import { assert, assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
+
+import validate from './validate';
 import actions from '../actions';
 import { CalculationTypeNames } from '../lib/constants';
 import { isColumnUsableWithMeasureArgument } from '../measureCalculator';
+
+const validateActionRegex = /^VALIDATE_/;
 
 // Convenience mutator for the measure being edited.
 // warning: _.merge will ignore undefined values so in the scenario where a value is
@@ -51,7 +55,8 @@ const setCalculationType = (state, type) => {
 const initialState = _.constant({
   isEditing: false,
   measure: {},
-  pristineMeasure: {}
+  pristineMeasure: {},
+  validationErrors: validate().validationErrors
 });
 
 // Edit modal reducer.
@@ -59,6 +64,11 @@ const initialState = _.constant({
 export default (state = initialState(), action) => {
   if (_.isUndefined(action)) {
     return state;
+  }
+
+  // Delegate to sub-reducer for validation.
+  if (validateActionRegex.test(action.type)) {
+    return validate(state, action);
   }
 
   // Need to cloneDeep the state since react/redux only does a shallow comparison so when we pass a 'measure'
@@ -193,6 +203,15 @@ export default (state = initialState(), action) => {
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 
+    case actions.editor.SET_DESCRIPTION:
+      return updateMeasureProperty(state, 'description', action.description);
+
+    case actions.editor.SET_NAME:
+      return updateMeasureProperty(state, 'name', action.name);
+
+    case actions.editor.SET_SHORT_NAME:
+      return updateMeasureProperty(state, 'shortName', action.shortName);
+
     case actions.editor.OPEN_EDIT_MODAL: {
       let nextState = {
         ...state,
@@ -209,6 +228,7 @@ export default (state = initialState(), action) => {
 
       return nextState;
     }
+
     case actions.editor.CANCEL_EDIT_MODAL:
     case actions.editor.ACCEPT_EDIT_MODAL_CHANGES:
       return {

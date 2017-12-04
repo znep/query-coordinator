@@ -12,7 +12,8 @@ export function getStore(state) {
       editor: {
         isEditing: true,
         measure: window.initialState.measure,
-        pristineMeasure: window.initialState.measure
+        pristineMeasure: window.initialState.measure,
+        validationErrors: {}
       }
     },
     state

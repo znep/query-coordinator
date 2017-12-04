@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment'
+import moment from 'moment';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mount, shallow } from 'enzyme';

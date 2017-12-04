@@ -52,6 +52,7 @@ module OpMeasureHelper
       :measure => {
         :coreView => @view,
         :name => @view.name,
+        :shortName => '',
         :description => @view.description || 'Description goes here',
         :metadata => {
           :methods => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',

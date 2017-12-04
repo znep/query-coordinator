@@ -88,3 +88,7 @@ common/frontend-visualizations/dist/
 common/i18n/config/locales/*.yml
 !common/i18n/config/locales/en.yml
 /common/i18n/log
+
+# Guard against weird npm stuff
+package-lock.json
+package.json

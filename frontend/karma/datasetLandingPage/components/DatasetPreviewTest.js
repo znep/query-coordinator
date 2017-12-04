@@ -96,19 +96,24 @@ describe('components/DatasetPreview', function() {
 
       it('does not render the visualize link', () => {
         const element = renderComponent(DatasetPreview, getProps());
-        assert.isNull(element.querySelector('a.btn-visualize[href="bootstrapUrl"]'));
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
 
     describe('when the user is not logged in', () => {
       beforeEach(() => {
-        window.serverConfig.currentUser = null;
+        window.serverConfig.currentUser = {};
         window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
-      it('renders the visualize link if the bootstrapUrl is defined', () => {
+      it('renders a link to login with a return_to=bootstrapUrl', function() {
         const element = renderComponent(DatasetPreview, getProps());
-        assert.ok(element.querySelector('a.btn-visualize[href="bootstrapUrl"]'));
+        assert.ok(element.querySelector('a[href="/login?return_to=bootstrapUrl"]'));
+      });
+
+      it('does not render the visualize link', () => {
+        const element = renderComponent(DatasetPreview, getProps());
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
   });

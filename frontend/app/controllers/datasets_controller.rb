@@ -6,10 +6,7 @@ class DatasetsController < ApplicationController
   include ViewsHelper
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [
-    :show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner,
-    :form_success, :external, :external_download, :download, :about, :create_visualization_canvas
-  ]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.

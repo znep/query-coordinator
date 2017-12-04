@@ -2532,6 +2532,7 @@ en:
     show_uploads:
       filetypes: Parseable file types are
       flash_error_message: Unsupported file type
+      directory_error_message: Directory uploads are not supported
       from_url: URL Source
       message: Drag a New Data File Here
       no_uploads: No data sources yet

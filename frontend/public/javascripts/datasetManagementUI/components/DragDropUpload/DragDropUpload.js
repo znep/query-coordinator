@@ -46,8 +46,18 @@ export class DragDropUpload extends Component {
     this.preventDefault(e);
     const { dispatch } = this.props;
     const file = e.dataTransfer.files[0];
+    const item = _.get(e, 'dataTransfer.items.0');
+    let entry;
 
-    if (file) {
+    if (item && item.getAsEntry) {
+      entry = item.getAsEntry();
+    } else if (item && item.webkitGetAsEntry) {
+      entry = item.webkitGetAsEntry();
+    }
+
+    if (entry && entry.isDirectory) {
+      dispatch(showFlashMessage('error', I18n.show_uploads.directory_error_message));
+    } else if (file) {
       dispatch(hideFlashMessage());
       dispatch(createUploadSource(file, this.canBeParsed(file), this.props.params));
     } else {

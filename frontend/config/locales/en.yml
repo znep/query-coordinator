@@ -3525,11 +3525,11 @@ en:
           working_copy: Working Copy
         columns:
           actions: Actions
-          date: Date
-          event: Event
-          initiated_by: Initiated By
-          item_affected: Item Affected
-          type: Type
+          activity_type: Event
+          acting_user_name: Initiated By
+          asset_type: Type
+          created_at: Date
+          dataset_name: Item Affected
         events:
           user_added: User Added
           user_removed: User Removed

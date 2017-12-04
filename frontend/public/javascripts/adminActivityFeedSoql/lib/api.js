@@ -59,6 +59,11 @@ const buildWhereClause = (filters) => {
   return ands.length > 0 ? `$where=${ands.join(' and ')}` : null;
 };
 
+const buildOrderClause = (order) => {
+  const { column, direction } = order || {};
+  return `$order=${column} ${direction}`;
+};
+
 const buildQuery = (parts) => {
 
   return `${constants.API_URL}?${parts.filter(_.isString).join('&')}`;
@@ -83,7 +88,8 @@ const fetchTable = (options) => {
   const parts = [
     `$offset=${options.offset}`,
     `$limit=${options.limit}`,
-    buildWhereClause(options.filters)
+    buildWhereClause(options.filters),
+    buildOrderClause(options.order)
   ];
 
   return fetch(buildQuery(parts), fetchOptions).

@@ -17,7 +17,8 @@ const fetchData = () => (dispatch, getState) => {
   const options = {
     offset: (state.pagination.page - 1) * state.pagination.pageSize,
     limit: state.pagination.pageSize,
-    filters: state.filters
+    filters: state.filters,
+    order: state.order
   };
 
   return api.

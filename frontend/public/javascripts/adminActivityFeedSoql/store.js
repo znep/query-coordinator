@@ -16,5 +16,4 @@ if (window.serverConfig.environment === 'development') {
 
 const store = createStore(activityFeed, applyMiddleware(...middleware));
 
-
 export default store;

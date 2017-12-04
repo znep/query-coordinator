@@ -5,6 +5,7 @@ import filters from './filters';
 import windowDimensions from './windowDimensions';
 import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReducer';
 import common from './common';
+import order from './order';
 
 export default combineReducers({
   table,
@@ -12,5 +13,6 @@ export default combineReducers({
   filters,
   windowDimensions,
   autocomplete,
-  common
+  common,
+  order
 });

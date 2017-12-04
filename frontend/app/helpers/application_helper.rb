@@ -1041,7 +1041,10 @@ module ApplicationHelper
   end
 
   def current_user_can_see_dsmp_preview?
-    FeatureFlags.derive(nil, request)[:dsmp_preview] || false
+    (
+      FeatureFlags.derive(nil, request)[:enable_dataset_management_ui] &&
+      FeatureFlags.derive(nil, request)[:dsmp_preview]
+    ) || false
   end
 
   def current_user_can_create_measure?

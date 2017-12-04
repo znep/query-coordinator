@@ -33,7 +33,7 @@ export function associateChildToParent(parentUid, currentRevision, revisionParam
         });
       }
 
-      const oldParentUid = getParentUid(currentRevision);
+      const oldParentUid = getParentUid(currentRevision.metadata);
       if (oldParentUid !== parentUid) {
         if (oldParentUid) {
           // remove the child from the current parent (about to be replaced)

@@ -19,6 +19,7 @@ export const getCurrentUserFilter = () => {
 };
 
 export const getCurrentUserId = () => _.get(getCurrentUserFilter(), 'ownedBy.id');
+export const getTargetUserId = () => _.get(window, 'socrata.initialState.targetUserId', getCurrentUserId());
 
 const translateColumnToMixpanelEvent = (columnName) => {
   switch (columnName) {

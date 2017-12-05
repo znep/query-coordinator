@@ -69,6 +69,7 @@ namespace :test do
       'exampleTestSuite' => nil,
       'internal_asset_manager' => nil,
       'oldUx' => nil,
+      'userProfile' => nil,
       'visualization_embed' => nil
     }.each do |task_name, dependency|
       desc "Usage example: rake test:karma:#{task_name}#{description_options.shuffle.first}"

@@ -67,8 +67,9 @@ module AssetBrowserHelper
       },
       :header => {
         :initialTab => @asset_browser_config[:initial_tab]
-      }
-    }
+      },
+      :targetUserId => @asset_browser_config[:target_user_id]
+    }.compact
 
     # The following fetches are used to populate the values in the filter dropdowns.
     initial_state.merge!(

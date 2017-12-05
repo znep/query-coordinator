@@ -7,9 +7,11 @@ describe('components/ResultListRow', () => {
   beforeEach(() => FeatureFlags.updateTestFixture({ usaid_features_enabled: false }));
 
   const resultListRowProps = (options = {}) => ({
+    activeTab: 'stub active tab',
     category: 'Fun',
     columns: ['type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'],
     description: 'The fifth sense: The sense of smell. The ability to smell crime before it even happens.',
+    isOwner: false,
     isPublic: true,
     isPublished: true,
     link: 'https://data.seattle.gov/dataset/blah-blah/cfa5-i2ky',

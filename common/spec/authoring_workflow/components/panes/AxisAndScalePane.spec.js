@@ -9,17 +9,20 @@ function render(type, dimensionColumnName) {
     {
       color: '#ba001e',
       label: 'Red Line',
-      value: 70000
+      value: 70000,
+      uId: 'a'
     },
     {
       color: '#1e489f',
       label: 'Blue Line',
-      value: 60000
+      value: 60000,
+      uId: 'b'
     },
     {
       color: '#067126',
       label: 'Green Line',
-      value: 50000
+      value: 50000,
+      uId: 'c'
     }
   ];
 

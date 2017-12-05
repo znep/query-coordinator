@@ -8,6 +8,8 @@ import 'intl/locale-data/jsonp/en.js';
 
 describe('Product Notifications', () => {
   const options = {
+    inProductTransientNotificationsEnabled: true,
+    isSuperAdmin: false,
     lockScrollbar: false,
     scrollTop: 0,
     showProductNotifications: true,

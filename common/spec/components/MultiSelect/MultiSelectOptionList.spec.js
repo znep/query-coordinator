@@ -6,8 +6,8 @@ import MultiSelectOption from 'common/components/MultiSelect/MultiSelectOption';
 
 describe('<MultiSelectOptionList />', () => {
   const defaultProps = {
-    shouldRenderResultsWhenQueryIsEmpty: false,
     currentQuery: 'something',
+    mouseMoved: false,
     noResultsMessage: 'No Results',
     onAddSelectedOption: () => {},
     onSelectedOptionIndexChange: () => {},
@@ -16,6 +16,8 @@ describe('<MultiSelectOptionList />', () => {
     renderOption: () => {},
     selectedOptionIndex: -1,
     setUsingMouse: () => {},
+    shouldRenderResultsWhenQueryIsEmpty: false,
+    skipRootBlur: () => {},
     usingMouse: false
   };
 

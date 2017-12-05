@@ -68,7 +68,12 @@ class DropdownButton extends React.Component {
 
     const buttonClass = `btn btn-transparent kebab-button${showDropdown ? ' selected' : ''}`;
     const childItems = Children.map(children, child => {
-      return React.cloneElement(child, { onClick: () => { this.hideDropdown(); child.props.onClick(); }});
+      return React.cloneElement(child, {
+        onClick: () => {
+          this.hideDropdown();
+          child.props.onClick();
+        }
+      });
     });
 
     return (
@@ -79,10 +84,7 @@ class DropdownButton extends React.Component {
           disabled={isDisabled}>
           <SocrataIcon name="kebab" />
         </button>
-        {showDropdown &&
-        <ul className="dropdown-button-actions">
-          {childItems}
-        </ul>}
+        {showDropdown && <ul className="dropdown-button-actions">{childItems}</ul>}
       </div>
     );
   }

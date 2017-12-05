@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
-import * as Actions from '../actions';
 import { renderUserAutocompleteResult } from './UserAutocompleteResult';
 import UserFilter from './UserFilter';
+import AddUserButton from './AddUserButton';
+import connectLocalization from 'common/i18n/components/connectLocalization';
+import { userAutocomplete, userSearch } from '../actions';
 
 // TODO: EN-19403 - Factor out as shared component
 class UserSearchBar extends Component {
@@ -14,7 +16,7 @@ class UserSearchBar extends Component {
       anonymous: false,
       collapsible: false,
       // currentQuery: this.props.currentQuery,
-      getSearchResults: Actions.userAutocomplete,
+      getSearchResults: userAutocomplete,
       millisecondsBeforeSearch: 100,
       onChooseResult: this.props.onChooseResult,
       onClearSearch: this.props.onClearSearch,
@@ -22,9 +24,10 @@ class UserSearchBar extends Component {
     };
 
     return (
-      <div className="user-search-bar">
+      <div className="user-search-bar search-bar">
         <Autocomplete className="user-autocomplete" {...autocompleteOptions} />
         <UserFilter />
+        <AddUserButton />
       </div>
     );
   }
@@ -37,14 +40,12 @@ UserSearchBar.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   onChooseResult: query => {
-    dispatch(Actions.userSearch(query));
+    dispatch(userSearch(query));
   },
   onClearSearch: () => {
-    dispatch(Actions.userSearch());
+    dispatch(userSearch());
   }
 });
 
-const ConnectedUserSearchBar = connect(() => {
-  return {};
-}, mapDispatchToProps)(UserSearchBar);
+const ConnectedUserSearchBar = connect(() => ({}), mapDispatchToProps)(connectLocalization(UserSearchBar));
 export default ConnectedUserSearchBar;

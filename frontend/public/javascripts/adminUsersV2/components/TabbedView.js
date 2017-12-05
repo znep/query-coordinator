@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import RoutingTab from './RoutingTab';
-import { ConnectedUsersTable } from './UsersTable';
-import UserSearchBar from './UserSearchBar';
-import { ConnectedInvitedUsersTable as InvitedUsers } from './InvitedUsersTable';
+import { ConnectedInvitedUsersTable as InvitedUsers } from '../invitedUsers/components/InvitedUsersTable';
 import { Router, Route, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
+import Users from '../users/components/Users';
 import _ from 'lodash';
 
 const mapStateToProps = state => ({
-  usersAdminPath: _.get(state, 'config.routes.usersAdminPath'),
-  invitedUsersAdminPath: _.get(state, 'config.routes.invitedUsersAdminPath')
+  invitedUsersAdminPath: _.get(state, 'config.routes.invitedUsersAdminPath'),
+  usersAdminPath: _.get(state, 'config.routes.usersAdminPath')
 });
 
 const TabbedNav = ({ I18n, children, usersAdminPath, invitedUsersAdminPath }) => (
@@ -33,19 +32,11 @@ TabbedNav.propTypes = {
 
 const LocalizedTabbedNav = connect(mapStateToProps)(connectLocalization(TabbedNav));
 
-const Users = () => (
-  <div>
-    <UserSearchBar />
-    <ConnectedUsersTable />
-  </div>
-);
-
-
 const TabbedView = ({ usersAdminPath, invitedUsersAdminPath }) => (
-  <Router history={ browserHistory }>
-    <Route path="/admin" component={ LocalizedTabbedNav }>
-      <Route path={usersAdminPath} component={ Users }/>
-      <Route path={invitedUsersAdminPath} component={ InvitedUsers }/>
+  <Router history={browserHistory}>
+    <Route path="/admin" component={LocalizedTabbedNav}>
+      <Route path={usersAdminPath} component={Users} />
+      <Route path={invitedUsersAdminPath} component={InvitedUsers} />
     </Route>
   </Router>
 );

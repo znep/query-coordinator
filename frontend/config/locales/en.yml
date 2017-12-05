@@ -6747,7 +6747,7 @@ en:
       reset_password: Reset Password
       resend_invited_user_email: Resend invite
     add_new_users:
-      add_users: Add User(s)
+      add_users: Add New User...
       subtitle: Add a single user or multiple users with the same role.
       cancel: Cancel
       emails_label: Emails (comma-separated)

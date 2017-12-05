@@ -20,11 +20,18 @@ class NewForm extends Component {
   }
 
   render() {
-    return <pre style={{ whiteSpace: 'pre-wrap', width: 500 }}>{JSON.stringify(this.state)}</pre>;
+    return (
+      <div>
+        <pre style={{ whiteSpace: 'pre-wrap', width: 500 }}>{JSON.stringify(this.state)}</pre>;
+        {this.props.children}
+      </div>
+    );
   }
 }
 
 // isNumber :: Any -> Boolean
+// verifies its input is a number, exluding NaN; _.isNumber(NaN) returns true, which
+// we don't want here
 function isNumber(x) {
   return typeof x === 'number' && !isNaN(x);
 }

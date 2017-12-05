@@ -168,7 +168,10 @@ Rails.application.routes.draw do
       get '/admin/approvals',
         :action => 'show',
         :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
-      get '/admin/approvals/settings',
+      get '/admin/approvals/settings/:id',
+        :action => 'settings',
+        :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
+      post '/admin/approvals/settings/:id',
         :action => 'settings',
         :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
     end

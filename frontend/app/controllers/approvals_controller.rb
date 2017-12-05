@@ -5,6 +5,8 @@ class ApprovalsController < AdministrationController
   include AssetBrowserHelper
 
   before_filter :require_approval_right
+  before_filter :fetch_approvers, :only => :settings
+  before_filter :fetch_approval, :only => :settings
 
   layout 'styleguide'
 
@@ -24,6 +26,35 @@ class ApprovalsController < AdministrationController
   end
 
   def settings
+    if request.post?
+      @approval_workflow.steps.first.official_task.approve! if params[:official_approval_strategy] == 'automatic'
+      @approval_workflow.steps.first.official_task.manual! if params[:official_approval_strategy] == 'manual'
+
+      @approval_workflow.steps.first.community_task.approve! if params[:community_approval_strategy] == 'automatic'
+      @approval_workflow.steps.first.community_task.manual! if params[:community_approval_strategy] == 'manual'
+      @approval_workflow.steps.first.community_task.reject! if params[:community_approval_strategy] == 'reject'
+
+      @approval_workflow.require_reapproval = params[:reapproval_strategy]
+
+      @approval_workflow.update
+
+      # if @approval_workflow.errors.blank?
+        flash[:notice] = 'Settings successfully updated'
+        redirect_to "/admin/approvals/settings/#{params[:id]}"
+      # else
+        # flash[:error] = 'Settings update failed'
+      # end
+    end
+  end
+
+  private
+
+  def fetch_approval
+    @approval_workflow = Fontana::Approval::Workflow.find(params[:id])
+    @approval_workflow.cookies = forwardable_session_cookies
+  end
+
+  def fetch_approvers
     @approvers = User.find_with_right(UserRights::CONFIGURE_APPROVALS).map do |why_do_we_hate_ourselves|
       User.find(why_do_we_hate_ourselves.id)
     end
@@ -32,15 +63,13 @@ class ApprovalsController < AdministrationController
     end).uniq!(&:id).sort_by(&:displayName)
   end
 
-  private
-
   def require_approval_right
     render_forbidden(I18n.t('core.auth.need_permission')) unless user_can_review_approvals?
   end
 
   def report_error(error_message)
     Airbrake.notify(
-      :error_class => 'Approvals',
+      :error_class => 'FontanaApprovals',
       :error_message => error_message
     )
     Rails.logger.error(error_message)

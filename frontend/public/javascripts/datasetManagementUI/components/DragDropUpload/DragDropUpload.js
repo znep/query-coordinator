@@ -8,14 +8,19 @@ import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMess
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import * as Selectors from 'selectors';
 import styles from './DragDropUpload.scss';
+import uuid from 'uuid';
 
 export class DragDropUpload extends Component {
   constructor() {
     super();
     this.state = {
-      draggingOver: false
+      draggingOver: false,
+      uploadApiCallId: null
     };
-    _.bindAll(this, 'preventDefault', 'handleDrop', 'handleDragOver', 'handleDragLeave');
+    _.bindAll(
+      this, 'preventDefault', 'handleDrop', 'handleDragOver', 'handleDragLeave',
+      'isApiCallPending', 'createUploadSource', 'generateDropzoneClassName'
+    );
   }
 
   componentWillUnmount() {
@@ -42,8 +47,19 @@ export class DragDropUpload extends Component {
     });
   }
 
+  createUploadSource(file) {
+    const { dispatch, params } = this.props;
+    const callId = uuid();
+    this.setState({
+      uploadApiCallId: callId
+    });
+    dispatch(createUploadSource(file, this.canBeParsed(file), params, callId));
+  }
+
   handleDrop(e) {
     this.preventDefault(e);
+    if (this.isApiCallPending())
+      return;
     const { dispatch } = this.props;
     const file = e.dataTransfer.files[0];
     const item = _.get(e, 'dataTransfer.items.0');
@@ -59,7 +75,7 @@ export class DragDropUpload extends Component {
       dispatch(showFlashMessage('error', I18n.show_uploads.directory_error_message));
     } else if (file) {
       dispatch(hideFlashMessage());
-      dispatch(createUploadSource(file, this.canBeParsed(file), this.props.params));
+      this.createUploadSource(file);
     } else {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     }
@@ -67,6 +83,24 @@ export class DragDropUpload extends Component {
     this.setState({
       draggingOver: false
     });
+  }
+
+  handleBrowseFileChange(e) {
+    if (!this.isApiCallPending()) {
+      this.createUploadSource(e.target.files[0]);
+    }
+  }
+
+  isApiCallPending() {
+    const callId = this.state.uploadApiCallId;
+    if (!callId)
+      return false;
+
+    const apiCall = this.props.apiCalls[callId]
+    if (!apiCall || apiCall.succeededAt || apiCall.failedAt)
+      return false;
+
+    return true;
   }
 
   canBeParsed(file) {
@@ -79,9 +113,19 @@ export class DragDropUpload extends Component {
     return enabledFileExtensions.includes(ext.toLowerCase());
   }
 
+  generateDropzoneClassName() {
+    if (this.isApiCallPending() && this.state.draggingOver) {
+      return styles.dropZoneInvalidDragging;
+    } else if (!this.isApiCallPending() && this.state.draggingOver) {
+      return styles.dropZoneDragging;
+    } else if (this.isApiCallPending() && !this.state.draggingOver) {
+      return styles.isApiCallPending
+    }
+    return styles.dropZone;
+  }
+
   render() {
     const { dispatch, params, hrefExists } = this.props;
-
     if (hrefExists) {
       return <SourceMessage hrefExists={hrefExists} />;
     }
@@ -92,31 +136,34 @@ export class DragDropUpload extends Component {
           onDrop={this.handleDrop}
           onDragOver={this.handleDragOver}
           onDragLeave={this.handleDragLeave}
-          className={this.state.draggingOver ? styles.dropZoneDragging : styles.dropZone}>
+          className={this.generateDropzoneClassName()}>
           <div className={styles.imageContainer}>
             <img alt="upload" className={styles.image} src="/images/datasetManagementUI/copy-document.svg" />
           </div>
           <div className={styles.textContainer}>
             <div className={styles.content}>
-              <h2>{I18n.show_uploads.message}</h2>
-              <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
-              <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-                Browse
-              </label>
-              <input
-                id="file"
-                name="file"
-                type="file"
-                aria-labelledby="upload-label"
-                className={styles.uploadInput}
-                onChange={e =>
-                  dispatch(
-                    createUploadSource(e.target.files[0], this.canBeParsed(e.target.files[0]), params)
-                  )} />
-              <div className={styles.fileTypes}>
-                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
-              </div>
-              <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
+              {
+                this.isApiCallPending() ?
+                <h2>Preparing for Upload...</h2> :
+                <div>
+                  <h2>{I18n.show_uploads.message}</h2>
+                  <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
+                  <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+                    Browse
+                  </label>
+                  <input
+                    id="file"
+                    name="file"
+                    type="file"
+                    aria-labelledby="upload-label"
+                    className={styles.uploadInput}
+                    onChange={this.handleBrowseFileChange} />
+                  <div className={styles.fileTypes}>
+                    {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
+                  </div>
+                  <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -128,13 +175,15 @@ export class DragDropUpload extends Component {
 DragDropUpload.propTypes = {
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired,
-  hrefExists: PropTypes.bool.isRequired
+  hrefExists: PropTypes.bool.isRequired,
+  apiCalls: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities }, { params }) => {
+const mapStateToProps = ({ entities, ui }, { params }) => {
   const rev = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
   return {
-    hrefExists: !!rev.href.length
+    hrefExists: !!rev.href.length,
+    apiCalls: ui.apiCalls
   };
 };
 

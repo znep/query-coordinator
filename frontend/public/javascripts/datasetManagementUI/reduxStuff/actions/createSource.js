@@ -10,6 +10,7 @@ import * as Links from 'links/links';
 import { normalizeCreateSourceResponse, normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
 import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
 import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
+import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
 export const UPDATE_SOURCE = 'UPDATE_SOURCE';
@@ -18,9 +19,9 @@ export const CREATE_UPLOAD_SOURCE_SUCCESS = 'CREATE_UPLOAD_SOURCE_SUCCESS';
 export const SOURCE_UPDATE = 'SOURCE_UPDATE';
 
 // Generic Create Source
-function createSource(params, callParams) {
+function createSource(params, callParams, optionalCallId = null) {
   return dispatch => {
-    const callId = uuid();
+    const callId = optionalCallId || uuid();
 
     const call = {
       operation: CREATE_SOURCE,
@@ -43,6 +44,7 @@ function createSource(params, callParams) {
         return resource;
       })
       .catch(err => {
+        console.error("createSourceErr", err);
         dispatch(apiCallFailed(callId, err));
         throw err;
       });
@@ -119,13 +121,13 @@ export function createViewSource(params) {
 }
 
 // Upload Source
-export function createUploadSource(file, parseFile, params) {
+export function createUploadSource(file, parseFile, params, callId) {
   const callParams = {
     source_type: { type: 'upload', filename: file.name },
     parse_options: { parse_source: parseFile }
   };
   return dispatch => {
-    return dispatch(createSource(params, callParams)).then(resource => {
+    return dispatch(createSource(params, callParams, callId)).then(resource => {
       // put source in store
       dispatch(
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
@@ -144,6 +146,9 @@ export function createUploadSource(file, parseFile, params) {
         }
         return bytesSource;
       });
+    }).catch(createUploadSourceErr => {
+      console.error("createUploadSourceErr:", createUploadSourceErr);
+      dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     });
   };
 }

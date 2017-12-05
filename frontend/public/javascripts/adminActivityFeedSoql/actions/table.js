@@ -3,7 +3,9 @@ import * as commonActions from './common';
 
 const types = {
   FETCH_DATA: 'FETCH_DATA',
-  STORE_DATA: 'STORE_DATA'
+  STORE_DATA: 'STORE_DATA',
+  SHOW_DETAILS: 'SHOW_DETAILS',
+  HIDE_DETAILS: 'HIDE_DETAILS'
 };
 
 const storeData = (data) => ({
@@ -30,8 +32,19 @@ const fetchData = () => (dispatch, getState) => {
     catch(commonActions.apiException);
 };
 
+const showDetails = (id) => ({
+  type: types.SHOW_DETAILS,
+  id
+});
+
+const hideDetails = () => ({
+  type: types.HIDE_DETAILS
+});
+
 export {
   types,
   fetchData,
-  storeData
+  storeData,
+  showDetails,
+  hideDetails
 };

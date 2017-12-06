@@ -3,10 +3,8 @@ import { assert } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
 
+import I18n from 'common/i18n';
 import ApprovalConfigurationOption from 'common/components/AssetBrowser/components/approvals/settings/approval_configuration_option';
-
-import I18n, { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'frontend/config/locales/en.yml';
 
 const validProps = (options = {}) => ({
   translationKey: 'send_to_my_queue',
@@ -29,7 +27,6 @@ describe('components/approvals/settings/ApprovalConfigurationOption', () => {
   let childRadio;
 
   beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
     wrapper = mount(<ApprovalConfigurationOption {...validProps()} />);
     ({ type, optionName } = validProps());
   });

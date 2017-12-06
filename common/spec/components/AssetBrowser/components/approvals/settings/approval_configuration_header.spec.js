@@ -2,19 +2,13 @@ import React from 'react';
 import { assert } from 'chai';
 import { shallow, mount } from 'enzyme';
 
+import I18n from 'common/i18n';
 import ApprovalConfigurationHeader from 'common/components/AssetBrowser/components/approvals/settings/approval_configuration_header';
 import SocrataIcon from 'common/components/SocrataIcon';
-
-import I18n, { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'frontend/config/locales/en.yml';
 
 describe('components/approvals/settings/ApprovalConfigurationHeader', () => {
   const translationScope = 'approvals.settings';
   const defaultType = 'community';
-
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
 
   it('renders <SocrataIcon />', () => {
     const wrapper = shallow(

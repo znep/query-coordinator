@@ -4,18 +4,12 @@ import { fetchApprovalForResource, setApprovalForResource } from
   'common/components/AssetBrowser/sagas/approvals';
 import * as coreUtils from 'common/core/utils';
 import * as assetActions from 'common/components/AssetBrowser/actions/asset_actions';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 import mockResourceApprovalPendingResponse from '../data/mock_resource_approval_pending_response';
 
 const mockPendingResource = () =>
   mockResourceApprovalPendingResponse.details.filter((record) => record.state === 'pending')[0];
 
 describe('ApprovalsSagas', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   describe('fetchApprovalForResource', () => {
     it('fetches the applicable approval for a given resource', () => {
       const testUid = 'test-uuid';

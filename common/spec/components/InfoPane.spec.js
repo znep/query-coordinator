@@ -1,16 +1,10 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
-import { useTestTranslations } from 'common/i18n';
-import allLocales from 'common/i18n/config/locales';
 import { renderComponent } from '../helpers';
 import { Simulate } from 'react-dom/test-utils';
 
 describe('InfoPane', () => {
-  beforeEach(() => {
-    useTestTranslations(allLocales.en);
-  });
-
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       name: 'A Different View',

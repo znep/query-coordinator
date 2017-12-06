@@ -183,7 +183,22 @@ function addFieldValuesAll(fieldsets, revision) {
       ...acc,
       [key]: {
         ...fieldsets[key],
-        fields: addFieldValues(fieldsets[key].fields, key, revision)
+        fields: keyByName(addFieldValues(fieldsets[key].fields, key, revision))
+      }
+    }),
+    {}
+  );
+}
+
+// keyByName :: Array Field -> { [String] : Field }
+// turns a Fieldset's Field array into an object, so the we can more easily
+// access it
+function keyByName(fields = []) {
+  return fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.name]: {
+        ...field
       }
     }),
     {}
@@ -252,12 +267,13 @@ class NewForm extends Component {
     });
   }
 
+  // {JSON.stringify(this.state)}
+
   render() {
     return (
       <div>
         <pre style={{ whiteSpace: 'pre-wrap', width: 700, paddingLeft: 20 }}>
-          {JSON.stringify(this.state)}
-          {JSON.stringify(this.props.fs)}
+          {JSON.stringify(this.props.datasetMetadata)}
         </pre>;
         {this.props.children &&
           React.cloneElement(this.props.children, {
@@ -304,15 +320,14 @@ export function getRevision(revisions = {}, revisionSeq) {
 const mapStateToProps = ({ entities }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);
   const outputSchemaId = Number(params.outputSchemaId);
-  const revision = getRevision(entities.revisions, revisionSeq);
+  const revision = getRevision(entities.revisions, revisionSeq) || {};
   const customFieldsets = entities.views[params.fourfour].customMetadataFieldsets;
-  const datasetMetadata = revision.metadata || {};
+  const datasetMetadata = addFieldValuesAll(createFieldsets(customFieldsets), revision);
   const outputSchemaColumns = getOutputSchemaCols(entities, outputSchemaId) || {};
 
   return {
     datasetMetadata,
-    outputSchemaColumns,
-    fs: addFieldValuesAll(createFieldsets(customFieldsets), revision)
+    outputSchemaColumns
   };
 };
 

@@ -115,7 +115,6 @@ section.container {
 
 .spinner {
   composes: spinner-default from global;
-  // composes: default-spinner from global;
   position: absolute;
   top: $container-padding + 1;
   left: $container-padding + 1;

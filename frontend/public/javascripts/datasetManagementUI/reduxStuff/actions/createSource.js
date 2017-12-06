@@ -44,7 +44,6 @@ function createSource(params, callParams, optionalCallId = null) {
         return resource;
       })
       .catch(err => {
-        console.error("createSourceErr", err);
         dispatch(apiCallFailed(callId, err));
         throw err;
       });
@@ -147,7 +146,6 @@ export function createUploadSource(file, parseFile, params, callId) {
         return bytesSource;
       });
     }).catch(createUploadSourceErr => {
-      console.error("createUploadSourceErr:", createUploadSourceErr);
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     });
   };

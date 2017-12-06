@@ -38,12 +38,9 @@ class ApprovalsController < AdministrationController
 
       @approval_workflow.update
 
-      # if @approval_workflow.errors.blank?
-        flash[:notice] = 'Settings successfully updated'
-        redirect_to "/admin/approvals/settings/#{params[:id]}"
-      # else
-        # flash[:error] = 'Settings update failed'
-      # end
+      # TODO Error handling (don't redirect when there's an error, re-render the page instead)
+      flash[:notice] = 'Settings successfully updated'
+      redirect_to "/admin/approvals/settings/#{params[:id]}"
     end
   end
 

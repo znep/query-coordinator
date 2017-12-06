@@ -3,7 +3,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import NewForm, {
   getOutputSchemaCols,
-  getRevision
+  getRevision,
+  shapeCustomFields
 } from 'components/NewForm/NewForm';
 
 describe.only('NewForm', () => {
@@ -123,6 +124,50 @@ describe.only('NewForm', () => {
     it('returns undefined if outputSchemaId param is NaN', () => {
       const result = getOutputSchemaCols(entities, NaN);
       assert.isUndefined(result);
+    });
+  });
+
+  describe('shapeCustomFields', () => {
+    const fieldsFromRails = [
+      {
+        name: 'first',
+        required: true
+      },
+      {
+        name: 'second',
+        private: true
+      }
+    ];
+
+    it('successfully re-shapes an array of text fields', () => {
+      const fields = shapeCustomFields(fieldsFromRails);
+
+      assert.isTrue(fields[0].isRequired);
+      assert.isTrue(fields[0].isCustom);
+      assert.equal(fields[0].inputType, 'text');
+    });
+
+    it('handles a select field', () => {
+      const selectField = {
+        name: 'fish',
+        type: 'fixed',
+        options: ['onefish', 'twofish', 'redfish', 'bluefish']
+      };
+
+      const serverFieldsWithSelect = [...fieldsFromRails, selectField];
+
+      const reshapedSelect = shapeCustomFields(serverFieldsWithSelect).find(
+        field => field.options
+      );
+
+      assert.equal(reshapedSelect.inputType, 'select');
+      assert.equal(reshapedSelect.options.length, selectField.options.length);
+    });
+
+    it('returns an empty array if given an undefined value', () => {
+      let notDefined;
+      const res = shapeCustomFields(notDefined);
+      assert.deepEqual(res, []);
     });
   });
 });

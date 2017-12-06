@@ -54,7 +54,14 @@ const checkIfPublished = store => (nextState, replace, cb) => {
 //   component={ManageMetadata}
 //   onEnter={checkSchemaStatus(store)} />
 
-const Dummy = () => <div>hey</div>;
+const Dummy = props => (
+  <div>
+    <input
+      type="text"
+      value={props.datasetForm.name}
+      onChange={e => props.handleChange('datasetForm', 'name', e.target.value)} />
+  </div>
+);
 
 export default function rootRoute(store) {
   return (

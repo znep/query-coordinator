@@ -1,6 +1,5 @@
 /* eslint react/jsx-indent: 0 */
 import PropTypes from 'prop-types';
-
 import React, { Component } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import TextInput from 'components/TextInput/TextInput';
@@ -60,47 +59,49 @@ class Field extends Component {
     const inErrorState = (showErrors || this.state.showErrors) && !!errors.length;
 
     const element = field.cata({
-      Text: data =>
+      Text: data => (
         <TextInput
           {...data}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           handleChange={({ target }) => setValue(target.value)}
-          inErrorState={inErrorState} />,
-      Tags: data =>
+          inErrorState={inErrorState} />
+      ),
+      Tags: data => (
         <TagsInput
           {...data}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           setValue={setValue}
-          inErrorState={inErrorState} />,
-      Attachments: data =>
+          inErrorState={inErrorState} />
+      ),
+      Attachments: data => (
         <AttachmentsInput
           {...data}
           handleFocus={this.handleFocus}
           revision={revision}
           handleBlur={this.handleBlur}
           setValue={setValue}
-          inErrorState={inErrorState} />,
-      TextArea: data =>
+          inErrorState={inErrorState} />
+      ),
+      TextArea: data => (
         <TextArea
           {...data}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           handleChange={({ target }) => setValue(target.value)}
-          inErrorState={inErrorState} />,
-      Select: (data, options) =>
+          inErrorState={inErrorState} />
+      ),
+      Select: (data, options) => (
         <Select
           {...data}
           options={options}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           handleChange={({ target }) => setValue(target.value)}
-          inErrorState={inErrorState} />,
-      NoField: () =>
-        <span>
-          {I18n.edit_metadata.no_fields_message}
-        </span>
+          inErrorState={inErrorState} />
+      ),
+      NoField: () => <span>{I18n.edit_metadata.no_fields_message}</span>
     });
 
     return (
@@ -108,23 +109,24 @@ class Field extends Component {
         <label htmlFor={field.data.name} className={labelClassNames.join(' ')}>
           {field.data.label}
         </label>
-        {field.data.isPrivate &&
+        {field.data.isPrivate && (
           <div>
             <SocrataIcon name="private" className={styles.icon} />
             <span className={styles.privateMessage}>
               {I18n.metadata_manage.dataset_tab.subtitles.private_field}
             </span>
-          </div>}
+          </div>
+        )}
         {element}
-        {inErrorState
-          ? <ul className={styles.errorList}>
-              {errors.map(error =>
-                <li className={styles.errorMessage} key={error}>
-                  {error}
-                </li>
-              )}
-            </ul>
-          : null}
+        {inErrorState ? (
+          <ul className={styles.errorList}>
+            {errors.map(error => (
+              <li className={styles.errorMessage} key={error}>
+                {error}
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     );
   }

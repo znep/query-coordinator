@@ -3,6 +3,24 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
+import Fieldset from 'components/Fieldset/Fieldset';
+import Field from 'components/Field/FieldNew';
+
+const DatasetForm = ({ fieldsets, handleDatasetChange }) => {
+  return (
+    <form>
+      {Object.keys(fieldsets).map(fsKey => {
+        return (
+          <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
+            {Object.values(fieldsets[fsKey].fields).map(field => (
+              <Field field={field} fieldsetName={fsKey} handleChange={handleDatasetChange} />
+            ))}
+          </Fieldset>
+        );
+      })}
+    </form>
+  );
+};
 
 // ==========
 // DATA MODEL
@@ -82,6 +100,7 @@ const FIELDSETS = {
       {
         name: 'category',
         label: I18n.edit_metadata.category,
+        options: window.initialState.datasetCategories,
         inputType: 'select'
       },
       {
@@ -98,6 +117,7 @@ const FIELDSETS = {
       {
         name: 'licenseId',
         label: I18n.edit_metadata.license_type,
+        options: window.initialState.datasetLicenses,
         inputType: 'select'
       },
       {
@@ -115,7 +135,8 @@ const FIELDSETS = {
         name: 'contactEmail',
         label: I18n.edit_metadata.email_address,
         placeholder: I18n.edit_metadata.dataset_email,
-        inputType: 'text'
+        inputType: 'text',
+        isPrivate: true
       }
     ]
   },
@@ -144,7 +165,12 @@ export function shapeCustomFields(fields = []) {
     label: field.name,
     isCustom: true,
     isRequired: field.required,
-    options: field.options,
+    options: field.options
+      ? field.options.map(option => ({
+        title: option,
+        value: option
+      }))
+      : null,
     inputType: field.type === 'fixed' ? 'select' : 'text'
   }));
 }
@@ -248,7 +274,7 @@ class NewForm extends Component {
       columnForm: {}
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleDatasetChange = this.handleDatasetChange.bind(this);
   }
 
   componentWillMount() {
@@ -258,33 +284,43 @@ class NewForm extends Component {
     });
   }
 
-  handleChange(formName, fieldName, value) {
+  handleDatasetChange(fieldsetName, fieldName, value) {
     this.setState({
-      [formName]: {
-        ...this.state[formName],
-        [fieldName]: value
+      ...this.state,
+      datasetForm: {
+        ...this.state.datasetForm,
+        [fieldsetName]: {
+          ...this.state.datasetForm[fieldsetName],
+          fields: {
+            ...this.state.datasetForm[fieldsetName].fields,
+            [fieldName]: {
+              ...this.state.datasetForm[fieldsetName].fields[fieldName],
+              value: value
+            }
+          }
+        }
       }
     });
   }
-
-  // {JSON.stringify(this.state)}
 
   render() {
     return (
       <div>
         <pre style={{ whiteSpace: 'pre-wrap', width: 700, paddingLeft: 20 }}>
-          {JSON.stringify(this.props.datasetMetadata)}
+          {JSON.stringify(this.state.datasetForm)}
         </pre>;
-        {this.props.children &&
-          React.cloneElement(this.props.children, {
-            ...this.props,
-            ...this.state,
-            handleChange: this.handleChange
-          })}
+        <DatasetForm fieldsets={this.state.datasetForm} handleDatasetChange={this.handleDatasetChange} />
       </div>
     );
   }
 }
+
+// {this.props.children &&
+//   React.cloneElement(this.props.children, {
+//     ...this.props,
+//     ...this.state,
+//     handleChange: this.handleChange
+//   })}
 
 // isNumber :: Any -> Boolean
 // verifies its input is a number, exluding NaN; _.isNumber(NaN) returns true, which

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import Tag from 'components/Tag/Tag';
-import classNames from 'classnames';
 import styles from './TagsInput.scss';
 
 class TagsInput extends Component {
@@ -13,10 +12,10 @@ class TagsInput extends Component {
       tag: ''
     };
 
-    _.bindAll(this, ['handleChange', 'handleKeyPress', 'addTag', 'removeTag']);
+    _.bindAll(this, ['handleTagChange', 'handleKeyPress', 'addTag', 'removeTag']);
   }
 
-  handleChange(e) {
+  handleTagChange(e) {
     e.preventDefault();
 
     this.setState({
@@ -27,15 +26,15 @@ class TagsInput extends Component {
   addTag(e) {
     e.preventDefault();
 
-    const { setValue, handleBlur, value } = this.props;
+    const { handleAddTag, field } = this.props;
 
-    handleBlur();
+    const value = field.value || [];
 
     if (!this.state.tag) {
       return;
     }
 
-    setValue([...value, this.state.tag.toLowerCase()]);
+    handleAddTag([...value, this.state.tag.toLowerCase()]);
 
     this.setState({
       tag: ''
@@ -43,13 +42,15 @@ class TagsInput extends Component {
   }
 
   removeTag(tagName) {
-    const { value, setValue } = this.props;
+    const { field, handleAddTag } = this.props;
+
+    const value = field.value || [];
 
     const idxToRemove = _.findIndex(value, val => val === tagName);
 
     const newTags = value.filter((tag, idx) => idx !== idxToRemove);
 
-    setValue(newTags);
+    handleAddTag(newTags);
   }
 
   handleKeyPress(e) {
@@ -61,17 +62,13 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { inErrorState, handleFocus, handleBlur, ...data } = this.props; // eslint-disable-line
+    const { name, placeholder } = this.props.field;
 
-    const { name, value, placeholder } = data;
+    const value = this.props.field.value || [];
 
-    const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
-
-    const buttonClasses = classNames(styles.button, { [styles.validationError]: inErrorState });
-
-    const listItems = value.map((tag, idx) =>
+    const listItems = value.map((tag, idx) => (
       <Tag key={idx} tagName={tag} onTagClick={() => this.removeTag(tag)} />
-    );
+    ));
 
     return (
       <div>
@@ -83,33 +80,21 @@ class TagsInput extends Component {
             name={name}
             id={name}
             placeholder={placeholder}
-            className={classes}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={this.handleChange} />
-          <button onClick={this.addTag} className={buttonClasses}>
+            className={styles.textInput}
+            onChange={this.handleTagChange} />
+          <button onClick={this.addTag} className={styles.button}>
             {I18n.edit_metadata.add_btn}
           </button>
         </div>
-        {!!listItems.length &&
-          <ul className={styles.tagList}>
-            {listItems}
-          </ul>}
+        {!!listItems.length && <ul className={styles.tagList}>{listItems}</ul>}
       </div>
     );
   }
 }
 
 TagsInput.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.array,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  isRequired: PropTypes.bool.isRequired,
-  inErrorState: PropTypes.bool.isRequired,
-  setValue: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired
+  field: PropTypes.object.isRequired,
+  handleAddTag: PropTypes.func.isRequired
 };
 
 export default TagsInput;

@@ -39,9 +39,9 @@ class NotificationSettings extends Component {
   }
 
   render() {
-    const { showTransientNotifications } = this.props;
+    const { inProductTransientNotificationsEnabled } = this.props;
 
-    if (showTransientNotifications) {
+    if (inProductTransientNotificationsEnabled) {
       const headerText = I18n.t(
         'notification_settings',
         { scope: 'shared_site_chrome_notifications.alert_setting_modal.table_header' }
@@ -73,7 +73,7 @@ class NotificationSettings extends Component {
 NotificationSettings.propTypes = {
   settings: PropTypes.object.isRequired,
   onSettingsChange: PropTypes.func,
-  showTransientNotifications: PropTypes.bool
+  inProductTransientNotificationsEnabled: PropTypes.bool
 };
 
 export default cssModules(NotificationSettings, styles, { allowMultiple: true });

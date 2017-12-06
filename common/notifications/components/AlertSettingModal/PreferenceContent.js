@@ -367,7 +367,7 @@ class PreferenceContent extends Component {
       currentDomainFeatures,
       settings,
       onSettingsChange,
-      showTransientNotifications
+      inProductTransientNotificationsEnabled
     } = this.props;
     const showRoutingAndApproval = _.get(currentDomainFeatures, 'routing_approval', false);
 
@@ -411,7 +411,7 @@ class PreferenceContent extends Component {
         </div>
         <EmailSettings settings={settings} onSettingsChange={onSettingsChange} />
         <NotificationSettings
-          showTransientNotifications={showTransientNotifications}
+          inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
           settings={settings}
           onSettingsChange={onSettingsChange} />
       </div>
@@ -423,7 +423,7 @@ PreferenceContent.propTypes = {
   preferences: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
   onAlertNotificationChange: PropTypes.func,
-  showTransientNotifications: PropTypes.bool,
+  inProductTransientNotificationsEnabled: PropTypes.bool,
   onSettingsChange: PropTypes.func
 };
 

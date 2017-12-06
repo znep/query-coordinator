@@ -208,7 +208,7 @@ describe('User Notifications', () => {
     scrollTop: 0,
     showProductNotifications: false,
     showUserNotifications: true,
-    showTransientNotifications: true
+    inProductTransientNotificationsEnabled: true
   };
 
   const userid = 'tugg-ikce';

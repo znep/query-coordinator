@@ -6,8 +6,7 @@ import TextInput from 'components/TextInput/TextInputNew';
 import TextArea from 'components/TextArea/TextAreaNew';
 import Select from 'components/Select/SelectNew';
 import TagsInput from 'components/TagsInput/TagsInput';
-import AttachmentsInput from 'containers/AttachmentsInputContainer';
-// import * as Types from 'models/forms';
+// import AttachmentsInput from 'containers/AttachmentsInputContainer';
 import styles from './Field.scss';
 
 class FieldNew extends Component {
@@ -22,7 +21,7 @@ class FieldNew extends Component {
 
     let element;
 
-    switch (field.inputType) {
+    switch (field.elementType) {
       case 'text':
         element = (
           <TextInput
@@ -86,11 +85,9 @@ class FieldNew extends Component {
 }
 
 FieldNew.propTypes = {
-  revision: PropTypes.object.isRequired,
-  errors: PropTypes.array,
-  setValue: PropTypes.func.isRequired,
   field: PropTypes.object.isRequired,
-  showErrors: PropTypes.bool.isRequired
+  fieldsetName: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired
 };
 
 export default FieldNew;

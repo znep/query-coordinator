@@ -4,8 +4,8 @@ import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import * as Links from 'links/links';
 import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
-// import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
-import NewForm from 'components/NewForm/NewForm';
+import ManageMetadata from 'containers/ManageMetadataContainer';
+import DatasetForm from 'components/DatasetForm/DatasetForm';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
@@ -47,30 +47,16 @@ const checkIfPublished = store => (nextState, replace, cb) => {
   }
 };
 
-// <Redirect from="metadata" to="metadata/dataset" />
-// <Route path="metadata/dataset" component={ManageMetadata} />
-// <Route
-//   path="metadata/:outputSchemaId/columns"
-//   component={ManageMetadata}
-//   onEnter={checkSchemaStatus(store)} />
-
-const Dummy = props => (
-  <div>
-    <input
-      type="text"
-      value={props.datasetForm.name}
-      onChange={e => props.handleChange('datasetForm', 'name', e.target.value)} />
-  </div>
-);
+const Dummy = () => <div>not ready</div>;
 
 export default function rootRoute(store) {
   return (
     <Route path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq" component={Home}>
       <IndexRoute component={ShowRevision} />
-      <Route path="metadata" component={NewForm}>
+      <Route path="metadata" component={ManageMetadata}>
         <IndexRedirect to="dataset" />
-        <Route path="dataset" component={Dummy} />
-        <Route path=":outputSchemaId/columns" component={Dummy} />
+        <Route path="dataset" component={DatasetForm} />
+        <Route path=":outputSchemaId/columns" onEnter={checkSchemaStatus(store)} component={Dummy} />
       </Route>
       <Route path="sources" component={ShowSource} onEnter={checkIfPublished(store)}>
         <IndexRoute component={DragDropUpload} />

@@ -1,14 +1,12 @@
 import { assert } from 'chai';
-import { shallow } from 'enzyme';
-import React from 'react';
-import NewForm, {
+import {
   getOutputSchemaCols,
   getRevision,
   shapeCustomFields,
   addFieldValues
-} from 'components/NewForm/NewForm';
+} from 'containers/ManageMetadataContainer';
 
-describe.only('NewForm', () => {
+describe.only('ManageMetadata Container', () => {
   describe('getRevision', () => {
     const revision1 = {
       id: 600,
@@ -145,7 +143,7 @@ describe.only('NewForm', () => {
 
       assert.isTrue(fields[0].isRequired);
       assert.isTrue(fields[0].isCustom);
-      assert.equal(fields[0].inputType, 'text');
+      assert.equal(fields[0].elementType, 'text');
     });
 
     it('handles a select field', () => {
@@ -161,7 +159,7 @@ describe.only('NewForm', () => {
         field => field.options
       );
 
-      assert.equal(reshapedSelect.inputType, 'select');
+      assert.equal(reshapedSelect.elementType, 'select');
       assert.equal(reshapedSelect.options.length, selectField.options.length);
     });
 

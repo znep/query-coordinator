@@ -1,74 +1,27 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import _ from 'lodash';
-import { validateDatasetForm } from 'models/forms';
+import React from 'react';
 import Fieldset from 'components/Fieldset/Fieldset';
-import DatasetField from 'containers/DatasetFieldContainer';
+import Field from 'components/Field/FieldNew';
 
-class DatasetForm extends Component {
-  componentWillMount() {
-    const { setErrors, regularFieldsets, customFieldsets } = this.props;
-
-    validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-      Success: () => setErrors([]),
-      Failure: ({ value }) => setErrors(value)
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { regularFieldsets, customFieldsets, setErrors } = nextProps;
-
-    const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
-
-    const oldFieldsets = [...oldRegularFieldsets, ...oldCustomFieldsets];
-
-    const fieldsets = [...regularFieldsets, ...customFieldsets];
-
-    if (!_.isEqual(oldFieldsets, fieldsets)) {
-      validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-        Success: () => setErrors([]),
-        Failure: ({ value }) => setErrors(value)
-      });
-    }
-  }
-
-  render() {
-    const { regularFieldsets, customFieldsets } = this.props;
-
-    const fieldsets = [...regularFieldsets, ...customFieldsets];
-
-    return (
-      <form>
-        {fieldsets.map(fieldset =>
-          <Fieldset title={fieldset.title} subtitle={fieldset.subtitle} key={fieldset.title}>
-            {fieldset.fields.map(field =>
-              <DatasetField
-                field={field}
-                fieldset={fieldset.title}
-                key={field.data.name} />
-            )}
+const DatasetForm = ({ fieldsets = {}, handleDatasetChange }) => {
+  return (
+    <form>
+      {Object.keys(fieldsets).map(fsKey => {
+        return (
+          <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
+            {Object.values(fieldsets[fsKey].fields).map(field => (
+              <Field field={field} fieldsetName={fsKey} handleChange={handleDatasetChange} />
+            ))}
           </Fieldset>
-        )}
-      </form>
-    );
-  }
-}
+        );
+      })}
+    </form>
+  );
+};
 
 DatasetForm.propTypes = {
-  regularFieldsets: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      subtitle: PropTypes.string,
-      fields: PropTypes.array.isRequired
-    })
-  ),
-  customFieldsets: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      fields: PropTypes.array
-    })
-  ),
-  setErrors: PropTypes.func.isRequired
+  fieldsets: PropTypes.object.isRequired,
+  handleDatasetChange: PropTypes.func.isRequired
 };
 
 export default DatasetForm;

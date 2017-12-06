@@ -1,26 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
-import Fieldset from 'components/Fieldset/Fieldset';
-import Field from 'components/Field/FieldNew';
-
-const DatasetForm = ({ fieldsets, handleDatasetChange }) => {
-  return (
-    <form>
-      {Object.keys(fieldsets).map(fsKey => {
-        return (
-          <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
-            {Object.values(fieldsets[fsKey].fields).map(field => (
-              <Field field={field} fieldsetName={fsKey} handleChange={handleDatasetChange} />
-            ))}
-          </Fieldset>
-        );
-      })}
-    </form>
-  );
-};
+import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
 
 // ==========
 // DATA MODEL
@@ -40,7 +21,7 @@ const DatasetForm = ({ fieldsets, handleDatasetChange }) => {
 //   label : String,
 //   isCustom : Boolean,
 //   isRequired : Boolean,
-//   inputType : String,
+//   elementType : String,
 //   options: Array String,
 //   placeholder : String,
 //   value : String
@@ -71,13 +52,13 @@ const FIELDSETS = {
         name: 'name',
         label: I18n.edit_metadata.dataset_title,
         placeholder: I18n.edit_metadata.dataset_title,
-        inputType: 'text'
+        elementType: 'text'
       },
       {
         name: 'description',
         label: I18n.edit_metadata.brief_description,
         placeholder: I18n.edit_metadata.brief_description_prompt,
-        inputType: 'textarea'
+        elementType: 'textarea'
       }
     ]
   },
@@ -89,7 +70,7 @@ const FIELDSETS = {
         name: 'rowLabel',
         label: I18n.edit_metadata.row_label,
         placeholder: I18n.edit_metadata.row_label_prompt,
-        inputType: 'text'
+        elementType: 'text'
       }
     ]
   },
@@ -101,13 +82,13 @@ const FIELDSETS = {
         name: 'category',
         label: I18n.edit_metadata.category,
         options: window.initialState.datasetCategories,
-        inputType: 'select'
+        elementType: 'select'
       },
       {
         name: 'tags',
         label: I18n.edit_metadata.tags_keywords,
         placeholder: I18n.edit_metadata.dataset_tags,
-        inputType: 'tagsInput'
+        elementType: 'tagsInput'
       }
     ]
   },
@@ -118,13 +99,13 @@ const FIELDSETS = {
         name: 'licenseId',
         label: I18n.edit_metadata.license_type,
         options: window.initialState.datasetLicenses,
-        inputType: 'select'
+        elementType: 'select'
       },
       {
         name: 'attribution',
         label: I18n.edit_metadata.attribution,
         placeholder: I18n.edit_metadata.dataset_attribution,
-        inputType: 'text'
+        elementType: 'text'
       }
     ]
   },
@@ -135,7 +116,7 @@ const FIELDSETS = {
         name: 'contactEmail',
         label: I18n.edit_metadata.email_address,
         placeholder: I18n.edit_metadata.dataset_email,
-        inputType: 'text',
+        elementType: 'text',
         isPrivate: true
       }
     ]
@@ -146,7 +127,7 @@ const FIELDSETS = {
     fields: [
       {
         name: 'attachments',
-        inputType: 'attachmentsInput'
+        elementType: 'attachmentsInput'
       }
     ]
   }
@@ -171,7 +152,7 @@ export function shapeCustomFields(fields = []) {
         value: option
       }))
       : null,
-    inputType: field.type === 'fixed' ? 'select' : 'text'
+    elementType: field.type === 'fixed' ? 'select' : 'text'
   }));
 }
 
@@ -200,6 +181,21 @@ function createFieldsets(rawFieldsets) {
   };
 }
 
+// keyByName :: Array Field -> { [String] : Field }
+// turns a Fieldset's Field array into an object, so the we can more easily
+// access it
+function keyByName(fields = []) {
+  return fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.name]: {
+        ...field
+      }
+    }),
+    {}
+  );
+}
+
 // addFieldValuesAll :: { [String] : Fieldset } -> Revision -> { [String] : Fieldset }
 // looks up the value for all fields of all fieldsets in the form and adds it to
 // the field object under the 'value' key.
@@ -210,21 +206,6 @@ function addFieldValuesAll(fieldsets, revision) {
       [key]: {
         ...fieldsets[key],
         fields: keyByName(addFieldValues(fieldsets[key].fields, key, revision))
-      }
-    }),
-    {}
-  );
-}
-
-// keyByName :: Array Field -> { [String] : Field }
-// turns a Fieldset's Field array into an object, so the we can more easily
-// access it
-function keyByName(fields = []) {
-  return fields.reduce(
-    (acc, field) => ({
-      ...acc,
-      [field.name]: {
-        ...field
       }
     }),
     {}
@@ -264,63 +245,6 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
     }
   });
 }
-
-class NewForm extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      datasetForm: {},
-      columnForm: {}
-    };
-
-    this.handleDatasetChange = this.handleDatasetChange.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({
-      datasetForm: this.props.datasetMetadata,
-      columnForm: this.props.outputSchemaColumns
-    });
-  }
-
-  handleDatasetChange(fieldsetName, fieldName, value) {
-    this.setState({
-      ...this.state,
-      datasetForm: {
-        ...this.state.datasetForm,
-        [fieldsetName]: {
-          ...this.state.datasetForm[fieldsetName],
-          fields: {
-            ...this.state.datasetForm[fieldsetName].fields,
-            [fieldName]: {
-              ...this.state.datasetForm[fieldsetName].fields[fieldName],
-              value: value
-            }
-          }
-        }
-      }
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <pre style={{ whiteSpace: 'pre-wrap', width: 700, paddingLeft: 20 }}>
-          {JSON.stringify(this.state.datasetForm)}
-        </pre>;
-        <DatasetForm fieldsets={this.state.datasetForm} handleDatasetChange={this.handleDatasetChange} />
-      </div>
-    );
-  }
-}
-
-// {this.props.children &&
-//   React.cloneElement(this.props.children, {
-//     ...this.props,
-//     ...this.state,
-//     handleChange: this.handleChange
-//   })}
 
 // isNumber :: Any -> Boolean
 // verifies its input is a number, exluding NaN; _.isNumber(NaN) returns true, which
@@ -367,4 +291,4 @@ const mapStateToProps = ({ entities }, { params }) => {
   };
 };
 
-export default connect(mapStateToProps)(NewForm);
+export default connect(mapStateToProps)(ManageMetadata);

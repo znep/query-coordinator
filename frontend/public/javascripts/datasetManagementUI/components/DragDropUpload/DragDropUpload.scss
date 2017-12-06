@@ -29,7 +29,7 @@ section.container {
 
 .isApiCallPending {
   composes: dropZone;
-  animation: pulse 2s linear infinite;
+  animation: pulse 1.6s ease infinite;
 }
 
 .dropZoneDragging {
@@ -39,7 +39,7 @@ section.container {
 
 .dropZoneInvalidDragging {
   composes: dropZone;
-  background-color: $error-light;
+  background-color: tint($error, 94%);
 }
 
 .uploadButton {
@@ -126,7 +126,7 @@ section.container {
     background-color: white;
   }
   50% {
-    background-color: rgb(235,235,235);
+    background-color: #f1f3f4;
   }
   100% {
     background-color: white;

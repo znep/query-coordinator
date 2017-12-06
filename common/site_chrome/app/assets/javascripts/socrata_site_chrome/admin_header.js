@@ -198,7 +198,7 @@
     };
 
     createPublishedView(metadata).then(
-      function(id) { window.location.href = '/d/' + id; },
+      function(id) { window.location.href = '/d/' + id + '/edit'; },
       console.error
     );
   }

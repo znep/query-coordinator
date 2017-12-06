@@ -20,7 +20,7 @@ export function* fetchApprovalForResource(resourceId) {
     approvalDetail.state !== 'not_applicable').first();
 }
 
-export function* setApprovalForResource(resource) {
+export function* setApprovalForResource(resource, logError = true) {
   const { name, notes, resourceId, state } = resource;
   const approval = yield call(fetchApprovalForResource, resourceId);
   const alertMessageLocaleScope = `shared.asset_browser.alert_messages.resource_${state}`;
@@ -44,7 +44,9 @@ export function* setApprovalForResource(resource) {
     const body = I18n.t('body', { scope: alertMessageLocaleScope });
     yield put(assetActions.showAlert(title, body));
   } catch (e) {
-    console.error(e);
+    if (logError) {
+      console.error(e);
+    }
     const title = I18n.t('error_title', { scope: alertMessageLocaleScope, resourceName: name });
     const body = I18n.t('error_body', { scope: alertMessageLocaleScope });
     yield put(assetActions.showAlert(title, body));

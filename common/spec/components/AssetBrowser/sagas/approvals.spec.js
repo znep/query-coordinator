@@ -74,7 +74,7 @@ describe('ApprovalsSagas', () => {
       const notes = 'I approve this!';
       const resourceId = 'test-uuid';
       const state = 'approved';
-      const gen = setApprovalForResource({ name, notes, resourceId, state });
+      const gen = setApprovalForResource({ name, notes, resourceId, state }, false);
 
       assert.deepEqual(
         gen.next().value,

@@ -1535,7 +1535,7 @@ function SvgTimelineChart($element, vif, options) {
     if (_.isNil(flyoutData.endDate)) {
 
       const dimensionColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-      const value = flyoutData.startDate.toString();
+      const value = flyoutData.startDate.toISOString();
       title = formatValueHTML(value, dimensionColumn, dataToRender);
 
     } else if (allSeriesAreLineVariant()) {

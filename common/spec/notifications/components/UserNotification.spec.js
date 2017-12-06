@@ -5,7 +5,7 @@ import UserNotification from 'common/notifications/components/UserNotifications/
 
 describe('UserNotification', () => {
   const defaultProps = {
-    id: 'notification id',
+    id: 1234,
     isRead: false,
     isTransientNotification: false,
     onClearUserNotification: () => {},

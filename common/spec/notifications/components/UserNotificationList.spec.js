@@ -19,7 +19,7 @@ describe('UserNotificationList', () => {
       userNotifications: [{
         activityType: 'CollaboratorRemoved',
         createdAt: '2017-10-03T08:20:35.042',
-        id: '167',
+        id: 167,
         link: '//elumitas.test-socrata.com/dataset/TESTprivate/ckdr-r2rz',
         messageBody: 'TESTprivate',
         read: false,

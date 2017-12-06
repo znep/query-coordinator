@@ -80,7 +80,7 @@ describe('SvgTimelineChart', () => {
   };
 
   const multiSeriesTestData = {
-    columns: ['dimension', 'measure 1', 'measure 2', null],
+    columns: ['dimension', '2017-01-10T09:45:00.000', '2017-01-10T09:45:00.000', null],
     rows: [
       ['2017-09-01T09:45:00.000', 10, 15, null],
       ['2017-09-02T09:45:00.000', null, null, null],

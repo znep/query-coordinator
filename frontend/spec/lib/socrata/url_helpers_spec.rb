@@ -53,6 +53,7 @@ RSpec.describe 'Socrata::UrlHelpers' do
     let(:can_preview_story) { true }
     let(:viewing_others_profile) { false }
     let(:is_visualization_canvas) { false }
+    let(:is_op_measure) { false }
 
     let(:view) do
       double(
@@ -66,7 +67,9 @@ RSpec.describe 'Socrata::UrlHelpers' do
         pulse?: is_pulse,
         data_lens?: is_data_lens,
         is_api?: false,
-        visualization_canvas?: is_visualization_canvas)
+        visualization_canvas?: is_visualization_canvas,
+        op_measure?: is_op_measure
+      )
     end
 
     before do
@@ -129,6 +132,21 @@ RSpec.describe 'Socrata::UrlHelpers' do
         let(:is_visualization_canvas) { true }
         it 'returns the correct URL' do
           expect(helpers.edit_visualization_canvas_url(view)).to eq('//example.com/d/four-four/edit')
+        end
+      end
+    end
+
+    describe '#edit_op_measure_url' do
+      describe 'when encountering a plain dataset' do
+        it 'raises when encountering a plain dataset' do
+          expect { helpers.edit_op_measure_url(view) }.to raise_error('view is not a measure')
+        end
+      end
+
+      describe 'when encountering a measure' do
+        let(:is_op_measure) { true }
+        it 'returns the correct URL' do
+          expect(helpers.edit_op_measure_url(view)).to eq('//example.com/d/four-four/edit')
         end
       end
     end

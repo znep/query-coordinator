@@ -12,6 +12,7 @@ RSpec.describe ProfileHelper, type: :helper do
     let(:can_preview_story) { true }
     let(:viewing_others_profile) { false }
     let(:is_visualization_canvas) { false }
+    let(:is_op_measure) { false }
 
     let(:view) do
       double(
@@ -27,7 +28,9 @@ RSpec.describe ProfileHelper, type: :helper do
         data_lens?: false,
         category: category,
         is_api?: false,
-        visualization_canvas?: is_visualization_canvas)
+        visualization_canvas?: is_visualization_canvas,
+        op_measure?: is_op_measure
+      )
     end
 
     before do
@@ -113,6 +116,26 @@ RSpec.describe ProfileHelper, type: :helper do
 
     describe 'when encountering a visualization canvas' do
       let(:is_visualization_canvas) { true }
+      let(:is_story) { false }
+
+      describe 'when the user has edit rights' do
+        let(:can_edit) { true }
+        it 'returns a url with ...' do
+          expect(view_url(view)).to eq('//example.com/d/four-four/edit')
+        end
+      end
+
+      describe "when the user is looking at someone else's profile" do
+        let(:viewing_others_profile) { true }
+
+        it 'returns the view mode url' do
+          expect(view_url(view)).to eq('//example.com/d/four-four')
+        end
+      end
+    end
+
+    describe 'when encountering a measure' do
+      let(:is_op_measure) { true }
       let(:is_story) { false }
 
       describe 'when the user has edit rights' do

@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
 
+// ==========
+// DATA MODEL
+// ==========
 // RawField :: {
 //   name : String,
 //   required : Boolean,
@@ -26,48 +29,22 @@ import * as Selectors from 'selectors';
 // }
 // Field is an object that holds all data needed to render a form field in DSMUI
 
-// shapeCustomFields :: Array RawField -> Array Field
-// shapeCustomFields takes the fields that come from Rails and reshapes them so
-// they can be used in dsmui; the array of fields correspond to all fields in a
-// fieldset
-export function shapeCustomFields(fields = []) {
-  return fields.map(field => ({
-    name: field.name,
-    label: field.name,
-    isCustom: true,
-    isRequired: field.required,
-    options: field.options,
-    inputType: field.type === 'fixed' ? 'select' : 'text'
-  }));
-}
-
 // RawFieldset :: {
 //   name : String,
 //   fields : Array RawField
 // }
+// Same story as above; This is a fieldset that comes straight from rails...
 
 // Fieldset :: {
 //   title : String,
 //   subtitle : String,
 //   fields : Array Field
 // }
+// ...and this is the shape that dsmui's metadata form expects
 
-// shapeCustomFieldsets :: Array RawFieldset -> {[String] : Fieldset}
-// shapeCustomFieldsets takes the data that comes from the Rails server and
-// reshapes it so it can be used in DSMUI to render the dataset form
-function shapeCustomFieldsets(fieldsets = []) {
-  return fieldsets.reduce((acc, fs) => {
-    return {
-      ...acc,
-      [fs.name]: {
-        title: fs.name,
-        fields: shapeCustomFields(fs.fields)
-      }
-    };
-  }, {});
-}
-
-const fieldsets = {
+// The standard, non-custom fieldsets. Here we just define non-dynamic properties.
+// The initial values of the fields come in ansynchronously from the server
+const FIELDSETS = {
   titleAndDescription: {
     title: I18n.metadata_manage.dataset_tab.titles.dataset_title,
     subtitle: I18n.metadata_manage.dataset_tab.subtitles.dataset_subtitle,
@@ -154,28 +131,74 @@ const fieldsets = {
   }
 };
 
+// =====================
+// DATA HELPER FUNCTIONS
+// =====================
+// shapeCustomFields :: Array RawField -> Array Field
+// shapeCustomFields takes the fields that come from Rails and reshapes them so
+// they can be used in dsmui; the array of fields correspond to all fields in a
+// fieldset
+export function shapeCustomFields(fields = []) {
+  return fields.map(field => ({
+    name: field.name,
+    label: field.name,
+    isCustom: true,
+    isRequired: field.required,
+    options: field.options,
+    inputType: field.type === 'fixed' ? 'select' : 'text'
+  }));
+}
+
+// shapeCustomFieldsets :: Array RawFieldset -> {[String] : Fieldset}
+// shapeCustomFieldsets takes the data that comes from the Rails server and
+// reshapes it so it can be used in DSMUI to render the dataset form
+function shapeCustomFieldsets(fieldsets = []) {
+  return fieldsets.reduce((acc, fs) => {
+    return {
+      ...acc,
+      [fs.name]: {
+        title: fs.name,
+        fields: shapeCustomFields(fs.fields)
+      }
+    };
+  }, {});
+}
+
+// createFieldsets :: Array RawFieldset -> { [String] : Fieldset }
+// shapes custom fieldsets that come in from rails and combines them with
+// the predefined fieldsets
 function createFieldsets(rawFieldsets) {
   return {
-    ...fieldsets,
+    ...FIELDSETS,
     ...shapeCustomFieldsets(rawFieldsets)
   };
 }
 
-function xx(fieldsets, revision) {
+// addFieldValuesAll :: { [String] : Fieldset } -> Revision -> { [String] : Fieldset }
+// looks up the value for all fields of all fieldsets in the form and adds it to
+// the field object under the 'value' key.
+function addFieldValuesAll(fieldsets, revision) {
   return Object.keys(fieldsets).reduce(
     (acc, key) => ({
       ...acc,
       [key]: {
         ...fieldsets[key],
-        fields: addValues(fieldsets[key].fields, key, revision)
+        fields: addFieldValues(fieldsets[key].fields, key, revision)
       }
     }),
     {}
   );
 }
 
-// addValues :: Array Field ->  Revision -> Array Field
-function addValues(fields = [], fieldsetName, revision) {
+// addValues :: Array Field -> String -> Revision -> Array Field
+// Looks up the value of each field in a single fieldset. The semi-complicated
+// conditional is due to the fact that the server demands that different categories
+// of metadata (e.g. private, custom, etc) be stored in a particular part of the
+// revision. This was done to appease core, which does a similar thing.
+// Note: we specify the path for `_.get` with an array of strings rather than
+// just a string. This is to account for weird custom field/fieldset names. E.g
+// a field name like `*anu@@` would cause problems with `_.get` string syntax.
+export function addFieldValues(fields = [], fieldsetName, revision) {
   return fields.map(field => {
     if (field.isCustom && field.isPrivate) {
       return {
@@ -289,7 +312,7 @@ const mapStateToProps = ({ entities }, { params }) => {
   return {
     datasetMetadata,
     outputSchemaColumns,
-    fs: xx(createFieldsets(customFieldsets), revision)
+    fs: addFieldValuesAll(createFieldsets(customFieldsets), revision)
   };
 };
 

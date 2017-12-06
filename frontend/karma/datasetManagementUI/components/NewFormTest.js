@@ -4,7 +4,8 @@ import React from 'react';
 import NewForm, {
   getOutputSchemaCols,
   getRevision,
-  shapeCustomFields
+  shapeCustomFields,
+  addFieldValues
 } from 'components/NewForm/NewForm';
 
 describe.only('NewForm', () => {
@@ -168,6 +169,107 @@ describe.only('NewForm', () => {
       let notDefined;
       const res = shapeCustomFields(notDefined);
       assert.deepEqual(res, []);
+    });
+  });
+
+  describe('addFieldValues', () => {
+    const revision = {
+      metadata: {
+        name: 'my dataset',
+        privateMetadata: {
+          custom_fields: {
+            FieldsetOne: {
+              name: 'test'
+            }
+          },
+          contactEmail: 'test@socrata.com'
+        },
+        metadata: {
+          custom_fields: {
+            FieldsetOne: {
+              foo: 'bar',
+              '*anu@@': 'beep'
+            }
+          }
+        }
+      }
+    };
+
+    it('returns an empty list if fields param is not defined', () => {
+      const result = addFieldValues(undefined, 'An irrelevant name', revision);
+      assert.deepEqual(result, []);
+    });
+
+    it('returns an empty string if it cannot find the value on the revision', () => {
+      const fieldWithNoValue = {
+        name: 'valueless',
+        isPrivate: true,
+        isCustom: false
+      };
+
+      const result = addFieldValues(
+        [fieldWithNoValue],
+        'An irrelevant name',
+        revision
+      );
+
+      assert.equal(result[0].value, '');
+    });
+
+    it('adds the value to a custom private field', () => {
+      const privateCustom = {
+        name: 'name',
+        isCustom: true,
+        isPrivate: true
+      };
+
+      const result = addFieldValues([privateCustom], 'FieldsetOne', revision);
+
+      assert.equal(result[0].value, 'test');
+    });
+
+    it('adds the value to a custom field', () => {
+      const custom = {
+        name: 'foo',
+        isCustom: true,
+        isPrivate: false
+      };
+
+      const result = addFieldValues([custom], 'FieldsetOne', revision);
+
+      assert.equal(result[0].value, 'bar');
+    });
+
+    it('adds the value to a private field', () => {
+      const privateField = {
+        name: 'contactEmail',
+        isPrivate: true
+      };
+
+      const result = addFieldValues([privateField], 'Contact Info', revision);
+
+      assert.equal(result[0].value, 'test@socrata.com');
+    });
+
+    it('adds the value to a normal field', () => {
+      const field = {
+        name: 'name'
+      };
+
+      const result = addFieldValues([field], 'Title', revision);
+
+      assert.equal(result[0].value, 'my dataset');
+    });
+
+    it('handles stupidly named custom fields with special characters', () => {
+      const stupidField = {
+        name: '*anu@@',
+        isCustom: true
+      };
+
+      const result = addFieldValues([stupidField], 'FieldsetOne', revision);
+
+      assert.equal(result[0].value, 'beep');
     });
   });
 });

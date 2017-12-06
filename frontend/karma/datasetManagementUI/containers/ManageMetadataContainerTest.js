@@ -3,7 +3,8 @@ import {
   getOutputSchemaCols,
   getRevision,
   shapeCustomFields,
-  addFieldValues
+  addFieldValues,
+  validateFieldset
 } from 'containers/ManageMetadataContainer';
 
 describe.only('ManageMetadata Container', () => {
@@ -268,6 +269,97 @@ describe.only('ManageMetadata Container', () => {
       const result = addFieldValues([stupidField], 'FieldsetOne', revision);
 
       assert.equal(result[0].value, 'beep');
+    });
+  });
+
+  describe.only('validateFieldset', () => {
+    const requiredMessage = 'this is required';
+    const minLengthMessage = 'this is too short';
+
+    function isRequired(v) {
+      if (v) {
+        return { status: 'pass' };
+      } else {
+        return {
+          status: 'fail',
+          message: requiredMessage
+        };
+      }
+    }
+
+    function minLength(l) {
+      return v => {
+        if (v >= l) {
+          return { status: 'pass' };
+        } else {
+          return {
+            status: 'fail',
+            message: minLengthMessage
+          };
+        }
+      };
+    }
+
+    const fieldset = {
+      title: 'My Fieldset',
+      subtitle: 'It is a good fieldset',
+      fields: {
+        name: {
+          name: 'name',
+          value: 'B',
+          isRequired: true,
+          validations: [isRequired, minLength(7)]
+        },
+        age: {
+          name: 'age',
+          value: '',
+          isRequired: true,
+          validations: [isRequired]
+        },
+        address: {
+          name: 'address',
+          value: 'hey'
+        }
+      }
+    };
+
+    it('applies all validations properly', () => {
+      const res = validateFieldset(fieldset);
+
+      assert.equal(res.fields.name[0], minLengthMessage);
+      assert.equal(res.fields.age[0], requiredMessage);
+      assert.isEmpty(res.fields.address);
+    });
+
+    it('concats errors if there are more than one', () => {
+      const newFieldset = {
+        ...fieldset,
+        fields: {
+          name: {
+            name: 'name',
+            value: '',
+            isRequired: true,
+            validations: [isRequired, minLength(7)]
+          }
+        }
+      };
+
+      const res = validateFieldset(newFieldset);
+
+      assert.sameMembers(res.fields.name, [requiredMessage, minLengthMessage]);
+    });
+
+    it('returns an empty object if fieldset is undefined for some reason', () => {
+      const res = validateFieldset(undefined);
+
+      assert.isEmpty(res.fields);
+    });
+
+    it('returns an empty array if no validations for a field are specified', () => {
+      const res = validateFieldset(fieldset);
+
+      assert.isEmpty(res.fields.address);
+      assert.isArray(res.fields.address);
     });
   });
 });

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { validateFieldsets } from 'containers/ManageMetadataContainer';
 
 class ManageMetadata extends Component {
   constructor() {
@@ -20,6 +21,9 @@ class ManageMetadata extends Component {
     });
   }
 
+  // tedious but updating nested state this way allows for weird fieldset
+  // and field names for custom fields; tried using dot-prop and a few other
+  // helpers but they would fail for some field/fieldset names
   handleDatasetChange(fieldsetName, fieldName, value) {
     this.setState({
       ...this.state,
@@ -40,6 +44,7 @@ class ManageMetadata extends Component {
   }
 
   render() {
+    console.log('VAL', validateFieldsets(this.state.datasetForm));
     return (
       <div>
         {this.props.children &&

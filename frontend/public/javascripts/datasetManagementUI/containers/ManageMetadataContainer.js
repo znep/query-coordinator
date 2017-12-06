@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
+import isEmailHelper from 'validator/lib/isEmail';
+import isURLHelper from 'validator/lib/isURL';
 
 // ==========
 // DATA MODEL
@@ -52,7 +54,9 @@ const FIELDSETS = {
         name: 'name',
         label: I18n.edit_metadata.dataset_title,
         placeholder: I18n.edit_metadata.dataset_title,
-        elementType: 'text'
+        elementType: 'text',
+        isRequired: true,
+        validations: [hasValue]
       },
       {
         name: 'description',
@@ -88,7 +92,8 @@ const FIELDSETS = {
         name: 'tags',
         label: I18n.edit_metadata.tags_keywords,
         placeholder: I18n.edit_metadata.dataset_tags,
-        elementType: 'tagsInput'
+        elementType: 'tagsInput',
+        validations: [areUnique]
       }
     ]
   },
@@ -105,7 +110,8 @@ const FIELDSETS = {
         name: 'attribution',
         label: I18n.edit_metadata.attribution,
         placeholder: I18n.edit_metadata.dataset_attribution,
-        elementType: 'text'
+        elementType: 'text',
+        validations: [isURL]
       }
     ]
   },
@@ -117,7 +123,8 @@ const FIELDSETS = {
         label: I18n.edit_metadata.email_address,
         placeholder: I18n.edit_metadata.dataset_email,
         elementType: 'text',
-        isPrivate: true
+        isPrivate: true,
+        validations: [isEmail]
       }
     ]
   },
@@ -127,7 +134,8 @@ const FIELDSETS = {
     fields: [
       {
         name: 'attachments',
-        elementType: 'attachmentsInput'
+        elementType: 'attachmentsInput',
+        validations: [areUnique]
       }
     ]
   }
@@ -152,7 +160,8 @@ export function shapeCustomFields(fields = []) {
         value: option
       }))
       : null,
-    elementType: field.type === 'fixed' ? 'select' : 'text'
+    elementType: field.type === 'fixed' ? 'select' : 'text',
+    validations: field.required ? [hasValue] : []
   }));
 }
 
@@ -244,6 +253,115 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
       };
     }
   });
+}
+
+// =====================
+// VALIDATOR FUNCTIONS
+// =====================
+// Validation
+// = { status : String }
+// | { status : String, message : String }
+
+// FieldsetError = {
+//   fields: {
+//     [String] : Array String
+//   }
+// }
+
+// validateFieldset :: Fieldset -> FieldsetError
+// Takes a fieldset and applies a set of rules for each field to produce an
+// error object. The object contains the collected results of each rule.
+export function validateFieldset(fieldset = {}) {
+  const fields = fieldset.fields || {};
+
+  const validatedFields = Object.values(fields).reduce((acc, field) => {
+    const errors = [];
+    const tests = field.validations || [];
+
+    tests.forEach(test => {
+      // If field has no value but is not required, then we don't want to run
+      // other valudations on it
+      if (!field.isRequired && !field.value) {
+        return;
+      }
+
+      const result = test(field.value);
+
+      if (result.status === 'fail') {
+        errors.push(result.message);
+      }
+    });
+
+    return {
+      ...acc,
+      [field.name]: errors
+    };
+  }, {});
+
+  return {
+    fields: validatedFields
+  };
+}
+
+export function validateFieldsets(fieldsets) {
+  return Object.keys(fieldsets).reduce(
+    (acc, fsKey) => ({
+      ...acc,
+      [fsKey]: validateFieldset(fieldsets[fsKey])
+    }),
+    {}
+  );
+}
+
+const SUCCESS = 'success';
+const FAIL = 'fail';
+
+// hasValue :: Any -> Validation
+function hasValue(v) {
+  if (v) {
+    return { status: SUCCESS };
+  } else {
+    return {
+      status: FAIL,
+      message: I18n.edit_metadata.validation_error_required
+    };
+  }
+}
+
+// areUnique :: Array Any -> Validation
+function areUnique(vs) {
+  if (Array.isArray(vs) && [...new Set(vs)].length === vs.length) {
+    return { status: SUCCESS };
+  } else {
+    return {
+      status: FAIL,
+      message: I18n.edit_metadata.validation_error_no_dupes
+    };
+  }
+}
+
+// isURL :: Any -> Validation
+function isURL(val) {
+  if (isURLHelper(val, { require_protocol: true })) {
+    return { status: SUCCESS };
+  } else {
+    return {
+      status: FAIL,
+      message: I18n.edit_metadata.validation_error_url
+    };
+  }
+}
+
+// isURL ::Any -> Validation
+function isEmail(val) {
+  if (isEmailHelper(val)) {
+    return { status: SUCCESS };
+  } else {
+    return {
+      status: FAIL,
+      message: I18n.edit_metadata.validation_error_email
+    };
+  }
 }
 
 // isNumber :: Any -> Boolean

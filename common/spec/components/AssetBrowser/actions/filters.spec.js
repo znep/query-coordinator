@@ -42,6 +42,10 @@ const verifyActions = (expectedActions, actualActions) => {
 };
 
 describe('actions/filters', () => {
+  beforeEach(() => window.socrata = { initialState: { catalog: {} } });
+
+  afterEach(() => delete window.socrata);
+
   describe('clearAllFilters', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();

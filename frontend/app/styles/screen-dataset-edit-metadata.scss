@@ -130,4 +130,20 @@
       }
     }
   }
+
+  .unsafe-delete {
+    margin-left: 5em;
+    color: #fff;
+    font-size: 11px;
+    line-height: 15px;
+    background-color: #d06463;
+    border: 1px solid #914646;
+    border-radius: 1.5px;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: #914646;
+    }
+  }
 }

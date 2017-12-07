@@ -6333,6 +6333,9 @@ en:
       tags_prompt: Enter keywords
       thumbnail_image: Thumbnail Image
       title: Edit Dataset Metadata
+      unsafe_delete: Purge from system
+      unsafe_delete_disclaimer: Warning! This file may be referenced in other places, and purging it from the system will break those references. Do you really want to permanently delete this file from the entire platform?
+      unsafe_delete_error: There was an error attempting to purge this file from the system. Please wait for the page to refresh and then try again, or contact Socrata support if the problem persists.
       upload_error: Please select a valid image file
       upload_help: This image will be cropped into a square
       upload_image: Upload Image

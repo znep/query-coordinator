@@ -3,8 +3,10 @@ import { updateQueryString } from 'common/components/AssetBrowser/lib/query_stri
 import { clearAllFilters } from 'common/components/AssetBrowser/actions/filters';
 import { getUnfilteredState } from 'common/components/AssetBrowser/reducers/filters';
 
+export const CHANGE_TAB = 'CHANGE_TAB';
+
 export const changeTab = (newTab) => (dispatch, getState) => {
-  dispatch({ type: 'CHANGE_TAB', newTab });
+  dispatch({ type: CHANGE_TAB, newTab });
 
   const onSuccess = () => {
     updateQueryString({ getState });
@@ -15,7 +17,7 @@ export const changeTab = (newTab) => (dispatch, getState) => {
     getState,
     {
       pageNumber: 1,
-      action: 'CHANGE_TAB',
+      action: CHANGE_TAB,
       activeTab: newTab
     },
     onSuccess

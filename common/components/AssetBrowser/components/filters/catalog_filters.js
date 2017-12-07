@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import I18n from 'common/i18n';
+import * as constants from 'common/components/AssetBrowser/lib/constants.js';
 
 import ClearFilters from './clear_filters';
 import AssetTypesFilter from './asset_types_filter';
@@ -71,9 +72,12 @@ export class CatalogFilters extends Component {
       </div>
     );
 
-    const onMyAssetsTab = activeTab === 'myAssets';
+    const onMyAssetsTab = activeTab === constants.MY_ASSETS_TAB;
+    const onApprovals = activeTab === constants.MY_QUEUE_TAB || activeTab === constants.HISTORY_TAB;
+
     const authorityFilterSection = onMyAssetsTab ? null : <AuthorityFilter />;
     const ownedByFilterSection = onMyAssetsTab ? null : <OwnedByFilter />;
+    const visibilityFilterSection = onApprovals ? null : <VisibilityFilter />;
 
     return (
       <div className="catalog-filters">
@@ -86,7 +90,7 @@ export class CatalogFilters extends Component {
             <AssetTypesFilter />
             {authorityFilterSection}
             {ownedByFilterSection}
-            <VisibilityFilter />
+            {visibilityFilterSection}
             <CategoryFilter />
             <TagFilter />
             <CustomFacetFilters />

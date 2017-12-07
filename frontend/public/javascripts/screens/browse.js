@@ -1,6 +1,4 @@
 $(function() {
-  'use strict';
-
   var $browse = $('.browseSection');
   var isListingViewType = $browse.is('[data-view-type="listing"]');
 
@@ -861,7 +859,7 @@ $(function() {
 
       $dropdownElement.addClass('working');
       createPublishedView(metadata).then(
-        function(uid) { window.location.href = '/d/' + uid; },
+        function(uid) { window.location.href = '/d/' + uid + '/edit'; },
         function(error) {
           $dropdownElement.removeClass('working');
           console.error(error);

@@ -1240,16 +1240,8 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    %w(
-      activity_feed
-      administration
-      connector
-      internal
-      internal_asset_manager
-      roles
-      routing_approval
-      site_appearance
-    ).include?(controller_name)
+    controller.class.ancestors.include?(AdministrationController) ||
+      %w(internal internal_asset_manager site_appearance).include?(controller_name)
   end
 
   def admin_page_with_left_nav_class

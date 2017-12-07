@@ -273,12 +273,49 @@ function renderCellHTML(cellContent, column, domain, datasetUid) {
         break;
 
       default:
-        cellHTML = _.escape(cellContent);
+        cellHTML = maybeRenderTextFormattingHTML(cellContent, column);
         break;
     }
   } catch (e) {
     console.error(`Error rendering ${cellContent} as type ${column.renderTypeName}:`);
     console.error(e);
+  }
+
+  return cellHTML;
+}
+
+/**
+ * Applies formatting to text columns (e.g. email addresses)
+ */
+function maybeRenderTextFormattingHTML(cellContent, column) {
+
+  if (!_.isString(cellContent) || _.isEmpty(cellContent)) {
+    return '';
+  }
+
+  const escapedCellContent = _.escape(cellContent);
+  let cellHTML = '';
+
+  switch (_.get(column, 'format.displayStyle', '').toLowerCase()) {
+
+    case 'email':
+      cellHTML = `<a href="mailto:${escapedCellContent}" title="${escapedCellContent}">${escapedCellContent}</a>`;
+      break;
+
+    case 'url':
+      const protocol = cellContent.match(/^([a-z]+:\/\/)/i);
+
+      // If there is no protocol it won't be a valid link anyway, so just render it as a string.
+      if (_.isNull(protocol)) {
+        cellHTML = escapedCellContent;
+      } else {
+        cellHTML = `<a href="${escapedCellContent}" title="${escapedCellContent}">${escapedCellContent}</a>`;
+      }
+      break;
+
+    default:
+      cellHTML = escapedCellContent;
+      break;
   }
 
   return cellHTML;

@@ -1452,17 +1452,22 @@
       $filter.slideDown();
 
       // EN-10572 - Different Filter Operators Available for OBE/NBE Text Columns
-      var tableColumnIdObj = _.get(condition, 'metadata.tableColumnId', {});
-      var tableColumnId = _.get(Object.values(tableColumnIdObj), '0', null);
-      var columnForThisFilterControl = window.blist.dataset.columnForTCID(tableColumnId);
+      try {
+        var tableColumnIdObj = _.get(condition, 'metadata.tableColumnId', {});
+        var tableColumnId = _.get(Object.values(tableColumnIdObj), '0', null);
+        var thisDataset = (dataset) ? dataset : _.get(window, 'blist.dataset');
+        var columnForThisFilterControl = thisDataset.columnForTCID(tableColumnId);
 
-      if (columnForThisFilterControl.dataTypeName === 'text') {
+        if (columnForThisFilterControl.dataTypeName === 'text') {
 
-        $filter.append(
-          '<div class="text-column-filter-operator-notice">' +
-            $.t('controls.filter.main.filter_operators_for_text_columns_may_differ') +
-          '</div>'
-        );
+          $filter.append(
+            '<div class="text-column-filter-operator-notice">' +
+              $.t('controls.filter.main.filter_operators_for_text_columns_may_differ') +
+            '</div>'
+          );
+        }
+      } catch (e) {
+        // Just don't fail if any of this additional UI fails.
       }
 
       return $filter;

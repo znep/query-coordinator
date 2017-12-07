@@ -16,16 +16,10 @@ export class ClearFilters extends Component {
     _.bindAll(this, 'activeFilters', 'activeFilterCount', 'clearAllFilters', 'clearAllFiltersAndQuery');
   }
 
-  activeFilters() {
-    const { allFilters, buttonStyle } = this.props;
-
-    const getFilterValue = _.partial(_.get, allFilters);
-
-    const customFacetKeyPaths = _.keys(_.get(allFilters, 'customFacets')).map((customFacetKey) => (
-      `customFacets.${customFacetKey}`
-    ));
-
-    const filterKeyPaths = [
+  // See similar list of key paths in ActiveFilterCount component
+  filterKeyPaths() {
+    const { buttonStyle } = this.props;
+    return [
       'assetTypes',
       'authority',
       'category',
@@ -34,11 +28,26 @@ export class ClearFilters extends Component {
       'tag',
       'visibility',
       buttonStyle ? 'q' : null
-    ].concat(customFacetKeyPaths);
+    ].concat(this.customFacetKeyPaths());
+  }
+
+  customFacetKeyPaths() {
+    const { allFilters } = this.props;
+    return _.keys(
+      _.get(allFilters, 'customFacets')
+    ).map(
+      (customFacetKey) => `customFacets.${customFacetKey}`
+    );
+  }
+
+  activeFilters() {
+    const { allFilters } = this.props;
+
+    const getFilterValue = _.partial(_.get, allFilters);
 
     const activeFilters = {};
 
-    _.each(filterKeyPaths, (filterKey) => {
+    _.each(this.filterKeyPaths(), (filterKey) => {
       const filterValue = getFilterValue(filterKey);
       if (filterValue) {
         activeFilters[filterKey] = filterValue;
@@ -63,9 +72,10 @@ export class ClearFilters extends Component {
 
     // If baseFilters are present, don't count them among the "active" filters that the user has specified.
     if (!_.isEmpty(baseFilters)) {
-      return _(allFilters).keys().reject((key) => _.isEmpty(allFilters[key])).
-        reject((key) => _.isEqual(allFilters[key], baseFilters[key])).
-        reject((key) => _.isEmpty(this.activeFilters()[key])).value().length;
+      // We use _.get() here because sometimes the key is actually a key path (i.e. 'foo.bar.id')
+      return _(this.filterKeyPaths()).reject((key) => _.isEmpty(_.get(allFilters, key))).
+        reject((key) => _.isEqual(_.get(allFilters, key), _.get(baseFilters, key))).
+        reject((key) => _.isEmpty(_.get(this.activeFilters(), key))).value().length;
     } else {
       return _.keys(this.activeFilters()).length;
     }

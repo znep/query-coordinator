@@ -36,6 +36,7 @@ class PanelFooter extends Component {
       currentUserRole,
       isSuperAdmin,
       currentDomainFeatures,
+      showMyAlertPreference,
       inProductTransientNotificationsEnabled,
       onShowTransientNotificationsChange
     } = this.props;
@@ -46,6 +47,7 @@ class PanelFooter extends Component {
           onClose={this.closeModal}
           isSuperAdmin={isSuperAdmin}
           currentDomainFeatures={currentDomainFeatures}
+          showMyAlertPreference={showMyAlertPreference}
           inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
           onShowTransientNotificationsChange={onShowTransientNotificationsChange}
           currentUserRole={currentUserRole} />
@@ -179,6 +181,7 @@ PanelFooter.propTypes = {
   onShowTransientNotificationsChange: PropTypes.func,
   openClearAllUserNotificationsPrompt: PropTypes.bool,
   toggleClearAllUserNotificationsPrompt: PropTypes.func,
+  showMyAlertPreference: PropTypes.bool,
   inProductTransientNotificationsEnabled: PropTypes.bool
 };
 

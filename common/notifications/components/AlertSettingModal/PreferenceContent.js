@@ -362,6 +362,46 @@ class PreferenceContent extends Component {
     );
   }
 
+  renderMyAlert() {
+    const { onAlertNotificationChange, preferences, showMyAlertPreference } = this.props;
+    const category = 'my_alerts';
+    const categoryData = _.get(preferences, category, {});
+
+    if (showMyAlertPreference) {
+      return (
+        <tr>
+          <td>
+            <div styleName="preference-name">
+              {I18n.t('title', { scope: 'shared_site_chrome_notifications.alert_setting_modal.my_alerts' })}
+            </div>
+            <div styleName="preference-description">
+              {I18n.t('description', { scope: 'shared_site_chrome_notifications.alert_setting_modal.my_alerts' })}
+            </div>
+          </td>
+          <td className="column-description">
+            <OnOffSwitch
+              enableSwitch={categoryData.enable_product_notification}
+              onSwitchChange={() => onAlertNotificationChange(category, 'product')} />
+          </td>
+
+          <td>
+            <label className="inline-label" styleName="email-option" htmlFor="notify-subscribe-my-alert">
+              <input
+                checked={categoryData.enable_email}
+                id="notify-subscribe-my-alert"
+                type="checkbox"
+                onChange={() => onAlertNotificationChange(category, 'email')} />
+              <span>
+                {I18n.t('subscribe_email',
+                  { scope: 'shared_site_chrome_notifications.alert_setting_modal.my_alerts' })}
+              </span>
+            </label>
+          </td>
+        </tr>
+      );
+    }
+  }
+
   render() {
     const {
       currentDomainFeatures,
@@ -406,6 +446,7 @@ class PreferenceContent extends Component {
             {this.renderMyAssets()}
             {this.renderDeleteAssets()}
             {this.renderUserAccounts()}
+            {this.renderMyAlert()}
             </tbody>
           </table>
         </div>
@@ -423,6 +464,7 @@ PreferenceContent.propTypes = {
   preferences: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
   onAlertNotificationChange: PropTypes.func,
+  showMyAlertPreference: PropTypes.bool,
   inProductTransientNotificationsEnabled: PropTypes.bool,
   onSettingsChange: PropTypes.func
 };

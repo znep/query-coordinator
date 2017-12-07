@@ -333,6 +333,7 @@ class Notifications extends Component {
         currentUserRole,
         isSuperAdmin,
         currentDomainFeatures,
+        showMyAlertPreference,
         inProductTransientNotificationsEnabled
       } = this.props.options;
       const {
@@ -383,6 +384,7 @@ class Notifications extends Component {
             unreadProductNotificationCount={unreadProductNotificationCount}
             unreadUserNotificationCount={unreadUserNotificationCount}
             currentDomainFeatures={currentDomainFeatures}
+            showMyAlertPreference={showMyAlertPreference}
             inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
             onShowTransientNotificationsChange={this.onShowTransientNotificationsChange}
             viewOlderLink={viewOlderLink} />
@@ -428,6 +430,7 @@ Notifications.propTypes = {
     lockScrollbar: PropTypes.bool,
     scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,
+    showMyAlertPreference: PropTypes.bool.isRequired,
     inProductTransientNotificationsEnabled: PropTypes.bool.isRequired,
     showUserNotifications: PropTypes.bool.isRequired
   }).isRequired
@@ -437,6 +440,7 @@ Notifications.defaultProps = {
   options: {
     lockScrollbar: PropTypes.false,
     scrollTop: 0,
+    showMyAlertPreference: false,
     inProductTransientNotificationsEnabled: false
   }
 };

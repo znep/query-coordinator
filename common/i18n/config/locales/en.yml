@@ -349,6 +349,8 @@ en:
         search: Search
       view_card:
         external_content: External Content
+      create_alert:
+        title: Create Alert
     site_chrome:
       access_manager:
         accept: OK
@@ -576,8 +578,8 @@ en:
             title: New Assets
             description: Notify me when any new asset is published
           email_digest:
-            title: Subscribe to Email Notifications
-            description: Send an email digest of all Notifications & alerts instead of individual emails
+            title: Subscribe to Email Digest
+            description: Send an email digest of all Notifications & Alerts instead of individual emails
             real_time: Real Time
             monthly: Monthly
             daily: Daily
@@ -589,6 +591,9 @@ en:
           in_product_transient:
             title: In-Product Transient Notifications
             description: Stop receiving in-product transient notifications
+          my_alerts:
+            title: My Alerts
+            description: Notify me when my alerts are triggered
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

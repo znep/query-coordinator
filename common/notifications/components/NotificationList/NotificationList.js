@@ -118,6 +118,7 @@ class NotificationList extends Component {
       showProductNotifications,
       showUserNotifications,
       currentDomainFeatures,
+      showMyAlertPreference,
       inProductTransientNotificationsEnabled,
       onShowTransientNotificationsChange
     } = this.props;
@@ -135,6 +136,7 @@ class NotificationList extends Component {
         currentUserRole={currentUserRole}
         showUserNotifications={showUserNotifications}
         currentDomainFeatures={currentDomainFeatures}
+        showMyAlertPreference={showMyAlertPreference}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
         onShowTransientNotificationsChange={onShowTransientNotificationsChange}
         isSuperAdmin={isSuperAdmin} />);
@@ -155,6 +157,7 @@ class NotificationList extends Component {
         showUserNotifications={showUserNotifications}
         currentUserRole={currentUserRole}
         currentDomainFeatures={currentDomainFeatures}
+        showMyAlertPreference={showMyAlertPreference}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
         onShowTransientNotificationsChange={onShowTransientNotificationsChange}
         isSuperAdmin={isSuperAdmin} />);
@@ -204,6 +207,7 @@ NotificationList.propTypes = {
   unreadProductNotificationCount: PropTypes.number.isRequired,
   unreadUserNotificationCount: PropTypes.number.isRequired,
   viewOlderLink: PropTypes.string,
+  showMyAlertPreference: PropTypes.bool,
   inProductTransientNotificationsEnabled: PropTypes.bool,
   onShowTransientNotificationsChange: PropTypes.func.isRequired
 };

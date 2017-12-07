@@ -107,6 +107,7 @@ class AlertSettingModal extends Component {
         currentUserRole,
         isSuperAdmin,
         currentDomainFeatures,
+        showMyAlertPreference,
         inProductTransientNotificationsEnabled
       } = this.props;
 
@@ -118,6 +119,7 @@ class AlertSettingModal extends Component {
           onAlertNotificationChange={this.onAlertNotificationChange}
           onSettingsChange={this.onSettingsChange}
           settings={this.state.settings}
+          showMyAlertPreference={showMyAlertPreference}
           inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
           preferences={this.state.preferences} />
       );
@@ -217,6 +219,7 @@ class AlertSettingModal extends Component {
 
 AlertSettingModal.propTypes = {
   onClose: PropTypes.func,
+  showMyAlertPreference: PropTypes.bool,
   onShowTransientNotificationsChange: PropTypes.func,
   inProductTransientNotificationsEnabled: PropTypes.bool
 };

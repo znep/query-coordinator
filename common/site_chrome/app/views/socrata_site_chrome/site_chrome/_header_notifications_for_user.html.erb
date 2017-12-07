@@ -23,6 +23,7 @@
           currentUserRole: <%== current_user_role.to_json %>,
           currentDomainFeatures: <%== current_domain_features_map.to_json %>,
           isSuperAdmin: <%== is_superadmin? %>,
+          showMyAlertPreference: <%= show_alert_preference? %>,
           inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>
         };
 

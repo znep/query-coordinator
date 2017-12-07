@@ -449,5 +449,17 @@ module SocrataSiteChrome
         fetch('properties', []).
         each_with_object({}) { |property, hsh| hsh[property['name']] = property['value'] }
     end
+
+    def show_alert_preference?
+      return false unless site_chrome_current_user
+
+      return true if get_feature_flag('enable_alert_notifications_for_all_users')
+
+      return true if get_feature_flag('enable_alert_notifications_for_admin_users') &&
+        (is_superadmin? || current_user_role === 'administrator')
+
+      get_feature_flag('enable_alert_notifications_for_role_users') &&
+        (is_superadmin? || !current_user_role.nil? )
+    end
   end
 end

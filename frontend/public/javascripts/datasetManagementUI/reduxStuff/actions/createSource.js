@@ -145,7 +145,7 @@ export function createUploadSource(file, parseFile, params, callId) {
         }
         return bytesSource;
       });
-    }).catch(createUploadSourceErr => {
+    }).catch(() => {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     });
   };

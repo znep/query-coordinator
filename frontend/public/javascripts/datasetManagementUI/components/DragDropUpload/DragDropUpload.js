@@ -58,8 +58,9 @@ export class DragDropUpload extends Component {
 
   handleDrop(e) {
     this.preventDefault(e);
-    if (this.isApiCallPending())
+    if (this.isApiCallPending()) {
       return;
+    }
     const { dispatch } = this.props;
     const file = e.dataTransfer.files[0];
     const item = _.get(e, 'dataTransfer.items.0');
@@ -93,12 +94,14 @@ export class DragDropUpload extends Component {
 
   isApiCallPending() {
     const callId = this.state.uploadApiCallId;
-    if (!callId)
+    if (!callId) {
       return false;
+    }
 
-    const apiCall = this.props.apiCalls[callId]
-    if (!apiCall || apiCall.succeededAt || apiCall.failedAt)
+    const apiCall = this.props.apiCalls[callId];
+    if (!apiCall || apiCall.succeededAt || apiCall.failedAt) {
       return false;
+    }
 
     return true;
   }
@@ -119,16 +122,17 @@ export class DragDropUpload extends Component {
     } else if (!this.isApiCallPending() && this.state.draggingOver) {
       return styles.dropZoneDragging;
     } else if (this.isApiCallPending() && !this.state.draggingOver) {
-      return styles.isApiCallPending
+      return styles.isApiCallPending;
     }
     return styles.dropZone;
   }
 
   render() {
-    const { dispatch, params, hrefExists } = this.props;
+    const { hrefExists } = this.props;
     if (hrefExists) {
       return <SourceMessage hrefExists={hrefExists} />;
     }
+    const enabledFileExtensionsStr = enabledFileExtensions.map(formatExpanation).join(', ');
 
     return (
       <section className={styles.container}>
@@ -144,25 +148,25 @@ export class DragDropUpload extends Component {
             <div className={styles.content}>
               {
                 this.isApiCallPending() ?
-                <h2>Preparing for Upload...</h2> :
-                <div>
-                  <h2>{I18n.show_uploads.message}</h2>
-                  <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
-                  <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-                    Browse
-                  </label>
-                  <input
-                    id="file"
-                    name="file"
-                    type="file"
-                    aria-labelledby="upload-label"
-                    className={styles.uploadInput}
-                    onChange={this.handleBrowseFileChange} />
-                  <div className={styles.fileTypes}>
-                    {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
+                  <h2>Preparing for Upload...</h2> :
+                  <div>
+                    <h2>{I18n.show_uploads.message}</h2>
+                    <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
+                    <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+                      Browse
+                    </label>
+                    <input
+                      id="file"
+                      name="file"
+                      type="file"
+                      aria-labelledby="upload-label"
+                      className={styles.uploadInput}
+                      onChange={this.handleBrowseFileChange} />
+                    <div className={styles.fileTypes}>
+                      {`${I18n.show_uploads.filetypes} ${enabledFileExtensionsStr}`}
+                    </div>
+                    <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
                   </div>
-                  <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
-                </div>
               }
             </div>
           </div>

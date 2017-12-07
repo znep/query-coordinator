@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Fieldset from 'components/Fieldset/Fieldset';
-import Field from 'components/Field/FieldNew';
+import Field from 'containers/DatasetFieldContainer';
 
 const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
   return (

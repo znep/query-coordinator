@@ -15,7 +15,7 @@ const initialState = {
   datasetForm: {
     isDirty: false,
     showErrors: false,
-    errors: []
+    errors: {}
   },
   columnForm: {
     isDirty: false,

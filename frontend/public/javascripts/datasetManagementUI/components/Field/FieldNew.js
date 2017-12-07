@@ -11,7 +11,7 @@ import styles from './Field.scss';
 
 class FieldNew extends Component {
   render() {
-    const { field, fieldsetName, handleChange } = this.props;
+    const { field, fieldsetName, handleChange, errors } = this.props;
 
     const labelClassNames = [styles.label];
 
@@ -53,8 +53,7 @@ class FieldNew extends Component {
         element = null;
     }
 
-    const inErrorState = false;
-    const errors = [];
+    const inErrorState = true;
 
     return (
       <div>
@@ -87,6 +86,7 @@ class FieldNew extends Component {
 FieldNew.propTypes = {
   field: PropTypes.object.isRequired,
   fieldsetName: PropTypes.string.isRequired,
+  errors: PropTypes.arrayOf(PropTypes.string),
   handleChange: PropTypes.func.isRequired
 };
 

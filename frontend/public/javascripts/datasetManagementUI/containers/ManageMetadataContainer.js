@@ -4,6 +4,8 @@ import * as Selectors from 'selectors';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
 import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
 import { FormValidationError } from 'containers/HrefFormContainer';
+import * as FormActions from 'reduxStuff/actions/forms';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
 
@@ -512,13 +514,17 @@ function reshape(s) {
   };
 }
 
+const FORM_NAME = 'datasetForm';
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
+    setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
     saveDatasetMetadata: newMetadata => {
       const result = validateFieldsets(newMetadata);
 
       if (hasErrors(result)) {
-        return Promise.reject(new FormValidationError('datasetForm', result));
+        return Promise.reject(new FormValidationError(FORM_NAME, result));
       }
 
       const reshaped = reshape(newMetadata);

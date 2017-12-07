@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { validateFieldsets } from 'containers/ManageMetadataContainer';
 
 class ManageMetadata extends Component {
   constructor() {
@@ -46,8 +45,16 @@ class ManageMetadata extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.saveDatasetMetadata(this.state.datasetForm);
-    console.log('VAL', validateFieldsets(this.state.datasetForm));
+    this.props
+      .saveDatasetMetadata(this.state.datasetForm)
+      .then(() => {
+        this.props.showFlash('success', 'saved ok');
+        this.props.setFormErrors({});
+      })
+      .catch(err => {
+        this.props.showFlash('error', 'messed up!');
+        this.props.setFormErrors(err.errors);
+      });
   }
 
   render() {
@@ -68,6 +75,8 @@ ManageMetadata.propTypes = {
   datasetMetadata: PropTypes.object.isRequired,
   outputSchemaColumns: PropTypes.object.isRequired,
   saveDatasetMetadata: PropTypes.func.isRequired,
+  setFormErrors: PropTypes.func.isRequired,
+  showFlash: PropTypes.func.isRequired,
   children: PropTypes.object
 };
 

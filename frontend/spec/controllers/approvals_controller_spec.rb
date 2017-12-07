@@ -14,7 +14,7 @@ describe ApprovalsController do
   describe 'get /settings/1', :verify_stubs => false do
 
     it 'renders the settings page with a list of approvers' do
-      VCR.use_cassette('get_approvals_settings', :record => :new_episodes) do
+      VCR.use_cassette('get_approvals_settings') do
         allow(User).to receive(:find).and_return(approver)
         allow(User).to receive(:find_with_right).and_return([approver])
         allow(Fontana::Approval::Workflow).to receive(:find).and_return(workflow)
@@ -37,7 +37,7 @@ describe ApprovalsController do
     end
 
     it 'updates the settings' do
-      VCR.use_cassette('put_approvals_settings', :record => :new_episodes) do
+      VCR.use_cassette('put_approvals_settings') do
         allow(User).to receive(:find).and_return(approver)
         allow(User).to receive(:find_with_right).and_return([approver])
         allow(Fontana::Approval::Workflow).to receive(:find).and_return(workflow)

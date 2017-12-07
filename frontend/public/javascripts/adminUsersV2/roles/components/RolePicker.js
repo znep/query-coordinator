@@ -5,6 +5,15 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 import { Dropdown } from 'common/components';
 
 export class RolePicker extends Component {
+  static propTypes = {
+    availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
+    roleId: PropTypes.string,
+    onRoleChange: PropTypes.func.isRequired,
+    I18n: PropTypes.object.isRequired,
+    initialOption: PropTypes.object,
+    placeholder: PropTypes.string
+  };
+
   render() {
     const { availableRoles, onRoleChange, roleId, initialOption, placeholder } = this.props;
 
@@ -22,15 +31,6 @@ export class RolePicker extends Component {
     );
   }
 }
-
-RolePicker.propTypes = {
-  availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
-  roleId: PropTypes.string,
-  onRoleChange: PropTypes.func.isRequired,
-  I18n: PropTypes.object.isRequired,
-  initialOption: PropTypes.object,
-  placeholder: PropTypes.string
-};
 
 const mapStateToProps = (state, { I18n }) => {
   const customRolesExist = state.roles.some(role => !role.isDefault);
@@ -58,3 +58,5 @@ const mapStateToProps = (state, { I18n }) => {
 };
 
 export const LocalizedRolePicker = connectLocalization(connect(mapStateToProps)(RolePicker));
+
+export default LocalizedRolePicker;

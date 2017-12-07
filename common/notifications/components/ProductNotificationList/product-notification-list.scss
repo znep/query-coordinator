@@ -26,20 +26,27 @@ $panelHeaderHeight: 30px;
 
   &.secondary-panel {
     background-color: $secondary-panel-background-color;
-    bottom: $footerBarHeight;
     color: $view-older-notifications-link-color;
-    height: $panelHeaderHeight;
-    left: 0;
     position: absolute;
-    right: 0;
-    -webkit-transition: height 0.3s ease;
-    -moz-transition: height 0.3s ease;
-    -ms-transition: height 0.3s ease;
-    -o-transition: height 0.3s ease;
-    transition: height 0.3s ease;
+    -webkit-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -moz-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -ms-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -o-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -webkit-transition: transform 0.3s ease;
+    -moz-transition: transform 0.3s ease;
+    -ms-transition: transform 0.3s ease;
+    -o-transition: transform 0.3s ease;
+    transition: transform 0.3s ease;
+    width: 100%;
+    z-index: 0;
 
     &.open {
-      height: calc(100% - #{$headerBarHeight} - #{$footerBarHeight});
+      -webkit-transform: translate3d(0px, -100%, 0);
+      -moz-transform: translate3d(0px, -100%, 0);
+      -ms-transform: translate3d(0px, -100%, 0);
+      -o-transform: translate3d(0px, -100%, 0);
+      transform: translate3d(0px, -100%, 0);
     }
 
     .accordion-header {

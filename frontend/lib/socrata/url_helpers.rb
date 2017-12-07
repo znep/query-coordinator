@@ -39,6 +39,15 @@ module Socrata
       end
     end
 
+    def edit_op_measure_url(view)
+      raise RuntimeError.new('view is not a measure') unless view.op_measure?
+      "#{op_measure_url(view)}/edit"
+    end
+
+    def op_measure_url(view)
+      "//#{view.canonical_domain_name}#{locale_url_prefix}/d/#{view.id}"
+    end
+
     def edit_visualization_canvas_url(view)
       raise RuntimeError.new('view is not a visualization canvas') unless view.visualization_canvas?
       "#{visualization_canvas_url(view)}/edit"

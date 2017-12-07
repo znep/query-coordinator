@@ -48,7 +48,11 @@ export class Dropdown extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     // Only render when something visible happens
-    return (this.state.focused !== nextState.focused || this.state.opened !== nextState.opened);
+    return (this.state.focused !== nextState.focused ||
+            this.state.opened !== nextState.opened ||
+            this.props.disabled !== nextProps.disabled ||
+            // This allows changing selected value from parent component
+            this.state.selectedOption !== nextState.selectedOption);
   }
 
   componentWillUpdate(nextProps, nextState) {

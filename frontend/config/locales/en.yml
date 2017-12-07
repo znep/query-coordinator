@@ -431,13 +431,6 @@ en:
     header:
       breadcrumbs:
         approvals: Approvals
-      tabs:
-        history:
-          title: History
-        my_queue:
-          title: My Queue
-        settings:
-          title: Settings
     settings:
       introduction:
         header: About Approvals and Approval Requests
@@ -3531,6 +3524,175 @@ en:
           asset_type: Type
           created_at: Date
           dataset_name: Item Affected
+        event_messages:
+          failure:
+            archive_error:
+              description: 'Failed to open the zip archive: %{reason}'
+              title: Archive decoding error
+            bad_response_from_server:
+              description: We were not able to import your data because of an unexpected error. Please try again later.
+              title: Something went wrong
+            bad_timestamp_format:
+              description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+              title: Bad date/time value
+            bad_timezone:
+              description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+              title: Bad timezone
+            completed_with_warnings:
+              description: 'Your data was imported with warnings, but there was an error saving the warnings to the dataset. However, you can find a full list of warnings here: %{warnings}'
+              title: Error saving warnings
+            control_file_invalid_json:
+              description: 'Your control file was not parseable as JSON. Error message: "%{message}". Please verify that it is valid JSON.'
+              title: Malformed control file
+            control_file_malformed:
+              description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
+              title: Malformed control file
+            control_file_too_large:
+              description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
+              title: Control file too large
+            corrupt_archive:
+              description: 'We could not process the archive you uploaded. Error message: %{reason}'
+              title: Corrupt archive
+            corrupt_gzip:
+              description: 'The GZip-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid GZip file.'
+              title: Unable to extract compressed file
+            corrupt_shapefile:
+              description: The shapefile header could not be read.
+              title: Corrupt shapefile
+            corrupt_shapefile_error:
+              describe: 'Failed to read the shapefile: %{reason}'
+              title: Corrupt shapefile
+            corrupt_xz:
+              description: 'The XZ-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid XZ file.'
+              title: Unable to extract compressed file
+            decode_filetype_error:
+              describe: Unable to read file with extension %{kind}
+              title: Unrecognized file format
+            delete_without_user_pk:
+              description: We cannot successfully process delete operations unless a row identifier field is declared.
+              title: Cannot delete without row identifier
+            di2_counts:
+              description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+              title: Completed
+            duplicated_fields_in_input:
+              description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
+              title: Duplicate field names specified
+            field_not_in_dataset:
+              description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
+              title: Could not find field in dataset
+            field_not_in_input:
+              description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
+              title: Could not find field in file
+            field_wrong_format:
+              description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ASCII characters and begin with an underscore or letter.
+              title: Illegal field name given
+            generic:
+              description: Sorry, we were unable to process your import request due to an unexpected error.
+              title: Something went wrong
+            geocoding_failure:
+              description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
+              title: Unknown geocoding failure
+            geocoding_source_ignored:
+              description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
+              title: Could not ignore specified columns
+            geocoding_source_invalid_type:
+              description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
+              title: Could not geocode from given columns
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
+              title: Could not ignore specified columns
+            incomplete_archive:
+              description: The shapefile archive you uploaded is missing a file with extension "%{missing}". Please ensure that your archive has this file and try again.
+              title: Incomplete shapefile archive
+            incomplete_shapefile_error:
+              describe: 'Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: %{missing}.'
+              title: Incomplete shapefile
+            invalid_arity_error:
+              description: 'One of the points in the following row did not have 2 coordinates: %{row}'
+              title: Invalid coordinates
+            invalid_encoding:
+              description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
+              title: Invalid file encoding
+            invalid_row_length:
+              description: 'Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.'
+              title: Unexpected number of fields in row
+            jsonparse_error:
+              description: Failed to parse JSON at line %{line} column %{column} token %{token} because %{reason}
+              title: JSON parse error
+            malformed_blueprint:
+              description: 'The blueprint you provided could not be used. Error message: "%{message}".'
+              title: Malformed blueprint
+            malformed_upsert:
+              description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
+              title: Malformed upsert
+            no_field_names_in_input:
+              description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
+              title: Could not find CSV header
+            no_identity_column:
+              description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
+              title: Row identifier column not found
+            parse_error:
+              description: Parsing the file you uploaded failed on line %{lineNumber} with message "%{reason}".
+              title: Parse error
+            permission_denied:
+              description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
+              title: Permission denied
+            record_too_large:
+              description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
+              title: Single record too large
+            row_too_large:
+              description: Row number %{nearRecord} of your file had too many characters; the limit is %{limit}.
+              title: Row too large
+            shapefile_header_error:
+              description: 'Failed to read the header in the shapefile: %{reason}'
+              title: Invalid shapefile header
+            shapefile_row_error:
+              description: 'Failed to read a row in the shapefile: %{reason}'
+              title: Invalid shapefile row
+            synthetic_location_in_input:
+              description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
+              title: Cannot import into synthetic column
+            too_many_errors_in_input:
+              description: The job is being aborted because too many errors were found in your input data.
+              title: Too many input errors found
+            too_many_records_in_input:
+              description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
+              title: Too many records
+            uninterpretable_value:
+              description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
+              title: Uninterpretable record value
+            unknown_domain:
+              description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
+              title: Domain not recognized
+            unknown_file_type:
+              description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
+              title: Unknown file type
+            unpublished_copy_exists:
+              description: An attempt was made to update a published dataset while an unpublished copy exists.  Please publish that copy, or update it directly instead.
+              title: Unpublished copy exists
+            unsupported_import_type:
+              description: The import method "%{importType}" is not supported. Please use "replace", "append", or "import".
+              title: Unsupported import method
+            upsert_already_in_progress_by_someone_else:
+              description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+              title: Upsert already in progress
+            upsert_counts:
+              description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
+              title: Completed
+            vertex_too_complex_error:
+              description: There were %{counted} vertices in row %{rowNum}, the max is %{maxVerticesPerRow}
+              title: Too many vertices in shape
+            xmlparse_error:
+              description: Failed to parse XML node due to %{reason} near %{path}
+              title: XML parse error
+          success_with_data_errors:
+            di2_counts:
+              description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+              title: Completed
+            upsert_counts:
+              description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
+              title: Completed
+        event_type: Type
         events:
           user_added: User Added
           user_removed: User Removed
@@ -3543,6 +3705,9 @@ en:
           draft_published: Draft Published
           asset_permissions_changed_visibility_public: Asset Permissions Changed Visibility Public
           asset_permissions_changed_visibility_private: private
+        failed_rows: Failed Rows
+        fallback_event_title: 'Error: %{error_code}'
+        filename: Filename
         filters:
           asset_types:
             label: Asset Types
@@ -3593,6 +3758,8 @@ en:
             title:
               clear_filters_only: Filters
               clear_filter_and_search: Clear All
+        hide_details: Hide Details
+        import_method: Import Method
         mobile:
           done: Done
           filters: Filters
@@ -3601,6 +3768,13 @@ en:
         result_count:
           one: "%{first}-%{last} of 1 result"
           other: "%{first}-%{last} of %{count} results"
+        services:
+          DeltaImporter2: DataSync
+          Imports2: Web Interface
+          ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
+          PublishingAPI: Publishing API
+        show_details: Show Details
+        type: Type
       assets:
         asset_inventory: Assets
       canvas:
@@ -6747,7 +6921,7 @@ en:
       reset_password: Reset Password
       resend_invited_user_email: Resend invite
     add_new_users:
-      add_users: Add User(s)
+      add_users: Add New User...
       subtitle: Add a single user or multiple users with the same role.
       cancel: Cancel
       emails_label: Emails (comma-separated)

@@ -1,30 +1,37 @@
 import 'whatwg-fetch';
+
 import { defaultHeaders, checkStatus, reload } from 'common/http';
 import ceteraUtils from 'common/cetera/utils';
 import I18n from 'common/i18n';
+import * as constants from '../lib/constants';
 
-const performingAction = (actionType) => ({ type: 'PERFORMING_ACTION', actionType });
-const performingActionSuccess = (actionType) => ({ type: 'PERFORMING_ACTION_SUCCESS', actionType });
+export const APPROVE_RESOURCE_REQUESTED = 'APPROVE_RESOURCE_REQUESTED';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const HIDE_ALERT = 'HIDE_ALERT';
+export const PERFORMING_ACTION = 'PERFORMING_ACTION';
+export const PERFORMING_ACTION_FAILURE = 'PERFORMING_ACTION_FAILURE';
+export const PERFORMING_ACTION_SUCCESS = 'PERFORMING_ACTION_SUCCESS';
+export const REJECT_RESOURCE_REQUESTED = 'REJECT_RESOURCE_REQUESTED';
+export const SHOW_ALERT = 'SHOW_ALERT';
+export const SHOW_MODAL = 'SHOW_MODAL';
+
+const performingAction = (actionType) => ({ type: PERFORMING_ACTION, actionType });
+const performingActionSuccess = (actionType) => ({ type: PERFORMING_ACTION_SUCCESS, actionType });
 const performingActionFailure = (actionType, response) => (
-  { type: 'PERFORMING_ACTION_FAILURE', actionType, response }
+  { type: PERFORMING_ACTION_FAILURE, actionType, response }
 );
 
-export const showAlert = (title, body, time = 7000) => ( // Time to display alert is in ms
-  { type: 'SHOW_ALERT', title, body, time }
-);
+// Time to display alert is in ms
+export const showAlert = (title, body, time = 7000) => ({ type: SHOW_ALERT, title, body, time });
+export const hideAlert = () => ({ type: HIDE_ALERT });
 
-export const hideAlert = () => (
-  { type: 'HIDE_ALERT' }
-);
-
-export const showModal = (modalType, uid) => ({ type: 'SHOW_MODAL', modalType, uid });
-export const closeModal = () => ({ type: 'CLOSE_MODAL' });
+export const showModal = (modalType, uid) => ({ type: SHOW_MODAL, modalType, uid });
+export const closeModal = () => ({ type: CLOSE_MODAL });
 
 export const fetchChildAssets = (uid) => () => ceteraUtils.query({ derivedFrom: uid });
 
-export const fetchParentVisibility = (uid) => () => (
-  ceteraUtils.query({ idFilters: [uid], showVisibility: true })
-);
+export const fetchParentVisibility = (uid) => () =>
+  ceteraUtils.query({ idFilters: [uid], showVisibility: true });
 
 export const deleteAsset = (uid) => (dispatch) => {
   const ACTION_TYPE = 'deleteAsset';
@@ -100,9 +107,9 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
 // Approvals actions (see approval_action_buttons)
 // Note: these are purely action creators; they are using Sagas for their requests rather than thunks
 export const approveResource = (resourceId, name, notes) => (
-  { type: 'APPROVE_RESOURCE_REQUESTED', resourceId, name, state: 'approved', notes }
+  { type: APPROVE_RESOURCE_REQUESTED, resourceId, name, state: constants.APPROVAL_STATUS_APPROVED, notes }
 );
 
 export const rejectResource = (resourceId, name, notes) => (
-  { type: 'REJECT_RESOURCE_REQUESTED', resourceId, name, state: 'rejected', notes }
+  { type: REJECT_RESOURCE_REQUESTED, resourceId, name, state: constants.APPROVAL_STATUS_REJECTED, notes }
 );

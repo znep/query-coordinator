@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import * as assetActions from 'common/components/AssetBrowser/actions/asset_actions';
+
 const getInitialState = () => ({
   activeActionModalType: null,
   activeActionForUid: null,
@@ -14,7 +16,7 @@ export default (state, action) => {
     return getInitialState();
   }
 
-  if (action.type === 'SHOW_MODAL') {
+  if (action.type === assetActions.SHOW_MODAL) {
     return {
       ...state,
       activeActionModalType: action.modalType,
@@ -22,7 +24,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'CLOSE_MODAL') {
+  if (action.type === assetActions.CLOSE_MODAL) {
     return {
       ...state,
       activeActionModalType: null,
@@ -30,7 +32,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'PERFORMING_ACTION') {
+  if (action.type === assetActions.PERFORMING_ACTION) {
     return {
       ...state,
       performingAction: true,
@@ -39,7 +41,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'PERFORMING_ACTION_SUCCESS') {
+  if (action.type === assetActions.PERFORMING_ACTION_SUCCESS) {
     return {
       ...state,
       performingAction: false,
@@ -48,7 +50,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'PERFORMING_ACTION_FAILURE') {
+  if (action.type === assetActions.PERFORMING_ACTION_FAILURE) {
     return {
       ...state,
       performingAction: false,
@@ -58,7 +60,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'SHOW_ALERT') {
+  if (action.type === assetActions.SHOW_ALERT) {
     return {
       ...state,
       alert: {
@@ -69,7 +71,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'HIDE_ALERT') {
+  if (action.type === assetActions.HIDE_ALERT) {
     return {
       ...state,
       alert: {}

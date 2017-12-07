@@ -3,6 +3,12 @@ import ceteraUtils from 'common/cetera/utils';
 import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera.js';
 import { MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
 
+export const INITIAL_RESULTS_FETCHED = 'INITIAL_RESULTS_FETCHED';
+export const FETCH_INITIAL_RESULTS = 'FETCH_INITIAL_RESULTS';
+
+import * as sortActions from 'common/components/AssetBrowser/actions/sort_order';
+import * as filterActions from 'common/components/AssetBrowser/actions/filters';
+
 export const getCurrentUserFilter = () => {
   return {
     ownedBy: {
@@ -33,29 +39,27 @@ const translateColumnToMixpanelEvent = (columnName) => {
 
 const translateParamsToMixpanelEvent = (params) => {
   switch (params.action) {
-    case 'TOGGLE_RECENTLY_VIEWED':
+    case filterActions.TOGGLE_RECENTLY_VIEWED:
       return 'Filtered Assets to Only Recently Viewed';
-    case 'CHANGE_LAST_UPDATED_DATE':
-      return 'Filtered Assets by Last Updated Date';
-    case 'CHANGE_ASSET_TYPE':
+    case filterActions.CHANGE_ASSET_TYPE:
       return 'Filtered Assets by Asset Type';
-    case 'CHANGE_AUTHORITY':
+    case filterActions.CHANGE_AUTHORITY:
       return 'Filtered Assets by Authority';
-    case 'CHANGE_CATEGORY':
+    case filterActions.CHANGE_CATEGORY:
       return 'Filtered Assets by Category';
-    case 'CHANGE_OWNER':
+    case filterActions.CHANGE_OWNER:
       return 'Filtered Assets by Owner';
-    case 'CHANGE_TAG':
+    case filterActions.CHANGE_TAG:
       return 'Filtered Assets by Tag';
-    case 'CHANGE_VISIBILITY':
+    case filterActions.CHANGE_VISIBILITY:
       return 'Filtered Assets by Visibility';
-    case 'CHANGE_Q':
+    case filterActions.CHANGE_Q:
       return 'Used Asset Search Field';
-    case 'CHANGE_SORT_ORDER':
+    case sortActions.CHANGE_SORT_ORDER:
       return translateColumnToMixpanelEvent(params.order.value);
-    case 'CLEAR_ALL_FILTERS':
+    case filterActions.CLEAR_ALL_FILTERS:
       return 'Clears All Asset Filters';
-    case 'FETCH_INITIAL_RESULTS':
+    case FETCH_INITIAL_RESULTS:
       return 'Fetched initial results';
     default:
       return `Unknown action: ${params.action}`;
@@ -109,7 +113,8 @@ export const translateFiltersToQueryParameters = (filters) => {
     lastAccessedUids = onlyRecentlyViewed ? Object.keys(window.lastAccessed.get()) : null;
   }
 
-  const customMetadataFilters = (filters.action === 'CLEAR_ALL_FILTERS') ? {} : filters.customFacets;
+  const customMetadataFilters = (filters.action === filterActions.CLEAR_ALL_FILTERS) ?
+    {} : filters.customFacets;
 
   return {
     approvalStatus,
@@ -202,6 +207,6 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
 };
 
 export const fetchInitialResults = (parameters = {}) => (dispatch, getState) => {
-  const onSuccess = () => dispatch({ type: 'INITIAL_RESULTS_FETCHED' });
-  return fetchResults(dispatch, getState, { action: 'FETCH_INITIAL_RESULTS', ...parameters }, onSuccess);
+  const onSuccess = () => dispatch({ type: INITIAL_RESULTS_FETCHED });
+  return fetchResults(dispatch, getState, { action: FETCH_INITIAL_RESULTS, ...parameters }, onSuccess);
 };

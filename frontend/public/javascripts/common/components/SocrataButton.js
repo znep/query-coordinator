@@ -48,7 +48,7 @@ SocrataButton.propTypes = {
   buttonStyle: PropTypes.oneOf(['inverse', 'block', 'dark', 'busy']),
   buttonSize: PropTypes.oneOf(['lg', 'sm', 'xs']),
   buttonDisabledStyle: PropTypes.oneOf(['light']),
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.any.isRequired,
   className: PropTypes.string
 };
 

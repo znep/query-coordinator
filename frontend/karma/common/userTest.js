@@ -2,7 +2,8 @@ import { expect, assert } from 'chai';
 import {
   isUserRoled,
   userHasRight,
-  isUserSuperadmin
+  isUserSuperadmin,
+  isUserAdmin
 } from 'user';
 import {
   create_datasets,
@@ -81,6 +82,31 @@ describe('user', () => {
 
     it('returns false if no user exists', () => {
       assert.isFalse(isUserSuperadmin());
+    });
+  });
+
+  describe('isUserAdmin', () => {
+    afterEach(() => {
+      delete window.serverConfig.currentUser;
+    });
+
+    it('returns true if the user is a superadmin', () => {
+      window.serverConfig.currentUser = { flags: ['admin'] };
+      assert.isTrue(isUserAdmin());
+    });
+
+    it('returns true if the user is admin', () => {
+      window.serverConfig.currentUser = { roleName: 'administrator' };
+      assert.isTrue(isUserAdmin());
+    });
+
+    it('returns false if the user is not admin', () => {
+      window.serverConfig.currentUser = { roleName: 'publisher' };
+      assert.isFalse(isUserAdmin());
+    });
+
+    it('returns false if no user exists', () => {
+      assert.isFalse(isUserAdmin());
     });
   });
 });

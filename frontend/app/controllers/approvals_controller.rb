@@ -23,6 +23,9 @@ class ApprovalsController < AdministrationController
     @approvers = User.find_with_right('configure_approvals')
   end
 
+  def settings
+  end
+
   private
 
   def require_approval_right

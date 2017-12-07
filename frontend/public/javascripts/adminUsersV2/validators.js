@@ -23,9 +23,9 @@ export const isValidEmailGroup = emails => {
     Success: value =>
       collect(
         value.
-        unsafeGet().
-        split(',').
-        map(email => isEmail(email.trim()))
+          unsafeGet().
+          split(',').
+          map(email => isEmail(email.trim()))
       ).map(() => value.unsafeGet()),
     Failure: _.identity
   });

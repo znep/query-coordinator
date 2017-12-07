@@ -1,11 +1,7 @@
 import _ from 'lodash';
 import CustomPalette from 'common/visualizations/helpers/palettes/custom_palette';
-import { useTestTranslations } from 'common/i18n';
 
 describe('CustomPalette', () => {
-  before(() => {
-    useTestTranslations(_.set({}, 'shared.visualizations.charts.common.no_value', '(No value)'));
-  });
   const vif = _.set({}, 'series[0].color.customPalette', {
     grouped_column: {
       groupTag1: { color: '#fff' },

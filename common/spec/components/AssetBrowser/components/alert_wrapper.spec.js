@@ -3,8 +3,6 @@ import { assert } from 'chai';
 import { shallow } from 'enzyme';
 
 import { AlertWrapper } from 'common/components/AssetBrowser/components/alert_wrapper';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 const alertWrapperProps = (props = {}) => ({
   alert: {
@@ -17,10 +15,6 @@ const alertWrapperProps = (props = {}) => ({
 });
 
 describe('components/AlertWrapper', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   it('does not render an alert if the alert prop is null', () => {
     const wrapper = shallow(<AlertWrapper
       {...alertWrapperProps({ alert: null })} />

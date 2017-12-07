@@ -4,7 +4,9 @@
   background-color: $panel-footer-background-color;
   height: $footerBarHeight;
   padding: 8px 10px;
+  position: relative;
   text-align: center;
+  z-index: 1;
 
   .primary-button,
   .cancel-button {

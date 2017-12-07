@@ -34,6 +34,11 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
           }
         }
 
+        .create-alert-button {
+          cursor: pointer;
+          margin-left: 8px;
+        }
+
         .associated-assets-button {
           margin-right: 8px;
         }

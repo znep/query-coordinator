@@ -113,7 +113,7 @@
       }
     }
 
-    & :global(.socrata-icon-checkmark3) {
+    & :global(:not(.socrata-icon-logo-color).socrata-icon-checkmark3) {
       color: $checkmark-read-state-color;
       fill: $checkmark-read-state-color;
 
@@ -148,10 +148,6 @@
       display: none;
     }
   }
-}
-
-.notification-wrapper {
-
 }
 
 .notification-info {

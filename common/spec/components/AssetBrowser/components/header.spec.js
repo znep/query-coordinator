@@ -2,9 +2,6 @@ import React from 'react';
 import { assert } from 'chai';
 import { mount, shallow } from 'enzyme';
 
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
-
 import { Header } from 'common/components/AssetBrowser/components/header';
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
@@ -28,10 +25,6 @@ const getProps = (props = {}) => ({
 });
 
 describe('components/Header', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   it('renders the tabs provided in the prop', () => {
     const wrapper = shallow(<Header {...getProps()} />);
     assert.isTrue(wrapper.find('.my-assets').exists());

@@ -85,6 +85,13 @@ class AlertSettingModal extends Component {
     categoryData.type = (_.isUndefined(options.type) ? categoryData.type : options.type);
 
     settings[category] = [categoryData];
+
+    if (_.isEqual(category, 'in_product_transient')) {
+      const { onShowTransientNotificationsChange } = this.props;
+
+      onShowTransientNotificationsChange(categoryData.enable);
+    }
+
     this.setState({ settings });
   }
 
@@ -100,7 +107,8 @@ class AlertSettingModal extends Component {
         currentUserRole,
         isSuperAdmin,
         currentDomainFeatures,
-        showTransientNotifications
+        showMyAlertPreference,
+        inProductTransientNotificationsEnabled
       } = this.props;
 
       return (
@@ -111,7 +119,8 @@ class AlertSettingModal extends Component {
           onAlertNotificationChange={this.onAlertNotificationChange}
           onSettingsChange={this.onSettingsChange}
           settings={this.state.settings}
-          showTransientNotifications={showTransientNotifications}
+          showMyAlertPreference={showMyAlertPreference}
+          inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
           preferences={this.state.preferences} />
       );
     } else if (failedLoadingUserPreferences) {
@@ -210,7 +219,9 @@ class AlertSettingModal extends Component {
 
 AlertSettingModal.propTypes = {
   onClose: PropTypes.func,
-  showTransientNotifications: PropTypes.bool
+  showMyAlertPreference: PropTypes.bool,
+  onShowTransientNotificationsChange: PropTypes.func,
+  inProductTransientNotificationsEnabled: PropTypes.bool
 };
 
 export default cssModules(AlertSettingModal, styles, { allowMultiple: true });

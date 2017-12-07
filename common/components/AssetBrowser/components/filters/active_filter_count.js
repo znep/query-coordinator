@@ -9,10 +9,10 @@ export class ActiveFilterCount extends Component {
 
     const getFilterValue = _.partial(_.get, allFilters);
 
-    const customFacetKeyPaths = _.keys(_.get(allFilters, 'customFacets')).map((customFacetKey) => (
-      `customFacets.${customFacetKey}`
-    ));
+    const customFacetKeyPaths = _.keys(_.get(allFilters, 'customFacets')).
+      map((customFacetKey) => `customFacets.${customFacetKey}`);
 
+    // See similar list of key paths in ClearFilters component
     const filterKeyPaths = [
       'assetTypes',
       'authority',

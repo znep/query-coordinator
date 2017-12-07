@@ -2,14 +2,11 @@ import { assert } from 'chai';
 import { AssetCounts } from 'common/components/AssetBrowser/components/asset_counts';
 import sinon from 'sinon';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/AssetCounts', () => {
   beforeEach(() => {
     FeatureFlags.updateTestFixture({ usaid_features_enabled: false });
-    useTestTranslations(sharedTranslations.en);
   });
 
   const assetCountsProps = (options = {}) => ({

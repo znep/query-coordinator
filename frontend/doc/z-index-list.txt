@@ -127,3 +127,5 @@ Collapsable Search inside Admin Header:
 
 Notifications:
 100 Notifications Panel
+1 Notifications Panel Footer
+0 Notifications Secondary Panel

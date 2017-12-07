@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectLocalization from 'common/i18n/components/connectLocalization';
-import * as Actions from '../actions';
 import AddUserModal from './AddUserModal';
 import _ from 'lodash';
+import { toggleAddUserUi } from '../actions';
 
 export class AddUserButton extends Component {
   render() {
@@ -26,9 +26,11 @@ AddUserButton.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   onStartAddUser: () => {
-    dispatch(Actions.toggleAddUserUi(true));
+    dispatch(toggleAddUserUi(true));
   }
 });
 
-const ConnectedAddUserButton = connectLocalization(connect(_.constant({}), mapDispatchToProps)(AddUserButton));
+const ConnectedAddUserButton = connectLocalization(
+  connect(_.constant({}), mapDispatchToProps)(AddUserButton)
+);
 export default ConnectedAddUserButton;

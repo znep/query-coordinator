@@ -6,16 +6,14 @@ import I18nJS from 'common/i18n';
 import LocalizedDate from 'common/i18n/components/LocalizedDate';
 import LocalizedLink from 'common/i18n/components/LocalizedLink';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
+import ActionsCell from './ActionsCell';
+import DetailsRow from './DetailsRow';
 
 class Body extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, ['renderRow']);
-  }
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.data, nextProps.data);
+    return !_.isEqual(this.props.data, nextProps.data) ||
+      this.props.openDetailsId !== nextProps.openDetailsId;
   }
 
   renderTypeCell(data) {
@@ -66,23 +64,33 @@ class Body extends Component {
     );
   }
 
-  renderActionsCell() {
+  renderActionsCell(data, openDetailsId) {
     return (
-      <td scope="row" className="actions"></td>
+      <td scope="row" className="actions">
+        <ActionsCell activity={data} openDetailsId={openDetailsId} />
+      </td>
     );
   }
 
-  renderRow(row) {
-    return (
+  renderRow = (row) => {
+    const { openDetailsId } = this.props;
+
+    const rows = [(
       <tr key={row.id} className="result-list-row">
         {this.renderTypeCell(row)}
         {this.renderInitiatedByCell(row)}
         {this.renderEventCell(row)}
         {this.renderItemAffectedCell(row)}
         {this.renderDateCell(row)}
-        {this.renderActionsCell(row)}
+        {this.renderActionsCell(row, openDetailsId)}
       </tr>
-    );
+    )];
+
+    if (openDetailsId && openDetailsId === row.id) {
+      rows.push(<DetailsRow activity={row} />);
+    }
+
+    return rows;
   }
 
   render() {
@@ -101,11 +109,13 @@ Body.defaultProps = {
 };
 
 Body.propTypes = {
-  data: propTypes.array.isRequired
+  data: propTypes.array.isRequired,
+  openDetailsId: propTypes.string
 };
 
 const mapStateToProps = state => ({
-  data: state.table.data
+  data: state.table.data,
+  openDetailsId: state.table.openDetailsId
 });
 
 export default connect(mapStateToProps)(Body);

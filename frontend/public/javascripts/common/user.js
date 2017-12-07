@@ -26,6 +26,16 @@ function isUserSuperadmin() {
   return _.includes(currentUser.flags, 'admin');
 }
 
+function isUserAdmin() {
+  const { currentUser } = window.serverConfig;
+
+  if (_.isEmpty(currentUser)) {
+    return false;
+  }
+
+  return isUserSuperadmin() || (currentUser.roleName === 'administrator');
+}
+
 function userHasRight(right) {
   const { currentUser } = window.serverConfig;
 
@@ -40,5 +50,6 @@ export {
   isLoggedIn,
   isUserRoled,
   userHasRight,
-  isUserSuperadmin
+  isUserSuperadmin,
+  isUserAdmin
 };

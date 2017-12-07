@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LocalizedRolePicker } from './RolePicker';
+import { LocalizedRolePicker } from '../../roles/components/RolePicker';
 import { connect } from 'react-redux';
-import { roleFilterChanged } from '../actions';
+import { roleFilterChanged } from '../../roles/actions';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 class UserFilter extends Component {
-
   render() {
     const { roleId, onRoleChange, I18n } = this.props;
 
@@ -22,7 +21,7 @@ class UserFilter extends Component {
           initialOption={initialOption}
           roleId={roleId ? roleId : 'all'}
           onRoleChange={onRoleChange}
-          />
+        />
       </div>
     );
   }

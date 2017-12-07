@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { defaultHeaders, fetchJson } from 'common/http';
 import * as helpers from './helpers';
+import * as constants from 'common/components/AssetBrowser/lib/constants.js';
 
 export const fetchApprovalsForResource = (resourceId) => {
   helpers.checkValidResourceId(resourceId);
@@ -11,16 +12,20 @@ export const fetchApprovalsForResource = (resourceId) => {
   });
 };
 
-export const setApprovalForPendingResource = ({ resourceId, recordId, body }) => {
+export const setApprovalForResource = ({ approval, resource }) => {
+  const { notes, resourceId, state } = resource;
+  const { id: recordId, state: previousState } = approval;
+
   helpers.checkValidResourceId(resourceId);
   helpers.checkValidRecordId(recordId);
 
-  if (!_.isObject(body)) {
-    throw new Error('Invalid body for setting approval status.');
+  let path = `/api/views/${resourceId}/approvals/${recordId}`;
+  if (previousState !== constants.APPROVAL_STATUS_PENDING) {
+    path = `${path}?method=redoStateOnRecord`;
   }
 
-  return fetchJson(`/api/views/${resourceId}/approvals/${recordId}`, {
-    body: JSON.stringify(body),
+  return fetchJson(path, {
+    body: JSON.stringify({ notes, state }),
     credentials: 'same-origin',
     headers: defaultHeaders,
     method: 'PUT'

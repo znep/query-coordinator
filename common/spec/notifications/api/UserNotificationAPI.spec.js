@@ -22,7 +22,8 @@ describe('User Notification API', () => {
   });
 
   it('should hit get notifications api on new user notifications mount', () => {
-    userNotificationAPI = new UserNotificationAPI(userId);
+    // TODO: Do this in a before.
+    userNotificationAPI = new UserNotificationAPI(userId, null, { debugLog: false });
     sinon.assert.calledOnce(notificationStub);
 
     const params = { limit: NOTIFICATIONS_PER_PAGE, offset };

@@ -8,9 +8,6 @@ import AutoApproval from 'common/components/AssetBrowser/components/approvals/se
 import Reapproval from 'common/components/AssetBrowser/components/approvals/settings/reapproval';
 import Approvers from 'common/components/AssetBrowser/components/approvals/settings/approvers';
 
-import { I18n, useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'frontend/config/locales/en.yml';
-
 const validProps = (options = {}) => ({
   translationScope: 'approvals.settings',
   onReapprovalClick: () => 'onReapprovalClick default',
@@ -22,7 +19,6 @@ describe('components/approvals/settings/Settings', () => {
   let wrapper;
 
   beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
     wrapper = shallow(<Settings {...validProps()} />);
   });
 

@@ -47,7 +47,7 @@ $result_list_row_bg_hover_color: $primary-light;
             width: 15%;
           }
           &.activity-type {
-            width: 20%;
+            width: 19%;
           }
           &.dataset-name {
             width: 34%
@@ -56,7 +56,7 @@ $result_list_row_bg_hover_color: $primary-light;
             width: 19%;
           }
           &.actions {
-            width: 6%;
+            width: 7%;
             cursor: not-allowed;
           }
 
@@ -112,5 +112,26 @@ $result_list_row_bg_hover_color: $primary-light;
       }
 
     }
+
+    tr.details-row {
+      background: $white;
+
+      td {
+        padding-left: calc(6% + 11px);
+        padding-right: 11px;
+
+        ul {
+          padding: 0;
+          margin: 0;
+          list-style: none;
+
+          .label {
+            font-weight: 600;
+          }
+        }
+      }
+
+    }
+
   }
 }

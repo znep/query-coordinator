@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Actions from '../actions';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
-import { LocalizedRolePicker } from './RolePicker';
+import { LocalizedRolePicker } from '../../roles/components/RolePicker';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import _ from 'lodash';
+import { cancelAddUser, submitNewUsers } from '../actions';
 
 export class AddUserModal extends Component {
   constructor() {
@@ -85,9 +85,7 @@ export class AddUserModal extends Component {
       return (
         <Modal {...modalProps}>
           <ModalHeader {...headerProps}>
-            <div>
-              {I18n.translate('users.add_new_users.subtitle')}
-            </div>
+            <div>{I18n.translate('users.add_new_users.subtitle')}</div>
           </ModalHeader>
 
           <ModalContent>
@@ -99,14 +97,14 @@ export class AddUserModal extends Component {
                 ref={ref => (this.textArea = ref)}
                 className="add-user-emails text-input text-area"
                 placeholder={I18n.translate('users.add_new_users.emails_placeholder')}
-                id="add-user-emails" />
-              <label className="block-label" >
-                {I18n.translate('users.add_new_users.role_label')}:
-              </label>
+                id="add-user-emails"
+              />
+              <label className="block-label">{I18n.translate('users.add_new_users.role_label')}:</label>
               <LocalizedRolePicker
                 roleId={selectedRoleId}
                 onRoleChange={roleId => this.setState({ selectedRoleId: roleId })}
-                placeholder={I18n.t('users.add_new_users.role_placeholder')} />
+                placeholder={I18n.t('users.add_new_users.role_placeholder')}
+              />
             </form>
             {hasError && this.renderErrors(errors)}
           </ModalContent>
@@ -155,8 +153,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = _.partial(
   bindActionCreators,
   {
-    onCancelAddUser: () => Actions.cancelAddUser(),
-    onSubmitNewUsers: (emails, roleId) => Actions.submitNewUsers(emails, roleId)
+    onCancelAddUser: () => cancelAddUser(),
+    onSubmitNewUsers: (emails, roleId) => submitNewUsers(emails, roleId)
   },
   _
 );

@@ -6,9 +6,21 @@ import { updateQueryString } from 'common/components/AssetBrowser/lib/query_stri
 import { getCurrentQuery, getUnfilteredState } from 'common/components/AssetBrowser/reducers/filters';
 import * as autocompleteActions from 'common/autocomplete/actions';
 
+export const CHANGE_ASSET_TYPE = 'CHANGE_ASSET_TYPE';
+export const CHANGE_AUTHORITY = 'CHANGE_AUTHORITY';
+export const CHANGE_CATEGORY = 'CHANGE_CATEGORY';
+export const CHANGE_CUSTOM_FACET = 'CHANGE_CUSTOM_FACET';
+export const CHANGE_OWNER = 'CHANGE_OWNER';
+export const CHANGE_Q = 'CHANGE_Q';
+export const CHANGE_TAG = 'CHANGE_TAG';
+export const CHANGE_VISIBILITY = 'CHANGE_VISIBILITY';
+export const CLEAR_ALL_FILTERS = 'CLEAR_ALL_FILTERS';
+export const CLEAR_SEARCH = 'CLEAR_SEARCH';
+export const TOGGLE_RECENTLY_VIEWED = 'TOGGLE_RECENTLY_VIEWED';
+
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'TOGGLE_RECENTLY_VIEWED' });
+    dispatch({ type: TOGGLE_RECENTLY_VIEWED });
 
     if (getState().filters.onlyRecentlyViewed) {
       dispatch(clearSortOrder());
@@ -21,7 +33,7 @@ export const toggleRecentlyViewed = () => (dispatch, getState) => {
     dispatch,
     getState,
     {
-      action: 'TOGGLE_RECENTLY_VIEWED',
+      action: TOGGLE_RECENTLY_VIEWED,
       onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed,
       sortByRecentlyViewed: !getState().filters.onlyRecentlyViewed,
       pageNumber: 1,
@@ -33,7 +45,7 @@ export const toggleRecentlyViewed = () => (dispatch, getState) => {
 
 export const changeAssetType = (value) => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_ASSET_TYPE', value });
+    dispatch({ type: CHANGE_ASSET_TYPE, value });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -43,7 +55,7 @@ export const changeAssetType = (value) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_ASSET_TYPE',
+        action: CHANGE_ASSET_TYPE,
         assetTypes: value,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -55,7 +67,7 @@ export const changeAssetType = (value) => (dispatch, getState) => {
 
 export const changeAuthority = (value) => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_AUTHORITY', value });
+    dispatch({ type: CHANGE_AUTHORITY, value });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -65,7 +77,7 @@ export const changeAuthority = (value) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_AUTHORITY',
+        action: CHANGE_AUTHORITY,
         authority: value,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -79,7 +91,7 @@ export const changeCategory = (option) => (dispatch, getState) => {
   const category = option.value;
 
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_CATEGORY', value: category });
+    dispatch({ type: CHANGE_CATEGORY, value: category });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -89,7 +101,7 @@ export const changeCategory = (option) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_CATEGORY',
+        action: CHANGE_CATEGORY,
         category,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -106,7 +118,7 @@ export const changeOwner = (option) => (dispatch, getState) => {
   };
 
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_OWNER', value: owner });
+    dispatch({ type: CHANGE_OWNER, value: owner });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -116,7 +128,7 @@ export const changeOwner = (option) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_OWNER',
+        action: CHANGE_OWNER,
         ownedBy: owner,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -130,7 +142,7 @@ export const changeTag = (option) => (dispatch, getState) => {
   const tag = option.value;
 
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_TAG', value: tag });
+    dispatch({ type: CHANGE_TAG, value: tag });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -140,7 +152,7 @@ export const changeTag = (option) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_TAG',
+        action: CHANGE_TAG,
         tag,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -152,7 +164,7 @@ export const changeTag = (option) => (dispatch, getState) => {
 
 export const changeVisibility = (value) => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_VISIBILITY', value });
+    dispatch({ type: CHANGE_VISIBILITY, value });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -162,7 +174,7 @@ export const changeVisibility = (value) => (dispatch, getState) => {
       dispatch,
       getState,
       {
-        action: 'CHANGE_VISIBILITY',
+        action: CHANGE_VISIBILITY,
         visibility: value,
         pageNumber: 1,
         q: getCurrentQuery()
@@ -178,7 +190,7 @@ export const changeQ = (value) => {
   // This is the deafult search by query.
   const searchByQ = (dispatch, getState) => {
     const onSuccess = () => {
-      dispatch({ type: 'CHANGE_Q', value });
+      dispatch({ type: CHANGE_Q, value });
       // EN-18325: Clear sort order for the cetera "relevance" default sort
       dispatch(clearSortOrder());
       clearPage(dispatch);
@@ -188,7 +200,7 @@ export const changeQ = (value) => {
     return fetchResults(
       dispatch,
       getState,
-      { action: 'CHANGE_Q', q: value, pageNumber: 1, order: undefined }, onSuccess
+      { action: CHANGE_Q, q: value, pageNumber: 1, order: undefined }, onSuccess
     );
   };
 
@@ -211,7 +223,7 @@ export const changeQ = (value) => {
       return fetchResults(
         dispatch,
         getState,
-        { action: 'CHANGE_Q', ids, q: null, pageNumber: 1, order: undefined }, onSuccess
+        { action: CHANGE_Q, ids, q: null, pageNumber: 1, order: undefined }, onSuccess
       );
     };
   } else {
@@ -221,7 +233,7 @@ export const changeQ = (value) => {
 
 export const changeCustomFacet = (facetParam, value) => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_CUSTOM_FACET', facetParam, value });
+    dispatch({ type: CHANGE_CUSTOM_FACET, facetParam, value });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -233,7 +245,7 @@ export const changeCustomFacet = (facetParam, value) => (dispatch, getState) => 
       dispatch,
       getState,
       {
-        action: 'CHANGE_CUSTOM_FACET',
+        action: CHANGE_CUSTOM_FACET,
         customFacets: { ...existingCustomFacets, [facetParam]: value },
         pageNumber: 1,
         q: getCurrentQuery()
@@ -245,21 +257,21 @@ export const changeCustomFacet = (facetParam, value) => (dispatch, getState) => 
 
 export const clearSearch = () => (dispatch, getState) => {
   const onSuccess = () => {
-    dispatch({ type: 'CLEAR_SEARCH' });
+    dispatch({ type: CLEAR_SEARCH });
     dispatch(autocompleteActions.clearSearch()); // For autocomplete to update its text input
     clearPage(dispatch);
     updateQueryString({ getState, shouldClearSearch: true });
   };
 
-  return fetchResults(dispatch, getState, { action: 'CLEAR_SEARCH', q: '', pageNumber: 1 }, onSuccess);
+  return fetchResults(dispatch, getState, { action: CLEAR_SEARCH, q: '', pageNumber: 1 }, onSuccess);
 };
 
 export const clearAllFilters = (options = {}) => (dispatch, getState) => {
   const shouldClearSearch = _.get(options, 'shouldClearSearch', false);
   const onSuccess = () => {
-    dispatch({ type: 'CLEAR_ALL_FILTERS' });
+    dispatch({ type: CLEAR_ALL_FILTERS });
     if (shouldClearSearch) {
-      dispatch({ type: 'CLEAR_SEARCH' });
+      dispatch({ type: CLEAR_SEARCH });
       dispatch(autocompleteActions.clearSearch()); // For autocomplete to update its text input
     }
     clearPage(dispatch);
@@ -268,7 +280,7 @@ export const clearAllFilters = (options = {}) => (dispatch, getState) => {
 
   const initialState = {
     ...getUnfilteredState(getState()),
-    action: 'CLEAR_ALL_FILTERS',
+    action: CLEAR_ALL_FILTERS,
     pageNumber: 1,
     q: getCurrentQuery()
   };

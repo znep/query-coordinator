@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 
 import I18nJS from 'i18n-js';
-import { CSVExportButton } from 'components/CSVExportButton';
+import { CSVExportButton } from 'users/components/CSVExportButton';
 
 describe('components/CSVExportButton', () => {
   const defaultProps = {

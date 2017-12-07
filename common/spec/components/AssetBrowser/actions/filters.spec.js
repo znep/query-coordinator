@@ -3,10 +3,17 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import * as Actions from 'common/components/AssetBrowser/actions/filters';
+
+import ceteraUtils from 'common/cetera/utils';
+
+import * as constants from 'common/components/AssetBrowser/lib/constants.js';
+import * as filterActions from 'common/components/AssetBrowser/actions/filters';
+import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
+import * as pagerActions from 'common/components/AssetBrowser/actions/pager';
+import * as sortActions from 'common/components/AssetBrowser/actions/sort_order';
+
 import mockCeteraResponse from '../data/mock_cetera_response';
 import mockCeteraFacetCountsResponse from '../data/mock_cetera_facet_counts_response';
-import ceteraUtils from 'common/cetera/utils';
 
 const stubCeteraQuery = (ceteraResponse = mockCeteraResponse) => (
   sinon.stub(ceteraUtils, 'query').callsFake(_.constant(Promise.resolve(ceteraResponse)))
@@ -49,26 +56,31 @@ describe('actions/filters', () => {
     it('clears the filters', () => {
       const baseFilters = { baseFiltersMock: true };
       const store = mockStore({
-        activeTab: 'MY_QUEUE_TAB',
+        activeTab: constants.MY_QUEUE_TAB,
         filters: { onlyRecentlyViewed: true },
-        tabs: { 'MY_QUEUE_TAB': { props: { baseFilters } } }
+        tabs: { [constants.MY_QUEUE_TAB]: { props: { baseFilters } } }
       });
 
       // Please note: this giant list of actions resulting from a single
       // operations is an anti-pattern. Don't take it as a good example.
       // This spec is not great as a result.
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CLEAR_ALL_FILTERS' },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        {
+          type: ceteraActions.UPDATE_CATALOG_RESULTS,
+          response: mockCeteraResponse,
+          onlyRecentlyViewed: false,
+          sortByRecentlyViewed: false
+        },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CLEAR_ALL_FILTERS },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.clearAllFilters()).then(() => {
+      return store.dispatch(filterActions.clearAllFilters()).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -89,17 +101,17 @@ describe('actions/filters', () => {
       const store = mockStore({ filters: { onlyRecentlyViewed: false, sortByRecentlyViewed: false } });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'TOGGLE_RECENTLY_VIEWED' },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.TOGGLE_RECENTLY_VIEWED },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.toggleRecentlyViewed()).then(() => {
+      return store.dispatch(filterActions.toggleRecentlyViewed()).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -120,17 +132,17 @@ describe('actions/filters', () => {
       const store = mockStore({ filters: { assetTypes: null } });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ASSET_TYPE', value: 'charts' },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CHANGE_ASSET_TYPE, value: 'charts' },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeAssetType('charts')).then(() => {
+      return store.dispatch(filterActions.changeAssetType('charts')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -151,17 +163,17 @@ describe('actions/filters', () => {
       const store = mockStore({ filters: { visibility: null } });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_VISIBILITY', value: 'internal' },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CHANGE_VISIBILITY, value: 'internal' },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeVisibility('internal')).then(() => {
+      return store.dispatch(filterActions.changeVisibility('internal')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -185,18 +197,18 @@ describe('actions/filters', () => {
       });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_Q', value: 'transformers! robots in disguise' },
-        { type: 'CHANGE_SORT_ORDER', order: undefined },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CHANGE_Q, value: 'transformers! robots in disguise' },
+        { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeQ('transformers! robots in disguise')).then(() => {
+      return store.dispatch(filterActions.changeQ('transformers! robots in disguise')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -221,17 +233,17 @@ describe('actions/filters', () => {
 
       // TODO: I have no idea what's going on here with the repeating actions :/
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: undefined },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeQ('asdf-1234')).then(() => {
+      return store.dispatch(filterActions.changeQ('asdf-1234')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -259,24 +271,24 @@ describe('actions/filters', () => {
       });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: customMockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'FETCH_RESULTS' },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_Q', value: 'asdf-1234' },
-        { type: 'CHANGE_SORT_ORDER', order: undefined },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: customMockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CHANGE_Q, value: 'asdf-1234' },
+        { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeQ('asdf-1234')).then(() => {
+      return store.dispatch(filterActions.changeQ('asdf-1234')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });
@@ -297,17 +309,17 @@ describe('actions/filters', () => {
       const store = mockStore({ filters: { customFacets: { City_Neighborhood: 'Greenlake' } } });
 
       const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_CUSTOM_FACET', facetParam: 'City_Neighborhood', value: 'Capitol Hill' },
-        { type: 'CHANGE_PAGE', pageNumber: 1 },
-        { type: 'FETCH_ASSET_COUNTS' },
-        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
-        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: ceteraActions.FETCH_RESULTS },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.FETCH_RESULTS_SUCCESS },
+        { type: filterActions.CHANGE_CUSTOM_FACET, facetParam: 'City_Neighborhood', value: 'Capitol Hill' },
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
+        { type: ceteraActions.FETCH_ASSET_COUNTS },
+        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
+        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
       ];
 
-      return store.dispatch(Actions.changeCustomFacet('City_Neighborhood', 'Capitol Hill')).then(() => {
+      return store.dispatch(filterActions.changeCustomFacet('City_Neighborhood', 'Capitol Hill')).then(() => {
         verifyActions(expectedActions, store.getActions());
       });
     });

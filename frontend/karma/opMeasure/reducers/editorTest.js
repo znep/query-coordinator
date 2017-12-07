@@ -83,6 +83,26 @@ describe('Edit modal reducer', () => {
 
       assert.deepEqual(state.measure.metric.dataSource, dataSource);
     });
+
+    describe('when resetting the data source', () => {
+      it('sets cachedRowCount to undefined', () => {
+        state.cachedRowCount = 3;
+
+        state = reducer(state, actions.editor.setDataSourceUid(''));
+
+        assert.isUndefined(state.cachedRowCount);
+      });
+    });
+
+    describe('when setting a new data source', () => {
+      it('sets cachedRowCount to null', () => {
+        state.cachedRowCount = 3;
+
+        state = reducer(state, actions.editor.setDataSourceUid('test-test'));
+
+        assert.isNull(state.cachedRowCount);
+      });
+    });
   });
 
   describe('RECEIVE_DATA_SOURCE_METADATA', () => {

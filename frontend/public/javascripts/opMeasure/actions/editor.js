@@ -40,13 +40,29 @@ export const setDataSource = (dataSourceString) => {
       datasetUid: uid
     });
 
-    const metadataPromise = metadataProvider.getDatasetMetadata();
+    let metadata = null;
+    let columns = [];
+    let rowCount = -1;
+    try {
+      const metadataPromise = metadataProvider.getDatasetMetadata();
+      [metadata, columns, rowCount] = await Promise.all([
+        metadataPromise,
+        metadataProvider.getDisplayableFilterableColumns(metadataPromise),
+        soqlDataProvider.getRowCount()
+      ]);
+    } catch (ex) {
+      console.error(ex);
+
+      metadata = null;
+      columns = [];
+      rowCount = -1;
+    }
 
     dispatch(
       receiveDataSourceMetadata(
-        await soqlDataProvider.getRowCount(),
-        await metadataPromise,
-        await metadataProvider.getDisplayableFilterableColumns(await metadataPromise)
+        rowCount,
+        metadata,
+        columns
       )
     );
   };
@@ -191,6 +207,9 @@ export const openEditModal = () => (dispatch, getState) => {
     type: OPEN_EDIT_MODAL,
     measure
   });
+
+  // Restore non-persisted data source info (name, row count, columns)
+  dispatch(setDataSource(_.get(measure, 'metric.dataSource.uid', '')));
 };
 
 export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';

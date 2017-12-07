@@ -148,7 +148,7 @@ ReportingPeriodPanel.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const reportingPeriod = _.get(state, 'editor.measure.metric.reportingPeriod');
+  const reportingPeriod = _.get(state, 'editor.measure.metric.reportingPeriod', {});
 
   return reportingPeriod;
 }

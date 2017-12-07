@@ -148,7 +148,14 @@ export class DragDropUpload extends Component {
             <div className={styles.content}>
               {
                 this.isApiCallPending() ?
-                  <h2>Preparing for Upload...</h2> :
+                  <div>
+                    <h2>{I18n.show_uploads.preparing_upload}</h2>
+                    {
+                      this.isApiCallPending() &&
+                      this.state.draggingOver &&
+                      <div>{I18n.show_uploads.file_dropping_disabled}</div>
+                    }
+                  </div> :
                   <div>
                     <h2>{I18n.show_uploads.message}</h2>
                     <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>

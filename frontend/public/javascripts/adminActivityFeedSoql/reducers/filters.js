@@ -27,7 +27,6 @@ const activeFilterCount = (state) => {
 
   // Special cases
   state.date && !state.date.baseFilter && filterCount++; //eslint-disable-line
-  state.activeTab == 'deleted' && filterCount++; //eslint-disable-line
 
   return filterCount;
 };
@@ -46,6 +45,8 @@ export default function filters(state, action) {
         stateDiff.event = 'DataUpdate.Failure';
       } else if (action.tab === 'deleted') {
         stateDiff.event = 'AssetDeleted';
+      } else {
+        stateDiff.event = null;
       }
       break;
 

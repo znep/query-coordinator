@@ -5,9 +5,9 @@ module Fontana
     class Workflow
       include HTTParty
 
-      APPROVALS_API_URI = URI.parse('http://localhost/api/approvals')
+      APPROVALS_API_URI = URI.parse('https://localhost/api/approvals')
 
-      base_uri APPROVALS_API_URI.to_s
+      # base_uri APPROVALS_API_URI.to_s
       default_timeout 5.seconds.to_i
       format :json
 
@@ -21,7 +21,7 @@ module Fontana
       class << self
         def find(id)
           instance = new
-          get("/#{id}").parsed_response.each do |key, value|
+          get("#{APPROVALS_API_URI}/#{id}").parsed_response.each do |key, value|
             if key == 'steps'
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
             else
@@ -50,15 +50,13 @@ module Fontana
 
       def update
         result = self.class.put(
-          "/#{id}",
+          "#{APPROVALS_API_URI}/#{id}",
           :headers => approval_request_headers,
-          :body => as_json.to_json
+          :body => to_json
         )
         if result.success?
           steps.each do |step|
-            step.tasks.each do |task|
-              update_task(task)
-            end
+            step.tasks.each(&method(:update_task))
           end
         end
 
@@ -71,13 +69,17 @@ module Fontana
         raise RuntimeError.new('Cookies are required to update workflow tasks') unless cookies.present?
         result = self.class.put(
           APPROVALS_API_URI,
-          :headers => approval_request_headers,
           :query => {
             :method => 'updateTask',
             :taskId => task.id
           },
+          :headers => approval_request_headers,
           :body => task.to_json
         )
+
+        unless result.success?
+          raise RuntimeError.new("Request failed: #{result.to_a.join(', ')}")
+        end
       end
 
       def update_step(step)

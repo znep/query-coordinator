@@ -153,7 +153,7 @@ export class DragDropUpload extends Component {
                     {
                       this.isApiCallPending() &&
                       this.state.draggingOver &&
-                      <div>{I18n.show_uploads.file_dropping_disabled}</div>
+                        <div>{I18n.show_uploads.file_dropping_disabled}</div>
                     }
                   </div> :
                   <div>

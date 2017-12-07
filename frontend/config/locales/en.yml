@@ -2537,6 +2537,8 @@ en:
       external_source: Link to an External Data Source
       total_rows: "{0} row, {1} column dataset"
       in_progress: Still in Progress
+      preparing_upload: Preparing for Upload...
+      file_dropping_disabled: File dropping disabled during upload
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.

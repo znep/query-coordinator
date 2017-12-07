@@ -2,6 +2,7 @@ import _ from 'lodash';
 import I18n from 'common/i18n';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 import { formatDate } from 'common/dates';
+import { assertIsString } from 'common/js_utils';
 
 export function getDefaultFilterForColumn(column) {
   return {
@@ -63,7 +64,7 @@ export function getCheckboxFilter(column, filter, values) {
     });
   }
 }
-export function getFilterToggleText(filter, column) {
+export function getFilterHumanText(filter, column) {
   if (filter.function === 'noop') { // eslint-disable-line dot-notation
     return column.name;
   }
@@ -83,28 +84,14 @@ export function getFilterToggleText(filter, column) {
     }
 
     case 'money':
-    case 'number': {
-      const { start, end } = _.defaultTo(filter.arguments, {});
-
-      const step = _.min(_.map([column.rangeMin, column.rangeMax], getPrecision));
-      const startLabel = roundToPrecision(start, step);
-      const endLabel = roundToPrecision(end, step);
-
-      const hasMinValue = _.isFinite(start) && !_.isEqual(column.rangeMin, startLabel);
-      const hasMaxValue = _.isFinite(end) && !_.isEqual(column.rangeMax, endLabel);
-
-      if (hasMinValue || hasMaxValue) {
-        return I18n.t('shared.components.filter_bar.range_filter.range_label').format(startLabel, endLabel);
-      } else {
-        return column.name;
-      }
-    }
+    case 'number':
+      return getNumberFilterHumanText(filter, column);
 
     case 'text':
-      return getTextFilterToggleText(filter, column);
+      return getTextFilterHumanText(filter, column);
 
     case 'checkbox':
-      return getCheckboxFilterToggleText(filter, column);
+      return getCheckboxFilterHumanText(filter, column);
 
     default:
       console.error(`Unsupported column type "${column.dataTypeName}"`); // eslint-disable-line no-console
@@ -112,8 +99,63 @@ export function getFilterToggleText(filter, column) {
 }
 
 // Private functions
-//
-function getTextFilterToggleText(filter, column) {
+
+function getNumberFilterHumanText(filter, column) {
+  const filterFunction = filter.function;
+  assertIsString(filterFunction, `Expected 'function' property to be a string, was: ${filter.function}`);
+
+    // Apart from valueRange, these filters use strings in their arguments for arbitrary numerical precision.
+  const { start, end, value } = _.defaultTo(filter.arguments, {});
+
+  if (filterFunction === 'valueRange') {
+    // Old-style ambiguous filter. We won't generate new ones, but we still need
+    // to display them. They're migrated when the user opens the dropdown.
+
+    const step = _.min(_.map([column.rangeMin, column.rangeMax], getPrecision));
+    const startLabel = roundToPrecision(start, step);
+    const endLabel = roundToPrecision(end, step);
+
+    const hasMinValue = _.isFinite(start) && !_.isEqual(column.rangeMin, startLabel);
+    const hasMaxValue = _.isFinite(end) && !_.isEqual(column.rangeMax, endLabel);
+
+    if (hasMinValue || hasMaxValue) {
+      return I18n.t('shared.components.filter_bar.range_filter.range_label').format(startLabel, endLabel);
+    } else {
+      return column.name;
+    }
+  }
+
+  // Note early return above.
+  let key;
+  if (filterFunction === 'rangeInclusive') {
+    assertIsString(start);
+    assertIsString(end);
+    key = 'shared.components.filter_bar.range_filter.range_inclusive_label';
+  } else if (filterFunction === 'rangeExclusive') {
+    assertIsString(start);
+    assertIsString(end);
+    key = 'shared.components.filter_bar.range_filter.range_exclusive_label';
+  } else if (filterFunction === '>') {
+    assertIsString(value);
+    key = 'shared.components.filter_bar.range_filter.above_label';
+  } else if (filterFunction === '>=') {
+    assertIsString(value);
+    key = 'shared.components.filter_bar.range_filter.at_least_label';
+  } else if (filterFunction === '<') {
+    assertIsString(value);
+    key = 'shared.components.filter_bar.range_filter.below_label';
+  } else if (filterFunction === '<=') {
+    assertIsString(value);
+    key = 'shared.components.filter_bar.range_filter.at_most_label';
+  } else {
+    throw new Error(`Unknown function: ${filterFunction}`);
+  }
+
+  // Punting on number formatting for now.
+  return I18n.t(key).format(filter.arguments || {});
+}
+
+function getTextFilterHumanText(filter, column) {
   const values = _.map(filter.arguments, 'operand');
   const valueCount = _.size(values);
   const firstValue = _.first(values);
@@ -136,7 +178,7 @@ function getTextFilterToggleText(filter, column) {
   }
 }
 
-function getCheckboxFilterToggleText(filter, column) {
+function getCheckboxFilterHumanText(filter, column) {
   const values = _.map(filter.arguments, 'operand');
   const valueCount = _.size(values);
   const firstValue = _.first(values);

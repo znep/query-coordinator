@@ -299,10 +299,24 @@ en:
         more: More
         no_options_found: No top values match your input
         range_filter:
+          operators:
+            <: Is less than
+            <=: Is at most
+            '>': Is greater than
+            '>=': Is at least
+            range_inclusive: Is between and includes
+            range_exclusive: Is between
+          value: value
           greater_label: Greater than {0}
           include_null_values: Include missing or null values
           less_label: Less than {0}
           range_label: From {0} to {1}
+          range_inclusive_label: '{start} through {end}'
+          range_exclusive_label: '{start} to {end}'
+          above_label: above {value}
+          below_label: below {value}
+          at_least_label: at least {value}
+          at_most_label: at most {value}
         remove: Remove
         reset: Reset
         search: Search options

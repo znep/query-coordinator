@@ -9,4 +9,8 @@
   .range-input {
     width: 45%;
   }
+
+  .dropdown-container {
+    width: 100%; // Dropdown doesn't automatically grow to fit text.
+  }
 }

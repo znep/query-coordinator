@@ -728,7 +728,9 @@ WHERE
 ```
 
 ##### `valueRange`
-The `timeRange` filter describes a partitioning of the set of all rows into those that fall into the specified value range and those that fall outside of it. It is of type `<object>`. This object must have the following properties:
+*The FilterBar controls no longer generate this filter object, as its mixture of inclusive and exclusive behavior is not in line with customer intentions. We use the `rangeInclusive` and `rangeExclusive` filter objects instead.*
+
+The `valueRange` filter describes a partitioning of the set of all rows into those that fall into the specified value range and those that fall outside of it. It is of type `<object>`. This object must have the following properties:
 
 * The `arguments` property specifies the the range with which to partition the data. It is of type `<object>`. It must contain two properties:
 
@@ -739,6 +741,10 @@ The `timeRange` filter describes a partitioning of the set of all rows into thos
 * The `columnName` property specifies the column against which the partition should be applied. It is of type `<string>` and it must be a column in the dataset specified by the parent `dataSource` object.
 
 * The `function` property specifies the desired filtering function. Its type is `<string>` and it must be `valueRange`.
+
+The object may have the following properties:
+
+* The `includeNullValues` property specifies if null values are to be considered within the specified range. It defaults to true.
 
 The following example would result in the where clause...
 ```
@@ -755,4 +761,77 @@ WHERE `number_column` >= 0 AND `number_column` < 128
   columnName: 'number_column',
   function: 'valueRange'
 }
+
 ```
+##### `rangeInclusive`, `rangeExclusive`
+
+The `rangeInclusive` and `rangeExclusive` filter describes a partitioning of the set of all rows into those that fall into the specified value range and those that fall outside of it. The `rangeInclusive` filter considers its range endpoints as falling within its value range, while the `rangeExclusive` filter does not. It is of type `<object>`. This object must have the following properties:
+
+* The `arguments` property specifies the the range with which to partition the data. It is of type `<object>`. It must contain two properties:
+
+   * The `start` property specifies the start of the range. It is of type `<string>`, to support arbitrary precision.
+
+   * The `end` property specifies the end of the range. It is of type `<string>`, to support arbitrary precision.
+
+* The `columnName` property specifies the column against which the partition should be applied. It is of type `<string>` and it must be a column in the dataset specified by the parent `dataSource` object.
+
+* The `function` property specifies the desired filtering function. Its type is `<string>` and it must be `rangeInclusive` or `rangeExclusive`.
+
+The object may have the following properties:
+
+* The `includeNullValues` property specifies if null values are to be considered within the specified range. It defaults to true.
+
+Example: rangeInclusive
+```
+{
+  arguments: {
+    start: '0',
+    end: '128'
+  },
+  columnName: 'number_column',
+  function: 'rangeInclusive'
+}
+```
+Output SoQL:
+```
+WHERE `number_column` >= 0 AND `number_column` <= 128
+```
+
+Example: rangeExclusive
+```
+{
+  arguments: {
+    start: '0',
+    end: '128'
+  },
+  columnName: 'number_column',
+  function: 'rangeExclusive'
+}
+```
+Output SoQL:
+```
+WHERE `number_column` > 0 AND `number_column` < 128
+```
+
+##### `<`, `<=`, `>`, `>=`
+The `<`, `<=`, `>`, and `>=` filters describes a partitioning of the set of all rows into those that fall strictly below, below or equal to, above, and above or equal to the argument and those that do not. It is of type `<object>`. This object must have the following properties:
+
+* The `arguments` property specifies the the value with which to partition the data. It is of type `<object>` and must have a single property of name `value` of type <string> to support arbitrary precision.
+
+* The `columnName` property specifies the column against which the partition should be applied. It is of type `<string>` and it must be a column in the dataset specified by the parent `dataSource` object.
+
+* The `function` property specifies the desired filtering function. Its type is `<string>` and it must be one of `<`, `<=`, `>`, `>=`
+
+Example: '<':
+```
+{
+  arguments: { value: '7' },
+  columnName: 'number_column',
+  function: '<'
+}
+```
+Output SoQL:
+```
+WHERE `number_column` < 7
+```
+

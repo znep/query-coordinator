@@ -142,6 +142,18 @@ var utils = {
   },
 
   /**
+   * Ensures the given value is a string.
+   *
+   * @param {any} object - The object to check
+   * @param {string} message - An explanatory error message.
+   */
+
+  assertIsString: (object, message) => {
+    utils.assert(_.isString(object), message || `Expected ${object} to be a string.`);
+  },
+
+
+  /**
    * Ensures the given value is of any of the provided types.
    *
    * @param {any} value - The value to check

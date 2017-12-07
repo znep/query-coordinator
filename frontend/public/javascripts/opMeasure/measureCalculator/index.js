@@ -45,11 +45,20 @@ const setupSoqlDataProvider = (measure) => {
 
 /* Helper functions. Should use BigNumbers where possible. */
 
-const whereClauseFromColumnCondition = (fieldName, columnCondition) => {
-  return SoqlHelpers.filterToWhereClauseComponent({
-    columnName: fieldName,
-    ...columnCondition
-  });
+const addColumnConditionWhereClause = (query, fieldName, columnCondition) => {
+  if (columnCondition) {
+    const whereClause = SoqlHelpers.filterToWhereClauseComponent({
+      columnName: fieldName,
+      ...columnCondition
+    });
+    if (_.isEmpty(whereClause)) {
+      return query;
+    } else {
+      return `${query} where ${whereClause}`;
+    }
+  } else {
+    return query;
+  }
 };
 
 // Returns: BigNumber.
@@ -60,10 +69,11 @@ const count = async (dataProvider, fieldName, columnCondition) => {
   }
 
   const countAlias = '__measure_count_alias__';
-  let query = `select count(${fieldName}) as ${countAlias}`;
-  if (columnCondition) {
-    query = `${query} where ${whereClauseFromColumnCondition(fieldName, columnCondition)}`;
-  }
+  const query = addColumnConditionWhereClause(
+    `select count(${fieldName}) as ${countAlias}`,
+    fieldName,
+    columnCondition
+  );
   const data = await dataProvider.rawQuery(query);
   return new BigNumber(data[0][countAlias]);
 };
@@ -72,10 +82,11 @@ const count = async (dataProvider, fieldName, columnCondition) => {
 const sum = async (dataProvider, fieldName, columnCondition) => {
   const sumAlias = '__measure_sum_alias__';
 
-  let query = `select sum(${fieldName}) as ${sumAlias}`;
-  if (columnCondition) {
-    query = `${query} where ${whereClauseFromColumnCondition(fieldName, columnCondition)}`;
-  }
+  const query = addColumnConditionWhereClause(
+    `select sum(${fieldName}) as ${sumAlias}`,
+    fieldName,
+    columnCondition
+  );
 
   const data = await dataProvider.rawQuery(query);
   return new BigNumber(data[0][sumAlias]);

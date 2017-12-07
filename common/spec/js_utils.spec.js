@@ -230,6 +230,43 @@ describe('utils.js', function() {
     });
   });
 
+  describe('assertIsString', function() {
+
+    describe('not given a string', function() {
+
+      assert.throws(function() {
+        utils.assertIsString(1);
+      });
+
+      assert.throws(function() {
+        utils.assertIsString(null);
+      });
+
+      assert.throws(function() {
+        utils.assertIsString(undefined);
+      });
+
+      assert.throws(function() {
+        utils.assertIsString([]);
+      });
+
+      assert.throws(function() {
+        utils.assertIsString({});
+      });
+
+      assert.throws(function() {
+        utils.assertIsString(4);
+      });
+    });
+
+    describe('given a string', function() {
+
+      it('does not throw an error', function() {
+        utils.assertIsString('hi');
+      });
+    });
+  });
+
   describe('assertIsOneOfTypes', function() {
 
     describe('given a value of type not in the specified array', function() {

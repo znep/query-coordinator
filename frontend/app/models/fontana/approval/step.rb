@@ -27,11 +27,11 @@ module Fontana
       end
 
       def as_json(keys = JSON_ATTRIBUTES)
-        Hash[keys.map { |key| [key, public_send(key)] }]
+        Hash[keys.map { |key| [key, public_send(key)] }].to_json
       end
 
-      def to_json(keys = JSON_ATTRIBUTES)
-        as_json(keys)
+      def to_json(keys = ATTRIBUTE_NAMES)
+        Hash[keys.map { |key| [key, public_send(key)] }].to_json
       end
 
     end

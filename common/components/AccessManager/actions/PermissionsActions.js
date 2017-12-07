@@ -15,9 +15,18 @@ export const fetchPermissionsFail = error => ({ type: FETCH_PERMISSIONS_FAIL, er
 export const CHANGE_AUDIENCE_SCOPE = 'CHANGE_AUDIENCE_SCOPE';
 export const changeAudienceScope = scope => ({ type: CHANGE_AUDIENCE_SCOPE, scope });
 
-// Save button was clicked
-export const SAVE_BUTTON_CLICKED = 'SAVE_BUTTON_CLICKED';
-export const saveButtonClicked = () => ({ type: SAVE_BUTTON_CLICKED });
+// Change the access level for a user
+export const CHANGE_USER_ACCESS_LEVEL = 'CHANGE_USER_ACCESS_LEVEL';
+export const changeUserAccessLevel = (user, accessLevel) =>
+  ({ type: CHANGE_USER_ACCESS_LEVEL, user, accessLevel });
+
+// Remove a user from the list
+export const REMOVE_USER_ACCESS = 'REMOVE_USER_ACCESS';
+export const removeUserAccess = user => ({ type: REMOVE_USER_ACCESS, user });
+
+// Add user(s) to the list with access levels
+export const ADD_USERS = 'ADD_USERS';
+export const addUsers = (users, accessLevel) => ({ type: ADD_USERS, users, accessLevel });
 
 // Save succeeded!
 export const SAVE_SUCCESS = 'SAVE_SUCCESS';
@@ -26,11 +35,3 @@ export const saveSuccess = () => ({ type: SAVE_SUCCESS });
 // Save failed
 export const SAVE_FAIL = 'SAVE_FAIL';
 export const saveFail = error => ({ type: SAVE_FAIL, error });
-
-// The cancel button was clicked (close the modal)
-export const CANCEL_BUTTON_CLICKED = 'CANCEL_BUTTON_CLICKED';
-export const cancelButtonClicked = () => ({ type: CANCEL_BUTTON_CLICKED });
-
-// A function gets added to window that basically dispatches this action when called
-export const SHOW_ACCESS_MANAGER = 'SHOW_ACCESS_MANAGER';
-export const showAccessManager = () => ({ type: SHOW_ACCESS_MANAGER });

@@ -1,11 +1,36 @@
 import { call, put, select } from 'redux-saga/effects';
 import { assert } from 'chai';
-import { fetchPermissions, savePermissions } from 'common/components/AccessManager/sagas/AccessManagerSagas';
+import { fetchPermissions, savePermissions } from 'common/components/AccessManager/sagas/PermissionsSagas';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
-import * as actions from 'common/components/AccessManager/actions/AccessManagerActions';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+import { permissionsUrl, fetchWithDefaults } from 'common/components/AccessManager/Util';
 
-describe('AccessManagerSagas', () => {
+describe('PermissionsSagas', () => {
   const fakeAssetId = 'fake-uuid';
+
+  const mockPermissions = {
+    scope: 'private',
+    accessLevels: [
+      {
+        name: 'viewer',
+        version: 'published'
+      }
+    ],
+    users: [
+      {
+        id: 'cool-cats',
+        displayName: 'Fakey',
+        email: 'fake@fake.com',
+        type: 'user',
+        accessLevels: [
+          {
+            name: 'current_owner',
+            version: 'all'
+          }
+        ]
+      }
+    ]
+  };
 
   describe('fetchPermissions', () => {
     it('fetches permissions', () => {
@@ -19,27 +44,17 @@ describe('AccessManagerSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetch,
-          `/api/views/${fakeAssetId}/permissions`,
-          {
-            credentials: 'same-origin'
-          }
+          fetchWithDefaults,
+          permissionsUrl(fakeAssetId)
         )
       );
 
-      const mockResponse = [
-        {
-          'public': true,
-          type: 'read'
-        }
-      ];
-
       // fake getting back the response from the fetch call
-      gen.next(new Response(JSON.stringify(mockResponse)));
+      gen.next(new Response(JSON.stringify(mockPermissions)));
 
       assert.deepEqual(
-        gen.next(mockResponse).value,
-        put(actions.fetchPermissionsSuccess(mockResponse))
+        gen.next(mockPermissions).value,
+        put(permissionsActions.fetchPermissionsSuccess(mockPermissions))
       );
 
       assert.deepEqual(
@@ -59,17 +74,14 @@ describe('AccessManagerSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetch,
-          `/api/views/${fakeAssetId}/permissions`,
-          {
-            credentials: 'same-origin'
-          }
+          fetchWithDefaults,
+          permissionsUrl(fakeAssetId)
         )
       );
 
       assert.deepEqual(
         gen.throw('error').value,
-        put(actions.fetchPermissionsFail('error'))
+        put(permissionsActions.fetchPermissionsFail('error'))
       );
 
       assert.deepEqual(
@@ -89,11 +101,8 @@ describe('AccessManagerSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetch,
-          `/api/views/${fakeAssetId}/permissions`,
-          {
-            credentials: 'same-origin'
-          }
+          fetchWithDefaults,
+          permissionsUrl(fakeAssetId)
         )
       );
 
@@ -107,7 +116,7 @@ describe('AccessManagerSagas', () => {
 
       assert.deepEqual(
         gen.next(mockResponse).value,
-        put(actions.fetchPermissionsFail(mockResponse))
+        put(permissionsActions.fetchPermissionsFail(mockResponse))
       );
 
       assert.deepEqual(
@@ -118,18 +127,8 @@ describe('AccessManagerSagas', () => {
   });
 
   describe('savePermissions', () => {
-    const fakePublicPermissions = [
-      {
-        'public': true,
-        type: 'read'
-      }
-    ];
-
-    const fakePrivatePermissions = [];
-
-    it('saves public permissions', () => {
+    it('saves permissions', () => {
       const gen = savePermissions();
-
       assert.deepEqual(
         gen.next().value,
         select(selectors.getAssetUid)
@@ -141,56 +140,20 @@ describe('AccessManagerSagas', () => {
       );
 
       assert.deepEqual(
-        gen.next(fakePublicPermissions).value,
+        gen.next(mockPermissions).value,
         call(
-          fetch,
-          `/api/views/${fakeAssetId}?accessType=WEBSITE&method=setPermission&value=public.read`,
+          fetchWithDefaults,
+          permissionsUrl(fakeAssetId),
           {
             method: 'PUT',
-            credentials: 'same-origin'
+            body: JSON.stringify(mockPermissions)
           }
         )
       );
-
-      assert.deepEqual(
-        gen.next(new Response()).value,
-        put(actions.saveSuccess())
-      );
-
-      assert.deepEqual(
-        gen.next(),
-        { done: true, value: undefined }
-      );
-    });
-
-    it('saves private permissions', () => {
-      const gen = savePermissions();
 
       assert.deepEqual(
         gen.next().value,
-        select(selectors.getAssetUid)
-      );
-
-      assert.deepEqual(
-        gen.next(fakeAssetId).value,
-        select(selectors.getPermissions)
-      );
-
-      assert.deepEqual(
-        gen.next(fakePrivatePermissions).value,
-        call(
-          fetch,
-          `/api/views/${fakeAssetId}?accessType=WEBSITE&method=setPermission&value=private`,
-          {
-            method: 'PUT',
-            credentials: 'same-origin'
-          }
-        )
-      );
-
-      assert.deepEqual(
-        gen.next(new Response()).value,
-        put(actions.saveSuccess())
+        put(permissionsActions.saveSuccess())
       );
 
       assert.deepEqual(
@@ -201,7 +164,6 @@ describe('AccessManagerSagas', () => {
 
     it('catches errors', () => {
       const gen = savePermissions();
-
       assert.deepEqual(
         gen.next().value,
         select(selectors.getAssetUid)
@@ -213,20 +175,20 @@ describe('AccessManagerSagas', () => {
       );
 
       assert.deepEqual(
-        gen.next(fakePrivatePermissions).value,
+        gen.next(mockPermissions).value,
         call(
-          fetch,
-          `/api/views/${fakeAssetId}?accessType=WEBSITE&method=setPermission&value=private`,
+          fetchWithDefaults,
+          permissionsUrl(fakeAssetId),
           {
             method: 'PUT',
-            credentials: 'same-origin'
+            body: JSON.stringify(mockPermissions)
           }
         )
       );
 
       assert.deepEqual(
         gen.throw('error').value,
-        put(actions.saveFail('error'))
+        put(permissionsActions.saveFail('error'))
       );
 
       assert.deepEqual(

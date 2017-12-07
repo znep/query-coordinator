@@ -368,6 +368,12 @@ en:
     site_chrome:
       access_manager:
         accept: OK
+        access_level: Access Level
+        access_levels:
+          viewer: Viewer
+          contributor: Contributor
+          owner: Co-owner
+        add: Add
         audience:
           organization:
             subtitle: Everyone in my Organization can view and edit
@@ -380,10 +386,25 @@ en:
             title: Public
         cancel: Cancel
         change: Change
-        header:
+        change_owner:
+          subtitle: The owner will appear on this asset's Primer page and have the ability to delete this asset.
+          title: Transfer Ownership
+        change_scope:
+          subtitle: Who can see this dataset?
+          title: Change Audience Scope
+        current_owner: Current Owner
+        new_owner: New Owner
+        no_results: No results found. Try again or enter a full email address.
+        owner: Owner
+        people: People
+        please_select: Please select a user to transfer ownership to
+        save: Save
+        summary:
           subtitle: Who can see this dataset?
           title: Manage Access
-        save: Save
+        transfer: Transfer
+        unregistered_user: This user has not yet registered
+        unregistered_user_search_result: Unregistered user
       admin:
         data_catalog:
           title: Data Catalog

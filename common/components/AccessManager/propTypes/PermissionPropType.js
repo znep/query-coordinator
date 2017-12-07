@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import UserPropType from './UserPropType';
+import AccessLevelPropType from './AccessLevelPropType';
+import AudienceScopePropType from './AudienceScopePropType';
 
 /**
- * Describes a permission that comes back from the API
+ * Describes the permissions that comes back from the API
  */
 export default PropTypes.shape({
-  scope: PropTypes.oneOf(['public', 'organization', 'user']),
-  'public': PropTypes.bool.isRequired,
-  user: UserPropType
+  scope: AudienceScopePropType,
+  accessLevels: PropTypes.arrayOf(AccessLevelPropType),
+  users: PropTypes.arrayOf(UserPropType)
 });

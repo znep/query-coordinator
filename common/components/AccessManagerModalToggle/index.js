@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import I18n from '../../i18n';
 import createStore from './AccessManagerStore';
-import ConfigPropType from '../AccessManager/propTypes/ConfigPropType';
+import ViewPropType from '../AccessManager/propTypes/ViewPropType';
+import UserPropType from '../AccessManager/propTypes/UserPropType';
 import AccessManager from '../AccessManager/components/AccessManager';
-import { fetchPermissions, showAccessManager } from '../AccessManager/actions/AccessManagerActions';
+import { fetchPermissions } from '../AccessManager/actions/PermissionsActions';
+import { showAccessManager } from '../AccessManager/actions/UiActions';
 
 /**
  * This component wraps the AccessManager in a redux store and provider.
@@ -20,25 +21,35 @@ import { fetchPermissions, showAccessManager } from '../AccessManager/actions/Ac
  */
 class AccessManagerModalToggle extends Component {
   static propTypes = {
-    config: ConfigPropType.isRequired
+    currentUser: UserPropType.isRequired,
+    view: ViewPropType.isRequired
   }
 
   constructor(props) {
     super(props);
 
+    const {
+      currentUser,
+      view
+    } = props;
+
     this.store = createStore({
-      accessManager: {
+      ui: {
         visible: false,
-        headerText: I18n.t('shared.site_chrome.access_manager.header.title'),
-        headerSubtitle: I18n.t('shared.site_chrome.access_manager.header.subtitle'),
-        assetUid: props.config.assetUid,
-        permissions: null,
         errors: []
+      },
+      permissions: {
+        currentUser,
+        permissions: null,
+        view
       }
     });
   }
 
   componentDidMount() {
+    // immediately fetch permissions when the component is loaded
+    // the saga will grab them in the background, so hopefully by the time
+    // the user opens the modal they will have been fetched!
     this.store.dispatch(fetchPermissions());
 
     // shove a function onto window.socrata that shows the access manager
@@ -52,11 +63,9 @@ class AccessManagerModalToggle extends Component {
   }
 
   render() {
-    const { config } = this.props;
-
     return (
       <Provider store={this.store}>
-        <AccessManager config={config} />
+        <AccessManager />
       </Provider>
     );
   }

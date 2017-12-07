@@ -1,0 +1,5 @@
+.dropdown {
+  & :global(.dropdown-container) {
+    width: 125px;
+  }
+}

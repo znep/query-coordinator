@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import I18n from '../../../../i18n';
-import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
-import SocrataIcon from '../../../SocrataIcon';
+
+import I18n from 'common/i18n';
+import SocrataIcon from 'common/components/SocrataIcon';
+
 import styles from './audience-label.scss';
+import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
 
 /**
  * A label with an icon, a title, and a subtitle that describes a "scope"

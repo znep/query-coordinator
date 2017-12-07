@@ -6,8 +6,13 @@ import {
   applyMiddleware,
   compose
 } from 'redux';
-import accessManagerReducer from '../AccessManager/reducers/AccessManagerReducer';
-import accessManagerSagas from '../AccessManager/sagas/AccessManagerSagas';
+import uiReducer from '../AccessManager/reducers/UiReducer';
+import permissionsReducer from '../AccessManager/reducers/PermissionsReducer';
+import addUsersReducer from '../AccessManager/reducers/AddUsersReducer';
+import permissionsSagas from '../AccessManager/sagas/PermissionsSagas';
+import addUsersSagas from '../AccessManager/sagas/AddUsersSagas';
+import changeOwnerReducer from '../AccessManager/reducers/ChangeOwnerReducer';
+import changeOwnerSagas from '../AccessManager/sagas/ChangeOwnerSagas';
 
 /**
  * Creates a store for the AccessManager component to use,
@@ -17,13 +22,18 @@ import accessManagerSagas from '../AccessManager/sagas/AccessManagerSagas';
  */
 export default (initialState) => {
   // use the redux devtool's composeEnhancers to keep them around
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers =
+    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ name: 'AccessManager' })) ||
+    compose;
 
   const sagaMiddleware = createSagaMiddleware();
 
   const store = createStore(
     combineReducers({
-      accessManager: accessManagerReducer
+      permissions: permissionsReducer,
+      addUsers: addUsersReducer,
+      changeOwner: changeOwnerReducer,
+      ui: uiReducer
     }),
     initialState,
     composeEnhancers(applyMiddleware(sagaMiddleware))
@@ -32,7 +42,9 @@ export default (initialState) => {
   // combine all the sagas together
   function* sagas() {
     yield all([
-      ...accessManagerSagas
+      ...permissionsSagas,
+      ...addUsersSagas,
+      ...changeOwnerSagas
     ]);
   }
   sagaMiddleware.run(sagas);

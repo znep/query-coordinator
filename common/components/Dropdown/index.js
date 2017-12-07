@@ -408,7 +408,7 @@ Dropdown.propTypes = {
     PropTypes.func
   ]),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   // Since this dropdown is not a form input element (gotta love custom
   // components that reimplement browser functionality), we can't rely
   // on built-in accessibility affordances like <label for="some-id">.

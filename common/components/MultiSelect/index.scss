@@ -39,8 +39,8 @@ $multiselect-remove-icon-hover-color: #a17b19;
 }
 
 .multiselect-search-icon-container {
-  margin-top: 2px;
-  height: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .multiselect-search-icon {
@@ -153,8 +153,8 @@ $multiselect-remove-icon-hover-color: #a17b19;
   width: $multiselect-options-spinner-size;
   height: $multiselect-options-spinner-size;
   border-width: 7px;
-  margin-left: calc(50% - $multiselect-options-spinner-size);
-  margin-top: calc(50% - $multiselect-options-spinner-size);
+  margin-left: calc(50% - #{$multiselect-options-spinner-size});
+  margin-top: calc(50% - #{$multiselect-options-spinner-size});
 }
 
 .multiselect-options-no-results {

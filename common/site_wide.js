@@ -65,23 +65,26 @@ window.autocomplete = function(containerSelector, options, defaultState) {
  * This renders the <AccessManagerModalToggle /> component into the "access-manager-component"
  * if "window.blist.dataset.id" is available.
  *
- * This component adds a "window.socrata.showAccessManager()" function when it mountas
+ * This component adds a "window.socrata.showAccessManager()" function when it mounts
  * that can be called to show the access manager modal.
  */
 /** ***************************************************************************************************/
 if (_.get(window, 'blist.feature_flags.enable_access_manager_modal', false)) {
   document.addEventListener('DOMContentLoaded', () => {
-    const datasetUid = _.get(window, 'blist.dataset.id', null);
+    const view = _.get(window, 'blist.dataset', null);
     const accessManagerRoot = document.getElementById('access-manager-container');
 
-    if (accessManagerRoot && datasetUid) {
-      const config = {
-        assetUid: datasetUid
-      };
-
-      ReactDOM.render(<AccessManagerModalToggle config={config} />, accessManagerRoot);
-    } else {
-      console.warn(`Couldn't render access manager; datasetUid: ${datasetUid}, accessManagerRoot: ${accessManagerRoot}`);
+    if (accessManagerRoot && view) {
+      // blist.currentUser isn't actually available on DOMContentLoad because
+      // we do a call to /api/user/current.json on every page load!
+      window.blist.configuration.onCurrentUserComplete((currentUser) => {
+        ReactDOM.render(
+          <AccessManagerModalToggle
+            currentUser={currentUser}
+            view={view} />,
+          accessManagerRoot
+        );
+      });
     }
   });
 }

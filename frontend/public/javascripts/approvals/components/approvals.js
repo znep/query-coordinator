@@ -15,12 +15,18 @@ export default class Approvals extends Component {
         props: {
           actionElement: ApprovalActionButtons,
           baseFilters: {
-            approvalStatus: 'pending'
+            approvalStatus: constants.APPROVAL_STATUS_PENDING
           }
         }
       },
       [constants.HISTORY_TAB]: {
-        component: () => <div>History! todo</div>
+        component: ResultsAndFilters,
+        props: {
+          actionElement: ApprovalActionButtons,
+          baseFilters: {
+            approvalStatus: [constants.APPROVAL_STATUS_APPROVED, constants.APPROVAL_STATUS_REJECTED]
+          }
+        }
       }
     };
 
@@ -30,12 +36,6 @@ export default class Approvals extends Component {
       };
     }
 
-    return (
-      <AssetBrowser
-        showAssetCounts={false}
-        showFilters
-        showSearchField
-        tabs={tabs} />
-    );
+    return <AssetBrowser showAssetCounts={false} showFilters showSearchField tabs={tabs} />;
   }
 }

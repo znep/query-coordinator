@@ -1,12 +1,18 @@
+ /* eslint-disable no-duplicate-imports */
+ /* eslint-disable import/no-duplicates */
+
 import sinon from 'sinon';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import {
   deleteAsset,
   changeVisibility,
   __RewireAPI__ as actionsAPI
 } from 'common/components/AssetBrowser/actions/asset_actions';
+import * as assetActions from 'common/components/AssetBrowser/actions/asset_actions';
+
 import { mockResponse } from 'common/spec/helpers';
 import { useTestTranslations } from 'common/i18n';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';
@@ -47,8 +53,8 @@ describe('actions/assetActions', () => {
 
       const store = mockStore();
       const expectedActions = [
-        { type: 'PERFORMING_ACTION', actionType: 'deleteAsset' },
-        { type: 'PERFORMING_ACTION_SUCCESS', actionType: 'deleteAsset' }
+        { type: assetActions.PERFORMING_ACTION, actionType: 'deleteAsset' },
+        { type: assetActions.PERFORMING_ACTION_SUCCESS, actionType: 'deleteAsset' }
       ];
 
       return store.dispatch(deleteAsset('abcd-1234')).then(() => {
@@ -63,8 +69,8 @@ describe('actions/assetActions', () => {
 
       const store = mockStore();
       const expectedActions = [
-        { type: 'PERFORMING_ACTION', actionType: 'deleteAsset' },
-        { type: 'PERFORMING_ACTION_FAILURE', actionType: 'deleteAsset', response: fakeResponse }
+        { type: assetActions.PERFORMING_ACTION, actionType: 'deleteAsset' },
+        { type: assetActions.PERFORMING_ACTION_FAILURE, actionType: 'deleteAsset', response: fakeResponse }
       ];
 
       return store.dispatch(deleteAsset('abcd-1234')).then(() => {
@@ -90,15 +96,15 @@ describe('actions/assetActions', () => {
 
       const store = mockStore();
       const expectedActions = [
-        { type: 'PERFORMING_ACTION', actionType: 'changeVisibility' },
+        { type: assetActions.PERFORMING_ACTION, actionType: 'changeVisibility' },
         {
-          type: 'SHOW_ALERT',
+          type: assetActions.SHOW_ALERT,
           body: 'This may take a few moments to take effect.',
           title: 'Visibility changed to public.',
           time: 7000
         },
-        { type: 'CLOSE_MODAL' },
-        { type: 'PERFORMING_ACTION_SUCCESS', actionType: 'changeVisibility' }
+        { type: assetActions.CLOSE_MODAL },
+        { type: assetActions.PERFORMING_ACTION_SUCCESS, actionType: 'changeVisibility' }
       ];
 
       const uid = 'abcd-1234';

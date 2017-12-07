@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
+import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
+import * as sortActions from 'common/components/AssetBrowser/actions/sort_order';
+import * as pagerActions from 'common/components/AssetBrowser/actions/pager';
+import * as ceteraHelperActions from 'common/components/AssetBrowser/lib/helpers/cetera';
+import * as pageSizeActions from 'common/components/AssetBrowser/actions/page_size';
 
 const defaultOrder = {
   ascending: false,
@@ -53,7 +58,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_RESULTS') {
+  if (action.type === ceteraActions.FETCH_RESULTS) {
     return {
       ...state,
       fetchingResults: true,
@@ -61,7 +66,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_RESULTS_SUCCESS') {
+  if (action.type === ceteraActions.FETCH_RESULTS_SUCCESS) {
     return {
       ...state,
       fetchingResults: false,
@@ -69,7 +74,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_RESULTS_ERROR') {
+  if (action.type === ceteraActions.FETCH_RESULTS_ERROR) {
     return {
       ...state,
       fetchingResults: false,
@@ -78,28 +83,28 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'CHANGE_SORT_ORDER') {
+  if (action.type === sortActions.CHANGE_SORT_ORDER) {
     return {
       ...state,
       order: action.order
     };
   }
 
-  if (action.type === 'CHANGE_PAGE') {
+  if (action.type === pagerActions.CHANGE_PAGE) {
     return {
       ...state,
       pageNumber: action.pageNumber
     };
   }
 
-  if (action.type === 'INITIAL_RESULTS_FETCHED') {
+  if (action.type === ceteraHelperActions.INITIAL_RESULTS_FETCHED) {
     return {
       ...state,
       initialResultsFetched: true
     };
   }
 
-  if (action.type === 'UPDATE_PAGE_SIZE') {
+  if (action.type === pageSizeActions.UPDATE_PAGE_SIZE) {
     return {
       ...state,
       pageSize: action.pageSize

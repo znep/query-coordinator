@@ -152,8 +152,23 @@ export const ceteraUtils = (() => {
       }
     };
 
-    return _.reduce(_.omit(parameters, 'ids'), reduceUriEncodedQueryParameter, []).
-      concat(parameters.ids ? [`${parameters.ids}`] : []).join('&');
+    let reducedParameters = _.reduce(
+      // Omit 'approval_status', and ids' since those parameters require special treatment
+      _.omit(parameters, 'approval_status', 'ids'),
+      reduceUriEncodedQueryParameter, []
+    ).concat(parameters.ids ? [`${parameters.ids}`] : []);
+
+    // This is special case handling for approvalStatus, which is sometimes an array of strings rather than
+    // a single string value. It could easily be generalized to support all parameters if necessary.
+    if (_.isArray(approvalStatus)) {
+      reducedParameters = reducedParameters.concat(
+        _.reduce(approvalStatus, (result, value, key) => result.concat(`approval_status[]=${value}`), [])
+      );
+    } else if (!_.isNull(approvalStatus)) {
+      reducedParameters = reducedParameters.concat([`approval_status=${approvalStatus}`]);
+    }
+
+    return reducedParameters.join('&');
   };
 
   return {

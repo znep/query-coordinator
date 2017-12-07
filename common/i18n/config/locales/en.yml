@@ -150,7 +150,7 @@ en:
           shared_to_me: Shared To Me
           my_queue: My Queue
           settings: Settings
-          history: History
+          history: Previously Reviewed
       mobile:
         done: Done
         filters: Filters

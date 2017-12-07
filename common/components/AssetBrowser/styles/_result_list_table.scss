@@ -179,7 +179,7 @@ $result_list_row_bg_hover_color: $primary-light;
     }
   }
 
-  .my-queue {
+  .my-queue, .history {
     table.result-list-table {
       thead tr th {
         &.type {

@@ -13,12 +13,6 @@ import * as headerActions from '../actions/header';
 import AssetCounts from './asset_counts';
 
 export class Header extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, 'renderTabByKey');
-  }
-
   renderTabByKey(tab) {
     const { activeTab, changeTab } = this.props;
 

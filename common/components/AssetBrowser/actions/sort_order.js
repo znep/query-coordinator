@@ -3,6 +3,8 @@ import { fetchResults } from 'common/components/AssetBrowser/lib/helpers/cetera'
 import { clearPage } from './pager';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
 
+export const CHANGE_SORT_ORDER = 'CHANGE_SORT_ORDER';
+
 export const changeSortOrder = (columnName) => (dispatch, getState) => {
   // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
   const currentStateOrder = _.get(getState(), 'catalog.order', {});
@@ -18,7 +20,7 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
   };
 
   const onSuccess = () => {
-    dispatch({ type: 'CHANGE_SORT_ORDER', order: newOrder });
+    dispatch({ type: CHANGE_SORT_ORDER, order: newOrder });
     clearPage(dispatch);
     updateQueryString({ getState });
   };
@@ -27,7 +29,7 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
     dispatch,
     getState,
     {
-      action: 'CHANGE_SORT_ORDER',
+      action: CHANGE_SORT_ORDER,
       order: newOrder,
       pageNumber: 1
     },
@@ -36,5 +38,5 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
 };
 
 export const clearSortOrder = () => (
-  { type: 'CHANGE_SORT_ORDER', order: undefined }
+  { type: CHANGE_SORT_ORDER, order: undefined }
 );

@@ -431,13 +431,6 @@ en:
     header:
       breadcrumbs:
         approvals: Approvals
-      tabs:
-        history:
-          title: History
-        my_queue:
-          title: My Queue
-        settings:
-          title: Settings
     settings:
       introduction:
         header: About Approvals and Approval Requests

@@ -20,11 +20,8 @@ export const saveRoles = makeActionCreator('save_roles', {
       roles
         .map(role =>
           (roleIsNew(role)
-            ? CoreApi.createRole({ body: role.filter(keyIn('name', 'rights')).toJS() })
-            : CoreApi.updateRole({
-                roleId: getIdFromRole(role),
-                body: role.filter(keyIn('name', 'rights')).toJS()
-              }))
+            ? CoreApi.createRole(role.filter(keyIn('name', 'rights')).toJS())
+            : CoreApi.updateRole(getIdFromRole(role),role.filter(keyIn('name', 'rights')).toJS()))
             .then(success => ({ role, success }))
             .catch(err => err.json().then(error => ({ role, error })))
         )
@@ -76,7 +73,7 @@ export const deleteRole = makeActionCreator('delete_role', {
     if (window.confirm('Are you sure?')) {
       dispatch(stages.start(payload));
 
-      CoreApi.deleteRole({ roleId: getIdFromRole(role) })
+      CoreApi.deleteRole(getIdFromRole(role))
         .then(() => {
           dispatch(
             showNotification({

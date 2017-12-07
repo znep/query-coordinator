@@ -22,7 +22,7 @@ export function* fetchApprovalForResource(resourceId) {
     filter((approvalDetail) => approvalDetail.state !== 'not_applicable').first();
 }
 
-export function* setApprovalForResource(resource, logError = true) {
+export function* setApprovalForResource(resource) {
   const { name, notes, resourceId, state } = resource;
   const approval = yield call(fetchApprovalForResource, resourceId);
   const alertMessageLocaleScope = `shared.asset_browser.alert_messages.resource_${state}`;

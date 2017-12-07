@@ -25,6 +25,7 @@ describe('cetera_helpers', () => {
   let ceteraAssetCountsStub;
 
   beforeEach(() => {
+    window.socrata = { initialState: require('../data/mock_initial_state') };
     ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
 
     ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').

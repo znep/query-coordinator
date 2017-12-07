@@ -15,6 +15,7 @@ window.serverConfig = {};
 window.mixpanelConfig = require('./data/mock_mixpanel_config').default;
 window.sessionData = require('./data/mock_session_data').default;
 window.serverConfig = require('./data/mock_server_config').default;
+window.socrata = { initialState: require('./data/mock_initial_state').default };
 
 // Load the translations before each test.
 beforeEach(require('./helpers').useDefaultTranslations);

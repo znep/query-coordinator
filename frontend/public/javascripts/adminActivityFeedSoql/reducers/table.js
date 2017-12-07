@@ -2,7 +2,9 @@ import * as actions from '../actions';
 
 const initialState = {
   data: [],
-  openDetailsId: null
+  openDetailsId: null,
+  fetchingTable: false,
+  fetchTableError: null
 };
 
 export default function table(state, action) {
@@ -19,6 +21,18 @@ export default function table(state, action) {
 
     case actions.table.types.HIDE_DETAILS:
       return Object.assign({}, state, { openDetailsId: null });
+
+    case actions.table.types.FETCHING_TABLE:
+      return Object.assign({}, state, { fetchingTable: true });
+
+    case actions.table.types.FETCH_TABLE_SUCCESS:
+      return Object.assign({}, state, { fetchingTable: false });
+
+    case actions.table.types.FETCH_TABLE_ERROR:
+      return Object.assign({}, state, {
+        fetchingTable: false,
+        fetchTableError: action.details || true
+      });
 
     default:
       return state;

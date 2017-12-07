@@ -3,7 +3,7 @@ import { getIdFromRole, roleHasError, roleIsNew, validateRole } from './selector
 import property from 'lodash/fp/property';
 import partition from 'lodash/fp/partition';
 import CoreApi from 'common/core-roles-api';
-import { types as NotificationTypes } from './components/util/Notification';
+import { types as NotificationTypes } from 'common/components/ToastNotification';
 import Immutable from 'immutable';
 
 export const editCustomRoles = makeActionCreator('edit_custom_roles', {

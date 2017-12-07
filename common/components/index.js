@@ -54,6 +54,7 @@ import MetadataTable from './MetadataTable';
 import Checkbox from './Checkbox';
 import MultiSelect from './MultiSelect';
 import SimpleMultiSelect from './SimpleMultiSelect';
+import ToastNotification from './ToastNotification';
 
 module.exports = {
   attachTo: function(element) {
@@ -108,5 +109,6 @@ module.exports = {
   SimpleMultiSelect,
   Slider,
   SocrataIcon,
+  ToastNotification,
   ViewCard
 };

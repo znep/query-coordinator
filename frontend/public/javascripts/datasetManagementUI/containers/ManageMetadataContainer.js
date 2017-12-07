@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
+import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
+import { FormValidationError } from 'containers/HrefFormContainer';
 import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
 
@@ -174,6 +176,7 @@ function shapeCustomFieldsets(fieldsets = []) {
       ...acc,
       [fs.name]: {
         title: fs.name,
+        isCustom: true,
         fields: shapeCustomFields(fs.fields)
       }
     };
@@ -226,30 +229,37 @@ function addFieldValuesAll(fieldsets, revision) {
 // conditional is due to the fact that the server demands that different categories
 // of metadata (e.g. private, custom, etc) be stored in a particular part of the
 // revision. This was done to appease core, which does a similar thing.
+
 // Note: we specify the path for `_.get` with an array of strings rather than
 // just a string. This is to account for weird custom field/fieldset names. E.g
 // a field name like `*anu@@` would cause problems with `_.get` string syntax.
+
+// Note 2: if a value in a revision is `null`, _.get will return it and not use its
+// fallback value. But the initial value of an input with no value saved on the server
+// should be `''`, otherwise React will complain; thus, the `|| ''`.
 export function addFieldValues(fields = [], fieldsetName, revision) {
   return fields.map(field => {
     if (field.isCustom && field.isPrivate) {
       return {
         ...field,
-        value: _.get(revision, ['metadata', 'privateMetadata', 'custom_fields', fieldsetName, field.name], '')
+        value:
+          _.get(revision, ['metadata', 'privateMetadata', 'custom_fields', fieldsetName, field.name], '') ||
+          ''
       };
     } else if (field.isCustom) {
       return {
         ...field,
-        value: _.get(revision, ['metadata', 'metadata', 'custom_fields', fieldsetName, field.name], '')
+        value: _.get(revision, ['metadata', 'metadata', 'custom_fields', fieldsetName, field.name], '') || ''
       };
     } else if (field.isPrivate) {
       return {
         ...field,
-        value: _.get(revision, ['metadata', 'privateMetadata', field.name], '')
+        value: _.get(revision, ['metadata', 'privateMetadata', field.name], '') || ''
       };
     } else {
       return {
         ...field,
-        value: _.get(revision, ['metadata', field.name], '')
+        value: _.get(revision, ['metadata', field.name], '') || ''
       };
     }
   });
@@ -258,9 +268,8 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
 // =====================
 // VALIDATOR FUNCTIONS
 // =====================
-// Validation
-// = { status : String }
-// | { status : String, message : String }
+// Validation = String | undefined
+// either an error message if the validation failed or undefined if it succeeded
 
 // FieldsetError = {
 //   fields: {
@@ -285,10 +294,10 @@ export function validateFieldset(fieldset = {}) {
         return;
       }
 
-      const result = test(field.value);
+      const errorMessage = test(field.value);
 
-      if (result.status === 'fail') {
-        errors.push(result.message);
+      if (errorMessage) {
+        errors.push(errorMessage);
       }
     });
 
@@ -313,54 +322,39 @@ export function validateFieldsets(fieldsets) {
   );
 }
 
-const SUCCESS = 'success';
-const FAIL = 'fail';
-
 // hasValue :: Any -> Validation
 function hasValue(v) {
   if (v) {
-    return { status: SUCCESS };
+    return;
   } else {
-    return {
-      status: FAIL,
-      message: I18n.edit_metadata.validation_error_required
-    };
+    return I18n.edit_metadata.validation_error_required;
   }
 }
 
 // areUnique :: Array Any -> Validation
 function areUnique(vs) {
   if (Array.isArray(vs) && [...new Set(vs)].length === vs.length) {
-    return { status: SUCCESS };
+    return;
   } else {
-    return {
-      status: FAIL,
-      message: I18n.edit_metadata.validation_error_no_dupes
-    };
+    return I18n.edit_metadata.validation_error_no_dupes;
   }
 }
 
 // isURL :: Any -> Validation
 function isURL(val) {
   if (isURLHelper(val, { require_protocol: true })) {
-    return { status: SUCCESS };
+    return;
   } else {
-    return {
-      status: FAIL,
-      message: I18n.edit_metadata.validation_error_url
-    };
+    return I18n.edit_metadata.validation_error_url;
   }
 }
 
 // isURL ::Any -> Validation
 function isEmail(val) {
   if (isEmailHelper(val)) {
-    return { status: SUCCESS };
+    return;
   } else {
-    return {
-      status: FAIL,
-      message: I18n.edit_metadata.validation_error_email
-    };
+    return I18n.edit_metadata.validation_error_email;
   }
 }
 
@@ -409,4 +403,141 @@ const mapStateToProps = ({ entities }, { params }) => {
   };
 };
 
-export default connect(mapStateToProps)(ManageMetadata);
+// reduceErrors :: { [String] : FieldsetError } -> Boolean
+export function hasErrors(errorsByFieldset = {}) {
+  let errors = [];
+
+  errors = _.flatMap(errorsByFieldset, fs => {
+    const fields = fs.fields || {};
+    return _.flatten(Object.values(fields));
+  });
+
+  return !!errors.length;
+}
+
+// partitionCustomNoncustom ::
+// { [String] : { isCustom : Boolean } }
+//  -> { custom: obj, noncustom: obj }
+export function partitionCustomNoncustom(fieldsets = {}) {
+  return {
+    custom: _.pickBy(fieldsets, fs => fs.isCustom),
+    noncustom: _.pickBy(fieldsets, fs => !fs.isCustom)
+  };
+}
+
+// getFieldsBy ::
+//   { [String]: { fields : { value : a } } }
+//   -> ({ value : a } -> Boolean)
+//   -> { [String] : a }
+// extracts key-value pairs from a fieldset's fields if the given function, when
+// applied to the field, returns a truthy value
+export function getFieldsBy(fs = {}, pred) {
+  const fields = fs.fields || {};
+
+  return _.chain(fields)
+    .pickBy(pred)
+    .mapValues(f => f.value)
+    .mapValues(v => (v === '' ? null : v))
+    .value();
+}
+
+// partitionPrivatePublic :: Fieldsets -> { regularPublic : obj, regularPrivate : obj }
+function partitionPrivatePublic(fieldsets) {
+  const regularPrivate = Object.values(fieldsets).reduce((acc, fs) => {
+    return {
+      ...acc,
+      ...getFieldsBy(fs, f => f.isPrivate)
+    };
+  }, {});
+
+  const regularPublic = Object.values(fieldsets).reduce((acc, fs) => {
+    return {
+      ...acc,
+      ...getFieldsBy(fs, f => !f.isPrivate)
+    };
+  }, {});
+
+  return {
+    regularPrivate,
+    regularPublic
+  };
+}
+
+// partitionCustomPublicPrivate :: Fieldsets -> { publicCustom : obj, privateCustom : obj }
+function partitionCustomPublicPrivate(fieldsets) {
+  const privateCustom = Object.keys(fieldsets).reduce((acc, ke) => {
+    return {
+      ...acc,
+      [ke]: getFieldsBy(fieldsets[ke], f => f.isPrivate)
+    };
+  }, {});
+
+  const publicCustom = Object.keys(fieldsets).reduce((acc, ke) => {
+    return {
+      ...acc,
+      [ke]: getFieldsBy(fieldsets[ke], f => !f.isPrivate)
+    };
+  }, {});
+
+  return {
+    privateCustom: _.omitBy(privateCustom, _.isEmpty),
+    publicCustom: _.omitBy(publicCustom, _.isEmpty)
+  };
+}
+
+function reshape(s) {
+  const { custom, noncustom } = partitionCustomNoncustom(s);
+  const { privateCustom, publicCustom } = partitionCustomPublicPrivate(custom);
+  const { regularPrivate, regularPublic } = partitionPrivatePublic(noncustom);
+
+  // in addition to having 4 buckets of metadata, we further complicate things
+  // by putting attachments and row-labels in this form, so we have to extract those
+  const regularPublicFiltered = _.omit(regularPublic, ['attachments', 'rowLabel']);
+  const rowLabel = _.get(regularPublic, 'rowLabel');
+  const attachments = _.get(regularPublic, 'attachments') || [];
+
+  return {
+    attachments,
+    metadata: {
+      ...regularPublicFiltered,
+      privateMetadata: {
+        ...regularPrivate,
+        custom_fields: privateCustom
+      },
+      metadata: {
+        rowLabel,
+        custom_fields: publicCustom
+      }
+    }
+  };
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    saveDatasetMetadata: newMetadata => {
+      const result = validateFieldsets(newMetadata);
+
+      if (hasErrors(result)) {
+        return Promise.reject(new FormValidationError('datasetForm', result));
+      }
+
+      const reshaped = reshape(newMetadata);
+
+      return dispatch(updateRevision(reshaped, ownProps.params))
+        .then(resp => {
+          dispatch(
+            editRevision(resp.resource.id, {
+              attachments: resp.resource.attachments,
+              metadata: resp.resource.metadata
+            })
+          );
+        })
+        .catch(err => {
+          console.log('err', err);
+          // throw serverside error
+        });
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

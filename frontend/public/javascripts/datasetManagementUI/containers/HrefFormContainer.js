@@ -161,7 +161,7 @@ export function MissingValue(urlId, hrefId) {
 // HrefError = MissingValue | BadUrl | DuplicateExtension
 // FormValidationError :: String -> [ HrefError ] ->
 //   { name : String, message : String, errors : [ HrefError ] }
-function FormValidationError(formName, errors) {
+export function FormValidationError(formName, errors) {
   this.name = 'FormValidationError';
   this.message = `Validation of ${formName} failed`;
   this.errors = errors;

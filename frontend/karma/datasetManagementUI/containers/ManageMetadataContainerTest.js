@@ -4,7 +4,10 @@ import {
   getRevision,
   shapeCustomFields,
   addFieldValues,
-  validateFieldset
+  validateFieldset,
+  hasErrors,
+  partitionCustomNoncustom,
+  getFieldsBy
 } from 'containers/ManageMetadataContainer';
 
 describe.only('ManageMetadata Container', () => {
@@ -272,30 +275,24 @@ describe.only('ManageMetadata Container', () => {
     });
   });
 
-  describe.only('validateFieldset', () => {
+  describe('validateFieldset', () => {
     const requiredMessage = 'this is required';
     const minLengthMessage = 'this is too short';
 
     function isRequired(v) {
       if (v) {
-        return { status: 'pass' };
+        return;
       } else {
-        return {
-          status: 'fail',
-          message: requiredMessage
-        };
+        return requiredMessage;
       }
     }
 
     function minLength(l) {
       return v => {
         if (v >= l) {
-          return { status: 'pass' };
+          return;
         } else {
-          return {
-            status: 'fail',
-            message: minLengthMessage
-          };
+          return minLengthMessage;
         }
       };
     }
@@ -360,6 +357,132 @@ describe.only('ManageMetadata Container', () => {
 
       assert.isEmpty(res.fields.address);
       assert.isArray(res.fields.address);
+    });
+  });
+
+  describe('hasErrors', () => {
+    const validFieldset = {
+      fields: {
+        name: [],
+        age: []
+      }
+    };
+
+    const invalidFieldset = {
+      fields: {
+        address: ['city is required'],
+        dob: []
+      }
+    };
+
+    const fieldlessFieldset = {
+      boop: 'beep'
+    };
+
+    it('returns true when the passed object contains errors', () => {
+      assert.isTrue(
+        hasErrors({
+          one: validFieldset,
+          two: invalidFieldset
+        })
+      );
+    });
+
+    it('returns false when the passed object contains no errors', () => {
+      assert.isFalse(
+        hasErrors({
+          validFieldset
+        })
+      );
+    });
+
+    it('returns false if its param is undefined for some reason', () => {
+      assert.isFalse(hasErrors(undefined));
+    });
+
+    it('handles fieldsets that have no fields', () => {
+      assert.isFalse(
+        hasErrors({
+          fieldlessFieldset
+        })
+      );
+    });
+  });
+
+  describe('partitionCustomNoncustom', () => {
+    it('divides a object based on the presence of an isCustom attribute', () => {
+      const one = {
+        title: 'one'
+      };
+
+      const two = {
+        title: 'two',
+        isCustom: true
+      };
+
+      const fieldsets = {
+        one,
+        two
+      };
+
+      const { custom, noncustom } = partitionCustomNoncustom(fieldsets);
+
+      assert.deepEqual(custom, { two });
+      assert.deepEqual(noncustom, { one });
+    });
+
+    it('does not blow up if given an undefined value', () => {
+      const { custom, noncustom } = partitionCustomNoncustom(undefined);
+
+      assert.isObject(custom);
+      assert.isEmpty(custom);
+      assert.isObject(noncustom);
+      assert.isEmpty(noncustom);
+    });
+  });
+
+  describe('getFieldsBy', () => {
+    const fieldset = {
+      fields: {
+        one: {
+          name: 'one',
+          value: 'ok',
+          isPrivate: true
+        },
+        two: {
+          name: 'two',
+          value: 'good'
+        },
+        three: {
+          name: 'three',
+          value: ''
+        }
+      }
+    };
+
+    it('correctly extracts fields from a fieldset', () => {
+      const actual = getFieldsBy(fieldset, f => !f.isPrivate);
+      const expected = { two: fieldset.fields.two.value, three: null };
+      assert.deepEqual(actual, expected);
+    });
+
+    it('converts any empty string value to null', () => {
+      const actual = getFieldsBy(fieldset, f => !f.isPrivate).three;
+      assert.isNull(actual);
+    });
+
+    it('returns an empty object if given an undefiend value instead of a fieldset', () => {
+      const actual = getFieldsBy(undefined, f => {});
+
+      assert.isEmpty(actual);
+      assert.isObject(actual);
+    });
+
+    it('returns an empy object if the fieldset has no fields property', () => {
+      const actual = getFieldsBy({ foo: 'bar' }, f => {});
+
+      assert.isEmpty(actual);
+      assert.isObject(actual);
     });
   });
 });

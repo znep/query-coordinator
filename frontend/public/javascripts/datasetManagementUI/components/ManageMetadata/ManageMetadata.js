@@ -12,6 +12,7 @@ class ManageMetadata extends Component {
     };
 
     this.handleDatasetChange = this.handleDatasetChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -43,13 +44,19 @@ class ManageMetadata extends Component {
     });
   }
 
-  render() {
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.saveDatasetMetadata(this.state.datasetForm);
     console.log('VAL', validateFieldsets(this.state.datasetForm));
+  }
+
+  render() {
     return (
       <div>
         {this.props.children &&
           React.cloneElement(this.props.children, {
             fieldsets: this.state.datasetForm,
+            handleSubmit: this.handleSubmit,
             handleDatasetChange: this.handleDatasetChange
           })}
       </div>
@@ -60,6 +67,7 @@ class ManageMetadata extends Component {
 ManageMetadata.propTypes = {
   datasetMetadata: PropTypes.object.isRequired,
   outputSchemaColumns: PropTypes.object.isRequired,
+  saveDatasetMetadata: PropTypes.func.isRequired,
   children: PropTypes.object
 };
 

@@ -58,6 +58,23 @@ body {
     justify-content: space-between;
     align-items: flex-end;
 
+    .settings_link {
+      margin-bottom: 0.5rem;
+
+      span {
+        position: relative;
+        top: -1px;
+        color: $primary-base;
+        height: 18px;
+        width: 18px;
+      }
+
+      a {
+        margin-left: 0.25rem;
+        text-decoration: none;
+      }
+    }
+
     &.mobile {
       display: block;
       min-height: 5.5rem;

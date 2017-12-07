@@ -6,7 +6,7 @@ class ApprovalsController < AdministrationController
 
   before_filter :require_approval_right
   before_filter :fetch_approvers, :only => :settings
-  before_filter :fetch_approval, :only => :settings
+  before_filter :fetch_approval
 
   layout 'styleguide'
 

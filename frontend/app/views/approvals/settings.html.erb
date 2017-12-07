@@ -11,15 +11,17 @@
     <div class="actions">
       <div class="change_settings">
         <button type="button" class="btn btn-sm btn-primary btn-dark">
-          Change settings
+          Edit
         </button>
       </div>
       <div class="form_buttons" style="display: none;">
-        <button type="submit" class="btn btn-sm btn-primary btn-dark hidden">
-          <%= t('save', scope: 'approvals.settings') %>
+        <button type="submit" class="btn btn-sm btn-primary btn-dark">
+          <span class="btn-title"><%= t('save', scope: 'approvals.settings') %></span>
+          <span class="spinner-default spinner-btn-primary hidden"></span>
         </button>
-        <button type="button" class="btn btn-sm hidden">
-          <%= t('cancel', scope: 'approvals.settings') %>
+        <button type="button" class="cancel btn btn-sm">
+          <span class="btn-title"><%= t('cancel', scope: 'approvals.settings') %></span>
+          <span class="spinner-default spinner-btn-secondary hidden"></span>
         </button>
       </div>
     </div>
@@ -43,11 +45,11 @@
         </div>
         <div class="configuration_options">
           <ul>
-            <li>
+            <li class="<%= @approval_workflow.steps.first.official_task.approve? && 'selected' %>">
               <%= radio_button_tag('official_approval_strategy', 'automatic', @approval_workflow.steps.first.official_task.approve?, :disabled => true) %>
               <label class="radio_label" for="official_approval_strategy_automatic">Is automatically approved and appears in the data catalog</label>
             </li>
-            <li>
+            <li class="<%= @approval_workflow.steps.first.official_task.manual? && 'selected' %>">
               <%= radio_button_tag('official_approval_strategy', 'manual', @approval_workflow.steps.first.official_task.manual?, :disabled => true) %>
               <label class="radio_label" for="official_approval_strategy_manual">Requires manual approval to appear in the data catalog</label>
             </li>
@@ -65,15 +67,15 @@
         </div>
         <div class="configuration_options">
           <ul>
-            <li>
+            <li class="<%= @approval_workflow.steps.first.community_task.approve? && 'selected' %>">
               <%= radio_button_tag('community_approval_strategy', 'automatic', @approval_workflow.steps.first.community_task.approve?, :disabled => true) %>
               <label class="radio_label" for="community_approval_strategy_automatic">Is automatically approved and appears in the data catalog</label>
             </li>
-            <li>
+            <li class="<%= @approval_workflow.steps.first.community_task.manual? && 'selected' %>">
               <%= radio_button_tag('community_approval_strategy', 'manual', @approval_workflow.steps.first.community_task.manual?, :disabled => true) %>
               <label class="radio_label" for="community_approval_strategy_manual">Requires manual approval to appear in the data catalog</label>
             </li>
-            <li>
+            <li class="<%= @approval_workflow.steps.first.community_task.reject? && 'selected' %>">
               <%= radio_button_tag('community_approval_strategy', 'reject', @approval_workflow.steps.first.community_task.reject?, :disabled => true) %>
               <label class="radio_label" for="community_approval_strategy_reject">Is automatically rejected and does not appear in the data catalog</label>
             </li>
@@ -96,7 +98,7 @@
         </div>
         <div class="configuration_options">
           <ul>
-            <li>
+            <li class="<%= @approval_workflow.manual? && 'selected' %>">
               <%= check_box_tag('reapproval_strategy', 'manual', @approval_workflow.manual?, :disabled => true, :class => 'embiggen') %>
               <label class="checkbox_label" for="reapproval_strategy">Working copies of approved assets require re-approval to appear in the data catalog</label>
             </li>
@@ -129,19 +131,25 @@
 </div>
 
 <% content_for :scripts do %>
-<script>
-  $(document).ready(function() {
-    $('.change_settings > button').on('click', function(event) {
-      $('.change_settings').hide();
-      $('.form_buttons').show();
-      $('input').attr('disabled', false);
+  <script>
+    $(document).ready(function() {
+      $('.change_settings > button').on('click', function(event) {
+        $('.change_settings').hide();
+        $('.form_buttons').show();
+        $('input').attr('disabled', false);
+      });
+      $('.form_buttons button').on('click', function(event) {
+        $(event.target).parent('button').addClass('btn-busy');
+      });
+      $('.form_buttons button.cancel').on('click', function(event) {
+        document.location.href = '/admin/approvals';
+      });
+      $('.approvals_settings input').on('change', function(event) {
+        $(event.target).closest('ul').children('li').removeClass('selected');
+        if (event.target.checked) {
+          $(event.target).parent('li').addClass('selected');
+        }
+      });
     });
-    $('.approvals_settings input').on('change', function(event) {
-      $('.approvals_settings li').removeClass('selected');
-      if (event.target.checked) {
-        $(event.target).parent('li').addClass('selected');
-      }
-    });
-  });
-</script>
+  </script>
 <% end %>

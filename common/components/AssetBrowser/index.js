@@ -50,6 +50,7 @@ AssetBrowser.propTypes = {
   enableAssetInventoryLink: PropTypes.bool,
   onAssetSelected: PropTypes.func,
   pageSize: PropTypes.number,
+  settings: PropTypes.object,
   showAssetCounts: PropTypes.bool,
   showAuthorityFilter: PropTypes.bool,
   showFilters: PropTypes.bool,

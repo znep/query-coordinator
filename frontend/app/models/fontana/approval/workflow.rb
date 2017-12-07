@@ -5,7 +5,7 @@ module Fontana
     class Workflow
       include HTTParty
 
-      APPROVALS_API_URI = URI.parse('https://localhost/api/approvals')
+      APPROVALS_API_URI = URI.parse("https://localhost/api/approvals")
 
       # base_uri APPROVALS_API_URI.to_s
       default_timeout 5.seconds.to_i
@@ -19,9 +19,12 @@ module Fontana
       attr_accessor :cookies
 
       class << self
-        def find(id)
+        def find(workflow_id = nil)
+          unless workflow_id
+            workflow_id = get(APPROVALS_API_URI).parsed_response.find { |workflow| workflow['outcome'] == 'publicize' }['id']
+          end
           instance = new
-          get("#{APPROVALS_API_URI}/#{id}").parsed_response.each do |key, value|
+          get("#{APPROVALS_API_URI}/#{workflow_id}").parsed_response.each do |key, value|
             if key == 'steps'
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
             else

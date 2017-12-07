@@ -13,11 +13,12 @@ import * as headerActions from '../actions/header';
 import AssetCounts from './asset_counts';
 
 export class Header extends Component {
+  scope = 'shared.asset_browser.header.asset_tabs';
+
   renderTabByKey(tab) {
     const { activeTab, changeTab } = this.props;
 
-    const scope = 'shared.asset_browser.header.asset_tabs';
-    const displayText = I18n.t(_.snakeCase(tab), { scope });
+    const displayText = I18n.t(_.snakeCase(tab), { scope: this.scope });
     const tabClasses = classNames('asset-tab', _.kebabCase(tab), {
       'active': tab === activeTab
     });
@@ -40,8 +41,8 @@ export class Header extends Component {
   }
 
   render() {
-    const { isMobile, showAssetCounts, tabs } = this.props;
-    const headerClassnames = classNames('header', { 'mobile': isMobile });
+    const { isMobile, showAssetCounts, settings, tabs } = this.props;
+    const headerClasses = classNames('header', { 'mobile': isMobile });
 
     const assetTabs = (
       <div className="asset-tabs">
@@ -50,9 +51,10 @@ export class Header extends Component {
     );
 
     return (
-      <div className={headerClassnames}>
+      <div className={headerClasses}>
         {!isMobile && assetTabs}
         {showAssetCounts && <AssetCounts />}
+        {settings}
         {isMobile && assetTabs}
       </div>
     );
@@ -63,6 +65,7 @@ Header.propTypes = {
   activeTab: PropTypes.string.isRequired,
   changeTab: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  settings: PropTypes.object,
   tabs: PropTypes.object
 };
 

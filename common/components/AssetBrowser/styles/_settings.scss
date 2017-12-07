@@ -1,8 +1,9 @@
 .approvals_settings {
 
   section {
-    width: 30%;
-    margin: 0 auto;
+    background-color: $white;
+    border-top: 1px solid $alternate-4;
+    padding: 1rem 35%;
     font-size: 80%;
   }
 
@@ -21,11 +22,32 @@
   .actions {
     display: flex;
     justify-content: flex-end;
-    margin: 3rem 1rem 2rem 0;
+    margin: 1rem;
     padding-top: 1rem;
 
     button {
+      width: 6rem;
       margin-left: 0.8rem;
+
+      .spinner-default.hidden {
+        display: none;
+      }
+      .spinner-btn-secondary {
+        border: 2px solid $btn-primary-border-color;
+        border-right-color: $alternate-3-light;
+      }
+      &.btn-busy {
+        padding: 8px 13px !important;
+        height: 38px !important;
+        position: relative;
+        top: 2px; // TODO: Unshit busy button stupidity
+        .spinner-default.hidden {
+          display: inline-block;
+        }
+        .btn-title {
+          display: none;
+        }
+      }
     }
   }
 
@@ -65,8 +87,8 @@
       border-radius: 3px;
 
       &.selected {
-        background-color: #E7F3FC;
-        border: 1px solid #A5D4F2;
+        background-color: $alternate-2-light;
+        border: 1px solid $alternate-2;
       }
 
       input {

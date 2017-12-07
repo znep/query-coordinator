@@ -6,6 +6,7 @@ import { ApprovalActionButtons } from 'common/components/AssetBrowser/components
 import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
 import SettingsContainer from 'common/components/AssetBrowser/components/approvals/settings/settings_container';
+import { SocrataIcon } from 'common/components';
 
 export default class Approvals extends Component {
   render() {
@@ -30,12 +31,18 @@ export default class Approvals extends Component {
       }
     };
 
+    let settingsLink = null;
     if (_.includes(serverConfig.currentUser.rights, 'configure_approvals')) {
-      tabs[constants.SETTINGS_TAB] = {
-        component: SettingsContainer
-      };
+      settingsLink = (
+        <div className="settings_link">
+          <SocrataIcon name="settings" />
+          <a href={`/admin/approvals/settings/${window.socrata.initialState.approvalWorkflowId}`}>
+            {/*I18n.t('approval_settings', { scope: this.scope })*/}Approvals Settings
+          </a>
+        </div>
+      );
     }
 
-    return <AssetBrowser showAssetCounts={false} showFilters showSearchField tabs={tabs} />;
+    return <AssetBrowser showAssetCounts={false} showFilters showSearchField tabs={tabs} settings={settingsLink} />;
   }
 }

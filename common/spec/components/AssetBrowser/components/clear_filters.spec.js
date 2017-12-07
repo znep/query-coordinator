@@ -16,6 +16,7 @@ const clearFilterProps = (options = {}) => ({
   clearAllFilters: () => {},
   header: { activeTab: 'allAssets' },
   store: store,
+  tabs: {},
   ...options
 });
 

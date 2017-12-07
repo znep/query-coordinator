@@ -3,9 +3,6 @@ import { put, call } from 'redux-saga/effects';
 import sinon from 'sinon';
 
 import * as coreUtils from 'common/core/utils';
-import ceteraUtils from 'common/cetera/utils';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 import {
   fetchApprovalForResource,
@@ -22,7 +19,6 @@ describe('ApprovalsSagas', () => {
   let consoleSpy;
 
   beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
     // Can't figure out how to stub this with sinon. Seems not to care at all a just logs anyway.
     // See platform-ui/common/components/AssetBrowser/sagas/approvals.js:48
     consoleSpy = sinon.spy(console, 'error');

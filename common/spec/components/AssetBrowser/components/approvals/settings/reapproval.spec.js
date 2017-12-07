@@ -4,9 +4,7 @@ import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import I18n, { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'frontend/config/locales/en.yml';
-
+import I18n from 'common/i18n';
 import Reapproval from 'common/components/AssetBrowser/components/approvals/settings/reapproval';
 
 const validProps = (options = {}) => ({
@@ -21,7 +19,6 @@ describe('components/approvals/settings/Reapproval', () => {
   let translationScope;
 
   beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
     wrapper = shallow(<Reapproval {...validProps()} />);
     ({ translationScope } = validProps());
   });

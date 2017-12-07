@@ -50,7 +50,6 @@ const AutoApproval = (props) => {
 };
 
 AutoApproval.propTypes = {
-  scope: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['community', 'official']).isRequired,
   withExplanation: PropTypes.bool
 };

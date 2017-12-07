@@ -6,17 +6,21 @@ import $ from 'jquery';
 import { STATUS_ACTIVITY_TYPES, NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 
 class NotificationAPI {
-  constructor(userId, callback) {
+  constructor(userId, callback, options = {}) {
+    // TODO: This should probably default to false. Question is out to team.
+    const useLogger = _.get(options, 'debugLog', true);
+
     if (!userId) {
       console.error('NotificationAPI called without user id');
       return;
     }
 
     let channelId = `user: ${userId}`;
-    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, {
-      params: { user_id: userId },
-      logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data); })
-    });
+    const socketOptions = { params: { user_id: userId } };
+    if (useLogger) {
+      socketOptions.logger = (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); };
+    }
+    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
 
     socket.connect();
 
@@ -34,10 +38,14 @@ class NotificationAPI {
       self.update();
       self._channel.join().
         receive('ok', (resp) => {
-          console.log('Joined user channel');
+          if (useLogger) {
+            console.log('Joined user channel');
+          }
         }).
         receive('error', (resp) => {
-          console.log('Unable to join', resp);
+          if (useLogger) {
+            console.log('Unable to join', resp);
+          }
         });
     }, function() {});
 

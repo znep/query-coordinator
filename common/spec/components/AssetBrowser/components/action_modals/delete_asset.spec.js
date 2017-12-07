@@ -4,14 +4,8 @@ import { DeleteAsset } from 'common/components/AssetBrowser/components/action_mo
 import mockCeteraResults from '../../data/mock_cetera_results';
 import sinon from 'sinon';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 describe('components/DeleteAsset', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   const deleteAssetProps = (options = {}) => ({
     assetActions: {
       performingActionFailure: false,

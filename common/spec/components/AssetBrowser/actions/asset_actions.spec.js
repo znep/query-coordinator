@@ -14,8 +14,6 @@ import {
 import * as assetActions from 'common/components/AssetBrowser/actions/asset_actions';
 
 import { mockResponse } from 'common/spec/helpers';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 const mockStore = configureMockStore([thunk]);
 
@@ -23,8 +21,6 @@ describe('actions/assetActions', () => {
   let reloadStub;
 
   beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-
     reloadStub = sinon.stub();
 
     actionsAPI.__Rewire__(

@@ -6,7 +6,7 @@
 
   section {
     background-color: $white;
-    border-top: 1px solid $alternate-4;
+    border-top: 1px solid $panel-border-color;
     padding: 1rem 35%;
     font-size: 80%;
   }
@@ -85,9 +85,9 @@
       list-style-type: none;
       display: flex;
       margin-top: 0.25rem;
-      background-color: #eee;
+      background-color: $btn-simple-background-color;
       padding: 0.33rem;
-      border: 1px solid #ddd;
+      border: 1px solid $header-accent-color;
       border-radius: 3px;
 
       &.selected {
@@ -116,7 +116,7 @@
     }
 
     .subtext {
-      color: #aaa;
+      color: $light-grey-2;
       margin-bottom: 1rem;
     }
 
@@ -125,7 +125,7 @@
     }
 
     .email_address {
-      color: #aaa;
+      color: $light-grey-2;
     }
   }
 

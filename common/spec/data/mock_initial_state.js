@@ -176,4 +176,4 @@ export default {
       'displayName': 'Randy Antler'
     }
   ]
-}
+};

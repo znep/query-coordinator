@@ -52,11 +52,13 @@ class ApprovalsController < AdministrationController
   end
 
   def fetch_approvers
-    @approvers = User.find_with_right(UserRights::CONFIGURE_APPROVALS).map do |why_do_we_hate_ourselves|
-      User.find(why_do_we_hate_ourselves.id)
+    # This dance is due to the find_with_right API returning JSON with missing User properties (i.e. email)
+    # TODO https://socrata.atlassian.net/browse/EN-20844
+    @approvers = User.find_with_right(UserRights::CONFIGURE_APPROVALS).map do |user|
+      User.find(user.id)
     end
-    @approvers.concat(User.find_with_right(UserRights::REVIEW_APPROVALS).map do |why_do_we_hate_ourselves|
-      User.find(why_do_we_hate_ourselves.id)
+    @approvers.concat(User.find_with_right(UserRights::REVIEW_APPROVALS).map do |user|
+      User.find(user.id)
     end).uniq!(&:id).sort_by(&:displayName)
   end
 

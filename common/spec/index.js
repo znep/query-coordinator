@@ -16,7 +16,7 @@ window.mixpanelConfig = require('./data/mock_mixpanel_config').default;
 window.sessionData = require('./data/mock_session_data').default;
 window.serverConfig = require('./data/mock_server_config').default;
 window.initialState = require('./data/mock_initial_state').default;
-window.socrata = { initialState }; /* eslint disable-no-undef */
+window.socrata = { initialState }; // eslint-disable-line no-undef
 
 // Load the translations before each test.
 beforeEach(require('./helpers').useDefaultTranslations);

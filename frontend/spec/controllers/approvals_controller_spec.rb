@@ -45,7 +45,7 @@ describe ApprovalsController do
         step_double = double(Fontana::Approval::Step)
         official_task_double = double(Fontana::Approval::Task)
         community_task_double = double(Fontana::Approval::Task)
-        expect(community_task_double).to receive(:approve!)
+        expect(community_task_double).to receive(:approved!)
         expect(official_task_double).to receive(:manual!)
         expect(step_double).to receive(:official_task).and_return(official_task_double)
         expect(step_double).to receive(:community_task).and_return(community_task_double)

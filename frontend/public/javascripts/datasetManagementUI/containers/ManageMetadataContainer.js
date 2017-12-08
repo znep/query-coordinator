@@ -169,10 +169,16 @@ export function shapeCustomFields(fields = []) {
     isCustom: true,
     isRequired: field.required,
     options: field.options
-      ? field.options.map(option => ({
-        title: option,
-        value: option
-      }))
+      ? [
+        {
+          title: I18n.edit_metadata.no_selection,
+          value: ''
+        },
+        ...field.options.map(option => ({
+          title: option,
+          value: option
+        }))
+      ]
       : null,
     elementType: field.type === 'fixed' ? 'select' : 'text',
     halfWidth: field.type === 'fixed',

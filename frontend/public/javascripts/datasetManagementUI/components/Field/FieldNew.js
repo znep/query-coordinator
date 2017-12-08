@@ -56,7 +56,7 @@ class FieldNew extends Component {
     const inErrorState = true;
 
     return (
-      <div>
+      <div className={field.halfWidth ? styles.halfWidth : ''}>
         <label htmlFor={field.name} className={labelClassNames.join(' ')}>
           {field.label}
         </label>

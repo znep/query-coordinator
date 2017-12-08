@@ -90,13 +90,15 @@ const FIELDSETS = {
         name: 'category',
         label: I18n.edit_metadata.category,
         options: window.initialState.datasetCategories,
-        elementType: 'select'
+        elementType: 'select',
+        halfWidth: true
       },
       {
         name: 'tags',
         label: I18n.edit_metadata.tags_keywords,
         placeholder: I18n.edit_metadata.dataset_tags,
         elementType: 'tagsInput',
+        halfWidth: true,
         validations: [areUnique]
       }
     ]
@@ -108,12 +110,20 @@ const FIELDSETS = {
         name: 'licenseId',
         label: I18n.edit_metadata.license_type,
         options: window.initialState.datasetLicenses,
-        elementType: 'select'
+        elementType: 'select',
+        halfWidth: true
       },
       {
         name: 'attribution',
         label: I18n.edit_metadata.attribution,
         placeholder: I18n.edit_metadata.dataset_attribution,
+        elementType: 'text',
+        halfWidth: true
+      },
+      {
+        name: 'attributionLink',
+        label: I18n.edit_metadata.attribution_link,
+        placeholder: I18n.edit_metadata.dataset_url,
         elementType: 'text',
         validations: [isURL]
       }
@@ -165,6 +175,7 @@ export function shapeCustomFields(fields = []) {
       }))
       : null,
     elementType: field.type === 'fixed' ? 'select' : 'text',
+    halfWidth: field.type === 'fixed',
     validations: field.required ? [hasValue] : []
   }));
 }

@@ -391,6 +391,16 @@ export function getRevision(revisions = {}, revisionSeq) {
   return rev;
 }
 
+function getOutputSchemaId(idFromParams, revision, fallbackOS) {
+  if (isNumber(idFromParams)) {
+    return idFromParams;
+  } else if (revision && revision.output_schema_id) {
+    return revision.output_schema_id;
+  } else {
+    return fallbackOS ? fallbackOS.id : null;
+  }
+}
+
 const mapStateToProps = ({ entities }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);
   const outputSchemaId = Number(params.outputSchemaId);
@@ -401,7 +411,13 @@ const mapStateToProps = ({ entities }, { params }) => {
 
   return {
     datasetMetadata,
-    outputSchemaColumns
+    outputSchemaColumns,
+    outputSchemaId: getOutputSchemaId(
+      outputSchemaId,
+      revision,
+      Selectors.currentOutputSchema(entities, Number(params.revisionSeq))
+    ),
+    columnsExist: !_.isEmpty(entities.output_columns)
   };
 };
 

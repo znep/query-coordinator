@@ -1,5 +1,47 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Link } from 'react-router';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import * as Links from 'links/links';
+import styles from 'pages/ManageMetadata/ManageMetadata.scss';
+import otherstyles from 'components/MetadataContent/MetadataContent.scss';
+
+const datasetMetadataEnabled = !window.serverConfig.featureFlags.usaid_features_enabled;
+
+const Sidebar = ({ params, outputSchemaId, columnsExist }) => {
+  return (
+    <div className={otherstyles.sidebar}>
+      {datasetMetadataEnabled ? (
+        <Link
+          to={Links.datasetMetadataForm(params)}
+          className={otherstyles.tab}
+          activeClassName={otherstyles.selected}>
+          {I18n.metadata_manage.dataset_metadata_label}
+        </Link>
+      ) : (
+        <span className={otherstyles.disabled}>{I18n.metadata_manage.dataset_metadata_label}</span>
+      )}
+      {columnsExist ? (
+        <Link
+          to={Links.columnMetadataForm(params, outputSchemaId)}
+          className={otherstyles.tab}
+          activeClassName={otherstyles.selected}>
+          {I18n.metadata_manage.column_metadata_label}
+        </Link>
+      ) : (
+        <span className={otherstyles.disabled} title={I18n.home_pane.sidebar.no_columns_msg}>
+          {I18n.metadata_manage.column_metadata_label}
+        </span>
+      )}
+    </div>
+  );
+};
+
+Sidebar.propTypes = {
+  params: PropTypes.object.isRequired,
+  outputSchemaId: PropTypes.number.isRequired,
+  columnsExist: PropTypes.bool.isRequired
+};
 
 class ManageMetadata extends Component {
   constructor() {
@@ -59,13 +101,25 @@ class ManageMetadata extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.children &&
-          React.cloneElement(this.props.children, {
-            fieldsets: this.state.datasetForm,
-            handleSubmit: this.handleSubmit,
-            handleDatasetChange: this.handleDatasetChange
-          })}
+      <div className={styles.manageMetadata}>
+        <Modal fullScreen>
+          <ModalHeader title={I18n.metadata_manage.title} />
+          <ModalContent>
+            <Sidebar
+              params={this.props.params}
+              columnsExist={this.props.columnsExist}
+              outputSchemaId={this.props.outputSchemaId} />
+            {this.props.children &&
+              React.cloneElement(this.props.children, {
+                fieldsets: this.state.datasetForm,
+                handleSubmit: this.handleSubmit,
+                handleDatasetChange: this.handleDatasetChange
+              })}
+          </ModalContent>
+          <ModalFooter>
+            <button>hey</button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
@@ -77,6 +131,9 @@ ManageMetadata.propTypes = {
   saveDatasetMetadata: PropTypes.func.isRequired,
   setFormErrors: PropTypes.func.isRequired,
   showFlash: PropTypes.func.isRequired,
+  outputSchemaId: PropTypes.number,
+  columnsExist: PropTypes.bool,
+  params: PropTypes.object.isRequired,
   children: PropTypes.object
 };
 

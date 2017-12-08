@@ -440,7 +440,7 @@ en:
       approval_process:
         official: Official asset settings
         roled_users: Assets published by roled users (publishers, designers, etc.)...
-        automatic: Is automatically approved and appears in the data catalog.
+        automatic: Is automatically approved and appears in the data catalog
         manual: Requires manual approval to appear in the data catalog
         reject: Is automatically rejected and does not appear in the data catalog
         community_assets: Community asset settings

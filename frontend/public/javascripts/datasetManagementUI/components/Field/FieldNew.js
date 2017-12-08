@@ -13,6 +13,8 @@ class FieldNew extends Component {
   render() {
     const { field, fieldsetName, handleChange, errors } = this.props;
 
+    const inErrorState = errors && !!errors.length;
+    // const inErrorState = true;
     const labelClassNames = [styles.label];
 
     if (field.isRequired) {
@@ -26,6 +28,7 @@ class FieldNew extends Component {
         element = (
           <TextInput
             field={field}
+            inErrorState={inErrorState}
             handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
         );
         break;
@@ -33,17 +36,24 @@ class FieldNew extends Component {
         element = (
           <TextArea
             field={field}
+            inErrorState={inErrorState}
             handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
         );
         break;
       case 'select':
         element = (
-          <Select field={field} handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
+          <Select
+            field={field}
+            inErrorState={inErrorState}
+            handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
         );
         break;
       case 'tagsInput':
         element = (
-          <TagsInput field={field} handleAddTag={tags => handleChange(fieldsetName, field.name, tags)} />
+          <TagsInput
+            field={field}
+            inErrorState={inErrorState}
+            handleAddTag={tags => handleChange(fieldsetName, field.name, tags)} />
         );
         break;
       case 'attachmentsInput':
@@ -52,8 +62,6 @@ class FieldNew extends Component {
       default:
         element = null;
     }
-
-    const inErrorState = true;
 
     return (
       <div className={field.halfWidth ? styles.halfWidth : ''}>

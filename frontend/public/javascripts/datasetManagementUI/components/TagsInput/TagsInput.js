@@ -63,7 +63,7 @@ class TagsInput extends Component {
 
   render() {
     const { name, placeholder } = this.props.field;
-
+    const { inErrorState } = this.props;
     const value = this.props.field.value || [];
 
     const listItems = value.map((tag, idx) => (
@@ -80,9 +80,9 @@ class TagsInput extends Component {
             name={name}
             id={name}
             placeholder={placeholder}
-            className={styles.textInput}
+            className={inErrorState ? styles.textInputError : styles.textInput}
             onChange={this.handleTagChange} />
-          <button onClick={this.addTag} className={styles.button}>
+          <button onClick={this.addTag} className={inErrorState ? styles.buttonError : styles.button}>
             {I18n.edit_metadata.add_btn}
           </button>
         </div>
@@ -94,6 +94,7 @@ class TagsInput extends Component {
 
 TagsInput.propTypes = {
   field: PropTypes.object.isRequired,
+  inErrorState: PropTypes.bool,
   handleAddTag: PropTypes.func.isRequired
 };
 

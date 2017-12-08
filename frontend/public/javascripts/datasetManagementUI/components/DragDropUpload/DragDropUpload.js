@@ -19,7 +19,8 @@ export class DragDropUpload extends Component {
     };
     _.bindAll(
       this, 'preventDefault', 'handleDrop', 'handleDragOver', 'handleDragLeave',
-      'isApiCallPending', 'createUploadSource', 'generateDropzoneClassName'
+      'isApiCallPending', 'createUploadSource', 'generateDropzoneClassName',
+      'handleBrowseFileChange'
     );
   }
 

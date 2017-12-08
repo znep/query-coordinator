@@ -1,20 +1,16 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
+
 import mixpanel from 'common/mixpanel';
+import ceteraUtils from 'common/cetera/utils';
 
 import {
   fetchResults,
   mergedCeteraQueryParameters
 } from 'common/components/AssetBrowser/lib/helpers/cetera.js';
 import getState from 'common/components/AssetBrowser/reducers/catalog';
-import ceteraUtils from 'common/cetera/utils';
-import {
-  ALL_ASSETS_TAB,
-  MY_ASSETS_TAB,
-  SHARED_TO_ME_TAB
-} from 'common/components/AssetBrowser/lib/constants';
-
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 import mockCeteraFacetCountsResponse from '../components/AssetBrowser/data/mock_cetera_facet_counts_response';
 import mockCeteraFetchResponse from '../components/AssetBrowser/data/mock_cetera_fetch_response';
 
@@ -41,10 +37,10 @@ describe('cetera_helpers', () => {
       it('overrides normal filters', () => {
         const state = () => ({
           header: {
-            activeTab: ALL_ASSETS_TAB
+            activeTab: constants.ALL_ASSETS_TAB
           },
           tabs: {
-            [ALL_ASSETS_TAB]: {
+            [constants.ALL_ASSETS_TAB]: {
               props: {
                 baseFilters: {
                   assetTypes: 'charts',

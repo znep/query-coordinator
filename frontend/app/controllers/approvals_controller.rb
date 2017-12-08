@@ -40,7 +40,7 @@ class ApprovalsController < AdministrationController
 
       # TODO Error handling (don't redirect when there's an error, re-render the page instead)
       flash[:notice] = 'Settings successfully updated'
-      redirect_to "/admin/approvals/settings/#{params[:id]}"
+      redirect_to '/admin/approvals'
     end
   end
 

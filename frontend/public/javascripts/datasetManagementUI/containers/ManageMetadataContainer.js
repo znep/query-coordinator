@@ -148,6 +148,7 @@ const FIELDSETS = {
     fields: [
       {
         name: 'attachments',
+        buttonText: 'Add Attachments',
         elementType: 'attachmentsInput',
         validations: [areUnique]
       }
@@ -274,6 +275,11 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
       return {
         ...field,
         value: _.get(revision, ['metadata', 'privateMetadata', field.name], '') || ''
+      };
+    } else if (field.name === 'attachments') {
+      return {
+        ...field,
+        value: _.get(revision, 'attachments', []) || []
       };
     } else {
       return {

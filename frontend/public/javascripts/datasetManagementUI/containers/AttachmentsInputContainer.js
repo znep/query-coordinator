@@ -1,37 +1,45 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
 import { uploadAttachment } from 'reduxStuff/actions/uploadFile';
+import { editRevision } from 'reduxStuff/actions/revisions';
+import { getRevision } from 'containers/ManageMetadataContainer.js';
 
-const mapStateToProps = (state, props) => {
-  return props;
+const mapStateToProps = ({ entities }, { params }) => {
+  const revisionSeq = Number(params.revisionSeq);
+  const revision = getRevision(entities.revisions, revisionSeq) || {};
+
+  return {
+    revision
+  };
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
-  const { revision, setValue } = stateProps;
+  const { revision } = stateProps;
+  const { handleAttachmentChange, field, inErrorState } = ownProps;
   const attachments = revision.attachments;
 
   return {
-    ...stateProps,
-    ...ownProps,
+    field,
+    inErrorState,
     uploadAttachment: file => {
-      dispatch(uploadAttachment(revision, file))
-        .then((result) => {
-          const newAttachments = attachments.concat([
-            {
-              asset_id: result.file_id,
-              filename: result.filename,
-              name: result.filename
-            }
-          ]);
+      dispatch(uploadAttachment(revision, file)).then(result => {
+        const newAttachments = attachments.concat([
+          {
+            asset_id: result.file_id,
+            filename: result.filename,
+            name: result.filename
+          }
+        ]);
 
-          setValue(newAttachments);
-        });
+        handleAttachmentChange(newAttachments);
+      });
     },
 
     removeAttachment: toRemove => {
       const newAttachments = attachments.filter(a => a.asset_id !== toRemove.asset_id);
-      setValue(newAttachments);
+      dispatch(editRevision(revision.id, { attachments: newAttachments }));
+      handleAttachmentChange(newAttachments);
     },
 
     editAttachment: (attachment, newName) => {
@@ -43,9 +51,9 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         }
       });
 
-      setValue(newAttachments);
+      handleAttachmentChange(newAttachments);
     }
   };
 };
 
-export default connect(mapStateToProps, null, mergeProps)(AttachmentsInput);
+export default withRouter(connect(mapStateToProps, null, mergeProps)(AttachmentsInput));

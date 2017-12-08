@@ -6,7 +6,7 @@ import TextInput from 'components/TextInput/TextInputNew';
 import TextArea from 'components/TextArea/TextAreaNew';
 import Select from 'components/Select/SelectNew';
 import TagsInput from 'components/TagsInput/TagsInput';
-// import AttachmentsInput from 'containers/AttachmentsInputContainer';
+import AttachmentsInput from 'containers/AttachmentsInputContainer';
 import styles from './Field.scss';
 
 class FieldNew extends Component {
@@ -57,7 +57,12 @@ class FieldNew extends Component {
         );
         break;
       case 'attachmentsInput':
-        element = 'attachments';
+        element = (
+          <AttachmentsInput
+            field={field}
+            inErrorState={inErrorState}
+            handleAttachmentChange={attachments => handleChange(fieldsetName, field.name, attachments)} />
+        );
         break;
       default:
         element = null;

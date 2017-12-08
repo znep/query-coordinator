@@ -122,6 +122,7 @@ function normalizeTransforms(os, totalRows) {
       [transform.id]: {
         ...transform,
         error_indices: [],
+        finished_at: transform.finished_at || os.finished_at,
         contiguous_rows_processed: transform.finished_at ? totalRows : 0
       },
       ...acc

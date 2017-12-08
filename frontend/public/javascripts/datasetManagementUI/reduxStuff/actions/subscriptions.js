@@ -6,6 +6,7 @@ import { editInputColumn } from 'reduxStuff/actions/inputColumns';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { batchActions } from 'reduxStuff/actions/batching';
 import { parseDate } from 'lib/parseDate';
+import * as Selectors from 'selectors';
 
 const PROGRESS_THROTTLE_TIME = 1000;
 
@@ -161,6 +162,19 @@ export function subscribeToOutputSchema(os) {
       };
 
       dispatch(editOutputSchema(os.id, updatedOS));
+
+      // This seems like a weird place to do this cascading
+      // update, but i can't find a better place
+      if (updatedOS.finished_at) {
+        const transformActions = Selectors.columnsForOutputSchema(
+          getState().entities,
+          updatedOS.id
+        ).map(oc => (
+          editTransform(oc.transform.id, { finished_at: updatedOS.finished_at })
+        ));
+
+        dispatch(batchActions(transformActions));
+      }
     });
 
     channel.join();

@@ -1,47 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import * as Links from 'links/links';
-import styles from 'pages/ManageMetadata/ManageMetadata.scss';
-import otherstyles from 'components/MetadataContent/MetadataContent.scss';
-
-const datasetMetadataEnabled = !window.serverConfig.featureFlags.usaid_features_enabled;
-
-const Sidebar = ({ params, outputSchemaId, columnsExist }) => {
-  return (
-    <div className={otherstyles.sidebar}>
-      {datasetMetadataEnabled ? (
-        <Link
-          to={Links.datasetMetadataForm(params)}
-          className={otherstyles.tab}
-          activeClassName={otherstyles.selected}>
-          {I18n.metadata_manage.dataset_metadata_label}
-        </Link>
-      ) : (
-        <span className={otherstyles.disabled}>{I18n.metadata_manage.dataset_metadata_label}</span>
-      )}
-      {columnsExist ? (
-        <Link
-          to={Links.columnMetadataForm(params, outputSchemaId)}
-          className={otherstyles.tab}
-          activeClassName={otherstyles.selected}>
-          {I18n.metadata_manage.column_metadata_label}
-        </Link>
-      ) : (
-        <span className={otherstyles.disabled} title={I18n.home_pane.sidebar.no_columns_msg}>
-          {I18n.metadata_manage.column_metadata_label}
-        </span>
-      )}
-    </div>
-  );
-};
-
-Sidebar.propTypes = {
-  params: PropTypes.object.isRequired,
-  outputSchemaId: PropTypes.number.isRequired,
-  columnsExist: PropTypes.bool.isRequired
-};
+import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetadataSidebar';
+import styles from './ManageMetadata.scss';
 
 class ManageMetadata extends Component {
   constructor() {
@@ -90,11 +51,11 @@ class ManageMetadata extends Component {
     this.props
       .saveDatasetMetadata(this.state.datasetForm)
       .then(() => {
-        this.props.showFlash('success', 'saved ok');
+        this.props.showFlash('success', I18n.edit_metadata.save_success, 3500);
         this.props.setFormErrors({});
       })
       .catch(err => {
-        this.props.showFlash('error', 'messed up!');
+        this.props.showFlash('error', I18n.edit_metadata.validation_error_general);
         this.props.setFormErrors(err.errors);
       });
   }
@@ -105,7 +66,7 @@ class ManageMetadata extends Component {
         <Modal fullScreen>
           <ModalHeader title={I18n.metadata_manage.title} />
           <ModalContent>
-            <Sidebar
+            <ManageMetadataSidebar
               params={this.props.params}
               columnsExist={this.props.columnsExist}
               outputSchemaId={this.props.outputSchemaId} />

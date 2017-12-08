@@ -3776,6 +3776,7 @@ en:
           ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
           PublishingAPI: Publishing API
         show_details: Show Details
+        table_fetch_error: Sorry, there was an error fetching results. Please reload the page and try again.
         type: Type
       assets:
         asset_inventory: Assets

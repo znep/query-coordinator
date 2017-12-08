@@ -1,12 +1,26 @@
 import * as api from '../lib/api';
-import * as commonActions from './common';
 
 const types = {
   FETCH_DATA: 'FETCH_DATA',
   STORE_DATA: 'STORE_DATA',
   SHOW_DETAILS: 'SHOW_DETAILS',
-  HIDE_DETAILS: 'HIDE_DETAILS'
+  HIDE_DETAILS: 'HIDE_DETAILS',
+  FETCHING_TABLE: 'FETCHING_TABLE',
+  FETCH_TABLE_SUCCESS: 'FETCH_TABLE_SUCCESS',
+  FETCH_TABLE_ERROR: 'FETCH_TABLE_ERROR'
 };
+
+const fetchingTable = () => ({
+  type: types.FETCHING_TABLE
+});
+
+const fetchingTableSuccess = () => ({
+  type: types.FETCH_TABLE_SUCCESS
+});
+
+const fetchingTableError = (errMsg = null) => ({
+  type: types.FETCH_TABLE_ERROR, details: errMsg
+});
 
 const storeData = (data) => ({
   type: types.STORE_DATA,
@@ -23,13 +37,13 @@ const fetchData = () => (dispatch, getState) => {
     order: state.order
   };
 
+  dispatch(fetchingTable());
+
   return api.
     fetchTable(options).
-    then((data) => {
-
-      return dispatch(storeData(data));
-    }).
-    catch(commonActions.apiException);
+    then((data) => dispatch(storeData(data))).
+    then(() => dispatch(fetchingTableSuccess())).
+    catch((error) => dispatch(fetchingTableError(error)));
 };
 
 const showDetails = (id) => ({
@@ -46,5 +60,8 @@ export {
   fetchData,
   storeData,
   showDetails,
-  hideDetails
+  hideDetails,
+  fetchingTable,
+  fetchingTableSuccess,
+  fetchingTableError
 };

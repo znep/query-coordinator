@@ -7,7 +7,6 @@ module Fontana
 
       APPROVALS_API_URI = URI.parse("https://localhost/api/approvals")
 
-      # base_uri APPROVALS_API_URI.to_s
       default_timeout 5.seconds.to_i
       format :json
 

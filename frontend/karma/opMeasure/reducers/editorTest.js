@@ -1,21 +1,17 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { CalculationTypeNames } from 'lib/constants';
+import { CalculationTypeNames, PeriodTypes, PeriodSizes } from 'lib/constants';
 import reducer from 'reducers/editor';
 import actions from 'actions';
 
-const INITIAL_STATE = Object.freeze({
-  isEditing: false,
-  measure: {},
-  pristineMeasure: {}
-});
+const { INITIAL_STATE } = reducer;
 
 describe('Edit modal reducer', () => {
   let state;
 
   beforeEach(() => {
-    state = reducer(_.cloneDeep(INITIAL_STATE));
+    state = reducer();
   });
 
   afterEach(() => {
@@ -281,6 +277,38 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('SET_START_DATE', () => {
+    it('updates the start date in the metric', () => {
+      assert.notNestedProperty(state, 'measure.metric.reportingPeriod.startDate');
+      const testDate = '2017-11-29';
+      state = reducer(state, actions.editor.setStartDate(testDate));
+      assert.equal(state.measure.metric.reportingPeriod.startDate, testDate);
+    });
+
+    // TODO: Test for bogus date values?
+  });
+
+  describe('SET_PERIOD_TYPE', () => {
+    it('updates the period type in the metric', () => {
+      const { OPEN, CLOSED } = PeriodTypes;
+      state = reducer(state, actions.editor.setPeriodType(OPEN));
+
+      assert.equal(state.measure.metric.reportingPeriod.type, OPEN);
+    });
+
+    // TODO: Test for invalid period types?
+  });
+
+  describe('SET_PERIOD_SIZE', () => {
+    it('updates the period size in the metric', () => {
+      assert.notNestedProperty(state, 'measure.metric.reportingPeriod.size');
+      state = reducer(state, actions.editor.setPeriodSize(PeriodSizes[0]));
+      assert.equal(state.measure.metric.reportingPeriod.size, PeriodSizes[0]);
+    });
+
+    // TODO: Should we test for bogus size values?
+  });
+
   describe('TOGGLE_DISPLAY_AS_PERCENT', () => {
     it('toggles display.asPercent in the measure metric', () => {
       assert.notNestedProperty(state, 'measure.metric.display.asPercent');
@@ -318,6 +346,9 @@ describe('Edit modal reducer', () => {
   // Note: This is a thunk action - we test the non-thunk parts here.
   // The thunk is tested in actionsTest.js.
   describe('OPEN_EDIT_MODAL', () => {
+    // NOTE: Our reducer should reject any fields not in our schema.
+    //       Thus, the expected result of these tests should not
+    //       include the "fake" field.
     const fakeMeasure = {
       fake: 'measure',
       metric: {
@@ -343,7 +374,9 @@ describe('Edit modal reducer', () => {
           measure: fakeMeasure
         });
 
-        assert.deepPropertyVal(state, 'measure', fakeMeasure);
+        assert.equal(state.measure.metric.sum, fakeMeasure.metric.sum);
+        // NOTE: pristineMeasure should also have filtered out fields that are not in our schema.
+        // TODO: Create a schema file for our state.
         assert.deepPropertyVal(state, 'pristineMeasure', fakeMeasure);
       });
     });

@@ -21,7 +21,7 @@
   }
 
   .measure-edit-modal-tabs {
-    width: 300px;
+    min-width: 300px;
     border-right: 1px solid $light-grey-3;
     margin: 0;
     border: 0;
@@ -290,6 +290,19 @@
   #reporting-period-panel {
     // Style for .reporting-period-start moved to common/DatePicker
     // and renamed to .socrata-date-picker
+    .period-type-option-container {
+       padding: 5px 0;
+       .left-col {
+         float: left;
+       }
+       .right-col {
+         margin-left: 20px;
+       }
+     }
+
+     .reporting-period-size {		
+       padding: 10px 0 10px 20px;
+     }
   }
 
   .socrata-accordion-pane {

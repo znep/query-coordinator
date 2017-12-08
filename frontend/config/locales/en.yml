@@ -3218,6 +3218,22 @@ en:
         methods_and_analysis:
           tab_title: Methods and Analysis
         reporting_period:
+          choose_size_body: Your dataset's collection frequency determines available period sizes.
+          choose_size_title: Choose Size of Period
+          closed_body: Closed periods are measurement periods that have already concluded or after the fact. Any reporting that accounts for lag in data might use a closed period. Only completed reporting periods are displayed.
+          closed_label: Closed
+          open_body: Open periods are not yet ended, but have a defined end point. These are often used for end-of-year targets, such as "year-to-date" measures.
+          open_label: Open
+          select_size: Select size
+          show_less: Show less
+          show_more: Show more
+          size:
+            month: Month
+            month_to_date: Month-to-date
+            week: Week
+            week_to_date: Week-to-date
+            year: Year
+            year_to_date: Year-to-date
           start_date_label: Period start date
           tab_title: Reporting Period
           title: Configure Reporting Period

@@ -26,6 +26,8 @@ const setCalculationType = (state, type) => {
     ...state
   };
 
+  // TODO: Calling _.set overwrites any prior metric data.
+  //       If this is desired, it should still copy in a base metric model.
   _.set(newState, 'measure.metric', {
     type,
     dataSource: currentDataSource
@@ -48,7 +50,7 @@ const setCalculationType = (state, type) => {
 };
 
 // Initial state for the edit modal reducer.
-const initialState = _.constant({
+export const INITIAL_STATE = Object.freeze({
   isEditing: false,
   measure: {},
   pristineMeasure: {}
@@ -56,7 +58,7 @@ const initialState = _.constant({
 
 // Edit modal reducer.
 // Governs all form updates, as well as initialize/open and close events.
-export default (state = initialState(), action) => {
+export default (state = _.cloneDeep(INITIAL_STATE), action) => {
   if (_.isUndefined(action)) {
     return state;
   }
@@ -190,6 +192,12 @@ export default (state = initialState(), action) => {
     case actions.editor.SET_START_DATE:
       return updateMeasureProperty(state, 'metric.reportingPeriod.startDate', action.startDate);
 
+    case actions.editor.SET_PERIOD_TYPE:
+      return updateMeasureProperty(state, 'metric.reportingPeriod.type', action.periodType);
+
+    case actions.editor.SET_PERIOD_SIZE:
+      return updateMeasureProperty(state, 'metric.reportingPeriod.size', action.periodSize);
+
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 
@@ -197,8 +205,8 @@ export default (state = initialState(), action) => {
       let nextState = {
         ...state,
         isEditing: true,
-        measure: action.measure,
-        pristineMeasure: action.measure
+        measure: { ...action.measure },
+        pristineMeasure: { ...action.measure }
       };
 
       // If no calculation type is set, defaults to 'count'

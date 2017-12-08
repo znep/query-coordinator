@@ -8,7 +8,18 @@ import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import { DatePicker } from 'common/components/DatePicker';
 
-import { setStartDate } from '../../actions/editor';
+import {
+  setStartDate,
+  setPeriodType,
+  setPeriodSize
+} from '../../actions/editor';
+
+import {
+  PeriodTypes,
+  PeriodSizes
+} from '../../lib/constants';
+
+import ReportingPeriodSize from './ReportingPeriodSize';
 
 function t(subkey) {
   return I18n.t(`open_performance.measure.edit_modal.reporting_period.${subkey}`);
@@ -29,8 +40,72 @@ export class ReportingPeriodPanel extends Component {
     );
   }
 
+  renderPeriodTypeOption(params) {
+    const { type, options, label, body, checked, onChange, placeholder } = params;
+    const inputAttributes = {
+      id: `period-type-${type}`,
+      type: 'radio',
+      name: 'period-type-radio',
+      onChange,
+      checked
+    };
+
+    const sizeAttributes = {
+      collapsible: !checked,
+      options,
+      placeholder,
+      onOptionSelected: (option) => this.props.onChangePeriodSize(option.value)
+    };
+
+    return (
+      <div className="period-type-option-container">
+        <div className="left-col">
+          <input {...inputAttributes} />
+        </div>
+        <div className="right-col">
+          <label htmlFor={inputAttributes.id}>
+            <span className="fake-radiobutton" />
+            <h6>{label}</h6>
+          </label>
+          <div>
+            {body}
+            <ReportingPeriodSize {...sizeAttributes} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderReportingPeriodType() {
-    return null; // TODO
+    const { onChangePeriodType, type, size } = this.props;
+    const { OPEN, CLOSED } = PeriodTypes;
+
+    const closedOption = this.renderPeriodTypeOption({
+      type: CLOSED,
+      label: t('closed_label'),
+      body: t('closed_body'),
+      checked: type === CLOSED,
+      onChange: () => onChangePeriodType(CLOSED),
+      options: PeriodSizes.map(sizeValue => ({ value: sizeValue, title: t(`size.${sizeValue}`) })),
+      placeholder: size ? t(`size.${size}`) : t('select_size')
+    });
+
+    const openOption = this.renderPeriodTypeOption({
+      type: OPEN,
+      label: t('open_label'),
+      body: t('open_body'),
+      checked: type === OPEN,
+      onChange: () => onChangePeriodType(OPEN),
+      options: PeriodSizes.map(sizeValue => ({ value: sizeValue, title: t(`size.${sizeValue}_to_date`) })),
+      placeholder: size ? t(`size.${size}_to_date`) : t('select_size')
+    });
+
+    return (
+      <div className="period-types">
+        {closedOption}
+        {openOption}
+      </div>
+    );
   }
 
   render() {
@@ -54,22 +129,35 @@ export class ReportingPeriodPanel extends Component {
   }
 }
 
+// TODO: Consider if we should make ALL properties required and then force
+//       ourselves to setup default state in the reducer.
 ReportingPeriodPanel.propTypes = {
   startDate: PropTypes.string,
-  onChangeStartDate: PropTypes.func.isRequired
+  type: PropTypes.oneOf(_.values(PeriodTypes)),
+  size: PropTypes.oneOf(PeriodSizes),
+  onChangeStartDate: PropTypes.func.isRequired,
+  onChangePeriodType: PropTypes.func.isRequired,
+  onChangePeriodSize: PropTypes.func.isRequired
 };
 
+// TODO: All default props should be defined in the reducer, instead of inside components.
+//       I do support default values if the field is not connected to redux, but in
+//       this case, the startDate should be set in redux before this component is created.
 ReportingPeriodPanel.defaultProps = {
   startDate: moment().startOf('year').format('YYYY-MM-DD')
 };
 
 function mapStateToProps(state) {
-  return _.get(state.editor.measure, 'metric.reportingPeriod', {});
+  const reportingPeriod = _.get(state, 'editor.measure.metric.reportingPeriod');
+
+  return reportingPeriod;
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onChangeStartDate: setStartDate
+    onChangeStartDate: setStartDate,
+    onChangePeriodType: setPeriodType,
+    onChangePeriodSize: setPeriodSize
   }, dispatch);
 }
 

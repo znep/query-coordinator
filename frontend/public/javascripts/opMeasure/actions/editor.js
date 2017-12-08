@@ -146,6 +146,18 @@ export const setStartDate = (startDate) => ({
   startDate
 });
 
+export const SET_PERIOD_TYPE = 'SET_PERIOD_TYPE';
+export const setPeriodType = (periodType) => ({
+  type: SET_PERIOD_TYPE,
+  periodType
+});
+
+export const SET_PERIOD_SIZE = 'SET_PERIOD_SIZE';
+export const setPeriodSize = (periodSize) => ({
+  type: SET_PERIOD_SIZE,
+  periodSize
+});
+
 export const SET_METHODS = 'SET_METHODS';
 export const setMethods = (methods) => ({
   type: SET_METHODS,
@@ -174,4 +186,3 @@ export const CANCEL_EDIT_MODAL = 'CANCEL_EDIT_MODAL';
 export const cancelEditModal = () => ({
   type: CANCEL_EDIT_MODAL
 });
-

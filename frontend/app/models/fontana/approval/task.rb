@@ -14,11 +14,11 @@ module Fontana
         end
       end
 
-      def approve?
+      def approved?
         presetState == 'approved'
       end
 
-      def approve!
+      def approved!
         self.presetState = 'approved'
       end
 
@@ -32,11 +32,11 @@ module Fontana
       end
       alias :manual! :pending!
 
-      def reject?
+      def rejected?
         presetState == 'rejected'
       end
 
-      def reject!
+      def rejected!
         self.presetState = 'rejected'
       end
 

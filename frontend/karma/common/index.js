@@ -12,7 +12,7 @@ window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
 window.TestUtils = require('react-dom/test-utils');
-window.I18n = require('mockTranslations');
+window.I18n = require('mock_translations');
 
 /* Temprorary: extra shit for DSLP viewCard Helpers. TODO */
 window.I18n.view_widget = {
@@ -30,7 +30,12 @@ window.I18n.action_buttons = {
   watch_dataset: 'Watch Dataset'
 };
 
-window.serverConfig = require('mockServerConfig').default;
+window.serverConfig = require('mock_server_config').default;
+
+// This the first of many steps to relocate the various state we put on 'window' into 'window.socrata'
+if (!_.get(window, 'socrata.initialState')) {
+  window.socrata = { initialState: require('mock_initial_state').default };
+}
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);

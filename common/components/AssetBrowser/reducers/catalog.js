@@ -26,7 +26,7 @@ const getInitialState = () => _.merge({
   pageNumber: parseInt(getQueryParameter('page', 1)),
   results: [],
   resultSetSize: 0
-}, _.get(window, 'initialState.catalog'));
+}, window.socrata.initialState.catalog);
 
 export default (state, action) => {
   if (_.isUndefined(state)) {

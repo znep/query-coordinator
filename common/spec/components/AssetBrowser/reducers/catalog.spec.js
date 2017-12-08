@@ -9,8 +9,11 @@ describe('reducers/catalog', () => {
   let state;
 
   beforeEach(() => {
+    window.socrata = { initialState: { catalog: {} } };
     state = reducer();
   });
+
+  afterEach(() => delete window.socrata);
 
   describe('UPDATE_CATALOG_RESULTS', () => {
     it('updates the catalog results array and resultSetSize', () => {

@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { Card } from 'components/AssetSelector/card';
 import { useTestTranslations } from 'common/i18n';
-import mockTranslations from '../../mockTranslations';
+import mockTranslations from '../../mock_translations';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('Card', () => {

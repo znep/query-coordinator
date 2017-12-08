@@ -20,11 +20,14 @@ import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 import mockCeteraFacetCountsResponse from '../components/AssetBrowser/data/mock_cetera_facet_counts_response';
 import mockCeteraFetchResponse from '../components/AssetBrowser/data/mock_cetera_fetch_response';
 
+const initialState = require('../data/mock_initial_state');
+
 describe('cetera_helpers', () => {
   let ceteraStub;
   let ceteraAssetCountsStub;
 
   beforeEach(() => {
+    window.socrata = { initialState };
     ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
 
     ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').

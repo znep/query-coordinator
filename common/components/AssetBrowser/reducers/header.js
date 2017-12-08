@@ -6,7 +6,7 @@ import * as headerActions from 'common/components/AssetBrowser/actions/header';
 
 const getInitialState = () => {
   return {
-    activeTab: getQueryParameter('tab', window.initialState.header.initialTab)
+    activeTab: getQueryParameter('tab', window.socrata.initialState.header.initialTab)
   };
 };
 

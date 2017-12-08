@@ -15,7 +15,6 @@
   <%= render_asset_browser_translations %>
   <%= render_asset_browser_session_data %>
   <%= render_asset_browser_server_config %>
-  <%== render_asset_browser_initial_state %>
-  <%== render_approvals_initial_state %>
+  <%== render_asset_browser_initial_state(approvals_initial_state) %>
   <%= include_webpack_bundle 'approvals/main' %>
 <%- end %>

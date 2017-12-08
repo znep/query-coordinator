@@ -3,7 +3,7 @@ import { FeedbackPanel } from 'components/FeedbackPanel';
 import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import { Simulate } from 'react-dom/test-utils';
 
-import mockServerConfig from 'mockServerConfig';
+import mockServerConfig from 'mock_server_config';
 
 describe('FeedbackPanel', () => {
   // this forces velocity animations to run with 0ms duration and 0ms delay

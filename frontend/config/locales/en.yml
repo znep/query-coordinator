@@ -431,27 +431,31 @@ en:
     header:
       breadcrumbs:
         approvals: Approvals
+        approvals_settings: Approvals Settings
     settings:
+      title: Settings
       introduction:
-        header: About Approvals and Approval Requests
-        paragraph_1: The Approval feature is part of the publishing process and allows site Administrators to create a multi-stage process for dataset publishing review and approval.
-        paragraph_2: The Approval Process is applied to all PUBLIC datasets that are uploaded and published by those who are not Administrators. Administrators with Approval rights are given access to a queue with which to Approve or Deny the datasets which their owners have requested to be published Publicly. A dataset that starts off as Private will not appear in the queue, but it will appear when the permissions are changed to Public.
-      approver_configuration:
-        header: 'The following users have the ability to Approve assets on this site:'
-        paragraph_1: 'This list is populated with users who have been granted Approval rights, based on a role configured in <a href="{{link}}">Users…</a>'
-        user_setting:
-          email_notification: Send email notification for new requests
-      automatic_approval:
+        paragraph_1: Set the approval process for how assets get published on this site. You can set all assets to be approved or rejected automatically, or require manual approval.
+        paragraph_2: Only approved assets display on your site's Data Catalog.
+      approval_process:
+        official: Official asset settings
+        roled_users: Assets published by roled users (publishers, designers, etc.)...
+        automatic: Is automatically approved and appears in the data catalog
+        manual: Requires manual approval to appear in the data catalog
+        reject: Is automatically rejected and does not appear in the data catalog
+        community_assets: Community asset settings
+        public_users: Content published on this site by the public...
         automatically_approve: Automatically Approve
         explanation: Access to these items will be shown in history
-        header:
-          community: Community-Created Content
-          official: Official Content
-        reject_all: Reject All
-        require_on_republish: When assets are edited and re-published to the public, require them to be re-approved.
-        send_to_my_queue: Send to My Queue for Review and Approval
+        learn_more: Learn more about Community content
+        reapproval: Re-approval
+        working_copies: Working copies of approved assets require re-approval to appear in the data catalog
+        approvers: Approvers
+        asset_approvers: The following people on this site can approve assets
+        user_settings: Go to User Settings
       cancel: Cancel
       save: Save
+      edit: Edit
     title: Routing and Approval
   catalog_landing_page:
     activation:

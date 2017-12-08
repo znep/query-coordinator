@@ -85,6 +85,7 @@ function SvgTimelineChart($element, vif, options) {
   let precision;
   let measures;
   let referenceLines;
+  let xAxisPanDistanceFromZoom = 0;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -600,6 +601,7 @@ function SvgTimelineChart($element, vif, options) {
         -1 * xAxisPanDistance,
         0
       );
+      xAxisPanDistanceFromZoom = lastRenderedZoomTranslate;
 
       // We need to override d3's internal translation since it doesn't seem to
       // respect our snapping to the beginning and end of the rendered data.
@@ -1028,9 +1030,9 @@ function SvgTimelineChart($element, vif, options) {
       viewportSvg.append('rect').
         attr('class', 'overlay').
         attr('fill', 'none').
-        attr('height', height).
+        attr('height', viewportHeight).
         attr('stroke', 'none').
-        attr('width', width).
+        attr('width', viewportWidth).
         on('mousemove', handleMouseMove).
         on(
           'mouseleave',
@@ -1249,13 +1251,29 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function handleMouseMove() {
+    // XXX: EN-20686 required adding a bunch of ugliness, namely all the
+    // *ForHighlight variables. It helps address a mismatch between the x-axis
+    // as displayed and the x-axis coordinates detected by hovering over it for
+    // the purposes of displaying a hover highlight. If a visualization has been
+    // panned, then it will show a date range different from one the
+    // showHighlight code expects to work with: showHighlight only correctly
+    // renders the leftmost date range (which basically means it does not really
+    // understand dates and probably should be fixed). If given the correct date
+    // range, it renders the highlight off-screen.
     const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
-    const rawDate = d3XScale.invert(d3.mouse(this)[0]);
+    const rawDate = d3XScale.invert(d3.mouse(this)[0] - xAxisPanDistanceFromZoom);
+    const rawDateForHighlight = d3XScale.invert(d3.mouse(this)[0]);
     const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
+    const bisectorIndexForHighlight = d3.bisectLeft(bisectorDates, rawDateForHighlight);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
 
     const firstSeriesIndex = _.clamp(
       (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
+      0,
+      firstSeriesRows.length - 1
+    );
+    const firstSeriesIndexForHighlight = _.clamp(
+      (precision !== 'none') ? bisectorIndexForHighlight - 1 : bisectorIndexForHighlight,
       0,
       firstSeriesRows.length - 1
     );
@@ -1264,7 +1282,9 @@ function SvgTimelineChart($element, vif, options) {
     let flyoutXOffset;
 
     const startDate = parseDate(firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]);
+    const startDateForHighlight = parseDate(firstSeriesRows[firstSeriesIndexForHighlight][seriesDimensionIndex]);
     const endDate = getIncrementedDateByPrecision(startDate, dataToRender.precision);
+    const endDateForHighlight = getIncrementedDateByPrecision(startDateForHighlight, dataToRender.precision);
 
     if (allSeriesAreLineVariant()) {
       flyoutXOffset = d3XScale(startDate);
@@ -1319,7 +1339,7 @@ function SvgTimelineChart($element, vif, options) {
       payload.endDate = endDate;
     }
 
-    showHighlight(startDate, endDate);
+    showHighlight(startDateForHighlight, endDateForHighlight);
     showFlyout(payload);
   }
 

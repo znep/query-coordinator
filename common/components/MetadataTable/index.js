@@ -151,7 +151,7 @@ class MetadataTable extends Component {
           href={localizeLink(editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
-          {I18n.t('common.metadata.edit_metadata')}
+          <span className="socrata-icon-edit" /> {I18n.t('common.metadata.edit_metadata')}
         </a>
       );
     }

@@ -11,13 +11,22 @@ import styles from './TablePreview.scss';
 
 // COMPONENT VIEWS
 const NoDataYetView = ({ params }) => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
-    <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
-    <Link to={Links.sources(params)} className={styles.dataLink}>
-      {I18n.home_pane.add_data}
-    </Link>
-  </div>
+  <section className={styles.tableContainer}>
+    <div className={styles.headerWrapper}>
+      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+      <div className="button-group">
+        <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
+          <span className="socrata-icon-plus2" /> {I18n.home_pane.add_data}
+        </Link>
+      </div>
+    </div>
+    <div className={styles.resultCard}>
+      <div className={styles.tableInfo}>
+        <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
+        <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
+      </div>
+    </div>
+  </section>
 );
 
 NoDataYetView.propTypes = {
@@ -25,13 +34,22 @@ NoDataYetView.propTypes = {
 };
 
 const HrefView = ({ params }) => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.href_header}</h3>
-    <p>{I18n.home_pane.href_message}</p>
-    <Link to={Links.hrefSource(params)} className={styles.dataLink}>
-      {I18n.home_pane.href_view_btn}
-    </Link>
-  </div>
+  <section className={styles.tableContainer}>
+    <div className={styles.headerWrapper}>
+      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+      <div className="button-group">
+        <Link to={Links.hrefSource(params)} className="btn btn-sm btn-default btn-alternate-2">
+          <span className="socrata-icon-eye" /> {I18n.home_pane.href_view_btn}
+        </Link>
+      </div>
+    </div>
+    <div className={styles.resultCard}>
+      <div className={styles.tableInfo}>
+        <h3 className={styles.previewAreaHeader}>{I18n.home_pane.href_header}</h3>
+        <p>{I18n.home_pane.href_message}</p>
+      </div>
+    </div>
+  </section>
 );
 
 HrefView.propTypes = {
@@ -51,17 +69,24 @@ const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
   }
 
   return (
-    <div className={styles.tableInfo}>
-      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
-      <p>{I18n.home_pane.data_uploaded_blurb}</p>
-      <p>
-        <Link to={previewDataPath}>
-          <button className={styles.reviewBtn} tabIndex="-1">
-            {I18n.home_pane.review_data}
-          </button>
-        </Link>
-      </p>
-    </div>
+    <section className={styles.tableContainer}>
+      <div className={styles.headerWrapper}>
+        <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+        <div className="button-group">
+          <Link to={previewDataPath}>
+            <button className="btn btn-sm btn-default btn-alternate-2" tabIndex="-1">
+              {I18n.home_pane.review_data}
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className={styles.resultCard}>
+        <div className={styles.tableInfo}>
+          <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
+          <p>{I18n.home_pane.data_uploaded_blurb}</p>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -73,19 +98,33 @@ PreviewDataView.propTypes = {
 };
 
 const UpsertInProgressView = () => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
-    <p>{I18n.home_pane.being_processed_detail}</p>
-    <div>
-      <NotifyButton />
+  <section className={styles.tableContainer}>
+    <div className={styles.headerWrapper}>
+      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+      <div className="button-group">
+        <NotifyButton />
+      </div>
     </div>
-  </div>
+    <div className={styles.resultCard}>
+      <div className={styles.tableInfo}>
+        <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
+        <p>{I18n.home_pane.being_processed_detail}</p>
+      </div>
+    </div>
+  </section>
 );
 
 const UpsertCompleteView = ({ view, outputSchema }) => (
-  <div key="upsertCompleteView">
-    <DatasetPreview view={view} outputSchema={outputSchema} />
-  </div>
+  <section className={styles.tableContainer}>
+    <div className={styles.headerWrapper}>
+      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+    </div>
+    <div className={styles.resultCard}>
+      <div key="upsertCompleteView">
+        <DatasetPreview view={view} outputSchema={outputSchema} />
+      </div>
+    </div>
+  </section>
 );
 
 UpsertCompleteView.propTypes = {
@@ -127,7 +166,7 @@ const TablePreview = ({ entities, params, view }) => {
     child = <NoDataYetView params={params} />;
   }
 
-  return <div className={styles.resultCard}>{child}</div>;
+  return child;
 };
 
 TablePreview.propTypes = {

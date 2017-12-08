@@ -30,21 +30,6 @@
   composes: btn-alternate-2 from global;
 }
 
-// TABLE CONTAINER
-.header {
-  float: left;
-  font-weight: 500;
-  padding: 11px 0;
-}
-
-.tableContainer {
-  padding: 1em;
-
-  input[type='file'] {
-    display: none;
-  }
-}
-
 // SCHEMA PREVIEW
 .schemaPreviewContainer {
   h2 {

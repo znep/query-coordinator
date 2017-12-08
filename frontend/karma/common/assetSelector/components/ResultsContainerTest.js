@@ -7,7 +7,7 @@ import { ResultsContainer } from 'components/AssetSelector/results_container';
 import ceteraUtils from 'common/cetera/utils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 import { useTestTranslations } from 'common/i18n';
-import mockTranslations from '../../mockTranslations';
+import mockTranslations from '../../mock_translations';
 
 describe('ResultsContainer', () => {
   beforeEach(() => {

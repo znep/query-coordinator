@@ -2,7 +2,7 @@ import { expect, assert } from 'chai';
 import { ResultCount } from 'components/AssetSelector/result_count';
 
 import { useTestTranslations } from 'common/i18n';
-import mockTranslations from '../../mockTranslations';
+import mockTranslations from '../../mock_translations';
 
 describe('ResultCount', function() {
   beforeEach(() => {

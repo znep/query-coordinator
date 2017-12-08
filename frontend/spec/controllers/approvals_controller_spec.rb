@@ -11,7 +11,7 @@ describe ApprovalsController do
   let(:workflow) { Fontana::Approval::Workflow.new.tap { |workflow| workflow.id = 1 } }
   let(:approver) { User.new(some_user) }
 
-  describe 'get /settings/1', :verify_stubs => false do
+  describe 'get /settings/:id', :verify_stubs => false do
 
     it 'renders the settings page with a list of approvers' do
       VCR.use_cassette('get_approvals_settings') do
@@ -26,7 +26,7 @@ describe ApprovalsController do
     end
   end
 
-  describe 'put /settings/1', :verify_stubs => false do
+  describe 'put /settings/:id', :verify_stubs => false do
     let(:params) do
       {
         'id' => workflow.id,

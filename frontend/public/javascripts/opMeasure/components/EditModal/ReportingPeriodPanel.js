@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
 
 import I18n from 'common/i18n';
-import SocrataIcon from 'common/components/SocrataIcon';
+import { DatePicker } from 'common/components/DatePicker';
 
 import { setStartDate } from '../../actions/editor';
 
@@ -23,22 +22,10 @@ export class ReportingPeriodPanel extends Component {
 
   renderStartDate() {
     const { startDate, onChangeStartDate } = this.props;
-
-    const datepickerProps = {
-      className: 'text-input date-picker-input',
-      dateFormatCalendar: 'MMMM YYYY',
-      fixedHeight: true,
-      selected: moment(startDate),
-      onChange: (value) => {
-        onChangeStartDate(value.format('YYYY-MM-DD'));
-      }
-    };
-
     return (
-      <div className="reporting-period-start">
-        <SocrataIcon name="date" />
-        <DatePicker {...datepickerProps} />
-      </div>
+      <DatePicker
+        date={startDate}
+        onChangeDate={onChangeStartDate} />
     );
   }
 

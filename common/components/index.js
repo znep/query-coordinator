@@ -38,6 +38,7 @@ import FilterBar from './FilterBar';
 import AssetActionBar from './AssetActionBar';
 import InfoPane from './InfoPane';
 import Slider from './Slider';
+import DatePicker from './DatePicker';
 import DateRangePicker from './DateRangePicker';
 import FilterItem from './FilterBar/FilterItem';
 import SocrataIcon from './SocrataIcon';
@@ -82,6 +83,7 @@ module.exports = {
   BlobPreview,
   Checkbox,
   ColorPicker,
+  DatePicker,
   DateRangePicker,
   Dropdown,
   EditBar,

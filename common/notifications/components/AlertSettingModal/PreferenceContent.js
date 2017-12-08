@@ -393,7 +393,7 @@ class PreferenceContent extends Component {
                 onChange={() => onAlertNotificationChange(category, 'email')} />
               <span>
                 {I18n.t('subscribe_email',
-                  { scope: 'shared_site_chrome_notifications.alert_setting_modal.my_alerts' })}
+                  { scope: 'shared_site_chrome_notifications.alert_setting_modal' })}
               </span>
             </label>
           </td>

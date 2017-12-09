@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'common/visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import { isLoggedIn } from '../../common/user';
 import { localizeLink } from 'common/locale';
 
 export class DatasetPreview extends Component {
@@ -16,12 +15,8 @@ export class DatasetPreview extends Component {
       _.isString(view.bootstrapUrl);
 
     if (canCreateVisualizationCanvas) {
-      const url = isLoggedIn() ?
-        localizeLink(view.bootstrapUrl) :
-        localizeLink(`/login?return_to=${encodeURIComponent(view.bootstrapUrl)}`);
-
       return (
-        <a href={url} className="btn btn-primary btn-sm btn-visualize">
+        <a href={view.bootstrapUrl} className="btn btn-primary btn-sm btn-visualize">
           {I18n.dataset_preview.visualize_link}
         </a>
       );

@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { save } from '../actions';
 import { SaveStates } from '../lib/constants';
+import { isLoggedIn } from '../../common/user';
 
 export class SaveButton extends PureComponent {
   render() {
@@ -18,9 +19,11 @@ export class SaveButton extends PureComponent {
       'btn-busy': isSaving
     });
 
+    const disabled = !isDirty || !isLoggedIn();
+
     const buttonProps = {
       className: classes,
-      disabled: !isDirty,
+      disabled,
       onClick
     };
 

@@ -2,19 +2,24 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
+
 import FeedbackPanel from '../common/components/FeedbackPanel';
-import { ModeStates } from './lib/constants';
-import EditBar from './components/EditBar';
-import PreviewBar from './components/PreviewBar';
-import InfoPane from './components/InfoPane';
-import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
-import ShareVisualizationModal from './components/ShareVisualizationModal';
-import EditMenu from './components/EditMenu';
-import Visualizations from './components/Visualizations';
-import Table from './components/Table';
-import FilterBar from './components/FilterBar';
 import { FeatureFlags } from 'common/feature_flags';
+
 import { updateName } from './actions';
+import Alert from './components/Alert';
+import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
+import EditBar from './components/EditBar';
+import EditMenu from './components/EditMenu';
+import FilterBar from './components/FilterBar';
+import InfoPane from './components/InfoPane';
+import PreviewBar from './components/PreviewBar';
+import ShareVisualizationModal from './components/ShareVisualizationModal';
+import SigninModal from './components/SigninModal';
+import Table from './components/Table';
+import Visualizations from './components/Visualizations';
+import { ModeStates } from './lib/constants';
 
 const SHARE_BUTTON_ENABLED = {
   view: FeatureFlags.value('visualization_canvas_embed_button') === 'always',
@@ -69,10 +74,17 @@ export class App extends Component {
   }
 
   renderEditMode() {
-    const { onNameChanged } = this.props;
+    const { onNameChanged, alert } = this.props;
+
+    const alertBox = alert ? <Alert /> : null;
+    const containerClasses = classNames({
+      'alert-active': !_.isNull(alertBox)
+    });
+
     return (
-      <div>
+      <div className={containerClasses}>
         <EditBar />
+        {alertBox}
         <div className="visualization-canvas-body edit-mode">
           <InfoPane onNameChanged={onNameChanged} />
           <FilterBar isReadOnly={false} />
@@ -82,6 +94,7 @@ export class App extends Component {
         </div>
         <AuthoringWorkflowModal />
         <ShareVisualizationModal />
+        <SigninModal />
         <EditMenu />
       </div>
     );
@@ -136,12 +149,18 @@ export class App extends Component {
 }
 
 App.propTypes = {
+  // App mode, e.g. edit, preview, or view
   mode: PropTypes.oneOf(_.values(ModeStates)).isRequired,
-  onNameChanged: PropTypes.func.isRequired
+
+  // Function that responds to the viz-can name being changed
+  onNameChanged: PropTypes.func.isRequired,
+
+  // Information to display in an alert box
+  alert: PropTypes.object
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'mode');
+  return _.pick(state, 'mode', 'alert');
 }
 
 function mapDispatchToProps(dispatch) {

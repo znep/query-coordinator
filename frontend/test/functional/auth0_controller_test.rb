@@ -121,9 +121,10 @@ class Auth0ControllerTest < ActionController::TestCase
       OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
       @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
       Auth0Controller.any_instance.expects(:authentication_provider_class).returns(AuthenticatedStub)
+      Auth0Controller.any_instance.expects(:login_redirect_url).returns('the_redirect_url')
       get :callback, :protocol => 'https'
       refute_nil(@response.cookies['logged_in'])
-      assert_redirected_to(login_redirect_url)
+      assert_redirected_to('the_redirect_url')
     end
   end
 
@@ -150,7 +151,7 @@ class Auth0ControllerTest < ActionController::TestCase
     end
 
     should 'get without arguments fails' do
-      assert_raises(NoMethodError) do 
+      assert_raises(NoMethodError) do
         get :link, :protocol => 'https'
       end
     end

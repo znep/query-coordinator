@@ -6,12 +6,12 @@ import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './TablePreview.scss';
 import * as TableViews from "./TableViews"
 
-function generateTableView(tasksExist, allTasksSucceeded, os, blob, hrefExists) {
-  if (tasksExist && allTasksSucceeded && os) {
+function generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists }) {
+  if (tasksExist && allTasksSucceeded && outputSchema) {
     return TableViews.UpsertCompleteView;
-  } else if (tasksExist && !allTasksSucceeded && os) {
+  } else if (tasksExist && !allTasksSucceeded && outputSchema) {
     return TableViews.UpsertInProgressView;
-  } else if (!tasksExist && (os || blob)) {
+  } else if (!tasksExist && (outputSchema || blob)) {
     return TableViews.PreviewDataView;
   } else if (hrefExists) {
     return TableViews.HrefView;
@@ -38,14 +38,14 @@ const TablePreview = ({ entities, params, view }) => {
   const tasksExist = doTasksExist(entities);
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);
-  const os = Selectors.currentOutputSchema(entities, revisionSeq);
+  const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const blob = Selectors.currentBlobSource(entities, revisionSeq);
   const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
 
-  const TableView = generateTableView(tasksExist, allTasksSucceeded, os, blob, hrefExists);
+  const TableView = generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists });
   const childProps = {
     view: view,
-    outputSchema: os,
+    outputSchema: outputSchema,
     entities: entities,
     blob: blob,
     params: params

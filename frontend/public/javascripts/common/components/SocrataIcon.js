@@ -7,7 +7,7 @@ React component for socrata icons. Used like so:
 */
 
 export const SocrataIcon = ({ name, className, size, onIconClick }) => {
-  let classNames = []; // eslint-disable-line prefer-const
+  const classNames = [];
 
   classNames.push(`socrata-icon-${name}`);
   className && classNames.push(className); // eslint-disable-line no-unused-expressions

@@ -6,15 +6,16 @@ import NotifyButton from 'containers/NotifyButtonContainer';
 import * as Links from 'links/links';
 import DatasetPreview from 'containers/DatasetPreviewContainer';
 import styles from './TablePreview.scss';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 // COMPONENT VIEWS
 export const NoDataYetView = ({ params }) => (
   <div className="no-data-view">
-    <div className={styles.headerWrapper}>
-      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+    <div className="header-wrapper">
+      <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <span className="socrata-icon-plus2" /> {I18n.home_pane.add_data}
+          <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
         </Link>
       </div>
     </div>
@@ -33,14 +34,14 @@ NoDataYetView.propTypes = {
 
 export const HrefView = ({ params }) => (
   <div className="href-view">
-    <div className={styles.headerWrapper}>
-      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+    <div className="header-wrapper">
+      <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <span className="socrata-icon-plus2" /> {I18n.home_pane.add_data}
+          <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
         </Link>
         <Link to={Links.hrefSource(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <span className="socrata-icon-eye" /> {I18n.home_pane.href_view_btn}
+          <SocrataIcon name="eye" />{I18n.home_pane.href_view_btn}
         </Link>
       </div>
     </div>
@@ -57,39 +58,43 @@ HrefView.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
-  let previewDataPath;
+function generatePreviewDataPath({ entities, outputSchema, blob, params }) {
   if (outputSchema) {
     const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
-    if (!inputSchema) return;
-    previewDataPath = Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id);
+    if (inputSchema) {
+      return Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id);
+    }
   } else if (blob) {
-    previewDataPath = Links.showBlobPreview(params, blob.id);
-  } else {
-    return;
+    return Links.showBlobPreview(params, blob.id);
   }
+}
 
-  return (
-    <div className="preview-data-view">
-      <div className={styles.headerWrapper}>
-        <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
-        <div className="button-group">
-          <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-            <span className="socrata-icon-plus2" /> {I18n.home_pane.add_data}
-          </Link>
-          <Link to={previewDataPath} className="btn btn-sm btn-default btn-alternate-2">
-            {I18n.home_pane.review_data}
-          </Link>
+export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
+  const previewDataPath = generatePreviewDataPath({ entities, outputSchema, blob, params });
+
+  if (previewDataPath) {
+    return (
+      <div className="preview-data-view">
+        <div className="header-wrapper">
+          <h2>{I18n.home_pane.table_preview}</h2>
+          <div className="button-group">
+            <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
+              <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
+            </Link>
+            <Link to={previewDataPath} className="btn btn-sm btn-default btn-alternate-2">
+              {I18n.home_pane.review_data}
+            </Link>
+          </div>
+        </div>
+        <div className={styles.resultCard}>
+          <div className={styles.tableInfo}>
+            <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
+            <p>{I18n.home_pane.data_uploaded_blurb}</p>
+          </div>
         </div>
       </div>
-      <div className={styles.resultCard}>
-        <div className={styles.tableInfo}>
-          <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
-          <p>{I18n.home_pane.data_uploaded_blurb}</p>
-        </div>
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 PreviewDataView.propTypes = {
@@ -101,8 +106,8 @@ PreviewDataView.propTypes = {
 
 export const UpsertInProgressView = () => (
   <div className="upsert-in-progress-view">
-    <div className={styles.headerWrapper}>
-      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+    <div className="header-wrapper">
+      <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <NotifyButton />
       </div>
@@ -118,8 +123,8 @@ export const UpsertInProgressView = () => (
 
 export const UpsertCompleteView = ({ view, outputSchema }) => (
   <div className="upsert-complete-view">
-    <div className={styles.headerWrapper}>
-      <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+    <div className="header-wrapper">
+      <h2>{I18n.home_pane.table_preview}</h2>
     </div>
     <div className={styles.resultCard}>
       <div key="upsertCompleteView">

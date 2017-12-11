@@ -93,7 +93,6 @@ export class GeneralPanel extends Component {
           <input {...shortNameFieldProps} />
 
           <label htmlFor={descriptionFieldProps.id}>{t('description_label')}</label>
-          <span className="sublabel">{t('description_sublabel')}</span>
           <textarea {...descriptionFieldProps} />
         </form>
 

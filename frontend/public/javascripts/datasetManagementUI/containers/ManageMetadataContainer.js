@@ -426,7 +426,7 @@ function getOutputSchemaId(idFromParams, revision, fallbackOS) {
   }
 }
 
-const mapStateToProps = ({ entities }, { params }) => {
+const mapStateToProps = ({ entities, ui }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);
   const outputSchemaId = Number(params.outputSchemaId);
   const onColumnTab = !!params.outputSchemaId;
@@ -434,6 +434,8 @@ const mapStateToProps = ({ entities }, { params }) => {
   const customFieldsets = entities.views[params.fourfour].customMetadataFieldsets;
   const datasetMetadata = addFieldValuesAll(createFieldsets(customFieldsets), revision);
   const outputSchemaColumns = getOutputSchemaCols(entities, outputSchemaId) || {};
+  const datasetFormDirty = ui.forms.datasetForm.isDirty;
+  const colFormDirty = ui.forms.columnForm.isDirty;
   let pathToNewOutputSchema = '';
 
   if (onColumnTab && isNumber(outputSchemaId)) {
@@ -446,6 +448,8 @@ const mapStateToProps = ({ entities }, { params }) => {
     datasetMetadata,
     outputSchemaColumns,
     pathToNewOutputSchema,
+    datasetFormDirty,
+    colFormDirty,
     outputSchemaId: getOutputSchemaId(
       outputSchemaId,
       revision,
@@ -569,7 +573,10 @@ const FORM_NAME = 'datasetForm';
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
+    hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
     setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
+    markFormDirty: () => dispatch(FormActions.markFormDirty(FORM_NAME)),
+    markFormClean: () => dispatch(FormActions.markFormClean(FORM_NAME)),
     handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params)),
     saveDatasetMetadata: newMetadata => {
       const result = validateFieldsets(newMetadata);

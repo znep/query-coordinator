@@ -10,7 +10,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
     <WithFlash>
       <div className={styles.formContainer}>
         <span className={styles.requiredNote}>{I18n.metadata_manage.required_note}</span>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} id="datasetFrom">
           {Object.keys(fieldsets).map(fsKey => {
             return (
               <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
@@ -20,7 +20,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
               </Fieldset>
             );
           })}
-          <button>submit</button>
+          <input type="submit" id="submit-dataset-form" className={styles.hidden} />
         </form>
       </div>
     </WithFlash>

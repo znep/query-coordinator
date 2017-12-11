@@ -3216,7 +3216,6 @@ en:
         general_info:
           description_label: Description
           description_placeholder: Measure description
-          description_sublabel: ""
           edit_metadata: Edit all metadata (advanced)
           name_label: Full title
           name_placeholder: Measure title

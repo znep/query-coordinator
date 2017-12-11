@@ -22,20 +22,32 @@ import { showFormErrors, hideFormErrors, markFormClean } from 'reduxStuff/action
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
-  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+  const isMetadataModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
+  const isShowOutputSchemaPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
+  // helper determines where to route users once they close the
+  // modal that holds the column and dataset metedata forms
   const helper = hist => {
-    const location = hist[hist.length - 1];
+    const previousLocation = hist[hist.length - 1];
 
+    // is this the first page you have visited? If so, just route to home page
     if (hist.length === 0) {
       browserHistory.push(Links.revisionBase(params));
-    } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
+
+      // did you come from ShowOutputSchema page? If so, route to that same page, but
+      // show the new output schema (since update column metadata creates an new schema).
+      // Note that we assume currentOutputSchemaPath will be falsey if on the dataset
+      // metadata form--ie we rely on the programmer to not pass it in if on the dataset
+      // tab.
+    } else if (currentOutputSchemaPath && isShowOutputSchemaPath.test(previousLocation.pathname)) {
       browserHistory.push(currentOutputSchemaPath);
-    } else if (isDatasetModalPath.test(location.pathname)) {
+
+      // did you come from one of the tabs in the metadata modal? If so, forget that
+      // location and try again
+    } else if (isMetadataModalPath.test(previousLocation.pathname)) {
       helper(hist.slice(0, -1));
     } else {
-      browserHistory.push(location.pathname);
+      browserHistory.push(previousLocation.pathname);
     }
   };
 

@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
+import * as Links from 'links/links';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
 import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
 import { FormValidationError } from 'containers/HrefFormContainer';
 import * as FormActions from 'reduxStuff/actions/forms';
 import * as FlashActions from 'reduxStuff/actions/flashMessage';
+import * as MetadataActions from 'reduxStuff/actions/manageMetadata';
 import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
 
@@ -427,14 +429,23 @@ function getOutputSchemaId(idFromParams, revision, fallbackOS) {
 const mapStateToProps = ({ entities }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);
   const outputSchemaId = Number(params.outputSchemaId);
+  const onColumnTab = !!params.outputSchemaId;
   const revision = getRevision(entities.revisions, revisionSeq) || {};
   const customFieldsets = entities.views[params.fourfour].customMetadataFieldsets;
   const datasetMetadata = addFieldValuesAll(createFieldsets(customFieldsets), revision);
   const outputSchemaColumns = getOutputSchemaCols(entities, outputSchemaId) || {};
+  let pathToNewOutputSchema = '';
+
+  if (onColumnTab && isNumber(outputSchemaId)) {
+    const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
+
+    pathToNewOutputSchema = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
+  }
 
   return {
     datasetMetadata,
     outputSchemaColumns,
+    pathToNewOutputSchema,
     outputSchemaId: getOutputSchemaId(
       outputSchemaId,
       revision,
@@ -559,6 +570,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
     setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
+    handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params)),
     saveDatasetMetadata: newMetadata => {
       const result = validateFieldsets(newMetadata);
 

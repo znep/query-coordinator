@@ -63,8 +63,10 @@ class ManageMetadata extends Component {
   render() {
     return (
       <div className={styles.manageMetadata}>
-        <Modal fullScreen>
-          <ModalHeader title={I18n.metadata_manage.title} />
+        <Modal fullScreen onDismiss={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)}>
+          <ModalHeader
+            title={I18n.metadata_manage.title}
+            onDismiss={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)} />
           <ModalContent>
             <ManageMetadataSidebar
               params={this.props.params}
@@ -95,6 +97,8 @@ ManageMetadata.propTypes = {
   outputSchemaId: PropTypes.number,
   columnsExist: PropTypes.bool,
   params: PropTypes.object.isRequired,
+  handleModalDismiss: PropTypes.func.isRequired,
+  pathToNewOutputSchema: PropTypes.string,
   children: PropTypes.object
 };
 

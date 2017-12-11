@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import * as Selectors from 'selectors';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import styles from './TablePreview.scss';
-import * as TableViews from "./TableViews"
+import * as TableViews from './TableViews';
 
 function generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists }) {
   if (tasksExist && allTasksSucceeded && outputSchema) {
@@ -34,7 +33,6 @@ const haveAllTasksSucceeded = entities =>
 
 // MAIN COMPONENT
 const TablePreview = ({ entities, params, view }) => {
-  let child;
   const tasksExist = doTasksExist(entities);
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);

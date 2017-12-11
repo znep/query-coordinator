@@ -90,9 +90,8 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
   );
 };
 
-
 // fieldsetRowLabel : String -> Fieldset
-const fieldsetRowLabel = (rowLabelValue) => {
+const fieldsetRowLabel = rowLabelValue => {
   const rowLabelDescriptor = FieldDescriptor(
     'metadata.rowLabel',
     rowLabelValue,
@@ -113,16 +112,8 @@ const fieldsetRowLabel = (rowLabelValue) => {
 };
 
 // fieldsetAttachments : [Attachment] -> Fieldset
-const fieldsetAttachments = (attachments) => {
-  const attachmentsDescriptor = FieldDescriptor(
-    'attachments',
-    attachments,
-    '',
-    '',
-    false,
-    false,
-    false
-  );
+const fieldsetAttachments = attachments => {
+  const attachmentsDescriptor = FieldDescriptor('attachments', attachments, '', '', false, false, false);
 
   const fields = [Field.Attachments(attachmentsDescriptor)];
 
@@ -507,7 +498,9 @@ export const getCurrentColumns = (outputSchemaId, entities) => {
 
 // makeRows : Number -> Entities -> List Field
 export const makeRows = (outputSchemaId, entities) =>
-  _.chain(getCurrentColumns(outputSchemaId, entities)).map(columnToFields).value();
+  _.chain(getCurrentColumns(outputSchemaId, entities))
+    .map(columnToFields)
+    .value();
 
 // COLUMN METADATA VALIDATIONS
 

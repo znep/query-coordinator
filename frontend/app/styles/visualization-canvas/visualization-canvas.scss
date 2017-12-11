@@ -87,6 +87,16 @@ body {
     }
   }
 
+  .signin-modal {
+    .signin-modal-footer .btn {
+      margin-right: 6px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
   .edit-bar {
     z-index: $edit-bar-z-index;
 
@@ -224,6 +234,27 @@ body {
 
       .socrata-icon-add {
         padding-right: 5px;
+      }
+    }
+  }
+
+  .visualization-canvas-alert {
+    position: relative;
+    top: $edit-bar-height;
+
+    button {
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .btn-dismiss {
+      float: right;
+      margin-top: 4px;
+      margin-left: 20px;
+
+      .socrata-icon svg {
+        width: 15px;
+        height: 15px;
       }
     }
   }

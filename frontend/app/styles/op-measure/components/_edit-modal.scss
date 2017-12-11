@@ -91,7 +91,26 @@
   }
 
   #general-info-panel {
+    label {
+      display: block;
+      padding-top: 1em;
+    }
 
+    .sublabel {
+      display: block;
+      font-size: 0.8em;
+      color: $dark-grey-1;
+    }
+
+    textarea {
+      width: initial;
+    }
+
+    .edit-metadata-link {
+      .socrata-icon-preview {
+        margin-left: 5px;
+      }
+    }
   }
 
   #data-source-panel {
@@ -315,5 +334,26 @@
 
   .socrata-accordion-pane-title {
     border: none;
+  }
+
+  .required-field-indicator {
+    color: $btn-error-border-color;
+    padding-left: 0.25em;
+
+    &::before {
+      content: "*";
+    }
+  }
+
+  // Validations occur on blur, so remove error state indications on focus.
+  input.text-input-error:focus {
+    background-color: initial;
+    border-color: $light-grey-3;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+    outline-color: -webkit-focus-ring-color;
+
+    &::placeholder {
+      opacity: 1;
+    }
   }
 }

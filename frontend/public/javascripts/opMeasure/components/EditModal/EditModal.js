@@ -91,13 +91,17 @@ export class EditModal extends Component {
   }
 
   render() {
-    const { isEditing, measure, pristineMeasure } = this.props;
-    const isUnmodified = _.isEqual(measure, pristineMeasure);
+    const {
+      isEditing,
+      measure,
+      pristineMeasure
+    } = this.props;
 
     if (!isEditing) {
       return null;
     }
 
+    const isUnmodified = _.isEqual(measure, pristineMeasure);
     const saveBtnClasses = classNames(
       'btn',
       'btn-sm',

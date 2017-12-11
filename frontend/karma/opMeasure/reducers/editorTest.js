@@ -343,6 +343,36 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('SET_DESCRIPTION', () => {
+    it('updates the description of the measure', () => {
+      assert.notNestedProperty(state.measure, 'description');
+
+      state = reducer(state, actions.editor.setDescription('Some description'));
+
+      assert.equal(state.measure.description, 'Some description');
+    });
+  });
+
+  describe('SET_FULL_TITLE', () => {
+    it('sets the full title of the measure', () => {
+      assert.notNestedProperty(state.measure, 'name');
+
+      state = reducer(state, actions.editor.setName('Full name'));
+
+      assert.equal(state.measure.name, 'Full name');
+    });
+  });
+
+  describe('SET_SHORT_TITLE', () => {
+    it('sets the short title of the measure', () => {
+      assert.notNestedProperty(state.measure, 'shortName');
+
+      state = reducer(state, actions.editor.setShortName('Short name'));
+
+      assert.equal(state.measure.shortName, 'Short name');
+    });
+  });
+
   // Note: This is a thunk action - we test the non-thunk parts here.
   // The thunk is tested in actionsTest.js.
   describe('OPEN_EDIT_MODAL', () => {

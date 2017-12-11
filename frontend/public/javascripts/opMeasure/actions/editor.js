@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { SoqlDataProvider, MetadataProvider } from 'common/visualizations/dataProviders';
 import { TRAILING_UID_REGEX } from 'common/http/constants';
 
+import { validateAll } from './validate';
+
 export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
 export const setDataSourceUid = (uid) => ({
   type: SET_DATA_SOURCE_UID,
@@ -164,6 +166,24 @@ export const setMethods = (methods) => ({
   methods
 });
 
+export const SET_DESCRIPTION = 'SET_DESCRIPTION';
+export const setDescription = (description) => ({
+  type: SET_DESCRIPTION,
+  description
+});
+
+export const SET_NAME = 'SET_NAME';
+export const setName = (name) => ({
+  type: SET_NAME,
+  name
+});
+
+export const SET_SHORT_NAME = 'SET_SHORT_NAME';
+export const setShortName = (shortName) => ({
+  type: SET_SHORT_NAME,
+  shortName
+});
+
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
 export const openEditModal = () => (dispatch, getState) => {
   const measure = getState().view.measure;
@@ -175,11 +195,17 @@ export const openEditModal = () => (dispatch, getState) => {
 
 export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';
 export const acceptEditModalChanges = () => (dispatch, getState) => {
-  const measure = getState().editor.measure;
-  dispatch({
-    type: ACCEPT_EDIT_MODAL_CHANGES,
-    measure
-  });
+  dispatch(validateAll());
+
+  const { measure, validationErrors } = getState().editor;
+  const hasErrors = _.some(_.values(validationErrors));
+
+  if (!hasErrors) {
+    dispatch({
+      type: ACCEPT_EDIT_MODAL_CHANGES,
+      measure
+    });
+  }
 };
 
 export const CANCEL_EDIT_MODAL = 'CANCEL_EDIT_MODAL';

@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import * as editorActions from 'actions/editor';
+import * as validateActions from 'actions/validate';
 import * as viewActions from 'actions/view';
 
 import { __RewireAPI__ as EditorActionsAPI } from 'actions/editor';
@@ -38,21 +39,45 @@ describe('thunk actions', () => {
   });
 
   describe('acceptEditModalChanges', () => {
-    it('updates the view measure and closes the edit modal', (done) => {
-      const measure = { test: 'foo' };
-      const expectedActions = [
-        { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure }
-      ];
+    describe('when the edit modal validates', () => {
+      it('updates the view measure and closes the edit modal', (done) => {
+        const measure = { test: 'foo' };
+        const expectedActions = [
+          { type: validateActions.VALIDATE_ALL },
+          { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure }
+        ];
 
-      const store = mockStore({
-        view: { measure: null },
-        editor: { isEditing: true, measure }
+        const store = mockStore({
+          view: { measure: null },
+          editor: { isEditing: true, measure }
+        });
+        store.dispatch(editorActions.acceptEditModalChanges());
+
+        _.defer(() => {
+          assert.deepEqual(store.getActions(), expectedActions);
+          done();
+        });
       });
-      store.dispatch(editorActions.acceptEditModalChanges());
+    });
 
-      _.defer(() => {
-        assert.deepEqual(store.getActions(), expectedActions);
-        done();
+    describe('when the edit modal does not validate', () => {
+      it('halts after validation', (done) => {
+        const measure = { test: 'foo' };
+        const validationErrors = { example: 'example' };
+        const expectedActions = [
+          { type: validateActions.VALIDATE_ALL }
+        ];
+
+        const store = mockStore({
+          view: { measure: null },
+          editor: { isEditing: true, measure, validationErrors }
+        });
+        store.dispatch(editorActions.acceptEditModalChanges());
+
+        _.defer(() => {
+          assert.deepEqual(store.getActions(), expectedActions);
+          done();
+        });
       });
     });
   });

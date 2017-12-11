@@ -41,6 +41,14 @@ body {
         justify-content: flex-end;
       }
     }
+
+    .entry-content {
+      padding-left: 2em;
+
+      .entry-description {
+        padding-left: 0;
+      }
+    }
   }
 
   .measure-content {

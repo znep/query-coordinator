@@ -23,10 +23,7 @@ class Column < Model
       'location' => 'Location'
   }
 
-  @@importable_types = Hash[ [ 'text', 'html', 'email', 'url',
-                               'number', 'money', 'percent',
-                               'calendar_date', 'date', 'checkbox',
-                               'stars', 'location' ].
+  @@importable_types = Hash[ [ 'text', 'url', 'number', 'money', 'percent', 'calendar_date', 'date', 'checkbox', 'location' ].
     collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
 
   @@nbe_importable_types = Hash[ [ 'point' ].

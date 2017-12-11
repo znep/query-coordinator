@@ -1726,7 +1726,6 @@ body.grid-view-2017-refresh {
           &.next {
             position: relative;
             float: left;
-            width: 9em;
             text-align: right;
 
             .socrata-icon-arrow-left,
@@ -1801,7 +1800,7 @@ body.grid-view-2017-refresh {
 
   #grid-view-column-editor {
     $headerHeight: 52px;
-    $headerTotalHeight: $headerHeight + ($headerVerticalPadding * 2);
+    $headerTotalHeight: $headerHeight + $headerVerticalPadding;
     $navTabsHeight: 31px;
 
     .modal {
@@ -1970,9 +1969,9 @@ body.grid-view-2017-refresh {
 
               .preview {
                 position: absolute;
-                width: 35%;
+                width: 30%;
                 top: 0;
-                right: 0;
+                right: 2em;
 
                 input[type="text"] {
                   width: 67%;

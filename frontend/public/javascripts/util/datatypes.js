@@ -1246,7 +1246,7 @@ blist.namespace.fetch('blist.datatypes');
           'flag'
         ].
         concat(numericConvertTypes),
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       filterConditions: $.extend(true, {
@@ -1586,7 +1586,7 @@ blist.namespace.fetch('blist.datatypes');
       aggregates: nonNumericAggs,
       alignment: alignment,
       convertableTypes: ['text'],
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       filterConditions: $.extend(true, {
@@ -1616,7 +1616,7 @@ blist.namespace.fetch('blist.datatypes');
       alignment: alignment,
       cls: 'phone',
       convertableTypes: ['text'],
-      createable: true,
+      createable: false,
       defaultFilterSubColumn: 'phone_type',
       deleteable: true,
       deprecatedInNbe: true,
@@ -1732,7 +1732,7 @@ blist.namespace.fetch('blist.datatypes');
       aggregates: nonNumericAggs,
       alignment: alignment,
       convertableTypes: ['text'],
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       dropDownList: {
@@ -1781,7 +1781,7 @@ blist.namespace.fetch('blist.datatypes');
       alignment: alignment,
       cls: 'stars',
       convertableTypes: _.without(numericConvertTypes, 'stars').concat('text'),
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       filterConditions: blist.filter.groups.numeric,
@@ -1934,7 +1934,7 @@ blist.namespace.fetch('blist.datatypes');
 
       aggregates: nonNumericAggs,
       alignment: alignment,
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       filterConditions: blist.filter.groups.comparable,

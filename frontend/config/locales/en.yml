@@ -809,6 +809,7 @@ en:
           validation_error: This column requires a datetime of the form "YYYY-MM-DDThh:mm:ss" and a valid UTC timezone offset (e.g. "-700").
         document:
           name: Document
+          filename_placeholder: Type a filename... (required)
           validation_error: If (No value) is unchecked then a filename is required and a file must be chosen.
         drop_down_list:
           name: Text
@@ -884,8 +885,11 @@ en:
           name: Text
           validation_error: This column only supports text.
         url:
+          description: Title
+          description_placeholder: Title (optional)
           name: URL
-          validation_error: This column only supports URLs.
+          url: URL
+          validation_error: The URL property must be a valid URL.
       error:
         save: There was an error saving your changes. Please wait a moment and try again, or contact Socrata support if the problem persists.
         delete: There was an error deleting the specified row. Please try again. If this problem persists, contact Socrata support.

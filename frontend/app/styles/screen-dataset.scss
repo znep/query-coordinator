@@ -2274,6 +2274,15 @@ body.grid-view-2017-refresh {
             }
           }
 
+          &[data-column-data-type-name="url"] {
+
+            .url-description,
+            .url {
+              display: inline-block;
+              width: 26%;
+            }
+          }
+
           &[data-column-data-type-name="photo"],
           &[data-column-data-type-name="blob"],
           &[data-column-data-type-name="document"] {

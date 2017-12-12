@@ -14,7 +14,7 @@ export const SocrataIcon = ({ name, className, size, onIconClick, isBtnIcon }) =
   size && classNames.push(`socrata-icon-${size}`); // eslint-disable-line no-unused-expressions
 
   if (isBtnIcon) {
-    classNames.push("btn-icon")
+    classNames.push('btn-icon');
   }
 
   return (
@@ -26,7 +26,8 @@ SocrataIcon.propTypes = {
   name: PropTypes.string.isRequired,
   className: PropTypes.string,
   size: PropTypes.oneOf(['lg', '2x', '3x', '4x', '5x']),
-  onIconClick: PropTypes.func
+  onIconClick: PropTypes.func,
+  isBtnIcon: PropTypes.bool
 };
 
 export default SocrataIcon;

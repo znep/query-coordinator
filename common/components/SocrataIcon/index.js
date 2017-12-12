@@ -21,7 +21,8 @@ export function SocrataIcon({ name, className, isBtnIcon, otherAttributes }) {
 SocrataIcon.propTypes = {
   name: PropTypes.string.isRequired,
   className: PropTypes.string,
-  otherAttributes: PropTypes.object
+  otherAttributes: PropTypes.object,
+  isBtnIcon: PropTypes.bool
 };
 
 SocrataIcon.defaultProps = {

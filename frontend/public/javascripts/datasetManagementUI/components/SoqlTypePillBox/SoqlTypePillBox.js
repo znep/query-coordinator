@@ -23,7 +23,8 @@ SoqlTypePill.propTypes = {
 };
 
 const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => {
-  const pills = Object.keys(transforms).map((key, idx) => (
+  // sort them for alphabetical ordering but also for tests
+  const pills = Object.keys(transforms).sort().map((key, idx) => (
     <SoqlTypePill
       name={key}
       key={idx}
@@ -42,7 +43,7 @@ const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => 
 SoqlTypePillBox.propTypes = {
   transforms: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  currentTransform: PropTypes.string.isRequired
+  currentTransform: PropTypes.func.isRequired
 };
 
 export default SoqlTypePillBox;

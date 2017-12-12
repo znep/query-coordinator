@@ -66,17 +66,17 @@ describe('components/AddColForm', () => {
     it('updates its state when a soql pill is clicked', () => {
       const component = shallow(<AddColForm {...props} />);
 
-      assert.equal(component.state('transform'), 'to_text');
+      assert.equal(component.state('transform')({field_name: 'foo'}), 'to_text(`foo`)');
 
       component
         .find('SoqlTypePillBox')
         .dive()
         .find('SoqlTypePill')
-        .first()
+        .at(2)
         .dive()
         .simulate('click');
 
-      assert.equal(component.state('transform'), 'to_number');
+      assert.equal(component.state('transform')({field_name: 'foo'}), 'to_number(`foo`)');
     });
 
     it('calculates the field_name when the description_name is changed', () => {
@@ -103,14 +103,8 @@ describe('components/AddColForm', () => {
     });
 
     describe('makeTransformExpr', () => {
-      it('inserts an escaped field name into a given transform', () => {
-        const actual = makeTransformExpr('id', 'to_number');
-        const expected = 'to_number(`id`)';
-        assert.equal(actual, expected);
-      });
-
       it('does not escape the field name if it is the string null', () => {
-        const actual = makeTransformExpr('null', 'to_text');
+        const actual = makeTransformExpr('null', (e) => `to_text(${e})`);
         const expected = 'to_text(null)';
         assert.equal(actual, expected);
       });

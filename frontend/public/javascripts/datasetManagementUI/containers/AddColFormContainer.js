@@ -69,7 +69,8 @@ export const mapStateToProps = ({ ui, entities }, { params }) => {
     errors: ui.forms.addColForm.errors,
     inputColumns: entities.input_columns,
     clearInternalState: ui.forms.addColForm.clearInternalState,
-    selectOptions
+    selectOptions,
+    entities
   };
 };
 

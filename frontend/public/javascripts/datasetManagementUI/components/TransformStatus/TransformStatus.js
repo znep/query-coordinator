@@ -96,6 +96,7 @@ export class TransformStatus extends Component {
     });
   }
 
+
   attachFlyouts() {
     // We only want to attach if there are flyouts on the page, otherwise we get a
     // ton of warnings about how flyouts weren't found - so we need to limit

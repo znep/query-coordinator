@@ -22,11 +22,11 @@ export function makeFieldName(displayName) {
     .replace(/__+/g, '_');
 }
 
-export function makeTransformExpr(fieldName, transform) {
+export function makeTransformExpr(fieldName, transform, entities) {
   if (fieldName === 'null') {
-    return `${transform}(${fieldName})`;
+    return transform(null);
   } else {
-    return `${transform}(\`${fieldName}\`)`;
+    return transform({ field_name: fieldName }, entities);
   }
 }
 
@@ -49,7 +49,7 @@ ErrorList.propTypes = {
 const initialState = {
   displayName: '',
   description: '',
-  transform: 'to_text',
+  transform: soqlProperties.text.conversions.text,
   fieldName: '',
   position: '',
   sourceColumnId: '',
@@ -97,7 +97,7 @@ class AddColForm extends Component {
       }
 
       this.setState({
-        transformExpr: makeTransformExpr(fieldName, nextState.transform)
+        transformExpr: makeTransformExpr(fieldName, nextState.transform, this.props.entities)
       });
     }
 
@@ -176,6 +176,7 @@ AddColForm.propTypes = {
   clearInternalState: PropTypes.bool.isRequired,
   resetFormErrors: PropTypes.func.isRequired,
   inputColumns: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   selectOptions: PropTypes.array.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   syncToStore: PropTypes.func.isRequired,

@@ -22,7 +22,7 @@ export const NoDataYetView = ({ params }) => (
     <div className={styles.resultCard}>
       <div className={styles.tableInfo}>
         <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
-        <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
+        <p>{I18n.home_pane.click_add_data_above}</p>
       </div>
     </div>
   </div>

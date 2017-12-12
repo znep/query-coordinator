@@ -15,7 +15,7 @@ export const NoDataYetView = ({ params }) => (
       <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
+          <SocrataIcon name="plus2" /><span>{I18n.home_pane.add_data}</span>
         </Link>
       </div>
     </div>
@@ -38,10 +38,10 @@ export const HrefView = ({ params }) => (
       <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
+          <SocrataIcon name="plus2" /><span>{I18n.home_pane.add_data}</span>
         </Link>
         <Link to={Links.hrefSource(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="eye" />{I18n.home_pane.href_view_btn}
+          <SocrataIcon name="eye" /><span>{I18n.home_pane.href_view_btn}</span>
         </Link>
       </div>
     </div>
@@ -79,7 +79,7 @@ export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
           <h2>{I18n.home_pane.table_preview}</h2>
           <div className="button-group">
             <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-              <SocrataIcon name="plus2" />{I18n.home_pane.add_data}
+              <SocrataIcon name="plus2" /><span>{I18n.home_pane.add_data}</span>
             </Link>
             <Link to={previewDataPath} className="btn btn-sm btn-default btn-alternate-2">
               {I18n.home_pane.review_data}

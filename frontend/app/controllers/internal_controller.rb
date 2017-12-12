@@ -363,14 +363,6 @@ class InternalController < ApplicationController
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
-  def add_module_to_domain
-    Domain.add_account_module(params[:domain_id], params[:module][:name])
-
-    CurrentDomain.flag_out_of_date!(params[:domain_id])
-
-    redirect_to show_domain_path(domain_id: params[:domain_id])
-  end
-
   def add_a_module_feature
     if params['new-feature_name'].present?
       module_features = [ params['new-feature_name'].strip ]

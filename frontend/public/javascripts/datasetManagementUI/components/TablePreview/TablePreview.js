@@ -44,7 +44,7 @@ const TablePreview = ({ entities, params, view }) => {
   const childProps = { view, outputSchema, entities, blob, params };
   return (
     <section className="table-preview-container">
-      <TableView { ...childProps }/>
+      <TableView { ...childProps } />
     </section>
   );
 };

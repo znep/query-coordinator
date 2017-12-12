@@ -85,6 +85,8 @@ body {
     }
 
     .asset-tabs {
+      margin-top: 5.5rem;
+
       a.asset-tab {
         color: $light-grey-2;
         cursor: pointer;
@@ -154,6 +156,14 @@ body {
 
     .catalog-results .socrata-icon-search {
       top: -3px !important;
+    }
+  }
+}
+
+#profile {
+  .asset-browser {
+    .asset-tabs {
+      margin-top: 0;
     }
   }
 }

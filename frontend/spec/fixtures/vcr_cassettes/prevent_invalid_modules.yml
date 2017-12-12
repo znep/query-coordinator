@@ -1,0 +1,458 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/account_tiers.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 21:25:27 GMT
+      X-Socrata-Requestid:
+      - 9u7jdjetj88oluj29esckwnbe
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 21:25:27 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/account_modules.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 22:02:37 GMT
+      X-Socrata-Requestid:
+      - ghsljrat6ccezlofysfgwphc
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 22:02:37 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=feature_set
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - cname
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 22:07:50 GMT
+      X-Socrata-Requestid:
+      - 4pay0bz5p77gaaf5lc3lomcao
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 37,
+          "name" : "Feature set",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "cname",
+          "type" : "feature_set",
+          "updatedAt" : 1513114486,
+          "properties" : [ {
+            "name" : "staging_api_lockdown",
+            "value" : true
+          }, {
+            "name" : "newPieDonutChart",
+            "value" : true
+          }, {
+            "name" : "geospatial",
+            "value" : true
+          }, {
+            "name" : "advanced_metrics",
+            "value" : true
+          }, {
+            "name" : "staging_lockdown",
+            "value" : true
+          }, {
+            "name" : "canvas2",
+            "value" : true
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 22:07:50 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/configurations/37/properties/advanced_metrics.json
+    body:
+      encoding: UTF-8
+      string: '{"name":"advanced_metrics","value":true}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 22:07:50 GMT
+      X-Socrata-Requestid:
+      - 1exjnfb7n0680sacvhh4ypehk
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Error-Code:
+      - permission_denied
+      X-Error-Message:
+      - Insufficient privileges for configuration change
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "permission_denied",
+          "error" : true,
+          "message" : "Insufficient privileges for configuration change"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 22:07:50 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/domains/cname.json?method=addAccountModule&moduleName=routing_approval
+    body:
+      encoding: UTF-8
+      string: '{"X-Socrata-Host"=>"cname"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 22:58:17 GMT
+      X-Socrata-Requestid:
+      - 339zpvih77ot1mb773e8mlhsf
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 22:58:17 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/37/properties.json
+    body:
+      encoding: UTF-8
+      string: '{"name":"routing_approval","value":true}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 23:00:00 GMT
+      X-Socrata-Requestid:
+      - 2ecj37vtd4y4j9tu4f5li1l4l
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Error-Code:
+      - permission_denied
+      X-Error-Message:
+      - Insufficient privileges for configuration change
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "permission_denied",
+          "error" : true,
+          "message" : "Insufficient privileges for configuration change"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 23:00:00 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/domains.json
+    body:
+      encoding: UTF-8
+      string: '{"organizationId":"34","name":"Domain Name","cName":"domain-cname","parentDomainId":"2","shortName":"domain-cname","accountTierId":"1"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 23:18:51 GMT
+      X-Socrata-Requestid:
+      - 56h1n241bzqwjojpnkttyn8xl
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 23:18:51 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/1/properties.json
+    body:
+      encoding: UTF-8
+      string: '{"name":"canvas2","value":true}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 23:24:11 GMT
+      X-Socrata-Requestid:
+      - 3ag36enljwtd5sui05vocpa38
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Error-Code:
+      - permission_denied
+      X-Error-Message:
+      - Insufficient privileges for configuration change
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "permission_denied",
+          "error" : true,
+          "message" : "Insufficient privileges for configuration change"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 23:24:11 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/domains/cname.json?method=addAccountModule&moduleName=geospatial
+    body:
+      encoding: UTF-8
+      string: '{"X-Socrata-Host"=>"cname"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Tue, 12 Dec 2017 23:25:00 GMT
+      X-Socrata-Requestid:
+      - 4ie8d5fvivn2jndw31o3pyajy
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Tue, 12 Dec 2017 23:25:00 GMT
+recorded_with: VCR 3.0.3

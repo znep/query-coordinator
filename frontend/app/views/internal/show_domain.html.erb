@@ -90,13 +90,13 @@
     <% end %>
 
     <h2>Modules (formerly Modules and Features):</h2>
-    <div>Disabling a module will have it remain visible in this list. There is no functional difference between a disabled and removed module.</div>
+    <div>Disabling a module will cause it to remain visible in this list. There is no functional difference between a disabled and removed module.</div>
     <%# A module gets created in `domain_modules`. It is never deleted. A property is set in the config `feature_set`. This controls whether or not it is used. The exception is `federations`, which are automatically available in most cases unless it's not in our main datacenter. See CORE-2696 and InternalHelper#federations_for_everyone? %>
     <div class="featureList">
       <%- @domain.features.sort.each do |feature, enabled| -%>
       <div class="line<%= ' featureDisabled' unless enabled %>">
         <label><%= feature %></label>
-        <%- unless permanent_module?(feature) %>
+        <%- unless module_notice?(feature) %>
           <%= enable_or_disable_module_feature(feature, enabled) %>
           <%= remove_module_feature(feature) %>
         <%- end %>

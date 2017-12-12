@@ -1206,7 +1206,23 @@ window.socrata.featureFlags =
         expect(helper.asset_inventory_view_model[:asset_inventory][:button_disabled]).to eq(false)
       end
     end
-
   end
 
+  describe 'valid_cname?' do
+    it 'returns true when provided with valid cnames' do
+      expect(helper.valid_cname?('localhost')).to eq(true)
+      expect(helper.valid_cname?('example.com')).to eq(true)
+      expect(helper.valid_cname?('data.weatherfordtx.gov')).to eq(true)
+      expect(helper.valid_cname?('atf-performance-dashboards.demo.socrata.com')).to eq(true)
+    end
+
+    it 'returns false when provided with invalid cnames' do
+      expect(helper.valid_cname?('localhost.')).to eq(false)
+      expect(helper.valid_cname?('localhost..com')).to eq(false)
+      expect(helper.valid_cname?('http://localhost')).to eq(false)
+      expect(helper.valid_cname?('local--host')).to eq(false)
+      expect(helper.valid_cname?('felixhernandez@demo.socrata.com')).to eq(false)
+      expect(helper.valid_cname?('cityofmadison,demo.socrata.com')).to eq(false)
+    end
+  end
 end

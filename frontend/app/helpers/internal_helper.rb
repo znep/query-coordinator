@@ -146,8 +146,8 @@ module InternalHelper
     end
   end
 
-  def permanent_module?(feature)
-    @permanent_modules.include?(feature)
+  def module_notice?(feature)
+    @module_notices.include?(feature)
   end
 
   def bulk_feature_flag_update(flags, options = {})
@@ -246,4 +246,16 @@ module InternalHelper
       ', '
     )
   end
+
+  ## Formerly a private method in InternalController. Relocated here for testability.
+  # A CName here is roughly:
+  # - Something alphanumeric
+  # - Can have separators: .-_
+  # - Cannot have stacked separators.
+  # - Cannot start/end with a separator.
+  # e.g. localhost, hello.com, hello-world.com, www.hello.com
+  def valid_cname?(candidate)
+    (/^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/ =~ candidate) == 0
+  end
+
 end

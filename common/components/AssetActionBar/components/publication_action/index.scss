@@ -1,30 +1,9 @@
 .asset-action-bar .publication-action {
   position: relative;
+  margin-top: 0.9rem;
+  margin-right: 0.9rem;
 
-  .more-actions-button {
-    margin-left: 0.2em;
-  }
-
-  .more-actions {
-    background-color: white;
-    padding: 0.6em;
-
-    border: solid 1px black;
-
-    position: absolute;
-    top: calc(100% - 1px);
-    right: 0;
-
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-
-    .btn {
-      margin-top: 0.4em;
-      text-align: center;
-      white-space: nowrap;
-
-      color: #fff; // Override a:visited style.
-    }
+  .dropdown-container {
+    margin-left: 0.9rem;
   }
 }

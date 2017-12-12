@@ -1,24 +1,36 @@
 .asset-action-bar .publication-state {
-  margin-left: 0.4em;
-  padding: 11px 0;
-  display: inline-block;
-  vertical-align: middle;
-
-  cursor: default;
+  padding: 0.8rem 1.5rem;
+  box-sizing: border-box;
   color: #dbdbdb;
 
   .socrata-icon {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 50%;
+    line-height: 0.4;
+
+    height: 21px;
+    width: 21px;
+    padding: 2px;
+    svg {
+      height: 17px;
+      width: 17px;
+      vertical-align: text-bottom;
+    }
+
+    color: white;
 
     &.publication-state-draft {
-      color: #e0a208;
+      background-color: #e0a208;
     }
 
     &.publication-state-pending {
-      color: #185074;
+      background-color: #185074;
     }
 
     &.publication-state-published {
-      color: #17b389;
+      background-color: #17b389;
     }
   }
 }

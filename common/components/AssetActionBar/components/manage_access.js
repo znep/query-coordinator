@@ -18,14 +18,14 @@ class ManageAccessButton extends React.Component {
   }
 
   render() {
-    return (
+    return (<div className="manage-access-wrapper">
       <button
-        className="btn btn-alternate manage-access-button"
+        className="btn btn-simple manage-access-button"
         onClick={this.onClick}>
         <SocrataIcon name="add-collaborator" />
         {I18n.t('shared.components.asset_action_bar.manage_access')}
       </button>
-    );
+    </div>);
   }
 }
 

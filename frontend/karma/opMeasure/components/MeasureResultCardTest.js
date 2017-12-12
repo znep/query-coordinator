@@ -16,6 +16,8 @@ describe('MeasureResultCard', () => {
     };
   };
 
+  const getRenderedValue = (element) => element.find('.measure-result-big-number').nodes[0].props.children;
+
   it('renders a placeholder if computedMeasure is not present', () => {
     const element = shallow(<MeasureResultCard {...getProps()} />);
     assert.lengthOf(element.find('.measure-result-placeholder'), 1);
@@ -56,6 +58,41 @@ describe('MeasureResultCard', () => {
         find('.measure-result-big-number.percent'),
       1
     );
+  });
+
+  it('truncates the result string to fit', () => {
+    const computedMeasure = {
+      result: '33.1234567890123456789'
+    };
+    let card;
+
+    const measureWithFixedDecimalPlaces = _.set({}, 'metric.display.decimalPlaces', 5);
+    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
+    assert.equal(getRenderedValue(card), '33.12345');
+
+    const measureWithoutDecimalPlaces = {};
+    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
+    assert.equal(getRenderedValue(card), '33.12345678');
+
+    const measureWithManyDecimalPlaces = _.set({}, 'metric.display.decimalPlaces', 100);
+    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
+    assert.equal(getRenderedValue(card), '33.12345678'); // Still truncates at a max length.
+
+    computedMeasure.result = '33.123';
+    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
+    assert.equal(getRenderedValue(card), '33.123');
+  });
+
+  // We may want to adjust the logic for when to humanize numbers.
+  // Perhaps the metric.display should take in a boolean prop to indicate when to humanize,
+  // but for now, we only humanize when number of characters are too many to fit.
+  it('displays human readable numbers for large values', () => {
+    const computedMeasure = {
+      result: '1234567890.00'
+    };
+
+    const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} {...getProps()} />);
+    assert.equal(getRenderedValue(card), '1.23B');
   });
 
   it('renders a spinner if dataRequestInFlight is set', () => {

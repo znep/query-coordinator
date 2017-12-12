@@ -220,7 +220,6 @@ describe('components/TablePreview', () => {
       .dive()
       .find('Link');
 
-    // assert.equal(link., 2);
     assert.isTrue(link.at(1).exists());
     assert.equal(link.at(1).prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/preview');
   });

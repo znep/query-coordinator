@@ -1287,7 +1287,7 @@ function SvgTimelineChart($element, vif, options) {
     const endDateForHighlight = getIncrementedDateByPrecision(startDateForHighlight, dataToRender.precision);
 
     if (allSeriesAreLineVariant()) {
-      flyoutXOffset = d3XScale(startDate);
+      flyoutXOffset = d3XScale(startDateForHighlight);
     } else {
 
       if (precision !== 'none') {
@@ -1298,12 +1298,12 @@ function SvgTimelineChart($element, vif, options) {
         // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
         flyoutXOffset = d3XScale(
           new Date(
-            startDate.getTime() +
+            startDateForHighlight.getTime() +
             getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
           )
         );
       } else {
-        flyoutXOffset = d3XScale(startDate);
+        flyoutXOffset = d3XScale(startDateForHighlight);
       }
     }
 

@@ -5,7 +5,6 @@
 @import 'common/visualizations/views/styles/socrata-visualizations';
 
 #app .dataset-management-ui {
-  @import 'frontend/app/styles/dataset-management-ui/button';
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
 }
 

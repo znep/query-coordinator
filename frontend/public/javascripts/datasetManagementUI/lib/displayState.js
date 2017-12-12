@@ -36,32 +36,32 @@ export function fromUiUrl({ params, location }) {
   }
 }
 
-export function toUiUrl(path, params, displayState) {
+export function toUiUrl(params, displayState) {
   switch (displayState.type) {
     case NORMAL:
       return Links.showOutputSchema(
         params,
-        path.sourceId,
-        path.inputSchemaId,
-        path.outputSchemaId,
+        params.sourceId,
+        params.inputSchemaId,
+        params.outputSchemaId,
         displayState.pageNo
       );
 
     case ROW_ERRORS:
       return Links.showRowErrors(
         params,
-        path.sourceId,
-        path.inputSchemaId,
-        path.outputSchemaId,
+        params.sourceId,
+        params.inputSchemaId,
+        params.outputSchemaId,
         displayState.pageNo
       );
 
     case COLUMN_ERRORS:
       return Links.showColumnErrors(
         params,
-        path.sourceId,
-        path.inputSchemaId,
-        path.outputSchemaId,
+        params.sourceId,
+        params.inputSchemaId,
+        params.outputSchemaId,
         displayState.transformId,
         displayState.pageNo
       );

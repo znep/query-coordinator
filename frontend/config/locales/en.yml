@@ -2434,6 +2434,7 @@ en:
         can_geocode: Data in this column can be geocoded
         click_for_options: Click for more options
         drop_column: Remove column
+        data_transforms: Data Transforms
         type_display_names:
           checkbox: True/False
           date: Date & Time (with timezone)

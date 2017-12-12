@@ -6,8 +6,10 @@ import classNames from 'classnames';
 import styles from './TypeIcon.scss';
 
 const TypeIcon = ({ type, isDisabled }) => {
+  const t = typeProperties[type];
+  if (!t) return null;
   const klass = classNames(
-    styles[typeProperties[type].cssName],
+    styles[t.cssName],
     { [styles.typeIconDisabled]: isDisabled }
   );
   return <SocrataIcon name={typeProperties[type].icon} className={klass} />;

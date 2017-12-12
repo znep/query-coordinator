@@ -1,0 +1,97 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+
+.funcallNode {
+  text-align: center;
+  .function {
+    font-size: 200%;
+    color: $primary-base;
+  }
+
+  .functionName {
+    font-family: monospace;
+    margin: 0px auto;
+  }
+}
+
+.argList {
+  border-bottom: 1px solid $light-grey-3;
+}
+
+.arrowDown {
+  width: 0; 
+  height: 0; 
+  margin: 0px auto;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  
+  border-top: 10px solid $light-grey-3;
+}
+
+.primitive, .columnRef {
+  display: inline-block;
+}
+
+.builderPopup {
+  position: absolute;
+}
+
+.arg {
+  display: block;
+}
+
+.typeIcon {
+  padding: 0.5em;
+}
+
+.soqlAstBuilder, .soqlEditor {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid $light-grey-7;
+  display: flex;
+  height: 800px;
+  position: relative;
+}
+
+
+.compilerResult {
+  padding: 1em;
+  margin-top: 1em !important; // argh styleguide why. there is a modal-content *:first-child that screws up all first children
+  border: 1px solid $light-grey-8;
+}
+.compilerReady {
+  border-color: $primary-base;
+  color: $primary-base;
+}
+.compilerError {
+  border-color: $error-base;
+  color: $error-base;
+}
+.compilerInProgress {
+  border-color: $alternate-3-base;
+  color: $alternate-3-base;
+}
+.compilerSuccess {
+  border-color: $success-base;
+  color: $success-base;
+}
+
+
+.doc {
+  padding: 1em;
+  border: 1px solid $alternate-2-base;
+  margin-top: 1em;
+  font-family: monospace;
+}
+
+.compilerErrorUnderline {
+  border-bottom: 1px solid $error-dark;
+  background: $error-text;
+  opacity: 0.4;
+  position: absolute;
+  cursor: pointer !important;
+  pointer-events: auto;
+
+}

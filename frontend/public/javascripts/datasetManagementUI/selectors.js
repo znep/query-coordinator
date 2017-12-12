@@ -2,6 +2,8 @@ import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
 import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
+import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
+import * as DisplayState from 'lib/displayState';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
@@ -70,6 +72,59 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
     .value();
 }
 
+export function getRowData(entities, inputSchemaId, displayState, outputColumns) {
+
+  const startRow = (displayState.pageNo - 1) * PAGE_SIZE;
+  const endRow = startRow + PAGE_SIZE;
+  let rowIndices;
+
+  if (displayState.type === DisplayState.COLUMN_ERRORS) {
+    const errorsTransform = entities.transforms[displayState.transformId];
+    if (errorsTransform.error_indices) {
+      rowIndices = errorsTransform.error_indices.map(_.toString);
+    } else {
+      rowIndices = [];
+    }
+  } else if (displayState.type === DisplayState.ROW_ERRORS) {
+    rowIndices = _.filter(entities.row_errors, { input_schema_id: inputSchemaId }).map(
+      rowError => rowError.offset
+    );
+  } else {
+    rowIndices = _.range(startRow, endRow);
+  }
+  return rowIndices.map(rowIdx => ({
+    rowIdx,
+    columns: outputColumns.map(column => {
+      const transform = column.transform;
+      const cell = entities.col_data[transform.id]
+        ? entities.col_data[transform.id][rowIdx]
+        : null;
+      return {
+        tid: transform.id,
+        id: column.id,
+        format: column.format,
+        cell
+      };
+    }),
+    rowError: entities.row_errors[`${inputSchemaId}-${rowIdx}`]
+  }));
+}
+
+export function allColumnsWithOSID(entities) {
+  return _.chain(entities.output_schema_columns)
+    .map(oc => ({
+      ...entities.output_columns[oc.output_column_id],
+      outputSchemaId: oc.output_schema_id
+    }))
+    .map(oc => ({
+      ...oc,
+      transform: entities.transforms[oc.transform_id],
+      is_primary_key: oc.is_primary_key || false
+    }))
+    .map(oc => _.omit(oc, 'transform_id'))
+    .orderBy('outputSchemaId', 'desc')
+    .value();
+}
 
 export function treeForOutputSchema(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];

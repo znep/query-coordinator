@@ -1,6 +1,44 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
+.table > tbody > tr {
+  display: block;
+  border-width: 0;
+}
+
+.table > * > tr > td, .table > * > tr > th {
+  min-height: 29px;
+  display: inline-block;
+  border-style: solid;
+  border-color: $light-grey-4;
+  white-space: nowrap;
+}
+
+.table > thead {
+  display: block;
+  border-top: 1px solid $light-grey-4;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-bottom: 1px;
+  z-index: 100;
+
+  .col-processed {
+    font-weight: normal;
+    font-size: 7pt;
+  }
+}
+
+.table > thead >  tr {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  background-color: #f6f6f6;
+}
+
+.table > thead > tr > td, .table > tbody > tr > td {
+  width: 250px;
+}
+
+
 .table {
   display: inline-flex;
   flex-direction: column;
@@ -49,9 +87,7 @@
     white-space: nowrap;
   }
 
-  td {
-    width: 250px;
-  }
+
 
   th {
     border-width: 0 1px 0 0;

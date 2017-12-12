@@ -20,7 +20,7 @@ describe('TablePane', () => {
     });
 
     it('renders the Pagerbar if needed', () => {
-      assert.equal(component.find('withRouter(Connect(PagerBar))').length, 1);
+      assert.equal(component.find('Connect(PagerBar)').length, 1);
     });
 
     it('renders the correct number of rows and columns', () => {

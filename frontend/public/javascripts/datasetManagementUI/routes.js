@@ -8,6 +8,7 @@ import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
+import TransformColumnPane from 'pages/ShowOutputSchema/TransformColumnPane';
 import AddColPane from 'pages/ShowOutputSchema/AddColPane';
 import ShowBlobPreview from 'pages/ShowBlobPreview/ShowBlobPreview';
 import ShowSource from 'pages/ShowSource/ShowSource';
@@ -46,7 +47,10 @@ const checkIfPublished = store => (nextState, replace, cb) => {
   }
 };
 
+
 export default function rootRoute(store) {
+  // If we upgrade to react-router 4 we can have a non-insane route hierarchy for the showOutputSchema
+  // page: https://github.com/ReactTraining/react-router/issues/4105#issuecomment-289195202
   return (
     <Route path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq" component={Home}>
       <IndexRoute component={ShowRevision} />
@@ -68,10 +72,26 @@ export default function rootRoute(store) {
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
+
+        <Route path="editor/:outputColumnId" component={TransformColumnPane}>
+          <Route
+            path="column_errors/:errorsTransformId"
+            component={TransformColumnPane}>
+            <Route
+              path="page/:pageNo"
+              component={TransformColumnPane} />
+          </Route>
+          <Route
+            path="page/:pageNo"
+            component={TransformColumnPane} />
+        </Route>
+
         <Route path="add_col" component={AddColPane} />
+
         <Route path="column_errors(/:errorsTransformId)" component={TablePane}>
           <Route path="page/:pageNo" component={TablePane} />
         </Route>
+
         <Route path="row_errors" component={TablePane}>
           <Route path="page/:pageNo" component={TablePane} />
         </Route>

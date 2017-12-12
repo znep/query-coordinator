@@ -27,9 +27,19 @@ export const urlSource = params => `${sources(params)}/url`;
 
 export const hrefSource = params => `${sources(params)}/href`;
 
-export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
-  `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
-  `${pageNo ? `/page/${pageNo}` : ''}`;
+const transformColumnFragment = (params) => `/editor/${params.outputColumnId}`;
+
+export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) => {
+  const showBase = `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}`;
+  const page = `${pageNo ? `/page/${pageNo}` : ''}`;
+  if (params.transformEditor) {
+    return `${showBase}${transformColumnFragment(params)}${page}`;
+  } else {
+    return `${showBase}${page}`;
+  }
+};
+
 
 export const showBlobPreview = (params, blobId) => `${revisionBase(params)}/sources/${blobId}/preview`;
 
@@ -49,6 +59,30 @@ export const showAddCol = params => {
   );
 };
 
+export const transformColumn = (params, sourceId, inputSchemaId, outputSchemaId, outputColumnId) => {
+  return (
+    `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/editor/${outputColumnId}`
+  );
+};
+
+export const transformColumnErrors = (
+  params,
+  sourceId,
+  inputSchemaId,
+  outputSchemaId,
+  outputColumnId,
+  transformId
+) => {
+  return `${transformColumn(
+    params,
+    sourceId,
+    inputSchemaId,
+    outputSchemaId,
+    outputColumnId
+  )}/column_errors/${transformId}`;
+};
+
 export const showColumnErrors = (
   params,
   sourceId,
@@ -56,10 +90,19 @@ export const showColumnErrors = (
   outputSchemaId,
   errorsTransformId,
   pageNo
-) =>
-  `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
-  `${outputSchemaId}/column_errors/${errorsTransformId}` +
-  `${pageNo ? `/page/${pageNo}` : ''}`;
+) => {
+  const showBase = `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
+    `${outputSchemaId}`;
+  const columnErrors = `/column_errors/${errorsTransformId}`;
+  const page = `${pageNo ? `/page/${pageNo}` : ''}`;
+
+  if (params.transformEditor) {
+    return `${showBase}${transformColumnFragment(params)}${columnErrors}${page}`;
+  }
+
+  return `${showBase}${columnErrors}${page}`;
+
+};
 
 export const showRowErrors = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
   `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +

@@ -5,6 +5,7 @@ import modal from 'reduxStuff/reducers/modal';
 import apiCalls from 'reduxStuff/reducers/apiCalls';
 import history from 'reduxStuff/reducers/history';
 import forms from 'reduxStuff/reducers/forms';
+import compiler from 'reduxStuff/reducers/compiler';
 
 export default combineReducers({
   flashMessage,
@@ -12,5 +13,6 @@ export default combineReducers({
   modal,
   apiCalls,
   history,
-  forms
+  forms,
+  compiler
 });

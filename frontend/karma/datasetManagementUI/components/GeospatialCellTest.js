@@ -12,7 +12,7 @@ describe('components/TableCell/GeospatialCell', () => {
     };
     const element = shallow(<GeospatialCell value={value} />).dive();
     assert.isTrue(element.exists());
-    assert.equal(element.find('div').text(), 'POINT(10 20)');
+    assert.equal(element.find('div').text(), 'Point(...)');
   });
 
   it('renders a multipolygon as WKT', () => {
@@ -41,7 +41,7 @@ describe('components/TableCell/GeospatialCell', () => {
     assert.isTrue(element.exists());
     assert.equal(
       element.find('div').text(),
-      'MULTIPOLYGON(((10 20, 20 30, 30 40, 10 20)), ((50 60, 70 80, 90 100, 50 60)))'
+      'MultiPolygon(...)'
     );
   });
 

@@ -1,0 +1,24 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.columnPreview,
+.noColumnYet {
+  padding: 0px 1em;
+  table {
+    margin: 0px auto;
+  }
+  
+  th {
+    display: block;
+    min-height: 27px;
+  }
+  tbody {
+    max-height: 640px;
+  }
+  
+  tr > td {
+    width: 250px;
+  }
+}
+

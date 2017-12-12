@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Links from 'links/links';
@@ -117,6 +117,17 @@ export class ColumnHeader extends Component {
     this.formatColumn();
   }
 
+  onTransform() {
+    if (this.isTransformDisabled()) return;
+    browserHistory.push(Links.transformColumn(
+      this.props.params,
+      this.props.params.sourceId,
+      this.props.params.inputSchemaId,
+      this.props.params.outputSchemaId,
+      this.props.outputColumn.id
+    ));
+  }
+
   isDropColumnDisabled() {
     return this.props.outputColumn.is_primary_key;
   }
@@ -229,6 +240,10 @@ export class ColumnHeader extends Component {
     return false;
   }
 
+  isTransformDisabled() {
+    return this.isInProgress();
+  }
+
   optionsFor() {
     const column = this.props.outputColumn;
     if (column.transform && column.transform.failed_at) {
@@ -241,6 +256,13 @@ export class ColumnHeader extends Component {
         value: 'onFormatColumn',
         icon: 'socrata-icon-paragraph-left',
         disabled: this.isFormatDisabled(),
+        render: DropdownWithIcon
+      },
+      {
+        title: 'data_transforms',
+        value: 'onTransform',
+        icon: 'socrata-icon-embed',
+        disabled: this.isTransformDisabled(),
         render: DropdownWithIcon
       },
       {

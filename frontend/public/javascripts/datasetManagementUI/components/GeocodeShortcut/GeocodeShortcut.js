@@ -433,6 +433,7 @@ export class GeocodeShortcut extends Component {
     };
     const { inputSchemaId } = params;
     const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
+    const outputSchema = this.getOutputSchema();
 
     const onPreview = () => this.createNewOutputSchema();
 
@@ -499,6 +500,7 @@ export class GeocodeShortcut extends Component {
           anySelected={anySelected}
           outputColumn={outputColumn}
           inputSchema={inputSchema}
+          outputSchema={outputSchema}
           displayState={displayState}
           isPreviewable={this.isPreviewable()}
           onPreview={onPreview}

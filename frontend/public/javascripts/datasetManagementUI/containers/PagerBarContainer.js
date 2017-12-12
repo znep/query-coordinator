@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { browserHistory, withRouter } from 'react-router';
+import { browserHistory } from 'react-router';
 import * as DisplayState from 'lib/displayState';
 import * as Selectors from 'selectors';
 import PagerBar from 'components/PagerBar/PagerBar';
@@ -24,11 +24,11 @@ function numItemsToPaginate(entities, outputSchemaId, displayState) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { displayState, path, params } = ownProps;
+  const { displayState, params } = ownProps;
 
   const urlForPage = targetPage => {
     const targetDisplayState = { ...displayState, pageNo: targetPage };
-    const targetPageUrl = DisplayState.toUiUrl(path, params, targetDisplayState);
+    const targetPageUrl = DisplayState.toUiUrl(params, targetDisplayState);
 
     return targetPageUrl;
   };
@@ -42,15 +42,17 @@ function mapDispatchToProps(dispatch, ownProps) {
   return { urlForPage, changePage };
 }
 
-function mapStateToProps({ entities }, ownProps) {
+function mapStateToProps({ entities, ui }, ownProps) {
   const currentPage = ownProps.displayState.pageNo;
   const resultCount = numItemsToPaginate(
     entities,
-    _.toNumber(ownProps.path.outputSchemaId),
+    _.toNumber(ownProps.params.outputSchemaId),
     ownProps.displayState
   );
 
-  return { currentPage, resultCount };
+  const isLoading = Selectors.rowLoadOperationsInProgress(ui.apiCalls) > 0;
+
+  return { currentPage, resultCount, isLoading };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PagerBar));
+export default connect(mapStateToProps, mapDispatchToProps)(PagerBar);

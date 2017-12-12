@@ -380,6 +380,8 @@ module DatasetsHelper
     end
   end
 
+  # Code in public/javascripts/controls/panes/download-dataset.js relies on the values here. If these ever
+  # get localized correctly, make sure to update that code as well.
   def normal_download_types
     ['CSV', 'CSV for Excel', 'CSV for Excel (Europe)', 'JSON', 'RDF', 'RSS', 'TSV for Excel', 'XML']
   end

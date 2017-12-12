@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
+import { FeatureFlags } from 'common/feature_flags';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
 import { getDownloadLink, getDownloadType } from 'common/downloadLinks';
 
@@ -44,11 +45,19 @@ export default class ExportFlannel extends PureComponent {
     );
   }
 
+  // Used below to filter out the csv_for_excel options from the list of links if
+  // the hide_csv_for_excel_download feature flag is set to true.
+  // Duplicated in controls/panes/download-dataset.js
+  csvForExcelOrTrue(value) {
+    return !(FeatureFlags.value('hide_csv_for_excel_download') && value.match(/^csv_for_excel/));
+  }
+
   getFeaturedLinks() {
     const { view } = this.props;
 
     const featuredLinks = view.exportFormats.
-      filter(format => ['csv', 'csv_for_excel'].includes(format)).
+      filter(format => featuredLinksList.includes(format)).
+      filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this));
 
     return featuredLinks;
@@ -58,7 +67,8 @@ export default class ExportFlannel extends PureComponent {
     const { view } = this.props;
 
     const restofLinks = view.exportFormats.
-      filter(format => !['csv', 'csv_for_excel'].includes(format)).
+      filter(format => !featuredLinksList.includes(format)).
+      filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this)).
       filter(el => !featuredLinksList.includes(el.key)).
       reduce(

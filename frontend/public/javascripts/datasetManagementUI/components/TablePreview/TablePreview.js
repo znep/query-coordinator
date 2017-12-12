@@ -41,17 +41,10 @@ const TablePreview = ({ entities, params, view }) => {
   const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
 
   const TableView = generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists });
-  const childProps = {
-    view: view,
-    outputSchema: outputSchema,
-    entities: entities,
-    blob: blob,
-    params: params
-  };
 
   return (
     <section className="table-preview-container">
-      {React.createElement(TableView, childProps, null)}
+      {React.createElement(TableView, { view, outputSchema, entities, blob, params }, null)}
     </section>
   );
 };

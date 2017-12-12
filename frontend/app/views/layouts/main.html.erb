@@ -108,16 +108,16 @@ http://www.socrata.com
 
   <div class="siteOuterWrapper">
     <div class="siteInnerWrapper <%= if FeatureFlags.derive(@view, request).show_govstat_header && enable_govstat_chrome? then "with-govstat-header" else "" end %> ">
-      <%- if enable_2017_grid_view_refresh_for_current_request? && render_asset_action_bar? %>
-        <div id="asset-action-bar-container"></div>
-      <%- end %>
-
       <%- if render_site_admin_chrome? -%>
         <%== site_chrome_admin_header(request, response) %>
       <%- end -%>
 
       <%- if render_site_chrome? -%>
         <%== site_chrome_header(request, response, :size => site_chrome_size) %>
+
+        <%- if enable_2017_grid_view_refresh_for_current_request? && render_asset_action_bar? %>
+          <div id="asset-action-bar-container"></div>
+        <%- end %>
 
         <div id="noticeContainer">
           <%== display_homepage_flashes %>

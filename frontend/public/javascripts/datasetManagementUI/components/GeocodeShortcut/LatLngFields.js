@@ -19,11 +19,15 @@ const LatLngFields = ({ outputColumns, setMapping, mappings }) => {
 
 LatLngFields.propTypes = fieldPropTypes;
 
-const composeFromLatLng = mappings => {
+const composeFromLatLng = (mappings, isObe) => {
   const lat = toNumberExpr(getOutputColumnFromMapping(mappings, 'latitude'));
   const lng = toNumberExpr(getOutputColumnFromMapping(mappings, 'longitude'));
 
-  return `make_location(make_point(${lat}, ${lng}))`;
+  const point = `make_point(${lat}, ${lng})`;
+  if (isObe) {
+    return `make_location(${point})`;
+  }
+  return point;
 };
 
 // given a make_point AST, and the output columns, return a mapping

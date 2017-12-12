@@ -6,6 +6,8 @@ import { GeocodeShortcut } from 'components/GeocodeShortcut/GeocodeShortcut';
 import entities from 'data/entities';
 import * as Selectors from 'selectors';
 
+window.serverConfig.featureFlags.ingress_strategy = 'obe';
+
 describe('components/GeocodeShortcut', () => {
   const defaultProps = {
     displayState: {
@@ -14,10 +16,12 @@ describe('components/GeocodeShortcut', () => {
       outputSchemaId: 137
     },
     params: {
+      fourfour: 'ky4m-3w3d',
       sourceId: 114,
       inputSchemaId: 97,
       outputSchemaId: 137
     },
+    view: entities.views['ky4m-3w3d'],
     inputColumns: Selectors.columnsForInputSchema(entities, 97),
     entities: entities,
     newOutputSchema: _.noop,

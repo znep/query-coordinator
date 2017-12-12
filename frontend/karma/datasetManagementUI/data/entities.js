@@ -49,6 +49,7 @@ const entities = {
         ],
         flags: ['admin']
       },
+      displayType: 'draft',
       lastUpdatedAt: new Date(1497394274000),
       dataLastUpdatedAt: new Date(1497394274000),
       metadataLastUpdatedAt: new Date(1497394274000),

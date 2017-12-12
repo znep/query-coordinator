@@ -21,19 +21,23 @@ const ComponentFields = ({ outputColumns, setMapping, mappings }) => (
 
 ComponentFields.propTypes = fieldPropTypes;
 
-const composeFromComponents = (mappings) => {
+const composeFromComponents = (mappings, isObe) => {
   const address = toTextExpr(getOutputColumnFromMapping(mappings, 'address'));
   const city = toTextExpr(getOutputColumnFromMapping(mappings, 'city'));
   const state = toTextExpr(getOutputColumnFromMapping(mappings, 'state'));
   const zip = toTextExpr(getOutputColumnFromMapping(mappings, 'zip'));
 
-  return `make_location(
-    ${address},
-    ${city},
-    ${state},
-    ${zip},
-    geocode(${address}, ${city}, ${state}, ${zip})
-  )`;
+  const point = `geocode(${address}, ${city}, ${state}, ${zip})`;
+  if (isObe) {
+    return `make_location(
+      ${address},
+      ${city},
+      ${state},
+      ${zip},
+      ${point}
+    )`;
+  }
+  return point;
 };
 
 const decomposeFromComponents = (geocodeFunc, outputColumns) => {

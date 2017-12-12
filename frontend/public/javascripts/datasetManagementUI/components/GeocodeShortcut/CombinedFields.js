@@ -16,9 +16,16 @@ const CombinedFields = ({ outputColumns, setMapping, mappings }) => (
 
 CombinedFields.propTypes = fieldPropTypes;
 
-const composeFromCombined = (mappings) => {
+const composeFromCombined = (mappings, isObe) => {
   const fullAddress = toTextExpr(getOutputColumnFromMapping(mappings, 'full_address'));
-  return `geocode(to_location(${fullAddress}))`;
+
+  // there is a location -> location impl of geocode
+  const base = `geocode(to_location(${fullAddress}))`;
+
+  if (!isObe) {
+    return `location_to_point(${base})`;
+  }
+  return base;
 };
 
 const decomposeFromCombined = (locToPoint, outputColumns) => {

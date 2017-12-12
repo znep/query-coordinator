@@ -6,6 +6,7 @@ import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'containers/ManageMetadataContainer';
 import DatasetForm from 'components/DatasetForm/DatasetForm';
+import ColumnForm from 'components/ColumnForm/ColumnForm';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
@@ -47,7 +48,7 @@ const checkIfPublished = store => (nextState, replace, cb) => {
   }
 };
 
-const Dummy = () => <div>not ready</div>;
+// const Dummy = () => <div>not ready</div>;
 
 export default function rootRoute(store) {
   return (
@@ -56,7 +57,7 @@ export default function rootRoute(store) {
       <Route path="metadata" component={ManageMetadata}>
         <IndexRedirect to="dataset" />
         <Route path="dataset" component={DatasetForm} />
-        <Route path=":outputSchemaId/columns" onEnter={checkSchemaStatus(store)} component={Dummy} />
+        <Route path=":outputSchemaId/columns" onEnter={checkSchemaStatus(store)} component={ColumnForm} />
       </Route>
       <Route path="sources" component={ShowSource} onEnter={checkIfPublished(store)}>
         <IndexRoute component={DragDropUpload} />

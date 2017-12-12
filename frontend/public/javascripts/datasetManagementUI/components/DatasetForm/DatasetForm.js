@@ -5,6 +5,20 @@ import Field from 'containers/DatasetFieldContainer';
 import WithFlash from 'containers/WithFlashContainer';
 import styles from './DatasetForm.scss';
 
+function getChangeHandler(field, fieldsetName, f) {
+  switch (field.elementType) {
+    case 'text':
+    case 'textarea':
+    case 'select':
+      return e => f(fieldsetName, field.name, e.target.value);
+    case 'attachmentsInput':
+    case 'tagsInput':
+      return v => f(fieldsetName, field.name, v);
+    default:
+      return () => {};
+  }
+}
+
 const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
   return (
     <WithFlash>
@@ -15,7 +29,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
             return (
               <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
                 {Object.values(fieldsets[fsKey].fields).map(field => (
-                  <Field field={field} fieldsetName={fsKey} handleChange={handleDatasetChange} />
+                  <Field field={field} handleChange={getChangeHandler(field, fsKey, handleDatasetChange)} />
                 ))}
               </Fieldset>
             );

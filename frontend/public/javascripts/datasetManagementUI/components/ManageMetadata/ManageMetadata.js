@@ -15,6 +15,7 @@ class ManageMetadata extends Component {
     };
 
     this.handleDatasetChange = this.handleDatasetChange.bind(this);
+    this.handleColumnChange = this.handleColumnChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -47,6 +48,20 @@ class ManageMetadata extends Component {
               value: value
             }
           }
+        }
+      }
+    });
+  }
+
+  handleColumnChange(columnId, fieldName, value) {
+    // this.props.markFormDirty();
+    this.setState({
+      ...this.state,
+      columnForm: {
+        ...this.state.columnForm,
+        [columnId]: {
+          ...this.state.columnForm[columnId],
+          [fieldName]: value
         }
       }
     });
@@ -86,8 +101,10 @@ class ManageMetadata extends Component {
             {this.props.children &&
               React.cloneElement(this.props.children, {
                 fieldsets: this.state.datasetForm,
+                columns: this.state.columnForm,
                 handleSubmit: this.handleSubmit,
-                handleDatasetChange: this.handleDatasetChange
+                handleDatasetChange: this.handleDatasetChange,
+                handleColumnChange: this.handleColumnChange
               })}
           </ModalContent>
           <ModalFooter>

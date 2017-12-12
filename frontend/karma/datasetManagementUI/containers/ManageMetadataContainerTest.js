@@ -7,7 +7,8 @@ import {
   validateFieldset,
   hasErrors,
   partitionCustomNoncustom,
-  getFieldsBy
+  getFieldsBy,
+  shapeOutputSchemaCols
 } from 'containers/ManageMetadataContainer';
 
 describe.only('ManageMetadata Container', () => {
@@ -483,6 +484,24 @@ describe.only('ManageMetadata Container', () => {
 
       assert.isEmpty(actual);
       assert.isObject(actual);
+    });
+  });
+
+  describe.only('shapeOutputSchemaCols', () => {
+    it('turns an array of output columns into an object keyed by column id', () => {
+      const cols = [
+        { position: 1, id: 123, field_name: 'first' },
+        { position: 2, id: 124, field_name: 'second' }
+      ];
+
+      assert.deepEqual(shapeOutputSchemaCols(cols), {
+        [123]: cols[0],
+        [124]: cols[1]
+      });
+    });
+
+    it('returns an empty object if given an undefined value', () => {
+      assert.deepEqual(shapeOutputSchemaCols(), {});
     });
   });
 });

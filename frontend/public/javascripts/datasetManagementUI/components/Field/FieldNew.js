@@ -11,7 +11,7 @@ import styles from './Field.scss';
 
 class FieldNew extends Component {
   render() {
-    const { field, fieldsetName, handleChange, errors } = this.props;
+    const { field, handleChange, errors } = this.props;
 
     const inErrorState = errors && !!errors.length;
     // const inErrorState = true;
@@ -25,43 +25,20 @@ class FieldNew extends Component {
 
     switch (field.elementType) {
       case 'text':
-        element = (
-          <TextInput
-            field={field}
-            inErrorState={inErrorState}
-            handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
-        );
+        element = <TextInput field={field} inErrorState={inErrorState} handleChange={handleChange} />;
         break;
       case 'textarea':
-        element = (
-          <TextArea
-            field={field}
-            inErrorState={inErrorState}
-            handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
-        );
+        element = <TextArea field={field} inErrorState={inErrorState} handleChange={handleChange} />;
         break;
       case 'select':
-        element = (
-          <Select
-            field={field}
-            inErrorState={inErrorState}
-            handleChange={e => handleChange(fieldsetName, field.name, e.target.value)} />
-        );
+        element = <Select field={field} inErrorState={inErrorState} handleChange={handleChange} />;
         break;
       case 'tagsInput':
-        element = (
-          <TagsInput
-            field={field}
-            inErrorState={inErrorState}
-            handleAddTag={tags => handleChange(fieldsetName, field.name, tags)} />
-        );
+        element = <TagsInput field={field} inErrorState={inErrorState} handleAddTag={handleChange} />;
         break;
       case 'attachmentsInput':
         element = (
-          <AttachmentsInput
-            field={field}
-            inErrorState={inErrorState}
-            handleAttachmentChange={attachments => handleChange(fieldsetName, field.name, attachments)} />
+          <AttachmentsInput field={field} inErrorState={inErrorState} handleAttachmentChange={handleChange} />
         );
         break;
       default:
@@ -98,7 +75,6 @@ class FieldNew extends Component {
 
 FieldNew.propTypes = {
   field: PropTypes.object.isRequired,
-  fieldsetName: PropTypes.string.isRequired,
   errors: PropTypes.arrayOf(PropTypes.string),
   handleChange: PropTypes.func.isRequired
 };

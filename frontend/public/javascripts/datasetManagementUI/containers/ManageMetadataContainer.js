@@ -350,7 +350,7 @@ export function validateFieldsets(fieldsets) {
 }
 
 // hasValue :: Any -> Validation
-function hasValue(v) {
+export function hasValue(v) {
   if (v) {
     return;
   } else {
@@ -392,7 +392,7 @@ function isNumber(x) {
   return typeof x === 'number' && !isNaN(x);
 }
 
-// getOutputSchemaCols :: Entities -> Number -> Array OutputColumn | undefined
+// getOutputSchemaCols :: Entities -> Number -> {Object} | undefined
 export function getOutputSchemaCols(entities, outputSchemaId) {
   let cols;
 
@@ -401,6 +401,17 @@ export function getOutputSchemaCols(entities, outputSchemaId) {
   }
 
   return cols;
+}
+
+// shapeOutputSchemaCols :: Array Column -> { [Column.id] : Column }
+export function shapeOutputSchemaCols(cols = []) {
+  return cols.reduce(
+    (acc, col) => ({
+      ...acc,
+      [col.id]: col
+    }),
+    {}
+  );
 }
 
 //  getRevision :: Revisions -> Number -> Revision | undefined
@@ -433,7 +444,7 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
   const revision = getRevision(entities.revisions, revisionSeq) || {};
   const customFieldsets = entities.views[params.fourfour].customMetadataFieldsets;
   const datasetMetadata = addFieldValuesAll(createFieldsets(customFieldsets), revision);
-  const outputSchemaColumns = getOutputSchemaCols(entities, outputSchemaId) || {};
+  const outputSchemaColumns = shapeOutputSchemaCols(getOutputSchemaCols(entities, outputSchemaId));
   const datasetFormDirty = ui.forms.datasetForm.isDirty;
   const colFormDirty = ui.forms.columnForm.isDirty;
   let pathToNewOutputSchema = '';

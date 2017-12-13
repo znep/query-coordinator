@@ -419,6 +419,7 @@ en:
         no_results: No results found. Try again or enter a full email address.
         owner: Owner
         people: People
+        permissions_saved: Permissions saved!
         please_select: Please select a user to transfer ownership to
         save: Save
         summary:

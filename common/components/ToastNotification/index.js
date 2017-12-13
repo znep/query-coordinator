@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { SocrataIcon } from '../SocrataIcon';
 import cx from 'classnames';
-import ConditionTransitionMotion from '../ConditionTransitionMotion';
 import { spring } from 'react-motion';
+
+import { SocrataIcon } from '../SocrataIcon';
+import ConditionTransitionMotion from '../ConditionTransitionMotion';
 
 export const types = {
   DEFAULT: 'default',
@@ -13,17 +14,32 @@ export const types = {
   ERROR: 'error'
 };
 
-export default class Notification extends Component {
+export default class ToastNotification extends Component {
   static propTypes = {
     canDismiss: PropTypes.bool,
     content: PropTypes.string,
     onDismiss: PropTypes.func.isRequired,
+    positionTop: PropTypes.number,
     showNotification: PropTypes.bool,
     type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error'])
   };
 
+  static defaultProps = {
+    canDismiss: false,
+    content: '',
+    positionTop: 35,
+    showNotification: false,
+    type: null
+  }
+
   renderNotification = (style) => {
-    const { content, onDismiss, type, canDismiss = false } = this.props;
+    const {
+      canDismiss,
+      content,
+      onDismiss,
+      type
+    } = this.props;
+
     const className = cx(
       'alert',
       {
@@ -31,16 +47,14 @@ export default class Notification extends Component {
       },
       this.props.className
     );
-    const htmlContent = {
-      __html: content
-    };
+
     return (
       <div className="socrata-toast-notification">
         <div className={className} style={style}>
-          <span dangerouslySetInnerHTML={htmlContent} />
+          <span dangerouslySetInnerHTML={{ __html: content }} />
           {canDismiss
             ? (
-            <button className="btn btn-transparent" onClick={() => onDismiss()}>
+            <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
               <SocrataIcon name="close-2" />
             </button>
               )
@@ -51,13 +65,13 @@ export default class Notification extends Component {
   }
 
   render() {
-    const { showNotification } = this.props;
+    const { positionTop, showNotification } = this.props;
     return (
       <ConditionTransitionMotion
         condition={showNotification}
-        willEnter={() => ({ opacity: 0, right: -16 })}
-        willLeave={() => ({ opacity: spring(0), right: spring(-16) })}
-        style={{ opacity: spring(1), right: spring(16) }} >
+        willEnter={() => ({ opacity: 0, top: -positionTop })}
+        willLeave={() => ({ opacity: spring(0), top: spring(-positionTop) })}
+        style={{ opacity: spring(1), top: spring(positionTop) }} >
         {style => this.renderNotification(style)}
       </ConditionTransitionMotion>
     );

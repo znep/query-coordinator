@@ -1,3 +1,5 @@
+import I18n from 'common/i18n';
+
 import * as uiActions from '../actions/UiActions';
 import * as permissionsActions from '../actions/PermissionsActions';
 
@@ -22,13 +24,16 @@ const showAccessManager = (state) => {
 };
 
 // called by the AccessManagerSaga when API returns success
+// hide the modal and show a success toast notification
 const saveSuccess = (state) => {
-  // TODO a toast or... something... also should the modal close on success?
-  console.log('Saved permissions!');
   return {
     ...state,
     saveInProgress: false,
-    visible: false
+    visible: false,
+
+    // see UiSagas for where this notification gets automatically dismissed
+    toastMessage: I18n.t('shared.site_chrome.access_manager.permissions_saved'),
+    toastMessageVisible: true
   };
 };
 
@@ -51,6 +56,11 @@ const fetchPermissionsFail = (state, action) => {
   };
 };
 
+const dismissToastMessage = (state) => ({
+  ...state,
+  toastMessageVisible: false
+});
+
 export default (state = {}, action) => {
   switch (action.type) {
     // uiActions
@@ -62,6 +72,8 @@ export default (state = {}, action) => {
       return saveButtonClicked(state, action);
     case uiActions.SHOW_ACCESS_MANAGER:
       return showAccessManager(state, action);
+    case uiActions.DISMISS_TOAST_MESSAGE:
+      return dismissToastMessage(state, action);
 
     // permissionsActions
     case permissionsActions.SAVE_SUCCESS:

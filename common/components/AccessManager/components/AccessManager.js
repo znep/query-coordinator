@@ -5,6 +5,7 @@ import cssModules from 'react-css-modules';
 import { createMemoryHistory, Router } from 'react-router';
 
 import I18n from 'common/i18n';
+import ToastNotification from 'common/components/ToastNotification';
 
 import styles from './access-manager.scss';
 import Header from './Header';
@@ -25,12 +26,17 @@ import * as uiActions from '../actions/UiActions';
 class AccessManager extends Component {
   static propTypes = {
     changeHeader: PropTypes.func.isRequired,
+    dismissToastNotification: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.any),
+    toastMessage: PropTypes.string,
+    toastMessageVisible: PropTypes.bool,
     visible: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
-    errors: []
+    errors: [],
+    toastMessage: null,
+    toastMessageVisible: false
   };
 
   constructor(props) {
@@ -70,16 +76,30 @@ class AccessManager extends Component {
   ];
 
   render() {
-    const { visible, errors } = this.props;
+    const {
+      visible,
+      errors,
+      toastMessage,
+      toastMessageVisible,
+      dismissToastNotification
+    } = this.props;
 
     return (
-      <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
-        <div styleName="modal">
-          <Header />
-          <section>
-            <Errors errors={errors} />
-            <Router history={this.history} routes={this.routes} />
-          </section>
+      <div>
+        <ToastNotification
+          canDismiss
+          content={toastMessage}
+          onDismiss={dismissToastNotification}
+          showNotification={toastMessageVisible}
+          type="success" />
+        <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
+          <div styleName="modal">
+            <Header />
+            <section>
+              <Errors errors={errors} />
+              <Router history={this.history} routes={this.routes} />
+            </section>
+          </div>
         </div>
       </div>
     );
@@ -88,11 +108,14 @@ class AccessManager extends Component {
 
 const mapStateToProps = state => ({
   visible: state.ui.visible,
-  errors: state.ui.errors
+  errors: state.ui.errors,
+  toastMessage: state.ui.toastMessage,
+  toastMessageVisible: state.ui.toastMessageVisible
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeHeader: (title, subtitle) => dispatch(uiActions.changeHeader(title, subtitle))
+  changeHeader: (title, subtitle) => dispatch(uiActions.changeHeader(title, subtitle)),
+  dismissToastNotification: () => dispatch(uiActions.dismissToastMessage())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(cssModules(AccessManager, styles));

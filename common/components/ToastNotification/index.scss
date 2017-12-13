@@ -1,11 +1,16 @@
-$notification-offset: 50px;
+$notification-width: 20%;
 
 .socrata-toast-notification {
   .alert {
-    position: fixed;
-    right: 16px;
-    top: $notification-offset;
-    z-index: 5;
+    position: absolute;
+    right: calc(50% - (#{$notification-width} / 2));
+    margin: auto;
+    z-index: 10000;
+    width: $notification-width;
+    display: flex;
+    min-width: 125px;
+    justify-content: space-between;
+    overflow-wrap: break-word;
 
     button {
       cursor: pointer;
@@ -15,7 +20,7 @@ $notification-offset: 50px;
     .btn-dismiss {
       float: right;
       margin-left: 20px;
-      margin-top: 4px;
+      margin-top: -2px;
 
       .socrata-icon {
         svg {

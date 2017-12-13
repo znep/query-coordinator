@@ -7,6 +7,7 @@ import {
   compose
 } from 'redux';
 import uiReducer from '../AccessManager/reducers/UiReducer';
+import uiSagas from '../AccessManager/sagas/UiSagas';
 import permissionsReducer from '../AccessManager/reducers/PermissionsReducer';
 import addUsersReducer from '../AccessManager/reducers/AddUsersReducer';
 import permissionsSagas from '../AccessManager/sagas/PermissionsSagas';
@@ -44,7 +45,8 @@ export default (initialState) => {
     yield all([
       ...permissionsSagas,
       ...addUsersSagas,
-      ...changeOwnerSagas
+      ...changeOwnerSagas,
+      ...uiSagas
     ]);
   }
   sagaMiddleware.run(sagas);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
+
 import createStore from './AccessManagerStore';
 import ViewPropType from '../AccessManager/propTypes/ViewPropType';
 import UserPropType from '../AccessManager/propTypes/UserPropType';

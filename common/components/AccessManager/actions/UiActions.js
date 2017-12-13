@@ -17,3 +17,6 @@ export const cancelButtonClicked = () => ({ type: CANCEL_BUTTON_CLICKED });
 // A function gets added to window that basically dispatches this action when called
 export const SHOW_ACCESS_MANAGER = 'SHOW_ACCESS_MANAGER';
 export const showAccessManager = () => ({ type: SHOW_ACCESS_MANAGER });
+
+export const DISMISS_TOAST_MESSAGE = 'DISMISS_TOAST_MESSAGE';
+export const dismissToastMessage = () => ({ type: DISMISS_TOAST_MESSAGE });

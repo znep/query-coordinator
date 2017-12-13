@@ -1315,4 +1315,5 @@ module ApplicationHelper
       FeatureFlags.derive(@view, request).enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon
     end
   end
+
 end

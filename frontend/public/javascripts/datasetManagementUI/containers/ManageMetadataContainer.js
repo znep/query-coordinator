@@ -50,8 +50,28 @@ import isURLHelper from 'validator/lib/isURL';
 // }
 // ...and this is the shape that dsmui's metadata form expects
 
+// Validation = String | undefined
+// either an error message if the validation failed or undefined if it succeeded
+
+// FieldsetError = {
+//   fields: {
+//     [String] : Array String
+//   }
+// }
+
+// ColumnError = {
+//   display_name: Array String,
+//   field_name: Array String
+// }
+
+// ==========
+// CONSTANTS
+// ==========
+const DATASET_FORM_NAME = 'datasetForm';
+const COL_FORM_NAME = 'columnForm';
+
 // The standard, non-custom fieldsets. Here we just define non-dynamic properties.
-// The initial values of the fields come in ansynchronously from the server
+// The initial values of the fields come in asynchronously from the server
 const FIELDSETS = {
   titleAndDescription: {
     title: I18n.metadata_manage.dataset_tab.titles.dataset_title,
@@ -164,7 +184,7 @@ const FIELDSETS = {
 // =====================
 // shapeCustomFields :: Array RawField -> Array Field
 // shapeCustomFields takes the fields that come from Rails and reshapes them so
-// they can be used in dsmui; the array of fields correspond to all fields in a
+// they can be used in dsmui; the array of fields corresponds to all fields in a
 // fieldset
 export function shapeCustomFields(fields = []) {
   return fields.map(field => ({
@@ -231,7 +251,7 @@ function keyByName(fields = []) {
   );
 }
 
-// addFieldValuesAll :: { [String] : Fieldset } -> Revision -> { [String] : Fieldset }
+// addFieldValuesAll :: { [String] : Fieldset } Revision -> { [String] : Fieldset }
 // looks up the value for all fields of all fieldsets in the form and adds it to
 // the field object under the 'value' key.
 function addFieldValuesAll(fieldsets, revision) {
@@ -247,7 +267,7 @@ function addFieldValuesAll(fieldsets, revision) {
   );
 }
 
-// addValues :: Array Field -> String -> Revision -> Array Field
+// addValues :: (Array Field) String Revision -> Array Field
 // Looks up the value of each field in a single fieldset. The semi-complicated
 // conditional is due to the fact that the server demands that different categories
 // of metadata (e.g. private, custom, etc) be stored in a particular part of the
@@ -296,15 +316,6 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
 // =====================
 // VALIDATOR FUNCTIONS
 // =====================
-// Validation = String | undefined
-// either an error message if the validation failed or undefined if it succeeded
-
-// FieldsetError = {
-//   fields: {
-//     [String] : Array String
-//   }
-// }
-
 // validateFieldset :: Fieldset -> FieldsetError
 // Takes a fieldset and applies a set of rules for each field to produce an
 // error object. The object contains the collected results of each rule.
@@ -340,6 +351,7 @@ export function validateFieldset(fieldset = {}) {
   };
 }
 
+// validateFieldsets :: { [String] : Fieldset } -> { [String] : FieldsetError }
 export function validateFieldsets(fieldsets) {
   return Object.keys(fieldsets).reduce(
     (acc, fsKey) => ({
@@ -350,6 +362,7 @@ export function validateFieldsets(fieldsets) {
   );
 }
 
+// validateColumns :: { [String] : OutputColumn } -> { [ String ] : ColumnError }
 export function validateColumns(columns = {}) {
   const fieldNames = Object.values(columns).map(col => col.field_name);
   const displayNames = Object.values(columns).map(col => col.display_name);
@@ -399,6 +412,7 @@ export function isUnique(as = []) {
   };
 }
 
+// isProperFieldName :: String -> Validation
 export function isProperFieldName(value) {
   if (!value) {
     return;
@@ -409,7 +423,7 @@ export function isProperFieldName(value) {
   }
 }
 
-// hasValue :: Any -> Validation
+// hasValue :: a -> Validation
 export function hasValue(v) {
   if (v) {
     return;
@@ -418,7 +432,7 @@ export function hasValue(v) {
   }
 }
 
-// areUnique :: Array Any -> Validation
+// areUnique :: Array a -> Validation
 function areUnique(vs) {
   if (Array.isArray(vs) && [...new Set(vs)].length === vs.length) {
     return;
@@ -427,7 +441,7 @@ function areUnique(vs) {
   }
 }
 
-// isURL :: Any -> Validation
+// isURL :: a -> Validation
 function isURL(val) {
   if (isURLHelper(val, { require_protocol: true })) {
     return;
@@ -436,7 +450,7 @@ function isURL(val) {
   }
 }
 
-// isURL ::Any -> Validation
+// isURL :: a -> Validation
 function isEmail(val) {
   if (isEmailHelper(val)) {
     return;
@@ -445,14 +459,15 @@ function isEmail(val) {
   }
 }
 
-// isNumber :: Any -> Boolean
+// DIVIDIEDIAFDAFDFAFDAFDAF
+// isNumber :: a -> Boolean
 // verifies its input is a number, exluding NaN; _.isNumber(NaN) returns true, which
 // we don't want here
 function isNumber(x) {
   return typeof x === 'number' && !isNaN(x);
 }
 
-// getOutputSchemaCols :: Entities -> Number -> {Object} | undefined
+// getOutputSchemaCols :: Entities Number -> (Array OutputColumn) | undefined
 export function getOutputSchemaCols(entities, outputSchemaId) {
   let cols;
 
@@ -463,7 +478,7 @@ export function getOutputSchemaCols(entities, outputSchemaId) {
   return cols;
 }
 
-// shapeOutputSchemaCols :: Array Column -> { [Column.id] : Column }
+// shapeOutputSchemaCols :: (Array OutputColumn) -> { [Column.id] : OutputColumn }
 export function shapeOutputSchemaCols(cols = []) {
   return cols.reduce(
     (acc, col) => ({
@@ -474,9 +489,7 @@ export function shapeOutputSchemaCols(cols = []) {
   );
 }
 
-//  getRevision :: Revisions -> Number -> Revision | undefined
-// Attempts to find a revision by its revision sequence number; if it fails to
-// find a revision, it returns undefined
+//  getRevision :: Revisions Number -> Revision | undefined
 export function getRevision(revisions = {}, revisionSeq) {
   let rev;
 
@@ -487,6 +500,7 @@ export function getRevision(revisions = {}, revisionSeq) {
   return rev;
 }
 
+// getOutputSchemaId :: Number -> Revision -> Number
 function getOutputSchemaId(idFromParams, revision, fallbackOS) {
   if (isNumber(idFromParams)) {
     return idFromParams;
@@ -495,6 +509,129 @@ function getOutputSchemaId(idFromParams, revision, fallbackOS) {
   } else {
     return fallbackOS ? fallbackOS.id : null;
   }
+}
+
+// hasColumnErrors :: { [Strgin] : ColumnError } -> Boolean
+export function hasColumnErrors(errorsByColumn = {}) {
+  let errors = [];
+
+  errors = _.flatMap(Object.values(errorsByColumn), col => col.display_name.concat(col.field_name));
+
+  return !!errors.length;
+}
+
+// hasDatasetErrors :: { [String] : FieldsetError } -> Boolean
+export function hasDatasetErrors(errorsByFieldset = {}) {
+  let errors = [];
+
+  errors = _.flatMap(errorsByFieldset, fs => {
+    const fields = fs.fields || {};
+    return _.flatten(Object.values(fields));
+  });
+
+  return !!errors.length;
+}
+
+// getFieldsBy ::
+//   { [String]: { fields : { value : a } } }
+//   ({ value : a } -> Boolean)
+//   -> { [String] : a }
+// extracts key-value pairs from a fieldset's fields if the given function, when
+// applied to the field, returns a truthy value
+export function getFieldsBy(fs = {}, pred) {
+  const fields = fs.fields || {};
+
+  return _.chain(fields)
+    .pickBy(pred)
+    .mapValues(f => f.value)
+    .mapValues(v => (v === '' ? null : v))
+    .value();
+}
+
+// partitionCustomNoncustom ::
+// { [String] : { isCustom : Boolean } }
+//  -> { custom: obj, noncustom: obj }
+export function partitionCustomNoncustom(fieldsets = {}) {
+  return {
+    custom: _.pickBy(fieldsets, fs => fs.isCustom),
+    noncustom: _.pickBy(fieldsets, fs => !fs.isCustom)
+  };
+}
+
+// partitionPrivatePublic :: { [String] : { isPrivate : Boolean } }
+//     -> { regularPublic : obj, regularPrivate : obj }
+function partitionPrivatePublic(fieldsets) {
+  const regularPrivate = Object.values(fieldsets).reduce((acc, fs) => {
+    return {
+      ...acc,
+      ...getFieldsBy(fs, f => f.isPrivate)
+    };
+  }, {});
+
+  const regularPublic = Object.values(fieldsets).reduce((acc, fs) => {
+    return {
+      ...acc,
+      ...getFieldsBy(fs, f => !f.isPrivate)
+    };
+  }, {});
+
+  return {
+    regularPrivate,
+    regularPublic
+  };
+}
+
+// partitionCustomPublicPrivate :: { [String] : { isPrivate : Boolean } }
+//     -> { publicCustom : obj, privateCustom : obj }
+function partitionCustomPublicPrivate(fieldsets) {
+  const privateCustom = Object.keys(fieldsets).reduce((acc, ke) => {
+    return {
+      ...acc,
+      [ke]: getFieldsBy(fieldsets[ke], f => f.isPrivate)
+    };
+  }, {});
+
+  const publicCustom = Object.keys(fieldsets).reduce((acc, ke) => {
+    return {
+      ...acc,
+      [ke]: getFieldsBy(fieldsets[ke], f => !f.isPrivate)
+    };
+  }, {});
+
+  return {
+    privateCustom: _.omitBy(privateCustom, _.isEmpty),
+    publicCustom: _.omitBy(publicCustom, _.isEmpty)
+  };
+}
+
+// reshape :: { [ String ] : Fieldset } -> { attachments : Array, metadata : obj }
+// this function takes the state of the dataset form and converts it back into
+// the shape expected by the server
+function reshape(s) {
+  const { custom, noncustom } = partitionCustomNoncustom(s);
+  const { privateCustom, publicCustom } = partitionCustomPublicPrivate(custom);
+  const { regularPrivate, regularPublic } = partitionPrivatePublic(noncustom);
+
+  // in addition to having 4 buckets of metadata, we further complicate things
+  // by putting attachments and row-labels in this form, so we have to extract those
+  const regularPublicFiltered = _.omit(regularPublic, ['attachments', 'rowLabel']);
+  const rowLabel = _.get(regularPublic, 'rowLabel');
+  const attachments = _.get(regularPublic, 'attachments') || [];
+
+  return {
+    attachments,
+    metadata: {
+      ...regularPublicFiltered,
+      privateMetadata: {
+        ...regularPrivate,
+        custom_fields: privateCustom
+      },
+      metadata: {
+        rowLabel,
+        custom_fields: publicCustom
+      }
+    }
+  };
 }
 
 const mapStateToProps = ({ entities, ui }, { params }) => {
@@ -533,127 +670,6 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
   };
 };
 
-// hasColumnErrors :: Obj -> Boolean
-export function hasColumnErrors(errorsByColumn = {}) {
-  let errors = [];
-
-  errors = _.flatMap(Object.values(errorsByColumn), col => col.display_name.concat(col.field_name));
-
-  return !!errors.length;
-}
-
-// reduceErrors :: { [String] : FieldsetError } -> Boolean
-export function hasErrors(errorsByFieldset = {}) {
-  let errors = [];
-
-  errors = _.flatMap(errorsByFieldset, fs => {
-    const fields = fs.fields || {};
-    return _.flatten(Object.values(fields));
-  });
-
-  return !!errors.length;
-}
-
-// partitionCustomNoncustom ::
-// { [String] : { isCustom : Boolean } }
-//  -> { custom: obj, noncustom: obj }
-export function partitionCustomNoncustom(fieldsets = {}) {
-  return {
-    custom: _.pickBy(fieldsets, fs => fs.isCustom),
-    noncustom: _.pickBy(fieldsets, fs => !fs.isCustom)
-  };
-}
-
-// getFieldsBy ::
-//   { [String]: { fields : { value : a } } }
-//   -> ({ value : a } -> Boolean)
-//   -> { [String] : a }
-// extracts key-value pairs from a fieldset's fields if the given function, when
-// applied to the field, returns a truthy value
-export function getFieldsBy(fs = {}, pred) {
-  const fields = fs.fields || {};
-
-  return _.chain(fields)
-    .pickBy(pred)
-    .mapValues(f => f.value)
-    .mapValues(v => (v === '' ? null : v))
-    .value();
-}
-
-// partitionPrivatePublic :: Fieldsets -> { regularPublic : obj, regularPrivate : obj }
-function partitionPrivatePublic(fieldsets) {
-  const regularPrivate = Object.values(fieldsets).reduce((acc, fs) => {
-    return {
-      ...acc,
-      ...getFieldsBy(fs, f => f.isPrivate)
-    };
-  }, {});
-
-  const regularPublic = Object.values(fieldsets).reduce((acc, fs) => {
-    return {
-      ...acc,
-      ...getFieldsBy(fs, f => !f.isPrivate)
-    };
-  }, {});
-
-  return {
-    regularPrivate,
-    regularPublic
-  };
-}
-
-// partitionCustomPublicPrivate :: Fieldsets -> { publicCustom : obj, privateCustom : obj }
-function partitionCustomPublicPrivate(fieldsets) {
-  const privateCustom = Object.keys(fieldsets).reduce((acc, ke) => {
-    return {
-      ...acc,
-      [ke]: getFieldsBy(fieldsets[ke], f => f.isPrivate)
-    };
-  }, {});
-
-  const publicCustom = Object.keys(fieldsets).reduce((acc, ke) => {
-    return {
-      ...acc,
-      [ke]: getFieldsBy(fieldsets[ke], f => !f.isPrivate)
-    };
-  }, {});
-
-  return {
-    privateCustom: _.omitBy(privateCustom, _.isEmpty),
-    publicCustom: _.omitBy(publicCustom, _.isEmpty)
-  };
-}
-
-function reshape(s) {
-  const { custom, noncustom } = partitionCustomNoncustom(s);
-  const { privateCustom, publicCustom } = partitionCustomPublicPrivate(custom);
-  const { regularPrivate, regularPublic } = partitionPrivatePublic(noncustom);
-
-  // in addition to having 4 buckets of metadata, we further complicate things
-  // by putting attachments and row-labels in this form, so we have to extract those
-  const regularPublicFiltered = _.omit(regularPublic, ['attachments', 'rowLabel']);
-  const rowLabel = _.get(regularPublic, 'rowLabel');
-  const attachments = _.get(regularPublic, 'attachments') || [];
-
-  return {
-    attachments,
-    metadata: {
-      ...regularPublicFiltered,
-      privateMetadata: {
-        ...regularPrivate,
-        custom_fields: privateCustom
-      },
-      metadata: {
-        rowLabel,
-        custom_fields: publicCustom
-      }
-    }
-  };
-}
-
-const FORM_NAME = 'datasetForm';
-const COL_FORM_NAME = 'columnForm';
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   const onColumnTab = !!ownProps.params.outputSchemaId;
 
@@ -665,14 +681,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   const datasetFormDispatchProps = {
     ...commonDispatchProps,
-    setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
-    markFormDirty: () => dispatch(FormActions.markFormDirty(FORM_NAME)),
-    markFormClean: () => dispatch(FormActions.markFormClean(FORM_NAME)),
+    setFormErrors: errors => dispatch(FormActions.setFormErrors(DATASET_FORM_NAME, errors)),
+    markFormDirty: () => dispatch(FormActions.markFormDirty(DATASET_FORM_NAME)),
+    markFormClean: () => dispatch(FormActions.markFormClean(DATASET_FORM_NAME)),
     saveDatasetMetadata: newMetadata => {
       const result = validateFieldsets(newMetadata);
 
-      if (hasErrors(result)) {
-        return Promise.reject(new FormValidationError(FORM_NAME, result));
+      if (hasDatasetErrors(result)) {
+        return Promise.reject(new FormValidationError(DATASET_FORM_NAME, result));
       }
 
       const reshaped = reshape(newMetadata);

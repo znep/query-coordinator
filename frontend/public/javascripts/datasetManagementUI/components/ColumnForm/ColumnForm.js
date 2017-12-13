@@ -49,6 +49,7 @@ class ColumnForm extends Component {
               <div className={styles.row} key={idx}>
                 {makeFieldsFromColumn(column).map(field => (
                   <ColumnField
+                    key={`${column.id}-${field.name}`}
                     field={field}
                     columnId={column.id}
                     handleChange={e => handleColumnChange(column.id, field.name, e.target.value)} />
@@ -64,9 +65,9 @@ class ColumnForm extends Component {
 }
 
 ColumnForm.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
-  handleColumnChange: PropTypes.func.isRequired,
-  handleColumnFormSubmit: PropTypes.func.isRequired
+  columns: PropTypes.object,
+  handleColumnChange: PropTypes.func,
+  handleColumnFormSubmit: PropTypes.func
 };
 
 export default ColumnForm;

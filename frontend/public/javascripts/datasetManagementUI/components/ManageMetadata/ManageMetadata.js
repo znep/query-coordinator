@@ -159,7 +159,7 @@ ManageMetadata.propTypes = {
   pathToNewOutputSchema: PropTypes.string,
   datasetFormDirty: PropTypes.bool,
   colFormDirty: PropTypes.bool,
-  inputSchemaId: PropTypes.string,
+  inputSchemaId: PropTypes.number,
   children: PropTypes.object
 };
 

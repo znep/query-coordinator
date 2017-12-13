@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Fieldset from 'components/Fieldset/Fieldset';
-import Field from 'containers/DatasetFieldContainer';
+import DatasetField from 'containers/DatasetFieldContainer';
 import WithFlash from 'containers/WithFlashContainer';
 import styles from './DatasetForm.scss';
 
@@ -29,7 +29,8 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSub
             return (
               <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
                 {Object.values(fieldsets[fsKey].fields).map(field => (
-                  <Field
+                  <DatasetField
+                    key={`${fsKey}-${field.name}`}
                     field={field}
                     fieldsetName={fsKey}
                     handleChange={getChangeHandler(field, fsKey, handleDatasetChange)} />
@@ -45,9 +46,9 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSub
 };
 
 DatasetForm.propTypes = {
-  fieldsets: PropTypes.object.isRequired,
-  handleDatasetFormSubmit: PropTypes.func.isRequired,
-  handleDatasetChange: PropTypes.func.isRequired
+  fieldsets: PropTypes.object,
+  handleDatasetFormSubmit: PropTypes.func,
+  handleDatasetChange: PropTypes.func
 };
 
 export default DatasetForm;

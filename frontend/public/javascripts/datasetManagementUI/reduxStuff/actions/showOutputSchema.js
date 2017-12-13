@@ -59,10 +59,6 @@ export function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(subscribeToTransforms(os));
 
         return resp;
-      })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-        throw err;
       });
   };
 }

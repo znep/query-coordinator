@@ -717,9 +717,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     saveColumnMetadata: (columns, inputSchemaId) => {
       const result = validateColumns(columns);
 
-      if (hasColumnErrors(result)) {
-        return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
-      }
+      // if (hasColumnErrors(result)) {
+      //   return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
+      // }
 
       const call = {
         operation: 'SAVE_COLUMN_METADATA',
@@ -727,8 +727,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       };
 
       return dispatch(createNewOutputSchema(inputSchemaId, Object.values(columns), call)).catch(err => {
-        console.log(err);
-        // throw validation error
+        console.log(err.body);
+        // parse this
+        // throw formvalidation error
+        // handle in component (flash, seterrors, etc)
       });
     }
   };

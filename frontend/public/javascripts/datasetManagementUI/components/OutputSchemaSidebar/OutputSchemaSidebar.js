@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './OutputSchemaSidebar.scss';
-import sidebarStyles from '../MetadataContent/MetadataContent.scss';
+import sidebarStyles from './Sidebar.scss';
 import SchemaActions from 'containers/SchemaActionsContainer';
 import { IndexLink, Link } from 'react-router';
 import * as Links from 'links/links';

@@ -6,6 +6,7 @@
 
 #app .dataset-management-ui {
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
 }
 
 // this is in the erb, so can't move to within react app

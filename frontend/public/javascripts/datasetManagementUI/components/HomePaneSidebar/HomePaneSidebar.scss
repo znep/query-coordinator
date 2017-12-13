@@ -1,33 +1,14 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.nav {
-  margin: 1em 0em 1em 0em;
-  border-bottom: 1px solid $light-grey-4;
-}
-
-// !important necessary to override global styles
-.navBtn {
-  composes: btn from global;
-  composes: chooser-btn from global;
-  background-color: $light-grey-7;
-  text-transform: uppercase;
-  padding: 0.25em 0em !important;
-  margin: 0em 2em;
-}
-
-.navBtnEnabled {
-  composes: navBtn;
-  composes: enabled from global;
-  border-bottom: 3px solid $alternate-2 !important;
-}
-
-.navBtn:focus {
-  outline: 0;
-}
-
 .sidebar {
   width: 24em;
   border-left: 1px solid $light-grey-4;
-  text-align: center;
+  .header-cont {
+    margin: 1em 0em 1em 0em;
+    h2 {
+      margin: 0;
+      padding: 0.2em 0.8em;
+    }
+  }
 }

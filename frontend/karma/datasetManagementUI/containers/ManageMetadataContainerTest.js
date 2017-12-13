@@ -6,9 +6,12 @@ import {
   addFieldValues,
   validateFieldset,
   hasErrors,
+  hasColumnErrors,
+  isUnique,
   partitionCustomNoncustom,
   getFieldsBy,
-  shapeOutputSchemaCols
+  shapeOutputSchemaCols,
+  validateColumns
 } from 'containers/ManageMetadataContainer';
 
 describe.only('ManageMetadata Container', () => {
@@ -410,6 +413,165 @@ describe.only('ManageMetadata Container', () => {
     });
   });
 
+  describe.only('hasColumnErrors', () => {
+    const validColumns = {
+      '1000': {
+        field_name: 'one',
+        display_name: 'a name'
+      },
+      '1001': {
+        field_name: 'two',
+        display_name: 'another name'
+      },
+      '1002': {
+        field_name: 'three',
+        display_name: 'yet another name'
+      }
+    };
+
+    const invalidColumns = {
+      ...validColumns,
+      '1003': {
+        field_name: '%^!!aa',
+        display_name: ''
+      }
+    };
+
+    it('returns true if 1 or more column errors exist', () => {
+      const validationResults = validateColumns(invalidColumns);
+      assert.isTrue(hasColumnErrors(validationResults));
+    });
+
+    it('returns false if no columns have errors', () => {
+      const validationResults = validateColumns(validColumns);
+
+      assert.isFalse(hasColumnErrors(validationResults));
+    });
+
+    it('returns false if the input is undefined', () => {
+      assert.isFalse(hasColumnErrors(undefined));
+    });
+  });
+
+  describe('isUnique', () => {
+    it('returns an error message if a value appears more than once in the specified set of values', () => {
+      const validator = isUnique(['foo', 'bar', 'foo', 'baz']);
+      assert.isOk(validator('foo'));
+    });
+
+    it('returns undefined--meaning valid--if the value appears only once in the specified set of values', () => {
+      const validator = isUnique(['foo', 'bar', 'baz']);
+      assert.isUndefined(validator('foo'));
+    });
+
+    it('returns undefined--meaning valid--if either input is undefined', () => {
+      const validator1 = isUnique(['foo']);
+      const validator2 = isUnique(undefined);
+
+      assert.isUndefined(validator1(undefined));
+      assert.isUndefined(validator2('foo'));
+    });
+  });
+
+  describe('validateColumns', () => {
+    const validColumns = {
+      '1000': {
+        field_name: 'one',
+        display_name: 'a name'
+      },
+      '1001': {
+        field_name: 'two',
+        display_name: 'another name'
+      },
+      '1002': {
+        field_name: 'three',
+        display_name: 'yet another name'
+      }
+    };
+
+    it('returns an object with the same keys as the object passed in', () => {
+      const result = validateColumns(validColumns);
+      assert.sameMembers(Object.keys(result), Object.keys(validColumns));
+    });
+
+    it('catches field name duplication', () => {
+      const dupFieldName = {
+        ...validColumns,
+        '1003': {
+          field_name: 'three',
+          display_name: 'boop beep'
+        }
+      };
+
+      const result = validateColumns(dupFieldName);
+
+      assert.equal(result['1003'].field_name.length, 1);
+      assert.equal(result['1002'].field_name.length, 1);
+    });
+
+    it('catches display name duplication', () => {
+      const dupDisplayName = {
+        ...validColumns,
+        '1003': {
+          field_name: 'boop',
+          display_name: 'a name'
+        }
+      };
+
+      const result = validateColumns(dupDisplayName);
+      assert.equal(result['1003'].display_name.length, 1);
+      assert.equal(result['1000'].display_name.length, 1);
+    });
+
+    it('catches an invalid field name', () => {
+      const withInvalidFieldName = {
+        ...validColumns,
+        ['1003']: {
+          field_name: '@--wrong-name!!',
+          display_name: 'ok'
+        }
+      };
+
+      const result = validateColumns(withInvalidFieldName);
+
+      assert.equal(result['1003'].field_name.length, 1);
+    });
+
+    it('catches a missing field name', () => {
+      const withMissingfieldName = {
+        ...validColumns,
+        ['1003']: {
+          field_name: '',
+          display_name: 'weeee'
+        }
+      };
+
+      const result = validateColumns(withMissingfieldName);
+
+      assert.equal(result['1003'].field_name.length, 1);
+    });
+
+    it('catches a missing display name', () => {
+      const withMissingDisplayName = {
+        ...validColumns,
+        ['1003']: {
+          field_name: 'ok',
+          display_name: ''
+        }
+      };
+
+      const result = validateColumns(withMissingDisplayName);
+
+      assert.equal(result['1003'].display_name.length, 1);
+    });
+
+    it('returns an empty object if the in put is undefined for whatever reason', () => {
+      const result = validateColumns(undefined);
+      assert.isObject(result);
+      assert.isEmpty(result);
+    });
+  });
+
   describe('partitionCustomNoncustom', () => {
     it('divides a object based on the presence of an isCustom attribute', () => {
       const one = {
@@ -487,7 +649,7 @@ describe.only('ManageMetadata Container', () => {
     });
   });
 
-  describe.only('shapeOutputSchemaCols', () => {
+  describe('shapeOutputSchemaCols', () => {
     it('turns an array of output columns into an object keyed by column id', () => {
       const cols = [
         { position: 1, id: 123, field_name: 'first' },

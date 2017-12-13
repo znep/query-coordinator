@@ -4,6 +4,7 @@ import * as Selectors from 'selectors';
 import * as Links from 'links/links';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
 import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
+import { createNewOutputSchema } from 'reduxStuff/actions/showOutputSchema';
 import { FormValidationError } from 'containers/HrefFormContainer';
 import * as FormActions from 'reduxStuff/actions/forms';
 import * as FlashActions from 'reduxStuff/actions/flashMessage';
@@ -349,6 +350,65 @@ export function validateFieldsets(fieldsets) {
   );
 }
 
+export function validateColumns(columns = {}) {
+  const fieldNames = Object.values(columns).map(col => col.field_name);
+  const displayNames = Object.values(columns).map(col => col.display_name);
+
+  return Object.keys(columns).reduce((acc, ke) => {
+    const { field_name, display_name } = columns[ke];
+    const fieldNameValidations = [hasValue, isUnique(fieldNames), isProperFieldName];
+    const displayNameValidations = [hasValue, isUnique(displayNames)];
+    const fieldNameErrors = [];
+    const displayNameErrors = [];
+
+    fieldNameValidations.forEach(validation => {
+      const errorMessage = validation(field_name);
+      if (errorMessage) {
+        fieldNameErrors.push(errorMessage);
+      }
+    });
+
+    displayNameValidations.forEach(validation => {
+      const errorMessage = validation(display_name);
+      if (errorMessage) {
+        displayNameErrors.push(errorMessage);
+      }
+    });
+
+    return {
+      ...acc,
+      [ke]: {
+        field_name: fieldNameErrors,
+        display_name: displayNameErrors
+      }
+    };
+  }, {});
+}
+
+// isUnique :: Array a -> a -> Validation
+// checks that 'a' does not appear more than once in 'as'
+export function isUnique(as = []) {
+  return a => {
+    if (!a) {
+      return;
+    } else if (as.filter(item => item === a).length > 1) {
+      return I18n.edit_metadata.validation_error_dupe_field_name;
+    } else {
+      return;
+    }
+  };
+}
+
+export function isProperFieldName(value) {
+  if (!value) {
+    return;
+  } else if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value)) {
+    return;
+  } else {
+    return I18n.edit_metadata.validation_error_fieldname;
+  }
+}
+
 // hasValue :: Any -> Validation
 export function hasValue(v) {
   if (v) {
@@ -448,11 +508,13 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
   const datasetFormDirty = ui.forms.datasetForm.isDirty;
   const colFormDirty = ui.forms.columnForm.isDirty;
   let pathToNewOutputSchema = '';
+  let inputSchemaId;
 
   if (onColumnTab && isNumber(outputSchemaId)) {
     const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
 
     pathToNewOutputSchema = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
+    inputSchemaId = inputSchema.id;
   }
 
   return {
@@ -461,6 +523,7 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
     pathToNewOutputSchema,
     datasetFormDirty,
     colFormDirty,
+    inputSchemaId,
     outputSchemaId: getOutputSchemaId(
       outputSchemaId,
       revision,
@@ -469,6 +532,15 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
     columnsExist: !_.isEmpty(entities.output_columns)
   };
 };
+
+// hasColumnErrors :: Obj -> Boolean
+export function hasColumnErrors(errorsByColumn = {}) {
+  let errors = [];
+
+  errors = _.flatMap(Object.values(errorsByColumn), col => col.display_name.concat(col.field_name));
+
+  return !!errors.length;
+}
 
 // reduceErrors :: { [String] : FieldsetError } -> Boolean
 export function hasErrors(errorsByFieldset = {}) {
@@ -580,15 +652,22 @@ function reshape(s) {
 }
 
 const FORM_NAME = 'datasetForm';
+const COL_FORM_NAME = 'columnForm';
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
+  const onColumnTab = !!ownProps.params.outputSchemaId;
+
+  const commonDispatchProps = {
     showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
     hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
+    handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params))
+  };
+
+  const datasetFormDispatchProps = {
+    ...commonDispatchProps,
     setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
     markFormDirty: () => dispatch(FormActions.markFormDirty(FORM_NAME)),
     markFormClean: () => dispatch(FormActions.markFormClean(FORM_NAME)),
-    handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params)),
     saveDatasetMetadata: newMetadata => {
       const result = validateFieldsets(newMetadata);
 
@@ -613,6 +692,36 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         });
     }
   };
+
+  const columnformDispatchProps = {
+    ...commonDispatchProps,
+    setFormErrors: errors => dispatch(FormActions.setFormErrors(COL_FORM_NAME, errors)),
+    markFormDirty: () => dispatch(FormActions.markFormDirty(COL_FORM_NAME)),
+    markFormClean: () => dispatch(FormActions.markFormClean(COL_FORM_NAME)),
+    saveColumnMetadata: (columns, inputSchemaId) => {
+      const result = validateColumns(columns);
+
+      if (hasColumnErrors(result)) {
+        return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
+      }
+
+      const call = {
+        operation: 'SAVE_COLUMN_METADATA',
+        callParams: {}
+      };
+
+      return dispatch(createNewOutputSchema(inputSchemaId, Object.values(columns), call)).catch(err => {
+        console.log(err);
+        // throw validation error
+      });
+    }
+  };
+
+  if (onColumnTab) {
+    return columnformDispatchProps;
+  } else {
+    return datasetFormDispatchProps;
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

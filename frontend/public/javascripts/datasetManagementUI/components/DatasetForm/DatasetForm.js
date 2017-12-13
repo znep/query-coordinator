@@ -19,17 +19,20 @@ function getChangeHandler(field, fieldsetName, f) {
   }
 }
 
-const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
+const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSubmit }) => {
   return (
     <WithFlash>
       <div className={styles.formContainer}>
         <span className={styles.requiredNote}>{I18n.metadata_manage.required_note}</span>
-        <form onSubmit={handleSubmit} className={styles.form} id="datasetFrom">
+        <form onSubmit={handleDatasetFormSubmit} className={styles.form} id="datasetFrom">
           {Object.keys(fieldsets).map(fsKey => {
             return (
               <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
                 {Object.values(fieldsets[fsKey].fields).map(field => (
-                  <Field field={field} handleChange={getChangeHandler(field, fsKey, handleDatasetChange)} />
+                  <Field
+                    field={field}
+                    fieldsetName={fsKey}
+                    handleChange={getChangeHandler(field, fsKey, handleDatasetChange)} />
                 ))}
               </Fieldset>
             );
@@ -43,7 +46,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleSubmit }) => {
 
 DatasetForm.propTypes = {
   fieldsets: PropTypes.object.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  handleDatasetFormSubmit: PropTypes.func.isRequired,
   handleDatasetChange: PropTypes.func.isRequired
 };
 

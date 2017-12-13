@@ -16,7 +16,8 @@ class ManageMetadata extends Component {
 
     this.handleDatasetChange = this.handleDatasetChange.bind(this);
     this.handleColumnChange = this.handleColumnChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleColumnFormSubmit = this.handleColumnFormSubmit.bind(this);
+    this.handleDatasetFormSubmit = this.handleDatasetFormSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -54,7 +55,7 @@ class ManageMetadata extends Component {
   }
 
   handleColumnChange(columnId, fieldName, value) {
-    // this.props.markFormDirty();
+    this.props.markFormDirty();
     this.setState({
       ...this.state,
       columnForm: {
@@ -67,7 +68,23 @@ class ManageMetadata extends Component {
     });
   }
 
-  handleSubmit(e) {
+  handleColumnFormSubmit(e) {
+    this.props.markFormClean();
+    e.preventDefault();
+    this.props
+      .saveColumnMetadata(this.state.columnForm, this.props.inputSchemaId)
+      .then(() => {
+        this.props.showFlash('success', I18n.edit_metadata.save_success, 3500);
+        this.props.setFormErrors({});
+      })
+      .catch(err => {
+        this.props.markFormDirty();
+        this.props.showFlash('error', I18n.edit_metadata.validation_error_general);
+        this.props.setFormErrors(err.errors);
+      });
+  }
+
+  handleDatasetFormSubmit(e) {
     this.props.markFormClean();
     e.preventDefault();
     this.props
@@ -84,7 +101,8 @@ class ManageMetadata extends Component {
   }
 
   render() {
-    const { datasetFormDirty, colFormDirty } = this.props;
+    const { datasetFormDirty, colFormDirty, params } = this.props;
+    const onColumnTab = !!params.outputSchemaId;
     const formDirty = datasetFormDirty || colFormDirty;
 
     return (
@@ -102,7 +120,8 @@ class ManageMetadata extends Component {
               React.cloneElement(this.props.children, {
                 fieldsets: this.state.datasetForm,
                 columns: this.state.columnForm,
-                handleSubmit: this.handleSubmit,
+                handleDatasetFormSubmit: this.handleDatasetFormSubmit,
+                handleColumnFormSubmit: this.handleColumnFormSubmit,
                 handleDatasetChange: this.handleDatasetChange,
                 handleColumnChange: this.handleColumnChange
               })}
@@ -113,7 +132,9 @@ class ManageMetadata extends Component {
               onClick={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)}>
               {formDirty ? I18n.common.cancel : I18n.common.done}
             </button>
-            <SubmitButton buttonName="submit-dataset-form" formName="datasetForm" />
+            <SubmitButton
+              buttonName={onColumnTab ? 'submit-column-form' : 'submit-dataset-form'}
+              formName={onColumnTab ? 'columnForm' : 'datasetForm'} />
           </ModalFooter>
         </Modal>
       </div>
@@ -124,7 +145,8 @@ class ManageMetadata extends Component {
 ManageMetadata.propTypes = {
   datasetMetadata: PropTypes.object.isRequired,
   outputSchemaColumns: PropTypes.object.isRequired,
-  saveDatasetMetadata: PropTypes.func.isRequired,
+  saveDatasetMetadata: PropTypes.func,
+  saveColumnMetadata: PropTypes.func,
   setFormErrors: PropTypes.func.isRequired,
   showFlash: PropTypes.func.isRequired,
   hideFlash: PropTypes.func.isRequired,
@@ -137,6 +159,7 @@ ManageMetadata.propTypes = {
   pathToNewOutputSchema: PropTypes.string,
   datasetFormDirty: PropTypes.bool,
   colFormDirty: PropTypes.bool,
+  inputSchemaId: PropTypes.string,
   children: PropTypes.object
 };
 

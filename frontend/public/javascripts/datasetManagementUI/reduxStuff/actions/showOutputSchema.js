@@ -28,7 +28,7 @@ import { validateFieldName, validateDisplayName } from 'containers/AddColFormCon
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
-function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
+export function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
     const callId = uuid();
 

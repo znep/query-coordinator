@@ -148,7 +148,7 @@ export class DataPanel extends Component {
         <iframe
           src={iframePath}
           width="100%"
-          height="580px"
+          height="600px"
           onLoad={() => this.setState({ loaded: true })}
           ref={(el) => this.iframe = el} />
       </div>

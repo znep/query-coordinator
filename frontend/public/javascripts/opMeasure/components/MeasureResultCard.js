@@ -12,7 +12,7 @@ import withComputedMeasure from './withComputedMeasure';
 export class MeasureResultCard extends Component {
 
   renderData() {
-    const { computedMeasure, dataRequestInFlight, placeholder } = this.props;
+    const { computedMeasure, dataRequestInFlight, placeholder, maxLength } = this.props;
     const result = _.get(computedMeasure, 'result'); // as a String from toFixed()
     const dividingByZero = _.get(computedMeasure, 'dividingByZero');
     const asPercent = _.get(this.props, 'measure.metric.display.asPercent', false);
@@ -33,11 +33,7 @@ export class MeasureResultCard extends Component {
       let formatted = result;
       const parts = result.split('.');
 
-      // MAX_RESULT_CHARS was chosen based on looking at roughly how many digits fit into the div.
-      // This is an approximate value that could be refined later.
-      const MAX_RESULT_CHARS = 11;
-
-      if (parts[0].length > 9) {
+      if (parts[0].length > 6) {
         // This is a large number, where decimal places are kind of irrelavant.
         // formatNumber provides the human readable value like 257K and 48M.
         formatted = formatNumber(Number(result));
@@ -49,8 +45,8 @@ export class MeasureResultCard extends Component {
         }
       }
       // We might still not have room for however many decimalPlaces are requested.
-      if (formatted.length > MAX_RESULT_CHARS) {
-        formatted = formatted.substring(0, MAX_RESULT_CHARS);
+      if (formatted.length > maxLength) {
+        formatted = formatted.substring(0, maxLength);
       }
       return (
         <div className={resultClassNames} title={formatted}>{formatted}</div>
@@ -68,9 +64,14 @@ export class MeasureResultCard extends Component {
 
   render() {
     const subtitle = _.get(this.props, 'measure.metric.display.label', '');
+    const hasResult = !!_.get(this.props, 'computedMeasure.result');
+
+    const cardClasses = classnames('measure-result-card', {
+      'measure-result-card-empty': !hasResult
+    });
 
     return (
-      <div className="measure-result-card">
+      <div className={cardClasses}>
         {this.renderData()}
         <div className="measure-result-subtitle">
           {subtitle}
@@ -81,7 +82,10 @@ export class MeasureResultCard extends Component {
 }
 
 MeasureResultCard.defaultProps = {
-  placeholder: ''
+  placeholder: '',
+  // maxLength was chosen based on looking at roughly how many digits fit into the div.
+  // This is an approximate value that could be refined later.
+  maxLength: 11
 };
 
 MeasureResultCard.propTypes = {
@@ -97,7 +101,8 @@ MeasureResultCard.propTypes = {
   }).isRequired,
   placeholder: PropTypes.string,
   computedMeasure: PropTypes.object, // See withComputedMeasure.
-  dataRequestInFlight: PropTypes.bool
+  dataRequestInFlight: PropTypes.bool,
+  maxLength: PropTypes.number // Can override the measure decimalPlaces.
 };
 
 export default withComputedMeasure()(MeasureResultCard);

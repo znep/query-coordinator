@@ -1,0 +1,86 @@
+.create-alert-modal {
+
+  .alert-info {
+    padding-bottom: 10px;
+    .info-icon{
+      font-size: 23px;
+      vertical-align: middle;
+    }
+    &.success-info{
+      font-size: 14px;
+      vertical-align: middle;
+      color: $success-text;
+    }
+    &.error-info{
+      font-size: 14px;
+      vertical-align: middle;
+      color: $error-text;
+    }
+  }
+
+  .advance-alert-section {
+
+    .advance-alert-content{
+      padding-bottom: 10px;
+    }
+
+    .advance-alert-title {
+      display: block;
+      font-size: 16px !important;
+      font-weight: bold;
+      color: $black;
+    }
+
+    .advance-alert-description {
+      font-size: 12px !important;
+      color: $black;
+    }
+
+    textarea {
+      width: 98%;
+      height: 120px;
+      margin-top: 5px;
+      border: 1px solid #e8e8e8;
+    }
+
+    .raw-query-title {
+      font-weight: bold;
+    }
+  }
+
+  .modal-footer-actions {
+    border-top: 1px solid #e8e8e8;
+    padding: 20px 0px 0px;
+
+    .alert-name-section {
+      float: left;
+
+      label {
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      input {
+        padding: 8px 6px;
+        margin-left: 10px;
+        width: 250px;
+        &::-webkit-input-placeholder {
+          font-style: italic;
+        }
+        &::-moz-placeholder {
+          font-style: italic;
+        }
+        &:-ms-input-placeholder {
+          font-style: italic;
+        }
+      }
+    }
+
+    .btn{
+      margin-right: 10px;
+      font-size: 12px !important;
+      padding: 8px 15px !important;
+    }
+  }
+}
+

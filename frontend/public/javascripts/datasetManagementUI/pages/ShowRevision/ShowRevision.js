@@ -25,7 +25,7 @@ export function ShowRevision({ params, readFromCore, isPublishedDataset, isParen
           <TablePreview params={params} />
         )}
       </div>
-      <HomePaneSidebar defaultTab="recentActions" />
+      <HomePaneSidebar />
     </div>
   );
 }

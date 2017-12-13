@@ -208,9 +208,8 @@ describe('components/TablePreview', () => {
       .find('PreviewDataView')
       .dive()
       .find('Link');
-
-    assert.isTrue(link.exists());
-    assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/schemas/1/output/10');
+    assert.isTrue(link.at(1).exists());
+    assert.equal(link.at(1).prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/schemas/1/output/10');
   });
 
   it('renders a link to the blob page when blob available', () => {
@@ -221,7 +220,7 @@ describe('components/TablePreview', () => {
       .dive()
       .find('Link');
 
-    assert.isTrue(link.exists());
-    assert.equal(link.prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/preview');
+    assert.isTrue(link.at(1).exists());
+    assert.equal(link.at(1).prop('to'), '/dataset/ok/m6u6-r357/revisions/0/sources/100/preview');
   });
 });

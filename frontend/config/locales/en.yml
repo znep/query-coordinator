@@ -2156,6 +2156,7 @@ en:
       adding_data: Adding Data
       adding_data_blurb: Adding data will enable visualizations and API access.
       adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just add a data source (file, URL, etc).
+      click_add_data_above: Click the "Add Data" button above to get started.
       adding_metadata: Adding Metadata
       adding_metadata_blurb: Metadata is crucial to give your end users context.
       apply_update: Apply Update
@@ -2174,7 +2175,7 @@ en:
       email_me_success: We'll send you an email!
       getting_started: Getting Started
       href_header: External Datasource Has Been Linked
-      href_message: You have linked an external datasource to this dataset. Click the link below to view details.
+      href_message: You have linked an external datasource to this dataset. Click the link above to view details.
       href_view_btn: View Datasource Link
       home_pane_sidebar:
         manage: Manage

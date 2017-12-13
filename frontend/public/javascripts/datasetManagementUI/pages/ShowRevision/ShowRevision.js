@@ -22,10 +22,7 @@ export function ShowRevision({ params, readFromCore, isPublishedDataset, isParen
             isPublishedDataset={isPublishedDataset} />}
         </div>
         {isPublishedDataset || isParentRevision || (
-          <section className={styles.tableContainer}>
-            <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
-            <TablePreview params={params} />
-          </section>
+          <TablePreview params={params} />
         )}
       </div>
       <HomePaneSidebar defaultTab="recentActions" />

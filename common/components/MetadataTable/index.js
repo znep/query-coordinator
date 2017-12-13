@@ -12,6 +12,7 @@ import I18n from 'common/i18n';
 import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
 import AssociatedAssets from 'frontend/public/javascripts/common/components/AssociatedAssets';
 import CreateAlertButton from 'common/components/CreateAlertButton';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
@@ -151,7 +152,8 @@ class MetadataTable extends Component {
           href={localizeLink(editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
-          {I18n.t('common.metadata.edit_metadata')}
+          <SocrataIcon name="edit" isBtnIcon />
+          <span>{I18n.t('common.metadata.edit_metadata')}</span>
         </a>
       );
     }

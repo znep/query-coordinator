@@ -1,97 +1,23 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link } from 'react-router';
-import NotifyButton from 'containers/NotifyButtonContainer';
-import * as Links from 'links/links';
-import DatasetPreview from 'containers/DatasetPreviewContainer';
 import * as Selectors from 'selectors';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import styles from './TablePreview.scss';
+import * as TableViews from './TableViews';
 
-// COMPONENT VIEWS
-const NoDataYetView = ({ params }) => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.no_data_yet}</h3>
-    <p>{I18n.home_pane.adding_data_is_easy_and_fun}</p>
-    <Link to={Links.sources(params)} className={styles.dataLink}>
-      {I18n.home_pane.add_data}
-    </Link>
-  </div>
-);
-
-NoDataYetView.propTypes = {
-  params: PropTypes.object.isRequired
-};
-
-const HrefView = ({ params }) => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.href_header}</h3>
-    <p>{I18n.home_pane.href_message}</p>
-    <Link to={Links.hrefSource(params)} className={styles.dataLink}>
-      {I18n.home_pane.href_view_btn}
-    </Link>
-  </div>
-);
-
-HrefView.propTypes = {
-  params: PropTypes.object.isRequired
-};
-
-const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
-  let previewDataPath;
-  if (outputSchema) {
-    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
-    if (!inputSchema) return;
-    previewDataPath = Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id);
-  } else if (blob) {
-    previewDataPath = Links.showBlobPreview(params, blob.id);
+function generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists }) {
+  if (tasksExist && allTasksSucceeded && outputSchema) {
+    return TableViews.UpsertCompleteView;
+  } else if (tasksExist && !allTasksSucceeded && outputSchema) {
+    return TableViews.UpsertInProgressView;
+  } else if (!tasksExist && (outputSchema || blob)) {
+    return TableViews.PreviewDataView;
+  } else if (hrefExists) {
+    return TableViews.HrefView;
   } else {
-    return;
+    return TableViews.NoDataYetView;
   }
-
-  return (
-    <div className={styles.tableInfo}>
-      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
-      <p>{I18n.home_pane.data_uploaded_blurb}</p>
-      <p>
-        <Link to={previewDataPath}>
-          <button className={styles.reviewBtn} tabIndex="-1">
-            {I18n.home_pane.review_data}
-          </button>
-        </Link>
-      </p>
-    </div>
-  );
-};
-
-PreviewDataView.propTypes = {
-  entities: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object,
-  blob: PropTypes.object,
-  params: PropTypes.object.isRequired
-};
-
-const UpsertInProgressView = () => (
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
-    <p>{I18n.home_pane.being_processed_detail}</p>
-    <div>
-      <NotifyButton />
-    </div>
-  </div>
-);
-
-const UpsertCompleteView = ({ view, outputSchema }) => (
-  <div key="upsertCompleteView">
-    <DatasetPreview view={view} outputSchema={outputSchema} />
-  </div>
-);
-
-UpsertCompleteView.propTypes = {
-  view: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object.isRequired
-};
+}
 
 // HELPER FUNCTIONS
 const numberOfTasks = _.flowRight(_.size, _.filter);
@@ -107,27 +33,20 @@ const haveAllTasksSucceeded = entities =>
 
 // MAIN COMPONENT
 const TablePreview = ({ entities, params, view }) => {
-  let child;
   const tasksExist = doTasksExist(entities);
   const allTasksSucceeded = haveAllTasksSucceeded(entities);
   const revisionSeq = _.toNumber(params.revisionSeq);
-  const os = Selectors.currentOutputSchema(entities, revisionSeq);
+  const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const blob = Selectors.currentBlobSource(entities, revisionSeq);
   const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
 
-  if (tasksExist && allTasksSucceeded && os) {
-    child = <UpsertCompleteView view={view} outputSchema={os} />;
-  } else if (tasksExist && !allTasksSucceeded && os) {
-    child = <UpsertInProgressView />;
-  } else if (!tasksExist && (os || blob)) {
-    child = <PreviewDataView entities={entities} outputSchema={os} blob={blob} params={params} />;
-  } else if (hrefExists) {
-    child = <HrefView params={params} />;
-  } else {
-    child = <NoDataYetView params={params} />;
-  }
-
-  return <div className={styles.resultCard}>{child}</div>;
+  const TableView = generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists });
+  const childProps = { view, outputSchema, entities, blob, params };
+  return (
+    <section className="table-preview-container">
+      <TableView { ...childProps } />
+    </section>
+  );
 };
 
 TablePreview.propTypes = {

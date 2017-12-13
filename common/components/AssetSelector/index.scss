@@ -1,7 +1,3 @@
-@import "common/styleguide/variables/colors";
-@import "common/styleguide/variables/breakpoints";
-@import "./results-container";
-
 .asset-selector.modal {
   overflow-y: hidden;
 
@@ -23,6 +19,10 @@
 
   .modal-content {
     padding: 19px;
-    margin-bottom: 0; // AssetSelector does not have a ModalFooter, remove the margin for it.
+    margin-bottom: 0 !important;
+  }
+
+  .back-button {
+    height: 38px;
   }
 }

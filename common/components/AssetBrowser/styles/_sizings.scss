@@ -1,1 +1,14 @@
+@import "common/styleguide/variables/breakpoints";
+
+@mixin desktop {
+  @media screen and (min-width: #{$medium}) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: #{$medium}) {
+    @content;
+  }
+}
+
 $horizontal_margin: 11px;

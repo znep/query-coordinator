@@ -3,38 +3,29 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import mixpanel from 'common/mixpanel';
 
-import {
-  fetchResults,
-  mergedCeteraQueryParameters
-} from 'common/components/AssetBrowser/lib/helpers/cetera.js';
-import getState from 'common/components/AssetBrowser/reducers/catalog';
+import catalogState from 'common/components/AssetBrowser/reducers/catalog';
 import ceteraUtils from 'common/cetera/utils';
-import {
-  ALL_ASSETS_TAB,
-  MY_ASSETS_TAB,
-  SHARED_TO_ME_TAB
-} from 'common/components/AssetBrowser/lib/constants';
-
+import * as ceteraHelpers from 'common/components/AssetBrowser/lib/helpers/cetera.js';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 
-import mockCeteraFacetCountsResponse from '../components/AssetBrowser/data/mock_cetera_facet_counts_response';
-import mockCeteraFetchResponse from '../components/AssetBrowser/data/mock_cetera_fetch_response';
+import mockCeteraFacetCountsResponse from '../../data/mock_cetera_facet_counts_response';
+import mockCeteraFetchResponse from '../../data/mock_cetera_fetch_response';
+import initialState from '../../../../data/mock_initial_state';
 
-const initialState = require('../data/mock_initial_state');
-
-describe('cetera_helpers', () => {
+describe('helpers/cetera', () => {
   let ceteraStub;
   let ceteraAssetCountsStub;
 
   beforeEach(() => {
     window.socrata = { initialState };
     ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
-
     ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').
       callsFake(_.constant(Promise.resolve(mockCeteraFacetCountsResponse)));
   });
 
   afterEach(() => {
+    delete window.socrata;
     ceteraStub.restore();
     ceteraAssetCountsStub.restore();
   });
@@ -44,14 +35,16 @@ describe('cetera_helpers', () => {
       it('overrides normal filters', () => {
         const state = () => ({
           header: {
-            activeTab: ALL_ASSETS_TAB
+            activeTab: constants.ALL_ASSETS_TAB
           },
-          tabs: {
-            [ALL_ASSETS_TAB]: {
-              props: {
-                baseFilters: {
-                  assetTypes: 'charts',
-                  forUser: 'abcd-1234'
+          assetBrowserProps: {
+            tabs: {
+              [constants.ALL_ASSETS_TAB]: {
+                props: {
+                  baseFilters: {
+                    assetTypes: 'charts',
+                    forUser: 'abcd-1234'
+                  }
                 }
               }
             }
@@ -63,7 +56,7 @@ describe('cetera_helpers', () => {
           q: 'foo'
         };
 
-        const result = mergedCeteraQueryParameters(state, parameters);
+        const result = ceteraHelpers.mergedCeteraQueryParameters(state, parameters);
         assert.equal(result.only, 'charts');
         assert.equal(result.forUser, 'abcd-1234');
         assert.equal(result.q, 'foo');
@@ -76,21 +69,21 @@ describe('cetera_helpers', () => {
 
     it('adds custom facet filters', () => {
       const parameters = { customFacets: { Foo_Bar: 'abcd' } };
-      const result = mergedCeteraQueryParameters(getState, parameters);
+      const result = ceteraHelpers.mergedCeteraQueryParameters(catalogState, parameters);
       assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'abcd' });
     });
 
     it('overrides an existing custom facet filter', () => {
       const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
       const parameters = { customFacets: { Foo_Bar: null } };
-      const result = mergedCeteraQueryParameters(state, parameters);
+      const result = ceteraHelpers.mergedCeteraQueryParameters(state, parameters);
       assert.deepEqual(result.customMetadataFilters, { Foo_Bar: null });
     });
 
     it('can have multiple custom facet filters', () => {
       const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
       const parameters = { customFacets: { Foo_Bar2: 'another value' } };
-      const result = mergedCeteraQueryParameters(state, parameters);
+      const result = ceteraHelpers.mergedCeteraQueryParameters(state, parameters);
       assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'some existing value', Foo_Bar2: 'another value' });
     });
   });
@@ -119,7 +112,7 @@ describe('cetera_helpers', () => {
           results: [1, 2, 3, 4, 5, 6, 7, 8, 9]
         };
 
-        return fetchResults(dispatch, getState, parameters, onSuccess).then((response) => {
+        return ceteraHelpers.fetchResults(dispatch, catalogState, parameters, onSuccess).then((response) => {
           const mixpanelSendPayloadCall = mixpanel.sendPayload.getCall(0);
 
           assert.equal(mixpanelSendPayloadCall.args[0], 'Filtered Assets to Only Recently Viewed');
@@ -129,6 +122,34 @@ describe('cetera_helpers', () => {
           assert(!_.includes(Object.keys(mixpanelSendPayloadCall.args[1]), 'results'));
           assert.equal(mixpanelSendPayloadCall.args[1].pageNumber, 1);
           assert(mixpanelSendPayloadCall.args[1].onlyRecentlyViewed);
+        });
+      });
+    });
+
+    describe('fetchAssetCounts', () => {
+      it('is called from fetchResults when showAssetCounts is true', () => {
+        const dispatch = () => {};
+        const state = () => ({
+          assetBrowserProps: {
+            showAssetCounts: true
+          }
+        });
+
+        ceteraHelpers.fetchResults(dispatch, state).then((response) => {
+          sinon.assert.calledOnce(ceteraAssetCountsStub);
+        });
+      });
+
+      it('is not called from fetchResults when showAssetCounts is false', () => {
+        const dispatch = () => {};
+        const state = () => ({
+          assetBrowserProps: {
+            showAssetCounts: false
+          }
+        });
+
+        ceteraHelpers.fetchResults(dispatch, state).then((response) => {
+          sinon.assert.notCalled(ceteraAssetCountsStub);
         });
       });
     });

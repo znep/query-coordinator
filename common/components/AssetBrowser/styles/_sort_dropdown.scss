@@ -1,0 +1,36 @@
+.asset-browser .sort-dropdown {
+  align-items: center;
+  display: inline-flex;
+  float: right;
+  margin-right: 1rem;
+  font-size: 15px;
+
+  .dropdown-container {
+    margin-left: 0.5rem;
+    width: 180px;
+
+    .dropdown-caret::after {
+      margin-top: 10px;
+    }
+
+    &.dropdown-focused {
+      .dropdown-placeholder {
+        border-color: $primary-light;
+        outline-color: $primary-base;
+      }
+      .dropdown-caret {
+        color: $primary-text;
+      }
+    }
+
+    .picklist-option {
+      &:hover {
+        background-color: $primary-light;
+      }
+
+      &.picklist-option-selected {
+        background-color: $primary-base;
+      }
+    }
+  }
+}

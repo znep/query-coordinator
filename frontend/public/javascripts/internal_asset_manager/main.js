@@ -9,9 +9,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import { dateLocalize } from 'common/locale';
 import { FeedbackPanel } from 'common/components/FeedbackPanel';
-import { ResultsAndFilters } from 'common/components/AssetBrowser/components';
 import reducer from 'common/components/AssetBrowser/reducers';
-import * as constants from 'common/components/AssetBrowser/lib/constants';
 import InternalAssetManager from './components/internal_asset_manager';
 
 const middleware = [thunk];

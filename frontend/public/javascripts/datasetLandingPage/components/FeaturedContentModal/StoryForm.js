@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import { ViewCard } from 'common/components';
-import { getDateLabel, getViewCountLabel } from '../../../common/helpers/viewCardHelpers';
+import { getDateLabel, getViewCountLabel } from 'common/viewCardHelpers';
 import {
   cancelFeaturedItemEdit,
   loadStory,

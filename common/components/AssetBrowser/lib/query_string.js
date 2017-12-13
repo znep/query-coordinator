@@ -2,6 +2,11 @@ import _ from 'lodash';
 import url from 'url';
 
 export const updateQueryString = ({ getState, shouldClearSearch = false }) => {
+  // In selectMode don't update the query string.
+  if (_.get(getState(), 'assetBrowserProps.selectMode') === true) {
+    return;
+  }
+
   if (_.get(window, 'history.pushState')) {
     const location = window.location;
     const urlPath = `${location.protocol}//${location.host}${location.pathname}`;

@@ -167,7 +167,7 @@ ClearFilters.defaultProps = {
 const mapStateToProps = (state) => ({
   activeTab: state.header.activeTab,
   allFilters: state.filters,
-  tabs: state.tabs
+  tabs: state.assetBrowserProps.tabs
 });
 
 const mapDispatchToProps = (dispatch) => ({

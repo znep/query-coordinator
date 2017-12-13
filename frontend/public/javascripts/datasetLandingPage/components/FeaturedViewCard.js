@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ViewCard, ExternalViewCard } from 'common/components';
-import { getViewCardPropsForFeaturedItem } from '../../common/helpers/viewCardHelpers';
+import { getViewCardPropsForFeaturedItem } from 'common/viewCardHelpers';
 
 class FeaturedViewCard extends PureComponent {
   render() {

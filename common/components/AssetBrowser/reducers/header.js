@@ -5,8 +5,9 @@ import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_stri
 import * as headerActions from 'common/components/AssetBrowser/actions/header';
 
 const getInitialState = () => {
+  const fallbackActiveTab = _.get(window, 'socrata.initialState.header.initialTab') || constants.DEFAULT_TAB;
   return {
-    activeTab: getQueryParameter('tab', window.socrata.initialState.header.initialTab)
+    activeTab: getQueryParameter('tab', fallbackActiveTab)
   };
 };
 

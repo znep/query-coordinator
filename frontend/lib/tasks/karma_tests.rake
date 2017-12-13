@@ -355,6 +355,7 @@ namespace :test do
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
+      'karma:internal_asset_manager',
       'karma:oldUx',
       'karma:opMeasure',
       'karma:authentication',

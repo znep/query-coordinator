@@ -1,28 +1,44 @@
-@import "common/styleguide/variables/breakpoints";
+@import "variables/colors";
+@import "sizings";
 
-.asset-selector {
-  .results-container .centered-content .card-container {
-    .result-card {
-      flex: 0 0 auto;
-      width: 31.9%;
+.modal.asset-selector .asset-browser {
+  .results-and-filters {
+    border: none;
+    .catalog-results {
+      min-height: 80vh;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+
+      .topbar {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .catalog-footer {
+    padding: 0;
+  }
+}
+
+.asset-browser {
+  .result-card-container {
+    clear: both;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2rem;
+
+    .result-card.media {
       height: 300px;
-      margin-right: 2%;
+      width: 100%;
+      margin: 0;
+      box-shadow: 0 1px 6px $light-grey-4;
 
       &.loading-card {
         display: flex;
 
         .spinner-large {
           margin: auto;
-        }
-      }
-
-      @include mobile {
-        flex: 0 0 260px;
-      }
-
-      @include desktop {
-        &:nth-child(3n) {
-          margin-right: 0;
         }
       }
 

@@ -6,7 +6,7 @@ import {
   CANCEL_FEATURED_ITEM_EDIT
 } from '../../actionTypes';
 
-import { translatePreviewImageIdToImageUrl } from 'common/helpers/viewCardHelpers';
+import { translatePreviewImageIdToImageUrl } from 'common/viewCardHelpers';
 
 const initialState = {
   description: '',

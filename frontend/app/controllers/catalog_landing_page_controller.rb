@@ -27,6 +27,11 @@ class CatalogLandingPageController < ApplicationController
 
   def manage
     compute_page_title
+
+    @asset_browser_config = {
+      :app_name => 'catalog_landing_page',
+      :filters_enabled => false
+    }
   end
 
   def manage_write

@@ -145,7 +145,7 @@ export const translateFiltersToQueryParameters = (filters) => {
 // state, you _must_ provide the override value in the parameters object.
 export const mergedCeteraQueryParameters = (getState, parameters = {}) => {
   const activeTab = _.get(getState(), 'header.activeTab');
-  const baseFilters = _.get(getState(), `tabs.${activeTab}.props.baseFilters`);
+  const baseFilters = _.get(getState(), `assetBrowserProps.tabs.${activeTab}.props.baseFilters`);
 
   return translateFiltersToQueryParameters(_.merge(
     {},
@@ -196,7 +196,10 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
       dispatch(ceteraActions.fetchingResultsSuccess());
       onSuccess(response.results.length > 0);
 
-      fetchAssetCounts(dispatch, getState, parameters);
+      const showAssetCounts = _.get(getState(), 'assetBrowserProps.showAssetCounts');
+      if (showAssetCounts) {
+        fetchAssetCounts(dispatch, getState, parameters);
+      }
     } else {
       dispatch(ceteraActions.fetchingResultsError());
     }

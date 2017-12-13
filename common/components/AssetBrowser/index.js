@@ -35,6 +35,22 @@ export class AssetBrowser extends Component {
     sagaMiddleware.run(sagas);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.checkValidProps(nextProps);
+  }
+
+  checkValidProps(nextProps) {
+    // Throw/warn for unsupported prop combinations
+    if (nextProps.selectMode === true && nextProps.renderStyle === 'list') {
+      console.warn(`AssetBrowser currently only supports selectMode when renderStyle is "card".
+        It will render using the "card" style instead.`);
+    }
+
+    if (nextProps.showFilters && nextProps.renderStyle === 'card') {
+      console.warn('AssetBrowser does not yet support the filter sidebar in the "card" renderStyle.');
+    }
+  }
+
   render() {
     return (
       <Localization locale={window.serverConfig.locale || 'en'}>
@@ -47,9 +63,13 @@ export class AssetBrowser extends Component {
 }
 
 AssetBrowser.propTypes = {
+  additionalTopbarComponents: PropTypes.array,
   enableAssetInventoryLink: PropTypes.bool,
   onAssetSelected: PropTypes.func,
+  onClose: PropTypes.func,
   pageSize: PropTypes.number,
+  renderStyle: PropTypes.string,
+  selectMode: PropTypes.bool,
   settings: PropTypes.object,
   showAssetCounts: PropTypes.bool,
   showAuthorityFilter: PropTypes.bool,
@@ -63,9 +83,13 @@ AssetBrowser.propTypes = {
 };
 
 AssetBrowser.defaultProps = {
+  additionalTopbarComponents: [],
   enableAssetInventoryLink: true,
-  onAssetSelected: null,
+  onAssetSelected: _.noop,
+  onClose: _.noop,
   pageSize: 10,
+  renderStyle: 'list',
+  selectMode: false,
   showAssetCounts: true,
   showAuthorityFilter: true,
   showFilters: true,

@@ -5,19 +5,28 @@ import { updateQueryString } from 'common/components/AssetBrowser/lib/query_stri
 
 export const CHANGE_SORT_ORDER = 'CHANGE_SORT_ORDER';
 
-export const changeSortOrder = (columnName) => (dispatch, getState) => {
-  // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
-  const currentStateOrder = _.get(getState(), 'catalog.order', {});
+export const changeSortOrder = (selection) => (dispatch, getState) => {
+  const sortOptionsThatDefaultToDescending = ['lastUpdatedDate', 'createdAt'];
+  let newOrder;
 
-  const columnsThatDefaultToDescending = ['lastUpdatedDate'];
-  const defaultToAscending = !_.includes(columnsThatDefaultToDescending, columnName);
+  if (_.get(getState(), 'assetBrowserProps.renderStyle') === 'card') { // Sorting via sort_dropdown
+    newOrder = {
+      value: selection.value,
+      ascending: !_.includes(sortOptionsThatDefaultToDescending, selection.value)
+    };
+  } else { // Sorting via column header
+    // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
+    const currentStateOrder = _.get(getState(), 'catalog.order', {});
 
-  const ascending = (columnName === currentStateOrder.value) ?
-    !currentStateOrder.ascending : defaultToAscending;
-  const newOrder = {
-    value: columnName,
-    ascending
-  };
+    const defaultToAscending = !_.includes(sortOptionsThatDefaultToDescending, selection);
+
+    const ascending = (selection === currentStateOrder.value) ?
+      !currentStateOrder.ascending : defaultToAscending;
+    newOrder = {
+      value: selection,
+      ascending
+    };
+  }
 
   const onSuccess = () => {
     dispatch({ type: CHANGE_SORT_ORDER, order: newOrder });

@@ -11,6 +11,9 @@ export var FeatureFlags = {
       featureFlags = _.get(window, 'serverConfig.featureFlags');
     }
     if (featureFlags === undefined) {
+      featureFlags = _.get(window, 'blist.feature_flags');
+    }
+    if (featureFlags === undefined) {
       throw new Error(
         `FeatureFlags requires window.socrata.featureFlags or window.serverConfig.featureFlags to be defined.
         Please see README.md in frontend-utils.`

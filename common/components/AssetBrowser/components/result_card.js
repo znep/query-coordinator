@@ -1,22 +1,23 @@
-import PropTypes from 'prop-types';
-import React from 'react';
 import _ from 'lodash';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import I18n from 'common/i18n';
+
+import { FeatureFlags } from 'common/feature_flags';
 import ViewCard from 'common/components/ViewCard';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
-import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
+import { getDateLabel, getViewCountLabel, getAriaLabel } from 'common/viewCardHelpers';
 import { handleKeyPress } from 'common/dom_helpers/keyPressHelpers';
-import { FeatureFlags } from 'common/feature_flags';
 
-export class Card extends React.Component {
+export class ResultCard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       hovering: false
     };
-
-    _.bindAll(this, ['onSelect', 'ceteraResultProps', 'setHovering', 'viewCardProps']);
   }
 
   onSelect(cardProps) {
@@ -66,36 +67,41 @@ export class Card extends React.Component {
   }
 
   render() {
+    const scope = 'shared.asset_browser.result_card_container';
     const cardOverlayClasses = classNames('overlay', {
       hidden: !this.state.hovering
     });
 
+    const selectModeOverlay = this.props.selectMode ? (
+      <div
+        className="hover-target"
+        role="button"
+        tabIndex={0}
+        onMouseOver={() => this.setHovering(true)}
+        onFocus={() => this.setHovering(true)}
+        onMouseOut={() => this.setHovering(false)}
+        onBlur={() => this.setHovering(false)}
+        onClick={() => this.onSelect(this.ceteraResultProps())}
+        onKeyDown={handleKeyPress(() => this.onSelect(this.ceteraResultProps()))}>
+        <div className={cardOverlayClasses}>
+          <button
+            alt={`${I18n.t('select_mode.select', { scope })} ${this.props.name}`}
+            className="select-button btn btn-primary">
+            {I18n.t('select_mode.select', { scope })}
+          </button>
+        </div>
+      </div>
+    ) : null;
+
     return (
       <ViewCard {...this.viewCardProps()}>
-        <div
-          className="hover-target"
-          role="button"
-          tabIndex={0}
-          onMouseOver={() => this.setHovering(true)}
-          onFocus={() => this.setHovering(true)}
-          onMouseOut={() => this.setHovering(false)}
-          onBlur={() => this.setHovering(false)}
-          onClick={() => this.onSelect(this.ceteraResultProps())}
-          onKeyDown={handleKeyPress(() => this.onSelect(this.ceteraResultProps()))}>
-          <div className={cardOverlayClasses}>
-            <button
-              alt={`${_.get(I18n, 'common.asset_selector.action_buttons.select')} ${this.props.name}`}
-              className="select-button btn btn-primary">
-              {_.get(I18n, 'common.asset_selector.action_buttons.select')}
-            </button>
-          </div>
-        </div>
+        {selectModeOverlay}
       </ViewCard>
     );
   }
 }
 
-Card.propTypes = {
+ResultCard.propTypes = {
   categories: PropTypes.array,
   createdAt: PropTypes.string,
   description: PropTypes.string,
@@ -108,13 +114,14 @@ Card.propTypes = {
   onSelect: PropTypes.func.isRequired,
   previewImageUrl: PropTypes.string,
   provenance: PropTypes.string,
+  selectMode: PropTypes.bool.isRequired,
   tags: PropTypes.array,
   type: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,
   viewCount: PropTypes.number.isRequired
 };
 
-Card.defaultProps = {
+ResultCard.defaultProps = {
   id: '',
   link: '',
   name: '',
@@ -124,4 +131,4 @@ Card.defaultProps = {
   viewCount: 0
 };
 
-export default Card;
+export default ResultCard;

@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import I18nJS from 'i18n-js';
 
 import Localization from 'common/i18n/components/Localization';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';

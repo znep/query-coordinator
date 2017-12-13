@@ -158,6 +158,16 @@ en:
       result:
         one: Result
         other: Results
+      result_card_container:
+        select_mode:
+          select: Select
+        sort_dropdown:
+          alphabetical: Alphabetical
+          most_accessed: Most Accessed
+          most_relevant: Most Relevant
+          recently_added: Recently Added
+          recently_updated: Recently Updated
+          sort_by: Sort by
       result_count:
         no_results: No results
         of: of

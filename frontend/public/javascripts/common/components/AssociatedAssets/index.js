@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
+
 import { Modal, ModalHeader, ModalContent } from 'common/components/Modal';
 import SocrataIcon from 'common/components/SocrataIcon';
 import { fetchJson, defaultHeaders } from 'common/http';
-import AssetSelector from '../AssetSelector';
+import AssetSelector from 'common/components/AssetSelector';
 
 import './styles/index.scss';
 
@@ -96,7 +97,7 @@ export class AssociatedAssets extends Component {
 
   render() {
     const { apiCalls, modalIsOpen, onDismiss, onSave } = this.props;
-    const { assetSelectorIsOpen } = this.state;
+    const { assetSelectorIsOpen, selectedAssets } = this.state;
 
     const modalProps = {
       className: 'associated-assets',
@@ -110,15 +111,14 @@ export class AssociatedAssets extends Component {
     };
 
     const assetSelectorProps = {
-      catalogQuery: {
-        limitTo: 'href',
+      baseFilters: {
+        assetTypes: 'href',
         published: true
       },
-      modalIsOpen: assetSelectorIsOpen,
-      onClose: handleAssetSelectorClose,
-      onSelect: (assetData) => {
-        this.setState({ selectedAssets: this.state.selectedAssets.concat(assetData) });
+      onAssetSelected: (assetData) => {
+        this.setState({ selectedAssets: selectedAssets.concat(assetData) });
       },
+      onClose: handleAssetSelectorClose,
       resultsPerPage: 6,
       title: 'Add to Existing Data Asset'
     };
@@ -130,7 +130,7 @@ export class AssociatedAssets extends Component {
 
     const handleSave = (e) => {
       e.preventDefault();
-      onSave(this.state.selectedAssets);
+      onSave(selectedAssets);
     };
 
     const lastApiCall = _.last(apiCalls) || {};
@@ -139,7 +139,7 @@ export class AssociatedAssets extends Component {
     const saveSuccess = lastApiCallStatus === 'STATUS_CALL_SUCCEEDED';
     const saveFailure = lastApiCallStatus === 'STATUS_CALL_FAILED';
 
-    const saveButtonIsDisabled = this.state.selectedAssets.length < 1;
+    const saveButtonIsDisabled = selectedAssets.length < 1;
 
     const saveButtonClasses = classNames('btn btn-sm btn-primary save-button', {
       'btn-success': saveSuccess,
@@ -190,7 +190,7 @@ export class AssociatedAssets extends Component {
     return (
       <div>
         {modal}
-        <AssetSelector {...assetSelectorProps} />
+        {assetSelectorIsOpen && <AssetSelector {...assetSelectorProps} />}
       </div>
     );
   }

@@ -13,20 +13,14 @@ import * as pagerActions from 'common/components/AssetBrowser/actions/pager';
 import * as sortActions from 'common/components/AssetBrowser/actions/sort_order';
 
 import mockCeteraResponse from '../data/mock_cetera_response';
-import mockCeteraFacetCountsResponse from '../data/mock_cetera_facet_counts_response';
 
 const stubCeteraQuery = (ceteraResponse = mockCeteraResponse) => (
   sinon.stub(ceteraUtils, 'query').callsFake(_.constant(Promise.resolve(ceteraResponse)))
 );
 
-const stubCeteraAssetCountsFetch = (ceteraResponse = mockCeteraFacetCountsResponse) => (
-  sinon.stub(ceteraUtils, 'facetCountsQuery').callsFake(_.constant(Promise.resolve(ceteraResponse)))
-);
-
 const mockStore = configureMockStore([thunk]);
 
 let ceteraStub;
-let ceteraAssetCountsStub;
 let customMockCeteraResponse;
 
 // Individually compare actions to make debugging tolerable.
@@ -49,12 +43,10 @@ describe('actions/filters', () => {
   describe('clearAllFilters', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('clears the filters', () => {
@@ -78,10 +70,7 @@ describe('actions/filters', () => {
         },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CLEAR_ALL_FILTERS },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.clearAllFilters()).then(() => {
@@ -93,12 +82,10 @@ describe('actions/filters', () => {
   describe('toggleRecentlyViewed', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('toggles the recently viewed assets', () => {
@@ -109,10 +96,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.TOGGLE_RECENTLY_VIEWED },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.toggleRecentlyViewed()).then(() => {
@@ -124,12 +108,10 @@ describe('actions/filters', () => {
   describe('changeAssetType', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('changes the current asset type', () => {
@@ -140,10 +122,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_ASSET_TYPE, value: 'charts' },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeAssetType('charts')).then(() => {
@@ -155,12 +134,10 @@ describe('actions/filters', () => {
   describe('changeVisibility', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('changes the current visibility', () => {
@@ -171,10 +148,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_VISIBILITY, value: 'internal' },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeVisibility('internal')).then(() => {
@@ -186,12 +160,10 @@ describe('actions/filters', () => {
   describe('changeQ', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('changes the current query and clears the existing sort', () => {
@@ -206,10 +178,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_Q, value: 'transformers! robots in disguise' },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeQ('transformers! robots in disguise')).then(() => {
@@ -221,12 +190,10 @@ describe('actions/filters', () => {
   describe('changeQ with a 4x4 that maps to a view', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('searches by 4x4 and clears the existing sort', () => {
@@ -241,10 +208,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeQ('asdf-1234')).then(() => {
@@ -260,12 +224,10 @@ describe('actions/filters', () => {
       ceteraStub = sinon.stub(ceteraUtils, 'query')
         .onFirstCall().callsFake(_.constant(Promise.resolve(customMockCeteraResponse)))
         .onSecondCall().callsFake(_.constant(Promise.resolve(mockCeteraResponse)));
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('searches by 4x4 and clears the existing sort', () => {
@@ -279,17 +241,11 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: customMockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_Q, value: 'asdf-1234' },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeQ('asdf-1234')).then(() => {
@@ -301,12 +257,10 @@ describe('actions/filters', () => {
   describe('changeCustomFacet', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
-      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
     });
 
     afterEach(() => {
       ceteraStub.restore();
-      ceteraAssetCountsStub.restore();
     });
 
     it('changes a given custom facet', () => {
@@ -317,10 +271,7 @@ describe('actions/filters', () => {
         { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_CUSTOM_FACET, facetParam: 'City_Neighborhood', value: 'Capitol Hill' },
-        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 },
-        { type: ceteraActions.FETCH_ASSET_COUNTS },
-        { type: ceteraActions.FETCH_ASSET_COUNTS_SUCCESS },
-        { type: ceteraActions.UPDATE_ASSET_COUNTS, assetCounts: mockCeteraFacetCountsResponse[0].values }
+        { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
       ];
 
       return store.dispatch(filterActions.changeCustomFacet('City_Neighborhood', 'Capitol Hill')).then(() => {

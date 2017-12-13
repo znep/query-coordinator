@@ -108,7 +108,7 @@ describe('components/DragDropUpload', () => {
     assert.isFalse(updatedState);
   });
 
-  it('prints an error if dropping a directory', () => {
+  it('prints an error if dropping a directory', (done) => {
     const fakeStore = mockStore(state);
     const fakeEvt = {
       dataTransfer: {

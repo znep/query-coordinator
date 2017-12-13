@@ -229,6 +229,10 @@ class Notifications extends Component {
     } = this.props.options;
     const { showTransientNotifications } = this.state;
 
+    if (showTransientNotifications) {
+      this.onSeeNewUserNotifications();
+    }
+
     if (showNotificationPanel) {
       this.addKeyboardEvents();
 
@@ -237,31 +241,12 @@ class Notifications extends Component {
         document.querySelector('body').style.overflow = 'hidden';
       }
 
-      let { transientNotifications } = this.state;
-
-      if (showTransientNotifications && !_.isEmpty(transientNotifications)) {
-        const enqueuedUserNotifications = transientNotifications;
-        const hasEnqueuedUserNotifications = !_.isEmpty(enqueuedUserNotifications);
-        transientNotifications = [];
-
-        this.setState({
-          showNotificationPanel,
-          enqueuedUserNotifications,
-          hasEnqueuedUserNotifications,
-          transientNotifications
-        });
-      } else {
-        this.setState({ showNotificationPanel });
-      }
+      this.setState({ showNotificationPanel });
     } else {
       this.removeKeyboardEvents();
 
       if (lockScrollbar) {
         document.querySelector('body').style.overflow = '';
-      }
-
-      if (showTransientNotifications) {
-        this.onSeeNewUserNotifications();
       }
 
       this.setState({

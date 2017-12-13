@@ -502,6 +502,12 @@ $axis-padding: 42px;
     }
   }
 
+  &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-filter-bar.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$filter-bar-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
   &.socrata-visualization-error {
 
     .socrata-visualization-error-container {

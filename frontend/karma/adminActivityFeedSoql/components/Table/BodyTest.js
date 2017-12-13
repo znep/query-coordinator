@@ -38,7 +38,7 @@ describe('Table/Body renders cell', () => {
   it('item-affected', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.item-affected');
 
-    assert.equal(thisCell.textContent, mockData.data1[0].view_name);
+    assert.equal(thisCell.textContent, mockData.data1[0].affected_item);
   });
 
   it('date', () => {

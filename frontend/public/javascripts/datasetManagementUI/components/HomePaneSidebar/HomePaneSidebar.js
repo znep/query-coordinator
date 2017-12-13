@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RecentActions from 'containers/RecentActionsContainer';
 
 export default function HomePaneSidebar() {

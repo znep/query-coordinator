@@ -34,6 +34,25 @@ describe('UserNotificationList', () => {
     assert.isNotNull(element);
   });
 
+  it('should render a list of user alert notifications ', () => {
+    const element = renderLocalizationElement(UserNotificationList, {
+      ...defaultProps,
+      userNotifications: [{
+        alertName: 'mock Alert',
+        createdAt: '2017-10-03T08:20:35.042',
+        id: 167,
+        link: '//elumitas.test-socrata.com/dataset/TESTprivate/ckdr-r2rz',
+        messageBody: 'TESTprivate',
+        read: false,
+        type: 'alert',
+        userName: 'testUser',
+        activityUniqueKey: 'activity unique key'
+      }]
+    });
+
+    assert.isNotNull(element);
+  });
+
   it('should show no user notification message if notification list is empty', () => {
     const element = renderLocalizationElement(UserNotificationList, {
       ...defaultProps,

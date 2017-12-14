@@ -56,7 +56,6 @@ const components = (
       showFilters={false}
       showHeader
       showManageAssets={showManageAssets}
-      showPager={false}
       showResultCount
       showSearchField
       tabs={tabs} />

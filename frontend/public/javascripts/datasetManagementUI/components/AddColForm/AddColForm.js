@@ -9,7 +9,7 @@ import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
 import styles from './AddColForm.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
-export function makeFieldName(displayName) {
+export function makeFieldName(displayName = '') {
   // First 'replace' swaps all whitespace for '_'
   // Second 'replace' swaps all non-alphanumerics/non-underscores for '_'
   // The second replace could result in several consecutive underscores: e.g.
@@ -19,7 +19,8 @@ export function makeFieldName(displayName) {
   return displayName
     .replace(/\s/g, '_')
     .replace(/\W/g, '_')
-    .replace(/__+/g, '_');
+    .replace(/__+/g, '_')
+    .toLowerCase();
 }
 
 export function makeTransformExpr(fieldName, transform, entities) {

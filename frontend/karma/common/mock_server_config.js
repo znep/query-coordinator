@@ -1,4 +1,6 @@
 export default {
+  csrfToken: 'abcdefgh1234',
+  appToken: 'global-frontend-token',
   environment: 'production',
   ceteraExternalUri: 'https://example.com/api/cetera',
   currentUser: null,

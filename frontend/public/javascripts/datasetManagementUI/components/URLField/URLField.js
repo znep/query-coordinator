@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import TextInput from 'components/TextInput/TextInput';
-import { getBasename, getExtension } from 'lib/util';
+import { getBasename, getExtension, compressWhitespace } from 'lib/util';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { DuplicateExtension, BadUrl, MissingValue } from 'containers/HrefFormContainer';
 import styles from './URLField.scss';
-import { compressWhitespace } from 'lib/util';
 
 class URLField extends Component {
   render() {

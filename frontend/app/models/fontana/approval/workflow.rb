@@ -5,7 +5,7 @@ module Fontana
     class Workflow
       include HTTParty
 
-      APPROVALS_API_URI = URI.parse("https://localhost/api/approvals")
+      APPROVALS_API_URI = URI.parse("#{CORESERVICE_URI}/approvals")
 
       default_timeout 5.seconds.to_i
       format :json

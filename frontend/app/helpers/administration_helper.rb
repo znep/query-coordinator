@@ -218,14 +218,15 @@ module AdministrationHelper
   end
 
   def user_can_configure_approvals?
-    _user = (current_user || User.new)
-    _user.is_superadmin? || _user.has_right?(UserRights::CONFIGURE_APPROVALS)
+    return false unless current_user
+
+    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::CONFIGURE_APPROVALS)
   end
 
   def user_can_review_approvals?
-    _user = (current_user || User.new)
-    feature_flag?('use_fontana_approvals', request) &&
-      (_user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS))
+    return false unless current_user
+
+    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::REVIEW_APPROVALS)
   end
 
   def a11y_metadata_category_summary(categories, columns)

@@ -13,7 +13,7 @@ import EditCustomRoleModal from './modal/EditCustomRoleModal';
 import { LOAD_DATA_FAILURE, LOADING } from '../appStates';
 import { loadData, showNotification } from '../actions';
 import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
-import Notification from './util/Notification';
+import Notification from 'common/components/ToastNotification';
 import AppError from './util/AppError';
 import RolesGrid from './grid/RolesGrid';
 import { getAppState, getInitialState, getNotificationFromState } from '../selectors';

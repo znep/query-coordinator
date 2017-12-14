@@ -206,13 +206,14 @@ section.colors {
       // The important stuff - actually display the color.
       &::after {
         content: "$#{$name}: #{$color}";
+        display: none;
       }
       background-color: $color;
 
       // Graphical touch-ups.
       display: inline-block;
       height: 3em;
-      margin: 1em .5em;
+      margin: 1em 0.5em;
       text-align: center;
       width: 25em;
 

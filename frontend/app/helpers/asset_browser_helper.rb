@@ -56,7 +56,7 @@ module AssetBrowserHelper
 
   # This method provides the initial redux store state for the static data used by asset browser
   # including domain-specific categories, custom facets, tags, users, initial tab, columns in the table...
-  def render_asset_browser_initial_state
+  def render_asset_browser_initial_state(supplemental_state = {})
     initial_state = {
       :assetInventoryViewModel => asset_inventory_view_model,
       :autocomplete => {
@@ -78,8 +78,15 @@ module AssetBrowserHelper
       :usersList => fetch_users_list
     ) if @asset_browser_config[:filters_enabled]
 
+    initial_state.merge!(supplemental_state.to_h)
+
     # TODO: rename this to window.socrata.assetBrowser.staticData
-    javascript_tag("window.initialState = #{json_escape(initial_state.to_json)}")
+    javascript_tag(
+      <<~EOM
+        window.socrata = window.socrata || {};
+        window.socrata.initialState = #{json_escape(initial_state.to_json)}
+      EOM
+    )
   end
 
   # Cetera fetches to populate AssetBrowser filter dropdowns

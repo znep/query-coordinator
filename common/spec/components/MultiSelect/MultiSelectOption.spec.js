@@ -14,6 +14,7 @@ describe('<MultiSelectOption />', () => {
     onAddSelectedOption: () => {},
     renderOption: () => {},
     setUsingMouse: () => {},
+    skipRootBlur: () => {},
     usingMouse: false
   };
 

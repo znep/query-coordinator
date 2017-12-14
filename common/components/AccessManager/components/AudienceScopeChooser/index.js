@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import I18n from '../../../../i18n';
+
+import I18n from 'common/i18n';
+
 import styles from './chooser.scss';
 import AudienceScopeChooserRadioButton from './AudienceScopeChooserRadioButton';
 

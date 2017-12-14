@@ -1,134 +1,176 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import sinon from 'sinon';
+import airbrake from 'common/airbrake';
+// The import below causes the test to print WARN: 'Mixpanel has not been loaded or has been disabled.' -SOARY
 import mixpanel from 'common/mixpanel';
+import sinon from 'sinon';
+import { useTestTranslations } from 'common/i18n';
+import frontendTranslations from 'frontend/config/locales/en.yml';
 
-import {
-  fetchResults,
-  mergedCeteraQueryParameters
-} from 'common/components/AssetBrowser/lib/helpers/cetera.js';
-import getState from 'common/components/AssetBrowser/reducers/catalog';
+import mockCeteraFetchResponse from 'common/spec/components/AssetBrowser/data/mock_cetera_fetch_response';
+
 import ceteraUtils from 'common/cetera/utils';
-import {
-  ALL_ASSETS_TAB,
-  MY_ASSETS_TAB,
-  SHARED_TO_ME_TAB
-} from 'common/components/AssetBrowser/lib/constants';
 
-import mockCeteraFacetCountsResponse from '../components/AssetBrowser/data/mock_cetera_facet_counts_response';
-import mockCeteraFetchResponse from '../components/AssetBrowser/data/mock_cetera_fetch_response';
+const stubCeteraFetch = (ceteraResponse) => (
+  sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(ceteraResponse)))
+);
 
-describe('cetera_helpers', () => {
-  let ceteraStub;
-  let ceteraAssetCountsStub;
+describe('cetera/utils', () => {
 
-  beforeEach(() => {
-    ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
+  describe('ceteraQueryString', () => {
 
-    ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').
-      callsFake(_.constant(Promise.resolve(mockCeteraFacetCountsResponse)));
-  });
-
-  afterEach(() => {
-    ceteraStub.restore();
-    ceteraAssetCountsStub.restore();
-  });
-
-  describe('mergedCeteraQueryParameters', () => {
-    describe('baseFilters', () => {
-      it('overrides normal filters', () => {
-        const state = () => ({
-          header: {
-            activeTab: ALL_ASSETS_TAB
-          },
-          tabs: {
-            [ALL_ASSETS_TAB]: {
-              props: {
-                baseFilters: {
-                  assetTypes: 'charts',
-                  forUser: 'abcd-1234'
-                }
-              }
-            }
-          }
-        });
-        const parameters = {
-          assetTypes: 'datasets',
-          forUser: 'efgh-5678',
-          q: 'foo'
-        };
-
-        const result = mergedCeteraQueryParameters(state, parameters);
-        assert.equal(result.only, 'charts');
-        assert.equal(result.forUser, 'abcd-1234');
-        assert.equal(result.q, 'foo');
-      });
+    it('handles baseFilters as an array of values', () => {
+      assert.equal(
+        ceteraUtils.ceteraQueryString({ approvalStatus: ['approved', 'rejected'] }),
+        'domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&approval_status[]=approved&approval_status[]=rejected'
+      );
     });
 
-    it('adds custom facet filters', () => {
-      const parameters = { customFacets: { Foo_Bar: 'abcd' } };
-      const result = mergedCeteraQueryParameters(getState, parameters);
-      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'abcd' });
-    });
-
-    it('overrides an existing custom facet filter', () => {
-      const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
-      const parameters = { customFacets: { Foo_Bar: null } };
-      const result = mergedCeteraQueryParameters(state, parameters);
-      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: null });
-    });
-
-    it('can have multiple custom facet filters', () => {
-      const state = () => ({ filters: { customFacets: { Foo_Bar: 'some existing value' } } });
-      const parameters = { customFacets: { Foo_Bar2: 'another value' } };
-      const result = mergedCeteraQueryParameters(state, parameters);
-      assert.deepEqual(result.customMetadataFilters, { Foo_Bar: 'some existing value', Foo_Bar2: 'another value' });
+    it('handles baseFilters as a single string value', () => {
+      assert.equal(
+        ceteraUtils.ceteraQueryString({ approvalStatus: 'pending' }),
+        'domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&approval_status=pending'
+      );
     });
   });
 
-  // fetchResults returns a promise
-  describe('fetchResults', () => {
-    let ceteraUtilsQuerySpy;
-    let mixpanelSendPayloadSpy;
+  describe('query', () => {
+    let mixpanelStub = null;
+    let ceteraStub = null;
+    let ceteraResponse = null;
 
     beforeEach(() => {
-      ceteraUtilsQuerySpy = sinon.spy(ceteraUtils, 'query');
-      mixpanelSendPayloadSpy = sinon.spy(mixpanel, 'sendPayload');
+      mixpanelStub = sinon.stub(mixpanel, 'sendPayload');
+      ceteraResponse = _.cloneDeep(mockCeteraFetchResponse);
+      ceteraResponse.status = 200;
+      ceteraStub = stubCeteraFetch(ceteraResponse);
+      useTestTranslations(frontendTranslations.en);
     });
 
     afterEach(() => {
-      ceteraUtilsQuerySpy.restore();
-      mixpanelSendPayloadSpy.restore();
+      mixpanelStub.restore();
+      ceteraStub.restore();
     });
 
-    describe('mixpanelContext', () => {
+    describe('encoding query string parameters', () => {
 
-      // Returns a promise
-      it('includes the mixpanelContext param for reporting metrics', () => {
-        const dispatch = () => {};
-        const onSuccess = () => {};
-        const parameters = {
-          action: 'TOGGLE_RECENTLY_VIEWED',
-          pageNumber: 1,
-          onlyRecentlyViewed: true,
-          results: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        };
+      it('encodes "false" boolean values', () => {
+        ceteraUtils.query({ showVisibility: false });
+        assert.equal(
+          window.fetch.args[0][0],
+          '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&show_visibility=false'
+        );
+      });
 
-        return fetchResults(dispatch, getState, parameters, onSuccess).then((response) => {
-          const mixpanelContext = ceteraUtils.query.getCall(0).args[0].mixpanelContext;
+      it('encodes "true" boolean values', () => {
+        ceteraUtils.query({ showVisibility: true });
+        assert.equal(
+          window.fetch.args[0][0],
+          '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost&show_visibility=true'
+        );
+      });
 
-          assert.equal(mixpanelContext.eventName, 'Filtered Assets to Only Recently Viewed');
-          assert.equal(Object.keys(mixpanelContext.params).length, 3);
-          assert(_.includes(Object.keys(mixpanelContext.params), 'results', 'pageNumber', 'onlyRecentlyViewed'));
-          assert.equal(mixpanelContext.params.pageNumber, 1);
-          assert(mixpanelContext.params.onlyRecentlyViewed);
-          // Confirm that we don't send the entire collection of results to mixpanel
-          assert(!_.includes(Object.keys(mixpanel.sendPayload.getCall(0).args[1]), 'results'));
-        });
+      it('omits null values', () => {
+        ceteraUtils.query({ showVisibility: null });
+        assert.equal(
+          window.fetch.args[0][0],
+          '/api/catalog/v1?domains=localhost&limit=6&offset=0&order=relevance&search_context=localhost'
+        );
       });
 
     });
 
-  });
+    describe('unsuccessful response', () => {
 
+      let airBrakeStub = null;
+      let consoleErrorStub = null;
+
+      beforeEach(() => {
+        airBrakeStub = sinon.stub(airbrake, 'notify');
+        consoleErrorStub = sinon.stub(window.console, 'error');
+      });
+
+      afterEach(() => {
+        airBrakeStub.restore();
+        consoleErrorStub.restore();
+      });
+
+      // Returns a promise
+      it('throws a connection error', () => {
+        ceteraResponse.status = 502;
+
+        return ceteraUtils.query({ mixpanelContext: 'Used Asset Search Field' }).then(
+          () => { throw new Error('Unexpected resolution'); },
+          (error) => {
+            ceteraStub.restore();
+            assert.equal(error.toString(),
+              'Error: We were unable to connect to the asset catalog. Please reload and try again.');
+          }
+        );
+      });
+
+      // Returns a promise
+      it('throws a service unavailable error', () => {
+        ceteraResponse.status = 503;
+
+        return ceteraUtils.query({ mixpanelContext: 'Used Asset Search Field' }).then(
+          () => { throw new Error('Unexpected resolution'); },
+          (error) => {
+            ceteraStub.restore();
+            assert.equal(error.toString(),
+              'Error: We were unable to contact the asset catalog. Please reload and try again.');
+          }
+        );
+      });
+
+      // Returns a promise
+      it('throws a timeout error', () => {
+        ceteraResponse.status = 504;
+
+        return ceteraUtils.query({ mixpanelContext: 'Used Asset Search Field' }).then(
+          () => { throw new Error('Unexpected resolution'); },
+          (error) => {
+            ceteraStub.restore();
+            assert.equal(error.toString(),
+              'Error: We were unable to query to the asset catalog. Please reload and try again.');
+          }
+        );
+      });
+
+    });
+
+    describe('successful response', () => {
+
+      describe('query', () => {
+
+        describe('without mixpanel', () => {
+
+          // Returns a promise
+          it('should return results', () => {
+            return ceteraUtils.query({}).then((response) => {
+              assert(response.results.length > 0);
+            });
+          });
+
+        });
+
+        describe('mixpanel', () => {
+
+          // Returns a promise
+          it('includes the context argument when reporting metrics', () => {
+            return ceteraUtils.query({
+              mixpanelContext: {
+                eventName: 'Used Asset Search Field',
+                params: { pageNumber: 3 }
+              }
+            }).then((response) => {
+              assert.equal(mixpanel.sendPayload.getCall(0).args[0], 'Used Asset Search Field');
+              assert.equal(mixpanel.sendPayload.getCall(0).args[1]['Result Count'], 6);
+              assert.equal(mixpanel.sendPayload.getCall(0).args[1].pageNumber, 3);
+            });
+          });
+        });
+      });
+    });
+  });
 });

@@ -1,122 +1,157 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { Simulate } from 'react-dom/test-utils';
+import { shallow, mount } from 'enzyme';
 
 import { DataPanel, DataSourceStates, mapStateToProps } from 'components/EditModal/DataPanel';
 
 describe('DataPanel', () => {
-  describe('DataPanel mapStateToProps', () => {
-    it('passes through uid', () => {
-      const state = _.set({}, 'editor.measure.metric.dataSource.uid', 'test-test');
-      assert.propertyVal(
-        mapStateToProps(state),
-        'uid',
-        'test-test'
-      );
+  describe('mapStateToProps', () => {
+    it('passes all saved data source properties', () => {
+      const state = {};
+      _.set(state, 'editor.measure.metric.dataSource.uid', 'test-test');
+      _.set(state, 'editor.measure.metric.dataSource.arbitrary', 'test value');
+
+      const mappedProps = mapStateToProps(state);
+      assert.propertyVal(mappedProps, 'uid', 'test-test');
+      assert.propertyVal(mappedProps, 'arbitrary', 'test value');
     });
-    describe('dataSourceState', () => {
-      it('is set to INVALID if rowCount is not set in state', () => {
-        assert.propertyVal(
-          mapStateToProps({}),
-          'dataSourceState',
-          DataSourceStates.INVALID
-        );
-      });
 
-      it('is set to INVALID if rowCount is negative', () => {
-        const state = _.set({}, 'editor.cachedRowCount', -1);
-        assert.propertyVal(
-          mapStateToProps(state),
-          'dataSourceState',
-          DataSourceStates.INVALID
-        );
-      });
+    it('passes selected info from non-saved properties', () => {
+      const state = {};
+      _.set(state, 'editor.cachedRowCount', 101);
+      _.set(state, 'editor.dataSourceViewMetadata', { name: 'test value', description: 'not passed' });
 
-      it('is set to INVALID if rowCount is NaN', () => {
-        const state = _.set({}, 'editor.cachedRowCount', NaN);
-        assert.propertyVal(
-          mapStateToProps(state),
-          'dataSourceState',
-          DataSourceStates.INVALID
-        );
-      });
-
-      it('is set to NO_ROWS if rowCount is 0', () => {
-        const state = _.set({}, 'editor.cachedRowCount', 0);
-        assert.propertyVal(
-          mapStateToProps(state),
-          'dataSourceState',
-          DataSourceStates.NO_ROWS
-        );
-      });
-
-      it('is set to VALID if rowCount is > 0', () => {
-        const state = _.set({}, 'editor.cachedRowCount', 10);
-        assert.propertyVal(
-          mapStateToProps(state),
-          'dataSourceState',
-          DataSourceStates.VALID
-        );
-      });
+      const mappedProps = mapStateToProps(state);
+      assert.propertyVal(mappedProps, 'rowCount', 101);
+      assert.propertyVal(mappedProps, 'dataSourceName', 'test value');
+      assert.notPropertyVal(mappedProps, 'dataSourceDescription');
     });
   });
 
-  describe('DataPanel component', () => {
-    const getProps = (props) => {
+  describe('component', () => {
+    let props;
+    let element;
+
+    const getProps = (propOverrides) => {
       return {
-        ...props
+        onDataSourceChange: _.noop,
+        ...propOverrides
       };
     };
 
     it('renders', () => {
-      const element = renderComponent(DataPanel, getProps());
-      assert.ok(element);
+      element = shallow(<DataPanel {...getProps()} />);
+      assert.isTrue(element.exists());
     });
 
-    it('shows a success indicator when the dataSource field points to a valid view with data', () => {
-      const element = renderComponent(DataPanel, getProps({
-        dataSourceState: DataSourceStates.VALID
-      }));
-      assert.ok(element.querySelector('.data-source-indicator.icon-check-2'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-warning'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-cross2'));
+    describe('selection status notice', () => {
+      const getDatasetName = (element) => element.find('.selected-dataset-name');
+      const getText = (element) => element.find('.selected-dataset p');
+      const getResetLink = (element) => element.find('a');
+      const getSpinner = (element) => element.find('.selected-dataset .spinner-default');
+
+      describe('when no dataset is selected', () => {
+        beforeEach(() => {
+          props = getProps({ rowCount: undefined });
+          element = shallow(<DataPanel {...props} />);
+        });
+
+        it('displays the correct messages', () => {
+          assert.equal(getDatasetName(element).text(), 'none');
+          assert.include(getText(element).last().text(), 'Select the dataset');
+        });
+
+        it('does not render a reset link', () => {
+          assert.isFalse(getResetLink(element).exists());
+        });
+      });
+
+      describe('when fetching a dataset', () => {
+        beforeEach(() => {
+          props = getProps({ rowCount: null });
+          element = shallow(<DataPanel {...props} />);
+        });
+
+        it('displays only a spinner', () => {
+          assert.isTrue(getSpinner(element).exists());
+          assert.isFalse(getDatasetName(element).exists());
+          assert.isFalse(getText(element).exists());
+          assert.isFalse(getResetLink(element).exists());
+        });
+      });
+
+      describe('when dataset with data is selected', () => {
+        beforeEach(() =>  {
+          props = getProps({ dataSourceName: 'Valid Dataset', rowCount: 1 });
+          element = shallow(<DataPanel {...props} />);
+        });
+
+        it('displays the correct messages', () => {
+          assert.equal(getDatasetName(element).text(), 'Valid Dataset');
+          assert.include(getText(element).last().text(), 'The dataset you\'ve selected is valid');
+        });
+
+        it('renders a reset link', () => {
+          assert.isTrue(getResetLink(element).exists());
+        });
+      });
+
+      describe('when a dataset without data is selected', () => {
+        beforeEach(() =>  {
+          props = getProps({ dataSourceName: 'Empty Dataset', rowCount: 0 });
+          element = shallow(<DataPanel {...props} />);
+        });
+
+        it('displays the correct messages', () => {
+          assert.equal(getDatasetName(element).text(), 'Empty Dataset');
+          assert.include(getText(element).last().text(), 'The selected dataset doesn\'t have any data yet');
+        });
+
+        it('renders a reset link', () => {
+          assert.isTrue(getResetLink(element).exists());
+        });
+      });
+
+      describe('when an invalid dataset is selected', () => {
+        beforeEach(() =>  {
+          props = getProps({ dataSourceName: 'Invalid Dataset', rowCount: -1, uid: 'test-test' });
+          element = shallow(<DataPanel {...props} />);
+        });
+
+        it('displays the correct messages', () => {
+          assert.equal(getDatasetName(element).text(), 'test-test');
+          assert.include(getText(element).last().text(), 'The selected dataset is not suitable');
+        });
+
+        it('renders a reset link', () => {
+          assert.isTrue(getResetLink(element).exists());
+        });
+      });
     });
 
-    it('shows a warning indicator when the dataSource field points to a valid view with no rows', () => {
-      const element = renderComponent(DataPanel, getProps({
-        dataSourceState: DataSourceStates.NO_ROWS
-      }));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-check-2'));
-      assert.ok(element.querySelector('.data-source-indicator.icon-warning'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-cross2'));
-    });
+    describe('asset selector', () => {
+      const getIframe = (element) => element.find('iframe');
 
-    it('shows an error indicator when the dataSource field points to an invalid view', () => {
-      const element = renderComponent(DataPanel, getProps({
-        dataSourceState: DataSourceStates.INVALID
-      }));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-check-2'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-warning'));
-      assert.ok(element.querySelector('.data-source-indicator.icon-cross2'));
-    });
+      describe('when selecting a different dataset', () => {
+        it('calls onChangeDataSource when the "Choose" button is clicked', () => {
+          props = getProps({ uid: 'test-test', onChangeDataSource: sinon.spy() });
+          element = mount(<DataPanel {...props} />);
 
-    it('shows no status indicator when the dataSource field is empty', () => {
-      const element = renderComponent(DataPanel, getProps());
-      assert.notOk(element.querySelector('.data-source-indicator.icon-check-2'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-warning'));
-      assert.notOk(element.querySelector('.data-source-indicator.icon-cross2'));
-    });
+          getIframe(element).node.onDatasetSelected({ id: 'four-four' });
+          sinon.assert.calledWithExactly(props.onChangeDataSource, 'four-four');
+        });
+      });
 
-    it('updates the dataSource state value when the dataSource field value is changed', () => {
-      const spy = sinon.spy();
-      const element = renderComponent(DataPanel, getProps({
-        onChangeDataSource: spy
-      }));
+      describe('when selecting an already-selected dataset', () => {
+        it('does not call onChangeDataSource when the "Choose" button is clicked', () => {
+          props = getProps({ uid: 'test-test', onChangeDataSource: sinon.spy() });
+          element = mount(<DataPanel {...props} />);
 
-      sinon.assert.notCalled(spy);
-      Simulate.change(element.querySelector('#data-source'), 'test-test');
-      sinon.assert.calledOnce(spy);
+          getIframe(element).node.onDatasetSelected({ id: 'test-test' });
+          sinon.assert.notCalled(props.onChangeDataSource);
+        });
+      });
     });
   });
 });

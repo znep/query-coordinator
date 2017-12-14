@@ -10,7 +10,9 @@ import Linkify from 'react-linkify';
 import moment from 'moment-timezone';
 import I18n from 'common/i18n';
 import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
-import AssociatedAssets from 'frontend/public/javascripts/common/components/AssociatedAssets';
+import AssociatedAssets from 'common/components/AssociatedAssets';
+import CreateAlertButton from 'common/components/CreateAlertButton';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
@@ -134,16 +136,24 @@ class MetadataTable extends Component {
 
   renderHeader() {
     let editMetadata;
-    const { editMetadataUrl, enableAssociatedAssets, localizeLink, renderWatchDatasetButton } = this.props;
+    const {
+      editMetadataUrl,
+      enableAssociatedAssets,
+      localizeLink,
+      renderWatchDatasetButton,
+      showCreateAlertButton
+    } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
     const watchDatasetButton = renderWatchDatasetButton ? renderWatchDatasetButton() : null;
+    const createAlertButton = showCreateAlertButton ? (<CreateAlertButton />) : null;
     if (editMetadataUrl) {
       editMetadata = (
         <a
           href={localizeLink(editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
-          {I18n.t('common.metadata.edit_metadata')}
+          <SocrataIcon name="edit" isBtnIcon />
+          <span>{I18n.t('common.metadata.edit_metadata')}</span>
         </a>
       );
     }
@@ -170,6 +180,7 @@ class MetadataTable extends Component {
         <div className="button-group">
           {associatedAssetsButton}
           {editMetadata}
+          {createAlertButton}
           {watchDatasetButton}
         </div>
       </div>
@@ -653,7 +664,7 @@ MetadataTable.propTypes = {
 
   // Disables the "contact dataset owner" button if set to true.
   disableContactDatasetOwner: PropTypes.bool,
-
+  showCreateAlertButton: PropTypes.bool,
   // A simple Core view metadata blob from /api/views/xxxx-yyyy.json
   // These PropTypes capture the fields actually used by the component.
   coreView: PropTypes.shape({

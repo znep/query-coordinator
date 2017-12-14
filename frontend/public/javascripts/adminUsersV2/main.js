@@ -26,7 +26,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const reducer = createReducer(window.serverConfig, getQueryParamFilters());
 const store = createStore(reducer, composeEnhancers(applyMiddleware(...middleware)));
 
-const render = (Component) => {
+const render = Component => {
   ReactDOM.render(
     <AppContainer>
       <Component store={store} />

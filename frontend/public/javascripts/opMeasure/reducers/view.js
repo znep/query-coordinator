@@ -1,24 +1,26 @@
 import _ from 'lodash';
 
 import actions from '../actions';
-import { ModeStates, SaveStates } from '../lib/constants';
+import { ModeStates, SaveStates, PeriodTypes } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
-const initialState = () => {
-  const state = window.initialState;
-
-  _.defaults(state, {
-    activePane: 'summary',
-    isDirty: false,
-    saveState: SaveStates.IDLE
-  });
-
-  return state;
-};
+const INITIAL_STATE = _.merge({}, window.initialState, {
+  activePane: 'summary',
+  isDirty: false,
+  saveState: SaveStates.IDLE,
+  // TODO: Set default metric props as part of setting up window.initialState?
+  measure: {
+    metric: {
+      reportingPeriod: {
+        type: PeriodTypes.CLOSED
+      }
+    }
+  }
+});
 
 // View reducer.
 // Handles on-page navigation, save actions, and updates from the edit modal.
-export default (state = initialState(), action) => {
+export default (state = INITIAL_STATE, action) => {
   if (_.isUndefined(action)) {
     return state;
   }

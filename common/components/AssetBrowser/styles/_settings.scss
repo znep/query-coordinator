@@ -1,16 +1,18 @@
-.asset-browser .settings {
-  display: flex;
-  justify-content: center;
+#site-chrome-admin-header + #noticeContainer .styleguide-alert {
+  margin-top: 3rem;
+}
 
-  font-size: 90%;
+.approvals_settings {
 
-  .settingsContainer {
-    margin-left: 4rem;
-    max-width: 84em;
+  section {
+    background-color: $white;
+    border-top: 1px solid $panel-border-color;
+    padding: 1rem 35%;
+    font-size: 80%;
   }
 
-  .section-title {
-    font-weight: bold;
+  p {
+    margin: 0 0 1rem 0;
   }
 
   .introduction {
@@ -21,114 +23,114 @@
     }
   }
 
-  p:first-of-type {
-    margin-top: 10px;
-  }
-
   .actions {
     display: flex;
     justify-content: flex-end;
-    border-top: solid 0.5px $light-grey-2;
-    margin-top: 3em;
-    margin-bottom: 2em;
-    padding-top: 1em;
+    margin: 1rem;
+    padding-top: 1rem;
 
     button {
-      margin-left: 0.8em;
-    }
-  }
+      width: 6rem;
+      margin-left: 0.8rem;
 
-  .automatically-approve {
-    display: flex;
-
-    margin-top: 2em;
-
-    .approval-configuration {
-      width: 50%;
-
-      .configuration-title {
-        font-weight: bold;
+      .spinner-default.hidden {
+        display: none;
       }
-
-      .socrata-icon {
+      .spinner-btn-secondary {
+        border: 2px solid $btn-primary-border-color;
+        border-right-color: $alternate-3-light;
+      }
+      &.btn-busy {
+        padding: 8px 13px !important;
+        height: 38px !important;
         position: relative;
-        top: -4px;
-        width: 20px;
-        height: 20px;
-        margin-right: 0.3em;
-      }
-
-      .socrata-icon-official2 {
-        color: $alternate-1;
-      }
-      .socrata-icon-community {
-        color: $primary-base;
-      }
-
-      ul {
-        margin: 0;
-        padding-left: 23px;
-      }
-
-      li {
-        list-style-type: none;
-        display: flex;
-        margin-top: 0.8em;
-
-        label.radioLabel {
+        top: 2px; // TODO: Unshit busy button stupidity
+        .spinner-default.hidden {
           display: inline-block;
-          margin-left: 0.5em;
-
-          div {
-            font-size: 80%;
-          }
+        }
+        .btn-title {
+          display: none;
         }
       }
     }
   }
 
-  .checkboxWrapper {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 1.5em;
-    margin-left: 6em;
+  .settings_group {
+    margin: 0rem 0 2rem 0;
 
-    > label {
-      margin-left: 0.5em;
-    }
-  }
-
-  .approver-configuration {
-    margin-top: 3em;
-    margin-left: 23px;
-    width: 52em;
-
-    p {
-      margin-top: 0;
-      margin-bottom: 15px;
+    .socrata-icon-official2,
+    .socrata-icon-community {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      margin-right: 0.3em;
+      float: right;
+      font-size: 200%;
+      top: 0;
     }
 
-    .user-setting {
+    .socrata-icon-official2 {
+      color: $alternate-1;
+    }
+    .socrata-icon-community {
+      color: $primary-base;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style-type: none;
       display: flex;
+      margin-top: 0.25rem;
+      background-color: $btn-simple-background-color;
+      padding: 0.33rem;
+      border: 1px solid $header-accent-color;
+      border-radius: 3px;
 
-      &:hover {
-        background-color: $header-link-hover-color;
+      &.selected {
+        background-color: $alternate-2-light;
+        border: 1px solid $alternate-2;
       }
 
-      width: 45em;
-      margin: 0 auto;
+      input {
+        position: relative;
+        top: 3px;
 
-      label.name {
-        flex: 2 1 auto;
+        &.embiggen {
+          font-size: 200%;
+          top: 12px;
+        }
       }
 
-      div {
-        margin: 0 0.4em;
-      }
+      label.radio_label {
+        display: inline-block;
+        margin-left: 0.5em;
 
-      label.helper {
-        white-space: nowrap;
+        div {
+          font-size: 80%;
+        }
       }
     }
+
+    .subtext {
+      color: $light-grey-2;
+      margin-bottom: 1rem;
+    }
+
+    .learn_more {
+      margin-top: 1rem;
+    }
+
+    .email_address {
+      color: $light-grey-2;
+    }
   }
+
+  .checkbox_label {
+    margin-left: 0.5em;
+  }
+
 }

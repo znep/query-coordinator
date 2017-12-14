@@ -59,6 +59,9 @@
   <%= render_dataset_landing_page_session_data %>
   <%= render_dataset_landing_page_server_config %>
 
+  <%# for USAID's associated asset selector %>
+  <%== render_asset_browser_initial_state if feature_flag?(:usaid_features_enabled, request) %>
+
   <script type="text/javascript">
     var initialState =
       <%= raw({

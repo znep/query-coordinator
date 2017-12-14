@@ -380,6 +380,8 @@ module DatasetsHelper
     end
   end
 
+  # Code in public/javascripts/controls/panes/download-dataset.js relies on the values here. If these ever
+  # get localized correctly, make sure to update that code as well.
   def normal_download_types
     ['CSV', 'CSV for Excel', 'CSV for Excel (Europe)', 'JSON', 'RDF', 'RSS', 'TSV for Excel', 'XML']
   end
@@ -622,6 +624,8 @@ module DatasetsHelper
 
   def hide_sharing?
     [
+      # when this flag is on, sharing is done via the access manager modal
+      FeatureFlags.derive(nil, request).enable_access_manager_modal,
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::GRANT),
       view.geoParent.present?,
@@ -640,6 +644,8 @@ module DatasetsHelper
 
   def hide_plagiarize?
     [
+      # when this flag is on, sharing is done via the access manager modal
+      FeatureFlags.derive(nil, request).enable_access_manager_modal,
       !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS),
       view.geoParent.present?,
       view.is_activity_feed_dataset?

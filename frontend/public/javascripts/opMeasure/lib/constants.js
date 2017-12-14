@@ -19,3 +19,14 @@ export const CalculationTypeNames = Object.freeze({
   RECENT_VALUE: 'recent_value',
   SUM: 'sum'
 });
+
+export const PeriodTypes = Object.freeze({
+  OPEN: 'open',
+  CLOSED: 'closed'
+});
+
+export const PeriodSizes = Object.freeze([
+  'year',
+  'month',
+  'week'
+]);

@@ -8,6 +8,7 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 import { getProductNotifications, updateProductNotificationLastSeen } from 'common/notifications/api/ProductNotificationAPI';
 import NotificationList from 'common/notifications/components/NotificationList/NotificationList';
 import UserNotificationAPI from 'common/notifications/api/UserNotificationAPI';
+import AlertPreferenceAPI from 'common/notifications/api/AlertPreferenceAPI';
 import Bell from 'common/notifications/components/Bell/Bell';
 import TransientNotifications from 'common/notifications/components/UserNotifications/TransientNotifications';
 import { DEFAULT_FILTER_TAB } from 'common/notifications/constants';
@@ -24,6 +25,7 @@ class Notifications extends Component {
       productNotifications: [],
       showNotificationPanel: false,
       showProductNotificationsAsSecondaryPanel: false,
+      showTransientNotifications: false,
       openClearAllUserNotificationsPrompt: false,
       unreadProductNotificationCount: 0,
       unreadUserNotificationCount: 0,
@@ -58,14 +60,16 @@ class Notifications extends Component {
       'renderNotificationPanel',
       'onSeeNewUserNotifications',
       'onLoadMoreUserNotifications',
-      'moveTransientNotificationIntoPanel'
+      'moveTransientNotificationIntoPanel',
+      'onShowTransientNotificationsChange'
     );
   }
 
   componentWillMount() {
     const {
       showProductNotifications,
-      showUserNotifications
+      showUserNotifications,
+      inProductTransientNotificationsEnabled
     } = this.props.options;
     const { I18n } = this.props;
 
@@ -90,6 +94,21 @@ class Notifications extends Component {
             areNotificationsLoading: false
           });
         }
+      });
+    }
+
+    if (inProductTransientNotificationsEnabled) {
+      let { showTransientNotifications } = this.state;
+
+      AlertPreferenceAPI.get().then((response) => {
+        const settings = _.get(response, 'settings', {});
+
+        showTransientNotifications = _.get(settings, 'in_product_transient[0].enable', false);
+        this.setState({ showTransientNotifications });
+      }).
+      catch((error) => {
+        showTransientNotifications = false;
+        this.setState({ showTransientNotifications });
       });
     }
   }
@@ -126,8 +145,7 @@ class Notifications extends Component {
   }
 
   onNotificationsUpdate(userNotifications, enqueuedUserNotifications, hasMoreNotifications, unreadUserNotificationCount) {
-    const { showTransientNotifications } = this.props.options;
-    const { showNotificationPanel } = this.state;
+    const { showTransientNotifications, showNotificationPanel } = this.state;
     let transientNotifications = [];
     let hasEnqueuedUserNotifications = false;
 
@@ -189,8 +207,7 @@ class Notifications extends Component {
   }
 
   onToggleReadUserNotification(notificationId, toggle) {
-    const { showTransientNotifications } = this.props.options;
-    const { showNotificationPanel } = this.state;
+    const { showTransientNotifications, showNotificationPanel } = this.state;
     const fromEnqueuedUserNotifications = !showNotificationPanel && showTransientNotifications;
 
     if (toggle) {
@@ -200,12 +217,21 @@ class Notifications extends Component {
     }
   }
 
+  onShowTransientNotificationsChange(toggle) {
+    this.setState({ showTransientNotifications: toggle });
+  }
+
   toggleNotificationPanel() {
     const showNotificationPanel = !this.state.showNotificationPanel;
     const {
       lockScrollbar,
       scrollTop
     } = this.props.options;
+    const { showTransientNotifications } = this.state;
+
+    if (showTransientNotifications) {
+      this.onSeeNewUserNotifications();
+    }
 
     if (showNotificationPanel) {
       this.addKeyboardEvents();
@@ -215,34 +241,12 @@ class Notifications extends Component {
         document.querySelector('body').style.overflow = 'hidden';
       }
 
-      const { showTransientNotifications } = this.props.options;
-      let { transientNotifications } = this.state;
-
-      if (showTransientNotifications && !_.isEmpty(transientNotifications)) {
-        const enqueuedUserNotifications = transientNotifications;
-        const hasEnqueuedUserNotifications = !_.isEmpty(enqueuedUserNotifications);
-        transientNotifications = [];
-
-        this.setState({
-          showNotificationPanel,
-          enqueuedUserNotifications,
-          hasEnqueuedUserNotifications,
-          transientNotifications
-        });
-      } else {
-        this.setState({ showNotificationPanel });
-      }
+      this.setState({ showNotificationPanel });
     } else {
       this.removeKeyboardEvents();
 
       if (lockScrollbar) {
         document.querySelector('body').style.overflow = '';
-      }
-
-      const { showTransientNotifications } = this.props.options;
-
-      if (showTransientNotifications) {
-        this.onSeeNewUserNotifications();
       }
 
       this.setState({
@@ -314,7 +318,8 @@ class Notifications extends Component {
         currentUserRole,
         isSuperAdmin,
         currentDomainFeatures,
-        showTransientNotifications
+        showMyAlertPreference,
+        inProductTransientNotificationsEnabled
       } = this.props.options;
       const {
         areNotificationsLoading,
@@ -364,7 +369,9 @@ class Notifications extends Component {
             unreadProductNotificationCount={unreadProductNotificationCount}
             unreadUserNotificationCount={unreadUserNotificationCount}
             currentDomainFeatures={currentDomainFeatures}
-            showTransientNotifications={showTransientNotifications}
+            showMyAlertPreference={showMyAlertPreference}
+            inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
+            onShowTransientNotificationsChange={this.onShowTransientNotificationsChange}
             viewOlderLink={viewOlderLink} />
         </div>
       );
@@ -372,8 +379,7 @@ class Notifications extends Component {
   }
 
   renderTransientNotifications() {
-    const { showTransientNotifications } = this.props.options;
-    const { showNotificationPanel, transientNotifications } = this.state;
+    const { showTransientNotifications, showNotificationPanel, transientNotifications } = this.state;
 
     if (!showNotificationPanel && showTransientNotifications && !_.isEmpty(transientNotifications)) {
       return (
@@ -409,7 +415,8 @@ Notifications.propTypes = {
     lockScrollbar: PropTypes.bool,
     scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,
-    showTransientNotifications: PropTypes.bool.isRequired,
+    showMyAlertPreference: PropTypes.bool.isRequired,
+    inProductTransientNotificationsEnabled: PropTypes.bool.isRequired,
     showUserNotifications: PropTypes.bool.isRequired
   }).isRequired
 };
@@ -418,7 +425,8 @@ Notifications.defaultProps = {
   options: {
     lockScrollbar: PropTypes.false,
     scrollTop: 0,
-    showTransientNotifications: false
+    showMyAlertPreference: false,
+    inProductTransientNotificationsEnabled: false
   }
 };
 

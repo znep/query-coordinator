@@ -89,7 +89,7 @@ describe InternalController do
 
       %i(index index_orgs analytics feature_flag_report demos).each do |page|
         it "renders the internal_panel left_nav on the '#{page}' page" do
-          VCR.use_cassette('internal_panel', :record => :new_episodes) do
+          VCR.use_cassette('internal_panel') do
             get page
             expect(response).to have_http_status(:ok)
             assert_select('.leftNavBox.internalPanel') unless page == :demos
@@ -98,34 +98,117 @@ describe InternalController do
           end
         end
       end
+    end
+  end
 
-      xdescribe 'using Signaller' do
-        before do
-          init_signaller
+  describe 'preventing invalid modules' do
+    let(:create_domain_params) do
+      {
+        'utf8' => '✓',
+        'authenticity_token' => 't8aKIa1wNLjA0w5GlGOt/2fSFuRi1Ca6gSk/vKaA1w3C/alFTZyT8F86fEmXQYf9xS/5gDhmTQZPlwQLQUMDWg==',
+        'domain' => {
+          'organizationId' => '34',
+          'name' => 'Domain Name',
+          'cName' => 'domain-cname',
+          'parentDomainId' => '2'
+        },
+        'config' => {
+          'parentDomainCName' => 'dontuse.ly'
+        },
+        'org_id' => '34'
+      }
+    end
+
+    before do
+      allow(current_user).to receive(:is_superadmin?).and_return(true)
+      rspec_stub_feature_flags_with(flags)
+    end
+
+    describe 'create_domain' do
+      let(:account_module) { AccountModule.new }
+      let(:does_include) { true }
+
+      before do
+        allow(AccountModule).to receive(:include?).and_return(does_include)
+        allow(AccountTier).to receive(:find_by_name).and_return(AccountTier.new('id' => 1))
+        allow(Domain).to receive(:create).and_return(Domain.new('cname' => 'cname'))
+        allow(Domain).to receive(:add_account_module)
+        allow(Configuration).to receive(:find_by_type).and_return([Configuration.new('id' => 1)])
+        allow(Configuration).to receive(:create)
+        allow_any_instance_of(Configuration).to receive(:create_property)
+        allow(subject).to receive(:module_features_on_by_default).and_return(
+          %w(canvas2 geospatial staging_lockdown staging_api_lockdown routing_approval)
+        )
+      end
+
+      context 'use_fontana_approvals feature flag is false' do
+        let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
+
+        it 'allows adding the routing_approval module' do
+          VCR.use_cassette('prevent_invalid_modules') do
+            post :create_domain, create_domain_params
+            expect(flash[:error]).to be_blank
+          end
         end
+      end
 
-        # TODO: check behavior expectations on FeatureFlags#(re)set_value
+      context 'use_fontana_approvals is true' do
+        let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
+
+        it 'prevents adding the routing_approval module' do
+          VCR.use_cassette('prevent_invalid_modules') do
+            post :create_domain, create_domain_params
+            expect(assigns(:flashes)[:error].include?(InternalController::ROUTING_APPROVAL_ERROR)).to eq(true)
+          end
+        end
+      end
+    end
+
+    describe 'add_a_module_feature' do
+      let(:module_feature_params) do
+        {
+          'utf8' => '✓',
+          'authenticity_token' => 'n0yWUwYdaf/cBd4LIv8Mq2hekMvuhWe/ifYEaAx7+8vqd7U35vHOt0PsrAQh3SapyqN/r7Q3DANHSD/f67gvnA==',
+          'new-feature_name' => 'routing_approval',
+          'new-feature_enabled' => 'enabled',
+          'commit' => 'Add',
+          'domain_id' => 'cname'
+        }
+      end
+      let(:account_module) { AccountModule.new }
+      let(:does_include) { false }
+
+      before do
+        allow(AccountModule).to receive(:find).and_return(account_module)
+        allow(AccountModule).to receive(:include?).and_return(does_include)
+        allow_any_instance_of(Configuration).to receive(:update_property)
+        allow_any_instance_of(Configuration).to receive(:create_property)
+      end
+
+      context 'use_fontana_approvals feature flag is false' do
+        let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
+
+        it 'allows adding the routing_approval module' do
+          VCR.use_cassette('prevent_invalid_modules') do
+            post :add_module_feature, module_feature_params
+            expect(flash[:error]).to be_blank
+          end
+        end
+      end
+
+      context 'use_fontana_approvals is true' do
+        let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
+        let(:does_include) { true }
+
+        it 'prevents adding the routing_approval module' do
+          allow(Domain).to receive(:add_account_module)
+          VCR.use_cassette('prevent_invalid_modules') do
+            post :add_module_feature, module_feature_params
+            expect(flash[:error]).to eq(InternalController::ROUTING_APPROVAL_ERROR)
+          end
+        end
       end
     end
   end
+
 end
-
-# Old Minitest tests for `valid_cname?` have been preserved here.
-# These really should be exposed as a public method somewhere else, not as a
-# private method of this controller.
-
-#   test 'provided with valid cnames, valid_cname? should return true' do
-#     assert(@controller.send(:valid_cname?, 'localhost'))
-#     assert(@controller.send(:valid_cname?, 'example.com'))
-#     assert(@controller.send(:valid_cname?, 'data.weatherfordtx.gov'))
-#     assert(@controller.send(:valid_cname?, 'atf-performance-dashboards.demo.socrata.com'))
-#   end
-
-#   test 'provided with invalid cnames, valid_name? should return false' do
-#     refute(@controller.send(:valid_cname?, 'localhost.'))
-#     refute(@controller.send(:valid_cname?, 'localhost..com'))
-#     refute(@controller.send(:valid_cname?, 'http://localhost'))
-#     refute(@controller.send(:valid_cname?, 'local--host'))
-#     refute(@controller.send(:valid_cname?, 'felixhernandez@demo.socrata.com'))
-#     refute(@controller.send(:valid_cname?, 'cityofmadison,demo.socrata.com'))
-#   end

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ViewCard } from 'common/components';
-import { getViewCardPropsForView } from '../../../common/helpers/viewCardHelpers';
+import { getViewCardPropsForView } from 'common/viewCardHelpers';
 
 export class ViewSelector extends Component {
   constructor(props) {

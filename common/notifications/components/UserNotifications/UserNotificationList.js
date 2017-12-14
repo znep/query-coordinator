@@ -47,7 +47,8 @@ class UserNotificationList extends Component {
         userName={notification.userName}
         userProfileLink={notification.userProfileLink}
         onClearUserNotification={onClearUserNotification}
-        onToggleReadUserNotification={onToggleReadUserNotification} />
+        onToggleReadUserNotification={onToggleReadUserNotification}
+        alertName={notification.alertName} />
     );
   }
 

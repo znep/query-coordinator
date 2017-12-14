@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as Actions from '../actions';
-import _ from 'lodash';
+import { loadData } from '../actions';
 
 /**
  * Wrapper utility component for triggering data load on component mount
  */
 class BaseDataLoader extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, 'componentDidMount');
-  }
+  static propTypes = {
+    children: PropTypes.any.isRequired,
+    loadData: PropTypes.func.isRequired
+  };
 
   componentDidMount() {
     this.props.loadData();
@@ -23,17 +21,12 @@ class BaseDataLoader extends Component {
   }
 }
 
-BaseDataLoader.propTypes = {
-  children: PropTypes.any.isRequired,
-  loadData: PropTypes.func.isRequired
-};
-
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadData: () => dispatch(Actions.loadData())
+    loadData: () => dispatch(loadData())
   };
 };
 
-export const DataLoader = connect(mapStateToProps, mapDispatchToProps)(BaseDataLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(BaseDataLoader);

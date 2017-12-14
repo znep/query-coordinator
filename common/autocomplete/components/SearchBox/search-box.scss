@@ -132,7 +132,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
 .icon-container-base {
   position: absolute;
-  margin-top: 11px;
+  margin-top: 11px !important;
   margin-left: 9px;
   width: 20px;
   height: 20px;

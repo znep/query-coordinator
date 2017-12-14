@@ -295,14 +295,21 @@ export class GeocodeShortcut extends Component {
 
     switch (this.state.composedFrom) {
       case COMPONENTS:
-        return maybeForgive(composeFromComponents(this.state.mappings));
+        return maybeForgive(composeFromComponents(this.state.mappings, this.isObe()));
       case COMBINED:
-        return maybeForgive(composeFromCombined(this.state.mappings));
+        return maybeForgive(composeFromCombined(this.state.mappings, this.isObe()));
       case LATLNG:
-        return maybeForgive(composeFromLatLng(this.state.mappings));
+        return maybeForgive(composeFromLatLng(this.state.mappings, this.isObe()));
       default:
         throw new Error(`Invalid composition: ${this.state.composedFrom}`);
     }
+  }
+
+  isObe() {
+    if (this.props.view.displayType === 'draft') {
+      return window.serverConfig.featureFlags.ingress_strategy === 'obe';
+    }
+    return !this.props.view.newBackend;
   }
 
   genDesiredColumns() {
@@ -433,6 +440,7 @@ export class GeocodeShortcut extends Component {
     };
     const { inputSchemaId } = params;
     const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
+    const outputSchema = this.getOutputSchema();
 
     const onPreview = () => this.createNewOutputSchema();
 
@@ -499,6 +507,7 @@ export class GeocodeShortcut extends Component {
           anySelected={anySelected}
           outputColumn={outputColumn}
           inputSchema={inputSchema}
+          outputSchema={outputSchema}
           displayState={displayState}
           isPreviewable={this.isPreviewable()}
           onPreview={onPreview}
@@ -546,6 +555,7 @@ export class GeocodeShortcut extends Component {
 }
 
 GeocodeShortcut.propTypes = {
+  view: PropTypes.object.isRequired,
   onDismiss: PropTypes.func,
   entities: PropTypes.object.isRequired,
   newOutputSchema: PropTypes.func.isRequired,
@@ -557,7 +567,8 @@ GeocodeShortcut.propTypes = {
 const mapStateToProps = ({ entities, ui }, { payload }) => ({
   ...payload,
   entities,
-  params: payload.params
+  params: payload.params,
+  view: entities.views[payload.params.fourfour]
 });
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {

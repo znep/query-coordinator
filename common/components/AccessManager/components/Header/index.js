@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+
 import styles from './header.scss';
 
 /**
@@ -32,8 +33,8 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => ({
-  title: state.accessManager.headerText,
-  subtitle: state.accessManager.headerSubtitle
+  title: state.ui.headerText,
+  subtitle: state.ui.headerSubtitle
 });
 
 export default connect(mapStateToProps)(cssModules(Header, styles));

@@ -22,6 +22,7 @@ SCSS_WATCH_PATHS = %w(
   /app/styles
   /node_modules
   /public/javascripts/common/components
+  /public/javascripts/datasetManagementUI/components
 ).map do |path|
   Pathname.new(path.prepend(Rails.root.to_s)).realpath.to_s
 end

@@ -10,6 +10,7 @@ import columnHeaderStyles from 'components/ColumnHeader/ColumnHeader.scss';
 const SubI18n = I18n.show_output_schema.geocode_shortcut;
 
 const ColumnPreview = ({
+  outputSchema,
   anySelected,
   isPreviewable,
   entities,
@@ -53,8 +54,9 @@ const ColumnPreview = ({
                   </span>
                 </th>
                 <TransformStatus
+                  outputSchema={outputSchema}
                   key={outputColumn.id}
-                  path={params}
+                  params={params}
                   transform={outputColumn.transform}
                   isIgnored={false}
                   displayState={displayState}
@@ -87,6 +89,7 @@ const ColumnPreview = ({
 ColumnPreview.propTypes = {
   displayState: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
+  outputSchema: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
   onPreview: PropTypes.func.isRequired,

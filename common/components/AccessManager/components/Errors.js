@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// Renders the list of given errors as alerts
 class Errors extends Component {
   static propTypes = {
     errors: PropTypes.arrayOf(PropTypes.any)

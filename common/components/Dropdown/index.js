@@ -48,7 +48,13 @@ export class Dropdown extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     // Only render when something visible happens
-    return (this.state.focused !== nextState.focused || this.state.opened !== nextState.opened);
+    return (
+      this.state.focused !== nextState.focused ||
+      this.state.opened !== nextState.opened ||
+      !_.isEqual(this.props, nextProps) ||
+      // This allows changing selected value from parent component
+      this.state.selectedOption !== nextState.selectedOption
+    );
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -404,7 +410,7 @@ Dropdown.propTypes = {
     PropTypes.func
   ]),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   // Since this dropdown is not a form input element (gotta love custom
   // components that reimplement browser functionality), we can't rely
   // on built-in accessibility affordances like <label for="some-id">.

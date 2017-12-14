@@ -189,15 +189,6 @@
 
     <%- end -%>
 
-    <%# HACK: The only customer to really use this is Data.gov, so only show it for them %>
-    <%- if Rails.env.development? || CurrentDomain.cname == "explore.data.gov" -%>
-      <h2><%= t('screens.edit_metadata.external_id') %></h2>
-      <div class="line clearfix">
-        <%= label_tag('view[externalId]', t('screens.edit_metadata.external_identifier')) %>
-        <%= text_field_tag('view[externalId]', @view.externalId, :title => t('screens.edit_metadata.external_id_prompt'), :class => 'textPrompt') %>
-      </div>
-    <%- end -%>
-
     <h2><%= t('screens.edit_metadata.thumbnail_image') %></h2>
     <div class="customImage">
       <div class="line clearfix">
@@ -242,6 +233,9 @@
                     <%= label_tag('view[metadata[attachments]][][delete]', t('screens.edit_metadata.delete')) %>
                     <%= check_box_tag('view[metadata[attachments]][][delete]') %>
                   </span>
+                  <%- if CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) -%>
+                    <button class="unsafe-delete" data-blob-id="<%= attachment['assetId'] %>"><%= t('screens.edit_metadata.unsafe_delete') %></button>
+                  <%- end -%>
                 </li>
               <%- end -%>
             <%- else -%>
@@ -328,6 +322,40 @@
         });
     });
   </script>
+
+  <%- if CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) -%>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.unsafe-delete').on('click', function(e) {
+
+          e.preventDefault();
+
+          if (confirm($.t('screens.edit_metadata.unsafe_delete_disclaimer'))) {
+            var domain = window.location.host;
+            var fourByFour = window.blist.viewId;
+            var blobId = $(e.target).attr('data-blob-id') || '';
+            var url = 'https://' + domain + '/api/views/' + fourByFour + '/files/' + blobId;
+
+            $.ajax({
+              type: 'DELETE',
+              url: url,
+              success: function() {
+                window.location.reload();
+              },
+              error: function() {
+                if (confirm($.t('screens.edit_metadata.unsafe_delete_error'))) {
+                  window.location.reload();
+                } else {
+                  window.location.reload();
+                }
+              }
+            });
+          }
+        });
+      });
+    </script>
+  <%- end -%>
+
   <%- unless params[:no_js] == 'true' -%>
     <%= include_webpack_bundle 'open-data/dataset-edit-metadata.js' %>
   <%- end -%>

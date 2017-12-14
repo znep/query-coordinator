@@ -98,6 +98,67 @@ describe AdministrationHelper do
     end
   end
 
+  context 'when use_fontana_approvals feature flag is set' do
+    before do
+      rspec_stub_feature_flags_with('use_fontana_approvals' => true)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    describe 'user_can_configure_approvals?' do
+      context 'when current_user is nil' do
+        let(:current_user) { nil }
+
+        it 'returns false' do
+          expect(helper.user_can_configure_approvals?).to eq(false)
+        end
+      end
+
+      context 'when current_user is not nil' do
+        context 'when user has appropriate right(s)' do
+          let(:current_user) { User.new('rights' => [UserRights::CONFIGURE_APPROVALS]) }
+
+          it 'returns true' do
+            expect(helper.user_can_configure_approvals?).to eq(true)
+          end
+        end
+        context 'when user does not have appropriate right(s)' do
+          let(:current_user) { User.new('rights' => []) }
+
+          it 'returns false' do
+            expect(helper.user_can_configure_approvals?).to eq(false)
+          end
+        end
+      end
+    end
+
+    describe 'user_can_review_approvals?' do
+      context 'when current_user is nil' do
+        let(:current_user) { nil }
+
+        it 'returns false' do
+          expect(helper.user_can_review_approvals?).to eq(false)
+        end
+      end
+
+      context 'when current_user is not nil' do
+        context 'when user has appropriate right(s)' do
+          let(:current_user) { User.new('rights' => [UserRights::REVIEW_APPROVALS]) }
+
+          it 'returns true' do
+            expect(helper.user_can_review_approvals?).to eq(true)
+          end
+        end
+        context 'when user does not have appropriate right(s)' do
+          let(:current_user) { User.new('rights' => []) }
+
+          it 'returns false' do
+            expect(helper.user_can_review_approvals?).to eq(false)
+          end
+        end
+      end
+    end
+  end
+
   describe 'user_can_see_content_section?', :verify_stubs => false do
     before do
       allow(helper).to receive(:user_can_see_routing_approval?).and_return(false)

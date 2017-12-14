@@ -129,13 +129,22 @@ class UserNotification extends React.Component {
       link,
       activityUniqueKey,
       messageBody,
+      type,
+      alertName,
       I18n
     } = this.props;
+    let alertOrNotificationTitle;
+
+    if (type === 'alert') {
+      alertOrNotificationTitle = alertName;
+    } else {
+      alertOrNotificationTitle = I18n.t(activityUniqueKey, { scope: 'shared_site_chrome_notifications' });
+    }
     const notificationTitle = (
       <div>
         <strong className="user-notification-title">
           {this.renderAlertLabel()}
-          {I18n.t(activityUniqueKey, { scope: 'shared_site_chrome_notifications' })}
+          {alertOrNotificationTitle}
         </strong>
 
         <span className="notification-body">{messageBody}</span>
@@ -159,7 +168,12 @@ class UserNotification extends React.Component {
       I18n
     } = this.props;
     const isUnread = !isRead;
-
+    let notificationByLabel;
+    if (type === 'alert') {
+      notificationByLabel = null;
+    } else {
+      notificationByLabel = <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>;
+    }
     return (
       <li
         styleName={classNames('notification-item', type, {
@@ -173,10 +187,9 @@ class UserNotification extends React.Component {
         <div styleName="notification-wrapper" className="clearfix">
           <div styleName="notification-info">
             {this.renderNotificationTitle()}
-
             <p styleName="timestamp" className="notification-timestamp">
               <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
-              <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>
+              {notificationByLabel}
               {this.renderUserLink()}
             </p>
           </div>
@@ -192,7 +205,7 @@ class UserNotification extends React.Component {
 }
 
 UserNotification.propTypes = {
-  activityType: PropTypes.string.isRequired,
+  activityType: PropTypes.string,
   messageBody: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
@@ -204,7 +217,7 @@ UserNotification.propTypes = {
   type: PropTypes.string.isRequired,
   activityUniqueKey: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
-  userProfileLink: PropTypes.string.isRequired
+  userProfileLink: PropTypes.string
 };
 
 UserNotification.defaultProps = {

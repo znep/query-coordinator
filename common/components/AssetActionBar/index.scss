@@ -5,10 +5,44 @@
   background-color: $header-bg-color;
   padding: 0.2em;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+
+  font-size: 15px;
+  line-height: 1.25;
 
   .socrata-icon {
     margin-right: 0.2em;
+  }
+
+  .left-side {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .right-side {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .asset-name {
+    display: inline-block;
+    padding: 11px 0;
+    max-width: 20rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: nowrap;
+    color: #dbdbdb;
+    margin-left: 1em;
+    margin-right: 0.4em;
+  }
+
+  .divider {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    margin-right: 0.4em;
+    border-right: solid 1px #dbdbdb;
+    padding-right: 0.4em;
   }
 }
 

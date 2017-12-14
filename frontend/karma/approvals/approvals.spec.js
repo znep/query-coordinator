@@ -65,7 +65,7 @@ describe('<Approvals />', () => {
         window.serverConfig.currentUser = currentUser;
       });
 
-      it('renders the Settings tab', () => {
+      it('renders a link to the Settings page', () => {
         const wrapper = mount(<Approvals {...approvalsProps()} />);
         // If you're ever curious about what this mounted element looks like, open the karma test session
         // in your browser (usually at http://0.0.0.0:9443/), then click the DEBUG button. Put a debugger
@@ -73,8 +73,8 @@ describe('<Approvals />', () => {
         // $('body').html(mount(<Approvals />).html())
         // This will replace the body of the document with the HTML of the React component under test.
         assert(
-          wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length,
-          'Expected the Settings tab to be rendered'
+          wrapper.find('.asset-browser .header .settings_link').length,
+          'Expected the Settings link to be rendered'
         );
       });
     })

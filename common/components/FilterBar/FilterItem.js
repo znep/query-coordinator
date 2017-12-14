@@ -9,7 +9,7 @@ import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
 import I18n from 'common/i18n';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
-import { getFilterToggleText } from './filters';
+import { getFilterHumanText } from './filters';
 
 export class FilterItem extends Component {
   constructor(props) {
@@ -254,7 +254,7 @@ export class FilterItem extends Component {
 
     return (
       <div {...toggleProps}>
-        {getFilterToggleText(filter, column)}
+        {getFilterHumanText(filter, column)}
         <span className="arrow-down-icon">
           <SocrataIcon name="arrow-down" />
         </span>

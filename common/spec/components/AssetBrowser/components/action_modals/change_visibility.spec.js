@@ -5,14 +5,8 @@ import { ChangeVisibility } from 'common/components/AssetBrowser/components/acti
 import mockCeteraResults from '../../data/mock_cetera_results';
 import sinon from 'sinon';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 describe('components/ChangeVisibility', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   const changeVisibilityProps = (options = {}) => ({
     assetActions: {
       performingActionFailure: false,

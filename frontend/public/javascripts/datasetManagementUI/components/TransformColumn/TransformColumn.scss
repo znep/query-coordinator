@@ -1,0 +1,61 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+
+.container {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  // This is a hack!
+  // TODO: fix the output schema sidebar to be a column oriented flexbox. 
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 250px;
+  right: 0px;
+  overflow: auto;
+}
+
+.editor {
+  flex-grow: 2;
+}
+
+.buttonBar {
+  display: flex;
+  justify-content: space-between;
+  div {
+    display: inline-block;
+  }
+}
+.builderTypeButton {
+  composes: btn from global;
+  composes: btn-primary from global; 
+}
+
+.evaluateButton, .cannotEvaluateButton {
+  composes: btn from global;
+  composes: btn-alternate-2 from global;
+  span {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+  } 
+}
+.cannotEvaluateButton {
+  composes: btn-error from global;
+}
+
+.builder {
+  display: flex;
+  border-top: 1px solid $light-grey-4;
+  margin-top: 1em;
+  padding-top: 1em;
+}
+
+.compositionPane {
+  flex: 2;
+}
+.resultsPane {
+  flex: 1;
+
+}

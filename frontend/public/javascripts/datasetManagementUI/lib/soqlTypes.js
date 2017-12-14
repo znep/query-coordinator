@@ -1,3 +1,4 @@
+import _ from 'lodash';
 // fyi, there's also public/javascripts/datasetLandingPage/lib/dataTypeMetadata.js
 
 /*
@@ -22,24 +23,52 @@ why are the canonical names different
 than the names in the transform functions
  */
 
-const addIdentityTransforms = typePropertiesList =>
-  typePropertiesList.map(typeInfo => ({
-    ...typeInfo,
-    conversions: {
-      ...typeInfo.conversions,
-      [typeInfo.canonicalName]: `to_${typeInfo.canonicalName}`
-    }
-  }));
+const basicTo = name => ic => {
+  if (!ic) {
+    return `to_${name}(null)`;
+  }
+  return `to_${name}(\`${ic.field_name}\`)`;
+};
 
-const soqlPropertiesList = addIdentityTransforms([
+const soqlPropertiesList = [
   {
     canonicalName: 'text', // The standard SODA2 API name
     cssName: 'text', // The name used in CSS classes
     icon: 'text',
     conversions: {
-      number: 'to_number',
-      checkbox: 'to_boolean',
-      calendar_date: 'to_floating_timestamp'
+      text: basicTo('text'),
+      number: basicTo('number'),
+      checkbox: basicTo('checkbox'),
+      calendar_date: (ic, entities) => {
+        // to_floating_timestamp takes a format argument. If the user switches
+        // something that was guessed as
+        // to_floating_timestamp(`datetime_column`, '{YYYY}-{0M}-{0D}')
+        // to a text, and then back again, we need to restore the guessed
+        // format as well. This means the date dropdown is not as simple as hardcoding
+        // a string, since it needs to look at the previous transforms for this input data,
+        // find one that is a transform to date, and use that expression
+
+        const originalTransforms = _.orderBy(
+          _.filter(
+            entities.transforms,
+            (t) => {
+              const isDatetimeTransform = t.output_soql_type === 'calendar_date';
+              const isSameTransform = (
+                t.transform_input_columns.length === 1 &&
+                t.transform_input_columns[0].input_column_id === ic.id
+              );
+
+              return isDatetimeTransform && isSameTransform;
+            }
+          ),
+          'id'
+        );
+        if (originalTransforms.length) {
+          return originalTransforms[0].transform_expr;
+        } else {
+          return `to_floating_timestamp(\`${ic.field_name}\`)`;
+        }
+      }
     }
   },
   {
@@ -47,8 +76,9 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'number',
     icon: 'number',
     conversions: {
-      text: 'to_text',
-      checkbox: 'to_boolean'
+      text: basicTo('text'),
+      checkbox: basicTo('checkbox'),
+      number: basicTo('number')
     }
   },
   {
@@ -56,7 +86,7 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'boolean',
     icon: 'boolean',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text')
     }
   },
   {
@@ -64,7 +94,7 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'floatingTimestamp',
     icon: 'date',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text')
     }
   },
   // geo types
@@ -74,7 +104,7 @@ const soqlPropertiesList = addIdentityTransforms([
     sodaType: 'location',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text')
     }
   },
   {
@@ -82,7 +112,8 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'point',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      point: basicTo('point')
     }
   },
   {
@@ -90,7 +121,8 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'multipoint',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      multipoint: basicTo('multipoint')
     }
   },
   {
@@ -98,7 +130,8 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'line',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      line: basicTo('line')
     }
   },
   {
@@ -106,7 +139,8 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'multiline',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      multiline: basicTo('multiline')
     }
   },
   {
@@ -114,7 +148,8 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'polygon',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      polygon: basicTo('polygon')
     }
   },
   {
@@ -122,10 +157,11 @@ const soqlPropertiesList = addIdentityTransforms([
     cssName: 'multipolygon',
     icon: 'map',
     conversions: {
-      text: 'to_text'
+      text: basicTo('text'),
+      multipolygon: basicTo('multipolygon')
     }
   }
-]);
+];
 
 export const soqlProperties = soqlPropertiesList.reduce(
   (acc, typespec) => ({

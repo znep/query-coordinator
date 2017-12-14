@@ -5,14 +5,8 @@ import { shallow } from 'enzyme';
 import { ResultListTable } from 'common/components/AssetBrowser/components/result_list_table';
 import ResultListRow from 'common/components/AssetBrowser/components/result_list_row';
 import mockCeteraResults from '../data/mock_cetera_results';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 describe('components/ResultListTable', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
-
   const resultListTableProps = (options = {}) => ({
     changeSortOrder: () => {},
     columns: [

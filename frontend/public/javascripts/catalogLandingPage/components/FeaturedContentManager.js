@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions/featuredContent';
 import _ from 'lodash';
 
-import FeaturedContentViewCardManager from './FeaturedContentViewCardManager';
-import FeaturedContentViewCardPlaceholder from './FeaturedContentViewCardPlaceholder';
-import AssetSelector from '../../common/components/AssetSelector';
+import { getViewCardPropsForCLPFeaturedItem } from 'common/viewCardHelpers';
+import AssetSelector from 'common/components/AssetSelector';
 import ExternalResourceEditor from '../../common/components/ExternalResourceEditor';
 
-import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
+import FeaturedContentViewCardManager from './FeaturedContentViewCardManager';
+import FeaturedContentViewCardPlaceholder from './FeaturedContentViewCardPlaceholder';
 
 export const MAX_NUMBER_OF_FEATURED_CARDS = 3;
 
@@ -72,7 +72,9 @@ export class FeaturedContentManager extends React.Component {
   }
 
   render() {
-    const { featuredContent } = this.props;
+    const { catalogQuery, featuredContent } = this.props;
+    const { assetSelectorIsOpen } = this.state;
+
     const viewCardManagersAndPlaceholders = [];
 
     for (let position = 0; position < MAX_NUMBER_OF_FEATURED_CARDS; position++) {
@@ -94,22 +96,32 @@ export class FeaturedContentManager extends React.Component {
       );
     }
 
+    const externalResourceEditorButton = (
+      <button
+        key={0}
+        className="btn btn-default btn-sm external-resource-wizard-button"
+        onClick={() => {
+          this.closeAssetSelector();
+          this.openExternalResourceEditor();
+        }}>
+        {_.get(I18n, 'common.external_resource_editor.open_editor_button')}
+      </button>
+    );
+
+    const baseFilters = {
+      assetTypes: catalogQuery.limitTo,
+      category: catalogQuery.category,
+      customFacets: _.omit(catalogQuery, ['category', 'custom_path', 'limitTo', 'tags']),
+      published: catalogQuery.published
+    };
+
     const assetSelectorProps = {
       additionalTopbarComponents: [
-        <button
-          key={0}
-          className="btn btn-default btn-sm external-resource-wizard-button"
-          onClick={() => {
-            this.closeAssetSelector();
-            this.openExternalResourceEditor();
-          }}>
-          {_.get(I18n, 'common.external_resource_editor.open_editor_button')}
-        </button>
+        externalResourceEditorButton
       ],
-      catalogQuery: this.props.catalogQuery,
-      modalIsOpen: this.state.assetSelectorIsOpen,
+      baseFilters,
+      onAssetSelected: this.onAssetSelection,
       onClose: this.closeAssetSelector,
-      onSelect: this.onAssetSelection,
       resultsPerPage: 6,
       title: this.props.assetSelectorTitle
     };
@@ -139,7 +151,7 @@ export class FeaturedContentManager extends React.Component {
           {viewCardManagersAndPlaceholders}
         </div>
 
-        <AssetSelector {...assetSelectorProps} />
+        {assetSelectorIsOpen && <AssetSelector {...assetSelectorProps} />}
         <ExternalResourceEditor {...externalResourceEditorProps} />
       </section>
     );

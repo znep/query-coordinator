@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
-import I18n from '../../../../i18n';
+
+import I18n from 'common/i18n';
+
 import styles from './footer.scss';
-import * as actions from '../../actions/AccessManagerActions';
+import * as uiActions from '../../actions/UiActions';
 import ButtonWithSpinner from '../ButtonWithSpinner';
 
 /**
@@ -17,6 +19,7 @@ class AccessSummaryFooter extends Component {
   static propTypes = {
     onCancelClick: PropTypes.func.isRequired,
     onSaveClick: PropTypes.func.isRequired,
+    saveInProgress: PropTypes.bool,
     errors: PropTypes.arrayOf(PropTypes.any)
   };
 
@@ -53,13 +56,13 @@ class AccessSummaryFooter extends Component {
 }
 
 const mapStateToProps = state => ({
-  errors: state.accessManager.errors,
-  saveInProgress: state.accessManager.saveInProgress
+  errors: state.ui.errors,
+  saveInProgress: state.ui.saveInProgress
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCancelClick: () => dispatch(actions.cancelButtonClicked()),
-  onSaveClick: () => dispatch(actions.saveButtonClicked())
+  onCancelClick: () => dispatch(uiActions.cancelButtonClicked()),
+  onSaveClick: () => dispatch(uiActions.saveButtonClicked())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(cssModules(AccessSummaryFooter, styles));

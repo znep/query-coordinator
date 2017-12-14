@@ -271,6 +271,18 @@ function filterToWhereClauseComponent(filter) {
       return timeRangeWhereClauseComponent(filter);
     case 'valueRange':
       return valueRangeWhereClauseComponent(filter);
+    case 'rangeInclusive':
+      return rangeInclusiveWhereClauseComponent(filter);
+    case 'rangeExclusive':
+      return rangeExclusiveWhereClauseComponent(filter);
+    case '<':
+      return comparisonWhereClauseComponent(filter);
+    case '<=':
+      return comparisonWhereClauseComponent(filter);
+    case '>':
+      return comparisonWhereClauseComponent(filter);
+    case '>=':
+      return comparisonWhereClauseComponent(filter);
     case 'in':
       return inWhereClauseComponent(filter);
     case 'not in':
@@ -614,6 +626,73 @@ function timeRangeWhereClauseComponent(filter) {
     soqlEncodeColumnName(filter.columnName),
     soqlEncodeValue(filter.arguments.start),
     soqlEncodeValue(filter.arguments.end)
+  );
+}
+
+function comparisonWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments.value'
+  );
+
+  const includeNullValuesTemplate = _.get(filter, 'arguments.includeNullValues', true) ?
+    'OR {0} IS NULL' :
+    'AND {0} IS NOT NULL';
+
+  const includeNullValuesQuery = includeNullValuesTemplate.format(soqlEncodeColumnName(filter.columnName));
+
+  return '(({0} {1} {2}) {3})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    filter.function, // eslint-disable-line dot-notation
+    soqlEncodeValue(filter.arguments.value),
+    includeNullValuesQuery
+  );
+}
+
+function rangeInclusiveWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments',
+    'arguments.start',
+    'arguments.end'
+  );
+
+  const includeNullValuesTemplate = _.get(filter, 'arguments.includeNullValues', true) ?
+    'OR {0} IS NULL' :
+    'AND {0} IS NOT NULL';
+
+  const includeNullValuesQuery = includeNullValuesTemplate.format(soqlEncodeColumnName(filter.columnName));
+
+  return '(({0} >= {1} AND {0} <= {2}) {3})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    soqlEncodeValue(filter.arguments.start),
+    soqlEncodeValue(filter.arguments.end),
+    includeNullValuesQuery
+  );
+}
+
+function rangeExclusiveWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'arguments',
+    'arguments.start',
+    'arguments.end'
+  );
+
+  const includeNullValuesTemplate = _.get(filter, 'arguments.includeNullValues', true) ?
+    'OR {0} IS NULL' :
+    'AND {0} IS NOT NULL';
+
+  const includeNullValuesQuery = includeNullValuesTemplate.format(soqlEncodeColumnName(filter.columnName));
+
+  return '(({0} > {1} AND {0} < {2}) {3})'.format(
+    soqlEncodeColumnName(filter.columnName),
+    soqlEncodeValue(filter.arguments.start),
+    soqlEncodeValue(filter.arguments.end),
+    includeNullValuesQuery
   );
 }
 

@@ -150,7 +150,7 @@ en:
           shared_to_me: Shared To Me
           my_queue: My Queue
           settings: Settings
-          history: History
+          history: Previously Reviewed
       mobile:
         done: Done
         filters: Filters
@@ -158,6 +158,16 @@ en:
       result:
         one: Result
         other: Results
+      result_card_container:
+        select_mode:
+          select: Select
+        sort_dropdown:
+          alphabetical: Alphabetical
+          most_accessed: Most Accessed
+          most_relevant: Most Relevant
+          recently_added: Recently Added
+          recently_updated: Recently Updated
+          sort_by: Sort by
       result_count:
         no_results: No results
         of: of
@@ -259,27 +269,21 @@ en:
           edit_prompt_message: Edit the source file for this dataset.
           title: Download this Resource
       asset_action_bar:
-        components:
-          publication_action:
-            draft_new:
-              last_saved: Changes last saved %{when}
-              primary_action_text: Publish Dataset
-            draft_old:
-              last_saved: Changes last saved %{when}
-              primary_action_text: Publish Draft
-              revert_published: Revert to last published version
-              view_published: View published version
-            pending:
-              last_saved: Submitted for approval %{when}
-              primary_action_text: Withdraw approval request
-            published:
-              last_saved: Published %{when}
-              primary_action_text: Edit Dataset
+        manage_access: Manage Access
+        publication_action:
+          draft:
+            primary_action_text: Publish
+          pending:
+            primary_action_text: Withdraw Approval Request
+          published:
+            creating_working_copy: Creating Working Copy...
+            primary_action_text: Edit
+          revert_published: Revert to last published version
+          view_published: View published version
         publication_state:
           draft: Draft
           pending: Pending
           published: Published
-        share: Share
       color_picker:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color
@@ -299,10 +303,24 @@ en:
         more: More
         no_options_found: No top values match your input
         range_filter:
+          operators:
+            <: Is less than
+            <=: Is at most
+            '>': Is greater than
+            '>=': Is at least
+            range_inclusive: Is between and includes
+            range_exclusive: Is between
+          value: value
           greater_label: Greater than {0}
           include_null_values: Include missing or null values
           less_label: Less than {0}
           range_label: From {0} to {1}
+          range_inclusive_label: '{start} through {end}'
+          range_exclusive_label: '{start} to {end}'
+          above_label: above {value}
+          below_label: below {value}
+          at_least_label: at least {value}
+          at_most_label: at most {value}
         remove: Remove
         reset: Reset
         search: Search options
@@ -349,9 +367,35 @@ en:
         search: Search
       view_card:
         external_content: External Content
+      create_alert:
+        title: Create Alert
+      create_alert_modal:
+        title: Create Alert for this Dataset
+        alert_name_label: Name
+        alert_name_placeholder: Name this Alert
+        advance_search:
+          alert_title: Create your own alert
+          description: SoQL. An alert will be sent each time the dataset is updated and the parameters are met
+          text_box_description: Enter your SOQL
+        info:
+          name_error: Please Name this Alert
+          valid_query: Looks good!
+          invalid_query: Query failed
+          loading: Validating...
+        tab:
+          advance_alert: Advanced Alert
+        button:
+          validate: Validate
+          create: Save
     site_chrome:
       access_manager:
         accept: OK
+        access_level: Access Level
+        access_levels:
+          viewer: Viewer
+          contributor: Contributor
+          owner: Co-owner
+        add: Add
         audience:
           organization:
             subtitle: Everyone in my Organization can view and edit
@@ -364,10 +408,26 @@ en:
             title: Public
         cancel: Cancel
         change: Change
-        header:
+        change_owner:
+          subtitle: The owner will appear on this asset's Primer page and have the ability to delete this asset.
+          title: Transfer Ownership
+        change_scope:
+          subtitle: Who can see this dataset?
+          title: Change Audience Scope
+        current_owner: Current Owner
+        new_owner: New Owner
+        no_results: No results found. Try again or enter a full email address.
+        owner: Owner
+        people: People
+        permissions_saved: Permissions saved!
+        please_select: Please select a user to transfer ownership to
+        save: Save
+        summary:
           subtitle: Who can see this dataset?
           title: Manage Access
-        save: Save
+        transfer: Transfer
+        unregistered_user: This user has not yet registered
+        unregistered_user_search_result: Unregistered user
       admin:
         data_catalog:
           title: Data Catalog
@@ -576,8 +636,8 @@ en:
             title: New Assets
             description: Notify me when any new asset is published
           email_digest:
-            title: Subscribe to Email Notifications
-            description: Send an email digest of all Notifications & alerts instead of individual emails
+            title: Subscribe to Email Digest
+            description: Send an email digest of all Notifications & Alerts instead of individual emails
             real_time: Real Time
             monthly: Monthly
             daily: Daily
@@ -589,6 +649,9 @@ en:
           in_product_transient:
             title: In-Product Transient Notifications
             description: Stop receiving in-product transient notifications
+          my_alerts:
+            title: My Alerts
+            description: Notify me when my alerts are triggered
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

@@ -64,6 +64,14 @@ describe('components/MetadataTable', () => {
     });
   });
 
+  it('renders create alert button', () => {
+    const wrapper = shallowWithProps({
+      showCreateAlertButton: true
+    });
+    assert.notEqual(wrapper.find('CreateAlertButton'), null);
+  });
+
+
   it('renders stats link', () => {
     const wrapper = shallowWithProps({
       statsUrl: 'http://example.com/stats'

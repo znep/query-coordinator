@@ -169,5 +169,22 @@ describe('components/TransformStatus', () => {
       assert.include(component.text(), '<ErrorFlyout />');
       assert.include(component.text(), '<Link />');
     });
+
+
+    it('renders a map flyout button when the type is geospatial', () => {
+      var component = shallow(<TransformStatus {...defaultProps} />);
+      assert.equal(component.find('MapFlyoutShortcut').length, 0);
+
+      const props = {
+        ...defaultProps,
+        transform: {
+          ...defaultProps.transform,
+          output_soql_type: 'point',
+        }
+      };
+
+      component = shallow(<TransformStatus {...props} />);
+      assert.equal(component.find('MapFlyoutShortcut').length, 1);
+    });
   });
 });

@@ -3,11 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 import { createMemoryHistory, Router } from 'react-router';
+
+import I18n from 'common/i18n';
+import ToastNotification from 'common/components/ToastNotification';
+
 import styles from './access-manager.scss';
 import Header from './Header';
 import Errors from './Errors';
 import AccessSummary from './AccessSummary';
 import AudienceScopeChooser from './AudienceScopeChooser';
+import ChangeOwner from './ChangeOwner';
+import * as uiActions from '../actions/UiActions';
 
 /**
  * This renders the header, any existing errors, and a react-router'd set of components.
@@ -19,29 +25,19 @@ import AudienceScopeChooser from './AudienceScopeChooser';
  */
 class AccessManager extends Component {
   static propTypes = {
-    visible: PropTypes.bool.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.any)
+    changeHeader: PropTypes.func.isRequired,
+    dismissToastNotification: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.any),
+    toastMessage: PropTypes.string,
+    toastMessageVisible: PropTypes.bool,
+    visible: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
-    errors: []
+    errors: [],
+    toastMessage: null,
+    toastMessageVisible: false
   };
-
-  // Routes are pulled out like this because sometimes
-  // the component will re-render and react-router will
-  // complain that we're trying to re-set the routes.
-  // With them static like this, react doesn't try to do
-  // anything when it re-renders the component.
-  static routes = [
-    {
-      path: '/',
-      component: AccessSummary
-    },
-    {
-      path: '/scope',
-      component: AudienceScopeChooser
-    }
-  ];
 
   constructor(props) {
     super(props);
@@ -52,17 +48,58 @@ class AccessManager extends Component {
     this.history = createMemoryHistory();
   }
 
+  routes = [
+    {
+      path: '/',
+      component: AccessSummary,
+      onEnter: () => this.props.changeHeader(
+        I18n.t('shared.site_chrome.access_manager.summary.title'),
+        I18n.t('shared.site_chrome.access_manager.summary.subtitle')
+      )
+    },
+    {
+      path: '/scope',
+      component: AudienceScopeChooser,
+      onEnter: () => this.props.changeHeader(
+        I18n.t('shared.site_chrome.access_manager.change_scope.title'),
+        I18n.t('shared.site_chrome.access_manager.change_scope.subtitle')
+      )
+    },
+    {
+      path: '/change_owner',
+      component: ChangeOwner,
+      onEnter: () => this.props.changeHeader(
+        I18n.t('shared.site_chrome.access_manager.change_owner.title'),
+        I18n.t('shared.site_chrome.access_manager.change_owner.subtitle')
+      )
+    }
+  ];
+
   render() {
-    const { visible, errors } = this.props;
+    const {
+      visible,
+      errors,
+      toastMessage,
+      toastMessageVisible,
+      dismissToastNotification
+    } = this.props;
 
     return (
-      <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
-        <div styleName="modal">
-          <Header />
-          <section>
-            <Errors errors={errors} />
-            <Router history={this.history} routes={AccessManager.routes} />
-          </section>
+      <div>
+        <ToastNotification
+          canDismiss
+          content={toastMessage}
+          onDismiss={dismissToastNotification}
+          showNotification={toastMessageVisible}
+          type="success" />
+        <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
+          <div styleName="modal">
+            <Header />
+            <section>
+              <Errors errors={errors} />
+              <Router history={this.history} routes={this.routes} />
+            </section>
+          </div>
         </div>
       </div>
     );
@@ -70,8 +107,15 @@ class AccessManager extends Component {
 }
 
 const mapStateToProps = state => ({
-  visible: state.accessManager.visible,
-  errors: state.accessManager.errors
+  visible: state.ui.visible,
+  errors: state.ui.errors,
+  toastMessage: state.ui.toastMessage,
+  toastMessageVisible: state.ui.toastMessageVisible
 });
 
-export default connect(mapStateToProps)(cssModules(AccessManager, styles));
+const mapDispatchToProps = dispatch => ({
+  changeHeader: (title, subtitle) => dispatch(uiActions.changeHeader(title, subtitle)),
+  dismissToastNotification: () => dispatch(uiActions.dismissToastMessage())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(cssModules(AccessManager, styles));

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import FeaturedContentViewCard from './FeaturedContentViewCard';
 import HelpFlyout from './HelpFlyout';
-import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
+import { getViewCardPropsForCLPFeaturedItem } from 'common/viewCardHelpers';
 
 export class FeaturedContent extends React.Component {
   render() {

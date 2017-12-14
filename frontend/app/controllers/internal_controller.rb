@@ -6,6 +6,8 @@ class InternalController < ApplicationController
   before_filter :redirect_to_current_domain, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
   before_filter :redirect_domain_id_to_domain_cname, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
   before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
+  before_filter :prevent_invalid_modules, :only => [ :add_module_feature, :create_domain ]
+
   skip_before_filter :require_user, :only => [ :demos ]
   skip_before_filter :check_auth, :only => [ :demos ]
 
@@ -23,6 +25,13 @@ class InternalController < ApplicationController
     { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' },
     { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' }
   ]
+
+  ROUTING_APPROVAL_ERROR = <<~EOM
+    Routing & Approval cannot be enabled because this site currently has the new Approvals workflow
+    (feature flag = "use_fontana_approvals") enabled. These workflows manage the 'approval status' of each
+    asset, and only one of these two workflows can be enabled at a time. NOTE: Product Development is planning
+    to deprecate Routing & Approval in early 2018; for more information, please ask in #discovery on Slack.
+  EOM
 
   def disable_site_chrome?
     true
@@ -99,14 +108,20 @@ class InternalController < ApplicationController
     }
 
     @known_config_types = ExternalConfig.for(:configuration_types).for_autocomplete(params)
-    @permanent_modules = {
-      routing_approval: 'Routing and Approval does not properly clean up when disabled, so you cannot remove it.'
-    }.with_indifferent_access
+    if can_use_routing_and_approval_module?
+      @module_notices = {
+        routing_approval: 'Routing and Approval does not properly clean up when disabled, so once added you cannot remove it!'
+      }.with_indifferent_access
+    else
+      @module_notices = {
+        routing_approval: ROUTING_APPROVAL_ERROR
+      }.with_indifferent_access
+    end
 
     @modules = (AccountModule.find + KNOWN_FEATURES).map do |duck_module|
       (duck_module.try(:as_json) || duck_module).symbolize_keys.tap do |_module|
-        if @permanent_modules.key?(_module[:name])
-          _module.bury(:permanent, :reason, @permanent_modules[_module[:name]])
+        if @module_notices.key?(_module[:name])
+          _module.bury(:permanent, :reason, @module_notices[_module[:name]])
         end
       end
     end
@@ -159,11 +174,11 @@ class InternalController < ApplicationController
   end
 
   def index_tiers
-    @tiers = AccountTier.find()
+    @tiers = AccountTier.find
   end
 
   def show_tier
-    @tier = AccountTier.find().select {|at| at.name == params[:name]}.first
+    @tier = AccountTier.find.select { |account_tier| account_tier.name == params[:name] }.first
   end
 
   def create_org
@@ -213,18 +228,15 @@ class InternalController < ApplicationController
         'domainCName' => domain.cname
       )
 
-      module_features_on_by_default = %w(canvas2 geospatial staging_lockdown staging_api_lockdown)
-      enabled = true
-      add_module_features(module_features_on_by_default, enabled, domain.cname)
+      add_module_features(module_features_on_by_default, enabled = true, domain.cname)
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
-      status =
-        case e.error_message
+      status = case e.error_message
         when /Validation failed/ then :bad_request
         else :internal_server_error
-        end
-      return (render 'shared/error', :status => status)
+      end
+      return render 'shared/error', :status => status
     end
 
     redirect_to show_domain_path(org_id: params[:org_id], domain_id: domain.cname)
@@ -363,15 +375,7 @@ class InternalController < ApplicationController
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
-  def add_module_to_domain
-    Domain.add_account_module(params[:domain_id], params[:module][:name])
-
-    CurrentDomain.flag_out_of_date!(params[:domain_id])
-
-    redirect_to show_domain_path(domain_id: params[:domain_id])
-  end
-
-  def add_a_module_feature
+  def add_module_feature # POST /module_feature
     if params['new-feature_name'].present?
       module_features = [ params['new-feature_name'].strip ]
       enabled = params['new-feature_enabled'] == 'enabled'
@@ -679,18 +683,6 @@ class InternalController < ApplicationController
     new_value
   end
 
-  ##
-  # Hand it a string, it hands you back a yes/no answer.
-  # A CName here is roughly:
-  # - Something alphanumeric
-  # - Can have separators: .-_
-  # - Cannot have stacked separators.
-  # - Cannot start/end with a separator.
-  # e.g. localhost, hello.com, hello-world.com, www.hello.com
-  def valid_cname?(candidate)
-    (/^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/ =~ candidate) == 0
-  end
-
   def editing_this_page_is_dangerous?(domain = @domain)
     case
       #when Rails.env.development? then false
@@ -704,6 +696,14 @@ class InternalController < ApplicationController
     module_features.try(:each) do |feature|
       feature_is_a_module = AccountModule.include?(feature)
       module_already_added = Domain.find(domain_cname, true).modules.include?(feature)
+
+      if feature == 'routing_approval'
+        unless can_use_routing_and_approval_module?
+          errors << ROUTING_APPROVAL_ERROR
+          next
+        end
+      end
+
       if feature_is_a_module && !module_already_added
         Domain.add_account_module(domain_cname, feature)
         notices << "Added account module `#{feature}` successfully."
@@ -853,4 +853,22 @@ class InternalController < ApplicationController
       redirect_to url_for(params.merge(config_id: config.id))
     end
   end
+
+  def can_use_routing_and_approval_module?
+    FeatureFlags.derive[:use_fontana_approvals] != true
+  end
+
+  def prevent_invalid_modules
+    if params[:module].to_h[:name] == 'routing_approval'
+      unless can_use_routing_and_approval_module?
+        errors << ROUTING_APPROVAL_ERROR
+        return redirect_to show_domain_path(domain_id: params[:domain_id])
+      end
+    end
+  end
+
+  def module_features_on_by_default
+    %w(canvas2 geospatial staging_lockdown staging_api_lockdown)
+  end
+
 end

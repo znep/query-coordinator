@@ -8,7 +8,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
 
-var USAID_COMPONENTS_FILEPATH_REGEXP = 'AssociatedAssets|AssetSelector|ExternalResourceEditor|common\/components\/searchbox';
+var USAID_COMPONENTS_FILEPATH_REGEXP = 'leaflet|AssociatedAssets|AssetSelector|ExternalResourceEditor|common\/components\/searchbox';
 
 const addPolyfill = () => {
   let entry = common.withHotModuleEntries({ main: './main' });

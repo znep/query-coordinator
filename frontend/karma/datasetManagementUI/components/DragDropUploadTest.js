@@ -34,7 +34,7 @@ describe('components/DragDropUpload', () => {
     const fakeStore = mockStore(state);
 
     const component = shallow(
-      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} apiCalls={{}} params={{}} />,
       {
         context: { store: fakeStore }
       }
@@ -58,7 +58,7 @@ describe('components/DragDropUpload', () => {
     const fakeStore = mockStore(state);
 
     const component = shallow(
-      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} apiCalls={{}} params={{}} />,
       {
         context: { store: fakeStore }
       }
@@ -86,7 +86,9 @@ describe('components/DragDropUpload', () => {
   });
 
   it('updates state properly on dragover', () => {
-    const component = shallow(<DragDropUpload dispatch={_.noop} hrefExists={false} params={{}} />);
+    const component = shallow(
+      <DragDropUpload dispatch={_.noop} hrefExists={false} apiCalls={{}} params={{}} />
+    );
     const initialState = component.state('draggingOver');
     component.find('.dropZone').simulate('dragover', fakeEvent);
     const updatedState = component.state('draggingOver');
@@ -95,7 +97,9 @@ describe('components/DragDropUpload', () => {
   });
 
   it('updates state properly on dragleave', () => {
-    const component = shallow(<DragDropUpload dispatch={_.noop} hrefExists={false} params={{}} />);
+    const component = shallow(
+      <DragDropUpload dispatch={_.noop} hrefExists={false} apiCalls={{}} params={{}} />
+    );
     component.find('.dropZone').simulate('dragover', fakeEvent);
     const initialState = component.state('draggingOver');
     component.find('.dropZone').simulate('dragleave', fakeEvent);
@@ -104,7 +108,7 @@ describe('components/DragDropUpload', () => {
     assert.isFalse(updatedState);
   });
 
-  it('prints an error if dropping a directory', () => {
+  it('prints an error if dropping a directory', (done) => {
     const fakeStore = mockStore(state);
     const fakeEvt = {
       dataTransfer: {
@@ -117,7 +121,7 @@ describe('components/DragDropUpload', () => {
       stopPropagation: () => {}
     };
     const component = shallow(
-      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} params={{}} />,
+      <DragDropUpload dispatch={fakeStore.dispatch} hrefExists={false} apiCalls={{}} params={{}} />,
       {
         context: { store: fakeStore }
       }

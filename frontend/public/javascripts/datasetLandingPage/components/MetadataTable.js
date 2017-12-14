@@ -8,6 +8,7 @@ import { MetadataTable as CommonMetadataTable } from 'common/components';
 import { localizeLink } from 'common/locale';
 import WatchDatasetButton from './WatchDatasetButton/WatchDatasetButton';
 import { FeatureFlags } from 'common/feature_flags';
+import { isUserRoled, isUserSuperadmin, isLoggedIn, isUserAdmin } from '../../common/user';
 
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
@@ -20,7 +21,14 @@ function mapStateToProps(state) {
   const { coreView } = view;
 
   const customFieldsets = view.customMetadataFieldsets || [];
-  const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
+  const userNotificationsEnabled =
+    FeatureFlags.value('enable_user_notifications') === true;
+  const enableCreateAlertButtonForAllUser =
+    FeatureFlags.value('enable_alert_notifications_for_all_users') === true;
+  const enableCreateAlertButtonForAdmin =
+    FeatureFlags.value('enable_alert_notifications_for_admin_users') === true;
+  const enableCreateAlertButtonForRolledUser =
+    FeatureFlags.value('enable_alert_notifications_for_role_users') === true;
 
   // TODO - move to common implementation.
   const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
@@ -77,6 +85,18 @@ function mapStateToProps(state) {
     return false;
   };
 
+  let showCreateAlertButton = false;
+
+  if (isLoggedIn()) {
+    if (enableCreateAlertButtonForAllUser) {
+      showCreateAlertButton = true;
+    } else if (enableCreateAlertButtonForAdmin && (isUserSuperadmin() || isUserAdmin())) {
+      showCreateAlertButton = true;
+    } else if (enableCreateAlertButtonForRolledUser && isUserRoled()) {
+      showCreateAlertButton = true;
+    }
+  }
+
   return ({
     associatedAssetsApiCalls: state.associateCollections,
     enableAssociatedAssets: associatedAssetsAreEnabled(),
@@ -92,7 +112,8 @@ function mapStateToProps(state) {
       } else {
         return null;
       }
-    }
+    },
+    showCreateAlertButton: showCreateAlertButton
   });
 }
 

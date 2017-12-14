@@ -4,13 +4,8 @@ import { SearchboxFilter } from 'common/components/AssetBrowser/components/filte
 import sinon from 'sinon';
 import { renderComponentWithPropsAndStore } from 'common/spec/helpers';
 import TestUtils from 'react-dom/test-utils';
-import { useTestTranslations } from 'common/i18n';
-import sharedTranslations from 'common/i18n/config/locales/en.yml';
 
 describe('components/SearchboxFilter', () => {
-  beforeEach(() => {
-    useTestTranslations(sharedTranslations.en);
-  });
 
   const searchboxFilterProps = (options = {}) => ({
     inputId: 'test',

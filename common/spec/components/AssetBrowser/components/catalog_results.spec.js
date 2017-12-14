@@ -15,12 +15,14 @@ const store = {
   getState: () => ({
     'catalog': {
       'columns': ['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility'],
-      'order': 'lastUpdatedDate',
+      'order': {},
       'results': []
     },
+    'filters': {},
     'header': {
       activeTab: 'myAssets'
-    }
+    },
+    'tabs': {}
   })
 };
 
@@ -34,6 +36,7 @@ describe('components/CatalogResults', () => {
     fetchInitialResults: () => {},
     resultSetSize: 0,
     isMobile: false,
+    tabs: {},
     toggleFilters: () => {},
     updatePageSize: () => {},
     ...options

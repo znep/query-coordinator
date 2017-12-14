@@ -26,11 +26,11 @@ class NotificationBox extends Component {
       <div className="socrata-notification">
         <div className={className} style={style}>
           <span dangerouslySetInnerHTML={htmlContent} />
-          {canDismiss
-            ? <SocrataButton buttonType="transparent" onClick={() => onDismiss()}>
+          {canDismiss ? (
+            <SocrataButton buttonType="transparent" onClick={() => onDismiss()}>
               <SocrataIcon name="close-2" />
             </SocrataButton>
-            : null}
+          ) : null}
         </div>
       </div>
     );
@@ -57,18 +57,17 @@ export default class Notification extends Component {
         condition={showNotification}
         willEnter={() => ({ opacity: 0, right: -16 })}
         willLeave={() => ({ opacity: spring(0), right: spring(-16) })}
-        style={{ opacity: spring(1), right: spring(16) }}
-      >
+        style={{ opacity: spring(1), right: spring(16) }}>
         {style => <NotificationBox style={style} {...props} />}
       </ConditionTransitionMotion>
     );
   }
 }
 
-const mapStateToProps = ({ ui: { notificationContent, notificationType, showNotification }}, { I18n }) => {
-  const content = _.has(notificationContent, 'translationKey') ?
-    I18n.translate(notificationContent.translationKey, notificationContent) :
-    notificationContent;
+const mapStateToProps = ({ ui: { notificationContent, notificationType, showNotification } }, { I18n }) => {
+  const content = _.has(notificationContent, 'translationKey')
+    ? I18n.translate(notificationContent.translationKey, notificationContent)
+    : notificationContent;
 
   return {
     content,

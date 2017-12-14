@@ -141,7 +141,7 @@ describe('components/Table', () => {
   it('renders a status for each output column', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.equal(
-      component.find('withRouter(TransformStatus)').length,
+      component.find('TransformStatus').length,
       defaultProps.outputColumns.length
     );
   });

@@ -50,7 +50,7 @@ class Table extends Component {
   render() {
     const {
       entities,
-      path,
+      params,
       inputSchema,
       outputSchema,
       outputColumns,
@@ -84,8 +84,9 @@ class Table extends Component {
           <tr className={styles.columnStatuses}>
             {outputColumns.map(column => (
               <TransformStatus
+                outputSchema={outputSchema}
                 key={column.id}
-                path={path}
+                params={params}
                 transform={column.transform}
                 displayState={displayState}
                 columnId={column.id}
@@ -94,12 +95,12 @@ class Table extends Component {
                 shortcuts={genShortcuts(column)}
                 showShortcut={showShortcut}
                 flyouts={showFlyouts}
-                onClickError={() => onClickError(path, column.transform, displayState)} />
+                onClickError={() => onClickError(params, column.transform, displayState)} />
             ))}
           </tr>
           {numRowErrors > 0 && (
             <RowErrorsLink
-              path={path}
+              params={params}
               displayState={displayState}
               numRowErrors={numRowErrors}
               inRowErrorMode={inRowErrorMode} />
@@ -118,7 +119,7 @@ class Table extends Component {
 
 Table.propTypes = {
   entities: PropTypes.object.isRequired,
-  path: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
   displayState: PropTypes.object.isRequired,

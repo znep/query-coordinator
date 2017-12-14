@@ -35,6 +35,11 @@ module ProfileHelper
       return edit_visualization_canvas_url(view) if view.can_edit?
     end
 
+    if view.op_measure?
+      return op_measure_url(view) if viewing_others_profile?
+      return edit_op_measure_url(view) if view.can_edit?
+    end
+
     super
   end
 

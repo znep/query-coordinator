@@ -1,17 +1,17 @@
-import { DefaultApiFp as api } from './generated-core-roles-api';
-import { defaultHeaders } from 'common/http';
+/* eslint new-cap: 0 */
+import { DefaultApiFp } from './generated-core-roles-api';
+import { csrfToken, appToken } from 'common/http';
 
 const wrappedApi = {};
 const wrappedFetch = (url, options) => fetch(url, Object.assign({ credentials: 'same-origin' }, options));
+const api = DefaultApiFp();
 
 Object.keys(api).forEach(key => {
-  wrappedApi[key] = params =>
-    api[key](
-      Object.assign(
-        { xCSRFToken: defaultHeaders['X-CSRF-Token'], xAppToken: defaultHeaders['X-App-Token'] },
-        params
-      )
-    )(wrappedFetch, '/api');
+  wrappedApi[key] = (...args) => {
+    const newArgs = [...args, { headers: { 'X-CSRF-Token': csrfToken(), 'X-App-Token': appToken() } }];
+    return api[key].apply(null, newArgs)(wrappedFetch, '');
+  };
 });
+
 
 export default wrappedApi;

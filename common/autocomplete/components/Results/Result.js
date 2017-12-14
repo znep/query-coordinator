@@ -95,3 +95,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(cssModules(Result, styles));
+
+/** For testing purposes */
+export const ResultClass = cssModules(Result, styles);

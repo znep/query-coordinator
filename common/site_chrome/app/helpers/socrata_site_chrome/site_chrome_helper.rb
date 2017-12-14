@@ -48,7 +48,7 @@ module SocrataSiteChrome
     end
 
     def get_feature_flag(flag)
-      Signaller.for(flag: flag).value(on_domain: request.host) rescue nil
+      Signaller.for(flag: flag).value(on_domain: request.host) rescue false
     end
 
 
@@ -161,7 +161,9 @@ module SocrataSiteChrome
     def current_user_can_see_dsmp_preview?
       return false unless site_chrome_current_user
 
-      get_feature_flag('dsmp_preview') || false
+      (
+        get_feature_flag('enable_dataset_management_ui') && get_feature_flag('dsmp_preview')
+      ) || false
     end
 
     def current_user_can_see_create_data_assets?
@@ -446,6 +448,18 @@ module SocrataSiteChrome
       SocrataSiteChrome::FeatureSet.new(request.host).feature_set.to_h.
         fetch('properties', []).
         each_with_object({}) { |property, hsh| hsh[property['name']] = property['value'] }
+    end
+
+    def show_alert_preference?
+      return false unless site_chrome_current_user
+
+      return true if get_feature_flag('enable_alert_notifications_for_all_users')
+
+      return true if get_feature_flag('enable_alert_notifications_for_admin_users') &&
+        (is_superadmin? || current_user_role === 'administrator')
+
+      get_feature_flag('enable_alert_notifications_for_role_users') &&
+        (is_superadmin? || !current_user_role.nil? )
     end
   end
 end

@@ -137,8 +137,7 @@ Rails.application.routes.draw do
         post '/rename_config/:config_id', :action => 'rename_site_config', :as => 'rename_config'
         post '/feature', :action => 'set_features', :as => 'set_features'
         post '/aliases', :action => 'update_aliases', :as => 'update_aliases'
-        post '/module_feature', :action => 'add_a_module_feature', :as => 'add_module_feature'
-        post '/account_modules', :action => 'add_module_to_domain'
+        post '/module_feature', :action => 'add_module_feature', :as => 'add_module_feature'
         post '/flush_cache', :action => 'flush_cache'
         get '/feature_flags(/:category)', :action => 'feature_flags', :as => 'feature_flags_config'
         post '/set_feature_flags', :action => 'set_feature_flags', :as => 'update_feature_flags'
@@ -167,6 +166,12 @@ Rails.application.routes.draw do
     scope :controller => 'approvals' do
       get '/admin/approvals',
         :action => 'show',
+        :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
+      get '/admin/approvals/settings/:id',
+        :action => 'settings',
+        :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
+      post '/admin/approvals/settings/:id',
+        :action => 'settings',
         :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
     end
 

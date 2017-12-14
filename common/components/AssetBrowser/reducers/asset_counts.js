@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
+
 const getInitialState = () => ({
   values: {
     charts: 0,
@@ -20,7 +22,7 @@ export default (state, action) => {
     return getInitialState();
   }
 
-  if (action.type === 'UPDATE_ASSET_COUNTS') {
+  if (action.type === ceteraActions.UPDATE_ASSET_COUNTS) {
     const getCountForAssetType = (assetType) => {
       const asset = _.filter(action.assetCounts, (assetCount => assetCount.value === assetType))[0];
       return (asset && _.has(asset, 'count')) ? asset.count : 0;
@@ -42,7 +44,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_ASSET_COUNTS') {
+  if (action.type === ceteraActions.FETCH_ASSET_COUNTS) {
     return {
       ...state,
       fetchingAssetCounts: true,
@@ -50,7 +52,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_ASSET_COUNTS_SUCCESS') {
+  if (action.type === ceteraActions.FETCH_ASSET_COUNTS_SUCCESS) {
     return {
       ...state,
       fetchingAssetCounts: false,
@@ -58,7 +60,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'FETCH_ASSET_COUNTS_ERROR') {
+  if (action.type === ceteraActions.FETCH_ASSET_COUNTS_ERROR) {
     return {
       ...state,
       fetchingAssetCounts: false,

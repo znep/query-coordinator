@@ -3,7 +3,7 @@ import { getIdFromRole, roleHasError, roleIsNew, validateRole } from './selector
 import property from 'lodash/fp/property';
 import partition from 'lodash/fp/partition';
 import CoreApi from 'common/core-roles-api';
-import { types as NotificationTypes } from './components/util/Notification';
+import { types as NotificationTypes } from 'common/components/ToastNotification';
 import Immutable from 'immutable';
 
 export const editCustomRoles = makeActionCreator('edit_custom_roles', {
@@ -20,11 +20,8 @@ export const saveRoles = makeActionCreator('save_roles', {
       roles
         .map(role =>
           (roleIsNew(role)
-            ? CoreApi.createRole({ body: role.filter(keyIn('name', 'rights')).toJS() })
-            : CoreApi.updateRole({
-                roleId: getIdFromRole(role),
-                body: role.filter(keyIn('name', 'rights')).toJS()
-              }))
+            ? CoreApi.createRole(role.filter(keyIn('name', 'rights')).toJS())
+            : CoreApi.updateRole(getIdFromRole(role), role.filter(keyIn('name', 'rights')).toJS()))
             .then(success => ({ role, success }))
             .catch(err => err.json().then(error => ({ role, error })))
         )
@@ -76,7 +73,7 @@ export const deleteRole = makeActionCreator('delete_role', {
     if (window.confirm('Are you sure?')) {
       dispatch(stages.start(payload));
 
-      CoreApi.deleteRole({ roleId: getIdFromRole(role) })
+      CoreApi.deleteRole(getIdFromRole(role))
         .then(() => {
           dispatch(
             showNotification({

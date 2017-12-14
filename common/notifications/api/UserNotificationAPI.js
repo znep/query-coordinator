@@ -6,17 +6,21 @@ import $ from 'jquery';
 import { STATUS_ACTIVITY_TYPES, NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 
 class NotificationAPI {
-  constructor(userId, callback) {
+  constructor(userId, callback, options = {}) {
+    // TODO: This should probably default to false. Question is out to team.
+    const useLogger = _.get(options, 'debugLog', true);
+
     if (!userId) {
       console.error('NotificationAPI called without user id');
       return;
     }
 
     let channelId = `user: ${userId}`;
-    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, {
-      params: { user_id: userId },
-      logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data); })
-    });
+    const socketOptions = { params: { user_id: userId } };
+    if (useLogger) {
+      socketOptions.logger = (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); };
+    }
+    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
 
     socket.connect();
 
@@ -34,10 +38,14 @@ class NotificationAPI {
       self.update();
       self._channel.join().
         receive('ok', (resp) => {
-          console.log('Joined user channel');
+          if (useLogger) {
+            console.log('Joined user channel');
+          }
         }).
         receive('error', (resp) => {
-          console.log('Unable to join', resp);
+          if (useLogger) {
+            console.log('Unable to join', resp);
+          }
         });
     }, function() {});
 
@@ -221,35 +229,47 @@ class NotificationAPI {
     const domainCname = _.get(notification, 'activity.domain_cname', '');
     const userName = _.get(notification, 'activity.acting_user_name', '');
     const userId = _.get(notification, 'activity.acting_user_id', '');
+    const notificationType = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status' : 'alert';
 
     transformedNotification.id = _.get(notification, 'id', '');
     transformedNotification.read = _.get(notification, 'read', false);
     transformedNotification.activityType = activityType;
     transformedNotification.createdAt = _.get(notification, 'activity.created_at', '');
-    transformedNotification.type = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status' : 'alert';
+    transformedNotification.type = notificationType;
     transformedNotification.activityUniqueKey = _.get(notification, 'activity_unique_key', '');
     transformedNotification.userName = userName;
     transformedNotification.userProfileLink = this._getUserProfileLink(domainCname, userName, userId);
 
-    if (activityType === 'ViewMetadataChanged') {
-      const viewId = _.get(notification, 'activity.view_uid', '');
-      const viewName = _.get(notification, 'activity.view_name', '');
+    if (notificationType === 'alert') {
+      const domainName = _.get(notification, 'alert.domain', '');
+      const datasetId = _.get(notification, 'alert.dataset_uid', '');
+      const datasetName = _.get(notification, 'alert.dataset_name', '');
+      transformedNotification.alertName = _.get(notification, 'alert.name', '');
 
-      transformedNotification.link = this._getDatasetLink(domainCname, viewName, viewId);
-      transformedNotification.messageBody = viewName;
-    } else if (_.includes(userActivityTypes, activityType)) {
-      transformedNotification.link = null;
-      transformedNotification.messageBody = _.get(
-        JSON.parse(_.get(notification, 'activity.details', '')),
-        'summary',
-        ''
-      );
-    } else {
-      const datasetId = _.get(notification, 'activity.dataset_uid', '');
-      const datasetName = _.get(notification, 'activity.dataset_name', '');
-
-      transformedNotification.link = this._getDatasetLink(domainCname, datasetName, datasetId);
       transformedNotification.messageBody = datasetName;
+      transformedNotification.link = this._getDatasetLink(domainName, datasetName, datasetId);
+      transformedNotification.createdAt = _.get(notification, 'alert_triggered_at', '');
+    } else {
+      if (activityType === 'ViewMetadataChanged') {
+        const viewId = _.get(notification, 'activity.view_uid', '');
+        const viewName = _.get(notification, 'activity.view_name', '');
+
+        transformedNotification.link = this._getDatasetLink(domainCname, viewName, viewId);
+        transformedNotification.messageBody = viewName;
+      } else if (_.includes(userActivityTypes, activityType)) {
+        transformedNotification.link = null;
+        transformedNotification.messageBody = _.get(
+          JSON.parse(_.get(notification, 'activity.details', '')),
+          'summary',
+          ''
+        );
+      } else {
+        const datasetId = _.get(notification, 'activity.dataset_uid', '');
+        const datasetName = _.get(notification, 'activity.dataset_name', '');
+
+        transformedNotification.link = this._getDatasetLink(domainCname, datasetName, datasetId);
+        transformedNotification.messageBody = datasetName;
+      }
     }
 
     return transformedNotification;

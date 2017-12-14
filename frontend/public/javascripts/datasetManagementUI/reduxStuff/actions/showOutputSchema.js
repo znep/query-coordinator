@@ -230,10 +230,11 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
       console.error('expected transform', transform.id, 'to have 1 input column; has', inputColumns.length);
     }
     const inputColumn = inputColumns[0];
-    const conversionFunc = soqlProperties[inputColumn.soql_type].conversions[newType];
+
+    const conversionExpr = soqlProperties[inputColumn.soql_type].conversions[newType](inputColumn, entities);
     const fieldName = inputColumn.field_name;
 
-    return inputColumn.soql_type === newType ? `\`${fieldName}\`` : `${conversionFunc}(${fieldName})`;
+    return inputColumn.soql_type === newType ? `\`${fieldName}\`` : conversionExpr;
   };
   return oldOutputColumns.map(c => buildNewOutputColumn(c, genTransform));
 }

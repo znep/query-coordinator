@@ -50,7 +50,6 @@
     top: -30px;
 
     .export-csv-btn {
-      margin-right: 8px;
       height: 42px;
       line-height: 1.25;
     }
@@ -196,9 +195,8 @@
   }
 
   .user-filter {
-    display: inherit;
-    position: absolute;
-    right: 0;
+    display: flex;
+    padding-left: 10px;
 
     .user-filter-label {
       padding-right: 1em;
@@ -210,19 +208,21 @@
     }
   }
 
-  .user-search-bar {
+  .search-bar {
     align-items: center;
     display: flex;
-    width: 40rem;
+    justify-content: space-between;
+    width: 100%;
     margin-bottom: 1rem;
 
     span.socrata-icon-search {
       top: -5px !important;
     }
+  }
 
+  .user-search-bar {
     .user-autocomplete {
-      flex: 1;
-      width: 100%;
+      width: 40rem;
     }
   }
 

@@ -1,11 +1,14 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
+$container-padding: 2.5em;
+
 section.container {
   background-color: $light-grey-7;
-  padding: 2.5em;
+  padding: $container-padding;
   font-size: 1rem;
   min-height: 100%;
+  position: relative;
 }
 
 .container h2 {
@@ -24,9 +27,19 @@ section.container {
   transition: background-color .2s;
 }
 
+.isApiCallPending {
+  composes: dropZone;
+  animation: pulse 1.6s ease infinite;
+}
+
 .dropZoneDragging {
   composes: dropZone;
   background-color: $white;
+}
+
+.dropZoneInvalidDragging {
+  composes: dropZone;
+  background-color: tint($error, 94%);
 }
 
 .uploadButton {
@@ -98,4 +111,23 @@ section.container {
 
 .content > div, .content > label {
   margin-bottom: 0.4em;
+}
+
+.spinner {
+  composes: spinner-default from global;
+  position: absolute;
+  top: $container-padding + 1;
+  left: $container-padding + 1;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: white;
+  }
+  50% {
+    background-color: #f1f3f4;
+  }
+  100% {
+    background-color: white;
+  }
 }

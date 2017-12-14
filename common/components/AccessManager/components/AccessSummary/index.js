@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import I18n from '../../../../i18n';
+
+import I18n from 'common/i18n';
+
+import styles from './access-summary.scss';
 import PermissionPropType from '../../propTypes/PermissionPropType';
 import AccessSummaryFooter from './AccessSummaryFooter';
-import { getAudienceScopeFromPermissions } from '../../Util';
 import AudienceScopeLabel from '../AudienceScopeLabel';
-import styles from './access-summary.scss';
-
+import UserList from './UserList';
+import AddUser from '../AddUser';
 
 /**
  * Shows a summary of the current permissions for a given asset.
@@ -18,7 +20,7 @@ import styles from './access-summary.scss';
  */
 class AccessSummary extends Component {
   static propTypes = {
-    permissions: PropTypes.arrayOf(PermissionPropType),
+    permissions: PermissionPropType,
     errors: PropTypes.arrayOf(PropTypes.any)
   };
 
@@ -29,19 +31,26 @@ class AccessSummary extends Component {
 
   renderBody = () => {
     const { permissions, errors } = this.props;
-    const scope = getAudienceScopeFromPermissions(permissions);
 
     // if the "permissions" object exists, it means we've gotten back results from our API call
     if (permissions) {
+      const scope = permissions.scope;
       return (
-        <div styleName="audience-container">
-          <AudienceScopeLabel scope={scope} />
-          <Link
-            to="/scope"
-            className="btn btn-default"
-            styleName="change-audience-button">
-            {I18n.t('shared.site_chrome.access_manager.change')}
-          </Link>
+        <div>
+          <div styleName="access-summary-container">
+            <div styleName="audience-container">
+              <AudienceScopeLabel scope={scope} />
+              <Link
+                to="/scope"
+                className="btn btn-default"
+                styleName="change-audience-button">
+                {I18n.t('shared.site_chrome.access_manager.change')}
+              </Link>
+            </div>
+            <hr />
+            <UserList />
+          </div>
+          <AddUser />
         </div>
       );
     }
@@ -63,7 +72,6 @@ class AccessSummary extends Component {
     return (
       <div>
         {this.renderBody()}
-        <hr />
         <AccessSummaryFooter />
       </div>
     );
@@ -71,8 +79,8 @@ class AccessSummary extends Component {
 }
 
 const mapStateToProps = state => ({
-  permissions: state.accessManager.permissions,
-  errors: state.accessManager.errors
+  permissions: state.permissions.permissions,
+  errors: state.ui.errors
 });
 
 export default

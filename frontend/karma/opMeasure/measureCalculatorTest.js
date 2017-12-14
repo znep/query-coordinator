@@ -300,7 +300,28 @@ describe('measureCalculator', () => {
           assert.propertyVal(response, 'denominator', '100');
         });
 
-        it('includes column condition in query', (done) => {
+        it('includes no column condition in query (noop filter)', (done) => {
+          const sumWithNoopCondition = _.set(_.cloneDeep(sumComputed),
+            'metric.arguments.numeratorColumn',
+            'numeratorCol'
+          );
+          _.set(sumWithNoopCondition,
+            'metric.arguments.numeratorColumnCondition',
+            { function: 'noop', arguments: null }
+          );
+
+          const dataProvider = {
+            rawQuery: (query) => {
+              if (query.indexOf('numeratorCol') >= 0) {
+                assert.notInclude(query, 'where');
+                done();
+              }
+            }
+          };
+          calculateRateMeasure(sumWithNoopCondition, dataProvider);
+        });
+
+        it('includes column condition in query (real filter)', (done) => {
           const sumWithCondition = _.set(_.cloneDeep(sumComputed),
             'metric.arguments.numeratorColumn',
             'numeratorCol'
@@ -312,8 +333,11 @@ describe('measureCalculator', () => {
 
           const dataProvider = {
             rawQuery: (query) => {
-              assert.include(query, '(`numeratorCol` >= 3 AND `numeratorCol` < 5)');
-              done();
+              if (query.indexOf('numeratorCol') >= 0) {
+                assert.include(query, 'where');
+                assert.include(query, '(`numeratorCol` >= 3 AND `numeratorCol` < 5)');
+                done();
+              }
             }
           };
           calculateRateMeasure(sumWithCondition, dataProvider);

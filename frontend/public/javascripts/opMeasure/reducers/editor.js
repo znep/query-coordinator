@@ -1,9 +1,13 @@
 import _ from 'lodash';
 
 import { assert, assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
+
+import validate from './validate';
 import actions from '../actions';
 import { CalculationTypeNames } from '../lib/constants';
 import { isColumnUsableWithMeasureArgument } from '../measureCalculator';
+
+const validateActionRegex = /^VALIDATE_/;
 
 // Convenience mutator for the measure being edited.
 // warning: _.merge will ignore undefined values so in the scenario where a value is
@@ -26,6 +30,8 @@ const setCalculationType = (state, type) => {
     ...state
   };
 
+  // TODO: Calling _.set overwrites any prior metric data.
+  //       If this is desired, it should still copy in a base metric model.
   _.set(newState, 'measure.metric', {
     type,
     dataSource: currentDataSource
@@ -48,17 +54,23 @@ const setCalculationType = (state, type) => {
 };
 
 // Initial state for the edit modal reducer.
-const initialState = _.constant({
+export const INITIAL_STATE = Object.freeze({
   isEditing: false,
   measure: {},
-  pristineMeasure: {}
+  pristineMeasure: {},
+  validationErrors: validate().validationErrors
 });
 
 // Edit modal reducer.
 // Governs all form updates, as well as initialize/open and close events.
-export default (state = initialState(), action) => {
+export default (state = _.cloneDeep(INITIAL_STATE), action) => {
   if (_.isUndefined(action)) {
     return state;
+  }
+
+  // Delegate to sub-reducer for validation.
+  if (validateActionRegex.test(action.type)) {
+    return validate(state, action);
   }
 
   // Need to cloneDeep the state since react/redux only does a shallow comparison so when we pass a 'measure'
@@ -67,10 +79,10 @@ export default (state = initialState(), action) => {
 
   switch (action.type) {
     case actions.editor.SET_DATA_SOURCE_UID: {
+      const { uid } = action;
       const newState = { ...state };
-      _.set(newState, 'measure.metric.dataSource', {
-        uid: action.uid
-      });
+      _.set(newState, 'cachedRowCount', uid ? null : undefined);
+      _.set(newState, 'measure.metric.dataSource', { uid });
       return newState;
     }
     case actions.editor.RECEIVE_DATA_SOURCE_METADATA: {
@@ -190,15 +202,30 @@ export default (state = initialState(), action) => {
     case actions.editor.SET_START_DATE:
       return updateMeasureProperty(state, 'metric.reportingPeriod.startDate', action.startDate);
 
+    case actions.editor.SET_PERIOD_TYPE:
+      return updateMeasureProperty(state, 'metric.reportingPeriod.type', action.periodType);
+
+    case actions.editor.SET_PERIOD_SIZE:
+      return updateMeasureProperty(state, 'metric.reportingPeriod.size', action.periodSize);
+
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 
+    case actions.editor.SET_DESCRIPTION:
+      return updateMeasureProperty(state, 'description', action.description);
+
+    case actions.editor.SET_NAME:
+      return updateMeasureProperty(state, 'name', action.name);
+
+    case actions.editor.SET_SHORT_NAME:
+      return updateMeasureProperty(state, 'shortName', action.shortName);
+
     case actions.editor.OPEN_EDIT_MODAL: {
       let nextState = {
-        ...state,
         isEditing: true,
-        measure: action.measure,
-        pristineMeasure: action.measure
+        measure: { ...action.measure },
+        pristineMeasure: { ...action.measure },
+        validationErrors: validate().validationErrors
       };
 
       // If no calculation type is set, defaults to 'count'
@@ -209,6 +236,7 @@ export default (state = initialState(), action) => {
 
       return nextState;
     }
+
     case actions.editor.CANCEL_EDIT_MODAL:
     case actions.editor.ACCEPT_EDIT_MODAL_CHANGES:
       return {

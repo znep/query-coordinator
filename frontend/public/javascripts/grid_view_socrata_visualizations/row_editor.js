@@ -422,6 +422,10 @@ module.exports = function(options) {
           $target.siblings('input.value').not('.utc-offset').attr('disabled', isNull);
           break;
 
+        case 'url':
+          $inputLine.find('.value-set input.value').attr('disabled', isNull);
+          break;
+
         case 'photo':
         case 'document':
         case 'blob':

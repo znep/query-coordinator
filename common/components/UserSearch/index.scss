@@ -1,0 +1,40 @@
+.user-search-pill-contents {
+  display: flex;
+}
+
+.user-search-pill-user-icon {
+  width: 17px;
+  height: 100%;
+  margin-right: 4px;
+
+  & svg use, & svg path {
+    fill: $primary-light !important;
+  }
+}
+
+.user-search-pill-user-name {
+  padding-top: 2px;
+  color: $primary-light !important;
+}
+
+.user-search-result-name {
+  font-size: 15px !important;
+  font-weight: 400;
+
+  & span {
+    font-size: 15px !important;
+  }
+}
+
+.user-search-result-email {
+  font-size: 12px !important;
+  font-weight: 400;
+
+  & > span {
+    font-size: 12px !important;
+  }
+}
+
+.user-search-result-highlight {
+  font-weight: 700;
+}

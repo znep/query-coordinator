@@ -21,6 +21,9 @@
 
     <h3 class="styleguide-subheader">Output</h3>
     <pre id="output" style="white-space: pre-wrap;"></pre>
+
+    <h3 class="styleguide-subheader">As SoQL</h3>
+    <pre id="soql" style="white-space: pre-wrap;"></pre>
   </div>
   <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
 </section>
@@ -32,6 +35,7 @@
   <script type="text/javascript" id="example-1">
     $(() => {
       const output = document.querySelector('#output');
+      const soql = document.querySelector('#soql');
       const filters = [
         {
           function: 'valueRange',
@@ -93,6 +97,12 @@
 
       function render() {
         output.innerHTML = JSON.stringify(props.filters, null, 2);
+        $(soql).text(
+          props.filters.
+          map(SoqlHelpers.filterToWhereClauseComponent).
+          filter(_.negate(_.isEmpty)).
+          join(' AND ')
+        );
 
         ReactDOM.render(
           React.createElement(components.FilterBar, props),

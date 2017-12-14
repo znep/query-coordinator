@@ -337,10 +337,11 @@ module TestHelperMethods
 
   def some_user
     {
+      accept_terms: true,
       email: 'foo@bar.com',
+      id: '1234-abcd',
       password: 'asdf',
-      passwordConfirm: 'asdf',
-      accept_terms: true
+      passwordConfirm: 'asdf'
     }
   end
 

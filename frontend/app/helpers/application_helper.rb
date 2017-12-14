@@ -1041,7 +1041,10 @@ module ApplicationHelper
   end
 
   def current_user_can_see_dsmp_preview?
-    FeatureFlags.derive(nil, request)[:dsmp_preview] || false
+    (
+      FeatureFlags.derive(nil, request)[:enable_dataset_management_ui] &&
+      FeatureFlags.derive(nil, request)[:dsmp_preview]
+    ) || false
   end
 
   def current_user_can_create_measure?
@@ -1237,16 +1240,8 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    %w(
-      activity_feed
-      administration
-      connector
-      internal
-      internal_asset_manager
-      roles
-      routing_approval
-      site_appearance
-    ).include?(controller_name)
+    controller.class.ancestors.include?(AdministrationController) ||
+      %w(internal internal_asset_manager site_appearance).include?(controller_name)
   end
 
   def admin_page_with_left_nav_class
@@ -1320,4 +1315,5 @@ module ApplicationHelper
       FeatureFlags.derive(@view, request).enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon
     end
   end
+
 end

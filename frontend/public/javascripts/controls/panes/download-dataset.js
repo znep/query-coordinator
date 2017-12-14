@@ -22,12 +22,28 @@
       var type = this._view.getDownloadType();
       var layerDownloadType = (_view.newBackend && _view.isLayered()) ? 'layer_geojson_attributes' : 'layer_attributes';
       var catchForm = !this._view.isGeoDataset();
+      var hideCsvForExcel = !!blist.feature_flags.hide_csv_for_excel_download;
+
+      /**
+       * copied from ExportFlannel.js in datasetLandingPage
+       *
+       * Used below to filter out the 'CSV for Excel' options from the list of links if
+       * the hide_csv_for_excel_download feature flag is set to true.
+       *
+       * The code here is expecting a hard-coded string that is not currently translated. It
+       * comes from `#normal_download_types` in the datasets_helper.rb. If that is ever changed
+       * this code will need to be updated.
+       */
+      function csvForExcelOrTrue(value) {
+        return !(hideCsvForExcel && value.match(/^CSV for Excel/));
+      }
+
       return [{
         customContent: {
           template: 'downloadsSectionContent',
           directive: $.templates.downloadsTable.directive[type],
           data: {
-            downloadTypes: $.templates.downloadsTable.downloadTypes[type],
+            downloadTypes: $.templates.downloadsTable.downloadTypes[type].filter(csvForExcelOrTrue),
             layerDownloadTypes: $.templates.downloadsTable.downloadTypes[layerDownloadType],
             view: this._view
           },

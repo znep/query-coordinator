@@ -5,6 +5,7 @@
 @import "catalog_filters";
 @import "clear_filters";
 @import "settings";
+@import "sort_dropdown";
 
 @import "common/styleguide/variables/colors";
 @import "common/styleguide/partials/pager";
@@ -58,6 +59,23 @@ body {
     justify-content: space-between;
     align-items: flex-end;
 
+    .settings_link {
+      margin-bottom: 0.5rem;
+
+      span {
+        position: relative;
+        top: -1px;
+        color: $primary-base;
+        height: 18px;
+        width: 18px;
+      }
+
+      a {
+        margin-left: 0.25rem;
+        text-decoration: none;
+      }
+    }
+
     &.mobile {
       display: block;
       min-height: 5.5rem;
@@ -68,6 +86,8 @@ body {
     }
 
     .asset-tabs {
+      margin-top: 5.5rem;
+
       a.asset-tab {
         color: $light-grey-2;
         cursor: pointer;
@@ -137,6 +157,14 @@ body {
 
     .catalog-results .socrata-icon-search {
       top: -3px !important;
+    }
+  }
+}
+
+#profile {
+  .asset-browser {
+    .asset-tabs {
+      margin-top: 0;
     }
   }
 }

@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableCell from 'components/TableCell/TableCell';
 import RowError from 'components/RowError/RowError';
-import * as DisplayState from 'lib/displayState';
-import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import styles from './TableBody.scss';
+import * as Selectors from 'selectors';
 
 class TableBody extends Component {
   componentDidMount() {
@@ -42,42 +41,12 @@ class TableBody extends Component {
   }
 
   getData() {
-    const props = this.props;
-
-    const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
-    const endRow = startRow + PAGE_SIZE;
-    let rowIndices;
-
-    if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
-      const errorsTransform = props.entities.transforms[props.displayState.transformId];
-      if (errorsTransform.error_indices) {
-        rowIndices = errorsTransform.error_indices.map(_.toString);
-      } else {
-        rowIndices = [];
-      }
-    } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
-      rowIndices = _.filter(props.entities.row_errors, { input_schema_id: props.inputSchemaId }).map(
-        rowError => rowError.offset
-      );
-    } else {
-      rowIndices = _.range(startRow, endRow);
-    }
-    return rowIndices.map(rowIdx => ({
-      rowIdx,
-      columns: this.props.columns.map(column => {
-        const transform = column.transform;
-        const cell = this.props.entities.col_data[transform.id]
-          ? this.props.entities.col_data[transform.id][rowIdx]
-          : null;
-        return {
-          tid: transform.id,
-          id: column.id,
-          format: column.format,
-          cell
-        };
-      }),
-      rowError: props.entities.row_errors[`${props.inputSchemaId}-${rowIdx}`]
-    }));
+    return Selectors.getRowData(
+      this.props.entities,
+      this.props.inputSchemaId,
+      this.props.displayState,
+      this.props.columns
+    );
   }
 
   renderNormalRow(row) {

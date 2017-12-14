@@ -1,0 +1,39 @@
+@import '../../../common.scss';
+
+.user-options-container {
+  display: flex;
+  margin-right: 26px;
+}
+
+.remove-button {
+  border: none;
+  background: none;
+  
+  cursor: pointer;
+
+  height: 30px;
+
+  margin-left: 49px;
+  margin-top: 8px;
+
+  & svg use, & svg polygon {
+    fill: $grey !important;
+    transition: fill 0.3s;
+  }
+
+  &:hover {
+    & svg use, & svg polygon {
+      fill: #a17b19 !important;
+    }
+  }
+}
+
+.remove-icon {
+  width: 100%;
+  height: 100%;
+
+  & svg {
+    width: 30px;
+    height: 30px;
+  }
+}

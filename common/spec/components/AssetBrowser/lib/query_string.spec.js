@@ -4,7 +4,7 @@ import sinon from 'sinon';
 
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
 
-describe('actions/query_string', () => {
+describe('lib/query_string', () => {
   describe('updateQueryString', () => {
     const baseUrl = `${location.protocol}//${location.host}${location.pathname}`;
     let historyStub;

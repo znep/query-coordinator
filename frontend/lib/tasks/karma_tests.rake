@@ -67,6 +67,7 @@ namespace :test do
 
       'approvals' => nil,
       'exampleTestSuite' => nil,
+      'internal_asset_manager' => nil,
       'oldUx' => nil,
       'visualization_embed' => nil
     }.each do |task_name, dependency|
@@ -355,6 +356,7 @@ namespace :test do
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
+      'karma:internal_asset_manager',
       'karma:oldUx',
       'karma:opMeasure',
       'karma:authentication',

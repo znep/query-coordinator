@@ -2,6 +2,54 @@ export const noopFilter = {
   'function': 'noop'
 };
 
+export const mockRangeInclusiveFilter = {
+  'function': 'rangeInclusive',
+  columnName: 'dinosaurAge',
+  arguments: {
+    start: '1',
+    end: '3'
+  },
+  isHidden: false
+};
+
+export const mockRangeExclusiveFilter = {
+  'function': 'rangeExclusive',
+  columnName: 'dinosaurAge',
+  arguments: {
+    start: '2',
+    end: '4'
+  },
+  isHidden: false
+};
+
+export const mockGTFilter = {
+  'function': '>',
+  columnName: 'dinosaurAge',
+  arguments: { value: '9' },
+  isHidden: false
+};
+
+export const mockGTEFilter = {
+  'function': '>=',
+  columnName: 'dinosaurAge',
+  arguments: { value: '4' },
+  isHidden: false
+};
+
+export const mockLTFilter = {
+  'function': '<',
+  columnName: 'dinosaurAge',
+  arguments: { value: '6' },
+  isHidden: false
+};
+
+export const mockLTEFilter = {
+  'function': '<=',
+  columnName: 'dinosaurAge',
+  arguments: { value: '8' },
+  isHidden: false
+};
+
 export const mockValueRangeFilter = {
   'function': 'valueRange',
   columnName: 'dinosaurAge',
@@ -54,8 +102,8 @@ export const mockNumberColumn = {
   dataTypeName: 'number',
   fieldName: 'dinosaurAge',
   name: 'Dinosaur Age (approximate)',
-  rangeMin: .1,
-  rangeMax: 100.01
+  rangeMin: 1.12,
+  rangeMax: 100.34
 };
 
 export const mockCalendarDateColumn = {

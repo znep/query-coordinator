@@ -270,6 +270,11 @@ class DatasetsController < ApplicationController
 
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)
 
+      @asset_browser_config = {
+        :app_name => 'dataset_management_page',
+        :filters_enabled => false
+      }
+
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else
       render_404
@@ -710,6 +715,11 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     if dataset_landing_page_enabled? && view.has_landing_page?
+      @asset_browser_config = {
+        :app_name => 'dataset_landing_page',
+        :filters_enabled => false
+      }
+
       result = DatasetLandingPage.fetch_all(
         view,
         current_user,
@@ -1239,6 +1249,11 @@ class DatasetsController < ApplicationController
       @related_views = result[:related_views]
       @featured_content = result[:featured_content]
       @dataset_landing_page_view = result[:dataset_landing_page_view]
+
+      @asset_browser_config = {
+        :app_name => 'dataset_landing_page',
+        :filters_enabled => false
+      }
 
       RequestStore[:current_user] = current_user.try(:data)
 

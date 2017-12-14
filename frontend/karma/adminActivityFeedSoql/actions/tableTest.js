@@ -45,12 +45,17 @@ describe('table actions', () => {
     store.
       dispatch(tableActions.fetchData()).
       then(() => {
-        const action = store.
-          getActions().
-          find((act) => act.type === tableActions.types.STORE_DATA);
+        const actions = store.getActions();
 
-        assert.isNotNull(action);
-        assert.deepEqual(action.data, mockData.data1);
+        const storeDataAction = actions.find((act) => act.type === tableActions.types.STORE_DATA);
+        assert.isNotNull(storeDataAction);
+        assert.deepEqual(storeDataAction.data, mockData.data1);
+
+        const fetchingTableAction = actions.find((act) => act.type === tableActions.types.FETCHING_TABLE);
+        assert.isNotNull(fetchingTableAction);
+
+        const fetchTableSuccessAction = actions.find((act) => act.type === tableActions.types.FETCH_TABLE_SUCCESS);
+        assert.isNotNull(fetchTableSuccessAction);
 
         done();
       });

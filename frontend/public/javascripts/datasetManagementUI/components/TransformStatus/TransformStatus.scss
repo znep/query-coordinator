@@ -1,5 +1,5 @@
 @import 'common/styleguide/variables/color_helpers';
-@import 'common/styleguide/variables/colors';
+@import 'app/styles/styleguide-colors';
 
 .dropping {
   opacity: 0.1;
@@ -59,26 +59,39 @@
   composes: statusItem;
 }
 
-.geoBadge {
+.geoBadge, .mapBadge {
   composes: statusItem;
-  margin-right: -5px;
   flex-grow: 0;
   flex-basis: 0;
-  min-width: 48px;
+  padding: 4px 3px 2px 3px;
+  margin: 0px;
+
+
+  span {
+    padding: 2px 8px;
+    border-radius: 1.1em;
+    color: $white;
+    font-size: 125%;
+  }
 }
 
-.geoIcon {
-  composes: socrata-icon-geo from global;
-  composes: primary from global;
-  padding: 0 0.5em 1px;
-  border-radius: 1.1em;
-  color: $white;
-  margin-right: 0.5em;
-  margin-right: 0;
+.geoBadge {
+  span {
+    background-color: $primary-base;
+  }
 }
+.mapBadge {
+  span {
+    background-color: $alternate-3-base;
+  }
+}
+
+
+
 
 .colAttributes {
   display: flex;
+  position: relative;
 }
 
 .columnProgressBar {

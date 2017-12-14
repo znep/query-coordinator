@@ -1,4 +1,4 @@
-.topbar {
+.asset-browser .topbar {
   margin: 0.5rem $horizontal_margin;
 
   .manage-assets-button {
@@ -41,6 +41,20 @@
       .active-filter-count {
         margin-left: 0.3rem;
       }
+    }
+  }
+
+  &.cards-container-topbar {
+    margin: 0 0 20px 0;
+
+    div[class*=autocomplete_container] {
+      float: right;
+      margin-right: 0;
+      width: 250px;
+    }
+
+    > button {
+      margin-right: 0.5rem;
     }
   }
 }

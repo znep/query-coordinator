@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment'
+import moment from 'moment';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mount, shallow } from 'enzyme';
@@ -8,8 +8,9 @@ import { ReportingPeriodPanel } from 'components/EditModal/ReportingPeriodPanel'
 
 describe('ReportingPeriodPanel', () => {
   const getProps = (props) => ({
-    // TODO: default test props
     onChangeStartDate: _.noop,
+    onChangePeriodType: _.noop,
+    onChangePeriodSize: _.noop,
     ...props
   });
 
@@ -54,6 +55,26 @@ describe('ReportingPeriodPanel', () => {
       input.node.value = '02/03/2001';
       input.simulate('change');
       sinon.assert.notCalled(props.onChangeStartDate);
+    });
+  });
+
+  describe('period type', () => {
+    const getOpenRadio = (element) => element.find('#period-type-open').first();
+    it('initializes from props', () => {
+      const props = { type: 'open' };
+      const element = mount(<ReportingPeriodPanel {...getProps(props)} />);
+
+      const input = getOpenRadio(element);
+      assert.equal(input.node.checked, true);
+    });
+
+    it('calls onChangePeriodType when the radio button value changes', () => {
+      const props = { type: 'closed', onChangePeriodType: sinon.spy() };
+      const element = mount(<ReportingPeriodPanel {...getProps(props)} />);
+      const input = getOpenRadio(element);
+      input.simulate('change');
+
+      sinon.assert.calledWith(props.onChangePeriodType, 'open');
     });
   });
 });

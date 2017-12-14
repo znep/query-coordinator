@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import Flannel from 'common/components/Flannel';
 
 import * as assetActions from '../actions/asset_actions';
+import * as constants from '../lib/constants';
 
 export class ApprovalActionButtons extends Component {
   constructor(props) {
@@ -67,41 +69,56 @@ export class ApprovalActionButtons extends Component {
     const flannelTarget = flannelType === 'approve' ? this.approveFlannelTarget : this.rejectFlannelTarget;
 
     return (
-      <Flannel
-        className={flannelClass}
-        onDismiss={onFlannelDismiss}
-        title={flannelTitle}
-        target={flannelTarget}>
+      <Flannel className={flannelClass} onDismiss={onFlannelDismiss} title={flannelTitle} target={flannelTarget}>
         {flannelContent}
       </Flannel>
     );
   }
 
   render() {
-    const approveButton = (
-      <div>
-        <a href="#" onClick={(e) => this.handleApprovalButtonClick(e, 'approve')}>
-          <button className="btn btn-sm btn-default approveButton">{this.getTranslation('approve')}</button>
-        </a>
-        <div ref={(flannelTarget) => { this.approveFlannelTarget = flannelTarget; }}></div>
-      </div>
-    );
+    const approveButton = () => {
+      const disabled = hasApprovalState(constants.APPROVAL_STATUS_APPROVED);
+      const buttonClasses = classNames('btn btn-sm btn-default', { 'btn-disabled': disabled });
 
-    const rejectButton = (
-      <div>
-        <a href="#" onClick={(e) => this.handleApprovalButtonClick(e, 'reject')}>
-          <button className="btn btn-sm btn-default rejectButton">{this.getTranslation('reject')}</button>
-        </a>
-        <div ref={(flannelTarget) => { this.rejectFlannelTarget = flannelTarget; }}></div>
-      </div>
-    );
+      return (
+        <div>
+          <a href="#" onClick={(e) => this.handleApprovalButtonClick(e, constants.APPROVAL_STATUS_APPROVE)}>
+            <button className={buttonClasses} disabled={disabled}>
+              {this.getTranslation(constants.APPROVAL_STATUS_APPROVE)}
+            </button>
+          </a>
+          <div ref={(flannelTarget) => { this.approveFlannelTarget = flannelTarget; }} />
+        </div>
+      );
+    };
+
+    const rejectButton = () => {
+      const disabled = hasApprovalState(constants.APPROVAL_STATUS_REJECTED);
+      const buttonClasses = classNames('btn btn-sm btn-default', { 'btn-disabled': disabled });
+
+      return (
+        <div>
+          <a href="#" onClick={(e) => this.handleApprovalButtonClick(e, constants.APPROVAL_STATUS_REJECT)}>
+            <button className={buttonClasses} disabled={disabled}>
+              {this.getTranslation(constants.APPROVAL_STATUS_REJECT)}
+            </button>
+          </a>
+          <div ref={(flannelTarget) => { this.rejectFlannelTarget = flannelTarget; }} />
+        </div>
+      );
+    };
 
     const flannel = this.state.flannelIsOpen && this.renderFlannel();
 
+    const hasApprovalState = (state) => {
+      const { approvals } = this.props;
+      return _.find(approvals, (approval) => approval.state === state);
+    };
+
     return (
       <div className="approval-action-buttons">
-        {approveButton}
-        {rejectButton}
+        {approveButton()}
+        {rejectButton()}
         {flannel}
       </div>
     );
@@ -114,8 +131,7 @@ ApprovalActionButtons.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  approveResource: (resourceId, name, notes) =>
-    dispatch(assetActions.approveResource(resourceId, name, notes)),
+  approveResource: (resourceId, name, notes) => dispatch(assetActions.approveResource(resourceId, name, notes)),
   rejectResource: (resourceId, name, notes) => dispatch(assetActions.rejectResource(resourceId, name, notes))
 });
 

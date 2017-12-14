@@ -3,7 +3,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 import * as DisplayState from 'lib/displayState';
 import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
@@ -11,29 +11,58 @@ import ProgressBar from 'components/ProgressBar/ProgressBar';
 import ErrorPill from 'components/ErrorPill/ErrorPill';
 import ErrorFlyout, { getErrorFlyoutId } from 'components/ErrorFlyout/ErrorFlyout';
 import GeoFlyout, { getGeoFlyoutId } from 'components/GeoFlyout/GeoFlyout';
+import MapFlyout from 'containers/MapFlyoutContainer';
 import StatusText from 'components/StatusText/StatusText';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './TransformStatus.scss';
 
 const SubI18n = I18n.show_output_schema.column_header;
 
+const GEOSPATIAL_TYPES = [
+  'multiline',
+  'multipoint',
+  'multipolygon',
+  'point',
+  'line',
+  'polygon'
+];
+
 const GeospatialShortcut = ({ showShortcut, flyoutId }) => (
   <Link className={styles.geoBadge} onClick={() => showShortcut('geocode')} data-flyout={flyoutId}>
-    <span className={styles.geoIcon}>Geo</span>
+     <SocrataIcon name="geo" />
   </Link>
 );
-
 GeospatialShortcut.propTypes = {
   showShortcut: PropTypes.func.isRequired,
   flyoutId: PropTypes.string.isRequired
 };
 
+
+const MapFlyoutShortcut = ({ toggleMap }) => (
+  <Link className={styles.mapBadge} onClick={toggleMap}>
+    <SocrataIcon name="region" />
+  </Link>
+);
+MapFlyoutShortcut.propTypes = {
+  toggleMap: PropTypes.func.isRequired
+};
+
 export class TransformStatus extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isMapShowing: false,
+      mapPosition: null
+    };
+
+    this.toggleMap = this.toggleMap.bind(this);
+  }
   componentDidMount() {
     this.attachFlyouts();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !_.isEqual(nextProps, this.props);
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState);
   }
 
   componentDidUpdate() {
@@ -47,6 +76,26 @@ export class TransformStatus extends Component {
   showGeocodeShortcut() {
     return _.includes(this.props.shortcuts, 'geocode');
   }
+
+  showMapFlyout() {
+    return _.includes(GEOSPATIAL_TYPES, this.props.transform.output_soql_type);
+  }
+
+  toggleMap(e) {
+    const sidebarWidth = 258;
+    const mapWidth = 500;
+    const left = e.target.getBoundingClientRect().left;
+
+    var posn = -250;
+    posn = Math.max(posn, sidebarWidth - left);
+    posn = Math.min(posn, window.innerWidth - mapWidth);
+
+    this.setState({
+      isMapShowing: !this.state.isMapShowing,
+      mapPosition: posn
+    });
+  }
+
 
   attachFlyouts() {
     // We only want to attach if there are flyouts on the page, otherwise we get a
@@ -73,7 +122,9 @@ export class TransformStatus extends Component {
 
   render() {
     const {
+      outputSchema,
       transform,
+      params,
       totalRows,
       displayState,
       columnId,
@@ -106,7 +157,9 @@ export class TransformStatus extends Component {
     let thClasses;
     let progressbarPercent;
     let statusTextMessage;
-    let extraProps = {};
+    let extraProps = {
+      ref: flyoutParentEl => (this.flyoutParentEl = flyoutParentEl)
+    };
 
     switch (colStatus) {
       case 'failed':
@@ -127,7 +180,7 @@ export class TransformStatus extends Component {
 
     if (hasErrors) {
       extraProps = {
-        ref: flyoutParentEl => (this.flyoutParentEl = flyoutParentEl),
+        ...extraProps,
         className: classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })
       };
     }
@@ -148,7 +201,19 @@ export class TransformStatus extends Component {
           {this.showGeocodeShortcut() && (
             <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} showShortcut={showShortcut} />
           )}
+          {this.showMapFlyout() && (
+            <MapFlyoutShortcut
+              toggleMap={this.toggleMap}
+              displayState={displayState} />
+          )}
           <GeoFlyout transform={transform} />
+
+          {this.state.isMapShowing && <MapFlyout
+            outputSchema={outputSchema}
+            transform={transform}
+            params={params}
+            displayState={this.props.displayState}
+            left={this.state.mapPosition} />}
           {hasErrors ? (
             <Link
               className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
@@ -168,6 +233,8 @@ export class TransformStatus extends Component {
 }
 
 TransformStatus.propTypes = {
+  outputSchema: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   isDropping: PropTypes.bool,
   transform: PropTypes.object.isRequired,
   columnId: PropTypes.number.isRequired,
@@ -179,4 +246,4 @@ TransformStatus.propTypes = {
   onClickError: PropTypes.func.isRequired
 };
 
-export default withRouter(TransformStatus);
+export default TransformStatus;

@@ -9,7 +9,7 @@ import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
 import styles from './AddColForm.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
-export function makeFieldName(displayName) {
+export function makeFieldName(displayName = '') {
   // First 'replace' swaps all whitespace for '_'
   // Second 'replace' swaps all non-alphanumerics/non-underscores for '_'
   // The second replace could result in several consecutive underscores: e.g.
@@ -19,14 +19,15 @@ export function makeFieldName(displayName) {
   return displayName
     .replace(/\s/g, '_')
     .replace(/\W/g, '_')
-    .replace(/__+/g, '_');
+    .replace(/__+/g, '_')
+    .toLowerCase();
 }
 
-export function makeTransformExpr(fieldName, transform) {
+export function makeTransformExpr(fieldName, transform, entities) {
   if (fieldName === 'null') {
-    return `${transform}(${fieldName})`;
+    return transform(null);
   } else {
-    return `${transform}(\`${fieldName}\`)`;
+    return transform({ field_name: fieldName }, entities);
   }
 }
 
@@ -49,7 +50,7 @@ ErrorList.propTypes = {
 const initialState = {
   displayName: '',
   description: '',
-  transform: 'to_text',
+  transform: soqlProperties.text.conversions.text,
   fieldName: '',
   position: '',
   sourceColumnId: '',
@@ -97,7 +98,7 @@ class AddColForm extends Component {
       }
 
       this.setState({
-        transformExpr: makeTransformExpr(fieldName, nextState.transform)
+        transformExpr: makeTransformExpr(fieldName, nextState.transform, this.props.entities)
       });
     }
 
@@ -176,6 +177,7 @@ AddColForm.propTypes = {
   clearInternalState: PropTypes.bool.isRequired,
   resetFormErrors: PropTypes.func.isRequired,
   inputColumns: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   selectOptions: PropTypes.array.isRequired,
   markFormDirty: PropTypes.func.isRequired,
   syncToStore: PropTypes.func.isRequired,

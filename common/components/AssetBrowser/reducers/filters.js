@@ -1,8 +1,11 @@
 import _ from 'lodash';
 
 import utils from 'common/js_utils';
+
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 import { ALL_ASSETS_TAB, MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
+import * as filterActions from 'common/components/AssetBrowser/actions/filters';
+import * as headerActions from 'common/components/AssetBrowser/actions/header';
 
 /*
  * Since we're now storing some of the redux state in the URL, that means that we've distributed "truth" into
@@ -13,7 +16,7 @@ import { ALL_ASSETS_TAB, MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/componen
 export const getInitialState = () => {
   // Map all the domain's custom facets to an object of the facet param name to the value for
   // custom facets that have filters present in the URL query params.
-  const customFacetFilters = (_.get(window, 'initialState.domainCustomFacets') || []).
+  const customFacetFilters = (window.socrata.initialState.domainCustomFacets || []).
     reduce((acc, customFacet) => {
       const customFacetValue = getQueryParameter(customFacet.param);
       if (customFacetValue) {
@@ -27,9 +30,9 @@ export const getInitialState = () => {
     authority: getQueryParameter('authority'),
     category: getQueryParameter('category'),
     customFacets: customFacetFilters,
-    domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
-    domainCategories: _.get(window, 'initialState.domainCategories') || [],
-    domainTags: _.get(window, 'initialState.domainTags') || [],
+    domainCustomFacets: window.socrata.initialState.domainCustomFacets || [],
+    domainCategories: window.socrata.initialState.domainCategories || [],
+    domainTags: window.socrata.initialState.domainTags || [],
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: getQueryParameter('ownerName'),
@@ -37,7 +40,7 @@ export const getInitialState = () => {
     },
     q: getQueryParameter('q'),
     tag: getQueryParameter('tag'),
-    usersList: _.get(window, 'initialState.usersList') || [],
+    usersList: window.socrata.initialState.usersList || [],
     visibility: getQueryParameter('visibility')
   };
 };
@@ -51,9 +54,9 @@ export const getUnfilteredState = (state) => ({
   authority: null,
   category: null,
   customFacets: {},
-  domainCustomFacets: _.get(window, 'initialState.domainCustomFacets') || [],
-  domainCategories: _.get(window, 'initialState.domainCategories') || [],
-  domainTags: _.get(window, 'initialState.domainTags') || [],
+  domainCustomFacets: window.socrata.initialState.domainCustomFacets || [],
+  domainCategories: window.socrata.initialState.domainCategories || [],
+  domainTags: window.socrata.initialState.domainTags || [],
   onlyRecentlyViewed: false,
   ownedBy: {
     displayName: null,
@@ -63,7 +66,7 @@ export const getUnfilteredState = (state) => ({
   tag: null,
   showAuthorityFilter: state.showAuthorityFilter,
   showOwnedByFilter: state.showOwnedByFilter,
-  usersList: _.get(window, 'initialState.usersList') || [],
+  usersList: window.socrata.initialState.usersList || [],
   visibility: null
 });
 
@@ -72,63 +75,63 @@ export default (state, action) => {
     return getInitialState();
   }
 
-  if (action.type === 'TOGGLE_RECENTLY_VIEWED') {
+  if (action.type === filterActions.TOGGLE_RECENTLY_VIEWED) {
     return {
       ...state,
       onlyRecentlyViewed: !state.onlyRecentlyViewed
     };
   }
 
-  if (action.type === 'CHANGE_ASSET_TYPE') {
+  if (action.type === filterActions.CHANGE_ASSET_TYPE) {
     return {
       ...state,
       assetTypes: action.value
     };
   }
 
-  if (action.type === 'CHANGE_AUTHORITY') {
+  if (action.type === filterActions.CHANGE_AUTHORITY) {
     return {
       ...state,
       authority: action.value
     };
   }
 
-  if (action.type === 'CHANGE_CATEGORY') {
+  if (action.type === filterActions.CHANGE_CATEGORY) {
     return {
       ...state,
       category: action.value
     };
   }
 
-  if (action.type === 'CHANGE_OWNER') {
+  if (action.type === filterActions.CHANGE_OWNER) {
     return {
       ...state,
       ownedBy: action.value
     };
   }
 
-  if (action.type === 'CHANGE_TAG') {
+  if (action.type === filterActions.CHANGE_TAG) {
     return {
       ...state,
       tag: action.value
     };
   }
 
-  if (action.type === 'CHANGE_VISIBILITY') {
+  if (action.type === filterActions.CHANGE_VISIBILITY) {
     return {
       ...state,
       visibility: action.value
     };
   }
 
-  if (action.type === 'CHANGE_Q') {
+  if (action.type === filterActions.CHANGE_Q) {
     return {
       ...state,
       q: action.value
     };
   }
 
-  if (action.type === 'CHANGE_CUSTOM_FACET') {
+  if (action.type === filterActions.CHANGE_CUSTOM_FACET) {
     const newState = _.cloneDeep(state);
     if (action.value) {
       newState.customFacets[action.facetParam] = action.value;
@@ -138,14 +141,14 @@ export default (state, action) => {
     return newState;
   }
 
-  if (action.type === 'CLEAR_SEARCH') {
+  if (action.type === filterActions.CLEAR_SEARCH) {
     return {
       ...state,
       q: ''
     };
   }
 
-  if (action.type === 'CLEAR_ALL_FILTERS') {
+  if (action.type === filterActions.CLEAR_ALL_FILTERS) {
     return getUnfilteredState(state);
   }
 
@@ -153,10 +156,10 @@ export default (state, action) => {
  * Actions originating from Header component
  */
 
-  if (action.type === 'CHANGE_TAB') {
+  if (action.type === headerActions.CHANGE_TAB) {
 
     const { newTab } = action;
-    utils.assert(newTab, 'CHANGE_TAB action requires property: newTab');
+    utils.assert(newTab, `${headerActions.CHANGE_TAB} action requires property: newTab`);
 
     if (action.newTab === MY_ASSETS_TAB || action.newTab === SHARED_TO_ME_TAB) {
       return getUnfilteredState(

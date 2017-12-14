@@ -15,6 +15,8 @@ Prop | Type | Default | Description
 --- | :---: | :---: | ---
 `onAssetSelected` | `func` | `null` | Callback function invoked when a user has selected an individual asset.
 `pageSize` | `number` | `10` | Number of records shown per page.
+`renderStyle` | `string` | `list` | Results can be rendered in a `list` layout or a `card` layout.
+`selectMode` | `bool` | `false` | Select mode is currently only supported in the "card" renderStyle (and if true, it will override the specified renderStyle). It adds a selection overlay to the cards. When a user selects a card, the `onAssetSelected` prop is called. This is generally a callback function to close the AssetBrowser modal and do something with the selected result.
 `showAuthorityFilter` | `bool` | `true` | Show the authority filter (official / community) in the filter panel.
 `showFilters` | `bool` | `true` | Show the filter panel.
 `showHeader` | `bool` | `true` | Show the header containing tabs and asset counts.

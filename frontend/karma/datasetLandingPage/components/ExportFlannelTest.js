@@ -2,8 +2,16 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import mockView from 'data/mockView';
 import ExportFlannel from 'components/ExportFlannel';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/ExportFlannel', () => {
+
+  beforeEach(() => {
+    FeatureFlags.useTestFixture({
+      hide_csv_for_excel_download: false
+    });
+  });
+
   const getProps = (props) => _.defaultsDeep({}, props, {
     view: mockView,
     onDownloadData: _.noop,
@@ -70,6 +78,25 @@ describe('components/ExportFlannel', () => {
     assert.include(downloadOption.getAttribute('href'), '.csv');
     assert.include(downloadOption.getAttribute('href'), 'format');
     assert.include(downloadOption.getAttribute('href'), 'delimiter');
+  });
+
+  describe('when hide_csv_for_excel_download feature flag is true', () => {
+    beforeEach(() => {
+      FeatureFlags.useTestFixture({
+        hide_csv_for_excel_download: true
+      });
+    });
+
+    it('does not render "CSV for Excel" option', () => {
+      const element = renderComponent(ExportFlannel, getProps());
+      assert.isNotOk(element.querySelector('[data-type="CSV for Excel"]'));
+    });
+
+    it('does not render "CSV for Excel Europe" Option', () => {
+      const element = renderComponent(ExportFlannel, getProps());
+      assert.isNotOk(element.querySelector('[data-type="CSV for Excel (Europe)"]'));
+    });
+
   });
 
   it('uses an overrideLink value if it is set', () => {

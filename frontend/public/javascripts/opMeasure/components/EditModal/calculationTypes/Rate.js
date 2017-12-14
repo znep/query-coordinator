@@ -17,7 +17,7 @@ import {
   SocrataIcon
 } from 'common/components';
 import FilterEditor from 'common/components/FilterBar/FilterEditor';
-import { getFilterToggleText } from 'common/components/FilterBar/filters';
+import { getFilterHumanText } from 'common/components/FilterBar/filters';
 import { getIconForDataType } from 'common/icons';
 import { SoqlDataProvider } from 'common/visualizations/dataProviders';
 
@@ -133,7 +133,7 @@ export class Rate extends Component {
 
     let text = I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions');
     if (numeratorColumnCondition) {
-      const condition = getFilterToggleText(numeratorColumnCondition, numeratorColumn);
+      const condition = getFilterHumanText(numeratorColumnCondition, numeratorColumn);
       // eslint-disable-next-line max-len
       text = `${I18n.t('open_performance.measure.edit_modal.calculation.types.rate.condition_text_prefix')} ${condition}`;
     }

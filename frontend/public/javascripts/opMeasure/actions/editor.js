@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { SoqlDataProvider, MetadataProvider } from 'common/visualizations/dataProviders';
 import { TRAILING_UID_REGEX } from 'common/http/constants';
 
+import { validateAll } from './validate';
+
 export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
 export const setDataSourceUid = (uid) => ({
   type: SET_DATA_SOURCE_UID,
@@ -38,13 +40,29 @@ export const setDataSource = (dataSourceString) => {
       datasetUid: uid
     });
 
-    const metadataPromise = metadataProvider.getDatasetMetadata();
+    let metadata = null;
+    let columns = [];
+    let rowCount = -1;
+    try {
+      const metadataPromise = metadataProvider.getDatasetMetadata();
+      [metadata, columns, rowCount] = await Promise.all([
+        metadataPromise,
+        metadataProvider.getDisplayableFilterableColumns(metadataPromise),
+        soqlDataProvider.getRowCount()
+      ]);
+    } catch (ex) {
+      console.error(ex);
+
+      metadata = null;
+      columns = [];
+      rowCount = -1;
+    }
 
     dispatch(
       receiveDataSourceMetadata(
-        await soqlDataProvider.getRowCount(),
-        await metadataPromise,
-        await metadataProvider.getDisplayableFilterableColumns(await metadataPromise)
+        rowCount,
+        metadata,
+        columns
       )
     );
   };
@@ -146,10 +164,40 @@ export const setStartDate = (startDate) => ({
   startDate
 });
 
+export const SET_PERIOD_TYPE = 'SET_PERIOD_TYPE';
+export const setPeriodType = (periodType) => ({
+  type: SET_PERIOD_TYPE,
+  periodType
+});
+
+export const SET_PERIOD_SIZE = 'SET_PERIOD_SIZE';
+export const setPeriodSize = (periodSize) => ({
+  type: SET_PERIOD_SIZE,
+  periodSize
+});
+
 export const SET_METHODS = 'SET_METHODS';
 export const setMethods = (methods) => ({
   type: SET_METHODS,
   methods
+});
+
+export const SET_DESCRIPTION = 'SET_DESCRIPTION';
+export const setDescription = (description) => ({
+  type: SET_DESCRIPTION,
+  description
+});
+
+export const SET_NAME = 'SET_NAME';
+export const setName = (name) => ({
+  type: SET_NAME,
+  name
+});
+
+export const SET_SHORT_NAME = 'SET_SHORT_NAME';
+export const setShortName = (shortName) => ({
+  type: SET_SHORT_NAME,
+  shortName
 });
 
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
@@ -159,19 +207,27 @@ export const openEditModal = () => (dispatch, getState) => {
     type: OPEN_EDIT_MODAL,
     measure
   });
+
+  // Restore non-persisted data source info (name, row count, columns)
+  dispatch(setDataSource(_.get(measure, 'metric.dataSource.uid', '')));
 };
 
 export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';
 export const acceptEditModalChanges = () => (dispatch, getState) => {
-  const measure = getState().editor.measure;
-  dispatch({
-    type: ACCEPT_EDIT_MODAL_CHANGES,
-    measure
-  });
+  dispatch(validateAll());
+
+  const { measure, validationErrors } = getState().editor;
+  const hasErrors = _.some(_.values(validationErrors));
+
+  if (!hasErrors) {
+    dispatch({
+      type: ACCEPT_EDIT_MODAL_CHANGES,
+      measure
+    });
+  }
 };
 
 export const CANCEL_EDIT_MODAL = 'CANCEL_EDIT_MODAL';
 export const cancelEditModal = () => ({
   type: CANCEL_EDIT_MODAL
 });
-

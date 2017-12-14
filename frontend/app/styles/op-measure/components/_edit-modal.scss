@@ -21,7 +21,7 @@
   }
 
   .measure-edit-modal-tabs {
-    width: 300px;
+    min-width: 300px;
     border-right: 1px solid $light-grey-3;
     margin: 0;
     border: 0;
@@ -91,23 +91,81 @@
   }
 
   #general-info-panel {
+    label {
+      display: block;
+      padding-top: 1em;
+    }
 
+    .sublabel {
+      display: block;
+      font-size: 0.8em;
+      color: $dark-grey-1;
+    }
+
+    textarea {
+      width: initial;
+    }
+
+    .edit-metadata-link {
+      .socrata-icon-preview {
+        margin-left: 5px;
+      }
+    }
   }
 
   #data-source-panel {
-    .data-source-indicator {
-      margin-left: 5px;
+    .selected-dataset {
+      margin: 1em 0;
+      min-height: 75px;
+      position: relative;
 
-      &.icon-cross2 {
-        color: $error;
+      p {
+        margin: 0;
       }
 
-      &.icon-check-2 {
-        color: $success;
+      .spinner-default {
+        display: block;
+        position: absolute;
+        top: calc((100% - 17px) / 2);
+        left: calc((100% - 17px) / 2);
       }
 
-      &.icon-warning {
-        color: #E7B000; // TODO: $warning from common/styleguide/variables/colors doesn't work?
+      .selected-dataset-name {
+        padding-left: 0.5em;
+        font-weight: bold;
+
+        &.selected-dataset-empty {
+          font-style: italic;
+        }
+      }
+    }
+
+    .dataset-picker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 580px;
+
+      .spinner-default {
+        display: block;
+      }
+
+      iframe {
+        display: none;
+        border: 1px solid $light-grey-3;
+        padding: 0.5em;
+      }
+
+      &.loaded {
+        .spinner-default {
+          display: none;
+        }
+
+        iframe {
+          display: block;
+        }
       }
     }
   }
@@ -288,29 +346,21 @@
   }
 
   #reporting-period-panel {
-    .reporting-period-start {
-      $spacer: 13px;
+    // Style for .reporting-period-start moved to common/DatePicker
+    // and renamed to .socrata-date-picker
+    .period-type-option-container {
+       padding: 5px 0;
+       .left-col {
+         float: left;
+       }
+       .right-col {
+         margin-left: 20px;
+       }
+     }
 
-      position: relative;
-      margin-top: 1em;
-
-      .date-picker-input {
-        height: 40px;
-        max-width: 145px;
-        padding-left: 20px + $spacer;
-        padding-right: $spacer;
-      }
-
-      .socrata-icon {
-        position: absolute;
-        width: 15px;
-        height: 15px;
-        top: $spacer;
-        left: $spacer;
-        z-index: 1;
-      }
-    }
-
+     .reporting-period-size {
+       padding: 10px 0 10px 20px;
+     }
   }
 
   .socrata-accordion-pane {
@@ -323,5 +373,26 @@
 
   .socrata-accordion-pane-title {
     border: none;
+  }
+
+  .required-field-indicator {
+    color: $btn-error-border-color;
+    padding-left: 0.25em;
+
+    &::before {
+      content: "*";
+    }
+  }
+
+  // Validations occur on blur, so remove error state indications on focus.
+  input.text-input-error:focus {
+    background-color: initial;
+    border-color: $light-grey-3;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+    outline-color: -webkit-focus-ring-color;
+
+    &::placeholder {
+      opacity: 1;
+    }
   }
 }

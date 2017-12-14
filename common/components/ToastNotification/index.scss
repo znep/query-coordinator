@@ -1,0 +1,90 @@
+$notification-width: 20%;
+
+.socrata-toast-notification {
+  .alert {
+    position: absolute;
+    right: calc(50% - (#{$notification-width} / 2));
+    margin: auto;
+    z-index: 10000;
+    width: $notification-width;
+    display: flex;
+    min-width: 125px;
+    justify-content: space-between;
+    overflow-wrap: break-word;
+
+    button {
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .btn-dismiss {
+      float: right;
+      margin-left: 20px;
+      margin-top: -2px;
+
+      .socrata-icon {
+        svg {
+          height: 15px;
+          width: 15px;
+        }
+      }
+    }
+
+    &.success {
+      .btn-dismiss {
+        .socrata-icon {
+          svg {
+            g {
+              fill: $success-dark;
+            }
+          }
+        }
+
+        &:hover,
+        &:focus {
+          .socrata-icon {
+            svg {
+              g {
+                fill: $success-base;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.error {
+      .btn-dismiss {
+        .socrata-icon {
+          svg {
+            g {
+              fill: $error-dark;
+            }
+          }
+        }
+
+        &:hover,
+        &:focus {
+          .socrata-icon {
+            svg {
+              g {
+                fill: $error-base;
+              }
+            }
+          }
+        }
+      }
+
+      .btn-retry {
+        color: $error-dark;
+        font-weight: bold;
+        padding-left: 5px;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

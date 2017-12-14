@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Measure, { getMeasures } from 'common/visualizations/helpers/measure';
-import { useTestTranslations } from 'common/i18n';
+import I18n from 'common/i18n';
 
 describe('Measure', () => {
   const vif = _.set({}, 'series[0]', {});
@@ -50,7 +50,7 @@ describe('getMeasures', () => {
     it('maps each measure column to a measure with correct properties', () => {
       // Yes, the string key is surprising. See the comment in the product code.
       // Yes, I'd expect no_value to map to something else, but it doesn't.
-      useTestTranslations(_.set({}, 'shared.visualizations.panes.data.fields.measure.no_value', 'count stub'));
+      const expectedTranslation = I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
       const dataToRender = {
         columns: ['dimension', 'whoo_columns', 'whoo_columns_but_no_name_defined', 'something'],
         columnFormats: {
@@ -69,7 +69,7 @@ describe('getMeasures', () => {
       assert.propertyVal(measures[1], 'tagValue', 'whoo_columns_but_no_name_defined');
       assert.propertyVal(measures[2], 'measureIndex', 2);
       assert.propertyVal(measures[2], 'seriesIndex', 2);
-      assert.propertyVal(measures[2], 'tagValue', 'count stub'); // Count measure
+      assert.propertyVal(measures[2], 'tagValue', expectedTranslation); // Count measure
     });
   });
   describe('grouped chart', () => {
@@ -81,7 +81,7 @@ describe('getMeasures', () => {
     };
 
     it('maps each measure column to a measure with correct properties', () => {
-      useTestTranslations(_.set({}, 'shared.visualizations.charts.common.no_value', '(No value)'));
+      const expectedTranslation = I18n.t('shared.visualizations.charts.common.no_value');
       const dataToRender = {
         columns: ['dimension', 'hello <', 'goodbye', null],
         columnFormats: {
@@ -103,7 +103,7 @@ describe('getMeasures', () => {
       assert.propertyVal(measures[2], 'measureIndex', 2);
       assert.propertyVal(measures[2], 'seriesIndex', 0);
       assert.propertyVal(measures[2], 'tagValue', null);
-      assert.propertyVal(measures[2], 'labelHtml', '(No value)');
+      assert.propertyVal(measures[2], 'labelHtml', expectedTranslation);
     });
 
     it('maps each measure column to a measure with correct properties and renders dates', () => {

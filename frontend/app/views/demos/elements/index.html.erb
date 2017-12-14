@@ -15,11 +15,13 @@
       var pseudoContent;
       var safetyIterationLimit = 1000;
       do {
-        var newDiv = $('<div>');
+        var newDiv = $('<div class="color_specimen">');
         colorsSection.append(newDiv);
         // When the content is empty, Firefox returns the string 'none', chrome a zero-length string.
         pseudoContent = window.getComputedStyle(newDiv[0], ':after').getPropertyValue('content');
-        safetyIterationLimit --;
+        newDiv.html(pseudoContent.replace(/"/g, ''));
+
+        safetyIterationLimit--;
       } while(pseudoContent.length > 0 && pseudoContent !== 'none' && safetyIterationLimit > 0);
 
 

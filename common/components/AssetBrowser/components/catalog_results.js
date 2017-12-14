@@ -13,9 +13,12 @@ import I18n from 'common/i18n';
 import * as constants from '../lib/constants';
 import ActionDropdown from './action_dropdown';
 import ActiveFilterCount from './filters/active_filter_count';
+import BackButton from './back_button';
 import Pager from 'frontend/public/javascripts/common/components/Pager';
 import ResultCount from './result_count';
+import ResultCardContainer from './result_card_container';
 import ResultListTable from './result_list_table';
+import SortDropdown from './sort_dropdown';
 import AssetInventoryLink from './asset_inventory_link';
 import * as filters from '../actions/filters';
 import * as mobile from '../actions/mobile';
@@ -54,7 +57,7 @@ export class CatalogResults extends Component {
   renderError() { // eslint-disable-line react/sort-comp
     if (this.props.fetchingResultsError) {
       const errorDetails = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
-      console.error(errorDetails);
+      console.error('catalogResults:renderError: ', errorDetails);
 
       return (
         <div className="alert error">
@@ -85,12 +88,17 @@ export class CatalogResults extends Component {
   renderTopbar() {
     const {
       activeTab,
+      additionalTopbarComponents,
       allFilters,
       changeQ,
       clearSearch,
       currentQuery,
       isMobile,
+      onClose,
       page,
+      renderStyle,
+      selectMode,
+      showFilters,
       showManageAssets,
       showSearchField,
       tabs,
@@ -135,26 +143,35 @@ export class CatalogResults extends Component {
       </a>
     ) : null;
 
-    const clearFiltersButton = isMobile ? null : <ClearFilters {...clearFiltersProps} />;
+    const clearFiltersButton = (isMobile || !showFilters) ? null : <ClearFilters {...clearFiltersProps} />;
 
     const topbarClassnames = classNames('topbar clearfix', {
+      'cards-container-topbar': renderStyle === 'card',
       'mobile': isMobile
     });
 
-    const searchField = showSearchField ? <Autocomplete {...autocompleteOptions} className="autocomplete" /> : null;
+    const sortDropdown = (renderStyle === 'card') ? <SortDropdown /> : null;
+
+    const searchField = showSearchField ?
+      <Autocomplete {...autocompleteOptions} className="autocomplete" /> : null;
+
+    const backButton = (selectMode === true) ? <BackButton onClick={onClose} /> : null;
 
     return (
       <div className={topbarClassnames}>
         {mobileFilterToggle}
+        {backButton}
+        {additionalTopbarComponents}
         {searchField}
+        {sortDropdown}
         {clearFiltersButton}
         {allAssetsButton}
       </div>
     );
   }
 
-  renderTable() {
-    const { actionElement, fetchingResults } = this.props;
+  renderResults() {
+    const { actionElement, fetchingResults, onAssetSelected, onClose, renderStyle } = this.props;
 
     const spinner = fetchingResults ? (
       <div className="catalog-results-spinner-container">
@@ -162,10 +179,25 @@ export class CatalogResults extends Component {
       </div>
     ) : null;
 
-    // Currently only support for the "list" view. TODO: add ResultCardTable for "card" view.
+    let resultListing;
+    let resultListingProps;
+
+    if (renderStyle === 'card') {
+      resultListing = ResultCardContainer;
+      resultListingProps = {
+        onAssetSelected,
+        onClose
+      };
+    } else {
+      resultListing = ResultListTable;
+      resultListingProps = {
+        actionElement
+      };
+    }
+
     return (
       <div className="table-wrapper">
-        <ResultListTable actionElement={actionElement} />
+        {React.createElement(resultListing, resultListingProps)}
         {spinner}
       </div>
     );
@@ -247,7 +279,7 @@ export class CatalogResults extends Component {
       <div className={catalogResultsClassnames}>
         {this.renderTopbar()}
         {this.renderError()}
-        {this.renderTable()}
+        {this.renderResults()}
         {this.renderFooter()}
       </div>
     );
@@ -257,6 +289,7 @@ export class CatalogResults extends Component {
 CatalogResults.propTypes = {
   actionElement: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
+  additionalTopbarComponents: PropTypes.array,
   allFilters: PropTypes.object,
   changePage: PropTypes.func.isRequired,
   changeQ: PropTypes.func.isRequired,
@@ -269,6 +302,8 @@ CatalogResults.propTypes = {
   fetchingResultsErrorType: PropTypes.string,
   initialResultsFetched: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  onAssetSelected: PropTypes.func,
+  onClose: PropTypes.func,
   order: PropTypes.object,
   page: PropTypes.string,
   pageNumber: PropTypes.number,
@@ -281,6 +316,7 @@ CatalogResults.propTypes = {
 
 CatalogResults.defaultProps = {
   actionElement: ActionDropdown,
+  additionalTopbarComponents: [],
   allFilters: {},
   currentQuery: '',
   fetchingResults: false,
@@ -303,7 +339,7 @@ const mapStateToProps = (state) => ({
   pageNumber: state.catalog.pageNumber,
   reduxState: state,
   resultSetSize: state.catalog.resultSetSize,
-  tabs: state.tabs
+  tabs: state.assetBrowserProps.tabs
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -218,14 +218,15 @@ module AdministrationHelper
   end
 
   def user_can_configure_approvals?
-    _user = (current_user || User.new)
-    _user.is_superadmin? || _user.has_right?(UserRights::CONFIGURE_APPROVALS)
+    return false unless current_user
+
+    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::CONFIGURE_APPROVALS)
   end
 
   def user_can_review_approvals?
-    _user = (current_user || User.new)
-    feature_flag?('use_fontana_approvals', request) &&
-      (_user.is_superadmin? || _user.has_right?(UserRights::REVIEW_APPROVALS))
+    return false unless current_user
+
+    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::REVIEW_APPROVALS)
   end
 
   def a11y_metadata_category_summary(categories, columns)
@@ -275,6 +276,9 @@ module AdministrationHelper
     server_config = {
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       csrfToken: form_authenticity_token.to_s,
+      csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
+      usersAdminPath: users_admin_path,
+      invitedUsersAdminPath: invited_users_admin_path,
       currentUser: current_user,
       domain: CurrentDomain.cname,
       environment: Rails.env,

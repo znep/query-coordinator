@@ -5,19 +5,31 @@ import NotificationSettings from 'common/notifications/components/AlertSettingMo
 describe('NotificationSettings', () => {
 
   it('renders an element', () => {
-    const element = renderLocalizationElement(NotificationSettings, { showTransientNotifications: true });
+    const element = renderLocalizationElement(NotificationSettings, {
+      inProductTransientNotificationsEnabled: true,
+      showTransientNotifications: true,
+      settings: {}
+    });
     assert.isNotNull(element);
   });
 
   describe('In Product Transient ', () => {
 
     it('should renders in-product-transient switch', () => {
-      const element = renderLocalizationElement(NotificationSettings, { showTransientNotifications: true });
+      const element = renderLocalizationElement(NotificationSettings, {
+        inProductTransientNotificationsEnabled: true,
+        showTransientNotifications: true,
+        settings: {}
+      });
       assert.isNotNull(element.querySelector('.in-product-transient'));
     });
 
     it('should not renders in-product-transient switch if product transient feature flag is false', () => {
-      const element = renderLocalizationElement(NotificationSettings, { showTransientNotifications: false });
+      const element = renderLocalizationElement(NotificationSettings, {
+        inProductTransientNotificationsEnabled: false,
+        showTransientNotifications: false,
+        settings: {}
+      });
       assert.isNull(element.querySelector('.in-product-transient'));
     });
 
@@ -25,7 +37,9 @@ describe('NotificationSettings', () => {
       var onSettingsChange = sinon.spy();
       const element = renderLocalizationElement(NotificationSettings, {
         onSettingsChange: onSettingsChange,
-        showTransientNotifications: true
+        inProductTransientNotificationsEnabled: true,
+        showTransientNotifications: true,
+        settings: {}
       });
       var emailSubscribtionButton = element.querySelector('.in-product-transient input');
       TestUtils.Simulate.change(emailSubscribtionButton);

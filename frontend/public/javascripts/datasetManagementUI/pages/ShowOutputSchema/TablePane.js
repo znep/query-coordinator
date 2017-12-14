@@ -137,7 +137,7 @@ class TablePane extends Component {
           </div>
 
           <Table
-            path={params}
+            params={params}
             columns={columns}
             showShortcut={showShortcut}
             inputSchema={inputSchema}
@@ -157,7 +157,7 @@ class TablePane extends Component {
               scrollToColIdx={this.scrollToColIdx} />
           )}
         </div>
-        <PagerBar path={params} displayState={displayState} isLoading={numLoadsInProgress > 0} />
+        <PagerBar params={params} displayState={displayState} />
       </div>
     );
   }

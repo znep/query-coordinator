@@ -37,6 +37,8 @@ function getCurrentPane(location) {
       return 'parseOptions';
     case 'add_col':
       return 'addColumn';
+    case 'editor':
+      return 'editor';
     default:
       return 'tablePreview';
   }
@@ -56,6 +58,8 @@ export class ShowOutputSchema extends Component {
             isDirty={this.props.addColForm.isDirty}
             callParams={{ outputSchemaId: this.props.outputSchema.id }} />
         );
+      case 'editor':
+        return (<span>'hi'</span>);
       default:
         return <SaveOutputSchemaButton {...this.props} />;
     }

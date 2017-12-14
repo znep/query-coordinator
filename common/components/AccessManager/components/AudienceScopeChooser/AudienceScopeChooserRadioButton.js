@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
-import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
-import * as actions from '../../actions/AccessManagerActions';
-import { getAudienceScopeFromPermissions } from '../../Util';
-import AudienceScopeLabel from '../AudienceScopeLabel';
+
 import styles from './radio-button.scss';
+import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
+import * as permissionsActions from '../../actions/PermissionsActions';
+import AudienceScopeLabel from '../AudienceScopeLabel';
 
 /**
  * Radio button with an audience label that will update the state with
@@ -48,11 +48,12 @@ class AudienceScopeChooserRadioButton extends Component {
 }
 
 const mapStateToProps = state => ({
-  currentScope: getAudienceScopeFromPermissions(state.accessManager.permissions)
+  currentScope: state.permissions.permissions ? state.permissions.permissions.scope : null
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeScope: scope => dispatch(actions.changeAudienceScope(scope))
+  changeScope: scope => dispatch(permissionsActions.changeAudienceScope(scope))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(cssModules(AudienceScopeChooserRadioButton, styles));
+export default
+  connect(mapStateToProps, mapDispatchToProps)(cssModules(AudienceScopeChooserRadioButton, styles));

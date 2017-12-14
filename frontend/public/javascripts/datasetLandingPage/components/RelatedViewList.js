@@ -5,7 +5,7 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'common/components';
-import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
+import { getViewCardPropsForView } from 'common/viewCardHelpers';
 import { RELATED_VIEWS_FETCH_LIMIT } from '../lib/constants';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { userHasRight } from '../../common/user';

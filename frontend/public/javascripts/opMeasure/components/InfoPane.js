@@ -28,8 +28,8 @@ function mapStateToProps(state) {
   };
 
   return {
-    name: 'Part I Property Crime Rate per 1,000 Population',
-    description: '',
+    name: state.view.measure.name,
+    description: state.view.measure.description,
     provenance: null,
     isPaneCollapsible: false,
     renderButtons() {

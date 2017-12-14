@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import {
@@ -7,7 +9,7 @@ import {
   mockTextColumn,
   noopFilter
 } from './data';
-import { getFilterToggleText } from 'components/FilterBar/filters';
+import { getFilterHumanText } from 'components/FilterBar/filters';
 
 describe('filters', () => {
   beforeEach(() => {
@@ -17,10 +19,10 @@ describe('filters', () => {
   afterEach(() => {
     I18n.translations = {};
   });
-  describe('getFilterToggleText', () => {
+  describe('getFilterHumanText', () => {
     describe('calendar_date columns', () => {
       it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterToggleText(noopFilter, mockCalendarDateColumn), mockCalendarDateColumn.name);
+        assert.equal(getFilterHumanText(noopFilter, mockCalendarDateColumn), mockCalendarDateColumn.name);
       });
 
       it('returns a range of dates otherwise', () => {
@@ -31,94 +33,178 @@ describe('filters', () => {
           }
         };
 
-        const text = getFilterToggleText(filter, mockCalendarDateColumn);
+        const text = getFilterHumanText(filter, mockCalendarDateColumn);
 
         assert.include(text, 'From 12/1');
         assert.include(text, 'to 11/1');
       });
     });
 
-    describe('money columns', () => {
-      it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterToggleText(noopFilter, mockMoneyColumn), mockMoneyColumn.name);
-      });
+    describe('numeric columns', () => {
+      [mockMoneyColumn, mockNumberColumn].forEach((column) => {
+        describe(column.dataTypeName, () => {
+          describe('rangeInclusive', () => {
+            const filter = {
+              function: 'rangeInclusive',
+              arguments: { start: '5', end: '6' }
+            };
 
-      it('returns a "greater than" range when the end of the range is the max of the column', () => {
-        const filter = {
-          arguments: {
-            start: 5,
-            end: mockMoneyColumn.rangeMax
-          }
-        };
+            it('throws if arguments are not strings', () => {
+              assert.throws(() => {
+                getFilterHumanText(_.set(_.cloneDeep(filter), 'arguments.start', 5), column);
+                getFilterHumanText(_.set(_.cloneDeep(filter), 'arguments.end', 6), column);
+              });
+            });
 
-        assert.equal(getFilterToggleText(filter, mockMoneyColumn), `From 5 to ${mockMoneyColumn.rangeMax}`);
-      });
+            it('throws if start or end are not set', () => {
+              assert.throws(() => {
+                getFilterHumanText(
+                  {
+                    ...filter,
+                    arguments: _.omit(filter.arguments, 'start')
+                  },
+                  column
+                );
+                getFilterHumanText(
+                  {
+                    ...filter,
+                    arguments: _.omit(filter.arguments, 'end')
+                  },
+                  column
+                );
+              });
+            });
 
-      it('returns a "less than" range when the start of the range is the min of the column', () => {
-        const filter = {
-          arguments: {
-            start: mockMoneyColumn.rangeMin,
-            end: 19
-          }
-        };
+            it('translates correctly', () => {
+              assert.equal(getFilterHumanText(filter, column), '5 through 6');
+            });
+          });
 
-        assert.equal(getFilterToggleText(filter, mockMoneyColumn), `From ${mockMoneyColumn.rangeMin} to 19`);
-      });
+          describe('rangeExclusive', () => {
+            const filter = {
+              function: 'rangeExclusive',
+              arguments: { start: '5', end: '6' }
+            };
 
-      it('returns a generic range message otherwise', () => {
-        const filter = {
-          arguments: {
-            start: 17,
-            end: 23
-          }
-        };
+            it('throws if arguments are not strings', () => {
+              assert.throws(() => {
+                getFilterHumanText(_.set(_.cloneDeep(filter), 'arguments.start', 5), column);
+                getFilterHumanText(_.set(_.cloneDeep(filter), 'arguments.end', 6), column);
+              });
+            });
 
-        assert.equal(getFilterToggleText(filter, mockMoneyColumn), 'From 17 to 23');
-      });
-    });
+            it('throws if start or end are not set', () => {
+              assert.throws(() => {
+                getFilterHumanText(
+                  {
+                    ...filter,
+                    arguments: _.omit(filter.arguments, 'start')
+                  },
+                  column
+                );
+                getFilterHumanText(
+                  {
+                    ...filter,
+                    arguments: _.omit(filter.arguments, 'end')
+                  },
+                  column
+                );
+              });
+            });
 
-    describe('number columns', () => {
-      it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterToggleText(noopFilter, mockNumberColumn), mockNumberColumn.name);
-      });
+            it('translates correctly', () => {
+              assert.equal(getFilterHumanText(filter, column), '5 to 6');
+            });
+          });
 
-      it('returns a "greater than" range when the end of the range is the max of the column', () => {
-        const filter = {
-          arguments: {
-            start: 5,
-            end: mockNumberColumn.rangeMax
-          }
-        };
+          // Sorry for some metatesting, but this was the cleanest way I could find to write these.
+          const expectedTranslations = {
+            '<': 'below 2',
+            '<=': 'at most 2',
+            '>': 'above 2',
+            '>=': 'at least 2'
+          };
 
-        assert.equal(getFilterToggleText(filter, mockNumberColumn), `From 5 to ${mockNumberColumn.rangeMax}`);
-      });
+          _.forOwn(expectedTranslations, (expectedTranslation, filterFunction) => {
+            describe('filterFunction', () => {
+              const filter = {
+                function: filterFunction,
+                arguments: { value: '2' }
+              };
 
-      it('returns a "less than" range when the start of the range is the min of the column', () => {
-        const filter = {
-          arguments: {
-            start: mockNumberColumn.rangeMin,
-            end: 19
-          }
-        };
+              it('throws if argument is not a string', () => {
+                assert.throws(() => {
+                  getFilterHumanText(_.set(_.cloneDeep(filter), 'arguments.value', 2), column);
+                });
+              });
 
-        assert.equal(getFilterToggleText(filter, mockNumberColumn), `From ${mockNumberColumn.rangeMin} to 19`);
-      });
+              it('throws if value is not set', () => {
+                assert.throws(() => {
+                  getFilterHumanText(
+                    {
+                      ...filter,
+                      arguments: {}
+                    },
+                    column
+                  );
+                });
+              });
 
-      it('returns a generic range message otherwise', () => {
-        const filter = {
-          arguments: {
-            start: 17,
-            end: 23
-          }
-        };
+              it('translates correctly', () => {
+                assert.equal(getFilterHumanText(filter, column), expectedTranslation);
+              });
+            });
+          });
 
-        assert.equal(getFilterToggleText(filter, mockNumberColumn), 'From 17 to 23');
+          // This type won't be generated anymore, but we must support existing usages.
+          describe('valueRange', () => {
+            it('returns the name of the column when the filter is a noop filter', () => {
+              assert.equal(getFilterHumanText(noopFilter, column), column.name);
+            });
+
+            it('returns a "greater than" range when the end of the range is the max of the column', () => {
+              const filter = {
+                function: 'valueRange',
+                arguments: {
+                  start: 5,
+                  end: column.rangeMax
+                }
+              };
+
+              assert.equal(getFilterHumanText(filter, column), `From 5 to ${column.rangeMax}`);
+            });
+
+            it('returns a "less than" range when the start of the range is the min of the column', () => {
+              const filter = {
+                function: 'valueRange',
+                arguments: {
+                  start: column.rangeMin,
+                  end: 19
+                }
+              };
+
+              assert.equal(getFilterHumanText(filter, column), `From ${column.rangeMin} to 19`);
+            });
+
+            it('returns a generic range message otherwise', () => {
+              const filter = {
+                function: 'valueRange',
+                arguments: {
+                  start: 17,
+                  end: 23
+                }
+              };
+
+              assert.equal(getFilterHumanText(filter, column), 'From 17 to 23');
+            });
+          });
+        });
       });
     });
 
     describe('text columns', () => {
       it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterToggleText(noopFilter, mockTextColumn), mockTextColumn.name);
+        assert.equal(getFilterHumanText(noopFilter, mockTextColumn), mockTextColumn.name);
       });
 
       it('returns the selected value if one value is selected', () => {
@@ -131,7 +217,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), 'purple');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), 'purple');
       });
 
       it('returns a negation message if one value is negated', () => {
@@ -145,7 +231,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), 'Excluded purple');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), 'Excluded purple');
       });
 
       it('returns the number of values selected if more than one is selected', () => {
@@ -162,7 +248,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), '2 selected');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), '2 selected');
       });
 
       it('returns the number of values omitted if more than one is selected and negated', () => {
@@ -180,7 +266,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), '2 excluded');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), '2 excluded');
       });
 
       it('returns the null value string if the null value is selected', () => {
@@ -193,7 +279,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), '(No value)');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), '(No value)');
       });
 
       it('returns the null value exclusion string if the null value is omitted', () => {
@@ -207,7 +293,7 @@ describe('filters', () => {
           ]
         };
 
-        assert.equal(getFilterToggleText(filter, mockTextColumn), 'Excluded (No value)');
+        assert.equal(getFilterHumanText(filter, mockTextColumn), 'Excluded (No value)');
       });
     });
   });

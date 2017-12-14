@@ -125,17 +125,56 @@ function renderDateInputLine(column, value) {
 }
 
 function renderUrlInputLine(column, value) {
-  var $inputLine = renderStandardTextInputLine(column);
+  var $inputLine = $(
+    '<div class="input-line" ' +
+      'data-column-field-name="' +
+      column.fieldName +
+      '" ' +
+      'data-column-data-type-name="' +
+      column.dataTypeName +
+      '">' +
+      renderIcon(column.dataTypeName) +
+      '<label class="value"></label>' +
+      '<div class="value-set">' +
+        '<div class="value-row">' +
+          '<label class="value url-description"></label>' +
+          '<input id="row-editor-' +
+            column.fieldName +
+            '" class="value url-description" ' +
+            'placeholder="' +
+            $.t('controls.grid_view_row_editor.data_types.url.description_placeholder') +
+            '" type="text" />' +
+        '</div>' +
+        '<div class="value-row">' +
+          '<label class="value url"></label>' +
+          '<input id="row-editor-' +
+            column.fieldName +
+            '" class="value url" type="text" />' +
+        '</div>' +
+      '</div>' +
+      '<input id="row-editor-' +
+        column.fieldName +
+        '-is-null" class="is-null" type="checkbox" />' +
+      '<div class="validation-error">' +
+        renderValidationError(column.dataTypeName) +
+      '</div>' +
+    '</div>'
+  );
 
   // Use jQuery's wrapper around the DOM API in order to avoid XSS vectors
   // that we'd expose by doing plain string interpolation.
   $inputLine.find('label').eq(0).attr('for', 'row-editor-' + column.fieldName).text(column.name);
+  $inputLine.find('label.url-description').eq(0).attr('for', 'row-editor-' + column.fieldName).text($.t('controls.grid_view_row_editor.data_types.url.description'));
+  $inputLine.find('label.url').eq(0).attr('for', 'row-editor-' + column.fieldName).text($.t('controls.grid_view_row_editor.data_types.url.url'));
 
   if (_.isNull(value)) {
-    $inputLine.find('input.value').attr('disabled', true);
+    $inputLine.find('input.value.url-description').attr('disabled', true);
+    $inputLine.find('input.value.url').attr('disabled', true);
     $inputLine.find('input.is-null').value(true);
   } else {
-    $inputLine.find('input.value').value(_.get(value, 'url', ''));
+    $inputLine.find('input.value.url-description').value(_.get(value, 'description', ''));
+    $inputLine.find('input.value.url').value(_.get(value, 'url', ''));
+    $inputLine.find('input.is-null').value(false);
   }
 
   return $inputLine;
@@ -457,7 +496,7 @@ function renderDocumentInputLine(column, value) {
       renderIcon(column.dataTypeName) +
       '<label class="value"></label>' +
       '<input type="text" class="value file-input-filename" placeholder="' +
-        $.t('controls.grid_view_row_editor.controls.filename_placeholder') +
+        $.t('controls.grid_view_row_editor.data_types.document.filename_placeholder') +
         '" />' +
       '<input type="button" class="value file-input-upload-button" value="' +
         fileUploadButtonValue +
@@ -611,6 +650,18 @@ function getDateInputLineValue($inputLine) {
   }
 }
 
+function getUrlInputLineValue($inputLine) {
+
+  if ($inputLine.find('input.is-null').value()) {
+    return null;
+  }
+
+  return {
+    description: $inputLine.find('input.value.url-description').value(),
+    url: $inputLine.find('input.value.url').value()
+  };
+}
+
 function getCheckboxInputLineValue($inputLine) {
   return $inputLine.find('input.value').value();
 }
@@ -656,7 +707,7 @@ function getDocumentInputLineValue($inputLine) {
   var filename = $inputLine.find('input.value.file-input-filename').value();
   var fileId = $inputLine.find('input.value.file-input-upload-button').attr('data-file-id');
 
-  if ($inputLine.find('input.is-null').value() || _.isNull(filename) || _.isNull(fileId)) {
+  if ($inputLine.find('input.is-null').value()) {
     return null;
   } else {
 
@@ -741,7 +792,11 @@ function validateDatetime(columnValue) {
 function validateUrl(columnValue) {
   var value = columnValue.value;
 
-  return _.isNull(value) || window.blist.util.patterns.core.urlValidator.test(value);
+  if (_.isNull(value)) {
+    return true;
+  }
+
+  return window.blist.util.patterns.core.urlValidator.test(_.get(value, 'url', ''));
 }
 
 function validateDropDownList(columnValue) {
@@ -816,7 +871,7 @@ function validateDocument(columnValue) {
     return true;
   }
 
-  if (!_.isObject(value) || !_.get(value, 'filename') || !_.get(value, 'file_id')) {
+  if (!_.get(value, 'filename') || !_.get(value, 'file_id')) {
     return false;
   }
 
@@ -1102,7 +1157,7 @@ var rowEditorHelpers = {
     url: {
       icon: 'socrata-icon-link',
       inputLineRenderer: renderUrlInputLine,
-      inputLineGetter: getSimpleInputLineValue,
+      inputLineGetter: getUrlInputLineValue,
       validator: validateUrl
     },
     nested_table: {

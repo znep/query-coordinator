@@ -19,11 +19,20 @@ module Fontana
 
       class << self
         def find(workflow_id = nil)
-          unless workflow_id
-            workflow_id = get(APPROVALS_API_URI).parsed_response.find { |workflow| workflow['outcome'] == 'publicize' }['id']
-          end
           instance = new
-          get("#{APPROVALS_API_URI}/#{workflow_id}").parsed_response.each do |key, value|
+
+          unless workflow_id
+            workflow_id = get(
+              APPROVALS_API_URI,
+              instance.approval_request_headers
+            ).parsed_response.find { |workflow| workflow.to_h['outcome'] == 'publicize' }.to_h['id']
+          end
+          raise RuntimeError.new('Unable to determine workflow_id') unless workflow_id
+
+          get(
+            "#{APPROVALS_API_URI}/#{workflow_id}",
+            instance.approval_request_headers
+          ).parsed_response.each do |key, value|
             if key == 'steps'
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
             else

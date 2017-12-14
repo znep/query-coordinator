@@ -163,6 +163,7 @@ export function MissingValue(urlId, hrefId) {
 //   { name : String, message : String, errors : [ HrefError ] }
 export function FormValidationError(formName, errors) {
   this.name = 'FormValidationError';
+  this.formName = formName;
   this.message = `Validation of ${formName} failed`;
   this.errors = errors;
 }

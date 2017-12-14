@@ -6,11 +6,15 @@ import styles from './ManageMetadataSidebar.scss';
 
 const datasetMetadataEnabled = !window.serverConfig.featureFlags.usaid_features_enabled;
 
-const ManageMetadataSidebar = ({ params, outputSchemaId, columnsExist }) => {
+const ManageMetadataSidebar = ({ params, outputSchemaId, columnsExist, hideFlash }) => {
   return (
     <div className={styles.sidebar}>
       {datasetMetadataEnabled ? (
-        <Link to={Links.datasetMetadataForm(params)} className={styles.tab} activeClassName={styles.selected}>
+        <Link
+          onClick={hideFlash}
+          to={Links.datasetMetadataForm(params)}
+          className={styles.tab}
+          activeClassName={styles.selected}>
           {I18n.metadata_manage.dataset_metadata_label}
         </Link>
       ) : (
@@ -18,6 +22,7 @@ const ManageMetadataSidebar = ({ params, outputSchemaId, columnsExist }) => {
       )}
       {columnsExist ? (
         <Link
+          onClikc={hideFlash}
           to={Links.columnMetadataForm(params, outputSchemaId)}
           className={styles.tab}
           activeClassName={styles.selected}>
@@ -34,6 +39,7 @@ const ManageMetadataSidebar = ({ params, outputSchemaId, columnsExist }) => {
 
 ManageMetadataSidebar.propTypes = {
   params: PropTypes.object.isRequired,
+  hideFlash: PropTypes.func.isRequired,
   outputSchemaId: PropTypes.number.isRequired,
   columnsExist: PropTypes.bool.isRequired
 };

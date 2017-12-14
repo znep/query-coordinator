@@ -67,8 +67,8 @@ import isURLHelper from 'validator/lib/isURL';
 // ==========
 // CONSTANTS
 // ==========
-const DATASET_FORM_NAME = 'datasetForm';
-const COL_FORM_NAME = 'columnForm';
+export const DATASET_FORM_NAME = 'datasetForm';
+export const COL_FORM_NAME = 'columnForm';
 
 // The standard, non-custom fieldsets. Here we just define non-dynamic properties.
 // The initial values of the fields come in asynchronously from the server
@@ -636,23 +636,20 @@ function reshape(s) {
 
 const mapStateToProps = ({ entities, ui }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);
-  const outputSchemaId = Number(params.outputSchemaId);
-  const onColumnTab = !!params.outputSchemaId;
   const revision = getRevision(entities.revisions, revisionSeq) || {};
   const customFieldsets = entities.views[params.fourfour].customMetadataFieldsets;
   const datasetMetadata = addFieldValuesAll(createFieldsets(customFieldsets), revision);
-  const outputSchemaColumns = shapeOutputSchemaCols(getOutputSchemaCols(entities, outputSchemaId));
   const datasetFormDirty = ui.forms.datasetForm.isDirty;
   const colFormDirty = ui.forms.columnForm.isDirty;
-  let pathToNewOutputSchema = '';
-  let inputSchemaId;
-
-  if (onColumnTab && isNumber(outputSchemaId)) {
-    const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
-
-    pathToNewOutputSchema = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
-    inputSchemaId = inputSchema.id;
-  }
+  const outputSchemaId = getOutputSchemaId(
+    Number(params.outputSchemaId),
+    revision,
+    Selectors.currentOutputSchema(entities, Number(params.revisionSeq))
+  );
+  const outputSchemaColumns = shapeOutputSchemaCols(getOutputSchemaCols(entities, outputSchemaId));
+  const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
+  const pathToNewOutputSchema = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
+  const inputSchemaId = inputSchema.id;
 
   return {
     datasetMetadata,
@@ -661,85 +658,72 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
     datasetFormDirty,
     colFormDirty,
     inputSchemaId,
-    outputSchemaId: getOutputSchemaId(
-      outputSchemaId,
-      revision,
-      Selectors.currentOutputSchema(entities, Number(params.revisionSeq))
-    ),
+    outputSchemaId,
     columnsExist: !_.isEmpty(entities.output_columns)
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const onColumnTab = !!ownProps.params.outputSchemaId;
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
+  hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
+  handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params)),
+  setFormErrors: (formName, errors) => dispatch(FormActions.setFormErrors(formName, errors)),
+  markFormDirty: formName => dispatch(FormActions.markFormDirty(formName)),
+  markFormClean: formName => dispatch(FormActions.markFormClean(formName)),
+  saveDatasetMetadata: newMetadata => {
+    const result = validateFieldsets(newMetadata);
 
-  const commonDispatchProps = {
-    showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
-    hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
-    handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params))
-  };
+    // if (hasDatasetErrors(result)) {
+    //   return Promise.reject(new FormValidationError(DATASET_FORM_NAME, result));
+    // }
 
-  const datasetFormDispatchProps = {
-    ...commonDispatchProps,
-    setFormErrors: errors => dispatch(FormActions.setFormErrors(DATASET_FORM_NAME, errors)),
-    markFormDirty: () => dispatch(FormActions.markFormDirty(DATASET_FORM_NAME)),
-    markFormClean: () => dispatch(FormActions.markFormClean(DATASET_FORM_NAME)),
-    saveDatasetMetadata: newMetadata => {
-      const result = validateFieldsets(newMetadata);
+    const reshaped = reshape(newMetadata);
 
-      if (hasDatasetErrors(result)) {
-        return Promise.reject(new FormValidationError(DATASET_FORM_NAME, result));
-      }
+    return dispatch(updateRevision(reshaped, ownProps.params))
+      .then(resp => {
+        dispatch(
+          editRevision(resp.resource.id, {
+            attachments: resp.resource.attachments,
+            metadata: resp.resource.metadata
+          })
+        );
 
-      const reshaped = reshape(newMetadata);
+        return resp;
+      })
+      .catch(err => {
+        return err.response.json().then(() => {
+          // TODO: see note in saveColumnMetadata catch block
+          const res = { generic: 'server side errror' };
 
-      return dispatch(updateRevision(reshaped, ownProps.params))
-        .then(resp => {
-          dispatch(
-            editRevision(resp.resource.id, {
-              attachments: resp.resource.attachments,
-              metadata: resp.resource.metadata
-            })
-          );
-        })
-        .catch(err => {
-          console.log('err', err);
-          // throw serverside error
+          throw new FormValidationError(DATASET_FORM_NAME, res);
         });
-    }
-  };
-
-  const columnformDispatchProps = {
-    ...commonDispatchProps,
-    setFormErrors: errors => dispatch(FormActions.setFormErrors(COL_FORM_NAME, errors)),
-    markFormDirty: () => dispatch(FormActions.markFormDirty(COL_FORM_NAME)),
-    markFormClean: () => dispatch(FormActions.markFormClean(COL_FORM_NAME)),
-    saveColumnMetadata: (columns, inputSchemaId) => {
-      const result = validateColumns(columns);
-
-      // if (hasColumnErrors(result)) {
-      //   return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
-      // }
-
-      const call = {
-        operation: 'SAVE_COLUMN_METADATA',
-        callParams: {}
-      };
-
-      return dispatch(createNewOutputSchema(inputSchemaId, Object.values(columns), call)).catch(err => {
-        console.log(err.body);
-        // parse this
-        // throw formvalidation error
-        // handle in component (flash, seterrors, etc)
       });
-    }
-  };
+  },
+  saveColumnMetadata: (columns, inputSchemaId) => {
+    const result = validateColumns(columns);
 
-  if (onColumnTab) {
-    return columnformDispatchProps;
-  } else {
-    return datasetFormDispatchProps;
+    // if (hasColumnErrors(result)) {
+    //   return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
+    // }
+
+    const call = {
+      operation: 'SAVE_COLUMN_METADATA',
+      callParams: {}
+    };
+
+    return dispatch(createNewOutputSchema(inputSchemaId, Object.values(columns), call)).catch(err => {
+      // TODO: improve dsmapi's error response to include output column ids for
+      // the columns that have errors, which values are duplicated or invalid, etc
+      // then change this code to generate a structure we can use to determine where
+      // in the form the error occured.
+
+      // not really using this, we just don't want the errors to be an empty {}
+      // since we interpret that as no errors
+      const res = { generic: err.body.message };
+
+      throw new FormValidationError(COL_FORM_NAME, res);
+    });
   }
-};
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

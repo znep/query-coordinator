@@ -1,17 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import { DATASET_FORM_NAME, COL_FORM_NAME } from 'containers/ManageMetadataContainer';
 import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetadataSidebar';
 import SubmitButton from 'containers/SubmitButtonContainer';
 import styles from './ManageMetadata.scss';
+
+const SAVED = 'SAVED';
+const UNSAVED = 'UNSAVED';
+const ERRORED = 'ERRORED';
 
 class ManageMetadata extends Component {
   constructor() {
     super();
 
     this.state = {
-      datasetForm: {},
-      columnForm: {}
+      datasetForm: {
+        status: '',
+        data: {}
+      },
+      columnForm: {
+        status: '',
+        data: {}
+      }
     };
 
     this.handleDatasetChange = this.handleDatasetChange.bind(this);
@@ -22,8 +33,14 @@ class ManageMetadata extends Component {
 
   componentWillMount() {
     this.setState({
-      datasetForm: this.props.datasetMetadata,
-      columnForm: this.props.outputSchemaColumns
+      datasetForm: {
+        status: SAVED,
+        data: this.props.datasetMetadata
+      },
+      columnForm: {
+        status: SAVED,
+        data: this.props.outputSchemaColumns
+      }
     });
   }
 
@@ -35,18 +52,21 @@ class ManageMetadata extends Component {
   // and field names for custom fields; tried using dot-prop and a few other
   // helpers but they would fail for some field/fieldset names
   handleDatasetChange(fieldsetName, fieldName, value) {
-    this.props.markFormDirty();
+    this.props.markFormDirty(DATASET_FORM_NAME);
     this.setState({
       ...this.state,
       datasetForm: {
-        ...this.state.datasetForm,
-        [fieldsetName]: {
-          ...this.state.datasetForm[fieldsetName],
-          fields: {
-            ...this.state.datasetForm[fieldsetName].fields,
-            [fieldName]: {
-              ...this.state.datasetForm[fieldsetName].fields[fieldName],
-              value: value
+        status: UNSAVED,
+        data: {
+          ...this.state.datasetForm.data,
+          [fieldsetName]: {
+            ...this.state.datasetForm.data[fieldsetName],
+            fields: {
+              ...this.state.datasetForm.data[fieldsetName].fields,
+              [fieldName]: {
+                ...this.state.datasetForm.data[fieldsetName].fields[fieldName],
+                value: value
+              }
             }
           }
         }
@@ -55,55 +75,94 @@ class ManageMetadata extends Component {
   }
 
   handleColumnChange(columnId, fieldName, value) {
-    this.props.markFormDirty();
+    this.props.markFormDirty(COL_FORM_NAME);
     this.setState({
       ...this.state,
       columnForm: {
-        ...this.state.columnForm,
-        [columnId]: {
-          ...this.state.columnForm[columnId],
-          [fieldName]: value
+        status: UNSAVED,
+        data: {
+          ...this.state.columnForm.data,
+          [columnId]: {
+            ...this.state.columnForm.data[columnId],
+            [fieldName]: value
+          }
         }
       }
     });
   }
 
   handleColumnFormSubmit(e) {
-    this.props.markFormClean();
     e.preventDefault();
-    this.props
-      .saveColumnMetadata(this.state.columnForm, this.props.inputSchemaId)
+    this.props.markFormClean(COL_FORM_NAME);
+
+    return this.props
+      .saveColumnMetadata(this.state.columnForm.data, this.props.inputSchemaId)
       .then(() => {
         this.props.showFlash('success', I18n.edit_metadata.save_success, 3500);
-        this.props.setFormErrors({});
+
+        this.setState({
+          ...this.state,
+          columnForm: {
+            ...this.state.columnForm,
+            status: SAVED
+          }
+        });
+        this.props.setFormErrors(COL_FORM_NAME, {});
       })
       .catch(err => {
-        this.props.markFormDirty();
         this.props.showFlash('error', I18n.edit_metadata.validation_error_general);
-        this.props.setFormErrors(err.errors);
+
+        this.setState({
+          ...this.state,
+          columnForm: {
+            ...this.state.columnForm,
+            status: ERRORED
+          }
+        });
+
+        this.props.markFormDirty(COL_FORM_NAME);
+        this.props.setFormErrors(COL_FORM_NAME, err.errors);
       });
   }
 
   handleDatasetFormSubmit(e) {
-    this.props.markFormClean();
     e.preventDefault();
-    this.props
-      .saveDatasetMetadata(this.state.datasetForm)
+    this.props.markFormClean(DATASET_FORM_NAME);
+
+    return this.props
+      .saveDatasetMetadata(this.state.datasetForm.data)
       .then(() => {
         this.props.showFlash('success', I18n.edit_metadata.save_success, 3500);
-        this.props.setFormErrors({});
+
+        this.setState({
+          ...this.state,
+          datasetForm: {
+            ...this.state.datasetForm,
+            status: SAVED
+          }
+        });
+        this.props.setFormErrors(DATASET_FORM_NAME, {});
       })
       .catch(err => {
-        this.props.markFormDirty();
         this.props.showFlash('error', I18n.edit_metadata.validation_error_general);
-        this.props.setFormErrors(err.errors);
+
+        this.setState({
+          ...this.state,
+          datasetForm: {
+            ...this.state.datasetForm,
+            status: ERRORED
+          }
+        });
+
+        this.props.markFormDirty(DATASET_FORM_NAME);
+        this.props.setFormErrors(DATASET_FORM_NAME, err.errors);
       });
   }
 
   render() {
     const { datasetFormDirty, colFormDirty, params } = this.props;
-    const onColumnTab = !!params.outputSchemaId;
     const formDirty = datasetFormDirty || colFormDirty;
+    const onColumnTab = !!params.outputSchemaId;
 
     return (
       <div className={styles.manageMetadata}>
@@ -114,16 +173,17 @@ class ManageMetadata extends Component {
           <ModalContent>
             <ManageMetadataSidebar
               params={this.props.params}
+              hideFlash={this.props.hideFlash}
               columnsExist={this.props.columnsExist}
               outputSchemaId={this.props.outputSchemaId} />
             {this.props.children &&
               React.cloneElement(this.props.children, {
-                fieldsets: this.state.datasetForm,
-                columns: this.state.columnForm,
-                handleDatasetFormSubmit: this.handleDatasetFormSubmit,
-                handleColumnFormSubmit: this.handleColumnFormSubmit,
+                fieldsets: this.state.datasetForm.data,
+                columns: this.state.columnForm.data,
                 handleDatasetChange: this.handleDatasetChange,
-                handleColumnChange: this.handleColumnChange
+                handleColumnChange: this.handleColumnChange,
+                handleDatasetFormSubmit: this.handleDatasetFormSubmit,
+                handleColumnFormSubmit: this.handleColumnFormSubmit
               })}
           </ModalContent>
           <ModalFooter>

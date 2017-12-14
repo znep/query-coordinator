@@ -79,7 +79,7 @@ const DatasetFieldset = ({
             e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))
           }
           handleBlur={
-            e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))
+            e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value, true))
           } />
       </div>
     </div>

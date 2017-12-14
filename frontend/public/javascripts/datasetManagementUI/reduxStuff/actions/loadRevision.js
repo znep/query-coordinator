@@ -65,9 +65,14 @@ export function loadRevision(params) {
         }
       });
 
-      // if revision is closed, show the modal of absolution that blocks further
-      // action
-      if (revision.closed_at) {
+      const isInProgressOrSuccessful = _.some(
+        revision.task_sets,
+        ts => ts.status !== ApplyRevision.TASK_SET_FAILURE
+      );
+
+      // if revision is closed or there is a job in progress,
+      // show the modal of absolution that blocks further action
+      if (revision.closed_at || isInProgressOrSuccessful) {
         dispatch(showModal('Publishing'));
       }
 

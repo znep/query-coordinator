@@ -1346,7 +1346,7 @@ class View < Model
     else
       url = "/views/#{id}.json?method=getDefaultView&accessType=WEBSITE"
       begin
-        @parent_dataset = View.parse(CoreServer::Base.connection.get_request(url))
+        @parent_dataset = View.parse(CoreServer::Base.connection.get_request(url, federation_headers))
       rescue CoreServer::CoreServerError => e
         if (e.error_code == 'authentication_required') || (e.error_code == 'permission_denied')
           @parent_dataset = nil

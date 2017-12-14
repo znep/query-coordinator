@@ -39,6 +39,7 @@ function getIconNameForDisplayType(displayType, isPublished = true) {
     case 'form':
       return 'list2';
 
+    case 'attachment':
     case 'blob':
     case 'file':
       return 'attachment';
@@ -53,7 +54,7 @@ function getIconNameForDisplayType(displayType, isPublished = true) {
       return 'db-collection';
 
     default:
-      return 'data';
+      return displayType;
   }
 }
 

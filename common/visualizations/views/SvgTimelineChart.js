@@ -1307,6 +1307,8 @@ function SvgTimelineChart($element, vif, options) {
       }
     }
 
+    flyoutXOffset += (self.getAxisLabels().left ? AXIS_LABEL_MARGIN : 0);
+
     const flyoutData = dataToRenderBySeries.map((series) => {
       const measureIndex = 1;
 

@@ -5,7 +5,7 @@ import {
   shapeCustomFields,
   addFieldValues,
   validateFieldset,
-  hasErrors,
+  hasDatasetErrors,
   hasColumnErrors,
   isUnique,
   partitionCustomNoncustom,
@@ -14,7 +14,7 @@ import {
   validateColumns
 } from 'containers/ManageMetadataContainer';
 
-describe.only('ManageMetadata Container', () => {
+describe('ManageMetadata Container', () => {
   describe('getRevision', () => {
     const revision1 = {
       id: 600,
@@ -168,7 +168,10 @@ describe.only('ManageMetadata Container', () => {
       );
 
       assert.equal(reshapedSelect.elementType, 'select');
-      assert.equal(reshapedSelect.options.length, selectField.options.length);
+      assert.equal(
+        reshapedSelect.options.length,
+        selectField.options.length + 1
+      );
     });
 
     it('returns an empty array if given an undefined value', () => {
@@ -385,7 +388,7 @@ describe.only('ManageMetadata Container', () => {
 
     it('returns true when the passed object contains errors', () => {
       assert.isTrue(
-        hasErrors({
+        hasDatasetErrors({
           one: validFieldset,
           two: invalidFieldset
         })
@@ -394,26 +397,26 @@ describe.only('ManageMetadata Container', () => {
 
     it('returns false when the passed object contains no errors', () => {
       assert.isFalse(
-        hasErrors({
+        hasDatasetErrors({
           validFieldset
         })
       );
     });
 
     it('returns false if its param is undefined for some reason', () => {
-      assert.isFalse(hasErrors(undefined));
+      assert.isFalse(hasDatasetErrors(undefined));
     });
 
     it('handles fieldsets that have no fields', () => {
       assert.isFalse(
-        hasErrors({
+        hasDatasetErrors({
           fieldlessFieldset
         })
       );
     });
   });
 
-  describe.only('hasColumnErrors', () => {
+  describe('hasColumnErrors', () => {
     const validColumns = {
       '1000': {
         field_name: 'one',
@@ -635,14 +638,14 @@ describe.only('ManageMetadata Container', () => {
     });
 
     it('returns an empty object if given an undefiend value instead of a fieldset', () => {
-      const actual = getFieldsBy(undefined, f => {});
+      const actual = getFieldsBy(undefined, () => {});
 
       assert.isEmpty(actual);
       assert.isObject(actual);
     });
 
     it('returns an empy object if the fieldset has no fields property', () => {
-      const actual = getFieldsBy({ foo: 'bar' }, f => {});
+      const actual = getFieldsBy({ foo: 'bar' }, () => {});
 
       assert.isEmpty(actual);
       assert.isObject(actual);

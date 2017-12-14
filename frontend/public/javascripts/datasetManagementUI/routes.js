@@ -48,8 +48,6 @@ const checkIfPublished = store => (nextState, replace, cb) => {
   }
 };
 
-// const Dummy = () => <div>not ready</div>;
-
 export default function rootRoute(store) {
   return (
     <Route path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq" component={Home}>

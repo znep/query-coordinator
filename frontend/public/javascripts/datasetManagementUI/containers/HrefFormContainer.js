@@ -93,8 +93,7 @@ const findDupes = hrefURLObj => {
 
 const findInvalidURLs = hrefURLObj => {
   const urls = Object.values(hrefURLObj)
-    .map(val => val.url)
-    .filter(url => !!url);
+    .map(val => val.url);
 
   return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
 };
@@ -125,7 +124,6 @@ export const validate = hrefs => {
     .filter(err => err)
     .map(err => new MissingValue(err.id, err.hrefId))
     .value();
-
   return [...dupes, ...badUrls, ...empties];
 };
 
@@ -194,9 +192,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
   clearFlash: () => dispatch(FlashActions.hideFlashMessage()),
   validateAndSaveHrefs: hrefs => {
+    console.log('hrefs:', hrefs);
     const errors = validate(hrefs);
 
     if (errors.length) {
+      console.log('errors:', errors);
       return Promise.reject(new FormValidationError(FORM_NAME, errors));
     }
 

@@ -30,7 +30,7 @@ import { getMeasures } from '../helpers/measure';
 const MARGINS = {
   TOP: 32,
   RIGHT: 50,
-  BOTTOM: 0,
+  BOTTOM: 10,
   LEFT: 50
 };
 const AREA_DOT_RADIUS = 1;
@@ -1175,7 +1175,7 @@ function SvgTimelineChart($element, vif, options) {
 
     self.renderAxisLabels(chartSvg, {
       x: leftMargin,
-      y: topMargin,
+      y: 0,
       width: viewportWidth,
       height: viewportHeight
     });

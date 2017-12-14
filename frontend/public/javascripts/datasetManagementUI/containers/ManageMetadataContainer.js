@@ -673,9 +673,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   saveDatasetMetadata: newMetadata => {
     const result = validateFieldsets(newMetadata);
 
-    // if (hasDatasetErrors(result)) {
-    //   return Promise.reject(new FormValidationError(DATASET_FORM_NAME, result));
-    // }
+    if (hasDatasetErrors(result)) {
+      return Promise.reject(new FormValidationError(DATASET_FORM_NAME, result));
+    }
 
     const reshaped = reshape(newMetadata);
 
@@ -702,9 +702,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   saveColumnMetadata: (columns, inputSchemaId) => {
     const result = validateColumns(columns);
 
-    // if (hasColumnErrors(result)) {
-    //   return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
-    // }
+    if (hasColumnErrors(result)) {
+      return Promise.reject(new FormValidationError(COL_FORM_NAME, result));
+    }
 
     const call = {
       operation: 'SAVE_COLUMN_METADATA',

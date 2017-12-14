@@ -26,6 +26,7 @@
 
 .tab {
   display: block;
+  position: relative;
   padding: 15px 0 15px 13px;
   font-size: 13px;
   background-color: $white;
@@ -62,3 +63,4 @@ span.disabled:hover {
   background-color: $light-grey-4;
   color: $light-grey-2;
 }
+

@@ -6,9 +6,10 @@ import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetada
 import SubmitButton from 'containers/SubmitButtonContainer';
 import styles from './ManageMetadata.scss';
 
-const SAVED = 'SAVED';
-const UNSAVED = 'UNSAVED';
-const ERRORED = 'ERRORED';
+export const SAVED = 'SAVED';
+export const UNSAVED = 'UNSAVED';
+export const ERRORED = 'ERRORED';
+export const INITIALIZED = 'INITIALIZED';
 
 class ManageMetadata extends Component {
   constructor() {
@@ -34,11 +35,11 @@ class ManageMetadata extends Component {
   componentWillMount() {
     this.setState({
       datasetForm: {
-        status: SAVED,
+        status: INITIALIZED,
         data: this.props.datasetMetadata
       },
       columnForm: {
-        status: SAVED,
+        status: INITIALIZED,
         data: this.props.outputSchemaColumns
       }
     });
@@ -175,7 +176,9 @@ class ManageMetadata extends Component {
               params={this.props.params}
               hideFlash={this.props.hideFlash}
               columnsExist={this.props.columnsExist}
-              outputSchemaId={this.props.outputSchemaId} />
+              outputSchemaId={this.props.outputSchemaId}
+              datasetFormStatus={this.state.datasetForm.status}
+              columnFormStatus={this.state.columnForm.status} />
             {this.props.children &&
               React.cloneElement(this.props.children, {
                 fieldsets: this.state.datasetForm.data,

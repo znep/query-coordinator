@@ -32,8 +32,80 @@ describe('thunk actions', () => {
       store.dispatch(editorActions.openEditModal());
 
       _.defer(() => {
-        assert.deepEqual(store.getActions(), expectedActions);
+        assert.deepEqual(_.take(store.getActions(), 1), expectedActions);
         done();
+      });
+    });
+
+    describe('when a data source has been configured', () => {
+      beforeEach(() => {
+        EditorActionsAPI.__Rewire__('MetadataProvider', function() {
+          this.getDatasetMetadata = _.noop;
+          this.getDisplayableFilterableColumns = _.noop;
+        });
+        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
+          this.getRowCount = _.noop;
+        });
+      })
+
+      afterEach(() => {
+        EditorActionsAPI.__ResetDependency__('MetadataProvider');
+        EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
+      });
+
+      it('restores non-persisted data source state', (done) => {
+        const measure = {
+          test: 'foo',
+          metric: {
+            dataSource: {
+              uid: 'test-test'
+            }
+          }
+        };
+        const expectedActions = [
+          editorActions.OPEN_EDIT_MODAL,
+          editorActions.SET_DATA_SOURCE_UID,
+          editorActions.RECEIVE_DATA_SOURCE_METADATA
+        ];
+
+        const store = mockStore({
+          view: { measure },
+          editor: { isEditing: false, measure: null }
+        });
+        store.dispatch(editorActions.openEditModal());
+
+        _.defer(() => {
+          const actions = _.map(store.getActions(), 'type');
+          assert.deepEqual(actions, expectedActions);
+          done();
+        });
+      });
+    });
+
+    describe('when a data source has not been configured', () => {
+      it('has no non-persisted data source state to restore', (done) => {
+        const measure = {
+          test: 'foo',
+          metric: {
+            dataSource: {}
+          }
+        };
+        const expectedActions = [
+          editorActions.OPEN_EDIT_MODAL,
+          editorActions.SET_DATA_SOURCE_UID
+        ];
+
+        const store = mockStore({
+          view: { measure },
+          editor: { isEditing: false, measure: null }
+        });
+        store.dispatch(editorActions.openEditModal());
+
+        _.defer(() => {
+          const actions = _.map(store.getActions(), 'type');
+          assert.deepEqual(actions, expectedActions);
+          done();
+        });
       });
     });
   });

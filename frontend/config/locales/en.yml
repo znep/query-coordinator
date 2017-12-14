@@ -3218,7 +3218,15 @@ en:
               title: Sum Options
           value_column: Value Column
         data_source:
+          message_default: Select the dataset that contains the data pertaining to this measure.
+          message_empty: The selected dataset doesn't have any data yet, so you won't be able to compute a metric.
+          message_invalid: The selected dataset is not suitable for a measure or could not be found.
+          message_valid: The dataset you've selected is valid and has data (%{rowCount} rows); you can now configure the metric calculation.
+          reset: Reset
+          selected_dataset_label: "Selected dataset:"
+          selected_dataset_placeholder: none
           tab_title: Data Source
+          title: Select a Dataset
         general_info:
           description_label: Description
           description_placeholder: Measure description

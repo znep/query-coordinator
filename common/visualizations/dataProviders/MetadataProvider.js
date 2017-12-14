@@ -318,12 +318,13 @@ function MetadataProvider(config, useCache = false) {
   };
 
   /**
-   * Returns the result of getDisplayableColumns and
-   * getFilterableColumns combined with a fresh call to
-   * getDatasetMetadata.
+   * Returns the result of getDisplayableColumns and getFilterableColumns.
+   * @param datasetMetadata A metadata object or a Promise for a metadata object
+   *                        (optional; will fetch fresh metadata if omitted)
    */
-  this.getDisplayableFilterableColumns = (datasetMetadata) => {
-    const metadataPromise = datasetMetadata ? Promise.resolve(_.cloneDeep(datasetMetadata)) : this.getDatasetMetadata();
+  this.getDisplayableFilterableColumns = (datasetMetadata = this.getDatasetMetadata()) => {
+    const metadataPromise = datasetMetadata instanceof Promise ?
+      datasetMetadata : Promise.resolve(_.cloneDeep(datasetMetadata));
 
     return metadataPromise.
       then((datasetMetadata) => {

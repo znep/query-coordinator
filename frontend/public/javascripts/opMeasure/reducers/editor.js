@@ -79,10 +79,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
   switch (action.type) {
     case actions.editor.SET_DATA_SOURCE_UID: {
+      const { uid } = action;
       const newState = { ...state };
-      _.set(newState, 'measure.metric.dataSource', {
-        uid: action.uid
-      });
+      _.set(newState, 'cachedRowCount', uid ? null : undefined);
+      _.set(newState, 'measure.metric.dataSource', { uid });
       return newState;
     }
     case actions.editor.RECEIVE_DATA_SOURCE_METADATA: {
@@ -222,10 +222,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     case actions.editor.OPEN_EDIT_MODAL: {
       let nextState = {
-        ...state,
         isEditing: true,
         measure: { ...action.measure },
-        pristineMeasure: { ...action.measure }
+        pristineMeasure: { ...action.measure },
+        validationErrors: validate().validationErrors
       };
 
       // If no calculation type is set, defaults to 'count'

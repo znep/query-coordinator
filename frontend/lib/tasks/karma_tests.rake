@@ -67,6 +67,7 @@ namespace :test do
 
       'approvals' => nil,
       'exampleTestSuite' => nil,
+      'internal_asset_manager' => nil,
       'oldUx' => nil,
       'visualization_embed' => nil
     }.each do |task_name, dependency|

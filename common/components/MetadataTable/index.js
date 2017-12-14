@@ -10,7 +10,7 @@ import Linkify from 'react-linkify';
 import moment from 'moment-timezone';
 import I18n from 'common/i18n';
 import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
-import AssociatedAssets from 'frontend/public/javascripts/common/components/AssociatedAssets';
+import AssociatedAssets from 'common/components/AssociatedAssets';
 import CreateAlertButton from 'common/components/CreateAlertButton';
 import SocrataIcon from 'common/components/SocrataIcon';
 

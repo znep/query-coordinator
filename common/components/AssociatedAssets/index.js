@@ -8,7 +8,7 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import { fetchJson, defaultHeaders } from 'common/http';
 import AssetSelector from 'common/components/AssetSelector';
 
-import './styles/index.scss';
+import './index.scss';
 
 // Limit of how many associated assets can be added. This will probably become a prop once we allow
 // more than 1 (for the case where we're on a parent selecting multiple children).

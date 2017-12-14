@@ -192,11 +192,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
   clearFlash: () => dispatch(FlashActions.hideFlashMessage()),
   validateAndSaveHrefs: hrefs => {
-    console.log('hrefs:', hrefs);
     const errors = validate(hrefs);
 
     if (errors.length) {
-      console.log('errors:', errors);
       return Promise.reject(new FormValidationError(FORM_NAME, errors));
     }
 

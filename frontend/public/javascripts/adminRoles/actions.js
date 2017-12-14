@@ -21,7 +21,7 @@ export const saveRoles = makeActionCreator('save_roles', {
         .map(role =>
           (roleIsNew(role)
             ? CoreApi.createRole(role.filter(keyIn('name', 'rights')).toJS())
-            : CoreApi.updateRole(getIdFromRole(role),role.filter(keyIn('name', 'rights')).toJS()))
+            : CoreApi.updateRole(getIdFromRole(role), role.filter(keyIn('name', 'rights')).toJS()))
             .then(success => ({ role, success }))
             .catch(err => err.json().then(error => ({ role, error })))
         )

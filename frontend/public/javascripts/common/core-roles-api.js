@@ -8,7 +8,7 @@ const api = DefaultApiFp();
 
 Object.keys(api).forEach(key => {
   wrappedApi[key] = (...args) => {
-    const newArgs = [...args, { xCSRFToken: csrfToken(), xAppToken: appToken() }];
+    const newArgs = [...args, { headers: { 'X-CSRF-Token': csrfToken(), 'X-App-Token': appToken() } }];
     return api[key].apply(null, newArgs)(wrappedFetch, '');
   };
 });

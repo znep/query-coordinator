@@ -350,16 +350,18 @@ function SvgVisualization($element, vif, options) {
 
     items.forEach((item) => {
 
+      // WARNING do not use this value with .html() below, which would create an XSS potential.
+      const itemLabelText = _.unescape(item.label);
       if (item.dashed) {
         $ul.append(
           $('<li>').
-            text(item.label).
+            text(itemLabelText).
             append($('<span>', { 'class': 'dashed', 'style': `border-top-color:${item.color}` }))
         );
       } else {
         $ul.append(
           $('<li>').
-            text(item.label).
+            text(itemLabelText).
             append($('<span>', { 'style': `background-color:${item.color}` }))
         );
       }

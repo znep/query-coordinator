@@ -1251,29 +1251,13 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function handleMouseMove() {
-    // XXX: EN-20686 required adding a bunch of ugliness, namely all the
-    // *ForHighlight variables. It helps address a mismatch between the x-axis
-    // as displayed and the x-axis coordinates detected by hovering over it for
-    // the purposes of displaying a hover highlight. If a visualization has been
-    // panned, then it will show a date range different from one the
-    // showHighlight code expects to work with: showHighlight only correctly
-    // renders the leftmost date range (which basically means it does not really
-    // understand dates and probably should be fixed). If given the correct date
-    // range, it renders the highlight off-screen.
     const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
     const rawDate = d3XScale.invert(d3.mouse(this)[0] - xAxisPanDistanceFromZoom);
-    const rawDateForHighlight = d3XScale.invert(d3.mouse(this)[0]);
     const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
-    const bisectorIndexForHighlight = d3.bisectLeft(bisectorDates, rawDateForHighlight);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
 
     const firstSeriesIndex = _.clamp(
       (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
-      0,
-      firstSeriesRows.length - 1
-    );
-    const firstSeriesIndexForHighlight = _.clamp(
-      (precision !== 'none') ? bisectorIndexForHighlight - 1 : bisectorIndexForHighlight,
       0,
       firstSeriesRows.length - 1
     );
@@ -1282,12 +1266,10 @@ function SvgTimelineChart($element, vif, options) {
     let flyoutXOffset;
 
     const startDate = parseDate(firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]);
-    const startDateForHighlight = parseDate(firstSeriesRows[firstSeriesIndexForHighlight][seriesDimensionIndex]);
     const endDate = getIncrementedDateByPrecision(startDate, dataToRender.precision);
-    const endDateForHighlight = getIncrementedDateByPrecision(startDateForHighlight, dataToRender.precision);
 
     if (allSeriesAreLineVariant()) {
-      flyoutXOffset = d3XScale(startDateForHighlight);
+      flyoutXOffset = d3XScale(startDate);
     } else {
 
       if (precision !== 'none') {
@@ -1298,15 +1280,16 @@ function SvgTimelineChart($element, vif, options) {
         // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
         flyoutXOffset = d3XScale(
           new Date(
-            startDateForHighlight.getTime() +
+            startDate.getTime() +
             getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
           )
         );
       } else {
-        flyoutXOffset = d3XScale(startDateForHighlight);
+        flyoutXOffset = d3XScale(startDate);
       }
     }
 
+    flyoutXOffset += xAxisPanDistanceFromZoom;
     flyoutXOffset += (self.getAxisLabels().left ? AXIS_LABEL_MARGIN : 0);
 
     const flyoutData = dataToRenderBySeries.map((series) => {
@@ -1341,7 +1324,7 @@ function SvgTimelineChart($element, vif, options) {
       payload.endDate = endDate;
     }
 
-    showHighlight(startDateForHighlight, endDateForHighlight);
+    showHighlight(startDate, endDate);
     showFlyout(payload);
   }
 
@@ -1382,6 +1365,8 @@ function SvgTimelineChart($element, vif, options) {
       highlightWidth = (highlightWidth / 2);
       highlightXTranslation = 0;
     }
+
+    highlightXTranslation += xAxisPanDistanceFromZoom;
 
     rootElement.select('.highlight').
       attr('display', 'block').

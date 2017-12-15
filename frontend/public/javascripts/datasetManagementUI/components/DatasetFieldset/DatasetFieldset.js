@@ -27,23 +27,23 @@ const DatasetFieldset = ({
       <div>
         <label>{I18n.show_sources.label_name}</label>
         <TextInput
-          name="title"
-          value={href.title}
-          label={I18n.show_sources.label_name}
+          field={{
+            name: 'title',
+            value: href.title,
+            label: I18n.show_sources.label_name
+          }}
           inErrorState={false}
-          handleChange={
-            e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value))
-          }
-          handleBlur={
-            e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value, true))
-          } />
+          handleChange={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value))}
+          handleBlur={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value, true))} />
       </div>
       <div>
         <label>{I18n.show_sources.label_description}</label>
         <TextArea
-          name="description"
-          value={href.description}
-          label={I18n.show_sources.label_description}
+          field={{
+            name: 'description',
+            value: href.description,
+            label: I18n.show_sources.label_description
+          }}
           inErrorState={false}
           handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
       </div>
@@ -71,15 +71,15 @@ const DatasetFieldset = ({
       <div>
         <label>{I18n.show_sources.label_data_dictionary}</label>
         <TextInput
-          name="dictionary-url"
-          value={href.data_dictionary}
-          label={I18n.show_sources.label_data_dictionary}
+          field={{
+            name: 'dictionary-url',
+            value: href.data_dictionary,
+            label: I18n.show_sources.label_data_dictionary
+          }}
           inErrorState={false}
-          handleChange={
-            e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))
-          }
-          handleBlur={
-            e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value, true))
+          handleChange={e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))}
+          handleBlur={e =>
+            handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value, true))
           } />
       </div>
     </div>

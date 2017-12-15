@@ -137,31 +137,40 @@ class AddColForm extends Component {
         <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
           <label htmlFor="displayName">{I18n.add_col.display_name}</label>
           <TextInput
-            name="displayName"
+            field={{
+              name: 'displayName',
+              value: this.state.displayName
+            }}
             inErrorState={this.props.errors.displayName ? !!this.props.errors.displayName.length : false}
-            value={this.state.displayName}
             handleChange={this.handleChange('displayName')} />
           <ErrorList errors={this.props.errors.displayName} />
           <label htmlFor="fieldName">{I18n.add_col.field_name}</label>
           <TextInput
-            name="fieldName"
-            value={this.state.fieldName}
+            field={{
+              name: 'fieldName',
+              value: this.state.fieldName
+            }}
             inErrorState={this.props.errors.fieldName ? !!this.props.errors.fieldName.length : false}
             handleChange={this.handleChange('fieldName')} />
           <ErrorList errors={this.props.errors.fieldName} />
           <label htmlFor="description">{I18n.add_col.description}</label>
           <TextArea
-            name="description"
+            field={{
+              name: 'description',
+              value: this.state.description
+            }}
             inErrorState={false}
-            value={this.state.description}
             handleChange={this.handleChange('description')} />
           <label htmlFor="sourceColumnId">{I18n.add_col.source_column}</label>
           <Select
-            name="sourceColumnId"
-            value={this.state.sourceColumnId}
+            field={{
+              name: 'sourceColumnId',
+              value: this.state.sourceColumnId,
+              options: this.props.selectOptions,
+              isRequired: false
+            }}
             inErrorState={false}
-            handleChange={this.handleChange('sourceColumnId')}
-            options={this.props.selectOptions} />
+            handleChange={this.handleChange('sourceColumnId')} />
           <SoqlTypePillBox
             transforms={transforms}
             currentTransform={this.state.transform}

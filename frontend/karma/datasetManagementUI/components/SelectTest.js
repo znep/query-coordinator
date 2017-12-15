@@ -5,37 +5,37 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 
 const props = {
-  name: 'animals',
-  label: 'animals',
-  value: 'cat',
-  isRequired: true,
-  options: [
-    {
-      title: '-- No Selection --',
-      value: ''
-    },
-    {
-      title: 'dog',
-      value: 'dog'
-    },
-    {
-      title: 'cat',
-      value: 'cat'
-    },
-    {
-      title: 'pig',
-      value: 'pig'
-    },
-    {
-      title: 'sheep',
-      value: 'sheep'
-    }
-  ],
-  isCustom: true,
+  field: {
+    name: 'animals',
+    label: 'animals',
+    value: 'cat',
+    isRequired: true,
+    options: [
+      {
+        title: '-- No Selection --',
+        value: ''
+      },
+      {
+        title: 'dog',
+        value: 'dog'
+      },
+      {
+        title: 'cat',
+        value: 'cat'
+      },
+      {
+        title: 'pig',
+        value: 'pig'
+      },
+      {
+        title: 'sheep',
+        value: 'sheep'
+      }
+    ],
+    isCustom: true
+  },
   inErrorState: false,
   handleChange: sinon.spy(),
-  handleBlur: () => {},
-  handleFocus: () => {}
 };
 
 describe('components/Select', () => {

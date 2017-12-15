@@ -39,7 +39,8 @@ describe('FilterBar', () => {
       ],
       filters: [],
       isReadOnly: false,
-      onUpdate: _.noop
+      onUpdate: _.noop,
+      isValidTextFilterColumnValue: _.noop
     });
   }
 

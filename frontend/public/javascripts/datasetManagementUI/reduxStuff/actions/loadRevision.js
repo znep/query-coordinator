@@ -6,6 +6,7 @@ import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { addNotification } from 'reduxStuff/actions/notifications';
 import { createSourceSuccess } from 'reduxStuff/actions/createSource';
 import { subscribeToOutputSchemaThings, subscribeToRevision } from 'reduxStuff/actions/subscriptions';
+import { addFieldValuesAll, createFieldsets, validateFieldsets } from 'containers/ManageMetadataContainer';
 import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
@@ -21,8 +22,9 @@ export function loadRevision(params) {
     return Promise.all([getCurrentRevision(params), getSources(params)]).then(([revision, srcs]) => {
       // calc md errors
       const view = views[revision.fourfour];
-      // const { customMetadataFieldsets } = view;
-      const metadataErrors = view.foobar || [];
+      const { customMetadataFieldsets } = view;
+      const datasetMetadata = addFieldValuesAll(createFieldsets(customMetadataFieldsets), revision);
+      const metadataErrors = validateFieldsets(datasetMetadata);
 
       // make taskSets to insert into store
       const taskSets = makeTaskSets(revision);

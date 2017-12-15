@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { DATASET_FORM_NAME, COL_FORM_NAME } from 'containers/ManageMetadataContainer';
+import {
+  DATASET_FORM_NAME,
+  COL_FORM_NAME,
+  validateFieldsets,
+  validateColumns
+} from 'containers/ManageMetadataContainer';
 import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetadataSidebar';
 import SubmitButton from 'containers/SubmitButtonContainer';
 import styles from './ManageMetadata.scss';
@@ -47,6 +52,23 @@ class ManageMetadata extends Component {
 
   componentWillUnmount() {
     this.props.hideFlash();
+
+    // If the user saves dataset metadata that is invalid, the errors are put into
+    // the redux store. This is because the publish button needs to know about these
+    // errors to prevent users from publishing a dataset if any errors exist. But
+    // this behavior causes a bug if:
+    //
+    // 1. user attempts to save bad dataset metadata
+    // 2. errors get put into the redux store
+    // 3. user hits cancel / close modal
+    //
+    // In this scenario, the form state reverts to the last set of dataset metadata
+    // successfully saved to the server, but the errors in the store still describe
+    // the erroneous form state the user attempted to save. Re-validating this.props.datasetMetadata
+    // here corrects this problem.
+    this.props.setFormErrors(DATASET_FORM_NAME, validateFieldsets(this.props.datasetMetadata));
+
+    this.props.setFormErrors(COL_FORM_NAME, validateColumns(this.props.outputSchemaColumns));
   }
 
   // tedious but updating nested state this way allows for weird fieldset

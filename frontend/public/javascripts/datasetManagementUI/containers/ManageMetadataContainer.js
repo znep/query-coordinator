@@ -229,7 +229,7 @@ function shapeCustomFieldsets(fieldsets = []) {
 // createFieldsets :: Array RawFieldset -> { [String] : Fieldset }
 // shapes custom fieldsets that come in from rails and combines them with
 // the predefined fieldsets
-function createFieldsets(rawFieldsets) {
+export function createFieldsets(rawFieldsets) {
   return {
     ...FIELDSETS,
     ...shapeCustomFieldsets(rawFieldsets)
@@ -254,7 +254,7 @@ function keyByName(fields = []) {
 // addFieldValuesAll :: { [String] : Fieldset } Revision -> { [String] : Fieldset }
 // looks up the value for all fields of all fieldsets in the form and adds it to
 // the field object under the 'value' key.
-function addFieldValuesAll(fieldsets, revision) {
+export function addFieldValuesAll(fieldsets, revision) {
   return Object.keys(fieldsets).reduce(
     (acc, key) => ({
       ...acc,
@@ -691,9 +691,21 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         return resp;
       })
       .catch(err => {
-        return err.response.json().then(() => {
+        return err.response.json().then(error => {
           // TODO: see note in saveColumnMetadata catch block
-          const res = { generic: 'server side errror' };
+          let res;
+
+          if (error.message.match(/.+attribution.+specified/gi)) {
+            res = {
+              licensingAndAttribution: {
+                fields: {
+                  attribution: [I18n.edit_metadata.validation_error_attribution_required]
+                }
+              }
+            };
+          } else {
+            res = { generic: 'server side errror' };
+          }
 
           throw new FormValidationError(DATASET_FORM_NAME, res);
         });

@@ -68,7 +68,7 @@ module ApplicationHelper
   end
 
   # helper for returning a boolean feature flag
-  def feature_flag?(name, request)
+  def feature_flag?(name, request = nil)
     !!FeatureFlags.derive(nil, request)[name]
   end
 

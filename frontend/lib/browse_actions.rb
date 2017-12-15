@@ -14,7 +14,7 @@ module BrowseActions
   attr_reader :request_params
 
   def standard_view_types
-    href_translation_key = feature_flag?(:usaid_features_enabled, request) ? 'data_assets' : 'href'
+    href_translation_key = feature_flag?(:usaid_features_enabled) ? 'data_assets' : 'href'
 
     [
       { text: t('controls.browse.facets.view_types.data_lens'), value: 'new_view', class: 'typeDataLens', icon_font_class: 'icon-cards' },

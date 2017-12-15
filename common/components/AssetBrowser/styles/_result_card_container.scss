@@ -1,7 +1,7 @@
 @import "variables/colors";
 @import "sizings";
 
-.modal.asset-selector .asset-browser {
+.asset-selector .asset-browser {
   .results-and-filters {
     border: none;
     .catalog-results {
@@ -12,6 +12,11 @@
 
       .topbar {
         margin-left: 0;
+
+        div.autocomplete {
+          width: 300px;
+          float: right;
+        }
       }
     }
   }

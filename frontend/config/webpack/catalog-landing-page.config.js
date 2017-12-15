@@ -14,14 +14,18 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: common.getStandardLoaders([], {
-      substituteStyleLoaders: {
-        test: /^((?!\.global).)*(scss|css)$/,
-        loaders: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
-      }
+      substituteStyleLoaders: [
+        {
+          // Matches stylesheets without the `.module.` affix - goes through normal style loaders.
+          test: /^((?!\.module\.).)*(s?css)$/,
+          loader: 'style?sourceMap!css!postcss!sass'
+        },
+        {
+          // Matches stylesheets with the `.module.` affix - goes through CSS Module loaders.
+          test: /.*\.module\.s?css$/,
+          loader: 'style?sourceMap!css?modules&camelCase=true&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=2!postcss!sass'
+        }
+      ]
     })
   },
   resolve: _.extend(

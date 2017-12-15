@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import { connect } from 'react-redux';
 import { collapseChanged } from '../actions';
-import styles from './autocomplete.scss';
+import styles from './autocomplete.module.scss';
 
 function CollapsedIcon({ onCollapsedChanged, adminHeaderClasses }) {
   return (

@@ -1,4 +1,4 @@
-@import "../common";
+@import "../common.module";
 
 .results-container {
   @include default-font;
@@ -43,7 +43,7 @@
   font-weight: 600;
 
   overflow: hidden;
-  
+
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 13px;

@@ -43,7 +43,7 @@ export class AssetTypesFilter extends Component {
       },
       {
         title: I18n.t(isUsaid ? 'options.data_assets' : 'options.external', { scope }),
-        value: 'hrefs',
+        value: 'hrefs,federated_hrefs',
         icon: <AssetTypeIcon displayType={isUsaid ? 'data_asset' : 'href'} />
       },
       {

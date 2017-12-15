@@ -53,7 +53,7 @@
         }
 
         var group = cmObj.settings.view.metadata.jsonQuery.group;
-
+        var isActivityFeedDataset = _.get(cmObj, 'settings.view.metadata.activityFeedDataset', false);
         var canEditColumns = cmObj.settings.view.hasRight(blist.rights.view.UPDATE_COLUMN);
         var columnDeletionEnabled = cmObj.settings.columnDeleteEnabled;
         var columnCanBeDeleted = col.renderType.deleteable || (blist.dataset.newBackend && col.renderType.nbeModifiable);
@@ -70,7 +70,7 @@
           features.hide = true;
         }
 
-        if (cmObj.settings.columnPropertiesEnabled && canEditColumns) {
+        if (!isActivityFeedDataset && cmObj.settings.columnPropertiesEnabled && canEditColumns) {
           features.properties = true;
         }
 

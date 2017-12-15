@@ -1,8 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import sinon from 'sinon';
+import _ from 'lodash';
+
+import mockCeteraFetchResponse from './data/mock_cetera_fetch_response';
+import airbrake from 'common/airbrake';
 
 import UserProfile from 'userProfile/components/user_profile';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
@@ -15,24 +19,36 @@ const userProfileProps = (options = {}) => ({
 });
 
 const initialStateStub = (id) => ({
-  initialState: {
+  initialState: _.merge(window.initialState, {
     targetUserId: id
-  }
+  })
 });
 
-const serverConfigStub = (id) => ({
-  currentUser: { id }
-});
+const serverConfigStub = (id) => (
+  _.merge(window.serverConfig, {
+    currentUser: { id }
+  })
+);
+
+const nonRoledStub = () => (
+  delete window.serverConfig.currentUser.roleId
+);
 
 describe('<UserProfile /> component', () => {
   var sandbox = sinon.createSandbox();
 
   let wrapper;
   let tabs;
+  let airBrakeStub;
 
   beforeEach(() => {
     wrapper = shallow(<UserProfile {...userProfileProps()} />);
     tabs = wrapper.props().tabs;
+    airBrakeStub = sinon.stub(airbrake, 'notify');
+  });
+
+  afterEach(() => {
+    airBrakeStub.restore()
   });
 
   it(`should always show ${constants.MY_ASSETS_TAB} tab`, () => {
@@ -90,6 +106,28 @@ describe('<UserProfile /> component', () => {
         tabs[constants.MY_ASSETS_TAB].props.baseFilters,
         { visibility: 'open' }
       );
+    });
+  });
+
+  describe('when currentUser has no roles', () => {
+    let ceteraStub;
+
+    before(() => {
+      ceteraStub = sinon.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
+      sandbox.stub(window, 'serverConfig').returns(nonRoledStub());
+      sandbox.stub(window, 'socrata').returns(initialStateStub());
+    });
+
+    after(() => {
+      ceteraStub.restore();
+      sandbox.restore();
+    });
+
+    it('should not show visibility column', () => {
+      wrapper = mount(<UserProfile {...userProfileProps()} />);
+
+      assert.isAbove(wrapper.find('th').length, 0);
+      assert.equal(wrapper.find('th.visibility').length, 0);
     });
   });
 });

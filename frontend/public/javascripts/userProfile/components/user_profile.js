@@ -39,6 +39,11 @@ export default class UserProfile extends Component {
     const showManageAssets = _.includes(serverConfig.currentUser.flags, 'admin') ||
       !_.isEmpty(window.serverConfig.currentUser.roleName);
 
+    // If user has no roles, don't show visibility column (EN-20845)
+    if (_.isNil(window.serverConfig.currentUser.roleId) && window.socrata.initialState.catalog.columns) {
+      _.remove(window.socrata.initialState.catalog.columns, (col) => col === 'visibility');
+    }
+
     return (
       <AssetBrowser
         enableAssetInventoryLink={false}

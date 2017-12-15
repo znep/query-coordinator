@@ -37,7 +37,7 @@ class ColumnForm extends Component {
   render() {
     const { columns, handleColumnChange, handleColumnFormSubmit } = this.props;
 
-    const sortedColumns = _.orderBy(Object.values(columns), 'position');
+    const sortedColumns = _.orderBy(_.values(columns), 'position');
 
     return (
       <WithFlash>

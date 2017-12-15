@@ -78,7 +78,7 @@ const shapeHrefState = rawState =>
 
 // FORM DATA VALIDATORS
 const findDupes = hrefURLObj => {
-  const filetypes = Object.values(hrefURLObj)
+  const filetypes = _.values(hrefURLObj)
     .map(val => val.filetype)
     .filter(ft => ft);
 
@@ -92,8 +92,7 @@ const findDupes = hrefURLObj => {
 };
 
 const findInvalidURLs = hrefURLObj => {
-  const urls = Object.values(hrefURLObj)
-    .map(val => val.url);
+  const urls = _.values(hrefURLObj).map(val => val.url);
 
   return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
 };

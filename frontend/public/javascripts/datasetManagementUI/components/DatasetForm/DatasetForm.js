@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import _ from 'lodash';
 import Fieldset from 'components/Fieldset/Fieldset';
 import DatasetField from 'containers/DatasetFieldContainer';
 import WithFlash from 'containers/WithFlashContainer';
@@ -28,7 +29,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSub
           {Object.keys(fieldsets).map(fsKey => {
             return (
               <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
-                {Object.values(fieldsets[fsKey].fields).map(field => (
+                {_.values(fieldsets[fsKey].fields).map(field => (
                   <DatasetField
                     key={`${fsKey}-${field.name}`}
                     field={field}

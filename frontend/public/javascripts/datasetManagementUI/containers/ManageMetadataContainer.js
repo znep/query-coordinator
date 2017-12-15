@@ -322,7 +322,7 @@ export function addFieldValues(fields = [], fieldsetName, revision) {
 export function validateFieldset(fieldset = {}) {
   const fields = fieldset.fields || {};
 
-  const validatedFields = Object.values(fields).reduce((acc, field) => {
+  const validatedFields = _.values(fields).reduce((acc, field) => {
     const errors = [];
     const tests = field.validations || [];
 
@@ -364,8 +364,8 @@ export function validateFieldsets(fieldsets) {
 
 // validateColumns :: { [String] : OutputColumn } -> { [ String ] : ColumnError }
 export function validateColumns(columns = {}) {
-  const fieldNames = Object.values(columns).map(col => col.field_name);
-  const displayNames = Object.values(columns).map(col => col.display_name);
+  const fieldNames = _.values(columns).map(col => col.field_name);
+  const displayNames = _.values(columns).map(col => col.display_name);
 
   return Object.keys(columns).reduce((acc, ke) => {
     const { field_name, display_name } = columns[ke];
@@ -494,7 +494,7 @@ export function getRevision(revisions = {}, revisionSeq) {
   let rev;
 
   if (isNumber(revisionSeq)) {
-    rev = Object.values(revisions).find(r => r.revision_seq === revisionSeq);
+    rev = _.values(revisions).find(r => r.revision_seq === revisionSeq);
   }
 
   return rev;
@@ -515,7 +515,7 @@ function getOutputSchemaId(idFromParams, revision, fallbackOS) {
 export function hasColumnErrors(errorsByColumn = {}) {
   let errors = [];
 
-  errors = _.flatMap(Object.values(errorsByColumn), col => col.display_name.concat(col.field_name));
+  errors = _.flatMap(_.values(errorsByColumn), col => col.display_name.concat(col.field_name));
 
   return !!errors.length;
 }
@@ -526,7 +526,7 @@ export function hasDatasetErrors(errorsByFieldset = {}) {
 
   errors = _.flatMap(errorsByFieldset, fs => {
     const fields = fs.fields || {};
-    return _.flatten(Object.values(fields));
+    return _.flatten(_.values(fields));
   });
 
   return !!errors.length;
@@ -561,14 +561,14 @@ export function partitionCustomNoncustom(fieldsets = {}) {
 // partitionPrivatePublic :: { [String] : { isPrivate : Boolean } }
 //     -> { regularPublic : obj, regularPrivate : obj }
 function partitionPrivatePublic(fieldsets) {
-  const regularPrivate = Object.values(fieldsets).reduce((acc, fs) => {
+  const regularPrivate = _.values(fieldsets).reduce((acc, fs) => {
     return {
       ...acc,
       ...getFieldsBy(fs, f => f.isPrivate)
     };
   }, {});
 
-  const regularPublic = Object.values(fieldsets).reduce((acc, fs) => {
+  const regularPublic = _.values(fieldsets).reduce((acc, fs) => {
     return {
       ...acc,
       ...getFieldsBy(fs, f => !f.isPrivate)
@@ -723,7 +723,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       callParams: {}
     };
 
-    return dispatch(createNewOutputSchema(inputSchemaId, Object.values(columns), call)).catch(err => {
+    return dispatch(createNewOutputSchema(inputSchemaId, _.values(columns), call)).catch(err => {
       // TODO: improve dsmapi's error response to include output column ids for
       // the columns that have errors, which values are duplicated or invalid, etc
       // then change this code to generate a structure we can use to determine where

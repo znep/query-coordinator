@@ -11,6 +11,7 @@ const spandexSubscriber = require('common/spandex/subscriber').default;
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
+const DataTypeFormatter = require('./DataTypeFormatter');
 
 import {
   DEFAULT_HIGHLIGHT_COLOR,
@@ -848,7 +849,11 @@ function SvgVisualization($element, vif, options) {
     const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append($('<td>', { 'colspan': 2 }).text(referenceLine.label));
 
-    let value = d3.format('s')(referenceLine.value);
+    let value = DataTypeFormatter.renderNumberCellHTML(
+      referenceLine.value,
+      { format: { forceHumane: true }
+    });
+
     value = isPercent ? `${value}%` : value;
 
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });

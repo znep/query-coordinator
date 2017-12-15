@@ -5,7 +5,7 @@ import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import { resultFocusChanged, queryChanged, resultVisibilityChanged } from 'common/autocomplete/actions';
 import { Result } from 'common/autocomplete/components/Results/Result';
-import styles from 'common/autocomplete/components/Results/results.scss';
+import styles from 'common/autocomplete/components/Results/results.module.scss';
 
 // TODO: EN-19403 - Factor out as shared component
 export class UserAutocompleteResult extends Result {

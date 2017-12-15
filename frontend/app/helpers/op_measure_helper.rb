@@ -48,6 +48,13 @@ module OpMeasureHelper
     # If this becomes more complex, parts can be factored out into view.rb; see
     # visualization canvas treatment of initial state for comparison.
     {
+
+      :mode => @edit_mode ? 'EDIT' : 'VIEW',
+      :measure => {
+        :coreView => @
+      }
+    }
+    {
       :mode => @edit_mode ? 'EDIT' : 'VIEW',
       :measure => {
         :coreView => @view,

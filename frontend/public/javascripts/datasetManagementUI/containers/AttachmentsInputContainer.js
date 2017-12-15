@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
 import { uploadAttachment } from 'reduxStuff/actions/uploadFile';
-import { editRevision } from 'reduxStuff/actions/revisions';
 import { getRevision } from 'containers/ManageMetadataContainer.js';
 
 const mapStateToProps = ({ entities }, { params }) => {
@@ -17,7 +16,7 @@ const mapStateToProps = ({ entities }, { params }) => {
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   const { revision } = stateProps;
   const { handleAttachmentChange, field, inErrorState } = ownProps;
-  const attachments = revision.attachments;
+  const attachments = field.value;
 
   return {
     field,
@@ -38,7 +37,6 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 
     removeAttachment: toRemove => {
       const newAttachments = attachments.filter(a => a.asset_id !== toRemove.asset_id);
-      dispatch(editRevision(revision.id, { attachments: newAttachments }));
       handleAttachmentChange(newAttachments);
     },
 

@@ -38,13 +38,6 @@ form .textInput {
   line-height: 22px;
 }
 
-// .textIputError {
-//   border-color: $error;
-//   outline-color: $error;
-//   background-color: lighten($error, 38%);
-//   box-shadow: inset 0 0 10px lighten($error, 35%);
-// }
-
 .textInputError {
   composes: textInputError from '../TextInput/TextInput.scss';
 }

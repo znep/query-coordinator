@@ -14,7 +14,7 @@ class Field extends Component {
     const { field, handleChange, errors } = this.props;
 
     const inErrorState = errors && !!errors.length;
-    // const inErrorState = true;
+
     const labelClassNames = [styles.label];
 
     if (field.isRequired) {
@@ -59,7 +59,7 @@ class Field extends Component {
           </div>
         )}
         {element}
-        {inErrorState ? (
+        {inErrorState && (
           <ul className={styles.errorList}>
             {errors.map(error => (
               <li className={styles.errorMessage} key={error}>
@@ -67,7 +67,7 @@ class Field extends Component {
               </li>
             ))}
           </ul>
-        ) : null}
+        )}
       </div>
     );
   }

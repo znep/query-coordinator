@@ -17,17 +17,17 @@ export const ERRORED = 'ERRORED';
 export const INITIALIZED = 'INITIALIZED';
 
 class ManageMetadata extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       datasetForm: {
-        status: '',
-        data: {}
+        status: INITIALIZED,
+        data: props.datasetMetadata
       },
       columnForm: {
-        status: '',
-        data: {}
+        status: INITIALIZED,
+        data: props.outputSchemaColumns
       }
     };
 
@@ -37,18 +37,18 @@ class ManageMetadata extends Component {
     this.handleDatasetFormSubmit = this.handleDatasetFormSubmit.bind(this);
   }
 
-  componentWillMount() {
-    this.setState({
-      datasetForm: {
-        status: INITIALIZED,
-        data: this.props.datasetMetadata
-      },
-      columnForm: {
-        status: INITIALIZED,
-        data: this.props.outputSchemaColumns
-      }
-    });
-  }
+  // componentWillMount() {
+  //   this.setState({
+  //     datasetForm: {
+  //       status: INITIALIZED,
+  //       data: this.props.datasetMetadata
+  //     },
+  //     columnForm: {
+  //       status: INITIALIZED,
+  //       data: this.props.outputSchemaColumns
+  //     }
+  //   });
+  // }
 
   componentWillUnmount() {
     this.props.hideFlash();

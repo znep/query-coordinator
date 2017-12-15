@@ -51,7 +51,8 @@ class ProfileController < ApplicationController
           :app_name => 'internal_asset_manager',
           :columns => %w(type name actions lastUpdatedDate category owner visibility),
           :initial_tab => 'myAssets',
-          :filters_enabled => false
+          :filters_enabled => false,
+          :target_user_id => params[:id]
         }
 
         render :layout => 'styleguide'

@@ -602,7 +602,6 @@ describe('SvgColumnChart', () => {
     });
 
     it('should show humane formatted value in flyout', (done) => {
-
       columnChart = createColumnChart(640, overrideVIF);
       columnChart.chart.render(null, testData);
 

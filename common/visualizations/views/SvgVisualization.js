@@ -851,8 +851,8 @@ function SvgVisualization($element, vif, options) {
 
     let value = DataTypeFormatter.renderNumberCellHTML(
       referenceLine.value,
-      { format: { forceHumane: true }
-    });
+      { format: { forceHumane: true } }
+    );
 
     value = isPercent ? `${value}%` : value;
 

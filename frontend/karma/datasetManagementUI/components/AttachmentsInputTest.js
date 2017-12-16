@@ -5,14 +5,15 @@ import { shallow, mount } from 'enzyme';
 import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
 
 const props = {
-  name: 'tags',
-  label: 'Attachments',
-  value: [{ assetId: 'meh', name: 'meh!', filename: 'meh.exe' }],
-  isPrivate: false,
-  isRequired: false,
-  placeholder: false,
+  field: {
+    name: 'tags',
+    label: 'Attachments',
+    value: [{ assetId: 'meh', name: 'meh!', filename: 'meh.exe' }],
+    isPrivate: false,
+    isRequired: false,
+    placeholder: false
+  },
   inErrorState: false,
-  setValue: sinon.spy(),
   uploadAttachment: sinon.spy(),
   removeAttachment: sinon.spy(),
   editAttachment: sinon.spy()
@@ -48,7 +49,7 @@ describe('components/AttachmentsInput', () => {
 
     it('calls proper callback functions when label is clicked', () => {
       const addBtn = component.find('#file');
-      addBtn.simulate('change', {target: {files: [{dummyFile: true}]}});
+      addBtn.simulate('change', { target: { files: [{ dummyFile: true }] } });
 
       assert.isTrue(component.props().uploadAttachment.calledOnce);
     });
@@ -57,10 +58,11 @@ describe('components/AttachmentsInput', () => {
       const inputField = component.find('.filename');
 
       inputField.simulate('change', { target: { value: 'hey' } });
-      const [attachment, newName] = component.props().editAttachment.getCall(0).args;
-      assert.equal(attachment, props.value[0]);
+      const [attachment, newName] = component
+        .props()
+        .editAttachment.getCall(0).args;
+      assert.equal(attachment, props.field.value[0]);
       assert.equal(newName, 'hey');
-
     });
 
     it('calls remove callback when remove icon is clicked', () => {
@@ -68,7 +70,7 @@ describe('components/AttachmentsInput', () => {
       rm.simulate('click', {});
 
       const [attachment] = component.props().removeAttachment.getCall(0).args;
-      assert.equal(attachment, props.value[0]);
+      assert.equal(attachment, props.field.value[0]);
     });
   });
 });

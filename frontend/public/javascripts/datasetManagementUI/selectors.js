@@ -127,9 +127,10 @@ export function allColumnsWithOSID(entities) {
 }
 
 export function treeForOutputSchema(entities, outputSchemaId) {
-  const outputSchema = entities.output_schemas[outputSchemaId];
-  const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-  const source = entities.sources[inputSchema.source_id];
+  const outputSchema = entities.output_schemas[outputSchemaId] || {};
+  const inputSchema = _.isEmpty(outputSchema) ? {} : entities.input_schemas[outputSchema.input_schema_id];
+  const source = _.isEmpty(inputSchema) ? {} : entities.sources[inputSchema.source_id];
+
   return {
     outputSchema,
     inputSchema,

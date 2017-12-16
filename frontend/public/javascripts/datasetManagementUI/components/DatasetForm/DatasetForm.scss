@@ -1,0 +1,36 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.form {
+  padding: 1.3rem 0 0 1.3rem;
+  display: inline-block;
+  width: 70%;
+  max-width: 700px;
+}
+
+.formContainer {
+  position: relative;
+}
+
+.requiredNote {
+  position: absolute;
+  top: 1.3rem;
+  right: 10px;
+  width: 30%;
+  vertical-align: top;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 10px;
+  color: $dark-grey-1;
+
+  &::before {
+    content: '*';
+    color: $alternate-1;
+    padding: 0.25em;
+    font-size: 14px;
+  }
+}
+
+.hidden {
+  display: none;
+}

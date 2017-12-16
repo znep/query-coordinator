@@ -5,17 +5,18 @@ import { shallow, mount } from 'enzyme';
 import TextInput from 'components/TextInput/TextInput';
 
 const props = {
-  name: 'name',
-  label: 'Dataset Title',
-  value: 'ddd',
-  isPrivate: false,
-  isRequired: true,
-  placeholder: 'Dataset Title',
-  isCustom: false,
+  field: {
+    name: 'name',
+    label: 'Dataset Title',
+    value: 'ddd',
+    isPrivate: false,
+    isRequired: true,
+    placeholder: 'Dataset Title',
+    isCustom: false
+  },
   inErrorState: false,
   handleChange: sinon.spy(),
   handleBlur: () => {},
-  handleFocus: () => {}
 };
 
 describe('components/TextInput', () => {

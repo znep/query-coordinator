@@ -2,33 +2,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './TextArea.scss';
 
-export default function TextArea({ inErrorState, handleFocus, handleBlur, handleChange, ...data }) {
-  const classNames = inErrorState ? styles.textAreaError : styles.textArea;
-  const { isRequired, label, name, value, placeholder } = data;
-
+const TextArea = ({ handleChange, field, inErrorState }) => {
   return (
     <textarea
-      id={name}
-      name={name}
-      placeholder={placeholder}
-      className={classNames}
-      aria-label={label}
-      aria-required={isRequired}
-      value={value || ''}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      id={field.name}
+      name={field.name}
+      placeholder={field.placeholder}
+      className={inErrorState ? styles.textAreaError : styles.textArea}
+      aria-label={field.label}
+      aria-required={field.isRequired}
+      value={field.value}
       onChange={handleChange} />
   );
-}
+};
 
 TextArea.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  isRequired: PropTypes.bool,
-  inErrorState: PropTypes.bool.isRequired,
-  handleChange: PropTypes.func,
-  handleBlur: PropTypes.func,
-  handleFocus: PropTypes.func
+  field: PropTypes.object.isRequired,
+  inErrorState: PropTypes.bool,
+  handleChange: PropTypes.func.isRequired
 };
+
+export default TextArea;

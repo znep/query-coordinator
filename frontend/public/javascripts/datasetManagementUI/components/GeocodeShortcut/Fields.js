@@ -24,11 +24,9 @@ function outputColumnSelection(
   const outputColumn = getOutputColumnFromMapping(mappings, addressComponent);
   const name = SubI18n[addressComponent];
 
-  const optionRenderer = ({ title, className }) => ( // eslint-disable-line
-    <span className={`picklist-title ${className}`}>
-      {title}
-    </span>
-  );
+  const optionRenderer = (
+    { title, className } // eslint-disable-line
+  ) => <span className={`picklist-title ${className}`}>{title}</span>;
 
   const empty = {
     title: SubI18n.none,
@@ -50,12 +48,12 @@ function outputColumnSelection(
       title: oc.field_name,
       value: oc.field_name,
       render: optionRenderer
-    })).concat([empty]);
+    }))
+    .concat([empty]);
 
   if (allowConstant) {
     options.push(constant);
   }
-
 
   const props = {
     onSelection: ({ value }) => {
@@ -67,29 +65,31 @@ function outputColumnSelection(
         setMapping(addressComponent, null);
       }
     },
-    value: _.isString(outputColumn) ? ENTER_CONSTANT : (outputColumn && outputColumn.field_name),
+    value: _.isString(outputColumn) ? ENTER_CONSTANT : outputColumn && outputColumn.field_name,
     options
   };
 
   let constantView;
   if (_.isString(outputColumn)) {
-    const onUpdateConstant = (e) => {
+    const onUpdateConstant = e => {
       setMapping(addressComponent, e.target.value);
     };
 
-    constantView = (<TextInput
-      name={`constant-${addressComponent}`}
-      placeholder={SubI18n.constant}
-      handleChange={onUpdateConstant}
-      inErrorState={false}
-      value={outputColumn} />);
+    constantView = (
+      <TextInput
+        field={{
+          name: `constant-${addressComponent}`,
+          placeholder: SubI18n.constant,
+          value: outputColumn
+        }}
+        handleChange={onUpdateConstant}
+        inErrorState={false} />
+    );
   }
 
   return (
     <div className={styles.columnSelection}>
-      <label>
-        {name}
-      </label>
+      <label>{name}</label>
       <Dropdown {...props} />
       {constantView}
     </div>

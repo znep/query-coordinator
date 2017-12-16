@@ -78,7 +78,7 @@ const shapeHrefState = rawState =>
 
 // FORM DATA VALIDATORS
 const findDupes = hrefURLObj => {
-  const filetypes = Object.values(hrefURLObj)
+  const filetypes = _.values(hrefURLObj)
     .map(val => val.filetype)
     .filter(ft => ft);
 
@@ -92,8 +92,7 @@ const findDupes = hrefURLObj => {
 };
 
 const findInvalidURLs = hrefURLObj => {
-  const urls = Object.values(hrefURLObj)
-    .map(val => val.url);
+  const urls = _.values(hrefURLObj).map(val => val.url);
 
   return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
 };
@@ -159,8 +158,9 @@ export function MissingValue(urlId, hrefId) {
 // HrefError = MissingValue | BadUrl | DuplicateExtension
 // FormValidationError :: String -> [ HrefError ] ->
 //   { name : String, message : String, errors : [ HrefError ] }
-function FormValidationError(formName, errors) {
+export function FormValidationError(formName, errors) {
   this.name = 'FormValidationError';
+  this.formName = formName;
   this.message = `Validation of ${formName} failed`;
   this.errors = errors;
 }

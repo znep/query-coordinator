@@ -5,16 +5,16 @@ import { shallow, mount } from 'enzyme';
 import TagsInput from 'components/TagsInput/TagsInput';
 
 const props = {
-  name: 'tags',
-  label: 'Tags / Keywords',
-  value: ['one', 'four', 'three'],
-  isPrivate: false,
-  isRequired: false,
-  placeholder: 'Enter tag name',
+  field: {
+    name: 'tags',
+    label: 'Tags / Keywords',
+    value: ['one', 'four', 'three'],
+    isPrivate: false,
+    isRequired: false,
+    placeholder: 'Enter tag name'
+  },
   inErrorState: false,
-  setValue: sinon.spy(),
-  handleBlur: () => {},
-  handleFocus: () => {}
+  handleAddTag: sinon.spy()
 };
 
 describe('components/TagsInput', () => {
@@ -52,7 +52,7 @@ describe('components/TagsInput', () => {
 
       addBtn.simulate('click');
 
-      assert.isTrue(component.props().setValue.calledOnce);
+      assert.isTrue(component.props().handleAddTag.calledOnce);
     });
 
     it('updates its internal state when change occurs in text input', () => {

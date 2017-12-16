@@ -1,74 +1,55 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import _ from 'lodash';
-import { validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/Fieldset/Fieldset';
 import DatasetField from 'containers/DatasetFieldContainer';
+import WithFlash from 'containers/WithFlashContainer';
+import styles from './DatasetForm.scss';
 
-class DatasetForm extends Component {
-  componentWillMount() {
-    const { setErrors, regularFieldsets, customFieldsets } = this.props;
-
-    validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-      Success: () => setErrors([]),
-      Failure: ({ value }) => setErrors(value)
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { regularFieldsets, customFieldsets, setErrors } = nextProps;
-
-    const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
-
-    const oldFieldsets = [...oldRegularFieldsets, ...oldCustomFieldsets];
-
-    const fieldsets = [...regularFieldsets, ...customFieldsets];
-
-    if (!_.isEqual(oldFieldsets, fieldsets)) {
-      validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-        Success: () => setErrors([]),
-        Failure: ({ value }) => setErrors(value)
-      });
-    }
-  }
-
-  render() {
-    const { regularFieldsets, customFieldsets } = this.props;
-
-    const fieldsets = [...regularFieldsets, ...customFieldsets];
-
-    return (
-      <form>
-        {fieldsets.map(fieldset =>
-          <Fieldset title={fieldset.title} subtitle={fieldset.subtitle} key={fieldset.title}>
-            {fieldset.fields.map(field =>
-              <DatasetField
-                field={field}
-                fieldset={fieldset.title}
-                key={field.data.name} />
-            )}
-          </Fieldset>
-        )}
-      </form>
-    );
+function getChangeHandler(field, fieldsetName, f) {
+  switch (field.elementType) {
+    case 'text':
+    case 'textarea':
+    case 'select':
+      return e => f(fieldsetName, field.name, e.target.value);
+    case 'attachmentsInput':
+    case 'tagsInput':
+      return v => f(fieldsetName, field.name, v);
+    default:
+      return () => {};
   }
 }
 
+const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSubmit }) => {
+  return (
+    <WithFlash>
+      <div className={styles.formContainer}>
+        <span className={styles.requiredNote}>{I18n.metadata_manage.required_note}</span>
+        <form onSubmit={handleDatasetFormSubmit} className={styles.form} id="datasetFrom">
+          {Object.keys(fieldsets).map(fsKey => {
+            return (
+              <Fieldset title={fieldsets[fsKey].title} subtitle={fieldsets[fsKey].subtitle} key={fsKey}>
+                {_.values(fieldsets[fsKey].fields).map(field => (
+                  <DatasetField
+                    key={`${fsKey}-${field.name}`}
+                    field={field}
+                    fieldsetName={fsKey}
+                    handleChange={getChangeHandler(field, fsKey, handleDatasetChange)} />
+                ))}
+              </Fieldset>
+            );
+          })}
+          <input type="submit" id="submit-dataset-form" className={styles.hidden} />
+        </form>
+      </div>
+    </WithFlash>
+  );
+};
+
 DatasetForm.propTypes = {
-  regularFieldsets: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      subtitle: PropTypes.string,
-      fields: PropTypes.array.isRequired
-    })
-  ),
-  customFieldsets: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      fields: PropTypes.array
-    })
-  ),
-  setErrors: PropTypes.func.isRequired
+  fieldsets: PropTypes.object,
+  handleDatasetFormSubmit: PropTypes.func,
+  handleDatasetChange: PropTypes.func
 };
 
 export default DatasetForm;

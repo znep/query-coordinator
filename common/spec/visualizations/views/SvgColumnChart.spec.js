@@ -1,8 +1,9 @@
-const _ = require('lodash');
-const $ = require('jquery');
-const I18n = require('common/i18n').default;
-const allLocales = require('common/i18n/config/locales').default;
-const SvgColumnChart = require('common/visualizations/views/SvgColumnChart');
+import _ from 'lodash';
+import $ from 'jquery';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
+import SvgColumnChart from 'common/visualizations/views/SvgColumnChart';
+import testHelpers from '../testHelpers';
 
 describe('SvgColumnChart', () => {
   const CHART_WIDTH = 640;
@@ -578,6 +579,44 @@ describe('SvgColumnChart', () => {
         let value = _.get(column, 'attributes.height.value', null);
         return value === '0';
       }));
+    });
+  });
+
+  describe('when rendering reference lines', () => {
+
+    const overrideVIF = {
+      referenceLines: [
+        {
+          color: '#ba001e',
+          label: '',
+          uId: 'reference-line-0',
+          value: 8000000000
+        }
+      ]
+    };
+
+    let columnChart;
+
+    afterEach(() => {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show humane formatted value in flyout', (done) => {
+
+      columnChart = createColumnChart(640, overrideVIF);
+      columnChart.chart.render(null, testData);
+
+      const referenceLineUnderlay = columnChart.element.find('.reference-line-underlay')[0];
+
+      columnChart.element.on('SOCRATA_VISUALIZATION_FLYOUT', (event) => {
+        const payload = event.originalEvent.detail;
+        const $content = $(payload.content);
+
+        assert.equal($content.find('.socrata-flyout-cell').text(), '8B');
+        done();
+      });
+
+      testHelpers.fireMouseEvent(referenceLineUnderlay, 'mousemove');
     });
   });
 

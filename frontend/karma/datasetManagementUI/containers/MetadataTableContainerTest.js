@@ -3,9 +3,9 @@ import {
   getRevision,
   getView,
   shapeCustomMetadata
-} from 'models/metadataTable';
+} from 'containers/MetadataTableContainer';
 
-describe('models/metadataTable', () => {
+describe('MetadataTableContainer', () => {
   describe('getRevision', () => {
     const revision = {
       id: 334,

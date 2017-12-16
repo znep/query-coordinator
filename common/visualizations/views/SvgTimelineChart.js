@@ -85,6 +85,7 @@ function SvgTimelineChart($element, vif, options) {
   let precision;
   let measures;
   let referenceLines;
+  let xAxisPanDistanceFromZoom = 0;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -600,6 +601,7 @@ function SvgTimelineChart($element, vif, options) {
         -1 * xAxisPanDistance,
         0
       );
+      xAxisPanDistanceFromZoom = lastRenderedZoomTranslate;
 
       // We need to override d3's internal translation since it doesn't seem to
       // respect our snapping to the beginning and end of the rendered data.
@@ -1028,9 +1030,9 @@ function SvgTimelineChart($element, vif, options) {
       viewportSvg.append('rect').
         attr('class', 'overlay').
         attr('fill', 'none').
-        attr('height', height).
+        attr('height', viewportHeight).
         attr('stroke', 'none').
-        attr('width', width).
+        attr('width', viewportWidth).
         on('mousemove', handleMouseMove).
         on(
           'mouseleave',
@@ -1250,7 +1252,7 @@ function SvgTimelineChart($element, vif, options) {
 
   function handleMouseMove() {
     const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
-    const rawDate = d3XScale.invert(d3.mouse(this)[0]);
+    const rawDate = d3XScale.invert(d3.mouse(this)[0] - xAxisPanDistanceFromZoom);
     const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
 
@@ -1286,6 +1288,9 @@ function SvgTimelineChart($element, vif, options) {
         flyoutXOffset = d3XScale(startDate);
       }
     }
+
+    flyoutXOffset += xAxisPanDistanceFromZoom;
+    flyoutXOffset += (self.getAxisLabels().left ? AXIS_LABEL_MARGIN : 0);
 
     const flyoutData = dataToRenderBySeries.map((series) => {
       const measureIndex = 1;
@@ -1360,6 +1365,8 @@ function SvgTimelineChart($element, vif, options) {
       highlightWidth = (highlightWidth / 2);
       highlightXTranslation = 0;
     }
+
+    highlightXTranslation += xAxisPanDistanceFromZoom;
 
     rootElement.select('.highlight').
       attr('display', 'block').

@@ -52,7 +52,6 @@ export default class UserProfile extends Component {
         showFilters={false}
         showHeader
         showManageAssets={showManageAssets}
-        showPager={false}
         showResultCount
         showSearchField
         tabs={tabs} />

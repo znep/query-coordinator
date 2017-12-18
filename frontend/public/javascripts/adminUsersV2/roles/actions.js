@@ -1,6 +1,7 @@
 import CoreRolesApi from 'common/core-roles-api';
 import { showNotification, START, COMPLETE_SUCCESS, COMPLETE_FAIL } from '../actions';
-import { loadUsers} from '../users/actions';
+import { GOTO_PAGE, loadUsers } from '../users/actions';
+import { getFilters, getUsersOffset, getUsersQuery, getUsersResultsLimit } from '../reducers';
 
 export const USER_ROLE_CHANGE = 'USER_ROLE_CHANGE';
 export const changeUserRole = (userId, newRole) => dispatch => {
@@ -90,8 +91,13 @@ export const removeUserRole = (userId, roleId) => dispatch => {
 export const ROLE_FILTER_CHANGED = 'ROLE_FILTER_CHANGED';
 export const roleFilterChanged = roleId => (dispatch, getState) => {
   dispatch({ type: ROLE_FILTER_CHANGED, stage: START, roleId });
-  const { filters, autocomplete: { query } } = getState();
-  return loadUsers({ filters, query }).then(users =>
-    dispatch({ type: ROLE_FILTER_CHANGED, stage: COMPLETE_SUCCESS, users, roleId })
-  );
+  dispatch({ type: GOTO_PAGE, payload: { page: 1 }});
+  const state = getState();
+  const filters = getFilters(state);
+  const offset = getUsersOffset(state);
+  const limit = getUsersResultsLimit(state);
+  const query = getUsersQuery(state);
+  return loadUsers({ filters, limit, offset, query }).then(results => {
+    dispatch({ type: ROLE_FILTER_CHANGED, stage: COMPLETE_SUCCESS, users: results, roleId });
+  });
 };

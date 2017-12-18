@@ -27,12 +27,9 @@ class DropdownButton extends React.Component {
     isDisabled: PropTypes.bool
   };
 
-  constructor() {
-    super();
-    this.state = {
-      showDropdown: false
-    };
-  }
+  state = {
+    showDropdown: false
+  };
 
   componentWillUnmount() {
     this.toggleDocumentMouseDown(false);
@@ -54,13 +51,9 @@ class DropdownButton extends React.Component {
     window.document[isMounted ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
   };
 
-  hideDropdown = () => {
-    this.setState({ showDropdown: false });
-  };
+  hideDropdown = () => this.setState({ showDropdown: false });
 
-  toggleDropdown = () => {
-    this.setState({ showDropdown: !this.state.showDropdown });
-  };
+  toggleDropdown = () => this.setState(({ showDropdown }) => ({ showDropdown: !showDropdown }));
 
   render() {
     const { children, isDisabled } = this.props;
@@ -80,7 +73,7 @@ class DropdownButton extends React.Component {
       <div className="dropdown-button" ref={ref => (this.dropdownRef = ref)}>
         <button
           className={buttonClass}
-          onClick={() => this.setState({ showDropdown: !showDropdown })}
+          onClick={this.toggleDropdown}
           disabled={isDisabled}>
           <SocrataIcon name="kebab" />
         </button>

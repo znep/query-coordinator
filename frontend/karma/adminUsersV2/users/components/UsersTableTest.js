@@ -7,7 +7,7 @@ import { UsersTable } from 'users/components/UsersTable';
 import I18nJS from 'i18n-js';
 
 import { initialState } from '../../helpers/stateFixtures';
-import { TableColumn } from 'components/ResultsTable';
+import ResultsTable from 'components/ResultsTable';
 
 describe('components/UsersTable', () => {
   const defaultProps = {
@@ -21,6 +21,6 @@ describe('components/UsersTable', () => {
 
   it('renders a table with 5 columns', () => {
     const component = shallow(<UsersTable {...defaultProps} />);
-    expect(component.find(TableColumn)).to.have.length(5);
+    expect(component.find(ResultsTable.Column)).to.have.length(5);
   });
 });

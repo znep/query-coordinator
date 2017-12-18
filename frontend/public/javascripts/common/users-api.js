@@ -14,17 +14,39 @@ const convertUserListFromApi = users => {
   });
 };
 
-const getUsers = (domain, { query, filters } = {}) => {
+export const SORT_KEYS = {
+  EMAIL: 'email',
+  LAST_AUTHENTICATED_AT: 'last_authenticated_at',
+  ROLE_NAME: 'role_name',
+  SCREEN_NAME: 'screen_name'
+};
+
+export const SORT_DIRECTION = {
+  ASC: 'ASC',
+  DESC: 'DESC'
+};
+
+const getUsers = (
+  domain,
+  {
+    query,
+    filters,
+    orderBy = SORT_KEYS.SCREEN_NAME,
+    sortDirection = SORT_DIRECTION.ASC,
+    limit,
+    offset = 0
+  } = {}
+) => {
   const fetchOptions = {
     credentials: 'same-origin',
     headers: defaultHeaders
   };
 
-  let apiPath = `/api/catalog/v1/users?domain=${domain}&limit=10000`;
+  let apiPath = `/api/catalog/v1/users?domain=${domain}&limit=${limit}&offset=${offset}`;
   if (!isEmpty(query)) {
     apiPath = `${apiPath}&q=${query}`;
   } else {
-    apiPath = `${apiPath}&order=screen_name`;
+    apiPath = `${apiPath}&order=${orderBy}+${sortDirection}`;
   }
   if (!isEmpty(filters)) {
     Object.keys(filters).forEach(key => {
@@ -35,9 +57,11 @@ const getUsers = (domain, { query, filters } = {}) => {
     });
   }
 
-  return fetchJson(apiPath, fetchOptions).
-    then(json => json.results).
-    then(convertUserListFromApi);
+  return fetchJson(apiPath, fetchOptions).then(json => ({
+    ...json,
+    resultCount: json.resultSetSize,
+    users: convertUserListFromApi(json.results)
+  }));
 };
 
 const autocomplete = (domain, query) => {
@@ -48,8 +72,7 @@ const autocomplete = (domain, query) => {
     headers: defaultHeaders
   };
 
-  return fetchJson(apiPath, fetchOptions).
-  then(searchResults => {
+  return fetchJson(apiPath, fetchOptions).then(searchResults => {
     return {
       ...searchResults,
       results: searchResults.results.map(result => {
@@ -62,7 +85,7 @@ const autocomplete = (domain, query) => {
   });
 };
 
-const resetPassword = (userId) => {
+const resetPassword = userId => {
   const apiPath = `/admin/users/${userId}/reset_password`;
 
   const fetchOptions = {

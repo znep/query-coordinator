@@ -276,14 +276,12 @@ module AdministrationHelper
     server_config = {
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       csrfToken: form_authenticity_token.to_s,
-      csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
-      usersAdminPath: users_admin_path,
-      invitedUsersAdminPath: invited_users_admin_path,
       currentUser: current_user,
       domain: CurrentDomain.cname,
       environment: Rails.env,
       locale: I18n.locale.to_s,
       localePrefix: locale_prefix.to_s,
+      usersResultsLimit: 10,
       routes: {
         csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
         invitedUsersAdminPath: invited_users_admin_path,
@@ -292,6 +290,7 @@ module AdministrationHelper
     }
 
     translations = LocaleCache.render_partial_translations(:users)
+    translations.deep_merge!(LocaleCache.render_partial_translations(:common))
     translations.deep_merge!(LocaleCache.render_partial_translations(:roles))
 
     javascript_tag(%Q(

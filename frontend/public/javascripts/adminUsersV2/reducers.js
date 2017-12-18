@@ -3,9 +3,9 @@ import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReduc
 import { COMPLETE_SUCCESS, LOAD_DATA, SHOW_NOTIFICATION, START } from './actions';
 import { TOGGLE_ADD_USER_UI, SUBMIT_NEW_USERS, SET_ADD_USER_ERRORS } from './users/actions';
 import { ROLE_FILTER_CHANGED } from './roles/actions';
-import invitedUsers from './invitedUsers/reducers';
 import roles from './roles/reducers';
 import users, * as fromUsers from './users/reducers';
+import invitedUsers, * as fromInvitedUsers from './invitedUsers/reducers';
 
 import get from 'lodash/get';
 
@@ -106,6 +106,7 @@ export const getLoadingData = state => get(state, 'ui.loadingData');
 export const getUsersResultsLimit = state => get(state, 'config.usersResultsLimit');
 export const getUsersLoadingData = state => fromUsers.getLoadingData(state.users);
 export const getAddUserErrors = state => get(state, 'ui.addUserErrors');
+export const getInvitedUserCount = state => fromInvitedUsers.getInvitedUserCount(state.invitedUsers);
 
 export default combineReducers({
     ui,

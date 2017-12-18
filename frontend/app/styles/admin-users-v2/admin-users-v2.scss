@@ -5,7 +5,7 @@
 @import 'styleguide-colors';
 
 .admin-header {
-  min-height: 110px;
+  border-bottom: 0;
 }
 
 // this is in the erb, so can't move to within react app
@@ -21,23 +21,42 @@
 }
 
 #app {
-  position: absolute;
-  width: 100%;
-  top: -59px;
-  padding-right: 62px;
-  padding-bottom: 5em;
-
   #users-table {
     margin: 0;
+  }
+
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: $light-grey-5;
+    border-bottom: 1px solid $light-grey-3;
+    margin-left: -2rem;
+    padding-left: 2rem;
+    margin-right: -2rem;
+    padding-right: 2rem;
+    margin-bottom: 1rem;
   }
 
   .nav-tabs {
     border-bottom: none;
     padding-bottom: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    > ul {
+      height: 2.25em;
+      margin: 0;
+      padding: 0;
+    }
   }
 
   .admin-users-app {
     position: relative;
+    margin-left: -2rem;
+    padding-left: 2rem;
+    margin-right: -2rem;
+    padding-right: 2rem;
   }
 
   .header-button-bar {
@@ -274,6 +293,41 @@
 
   .error-list {
     margin-bottom: 0;
+  }
+
+  .asset-counts {
+    margin: 0.5rem 0;
+    display: flex;
+
+    &.fetching {
+      opacity: 0.5;
+    }
+
+    &.has-error {
+      display: none;
+    }
+
+    .asset-counts-item {
+      display: inline-block;
+      margin-right: 1.5rem;
+      width: 2.5rem;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      .item-count {
+        font-size: 1.5rem;
+        line-height: 1;
+        color: $primary-base;
+        margin-bottom: 0.25rem;
+      }
+
+      .item-name {
+        color: $dark-grey-1;
+        font-size: 0.9rem;
+      }
+    }
   }
 }
 

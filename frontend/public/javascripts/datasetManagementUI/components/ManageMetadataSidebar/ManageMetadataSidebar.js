@@ -50,7 +50,7 @@ const ManageMetadataSidebar = ({
 ManageMetadataSidebar.propTypes = {
   params: PropTypes.object.isRequired,
   hideFlash: PropTypes.func.isRequired,
-  outputSchemaId: PropTypes.number.isRequired,
+  outputSchemaId: PropTypes.number,
   columnsExist: PropTypes.bool.isRequired,
   datasetFormStatus: PropTypes.string.isRequired,
   columnFormStatus: PropTypes.string.isRequired

@@ -100,11 +100,13 @@ class TablePane extends Component {
       displayState,
       numLoadsInProgress,
       showShortcut,
-      params
+      params,
+      source
     } = this.props;
 
     const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
     const errorsNotInView = this.errorsNotInView();
+    const uploadedFile = source && source.export_filename;
 
     return (
       <div className={styles.contentWrap}>
@@ -117,10 +119,11 @@ class TablePane extends Component {
           ref={tableWrap => {
             this.tableWrap = tableWrap;
           }}>
-          <div className={styles.dataPreview}>
-            <div className={styles.titleWrapper}>
+          <div className={`${styles.dataPreview} data-preview`}>
+            <div className={`${styles.titleWrapper} title-wrapper`}>
               <h2 className={styles.previewHeader}>{I18n.data_preview.title}</h2>
-              {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
+              {numLoadsInProgress > 0 && <span className="spinner-default" />}
+              {uploadedFile && <span className="filename">({uploadedFile})</span>}
             </div>
             <div className={styles.datasetAttribute}>
               <div className={styles.datasetAttribute}>
@@ -171,7 +174,8 @@ TablePane.propTypes = {
   params: PropTypes.object,
   numLoadsInProgress: PropTypes.number,
   showShortcut: PropTypes.func,
-  flashVisible: PropTypes.bool
+  flashVisible: PropTypes.bool,
+  source: PropTypes.object
 };
 
 export default TablePane;

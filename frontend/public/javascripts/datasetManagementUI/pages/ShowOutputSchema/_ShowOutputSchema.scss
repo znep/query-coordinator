@@ -1,0 +1,13 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.output-schema-container {
+  .data-preview {
+    .title-wrapper {
+      .filename {
+        color: $light-grey-2;
+        vertical-align: text-bottom;
+      }
+    }
+  }
+}

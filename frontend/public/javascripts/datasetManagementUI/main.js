@@ -12,7 +12,6 @@ import App from 'components/App/App';
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
-  window.store = store;
 } else {
   // 126728 is Publishing airbrake project id
   Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);

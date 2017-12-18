@@ -373,6 +373,66 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#renderLegendBar', () => {
+    let viz;
+    let $viz;
+    let $legend;
+    const legendItems = [
+      { label: 'a', color: '#fff' },
+      { label: '<script>alert(0)</script>', color: 'red' },
+      { label: 'dashed', color: 'blue', dashed: true }
+    ];
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+      viz.renderLegendBar(legendItems);
+      $legend = $(getVizChildElement('.socrata-legend-menu'));
+    });
+
+    it('renders a list of items', () => {
+      assert.equal($legend.find('li').length, legendItems.length);
+      for (let i = 0; i < legendItems.length; i++) {
+        assert.equal($legend.find('li')[i].textContent, legendItems[i].label);
+      }
+    });
+
+    it('sets background-color for non-dashed items', () => {
+      const itemIndex = 0;
+      const item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend)[0];
+      assert.isOk(item.style.backgroundColor);
+    });
+
+    it('does not set dashed class for non-dashed items', () => {
+      const itemIndex = 1;
+      const $item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend);
+      assert.isNotTrue($item.hasClass('dashed'));
+    });
+
+    it('does not set border-top-color for non-dashed items', () => {
+      const itemIndex = 1;
+      const item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend)[0];
+      assert.isNotOk(item.style.borderTopColor);
+    });
+
+    it('does not set background-color for dashed items', () => {
+      const itemIndex = 2;
+      const item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend)[0];
+      assert.isNotOk(item.style.backgroundColor);
+    });
+
+    it('sets dashed class for dashed items', () => {
+      const itemIndex = 2;
+      const $item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend);
+      assert.isTrue($item.hasClass('dashed'));
+    });
+
+    it('sets border-top-color for dashed items', () => {
+      const itemIndex = 2;
+      const item = $(`li:nth-child(${itemIndex + 1}) > span`, $legend)[0];
+      assert.isOk(item.style.borderTopColor);
+    });
+  });
+
   describe('#clearError', () => {
     it('should clear a rendered error message', () => {
       const viz = new SvgVisualization($element, mockVif);

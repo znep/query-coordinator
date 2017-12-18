@@ -10,7 +10,7 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 import I18n from 'common/i18n';
 
 import { queryChanged, resultsChanged, resultVisibilityChanged } from '../../actions';
-import styles from './search-box.scss';
+import styles from './search-box.module.scss';
 
 class SearchBox extends React.Component {
   constructor(props) {

@@ -28,7 +28,7 @@ import { validateFieldName, validateDisplayName } from 'containers/AddColFormCon
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
-function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
+export function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
   return (dispatch, getState) => {
     const callId = uuid();
 
@@ -59,10 +59,6 @@ function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(subscribeToTransforms(os));
 
         return resp;
-      })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-        throw err;
       });
   };
 }

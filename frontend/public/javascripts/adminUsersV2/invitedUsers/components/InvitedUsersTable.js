@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
-import ResultsTable, { TableColumn } from '../../components/ResultsTable';
+import ResultsTable from '../../components/ResultsTable';
 import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
 import { removeInvitedUser, resendInvitedUserEmail } from '../actions';
 import DateFromNow from '../../components/DateFromNow';
@@ -41,14 +41,14 @@ export class InvitedUsersTable extends React.Component {
         rowKey="id"
         loadingData={loadingData}
         noResultsMessage={noResultsMessage}>
-        <TableColumn dataIndex="email" header={I18n.t('users.headers.email')} />
-        <TableColumn dataIndex="role" header={I18n.t('users.headers.role')} />
-        <TableColumn dataIndex="createdAt" header={I18n.t('users.headers.invited')}>
+        <ResultsTable.Column dataIndex="email" header={I18n.t('users.headers.email')} />
+        <ResultsTable.Column dataIndex="role" header={I18n.t('users.headers.role')} />
+        <ResultsTable.Column dataIndex="createdAt" header={I18n.t('users.headers.invited')}>
           {this.renderInvitedCell}
-        </TableColumn>
-        <TableColumn dataIndex="id" header={I18n.t('users.headers.actions')}>
+        </ResultsTable.Column>
+        <ResultsTable.Column dataIndex="id" header={I18n.t('users.headers.actions')}>
           {this.renderActionsCell}
-        </TableColumn>
+        </ResultsTable.Column>
       </ResultsTable>
     );
   }

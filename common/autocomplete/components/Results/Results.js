@@ -5,7 +5,7 @@ import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import { resultFocusChanged, resultVisibilityChanged, queryChanged } from '../../actions';
 import Result from './Result';
-import styles from './results.scss';
+import styles from './results.module.scss';
 
 class Results extends React.Component {
   constructor(props) {

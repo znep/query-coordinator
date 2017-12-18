@@ -1,16 +1,15 @@
 import CoreFutureAccountsApi from 'common/core-future-accounts-api';
-import _ from 'lodash';
+import sortBy from 'lodash/fp/sortBy';
+import pick from 'lodash/fp/pick';
 
 import { showNotification, START, COMPLETE_SUCCESS, COMPLETE_FAIL } from '../actions';
 
+const sortByCreatedAt = sortBy(['createdAt']);
+const pickUserFields = pick(['createdAt', 'email', 'id', 'pendingRoleId']);
 export const loadInvitedUsers = () =>
   CoreFutureAccountsApi.getFutureUsers().
-    then(values => values.map(value => _.pick(value, ['createdAt', 'email', 'id', 'pendingRoleId']))).
-    then(users =>
-      users.sort((a, b) => {
-        return b.createdAt - a.createdAt;
-      })
-    ).
+    then(values => values.map(pickUserFields)).
+    then(sortByCreatedAt).
     catch(error => {
       console.warn('Unable to load invited users, showing empty list.', error);
       return [];

@@ -230,10 +230,7 @@ export class GeocodeShortcut extends Component {
   getOutputColumns() {
     // TODO: refine this selector; will break if you have multiple oc's with the
     // same mapping (if e.g. you change a col name)
-    return Selectors.columnsForOutputSchema(
-      this.props.entities,
-      this.getOutputSchema().id
-    );
+    return Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
   }
 
   maybeSetColumnsHidden() {
@@ -315,10 +312,7 @@ export class GeocodeShortcut extends Component {
   genDesiredColumns() {
     // will be all cols + the generated geo one or just the geo one, depending
     // on if the user checked the "Do Not Import Original Cols" box
-    let existingColumns = Selectors.columnsForOutputSchema(
-      this.props.entities,
-      this.getOutputSchema().id
-    );
+    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
 
     const anyMappings = _.some(
       this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
@@ -389,7 +383,7 @@ export class GeocodeShortcut extends Component {
       .catch(resp => {
         const { body } = resp;
         if (body && body.params) {
-          const message = _.flatMap(Object.values(body.params), errors => errors);
+          const message = _.flatMap(_.values(body.params), errors => errors);
           this.props.showError(message);
         } else {
           console.error(resp);

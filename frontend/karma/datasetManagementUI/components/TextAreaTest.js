@@ -5,16 +5,16 @@ import { shallow, mount } from 'enzyme';
 import TextArea from 'components/TextArea/TextArea';
 
 const props = {
-  name: 'description',
-  label: 'Brief Description',
-  value: 'kk',
-  isPrivate: false,
-  isRequired: false,
-  placeholder: 'Enter a description',
+  field: {
+    name: 'description',
+    label: 'Brief Description',
+    value: 'kk',
+    isPrivate: false,
+    isRequired: false,
+    placeholder: 'Enter a description'
+  },
   inErrorState: false,
-  handleChange: sinon.spy(),
-  handleBlur: () => {},
-  handleFocus: () => {}
+  handleChange: sinon.spy()
 };
 
 describe('components/TextArea', () => {

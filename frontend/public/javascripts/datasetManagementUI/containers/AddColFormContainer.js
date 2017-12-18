@@ -57,7 +57,7 @@ export const mapStateToProps = ({ ui, entities }, { params }) => {
   const isid = _.toNumber(params.inputSchemaId);
   const selectOptions = [
     { title: I18n.add_col.no_source_col, value: 'null' },
-    ...Object.values(entities.input_columns)
+    ..._.values(entities.input_columns)
       .filter(ic => ic.input_schema_id === isid)
       .map(col => ({
         title: col.field_name,

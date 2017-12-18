@@ -3,11 +3,11 @@ import autocomplete from 'common/autocomplete/reducers/StatefulAutocompleteReduc
 import { COMPLETE_SUCCESS, LOAD_DATA, SHOW_NOTIFICATION, START } from './actions';
 import { TOGGLE_ADD_USER_UI, SUBMIT_NEW_USERS, SET_ADD_USER_ERRORS } from './users/actions';
 import { ROLE_FILTER_CHANGED } from './roles/actions';
-import users from './users/reducers';
 import invitedUsers from './invitedUsers/reducers';
 import roles from './roles/reducers';
+import users, * as fromUsers from './users/reducers';
 
-import _ from 'lodash';
+import get from 'lodash/get';
 
 const initialUiState = {
   addUserErrors: [],
@@ -24,16 +24,16 @@ const ui = (state = initialUiState, action) => {
     case SET_ADD_USER_ERRORS:
       return {
         ...state,
-        addUserErrors: _.get(action, 'payload.errors', [])
+        addUserErrors: get(action, 'payload.errors', [])
       };
     case SHOW_NOTIFICATION:
       if (action.stage === START) {
         return {
           ...state,
           showNotification: true,
-          notificationTimeout: _.get(action, 'payload.timeout', null),
-          notificationType: _.get(action, 'payload.type', 'default'),
-          notificationContent: _.get(action, 'payload.content', '')
+          notificationTimeout: get(action, 'payload.timeout', null),
+          notificationType: get(action, 'payload.type', 'default'),
+          notificationContent: get(action, 'payload.content', '')
         };
       } else if (action.stage === COMPLETE_SUCCESS) {
         return {
@@ -46,7 +46,7 @@ const ui = (state = initialUiState, action) => {
     case TOGGLE_ADD_USER_UI:
       return {
         ...state,
-        showAddUserUi: _.get(action, 'payload.isOpen', !state.showAddUserUi)
+        showAddUserUi: get(action, 'payload.isOpen', !state.showAddUserUi)
       };
     case LOAD_DATA:
       if (action.stage === COMPLETE_SUCCESS) {
@@ -73,9 +73,9 @@ const ui = (state = initialUiState, action) => {
   }
 };
 
-const config = initialConfig => (state = initialConfig) => state;
+const config = (state = {}) => state;
 
-const filters = initialFilters => (state = initialFilters, action) => {
+const filters = (state = {}, action) => {
   switch (action.type) {
     case ROLE_FILTER_CHANGED:
       if (action.roleId === 'all') {
@@ -94,13 +94,25 @@ const filters = initialFilters => (state = initialFilters, action) => {
   }
 };
 
-export default (initialConfig, initialFilters) =>
-  combineReducers({
+export const getFilters = state => state.filters;
+export const getUsersCurrentPage = state => fromUsers.getCurrentPage(state.users);
+export const getUsersOffset = state => fromUsers.getOffset(state.users);
+export const getUsersOrderBy = state => fromUsers.getOrderBy(state.users);
+export const getUsersSortDirection = state => fromUsers.getSortDirection(state.users);
+export const getUsersResultCount = state => fromUsers.getResultCount(state.users);
+export const getUsers = state => fromUsers.getUsers(state.users);
+export const getUsersQuery = state => get(state, 'autocomplete.query');
+export const getLoadingData = state => get(state, 'ui.loadingData');
+export const getUsersResultsLimit = state => get(state, 'config.usersResultsLimit');
+export const getUsersLoadingData = state => fromUsers.getLoadingData(state.users);
+export const getAddUserErrors = state => get(state, 'ui.addUserErrors');
+
+export default combineReducers({
     ui,
     users,
     invitedUsers,
     roles,
-    config: config(initialConfig),
+    config,
     autocomplete,
-    filters: filters(initialFilters)
+    filters
   });

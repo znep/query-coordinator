@@ -1,34 +1,105 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import _ from 'lodash';
+import { SocrataIcon } from 'common/components';
+import isFunction from 'lodash/isFunction';
+import omit from 'lodash/omit';
+import { SORT_DIRECTION } from 'common/users-api';
 
-export class TableColumn extends Component {
+
+/**
+ * TableCell is a wrapper to allow for better visualizing the flow of props through the table, and to
+ * reconcile a cell's data with the index into that data
+ */
+const TableCell = ({ children, dataClassName, data, dataIndex }) => (
+  <td className={dataClassName || null}>
+    {children(data[dataIndex], data)}
+  </td>
+);
+
+TableCell.propTypes = {
+  children: PropTypes.func,
+  dataClassName: PropTypes.string,
+  data: PropTypes.any
+};
+
+/**
+ * TableRow is a wrapper to allow for better visualizing the flow of props through the table
+ */
+const TableRow = ({ children, rowClassName }) => {
+  const className = cx(rowClassName, 'results-list-row');
+  return (<tr className={className}>{children}</tr>);
+};
+
+TableRow.propTypes = {
+  children: PropTypes.any
+};
+
+
+const TableHeaderCell = ({ header, headerClassName, isActive, sortDirection, onSort, ...otherProps }) => {
+  const baseProps = omit(otherProps, Object.keys(TableColumn.propTypes));
+  const isSorted = isFunction(onSort);
+  const props = {
+    onClick: isSorted ? onSort : null,
+    ...baseProps
+  };
+  const className = cx({
+    'active': isActive,
+    'sorted': isSorted,
+    'ascending': sortDirection === SORT_DIRECTION.ASC && isActive,
+    'descending': sortDirection === SORT_DIRECTION.DESC && isActive
+  }, headerClassName, 'results-list-header-cell');
+  return (
+    <th {...props} className={className} scope="col" tabIndex="0">
+      <span className="column-name">{header}</span>
+      {isSorted ? <SocrataIcon className="ascending-arrow" name="arrow-up2" /> : null}
+      {isSorted ? <SocrataIcon className="descending-arrow" name="arrow-down2" /> : null}
+    </th>
+  );
+};
+
+TableHeaderCell.propTypes = {
+  header: PropTypes.string.isRequired,
+  headerClassName: PropTypes.string,
+  isActive: PropTypes.bool,
+  onSort: PropTypes.func,
+  sortDirection: PropTypes.oneOf(Object.values(SORT_DIRECTION))
+};
+
+TableHeaderCell.defaultProps = {
+  isActive: false,
+  headerClassName: ''
+};
+
+const TableHeaderRow = ({ children }) => {
+  return (
+    <thead className="results-list-header">
+    <tr>{children}</tr>
+    </thead>
+  );
+};
+
+TableHeaderRow.propTypes = {
+  children: PropTypes.any
+};
+
+/**
+ * TableColumn doesn't render anything, it's just a props bag for configuration of the columns/row cells
+ */
+class TableColumn extends Component {
   static propTypes = {
     children: PropTypes.func,
     data: PropTypes.any,
     dataClassName: PropTypes.string,
     dataIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    header: PropTypes.string.isRequired,
-    headerClassName: PropTypes.string
+    ...TableCell.propTypes
   };
 
   static defaultProps = {
-    children: _.identity,
+    children: (arg) => arg,
     data: null,
-    dataClassName: '',
-    headerClassName: ''
+    dataClassName: ''
   };
-
-  render() {
-    const { children, data, dataIndex } = this.props;
-    const renderedChildren = children(data[dataIndex], this.props.data);
-    if (typeof renderedChildren === 'string' || _.isNumber(renderedChildren)) {
-      return <span>{renderedChildren}</span>;
-    } else {
-      return renderedChildren && React.Children.only(renderedChildren);
-    }
-  }
 }
 
 const childrenOfType = (displayName, onError) => PropTypes.
@@ -40,6 +111,7 @@ const childrenOfType = (displayName, onError) => PropTypes.
   });
 
 class ResultsTable extends Component {
+  static Column = TableColumn;
   static propTypes = {
     children: childrenOfType(
       'TableColumn',
@@ -48,46 +120,30 @@ class ResultsTable extends Component {
       ),
     className: PropTypes.string,
     data: PropTypes.array.isRequired,
+    isSortedDescending: PropTypes.bool,
     loadingData: PropTypes.bool,
     noResultsMessage: PropTypes.string.isRequired,
     rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   static defaultProps = {
+    isSortedDescending: false,
     loadingData: false
   };
 
   renderHeaderRow = () => {
-    const headerCells = React.Children.map(this.props.children, column => {
-      const { header, headerClassName, ...otherProps } = column.props;
-      const props = _.omit(otherProps, _.keys(TableColumn.propTypes));
-      return (
-        <th {...props} className={headerClassName}>
-          {header}
-        </th>
-      );
-    });
-    return (
-      <thead className="results-list-header">
-        <tr>{headerCells}</tr>
-      </thead>
-    );
+    const headerCells = React.Children.map(this.props.children, column => <TableHeaderCell {...column.props} />);
+    return (<TableHeaderRow>{headerCells}</TableHeaderRow>);
   };
 
   renderDataRows = () => {
     const { children, data, rowKey } = this.props;
     const rows = data.map((rowData, index) => {
-      const cells = React.Children.map(children, child => {
-        const { dataClassName, dataIndex } = child.props;
-        const element = React.cloneElement(child, { data: rowData });
-        return (
-          <td className={dataClassName} key={dataIndex}>
-            {element}
-          </td>
-        );
-      });
+      const cells = React.Children.map(children, child => (
+        <TableCell {...child.props} data={rowData}>{child.props.children}</TableCell>
+      ));
       const key = (rowKey && rowKey.length) ? rowData[rowKey] : index;
-      return <tr key={key}>{cells}</tr>;
+      return (<TableRow key={key}>{cells}</TableRow>);
     });
     return <tbody>{rows}</tbody>;
   };
@@ -116,9 +172,9 @@ class ResultsTable extends Component {
   };
 
   render() {
-    const props = _.omit(this.props, _.keys(ResultsTable.propTypes));
+    const props = omit(this.props, Object.keys(ResultsTable.propTypes));
     const className = cx(
-      'result-list-table table table-discrete table-condensed table-borderless',
+      'results-list-table table table-discrete table-condensed table-borderless',
       this.props.className
     );
     const count = React.Children.count(this.props.children);

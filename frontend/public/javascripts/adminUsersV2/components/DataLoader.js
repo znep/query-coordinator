@@ -21,12 +21,8 @@ class BaseDataLoader extends Component {
   }
 }
 
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = dispatch => {
-  return {
-    loadData: () => dispatch(loadData())
-  };
+const mapDispatchToProps = {
+  loadData: loadData
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BaseDataLoader);
+export default connect(null, mapDispatchToProps)(BaseDataLoader);

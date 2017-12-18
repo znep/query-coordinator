@@ -19,13 +19,30 @@ const cancelButtonClicked = (state) => {
 const saveButtonClicked = state => ({ ...state, saveInProgress: true });
 
 // usually outside forces telling us to show the access manager modal
-const showAccessManager = (state) => {
-  return { ...state, visible: true };
+const showAccessManager = (state, action) => {
+  return {
+    ...state,
+    visible: true,
+
+    // optionally refresh the page when saving succeeds
+    refreshPageOnSave: action.refreshPageOnSave
+  };
 };
 
 // called by the AccessManagerSaga when API returns success
 // hide the modal and show a success toast notification
 const saveSuccess = (state) => {
+  const { refreshPageOnSave } = state;
+
+  // if we've been told ro refresh the page on save success, do so now
+  // (this is mostly for when elements showing permissions on a view
+  // but don't get updated when they change in this component)
+  if (refreshPageOnSave) {
+    window.location.reload();
+    return state;
+  }
+
+  // else show a toast
   return {
     ...state,
     saveInProgress: false,

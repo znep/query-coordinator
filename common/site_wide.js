@@ -6,6 +6,7 @@ import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocom
 import AccessManagerModalToggle from 'common/components/AccessManagerModalToggle';
 import 'common/notifications/main';
 import AssetActionBar from 'common/components/AssetActionBar';
+import { sift } from 'common/js_utils';
 
 /** ***************************************************************************************************/
 /*
@@ -62,29 +63,34 @@ window.autocomplete = function(containerSelector, options, defaultState) {
 
 /** ***************************************************************************************************/
 /*
- * This renders the <AccessManagerModalToggle /> component into the "access-manager-component"
- * if "window.blist.dataset.id" is available.
+ * This renders the <AccessManagerModalToggle /> component into the "access-manager-component" div
+ * if a view and a current user are available.
  *
  * This component adds a "window.socrata.showAccessManager()" function when it mounts
  * that can be called to show the access manager modal.
  */
 /** ***************************************************************************************************/
-if (_.get(window, 'blist.feature_flags.enable_access_manager_modal', false)) {
+if (_.get(window, 'socrata.featureFlags.enable_access_manager_modal', false)) {
   document.addEventListener('DOMContentLoaded', () => {
-    const view = _.get(window, 'blist.dataset', null);
     const accessManagerRoot = document.getElementById('access-manager-container');
+    if (accessManagerRoot) {
+      const view = sift(window,
+        // "blist.dataset" is for the grid view
+        'blist.dataset',
+        // "initialState.view.coreView" is for primer
+        'initialState.view.coreView'
+      );
 
-    if (accessManagerRoot && view) {
-      // blist.currentUser isn't actually available on DOMContentLoad because
-      // we do a call to /api/user/current.json on every page load!
-      window.blist.configuration.onCurrentUserComplete((currentUser) => {
+      const currentUser = _.get(window, 'socrata.currentUser', null);
+
+      if (view && currentUser) {
         ReactDOM.render(
           <AccessManagerModalToggle
             currentUser={currentUser}
             view={view} />,
           accessManagerRoot
         );
-      });
+      }
     }
   });
 }

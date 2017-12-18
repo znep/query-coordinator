@@ -18,6 +18,8 @@ http://www.socrata.com
     <%= rendered_stylesheet_tag 'styleguide-layout' %>
     <%= rendered_stylesheet_tag 'datasets-common' %>
 
+    <%= render_global_socrata_state %>
+
     <%= yield :head %>
 
     <%= get_favicon_tag %>

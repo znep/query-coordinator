@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { showAccessManager } from '../lib/accessManager';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
@@ -59,7 +60,9 @@ export class PrivateNotice extends Component {
     }
 
     const manageLink = userHasRight(Rights.edit_others_datasets) ?
-      <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
+      <a
+        href={`${localizeLink(view.gridUrl)}?pane=manage`}
+        onClick={e => showAccessManager(e)}>
         {I18n.manage_prompt}
       </a> :
       null;

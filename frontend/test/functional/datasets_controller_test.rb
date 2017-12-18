@@ -449,16 +449,7 @@ class DatasetsControllerTest < ActionController::TestCase
   def setup_nbe_dataset_test(is_superadmin = false, has_page_metadata = false)
     load_sample_data('test/fixtures/sample-data.json')
     @view.stubs(new_backend?: true, category_display: nil)
-    role_name = is_superadmin ? 'admin' : 'user'
-    stub_user = stub(
-      :displayName =>  nil,
-      :email =>  nil,
-      :id =>  'prix-fixe',
-      :is_superadmin? =>  is_superadmin,
-      :rights => [:some_right],
-      :role_name => role_name
-    )
-    stub_user.stubs(has_right?: false)
-    @controller.stubs(current_user: stub_user)
+    user = init_current_user(@controller, 'test-test', '123456', { 'flags' => is_superadmin ? ['admin'] : [] })
+    @controller.stubs(current_user: user)
   end
 end

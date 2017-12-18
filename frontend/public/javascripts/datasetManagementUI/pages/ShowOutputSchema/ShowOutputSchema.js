@@ -72,7 +72,7 @@ export class ShowOutputSchema extends Component {
     const onTablePreview = currentPane === 'tablePreview';
 
     return (
-      <div className={styles.outputSchemaContainer}>
+      <div className={`${styles.outputSchemaContainer} output-schema-container`}>
         <Modal fullScreen onDismiss={goToRevisionBase}>
           <ModalHeader onDismiss={goToRevisionBase}>
             <SourceBreadcrumbs />

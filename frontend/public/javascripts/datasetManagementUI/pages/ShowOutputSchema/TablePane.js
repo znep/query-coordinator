@@ -174,7 +174,8 @@ TablePane.propTypes = {
   params: PropTypes.object,
   numLoadsInProgress: PropTypes.number,
   showShortcut: PropTypes.func,
-  flashVisible: PropTypes.bool
+  flashVisible: PropTypes.bool,
+  source: PropTypes.object
 };
 
 export default TablePane;

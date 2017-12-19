@@ -71,7 +71,6 @@ function generatePreviewDataPath({ entities, outputSchema, blob, params }) {
 
 export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
   const previewDataPath = generatePreviewDataPath({ entities, outputSchema, blob, params });
-  const inProgress = _.some(entities.sources, source => !source.finished_at && !source.failed_at);
 
   if (previewDataPath) {
     return (
@@ -79,13 +78,9 @@ export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
         <div className="header-wrapper">
           <h2>{I18n.home_pane.table_preview}</h2>
           <div className="button-group">
-            {
-              !inProgress && (
-                <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-                  <SocrataIcon name="plus2" isBtnIcon /><span>{I18n.home_pane.add_data}</span>
-                </Link>
-              )
-            }
+            <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
+              <SocrataIcon name="plus2" isBtnIcon /><span>{I18n.home_pane.add_data}</span>
+            </Link>
             <Link to={previewDataPath} className="btn btn-sm btn-default btn-alternate-2">
               {I18n.home_pane.review_data}
             </Link>

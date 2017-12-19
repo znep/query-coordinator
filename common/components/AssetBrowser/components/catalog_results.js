@@ -135,7 +135,7 @@ export class CatalogResults extends Component {
       </div>
     ) : null;
 
-    const mobileFilterToggle = isMobile ? (
+    const mobileFilterToggle = isMobile && showFilters ? (
       <a href="#" className="mobile-filter-toggle" onClick={toggleFilters}>
         {I18n.t('shared.asset_browser.mobile.filters')}
         <ActiveFilterCount />

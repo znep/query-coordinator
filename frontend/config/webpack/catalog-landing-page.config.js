@@ -23,7 +23,7 @@ module.exports = _.defaultsDeep({
         {
           // Matches stylesheets with the `.module.` affix - goes through CSS Module loaders.
           test: /.*\.module\.s?css$/,
-          loader: 'style?sourceMap!css?modules&camelCase=true&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=2!postcss!sass'
+          loader: 'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=2!postcss!sass'
         }
       ]
     })

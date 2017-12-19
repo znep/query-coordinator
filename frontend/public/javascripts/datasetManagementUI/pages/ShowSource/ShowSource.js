@@ -33,7 +33,7 @@ export const ShowSource = ({
         {inProgress ? (
           <div className={styles.centeredContainer}>
             <span className={styles.spinner} />
-            <p>Upload in Progress...</p>
+            <p>{I18n.show_uploads.preparing_upload}</p>
           </div>
         ) : (
           <div className={styles.sourceContainer}>

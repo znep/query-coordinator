@@ -71,7 +71,7 @@ function generatePreviewDataPath({ entities, outputSchema, blob, params }) {
 
 export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
   const previewDataPath = generatePreviewDataPath({ entities, outputSchema, blob, params });
-  const inProgress = _.some(entities.sources, source => !source.finished_at && !source.failed_at)
+  const inProgress = _.some(entities.sources, source => !source.finished_at && !source.failed_at);
 
   if (previewDataPath) {
     return (

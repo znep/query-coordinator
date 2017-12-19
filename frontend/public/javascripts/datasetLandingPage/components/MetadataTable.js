@@ -85,6 +85,11 @@ function mapStateToProps(state) {
     return false;
   };
 
+  const useDataAssetStrings = () => {
+    const { isParent } = view.coreView.metadata;
+    return isUSAID && isParent === true;
+  };
+
   let showCreateAlertButton = false;
 
   if (isLoggedIn()) {
@@ -113,7 +118,8 @@ function mapStateToProps(state) {
         return null;
       }
     },
-    showCreateAlertButton: showCreateAlertButton
+    showCreateAlertButton: showCreateAlertButton,
+    useDataAssetStrings: useDataAssetStrings()
   });
 }
 

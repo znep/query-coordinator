@@ -594,6 +594,7 @@ en:
             recently_added: Recently Added
             recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
+    contact_data_asset_owner: Contact Data Asset Owner
     dataset_contents:
       columns: Columns
       row_display_unit: Each row is a
@@ -650,20 +651,26 @@ en:
       data_last_updated: Data Last Updated
       data_provided_by: Data Provided by
       dataset_owner: Dataset Owner
+      data_asset_owner: Data Asset Owner
       downloads: Downloads
       edit_metadata: Edit Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
       no_category_value: This dataset has not been categorized
+      no_category_value_data_asset: This data asset has not been categorized
       no_license_value: The license for this dataset is unspecified
+      no_license_value_data_asset: The license for this data asset is unspecified
       no_tags_value: This dataset does not have any tags
+      no_tags_value_data_asset: This data asset does not have any tags
       no_value: "(none)"
       source_link: Source Link
       tags: Tags
       title: About this Dataset
+      title_data_asset: About this Data Asset
       topics: Topics
       view_statistics: View all statistics for this Dataset
+      view_statistics_data_asset: View all statistics for this Data Asset
       views: Views
     more: Show More
     none: None
@@ -1873,6 +1880,7 @@ en:
       learn_more_link: Learn about more external integrations at
       title: Open this dataset in Carto?
     contact_dataset_owner: Contact Dataset Owner
+    contact_data_asset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
       email: Your Email

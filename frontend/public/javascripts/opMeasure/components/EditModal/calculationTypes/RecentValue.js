@@ -91,9 +91,9 @@ RecentValue.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const dateColumnFieldName = _.get(state, 'editor.measure.metric.arguments.dateColumn');
+  const dateColumnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.dateColumn');
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
-  const valueColumnFieldName = _.get(state, 'editor.measure.metric.arguments.valueColumn');
+  const valueColumnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.valueColumn');
 
   return {
     dateColumnFieldName,

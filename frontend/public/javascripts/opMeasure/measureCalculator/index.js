@@ -10,7 +10,7 @@ import { assert, assertIsOneOfTypes } from 'common/js_utils';
 export const isColumnUsableWithMeasureArgument = (column, measure, argument) => {
   if (!column) { return false; }
 
-  const type = _.get(measure, 'metric.type');
+  const type = _.get(measure, 'metricConfig.type');
   const renderTypeName = _.get(column, 'renderTypeName');
   const columnIsNumeric = renderTypeName === 'number' || renderTypeName === 'money';
 
@@ -20,7 +20,7 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
       (argument === 'valueColumn' && columnIsNumeric);
   } else {
     // All other types
-    const aggregationType = _.get(measure, 'metric.arguments.aggregationType');
+    const aggregationType = _.get(measure, 'metricConfig.arguments.aggregationType');
     const needsNumericColumn =
       (type === 'rate' && aggregationType === 'sum') ||
       (type === 'sum');
@@ -30,7 +30,7 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
 };
 
 const setupSoqlDataProvider = (measure) => {
-  const datasetUid = _.get(measure, 'metric.dataSource.uid');
+  const datasetUid = _.get(measure, 'dataSourceLensUid');
   if (!datasetUid) {
     return null;
   }
@@ -121,12 +121,12 @@ const excludeNullsFilter = (fieldName) => ({
 
 export const calculateCountMeasure = async (measure) => {
   const dataProvider = setupSoqlDataProvider(measure);
-  const column = _.get(measure, 'metric.arguments.column');
+  const column = _.get(measure, 'metricConfig.arguments.column');
   if (!dataProvider || !column) {
     return {};
   }
 
-  const columnCondition = _.get(measure, 'metric.arguments.includeNullValues') ?
+  const columnCondition = _.get(measure, 'metricConfig.arguments.includeNullValues') ?
     null : excludeNullsFilter(column);
 
   const result = await count(
@@ -142,8 +142,8 @@ export const calculateCountMeasure = async (measure) => {
 
 export const calculateSumMeasure = async (measure) => {
   const dataProvider = setupSoqlDataProvider(measure);
-  const column = _.get(measure, 'metric.arguments.column');
-  const decimalPlaces = _.get(measure, 'metric.display.decimalPlaces');
+  const column = _.get(measure, 'metricConfig.arguments.column');
+  const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
 
   if (!dataProvider || !column) {
     return {};
@@ -156,9 +156,9 @@ export const calculateSumMeasure = async (measure) => {
 
 export const calculateRecentValueMeasure = async (measure) => {
   const dataProvider = setupSoqlDataProvider(measure);
-  const valueColumnFieldName = _.get(measure, 'metric.arguments.valueColumn');
-  const dateColumnFieldName = _.get(measure, 'metric.arguments.dateColumn');
-  const decimalPlaces = _.get(measure, 'metric.display.decimalPlaces');
+  const valueColumnFieldName = _.get(measure, 'metricConfig.arguments.valueColumn');
+  const dateColumnFieldName = _.get(measure, 'metricConfig.arguments.dateColumn');
+  const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
 
   if (!dataProvider || !valueColumnFieldName || !dateColumnFieldName) {
     return {};
@@ -179,9 +179,9 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     numeratorColumnCondition,
     denominatorColumn,
     fixedDenominator
-  } = _.get(measure, 'metric.arguments', {});
+  } = _.get(measure, 'metricConfig.arguments', {});
 
-  const denominatorIncludeNullValues = _.get(measure, 'metric.arguments.denominatorIncludeNullValues', true);
+  const denominatorIncludeNullValues = _.get(measure, 'metricConfig.arguments.denominatorIncludeNullValues', true);
 
   if (aggregationType && aggregationType !== CalculationTypeNames.COUNT) {
     assert(
@@ -190,8 +190,8 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     );
   }
 
-  const decimalPlaces = _.get(measure, 'metric.display.decimalPlaces');
-  const asPercent = _.get(measure, 'metric.display.asPercent');
+  const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
+  const asPercent = _.get(measure, 'metricConfig.display.asPercent');
 
   if (!dataProvider) {
     return {};
@@ -262,7 +262,7 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
 export const calculateMeasure = async (measure) => {
   assertIsOneOfTypes(measure, 'object');
 
-  const calculationType = _.get(measure, 'metric.type');
+  const calculationType = _.get(measure, 'metricConfig.type');
 
   if (_.isUndefined(calculationType)) {
     return {}; // Calculation undefined, but that's fine. See comment at top of section.

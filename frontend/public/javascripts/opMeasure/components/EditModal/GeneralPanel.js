@@ -22,11 +22,8 @@ function t(subkey) {
 export class GeneralPanel extends Component {
   render() {
     const {
-      measure: {
-        description,
-        name,
-        shortName
-      },
+      coreView,
+      measure,
       validationErrors,
       onBlurDescription,
       onBlurName,
@@ -35,6 +32,10 @@ export class GeneralPanel extends Component {
       onChangeName,
       onChangeShortName
     } = this.props;
+
+    const name = coreView.name;
+    const description = coreView.description;
+    const shortName = _.get(measure, 'metadata.shortName', '');
 
     const nameFieldProps = {
       className: classNames('text-input', {
@@ -108,11 +109,15 @@ export class GeneralPanel extends Component {
 }
 
 GeneralPanel.propTypes = {
-  measure: PropTypes.shape({
+  coreView: PropTypes.shape({
     description: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    shortName: PropTypes.string
-  }),
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  measure: PropTypes.shape({
+    metadata: PropTypes.shape({
+      shortName: PropTypes.string
+    })
+  }).isRequired,
   validationErrors: PropTypes.object.isRequired,
   onBlurDescription: PropTypes.func.isRequired,
   onBlurName: PropTypes.func.isRequired,
@@ -123,9 +128,7 @@ GeneralPanel.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const measure = _.pick(state.editor.measure, ['description', 'name', 'shortName']);
-  const validationErrors = state.editor.validationErrors;
-  return { measure, validationErrors };
+  return state.editor;
 }
 
 function mapDispatchToProps(dispatch) {

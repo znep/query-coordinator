@@ -26,10 +26,10 @@ function mapStateToProps(state) {
       return null;
     }
   };
-
-  return {
-    name: state.view.measure.name,
-    description: state.view.measure.description,
+  
+  return { 
+    name: state.view.coreView.name,
+    description: state.view.coreView.description,
     provenance: null,
     isPaneCollapsible: false,
     renderButtons() {

@@ -150,10 +150,10 @@ CalculationPanel.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const calculationType = _.get(state, 'editor.measure.metric.type');
-  const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
-  const hasDataSource = !!_.get(state, 'editor.measure.metric.dataSource.uid');
-  const unitLabel = _.get(state, 'editor.measure.metric.label', '');
+  const calculationType = _.get(state, 'editor.measure.metricConfig.type');
+  const decimalPlaces = _.get(state, 'editor.measure.metricConfig.display.decimalPlaces', 0);
+  const hasDataSource = !!_.get(state, 'editor.measure.dataSourceLensUid');
+  const unitLabel = _.get(state, 'editor.measure.metricConfig.label', '');
 
   return {
     calculationType,

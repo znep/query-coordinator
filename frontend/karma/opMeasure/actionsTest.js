@@ -19,16 +19,18 @@ describe('thunk actions', () => {
   });
 
   describe('openEditModal', () => {
-    it('clones the view measure and opens the edit modal', (done) => {
+    it('clones the view measure coreView and opens the edit modal', (done) => {
       const measure = { test: 'foo' };
+      const coreView = { name: 'my measure' };
       const expectedActions = [
-        { type: editorActions.OPEN_EDIT_MODAL, measure }
+        { type: editorActions.OPEN_EDIT_MODAL, measure, coreView }
       ];
 
       const store = mockStore({
-        view: { measure },
+        view: { measure, coreView },
         editor: { isEditing: false, measure: null }
       });
+      
       store.dispatch(editorActions.openEditModal());
 
       _.defer(() => {
@@ -55,17 +57,13 @@ describe('thunk actions', () => {
 
       it('restores non-persisted data source state', (done) => {
         const measure = {
-          test: 'foo',
-          metric: {
-            dataSource: {
-              uid: 'test-test'
-            }
-          }
+          dataSourceLensUid: 'test-test',
+          test: 'foo'
         };
         const expectedActions = [
           editorActions.OPEN_EDIT_MODAL,
           editorActions.SET_DATA_SOURCE_UID,
-          editorActions.RECEIVE_DATA_SOURCE_METADATA
+          editorActions.RECEIVE_DATA_SOURCE_VIEW
         ];
 
         const store = mockStore({
@@ -214,9 +212,9 @@ describe('thunk actions', () => {
             uid
           },
           {
-            type: editorActions.RECEIVE_DATA_SOURCE_METADATA,
+            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
             rowCount: 12345,
-            dataSourceViewMetadata: viewMetadata,
+            dataSourceView: viewMetadata,
             displayableFilterableColumns: 'displayable filterable'
           }
         ];

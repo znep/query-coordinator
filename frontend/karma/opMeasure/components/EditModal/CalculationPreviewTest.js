@@ -10,7 +10,7 @@ import { CalculationPreview, mapStateToProps } from 'components/EditModal/Calcul
 describe('CalculationPreview', () => {
   describe('mapStateToProps', () => {
     it('passes through label as unitLabel', () => {
-      const state = _.set({}, 'editor.measure.metric.display.label', 'granfaloons');
+      const state = _.set({}, 'editor.measure.metricConfig.display.label', 'granfaloons');
       assert.propertyVal(
         mapStateToProps(state),
         'unitLabel',
@@ -19,7 +19,7 @@ describe('CalculationPreview', () => {
     });
 
     it('passes through decimalPlaces', () => {
-      const state = _.set({}, 'editor.measure.metric.display.decimalPlaces', 50);
+      const state = _.set({}, 'editor.measure.metricConfig.display.decimalPlaces', 50);
       assert.propertyVal(
         mapStateToProps(state),
         'decimalPlaces',

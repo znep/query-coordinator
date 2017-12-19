@@ -79,8 +79,8 @@ Count.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
-  const includeNullValues = _.get(state, 'editor.measure.metric.arguments.includeNullValues', true);
+  const columnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.column');
+  const includeNullValues = _.get(state, 'editor.measure.metricConfig.arguments.includeNullValues', true);
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
 
   return {

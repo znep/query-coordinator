@@ -14,9 +14,9 @@ describe('withComputedMeasure', () => {
 
   beforeEach(() => {
     measure = {};
-    _.set(measure, 'metric.dataSource.uid', 'test-test');
-    _.set(measure, 'metric.arguments.column', 'column A');
-    _.set(measure, 'metric.type', 'count');
+    _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+    _.set(measure, 'metricConfig.arguments.column', 'column A');
+    _.set(measure, 'metricConfig.type', 'count');
   });
 
   it('provides results to wrapped component', (done) => {

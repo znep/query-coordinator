@@ -44,46 +44,13 @@ module OpMeasureHelper
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
   end
 
+  # Initial state is still crafted here to adhere to existing patterns and gain some performance by not fetching everything on load,
+  # but as you can see, data is being passed through with little to no modification in order to limit the areas where data shaping occurs. 
   def op_measure_initial_state
-    # If this becomes more complex, parts can be factored out into view.rb; see
-    # visualization canvas treatment of initial state for comparison.
-    {
-
-      :mode => @edit_mode ? 'EDIT' : 'VIEW',
-      :measure => {
-        :coreView => @
-      }
-    }
     {
       :mode => @edit_mode ? 'EDIT' : 'VIEW',
-      :measure => {
-        :coreView => @view,
-        :name => @view.name,
-        :shortName => '',
-        :description => @view.description || 'Description goes here',
-        :metadata => {
-          :methods => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-          :analysis => 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. '
-        },
-        :metric => {
-          :reportingPeriod => {
-            :startDate => '2016-06-01'
-          }
-        }
-        # proposed structure
-        #:metric => {
-          #:type => '',
-          #:dataSource => {
-          #  :uid => ''
-          #},
-        #:display => {
-        #
-        #},
-          #:arguments => {
-
-          #}
-        #}
-      }
+      :coreView => @view,
+      :measure => @measure
     }
   end
 end

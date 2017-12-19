@@ -15,8 +15,8 @@ import { formatDateWithLocale } from 'common/dates';
 // Pane containing high-level (mostly prose) description of the measure.
 export class SummaryPane extends Component {
   renderOverview() {
-    const { measure } = this.props;
-    const { description, coreView } = measure;
+    const { measure, coreView } = this.props;
+    const { description } = measure;
 
     const lastUpdatedAt = _([
       coreView.rowsUpdatedAt,
@@ -70,7 +70,9 @@ export class SummaryPane extends Component {
 
   renderMethodsAndAnalysis() {
     const { measure, mode, onClickEdit } = this.props;
-
+    const methods = _.get(measure, 'metadata.methods', '');
+    const analysis = _.get(measure, 'metadata.analysis', '');
+    
     let editButton = null;
     if (mode === ModeStates.EDIT) {
       editButton = (
@@ -89,10 +91,10 @@ export class SummaryPane extends Component {
         <h4>Methods and Analysis</h4>
 
         <h5>Methods</h5>
-        <p>{measure.metadata.methods}</p>
+        <p>{methods}</p>
 
         <h5>Analysis</h5>
-        <p>{measure.metadata.analysis}</p>
+        <p>{analysis}</p>
       </div>
     );
   }
@@ -114,13 +116,12 @@ export class SummaryPane extends Component {
 
 SummaryPane.propTypes = {
   activePane: PropTypes.string,
-  measure: PropTypes.shape({
-    coreView: PropTypes.shape({
-      rowsUpdatedAt: PropTypes.number,
-      viewLastModified: PropTypes.number,
-      createdAt: PropTypes.number
-    }).isRequired
+  coreView: PropTypes.shape({
+    rowsUpdatedAt: PropTypes.number,
+    viewLastModified: PropTypes.number,
+    createdAt: PropTypes.number
   }).isRequired,
+  measure: PropTypes.shape({}).isRequired,
   mode: PropTypes.oneOf(_.values(ModeStates)),
   onClickEdit: PropTypes.func
 };

@@ -193,17 +193,19 @@ export class DataPanel extends Component {
 DataPanel.propTypes = {
   dataSourceName: PropTypes.string,
   rowCount: PropTypes.number,
-  uid: PropTypes.string,
+  measure: PropTypes.shape({
+    dataSourceLensUid: PropTypes.string
+  }),
   onChangeDataSource: PropTypes.func
 };
 
 export function mapStateToProps(state) {
-  const dataSourceConfig = _.get(state, 'editor.measure.metric.dataSource', {});
-  const dataSourceName = _.get(state, 'editor.dataSourceViewMetadata.name', '');
+  const measure = _.get(state, 'editor.measure', {});
+  const dataSourceName = _.get(state, 'editor.dataSourceView.name', '');
   const rowCount = _.get(state, 'editor.cachedRowCount');
 
   return {
-    ...dataSourceConfig,
+    measure,
     dataSourceName,
     rowCount
   };

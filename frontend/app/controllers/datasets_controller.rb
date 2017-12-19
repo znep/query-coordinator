@@ -1325,6 +1325,11 @@ class DatasetsController < ApplicationController
         return true
       end
 
+      view_four_four = @view.data["id"]
+
+      @measure = JSON.parse(
+        CoreServer::Base.connection.get_request("/measures_v1/#{view_four_four}.json")
+      ).with_indifferent_access
       @edit_mode = as_edit
 
       render 'op_measure', :layout => 'styleguide'

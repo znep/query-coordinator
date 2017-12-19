@@ -9,23 +9,20 @@ describe('DataPanel', () => {
   describe('mapStateToProps', () => {
     it('passes all saved data source properties', () => {
       const state = {};
-      _.set(state, 'editor.measure.metric.dataSource.uid', 'test-test');
-      _.set(state, 'editor.measure.metric.dataSource.arbitrary', 'test value');
+      _.set(state, 'editor.measure.dataSourceLensUid', 'test-test');
 
       const mappedProps = mapStateToProps(state);
-      assert.propertyVal(mappedProps, 'uid', 'test-test');
-      assert.propertyVal(mappedProps, 'arbitrary', 'test value');
+      assert.propertyVal(mappedProps.measure, 'dataSourceLensUid', 'test-test');
     });
 
     it('passes selected info from non-saved properties', () => {
       const state = {};
       _.set(state, 'editor.cachedRowCount', 101);
-      _.set(state, 'editor.dataSourceViewMetadata', { name: 'test value', description: 'not passed' });
+      _.set(state, 'editor.dataSourceView', { name: 'test value', description: 'not passed' });
 
       const mappedProps = mapStateToProps(state);
       assert.propertyVal(mappedProps, 'rowCount', 101);
       assert.propertyVal(mappedProps, 'dataSourceName', 'test value');
-      assert.notPropertyVal(mappedProps, 'dataSourceDescription');
     });
   });
 

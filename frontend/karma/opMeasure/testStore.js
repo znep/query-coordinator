@@ -8,11 +8,13 @@ export function getDefaultStore() {
 export function getStore(state) {
   const preloadedState = _.merge(
     {
-      view: window.initialState,
+      view: window.socrata.opMeasure,
       editor: {
         isEditing: true,
-        measure: window.initialState.measure,
-        pristineMeasure: window.initialState.measure,
+        coreView: window.socrata.opMeasure.coreView,
+        measure: window.socrata.opMeasure.measure,
+        pristineMeasure: window.socrata.opMeasure.measure,
+        pristineCoreView: window.socrata.opMeasure.coreView,
         validationErrors: {}
       }
     },

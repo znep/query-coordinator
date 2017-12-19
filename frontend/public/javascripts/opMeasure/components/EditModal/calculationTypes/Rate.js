@@ -85,7 +85,7 @@ export class Rate extends Component {
 
     const isValidTextFilterColumnValue = (column, term) => {
       const soqlDataProvider = new SoqlDataProvider({
-        datasetUid: _.get(measure, 'metric.dataSource.uid'),
+        datasetUid: _.get(measure, 'dataSourceLensUid'),
         domain: window.location.hostname
       });
 
@@ -332,16 +332,16 @@ Rate.propTypes = {
 
 function mapStateToProps(state) {
   const measure = _.get(state, 'editor.measure');
-  const aggregationType = _.get(state, 'editor.measure.metric.arguments.aggregationType');
-  const denominatorColumnFieldName = _.get(state, 'editor.measure.metric.arguments.denominatorColumn');
+  const aggregationType = _.get(state, 'editor.measure.metricConfig.arguments.aggregationType');
+  const denominatorColumnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.denominatorColumn');
   const denominatorIncludeNullValues = _.get(
-    state, 'editor.measure.metric.arguments.denominatorIncludeNullValues', true
+    state, 'editor.measure.metricConfig.arguments.denominatorIncludeNullValues', true
   );
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
-  const fixedDenominator = _.get(state, 'editor.measure.metric.arguments.fixedDenominator', '');
-  const numeratorColumnFieldName = _.get(state, 'editor.measure.metric.arguments.numeratorColumn');
+  const fixedDenominator = _.get(state, 'editor.measure.metricConfig.arguments.fixedDenominator', '');
+  const numeratorColumnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.numeratorColumn');
   const numeratorColumn = _.find(displayableFilterableColumns, { fieldName: numeratorColumnFieldName });
-  const numeratorColumnCondition = _.get(state, 'editor.measure.metric.arguments.numeratorColumnCondition');
+  const numeratorColumnCondition = _.get(state, 'editor.measure.metricConfig.arguments.numeratorColumnCondition');
 
   if (numeratorColumnFieldName && !numeratorColumn) {
     throw new Error(`Numerator column not in filterable column set: ${numeratorColumnFieldName}`);

@@ -9,7 +9,8 @@ window.redux = require('redux');
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 
-window.initialState = require('./data/mockInitialState').default;
+window.socrata = window.socrata || {};
+window.socrata.opMeasure = require('./data/mockInitialState').default;
 window.serverConfig = require('./data/mockServerConfig').default;
 window.translations = { open_performance: require('./mockTranslations').default };
 

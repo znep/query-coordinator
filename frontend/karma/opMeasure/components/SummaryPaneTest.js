@@ -9,15 +9,15 @@ import { ModeStates } from 'lib/constants';
 describe('SummaryPane', () => {
   const getProps = (props) => {
     return {
-      activePane: 'summary',
-      measure: {
+      coreView: {
         name: 'My Measure',
         description: 'My measure has a description',
-        coreView: {
-          rowsUpdatedAt: 123,
-          viewLastModified: 345,
-          createdAt: 456
-        },
+        rowsUpdatedAt: 123,
+        viewLastModified: 345,
+        createdAt: 456
+      },
+      activePane: 'summary',
+      measure: {
         metadata: {
           analysis: 'Some analysis text',
           methods: 'Some methods text'

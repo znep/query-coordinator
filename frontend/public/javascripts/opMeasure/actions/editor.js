@@ -11,12 +11,12 @@ export const setDataSourceUid = (uid) => ({
   uid
 });
 
-export const RECEIVE_DATA_SOURCE_METADATA = 'RECEIVE_DATA_SOURCE_METADATA';
-export const receiveDataSourceMetadata = (rowCount, dataSourceViewMetadata, displayableFilterableColumns) => (
+export const RECEIVE_DATA_SOURCE_VIEW = 'RECEIVE_DATA_SOURCE_VIEW';
+export const receiveDataSourceMetadata = (rowCount, dataSourceView, displayableFilterableColumns) => (
   {
-    type: RECEIVE_DATA_SOURCE_METADATA,
+    type: RECEIVE_DATA_SOURCE_VIEW,
     rowCount,
-    dataSourceViewMetadata,
+    dataSourceView,
     displayableFilterableColumns
   }
 );
@@ -202,26 +202,28 @@ export const setShortName = (shortName) => ({
 
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
 export const openEditModal = () => (dispatch, getState) => {
-  const measure = getState().view.measure;
+  const { measure, coreView } = getState().view;
   dispatch({
     type: OPEN_EDIT_MODAL,
+    coreView,
     measure
   });
 
   // Restore non-persisted data source info (name, row count, columns)
-  dispatch(setDataSource(_.get(measure, 'metric.dataSource.uid', '')));
+  dispatch(setDataSource(_.get(measure, 'dataSourceLensUid', '')));
 };
 
 export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';
 export const acceptEditModalChanges = () => (dispatch, getState) => {
   dispatch(validateAll());
 
-  const { measure, validationErrors } = getState().editor;
+  const { coreView, measure, validationErrors } = getState().editor;
   const hasErrors = _.some(_.values(validationErrors));
 
   if (!hasErrors) {
     dispatch({
       type: ACCEPT_EDIT_MODAL_CHANGES,
+      coreView,
       measure
     });
   }

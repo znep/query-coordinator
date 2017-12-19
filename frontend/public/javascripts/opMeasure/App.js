@@ -28,6 +28,7 @@ export class App extends Component {
   }
 
   setSiteChromeVisibility() {
+
     const { mode } = this.props;
 
     switch (mode) {
@@ -69,7 +70,7 @@ export class App extends Component {
           </div>
         </div>
         <FeedbackPanel {...window.serverConfig} />
-        <EditModal />
+        <EditModal /> 
       </div>
     );
   }
@@ -119,7 +120,6 @@ export class App extends Component {
 
   render() {
     const { mode } = this.props;
-
     switch (mode) {
       case ModeStates.EDIT: return this.renderEditMode();
       case ModeStates.PREVIEW: return this.renderPreviewMode();

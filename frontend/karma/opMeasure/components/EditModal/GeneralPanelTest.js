@@ -8,9 +8,10 @@ import { GeneralPanel } from 'components/EditModal/GeneralPanel';
 describe('GeneralPanel', () => {
   const getProps = (props) => {
     return {
-      measure: {
+      coreView: {
         name: 'My Measure'
       },
+      measure: {},
       validationErrors: {},
       onBlurName: _.noop,
       onBlurShortName: _.noop,
@@ -34,17 +35,21 @@ describe('GeneralPanel', () => {
 
   it('initializes from props', () => {
     const props = {
-      measure: {
+      coreView: {
         name: 'Name',
-        shortName: 'Short Name',
         description: 'Description'
+      },
+      measure: {
+        metadata: {
+          shortName: 'Short Name'
+        }
       }
     };
     const element = shallow(<GeneralPanel {...getProps(props)} />);
 
-    assert.equal(getName(element).prop('value'), props.measure.name);
-    assert.equal(getShortName(element).prop('value'), props.measure.shortName);
-    assert.equal(getDescription(element).prop('value'), props.measure.description);
+    assert.equal(getName(element).prop('value'), props.coreView.name);
+    assert.equal(getShortName(element).prop('value'), props.measure.metadata.shortName);
+    assert.equal(getDescription(element).prop('value'), props.coreView.description);
   });
 
   it('links to the generic metadata edit page', () => {

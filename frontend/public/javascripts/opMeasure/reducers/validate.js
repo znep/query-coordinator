@@ -11,16 +11,16 @@ const INITIAL_STATE = Object.freeze({
   }
 });
 
-const validateMeasureName = (state) => {
-  const { measure, validationErrors } = state;
-  const { name } = measure;
+const validateCoreViewName = (state) => {
+  const { coreView, validationErrors } = state;
+  const { name } = coreView;
   const normalizedName = name.trim().replace(/\s+/g, ' ');
   const isValid = normalizedName.length > 0 && normalizedName.length < 255;
 
   return {
     ...state,
-    measure: {
-      ...measure,
+    coreView: {
+      ...coreView,
       name: normalizedName
     },
     validationErrors: {
@@ -32,7 +32,8 @@ const validateMeasureName = (state) => {
 
 const validateMeasureShortName = (state) => {
   const { measure, validationErrors } = state;
-  const { shortName } = measure;
+  const metadata = measure.metadata || {};
+  const shortName = metadata.shortName || '';
   const normalizedShortName = shortName.trim().replace(/\s+/g, ' ');
   const isValid = normalizedShortName.length <= 26;
 
@@ -40,7 +41,10 @@ const validateMeasureShortName = (state) => {
     ...state,
     measure: {
       ...measure,
-      shortName: normalizedShortName
+      metadata: {
+        ...metadata,
+        shortName: normalizedShortName
+      }
     },
     validationErrors: {
       ...validationErrors,
@@ -49,23 +53,23 @@ const validateMeasureShortName = (state) => {
   };
 };
 
-const validateMeasureDescription = (state) => {
-  const { measure } = state;
-  const { description } = measure;
+const validateCoreViewDescription = (state) => {
+  const { coreView } = state;
+  const description = coreView.description || '';
   const normalizedDescription = description.trim();
 
   return {
     ...state,
-    measure: {
-      ...measure,
+    coreView: {
+      ...coreView,
       description: normalizedDescription
     }
   };
 };
 
 export const validators = {
-  validateMeasureDescription,
-  validateMeasureName,
+  validateCoreViewDescription,
+  validateCoreViewName,
   validateMeasureShortName
 };
 
@@ -80,13 +84,13 @@ export default (state = INITIAL_STATE, action) => {
       return _.flow(_.values(validators))(state);
 
     case actions.VALIDATE_MEASURE_NAME:
-      return validateMeasureName(state);
+      return validateCoreViewName(state);
 
     case actions.VALIDATE_MEASURE_SHORT_NAME:
       return validateMeasureShortName(state);
 
     case actions.VALIDATE_MEASURE_DESCRIPTION:
-      return validateMeasureDescription(state);
+      return validateCoreViewDescription(state);
 
     default:
       console.debug(`Encountered unknown validation action: ${action.type}`);

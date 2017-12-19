@@ -25,27 +25,25 @@ const setCalculationType = (state, type) => {
     `Unknown calculation type given: ${type}`
   );
 
-  const currentDataSource = _.get(state, 'measure.metric.dataSource');
   const newState = {
     ...state
   };
 
   // TODO: Calling _.set overwrites any prior metric data.
   //       If this is desired, it should still copy in a base metric model.
-  _.set(newState, 'measure.metric', {
-    type,
-    dataSource: currentDataSource
+  _.set(newState, 'measure.metricConfig', {
+    type
   });
 
   // Set some defaults for calculation types.
   switch (type) {
     case CalculationTypeNames.COUNT:
-      _.set(newState, 'measure.metric.arguments.includeNullValues', true);
+      _.set(newState, 'measure.metricConfig.arguments.includeNullValues', true);
       break;
     case CalculationTypeNames.RATE:
       // TODO Reconcile the fact that it doesn't always make sense to include null
       // values in the denominator (i.e., sums).
-      _.set(newState, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+      _.set(newState, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
       break;
     default: // pass
   }
@@ -58,6 +56,7 @@ export const INITIAL_STATE = Object.freeze({
   isEditing: false,
   measure: {},
   pristineMeasure: {},
+  pristineCoreView: {},
   validationErrors: validate().validationErrors
 });
 
@@ -82,17 +81,17 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       const { uid } = action;
       const newState = { ...state };
       _.set(newState, 'cachedRowCount', uid ? null : undefined);
-      _.set(newState, 'measure.metric.dataSource', { uid });
+      _.set(newState, 'measure.dataSourceLensUid', uid);
       return newState;
     }
-    case actions.editor.RECEIVE_DATA_SOURCE_METADATA: {
+    case actions.editor.RECEIVE_DATA_SOURCE_VIEW: {
       assertIsNumber(action.rowCount);
-      assertIsOneOfTypes(action.dataSourceViewMetadata, 'object');
+      assertIsOneOfTypes(action.dataSourceView, 'object');
 
       const newState = {
         ...state,
         cachedRowCount: action.rowCount,
-        dataSourceViewMetadata: action.dataSourceViewMetadata,
+        dataSourceView: action.dataSourceView,
         displayableFilterableColumns: action.displayableFilterableColumns
       };
 
@@ -104,22 +103,22 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     case actions.editor.SET_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
-      return updateMeasureProperty(state, 'metric.arguments.column', action.fieldName);
+      return updateMeasureProperty(state, 'metricConfig.arguments.column', action.fieldName);
 
     case actions.editor.SET_VALUE_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
-      return updateMeasureProperty(state, 'metric.arguments.valueColumn', action.fieldName);
+      return updateMeasureProperty(state, 'metricConfig.arguments.valueColumn', action.fieldName);
 
     case actions.editor.SET_AGGREGATION_TYPE: {
       assertIsOneOfTypes(action.aggregationType, 'string');
       assert(
-        _.get(state, 'measure.metric.type') === 'rate',
+        _.get(state, 'measure.metricConfig.type') === 'rate',
         'This action only makes sense for rate measures today.'
       );
 
       const newState = updateMeasureProperty(
         state,
-        'metric.arguments.aggregationType',
+        'metricConfig.arguments.aggregationType',
         action.aggregationType
       );
 
@@ -127,16 +126,16 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       // and denominator (i.e., it makes sense to count on a date column, but it does not make
       // sense to sum a date column).
       // If the numerator/denominator columns are valid, keep them. If not, clear them.
-      let { numeratorColumn, denominatorColumn } = _.get(state, 'measure.metric.arguments') || {};
-      numeratorColumn = _.find(state.dataSourceViewMetadata.columns, { fieldName: numeratorColumn });
-      denominatorColumn = _.find(state.dataSourceViewMetadata.columns, { fieldName: denominatorColumn });
+      let { numeratorColumn, denominatorColumn } = _.get(state, 'measure.metricConfig.arguments') || {};
+      numeratorColumn = _.find(state.dataSourceView.columns, { fieldName: numeratorColumn });
+      denominatorColumn = _.find(state.dataSourceView.columns, { fieldName: denominatorColumn });
 
       if (!isColumnUsableWithMeasureArgument(numeratorColumn, newState.measure, 'numerator')) {
-        _.unset(newState, 'measure.metric.arguments.numeratorColumn');
-        _.unset(newState, 'measure.metric.arguments.numeratorColumnCondition');
+        _.unset(newState, 'measure.metricConfig.arguments.numeratorColumn');
+        _.unset(newState, 'measure.metricConfig.arguments.numeratorColumnCondition');
       }
       if (!isColumnUsableWithMeasureArgument(denominatorColumn, newState.measure, 'denominator')) {
-        _.unset(newState, 'measure.metric.arguments.denominatorColumn');
+        _.unset(newState, 'measure.metricConfig.arguments.denominatorColumn');
       }
 
       return newState;
@@ -144,92 +143,94 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     case actions.editor.SET_NUMERATOR_COLUMN: {
       assert(
-        _.get(state, 'measure.metric.type') === 'rate',
+        _.get(state, 'measure.metricConfig.type') === 'rate',
         'This action only makes sense for rate measures.'
       );
       assertIsOneOfTypes(action.fieldName, 'string');
-      const newState = updateMeasureProperty(state, 'metric.arguments.numeratorColumn', action.fieldName);
-      _.unset(newState, 'measure.metric.arguments.numeratorColumnCondition');
+      const newState = updateMeasureProperty(state, 'metricConfig.arguments.numeratorColumn', action.fieldName);
+      _.unset(newState, 'measure.metricConfig.arguments.numeratorColumnCondition');
       return newState;
     }
 
     case actions.editor.SET_NUMERATOR_COLUMN_CONDITION:
       assert(
-        _.get(state, 'measure.metric.type') === 'rate',
+        _.get(state, 'measure.metricConfig.type') === 'rate',
         'This action only makes sense for rate measures today.'
       );
-      return _.set(state, 'measure.metric.arguments.numeratorColumnCondition', action.condition);
+      return _.set(state, 'measure.metricConfig.arguments.numeratorColumnCondition', action.condition);
 
     case actions.editor.SET_DENOMINATOR_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
       // Cant have both Denominator Column and Fixed Denominator
-      _.unset(state, 'measure.metric.arguments.fixedDenominator');
-      return updateMeasureProperty(state, 'metric.arguments.denominatorColumn', action.fieldName);
+      _.unset(state, 'measure.metricConfig.arguments.fixedDenominator');
+      return updateMeasureProperty(state, 'metricConfig.arguments.denominatorColumn', action.fieldName);
 
     case actions.editor.SET_FIXED_DENOMINATOR:
-      _.unset(state, 'measure.metric.arguments.denominatorColumn');
-      return updateMeasureProperty(state, 'metric.arguments.fixedDenominator', action.denominator);
+      _.unset(state, 'measure.metricConfig.arguments.denominatorColumn');
+      return updateMeasureProperty(state, 'metricConfig.arguments.fixedDenominator', action.denominator);
 
     case actions.editor.SET_DATE_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
 
-      return updateMeasureProperty(state, 'metric.arguments.dateColumn', action.fieldName);
+      return updateMeasureProperty(state, 'metricConfig.arguments.dateColumn', action.fieldName);
 
     case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);
 
     case actions.editor.TOGGLE_INCLUDE_NULL_VALUES: {
-      const currentValue = _.get(state, 'measure.metric.arguments.includeNullValues', true);
-      return updateMeasureProperty(state, 'metric.arguments.includeNullValues', !currentValue);
+      const currentValue = _.get(state, 'measure.metricConfig.arguments.includeNullValues', true);
+      return updateMeasureProperty(state, 'metricConfig.arguments.includeNullValues', !currentValue);
     }
 
     case actions.editor.TOGGLE_DENOMINATOR_INCLUDE_NULL_VALUES: {
-      const currentValue = _.get(state, 'measure.metric.arguments.denominatorIncludeNullValues', true);
-      return updateMeasureProperty(state, 'metric.arguments.denominatorIncludeNullValues', !currentValue);
+      const currentValue = _.get(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
+      return updateMeasureProperty(state, 'metricConfig.arguments.denominatorIncludeNullValues', !currentValue);
     }
 
     case actions.editor.SET_DECIMAL_PLACES:
-      return updateMeasureProperty(state, 'metric.display.decimalPlaces', action.places);
+      return updateMeasureProperty(state, 'metricConfig.display.decimalPlaces', action.places);
 
     case actions.editor.SET_UNIT_LABEL:
-      return updateMeasureProperty(state, 'metric.display.label', action.label);
+      return updateMeasureProperty(state, 'metricConfig.display.label', action.label);
 
     case actions.editor.TOGGLE_DISPLAY_AS_PERCENT: {
-      const currentValue = _.get(state, 'measure.metric.display.asPercent');
-      return updateMeasureProperty(state, 'metric.display.asPercent', !currentValue);
+      const currentValue = _.get(state, 'measure.metricConfig.display.asPercent');
+      return updateMeasureProperty(state, 'metricConfig.display.asPercent', !currentValue);
     }
 
     case actions.editor.SET_START_DATE:
-      return updateMeasureProperty(state, 'metric.reportingPeriod.startDate', action.startDate);
+      return updateMeasureProperty(state, 'metricConfig.reportingPeriod.startDate', action.startDate);
 
     case actions.editor.SET_PERIOD_TYPE:
-      return updateMeasureProperty(state, 'metric.reportingPeriod.type', action.periodType);
+      return updateMeasureProperty(state, 'metricConfig.reportingPeriod.type', action.periodType);
 
     case actions.editor.SET_PERIOD_SIZE:
-      return updateMeasureProperty(state, 'metric.reportingPeriod.size', action.periodSize);
+      return updateMeasureProperty(state, 'metricConfig.reportingPeriod.size', action.periodSize);
 
     case actions.editor.SET_METHODS:
       return updateMeasureProperty(state, 'metadata.methods', action.methods);
 
     case actions.editor.SET_DESCRIPTION:
-      return updateMeasureProperty(state, 'description', action.description);
+      return _.set(state, 'coreView.description', action.description);
 
     case actions.editor.SET_NAME:
-      return updateMeasureProperty(state, 'name', action.name);
+      return _.set(state, 'coreView.name', action.name);
 
     case actions.editor.SET_SHORT_NAME:
-      return updateMeasureProperty(state, 'shortName', action.shortName);
+      return _.set(state, 'measure.metadata.shortName', action.shortName);
 
     case actions.editor.OPEN_EDIT_MODAL: {
       let nextState = {
         isEditing: true,
+        coreView: { ...action.coreView },
         measure: { ...action.measure },
+        pristineCoreView: { ...action.coreView },
         pristineMeasure: { ...action.measure },
         validationErrors: validate().validationErrors
       };
 
       // If no calculation type is set, defaults to 'count'
-      const currentType = _.get(nextState, 'measure.metric.type');
+      const currentType = _.get(nextState, 'measure.metricConfig.type');
       if (_.isEmpty(currentType)) {
         nextState = setCalculationType(nextState, CalculationTypeNames.COUNT);
       }

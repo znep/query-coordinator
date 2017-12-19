@@ -65,7 +65,7 @@ Sum.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const columnFieldName = _.get(state, 'editor.measure.metric.arguments.column');
+  const columnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.column');
   const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
 
   return {

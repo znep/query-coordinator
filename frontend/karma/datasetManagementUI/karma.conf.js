@@ -14,7 +14,7 @@ webpackConfig.externals = {
 
 // To make tests easier to write, we disable auto scss class prefixes.
 const styleLoaderWithDisabledAutoScssClassPrefixes =
-  'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass';
+  'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=2!postcss!sass';
 const styleLoader = _(webpackConfig.module.loaders).find((loader) =>
   _.get(loader, 'loader', '').indexOf('localIdentName') >= 0
 );

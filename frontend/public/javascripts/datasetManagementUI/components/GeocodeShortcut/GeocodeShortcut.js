@@ -463,10 +463,18 @@ export class GeocodeShortcut extends Component {
     const onPreview = () => this.createNewOutputSchema();
 
     const onSave = () => {
-      this.createNewOutputSchema().then(resp => {
-        redirectToOutputSchema(resp.resource.id);
+      if (this.isOutputschemaStateDesired()) {
+        // The current expression matches the output column,
+        // so we have nothing to save,
+        // just dismiss
+        redirectToOutputSchema(this.getOutputSchema().id);
         onDismiss();
-      });
+      } else {
+        this.createNewOutputSchema().then(resp => {
+          redirectToOutputSchema(resp.resource.id);
+          onDismiss();
+        });
+      }
     };
 
     const isLatLng = composedFrom === LATLNG;

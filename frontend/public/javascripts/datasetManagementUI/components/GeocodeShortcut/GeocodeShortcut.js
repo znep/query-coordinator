@@ -79,13 +79,14 @@ const fieldSet = (composedFrom, mappings, setMapping, outputColumns) =>
   }[composedFrom]);
 
 export class GeocodeShortcut extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       mappings: [],
       composedFrom: COMPONENTS,
       shouldHideOriginal: false,
-      shouldConvertToNull: false
+      shouldConvertToNull: false,
+      initialOutputSchemaId: props.params.outputSchemaId
     };
     _.bindAll(this, ['setMapping', 'toggleConvertToNull', 'toggleHideOriginal', 'toggleErrorDisplayState']);
   }
@@ -110,6 +111,9 @@ export class GeocodeShortcut extends Component {
   }
 
   setOutputSchema(outputSchemaId) {
+    if (outputSchemaId === this.getOutputSchema().id) {
+      return;
+    }
     const { entities } = this.props;
     // TODO: this is awful and terrible - maybe ping ryan about this
     // question: it's hard to know which column we want here
@@ -312,7 +316,7 @@ export class GeocodeShortcut extends Component {
   genDesiredColumns() {
     // will be all cols + the generated geo one or just the geo one, depending
     // on if the user checked the "Do Not Import Original Cols" box
-    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
+    let existingColumns;
 
     const anyMappings = _.some(
       this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
@@ -325,10 +329,30 @@ export class GeocodeShortcut extends Component {
       // filter out the original cols from the ones we plan to show on the SchemaPreview page...
       const columnIdsToHide = colsOrConstants.map(oc => oc.id);
 
-      existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
+      existingColumns = Selectors.columnsForOutputSchema(
+        this.props.entities, _.toNumber(this.getOutputSchema().id)
+      ).filter(oc => !_.includes(columnIdsToHide, oc.id));
     } else {
       // otherwise add the things in the list that are columns, ignoring all the constants
       const columnsToShow = colsOrConstants.filter(oc => !!oc.transform_expr);
+
+      existingColumns = [
+        ...Selectors.columnsForOutputSchema(
+          this.props.entities, _.toNumber(this.state.initialOutputSchemaId)
+        ),
+        ...Selectors.columnsForOutputSchema(
+          this.props.entities, _.toNumber(this.getOutputSchema().id)
+        )
+      ]
+
+      // removes dupes
+      existingColumns = _.reduce(existingColumns, (cols, col) => {
+        if (_.some(cols, _col => _col.id === col.id || _col.field_name === col.field_name)) {
+          return cols
+        } else {
+          return [...cols, col]
+        }
+      }, [])
 
       const existingColIds = existingColumns.map(oc => oc.id);
 
@@ -439,23 +463,10 @@ export class GeocodeShortcut extends Component {
     const onPreview = () => this.createNewOutputSchema();
 
     const onSave = () => {
-      // isPreviewable will be true when the expression the user has built is the same as
-      // the target output column; ie: they have hit "Preview" and the output column has been
-      // created and evaluated
-      // we also want to check that they haven't hidden the columns by comparing desired length
-      // to actual length
-      if (this.isOutputschemaStateDesired()) {
-        // The current expression matches the output column,
-        // so we have nothing to save,
-        // just dismiss
-        redirectToOutputSchema(this.getOutputSchema().id);
+      this.createNewOutputSchema().then(resp => {
+        redirectToOutputSchema(resp.resource.id);
         onDismiss();
-      } else {
-        this.createNewOutputSchema().then(resp => {
-          redirectToOutputSchema(resp.resource.id);
-          onDismiss();
-        });
-      }
+      });
     };
 
     const isLatLng = composedFrom === LATLNG;

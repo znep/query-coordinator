@@ -22,7 +22,7 @@ class LocationCell extends Component {
 }
 
 LocationCell.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.object,
   format: PropTypes.object
 };
 

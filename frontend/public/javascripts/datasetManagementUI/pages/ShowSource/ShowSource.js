@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 import SourceSidebar from 'containers/SourceSidebarContainer';
-import FlashMessage from 'containers/FlashMessageContainer';
+import WithFlash from 'components/WithFlash/WithFlash';
 import SaveButtons from './SaveButtons';
 import * as FormActions from 'reduxStuff/actions/forms';
 import * as Links from 'links/links';
@@ -29,16 +29,13 @@ export const ShowSource = ({
         <SourceBreadcrumbs atShowSource />
       </ModalHeader>
       <ModalContent className={styles.modalContent}>
-        <FlashMessage />
+        <SourceSidebar />
         {inProgress ? (
           <div className={styles.centeredContainer}>
             <span className={styles.spinner} />
           </div>
         ) : (
-          <div className={styles.sourceContainer}>
-            <SourceSidebar />
-            {children}
-          </div>
+          <WithFlash useFlexStyles>{children}</WithFlash>
         )}
       </ModalContent>
       {onHrefPage &&

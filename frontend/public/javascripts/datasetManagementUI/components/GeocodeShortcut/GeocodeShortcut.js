@@ -328,8 +328,7 @@ export class GeocodeShortcut extends Component {
       existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
     } else {
       // otherwise add the things in the list that are columns, ignoring all the constants
-      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform_expr);
-
+      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform && !!oc.transform.transform_expr);
       const existingColIds = existingColumns.map(oc => oc.id);
 
       existingColumns = columnsToShow.filter(oc => !existingColIds.includes(oc.id)).concat(existingColumns);

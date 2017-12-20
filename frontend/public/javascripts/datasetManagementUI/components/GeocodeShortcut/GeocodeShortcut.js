@@ -111,9 +111,6 @@ export class GeocodeShortcut extends Component {
   }
 
   setOutputSchema(outputSchemaId) {
-    if (outputSchemaId === this.getOutputSchema().id) {
-      return;
-    }
     const { entities } = this.props;
     // TODO: this is awful and terrible - maybe ping ryan about this
     // question: it's hard to know which column we want here

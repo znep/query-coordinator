@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Pager from 'frontend/public/javascripts/common/components/Pager';
+import DownloadLink from './DownloadLink';
 import * as actions from '../actions';
 import utils from 'common/js_utils';
 import LocalizedText from 'common/i18n/components/LocalizedText';
@@ -52,6 +53,7 @@ class Footer extends PureComponent {
           {this.renderPager()}
           {this.renderResultCount()}
         </div>
+        <DownloadLink />
       </div>
     );
   }

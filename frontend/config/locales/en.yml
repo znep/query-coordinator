@@ -3578,6 +3578,7 @@ en:
           asset_type: Type
           created_at: Date
           dataset_name: Item Affected
+        download: Download
         event_messages:
           failure:
             archive_error:

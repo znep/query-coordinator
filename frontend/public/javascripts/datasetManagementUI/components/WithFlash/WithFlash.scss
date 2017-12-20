@@ -10,11 +10,32 @@
   @media (max-width: 750px) {
     border-left-style: none;
     width: 100%;
+    margin-left: 0;
   }
+}
+
+.flexContainer {
+  composes: container;
+  flex-grow: 1;
+  padding-bottom: 0;
+  max-width: none;
+
+  @media (max-width: 750px) {
+    height: 100%;
+  }
+}
+
+.flexContainer > div:nth-child(2) {
+  height: 100%;
 }
 
 .flashContainer {
   position: fixed;
   z-index: 1;
   width: calc(100% - 250px);
+
+  @media (max-width: 750px) {
+    width: 100%;
+    position: static;
+  }
 }

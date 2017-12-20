@@ -21,6 +21,7 @@
   @media (max-width: 750px) {
     position: static;
     width: 100%;
+    flex: 0 0 0%;
   }
 }
 
@@ -63,4 +64,3 @@ span.disabled:hover {
   background-color: $light-grey-4;
   color: $light-grey-2;
 }
-

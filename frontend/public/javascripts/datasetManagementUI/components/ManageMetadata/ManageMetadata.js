@@ -37,19 +37,6 @@ class ManageMetadata extends Component {
     this.handleDatasetFormSubmit = this.handleDatasetFormSubmit.bind(this);
   }
 
-  // componentWillMount() {
-  //   this.setState({
-  //     datasetForm: {
-  //       status: INITIALIZED,
-  //       data: this.props.datasetMetadata
-  //     },
-  //     columnForm: {
-  //       status: INITIALIZED,
-  //       data: this.props.outputSchemaColumns
-  //     }
-  //   });
-  // }
-
   componentWillUnmount() {
     this.props.hideFlash();
 

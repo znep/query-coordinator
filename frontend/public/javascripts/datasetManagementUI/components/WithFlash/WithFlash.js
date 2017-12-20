@@ -27,14 +27,14 @@ class WithFlash extends Component {
   }
 
   render() {
-    const { flashVisible } = this.props;
+    const { flashVisible, useFlexStyles } = this.props;
 
     let formPadding = {
       paddingTop: flashVisible ? this.state.flashHeight + 12 : 0
     };
 
     return (
-      <div className={styles.container}>
+      <div className={useFlexStyles ? styles.flexContainer : styles.container}>
         <div className={styles.flashContainer} ref={flash => this.getHeight(flash)}>
           <FlashMessage />
         </div>
@@ -45,9 +45,9 @@ class WithFlash extends Component {
 }
 
 WithFlash.propTypes = {
+  useFlexStyles: PropTypes.bool,
   flashVisible: PropTypes.bool,
   children: PropTypes.object
 };
 
 export default WithFlash;
-

@@ -10,6 +10,7 @@ section.container {
   min-height: 100%;
   position: relative;
   border-bottom: 1px solid $light-grey-4;
+  height: 100%;
 }
 
 .container h2 {
@@ -24,8 +25,8 @@ section.container {
   height: 100%;
   min-height: 385px;
   margin: 0 auto;
-  border: 2px dashed rgb(200,200,200);
-  transition: background-color .2s;
+  border: 2px dashed rgb(200, 200, 200);
+  transition: background-color 0.2s;
 }
 
 .isApiCallPending {
@@ -110,7 +111,8 @@ section.container {
   }
 }
 
-.content > div, .content > label {
+.content > div,
+.content > label {
   margin-bottom: 0.4em;
 }
 

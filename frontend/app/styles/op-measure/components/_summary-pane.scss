@@ -1,32 +1,29 @@
 .pane[data-pane="summary"] {
-  .metadata-table-wrapper {
-    border: 1px solid $light-grey-3;
-    background-color: $white;
-    padding: 2px 0;
-  }
+  @import "op-measure/components/scroll-pane";
 
-  .metadata-section hr {
-    margin: 0 0 20px;
-  }
+  .summary-pane-lower {
+    display: flex;
+    flex-direction: row-reverse;
 
-  .metadata-pair {
-    margin-bottom: 20px;
-  }
-
-  .summary-pane-description {
-    max-width: 948px;
-    margin-top: 20px;
-
-    h4 {
-      margin-bottom: 20px;
+    @media(max-width: $medium) {
+      flex-direction: column;
     }
 
-    p {
-      margin-top: 0;
-    }
-  }
+    .methods-and-analysis {
+      flex-grow: 1;
+      padding-right: 1em;
 
-  .btn-group {
-    float: right;
+      @media(max-width: $medium) {
+        padding-right: 0;
+      }
+
+      h4 {
+        margin-bottom: 1em;
+      }
+
+      &.unconfigured p {
+        font-style: italic;
+      }
+    }
   }
 }

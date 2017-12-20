@@ -3152,16 +3152,18 @@ en:
       format:
         format: "%n%"
   open_performance:
-    dismiss: Dismiss
-    edit: Edit
-    edit_menu_label: Menu
-    exit_preview_mode: Exit Preview Mode
     calculation_types:
       count: Count
       sum: Sum
       rate: Rate
       recent_value: Recent Value
+    dismiss: Dismiss
+    edit: Edit
+    edit_menu_label: Menu
+    exit_preview_mode: Exit Preview Mode
     measure:
+      about_this_measure: About This Measure
+      calculation_type: Calculation Type
       dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
@@ -3270,7 +3272,16 @@ en:
           tab_title: Reporting Period
           title: Configure Reporting Period
           type_label: Period type
+      methods_and_analysis:
+        analysis: Analysis
+        combined: Methods and Analysis
+        methods: Methods
+        placeholder: Methodological data not yet provided
       reporting_period: Reporting Period
+    measure_visualization: Measure visualization
+    metric: Metric
+    no_dataset: Metric calculation not available
+    no_visualization: Metric calculation not available
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save

@@ -30,8 +30,6 @@ const setCalculationType = (state, type) => {
     ...state
   };
 
-  // TODO: Calling _.set overwrites any prior metric data.
-  //       If this is desired, it should still copy in a base metric model.
   _.set(newState, 'measure.metric', {
     type,
     dataSource: currentDataSource

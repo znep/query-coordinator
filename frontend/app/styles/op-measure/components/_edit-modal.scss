@@ -1,3 +1,6 @@
+$column-width: 750px;
+$large: 769px;
+
 .measure-edit-modal {
   overflow: hidden;
 
@@ -21,10 +24,10 @@
   }
 
   .measure-edit-modal-tabs {
-    min-width: 300px;
+    min-width: 225px;
+    border: 0;
     border-right: 1px solid $light-grey-3;
     margin: 0;
-    border: 0;
     padding: 0;
 
     li {
@@ -77,7 +80,7 @@
   .measure-edit-modal-panels {
     flex-grow: 1;
     padding: 16px;
-    border-left: 1px solid $light-grey-3;
+    overflow-y: auto;
 
     > .hidden {
       display: none;
@@ -102,8 +105,8 @@
       color: $dark-grey-1;
     }
 
-    textarea {
-      width: initial;
+    .text-input {
+      width: $column-width / 2;
     }
 
     .edit-metadata-link {
@@ -146,7 +149,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 580px;
+      height: 600px;
 
       .spinner-default {
         display: block;
@@ -175,7 +178,6 @@
   }
 
   #calculation-panel {
-    $column-width: 750px;
     $metric-definition-margin: 32px;
 
     .calculation-panel-subtitle {
@@ -202,32 +204,27 @@
     }
 
     .metric-container {
-      width: $column-width;
-    }
-
-    .metric-config {
-      float: left;
-      width: $column-width / 2;
-      margin-bottom: $metric-definition-margin;
-
-      // Mostly for column condition display, but user-provided strings are shown throughout.
-      word-break: break-word;
     }
 
     .metric-preview {
-      display: flex;
       margin-bottom: $metric-definition-margin;
+      overflow: auto;
 
       .measure-result-card {
-        width: 345px;
+        min-width: $column-width / 2;
         margin-top: 4px;
         margin-bottom: 24px;
 
         box-shadow: 0 0 8px $light-grey-1;
+
+        @media(min-width: $large) {
+          float: left;
+          margin-right: 50px;
+        }
       }
 
       .metric-display-options {
-        margin-left: 50px;
+        display: inline-block;
 
         .metric-display-options-title {
           margin-bottom: 5px;
@@ -252,12 +249,23 @@
       }
     }
 
+    .metric-config {
+      width: $column-width / 2;
+      margin-bottom: $metric-definition-margin;
+      @media(min-width: $large) {
+        float: left;
+        margin-right: 50px;
+      }
+
+      // Mostly for column condition display, but user-provided strings are shown throughout.
+      word-break: break-word;
+    }
+
     .metric-definition-text {
-      float: right;
       width: $column-width / 2;
       background: $light-grey-6;
       padding: 18px 16px;
-      margin-right: -20px;
+      display: inline-block;
 
       h5 {
         margin-bottom: 4px;

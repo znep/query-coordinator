@@ -3,13 +3,14 @@
 @import "common/feedback-panel";
 
 @import "op-measure/site-chrome";
-@import "op-measure/components/metadata-pane";
-@import "op-measure/components/summary-pane";
-@import "op-measure/components/reporting-period";
-@import "op-measure/components/measure-result-card";
-@import "op-measure/components/preview-bar";
+@import "op-measure/components/about-measure";
 @import "op-measure/components/edit-bar";
 @import "op-measure/components/edit-modal";
+@import "op-measure/components/measure-result-card";
+@import "op-measure/components/metadata-pane";
+@import "op-measure/components/preview-bar";
+@import "op-measure/components/reporting-period";
+@import "op-measure/components/summary-pane";
 
 $edit-bar-height: 60px;
 
@@ -21,7 +22,6 @@ body {
 
 .op-measure {
   .container {
-    margin-left: 4px;
     max-width: initial;
   }
 
@@ -29,8 +29,6 @@ body {
     margin-bottom: 0; // decrease space above nav tabs
 
     .entry-header {
-      padding-left: 2em;
-
       .entry-title {
         flex: 1 1 80%;
       }
@@ -42,37 +40,43 @@ body {
       }
     }
 
-    .entry-content {
-      padding-left: 2em;
+    @media(max-width: $small) {
+      .entry-header {
+        .entry-actions {
+          flex: 1 1 100%;
 
-      .entry-description {
-        padding-left: 0;
+          .btn-group, .btn-edit {
+            width: 100%;
+          }
+        }
       }
     }
   }
 
   .measure-content {
-    display: flex;
-    margin: 0 2em;
+    overflow: auto;
   }
 
   .measure-panes {
-    flex-grow: 1;
-
+    // fixing up spacing, because this doesn't seem to be how nav tabs were
+    // originally envisioned
     .nav-tabs {
-      margin-left: 0; // remove overall shift to the left
+      padding-left: 1em;
+      margin: 0.5em 0 1em;
 
       li:first-child {
-        padding-left: 0; // remove divider extension to the left
+        padding-left: 0;
+      }
+
+      a {
+        padding-left: 0;
+        padding-right: 0;
       }
     }
-  }
 
-  .measure-sidebar {
-    flex-basis: 330px;
-    display: flex;
-    flex-direction: column;
-    margin-left: 2em;
+    .pane {
+      margin: 0 1em;
+    }
   }
 }
 

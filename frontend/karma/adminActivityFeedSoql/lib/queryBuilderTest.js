@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import * as queryBuilder from 'lib/queryBuilder';
 import mockQuery from '../data/mockQuery';
 
-describe.only('lib/queryBuilder', () => {
+describe('lib/queryBuilder', () => {
 
   describe('.buildSelectClause', () => {
     it('incorrect argument', () => {

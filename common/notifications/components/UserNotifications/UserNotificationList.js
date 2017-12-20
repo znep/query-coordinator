@@ -17,7 +17,6 @@ class UserNotificationList extends Component {
       onToggleReadUserNotification,
       I18n
     } = this.props;
-    const isTransientNotification = false;
     const notifications = userNotifications.filter((notification) => (
       _.isEqual(filterNotificationsBy, 'all') || _.isEqual(notification.type, filterNotificationsBy)
     ));
@@ -35,20 +34,10 @@ class UserNotificationList extends Component {
     return notifications.map((notification) =>
       <UserNotification
         key={notification.id}
-        id={notification.id}
-        isRead={notification.read}
-        isTransientNotification={isTransientNotification}
-        activityType={notification.activityType}
-        createdAt={notification.createdAt}
-        type={notification.type}
-        activityUniqueKey={notification.activityUniqueKey}
-        messageBody={notification.messageBody}
-        link={notification.link}
-        userName={notification.userName}
-        userProfileLink={notification.userProfileLink}
+        notification={notification}
+        isTransientNotification={false}
         onClearUserNotification={onClearUserNotification}
-        onToggleReadUserNotification={onToggleReadUserNotification}
-        alertName={notification.alertName} />
+        onToggleReadUserNotification={onToggleReadUserNotification} />
     );
   }
 

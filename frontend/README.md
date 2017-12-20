@@ -456,6 +456,8 @@ Variable Name | Type | Source | Description
 `polaroid_hostname` | String | Configuration | Host name to connect to for the Polaroid page snapshot service.
 `polaroid_port` | Integer | Configuration | Port to connect to on `polaroid_host`.
 `port` | Integer | Configuration | _Deprecated_ Port to expose in Docker when running in a docker container.
+`publishing_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track DSMP (dataset management page) errors.
+`publishing_airbrake_project_id` | String | Configuration | AirBrake Project ID used specifically to track DSMP (dataset management page) errors.
 `query_string` | String | Rails | Used by `RequestLoggerMiddleware` in composing the log message.
 `rails_log_file` | String | Configuration | File name into which to write logs from the Rails application. Can optionally be set to `STDOUT` OR `STDERR`.
 `rack_env` | String | Configuration | Used to determine which environment the application is running in (e.g. `production`, `rc`, etc.). See also `rails_env`. Used primarily in `SslEnforcerConstraint`.

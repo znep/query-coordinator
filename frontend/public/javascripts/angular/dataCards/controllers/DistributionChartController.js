@@ -10,6 +10,7 @@ module.exports = function DistributionChartController(
   rx) {
   const Rx = rx;
 
+  var model = $scope.$observe('model').filter(_.isPresent);
   var whereClause$ = $scope.$observe('whereClause');
   var isFiltered$ = whereClause$.map(_.isPresent);
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
@@ -19,6 +20,11 @@ module.exports = function DistributionChartController(
   var fieldName$ = cardModel$.pluck('fieldName');
   var expanded$ = cardModel$.observeOnLatest('expanded');
   var rowDisplayUnit$ = cardModel$.observeOnLatest('aggregation.unit');
+  var rescaleAxis$ = model.observeOnLatest('page.enableAxisRescaling').
+    map(function(enabled) {
+      // Don't rescale for `false` or `"hidden"`.
+      return enabled === true;
+    });
 
   /** This function returns an observable that produces the data required to render the histogram
    * as a column chart. If the decision is made to render as a column chart, then we can reuse the
@@ -127,4 +133,5 @@ module.exports = function DistributionChartController(
   $scope.$bindObservable('isFiltered', isFiltered$);
   $scope.$bindObservable('expanded', expanded$);
   $scope.$bindObservable('visualizationType', visualizationType$);
+  $scope.$bindObservable('rescaleAxis', rescaleAxis$);
 };

@@ -343,16 +343,16 @@ export class GeocodeShortcut extends Component {
         ...Selectors.columnsForOutputSchema(
           this.props.entities, _.toNumber(this.getOutputSchema().id)
         )
-      ]
+      ];
 
       // removes dupes
       existingColumns = _.reduce(existingColumns, (cols, col) => {
         if (_.some(cols, _col => _col.id === col.id || _col.field_name === col.field_name)) {
-          return cols
+          return cols;
         } else {
-          return [...cols, col]
+          return [...cols, col];
         }
-      }, [])
+      }, []);
 
       const existingColIds = existingColumns.map(oc => oc.id);
 

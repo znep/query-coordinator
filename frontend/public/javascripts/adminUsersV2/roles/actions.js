@@ -67,7 +67,7 @@ export const removeUserRole = (userId, roleId) => dispatch => {
   };
 
   dispatch({ ...ACTION, stage: START });
-  CoreRolesApi.removeRoleFromUser({ userId, roleId }).then(
+  return CoreRolesApi.removeRoleFromUser(userId, roleId).then(
     () => {
       dispatch({ ...ACTION, stage: COMPLETE_SUCCESS });
       dispatch(showNotification({ translationKey: 'users.notifications.role_removed' }, 'success'));

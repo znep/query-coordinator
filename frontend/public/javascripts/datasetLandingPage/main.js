@@ -51,7 +51,7 @@ _.defer(() => {
       });
     }
   } catch (e) {
-    console.error(`Fatal error when rendering: ${e.stack}`);
+    console.error('Fatal error when rendering:', e);
 
     ReactDOM.render(
       <div className="alert error alert-full-width-top">{I18n.render_error}</div>,

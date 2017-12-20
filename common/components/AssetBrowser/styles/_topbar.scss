@@ -9,7 +9,7 @@
     }
   }
 
-  div[class*=autocomplete_container] {
+  > div[class*=autocomplete] {
     float: left;
     width: 40rem;
     padding-bottom: 8px;
@@ -21,7 +21,7 @@
     align-items: baseline;
     justify-content: space-between;
 
-    div[class*=autocomplete_container] {
+    > div[class*=autocomplete] {
       padding-bottom: 0;
       display: inline-block;
     }
@@ -47,7 +47,7 @@
   &.cards-container-topbar {
     margin: 0 0 20px 0;
 
-    div[class*=autocomplete_container] {
+    > div[class*=autocomplete] {
       float: right;
       margin-right: 0;
       width: 250px;

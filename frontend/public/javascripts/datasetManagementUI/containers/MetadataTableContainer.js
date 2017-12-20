@@ -81,6 +81,7 @@ export const makeProps = (entities, params) => {
 
     const isUSAID = FeatureFlags.value('usaid_features_enabled');
     const enableAssociatedAssets = isUSAID && r.is_parent === false;
+    const useDataAssetStrings = isUSAID && r.is_parent === true;
 
     return {
       editMetadataUrl: isUSAID ? `/publisher/edit?view=${r.fourfour}` : '#',
@@ -95,7 +96,8 @@ export const makeProps = (entities, params) => {
           browserHistory.push(Links.metadata(params));
         }
       },
-      revision: r
+      revision: r,
+      useDataAssetStrings
     };
   }
 };

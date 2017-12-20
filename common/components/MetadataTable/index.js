@@ -141,7 +141,8 @@ class MetadataTable extends Component {
       enableAssociatedAssets,
       localizeLink,
       renderWatchDatasetButton,
-      showCreateAlertButton
+      showCreateAlertButton,
+      useDataAssetStrings
     } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
     const watchDatasetButton = renderWatchDatasetButton ? renderWatchDatasetButton() : null;
@@ -175,7 +176,10 @@ class MetadataTable extends Component {
     return (
       <div className="landing-page-header-wrapper">
         <h2 className="landing-page-section-header">
-          {I18n.t('common.metadata.title')}
+          {useDataAssetStrings ?
+            I18n.t('common.metadata.title_data_asset')
+            : I18n.t('common.metadata.title')
+          }
         </h2>
         <div className="button-group">
           {associatedAssetsButton}
@@ -196,7 +200,8 @@ class MetadataTable extends Component {
       localizeLink,
       onSaveAssociatedAssets,
       associatedAssetsApiCalls,
-      statsUrl
+      statsUrl,
+      useDataAssetStrings
     } = this.props;
     const onClickStats = this.props.onClickStats || _.noop;
 
@@ -331,7 +336,11 @@ class MetadataTable extends Component {
     if (coreView.category) {
       category = <td>{_.upperFirst(coreView.category)}</td>;
     } else {
-      category = <td className="empty">{I18n.t('common.metadata.no_category_value')}</td>;
+      category = (<td className="empty">{
+        useDataAssetStrings ?
+          I18n.t('common.metadata.no_category_value_data_asset')
+          : I18n.t('common.metadata.no_category_value')
+      }</td>);
     }
 
     if (!_.isEmpty(coreView.tags)) {
@@ -355,7 +364,11 @@ class MetadataTable extends Component {
         </td>
       );
     } else {
-      tags = <td className="empty">{I18n.t('common.metadata.no_tags_value')}</td>;
+      tags = (<td className="empty">{
+        useDataAssetStrings ?
+          I18n.t('common.metadata.no_tags_value_data_asset')
+          : I18n.t('common.metadata.no_tags_value')
+      }</td>);
     }
 
     const licenseName = _.get(coreView, 'license.name');
@@ -374,7 +387,11 @@ class MetadataTable extends Component {
 
       license = <td>{license}</td>;
     } else {
-      license = <td className="empty">{I18n.t('common.metadata.no_license_value')}</td>;
+      license = (<td className="empty">{
+        useDataAssetStrings ?
+          I18n.t('common.metadata.no_license_value_data_asset')
+        : I18n.t('common.metadata.no_license_value')
+      }</td>);
     }
 
     if (coreView.attributionLink) {
@@ -398,7 +415,11 @@ class MetadataTable extends Component {
             className="metadata-detail-group-value"
             href={localizeLink(statsUrl)}
             onClick={onClickStats}>
-            {I18n.t('common.metadata.view_statistics')}
+            {
+              useDataAssetStrings ?
+                I18n.t('common.metadata.view_statistics_data_asset')
+              : I18n.t('common.metadata.view_statistics')
+            }
           </a>
         </div>
       );
@@ -409,7 +430,11 @@ class MetadataTable extends Component {
         <button
           className="btn btn-sm btn-primary btn-block contact-dataset-owner"
           data-modal="contact-form">
-          {I18n.t('common.contact_dataset_owner')}
+          {
+            useDataAssetStrings ?
+              I18n.t('common.contact_data_asset_owner')
+            : I18n.t('common.contact_dataset_owner')
+          }
         </button>
       );
     }
@@ -532,9 +557,11 @@ class MetadataTable extends Component {
                   </div>
 
                   <div className="metadata-detail-group">
-                    <dt className="metadata-detail-group-title">
-                      {I18n.t('common.metadata.dataset_owner')}
-                    </dt>
+                    <dt className="metadata-detail-group-title">{
+                      useDataAssetStrings ?
+                        I18n.t('common.metadata.data_asset_owner')
+                        : I18n.t('common.metadata.dataset_owner')
+                    }</dt>
 
                     <dd className="metadata-detail-group-value">
                       {ownerName}

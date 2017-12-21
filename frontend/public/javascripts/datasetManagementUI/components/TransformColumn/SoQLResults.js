@@ -40,7 +40,6 @@ class SoQLResults extends React.Component {
                 isIgnored={false}
                 displayState={this.state.displayState}
                 columnId={this.props.outputColumn.id}
-                showShortcut={() => {}}
                 shortcuts={[]}
                 flyouts={false}
                 onClickError={this.props.onClickError}

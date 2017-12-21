@@ -10,6 +10,7 @@ import ColumnForm from 'components/ColumnForm/ColumnForm';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
+import GeocodeShortcutPane from 'pages/ShowOutputSchema/GeocodeShortcutPane';
 import TransformColumnPane from 'pages/ShowOutputSchema/TransformColumnPane';
 import AddColPane from 'pages/ShowOutputSchema/AddColPane';
 import ShowBlobPreview from 'pages/ShowBlobPreview/ShowBlobPreview';
@@ -73,6 +74,7 @@ export default function rootRoute(store) {
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
+        <Route path="georeference" component={GeocodeShortcutPane} />
 
         <Route path="editor/:outputColumnId" component={TransformColumnPane}>
           <Route

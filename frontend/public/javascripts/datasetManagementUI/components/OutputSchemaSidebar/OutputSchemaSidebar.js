@@ -16,7 +16,7 @@ class OutputSchemaSidebar extends Component {
   }
 
   render() {
-    const { params, showShortcut } = this.props;
+    const { params } = this.props;
     // TODO: switch the geo modal thing into a page
     return (
       <div className={[sidebarStyles.sidebar, styles.outputSchemaSidebar].join(' ')}>
@@ -35,7 +35,7 @@ class OutputSchemaSidebar extends Component {
           {SubI18n.specify_headers}
         </Link>
         <Link
-          onClick={() => showShortcut('geocode')}
+          to={Links.geocodeShortcut(params)}
           className={sidebarStyles.tab}
           activeClassName={sidebarStyles.selected}>
           <SocrataIcon name="geo" />
@@ -45,6 +45,7 @@ class OutputSchemaSidebar extends Component {
           to={Links.showAddCol(params)}
           className={sidebarStyles.tab}
           activeClassName={sidebarStyles.selected}>
+          <SocrataIcon name="add" />
           {SubI18n.add_col}
         </Link>
         <SchemaActions />
@@ -54,8 +55,7 @@ class OutputSchemaSidebar extends Component {
 }
 
 OutputSchemaSidebar.propTypes = {
-  params: PropTypes.object.isRequired,
-  showShortcut: PropTypes.func.isRequired
+  params: PropTypes.object.isRequired
 };
 
 export default OutputSchemaSidebar;

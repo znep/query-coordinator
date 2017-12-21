@@ -99,7 +99,6 @@ class TablePane extends Component {
       columns,
       displayState,
       numLoadsInProgress,
-      showShortcut,
       params,
       source
     } = this.props;
@@ -142,7 +141,6 @@ class TablePane extends Component {
           <Table
             params={params}
             columns={columns}
-            showShortcut={showShortcut}
             inputSchema={inputSchema}
             outputSchema={outputSchema}
             displayState={displayState} />
@@ -173,7 +171,6 @@ TablePane.propTypes = {
   displayState: PropTypes.object,
   params: PropTypes.object,
   numLoadsInProgress: PropTypes.number,
-  showShortcut: PropTypes.func,
   flashVisible: PropTypes.bool,
   source: PropTypes.object
 };

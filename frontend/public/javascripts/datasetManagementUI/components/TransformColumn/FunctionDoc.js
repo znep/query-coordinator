@@ -15,8 +15,8 @@ function intersperse(things, thing) {
   });
 }
 
-const renderArgs = (argSpec) => (
-  intersperse(argSpec.map(ts => {
+function renderArgs(argSpec) {
+  return intersperse(argSpec.map(ts => {
     switch (ts.kind) {
       case 'fixed':
         return (<span>{ts.type}</span>);
@@ -24,9 +24,10 @@ const renderArgs = (argSpec) => (
         return (<span>{ts.type}</span>);
       default:
         console.error(`Invalid argSpec ${ts.type}`);
+        return null;
     }
-  }), ', ')
-);
+  }), ', ');
+}
 
 const renderResult = (t) => {
   switch (t.kind) {

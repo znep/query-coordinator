@@ -1,0 +1,20 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.manageMetadata {
+  :global {
+    section.modal-content {
+      margin: 0;
+      padding: 0;
+    }
+
+    .modal-footer {
+      z-index: 1000;
+    }
+  }
+}
+
+.button {
+  composes: btn from global;
+  composes: btn-default from global;
+}

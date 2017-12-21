@@ -2,21 +2,20 @@
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import * as Links from '../../links/links';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { hideModal } from 'reduxStuff/actions/modal';
 import * as Selectors from 'selectors';
 import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import { ADD_COLUMN } from 'reduxStuff/actions/apiCalls';
 import * as DisplayState from 'lib/displayState';
 import FlashMessage from 'containers/FlashMessageContainer';
-import ApiCallButton from 'components/ApiCallButton/ApiCallButton';
 import ColumnPreview from './ColumnPreview';
 import HideOriginal from './HideOriginal';
 import ErrorHandling from './ErrorHandling';
 import { traverse } from 'lib/ast';
+import { browserHistory } from 'react-router';
 import styles from './GeocodeShortcut.scss';
 import flashMessageStyles from 'components/FlashMessage/FlashMessage.scss';
 
@@ -197,14 +196,14 @@ export class GeocodeShortcut extends Component {
   getStateFromGeocodeFuncAst(geocodeFunc) {
     if (geocodeFunc.args.length === 1) {
       return {
-        mappings: decomposeFromCombined(geocodeFunc, this.getOutputColumns()),
+        mappings: decomposeFromCombined(geocodeFunc, this.getAllOutputColumns()),
         composedFrom: COMBINED
       };
     } else if (geocodeFunc.args.length === 4) {
       // Now we want to set the mappings from the component name to the input column
       // referred to in the AST
       return {
-        mappings: decomposeFromComponents(geocodeFunc, this.getOutputColumns()),
+        mappings: decomposeFromComponents(geocodeFunc, this.getAllOutputColumns()),
         composedFrom: COMPONENTS
       };
     }
@@ -215,7 +214,7 @@ export class GeocodeShortcut extends Component {
 
   getStateFromMakePointAst(geocodeFunc) {
     return {
-      mappings: decomposeFromLatLng(geocodeFunc, this.getOutputColumns()),
+      mappings: decomposeFromLatLng(geocodeFunc, this.getAllOutputColumns()),
       composedFrom: LATLNG
     };
   }
@@ -230,9 +229,13 @@ export class GeocodeShortcut extends Component {
   getOutputColumns() {
     // TODO: refine this selector; will break if you have multiple oc's with the
     // same mapping (if e.g. you change a col name)
-    return Selectors.columnsForOutputSchema(
+    return Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
+  }
+
+  getAllOutputColumns() {
+    return Selectors.outputColumnsForInputSchemaUniqByTransform(
       this.props.entities,
-      this.getOutputSchema().id
+      this.getOutputSchema().input_schema_id
     );
   }
 
@@ -315,10 +318,7 @@ export class GeocodeShortcut extends Component {
   genDesiredColumns() {
     // will be all cols + the generated geo one or just the geo one, depending
     // on if the user checked the "Do Not Import Original Cols" box
-    let existingColumns = Selectors.columnsForOutputSchema(
-      this.props.entities,
-      this.getOutputSchema().id
-    );
+    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
 
     const anyMappings = _.some(
       this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
@@ -334,8 +334,7 @@ export class GeocodeShortcut extends Component {
       existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
     } else {
       // otherwise add the things in the list that are columns, ignoring all the constants
-      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform_expr);
-
+      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform && !!oc.transform.transform_expr);
       const existingColIds = existingColumns.map(oc => oc.id);
 
       existingColumns = columnsToShow.filter(oc => !existingColIds.includes(oc.id)).concat(existingColumns);
@@ -389,7 +388,7 @@ export class GeocodeShortcut extends Component {
       .catch(resp => {
         const { body } = resp;
         if (body && body.params) {
-          const message = _.flatMap(Object.values(body.params), errors => errors);
+          const message = _.flatMap(_.values(body.params), errors => errors);
           this.props.showError(message);
         } else {
           console.error(resp);
@@ -429,40 +428,16 @@ export class GeocodeShortcut extends Component {
   }
 
   render() {
-    const { onDismiss, params, entities, redirectToOutputSchema } = this.props;
+    const { params, entities, redirectToOutputSchema } = this.props;
     const { mappings, shouldHideOriginal, shouldConvertToNull, composedFrom, displayState } = this.state;
-    const outputColumns = this.getOutputColumns();
     const outputColumn = this.getOutputColumn();
-    const headerProps = {
-      title: SubI18n.title,
-      className: styles.header,
-      onDismiss: onDismiss
-    };
     const { inputSchemaId } = params;
     const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
     const outputSchema = this.getOutputSchema();
 
-    const onPreview = () => this.createNewOutputSchema();
-
-    const onSave = () => {
-      // isPreviewable will be true when the expression the user has built is the same as
-      // the target output column; ie: they have hit "Preview" and the output column has been
-      // created and evaluated
-      // we also want to check that they haven't hidden the columns by comparing desired length
-      // to actual length
-      if (this.isOutputschemaStateDesired()) {
-        // The current expression matches the output column,
-        // so we have nothing to save,
-        // just dismiss
-        redirectToOutputSchema(this.getOutputSchema().id);
-        onDismiss();
-      } else {
-        this.createNewOutputSchema().then(resp => {
-          redirectToOutputSchema(resp.resource.id);
-          onDismiss();
-        });
-      }
-    };
+    const onPreview = () => this.createNewOutputSchema().then(resp => {
+      redirectToOutputSchema(resp.resource.id);
+    });
 
     const isLatLng = composedFrom === LATLNG;
     const isCombined = composedFrom === COMBINED;
@@ -491,7 +466,7 @@ export class GeocodeShortcut extends Component {
       <div className={styles.content}>
         <div className={styles.formWrap}>
           <form>
-            {fieldSet(this.state.composedFrom, mappings, this.setMapping, outputColumns)}
+            {fieldSet(this.state.composedFrom, mappings, this.setMapping, this.getAllOutputColumns())}
 
             <HideOriginal
               shouldHideOriginal={shouldHideOriginal}
@@ -521,34 +496,24 @@ export class GeocodeShortcut extends Component {
     );
 
     return (
-      <div>
-        <ModalHeader {...headerProps} />
-        <ModalContent>
-          <div className={styles.geocodeOptions}>
-            <p>Transform your data into coordinates</p>
-            <div className={styles.compositionSelector}>
-              <button onClick={composeLatlng} className={latlngClassname}>
-                Lat/Long
-              </button>
-              <button onClick={composeComponents} className={componentsClassname}>
-                Address (separated)
-              </button>
-              <button onClick={composeCombined} className={combinedClassname}>
-                Combined Address
-              </button>
-            </div>
+      <div className={styles.geocodeWrapper}>
+        <h2>{SubI18n.title}</h2>
+        <div className={styles.geocodeOptions}>
+          <p>Transform your data into coordinates</p>
+          <div className={styles.compositionSelector}>
+            <button onClick={composeLatlng} className={latlngClassname}>
+              Lat/Long
+            </button>
+            <button onClick={composeComponents} className={componentsClassname}>
+              Address (separated)
+            </button>
+            <button onClick={composeCombined} className={combinedClassname}>
+              Combined Address
+            </button>
           </div>
-          <FlashMessage />
-          {content}
-        </ModalContent>
-        <ModalFooter className={styles.footer}>
-          <button onClick={onDismiss} className={styles.cancelButton}>
-            Cancel
-          </button>
-          <ApiCallButton onClick={onSave} className={styles.saveButton} operation={ADD_COLUMN}>
-            Save
-          </ApiCallButton>
-        </ModalFooter>
+        </div>
+        <FlashMessage />
+        {content}
       </div>
     );
   }
@@ -564,23 +529,24 @@ GeocodeShortcut.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { payload }) => ({
-  ...payload,
+const mapStateToProps = ({ entities, ui }, { params }) => ({
   entities,
-  params: payload.params,
-  view: entities.views[payload.params.fourfour]
+  params,
+  view: entities.views[params.fourfour]
 });
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
-  const params = ownProps.payload.params;
   const dispatchProps = {
     onDismiss: () => dispatch(hideModal()),
 
     newOutputSchema: (inputSchemaId, desiredColumns) =>
       dispatch(ShowActions.newOutputSchema(inputSchemaId, desiredColumns)),
 
-    redirectToOutputSchema: outputSchemaId =>
-      dispatch(ShowActions.redirectToOutputSchema(params, outputSchemaId)),
+    redirectToOutputSchema: outputSchemaId => {
+      browserHistory.push(Links.geocodeColumn(
+        { ...ownProps.params, outputSchemaId: outputSchemaId }
+      ));
+    },
 
     showError: message => dispatch(FlashActions.showFlashMessage('error', message, 10000))
   };

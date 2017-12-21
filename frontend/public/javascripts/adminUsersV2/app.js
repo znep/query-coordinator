@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import DataLoader from './components/DataLoader';
-import { LocalizedCSVExportButton as CSVExportButton } from './users/components/CSVExportButton';
 import Localization from 'common/i18n/components/Localization';
 import { LocalizedNotification as Notification } from './components/Notification';
 import TabbedView from './components/TabbedView';
@@ -13,9 +12,7 @@ export const App = ({ store }) => (
       <DataLoader>
         <Notification />
         <div className="admin-users-app">
-          <div className="header-button-bar">
-            <CSVExportButton />
-          </div>
+          <div className="header-button-bar" />
           <TabbedView />
         </div>
       </DataLoader>

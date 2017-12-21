@@ -6,7 +6,8 @@ import {
   shapeRevisions,
   shapeSources,
   shapeOutputSchemas,
-  createActivities
+  createActivities,
+  ACTIVITY_TYPES
 } from 'containers/RecentActionsContainer';
 
 describe('containers/RecentActionsContainer', () => {
@@ -40,7 +41,7 @@ describe('containers/RecentActionsContainer', () => {
       const activities = shapeRevisions(_.values(revisions), 9);
 
       const allEmpty = activities
-        .map(act => Activity.Empty.is(act))
+        .map(act => act.type === ACTIVITY_TYPES.empty)
         .reduce((acc, a) => acc && a, true);
 
       assert.isTrue(allEmpty);
@@ -50,13 +51,13 @@ describe('containers/RecentActionsContainer', () => {
       const activities = shapeRevisions(_.values(revisions), 0);
 
       assert.equal(activities.length, 1);
-      assert.isTrue(Activity.Revision.is(activities[0]));
+      assert.isTrue(activities[0].type === ACTIVITY_TYPES.revision);
       assert.equal(
-        activities[0].details.createdAt,
+        activities[0].createdAt,
         revisions['444'].created_at
       );
       assert.equal(
-        activities[0].details.createdBy,
+        activities[0].createdBy,
         revisions['444'].created_by.display_name
       );
     });
@@ -86,7 +87,7 @@ describe('containers/RecentActionsContainer', () => {
       const activities = shapeSources([]);
 
       const allEmpty = activities
-        .map(act => Activity.Empty.is(act))
+        .map(act => act.type === ACTIVITY_TYPES.empty)
         .reduce((acc, a) => acc && a, true);
 
       assert.isTrue(allEmpty);
@@ -96,7 +97,7 @@ describe('containers/RecentActionsContainer', () => {
       const activities = shapeSources(_.values(sources));
 
       const allSources = activities
-        .map(act => Activity.Source.is(act))
+        .map(act => act.type === ACTIVITY_TYPES.source)
         .reduce((acc, a) => acc && a, true);
 
       assert.equal(activities.length, 2);
@@ -148,7 +149,7 @@ describe('containers/RecentActionsContainer', () => {
       const activities = shapeOutputSchemas([], null, null);
 
       const allEmpty = activities
-        .map(act => Activity.Empty.is(act))
+        .map(act => act.type === ACTIVITY_TYPES.empty)
         .reduce((acc, a) => acc && a, true);
 
       assert.isTrue(allEmpty);
@@ -162,7 +163,7 @@ describe('containers/RecentActionsContainer', () => {
       );
 
       const allOS = activities
-        .map(act => Activity.OutputSchema.is(act))
+        .map(act => act.type === ACTIVITY_TYPES.outputSchema)
         .reduce((acc, a) => acc && a, true);
 
       assert.equal(activities.length, 2);
@@ -177,16 +178,16 @@ describe('containers/RecentActionsContainer', () => {
       )[0];
 
       assert.equal(
-        activity.details.createdAt,
+        activity.createdAt,
         state.output_schemas['55'].created_at
       );
       assert.equal(
-        activity.details.createdBy,
+        activity.createdBy,
         state.output_schemas['55'].created_by.display_name
       );
-      assert.equal(activity.details.sourceId, state.sources['10'].id);
-      assert.equal(activity.details.isid, state.input_schemas['9'].id);
-      assert.equal(activity.details.osid, state.output_schemas['55'].id);
+      assert.equal(activity.sourceId, state.sources['10'].id);
+      assert.equal(activity.isid, state.input_schemas['9'].id);
+      assert.equal(activity.osid, state.output_schemas['55'].id);
     });
   });
 
@@ -267,7 +268,7 @@ describe('containers/RecentActionsContainer', () => {
       const activities = createActivities(state, params);
 
       const allActivities = activities
-        .map(act => Activity.is(act))
+        .map(act => !!act.type)
         .reduce((acc, a) => acc && a, true);
 
       assert.isOk(activities.length);
@@ -277,7 +278,7 @@ describe('containers/RecentActionsContainer', () => {
     it('filters out empty activities', () => {
       const activities = createActivities(state, params);
 
-      const emptyActivities = activities.filter(act => Activity.Empty.is(act));
+      const emptyActivities = activities.filter(act => act.type === ACTIVITY_TYPES.empty);
 
       assert.equal(emptyActivities.length, 0);
     });

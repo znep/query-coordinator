@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ACTIVITY_TYPES } from 'containers/RecentActionsContainer';
 import {
   RevisionActivity,
   SourceActivity,
@@ -10,17 +11,24 @@ import {
 } from 'components/RecentActionItems/RecentActionItems';
 
 const RecentActions = ({ activities, params }) => {
-  const items = activities.map((activity, idx) =>
-    activity.cata({
-      Revision: details => <RevisionActivity key={idx} details={details} />,
-      Source: details => <SourceActivity key={idx} details={details} />,
-      OutputSchema: details => <OutputSchemaActivity key={idx} params={params} details={details} />,
-      TaskSet: details => <TaskSetActivity key={idx} details={details} />,
-      FinishedTaskSet: details => <TaskSetFinishedActivity key={idx} details={details} />,
-      FailedTaskSet: details => <TaskSetFailedActivity key={idx} details={details} />,
-      Empty: () => null
-    })
-  );
+  const items = activities.map((activity, idx) => {
+    switch (activity.type) {
+      case ACTIVITY_TYPES.revision:
+        return <RevisionActivity key={idx} details={activity} />;
+      case ACTIVITY_TYPES.source:
+        return <SourceActivity key={idx} details={activity} />;
+      case ACTIVITY_TYPES.outputSchema:
+        return <OutputSchemaActivity key={idx} params={params} details={activity} />;
+      case ACTIVITY_TYPES.taskSet:
+        return <TaskSetActivity key={idx} details={activity} />;
+      case ACTIVITY_TYPES.taskSetFailed:
+        return <TaskSetFailedActivity key={idx} details={activity} />;
+      case ACTIVITY_TYPES.taskSetFinished:
+        return <TaskSetFinishedActivity key={idx} details={activity} />;
+      default:
+        return null;
+    }
+  });
 
   return <div>{items}</div>;
 };

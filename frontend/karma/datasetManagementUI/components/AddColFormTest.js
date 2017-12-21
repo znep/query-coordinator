@@ -41,13 +41,13 @@ describe('components/AddColForm', () => {
       assert.isTrue(
         component
           .find('TextInput')
-          .filterWhere(input => input.prop('name') === 'displayName')
+          .filterWhere(input => input.prop('field').name === 'displayName')
           .exists()
       );
       assert.isTrue(
         component
           .find('TextInput')
-          .filterWhere(input => input.prop('name') === 'fieldName')
+          .filterWhere(input => input.prop('field').name === 'fieldName')
           .exists()
       );
       assert.isTrue(component.find('SoqlTypePillBox').exists());
@@ -84,7 +84,7 @@ describe('components/AddColForm', () => {
       assert.equal(component.state('fieldName'), '');
       component
         .find('TextInput')
-        .filterWhere(input => input.prop('name') === 'displayName')
+        .filterWhere(input => input.prop('field').name === 'displayName')
         .dive()
         .find('input')
         .simulate('change', { target: { value: 'hey there' } });

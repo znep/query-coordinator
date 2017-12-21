@@ -1,8 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import sinon from 'sinon';
+import _ from 'lodash';
+
+import mockCeteraFetchResponse from './data/mock_cetera_fetch_response';
+import airbrake from 'common/airbrake';
 
 import UserProfile from 'userProfile/components/user_profile';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
@@ -10,29 +14,52 @@ import * as constants from 'common/components/AssetBrowser/lib/constants';
 const store = configureMockStore()();
 
 const userProfileProps = (options = {}) => ({
-  store: store,
+  store,
   ...options
 });
 
-const initialStateStub = (id) => ({
-  initialState: {
-    targetUserId: id
-  }
-});
+var sandbox = sinon.createSandbox();
 
-const serverConfigStub = (id) => ({
-  currentUser: { id }
-});
+const stubTargetUserId = (id) => {
+  const staticDataStub = _.cloneDeep(window.socrata.assetBrowser.staticData);
+  _.set(staticDataStub, 'targetUserId', id);
+  sandbox.stub(window.socrata.assetBrowser, 'staticData').value(staticDataStub);
+};
+
+const stubCurrentUserId = (id) => {
+  const currentUserStub = _.cloneDeep(window.socrata.currentUser);
+  _.set(currentUserStub, 'id', id);
+  sandbox.stub(window.socrata, 'currentUser').value(currentUserStub);
+};
+
+const stubVisibility = (args) => {
+  const { hasRole, hasAdminFlag } = args;
+  const visibilityStub = _.cloneDeep(window.socrata);
+
+  if (!hasRole) {
+    _.unset(visibilityStub, 'currentUser.roleId');
+  }
+
+  if (!hasAdminFlag) {
+    _.set(visibilityStub, 'currentUser.flags', []);
+  }
+
+  sandbox.stub(window, 'socrata').value(visibilityStub);
+};
 
 describe('<UserProfile /> component', () => {
-  var sandbox = sinon.createSandbox();
-
   let wrapper;
   let tabs;
+  let airBrakeStub;
 
   beforeEach(() => {
     wrapper = shallow(<UserProfile {...userProfileProps()} />);
     tabs = wrapper.props().tabs;
+    airBrakeStub = sinon.stub(airbrake, 'notify');
+  });
+
+  afterEach(() => {
+    airBrakeStub.restore();
   });
 
   it(`should always show ${constants.MY_ASSETS_TAB} tab`, () => {
@@ -44,8 +71,8 @@ describe('<UserProfile /> component', () => {
 
   describe('targetUserId and currentUser.id are not equal', () => {
     before(() => {
-      sandbox.stub(window, 'socrata').returns(initialStateStub(undefined));
-      sandbox.stub(window, 'serverConfig').returns(serverConfigStub('legal_4x4'));
+      stubTargetUserId(undefined);
+      stubCurrentUserId('legal_4x4');
     });
 
     after(() => {
@@ -70,8 +97,8 @@ describe('<UserProfile /> component', () => {
   describe('targetUserId and currentUser.id are equal', () => {
     before(() => {
       let userId = 'legal_4x4';
-      sandbox.stub(window, 'socrata').value(initialStateStub(userId));
-      sandbox.stub(window, 'serverConfig').value(serverConfigStub(userId));
+      stubTargetUserId(userId);
+      stubCurrentUserId(userId);
     });
 
     after(() => {
@@ -90,6 +117,67 @@ describe('<UserProfile /> component', () => {
         tabs[constants.MY_ASSETS_TAB].props.baseFilters,
         { visibility: 'open' }
       );
+    });
+  });
+
+  describe('visibility column', () => {
+    beforeEach(() => {
+      sandbox.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
+      // Hack to shush console.error from failed catalog-service (fka cetera) query
+      sandbox.stub(console, 'error');
+      wrapper = mount(<UserProfile {...userProfileProps()} />);
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    describe('when currentUser has a role and admin flag', () => {
+      before(() => {
+        stubVisibility({ hasRole: true, hasAdminFlag: true });
+      });
+
+      it('should be present', () => {
+        assert.exists(window.socrata.currentUser.roleId);
+        assert.include(window.socrata.currentUser.flags, 'admin');
+        assert.equal(wrapper.find('th.visibility').length, 1);
+      });
+    });
+
+    describe('when currentUser has a role but no admin flag', () => {
+      before(() => {
+        stubVisibility({ hasRole: true, hasAdminFlag: false });
+      });
+
+      it('should be present', () => {
+        assert.exists(window.socrata.currentUser.roleId);
+        assert.notInclude(window.socrata.currentUser.flags, 'admin');
+        assert.equal(wrapper.find('th.visibility').length, 1);
+      });
+    });
+
+    describe('when currentUser has no role but has admin flag', () => {
+      before(() => {
+        stubVisibility({ hasRole: false, hasAdminFlag: true });
+      });
+
+      it('should be present', () => {
+        assert.notExists(window.socrata.currentUser.roleId);
+        assert.include(window.socrata.currentUser.flags, 'admin');
+        assert.equal(wrapper.find('th.visibility').length, 1);
+      });
+    });
+
+    describe('when currentUser has no role and no admin flag', () => {
+      before(() => {
+        stubVisibility({ hasRole: false, hasAdminFlag: false });
+      });
+
+      it('should not be present', () => {
+        assert.notExists(window.socrata.currentUser.roleId);
+        assert.notInclude(window.socrata.currentUser.flags, 'admin');
+        assert.equal(wrapper.find('th.visibility').length, 0);
+      });
     });
   });
 });

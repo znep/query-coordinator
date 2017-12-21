@@ -4,6 +4,11 @@ import { clearAllFilters } from 'common/components/AssetBrowser/actions/filters'
 import { getUnfilteredState } from 'common/components/AssetBrowser/reducers/filters';
 
 export const CHANGE_TAB = 'CHANGE_TAB';
+export const SET_INITIAL_TAB = 'SET_INITIAL_TAB';
+
+export const setInitialTab = (initialTab) => (dispatch) => {
+  dispatch({ type: SET_INITIAL_TAB, initialTab });
+};
 
 export const changeTab = (newTab) => (dispatch, getState) => {
   dispatch({ type: CHANGE_TAB, newTab });

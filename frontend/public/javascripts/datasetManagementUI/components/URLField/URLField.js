@@ -45,10 +45,12 @@ class URLField extends Component {
         <div className={styles.urlFieldArea}>
           <label>{I18n.show_sources.label_url}</label>
           <TextInput
-            value={value.url}
-            label={I18n.show_sources.label_url}
-            name="url"
-            isRequired
+            field={{
+              value: value.url,
+              label: I18n.show_sources.label_url,
+              name: 'url',
+              isRequired: true
+            }}
             inErrorState={urlInErrorState}
             handleChange={e =>
               handleChangeUrl({
@@ -67,9 +69,11 @@ class URLField extends Component {
         <div className={styles.filetypeFieldArea}>
           <label>{I18n.show_sources.label_file_type}</label>
           <TextInput
-            name="filetype"
-            value={value.filetype}
-            label={I18n.show_sources.label_file_type}
+            field={{
+              name: 'filetype',
+              value: value.filetype,
+              label: I18n.show_sources.label_file_type
+            }}
             inErrorState={filetypeInErrorState}
             handleChange={e =>
               handleChangeUrl({

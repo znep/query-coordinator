@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 
 import { COMPLETE_SUCCESS, SHOW_NOTIFICATION, START } from 'actions';
 import { userSearch } from 'users/actions';
-import { changeUserRole, USER_ROLE_CHANGE } from 'roles/actions';
+import { changeUserRole, removeUserRole, USER_ROLE_CHANGE } from 'roles/actions';
 
 import { initialState } from '../helpers/stateFixtures';
 
@@ -26,6 +26,32 @@ describe('roles/reducers', () => {
         expect(actions[0].stage).to.equal(START);
         expect(actions[1].stage).to.equal(COMPLETE_SUCCESS);
         expect(actions[2].type).to.equal(SHOW_NOTIFICATION);
+        done();
+      }).
+      catch(err => {
+        done(err);
+      });
+    });
+  });
+
+  describe('removeUserRole', () => {
+    it('removes the role from the user', (done) => {
+      const mockStore = configureStore([thunk]);
+      const store = mockStore(initialState);
+
+      fetchMock.delete('/api/roles/5/users/cr53-8rh5', {}, { name: 'removeUserRole' });
+
+      store.dispatch(removeUserRole('cr53-8rh5', '5')).
+      then(() => {
+        const actions = store.getActions();
+        expect(actions).to.have.length(3);
+        actions.slice(0,2).forEach((action) => expect(action.type).to.equal(USER_ROLE_CHANGE));
+        expect(actions[0].stage).to.equal(START);
+        expect(actions[1].stage).to.equal(COMPLETE_SUCCESS);
+        expect(actions[2].type).to.equal(SHOW_NOTIFICATION);
+        const [ ignored, { headers } ] = fetchMock.lastCall('removeUserRole');
+        expect(headers['X-CSRF-Token']).to.eql(serverConfig.csrfToken);
+        expect(headers['X-App-Token']).to.eql(serverConfig.appToken);
         done();
       }).
       catch(err => {

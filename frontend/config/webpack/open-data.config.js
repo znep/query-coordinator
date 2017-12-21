@@ -55,6 +55,7 @@ module.exports = _.defaultsDeep({
       './util/dataset/chart.js',
       './util/dataset/form.js',
       './util/dataset/map.js',
+      './util/geo-helpers.js',
       './util/view-cache.js',
       './util/styles.js',
       './util/templates.js',

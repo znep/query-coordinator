@@ -2,6 +2,7 @@ import CoreFutureAccountsApi from 'common/core-future-accounts-api';
 import * as Validators from '../validators';
 import { showNotification, START, COMPLETE_SUCCESS, COMPLETE_FAIL } from '../actions';
 import UsersApi from 'common/users-api';
+import { getFilters, getUsersOffset, getUsersOrderBy, getUsersResultsLimit, getUsersSortDirection } from '../reducers';
 
 // Async Stages
 export const VALIDATION_FAIL = 'VALIDATION_FAIL';
@@ -14,10 +15,15 @@ export const userSearch = query => (dispatch, getState) => {
     type: USER_SEARCH,
     query
   };
-  const { filters } = getState();
+  const state = getState();
+  const filters = getFilters(state);
+  const offset = getUsersOffset(state);
+  const limit = getUsersResultsLimit(state);
+  const orderBy = getUsersOrderBy(state);
+  const sortDirection = getUsersSortDirection(state);
   dispatch({ ...ACTION, stage: START });
-  return loadUsers({ query, filters }).
-    then(users => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, users })).
+  return loadUsers({ query, filters, limit, offset, orderBy, sortDirection }).
+    then(results => dispatch({ ...ACTION, stage: COMPLETE_SUCCESS, payload: results })).
     catch(ex => console.error('Error parsing JSON', ex));
 };
 
@@ -98,4 +104,16 @@ export const resetPassword = userId => dispatch => {
     catch(err => {
       console.error(err);
     });
+};
+
+export const GOTO_PAGE = 'GOTO_PAGE';
+export const gotoPage = page => dispatch => {
+  dispatch({ type: GOTO_PAGE, payload: { page }});
+  dispatch(userSearch());
+};
+
+export const SORT_COLUMN = 'SORT_COLUMN';
+export const sortColumn = columnKey => dispatch => {
+  dispatch({ type: SORT_COLUMN, payload: { columnKey }});
+  dispatch(userSearch());
 };

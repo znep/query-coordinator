@@ -257,11 +257,15 @@
     };
 
     var validDataset = function(ds) {
-      return ds.isArcGISDataset() || ds.isGeoDataset() ||
-        _.any(ds.realColumns,
+      return (
+        GeoHelpers.isArcGISOrGeoDataset(ds) ||
+        _.any(
+          ds.realColumns,
           function(col) {
             return _.include(['location', 'point'], col.renderTypeName);
-          });
+          }
+        )
+      );
     };
 
     $field.makeStatic = function(value, invalid, uneditable) {

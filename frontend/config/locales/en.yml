@@ -594,6 +594,7 @@ en:
             recently_added: Recently Added
             recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
+    contact_data_asset_owner: Contact Data Asset Owner
     dataset_contents:
       columns: Columns
       row_display_unit: Each row is a
@@ -635,6 +636,7 @@ en:
       open_editor_button: Feature an External Resource
       preview: Preview
     feedback:
+      close: Close
       panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
       panel_title: Do you want to include an annotated screenshot of the current page?
       screenshot_no: No thanks
@@ -650,20 +652,26 @@ en:
       data_last_updated: Data Last Updated
       data_provided_by: Data Provided by
       dataset_owner: Dataset Owner
+      data_asset_owner: Data Asset Owner
       downloads: Downloads
       edit_metadata: Edit Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
       no_category_value: This dataset has not been categorized
+      no_category_value_data_asset: This data asset has not been categorized
       no_license_value: The license for this dataset is unspecified
+      no_license_value_data_asset: The license for this data asset is unspecified
       no_tags_value: This dataset does not have any tags
+      no_tags_value_data_asset: This data asset does not have any tags
       no_value: "(none)"
       source_link: Source Link
       tags: Tags
       title: About this Dataset
+      title_data_asset: About this Data Asset
       topics: Topics
       view_statistics: View all statistics for this Dataset
+      view_statistics_data_asset: View all statistics for this Data Asset
       views: Views
     more: Show More
     none: None
@@ -1873,6 +1881,7 @@ en:
       learn_more_link: Learn about more external integrations at
       title: Open this dataset in Carto?
     contact_dataset_owner: Contact Dataset Owner
+    contact_data_asset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
       email: Your Email
@@ -2330,6 +2339,7 @@ en:
       uploading_attachment: Uploading attachment
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
+      dataset_revision_error: Error applying the dataset revision. This may be a temporary network issue.
     import_from_url:
       retry: Retry
       start_import: Start Import
@@ -2410,7 +2420,7 @@ en:
         longitude: Longitude
         hide_original_columns: Do not import original columns
         begin_georeferencing: Select columns to georeference this dataset
-        preview: Preview
+        run_geocoding: Run Geocoder
       column_header:
         column_options: Column Options
         column_status_flyout:
@@ -3144,16 +3154,18 @@ en:
       format:
         format: "%n%"
   open_performance:
-    dismiss: Dismiss
-    edit: Edit
-    edit_menu_label: Menu
-    exit_preview_mode: Exit Preview Mode
     calculation_types:
       count: Count
       sum: Sum
       rate: Rate
       recent_value: Recent Value
+    dismiss: Dismiss
+    edit: Edit
+    edit_menu_label: Menu
+    exit_preview_mode: Exit Preview Mode
     measure:
+      about_this_measure: About This Measure
+      calculation_type: Calculation Type
       dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
@@ -3262,7 +3274,16 @@ en:
           tab_title: Reporting Period
           title: Configure Reporting Period
           type_label: Period type
+      methods_and_analysis:
+        analysis: Analysis
+        combined: Methods and Analysis
+        methods: Methods
+        placeholder: Methodological data not yet provided
       reporting_period: Reporting Period
+    measure_visualization: Measure visualization
+    metric: Metric
+    no_dataset: Metric calculation not available
+    no_visualization: Metric calculation not available
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save
@@ -3570,6 +3591,7 @@ en:
           asset_type: Type
           created_at: Date
           dataset_name: Item Affected
+        download: Download
         event_messages:
           failure:
             archive_error:

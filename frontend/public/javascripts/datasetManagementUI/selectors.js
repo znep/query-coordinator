@@ -72,6 +72,25 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
     .value();
 }
 
+export function outputColumnsForInputSchemaUniqByTransform(entities, inputSchemaId) {
+  const outputSchemaIds = _.filter(entities.output_schemas, { input_schema_id: inputSchemaId })
+    .map(os => os.id);
+
+  return _.chain(entities.output_schema_columns)
+    .filter(osc => _.includes(outputSchemaIds, osc.output_schema_id))
+    .map(outputSchemaColumn => {
+      const outputColumn = entities.output_columns[outputSchemaColumn.output_column_id];
+      return {
+        ...outputColumn,
+        transform: entities.transforms[outputColumn.transform_id],
+        is_primary_key: outputSchemaColumn.is_primary_key || false
+      };
+    })
+    .uniqBy(oc => oc.transform.id)
+    .sortBy('position')
+    .value();
+}
+
 export function getRowData(entities, inputSchemaId, displayState, outputColumns) {
 
   const startRow = (displayState.pageNo - 1) * PAGE_SIZE;
@@ -127,9 +146,10 @@ export function allColumnsWithOSID(entities) {
 }
 
 export function treeForOutputSchema(entities, outputSchemaId) {
-  const outputSchema = entities.output_schemas[outputSchemaId];
-  const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-  const source = entities.sources[inputSchema.source_id];
+  const outputSchema = entities.output_schemas[outputSchemaId] || {};
+  const inputSchema = _.isEmpty(outputSchema) ? {} : entities.input_schemas[outputSchema.input_schema_id];
+  const source = _.isEmpty(inputSchema) ? {} : entities.sources[inputSchema.source_id];
+
   return {
     outputSchema,
     inputSchema,

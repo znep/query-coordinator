@@ -12,24 +12,20 @@ class ParseOption extends Component {
 
     let errorMessage = null;
     if (error) {
-      errorMessage = (
-        <div className={styles.optionError}>
-          {error.message}
-        </div>
-      );
+      errorMessage = <div className={styles.optionError}>{error.message}</div>;
     }
 
     return (
       <div>
-        <label htmlFor={name}>
-          {SubI18n[name]}
-        </label>
+        <label htmlFor={name}>{SubI18n[name]}</label>
         {errorMessage}
         <TextInput
-          placeholder={placeholder}
-          id={name}
-          name={name}
-          value={_.toString(error ? error.value : getOption(name))}
+          field={{
+            placeholder: placeholder,
+            id: name,
+            name: name,
+            value: _.toString(error ? error.value : getOption(name))
+          }}
           handleChange={setOption}
           inErrorState={!!error} />
       </div>

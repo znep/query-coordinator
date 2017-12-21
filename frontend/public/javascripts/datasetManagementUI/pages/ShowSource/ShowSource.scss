@@ -2,25 +2,24 @@
 @import 'common/styleguide/variables/colors';
 
 .modalContent {
-  flex-grow: 1;
-  height: 100%;
-}
-
-.sourceContainer {
-  background-color: #fff;
   display: flex;
-  min-height: 100%;
-}
 
-.sourceContainer > section:nth-child(2) {
-  flex-grow: 1;
+  @media (max-width: 750px) {
+    height: 100%;
+    flex-direction: column;
+  }
 }
 
 .centeredContainer {
-  height: 100%;
   display: flex;
+  flex-grow: 1;
+  margin-left: 250px;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  @media (max-width: 750px) {
+    margin-left: 0;
+  }
 }
 
 .spinner {

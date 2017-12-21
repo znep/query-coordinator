@@ -58,9 +58,13 @@ describe('containers/PublishButtonContainer', () => {
 
   describe('mapStateToProps', () => {
     it('returns metadataSatisfied is false if there are errors in the store', () => {
-      const newState = dotProp.set(state, 'ui.forms.datasetForm.errors', [
-        { name: 'messed up' }
-      ]);
+      const newState = dotProp.set(state, 'ui.forms.datasetForm.errors', {
+        fieldset: {
+          fields: {
+            name: ['messed up', 'really messed up']
+          }
+        }
+      });
 
       const props = mapStateToProps(newState, ownProps);
 

@@ -55,14 +55,14 @@ describe('<Approvals />', () => {
 
   describe('tabs', () => {
     describe('when the user has the "configure_approvals" right', () => {
-      let currentUser = _.cloneDeep(window.serverConfig.currentUser);
+      const currentUser = _.cloneDeep(window.socrata.currentUser);
 
       beforeEach(() => {
-        window.serverConfig.currentUser.rights = ['configure_approvals'];
+        window.socrata.currentUser.rights = ['configure_approvals'];
       });
 
       afterEach(() => {
-        window.serverConfig.currentUser = currentUser;
+        window.socrata.currentUser = currentUser;
       });
 
       it('renders a link to the Settings page', () => {
@@ -81,7 +81,7 @@ describe('<Approvals />', () => {
 
     describe('when the user does not have the "configure_approvals" right', () => {
       beforeEach(() => {
-        window.serverConfig.currentUser.rights = [];
+        window.socrata.currentUser.rights = [];
       });
       it('does not render the settings tab', () => {
         const wrapper = mount(<Approvals {...approvalsProps()} />);

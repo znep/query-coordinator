@@ -35,6 +35,7 @@ module.exports = function (karma) {
       'public/javascripts/plugins/inheritance.js',
       'public/javascripts/util/base-model.js',
       'public/javascripts/util/socrata-server.js',
+      'public/javascripts/util/geo-helpers.js',
       'public/javascripts/util/dataset/dataset.js',
       'public/javascripts/util/dataset/column.js',
       'public/javascripts/util/dataset/column-container.js',

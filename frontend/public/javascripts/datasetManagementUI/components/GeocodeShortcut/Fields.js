@@ -23,12 +23,9 @@ function outputColumnSelection(
 ) {
   const outputColumn = getOutputColumnFromMapping(mappings, addressComponent);
   const name = SubI18n[addressComponent];
-
-  const optionRenderer = ({ title, className }) => ( // eslint-disable-line
-    <span className={`picklist-title ${className}`}>
-      {title}
-    </span>
-  );
+  const optionRenderer = (
+    { title, className } // eslint-disable-line
+  ) => <span className={`picklist-title ${className}`}>{title}</span>;
 
   const empty = {
     title: SubI18n.none,
@@ -47,49 +44,51 @@ function outputColumnSelection(
   const options = outputColumns
     .filter(oc => _.includes(typeWhitelist, oc.transform.output_soql_type))
     .map(oc => ({
-      title: oc.field_name,
-      value: oc.field_name,
+      title: oc.display_name,
+      value: oc,
       render: optionRenderer
-    })).concat([empty]);
+    }))
+    .concat([empty]);
 
   if (allowConstant) {
     options.push(constant);
   }
-
 
   const props = {
     onSelection: ({ value }) => {
       if (value === ENTER_CONSTANT) {
         setMapping(addressComponent, '');
       } else if (value) {
-        setMapping(addressComponent, _.find(outputColumns, oc => oc.field_name === value));
+        setMapping(addressComponent, value);
       } else {
         setMapping(addressComponent, null);
       }
     },
-    value: _.isString(outputColumn) ? ENTER_CONSTANT : (outputColumn && outputColumn.field_name),
+    value: _.isString(outputColumn) ? ENTER_CONSTANT : outputColumn,
     options
   };
 
   let constantView;
   if (_.isString(outputColumn)) {
-    const onUpdateConstant = (e) => {
+    const onUpdateConstant = e => {
       setMapping(addressComponent, e.target.value);
     };
 
-    constantView = (<TextInput
-      name={`constant-${addressComponent}`}
-      placeholder={SubI18n.constant}
-      handleChange={onUpdateConstant}
-      inErrorState={false}
-      value={outputColumn} />);
+    constantView = (
+      <TextInput
+        field={{
+          name: `constant-${addressComponent}`,
+          placeholder: SubI18n.constant,
+          value: outputColumn
+        }}
+        handleChange={onUpdateConstant}
+        inErrorState={false} />
+    );
   }
 
   return (
     <div className={styles.columnSelection}>
-      <label>
-        {name}
-      </label>
+      <label>{name}</label>
       <Dropdown {...props} />
       {constantView}
     </div>

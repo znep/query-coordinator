@@ -27,10 +27,6 @@ function t(subkey) {
 
 // Configuration panel for the reporting period start date, type, and size.
 export class ReportingPeriodPanel extends Component {
-  renderCollectionFrequency() {
-    return null; // TODO
-  }
-
   renderStartDate() {
     const { startDate, onChangeStartDate } = this.props;
     return (
@@ -112,7 +108,6 @@ export class ReportingPeriodPanel extends Component {
     return (
       <div>
         <h3 className="reporting-period-panel-title">{t('title')}</h3>
-        {this.renderCollectionFrequency()}
         <form onSubmit={(event) => event.preventDefault()}>
           <div className="configuration-field">
             <h5>{t('start_date_label')}</h5>
@@ -129,8 +124,6 @@ export class ReportingPeriodPanel extends Component {
   }
 }
 
-// TODO: Consider if we should make ALL properties required and then force
-//       ourselves to setup default state in the reducer.
 ReportingPeriodPanel.propTypes = {
   startDate: PropTypes.string,
   type: PropTypes.oneOf(_.values(PeriodTypes)),
@@ -140,9 +133,6 @@ ReportingPeriodPanel.propTypes = {
   onChangePeriodSize: PropTypes.func.isRequired
 };
 
-// TODO: All default props should be defined in the reducer, instead of inside components.
-//       I do support default values if the field is not connected to redux, but in
-//       this case, the startDate should be set in redux before this component is created.
 ReportingPeriodPanel.defaultProps = {
   startDate: moment().startOf('year').format('YYYY-MM-DD')
 };

@@ -27,13 +27,12 @@ const GEOSPATIAL_TYPES = [
   'polygon'
 ];
 
-const GeospatialShortcut = ({ showShortcut, flyoutId }) => (
-  <Link className={styles.geoBadge} onClick={() => showShortcut('geocode')} data-flyout={flyoutId}>
+const GeospatialShortcut = ({ flyoutId }) => (
+  <Link className={styles.geoBadge} onClick={() => console.warn('not implemented!')} data-flyout={flyoutId}>
      <SocrataIcon name="geo" />
   </Link>
 );
 GeospatialShortcut.propTypes = {
-  showShortcut: PropTypes.func.isRequired,
   flyoutId: PropTypes.string.isRequired
 };
 
@@ -128,7 +127,6 @@ export class TransformStatus extends Component {
       totalRows,
       displayState,
       columnId,
-      showShortcut,
       onClickError,
       isDropping
     } = this.props;
@@ -199,7 +197,7 @@ export class TransformStatus extends Component {
         </div>
         <div className={styles.colAttributes}>
           {this.showGeocodeShortcut() && (
-            <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} showShortcut={showShortcut} />
+            <GeospatialShortcut flyoutId={getGeoFlyoutId(transform)} />
           )}
           {this.showMapFlyout() && (
             <MapFlyoutShortcut
@@ -242,7 +240,6 @@ TransformStatus.propTypes = {
   totalRows: PropTypes.number,
   shortcuts: PropTypes.array.isRequired,
   flyouts: PropTypes.bool.isRequired,
-  showShortcut: PropTypes.func.isRequired,
   onClickError: PropTypes.func.isRequired
 };
 

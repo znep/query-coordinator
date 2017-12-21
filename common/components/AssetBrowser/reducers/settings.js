@@ -32,7 +32,7 @@ const updatePresetStates = (currentState, action) => ({
 });
 
 const getInitialState = () => ({
-  approvers: window.socrata.initialState.approvers
+  approvers: _.get(window, 'socrata.assetBrowser.staticData.approvers')
 });
 
 const parseSettings = (settings) => {

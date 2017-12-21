@@ -4,30 +4,36 @@ import renderLocalizationElement from '../renderLocalizationComponent';
 import UserNotification from 'common/notifications/components/UserNotifications/UserNotification';
 
 describe('UserNotification', () => {
-  const defaultProps = {
+  const defaultNotification = {
     id: 1234,
-    isRead: false,
-    isTransientNotification: false,
-    onClearUserNotification: () => {},
-    onToggleReadUserNotification: () => {},
+    read: false,
     type: 'alert',
     activityUniqueKey: 'activity unique key',
     userName: 'someone who sets default prop types yo',
-    userProfileLink: ''
+    userProfileLink: '',
+    alertName: ''
+  };
+  const defaultProps = {
+    isTransientNotification: false,
+    onClearUserNotification: () => {},
+    onToggleReadUserNotification: () => {}
   };
 
   it('should render user notification item', () => {
     const spy = sinon.spy();
     const element = renderLocalizationElement(UserNotification, {
       ...defaultProps,
-      messageBody: 'test-body',
-      activityType: 'test-title',
-      datasetName: 'WORKFLOWTEST',
-      datasetUid: 'binx-cnrq',
-      domainCname: 'elumitas.test-socrata.com',
-      actingUserName: 'Vinu',
-      actingUserId: 'gbyy-925e',
-      createdAt: '2013-02-04T18:35:24+00:00'
+      notification: {
+        ...defaultNotification,
+        messageBody: 'test-body',
+        activityType: 'test-title',
+        datasetName: 'WORKFLOWTEST',
+        datasetUid: 'binx-cnrq',
+        domainCname: 'elumitas.test-socrata.com',
+        actingUserName: 'Vinu',
+        actingUserId: 'gbyy-925e',
+        createdAt: '2013-02-04T18:35:24+00:00'
+      }
     });
 
     assert.isNotNull(element);
@@ -36,10 +42,13 @@ describe('UserNotification', () => {
   it('should render notification title, body, and timestamp', () => {
     var element = renderLocalizationElement(UserNotification, {
       ...defaultProps,
-      messageBody: 'test-body',
-      activityType: 'test-title',
-      datasetName: 'WORKFLOWTEST',
-      createdAt: '2013-02-04T18:35:24+00:00'
+      notification: {
+        ...defaultNotification,
+        messageBody: 'test-body',
+        activityType: 'test-title',
+        datasetName: 'WORKFLOWTEST',
+        createdAt: '2013-02-04T18:35:24+00:00'
+      }
     });
 
     assert.isNotNull(element);
@@ -52,10 +61,13 @@ describe('UserNotification', () => {
     const spy = sinon.spy();
     const element = renderLocalizationElement(UserNotification, {
       ...defaultProps,
-      messageBody: 'test-body',
-      activityType: 'test-title',
-      datasetName: 'WORKFLOWTEST',
-      createdAt: '2013-02-04T18:35:24+00:00',
+      notification: {
+        ...defaultNotification,
+        messageBody: 'test-body',
+        activityType: 'test-title',
+        datasetName: 'WORKFLOWTEST',
+        createdAt: '2013-02-04T18:35:24+00:00'
+      },
       onToggleReadUserNotification: spy
     });
     const markAsReadLink = element.querySelector('.toggle-notification-read-state');
@@ -69,10 +81,13 @@ describe('UserNotification', () => {
     const spy = sinon.spy();
     const element = renderLocalizationElement(UserNotification, {
       ...defaultProps,
-      messageBody: 'test-body',
-      activityType: 'test-title',
-      datasetName: 'WORKFLOWTEST',
-      createdAt: '2013-02-04T18:35:24+00:00',
+      notification: {
+        ...defaultNotification,
+        messageBody: 'test-body',
+        activityType: 'test-title',
+        datasetName: 'WORKFLOWTEST',
+        createdAt: '2013-02-04T18:35:24+00:00'
+      },
       onClearUserNotification: spy
     });
     const clearNotificationLink = element.querySelector('.user-notification-clear-icon');

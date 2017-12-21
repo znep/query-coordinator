@@ -1,5 +1,9 @@
+import { shallow } from 'enzyme';
+import React from 'react';
 import { assert } from 'chai';
 import sinon from 'sinon';
+
+import { EditBar as SocrataComponentsEditBar } from 'common/components';
 
 import { EditBar } from 'components/EditBar';
 
@@ -12,30 +16,56 @@ describe('EditBar', () => {
   };
 
   it('renders', () => {
-    const element = renderComponent(EditBar, getProps());
+    const element = shallow(<EditBar {...getProps()} />);
     assert.ok(element);
   });
 
-  it('displays the measure name', () => {
-    const element = renderComponent(EditBar, getProps());
-    const nameElement = element.querySelector('.page-name');
-    assert.ok(nameElement);
-    assert.equal(nameElement.innerText, 'Test Measure');
+  it('behaves like a standard edit bar', () => {
+    const element = shallow(<EditBar {...getProps()} />);
+    const standardElement = element.find(SocrataComponentsEditBar);
+    assert.isTrue(standardElement.exists());
+    assert.equal(standardElement.dive().find('.page-name').text(), 'Test Measure');
   });
 
-  it('renders a preview button', () => {
-    const element = renderComponent(EditBar, getProps());
-    assert.ok(element.querySelector('.btn-preview'));
+  describe('preview button', () => {
+    let props;
+    let element;
+
+    const getPreviewButton = (element) => element.find('.btn-preview');
+
+    beforeEach(() => {
+      props = { onClickPreview: sinon.spy() };
+      element = shallow(<EditBar {...getProps(props)} />);
+    });
+
+    it('renders', () => {
+      assert.isTrue(getPreviewButton(element).exists());
+    });
+
+    it('invokes onClickPreview on click', () => {
+      getPreviewButton(element).simulate('click');
+      sinon.assert.calledOnce(props.onClickPreview);
+    });
   });
 
-  it('invokes onClickPreview on preview click', () => {
-    const onClickSpy = sinon.spy();
-    const element = renderComponentWithStore(EditBar, getProps({
-      onClickPreview: onClickSpy
-    }));
+  describe('edit button', () => {
+    let props;
+    let element;
 
-    TestUtils.Simulate.click(element.querySelector('.btn-preview'));
+    const getEditButton = (element) => element.find('.btn-edit');
 
-    sinon.assert.called(onClickSpy);
+    beforeEach(() => {
+      props = { onClickEdit: sinon.spy() };
+      element = shallow(<EditBar {...getProps(props)} />);
+    });
+
+    it('renders', () => {
+      assert.isTrue(getEditButton(element).exists());
+    });
+
+    it('invokes onClickEdit on click', () => {
+      getEditButton(element).simulate('click');
+      sinon.assert.calledOnce(props.onClickEdit);
+    });
   });
 });

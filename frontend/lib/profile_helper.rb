@@ -78,6 +78,12 @@ module ProfileHelper
     render_qualtrics_survey('profile')
   end
 
+  def profile_asset_browser_initial_state
+    {
+      :targetUserId => @asset_browser_config[:target_user_id]
+    }
+  end
+
   private
 
   def viewing_others_profile?

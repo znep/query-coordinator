@@ -90,6 +90,7 @@ describe('DistributionChartController', function() {
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
     page.defineObservableProperty('activeFilters', []);
+    page.defineObservableProperty('enableAxisRescaling', false);
     card.page = page;
     card.fieldName = 'some-card';
     card.defineObservableProperty('expanded', false);
@@ -138,6 +139,20 @@ describe('DistributionChartController', function() {
 
     var histogram = createDistributionChart();
     expect(histogram.$scope.cardData[0][0]).to.not.eql(NaN);
+    HistogramService.getVisualizationTypeForData.restore();
+  });
+
+  it('sets rescaleAxis according to page.enableAxisRescaling', function() {
+    sinon.stub(HistogramService, 'getVisualizationTypeForData').callsFake(function() { return 'column'; });
+
+    var histogram = createDistributionChart();
+
+    histogram.model.page.set('enableAxisRescaling', true);
+    assert.propertyVal(histogram.$scope, 'rescaleAxis', true);
+
+    histogram.model.page.set('enableAxisRescaling', false);
+    assert.propertyVal(histogram.$scope, 'rescaleAxis', false);
+
     HistogramService.getVisualizationTypeForData.restore();
   });
 });

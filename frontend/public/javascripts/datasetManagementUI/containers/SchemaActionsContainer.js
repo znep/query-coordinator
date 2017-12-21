@@ -4,12 +4,12 @@ import { withRouter } from 'react-router';
 import SchemaActions from 'components/SchemaActions/SchemaActions';
 
 const mapStateToProps = ({ entities }, { params }) => {
-  const schemas = Object.values(entities.output_schemas)
-  .filter(os => os.input_schema_id === Number(params.inputSchemaId))
-  .map(os => ({
-    ...os,
-    isCurrent: os.id === Number(params.outputSchemaId)
-  }));
+  const schemas = _.values(entities.output_schemas)
+    .filter(os => os.input_schema_id === Number(params.inputSchemaId))
+    .map(os => ({
+      ...os,
+      isCurrent: os.id === Number(params.outputSchemaId)
+    }));
 
   return {
     oss: _.orderBy(schemas, 'finished_at', 'desc'),

@@ -1,0 +1,66 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.sidebar {
+  display: block;
+  padding-left: 0;
+  margin: 4px 0 0;
+  position: fixed;
+  height: 100%;
+  width: 250px;
+  border-right: 1px solid $light-grey-4;
+
+  a,
+  a:visited,
+  a:hover,
+  span {
+    text-decoration: none;
+    color: $black;
+  }
+
+  @media (max-width: 750px) {
+    position: static;
+    width: 100%;
+    flex: 0 0 0%;
+  }
+}
+
+.tab {
+  display: block;
+  position: relative;
+  padding: 15px 0 15px 13px;
+  font-size: 13px;
+  background-color: $white;
+  border-left: 5px solid $light-grey-2;
+  border-bottom: 1px solid $light-grey-4;
+
+  @media (max-width: 750px) {
+    width: 100%;
+  }
+}
+.tab:hover {
+  cursor: pointer;
+  border-left-color: $dark-grey-2;
+  background-color: $light-grey-4;
+}
+
+.selected:hover {
+  border-left-color: $primary-base;
+  background-color: $white;
+}
+
+.selected {
+  composes: tab;
+  border-left-color: $primary-base;
+}
+
+span.disabled:hover {
+  border-left-color: $light-grey-2;
+}
+
+.disabled {
+  composes: tab;
+  cursor: not-allowed !important;
+  background-color: $light-grey-4;
+  color: $light-grey-2;
+}

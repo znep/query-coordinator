@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
+import { showAccessManager } from '../lib/accessManager';
 import { localizeLink } from 'common/locale';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
 
@@ -29,9 +30,10 @@ export default class ShareFlannel extends PureComponent {
     const { view } = this.props;
 
     if (view.isPrivate) {
-
       const manageLink = userHasRight(Rights.edit_others_datasets) ?
-        <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
+        <a
+          href={`${localizeLink(view.gridUrl)}?pane=manage`}
+          onClick={e => showAccessManager(e, this.closeFlannel)}>
           {I18n.manage_prompt}
         </a> :
         null;

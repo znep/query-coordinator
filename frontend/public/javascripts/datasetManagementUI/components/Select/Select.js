@@ -2,21 +2,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Select.scss';
 
-const Select = ({ inErrorState, handleFocus, handleBlur, handleChange, options, ...data }) => {
-  const { name, value, label, isRequired } = data;
-
+const Select = ({ handleChange, field, inErrorState }) => {
   return (
     <select
-      name={name}
-      id={name}
-      aria-label={label}
-      aria-required={isRequired}
-      value={value || ''}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      name={field.name}
+      id={field.name}
+      aria-label={field.label}
+      aria-required={field.isRequired}
+      value={field.value}
       onChange={handleChange}
       className={inErrorState ? styles.selectError : styles.select}>
-      {options.map((option, idx) => (
+      {field.options.map((option, idx) => (
         <option value={option.value} key={idx}>
           {option.title}
         </option>
@@ -26,15 +22,9 @@ const Select = ({ inErrorState, handleFocus, handleBlur, handleChange, options, 
 };
 
 Select.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string,
-  label: PropTypes.string,
-  isRequired: PropTypes.bool,
-  options: PropTypes.array.isRequired,
-  inErrorState: PropTypes.bool.isRequired,
-  handleChange: PropTypes.func,
-  handleBlur: PropTypes.func,
-  handleFocus: PropTypes.func
+  field: PropTypes.object.isRequired,
+  inErrorState: PropTypes.bool,
+  handleChange: PropTypes.func
 };
 
 export default Select;

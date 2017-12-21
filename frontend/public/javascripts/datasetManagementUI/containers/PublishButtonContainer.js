@@ -4,6 +4,7 @@ import PublishButton from 'components/PublishButton/PublishButton';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import * as Selectors from 'selectors';
 import { showModal } from 'reduxStuff/actions/modal';
+import { hasDatasetErrors } from 'containers/ManageMetadataContainer';
 import { withRouter } from 'react-router';
 
 function isDataSatisfied({ entities, ui }, params) {
@@ -34,8 +35,10 @@ function isDataSatisfied({ entities, ui }, params) {
 // do not allow publishing of is_parent: false revisions w/o an external link (pointing to a parent) on USAID
 function isParenthoodSatisfied(rev, isUSAID) {
   if (isUSAID && rev.is_parent === false) {
-    return !!rev.metadata.metadata.additionalAccessPoints &&
-      rev.metadata.metadata.additionalAccessPoints.length > 0;
+    return (
+      !!rev.metadata.metadata.additionalAccessPoints &&
+      rev.metadata.metadata.additionalAccessPoints.length > 0
+    );
   } else {
     return true;
   }
@@ -56,7 +59,7 @@ export function mapStateToProps(state, { params }) {
   const publishing = isPublishing(state.entities.task_sets);
   const parenthoodSatisfied = isParenthoodSatisfied(rev, isUSAID);
   return {
-    metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
+    metadataSatisfied: !hasDatasetErrors(state.ui.forms.datasetForm.errors),
     dataSatisfied,
     parenthoodSatisfied,
     publishing,

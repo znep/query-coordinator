@@ -6,7 +6,7 @@ import I18n from 'common/i18n';
 import { Modal, ModalHeader, ModalContent } from 'common/components/Modal';
 import AssetBrowser from 'common/components/AssetBrowser';
 import ResultsAndFilters from 'common/components/AssetBrowser/components/results_and_filters';
-import { DEFAULT_TAB } from 'common/components/AssetBrowser/lib/constants';
+import { ASSET_SELECTOR } from 'common/components/AssetBrowser/lib/constants';
 
 import './index.scss';
 
@@ -25,6 +25,7 @@ export class AssetSelector extends Component {
     const assetBrowserProps = {
       additionalTopbarComponents,
       enableAssetInventoryLink: false,
+      initialTab: ASSET_SELECTOR,
       onAssetSelected,
       onClose,
       pageSize: resultsPerPage,
@@ -34,7 +35,7 @@ export class AssetSelector extends Component {
       showFilters: false,
       showHeader: false,
       tabs: {
-        [DEFAULT_TAB]: {
+        [ASSET_SELECTOR]: {
           component: ResultsAndFilters,
           props: {
             baseFilters

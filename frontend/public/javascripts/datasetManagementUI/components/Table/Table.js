@@ -55,7 +55,6 @@ class Table extends Component {
       outputSchema,
       outputColumns,
       displayState,
-      showShortcut,
       onClickError
     } = this.props;
 
@@ -93,7 +92,6 @@ class Table extends Component {
                 isDropping={this.state.dropping === column.id}
                 totalRows={inputSchema.total_rows}
                 shortcuts={genShortcuts(column)}
-                showShortcut={showShortcut}
                 flyouts={showFlyouts}
                 onClickError={() => onClickError(params, column.transform, displayState)} />
             ))}
@@ -124,7 +122,6 @@ Table.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   displayState: PropTypes.object.isRequired,
   onClickError: PropTypes.func.isRequired,
-  showShortcut: PropTypes.func.isRequired,
   outputColumns: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.number.isRequired,

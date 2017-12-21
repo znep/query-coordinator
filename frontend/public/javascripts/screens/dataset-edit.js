@@ -19,7 +19,7 @@
         disableButtons: ['next'],
         onInitialize: function($pane, config, state, command) {
           var isBlobby = blist.importer.dataset.viewType == 'blobby',
-            isGeo = blist.importer.dataset.isGeoDataset();
+            isGeo = GeoHelpers.isGeoDataset(blist.importer.dataset);
 
           // permissions
           if (!_.include(blist.importer.dataset.rights, blist.rights.view.DELETE)) {

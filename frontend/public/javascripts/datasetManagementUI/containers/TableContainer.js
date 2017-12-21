@@ -26,14 +26,13 @@ function getOutputColumns(entities, osid) {
     .value();
 }
 
-const mapStateToProps = ({ entities }, { path, inputSchema, outputSchema, displayState, showShortcut }) => {
+const mapStateToProps = ({ entities }, { path, inputSchema, outputSchema, displayState }) => {
   return {
     entities,
     path,
     inputSchema,
     outputSchema,
     displayState,
-    showShortcut,
     outputColumns: getOutputColumns(entities, outputSchema.id)
   };
 };

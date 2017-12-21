@@ -3,7 +3,7 @@ import React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
 import UploadNotification from 'containers/UploadNotificationContainer';
 import AttachmentNotification from 'components/AttachmentNotification/AttachmentNotification';
-
+import Notification from 'containers/NotificationContainer';
 import styles from './NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
@@ -22,6 +22,14 @@ const NotificationList = ({ notifications }) => {
           status={notification.status}
           error={notification.error}
           key={i} />);
+      case 'error':
+        return (<Notification
+          key={i}
+          status="error"
+          id={notification.id}
+          message={I18n.notifications.error}>
+          {notification.subject}
+        </Notification>);
       default:
         return null;
     }

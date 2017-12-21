@@ -10,8 +10,8 @@ const spandexSubscriber = require('common/spandex/subscriber').default;
 
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
-const MetadataProvider = require('../dataProviders/MetadataProvider');
 const DataTypeFormatter = require('./DataTypeFormatter');
+const { MetadataProvider, SoqlDataProvider } = require('../dataProviders');
 
 import {
   DEFAULT_HIGHLIGHT_COLOR,
@@ -147,10 +147,21 @@ function SvgVisualization($element, vif, options) {
 
     self.$container.addClass('socrata-visualization-filter-bar');
 
+    /**
+     * This code is basically duplicated from the following files:
+     * - frontend/public/javascripts/visualizationCanvas/components/FilterBar.js
+     * - common/authoring_workflow/components/FilterBar.js
+     */
+    const isValidTextFilterColumnValue = (column, searchTerm) => {
+      const soqlDataProvider = new SoqlDataProvider(_.pick(dataSource, ['datasetUid', 'domain']), true);
+      return soqlDataProvider.match(column.fieldName, searchTerm);
+    };
+
     const props = {
       columns: this.getColumns(),
       filters,
       isReadOnly: true,
+      isValidTextFilterColumnValue,
       spandex: _.pick(dataSource, ['datasetUid', 'domain']),
       onUpdate: (newFilters) => {
         const newVif = _.cloneDeep(this.getVif());

@@ -13,10 +13,12 @@ import * as headerActions from 'common/components/AssetBrowser/actions/header';
  * state and URL parameters. Subsequent user interactions update both Redux state _and_ URL query parameters.
  */
 
+const getStaticData = (key) => _.get(window, `socrata.assetBrowser.staticData.${key}`);
+
 export const getInitialState = () => {
   // Map all the domain's custom facets to an object of the facet param name to the value for
   // custom facets that have filters present in the URL query params.
-  const customFacetFilters = (window.socrata.initialState.domainCustomFacets || []).
+  const customFacetFilters = (getStaticData('domainCustomFacets') || []).
     reduce((acc, customFacet) => {
       const customFacetValue = getQueryParameter(customFacet.param);
       if (customFacetValue) {
@@ -30,9 +32,9 @@ export const getInitialState = () => {
     authority: getQueryParameter('authority'),
     category: getQueryParameter('category'),
     customFacets: customFacetFilters,
-    domainCustomFacets: window.socrata.initialState.domainCustomFacets || [],
-    domainCategories: window.socrata.initialState.domainCategories || [],
-    domainTags: window.socrata.initialState.domainTags || [],
+    domainCustomFacets: getStaticData('domainCustomFacets') || [],
+    domainCategories: getStaticData('domainCategories') || [],
+    domainTags: getStaticData('domainTags') || [],
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: getQueryParameter('ownerName'),
@@ -40,7 +42,7 @@ export const getInitialState = () => {
     },
     q: getQueryParameter('q'),
     tag: getQueryParameter('tag'),
-    usersList: window.socrata.initialState.usersList || [],
+    usersList: getStaticData('usersList') || [],
     visibility: getQueryParameter('visibility')
   };
 };
@@ -54,9 +56,9 @@ export const getUnfilteredState = (state) => ({
   authority: null,
   category: null,
   customFacets: {},
-  domainCustomFacets: window.socrata.initialState.domainCustomFacets || [],
-  domainCategories: window.socrata.initialState.domainCategories || [],
-  domainTags: window.socrata.initialState.domainTags || [],
+  domainCustomFacets: getStaticData('domainCustomFacets') || [],
+  domainCategories: getStaticData('domainCategories') || [],
+  domainTags: getStaticData('domainTags') || [],
   onlyRecentlyViewed: false,
   ownedBy: {
     displayName: null,
@@ -66,7 +68,7 @@ export const getUnfilteredState = (state) => ({
   tag: null,
   showAuthorityFilter: state.showAuthorityFilter,
   showOwnedByFilter: state.showOwnedByFilter,
-  usersList: window.socrata.initialState.usersList || [],
+  usersList: getStaticData('usersList') || [],
   visibility: null
 });
 

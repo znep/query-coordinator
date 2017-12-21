@@ -64,7 +64,9 @@ export class AssetBrowser extends Component {
 
 AssetBrowser.propTypes = {
   additionalTopbarComponents: PropTypes.array,
+  columns: PropTypes.array,
   enableAssetInventoryLink: PropTypes.bool,
+  initialTab: PropTypes.string,
   onAssetSelected: PropTypes.func,
   onClose: PropTypes.func,
   pageSize: PropTypes.number,

@@ -427,7 +427,7 @@ FilterBar.propTypes = {
    * That way, it can implement this functionality itself (we need the view UID).
    * Under this regime, we could also fetch the column stats ourselves inside the component.
    */
-  isValidTextFilterColumnValue: PropTypes.func,
+  isValidTextFilterColumnValue: PropTypes.func.isRequired,
 
   /**
    * A namespace containing information about Spandex access and availability.

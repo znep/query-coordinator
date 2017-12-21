@@ -21,7 +21,7 @@
       var _view = this._view;
       var type = this._view.getDownloadType();
       var layerDownloadType = (_view.newBackend && _view.isLayered()) ? 'layer_geojson_attributes' : 'layer_attributes';
-      var catchForm = !this._view.isGeoDataset();
+      var catchForm = !GeoHelpers.isGeoDataset(this._view);
       var hideCsvForExcel = !!blist.feature_flags.hide_csv_for_excel_download;
 
       /**
@@ -53,7 +53,7 @@
                 cObj.$dom());
             }
 
-            if (_view.isGeoDataset()) {
+            if (GeoHelpers.isGeoDataset(_view)) {
               _view.getChildOptionsForType('table', function(views) {
                 var hookupLinks = function(uid) {
                   $sect.find('.layerDownloadsContent .item a').each(function() {

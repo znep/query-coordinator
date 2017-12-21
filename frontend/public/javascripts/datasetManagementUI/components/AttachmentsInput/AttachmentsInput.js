@@ -6,29 +6,25 @@ import styles from './AttachmentsInput.scss';
 
 class AttachmentsInput extends Component {
   render() {
-    const {
-      inErrorState,
-      uploadAttachment,
-      removeAttachment,
-      editAttachment,
-      value
-    } = this.props;
+    const { inErrorState, uploadAttachment, removeAttachment, editAttachment, field } = this.props;
+
+    const attachments = field.value || [];
 
     const buttonClasses = classNames(styles.button, { [styles.validationError]: inErrorState });
 
-    const listItems = value.map((attachment, idx) =>
+    const listItems = attachments.map((attachment, idx) => (
       <Attachment
         key={idx}
         attachment={attachment}
         onRemove={() => removeAttachment(attachment)}
-        onEdit={(newName) => editAttachment(attachment, newName)} />
-    );
+        onEdit={newName => editAttachment(attachment, newName)} />
+    ));
 
     return (
       <div>
         <div className={styles.container}>
           <label id="add-attachment" className={buttonClasses} htmlFor="file">
-            Add Attachment
+            {field.buttonText}
           </label>
           <input
             id="file"
@@ -39,21 +35,14 @@ class AttachmentsInput extends Component {
             aria-labelledby="add-attachment"
             onChange={evt => uploadAttachment(evt.target.files[0])} />
         </div>
-        {!!listItems.length &&
-          <ul className={styles.attachmentList}>
-            {listItems}
-          </ul>}
+        {!!listItems.length && <ul className={styles.attachmentList}>{listItems}</ul>}
       </div>
     );
   }
 }
 
 AttachmentsInput.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.array,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  isRequired: PropTypes.bool.isRequired,
+  field: PropTypes.object,
   inErrorState: PropTypes.bool.isRequired,
   uploadAttachment: PropTypes.func.isRequired,
   removeAttachment: PropTypes.func.isRequired,

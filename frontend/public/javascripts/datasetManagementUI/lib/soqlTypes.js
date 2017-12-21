@@ -38,7 +38,7 @@ const soqlPropertiesList = [
     conversions: {
       text: basicTo('text'),
       number: basicTo('number'),
-      checkbox: basicTo('checkbox'),
+      checkbox: basicTo('boolean'),
       calendar_date: (ic, entities) => {
         // to_floating_timestamp takes a format argument. If the user switches
         // something that was guessed as
@@ -77,7 +77,7 @@ const soqlPropertiesList = [
     icon: 'number',
     conversions: {
       text: basicTo('text'),
-      checkbox: basicTo('checkbox'),
+      checkbox: basicTo('boolean'),
       number: basicTo('number')
     }
   },

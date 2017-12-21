@@ -33,9 +33,8 @@ cp package.json ${HOME}
 
 # TODO: fix this, `n` is not installed on the docker image that runs this build
 # n $(cat .node-version)
-echo "progress=false" >> ${HOME}/.npmrc # Randy added this on March 28, 2017
-npm install 2>&1 >/dev/null # Randy changed this on March 28, 2017
-npm rebuild node-sass
+npm install --silent
+npm rebuild node-sass --silent
 
 # Installing bundler shouldn't be necessary (should already be installed). Installing it nonetheless to guarantee
 # the following commands can be executed. Install is a NOOP anyway if it's already installed.

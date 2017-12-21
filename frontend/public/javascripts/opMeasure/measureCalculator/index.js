@@ -245,7 +245,9 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
   if (denominator) { denominator = new BigNumber(denominator); }
 
   const calculation = {};
-  if (numerator) { calculation.numerator = numerator.toFixed(decimalPlaces); }
+  if (numerator) {
+    calculation.numerator = numerator.toFixed(decimalPlaces);
+  }
   if (denominator) {
     calculation.denominator = denominator.toFixed(decimalPlaces);
     calculation.dividingByZero = denominator.isZero();

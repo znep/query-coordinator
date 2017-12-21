@@ -1,48 +1,73 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import _ from 'lodash';
 import Fieldset from 'components/Fieldset/Fieldset';
+import WithFlash from 'containers/WithFlashContainer';
+import _ from 'lodash';
 import ColumnField from 'containers/ColumnFieldContainer';
 import styles from './ColumnForm.scss';
 
-class ColumnForm extends Component {
-  componentWillMount() {
-    const { errors, setErrors } = this.props;
-    setErrors(errors);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { errors: oldErrors } = this.props;
-    const { errors: currentErrors, setErrors } = nextProps;
-
-    if (!_.isEqual(oldErrors, currentErrors)) {
-      setErrors(currentErrors);
+// makeFieldsFromColumn :: OutputColumn -> Array Field
+function makeFieldsFromColumn(oc) {
+  return [
+    {
+      name: 'display_name',
+      label: I18n.metadata_manage.column_tab.name,
+      elementType: 'text',
+      isRequired: true,
+      value: oc.display_name
+    },
+    {
+      name: 'description',
+      label: I18n.metadata_manage.column_tab.description,
+      elementType: 'text',
+      isRequired: false,
+      value: oc.description
+    },
+    {
+      name: 'field_name',
+      label: I18n.metadata_manage.column_tab.field_name,
+      elementType: 'text',
+      isRequired: true,
+      value: oc.field_name
     }
-  }
+  ];
+}
 
+class ColumnForm extends Component {
   render() {
-    const { rows } = this.props;
+    const { columns, handleColumnChange, handleColumnFormSubmit } = this.props;
+
+    const sortedColumns = _.orderBy(_.values(columns), 'position');
 
     return (
-      <form>
-        <Fieldset
-          title={I18n.metadata_manage.column_tab.title}
-          subtitle={I18n.metadata_manage.column_tab.subtitle}>
-          {rows.map((row, idx) =>
-            <div className={styles.row} key={idx}>
-              {row.map(field => <ColumnField field={field} key={field.data.name} />)}
-            </div>
-          )}
-        </Fieldset>
-      </form>
+      <WithFlash>
+        <form className={styles.form} onSubmit={handleColumnFormSubmit}>
+          <Fieldset
+            title={I18n.metadata_manage.column_tab.title}
+            subtitle={I18n.metadata_manage.column_tab.subtitle}>
+            {sortedColumns.map((column, idx) => (
+              <div className={styles.row} key={idx}>
+                {makeFieldsFromColumn(column).map(field => (
+                  <ColumnField
+                    key={`${column.id}-${field.name}`}
+                    field={field}
+                    columnId={column.id}
+                    handleChange={e => handleColumnChange(column.id, field.name, e.target.value)} />
+                ))}
+              </div>
+            ))}
+          </Fieldset>
+          <input type="submit" id="submit-column-form" className={styles.hidden} />
+        </form>
+      </WithFlash>
     );
   }
 }
 
 ColumnForm.propTypes = {
-  rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
-  errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setErrors: PropTypes.func.isRequired
+  columns: PropTypes.object,
+  handleColumnChange: PropTypes.func,
+  handleColumnFormSubmit: PropTypes.func
 };
 
 export default ColumnForm;

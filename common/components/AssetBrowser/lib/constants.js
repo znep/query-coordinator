@@ -4,6 +4,7 @@ export const SHARED_TO_ME_TAB = 'sharedToMe';
 export const MY_QUEUE_TAB = 'myQueue';
 export const HISTORY_TAB = 'history';
 export const SETTINGS_TAB = 'settings';
+export const ASSET_SELECTOR = 'assetSelector';
 
 export const DEFAULT_TAB = ALL_ASSETS_TAB;
 

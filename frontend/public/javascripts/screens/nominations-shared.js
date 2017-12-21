@@ -1,4 +1,3 @@
-/*eslint no-undef: "grecaptcha"*/
 blist.namespace.fetch('blist.nominations');
 
 $(function() {

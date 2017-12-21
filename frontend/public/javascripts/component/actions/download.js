@@ -34,7 +34,7 @@ $.component.Component.extend('Download', 'actions', {
       cObj.$link.text(cObj._stringSubstitute(cObj._properties.text) || 'Download this data');
       cObj.$link.attr('href', ds.downloadUrl('csv'));
 
-      if (!ds.isGeoDataset() && !cObj._properties.disableInlineDownload) {
+      if (!GeoHelpers.isGeoDataset(ds) && !cObj._properties.disableInlineDownload) {
         cObj.$link.downloadToFormCatcher(ds);
       }
     });

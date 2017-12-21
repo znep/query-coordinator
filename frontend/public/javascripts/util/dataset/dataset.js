@@ -221,15 +221,8 @@
       return !$.isBlank(this.domainCName);
     },
 
-    isArcGISDataset: function() {
-      if (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.Basic && this.metadata.custom_fields.Basic.Source) {
-        return true;
-      }
-      return false;
-    },
-
     getDownloadType: function() {
-      if (!this.isGeoDataset()) {
+      if (!GeoHelpers.isGeoDataset(this)) {
         return 'normal';
       } else {
         var backendPrefix = this.newBackend ? 'nbe_' : 'obe_';
@@ -239,7 +232,7 @@
 
     isLayered: function() {
       //checks for layers as direct children
-      if (this.isGeoDataset() &&
+      if (GeoHelpers.isGeoDataset(this) &&
         typeof(this.metadata.geo.layers) === 'string' &&
         this.metadata.geo.layers.split(',').length > 1) {
         return true;
@@ -251,10 +244,6 @@
         });
       }
       return false;
-    },
-
-    isGeoDataset: function() {
-      return (this.metadata && this.metadata.geo);
     },
 
     isApiGeospatial: function() {
@@ -304,13 +293,13 @@
       if (this.forceEditable()) {
         return false;
       }
-      return (this.isBlobby() || this.isGeoDataset());
+      return (this.isBlobby() || GeoHelpers.isGeoDataset(this));
     },
 
     renderWithArcGISServer: function() {
       // Render everything using ArcGIS Server since we can't preemptively tell
       // if something is more than 500 rows or not.
-      return this.isArcGISDataset();
+      return GeoHelpers.isArcGISDataset(this);
     },
 
     invalidMessage: function() {
@@ -1791,7 +1780,7 @@
     },
 
     _isGeoExport: function(ext) {
-      return this.isGeoDataset() && ext !== 'json' && ext !== 'csv';
+      return GeoHelpers.isGeoDataset(this) && ext !== 'json' && ext !== 'csv';
     },
 
     downloadUrl: function(type) {

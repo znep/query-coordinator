@@ -13,10 +13,10 @@
       return false;
     }
 
-    if (view.isArcGISDataset()) {
+    if (GeoHelpers.isArcGISDataset(view)) {
       return true;
     }
-    if (view.isGeoDataset()) {
+    if (GeoHelpers.isGeoDataset(view)) {
       return true;
     }
     if ($.isBlank(displayFormat.noLocations) &&
@@ -87,7 +87,7 @@
       }
     }
 
-    if (view.isArcGISDataset()) {
+    if (GeoHelpers.isArcGISDataset(view)) {
       if (!df.layers) {
         df.bkgdLayers = [{
           layerKey: 'World Street Map (ESRI)',
@@ -103,7 +103,7 @@
       }
     }
 
-    if (view.isGeoDataset()) {
+    if (GeoHelpers.isGeoDataset(view)) {
       df.exclusiveLayers = true;
       df.bkgdLayers = [{
         layerKey: 'Google Roadmap',
@@ -284,7 +284,7 @@
             }
           };
 
-          if (checkView.isArcGISDataset() || checkView.isGeoDataset()) {
+          if (GeoHelpers.isArcGISOrGeoDataset(checkView)) {
             return false;
           }
 

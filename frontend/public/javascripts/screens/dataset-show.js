@@ -954,7 +954,7 @@ $(function() {
 
     // avoid showing "Based on" for default views
     if (!_.include(['blist', 'blob', 'href', 'metadata_table'], blist.dataset.type) &&
-      !blist.dataset.isGeoDataset()) {
+      !GeoHelpers.isGeoDataset(blist.dataset)) {
       blist.dataset.getParentView(function(parDS) {
         if (!$.isBlank(parDS)) {
           $('.basedOnParent').

@@ -13,7 +13,7 @@ describe('users/reducers', () => {
   describe('userSearch', () => {
     it('searches for users when passed a query', (done) => {
       const mockStore = configureStore([thunk]);
-      const store = mockStore({ users: {}, roles: [], config: { usersResultsLimit: 10000 } });
+      const store = mockStore({ users: { zeroBasedPage: 0 }, roles: [], config: { usersResultsLimit: 10000 } });
 
       const query = 'asdf';
       fetchMock.get(`/api/catalog/v1/users?domain=localhost&limit=10000&offset=0&q=${query}`, usersResponse);

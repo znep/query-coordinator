@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { browserHistory } from 'react-router';
 import * as Selectors from 'selectors';
 import * as Links from 'links/links';
 import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
@@ -723,18 +724,22 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       callParams: {}
     };
 
-    return dispatch(createNewOutputSchema(inputSchemaId, _.values(columns), call)).catch(err => {
-      // TODO: improve dsmapi's error response to include output column ids for
-      // the columns that have errors, which values are duplicated or invalid, etc
-      // then change this code to generate a structure we can use to determine where
-      // in the form the error occured.
+    return dispatch(createNewOutputSchema(inputSchemaId, _.values(columns), call))
+      .then(resp => {
+        browserHistory.push(Links.columnMetadataForm(ownProps.params, resp.resource.id));
+      })
+      .catch(err => {
+        // TODO: improve dsmapi's error response to include output column ids for
+        // the columns that have errors, which values are duplicated or invalid, etc
+        // then change this code to generate a structure we can use to determine where
+        // in the form the error occured.
 
-      // not really using this, we just don't want the errors to be an empty {}
-      // since we interpret that as no errors
-      const res = { generic: err.body.message };
+        // not really using this, we just don't want the errors to be an empty {}
+        // since we interpret that as no errors
+        const res = { generic: err.body.message };
 
-      throw new FormValidationError(COL_FORM_NAME, res);
-    });
+        throw new FormValidationError(COL_FORM_NAME, res);
+      });
   }
 });
 

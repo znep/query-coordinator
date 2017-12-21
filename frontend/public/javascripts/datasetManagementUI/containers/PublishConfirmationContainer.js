@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import { hideModal } from 'reduxStuff/actions/modal';
 import { applyRevision, updatePermission } from 'reduxStuff/actions/applyRevision';
 import PublishConfirmation from 'components/PublishConfirmation/PublishConfirmation';
+import { addNotification } from 'reduxStuff/actions/notifications';
 
 export function mapStateToProps({ entities, ui }, { params }) {
   const rev = _.values(entities.revisions).find(r => r.revision_seq === _.toNumber(params.revisionSeq));
@@ -27,12 +28,12 @@ export function mapStateToProps({ entities, ui }, { params }) {
 
 function mapDispatchToProps(dispatch, { params }) {
   return {
-    doCancel: initialPermission => {
-      dispatch(updatePermission(initialPermission, params));
-      dispatch(hideModal());
-    },
+    doCancel: () => dispatch(hideModal()),
     dispatchApplyRevision: () => dispatch(applyRevision(params)),
-    setPermission: permission => dispatch(updatePermission(permission, params))
+    setPermission: permission => dispatch(updatePermission(permission, params)),
+    dispatchRevisionError: () => {
+      dispatch(addNotification('error', I18n.notifications.dataset_revision_error));
+    }
   };
 }
 

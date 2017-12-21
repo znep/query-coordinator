@@ -2339,6 +2339,7 @@ en:
       uploading_attachment: Uploading attachment
       fetching: Fetching
       non_streamable_source: This data source is in a format that cannot be streamed. Your data will be shown when the file is fully uploaded.
+      dataset_revision_error: Error applying the dataset revision. This may be a temporary network issue.
     import_from_url:
       retry: Retry
       start_import: Start Import

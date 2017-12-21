@@ -34,16 +34,14 @@ describe('components/PublishConfirmation', () => {
     assert.equal(component.find('.privacySelector').length, 2);
   });
 
-  it('calls setPermission with right args when you click private', () => {
+  it('calls setCurrentPermission with right args when you click private', () => {
     component.find('.privacySelector').last().simulate('click');
-    assert.isTrue(defaultProps.setPermission.calledOnce);
-    assert.isTrue(defaultProps.setPermission.calledWith('private'));
+    assert.equal(component.state('currentPermission'), 'private');
   });
 
-  it('calls setPermission with right args when you click public', () => {
+  it('calls setCurrentPermission with right args when you click public', () => {
     component.find('.privacySelector').first().simulate('click');
-    assert.isTrue(defaultProps.setPermission.calledOnce);
-    assert.isTrue(defaultProps.setPermission.calledWith('public'));
+    assert.equal(component.state('currentPermission'), 'public');
   });
 
   it('shows correct permissions selector as active', () => {
@@ -51,9 +49,10 @@ describe('components/PublishConfirmation', () => {
     assert.isTrue(defaultProps.doCancel.calledOnce);
   });
 
-  it('calls applyRevision callback when you click publish button', () => {
+  it('calls setPermission callback when you click publish button', () => {
     component.find('Connect(ApiCallButton)').first().simulate('click');
-    assert.isTrue(defaultProps.dispatchApplyRevision.calledOnce);
+    assert.isTrue(defaultProps.setPermission.calledOnce);
+    assert.isTrue(defaultProps.setPermission.calledWith(component.state('currentPermission')));
   });
 
   it('calls cancel callback when you click cancel button', () => {

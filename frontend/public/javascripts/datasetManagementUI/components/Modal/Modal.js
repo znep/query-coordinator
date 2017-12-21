@@ -33,7 +33,7 @@ const getModalProps = (props, contentComponentName, payload) => {
       return {
         ...props,
         children: [<PublishConfirmation key={1} />],
-        className: styles.publishConfirmation
+        className: `${styles.publishConfirmation} publish-confirmation`
       };
 
     case 'RowIdentifierError':

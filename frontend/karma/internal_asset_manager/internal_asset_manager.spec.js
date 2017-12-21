@@ -20,6 +20,7 @@ const internalAssetManagerProps = (options = {}) => ({
 });
 
 describe('<InternalAssetManager />', () => {
+  const currentUser = _.cloneDeep(window.socrata.currentUser);
   let ceteraStub;
 
   beforeEach(() => {
@@ -32,6 +33,14 @@ describe('<InternalAssetManager />', () => {
   });
 
   describe('default props', () => {
+    beforeEach(() => {
+      _.remove(window.socrata.currentUser.rights, (right) => right === 'can_see_all_assets_tab_siam');
+    });
+
+    afterEach(() => {
+      window.socrata.currentUser = currentUser;
+    });
+
     it('defaults to showFilters and showSearchField as true and showAssetCounts as true', () => {
       const wrapper = mount(<InternalAssetManager {...internalAssetManagerProps()} />);
 
@@ -56,14 +65,12 @@ describe('<InternalAssetManager />', () => {
 
   describe('tabs', () => {
     describe('when the user has the "can_see_all_assets_tab_siam" right', () => {
-      let currentUser = _.cloneDeep(window.serverConfig.currentUser);
-
       beforeEach(() => {
-        window.serverConfig.currentUser.rights = ['can_see_all_assets_tab_siam'];
+        window.socrata.currentUser.rights = ['can_see_all_assets_tab_siam'];
       });
 
       afterEach(() => {
-        window.serverConfig.currentUser = currentUser;
+        window.socrata.currentUser = currentUser;
       });
 
       it('renders the All Assets tab', () => {
@@ -82,14 +89,18 @@ describe('<InternalAssetManager />', () => {
 
     describe('when the user does not have the "can_see_all_assets_tab_siam" right', () => {
       beforeEach(() => {
-        window.serverConfig.currentUser.rights = [];
+        window.socrata.currentUser.rights = [];
       });
+
+       afterEach(() => {
+        window.socrata.currentUser = currentUser;
+      });
+
       it('does not render the All Assets tab', () => {
         const wrapper = mount(<InternalAssetManager {...internalAssetManagerProps({
-          header: {
-            activeTab: constants.MY_ASSETS_TAB
-          }
+          header: { activeTab: constants.MY_ASSETS_TAB }
         })} />);
+
         assert(
           wrapper.find('.asset-browser .header .asset-tabs .asset-tab.settings').length <= 0,
           'Expected the All Assets tab to NOT be rendered'

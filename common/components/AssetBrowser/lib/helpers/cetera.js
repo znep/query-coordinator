@@ -12,14 +12,13 @@ import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 export const getCurrentUserFilter = () => {
   return {
     ownedBy: {
-      id: _.get(window, 'serverConfig.currentUser.id'),
-      displayName: _.get(window, 'serverConfig.currentUser.displayName')
+      id: _.get(window.socrata, 'currentUser.id'),
+      displayName: _.get(window.socrata, 'currentUser.displayName')
     }
   };
 };
 
 export const getCurrentUserId = () => _.get(getCurrentUserFilter(), 'ownedBy.id');
-export const getTargetUserId = () => _.get(window, 'socrata.initialState.targetUserId', getCurrentUserId());
 
 const translateColumnToMixpanelEvent = (columnName) => {
   switch (columnName) {

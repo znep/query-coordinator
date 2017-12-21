@@ -14,8 +14,6 @@ class InternalAssetManagerController < ApplicationController
   def show
     @asset_browser_config = {
       :app_name => 'internal_asset_manager',
-      :columns => %w(type name actions lastUpdatedDate category owner visibility),
-      :initial_tab => current_user.has_right?('can_see_all_assets_tab_siam') ? 'allAssets' : 'myAssets',
       :filters_enabled => true
     }
   end

@@ -1,18 +1,11 @@
 module AssetBrowserHelper
 
+  def asset_browser_config
+    @asset_browser_config.to_h
+  end
+
   def app_name
-    @asset_browser_config[:app_name]
-  end
-
-  def asset_browser_translations
-    translations = LocaleCache.render_translations([LocalePart.public_send(app_name)])[app_name]
-    translations.deep_merge(common: LocaleCache.render_translations([LocalePart.common])['common'])
-  end
-
-  def render_asset_browser_translations
-    old_translations = json_escape(asset_browser_translations.to_json)
-    new_translations = json_escape(LocaleCache.render_partial_translations(app_name.to_sym).to_json)
-    javascript_tag("window.I18n = _.extend(I18n, #{old_translations}); window.translations = #{new_translations}")
+    asset_browser_config[:app_name] || 'internal_asset_manager'
   end
 
   def render_asset_browser_session_data
@@ -41,7 +34,6 @@ module AssetBrowserHelper
       :airbrakeProjectId => ENV["#{app_name.upcase}_AIRBRAKE_PROJECT_ID"] ||
         APP_CONFIG.send("#{app_name}_airbrake_project_id"),
       :csrfToken => form_authenticity_token.to_s,
-      :currentUser => current_user,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
       :featureFlags => feature_flags,
@@ -55,20 +47,10 @@ module AssetBrowserHelper
   end
 
   # This method provides the initial redux store state for the static data used by asset browser
-  # including domain-specific categories, custom facets, tags, users, initial tab, columns in the table...
+  # including domain-specific categories, custom facets, tags, and users.
   def render_asset_browser_initial_state(supplemental_state = {})
     initial_state = {
-      :assetInventoryViewModel => asset_inventory_view_model,
-      :autocomplete => {
-        query: params[:q].to_s
-      },
-      :catalog => {
-        :columns => @asset_browser_config[:columns]
-      },
-      :header => {
-        :initialTab => @asset_browser_config[:initial_tab]
-      },
-      :targetUserId => @asset_browser_config[:target_user_id]
+      :assetInventoryViewModel => asset_inventory_view_model
     }.compact
 
     # The following fetches are used to populate the values in the filter dropdowns.
@@ -77,15 +59,22 @@ module AssetBrowserHelper
       :domainCustomFacets => fetch_domain_custom_facets,
       :domainTags => fetch_domain_tags,
       :usersList => fetch_users_list
-    ) if @asset_browser_config[:filters_enabled]
+    ) if asset_browser_config[:filters_enabled]
 
     initial_state.merge!(supplemental_state.to_h)
 
-    # TODO: rename this to window.socrata.assetBrowser.staticData
+    autocomplete_initial_state = {
+      query: params[:q].to_s
+    }
+
     javascript_tag(
       <<~EOM
         window.socrata = window.socrata || {};
-        window.socrata.initialState = #{json_escape(initial_state.to_json)}
+        window.socrata.assetBrowser = window.socrata.assetBrowser || {};
+        window.socrata.assetBrowser.staticData = #{json_escape(initial_state.to_json)}
+
+        window.initialState = window.initialState || {};
+        window.initialState.autocomplete = #{json_escape(autocomplete_initial_state.to_json)}
       EOM
     )
   end

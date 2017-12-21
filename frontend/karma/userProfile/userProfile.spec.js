@@ -14,56 +14,37 @@ import * as constants from 'common/components/AssetBrowser/lib/constants';
 const store = configureMockStore()();
 
 const userProfileProps = (options = {}) => ({
-  store: store,
+  store,
   ...options
 });
 
 var sandbox = sinon.createSandbox();
 
 const stubTargetUserId = (id) => {
-  const socrataStub = _.cloneDeep(window.socrata);
-  _.set(socrataStub, 'initialState.targetUserId', id);
-  sandbox.stub(window, 'socrata').value(socrataStub);
+  const staticDataStub = _.cloneDeep(window.socrata.assetBrowser.staticData);
+  _.set(staticDataStub, 'targetUserId', id);
+  sandbox.stub(window.socrata.assetBrowser, 'staticData').value(staticDataStub);
 };
 
 const stubCurrentUserId = (id) => {
-  const serverConfigStub = _.cloneDeep(window.serverConfig);
-  _.set(serverConfigStub, 'currentUser.id', id);
-  sandbox.stub(window, 'serverConfig').value(serverConfigStub);
+  const currentUserStub = _.cloneDeep(window.socrata.currentUser);
+  _.set(currentUserStub, 'id', id);
+  sandbox.stub(window.socrata, 'currentUser').value(currentUserStub);
 };
 
 const stubVisibility = (args) => {
   const { hasRole, hasAdminFlag } = args;
-  const visibilityStub = _.cloneDeep(window.serverConfig);
+  const visibilityStub = _.cloneDeep(window.socrata);
 
-  if (! hasRole) {
+  if (!hasRole) {
     _.unset(visibilityStub, 'currentUser.roleId');
   }
 
-  if (! hasAdminFlag) {
+  if (!hasAdminFlag) {
     _.set(visibilityStub, 'currentUser.flags', []);
   }
 
-  sandbox.stub(window, 'serverConfig').value(visibilityStub);
-  // This is necessary so that the window object stops getting messed with and
-  // persisting to the next test
-  stubColumns();
-};
-
-const stubColumns = () => {
-  const expectedColumns = [
-    'type',
-    'name',
-    'actions',
-    'lastUpdatedDate',
-    'category',
-    'owner',
-    'visibility'
-  ];
-
-  const socrataStub = _.cloneDeep(window.socrata);
-  _.set(socrataStub, 'initialState.catalog.columns', expectedColumns);
-  sandbox.stub(window, 'socrata').value(socrataStub);
+  sandbox.stub(window, 'socrata').value(visibilityStub);
 };
 
 describe('<UserProfile /> component', () => {
@@ -157,8 +138,8 @@ describe('<UserProfile /> component', () => {
       });
 
       it('should be present', () => {
-        assert.exists(window.serverConfig.currentUser.roleId);
-        assert.include(window.serverConfig.currentUser.flags, 'admin');
+        assert.exists(window.socrata.currentUser.roleId);
+        assert.include(window.socrata.currentUser.flags, 'admin');
         assert.equal(wrapper.find('th.visibility').length, 1);
       });
     });
@@ -169,8 +150,8 @@ describe('<UserProfile /> component', () => {
       });
 
       it('should be present', () => {
-        assert.exists(window.serverConfig.currentUser.roleId);
-        assert.notInclude(window.serverConfig.currentUser.flags, 'admin');
+        assert.exists(window.socrata.currentUser.roleId);
+        assert.notInclude(window.socrata.currentUser.flags, 'admin');
         assert.equal(wrapper.find('th.visibility').length, 1);
       });
     });
@@ -181,8 +162,8 @@ describe('<UserProfile /> component', () => {
       });
 
       it('should be present', () => {
-        assert.notExists(window.serverConfig.currentUser.roleId);
-        assert.include(window.serverConfig.currentUser.flags, 'admin');
+        assert.notExists(window.socrata.currentUser.roleId);
+        assert.include(window.socrata.currentUser.flags, 'admin');
         assert.equal(wrapper.find('th.visibility').length, 1);
       });
     });
@@ -193,8 +174,8 @@ describe('<UserProfile /> component', () => {
       });
 
       it('should not be present', () => {
-        assert.notExists(window.serverConfig.currentUser.roleId);
-        assert.notInclude(window.serverConfig.currentUser.flags, 'admin');
+        assert.notExists(window.socrata.currentUser.roleId);
+        assert.notInclude(window.socrata.currentUser.flags, 'admin');
         assert.equal(wrapper.find('th.visibility').length, 0);
       });
     });

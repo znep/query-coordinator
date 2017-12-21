@@ -45,7 +45,7 @@ export class ResultListRow extends Component {
     );
 
     if (type === 'story') {
-      const rights = _.get(window.serverConfig, 'currentUser.rights');
+      const rights = _.get(window.socrata, 'currentUser.rights');
       if ((isOwner && _.includes(rights, 'edit_story')) ||
           (!isOwner && _.includes(rights, 'edit_others_stories'))) {
         link += '/edit';
@@ -173,7 +173,7 @@ ResultListRow.propTypes = {
 
 const mapStateToProps = state => ({
   activeTab: state.header.activeTab,
-  columns: state.catalog.columns
+  columns: state.assetBrowserProps.columns
 });
 
 export default connect(mapStateToProps)(ResultListRow);

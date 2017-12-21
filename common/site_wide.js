@@ -18,7 +18,8 @@ import { sift } from 'common/js_utils';
 // Attempt to find the current user id in the various places it might be found
 const userId = _.get(window, 'blist.currentUserId',
   _.get(window, 'serverConfig.currentUser.id',
-    _.get(window, 'currentUser.id', null)));
+    _.get(window, 'socrata.currentUser.id',
+      _.get(window, 'currentUser.id', null))));
 
 if (userId) {
   window.lastAccessed = new MostRecentlyUsed({ namespace: `socrata:assets:mru:${userId}` });

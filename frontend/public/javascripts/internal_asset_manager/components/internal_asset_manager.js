@@ -27,7 +27,10 @@ export default class InternalAssetManager extends Component {
       }
     };
 
-    if (_.includes(serverConfig.currentUser.rights, 'can_see_all_assets_tab_siam')) {
+    const currentUserRights = window.socrata.currentUser.rights || [];
+    const userCanSeeAllAssets = _.includes(currentUserRights, 'can_see_all_assets_tab_siam');
+
+    if (userCanSeeAllAssets) {
       tabs[constants.ALL_ASSETS_TAB] = {
         component: ResultsAndFilters
       };
@@ -35,6 +38,8 @@ export default class InternalAssetManager extends Component {
 
     return (
       <AssetBrowser
+        columns={['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility']}
+        initialTab={userCanSeeAllAssets ? constants.ALL_ASSETS_TAB : constants.MY_ASSETS_TAB}
         showAssetCounts
         showFilters
         showSearchField

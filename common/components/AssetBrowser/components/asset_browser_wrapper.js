@@ -7,11 +7,13 @@ import Header from './header';
 import TabContent from './tab_content';
 import WindowDimensions from './window_dimensions';
 import * as assetBrowserPropsActions from '../actions/asset_browser_props';
+import * as headerActions from '../actions/header';
 
 export class AssetBrowserWrapper extends Component {
   componentWillMount() {
-    const { setAssetBrowserProps } = this.props;
+    const { setAssetBrowserProps, setInitialTab } = this.props;
     setAssetBrowserProps(this.props);
+    setInitialTab(this.props.initialTab);
   }
 
   render() {
@@ -30,7 +32,8 @@ export class AssetBrowserWrapper extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setAssetBrowserProps: (props) => dispatch(assetBrowserPropsActions.setAssetBrowserProps(props))
+  setAssetBrowserProps: (props) => dispatch(assetBrowserPropsActions.setAssetBrowserProps(props)),
+  setInitialTab: (initialTab) => dispatch(headerActions.setInitialTab(initialTab))
 });
 
 export default connect(null, mapDispatchToProps)(AssetBrowserWrapper);

@@ -40,7 +40,7 @@ describe('components/VisibilityCell', () => {
 
     it('shows the "shared to me" description if the current user is listed in the grants array', () => {
       const fakeUserId = 'abcd-1234';
-      window.serverConfig.currentUser = { id: fakeUserId };
+      window.socrata.currentUser = { id: fakeUserId };
 
       const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
@@ -54,7 +54,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('does not show the "shared to me" description if the current user is not listed in the grants array', () => {
-      window.serverConfig.currentUser = { id: 'abcd-1234' };
+      window.socrata.currentUser = { id: 'abcd-1234' };
 
       const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,

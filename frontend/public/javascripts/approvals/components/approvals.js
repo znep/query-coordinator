@@ -33,18 +33,26 @@ export default class Approvals extends Component {
       }
     };
 
-    let settingsLink = null;
-    if (_.includes(serverConfig.currentUser.rights, 'configure_approvals')) {
-      settingsLink = (
-        <div className="settings_link">
-          <SocrataIcon name="settings" />
-          <a href={`/admin/approvals/settings/${window.socrata.initialState.approvalWorkflowId}`}>
-            {I18n.t('approvals_settings', { scope: this.scope })}
-          </a>
-        </div>
-      );
-    }
+    const approvalWorkflowId = _.get(window, 'socrata.assetBrowser.staticData.approvalWorkflowId');
+    const settingsLink = _.includes(window.socrata.currentUser.rights, 'configure_approvals') ? (
+      <div className="settings_link">
+        <SocrataIcon name="settings" />
+        <a href={`/admin/approvals/settings/${approvalWorkflowId}`}>
+          {I18n.t('approvals_settings', { scope: this.scope })}
+        </a>
+      </div>
+    ) : null;
 
-    return <AssetBrowser showAssetCounts={false} showFilters showSearchField tabs={tabs} settings={settingsLink} />;
+
+    return (
+      <AssetBrowser
+        columns={['type', 'name', 'submitted_at', 'owner', 'status', 'actions']}
+        initialTab={constants.MY_QUEUE_TAB}
+        showAssetCounts={false}
+        showFilters
+        showSearchField
+        tabs={tabs}
+        settings={settingsLink} />
+    );
   }
 }

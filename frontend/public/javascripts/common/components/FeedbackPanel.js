@@ -3,14 +3,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import velocity from 'velocity-animate';
 import classNames from 'classnames';
-
+import I18n from 'common/i18n';
+import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import usersnap from '../usersnap';
 import zendesk from '../zendesk';
-import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
-
-function t(key) {
-  return I18n.common.feedback[key];
-}
 
 export class FeedbackPanel extends Component {
   constructor(props) {
@@ -191,6 +187,7 @@ export class FeedbackPanel extends Component {
 
   renderUsersnapButton(isMobile) {
     const { isLoadingUsersnap } = this.state;
+    const scope = 'common.feedback';
 
     const classes = classNames('btn btn-primary', {
       'btn-busy': isLoadingUsersnap,
@@ -199,7 +196,7 @@ export class FeedbackPanel extends Component {
 
     const content = isLoadingUsersnap ?
       <div className="spinner spinner-default" /> :
-      t('screenshot_yes');
+      I18n.t('screenshot_yes', { scope });
 
     const onClick = isLoadingUsersnap ? null : this.onClickUsersnap;
 
@@ -212,13 +209,15 @@ export class FeedbackPanel extends Component {
       return null;
     }
 
+    const scope = 'common.feedback';
+
     return (
       <div className="feedback-panel" onKeyUp={this.tryEscDismiss}>
         <div className="feedback-panel-content flannel" ref={(ref) => this.content = ref}>
           <header className="flannel-header">
-            <h5>{t('panel_title')}</h5>
+            <h5>{I18n.t('panel_title', { scope })}</h5>
             <button
-              aria-label={I18n.close}
+              aria-label={I18n.t('close', { scope })}
               className="btn btn-transparent flannel-header-dismiss"
               onClick={this.onDismissFeedback}
               ref={(ref) => this.dismiss = ref}>
@@ -227,17 +226,19 @@ export class FeedbackPanel extends Component {
           </header>
 
           <section className="flannel-content">
-            <p className="small" dangerouslySetInnerHTML={{ __html: t('panel_details_html') }} />
+            <p
+              className="small"
+              dangerouslySetInnerHTML={{ __html: I18n.t('panel_details_html', { scope }) }} />
             <div className="desktop">
               {this.renderUsersnapButton(false)}
               <button className="btn btn-default" onClick={this.onClickZendesk}>
-                {t('screenshot_no')}
+                {I18n.t('screenshot_no', { scope })}
               </button>
             </div>
             <div className="mobile">
               {this.renderUsersnapButton(true)}
               <button className="btn btn-default btn-block" onClick={this.onClickZendesk}>
-                {t('screenshot_no')}
+                {I18n.t('screenshot_no', { scope })}
               </button>
             </div>
           </section>
@@ -246,7 +247,7 @@ export class FeedbackPanel extends Component {
           className={['btn', 'feedback-panel-button', this.props.buttonPosition].join(' ')}
           onClick={this.onClickFeedback}
           ref={(ref) => this.button = ref}>
-          {t('title')}
+          {I18n.t('title', { scope })}
         </button>
       </div>
     );

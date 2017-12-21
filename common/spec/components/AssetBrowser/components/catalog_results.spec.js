@@ -13,8 +13,10 @@ const store = {
   subscribe: () => {},
   dispatch: () => {},
   getState: () => ({
+    'assetBrowserProps': {
+      'columns': ['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility']
+    },
     'catalog': {
-      'columns': ['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility'],
       'order': {},
       'results': []
     },
@@ -76,28 +78,6 @@ describe('components/CatalogResults', () => {
         { context: store }
       );
       assert.lengthOf(element.find('.pagination-and-result-count .pager'), 0);
-    });
-  });
-
-  describe('showResultCount', () => {
-    it('renders the result count when true', () => {
-      const element = mount(
-        <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({ showResultCount: true })} />
-        </Provider>,
-        { context: store }
-      );
-      assert.lengthOf(element.find('.result-count'), 1);
-    });
-
-    it('does not render the result count when false', () => {
-      const element = mount(
-        <Provider store={store}>
-          <CatalogResults {...catalogResultsProps({ showResultCount: false })} />
-        </Provider>,
-        { context: store }
-      );
-      assert.lengthOf(element.find('.result-count'), 0);
     });
   });
 

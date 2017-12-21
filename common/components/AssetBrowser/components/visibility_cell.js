@@ -27,7 +27,7 @@ export class VisibilityCell extends Component {
   }
 
   isPrivateAndSharedToCurrentUser() {
-    const currentUserId = _.get(window, 'serverConfig.currentUser.id');
+    const currentUserId = _.get(window.socrata, 'currentUser.id');
 
     if (!this.isPrivate() || !currentUserId) {
       return false;

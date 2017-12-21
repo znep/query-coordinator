@@ -2419,7 +2419,7 @@ en:
         longitude: Longitude
         hide_original_columns: Do not import original columns
         begin_georeferencing: Select columns to georeference this dataset
-        preview: Preview
+        run_geocoding: Run Geocoder
       column_header:
         column_options: Column Options
         column_status_flyout:

@@ -6,7 +6,6 @@ import ErrorsHelp from 'containers/ErrorsHelpContainer';
 import Publishing from 'containers/PublishingContainer';
 import PublishConfirmation from 'containers/PublishConfirmationContainer';
 import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
-import GeocodeShortcut from 'components/GeocodeShortcut/GeocodeShortcut';
 import SetupAutomation from 'containers/SetupAutomationContainer';
 import FormatColumn from 'containers/FormatColumnContainer';
 
@@ -15,13 +14,6 @@ import styles from './Modal.scss';
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName, payload) => {
   switch (contentComponentName) {
-    case 'geocode':
-      return {
-        ...props,
-        children: [<GeocodeShortcut key={1} payload={payload} />],
-        className: styles.shortcut
-      };
-
     case 'ErrorsHelp':
       return {
         ...props,

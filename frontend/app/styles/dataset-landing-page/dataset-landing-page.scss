@@ -106,6 +106,15 @@ body {
         display: none;
       }
 
+      .view-data {
+        color: $white;
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+      }
+
       .grid, .manage, a.download {
         color: $grid-link-color;
 
@@ -148,7 +157,7 @@ body {
     }
 
     .icon-arrow-down {
-      color: $white;
+      color: $grid-link-color;
       font-size: 12px;
     }
 
@@ -287,6 +296,13 @@ div.container.landing-page-container {
         margin-bottom: 9px;
         align-self: center;
 
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+      }
+
+      .btn-primary {
         &:hover,
         &:focus {
           text-decoration: none;

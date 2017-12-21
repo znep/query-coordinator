@@ -87,17 +87,17 @@ describe('components/InfoPaneButtons', () => {
     describe('view data button', () => {
       it('exists if the dataset is tabular', () => {
         const element = renderComponent(InfoPaneButtons, getProps());
-        assert.ok(element.querySelector('.grid-link'));
+        assert.ok(element.querySelector('.view-data'));
       });
 
-      it('does not exist if the dataset is blobby or an href', () => {
+      it('should not exist if the dataset is blobby or an href', () => {
         let element = renderComponent(InfoPaneButtons, getProps({
           view: {
             isBlobby: true
           }
         }));
 
-        assert.isNull(element.querySelector('.grid-link'));
+        assert.isNull(element.querySelector('.view-data'));
 
         element = renderComponent(InfoPaneButtons, getProps({
           view: {
@@ -105,7 +105,7 @@ describe('components/InfoPaneButtons', () => {
           }
         }));
 
-        assert.isNull(element.querySelector('.grid-link'));
+        assert.isNull(element.querySelector('.view-data'));
       });
     });
 

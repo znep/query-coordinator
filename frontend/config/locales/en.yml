@@ -1848,6 +1848,7 @@ en:
       download: Download
       export: Export
       explore_data: Explore Data
+      visualize: Visualize
       odata: Access Data via OData
       share: Share
       watch_dataset: Watch this Dataset
@@ -1921,7 +1922,7 @@ en:
       previous: Previous
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
-      visualize_link: Visualize and Filter
+      create_visualization_link: Create Visualization
     default_row_label: row
     done: Done
     export:
@@ -1943,6 +1944,7 @@ en:
       openin_separator: OPEN IN...
       view_data: View Data
       visualize_and_filter: Visualize and Filter
+      create_visualization: Create Visualization
     featured_content:
       manage_prompt:
         button: Manage Featured Content

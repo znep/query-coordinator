@@ -8,13 +8,14 @@ import { toggleAddUserUi, setAddUserErrors, clearAddUserErrors } from 'users/act
 import rootReducer from 'reducers';
 
 import { invitedUsers, usersResponse, rolesResponse } from './helpers/stateFixtures';
+import { getUsersOffset } from "../../public/javascripts/adminUsersV2/reducers";
 
 describe('reducers', () => {
 
   describe('loadData', () => {
     it('loads data and populates the store', (done) => {
       const mockStore = configureStore([thunk]);
-      const store = mockStore({ users: [], roles: [], config: { usersResultsLimit: 10000 } });
+      const store = mockStore({ users: { zeroBasedPage: 0 }, roles: [], config: { usersResultsLimit: 10000 } });
 
       fetchMock.get('/api/catalog/v1/users?domain=localhost&limit=10000&offset=0&order=screen_name+ASC', usersResponse);
       fetchMock.get('/api/future_accounts', invitedUsers);
@@ -56,6 +57,33 @@ describe('reducers', () => {
     it('clear errors', () => {
       const newState = rootReducer({ ui: { addUserErrors: ['error'] }}, clearAddUserErrors());
       expect(newState.ui.addUserErrors).to.eql([]);
+    });
+  });
+
+  describe('getUsersOffset', () => {
+    it('returns offset of 0 for page 1', () => {
+      const initialState = {
+        config: {
+          usersResultsLimit: 10
+        },
+        users: {
+          zeroBasedPage: 0
+        }
+      };
+      const actual = getUsersOffset(initialState);
+      expect(actual).to.eql(0);
+    });
+    it('returns offset of 10 for page 2', () => {
+      const initialState = {
+        config: {
+          usersResultsLimit: 10
+        },
+        users: {
+          zeroBasedPage: 1
+        }
+      };
+      const actual = getUsersOffset(initialState);
+      expect(actual).to.eql(10);
     });
   });
 });

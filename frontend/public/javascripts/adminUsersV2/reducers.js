@@ -96,7 +96,6 @@ const filters = (state = {}, action) => {
 
 export const getFilters = state => state.filters;
 export const getUsersCurrentPage = state => fromUsers.getCurrentPage(state.users);
-export const getUsersOffset = state => fromUsers.getOffset(state.users);
 export const getUsersOrderBy = state => fromUsers.getOrderBy(state.users);
 export const getUsersSortDirection = state => fromUsers.getSortDirection(state.users);
 export const getUsersResultCount = state => fromUsers.getResultCount(state.users);
@@ -104,6 +103,7 @@ export const getUsers = state => fromUsers.getUsers(state.users);
 export const getUsersQuery = state => get(state, 'autocomplete.query');
 export const getLoadingData = state => get(state, 'ui.loadingData');
 export const getUsersResultsLimit = state => get(state, 'config.usersResultsLimit');
+export const getUsersOffset = state => fromUsers.getZeroBasedPage(state.users) * getUsersResultsLimit(state);
 export const getUsersLoadingData = state => fromUsers.getLoadingData(state.users);
 export const getAddUserErrors = state => get(state, 'ui.addUserErrors');
 export const getInvitedUserCount = state => fromInvitedUsers.getInvitedUserCount(state.invitedUsers);

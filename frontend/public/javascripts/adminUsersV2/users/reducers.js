@@ -45,7 +45,7 @@ const updateColumnSort = (columnKey, state) => {
 
 const initialState = {
   loadingData: true,
-  offset: 0,
+  zeroBasedPage: 0,
   orderBy: SORT_KEYS.SCREEN_NAME,
   sortDirection: SORT_DIRECTION.ASC,
   resultCount: 0,
@@ -79,7 +79,7 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, loadingData: action.stage === START };
 
     case GOTO_PAGE:
-      return {...state, offset: Math.max(0, action.payload.page - 1) };
+      return {...state, zeroBasedPage: makeZeroBasedPageFromPager(action.payload.page) };
 
     case SORT_COLUMN:
       return updateColumnSort(action.payload.columnKey, state);
@@ -91,10 +91,11 @@ const usersReducer = (state = initialState, action) => {
 
 export default usersReducer;
 
-export const getCurrentPage = state => getOffset(state) + 1;
+export const makeZeroBasedPageFromPager = page => Math.max(0, page - 1);
+export const getZeroBasedPage = state => get(state, 'zeroBasedPage');
+export const getCurrentPage = state => getZeroBasedPage(state) + 1;
 export const getResultCount = state => get(state, 'resultCount');
 export const getUsers = state => get(state, 'users');
 export const getOrderBy = state => get(state, 'orderBy');
 export const getSortDirection = state => get(state, 'sortDirection');
-export const getOffset = state => get(state, 'offset');
 export const getLoadingData = state => get(state, 'loadingData');

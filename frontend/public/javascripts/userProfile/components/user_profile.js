@@ -39,8 +39,10 @@ export default class UserProfile extends Component {
     const showManageAssets = _.includes(serverConfig.currentUser.flags, 'admin') ||
       !_.isEmpty(window.serverConfig.currentUser.roleName);
 
-    // If user has no roles, don't show visibility column (EN-20845)
-    if (_.isNil(window.serverConfig.currentUser.roleId) && window.socrata.initialState.catalog.columns) {
+    // If user has no roles and is not admin, don't show visibility column (EN-20845)
+    if (_.isUndefined(_.get(window, 'serverConfig.currentUser.roleId')) &&
+      ! _.includes(_.get(window, 'serverConfig.currentUser.flags'), 'admin')
+    ) {
       _.remove(window.socrata.initialState.catalog.columns, (col) => col === 'visibility');
     }
 

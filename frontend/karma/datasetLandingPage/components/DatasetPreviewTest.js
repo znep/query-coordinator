@@ -56,10 +56,6 @@ describe('components/DatasetPreview', function() {
         assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
-      it('does not render the grid view link', () => {
-        const element = renderComponent(DatasetPreview, getProps());
-        assert.isNull(element.querySelector('a.btn-grid'));
-      });
 
       describe('when the bootstrapUrl is blank', () => {
         let element;

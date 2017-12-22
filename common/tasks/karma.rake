@@ -11,7 +11,7 @@ namespace 'karma' do
   task :deps do
     npm('run check-dependencies') do |ok, res|
       unless ok
-        npm('install') { |ok, res| exit(1) unless ok }
+        npm('install --silent') { |ok, res| exit(1) unless ok }
       end
     end
   end

@@ -289,7 +289,7 @@
       };
       var loadDataset = function(ds) {
         if (df.legacy) {
-          if (!ds.isArcGISDataset() && !ds.isGeoDataset()) {
+          if (!GeoHelpers.isArcGISOrGeoDataset(ds)) {
             df.plotStyle = 'point';
             var locCol = _.detect(ds.realColumns, function(col) {
               return col.renderTypeName == 'location';

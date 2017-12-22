@@ -1,0 +1,27 @@
+.about-measure {
+  white-space: nowrap;
+  margin-bottom: 1em;
+
+  .about-measure-title {
+    margin-bottom: 1em;
+  }
+
+  .metadata-table-wrapper {
+    border: 1px solid $light-grey-3;
+    background-color: $white;
+    padding: 2px 5px;
+  }
+
+  .metadata-section hr {
+    margin: 0 0 2em;
+  }
+
+  .metadata-pair {
+    margin-bottom: 25px;
+    display: block;
+  }
+
+  @media(max-width: $medium) {
+    width: 100%;
+  }
+}

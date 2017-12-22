@@ -8,7 +8,7 @@ import { resultVisibilityChanged } from '../actions';
 import CollapsedIcon from './CollapsedIcon';
 import SearchBox from './SearchBox/SearchBox';
 import Results from './Results/Results';
-import styles from './autocomplete.scss';
+import styles from './autocomplete.module.scss';
 
 class Autocomplete extends React.Component {
   constructor(props) {

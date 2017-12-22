@@ -68,7 +68,7 @@ module ApplicationHelper
   end
 
   # helper for returning a boolean feature flag
-  def feature_flag?(name, request)
+  def feature_flag?(name, request = nil)
     !!FeatureFlags.derive(nil, request)[name]
   end
 
@@ -1316,4 +1316,18 @@ module ApplicationHelper
     end
   end
 
+  def render_global_socrata_state
+    socrata_state = {
+      :csrfToken => form_authenticity_token.to_s,
+      :currentUser => current_user,
+      :domain => CurrentDomain.cname,
+      :environment => Rails.env,
+      :featureFlags => FeatureFlags.derive(@view, request),
+      :locale => I18n.locale.to_s,
+      :localePrefix => locale_prefix.to_s,
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+    }
+
+    javascript_tag("var socrata = #{json_escape(socrata_state.to_json)};")
+  end
 end

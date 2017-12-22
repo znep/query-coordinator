@@ -77,9 +77,11 @@ class URLSource extends Component {
             <div className={styles.browseMsg}>{SubI18n.url_prompt}</div>
             <form>
               <TextInput
-                name="import-url"
+                field={{
+                  name: 'import-url',
+                  value: this.state.url
+                }}
                 handleChange={this.onURLChange}
-                value={this.state.url}
                 inErrorState={!!this.state.error} />
               <span className={styles.errorMessage}>{this.state.error}</span>
               <div className={styles.fileTypes}>

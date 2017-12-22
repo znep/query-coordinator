@@ -62,7 +62,7 @@ _.defer(function() {
     // flush the metrics queue to dispatch everything
     analytics.flushMetrics();
   } catch (e) {
-    console.error(`Fatal error when rendering: ${e.stack}`);
+    console.error('Fatal error when rendering:', e);
 
     ReactDOM.render(
       <div className="alert error alert-full-width-top">{I18n.t('common.render_error')}</div>,

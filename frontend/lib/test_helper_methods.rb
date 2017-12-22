@@ -18,8 +18,9 @@ module TestHelperMethods
     CurrentDomain.set_domain(@domain)
   end
 
-  def init_current_user(controller, id = 'test-test', session_token = '123456')
-    user = User.new('id' => id)
+  def init_current_user(controller, id = 'test-test', session_token = '123456', user_data = {})
+    user_data['id'] ||= id
+    user = User.new(user_data)
     UserSessionProvider.klass.controller = controller
     UserSessionProvider.klass.update_current_user(user, session_token)
     user_session = UserSessionProvider.klass.new

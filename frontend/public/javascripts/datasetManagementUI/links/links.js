@@ -51,11 +51,26 @@ export const showParseOptions = params => {
   );
 };
 
+export const geocodeShortcut = params => {
+  const { sourceId, inputSchemaId, outputSchemaId } = params;
+  return (
+    `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
+    `/output/${outputSchemaId}/georeference`
+  );
+};
+
 export const showAddCol = params => {
   const { sourceId, inputSchemaId, outputSchemaId } = params;
   return (
     `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
     `/output/${outputSchemaId}/add_col`
+  );
+};
+
+export const geocodeColumn = (params) => {
+  return (
+    `${revisionBase(params)}/sources/${params.sourceId}/schemas/${params.inputSchemaId}` +
+    `/output/${params.outputSchemaId}/georeference`
   );
 };
 

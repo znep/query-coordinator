@@ -1,5 +1,7 @@
-.asset-selector.modal {
-  overflow-y: hidden;
+.asset-selector {
+  &.modal {
+    overflow-y: hidden;
+  }
 
   &.modal-full {
     // Copied from DSLP
@@ -18,7 +20,7 @@
   }
 
   .modal-content {
-    padding: 19px;
+    padding: 19px !important;
     margin-bottom: 0 !important;
   }
 

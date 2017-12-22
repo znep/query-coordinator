@@ -4,9 +4,9 @@
       var mixins = [];
       var df = options.displayFormat || options.view.displayFormat;
 
-      if (options.view.isGeoDataset()) {
+      if (GeoHelpers.isGeoDataset(options.view)) {
         mixins = ['mondara'];
-      } else if (options.view.isArcGISDataset()) {
+      } else if (GeoHelpers.isArcGISDataset(options.view)) {
         mixins = ['arcgis'];
       } else if (df.plotStyle == 'heatmap') {
         mixins = ['boundary'];

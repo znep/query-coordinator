@@ -28,7 +28,6 @@ class Table extends PureComponent {
         {spinner}
       </div>
     );
-
   }
 }
 

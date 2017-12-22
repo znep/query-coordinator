@@ -24,14 +24,14 @@ module Fontana
           unless workflow_id
             workflow_id = get(
               APPROVALS_API_URI,
-              instance.approval_request_headers
+              :headers => instance.approval_request_headers
             ).parsed_response.find { |workflow| workflow.to_h['outcome'] == 'publicize' }.to_h['id']
           end
           raise RuntimeError.new('Unable to determine workflow_id') unless workflow_id
 
           get(
             "#{APPROVALS_API_URI}/#{workflow_id}",
-            instance.approval_request_headers
+            :headers => instance.approval_request_headers
           ).parsed_response.each do |key, value|
             if key == 'steps'
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
@@ -102,7 +102,7 @@ module Fontana
           'Content-Type' => 'application/json',
           'Cookie' => cookies,
           'X-Socrata-Host' => CurrentDomain.cname
-        }
+        }.compact
       end
 
       def as_json(keys = JSON_ATTRIBUTES)

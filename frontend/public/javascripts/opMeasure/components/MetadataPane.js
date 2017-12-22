@@ -7,11 +7,7 @@ import { MetadataTable } from 'common/components';
 // Pane containing generic asset metadata for the measure.
 export class MetadataPane extends Component {
   render() {
-    const { activePane, measure, coreView } = this.props;
-
-    if (activePane !== 'metadata') {
-      return null;
-    }
+    const { coreView } = this.props;
 
     return (
       <div className="pane" data-pane="metadata">
@@ -26,8 +22,7 @@ export class MetadataPane extends Component {
 }
 
 MetadataPane.propTypes = {
-  activePane: PropTypes.string,
-  measure: PropTypes.object
+  measure: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

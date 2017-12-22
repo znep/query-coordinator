@@ -13,10 +13,10 @@ describe('users/reducers', () => {
   describe('userSearch', () => {
     it('searches for users when passed a query', (done) => {
       const mockStore = configureStore([thunk]);
-      const store = mockStore({ users: [], roles: [] });
+      const store = mockStore({ users: { zeroBasedPage: 0 }, roles: [], config: { usersResultsLimit: 10000 } });
 
       const query = 'asdf';
-      fetchMock.get(`/api/catalog/v1/users?domain=localhost&limit=10000&q=${query}`, usersResponse);
+      fetchMock.get(`/api/catalog/v1/users?domain=localhost&limit=10000&offset=0&q=${query}`, usersResponse);
 
       store
         .dispatch(userSearch(query))
@@ -24,9 +24,11 @@ describe('users/reducers', () => {
           const actions = store.getActions();
           expect(actions).to.have.length(2);
           actions.forEach((action) => expect(action.type).to.equal(USER_SEARCH));
-          expect(actions[0].stage).to.equal(START);
-          expect(actions[1].stage).to.equal(COMPLETE_SUCCESS);
-          expect(actions[1].users).to.be.an('array');
+          const [ startAction, completeAction ] = actions;
+          expect(startAction.stage).to.equal(START);
+          expect(completeAction.stage).to.equal(COMPLETE_SUCCESS);
+          expect(completeAction.payload).to.be.an('object');
+          expect(completeAction.payload.users).to.be.an('array');
           done();
         })
         .catch(err => done(err));

@@ -6,22 +6,21 @@ import { connect } from 'react-redux';
 import { EditBar as SocrataComponentsEditBar } from 'common/components';
 import I18n from 'common/i18n';
 
+import { openEditModal } from '../actions/editor';
 import { enterPreviewMode } from '../actions/view';
 
 // Container for the edit menu affordance, as well as save and preview buttons.
 export class EditBar extends PureComponent {
   render() {
-    const { name, onClickPreview } = this.props;
-
-    const editBarProps = {
-      name,
-      menuLabel: I18n.t('open_performance.edit_menu_label'),
-      menuIcon: 'socrata-icon-stories-menu'
-    };
+    const { name, onClickPreview, onClickEdit } = this.props;
+    const editBarProps = { name };
 
     return (
       <SocrataComponentsEditBar {...editBarProps}>
-        <div className="edit-bar-child">
+        <div className="edit-bar-child btn-group">
+          <button type="button" className="btn btn-alternate-2 btn-sm btn-edit" onClick={onClickEdit}>
+            {I18n.t('open_performance.edit')}
+          </button>
           <button type="button" className="btn btn-transparent btn-preview" onClick={onClickPreview}>
             {I18n.t('open_performance.preview')}
             <span className="socrata-icon-preview" role="presentation" />
@@ -33,7 +32,9 @@ export class EditBar extends PureComponent {
 }
 
 EditBar.propTypes = {
-  name: PropTypes.string
+  name: PropTypes.string,
+  onClickPreview: PropTypes.func,
+  onClickEdit: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -42,7 +43,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onClickPreview: enterPreviewMode
+    onClickPreview: enterPreviewMode,
+    onClickEdit: openEditModal
   }, dispatch);
 }
 

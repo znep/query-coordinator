@@ -13,25 +13,27 @@ export class DatasetPreview extends Component {
     const enableVisualizationCanvas = serverConfig.featureFlags.enable_visualization_canvas;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
       _.isString(view.bootstrapUrl);
+    let createVisualizationLink = null;
 
     if (canCreateVisualizationCanvas) {
-      return (
-        <a href={view.bootstrapUrl} className="btn btn-primary btn-sm btn-visualize">
-          {I18n.dataset_preview.visualize_link}
+      createVisualizationLink = (
+        <a href={view.bootstrapUrl} className="btn btn-default btn-sm btn-visualize">
+          {I18n.dataset_preview.create_visualization_link}
         </a>
       );
-    } else {
-      return (
+    }
+
+    return (
+      <div>
         <a
           href={localizeLink(view.gridUrl)}
           className="btn btn-primary btn-sm btn-grid"
           onClick={onClickGrid}>
           {I18n.dataset_preview.grid_view_link}
-          <span className="icon-external" />
         </a>
-      );
-    }
-
+        {createVisualizationLink}
+      </div>
+    );
   }
 
   renderTable() {

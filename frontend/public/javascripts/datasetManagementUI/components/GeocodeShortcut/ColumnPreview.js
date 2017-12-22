@@ -37,7 +37,7 @@ const ColumnPreview = ({
     body = (
       <div className={styles.noColumnYet}>
         <button onClick={onPreview} className={styles.runTransform}>
-          {SubI18n.preview}
+          {SubI18n.run_geocoding}
         </button>
       </div>
     );
@@ -61,7 +61,6 @@ const ColumnPreview = ({
                   isIgnored={false}
                   displayState={displayState}
                   columnId={outputColumn.id}
-                  showShortcut={() => {}}
                   shortcuts={[]}
                   flyouts={false}
                   onClickError={onClickError}

@@ -30,7 +30,7 @@ describe('thunk actions', () => {
         view: { measure, coreView },
         editor: { isEditing: false, measure: null }
       });
-      
+
       store.dispatch(editorActions.openEditModal());
 
       _.defer(() => {
@@ -112,14 +112,15 @@ describe('thunk actions', () => {
     describe('when the edit modal validates', () => {
       it('updates the view measure and closes the edit modal', (done) => {
         const measure = { test: 'foo' };
+        const coreView = { name: 'test core view' };
         const expectedActions = [
           { type: validateActions.VALIDATE_ALL },
-          { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure }
+          { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure, coreView }
         ];
 
         const store = mockStore({
-          view: { measure: null },
-          editor: { isEditing: true, measure }
+          view: { measure: null, coreView },
+          editor: { isEditing: true, measure, coreView }
         });
         store.dispatch(editorActions.acceptEditModalChanges());
 

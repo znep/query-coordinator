@@ -51,7 +51,7 @@ class Body extends Component {
   renderItemAffectedCell(data) {
     return (
       <td scope="row" className="item-affected">
-        {data.dataset_name || data.view_name}
+        {data.affected_item}
       </td>
     );
   }

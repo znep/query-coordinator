@@ -103,7 +103,7 @@ export class Dropdown extends Component {
    * if it's set to true
    * */
   onMouseDown(event) {
-    if (event && this.state.opened) {
+    if (event && this.state.opened && this.dropdownRef) {
       const dropdownOptionsList = _.find(this.dropdownRef.children, (elem) => {
         return elem.classList.contains('dropdown-options-list');
       });
@@ -135,7 +135,7 @@ export class Dropdown extends Component {
   onClickPlaceholder() {
     this.onAnyScroll();
     this.setState({ opened: !this.state.opened }, () => {
-      if (this.state.opened) {
+      if (this.state.opened && this.picklistRef) {
         this.picklistRef.picklist.focus();
       }
     });
@@ -148,6 +148,8 @@ export class Dropdown extends Component {
    * how we respond to ready for the next blur.
    */
   onBlurPlaceholder() {
+    if (!this.placeholderRef) { return; }
+
     if (!this.state.mousedDownOnDropdown) {
       this.optionsRef.scrollTop = 0;
       this.setState({ focused: false });
@@ -208,7 +210,9 @@ export class Dropdown extends Component {
       opened: true,
       selectedOption
     }, () => {
-      this.picklistRef.picklist.focus();
+      if (this.picklistRef) {
+        this.picklistRef.picklist.focus();
+      }
     });
   }
 
@@ -260,6 +264,8 @@ export class Dropdown extends Component {
    * reached.
    */
   toggleIsolateScrolling(onOrOff) {
+    if (!this.optionsRef) { return; }
+
     SocrataUtils.isolateScrolling($(this.optionsRef), onOrOff);
   }
 
@@ -277,6 +283,8 @@ export class Dropdown extends Component {
    * depending on a boolean value passed as the first parameter.
    */
   toggleScrollEvents(onOrOff) {
+    if (!this.dropdownRef) { return; }
+
     const action = onOrOff ? 'addEventListener' : 'removeEventListener';
     const toggleEvents = (element) => {
       element[action]('scroll', this.onAnyScroll);

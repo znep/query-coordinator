@@ -63,7 +63,7 @@ if ./bin/should_run_tests frontend; then
   # clears it up. Come back and delete once merged into master.
   # for package in `ls node_modules`; do npm uninstall $package; done;
   npm uninstall define-properties
-  npm install
+  npm install --silent
 
   # Ruby tests
   bundle exec rake test:units

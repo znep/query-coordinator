@@ -48,11 +48,11 @@ class UserNotification extends React.Component {
 
   renderAlertLabel() {
     const {
-      type,
+      notification,
       I18n
     } = this.props;
 
-    if (_.isEqual(type, 'alert')) {
+    if (_.isEqual(notification.type, 'alert')) {
       return <em>{I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')}</em>;
     }
   }
@@ -67,14 +67,13 @@ class UserNotification extends React.Component {
 
   renderUnreadIcon() {
     const {
-      id,
-      isRead,
+      notification,
       onToggleReadUserNotification,
       I18n
     } = this.props;
     let linkTitle;
 
-    if (isRead) {
+    if (notification.read) {
       linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_unread');
     } else {
       linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_read');
@@ -86,7 +85,7 @@ class UserNotification extends React.Component {
         className="toggle-notification-read-state"
         role="button"
         title={linkTitle}
-        onClick={() => onToggleReadUserNotification(id, !isRead)}>
+        onClick={() => onToggleReadUserNotification(notification.id, !notification.read)}>
         <SocrataIcon name="checkmark3" />
       </span>
     );
@@ -94,7 +93,7 @@ class UserNotification extends React.Component {
 
   renderClearIcon() {
     const {
-      id,
+      notification,
       onClearUserNotification,
       I18n
     } = this.props;
@@ -105,40 +104,33 @@ class UserNotification extends React.Component {
         className="user-notification-clear-icon"
         role="button"
         title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
-        onClick={() => onClearUserNotification(id)}>
+        onClick={() => onClearUserNotification(notification.id)}>
         <SocrataIcon name="close-2" />
       </span>
     );
   }
 
   renderUserLink() {
-    const {
-      userName,
-      userProfileLink
-    } = this.props;
+    const { notification } = this.props;
 
-    if (_.isNull(userProfileLink)) {
-      return <span styleName="user-name">{userName}</span>;
+    if (_.isNull(notification.userProfileLink)) {
+      return <span styleName="user-name">{notification.userName}</span>;
     }
 
-    return <a href={userProfileLink} target="_blank">{userName}</a>;
+    return <a href={notification.userProfileLink} target="_blank">{notification.userName}</a>;
   }
 
   renderNotificationTitle() {
     const {
-      link,
-      activityUniqueKey,
-      messageBody,
-      type,
-      alertName,
+      notification,
       I18n
     } = this.props;
     let alertOrNotificationTitle;
 
-    if (type === 'alert') {
-      alertOrNotificationTitle = alertName;
+    if (notification.type === 'alert') {
+      alertOrNotificationTitle = notification.alertName;
     } else {
-      alertOrNotificationTitle = I18n.t(activityUniqueKey, { scope: 'shared_site_chrome_notifications' });
+      alertOrNotificationTitle = I18n.t(notification.activityUniqueKey, { scope: 'shared_site_chrome_notifications' });
     }
     const notificationTitle = (
       <div>
@@ -147,48 +139,45 @@ class UserNotification extends React.Component {
           {alertOrNotificationTitle}
         </strong>
 
-        <span className="notification-body">{messageBody}</span>
+        <span className="notification-body">{notification.messageBody}</span>
       </div>
     );
 
-    if (_.isNull(link)) {
+    if (_.isNull(notification.link)) {
       return <span styleName="title">{notificationTitle}</span>;
     }
 
-    return <a styleName="title" href={link} target="_blank">{notificationTitle}</a>;
+    return <a styleName="title" href={notification.link} target="_blank">{notificationTitle}</a>;
   }
 
   render() {
     const {
-      id,
-      isRead,
+      notification,
       isTransientNotification,
-      type,
-      createdAt,
       I18n
     } = this.props;
-    const isUnread = !isRead;
+    const isUnread = !notification.read;
     let notificationByLabel;
-    if (type === 'alert') {
+    if (notification.type === 'alert') {
       notificationByLabel = null;
     } else {
       notificationByLabel = <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>;
     }
     return (
       <li
-        styleName={classNames('notification-item', type, {
+        styleName={classNames('notification-item', notification.type, {
           'unread': isUnread,
           'transient': isTransientNotification
         })}
         className={classNames('user-notification-item', { 'unread': isUnread })}
-        data-notification-id={id}>
+        data-notification-id={notification.id}>
         {this.renderSocrataLogo()}
 
         <div styleName="notification-wrapper" className="clearfix">
           <div styleName="notification-info">
             {this.renderNotificationTitle()}
             <p styleName="timestamp" className="notification-timestamp">
-              <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
+              <span>{moment.utc(notification.createdAt).locale(I18n.locale).fromNow()}</span>
               {notificationByLabel}
               {this.renderUserLink()}
             </p>
@@ -205,19 +194,22 @@ class UserNotification extends React.Component {
 }
 
 UserNotification.propTypes = {
-  activityType: PropTypes.string,
-  messageBody: PropTypes.string.isRequired,
-  createdAt: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
-  isRead: PropTypes.bool.isRequired,
+  notification: PropTypes.shape({
+    activityType: PropTypes.string,
+    activityUniqueKey: PropTypes.string.isRequired,
+    alertName: PropTypes.string,
+    createdAt: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    read: PropTypes.bool.isRequired,
+    link: PropTypes.string,
+    messageBody: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    userProfileLink: PropTypes.string
+  }).isRequired,
   isTransientNotification: PropTypes.bool.isRequired,
-  link: PropTypes.string,
   onClearUserNotification: PropTypes.func.isRequired,
-  onToggleReadUserNotification: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
-  activityUniqueKey: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
-  userProfileLink: PropTypes.string
+  onToggleReadUserNotification: PropTypes.func.isRequired
 };
 
 UserNotification.defaultProps = {

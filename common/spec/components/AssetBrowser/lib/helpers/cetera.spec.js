@@ -18,7 +18,7 @@ describe('helpers/cetera', () => {
   let ceteraAssetCountsStub;
 
   beforeEach(() => {
-    window.socrata = { initialState };
+    window.socrata = { assetBrowser: { staticData: initialState } };
     ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
     ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').
       callsFake(_.constant(Promise.resolve(mockCeteraFacetCountsResponse)));

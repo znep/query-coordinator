@@ -17,8 +17,7 @@ const order = _.isEmpty(getQueryParameter('orderColumn')) ? defaultOrder : {
   value: getQueryParameter('orderColumn')
 };
 
-const getInitialState = () => _.merge({
-  columns: [],
+const getInitialState = () => ({
   fetchingResults: false,
   fetchingResultsError: false,
   initialResultsFetched: false,
@@ -26,7 +25,7 @@ const getInitialState = () => _.merge({
   pageNumber: parseInt(getQueryParameter('page', 1)),
   results: [],
   resultSetSize: 0
-}, window.socrata.initialState.catalog);
+});
 
 export default (state, action) => {
   if (_.isUndefined(state)) {

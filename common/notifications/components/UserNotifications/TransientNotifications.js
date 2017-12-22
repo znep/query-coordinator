@@ -9,44 +9,28 @@ import UserNotification from './UserNotification';
 import styles from './transient-notifications.scss';
 
 class TransientNotifications extends Component {
-  renderTransientNotifications() {
+  render() {
     const {
       transientNotifications,
       onClearUserNotification,
       onToggleReadUserNotification,
       moveTransientNotificationIntoPanel
     } = this.props;
-    const isTransientNotification = true;
 
-    if (!_.isEmpty(transientNotifications)) {
-      return transientNotifications.map((notification) =>
-        <UserNotification
-          key={notification.id}
-          id={notification.id}
-          isRead={notification.read}
-          isTransientNotification={isTransientNotification}
-          activityType={notification.activityType}
-          createdAt={notification.createdAt}
-          type={notification.type}
-          activityUniqueKey={notification.activityUniqueKey}
-          messageBody={notification.messageBody}
-          link={notification.link}
-          userName={notification.userName}
-          userProfileLink={notification.userProfileLink}
-          onClearUserNotification={onClearUserNotification}
-          onToggleReadUserNotification={onToggleReadUserNotification}
-          moveTransientNotificationIntoPanel={moveTransientNotificationIntoPanel} />
-      );
-    }
-  }
-
-  render() {
     return (
       <div>
         <ul
           styleName="transient-notifications-list"
           className="transient-notifications-list">
-          {this.renderTransientNotifications()}
+          {transientNotifications.map((notification) =>
+            <UserNotification
+              key={notification.id}
+              notification={notification}
+              isTransientNotification
+              onClearUserNotification={onClearUserNotification}
+              onToggleReadUserNotification={onToggleReadUserNotification}
+              moveTransientNotificationIntoPanel={moveTransientNotificationIntoPanel} />
+          )}
         </ul>
       </div>
     );
@@ -56,11 +40,8 @@ class TransientNotifications extends Component {
 TransientNotifications.propTypes = {
   onClearUserNotification: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
-  moveTransientNotificationIntoPanel: PropTypes.func.isRequired
-};
-
-TransientNotifications.defaultProps = {
-  transientNotifications: null
+  moveTransientNotificationIntoPanel: PropTypes.func.isRequired,
+  transientNotifications: PropTypes.array.isRequired
 };
 
 export default connectLocalization(cssModules(TransientNotifications, styles, { allowMultiple: true }));

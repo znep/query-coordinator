@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import { LocalizedRolePicker } from '../../roles/components/RolePicker';
 import connectLocalization from 'common/i18n/components/connectLocalization';
-import _ from 'lodash';
+import has from 'lodash/has';
+import isEmpty from 'lodash/isEmpty';
 import { cancelAddUser, submitNewUsers } from '../actions';
+import { getAddUserErrors } from '../../reducers';
 
 export class AddUserModal extends Component {
-  constructor() {
-    super();
-    this.state = {
-      selectedRoleId: '0'
-    };
-    _.bindAll(this, ['cancelModal', 'renderError', 'renderErrors', 'submitNewUsers']);
-  }
+  static propTypes = {
+    errors: PropTypes.array,
+    showModal: PropTypes.bool.isRequired,
+    submittingUsers: PropTypes.bool
+  };
+
+  state = {
+    selectedRoleId: '0'
+  };
 
   componentDidUpdate() {
     const { showModal } = this.props;
@@ -26,26 +29,26 @@ export class AddUserModal extends Component {
 
   componentWillReceiveProps(nextProps) {
     // reset internal state when modal is going from hidden => visible
-    if (this.props.showModal === false && nextProps.showModal == true) {
+    if (this.props.showModal === false && nextProps.showModal === true) {
       this.setState({ selectedRoleId: undefined });
     }
   }
 
-  cancelModal() {
+  cancelModal = () => {
     const { onCancelAddUser } = this.props;
     onCancelAddUser();
-  }
+  };
 
-  submitNewUsers() {
+  submitNewUsers = () => {
     const { onSubmitNewUsers } = this.props;
     const { selectedRoleId } = this.state;
     const emails = this.textArea.value;
     onSubmitNewUsers(emails, selectedRoleId);
-  }
+  };
 
-  renderError(error, key) {
+  renderError = (error, key) => {
     const { I18n } = this.props;
-    if (_.has(error, 'translationKey')) {
+    if (has(error, 'translationKey')) {
       const translationKey = error.translationKey;
       const message = I18n.t(translationKey, error);
       if (translationKey.endsWith('_html')) {
@@ -56,23 +59,23 @@ export class AddUserModal extends Component {
     } else {
       return <li key={key}>{error}</li>;
     }
-  }
+  };
 
-  renderErrors(errors) {
+  renderErrors = (errors) => {
     return (
       <div className="alert error">
         <ul className="error-list">{errors.map(this.renderError)}</ul>
       </div>
     );
-  }
+  };
 
   render() {
     const { I18n, errors = [], showModal, submittingUsers } = this.props;
     const { selectedRoleId } = this.state;
-    const hasError = !_.isEmpty(errors);
+    const hasError = !isEmpty(errors);
     const modalProps = {
       fullScreen: false,
-      onDismiss: _.noop // don't allow clicking outside to hide
+      onDismiss: () => {}
     };
     const headerProps = {
       showCloseButton: true,
@@ -135,29 +138,15 @@ export class AddUserModal extends Component {
   }
 }
 
-AddUserModal.propTypes = {
-  errors: PropTypes.array,
-  showModal: PropTypes.bool.isRequired,
-  submittingUsers: PropTypes.bool
-};
+const mapStateToProps = state => ({
+  showModal: state.ui.showAddUserUi,
+  errors: getAddUserErrors(state),
+  submittingUsers: state.ui.submittingUsers
+});
 
-const mapStateToProps = state => {
-  const errors = _.get(state, 'ui.addUserErrors', []);
-  return {
-    showModal: state.ui.showAddUserUi,
-    errors,
-    submittingUsers: state.ui.submittingUsers
-  };
-};
+const mapDispatchToProps = ({
+  onCancelAddUser: cancelAddUser,
+  onSubmitNewUsers:  submitNewUsers
+});
 
-const mapDispatchToProps = _.partial(
-  bindActionCreators,
-  {
-    onCancelAddUser: () => cancelAddUser(),
-    onSubmitNewUsers: (emails, roleId) => submitNewUsers(emails, roleId)
-  },
-  _
-);
-
-const ConnectedAddUserModal = connectLocalization(connect(mapStateToProps, mapDispatchToProps)(AddUserModal));
-export default ConnectedAddUserModal;
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(AddUserModal));

@@ -369,21 +369,19 @@ body {
     min-height: auto;
     margin: 0;
   }
-  $profile-asset-browser-min-width: 650px;
   .result-list-table {
     min-width: 0;
   }
   .topbar {
     margin: 0.5rem 0;
-    div[class*=autocomplete_container] {
-      max-width: 300px;
+
+    > div[class*=autocomplete] {
+      max-width: 40rem;
+      width: calc(90% - 100px);
     }
   }
   .catalog-results {
     overflow: hidden;
-    > * {
-      min-width: $profile-asset-browser-min-width;
-    }
   }
   .catalog-filters .filter-content {
     width: 100%;

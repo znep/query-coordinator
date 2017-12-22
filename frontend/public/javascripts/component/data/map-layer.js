@@ -18,12 +18,18 @@ $.component.Component.extend('Map Layer', 'data', {
     },
 
     isValid: function() {
-        //return $.isBlank(this._dataObj) ? false : this._dataObj.isValid();
-        var valid = $.isBlank(this._dataContext) ? false :
-            (this._dataContext.dataset.isArcGISDataset()
-            || this._dataContext.dataset.isGeoDataset() ||
-            ($.subKeyDefined(this._properties, 'displayFormat.plot.locationId')
-             && $.subKeyDefined(this._properties, 'displayFormat.plotStyle')));
+        var hasPlotStyleAndLocationId = function(properties) {
+          return (
+            $.subKeyDefined(properties, 'displayFormat.plot.locationId') &&
+            $.subKeyDefined(properties, 'displayFormat.plotStyle')
+          );
+        };
+        var valid = $.isBlank(this._dataContext) ?
+          false :
+          (
+            GeoHelpers.isArcGISOrGeoDataset(this._dataContext.dataset) ||
+            hasPlotStyleAndLocationId(this._properties)
+          );
         if ($.deepGet(this._properties, 'displayFormat', 'plotStyle') == 'heatmap') {
             valid = valid && $.subKeyDefined(this._properties, 'displayFormat.heatmap.type');
         }
@@ -86,9 +92,9 @@ $.component.Component.extend('Map Layer', 'data', {
         var rv = this._super.apply(this, arguments);
         if ($.subKeyDefined(this, '_dataContext.dataset')) {
             var ds = this._dataContext.dataset;
-            if (ds.isArcGISDataset()) {
+            if (GeoHelpers.isArcGISDataset(ds)) {
                 this._dataType = 'esri';
-            } else if (ds.isGeoDataset()) {
+            } else if (GeoHelpers.isGeoDataset(ds)) {
                 this._dataType = 'mondara';
             } else {
                 this._dataType = 'socrata';

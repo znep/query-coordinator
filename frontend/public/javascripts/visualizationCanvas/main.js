@@ -65,7 +65,7 @@ _.defer(function() {
       metrics.sendAnalytics(window.initialState.view.id);
     }
   } catch (e) {
-    console.error(`Fatal error when rendering: ${e.stack}`);
+    console.error('Fatal error when rendering:', e);
 
     ReactDOM.render(
       <div className="alert error alert-full-width-top">{I18n.t('visualization_canvas.render_error')}</div>,

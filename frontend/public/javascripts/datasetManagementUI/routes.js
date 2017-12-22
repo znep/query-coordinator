@@ -1,13 +1,16 @@
 import React from 'react';
 import _ from 'lodash';
-import { Route, Redirect, IndexRoute } from 'react-router';
+import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import * as Links from 'links/links';
 import Home from 'pages/Home/Home';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
-import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
+import ManageMetadata from 'containers/ManageMetadataContainer';
+import DatasetForm from 'components/DatasetForm/DatasetForm';
+import ColumnForm from 'components/ColumnForm/ColumnForm';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import TablePane from 'pages/ShowOutputSchema/TablePane';
 import ParseOptionsPane from 'pages/ShowOutputSchema/ParseOptionsPane';
+import GeocodeShortcutPane from 'pages/ShowOutputSchema/GeocodeShortcutPane';
 import TransformColumnPane from 'pages/ShowOutputSchema/TransformColumnPane';
 import AddColPane from 'pages/ShowOutputSchema/AddColPane';
 import ShowBlobPreview from 'pages/ShowBlobPreview/ShowBlobPreview';
@@ -54,12 +57,11 @@ export default function rootRoute(store) {
   return (
     <Route path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq" component={Home}>
       <IndexRoute component={ShowRevision} />
-      <Redirect from="metadata" to="metadata/dataset" />
-      <Route path="metadata/dataset" component={ManageMetadata} />
-      <Route
-        path="metadata/:outputSchemaId/columns"
-        component={ManageMetadata}
-        onEnter={checkSchemaStatus(store)} />
+      <Route path="metadata" component={ManageMetadata}>
+        <IndexRedirect to="dataset" />
+        <Route path="dataset" component={DatasetForm} />
+        <Route path=":outputSchemaId/columns" onEnter={checkSchemaStatus(store)} component={ColumnForm} />
+      </Route>
       <Route path="sources" component={ShowSource} onEnter={checkIfPublished(store)}>
         <IndexRoute component={DragDropUpload} />
         <Route path="url" component={URLSource} />
@@ -72,6 +74,7 @@ export default function rootRoute(store) {
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
+        <Route path="georeference" component={GeocodeShortcutPane} />
 
         <Route path="editor/:outputColumnId" component={TransformColumnPane}>
           <Route

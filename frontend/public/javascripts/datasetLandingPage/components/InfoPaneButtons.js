@@ -10,6 +10,15 @@ import ShareFlannel from './ShareFlannel';
 import ODataModal from './ODataModal';
 
 export default class InfoPaneButtons extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      shareFlannelOpen: false
+    };
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.alignActionButtons);
   }
@@ -18,6 +27,15 @@ export default class InfoPaneButtons extends Component {
     window.removeEventListener('resize', this.alignActionButtons);
   }
 
+  openShareFlannel = () => {
+    this.setState({ shareFlannelOpen: true });
+  };
+
+  closeShareFlannel = (event) => {
+    if (event && !event.target.classList.contains('share-link')) {
+      this.setState({ shareFlannelOpen: false });
+    }
+  };
   // If the Infopane action buttons break onto the next line we
   // want to left-align the set of buttons to be directly under the title
   alignActionButtons() {
@@ -54,13 +72,13 @@ export default class InfoPaneButtons extends Component {
           className="option"
           href={view.bootstrapUrl}
           onClick={onClickVisualizeAndFilter}>
-          {I18n.explore_data.visualize_and_filter}
+          {I18n.explore_data.create_visualization}
         </a>
       </li>
     );
   }
 
-  renderViewDataLink() {
+  renderViewDataButton() {
     const { view, onClickGrid } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
@@ -69,11 +87,11 @@ export default class InfoPaneButtons extends Component {
     }
 
     return (
-      <li>
-        <a className="grid-link" role="menuitem" href={localizeLink(view.gridUrl)} onClick={onClickGrid}>
-          {I18n.explore_data.view_data}
-        </a>
-      </li>
+      <a
+        className="btn btn-primary btn-sm view-data"
+        href={localizeLink(view.gridUrl)} onClick={onClickGrid}>
+        {I18n.explore_data.view_data}
+      </a>
     );
   }
 
@@ -143,14 +161,13 @@ export default class InfoPaneButtons extends Component {
 
     return (
       <div
-        className="dropdown explore-dropdown btn btn-primary btn-sm"
+        className="dropdown explore-dropdown btn btn-simple btn-sm"
         data-dropdown
         data-orientation="bottom">
-        <span className="btn-label" aria-hidden>{I18n.action_buttons.explore_data}</span>
+        <span className="btn-label" aria-hidden>{I18n.action_buttons.visualize}</span>
         <span className="icon icon-arrow-down" />
-        <ul role="menu" aria-label={I18n.action_buttons.explore_data} className="dropdown-options">
+        <ul role="menu" aria-label={I18n.action_buttons.visualize} className="dropdown-options">
           {this.renderVisualizeAndFilterLink()}
-          {this.renderViewDataLink()}
           {this.renderExternalIntegrations()}
         </ul>
       </div>
@@ -243,10 +260,28 @@ export default class InfoPaneButtons extends Component {
       );
     }
 
+    const shareLinkProps = {
+      className: 'option share-link',
+      'aria-hidden': true,
+      onClick: this.openShareFlannel
+    };
+
+    let shareLink = (
+      <li>
+        <a {...shareLinkProps}>
+          {I18n.action_buttons.share}
+        </a>
+      </li>
+    );
+
     return (
-      <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
+      <div
+        className="btn btn-simple btn-sm dropdown more"
+        onClick={(event) => this.closeShareFlannel(event)}
+        data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
+          {shareLink}
           {watchDatasetLink}
           {contactFormLink}
           {commentLink}
@@ -257,23 +292,39 @@ export default class InfoPaneButtons extends Component {
     );
   }
 
+
   render() {
     const { view, isMobile, isTablet } = this.props;
+    const { shareFlannelOpen } = this.state;
 
     const isBlobbyOrHref = view.isBlobby || view.isHref;
     const shouldApiLinkRender = !isBlobbyOrHref && !(isMobile || isTablet);
     let apiLink = null;
+    let shareFlannel = null;
+    // To show flannel under the more button
+    let shareFlannelTargetElement = () => document.getElementsByClassName('dropdown more')[0];
+
+    if (shareFlannelOpen) {
+      shareFlannel = (
+        <ShareFlannel
+          {...this.props}
+          flannelTargetElement={shareFlannelTargetElement}
+          flannelOpen={shareFlannelOpen}
+          onCloseShareFlannel={this.closeShareFlannel} />
+      );
+    }
     if (shouldApiLinkRender) {
       apiLink = <ApiFlannel {...this.props} />;
     }
 
     return (
       <div className="btn-group">
+        {this.renderViewDataButton()}
         {this.renderExploreDataDropdown()}
         {this.renderManageButton()}
         <ExportFlannel {...this.props} />
         {apiLink}
-        <ShareFlannel {...this.props} />
+        {shareFlannel}
         {this.renderMoreActions()}
         <ODataModal {...this.props} />
       </div>

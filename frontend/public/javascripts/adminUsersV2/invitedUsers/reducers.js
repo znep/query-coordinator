@@ -25,4 +25,6 @@ const invitedUsers = (state = [], action) => {
   }
 };
 
+export const getInvitedUserCount = state => _.get(state, 'length', 0);
+
 export default invitedUsers;

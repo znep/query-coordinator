@@ -36,8 +36,8 @@ class AccessManagerModalToggle extends Component {
 
     this.store = createStore({
       ui: {
-        visible: false,
-        errors: []
+        errors: [],
+        visible: false
       },
       permissions: {
         currentUser,
@@ -58,8 +58,8 @@ class AccessManagerModalToggle extends Component {
       window.socrata = {};
     }
 
-    window.socrata.showAccessManager = () => {
-      this.store.dispatch(showAccessManager());
+    window.socrata.showAccessManager = (refreshPageOnSave = false) => {
+      this.store.dispatch(showAccessManager(refreshPageOnSave));
     };
   }
 

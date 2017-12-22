@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { userHasRight } from '../../common/user';
 import * as Rights from '../../common/rights';
+import { showAccessManager } from '../lib/accessManager';
 import { localizeLink } from 'common/locale';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
 
@@ -18,7 +19,9 @@ export default class ShareFlannel extends PureComponent {
   }
 
   closeFlannel() {
+    const { onCloseShareFlannel } = this.props;
     this.setState({ flannelOpen: false });
+    onCloseShareFlannel();
   }
 
   openFlannel() {
@@ -29,9 +32,10 @@ export default class ShareFlannel extends PureComponent {
     const { view } = this.props;
 
     if (view.isPrivate) {
-
       const manageLink = userHasRight(Rights.edit_others_datasets) ?
-        <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
+        <a
+          href={`${localizeLink(view.gridUrl)}?pane=manage`}
+          onClick={e => showAccessManager(e, this.closeFlannel)}>
           {I18n.manage_prompt}
         </a> :
         null;
@@ -58,13 +62,13 @@ export default class ShareFlannel extends PureComponent {
   }
 
   renderFlannel() {
-    const { view } = this.props;
+    const { view, flannelTargetElement } = this.props;
 
     const flannelProps = {
       id: 'share-flannel',
       className: 'share-flannel',
       title: I18n.share.title.replace('%{dataset_title}', view.name),
-      target: () => this.targetElement,
+      target: flannelTargetElement,
       onDismiss: this.closeFlannel
     };
 
@@ -118,27 +122,11 @@ export default class ShareFlannel extends PureComponent {
     );
   }
 
-  renderTarget() {
-    const targetProps = {
-      className: 'btn btn-simple btn-sm',
-      'aria-hidden': true,
-      ref: ref => this.targetElement = ref,
-      onClick: this.openFlannel
-    };
-
-    return (
-      <span {...targetProps}>
-        {I18n.action_buttons.share}
-      </span>
-    );
-  }
-
   render() {
     return (
-      <div className="btn-container">
-        {this.renderTarget()}
+      <span className="share-flannelsss">
         {this.state.flannelOpen && this.renderFlannel()}
-      </div>
+      </span>
     );
   }
 }
@@ -150,5 +138,6 @@ ShareFlannel.defaultProps = {
 ShareFlannel.propTypes = {
   onClickShareOption: PropTypes.func.isRequired,
   view: PropTypes.object.isRequired,
-  flannelOpen: PropTypes.bool
+  flannelOpen: PropTypes.bool,
+  onCloseShareFlannel: PropTypes.func
 };

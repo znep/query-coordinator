@@ -1,14 +1,13 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 
+import { AboutThisMeasure } from 'components/AboutThisMeasure';
 import { SummaryPane } from 'components/SummaryPane';
-import { ModeStates } from 'lib/constants';
 
 describe('SummaryPane', () => {
   const getProps = (props) => {
-    return {
+    return _.merge({}, {
       coreView: {
         name: 'My Measure',
         description: 'My measure has a description',
@@ -22,24 +21,28 @@ describe('SummaryPane', () => {
           analysis: 'Some analysis text',
           methods: 'Some methods text'
         }
-      },
-      mode: ModeStates.VIEW,
-      ...props
-    };
+      }
+    }, props);
   };
 
-  it('renders pane content if it is the active pane', () => {
+  it('renders a scrollable section with metric-related cards', () => {
     const element = shallow(<SummaryPane {...getProps()} />);
+    const scrollPane = element.find('.scroll-pane');
 
-    assert.lengthOf(element.find('.metadata-section'), 1);
-    assert.lengthOf(element.find('.summary-pane-description'), 1);
+    assert.isTrue(scrollPane.exists());
+    assert.isTrue(scrollPane.find('#latest-metric').exists());
+    assert.isTrue(scrollPane.find('#metric-visualization').exists());
   });
 
-  it('renders nothing if it is not the active pane', () => {
-    const element = shallow(<SummaryPane {...getProps({
-      activePane: 'other'
-    })} />);
+  it('renders a section for methods and analysis', () => {
+    const element = shallow(<SummaryPane {...getProps()} />);
 
-    assert.isTrue(element.isEmptyRender());
+    assert.isTrue(element.find('.methods-and-analysis').exists());
+  });
+
+  it('renders AboutThisMeasure', () => {
+    const element = shallow(<SummaryPane {...getProps()} />);
+
+    assert.isTrue(element.find('Connect(AboutThisMeasure)').exists());
   });
 });

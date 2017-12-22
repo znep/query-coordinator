@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import { resultFocusChanged, queryChanged, resultVisibilityChanged } from '../../actions';
-import styles from './results.scss';
+import styles from './results.module.scss';
 
 export class Result extends React.Component {
   constructor(props) {

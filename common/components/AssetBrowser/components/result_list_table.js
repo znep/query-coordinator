@@ -36,7 +36,7 @@ export class ResultListTable extends Component {
         isDatalensApproved: result.metadata.is_datalens_approved,
         isExplicitlyHidden: result.metadata.is_hidden,
         isModerationApproved: result.metadata.is_moderation_approved,
-        isOwner: result.owner.id === _.get(window.serverConfig, 'currentUser.id'),
+        isOwner: result.owner.id === _.get(window.socrata, 'currentUser.id'),
         isPublic: result.metadata.is_public,
         isPublished: result.metadata.is_published,
         isRoutingApproved: result.metadata.is_routing_approved,
@@ -128,7 +128,7 @@ ResultListTable.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  columns: state.catalog.columns,
+  columns: state.assetBrowserProps.columns,
   order: state.catalog.order,
   results: state.catalog.results
 });

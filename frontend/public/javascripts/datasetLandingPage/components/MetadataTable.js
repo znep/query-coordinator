@@ -13,10 +13,10 @@ import { isUserRoled, isUserSuperadmin, isLoggedIn, isUserAdmin } from '../../co
 // TODO: This allows the tests to stay in the same place; remove it once the tests move to karma/common
 export const MetadataTable = CommonMetadataTable;
 
-const editThruDSMUI = FeatureFlags.value('enable_dsmui_edit_metadata') === true;
-const isUSAID = FeatureFlags.value('usaid_features_enabled') === true;
+const editThruDSMUI = () => FeatureFlags.value('enable_dsmui_edit_metadata') === true;
+const isUSAID = () => FeatureFlags.value('usaid_features_enabled') === true;
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
   const view = state.view || {};
   const { coreView } = view;
 
@@ -51,9 +51,9 @@ function mapStateToProps(state) {
   const editMetadataUrl = () => {
     // editMetadataUrl being null indicates the button should not appear
     if (view.editMetadataUrl) {
-      if (isUSAID) {
+      if (isUSAID()) {
         return `/publisher/edit?view=${coreView.id}`;
-      } else if (editThruDSMUI) {
+      } else if (editThruDSMUI()) {
         return '#';
       }
     }
@@ -67,7 +67,7 @@ function mapStateToProps(state) {
     if (view.editMetadataUrl) {
       const { viewType, displayType, publicationStage } = view.coreView;
 
-      if (!isUSAID) return false;
+      if (!isUSAID()) return false;
       if (publicationStage !== 'published') return false;
 
       if (viewType === 'blobby') return true;
@@ -83,6 +83,11 @@ function mapStateToProps(state) {
     // if (viewType === 'href') return true;
 
     return false;
+  };
+
+  const useDataAssetStrings = () => {
+    const { isParent } = view.coreView.metadata || {};
+    return isUSAID() && isParent === true;
   };
 
   let showCreateAlertButton = false;
@@ -113,7 +118,8 @@ function mapStateToProps(state) {
         return null;
       }
     },
-    showCreateAlertButton: showCreateAlertButton
+    showCreateAlertButton: showCreateAlertButton,
+    useDataAssetStrings: useDataAssetStrings()
   });
 }
 
@@ -121,7 +127,7 @@ function mergeProps(stateProps, { dispatch }) {
   return {
     ...stateProps,
     onClickEditMetadata: e => {
-      if (editThruDSMUI && !isUSAID) {
+      if (editThruDSMUI() && !isUSAID()) {
         e.preventDefault();
         dispatch(createDSMAPIRevision(stateProps.view.id));
       }

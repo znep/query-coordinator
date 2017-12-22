@@ -17,9 +17,15 @@ module.exports = _.defaultsDeep({
     loaders: common.getStandardLoaders([], {
       substituteStyleLoaders: [
         {
-          test: /\.s?css$/,
+          // Matches stylesheets without the `.module.` affix - goes through normal style loaders.
+          test: /^((?!\.module\.).)*(s?css)$/,
           // Process styles but don't inline images. We don't use them.
           loader: 'style-loader!css-loader?url=false!sass-loader'
+        },
+        {
+          // Matches stylesheets with the `.module.` affix - goes through CSS Module loaders.
+          test: /.*\.module\.s?css$/,
+          loader: 'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=2!postcss!sass'
         }
       ]
     })

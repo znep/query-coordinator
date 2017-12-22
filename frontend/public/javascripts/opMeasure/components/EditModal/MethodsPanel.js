@@ -46,7 +46,7 @@ MethodsPanel.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return state.editor.measure;
+  return state.editor;
 }
 
 function mapDispatchToProps(dispatch) {

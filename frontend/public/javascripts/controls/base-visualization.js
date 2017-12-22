@@ -631,7 +631,7 @@
       var vizObj = this;
 
       var nonStandardRender = function(view) {
-        return view.renderWithArcGISServer() || view.isGeoDataset();
+        return GeoHelpers.isArcGISOrGeoDataset(view);
       };
 
       var viewsToRender = _.reject(vizObj._dataViews, function(view) {

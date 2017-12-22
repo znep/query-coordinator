@@ -16,6 +16,7 @@ import { getView } from 'reduxStuff/actions/views';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import * as Links from 'links/links';
 import { parseDate } from 'lib/parseDate';
+import { addNotification } from 'reduxStuff/actions/notifications';
 
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
 export const TASK_SET_INITIALIZING = 'initializing';
@@ -96,6 +97,7 @@ export function applyRevision(params) {
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
+        dispatch(addNotification('error', I18n.notifications.dataset_revision_error));
       });
   };
 }

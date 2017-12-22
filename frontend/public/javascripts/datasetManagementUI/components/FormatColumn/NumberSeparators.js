@@ -8,11 +8,8 @@ import TextInput from 'components/TextInput/TextInput';
 const SubI18n = I18n.format_column;
 
 function NumberSeparators({ onChange, format, onRemove }) {
-
   const noCommasChecked = format.noCommas ? 'checked' : '';
-  const toggleNoCommas = () => (
-    onChange({ noCommas: !format.noCommas })
-  );
+  const toggleNoCommas = () => onChange({ noCommas: !format.noCommas });
 
   const thousandsDisabled = !!format.noCommas;
   const isOverridingThousands = !_.isUndefined(format.groupSeparator);
@@ -28,12 +25,13 @@ function NumberSeparators({ onChange, format, onRemove }) {
   };
   const overrideThousands = isOverridingThousands ? (
     <TextInput
-      name="override-thousands"
+      field={{
+        name: 'override-thousands',
+        value: format.groupSeparator
+      }}
       inErrorState={false}
-      value={format.groupSeparator}
       handleChange={e => onChange({ groupSeparator: e.target.value || '' })} />
   ) : null;
-
 
   const isOverridingDecimal = !_.isUndefined(format.decimalSeparator);
   const decimalSeparatorChecked = isOverridingDecimal ? 'checked' : '';
@@ -46,9 +44,11 @@ function NumberSeparators({ onChange, format, onRemove }) {
   };
   const overrideDecimals = isOverridingDecimal ? (
     <TextInput
-      name="override-decimal"
+      field={{
+        name: 'override-decimal',
+        value: format.decimalSeparator
+      }}
       inErrorState={false}
-      value={format.decimalSeparator}
       handleChange={e => onChange({ decimalSeparator: e.target.value || '' })} />
   ) : null;
 
@@ -66,10 +66,7 @@ function NumberSeparators({ onChange, format, onRemove }) {
 
       <div className={classNames(styles.thousandsSeparator, { [styles.disabled]: thousandsDisabled })}>
         <input id="thousands-separator" type="checkbox" checked={thousandsSeparatorChecked} />
-        <label
-          htmlFor="thousands-separator"
-          onClick={toggleThousandsSeparator}
-          disabled>
+        <label htmlFor="thousands-separator" onClick={toggleThousandsSeparator} disabled>
           <span className="fake-checkbox">
             <span className="socrata-icon-checkmark3" />
           </span>
@@ -77,7 +74,6 @@ function NumberSeparators({ onChange, format, onRemove }) {
         </label>
         {overrideThousands}
       </div>
-
 
       <div className={styles.decimalSeparator}>
         <input id="decimal-separator" type="checkbox" checked={decimalSeparatorChecked} />

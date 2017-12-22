@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import actions from '../actions';
-import { ModeStates, SaveStates, PeriodTypes } from '../lib/constants';
+import { ModeStates, PeriodTypes, SaveStates } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
 const INITIAL_STATE = _.merge({}, window.socrata.opMeasure, {
@@ -36,7 +36,8 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDirty: true,
-        measure: action.measure
+        measure: action.measure,
+        coreView: action.coreView
       };
 
     case actions.view.ENTER_EDIT_MODE: {

@@ -36,7 +36,7 @@ const verifyActions = (expectedActions, actualActions) => {
 };
 
 describe('actions/filters', () => {
-  beforeEach(() => window.socrata = { initialState: { catalog: {} } });
+  beforeEach(() => window.socrata = { assetBrowser: { staticData: { catalog: {} } } });
 
   afterEach(() => delete window.socrata);
 

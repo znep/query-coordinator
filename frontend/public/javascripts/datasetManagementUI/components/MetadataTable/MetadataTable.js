@@ -16,7 +16,8 @@ export class MetadataTable extends Component {
       disableContactDatasetOwner,
       editMetadataUrl,
       enableAssociatedAssets,
-      onSaveAssociationCallback
+      onSaveAssociationCallback,
+      useDataAssetStrings
     } = this.props;
 
     if (_.isEmpty(coreView)) {
@@ -42,7 +43,8 @@ export class MetadataTable extends Component {
             if (associatedAssetId) {
               onSaveAssociationCallback(associatedAssetId);
             }
-          }} />
+          }}
+          useDataAssetStrings={useDataAssetStrings} />
       </div>
     );
   }
@@ -56,7 +58,8 @@ MetadataTable.propTypes = {
   editMetadataUrl: PropTypes.string,
   onClickEditMetadata: PropTypes.func.isRequired,
   onSaveAssociationCallback: PropTypes.func,
-  enableAssociatedAssets: PropTypes.bool
+  enableAssociatedAssets: PropTypes.bool,
+  useDataAssetStrings: PropTypes.bool
 };
 
 export default MetadataTable;

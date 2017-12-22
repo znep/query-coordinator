@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
@@ -12,8 +13,6 @@ import InfoPane from './components/InfoPane';
 import PaneTabs from './components/PaneTabs';
 import SummaryPane from './components/SummaryPane';
 import MetadataPane from './components/MetadataPane';
-import ReportingPeriodSelector from './components/ReportingPeriodSelector';
-import SavedMeasureResultCard from './components/SavedMeasureResultCard';
 
 // Outermost component for the page.
 export class App extends Component {
@@ -52,87 +51,47 @@ export class App extends Component {
     }
   }
 
-  renderEditMode() {
-    return (
-      <div className="measure-body edit-mode">
-        <EditBar />
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
-
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <SavedMeasureResultCard />
-          </div>
-        </div>
-        <FeedbackPanel {...window.serverConfig} />
-        <EditModal /> 
-      </div>
-    );
-  }
-
-  renderPreviewMode() {
-    return (
-      <div className="measure-body preview-mode">
-        <PreviewBar />
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
-
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <SavedMeasureResultCard />
-          </div>
-        </div>
-        <FeedbackPanel {...window.serverConfig} />
-      </div>
-    );
-  }
-
-  renderViewMode() {
-    return (
-      <div className="measure-body">
-        <InfoPane />
-        <div className="measure-content">
-          <div className="measure-panes">
-            <PaneTabs />
-            <SummaryPane />
-            <MetadataPane />
-          </div>
-
-          <div className="measure-sidebar">
-            <ReportingPeriodSelector />
-            <SavedMeasureResultCard />
-          </div>
-        </div>
-        <FeedbackPanel {...window.serverConfig} />
-      </div>
-    );
-  }
-
   render() {
-    const { mode } = this.props;
-    switch (mode) {
-      case ModeStates.EDIT: return this.renderEditMode();
-      case ModeStates.PREVIEW: return this.renderPreviewMode();
-      case ModeStates.VIEW: return this.renderViewMode();
+    const { activePane, mode } = this.props;
 
-      default:
-        throw new Error(`invalid mode: ${mode}`);
-    }
+    const isEditing = mode === ModeStates.EDIT;
+    const isPreviewing = mode === ModeStates.PREVIEW;
+
+    const measureBodyClasses = classnames('measure-body', {
+      'edit-mode': isEditing,
+      'preview-mode': isPreviewing
+    });
+
+    return (
+      <div className={measureBodyClasses}>
+        {isPreviewing && <PreviewBar />}
+        {isEditing && <EditBar />}
+
+        <div>
+          <InfoPane />
+          <div className="measure-content">
+            <div className="measure-panes">
+              <PaneTabs />
+              {activePane === 'summary' && <SummaryPane />}
+              {activePane === 'metadata' && <MetadataPane />}
+            </div>
+          </div>
+          <FeedbackPanel {...window.serverConfig} />
+        </div>
+
+        {isEditing && <EditModal />}
+      </div>
+    );
   }
 }
 
 App.propTypes = {
-  mode: PropTypes.oneOf(_.values(ModeStates))
+  activePane: PropTypes.string.isRequired,
+  mode: PropTypes.oneOf(_.values(ModeStates)).isRequired
+};
+
+App.defaultProps = {
+  activePane: 'summary'
 };
 
 function mapStateToProps(state) {

@@ -21,12 +21,15 @@ export const receiveDataSourceMetadata = (rowCount, dataSourceView, displayableF
   }
 );
 
-export const setDataSource = (dataSourceString) => {
-  return async (dispatch) => {
-    const uid = _.get(dataSourceString.match(TRAILING_UID_REGEX), '1');
-    dispatch(setDataSourceUid(uid));
-
+// Loads the metadata for the view found at dataSourceLensUid.
+export const loadDataSourceView = (uid) => {
+  return async (dispatch, getState) => {
     if (!uid) {
+      return;
+    }
+
+    if (_.get(getState(), 'editor.dataSourceView.id') === uid) {
+      // Already fetched.
       return;
     }
 
@@ -45,11 +48,9 @@ export const setDataSource = (dataSourceString) => {
     let rowCount = -1;
     try {
       const metadataPromise = metadataProvider.getDatasetMetadata();
-      [metadata, columns, rowCount] = await Promise.all([
-        metadataPromise,
-        metadataProvider.getDisplayableFilterableColumns(metadataPromise),
-        soqlDataProvider.getRowCount()
-      ]);
+      rowCount = await soqlDataProvider.getRowCount();
+      metadata = await metadataPromise;
+      columns = await metadataProvider.getDisplayableFilterableColumns(metadata);
     } catch (ex) {
       console.error(ex);
 
@@ -65,6 +66,14 @@ export const setDataSource = (dataSourceString) => {
         columns
       )
     );
+  };
+};
+
+export const changeDataSource = (dataSourceString) => {
+  return async (dispatch) => {
+    const uid = _.get(dataSourceString.match(TRAILING_UID_REGEX), '1');
+    dispatch(setDataSourceUid(uid));
+    dispatch(loadDataSourceView(uid));
   };
 };
 
@@ -201,16 +210,16 @@ export const setShortName = (shortName) => ({
 });
 
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
-export const openEditModal = () => (dispatch, getState) => {
+export const openEditModal = () => async (dispatch, getState) => {
+  // Need to fetch view metadata first.
+  const dataSourceLensUid = _.get(getState(), 'view.measure.dataSourceLensUid');
+  await loadDataSourceView(dataSourceLensUid)(dispatch, getState);
   const { measure, coreView } = getState().view;
   dispatch({
     type: OPEN_EDIT_MODAL,
     coreView,
     measure
   });
-
-  // Restore non-persisted data source info (name, row count, columns)
-  dispatch(setDataSource(_.get(measure, 'dataSourceLensUid', '')));
 };
 
 export const ACCEPT_EDIT_MODAL_CHANGES = 'ACCEPT_EDIT_MODAL_CHANGES';

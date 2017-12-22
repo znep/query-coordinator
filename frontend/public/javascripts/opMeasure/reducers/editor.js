@@ -18,7 +18,7 @@ const updateMeasureProperty = (state, propertyPath, value) => ({
 });
 
 const setCalculationType = (state, type) => {
-  // Changing type clears everything under 'metric' other than the data source.
+  // Changing type clears everything under 'metricConfig'.
   // This is by design.
   assert(
     _.includes(_.values(CalculationTypeNames), type),
@@ -80,20 +80,22 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       const newState = { ...state };
       _.set(newState, 'cachedRowCount', uid ? null : undefined);
       _.set(newState, 'measure.dataSourceLensUid', uid);
-      return newState;
+      return setCalculationType(newState, CalculationTypeNames.COUNT); // Clear any existing measure config.
     }
     case actions.editor.RECEIVE_DATA_SOURCE_VIEW: {
+      // N.B.: This action is dispatched when the editor is loaded. It does not imply the user
+      // chose a new data source - we could just be loading an existing measure.
+      // This means that we won't touch the metricConfig - if the user is switching data
+      // sources, dispatch a SET_DATA_SOURCE_UID first to reset the metricConfig to defaults.
       assertIsNumber(action.rowCount);
       assertIsOneOfTypes(action.dataSourceView, 'object');
 
-      const newState = {
+      return {
         ...state,
         cachedRowCount: action.rowCount,
         dataSourceView: action.dataSourceView,
         displayableFilterableColumns: action.displayableFilterableColumns
       };
-
-      return setCalculationType(newState, CalculationTypeNames.COUNT); // Clear any existing measure config.
     }
     case actions.editor.SET_CALCULATION_TYPE: {
       return setCalculationType(state, action.calculationType);
@@ -145,7 +147,11 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         'This action only makes sense for rate measures.'
       );
       assertIsOneOfTypes(action.fieldName, 'string');
-      const newState = updateMeasureProperty(state, 'metricConfig.arguments.numeratorColumn', action.fieldName);
+      const newState = updateMeasureProperty(
+        state,
+        'metricConfig.arguments.numeratorColumn',
+        action.fieldName
+      );
       _.unset(newState, 'measure.metricConfig.arguments.numeratorColumnCondition');
       return newState;
     }
@@ -182,7 +188,11 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     case actions.editor.TOGGLE_DENOMINATOR_INCLUDE_NULL_VALUES: {
       const currentValue = _.get(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
-      return updateMeasureProperty(state, 'metricConfig.arguments.denominatorIncludeNullValues', !currentValue);
+      return updateMeasureProperty(
+        state,
+        'metricConfig.arguments.denominatorIncludeNullValues',
+        !currentValue
+      );
     }
 
     case actions.editor.SET_DECIMAL_PLACES:
@@ -219,11 +229,12 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     case actions.editor.OPEN_EDIT_MODAL: {
       let nextState = {
+        ...state,
         isEditing: true,
         coreView: { ...action.coreView },
         measure: { ...action.measure },
-        pristineCoreView: { ...action.coreView },
-        pristineMeasure: { ...action.measure },
+        pristineCoreView: _.cloneDeep(action.coreView),
+        pristineMeasure: _.cloneDeep(action.measure),
         validationErrors: validate().validationErrors
       };
 

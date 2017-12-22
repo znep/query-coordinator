@@ -341,7 +341,10 @@ function mapStateToProps(state) {
   const fixedDenominator = _.get(state, 'editor.measure.metricConfig.arguments.fixedDenominator', '');
   const numeratorColumnFieldName = _.get(state, 'editor.measure.metricConfig.arguments.numeratorColumn');
   const numeratorColumn = _.find(displayableFilterableColumns, { fieldName: numeratorColumnFieldName });
-  const numeratorColumnCondition = _.get(state, 'editor.measure.metricConfig.arguments.numeratorColumnCondition');
+  const numeratorColumnCondition = _.get(
+    state,
+    'editor.measure.metricConfig.arguments.numeratorColumnCondition'
+  );
 
   if (numeratorColumnFieldName && !numeratorColumn) {
     throw new Error(`Numerator column not in filterable column set: ${numeratorColumnFieldName}`);

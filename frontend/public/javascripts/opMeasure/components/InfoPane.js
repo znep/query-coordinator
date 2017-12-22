@@ -26,8 +26,8 @@ function mapStateToProps(state) {
       return null;
     }
   };
-  
-  return { 
+
+  return {
     name: state.view.coreView.name,
     description: state.view.coreView.description,
     provenance: null,

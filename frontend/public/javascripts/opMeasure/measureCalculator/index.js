@@ -181,7 +181,11 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     fixedDenominator
   } = _.get(measure, 'metricConfig.arguments', {});
 
-  const denominatorIncludeNullValues = _.get(measure, 'metricConfig.arguments.denominatorIncludeNullValues', true);
+  const denominatorIncludeNullValues = _.get(
+    measure,
+    'metricConfig.arguments.denominatorIncludeNullValues',
+    true
+  );
 
   if (aggregationType && aggregationType !== CalculationTypeNames.COUNT) {
     assert(

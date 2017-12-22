@@ -46,7 +46,9 @@ class InfoPane extends Component {
 
   componentWillUpdate(nextProps) {
     if (this.shouldEllipsify(this.props, nextProps)) {
-      this.$description.trigger('destroy.dot');
+      if (this.$description) {
+        this.$description.trigger('destroy.dot');
+      }
       this.resetParentHeight();
     }
   }
@@ -58,7 +60,9 @@ class InfoPane extends Component {
   }
 
   resetParentHeight() {
-    this.description.parentElement.style.height = 'auto';
+    if (this.description) {
+      this.description.parentElement.style.height = 'auto';
+    }
   }
 
   shouldEllipsify(prevProps, nextProps) {

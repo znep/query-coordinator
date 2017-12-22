@@ -109,7 +109,7 @@ export class SummaryPane extends Component {
 
 SummaryPane.propTypes = {
   coreView: PropTypes.shape({
-    name: PropTypes.string,
+    name: PropTypes.string
   }).isRequired,
   measure: PropTypes.shape({
     shortName: PropTypes.string,

@@ -22,6 +22,7 @@ export class MetadataPane extends Component {
 }
 
 MetadataPane.propTypes = {
+  coreView: PropTypes.object.isRequired,
   measure: PropTypes.object.isRequired
 };
 

@@ -141,6 +141,8 @@ export class EditModal extends Component {
 EditModal.propTypes = {
   isEditing: PropTypes.bool,
   measure: PropTypes.object,
+  coreView: PropTypes.object,
+  pristineCoreView: PropTypes.object,
   pristineMeasure: PropTypes.object,
   tabs: PropTypes.array,
   onCancel: PropTypes.func,

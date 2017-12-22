@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
 import actions from '../actions';
-import { ModeStates, PeriodTypes, SaveStates } from '../lib/constants';
+import { ModeStates, SaveStates } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
 const INITIAL_STATE = _.merge({}, window.socrata.opMeasure, {
   activePane: 'summary',
   isDirty: false,
-  saveState: SaveStates.IDLE,
+  saveState: SaveStates.IDLE
   // TODO: Set default metric props as part of setting up window.initialState?
   // measure: {
   //   metric: {
@@ -26,6 +26,20 @@ export default (state = INITIAL_STATE, action) => {
   }
 
   switch (action.type) {
+    case actions.view.SAVE_START:
+      return {
+        ...state,
+        saving: true,
+        saveError: null
+      };
+
+    case actions.view.SAVE_COMPLETE:
+      return {
+        ...state,
+        saving: false,
+        saveError: action.error
+      };
+
     case actions.view.SET_ACTIVE_PANE:
       return {
         ...state,

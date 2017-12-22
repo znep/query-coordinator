@@ -308,6 +308,13 @@ div.container.landing-page-container {
           text-decoration: none;
         }
       }
+
+      .view-data {
+        &:hover,
+        &:focus {
+          text-decoration: none !important;
+        }
+      }
     }
 
     // Special treatment for a spinner that appears while row stats are being

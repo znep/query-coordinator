@@ -1,5 +1,7 @@
 .asset-selector {
-  overflow-y: hidden;
+  &.modal {
+    overflow-y: hidden;
+  }
 
   &.modal-full {
     // Copied from DSLP

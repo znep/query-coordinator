@@ -374,7 +374,8 @@ body {
   }
   .topbar {
     margin: 0.5rem 0;
-    div[class*=autocomplete] {
+
+    > div[class*=autocomplete] {
       max-width: 40rem;
       width: calc(90% - 100px);
     }

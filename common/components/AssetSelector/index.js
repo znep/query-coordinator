@@ -12,15 +12,15 @@ import './index.scss';
 
 export class AssetSelector extends Component {
   render() {
-    const { additionalTopbarComponents, baseFilters, onClose, onAssetSelected, resultsPerPage, title } =
-      this.props;
-
-    const modalProps = {
-      className: 'asset-selector',
-      fullScreen: true,
-      onDismiss: onClose,
-      overlay: true
-    };
+    const {
+      additionalTopbarComponents,
+      baseFilters,
+      onClose,
+      onAssetSelected,
+      renderInModal,
+      resultsPerPage,
+      title
+    } = this.props;
 
     const assetBrowserProps = {
       additionalTopbarComponents,
@@ -44,14 +44,29 @@ export class AssetSelector extends Component {
       }
     };
 
-    return (
-      <Modal {...modalProps}>
-        <ModalHeader title={title} onDismiss={onClose} />
-        <ModalContent>
+    if (renderInModal) {
+      const modalProps = {
+        className: 'asset-selector',
+        fullScreen: true,
+        onDismiss: onClose,
+        overlay: true
+      };
+
+      return (
+        <Modal {...modalProps}>
+          <ModalHeader title={title} onDismiss={onClose} />
+          <ModalContent>
+            <AssetBrowser {...assetBrowserProps} />
+          </ModalContent>
+        </Modal>
+      );
+    } else {
+      return (
+        <div className="asset-selector">
           <AssetBrowser {...assetBrowserProps} />
-        </ModalContent>
-      </Modal>
-    );
+        </div>
+      );
+    }
   }
 }
 
@@ -60,6 +75,7 @@ AssetSelector.propTypes = {
   baseFilters: PropTypes.object,
   onClose: PropTypes.func,
   onAssetSelected: PropTypes.func,
+  renderInModal: PropTypes.bool,
   resultsPerPage: PropTypes.number,
   title: PropTypes.string
 };
@@ -69,6 +85,7 @@ AssetSelector.defaultProps = {
   baseFilters: {},
   onClose: _.noop,
   onAssetSelected: _.noop,
+  renderInModal: true,
   resultsPerPage: 6,
   title: I18n.t('common.asset_selector.header_title')
 };

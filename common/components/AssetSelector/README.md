@@ -10,5 +10,6 @@ Prop | Type | Default | Description
 `baseFilters` | `obj` | `{}` | Mapping of cetera filters for the selectable catalog results. For the accepted object keys, see `translateFiltersToQueryParameters` in `AssetBrowser/lib/helpers/cetera.js`.
 `onClose` | `func` | `null` | Callback that gets called when the "Back" button or escape key are hit. It generally just sets state on the parent component to not show the AssetSelector.
 `onAssetSelected` | `func` | `null` | Callback that gets called when an asset is selected. It is passed a parameter with the selected asset's cetera result.
+`renderInModal` | `bool` | `true` | Render the AssetSelector inside a styleguide Modal or inside a div (class-named "asset-selector").
 `resultsPerPage` | `number` | `6` | Number of results displayed per page.
 `title` | `string` | `Select Featured Content` | Title of the modal.

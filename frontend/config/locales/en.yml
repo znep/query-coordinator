@@ -3811,8 +3811,8 @@ en:
               asset_metadata_changed: Asset Metadata Changed
               asset_owner_changed: Asset Owner Changed
               asset_permissions_changed: Asset Permissions Changed
-              collabrator_added: Collabrator Added
-              collabrator_removed: Collabrator Removed
+              collaborator_added: Collaborator Added
+              collaborator_removed: Collaborator Removed
               data_update_started: Data Update Started
               data_update_in_progress: Data Update In Progress
               data_update_success: Data Update Success

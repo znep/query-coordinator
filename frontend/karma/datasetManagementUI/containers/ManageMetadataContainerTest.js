@@ -11,7 +11,8 @@ import {
   partitionCustomNoncustom,
   getFieldsBy,
   shapeOutputSchemaCols,
-  validateColumns
+  validateColumns,
+  handleServerErrors
 } from 'containers/ManageMetadataContainer';
 
 describe('ManageMetadata Container', () => {
@@ -667,6 +668,55 @@ describe('ManageMetadata Container', () => {
 
     it('returns an empty object if given an undefined value', () => {
       assert.deepEqual(shapeOutputSchemaCols(), {});
+    });
+  });
+
+  describe('handleServerErrors', () => {
+    const validColumns = [
+      { position: 1, id: 1, display_name: 'one', field_name: 'one' },
+      { position: 2, id: 2, display_name: 'two', field_name: 'two' }
+    ];
+
+    it('returns an empty array if details object contains no errors', () => {
+      const result = handleServerErrors({}, validColumns);
+
+      assert.isObject(result);
+      assert.isEmpty(result);
+    });
+
+    it('identifies all columns with duplicate display names', () => {
+      const colsWithDuplicateDisplayName = [
+        ...validColumns,
+        { position: 3, id: 3, display_name: 'one', field_name: 'three' }
+      ];
+
+      const result = handleServerErrors(
+        { display_name: [{ position: 1, value: 'one' }] },
+        colsWithDuplicateDisplayName
+      );
+
+      assert.sameMembers(Object.keys(result), ['1', '3']);
+    });
+
+    it('identifies all columns with duplicate field names', () => {
+      const colsWithDuplicateFieldNames = [
+        ...validColumns,
+        { position: 3, id: 3, display_name: 'three', field_name: 'two' }
+      ];
+
+      const result = handleServerErrors(
+        { field_name: [{ position: 2, value: 'two' }] },
+        colsWithDuplicateFieldNames
+      );
+
+      assert.sameMembers(Object.keys(result), ['2', '3']);
+    });
+
+    it('returns an empty object if either input is undefined', () => {
+      const result = handleServerErrors(undefined, undefined);
+
+      assert.isObject(result);
+      assert.isEmpty(result);
     });
   });
 });

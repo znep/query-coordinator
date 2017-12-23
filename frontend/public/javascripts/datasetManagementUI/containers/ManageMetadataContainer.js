@@ -406,7 +406,7 @@ export function isUnique(as = []) {
     if (!a) {
       return;
     } else if (as.filter(item => item === a).length > 1) {
-      return I18n.edit_metadata.validation_error_dupe_field_name;
+      return I18n.edit_metadata.validation_error_dupe;
     } else {
       return;
     }
@@ -460,7 +460,6 @@ function isEmail(val) {
   }
 }
 
-// DIVIDIEDIAFDAFDFAFDAFDAF
 // isNumber :: a -> Boolean
 // verifies its input is a number, exluding NaN; _.isNumber(NaN) returns true, which
 // we don't want here
@@ -664,6 +663,37 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
   };
 };
 
+// handleServerErrors :: { display_name : Array {value : String, position: Int}, field_name: Array {value : String, position: Int} }
+//  -> { [ColId] : { display_name : Array String , field_name : Array String } }
+export function handleServerErrors(errorDetails = {}, columns = []) {
+  const displayNameErrors = errorDetails.display_name || [];
+  const fieldNameErrors = errorDetails.field_name || [];
+
+  return columns.reduce((acc, col) => {
+    const hasDisplayNameError = displayNameErrors.find(error => error.value === col.display_name);
+    const hasFieldNameError = fieldNameErrors.find(error => error.value === col.field_name);
+
+    const errors = {};
+
+    if (hasDisplayNameError) {
+      errors.display_name = [I18n.edit_metadata.validation_error_dupe];
+    }
+
+    if (hasFieldNameError) {
+      errors.field_name = [I18n.edit_metadata.validation_error_dupe];
+    }
+
+    if (_.isEmpty(errors)) {
+      return acc;
+    } else {
+      return {
+        ...acc,
+        [col.id]: errors
+      };
+    }
+  }, {});
+}
+
 const mapDispatchToProps = (dispatch, ownProps) => ({
   showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
   hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
@@ -729,14 +759,17 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         browserHistory.push(Links.columnMetadataForm(ownProps.params, resp.resource.id));
       })
       .catch(err => {
-        // TODO: improve dsmapi's error response to include output column ids for
-        // the columns that have errors, which values are duplicated or invalid, etc
-        // then change this code to generate a structure we can use to determine where
-        // in the form the error occured.
+        let res;
 
-        // not really using this, we just don't want the errors to be an empty {}
-        // since we interpret that as no errors
-        const res = { generic: err.body.message };
+        if (err.body && err.body.params && err.body.params.details) {
+          res = handleServerErrors(err.body.params.details, _.values(columns));
+        }
+
+        if (!res || _.isEmpty(res)) {
+          // not really using this, we just don't want the errors to be an empty {}
+          // since we interpret that as no errors
+          res = { generic: err.body.message };
+        }
 
         throw new FormValidationError(COL_FORM_NAME, res);
       });

@@ -12,6 +12,7 @@ const initialState = {
   },
   event: null,
   assetType: null,
+  affectedItemSearch: null,
   activeFilterCount: 0
 };
 
@@ -66,6 +67,10 @@ export default function filters(state, action) {
 
     case actions.filters.types.CHANGE_DATE_RANGE:
       stateDiff = { date: action.date };
+      break;
+
+    case actions.filters.types.CHANGE_AFFECTED_ITEM_SEARCH:
+      stateDiff = { affectedItemSearch: action.value };
       break;
 
     case actions.filters.types.CLEAR_ALL_FILTERS:

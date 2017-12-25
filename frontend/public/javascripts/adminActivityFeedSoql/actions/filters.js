@@ -7,6 +7,7 @@ const types = {
   CHANGE_ASSET_TYPE: 'CHANGE_ASSET_TYPE',
   CHANGE_EVENT: 'CHANGE_EVENT',
   CHANGE_DATE_RANGE: 'CHANGE_DATE_RANGE',
+  CHANGE_AFFECTED_ITEM_SEARCH: 'CHANGE_AFFECTED_ITEM_SEARCH',
   CLEAR_ALL_FILTERS: 'CLEAR_ALL_FILTERS'
 };
 
@@ -44,6 +45,11 @@ const changeDateRange = (date) => (dispatch) => {
   return reloadWithFilters(dispatch);
 };
 
+const changeAffectedItemSearch = (value) => (dispatch) => {
+  dispatch({ type: types.CHANGE_AFFECTED_ITEM_SEARCH, value });
+  return reloadWithFilters(dispatch);
+};
+
 const clearAllFilters = () => (dispatch) => {
   dispatch({ type: types.CLEAR_ALL_FILTERS });
   return reloadWithFilters(dispatch);
@@ -55,5 +61,6 @@ export {
   changeAssetType,
   changeEventFilter,
   changeDateRange,
+  changeAffectedItemSearch,
   clearAllFilters
 };

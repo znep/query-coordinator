@@ -50,6 +50,10 @@ export const buildWhereClause = (filters) => {
     }
   }
 
+  if (filters.affectedItemSearch) {
+    ands.push(`affected_item like '${filters.affectedItemSearch}%'`);
+  }
+
   if (filters.date && filters.date.start && filters.date.end) {
     const dateRange = formatToInclusiveSoqlDateRange(filters.date);
     ands.push(`(created_at between '${dateRange.start}' and '${dateRange.end}')`);

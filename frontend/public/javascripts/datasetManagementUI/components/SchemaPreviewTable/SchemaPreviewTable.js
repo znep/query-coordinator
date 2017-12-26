@@ -3,12 +3,14 @@ import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './SchemaPreviewTable.scss';
 
+const Translations = I18n.show_output_schema.column_header;
+
 const SchemaPreviewTable = ({ outputColumns }) => {
   const rows = outputColumns.map((oc, idx) => {
     return (
       <tr className={oc.newCol ? styles.newCol : ''} key={idx}>
         <td className={styles.name}>{oc.display_name}</td>
-        <td>{oc.transform.output_soql_type}</td>
+        <td>{Translations.type_display_names[oc.transform.output_soql_type.toLowerCase()]}</td>
         <td>
           <SocrataIcon name={oc.iconName} />
         </td>

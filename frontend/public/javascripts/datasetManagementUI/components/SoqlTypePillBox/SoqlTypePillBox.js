@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './SoqlTypePillBox.scss';
 
+const Translations = I18n.show_output_schema.column_header;
+
 const SoqlTypePill = ({ name, handleClick, isSelected }) => {
   const classNames = [styles.pill];
 
@@ -11,7 +13,7 @@ const SoqlTypePill = ({ name, handleClick, isSelected }) => {
 
   return (
     <span className={classNames.join(' ')} onClick={handleClick}>
-      {name}
+      {Translations.type_display_names[name.toLowerCase()]}
     </span>
   );
 };
@@ -24,13 +26,15 @@ SoqlTypePill.propTypes = {
 
 const SoqlTypePillBox = ({ transforms = {}, handleClick, currentTransform }) => {
   // sort them for alphabetical ordering but also for tests
-  const pills = Object.keys(transforms).sort().map((key, idx) => (
-    <SoqlTypePill
-      name={key}
-      key={idx}
-      isSelected={transforms[key] === currentTransform}
-      handleClick={() => handleClick(transforms[key])} />
-  ));
+  const pills = Object.keys(transforms)
+    .sort()
+    .map((key, idx) => (
+      <SoqlTypePill
+        name={key}
+        key={idx}
+        isSelected={transforms[key] === currentTransform}
+        handleClick={() => handleClick(transforms[key])} />
+    ));
 
   return (
     <div>

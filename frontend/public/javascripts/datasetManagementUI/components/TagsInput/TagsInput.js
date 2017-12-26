@@ -34,7 +34,13 @@ class TagsInput extends Component {
       return;
     }
 
-    handleAddTag([...value, this.state.tag.toLowerCase()]);
+    const tagsToAdd = this.state.tag
+      .split(',')
+      .map(tag => _.trim(tag)) // remove starting/ending whitespace
+      .filter(tag => !!tag) // remove empty strings
+      .map(tag => tag.toLowerCase()); // you can probably guess
+
+    handleAddTag([...value, ...tagsToAdd]);
 
     this.setState({
       tag: ''

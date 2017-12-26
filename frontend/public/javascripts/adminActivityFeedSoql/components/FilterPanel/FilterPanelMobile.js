@@ -9,6 +9,7 @@ import * as actions from '../../actions';
 import AssetTypeFilter from './AssetTypeFilter';
 import DateRangeFilter from './DateRangeFilter';
 import EventFilter from './EventFilter';
+import InitiatedByFilter from './InitiatedByFilter';
 
 class FilterPanelMobile extends PureComponent {
   renderFilterHeader() {
@@ -55,11 +56,10 @@ class FilterPanelMobile extends PureComponent {
         </ModalHeader>
         <ModalContent>
           <div className="filter-content">
-            <form>
-              <DateRangeFilter />
-              <AssetTypeFilter />
-              <EventFilter />
-            </form>
+            <DateRangeFilter />
+            <AssetTypeFilter />
+            <EventFilter />
+            <InitiatedByFilter mobile />
           </div>
         </ModalContent>
         <ModalFooter>

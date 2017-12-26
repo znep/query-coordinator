@@ -3564,10 +3564,7 @@ en:
       your: Your Rating
     admin:
       activity_feed:
-        tabs:
-          all: All Activity
-          failure: Data Update Failures
-          deleted: Deleted Assets
+        any_user: Any User
         asset_types:
           blob: File or Document
           calendar: Calendar
@@ -3846,6 +3843,10 @@ en:
         show_details: Show Details
         table_fetch_error: Sorry, there was an error fetching results. Please reload the page and try again.
         type: Type
+        tabs:
+          all: All Activity
+          failure: Data Update Failures
+          deleted: Deleted Assets
       assets:
         asset_inventory: Assets
       canvas:

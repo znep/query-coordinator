@@ -8,6 +8,7 @@ const types = {
   CHANGE_EVENT: 'CHANGE_EVENT',
   CHANGE_DATE_RANGE: 'CHANGE_DATE_RANGE',
   CHANGE_AFFECTED_ITEM_SEARCH: 'CHANGE_AFFECTED_ITEM_SEARCH',
+  CHANGE_INITIATED_BY_SEARCH: 'CHANGE_INITIATED_BY_SEARCH',
   CLEAR_ALL_FILTERS: 'CLEAR_ALL_FILTERS'
 };
 
@@ -50,6 +51,11 @@ const changeAffectedItemSearch = (value) => (dispatch) => {
   return reloadWithFilters(dispatch);
 };
 
+const changeInitiatedBySearch = (value) => (dispatch) => {
+  dispatch({ type: types.CHANGE_INITIATED_BY_SEARCH, value });
+  return reloadWithFilters(dispatch);
+};
+
 const clearAllFilters = () => (dispatch) => {
   dispatch({ type: types.CLEAR_ALL_FILTERS });
   return reloadWithFilters(dispatch);
@@ -62,5 +68,6 @@ export {
   changeEventFilter,
   changeDateRange,
   changeAffectedItemSearch,
+  changeInitiatedBySearch,
   clearAllFilters
 };

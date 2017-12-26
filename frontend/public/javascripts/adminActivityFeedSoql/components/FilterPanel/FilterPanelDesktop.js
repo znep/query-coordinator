@@ -7,6 +7,7 @@ import I18nJS from 'common/i18n';
 import AssetTypeFilter from './AssetTypeFilter';
 import DateRangeFilter from './DateRangeFilter';
 import EventFilter from './EventFilter';
+import InitiatedByFilter from './InitiatedByFilter';
 import ClearFilters from '../ClearFilters';
 
 class FilterPanelDesktop extends PureComponent {
@@ -89,11 +90,10 @@ class FilterPanelDesktop extends PureComponent {
         {this.renderOpenButton()}
         <div className={filterContentClass}>
           {this.renderHeader()}
-          <form>
-            <DateRangeFilter />
-            <AssetTypeFilter />
-            <EventFilter />
-          </form>
+          <DateRangeFilter />
+          <AssetTypeFilter />
+          <EventFilter />
+          <InitiatedByFilter />
         </div>
       </div>
     );

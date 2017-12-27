@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './SourceMessage.scss';
+import styles from './SourceMessage.module.scss';
 
 const SourceMessage = ({ hrefExists, sourceExists }) => {
   let message;

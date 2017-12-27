@@ -11,7 +11,7 @@ import { toggleExpanded } from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
 import * as selectors from '../../selectors';
 
-import styles from './roles-grid.scss';
+import styles from './roles-grid.module.scss';
 import cssVariables from '../variables.scss';
 
 const cellHeight = parseInt(cssVariables.cellHeight, 10);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import cssModules from 'react-css-modules';
-import styles from './role-edit-control.scss';
+import styles from './role-edit-control.module.scss';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import { Button } from 'common/components';
 import { startEditRole, deleteRole, startRenameRole } from '../../actions';

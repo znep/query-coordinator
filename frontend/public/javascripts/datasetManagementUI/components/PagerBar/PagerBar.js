@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import { commaify } from '../../../common/formatNumber';
 import Pager from '../../../common/components/Pager';
-import styles from './PagerBar.scss';
+import styles from './PagerBar.module.scss';
 
 function PagerBar({ currentPage, resultCount, urlForPage, changePage, isLoading }) {
   if (resultCount) {

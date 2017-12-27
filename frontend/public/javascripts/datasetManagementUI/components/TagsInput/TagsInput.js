@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import Tag from 'components/Tag/Tag';
-import styles from './TagsInput.scss';
+import styles from './TagsInput.module.scss';
 
 class TagsInput extends Component {
   constructor() {
@@ -34,7 +34,13 @@ class TagsInput extends Component {
       return;
     }
 
-    handleAddTag([...value, this.state.tag.toLowerCase()]);
+    const tagsToAdd = this.state.tag
+      .split(',')
+      .map(tag => _.trim(tag)) // remove starting/ending whitespace
+      .filter(tag => !!tag) // remove empty strings
+      .map(tag => tag.toLowerCase()); // you can probably guess
+
+    handleAddTag([...value, ...tagsToAdd]);
 
     this.setState({
       tag: ''

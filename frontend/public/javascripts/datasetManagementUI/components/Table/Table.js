@@ -6,7 +6,7 @@ import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
 import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
-import styles from './Table.scss';
+import styles from './Table.module.scss';
 
 // these are the types that mean something might be vaguely geo-y. they come from clads.
 // view them by doing:

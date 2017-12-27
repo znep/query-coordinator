@@ -3,7 +3,7 @@ import React from 'react';
 import { commaify } from '../../../common/formatNumber';
 import * as dsmapiLinks from 'links/dsmapiLinks';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './ReadyToImport.scss';
+import styles from './ReadyToImport.module.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 

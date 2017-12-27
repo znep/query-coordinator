@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import { inputChanged } from '../../actions';
-import styles from './sign-up-form.scss';
+import styles from './sign-up-form.module.scss';
 
 class SignUpInput extends React.Component {
   constructor(props) {

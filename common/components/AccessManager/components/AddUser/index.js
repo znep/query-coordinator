@@ -7,7 +7,7 @@ import I18n from 'common/i18n';
 import UserSearch from 'common/components/UserSearch';
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
 
-import styles from './add-user.scss';
+import styles from './add-user.module.scss';
 import AccessLevelDropdown from '../AccessLevelDropdown';
 import * as addUsersActions from '../../actions/AddUsersActions';
 import * as permissionsActions from '../../actions/PermissionsActions';

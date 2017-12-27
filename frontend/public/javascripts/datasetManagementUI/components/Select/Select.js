@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './Select.scss';
+import styles from './Select.module.scss';
 
 const Select = ({ handleChange, field, inErrorState }) => {
   return (

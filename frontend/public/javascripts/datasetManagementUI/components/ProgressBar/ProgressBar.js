@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './ProgressBar.scss';
+import styles from './ProgressBar.module.scss';
 
 export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, className }) {
   const ariaLabelProp = {};

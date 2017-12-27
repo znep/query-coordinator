@@ -7,7 +7,7 @@ import AppBar from 'containers/AppBarContainer';
 import NotificationList from 'containers/NotificationListContainer';
 import Modal from 'containers/ModalContainer';
 import { loadRevision } from 'reduxStuff/actions/loadRevision';
-import styles from './Home.scss';
+import styles from './Home.module.scss';
 
 class Home extends Component {
   constructor() {

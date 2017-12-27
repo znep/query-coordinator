@@ -9,7 +9,7 @@ import {
 } from 'containers/ManageMetadataContainer';
 import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetadataSidebar';
 import SubmitButton from 'containers/SubmitButtonContainer';
-import styles from './ManageMetadata.scss';
+import styles from './ManageMetadata.module.scss';
 
 export const SAVED = 'SAVED';
 export const UNSAVED = 'UNSAVED';

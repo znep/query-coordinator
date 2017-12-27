@@ -5,7 +5,7 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
-import styles from './owner-user-details.scss';
+import styles from './owner-user-details.module.scss';
 import UserDetails from '../../UserDetails';
 import CurrentUserPropType from '../../../propTypes/CurrentUserPropType';
 import UserPropType from '../../../propTypes/UserPropType';

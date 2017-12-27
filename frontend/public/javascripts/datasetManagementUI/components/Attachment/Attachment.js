@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './Attachment.scss';
+import styles from './Attachment.module.scss';
 
 const Attachment = ({ attachment, onRemove, onEdit }) =>
   <li className={styles.attachment}>

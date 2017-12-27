@@ -1,0 +1,156 @@
+@import '../../common.module.scss';
+
+.footer-bar {
+  background-color: $panel-footer-background-color;
+  height: $footerBarHeight;
+  padding: 8px 10px;
+  position: relative;
+  text-align: center;
+  z-index: 1;
+
+  .primary-button,
+  .cancel-button {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    height: 30px;
+    line-height: 30px;
+    max-width: calc(50% - 5px);
+    overflow: hidden;
+    padding: 0 15px;
+    text-transform: capitalize;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .primary-button {
+    background-color: $panel-primary-button-background-color;
+    border: 0 none;
+    border-radius: 2px;
+    color: $panel-primary-button-text-color;
+
+    &:hover,
+    &:focus {
+      background-color: $panel-primary-button-hover-background-color;
+    }
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  .cancel-button {
+    margin-right: 5px;
+  }
+}
+
+
+.buttons-wrapper {
+  position: relative;
+  text-align: left;
+}
+
+.prompt-buttons-wrapper {
+  float: right;
+
+  button {
+    float: left;
+    min-width: 60px;
+  }
+}
+
+.inline-prompt {
+  background-color: $panel-footer-prompt-background-color;
+  border-radius: 5px;
+  bottom: $footerBarHeight + 10px;
+  box-shadow: 0 0 1px 1px $panel-footer-prompt-shadow-color;
+  color: $notification-item-text-color;
+  left: 0;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  white-space: normal;
+
+  &:before,
+  &:after {
+    border-color: transparent;
+    border-style: solid;
+    content: '';
+    height: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  &:before {
+    border-top-color: rgba($panel-footer-prompt-shadow-color, 0.15);
+    border-width: 17px 12px 0;
+    bottom: -17px;
+    left: 24px;
+    z-index: 0;
+  }
+
+  &:after {
+    border-top-color: $panel-footer-prompt-background-color;
+    border-width: 15px 10px 0;
+    bottom: -15px;
+    left: 26px;
+    z-index: 1;
+  }
+
+  p {
+    font-size: 12px;
+    margin: 0 0 5px;
+  }
+
+  .heading-text {
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.setting-button {
+  color: $settings-text-color;
+  cursor: pointer;
+  float: right;
+  height: 30px;
+  max-width: calc(50% - 5px);
+  padding: 5px;
+  text-decoration: none;
+
+  em {
+    display: inline-block;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 17px !important;
+    margin-left: 5px;
+    max-width: calc(100% - 22px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  & :global(.socrata-icon) {
+    color: $settings-icon-color;
+    fill: $settings-icon-color;
+    height: 17px;
+    width: 17px;
+
+    & svg {
+      height: 17px;
+      width: 17px;
+
+      &,
+      * {
+        color: $settings-icon-color;
+        fill: $settings-icon-color;
+      }
+    }
+
+    &:before {
+      display: none;
+    }
+  }
+}

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import styles from './alerts.scss';
+import styles from './alerts.module.scss';
 
 class Alerts extends Component {
   render() {

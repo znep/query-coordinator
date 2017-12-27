@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import * as styles from './TransformColumn.scss';
+import * as styles from './TransformColumn.module.scss';
 import {
   COMPILATION_FAILED
 } from '../../reduxStuff/reducers/compiler';

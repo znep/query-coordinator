@@ -5,7 +5,7 @@ import { SocrataIcon } from 'common/components';
 import _ from 'lodash';
 import I18n from 'common/i18n';
 import PollingInput from './PollingInput';
-import styles from './sign-in-form.scss';
+import styles from './sign-in-form.module.scss';
 
 class PasswordInput extends React.Component {
   renderSsoEnabled(isUsingSingleSignOn) {

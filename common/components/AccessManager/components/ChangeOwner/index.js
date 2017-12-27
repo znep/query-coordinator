@@ -6,7 +6,7 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
 
-import styles from './change-owner.scss';
+import styles from './change-owner.module.scss';
 import * as changeOwnerActions from '../../actions/ChangeOwnerActions';
 import UserSearch from '../../../UserSearch';
 import UserDetails from '../UserDetails';

@@ -9,7 +9,7 @@ import OptionsPropType from '../../PropTypes/OptionsPropType';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
-import styles from './sign-in-form.scss';
+import styles from './sign-in-form.module.scss';
 
 class SignInForm extends React.Component {
   constructor(props) {

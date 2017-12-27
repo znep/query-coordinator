@@ -12,7 +12,7 @@ import RoleEditControl from './RoleEditControl';
 import { connectLocalization } from 'common/components/Localization';
 import * as selectors from '../../selectors';
 
-import styles from './roles-grid.scss';
+import styles from './roles-grid.module.scss';
 
 const mapStateToProps = state => ({
   editingRole: selectors.getEditingRoleFromState(state),

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AddColForm from 'containers/AddColFormContainer';
 import SchemaPreivewTable from 'containers/SchemaPreviewTableContainer';
 import FlashMessage from 'containers/FlashMessageContainer';
-import styles from './ShowOutputSchema.scss';
+import styles from './ShowOutputSchema.module.scss';
 
 class AddColPane extends Component {
   constructor() {

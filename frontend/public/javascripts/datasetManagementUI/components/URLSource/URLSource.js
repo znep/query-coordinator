@@ -6,7 +6,7 @@ import TextInput from 'components/TextInput/TextInput';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
-import styles from './URLSource.scss';
+import styles from './URLSource.module.scss';
 
 const SubI18n = I18n.import_from_url;
 

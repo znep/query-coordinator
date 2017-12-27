@@ -484,6 +484,7 @@ Rails.application.routes.draw do
       get '/revisions/current(*rest_of_path)', :action => 'current_revision', :as => :current_revision
       get '/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision', :as => :show_revision
       get '/visualization', :action => 'create_visualization_canvas'
+      get '/colocate', :action => 'colocate'
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
       match '/edit_metadata', :action => 'edit_metadata', :via => [:get, :post], :as => :edit_view_metadata

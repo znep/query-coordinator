@@ -6,7 +6,7 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import Dropdown from 'common/components/Dropdown';
 
-import styles from './dropdown.scss';
+import styles from './dropdown.module.scss';
 import UserAccessLevelPropType from '../../propTypes/UserAccessLevelPropType';
 
 /**

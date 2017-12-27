@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { formatDateWithLocale } from 'common/dates';
 
 import { TRUNCATE_DESCRIPTION_AFTER } from 'common/notifications/constants';
-import styles from './product-notification.scss';
+import styles from './product-notification.module.scss';
 
 class ProductNotification extends Component {
   truncateBodyText() {

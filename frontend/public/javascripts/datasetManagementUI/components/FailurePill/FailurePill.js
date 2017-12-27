@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from 'components/ErrorPill/ErrorPill.scss';
+import styles from 'components/ErrorPill/ErrorPill.module.scss';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 
 function FailurePill() {

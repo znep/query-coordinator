@@ -7,7 +7,7 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import AlertSettingModal from 'common/notifications/components/AlertSettingModal/AlertSettingModal';
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import styles from './panel-footer.scss';
+import styles from './panel-footer.module.scss';
 
 class PanelFooter extends Component {
   constructor(props) {

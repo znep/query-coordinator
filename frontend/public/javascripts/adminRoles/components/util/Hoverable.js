@@ -7,7 +7,7 @@ import { connectLocalization } from 'common/components/Localization';
 
 import { hoverRow, unhoverRow } from '../../actions';
 
-import styles from './hoverable.scss';
+import styles from './hoverable.module.scss';
 
 const mapStateToProps = (state) => ({
   hovered: state.get('hovered')

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './FormatColumn.scss';
+import styles from './FormatColumn.module.scss';
 import classNames from 'classnames';
 import TextInput from 'components/TextInput/TextInput';
 

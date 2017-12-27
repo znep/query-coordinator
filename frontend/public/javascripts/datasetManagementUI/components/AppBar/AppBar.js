@@ -3,7 +3,7 @@ import React from 'react';
 import { EditBar } from 'common/components';
 import SocrataIcon from 'common/components/SocrataIcon';
 import PublishButton from 'containers/PublishButtonContainer';
-import styles from './AppBar.scss';
+import styles from './AppBar.module.scss';
 
 const PreviewLink = () =>
   <div className={styles.primerPreview}>

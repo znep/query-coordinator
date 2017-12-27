@@ -8,7 +8,7 @@ import Table from 'containers/TableContainer';
 import PagerBar from 'containers/PagerBarContainer';
 import ErrorPointer from 'components/ErrorPointer/ErrorPointer';
 import FlashMessage from 'containers/FlashMessageContainer';
-import styles from './ShowOutputSchema.scss';
+import styles from './ShowOutputSchema.module.scss';
 
 const COL_WIDTH_PX = 250; // matches style on td in Table.scss
 const ERROR_SCROLL_DURATION_MS = 1000;

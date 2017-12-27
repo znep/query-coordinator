@@ -6,7 +6,7 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
-import styles from './access-summary.scss';
+import styles from './access-summary.module.scss';
 import PermissionPropType from '../../propTypes/PermissionPropType';
 import AccessSummaryFooter from './AccessSummaryFooter';
 import AudienceScopeLabel from '../AudienceScopeLabel';

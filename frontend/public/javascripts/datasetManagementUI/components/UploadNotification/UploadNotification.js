@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Notification from 'containers/NotificationContainer';
-import styles from './UploadNotification.scss';
+import styles from './UploadNotification.module.scss';
 import moment from 'moment';
 
 const isURL = (source) => source.source_type.type === 'url';

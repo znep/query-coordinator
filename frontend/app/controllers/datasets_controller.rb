@@ -48,6 +48,22 @@ class DatasetsController < ApplicationController
 
 # member actions
 
+  def colocate
+    if params['$$store']
+      @view = View.find_in_store(params[:id], params['$$store'])
+    else
+      @view = get_view(params[:id])
+    end
+
+    @asset_browser_config = {
+      :app_name => 'colocate',
+      :filters_enabled => false
+    }
+
+    return render_404 if @view.nil? || !FeatureFlags.derive(nil, request).enable_colocate_ui
+    render 'colocate', :layout => 'styleguide'
+  end
+
   def show
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])

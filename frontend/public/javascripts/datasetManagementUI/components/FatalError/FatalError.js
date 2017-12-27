@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './FatalError.scss';
+import styles from './FatalError.module.scss';
 
 const SubI18n = I18n.show_output_schema.fatal_error;
 

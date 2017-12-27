@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
-import styles from './RowIdentifierError.scss';
+import styles from './RowIdentifierError.module.scss';
 
 const REASON_DUPLICATE = 'duplicate';
 const REASON_NULL = 'null';

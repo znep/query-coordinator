@@ -1,0 +1,12 @@
+@import '../common.module.scss';
+
+.error-message {
+  @extend .alert;
+  @extend .error;
+
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  font-size: 12px;
+  text-align: center;
+}

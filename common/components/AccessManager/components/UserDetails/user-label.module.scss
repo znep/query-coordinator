@@ -1,0 +1,19 @@
+@import '../../common.module.scss';
+
+.user-label {
+  width: 387px;
+}
+
+.title {
+  font-size: 14px;
+}
+
+.subtitle {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.unregistered {
+  font-style: italic;
+  color: $error-text;
+}

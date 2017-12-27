@@ -5,7 +5,7 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
-import styles from './footer.scss';
+import styles from './footer.module.scss';
 import * as uiActions from '../../actions/UiActions';
 import ButtonWithSpinner from '../ButtonWithSpinner';
 

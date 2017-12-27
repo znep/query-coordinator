@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
 import I18n from 'common/i18n';
 import ReCAPTCHA from 'react-google-recaptcha';
-import styles from './sign-up-form.scss';
+import styles from './sign-up-form.module.scss';
 import {
   validateEmail,
   validateScreenName,

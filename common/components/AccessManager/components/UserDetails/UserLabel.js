@@ -3,7 +3,7 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
-import styles from './user-label.scss';
+import styles from './user-label.module.scss';
 import UserPropType from '../../propTypes/UserPropType';
 
 /**

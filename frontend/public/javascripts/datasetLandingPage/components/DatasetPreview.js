@@ -27,7 +27,7 @@ export class DatasetPreview extends Component {
       <div>
         <a
           href={localizeLink(view.gridUrl)}
-          className="btn btn-primary btn-sm btn-grid"
+          className="btn btn-primary btn-sm btn-grid view-data"
           onClick={onClickGrid}>
           {I18n.dataset_preview.grid_view_link}
         </a>

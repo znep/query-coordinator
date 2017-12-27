@@ -4,7 +4,7 @@ import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import eq from 'lodash/fp/eq';
 import stubTrue from 'lodash/fp/stubTrue';
-import styles from './tristate-checkbox.scss';
+import styles from './tristate-checkbox.module.scss';
 import cssModules from 'react-css-modules';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';

@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 
-import styles from './audience-label.scss';
+import styles from './audience-label.module.scss';
 import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
 
 /**

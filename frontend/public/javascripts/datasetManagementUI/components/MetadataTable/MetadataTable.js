@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InfoPane } from 'common/components';
 import CommonMetadataTable from 'common/components/MetadataTable';
-import styles from './MetadataTable.scss';
+import styles from './MetadataTable.module.scss';
 import _ from 'lodash';
 import { localizeLink } from 'common/locale';
 

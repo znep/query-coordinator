@@ -9,7 +9,7 @@ import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
 import SocialLinkMessage from './SocialLinkMessage';
-import styles from './signin.scss';
+import styles from './signin.module.scss';
 
 class SignInContainer extends React.Component {
   constructor(props) {

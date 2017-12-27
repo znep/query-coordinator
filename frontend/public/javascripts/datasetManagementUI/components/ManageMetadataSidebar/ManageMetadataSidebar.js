@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import * as Links from 'links/links';
 import StatusIndicator from 'components/StatusIndicator/StatusIndicator';
-import styles from './ManageMetadataSidebar.scss';
+import styles from './ManageMetadataSidebar.module.scss';
 
 const datasetMetadataEnabled = !window.serverConfig.featureFlags.usaid_features_enabled;
 

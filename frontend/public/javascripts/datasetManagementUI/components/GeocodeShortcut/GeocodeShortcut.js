@@ -16,8 +16,8 @@ import HideOriginal from './HideOriginal';
 import ErrorHandling from './ErrorHandling';
 import { traverse } from 'lib/ast';
 import { browserHistory } from 'react-router';
-import styles from './GeocodeShortcut.scss';
-import flashMessageStyles from 'components/FlashMessage/FlashMessage.scss';
+import styles from './GeocodeShortcut.module.scss';
+import flashMessageStyles from 'components/FlashMessage/FlashMessage.module.scss';
 
 import {
   LatLngFields,

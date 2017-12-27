@@ -14,7 +14,7 @@ import { updateRevision, editRevision, shapeRevision } from 'reduxStuff/actions/
 import FlashMessage from 'containers/FlashMessageContainer';
 import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
 
-import styles from './ShowBlobPreview.scss';
+import styles from './ShowBlobPreview.module.scss';
 
 export const BlobFileInfo = ({ source, sourcesLink }) => {
   return (

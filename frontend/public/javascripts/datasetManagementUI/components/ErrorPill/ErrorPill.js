@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { commaify } from '../../../common/formatNumber';
-import styles from './ErrorPill.scss';
+import styles from './ErrorPill.module.scss';
 
 function ErrorPill({ number }) {
   return (

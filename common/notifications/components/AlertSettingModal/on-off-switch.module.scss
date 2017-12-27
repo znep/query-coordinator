@@ -1,0 +1,45 @@
+@import '../../common.module.scss';
+
+.on-off-switch {
+  display: inline-block;
+
+  input {
+    display: none;
+  }
+
+  label {
+    float: left;
+  }
+
+  label {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    color: rgba(0, 0, 0, 0.6);
+    display: inline-block;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: none;
+    overflow: hidden;
+    padding: 6px 10px;
+    transition: all 0.1s ease-in-out;
+    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+
+  }
+
+  label:hover {
+    cursor: pointer;
+  }
+
+  label.selected {
+    background-color: $btn-primary-background-color;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    color: white;
+  }
+}

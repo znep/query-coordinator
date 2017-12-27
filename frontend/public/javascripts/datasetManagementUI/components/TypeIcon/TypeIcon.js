@@ -3,7 +3,7 @@ import React from 'react';
 import { soqlProperties as typeProperties } from 'lib/soqlTypes';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import classNames from 'classnames';
-import styles from './TypeIcon.scss';
+import styles from './TypeIcon.module.scss';
 
 const TypeIcon = ({ type, isDisabled }) => {
   const t = typeProperties[type];

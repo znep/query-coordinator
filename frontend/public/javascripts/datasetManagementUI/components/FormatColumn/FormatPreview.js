@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TableBody from 'containers/TableBodyContainer';
 import * as DisplayState from 'lib/displayState';
-import styles from './FormatColumn.scss';
+import styles from './FormatColumn.module.scss';
 const SubI18n = I18n.format_column;
 
 const FormatPreview = ({

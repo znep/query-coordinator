@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import styles from './ParseOptions.scss';
+import styles from './ParseOptions.module.scss';
 import _ from 'lodash';
 
 const SubI18n = I18n.parse_options;

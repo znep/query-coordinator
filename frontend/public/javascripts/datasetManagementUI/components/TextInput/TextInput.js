@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './TextInput.scss';
+import styles from './TextInput.module.scss';
 
 const TextInput = ({ handleChange, handleBlur, field, inErrorState }) => {
   return (

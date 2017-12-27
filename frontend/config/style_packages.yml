@@ -30,6 +30,9 @@ visualization-canvas:
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
+dataset-landing-page-colocate:
+- dataset-landing-page/colocate
+
 op-measure:
 - op-measure/op-measure
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import styles from 'styles/SetupAutomation.scss';
+import styles from 'styles/SetupAutomation.module.scss';
 import Highlight from 'react-syntax-highlight';
 import CopyToClipboard from 'react-copy-to-clipboard';
 

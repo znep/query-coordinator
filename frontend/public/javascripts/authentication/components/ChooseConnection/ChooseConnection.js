@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import I18n from 'common/i18n';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
-import styles from './choose-connection.scss';
+import styles from './choose-connection.module.scss';
 
 class ChooseConnection extends React.Component {
   constructor(props) {

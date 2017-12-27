@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import TypeIcon from '../TypeIcon/TypeIcon';
-import * as styles from './SoQLEditor.scss';
+import * as styles from './SoQLEditor.module.scss';
 
 const ColumnDoc = ({ completion }) => {
   if (completion.column) {

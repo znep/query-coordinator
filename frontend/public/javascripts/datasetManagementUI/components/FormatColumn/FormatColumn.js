@@ -6,7 +6,7 @@ import FormatPreview from './FormatPreview';
 import TextColumnFormat from './TextColumnFormat';
 import NumberColumnFormat from './NumberColumnFormat';
 import DatetimeColumnFormat from './DatetimeColumnFormat';
-import styles from './FormatColumn.scss';
+import styles from './FormatColumn.module.scss';
 
 const SubI18n = I18n.format_column;
 

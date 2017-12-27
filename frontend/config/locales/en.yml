@@ -3811,8 +3811,8 @@ en:
               asset_metadata_changed: Asset Metadata Changed
               asset_owner_changed: Asset Owner Changed
               asset_permissions_changed: Asset Permissions Changed
-              collabrator_added: Collabrator Added
-              collabrator_removed: Collabrator Removed
+              collaborator_added: Collaborator Added
+              collaborator_removed: Collaborator Removed
               data_update_started: Data Update Started
               data_update_in_progress: Data Update In Progress
               data_update_success: Data Update Success
@@ -6414,8 +6414,7 @@ en:
       url: URL
       validation_error_attribution_required: License type requires attribution
       validation_error_category: Not a valid category
-      validation_error_dupe_display_name: Column names must be unique
-      validation_error_dupe_field_name: Field names must be unique
+      validation_error_dupe: Value must be unique
       validation_error_email: Please enter a valid email address
       validation_error_fieldname: Field name must begin with a letter and cannot contain any spaces or non-alphanumeric characters
       validation_error_general: Couldn't submit metadata. Review your inputs and try again.

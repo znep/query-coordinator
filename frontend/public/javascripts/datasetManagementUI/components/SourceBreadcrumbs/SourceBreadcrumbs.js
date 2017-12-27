@@ -5,7 +5,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import * as Links from 'links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './SourceBreadcrumbs.scss';
+import styles from './SourceBreadcrumbs.module.scss';
 
 function getPreviewLink(params, blobId, sourceId, inputSchemaId, outputSchemaId) {
   if (blobId) {

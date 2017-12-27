@@ -6,7 +6,7 @@ import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
 import SourceMessage from 'components/SourceMessage/SourceMessage';
 import { browserHistory } from 'react-router';
 import * as Links from 'links/links';
-import styles from './HrefForm.scss';
+import styles from './HrefForm.module.scss';
 
 // This form strives to let the UI derrive from the data, so in order to control
 // the UI, it changes the data--namely the "hrefs" array. When the component loads,

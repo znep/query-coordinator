@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 
 import UserLabel from './UserLabel';
-import styles from './list-item.scss';
+import styles from './list-item.module.scss';
 import SocrataIcon from '../../../SocrataIcon';
 import UserPropType from '../../propTypes/UserPropType';
 

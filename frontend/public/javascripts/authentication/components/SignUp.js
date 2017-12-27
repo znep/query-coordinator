@@ -9,7 +9,7 @@ import I18n from 'common/i18n';
 import { renderAlerts } from '../Util';
 import signUpReducer from '../reducers/SignUpReducer';
 import OptionsPropType from '../PropTypes/OptionsPropType';
-import styles from './signup.scss';
+import styles from './signup.module.scss';
 import SignUpForm from './SignUpForm/SignUpForm';
 import SocialSignIn from './Social/SocialSignIn';
 import SocialLinkMessage from './SocialLinkMessage';

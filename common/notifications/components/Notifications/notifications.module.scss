@@ -1,0 +1,8 @@
+@import '../../common.module.scss';
+
+.container {
+  @include base;
+
+  height: 100%;
+  position: relative;
+}

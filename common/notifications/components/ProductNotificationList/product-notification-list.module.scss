@@ -1,0 +1,180 @@
+@import '../../common.module.scss';
+$viewOlderLinksHeight: $footerBarHeight;
+$panelHeaderHeight: 30px;
+
+:global(.site-chrome-small) {
+  .list-wrapper {
+    &.secondary-panel {
+      &.open {
+        height: calc(100% - #{$headerHeightSmall} - #{$footerBarHeight});
+      }
+    }
+  }
+}
+
+.list-wrapper {
+  background-color: $panel-body-background-color;
+  height: calc(100% - #{$headerBarHeight} - #{$footerBarHeight});
+  list-style: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0 5px;
+
+  &:not(.secondary-panel) {
+    padding-top: 5px;
+  }
+
+  &.secondary-panel {
+    background-color: $secondary-panel-background-color;
+    color: $view-older-notifications-link-color;
+    position: absolute;
+    -webkit-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -moz-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -ms-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -o-transform: translate3d(0px, -$panelHeaderHeight, 0);
+    transform: translate3d(0px, -$panelHeaderHeight, 0);
+    -webkit-transition: transform 0.3s ease;
+    -moz-transition: transform 0.3s ease;
+    -ms-transition: transform 0.3s ease;
+    -o-transition: transform 0.3s ease;
+    transition: transform 0.3s ease;
+    width: 100%;
+    z-index: 0;
+
+    &.open {
+      -webkit-transform: translate3d(0px, -100%, 0);
+      -moz-transform: translate3d(0px, -100%, 0);
+      -ms-transform: translate3d(0px, -100%, 0);
+      -o-transform: translate3d(0px, -100%, 0);
+      transform: translate3d(0px, -100%, 0);
+    }
+
+    .accordion-header {
+      display: block;
+
+      .panel-header-text {
+        color: $view-older-notifications-link-color;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 400;
+        height: $panelHeaderHeight;
+        line-height: 20px;
+        margin: 0;
+        padding: 5px 30px 5px 10px;
+        position: relative;
+        text-align: left;
+        text-transform: capitalize;
+
+        &:before {
+          background-color: $product-unread-indicator-color;
+          border-radius: 4px;
+          content: '';
+          display: none;
+          height: 8px;
+          left: 11px;
+          position: absolute;
+          top: 11px;
+          width: 8px;
+        }
+
+        &.unread {
+          padding-left: 25px;
+
+          &:before {
+            display: block;
+          }
+        }
+
+        .unread-count-label {
+          font-size: 10px;
+          font-style: normal;
+          font-weight: 300;
+          margin-left: 8px;
+          text-transform: uppercase;
+
+          span:first-child {
+            margin-right: 3px;
+          }
+        }
+
+        & :global(.socrata-icon) {
+          color: $view-older-notifications-link-color;
+          fill: $view-older-notifications-link-color;
+          height: 13px;
+          position: absolute;
+          right: 10px;
+          top: 8px;
+          width: 13px;
+
+          & svg {
+            height: 13px;
+            width: 13px;
+
+            &,
+            * {
+              color: $view-older-notifications-link-color;
+              fill: $view-older-notifications-link-color;
+            }
+          }
+
+          &:before {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .list {
+      max-height: calc(100% - #{$panelHeaderHeight + $viewOlderLinksHeight});
+    }
+  }
+
+  .list {
+    margin: 0;
+    max-height: calc(100% - #{$viewOlderLinksHeight});
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+
+    &.has-no-view-older-link {
+      max-height: 100%;
+    }
+  }
+}
+
+.notifications-message {
+  padding: 80px 25px 20px;
+  text-align: center;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.543;
+    margin: 0;
+  }
+}
+
+.view-older-links-wrapper {
+  display: block;
+  height: $viewOlderLinksHeight;
+  padding: 8px 0;
+}
+
+.view-older-link {
+  color: $view-older-notifications-link-color;
+  display: block;
+  font-size: 13px;
+  height: 30px;
+  padding: 5px 0;
+  text-align: center;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: $view-older-notifications-link-color;
+  }
+}

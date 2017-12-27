@@ -7,7 +7,7 @@ import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
 import TagsInput from 'components/TagsInput/TagsInput';
 import AttachmentsInput from 'containers/AttachmentsInputContainer';
-import styles from './Field.scss';
+import styles from './Field.module.scss';
 
 class Field extends Component {
   render() {

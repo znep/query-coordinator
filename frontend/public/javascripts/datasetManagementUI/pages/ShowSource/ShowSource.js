@@ -12,7 +12,7 @@ import SaveButtons from './SaveButtons';
 import * as FormActions from 'reduxStuff/actions/forms';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
-import styles from './ShowSource.scss';
+import styles from './ShowSource.module.scss';
 
 export const ShowSource = ({
   inProgress,

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Attachment from 'components/Attachment/Attachment';
 import classNames from 'classnames';
-import styles from './AttachmentsInput.scss';
+import styles from './AttachmentsInput.module.scss';
 
 class AttachmentsInput extends Component {
   render() {

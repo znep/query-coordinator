@@ -17,7 +17,7 @@ const invitedUsers = (state = [], action) => {
       return state;
     case SUBMIT_NEW_USERS:
       if (action.stage === COMPLETE_SUCCESS) {
-        return _.get(action, 'payload.invitedUsers', []).concat(state);
+        return _.get(action, 'payload.invitedUsers', []);
       }
       return state;
     default:

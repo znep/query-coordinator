@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from './tabs.scss';
+import styles from './tabs.module.scss';
 import cssModules from 'react-css-modules';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import classNames from 'classnames';

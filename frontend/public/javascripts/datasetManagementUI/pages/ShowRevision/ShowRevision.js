@@ -7,7 +7,7 @@ import SchemaPreview from 'components/SchemaPreview/SchemaPreview';
 import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
 import TablePreview from 'containers/TablePreviewContainer';
 import RowDetails from 'components/RowDetails/RowDetails';
-import styles from './ShowRevision.scss';
+import styles from './ShowRevision.module.scss';
 
 export function ShowRevision({ params, readFromCore, isPublishedDataset, isParentRevision }) {
   return (

@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import TransformStatus from '../TransformStatus/TransformStatus';
 import TableBody from '../../containers/TableBodyContainer';
-import * as columnHeaderStyles from '../../components/ColumnHeader/ColumnHeader.scss';
-import * as styles from './SoQLResults.scss';
+import * as columnHeaderStyles from '../../components/ColumnHeader/ColumnHeader.module.scss';
+import * as styles from './SoQLResults.module.scss';
 
 class SoQLResults extends React.Component {
   constructor(props) {

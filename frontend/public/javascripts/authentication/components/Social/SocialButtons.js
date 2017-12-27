@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
 import SocialButton from './SocialButton';
-import styles from './social.scss';
+import styles from './social.module.scss';
 
 function SocialButtons({ doAuth0Authorize }) {
   return (

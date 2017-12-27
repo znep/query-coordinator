@@ -4,6 +4,9 @@ import * as React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux  from 'react-redux';
 import * as Immutable from 'immutable';
+
+import { Button } from 'common/components';
+
 import * as GoalsActions from '../../actions';
 import * as Actions from '../../../../actions';
 import * as Helpers from '../../../../helpers';
@@ -202,15 +205,15 @@ class QuickEditForm extends React.Component {
                 text= { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
               />
             </div>
-            <Components.Socrata.Button onClick={ this.props.dismissModal } disabled={ saveInProgress } >
+            <Button onClick={ this.props.dismissModal } disabled={ saveInProgress } >
               { translations.getIn(['admin', 'quick_edit', 'cancel']) }
-            </Components.Socrata.Button>
-            <Components.Socrata.Button type="submit" primary
+            </Button>
+            <Button type="submit" variant="primary"
               onClick={ this.save }
               disabled={ !this.props.unsavedChanges || saveInProgress }
-              inProgress={ saveInProgress }>
+              busy={ saveInProgress }>
               { translations.getIn(['admin', 'quick_edit', 'save']) }
-            </Components.Socrata.Button>
+            </Button>
           </Components.Socrata.Modal.Footer>
         </form>
       </Components.Socrata.Modal.Modal>

@@ -7,7 +7,10 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/demos/components'),
-  entry: common.withHotModuleEntries({'main': './main'}),
+  entry: common.withHotModuleEntries({
+    'main': './main',
+    'button': './button'
+  }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('.eslintrc.json'),
   module: { loaders: common.getStandardLoaders() },

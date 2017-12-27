@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { SocrataIcon } from 'common/components';
-import SocrataButton from 'common/components/SocrataButton';
+import { SocrataIcon, Button } from 'common/components';
 import cx from 'classnames';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { spring } from 'react-motion';
@@ -27,9 +26,9 @@ class NotificationBox extends Component {
         <div className={className} style={style}>
           <span dangerouslySetInnerHTML={htmlContent} />
           {canDismiss ? (
-            <SocrataButton buttonType="transparent" onClick={() => onDismiss()}>
+            <Button variant="transparent" onClick={() => onDismiss()}>
               <SocrataIcon name="close-2" />
-            </SocrataButton>
+            </Button>
           ) : null}
         </div>
       </div>

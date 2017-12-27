@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SocrataButton from '../SocrataButton';
+import { Button } from 'common/components';
 
 import './SocrataDownloadButton.scss';
 
@@ -37,9 +37,9 @@ export default class SocrataDownloadButton extends React.Component {
     };
 
     return (
-      <SocrataButton {...buttonProps} className={ this.props.inProgress ? '' : 'icon-download'}>
+      <Button {...buttonProps} className={ this.props.inProgress ? '' : 'icon-download'}>
         { this.renderButtonContent() }
-      </SocrataButton>
+      </Button>
     );
   }
 }

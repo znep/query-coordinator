@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { EditBar as SocrataComponentsEditBar } from 'common/components';
+import { Button, EditBar as SocrataComponentsEditBar } from 'common/components';
 import I18n from 'common/i18n';
 
 import { openEditModal } from '../actions/editor';
@@ -17,14 +17,15 @@ export class EditBar extends PureComponent {
 
     return (
       <SocrataComponentsEditBar {...editBarProps}>
-        <div className="edit-bar-child btn-group">
-          <button type="button" className="btn btn-alternate-2 btn-sm btn-edit" onClick={onClickEdit}>
+        <div className="edit-bar-child">
+          <Button variant="primary" dark onClick={onClickEdit}>
             {I18n.t('open_performance.edit')}
-          </button>
-          <button type="button" className="btn btn-transparent btn-preview" onClick={onClickPreview}>
+          </Button>
+          <Button className="btn-save" dark>Save</Button>
+          <Button className="btn-preview" variant="transparent" onClick={onClickPreview}>
             {I18n.t('open_performance.preview')}
             <span className="socrata-icon-preview" role="presentation" />
-          </button>
+          </Button>
         </div>
       </SocrataComponentsEditBar>
     );

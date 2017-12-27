@@ -15,6 +15,12 @@
   text-decoration: none;
   letter-spacing: 0;
 
+  .spinner-default {
+    width: 1rem;
+    height: 1rem;
+    border-width: 2px;
+  }
+
   &.btn-lg {
     font-size: ms(1);
     padding: ms(-2) ms(1);
@@ -23,12 +29,6 @@
   &.btn-sm {
     font-size: ms(-1);
     padding: ms(-6) ms(-1);
-
-    .spinner-default {
-      width: 1rem;
-      height: 1rem;
-      border-width: 2px;
-    }
   }
 
   &.btn-xs {

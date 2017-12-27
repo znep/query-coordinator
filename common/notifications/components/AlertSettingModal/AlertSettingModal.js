@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import styles from './alert-setting-modal.scss';
+import styles from './alert-setting-modal.module.scss';
 import Tabs from './Tabs';
 import PreferenceContent from './PreferenceContent';
 import cssModules from 'react-css-modules';

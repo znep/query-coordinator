@@ -5,7 +5,7 @@ import { Link, withRouter } from 'react-router';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
-import styles from 'styles/SchemaPreview.scss';
+import styles from 'styles/SchemaPreview.module.scss';
 
 const calcColumns = (entities, os) => {
   if (os) {

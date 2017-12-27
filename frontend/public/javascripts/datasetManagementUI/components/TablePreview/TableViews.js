@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import NotifyButton from 'containers/NotifyButtonContainer';
 import * as Links from 'links/links';
 import DatasetPreview from 'containers/DatasetPreviewContainer';
-import styles from './TablePreview.scss';
+import styles from './TablePreview.module.scss';
 import SocrataIcon from 'common/components/SocrataIcon';
 
 // COMPONENT VIEWS

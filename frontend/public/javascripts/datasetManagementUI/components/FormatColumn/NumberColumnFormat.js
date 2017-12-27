@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './FormatColumn.scss';
+import styles from './FormatColumn.module.scss';
 import Alignment from './Alignment';
 import PrecisionStyle from './PrecisionStyle';
 import DecimalPrecision from './DecimalPrecision';

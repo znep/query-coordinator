@@ -18,7 +18,7 @@ import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSide
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
 import SaveParseOptionsButton from './SaveParseOptionsButton';
 import SaveColButton from './SaveColButton';
-import styles from './ShowOutputSchema.scss';
+import styles from './ShowOutputSchema.module.scss';
 
 function getCurrentPane(location) {
   let currentPane;

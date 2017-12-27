@@ -168,7 +168,9 @@ function getStandardLoaders(extraLoaders, options) {
       test: /^((?!\.global).)*(scss|css)$/, // All *.?css files but _not_ the .global.scss file
       loaders: [
         'style-loader?sourceMap',
-        'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+        // Note! importLoaders is either 1 or 2 in our various webpackconigs.
+        // When consolidating configs, we probably want 2.. Talk to Brandon
+        'css-loader?modules&importLoaders=2&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
         'postcss-loader', // See postcss: key in platform-ui/frontend/config/webpack/base.js
         'sass-loader'
       ]

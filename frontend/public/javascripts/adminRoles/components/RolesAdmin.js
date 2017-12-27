@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import styles from './roles-admin.scss';
+import styles from './roles-admin.module.scss';
 import SaveBar from './SaveBar';
 import EditBar from './EditBar';
 import { applyMiddleware, bindActionCreators, compose, createStore } from 'redux';

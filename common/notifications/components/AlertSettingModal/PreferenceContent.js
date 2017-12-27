@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
-import styles from './alert-setting-modal.scss';
+import styles from './alert-setting-modal.module.scss';
 import OnOffSwitch from './OnOffSwitch';
 import I18n from 'common/i18n';
 import EmailSettings from './EmailSettings';

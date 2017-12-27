@@ -4,7 +4,7 @@ import Fieldset from 'components/Fieldset/Fieldset';
 import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import URLField from 'components/URLField/URLField';
-import styles from './DatasetFieldset.scss';
+import styles from './DatasetFieldset.module.scss';
 import { compressWhitespace } from 'lib/util';
 
 const DatasetFieldset = ({

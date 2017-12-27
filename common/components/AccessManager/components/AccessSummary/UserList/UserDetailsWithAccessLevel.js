@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
-import styles from './user-details-with-access-level.scss';
+import styles from './user-details-with-access-level.module.scss';
 import AccessLevelDropdown from '../../AccessLevelDropdown';
 import SocrataIcon from '../../../../SocrataIcon';
 import UserDetails from '../../UserDetails';

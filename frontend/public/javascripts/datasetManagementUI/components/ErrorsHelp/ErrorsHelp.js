@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import classNames from 'classnames';
-import styles from './ErrorsHelp.scss';
+import styles from './ErrorsHelp.module.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 

@@ -6,7 +6,7 @@ import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
 import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
-import styles from './AddColForm.scss';
+import styles from './AddColForm.module.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
 export function makeFieldName(displayName = '') {

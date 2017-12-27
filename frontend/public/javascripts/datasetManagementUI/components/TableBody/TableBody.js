@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableCell from 'components/TableCell/TableCell';
 import RowError from 'components/RowError/RowError';
-import styles from './TableBody.scss';
+import styles from './TableBody.module.scss';
 import * as Selectors from 'selectors';
 
 class TableBody extends Component {

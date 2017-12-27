@@ -9,7 +9,7 @@ import {
   roleIsCustom
 } from '../../selectors';
 import cssModules from 'react-css-modules';
-import styles from './template-dropdown.scss';
+import styles from './template-dropdown.module.scss';
 import Dropdown from 'common/components/Dropdown';
 import { connectLocalization } from 'common/components/Localization';
 

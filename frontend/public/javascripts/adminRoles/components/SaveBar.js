@@ -13,7 +13,7 @@ import { editCustomRoles, saveRoles } from '../actions';
 import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../selectors';
 import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
 import SocrataButton from 'common/components/SocrataButton';
-import styles from './save-bar.scss';
+import styles from './save-bar.module.scss';
 
 const mapStateToProps = state => {
   const appState = getAppState(state);

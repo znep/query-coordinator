@@ -5,7 +5,7 @@ import TextInput from 'components/TextInput/TextInput';
 import { getBasename, getExtension, compressWhitespace } from 'lib/util';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { DuplicateExtension, BadUrl, MissingValue } from 'containers/HrefFormContainer';
-import styles from './URLField.scss';
+import styles from './URLField.module.scss';
 
 class URLField extends Component {
   render() {

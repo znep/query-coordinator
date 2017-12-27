@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import styles from './app-error.scss';
+import styles from './app-error.module.scss';
 
 class AppError extends Component {
   render() {

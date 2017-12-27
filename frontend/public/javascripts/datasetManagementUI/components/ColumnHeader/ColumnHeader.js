@@ -11,7 +11,7 @@ import * as ModalActions from 'reduxStuff/actions/modal';
 import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 import { Dropdown } from 'common/components';
-import styles from './ColumnHeader.scss';
+import styles from './ColumnHeader.module.scss';
 
 const Translations = I18n.show_output_schema.column_header;
 

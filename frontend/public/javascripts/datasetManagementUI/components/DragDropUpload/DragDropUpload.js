@@ -7,7 +7,7 @@ import { createUploadSource } from 'reduxStuff/actions/createSource';
 import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import * as Selectors from 'selectors';
-import styles from './DragDropUpload.scss';
+import styles from './DragDropUpload.module.scss';
 import uuid from 'uuid';
 
 export class DragDropUpload extends Component {

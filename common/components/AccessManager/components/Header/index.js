@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
-import styles from './header.scss';
+import styles from './header.module.scss';
 
 /**
  * Simple header for the top of the modal.

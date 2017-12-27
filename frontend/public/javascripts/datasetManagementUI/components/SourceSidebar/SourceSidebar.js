@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Link, IndexLink } from 'react-router';
 import * as Links from 'links/links';
 import * as Selectors from 'selectors';
-import styles from './SourceSidebar.scss';
+import styles from './SourceSidebar.module.scss';
 
 function titleOf(source) {
   if (!source || !source.source_type) {

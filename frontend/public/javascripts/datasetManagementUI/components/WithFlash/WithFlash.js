@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FlashMessage from 'containers/FlashMessageContainer';
-import styles from './WithFlash.scss';
+import styles from './WithFlash.module.scss';
 
 class WithFlash extends Component {
   constructor() {

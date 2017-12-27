@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import styles from './ParseOptions.scss';
+import styles from './ParseOptions.module.scss';
 import Fieldset from 'components/Fieldset/Fieldset';
 import GridPreview from './GridPreview';
 import ParseOption from './ParseOption';

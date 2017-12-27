@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ErrorPill from 'components/ErrorPill/ErrorPill';
 import { singularOrPlural } from 'lib/util';
-import styles from './ErrorPointer.scss';
+import styles from './ErrorPointer.module.scss';
 
 function ErrorPointer({ errorInfo, direction, scrollToColIdx }) {
   const className = direction === 'left' ? styles.errorPointerLeft : styles.errorPointerRight;

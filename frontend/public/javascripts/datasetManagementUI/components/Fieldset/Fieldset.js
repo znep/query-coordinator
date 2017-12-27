@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './FieldSet.scss';
+import styles from './FieldSet.module.scss';
 
 const Fieldset = ({ children, title, subtitle, closable, closeCallback, containerClass, legendClass }) => {
   let fsClasses = [styles.fieldset]; // eslint-disable-line prefer-const

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
-import styles from './tabs.scss';
+import styles from './tabs.module.scss';
 
 class Tabs extends React.Component {
   renderIndicator(tab) {

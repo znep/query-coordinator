@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
-import styles from './radio-button.scss';
+import styles from './radio-button.module.scss';
 import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
 import * as permissionsActions from '../../actions/PermissionsActions';
 import AudienceScopeLabel from '../AudienceScopeLabel';

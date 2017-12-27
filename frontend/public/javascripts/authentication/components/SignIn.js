@@ -5,7 +5,7 @@ import I18n from 'common/i18n';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignInForm from './SignInForm/SignInForm';
 import SocialSignIn from './Social/SocialSignIn';
-import styles from './signin.scss';
+import styles from './signin.module.scss';
 
 class SignIn extends React.Component {
   renderSocialSignIn(doAuth0Authorize) {

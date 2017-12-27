@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import SocialButtons from './SocialButtons';
 import CircleDivider from '../CircleDivider/CircleDivider';
-import styles from './social.scss';
+import styles from './social.module.scss';
 
 class SocialSignIn extends React.Component {
   render() {

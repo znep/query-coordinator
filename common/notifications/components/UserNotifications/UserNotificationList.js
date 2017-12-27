@@ -6,7 +6,7 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import UserNotification from './UserNotification';
-import styles from './user-notification-list.scss';
+import styles from './user-notification-list.module.scss';
 
 class UserNotificationList extends Component {
   renderUserNotifications() {

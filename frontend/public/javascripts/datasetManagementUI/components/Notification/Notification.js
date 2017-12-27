@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { CSSTransitionGroup } from 'react-transition-group';
 import ProgressBar from 'components/ProgressBar/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './Notification.scss';
+import styles from './Notification.module.scss';
 
 class Notification extends Component {
   constructor() {

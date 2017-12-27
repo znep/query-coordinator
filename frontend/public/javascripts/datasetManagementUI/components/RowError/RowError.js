@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './RowError.scss';
+import styles from './RowError.module.scss';
 
 function escapeValue(value) {
   return value ? `"${value.replace('"', '\\"')}"` : '';

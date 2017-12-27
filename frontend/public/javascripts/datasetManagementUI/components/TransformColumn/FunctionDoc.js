@@ -2,7 +2,7 @@ import _ from 'lodash';
 import * as React from 'react';
 import TypeIcon from '../TypeIcon/TypeIcon';
 import PropTypes from 'prop-types';
-import * as styles from './SoQLEditor.scss';
+import * as styles from './SoQLEditor.module.scss';
 
 function intersperse(things, thing) {
   let first = true;

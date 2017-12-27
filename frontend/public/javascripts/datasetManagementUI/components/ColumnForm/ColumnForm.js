@@ -4,7 +4,7 @@ import Fieldset from 'components/Fieldset/Fieldset';
 import WithFlash from 'containers/WithFlashContainer';
 import _ from 'lodash';
 import ColumnField from 'containers/ColumnFieldContainer';
-import styles from './ColumnForm.scss';
+import styles from './ColumnForm.module.scss';
 
 // makeFieldsFromColumn :: OutputColumn -> Array Field
 function makeFieldsFromColumn(oc) {

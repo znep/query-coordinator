@@ -1,7 +1,7 @@
 /* eslint react/jsx-boolean-value: 0 */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as styles from './SoQLEditor.scss';
+import * as styles from './SoQLEditor.module.scss';
 import {
   COMPILATION_EMPTY,
   COMPILATION_IN_PROGRESS,

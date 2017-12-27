@@ -10,7 +10,7 @@ import ProductNotification from './ProductNotification';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import Spinner from 'common/notifications/components/Spinner';
 import ErrorMessage from 'common/notifications/components/ErrorMessage';
-import styles from './product-notification-list.scss';
+import styles from './product-notification-list.module.scss';
 
 class ProductNotificationList extends Component {
   renderUnreadNewCountLabel() {

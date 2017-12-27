@@ -6,7 +6,7 @@ import { Link, browserHistory, withRouter } from 'react-router';
 import { createViewSource } from 'reduxStuff/actions/createSource';
 import { getRevision } from 'reduxStuff/actions/loadRevision';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
-import styles from 'styles/SchemaPreview.scss';
+import styles from 'styles/SchemaPreview.module.scss';
 
 const mapStateToProps = ({ entities }, { params }) => ({
   onExpandColumn: _.noop,

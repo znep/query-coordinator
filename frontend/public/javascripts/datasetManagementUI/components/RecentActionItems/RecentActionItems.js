@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Link } from 'react-router';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import * as Links from 'links/links';
-import styles from './RecentActionItems.scss';
+import styles from './RecentActionItems.module.scss';
 
 const SubI18n = I18n.home_pane.home_pane_sidebar;
 

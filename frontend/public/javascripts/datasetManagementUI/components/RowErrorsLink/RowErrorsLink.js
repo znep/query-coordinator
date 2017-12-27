@@ -8,7 +8,7 @@ import * as Links from 'links/links';
 import * as DisplayState from 'lib/displayState';
 import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
-import styles from './RowErrorsLink.scss';
+import styles from './RowErrorsLink.module.scss';
 
 const FLYOUT_ID = 'malformed-rows-flyout';
 

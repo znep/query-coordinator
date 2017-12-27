@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Fieldset from 'components/Fieldset/Fieldset';
 import DatasetField from 'containers/DatasetFieldContainer';
 import WithFlash from 'containers/WithFlashContainer';
-import styles from './DatasetForm.scss';
+import styles from './DatasetForm.module.scss';
 
 function getChangeHandler(field, fieldsetName, f) {
   switch (field.elementType) {

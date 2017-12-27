@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TransformColumn from 'containers/TransformColumnContainer';
 import classNames from 'classnames';
-import styles from './ShowOutputSchema.scss';
+import styles from './ShowOutputSchema.module.scss';
 
 const TransformColumnPane = (props) => {
   return (

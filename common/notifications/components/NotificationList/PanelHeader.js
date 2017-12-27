@@ -5,7 +5,7 @@ import cssModules from 'react-css-modules';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import styles from './panel-header.scss';
+import styles from './panel-header.module.scss';
 
 class PanelHeader extends Component {
   renderNewNotificationsLabel() {

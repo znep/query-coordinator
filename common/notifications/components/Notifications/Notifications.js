@@ -12,7 +12,7 @@ import AlertPreferenceAPI from 'common/notifications/api/AlertPreferenceAPI';
 import Bell from 'common/notifications/components/Bell/Bell';
 import TransientNotifications from 'common/notifications/components/UserNotifications/TransientNotifications';
 import { DEFAULT_FILTER_TAB } from 'common/notifications/constants';
-import styles from './notifications.scss';
+import styles from './notifications.module.scss';
 
 class Notifications extends Component {
   constructor(props) {

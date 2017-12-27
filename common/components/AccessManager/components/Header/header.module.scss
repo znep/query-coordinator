@@ -1,9 +1,9 @@
-@import '../../common.scss';
+@import '../../common.module.scss';
 
 .header {
   & h2 {
     padding-bottom: 10px;
-    font-size: 17px;      
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.3px;
   }

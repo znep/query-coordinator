@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 
-import styles from './error-message.scss';
+import styles from './error-message.module.scss';
 
 class ErrorMessage extends PureComponent {
   render() {

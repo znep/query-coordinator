@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import React, { Component } from 'react';
 import styleguide from 'common/components';
-import styles from './PublishButton.scss';
+import styles from './PublishButton.module.scss';
 
 const FLYOUT_ID = 'publication-readiness-flyout';
 const SubI18n = I18n.home_pane.publish_dataset_button;

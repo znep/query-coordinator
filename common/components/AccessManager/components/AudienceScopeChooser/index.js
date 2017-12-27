@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
-import styles from './chooser.scss';
+import styles from './chooser.module.scss';
 import AudienceScopeChooserRadioButton from './AudienceScopeChooserRadioButton';
 
 /**

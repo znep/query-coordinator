@@ -11,7 +11,7 @@ import PanelFooter from './PanelFooter';
 import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
 import Tabs from 'common/notifications/components/Tabs/Tabs';
 import { FILTER_TABS } from 'common/notifications/constants';
-import styles from './notification-list.scss';
+import styles from './notification-list.module.scss';
 
 class NotificationList extends Component {
   renderPanelHeader() {

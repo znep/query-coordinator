@@ -3,7 +3,7 @@ import React from 'react';
 import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { singularOrPlural } from 'lib/util';
 import { commaify } from '../../../common/formatNumber';
-import styles from './ErrorFlyout.scss';
+import styles from './ErrorFlyout.module.scss';
 
 export function getErrorFlyoutId(transform) {
   return `transform-status-flyout-${transform.id}`;

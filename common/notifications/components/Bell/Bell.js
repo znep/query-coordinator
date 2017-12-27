@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import styles from './bell.scss';
+import styles from './bell.module.scss';
 
 class Bell extends Component {
   render() {

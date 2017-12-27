@@ -9,7 +9,7 @@ import RightsColumn from './RightsColumn';
 import RoleColumn from './RoleColumn';
 import * as selectors from '../../selectors';
 
-import styles from './roles-grid.scss';
+import styles from './roles-grid.module.scss';
 
 const mapStateToProps = state => ({
   roles: selectors.getRolesFromState(state)

@@ -7,7 +7,7 @@ import { createMemoryHistory, Router } from 'react-router';
 import I18n from 'common/i18n';
 import ToastNotification from 'common/components/ToastNotification';
 
-import styles from './access-manager.scss';
+import styles from './access-manager.module.scss';
 import Header from './Header';
 import Errors from './Errors';
 import AccessSummary from './AccessSummary';

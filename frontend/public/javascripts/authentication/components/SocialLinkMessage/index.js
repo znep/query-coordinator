@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
-import styles from './social-link.scss';
+import styles from './social-link.module.scss';
 
 class SocialLinkMessage extends Component {
   render() {

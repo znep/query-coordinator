@@ -9,7 +9,7 @@ import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
 import SetupAutomation from 'containers/SetupAutomationContainer';
 import FormatColumn from 'containers/FormatColumnContainer';
 
-import styles from './Modal.scss';
+import styles from './Modal.module.scss';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName, payload) => {

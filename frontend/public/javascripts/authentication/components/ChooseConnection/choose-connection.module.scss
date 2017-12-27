@@ -17,7 +17,7 @@
   margin-left: auto !important;
   display: flex;
   padding: 0;
-  
+
   /* If the screen is big enough, take up less of it */
   @media screen and (max-width: $break-large) {
     max-width: 65%;

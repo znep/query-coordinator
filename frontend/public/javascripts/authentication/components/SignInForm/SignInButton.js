@@ -6,7 +6,7 @@ import I18n from 'common/i18n';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import ForcedConnectionsPropType from '../../PropTypes/ForcedConnectionsPropType';
 import { findForcedOrEmailDomainConnection } from '../../Util';
-import styles from './sign-in-form.scss';
+import styles from './sign-in-form.module.scss';
 
 class SignInButton extends React.Component {
   constructor(props) {

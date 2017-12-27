@@ -14,7 +14,7 @@ import GeoFlyout, { getGeoFlyoutId } from 'components/GeoFlyout/GeoFlyout';
 import MapFlyout from 'containers/MapFlyoutContainer';
 import StatusText from 'components/StatusText/StatusText';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './TransformStatus.scss';
+import styles from './TransformStatus.module.scss';
 
 const SubI18n = I18n.show_output_schema.column_header;
 

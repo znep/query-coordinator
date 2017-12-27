@@ -9,7 +9,7 @@ import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import { FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS } from 'common/notifications/constants';
-import styles from './user-notification.scss';
+import styles from './user-notification.module.scss';
 
 class UserNotification extends React.Component {
   constructor(props) {

@@ -2,7 +2,7 @@
 @import 'common/styleguide/variables/colors';
 
 .sidebar {
-  composes: sidebar from '../ManageMetadataSidebar/ManageMetadataSidebar.scss';
+  composes: sidebar from '../ManageMetadataSidebar/ManageMetadataSidebar.module.scss';
   padding: 0 !important;
   @media (max-width: 750px) {
     flex: 0 0 auto;
@@ -12,11 +12,11 @@
 }
 
 .tab {
-  composes: tab from '../ManageMetadataSidebar/ManageMetadataSidebar.scss';
+  composes: tab from '../ManageMetadataSidebar/ManageMetadataSidebar.module.scss';
 }
 
 .selected {
-  composes: selected from '../ManageMetadataSidebar/ManageMetadataSidebar.scss';
+  composes: selected from '../ManageMetadataSidebar/ManageMetadataSidebar.module.scss';
 }
 
 .sourceList {

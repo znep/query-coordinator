@@ -9,7 +9,7 @@ import NotifyButton from 'containers/NotifyButtonContainer';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'reduxStuff/actions/apiCalls';
-import styles from './Publishing.scss';
+import styles from './Publishing.module.scss';
 
 const SubI18n = I18n.home_pane.publish_modal;
 

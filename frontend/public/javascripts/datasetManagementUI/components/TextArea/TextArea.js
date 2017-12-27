@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './TextArea.scss';
+import styles from './TextArea.module.scss';
 
 const TextArea = ({ handleChange, field, inErrorState }) => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from 'components/ApiCallButton/ApiCallButton.scss';
+import styles from 'components/ApiCallButton/ApiCallButton.module.scss';
 
 // TODO : reconcile with APICallButton at some point
 const SubmitButton = ({ isDisabled, handleClick, buttonName }) => (

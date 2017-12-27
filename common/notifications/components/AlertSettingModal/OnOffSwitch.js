@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
-import styles from './on-off-switch.scss';
+import styles from './on-off-switch.module.scss';
 import classNames from 'classnames';
 import _ from 'lodash';
 

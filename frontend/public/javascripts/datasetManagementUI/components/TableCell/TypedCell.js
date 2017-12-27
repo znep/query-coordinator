@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import styles from './TableCell.scss';
+import styles from './TableCell.module.scss';
 
 const formatMapping = {
   'align.left': styles.formatAlignLeft,

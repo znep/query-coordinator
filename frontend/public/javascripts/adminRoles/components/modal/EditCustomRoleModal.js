@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import styles from './edit-custom-role-modal.scss';
+import styles from './edit-custom-role-modal.module.scss';
 import includes from 'lodash/fp/includes';
 import noop from 'lodash/fp/noop';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';

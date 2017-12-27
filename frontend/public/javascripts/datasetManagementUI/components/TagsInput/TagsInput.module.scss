@@ -39,7 +39,7 @@ form .textInput {
 }
 
 .textInputError {
-  composes: textInputError from '../TextInput/TextInput.scss';
+  composes: textInputError from '../TextInput/TextInput.module.scss';
 }
 
 .buttonError {

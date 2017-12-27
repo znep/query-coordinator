@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './SchemaPreviewTable.scss';
+import styles from './SchemaPreviewTable.module.scss';
 
 const Translations = I18n.show_output_schema.column_header;
 

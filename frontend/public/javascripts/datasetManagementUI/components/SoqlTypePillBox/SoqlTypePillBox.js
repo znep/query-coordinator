@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './SoqlTypePillBox.scss';
+import styles from './SoqlTypePillBox.module.scss';
 
 const Translations = I18n.show_output_schema.column_header;
 

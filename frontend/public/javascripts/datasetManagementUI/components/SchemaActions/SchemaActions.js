@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as Links from 'links/links';
 import { RecentActionsTimestamp } from 'components/RecentActionItems/RecentActionItems';
 import { Link } from 'react-router';
-import styles from './SchemaActions.scss';
+import styles from './SchemaActions.module.scss';
 
 const SchemaActions = ({ oss, iss, params }) => {
   const items = oss.map((os, idx) => (

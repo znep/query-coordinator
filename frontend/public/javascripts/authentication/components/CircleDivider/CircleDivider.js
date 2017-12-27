@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
-import styles from './circle-divider.scss';
+import styles from './circle-divider.module.scss';
 
 function CircleDivider({ text }) {
   return (

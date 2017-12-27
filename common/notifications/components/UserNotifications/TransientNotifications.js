@@ -6,7 +6,7 @@ import _ from 'lodash';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import UserNotification from './UserNotification';
-import styles from './transient-notifications.scss';
+import styles from './transient-notifications.module.scss';
 
 class TransientNotifications extends Component {
   render() {

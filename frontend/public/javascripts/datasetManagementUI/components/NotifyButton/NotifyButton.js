@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
-import styles from './NotifyButton.scss';
+import styles from './NotifyButton.module.scss';
 
 function NotifyButton({ apiCall, taskSet, addEmailInterest, className }) {
   if (taskSet) {

@@ -3,6 +3,7 @@ import * as Validators from '../validators';
 import { showNotification, START, COMPLETE_SUCCESS, COMPLETE_FAIL } from '../actions';
 import UsersApi from 'common/users-api';
 import { getFilters, getUsersOffset, getUsersOrderBy, getUsersResultsLimit, getUsersSortDirection } from '../reducers';
+import { loadInvitedUsers } from '../invitedUsers/actions';
 
 // Async Stages
 export const VALIDATION_FAIL = 'VALIDATION_FAIL';
@@ -51,13 +52,8 @@ export const clearAddUserErrors = () => ({ type: SET_ADD_USER_ERRORS, payload: {
 export const SUBMIT_NEW_USERS = 'SUBMIT_NEW_USERS';
 const postNewUsers = (emails, roleId, dispatch) => {
   CoreFutureAccountsApi.postFutureUsers(emails, roleId).
-    then(createdEmails => {
-      const invitedUsers = createdEmails.map((email, i) => ({
-        createdAt: Date.now() / 1000,
-        email,
-        id: Date.now() + i,
-        pendingRoleId: roleId
-      }));
+    then(loadInvitedUsers).
+    then(invitedUsers => {
       dispatch({ type: SUBMIT_NEW_USERS, stage: COMPLETE_SUCCESS, payload: { invitedUsers } });
       dispatch(toggleAddUserUi(false));
       dispatch(showNotification({ translationKey: 'users.notifications.add_user_success' }, 'success'));

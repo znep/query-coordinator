@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cx from 'classnames';
+import classNames from 'classnames';
 import { spring } from 'react-motion';
 
 import { SocrataIcon } from '../SocrataIcon';
@@ -16,31 +16,27 @@ export const types = {
 
 export default class ToastNotification extends Component {
   static propTypes = {
-    canDismiss: PropTypes.bool,
-    content: PropTypes.string,
-    onDismiss: PropTypes.func.isRequired,
+    onDismiss: PropTypes.func,
     positionTop: PropTypes.number,
     showNotification: PropTypes.bool,
     type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error'])
   };
 
   static defaultProps = {
-    canDismiss: false,
-    content: '',
     positionTop: 35,
     showNotification: false,
     type: null
-  }
+  };
 
   renderNotification = (style) => {
     const {
-      canDismiss,
+      children,
       content,
       onDismiss,
       type
     } = this.props;
 
-    const className = cx(
+    const className = classNames(
       'alert',
       {
         [type]: true
@@ -51,8 +47,8 @@ export default class ToastNotification extends Component {
     return (
       <div className="socrata-toast-notification">
         <div className={className} style={style}>
-          <span dangerouslySetInnerHTML={{ __html: content }} />
-          {canDismiss
+          {children}
+          {onDismiss
             ? (
             <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
               <SocrataIcon name="close-2" />

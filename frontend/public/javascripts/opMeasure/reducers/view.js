@@ -30,14 +30,22 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         saving: true,
-        saveError: null
+        saveError: null,
+        showSaveToastMessage: false
       };
 
     case actions.view.SAVE_COMPLETE:
       return {
         ...state,
         saving: false,
-        saveError: action.error
+        saveError: action.error,
+        showSaveToastMessage: true
+      };
+
+    case actions.view.CLEAR_SAVE_TOAST:
+      return {
+        ...state,
+        showSaveToastMessage: false
       };
 
     case actions.view.SET_ACTIVE_PANE:

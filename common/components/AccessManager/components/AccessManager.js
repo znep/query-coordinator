@@ -87,11 +87,11 @@ class AccessManager extends Component {
     return (
       <div>
         <ToastNotification
-          canDismiss
-          content={toastMessage}
           onDismiss={dismissToastNotification}
           showNotification={toastMessageVisible}
-          type="success" />
+          type="success">
+          <span dangerouslySetInnerHTML={{ __html: toastMessage}} />
+        </ToastNotification>
         <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
           <div styleName="modal">
             <Header />

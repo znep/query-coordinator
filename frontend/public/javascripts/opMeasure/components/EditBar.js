@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, EditBar as SocrataComponentsEditBar } from 'common/components';
+import { Button, EditBar as SocrataComponentsEditBar, ToastNotification } from 'common/components';
 import I18n from 'common/i18n';
 
 import { openEditModal } from '../actions/editor';
@@ -12,6 +12,22 @@ import { enterPreviewMode, saveMeasure } from '../actions/view';
 
 // Container for the edit menu affordance, as well as save and preview buttons.
 export class EditBar extends PureComponent {
+  renderSaveToast() {
+    const { saveError, showSaveToastMessage } = this.props;
+
+    const toastMessage = saveError ?
+      I18n.t('open_performance.save_error') :
+      I18n.t('open_performance.save_success');
+
+    return (
+      <ToastNotification
+        showNotification={showSaveToastMessage}
+        type={saveError ? 'error' : 'success'}>
+        <span>{toastMessage}</span>
+      </ToastNotification>
+    );
+  }
+
   render() {
     const {
       editBusy,
@@ -30,7 +46,10 @@ export class EditBar extends PureComponent {
           <Button variant="primary" dark busy={editBusy} onClick={onClickEdit}>
             {I18n.t('open_performance.edit')}
           </Button>
-          <Button className="btn-save" dark onClick={onClickSave} busy={saving}>Save</Button>
+          <Button className="btn-save" dark onClick={onClickSave} busy={saving}>
+            {I18n.t('open_performance.save')}
+          </Button>
+          {this.renderSaveToast()}
           <Button className="btn-preview" variant="transparent" onClick={onClickPreview}>
             {I18n.t('open_performance.preview')}
             <span className="socrata-icon-preview" role="presentation" />
@@ -46,20 +65,23 @@ EditBar.propTypes = {
     name: PropTypes.string
   }),
   editBusy: PropTypes.bool,
-  saving: PropTypes.bool,
-  saveError: PropTypes.any,
-  onClickPreview: PropTypes.func,
   onClickEdit: PropTypes.func,
-  onClickSave: PropTypes.func
+  onClickPreview: PropTypes.func,
+  onClickSave: PropTypes.func,
+  saveError: PropTypes.any,
+  showSaveToastMessage: PropTypes.bool,
+  saving: PropTypes.bool
 };
 
 function mapStateToProps(state) {
-  const { measure, saving } = state.view;
+  const { measure, saving, saveError, showSaveToastMessage } = state.view;
   const editBusy = _.get(measure, 'dataSourceLensUid') && !_.get(state.editor, 'dataSourceView');
 
   return {
     measure: state.view.measure,
     editBusy,
+    saveError,
+    showSaveToastMessage,
     saving
   };
 }

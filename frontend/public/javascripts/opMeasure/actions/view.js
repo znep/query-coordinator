@@ -12,6 +12,24 @@ export const saveComplete = (error) => ({
   type: SAVE_COMPLETE,
   error
 });
+
+export const CLEAR_SAVE_TOAST = 'CLEAR_SAVE_TOAST';
+/*
+ * Clears the save toast, optionally after a debounce delay.
+ * The `debounce` param controls the time constant of the debounce.
+ * As an example, this sets the time constant to 3 seconds:
+ * clearSaveToast({ time: 3000 });
+ *
+ * See the redux-debounced documentation for full details:
+ * https://github.com/ryanseddon/redux-debounced/blob/master/README.md
+ *
+ * If the `debounce` param is omitted, the toast is cleared immediately.
+ */
+export const clearSaveToast = (debounce) => ({
+  type: CLEAR_SAVE_TOAST,
+  meta: { debounce } // This is hooking into the react-debounced middleware.
+});
+
 // Saves the measure from the viewer state.
 export const saveMeasure = () => {
   return async (dispatch, getState) => {
@@ -20,6 +38,7 @@ export const saveMeasure = () => {
     // Saving happens in two requests, because Measures exist in both the ViewsService
     // and MeasuresService.
 
+    // Show the spinner, etc.
     dispatch(saveStart());
 
     try {
@@ -44,6 +63,8 @@ export const saveMeasure = () => {
     } catch (e) {
       dispatch(saveComplete(e));
     }
+
+    dispatch(clearSaveToast({ time: 3000 }));
   };
 };
 

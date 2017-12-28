@@ -72,15 +72,30 @@ export class HrefDownload extends Component {
     const { view } = this.props;
     const { isHref } = view;
     const { allAccessPoints } = this.props.view;
-    const hideHrefTitle = FeatureFlags.value('usaid_features_enabled') && view.metadata.isParent === false;
+
+    // things for USAID (EN-19924)
+    const isUSAID = FeatureFlags.value('usaid_features_enabled');
+    const isParent = view.metadata && view.metadata.isParent === true;
+    const isChild = view.metadata && view.metadata.isParent === false;
 
     if (!isHref && _.isEmpty(allAccessPoints)) {
       return null;
     }
 
+    let hrefTitle;
+
+    if (isUSAID && isChild) {
+      // hide the title
+      hrefTitle = null;
+    } else if (isUSAID && isParent) {
+      hrefTitle = (<h2 className="landing-page-section-header">{I18n.href_download.associated_datasets}</h2>);
+    } else {
+      hrefTitle = (<h2 className="landing-page-section-header">{I18n.href_download.title}</h2>);
+    }
+
     return (
       <section className="landing-page-section href-download dataset-download-section">
-        {hideHrefTitle || <h2 className="landing-page-section-header">{I18n.href_download.title}</h2>}
+        {hrefTitle}
 
         {this.renderManagePrompt()}
         {this.renderContent()}

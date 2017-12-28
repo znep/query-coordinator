@@ -113,7 +113,7 @@ export function mapStateToProps(state) {
     statsUrl: view.statsUrl,
     renderWatchDatasetButton() {
       if (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled) {
-        return (<WatchDatasetButton view={view} />);
+        return (<WatchDatasetButton view={view} useDataAssetStrings={useDataAssetStrings()} />);
       } else {
         return null;
       }

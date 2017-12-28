@@ -36,7 +36,8 @@ const streamableContentTypes = [
   'text/csv',
   'text/tab-separated-values',
   'application/vnd.google-earth.kml+xml',
-  'application/vnd.geo+json'
+  'application/vnd.geo+json',
+  'application/json'
 ];
 
 function isSourceStreamable(source) {
@@ -98,6 +99,12 @@ function getFilename(source) {
   return 'Unknown';
 }
 
+// when a source fails because it is an unparsable_file, the UI recreates it with
+// parse_source: false, behind the scenes. Don't show the error in this case
+function isHiddenError(source) {
+  return !!source.failure_details && source.failure_details.key === 'unparsable_file';
+}
+
 function isTooOld(ts) {
   return moment().diff(ts, 'minutes') > 1;
 }
@@ -137,6 +144,7 @@ const UploadNotification = ({ source }) => {
     }
   }
 
+  if (notificationStatus === 'error' && isHiddenError(source)) return null;
   if (notificationStatus === 'error' && isTooOld(source.failed_at)) return null;
   if (notificationStatus === 'success' && isTooOld(source.finished_at)) return null;
 

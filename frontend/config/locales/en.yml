@@ -1844,6 +1844,7 @@ en:
     action_buttons:
       api: API
       comment: Comment on this Dataset
+      contact_asset_owner: Contact Data Asset Owner
       contact_owner: Contact Dataset Owner
       download: Download
       export: Export
@@ -1852,7 +1853,9 @@ en:
       odata: Access Data via OData
       share: Share
       watch_dataset: Watch this Dataset
+      watch_data_asset: Watch this Data Asset
       unwatch_dataset: Unwatch this Dataset
+      unwatch_data_asset: Unwatch this Data Asset
       create_alert: Create Alert
     add: Add
     api_modal:
@@ -1998,7 +2001,9 @@ en:
       edit_prompt_button: Edit Links
       edit_prompt_message: Edit the external source link(s) for this dataset.
       title: Access this Data
+      associated_datasets: Associated Datasets
     less: Show Less
+    manage_data_asset: Manage Data Asset
     manage_dataset: Manage Dataset
     manage_prompt: Click here to manage permissions
     metadata:

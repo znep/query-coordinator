@@ -79,9 +79,30 @@ function updateSource(params, source, changes) {
   };
 }
 
+function dontParseSource(params, source) {
+  return dispatch => {
+    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } }))
+      .then(resource => {
+        dispatch(listenForInputSchema(resource.id, params));
+        dispatch(
+          createUploadSourceSuccess(
+            resource.id,
+            resource.created_by,
+            resource.created_at,
+            resource.source_type,
+            100
+          )
+        );
+        dispatch(addNotification('source', resource.id));
+        browserHistory.push(Links.showBlobPreview(params, resource.id));
+        return resource;
+      });
+  };
+}
+
 export function updateSourceParseOptions(params, source, parseOptions) {
   return dispatch => {
-    dispatch(updateSource(params, source, { parse_options: parseOptions }))
+    return dispatch(updateSource(params, source, { parse_options: parseOptions }))
       .then(resource => {
         dispatch(listenForInputSchema(resource.id, params));
         return resource;
@@ -132,24 +153,32 @@ export function createUploadSource(file, parseFile, params, callId) {
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
-      if (parseFile) {
-        // listen on source channel, which puts other stuff into store
-        dispatch(listenForInputSchema(resource.id, params));
-      }
+      // listen on source channel
+      dispatch(listenForInputSchema(resource.id, params));
 
-      // send bytes to created upload
-      return dispatch(uploadFile(resource.id, file)).then(bytesSource => {
+      return dispatch(uploadFile(resource.id, file))
+      .then(bytesSource => {
         if (!parseFile) {
-          dispatch(sourceUpdate(resource.id, bytesSource.resource));
-          browserHistory.push(Links.showBlobPreview(params, resource.id));
+          dispatch(sourceUpdate(bytesSource.resource.id, bytesSource.resource));
+          browserHistory.push(Links.showBlobPreview(params, bytesSource.resource.id));
         }
         return bytesSource;
+      }).catch(err => {
+        if (err.key && err.key === 'unparsable_file') {
+          // this was not a parseable file type, even though we thought it would be
+          // ex: zipfile but not shapefile, .json but not geojson
+          // recover by telling DSMAPI to make a parse_source: false copy
+          dispatch(dontParseSource(params, resource));
+        } else {
+          throw err;
+        }
       });
     }).catch(() => {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     });
   };
 }
+
 
 // URL Source
 export function createURLSource(url, params) {
@@ -173,7 +202,7 @@ export function createURLSource(url, params) {
   };
 }
 
-export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) {
+export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType, percentCompleted = 0) {
   return {
     type: CREATE_UPLOAD_SOURCE_SUCCESS,
     source: {
@@ -181,7 +210,7 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType) 
       source_type: sourceType,
       created_by: createdBy,
       created_at: parseDate(createdAt),
-      percentCompleted: 0
+      percentCompleted
     }
   };
 }

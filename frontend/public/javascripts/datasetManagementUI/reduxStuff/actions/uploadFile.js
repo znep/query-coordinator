@@ -13,12 +13,12 @@ export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
 function getContentType(fileType) {
-  // TODO: boo, not true for blobs
   // Substitute .json for .geojson content type
   // because that's the only json variant we support -
   // if the user has a file `foo.json`, we'll translate
   // the content type to geojson for them
   if (fileType.indexOf('application/json') > -1) {
+    // TODO: stop doing this for json files when EN-21134 is fixed
     return 'application/vnd.geo+json';
   }
   return fileType;
@@ -134,36 +134,8 @@ export function uploadFile(sourceId, file) {
     return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, onProgress)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
-        // Why do we have this action? it's stupid - we're setting something
-        // that dsmapi sets for us and we get in the response....
-        dispatch(uploadFileSuccess(sourceId, new Date()));
-
         dispatch(apiCallSucceeded(callId));
-
-        dispatch(removeNotificationAfterTimeout(sourceId));
-
         return resp;
-      })
-      .catch(err => {
-        // also this is not required...
-        dispatch(uploadFileFailure(sourceId));
-        dispatch(apiCallFailed(callId, err));
       });
-  };
-}
-
-function uploadFileSuccess(sourceId, finishedAt) {
-  return {
-    type: UPLOAD_FILE_SUCCESS,
-    sourceId,
-    finishedAt
-  };
-}
-
-function uploadFileFailure(sourceId) {
-  return {
-    type: UPLOAD_FILE_FAILURE,
-    sourceId,
-    failedAt: Date.now()
   };
 }

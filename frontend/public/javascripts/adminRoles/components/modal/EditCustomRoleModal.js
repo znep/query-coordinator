@@ -92,7 +92,7 @@ class EditCustomRoleModal extends Component {
                 >
                   {translate('screens.admin.roles.buttons.cancel')}
                 </Button>
-                <Button bvariant="primary" className={styles['save-button']} onClick={onSubmit}>
+                <Button variant="primary" className={styles['save-button']} onClick={onSubmit}>
                   {translate(`screens.admin.roles.buttons.${editingNewRole ? 'create' : 'save'}`)}
                 </Button>
               </div>

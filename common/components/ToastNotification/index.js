@@ -33,48 +33,46 @@ export default class ToastNotification extends Component {
     type: null
   };
 
-  renderNotification = (style) => {
+  render() {
     const {
       children,
-      content,
+      customTransition,
       onDismiss,
+      positionTop,
+      showNotification,
       type
     } = this.props;
 
-    const className = classNames(
+    const defaultTransition = {
+      willEnter: () => ({ opacity: 0, top: -positionTop }),
+      willLeave: () => ({ opacity: spring(0), top: spring(-positionTop) }),
+      style: { opacity: spring(1), top: spring(positionTop) }
+    };
+
+    const contentClassName = classNames(
       'alert',
       type,
       this.props.className
     );
 
     return (
-      <div className="socrata-toast-notification">
-        <div className={className} style={style}>
-          {children}
-          {onDismiss
-            ? (
-            <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
-              <SocrataIcon name="close-2" />
-            </button>
-              )
-            : null}
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    const { customTransition, positionTop, showNotification } = this.props;
-    const defaultTransition = {
-      willEnter: () => ({ opacity: 0, top: -positionTop }),
-      willLeave: () => ({ opacity: spring(0), top: spring(-positionTop) }),
-      style: { opacity: spring(1), top: spring(positionTop) }
-    };
-    return (
       <ConditionTransitionMotion
         condition={showNotification}
         {...(customTransition || defaultTransition)}>
-        {style => this.renderNotification(style)}
+        {(style) => (
+          <div className="socrata-toast-notification">
+            <div className={contentClassName} style={style}>
+              {children}
+              {onDismiss
+                ? (
+                <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
+                  <SocrataIcon name="close-2" />
+                </button>
+                  )
+                : null}
+            </div>
+          </div>
+        )}
       </ConditionTransitionMotion>
     );
   }

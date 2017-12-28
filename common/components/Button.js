@@ -49,24 +49,6 @@ class Button extends Component {
     onClick: PropTypes.func
   };
 
-  renderChildren() {
-    const {
-      busy,
-      children,
-      dark,
-      variant
-    } = this.props;
-
-    if (busy) {
-      const classes = classNames('spinner-default', `spinner-btn-${variant}`, {
-        'spinner-dark': dark === true
-      });
-      return (<span className={classes}></span>);
-    } else {
-      return children;
-    }
-  }
-
   render() {
     const {
       busy,
@@ -99,9 +81,19 @@ class Button extends Component {
       'btn-busy': busy === true
     });
 
+    let childrenElements;
+    if (busy) {
+      const classes = classNames('spinner-default', `spinner-btn-${variant}`, {
+        'spinner-dark': dark === true
+      });
+      childrenElements = <span className={classes}></span>;
+    } else {
+      childrenElements = children;
+    }
+
     return (
       <button type="button" disabled={disabled} className={classes} onClick={onClickFiltered}>
-        {this.renderChildren()}
+        {childrenElements}
       </button>
     );
   }

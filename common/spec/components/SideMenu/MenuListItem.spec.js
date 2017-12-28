@@ -22,7 +22,7 @@ describe('MenuListItem', () => {
 
   describe('iconName', () => {
     it('renders if provided', () => {
-      assert.lengthOf(element.find(SocrataIcon), 1);
+      assert.isTrue(element.find(SocrataIcon).exists());
     });
 
     it('does not render if not provided', () => {
@@ -30,7 +30,7 @@ describe('MenuListItem', () => {
         iconName: null
       });
       element = shallow(<MenuListItem {...props} />);
-      assert.lengthOf(element.find(SocrataIcon), 0);
+      assert.isFalse(element.find(SocrataIcon).exists());
     });
   });
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { createSelector } from 'reselect';
 import { dataProviders } from 'common/visualizations';
 
-import { VISUALIZATION_TYPES, COLUMN_TYPES } from '../constants';
+import { VISUALIZATION_TYPES, COLUMN_TYPES, NUMERIC_COLUMN_TYPES, GEO_LOCATION_COLUMN_TYPES } from '../constants';
 
 const getLoading = state => state.isLoading;
 const getDomain = state => state.domain;
@@ -32,6 +32,28 @@ export const getDisplayableColumns = createSelector(
     } else {
       return []; // No data yet.
     }
+  }
+);
+
+export const getNumericalColumns = createSelector(
+  getDatasetMetadata,
+  (datasetMetadata) => {
+    return _.chain(datasetMetadata.columns).
+    filter(isNumericColumn).
+    map(toDatasetMetadata(datasetMetadata)).
+    sortBy('name').
+    value();
+  }
+);
+
+export const getNumericalAndTextColumns = createSelector(
+  getDatasetMetadata,
+  (datasetMetadata) => {
+    return _.chain(datasetMetadata.columns).
+    filter(isTextOrNumericColumn).
+    map(toDatasetMetadata(datasetMetadata)).
+    sortBy('name').
+    value();
   }
 );
 
@@ -90,6 +112,53 @@ export const getRecommendedDimensions = (state, type) => {
 export const isDimensionTypeCalendarDate = (state, column) => {
   const dimensionType = getDimensionType(state, column);
   return !_.isUndefined(dimensionType) && (dimensionType.type === 'calendar_date');
+};
+
+export const isPointMapColumn = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+
+  return !_.isUndefined(dimensionType) && _.includes(['location', 'point', 'multipoint'], dimensionType.type);
+};
+
+export const isLineMapColumn = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+
+  return !_.isUndefined(dimensionType) && _.includes(['line', 'multiline'], dimensionType.type);
+};
+
+export const isBoundaryMapColumn = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+
+  return !_.isUndefined(dimensionType) && _.includes(['polygon', 'multipolygon'], dimensionType.type);
+};
+
+export const getMapType = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+  let mapType = null;
+
+  if (_.isUndefined(dimensionType)) {
+    return mapType;
+  }
+
+  switch (dimensionType.type) {
+    case 'location':
+    case 'point':
+    case 'multipoint':
+      mapType = 'pointMap';
+      break;
+
+    case 'line':
+    case 'multiline':
+      mapType = 'lineMap';
+      break;
+
+    case 'polygon':
+    case 'multipolygon':
+      mapType = 'boundaryMap';
+      break;
+  }
+
+  return mapType;
 };
 
 export const getDimensionType = (state, column) => {
@@ -168,6 +237,15 @@ export const getAnyLocationColumn = createSelector(
   (datasetMetadata) => _.find(datasetMetadata.columns, { renderTypeName: 'point' })
 );
 
+export const getFirstOccurringGeoLocationColumn = createSelector(
+  getDatasetMetadata,
+  (datasetMetadata) => {
+    return _.find(datasetMetadata.columns, column => {
+      return isGeoLocationColumn(column);
+    });
+  }
+);
+
 export const getSoqlDataProvider = createSelector(
   getDomain,
   getDatasetUid,
@@ -203,5 +281,17 @@ const injectFieldName = (column, key) => {
 const isNumericColumn = (column) => {
   const renderTypeName = _.get(column, 'renderTypeName');
 
-  return (renderTypeName === 'number' || renderTypeName === 'money' || renderTypeName === 'percent');
+  return _.includes(NUMERIC_COLUMN_TYPES, renderTypeName);
+};
+
+const isGeoLocationColumn = (column) => {
+  const renderTypeName = _.get(column, 'renderTypeName');
+
+  return _.includes(GEO_LOCATION_COLUMN_TYPES, renderTypeName);
+};
+
+const isTextOrNumericColumn = (column) => {
+  const renderTypeName = _.get(column, 'renderTypeName');
+
+  return renderTypeName === 'text' || _.includes(NUMERIC_COLUMN_TYPES, renderTypeName);
 };

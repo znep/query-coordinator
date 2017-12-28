@@ -108,6 +108,81 @@ export const getPointSize = createSelector(
   (vif) => _.get(vif, 'configuration.pointSize', 1)
 );
 
+export const getMapType = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.mapType', null)
+);
+
+export const getPointSizeByColumn = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.resizePointsBy', null)
+);
+
+export const getMinimumPointSize = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 3)
+);
+
+export const getMaximumPointSize = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 7)
+);
+
+export const getNumberOfDataClasses = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.numberOfDataClasses', 5)
+);
+
+export const getMaxClusteringZoomLevel = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 8)
+);
+
+export const getPointThreshold = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.pointThreshold', 4500)
+);
+
+export const getClusterRadius = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.clusterRadius', 50)
+);
+
+export const getMaxClusterSize = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 8)
+);
+
+export const getStackRadius = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', 20)
+);
+
+export const getPointColorByColumn = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.colorPointsBy', null)
+);
+
+export const getLineWeightByColumn = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.weighLinesBy', null)
+);
+
+export const getMinimumLineWeight = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumLineWeight', 3)
+);
+
+export const getMaximumLineWeight = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumLineWeight', 7)
+);
+
+export const getLineColorByColumn = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.colorLinesBy', null)
+);
+
 export const getColorScale = createSelector(
   getCurrentVif,
   (vif) => {
@@ -122,6 +197,11 @@ export const getColorScale = createSelector(
 export const getColorPalette = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].color.palette', null)
+);
+
+export const getMapColorPalette = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].color.palette', 'categorical')
 );
 
 export const getBaseLayer = createSelector(
@@ -467,6 +547,37 @@ export const isFeatureMap = createSelector(
   (type) => type === 'featureMap'
 );
 
+export const isNewGLMap = createSelector(
+  getVisualizationType,
+  (type) => {
+    return type === 'map';
+  }
+);
+
+export const isValidNewGLMapVif = createSelector(
+  getDimension,
+  getDatasetUid,
+  getDomain,
+  getConfiguration,
+  getMeasure,
+  (dimension, datasetUid, domain, configuration, measure) => {
+    const hasDimension = _.isString(_.get(dimension, 'columnName'));
+    const hasDatasetUid = _.isString(datasetUid);
+    const hasDomain = _.isString(domain);
+    const hasComputedColumnName = _.isString(_.get(configuration, 'computedColumnName'));
+    const hasShapeFileUid = _.isString(_.get(configuration, 'shapefile.uid'));
+    const hasMeasureAggregation = _.isString(_.get(measure, 'aggregationFunction'));
+
+    return (hasDimension && hasDatasetUid && hasDomain) ||
+      (hasDimension &&
+      hasDatasetUid &&
+      hasDomain &&
+      hasComputedColumnName &&
+      hasShapeFileUid &&
+      hasMeasureAggregation);
+  }
+);
+
 export const isValidFeatureMapVif = createSelector(
   getDimension,
   getDatasetUid,
@@ -521,6 +632,10 @@ export const isValidPieChartVif = createSelector(
 export const isInsertableVisualization = createSelector(
   isBarChart,
   isValidBarChartVif,
+  isNewGLMap,
+  isValidNewGLMapVif,
+  isFeatureMap,
+  isValidFeatureMapVif,
   isRegionMap,
   isValidRegionMapVif,
   isColumnChart,
@@ -529,8 +644,6 @@ export const isInsertableVisualization = createSelector(
   isValidComboChartVif,
   isPieChart,
   isValidPieChartVif,
-  isFeatureMap,
-  isValidFeatureMapVif,
   isTimelineChart,
   isValidTimelineChartVif,
   isHistogram,
@@ -539,6 +652,10 @@ export const isInsertableVisualization = createSelector(
   (
     isBarChart,
     validBarChart,
+    isNewGLMap,
+    validNewMap,
+    isFeatureMap,
+    validFeatureMap,
     isRegionMap,
     validRegionMap,
     isColumnChart,
@@ -547,8 +664,6 @@ export const isInsertableVisualization = createSelector(
     validComboChart,
     isPieChart,
     validPieChart,
-    isFeatureMap,
-    validFeatureMap,
     isTimelineChart,
     validTimelineChart,
     isHistogram,
@@ -557,11 +672,12 @@ export const isInsertableVisualization = createSelector(
   ) => {
     return !showCenteringAndZoomingSaveMessage && (
       isBarChart && validBarChart ||
+      isNewGLMap && validNewMap ||
+      isFeatureMap && validFeatureMap ||
       isRegionMap && validRegionMap ||
       isColumnChart && validColumnChart ||
       isComboChart && validComboChart ||
       isPieChart && validPieChart ||
-      isFeatureMap && validFeatureMap ||
       isTimelineChart && validTimelineChart ||
       isHistogram && validHistogramVif
     );
@@ -569,18 +685,23 @@ export const isInsertableVisualization = createSelector(
 );
 
 export const isMap = createSelector(
+  isNewGLMap,
   isRegionMap,
   isFeatureMap,
-  (isRegionMap, isFeatureMap) => isRegionMap || isFeatureMap
+  (isNewGLMap, isRegionMap, isFeatureMap) => isNewGLMap || isRegionMap || isFeatureMap
 );
 
 export const isRenderableMap = createSelector(
+  isNewGLMap,
+  isValidNewGLMapVif,
   isRegionMap,
   isValidRegionMapVif,
   isFeatureMap,
   isValidFeatureMapVif,
-  (isRegionMap, isValidRegionMapVif, isFeatureMap, isValidFeatureMapVif) => {
-    return (isFeatureMap && isValidFeatureMapVif) || (isRegionMap && isValidRegionMapVif);
+  (isNewGLMap, isValidNewGLMapVif, isRegionMap, isValidRegionMapVif, isFeatureMap, isValidFeatureMapVif) => {
+    return (isNewGLMap && isValidNewGLMapVif) ||
+      (isFeatureMap && isValidFeatureMapVif) ||
+      (isRegionMap && isValidRegionMapVif);
   }
 );
 
@@ -600,4 +721,3 @@ export const hasMadeChangesToVifs = createSelector(
     return !_.isEqual(clonedModifiedVifs, clonedCheckpointVifs);
   }
 );
-

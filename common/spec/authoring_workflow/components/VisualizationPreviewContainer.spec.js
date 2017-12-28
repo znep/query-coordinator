@@ -6,6 +6,7 @@ import vifs from 'common/authoring_workflow/vifs';
 
 import renderComponent from '../renderComponent';
 import featureMap from '../testData/featureMap';
+import map from '../testData/map';
 import columnChart from '../testData/columnChart';
 
 const getGetStartedContainer = (element) => element.querySelector('.get-started-container');
@@ -58,6 +59,30 @@ describe('VisualizationPreviewContainer', () => {
 
       _.set(props, 'vifAuthoring.vifs.featureMap', featureMap());
       _.set(props, 'vifAuthoring.authoring.selectedVisualizationType', 'featureMap');
+      _.set(props, 'dismissMapInfo', sinon.spy());
+
+      element = renderComponent(VisualizationPreviewContainer, props);
+    });
+
+    it('renders map info', () => {
+      expect(getMapInfoContainer(element)).to.exist;
+    });
+
+    it('fires a click event to close map info', () => {
+      Simulate.click(getMapInfoDismiss(element));
+      expect(props.dismissMapInfo.called).to.equal(true);
+    });
+  });
+
+  describe('for new map visualization types', () => {
+    let props;
+    let element;
+
+    beforeEach(() => {
+      props = getProps();
+
+      _.set(props, 'vifAuthoring.vifs.map', map());
+      _.set(props, 'vifAuthoring.authoring.selectedVisualizationType', 'map');
       _.set(props, 'dismissMapInfo', sinon.spy());
 
       element = renderComponent(VisualizationPreviewContainer, props);

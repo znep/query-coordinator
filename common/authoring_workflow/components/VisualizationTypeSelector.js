@@ -4,11 +4,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { factories } from 'common/components';
+import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
 
 import { VISUALIZATION_TYPES } from '../constants';
-import { setVisualizationType, setColorPalette, setDimension } from '../actions';
+import { setVisualizationType, setColorPalette, setDimension, setMapType } from '../actions';
 import {
+  getDimension,
   getAnyDimension,
   getSelectedVisualizationType,
   hasCustomColorPalette,
@@ -18,6 +20,8 @@ import {
 } from '../selectors/vifAuthoring';
 import {
   getAnyLocationColumn,
+  getFirstOccurringGeoLocationColumn,
+  getMapType,
   getRecommendedVisualizationTypes,
   hasData,
   hasRegions
@@ -47,19 +51,34 @@ export class VisualizationTypeSelector extends Component {
       const {
         onSelectVisualizationType,
         setDimensionToLocation,
+        updateMapType,
         updateColorPalette,
         updateDimensionGroupingColumnName,
         vifAuthoring,
         metadata
       } = this.props;
-
+      const mapVisualizationTypes = ['map', 'regionMap', 'featureMap'];
+      const isMap = _.includes(mapVisualizationTypes, visualizationType);
       const dimension = getAnyDimension(vifAuthoring);
-      const isMap = visualizationType === 'regionMap' || visualizationType === 'featureMap';
 
       onSelectVisualizationType(visualizationType);
 
-      if (isMap && _.isNull(dimension.columnName)) {
-        setDimensionToLocation(_.get(getAnyLocationColumn(metadata), 'fieldName', null));
+      if (isMap) {
+        const areNewMapsEnabled = FeatureFlags.value('enable_new_maps');
+
+        if (_.isNull(dimension.columnName)) {
+          if (areNewMapsEnabled) {
+            const columnName = _.get(getFirstOccurringGeoLocationColumn(metadata), 'fieldName', null);
+
+            setDimensionToLocation(columnName);
+            updateMapType(getMapType(metadata, { columnName }));
+          } else {
+            setDimensionToLocation(_.get(getAnyLocationColumn(metadata), 'fieldName', null));
+          }
+        } else if (areNewMapsEnabled) {
+          const columnName = dimension.columnName;
+          updateMapType(getMapType(metadata, { columnName }));
+        }
       }
     };
   }
@@ -120,6 +139,16 @@ export class VisualizationTypeSelector extends Component {
   }
 
   renderVisualizationTypeButton(visualizationType) {
+    const areNewMapsEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (!areNewMapsEnabled && _.isEqual(visualizationType, 'map')) {
+      return;
+    }
+
+    if (areNewMapsEnabled && _.includes(['featureMap', 'regionMap'], visualizationType)) {
+      return;
+    }
+
     const { metadata, vifAuthoring } = this.props;
     const recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
     const isRecommended = _.some(recommendedVisualizationTypes, { type: visualizationType });
@@ -165,6 +194,7 @@ export class VisualizationTypeSelector extends Component {
           {this.renderVisualizationTypeButton('comboChart')}
           {this.renderVisualizationTypeButton('featureMap')}
           {this.renderVisualizationTypeButton('regionMap')}
+          {this.renderVisualizationTypeButton('map')}
         </div>
         <div className="visualization-type-gutter" />
       </div>
@@ -207,11 +237,17 @@ function mapDispatchToProps(dispatch) {
     onSelectVisualizationType(visualizationType) {
       dispatch(setVisualizationType(visualizationType));
     },
+
     updateColorPalette(colorPalette) {
       dispatch(setColorPalette(colorPalette));
     },
+
     setDimensionToLocation(dimension) {
       dispatch(setDimension(dimension));
+    },
+
+    updateMapType(mapType) {
+      dispatch(setMapType(mapType));
     }
   };
 }

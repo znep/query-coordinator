@@ -34,7 +34,7 @@ class DetailsRow extends PureComponent {
     );
 
     let failedRowsDownloadLink;
-    if (details.info.badRowsPath) {
+    if (details.info && details.info.badRowsPath) {
       failedRowsDownloadLink = (
         <li>
           <LocalizedText

@@ -30,18 +30,7 @@ import {
 } from '../selectors/metadata';
 
 export class RegionSelector extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, [
-      'onSelectRegion',
-      'renderRegionProcessingMessage',
-      'renderRegionProcessingError',
-      'renderSelector'
-    ]);
-  }
-
-  onSelectRegion({ computedColumn, curatedRegion, domain }) {
+  onSelectRegion = ({ computedColumn, curatedRegion, domain }) => {
     var {
       vifAuthoring,
       onSelectComputedColumn,
@@ -62,7 +51,7 @@ export class RegionSelector extends Component {
     }
   }
 
-  renderRegionProcessingMessage() {
+  renderRegionProcessingMessage = () => {
     var {
       showRegionCodingProcessingMessage,
       regionCodingLastChecked
@@ -86,7 +75,7 @@ export class RegionSelector extends Component {
     }
   }
 
-  renderRegionProcessingError() {
+  renderRegionProcessingError = () => {
     var { regionCodingError } = this.props.vifAuthoring.authoring;
 
     if (regionCodingError) {
@@ -98,7 +87,7 @@ export class RegionSelector extends Component {
     }
   }
 
-  renderSelector() {
+  renderSelector = () => {
     var { metadata, vifAuthoring } = this.props;
     var reference = (ref) => { this.selector = ref; };
     var domain = getDomain(vifAuthoring);

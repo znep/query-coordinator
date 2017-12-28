@@ -12,6 +12,8 @@ import {
   hasVisualizationDimension,
   isTimelineChart,
   isValidTimelineChartVif,
+  isNewGLMap,
+  isValidNewGLMapVif,
   isFeatureMap,
   isValidFeatureMapVif,
   isBarChart,
@@ -93,6 +95,7 @@ export class VisualizationPreview extends Component {
     const isValidColumnChart = isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring);
     const isValidTimelineChart = isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring);
     const isValidPieChart = isPieChart(vifAuthoring) && isValidPieChartVif(vifAuthoring);
+    const isValidNewMap = isNewGLMap(vifAuthoring) && isValidNewGLMapVif(vifAuthoring);
     const isValidFeatureMap = isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring);
     const isValidRegionMap = isRegionMap(vifAuthoring) && isValidRegionMapVif(vifAuthoring);
     const isValidHistogram = isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring);
@@ -102,6 +105,7 @@ export class VisualizationPreview extends Component {
       isValidColumnChart ||
       isValidTimelineChart ||
       isValidPieChart ||
+      isValidNewMap ||
       isValidFeatureMap ||
       isValidRegionMap ||
       isValidHistogram ||

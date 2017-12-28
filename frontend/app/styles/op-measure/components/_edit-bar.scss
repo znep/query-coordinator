@@ -28,6 +28,12 @@ $edit-bar-z-index: 8;
       margin-right: 5px;
     }
 
+    @media (max-width: $small), (max-height: $small) {
+      .btn-edit {
+        display: none;
+      }
+    }
+
     .btn-save {
       width: 110px;
 

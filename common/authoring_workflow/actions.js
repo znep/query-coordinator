@@ -456,22 +456,6 @@ export function setSecondaryColor(seriesIndex, secondaryColor) {
   };
 }
 
-export const SET_POINT_OPACITY = 'SET_POINT_OPACITY';
-export function setPointOpacity(pointOpacity) {
-  return {
-    type: SET_POINT_OPACITY,
-    pointOpacity
-  };
-}
-
-export const SET_POINT_SIZE = 'SET_POINT_SIZE';
-export function setPointSize(pointSize) {
-  return {
-    type: SET_POINT_SIZE,
-    pointSize
-  };
-}
-
 export const SET_COLOR_SCALE = 'SET_COLOR_SCALE';
 export function setColorScale(negativeColor, zeroColor, positiveColor) {
   return {
@@ -865,5 +849,141 @@ export const SET_USER_IDLE = 'SET_USER_IDLE';
 export function setUserIdle() {
   return {
     type: SET_USER_IDLE
+  };
+}
+
+export const SET_MAP_TYPE = 'SET_MAP_TYPE';
+export function setMapType(mapType) {
+  return {
+    type: SET_MAP_TYPE,
+    mapType
+  };
+}
+
+export const SET_POINT_SIZE = 'SET_POINT_SIZE';
+export function setPointSize(pointSize) {
+  return {
+    type: SET_POINT_SIZE,
+    pointSize
+  };
+}
+
+export const SET_POINT_OPACITY = 'SET_POINT_OPACITY';
+export function setPointOpacity(pointOpacity) {
+  return {
+    type: SET_POINT_OPACITY,
+    pointOpacity
+  };
+}
+
+export const SET_POINT_SIZE_BY_COLUMN = 'SET_POINT_SIZE_BY_COLUMN';
+export function setPointSizeByColumn(resizePointsBy) {
+  return {
+    type: SET_POINT_SIZE_BY_COLUMN,
+    resizePointsBy
+  };
+}
+
+export const SET_MINIMUM_POINT_SIZE = 'SET_MINIMUM_POINT_SIZE';
+export function setMinimumPointSize(minimumPointSize) {
+  return {
+    type: SET_MINIMUM_POINT_SIZE,
+    minimumPointSize
+  };
+}
+
+export const SET_MAXIMUM_POINT_SIZE = 'SET_MAXIMUM_POINT_SIZE';
+export function setMaximumPointSize(maximumPointSize) {
+  return {
+    type: SET_MAXIMUM_POINT_SIZE,
+    maximumPointSize
+  };
+}
+
+export const SET_NUMBER_OF_DATA_CLASSES = 'SET_NUMBER_OF_DATA_CLASSES';
+export function setNumberOfDataClasses(numberOfDataClasses) {
+  return {
+    type: SET_NUMBER_OF_DATA_CLASSES,
+    numberOfDataClasses
+  };
+}
+
+export const SET_MAX_CLUSTERING_ZOOM_LEVEL = 'SET_MAX_CLUSTERING_ZOOM_LEVEL';
+export function setMaxClusteringZoomLevel(maxClusteringZoomLevel) {
+  return {
+    type: SET_MAX_CLUSTERING_ZOOM_LEVEL,
+    maxClusteringZoomLevel
+  };
+}
+
+export const SET_POINT_THRESHOLD = 'SET_POINT_THRESHOLD';
+export function setPointThreshold(pointThreshold) {
+  return {
+    type: SET_POINT_THRESHOLD,
+    pointThreshold
+  };
+}
+
+export const SET_CLUSTER_RADIUS = 'SET_CLUSTER_RADIUS';
+export function setClusterRadius(clusterRadius) {
+  return {
+    type: SET_CLUSTER_RADIUS,
+    clusterRadius
+  };
+}
+
+export const SET_MAX_CLUSTER_SIZE = 'SET_MAX_CLUSTER_SIZE';
+export function setMaxClusterSize(maxClusterSize) {
+  return {
+    type: SET_MAX_CLUSTER_SIZE,
+    maxClusterSize
+  };
+}
+
+export const SET_STACK_RADIUS = 'SET_STACK_RADIUS';
+export function setStackRadius(stackRadius) {
+  return {
+    type: SET_STACK_RADIUS,
+    stackRadius
+  };
+}
+
+export const SET_POINT_COLOR_BY_COLUMN = 'SET_POINT_COLOR_BY_COLUMN';
+export function setPointColorByColumn(colorPointsBy) {
+  return {
+    type: SET_POINT_COLOR_BY_COLUMN,
+    colorPointsBy
+  };
+}
+
+export const SET_LINE_WEIGHT_BY_COLUMN = 'SET_LINE_WEIGHT_BY_COLUMN';
+export function setLineWeightByColumn(weighLinesBy) {
+  return {
+    type: SET_LINE_WEIGHT_BY_COLUMN,
+    weighLinesBy
+  };
+}
+
+export const SET_MINIMUM_LINE_WEIGHT = 'SET_MINIMUM_LINE_WEIGHT';
+export function setMinimumLineWeight(minimumLineWeight) {
+  return {
+    type: SET_MINIMUM_LINE_WEIGHT,
+    minimumLineWeight
+  };
+}
+
+export const SET_MAXIMUM_LINE_WEIGHT = 'SET_MAXIMUM_LINE_WEIGHT';
+export function setMaximumLineWeight(maximumLineWeight) {
+  return {
+    type: SET_MAXIMUM_LINE_WEIGHT,
+    maximumLineWeight
+  };
+}
+
+export const SET_LINE_COLOR_BY_COLUMN = 'SET_LINE_COLOR_BY_COLUMN';
+export function setLineColorByColumn(colorLinesBy) {
+  return {
+    type: SET_LINE_COLOR_BY_COLUMN,
+    colorLinesBy
   };
 }

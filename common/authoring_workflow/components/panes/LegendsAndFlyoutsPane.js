@@ -21,7 +21,8 @@ import {
   isHistogram,
   isPieChart,
   isRegionMap,
-  isTimelineChart
+  isTimelineChart,
+  isNewGLMap
 } from '../../selectors/vifAuthoring';
 
 import {
@@ -36,26 +37,7 @@ import EmptyPane from './EmptyPane';
 import DebouncedInput from '../shared/DebouncedInput';
 
 export class LegendsAndFlyoutsPane extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, [
-      'renderUnits',
-      'renderUnitsForSeries',
-      'renderLegends',
-      'renderRegionMapControls',
-      'renderBarChartControls',
-      'renderColumnChartControls',
-      'renderPieChartControls',
-      'renderHistogramControls',
-      'renderTimelineChartControls',
-      'renderFeatureMapControls',
-      'renderRowInspectorTitleColumnOption',
-      'renderEmptyPane'
-    ]);
-  }
-
-  renderUnits() {
+  renderUnits = () => {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
 
     const series = getSeries(vifAuthoring);
@@ -101,7 +83,7 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
-  renderUnitsForSeries(seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) {
+  renderUnitsForSeries = (seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) => {
     const containerAttributes = {
       id: `units-container-${seriesIndex}`,
       className: 'units-container',
@@ -133,7 +115,7 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
-  renderLegends() {
+  renderLegends = () => {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
     // Currently legends are only available for grouping or multi-series visualizations or pie charts
@@ -162,35 +144,35 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
-  renderRegionMapControls() {
+  renderRegionMapControls = () => {
     return this.renderUnits();
   }
 
-  renderBarChartControls() {
+  renderBarChartControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderColumnChartControls() {
+  renderColumnChartControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderComboChartControls() {
+  renderComboChartControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderPieChartControls() {
+  renderPieChartControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderHistogramControls() {
+  renderHistogramControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderTimelineChartControls() {
+  renderTimelineChartControls = () => {
     return [this.renderUnits(), this.renderLegends()];
   }
 
-  renderFeatureMapControls() {
+  renderFeatureMapControls = () => {
     const { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
     const rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
     const columnAttributes = {
@@ -220,7 +202,11 @@ export class LegendsAndFlyoutsPane extends Component {
     return [this.renderUnits(), rowInspector];
   }
 
-  renderRowInspectorTitleColumnOption(option) {
+  renderNewMapControls = () => {
+    return this.renderFeatureMapControls();
+  }
+
+  renderRowInspectorTitleColumnOption = (option) => {
     const columnType = _.find(COLUMN_TYPES, { type: option.type });
     const icon = columnType ? columnType.icon : '';
 
@@ -231,7 +217,7 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
-  renderEmptyPane() {
+  renderEmptyPane = () => {
     return <EmptyPane />;
   }
 
@@ -246,6 +232,8 @@ export class LegendsAndFlyoutsPane extends Component {
         configuration = this.renderPieChartControls();
       } else if (isRegionMap(vifAuthoring)) {
         configuration = this.renderRegionMapControls();
+      } else if (isNewGLMap(vifAuthoring)) {
+        configuration = this.renderNewMapControls();
       } else if (isColumnChart(vifAuthoring)) {
         configuration = this.renderColumnChartControls();
       } else if (isComboChart(vifAuthoring)) {

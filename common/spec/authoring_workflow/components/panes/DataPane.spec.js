@@ -5,6 +5,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import { DataPane } from 'common/authoring_workflow/components/panes/DataPane';
 import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { FeatureFlags } from 'common/feature_flags';
 
 function render(type) {
   var props = defaultProps({
@@ -24,6 +25,8 @@ describe('DataPane', function() {
   var props;
 
   function setUpVisualization(type) {
+    FeatureFlags.updateTestFixture({ enable_new_maps: false });
+
     return function() {
       var renderedParts = render(type);
 

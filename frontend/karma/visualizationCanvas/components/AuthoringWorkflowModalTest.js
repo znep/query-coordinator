@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('AuthoringWorkflowModal', () => {
   let server;
@@ -10,6 +11,7 @@ describe('AuthoringWorkflowModal', () => {
     // This stubs the Authoring Workflow's data requests.
     server = sinon.fakeServer.create();
     server.respondWith([200, { 'Content-Type': 'application/json' }, '{}']);
+    FeatureFlags.updateTestFixture({ enable_new_maps: false });
   });
 
   afterEach(() => {

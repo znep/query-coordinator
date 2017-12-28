@@ -33,7 +33,8 @@ describe('AssetSelectorRenderer', function() {
   beforeEach(function() {
     FeatureFlags.useTestFixture({
       enable_getty_images_gallery: true,
-      enable_filtered_tables_in_ax: false
+      enable_filtered_tables_in_ax: false,
+      enable_new_maps: false
     });
 
     server = sinon.fakeServer.create();

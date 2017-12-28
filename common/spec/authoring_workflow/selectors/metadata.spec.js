@@ -52,6 +52,10 @@ describe('metadata', function() {
       returnsRecommendedDimensions('featureMap');
     });
 
+    describe('map', function() {
+      returnsRecommendedDimensions('map');
+    });
+
     describe('timelineChart', function() {
       returnsRecommendedDimensions('timelineChart');
     });

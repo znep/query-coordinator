@@ -213,6 +213,28 @@ describe('LegendsAndFlyoutsPane', function() {
     });
   });
 
+  describe('newMap', function() {
+    beforeEach(function() {
+      var renderedParts = render('map');
+
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+
+    describe('rendering', function() {
+      rendersEditableUnits();
+
+      it('should render a dropdown with columns', function() {
+        assert.isNotNull(component.querySelector('#flyout-title-column'));
+      });
+    });
+
+    describe('events', function() {
+      emitsEventsForUnits();
+      emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
+    });
+  });
+
   describe('timelineChart', function() {
 
     beforeEach(function() {

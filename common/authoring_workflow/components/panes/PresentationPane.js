@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Dropdown, ColorPicker, AccordionContainer, AccordionPane } from 'common/components';
+import BlockLabel from '../shared/BlockLabel';
 import I18n from 'common/i18n';
 import { getMeasureTitle } from '../../helpers';
-import { hasData } from '../../selectors/metadata';
 
 import {
   BASE_LAYERS,
@@ -21,43 +21,12 @@ import DebouncedInput from '../shared/DebouncedInput';
 import DebouncedTextArea from '../shared/DebouncedTextArea';
 import * as selectors from '../../selectors/vifAuthoring';
 import * as actions from '../../actions';
+import { hasData, isPointMapColumn, isLineMapColumn } from '../../selectors/metadata';
+import PointSizePreview from '../shared/PointSizePreview';
+import LineWeightPreview from '../shared/LineWeightPreview';
 
 export class PresentationPane extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, [
-      'onSelectColorScale',
-      'renderPrimaryColor',
-      'renderColorPalette',
-      'renderMultiSeriesCustomColorSelector',
-      'renderSingleSeriesCustomColorSelector',
-      'renderDimensionLabels',
-      'renderLabels',
-      'renderShowValueLabels',
-      'renderShowPercentLabels',
-      'renderComboChartVisualizationLabels',
-      'renderVisualizationLabels',
-      'renderShowSourceDataLink',
-      'renderTitleField',
-      'renderDescriptionField',
-      'renderGeneral',
-      'renderGroupedBarChartControls',
-      'renderBarChartControls',
-      'renderGroupedColumnChartControls',
-      'renderColumnChartControls',
-      'renderHistogramControls',
-      'renderTimelineChartControls',
-      'renderGroupedTimelineChartControls',
-      'renderFeatureMapControls',
-      'renderRegionMapControls',
-      'renderMapLayerControls',
-      'renderPieChartControls',
-      'renderEmptyPane'
-    ]);
-  }
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps = (nextProps) => {
     const thisVizType = this.props.vifAuthoring.authoring.selectedVisualizationType;
     const nextVizType = nextProps.vifAuthoring.authoring.selectedVisualizationType;
     const thisSeries = _.get(this.props.vifAuthoring.vifs[thisVizType], 'series[0]');
@@ -72,15 +41,14 @@ export class PresentationPane extends Component {
     }
   }
 
-  onSelectColorScale(event) {
+  onSelectColorScale = (event) => {
     const colorScale = _.find(this.props.colorScales, { value: event.target.value }).scale;
     this.props.onSelectColorScale(colorScale);
   }
 
-  renderPrimaryColor() {
+  renderPrimaryColor = (labelText) => {
     const { vifAuthoring, onChangePrimaryColor } = this.props;
     const primaryColor = selectors.getPrimaryColor(vifAuthoring);
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
 
     const colorPickerAttributes = {
       handleColorChange: (primaryColor) => onChangePrimaryColor(0, primaryColor),
@@ -94,11 +62,12 @@ export class PresentationPane extends Component {
           <label className="block-label" htmlFor="primary-color">{labelText}</label>
           <ColorPicker {...colorPickerAttributes} />
         </div>
+        {this.renderPointOpacityControls()}
       </AccordionPane>
     );
   }
 
-  renderColorPalette() {
+  renderColorPalette = () => {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
     const colorPaletteFromVif = selectors.getColorPalette(vifAuthoring);
     const isMultiSeries = selectors.isMultiSeries(vifAuthoring);
@@ -153,7 +122,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderMultiSeriesCustomColorSelector() {
+  renderMultiSeriesCustomColorSelector = () => {
     const { vifAuthoring, onChangePrimaryColor, metadata } = this.props;
 
     if (!hasData(metadata)) {
@@ -186,7 +155,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderSingleSeriesCustomColorSelector() {
+  renderSingleSeriesCustomColorSelector = () => {
     const { vifAuthoring, onChangeCustomColorPalette } = this.props;
     const dimensionColumnName = selectors.getColorPaletteGroupingColumnName(vifAuthoring);
     const customColorPalette = selectors.getCustomColorPalette(vifAuthoring);
@@ -231,7 +200,7 @@ export class PresentationPane extends Component {
     }
   }
 
-  renderDimensionLabels() {
+  renderDimensionLabels = () => {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-dimension-labels',
@@ -255,7 +224,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderLabels() {
+  renderLabels = () => {
     const { vifAuthoring } = this.props;
 
     const valueLabelsVisible = (selectors.isBarChart(vifAuthoring) || selectors.isPieChart(vifAuthoring)) &&
@@ -277,7 +246,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderShowValueLabels() {
+  renderShowValueLabels = () => {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-value-labels',
@@ -301,7 +270,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderShowPercentLabels() {
+  renderShowPercentLabels = () => {
     const { vifAuthoring } = this.props;
     const showLabels = selectors.getShowValueLabels(vifAuthoring);
 
@@ -332,7 +301,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderComboChartVisualizationLabels() {
+  renderComboChartVisualizationLabels = () => {
     const { vifAuthoring } = this.props;
 
     const usePrimaryAxis =
@@ -350,7 +319,7 @@ export class PresentationPane extends Component {
     });
   }
 
-  renderVisualizationLabels({ bottom = false, left = false, right = false, top = false }) {
+  renderVisualizationLabels = ({ bottom = false, left = false, right = false, top = false }) => {
     const {
       onChangeLabelBottom,
       onChangeLabelLeft,
@@ -403,7 +372,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderVisualizationLabel(id, onChange, title, value) {
+  renderVisualizationLabel = (id, onChange, title, value) => {
     const labelAttributes = {
       className: 'block-label',
       htmlFor: id
@@ -424,7 +393,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderShowSourceDataLink() {
+  renderShowSourceDataLink = () => {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-source-data-link',
@@ -446,7 +415,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderTitleField() {
+  renderTitleField = () => {
     const { vifAuthoring, onChangeTitle } = this.props;
     const title = selectors.getTitle(vifAuthoring);
 
@@ -458,7 +427,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderDescriptionField() {
+  renderDescriptionField = () => {
     const { vifAuthoring, onChangeDescription } = this.props;
     const description = selectors.getDescription(vifAuthoring);
 
@@ -470,7 +439,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderGeneral() {
+  renderGeneral = () => {
     return (
       <AccordionPane title={I18n.t('shared.visualizations.panes.presentation.subheaders.general')}>
         {this.renderTitleField()}
@@ -480,7 +449,7 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderGroupedBarChartControls() {
+  renderGroupedBarChartControls = () => {
     return [
       this.renderColorPalette(),
       this.renderLabels(),
@@ -488,15 +457,17 @@ export class PresentationPane extends Component {
     ];
   }
 
-  renderBarChartControls() {
+  renderBarChartControls = () => {
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+
     return [
-      this.renderPrimaryColor(),
+      this.renderPrimaryColor(labelText),
       this.renderLabels(),
       this.renderVisualizationLabels({ left: true, top: true })
     ];
   }
 
-  renderGroupedColumnChartControls() {
+  renderGroupedColumnChartControls = () => {
     return [
       this.renderColorPalette(),
       this.renderLabels(),
@@ -504,15 +475,17 @@ export class PresentationPane extends Component {
     ];
   }
 
-  renderColumnChartControls() {
+  renderColumnChartControls = () => {
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+
     return [
-      this.renderPrimaryColor(),
+      this.renderPrimaryColor(labelText),
       this.renderLabels(),
       this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
-  renderGroupedComboChartControls() {
+  renderGroupedComboChartControls = () => {
     return [
       this.renderColorPalette(),
       this.renderLabels(),
@@ -520,36 +493,451 @@ export class PresentationPane extends Component {
     ];
   }
 
-  renderComboChartControls() {
+  renderComboChartControls = () => {
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+
     return [
-      this.renderPrimaryColor(),
+      this.renderPrimaryColor(labelText),
       this.renderLabels(),
       this.renderComboChartVisualizationLabels()
     ];
   }
 
-  renderHistogramControls() {
+  renderHistogramControls = () => {
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+
     return [
-      this.renderPrimaryColor(),
+      this.renderPrimaryColor(labelText),
       this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
-  renderTimelineChartControls() {
+  renderTimelineChartControls = () => {
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+
     return [
-      this.renderPrimaryColor(),
+      this.renderPrimaryColor(labelText),
       this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
-  renderGroupedTimelineChartControls() {
+  renderGroupedTimelineChartControls = () => {
     return [
       this.renderColorPalette(),
       this.renderVisualizationLabels({ bottom: true, left: true })
     ];
   }
 
-  renderFeatureMapControls() {
+  renderPointOpacityControls = () => {
+    const { vifAuthoring, metadata, onChangePointOpacity } = this.props;
+    const dimension = selectors.getDimension(vifAuthoring);
+    const isPointMap = isPointMapColumn(metadata, dimension);
+
+    if (selectors.isNewGLMap(vifAuthoring) && isPointMap) {
+      const pointOpacity = selectors.getPointOpacity(vifAuthoring);
+      const pointOpacityAttributes = {
+        id: 'point-opacity',
+        rangeMin: 0,
+        rangeMax: 100,
+        step: 5,
+        value: pointOpacity,
+        onChange: onChangePointOpacity,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+
+      return (
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
+          <div id="point-opacity">
+            <DebouncedSlider {...pointOpacityAttributes} />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  renderMapColorControls = (renderColorPalette, colorLabelText) => {
+    if (renderColorPalette) {
+      const { vifAuthoring } = this.props;
+      const { colorPalettes, onSelectColorPalette } = this.props;
+      const colorPaletteValue = selectors.getMapColorPalette(vifAuthoring);
+      const colorPaletteAttributes = {
+        id: 'color-palette',
+        options: colorPalettes,
+        value: colorPaletteValue,
+        onSelection: (event) => {
+          onSelectColorPalette(event.value);
+        }
+      };
+
+      return (
+        <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
+          <label className="block-label" htmlFor="color-palette">
+            {I18n.t('shared.visualizations.panes.presentation.fields.color_palette.title')}
+          </label>
+          <div className="color-scale-dropdown-container">
+            <Dropdown {...colorPaletteAttributes} />
+          </div>
+          {this.renderPointOpacityControls()}
+        </AccordionPane>
+      );
+    } else {
+      return this.renderPrimaryColor(colorLabelText);
+    }
+  }
+
+  renderDataClassesSelector = () => {
+    const { vifAuthoring, onNumberOfDataClassesChange } = this.props;
+    const numberOfDataClasses = selectors.getNumberOfDataClasses(vifAuthoring);
+
+    const dataClassesAttributes = {
+      id: 'data-classes',
+      options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: parseInt(i) })),
+      value: numberOfDataClasses,
+      onSelection: (event) => {
+        onNumberOfDataClassesChange(event.value);
+      }
+    };
+
+    return (
+      <div className="authoring-field">
+        <label className="block-label" htmlFor="data-classes">
+          {I18n.t('shared.visualizations.panes.presentation.fields.data_classes.title')}
+        </label>
+        <div className="data-classes-dropdown-container">
+          <Dropdown {...dataClassesAttributes} />
+        </div>
+      </div>
+    );
+  }
+
+  renderLineMapWeightControls = () => {
+    const { vifAuthoring } = this.props;
+    const isLineWeightByColumnSelected = selectors.getLineWeightByColumn(vifAuthoring);
+    let LineMapWeightControls = null;
+
+    if (isLineWeightByColumnSelected) {
+      const { onMinimumLineWeightChange, onMaximumLineWeightChange } = this.props;
+      const minimumLineWeight = selectors.getMinimumLineWeight(vifAuthoring);
+      const maximumLineWeight = selectors.getMaximumLineWeight(vifAuthoring);
+      const minimumLineWeightAttributes = {
+        id: 'minimum-line-weight',
+        rangeMin: 1,
+        rangeMax: 10,
+        step: 1,
+        value: minimumLineWeight,
+        onChange: onMinimumLineWeightChange,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+      const maximumLineWeightAttributes = {
+        id: 'maximum-line-weight',
+        rangeMin: 1,
+        rangeMax: 10,
+        step: 1,
+        value: maximumLineWeight,
+        onChange: onMaximumLineWeightChange,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+
+      LineMapWeightControls = (
+        <div className="line-weight-min-max-selection-container">
+          <div className="authoring-field">
+            <label
+              className="block-label"
+              htmlFor="minimum-line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.minimum')}</label>
+            <div id="minimum-line-weight" className="debounced-slider-with-preview">
+              <div className="line-weight-slider-container">
+                <DebouncedSlider {...minimumLineWeightAttributes} />
+              </div>
+              <LineWeightPreview lineWeight={minimumLineWeight} />
+            </div>
+          </div>
+
+          <div className="authoring-field">
+            <label
+              className="block-label"
+              htmlFor="maximum-line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.maximum')}</label>
+            <div id="maximum-line-weight" className="debounced-slider-with-preview">
+              <div className="line-weight-slider-container">
+                <DebouncedSlider {...maximumLineWeightAttributes} />
+              </div>
+              <LineWeightPreview lineWeight={maximumLineWeight} />
+            </div>
+          </div>
+
+          {this.renderDataClassesSelector()}
+        </div>
+      );
+    } else {
+      const { onChangeLineWeight } = this.props;
+      const lineWeight = selectors.getLineWeightByColumn(vifAuthoring);
+      const lineWeightAttributes = {
+        id: 'line-weight',
+        rangeMin: 1,
+        rangeMax: 3.2,
+        step: 0.1,
+        value: lineWeight,
+        onChange: onChangeLineWeight,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+
+      LineMapWeightControls = (
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.title')}</label>
+          <div id="line-weight">
+            <DebouncedSlider {...lineWeightAttributes} />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <AccordionPane key="lineWeightControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.line_weight')}>
+        {LineMapWeightControls}
+      </AccordionPane>
+    );
+  }
+
+  renderPointMapSizeControls = () => {
+    const { vifAuthoring } = this.props;
+    const isPointSizeByColumnSelected = selectors.getPointSizeByColumn(vifAuthoring);
+    let pointMapSizeControls = null;
+
+    if (isPointSizeByColumnSelected) {
+      const { onMinimumPointSizeChange, onMaximumPointSizeChange } = this.props;
+      const minimumPointSize = selectors.getMinimumPointSize(vifAuthoring);
+      const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
+      const minimumPointSizeAttributes = {
+        id: 'minimum-point-size',
+        rangeMin: 1,
+        rangeMax: 10,
+        step: 1,
+        value: minimumPointSize,
+        onChange: onMinimumPointSizeChange,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+      const maximumPointSizeAttributes = {
+        id: 'maximum-point-size',
+        rangeMin: 1,
+        rangeMax: 10,
+        step: 1,
+        value: maximumPointSize,
+        onChange: onMaximumPointSizeChange,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+
+      pointMapSizeControls = (
+        <div className="point-size-min-max-selection-container">
+          <div className="authoring-field">
+            <label
+              className="block-label"
+              htmlFor="minimum-point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.minimum')}</label>
+            <div id="minimum-point-size" className="debounced-slider-with-preview">
+              <div className="point-size-slider-container">
+                <DebouncedSlider {...minimumPointSizeAttributes} />
+              </div>
+              <PointSizePreview pointSize={minimumPointSize} />
+            </div>
+          </div>
+
+          <div className="authoring-field">
+            <label
+              className="block-label"
+              htmlFor="maximum-point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.maximum')}</label>
+            <div id="maximum-point-size" className="debounced-slider-with-preview">
+              <div className="point-size-slider-container">
+                <DebouncedSlider {...maximumPointSizeAttributes} />
+              </div>
+              <PointSizePreview pointSize={maximumPointSize} />
+            </div>
+          </div>
+
+          {this.renderDataClassesSelector()}
+        </div>
+      );
+    } else {
+      const { onChangePointSize } = this.props;
+      const pointSize = selectors.getPointSize(vifAuthoring);
+      const pointSizeAttributes = {
+        id: 'point-size',
+        rangeMin: 1,
+        rangeMax: 3.2,
+        step: 0.1,
+        value: pointSize,
+        onChange: onChangePointSize,
+        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      };
+
+      pointMapSizeControls = (
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
+          <div id="point-size">
+            <DebouncedSlider {...pointSizeAttributes} />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <AccordionPane key="pointSizeControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.point_size')}>
+        {pointMapSizeControls}
+      </AccordionPane>
+    );
+  }
+
+  renderClusterControls = () => {
+    const { vifAuthoring } = this.props;
+    const {
+      onMaxClusteringZoomLevelChange,
+      onPointThresholdChange,
+      onClusterRadiusChange,
+      onMaxClusterSizeChange,
+      onStackRadiusChange
+    } = this.props;
+    const maxClusteringZoomLevel = selectors.getMaxClusteringZoomLevel(vifAuthoring);
+    const pointThreshold = selectors.getPointThreshold(vifAuthoring);
+    const clusterRadius = selectors.getClusterRadius(vifAuthoring);
+    const maxClusterSize = selectors.getMaxClusterSize(vifAuthoring);
+    const stackRadius = selectors.getStackRadius(vifAuthoring);
+    const maxClusteringZoomLevelAttributes = {
+      id: 'max-clustering-zoom-level',
+      rangeMin: 1,
+      rangeMax: 23,
+      step: 1,
+      value: maxClusteringZoomLevel,
+      onChange: onMaxClusteringZoomLevelChange,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+    };
+    const pointThresholdAttributes = {
+      id: 'point-threshold',
+      rangeMin: 100,
+      rangeMax: 10000,
+      step: 100,
+      value: pointThreshold,
+      onChange: onPointThresholdChange,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+    };
+    const clusterRadiusAttributes = {
+      id: 'cluster-radius',
+      rangeMin: 20,
+      rangeMax: 80,
+      step: 1,
+      value: clusterRadius,
+      onChange: onClusterRadiusChange,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+    };
+    const maxClusterSizeAttributes = {
+      id: 'max-cluster-size',
+      rangeMin: 1,
+      rangeMax: 10,
+      step: 1,
+      value: maxClusterSize,
+      onChange: onMaxClusterSizeChange,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+    };
+    const stackRadiusAttributes = {
+      id: 'stack-radius',
+      rangeMin: 1,
+      rangeMax: 80,
+      step: 1,
+      value: stackRadius,
+      onChange: onStackRadiusChange,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+    };
+
+    return (
+      <AccordionPane key="clusterControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.clusters')}>
+        <div className="authoring-field">
+          <BlockLabel
+            title={I18n.t('shared.visualizations.panes.presentation.fields.stop_clustering_at_zoom_level.title')}
+            htmlFor="max-clustering-zoom-level"
+            description={I18n.t('shared.visualizations.panes.presentation.fields.stop_clustering_at_zoom_level.description')} />
+          <div id="max-clustering-zoom-level">
+            <DebouncedSlider {...maxClusteringZoomLevelAttributes} />
+          </div>
+        </div>
+
+        <div className="authoring-field">
+          <BlockLabel
+            title={I18n.t('shared.visualizations.panes.presentation.fields.point_threshold.title')}
+            htmlFor="point-threshold"
+            description={I18n.t('shared.visualizations.panes.presentation.fields.point_threshold.description')} />
+          <div id="point-threshold">
+            <DebouncedSlider {...pointThresholdAttributes} />
+          </div>
+        </div>
+
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="cluster-radius">
+            {I18n.t('shared.visualizations.panes.presentation.fields.cluster_radius.title')}
+          </label>
+          <div id="cluster-radius">
+            <DebouncedSlider {...clusterRadiusAttributes} />
+          </div>
+        </div>
+
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="max-cluster-size">
+            {I18n.t('shared.visualizations.panes.presentation.fields.max_cluster_size.title')}
+          </label>
+          <div id="max-cluster-size">
+            <DebouncedSlider {...maxClusterSizeAttributes} />
+          </div>
+        </div>
+
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="stack-radius">
+            {I18n.t('shared.visualizations.panes.presentation.fields.stack_radius.title')}
+          </label>
+          <div id="stack-radius">
+            <DebouncedSlider {...stackRadiusAttributes} />
+          </div>
+        </div>
+      </AccordionPane>
+    );
+  }
+
+  renderNewMapControls = () => {
+    const { vifAuthoring, metadata } = this.props;
+    const dimension = selectors.getDimension(vifAuthoring);
+    const isPointMap = isPointMapColumn(metadata, dimension);
+    const isLineMap = isLineMapColumn(metadata, dimension);
+
+    if (isPointMap) {
+      const renderColorPalette = !_.isNull(selectors.getPointColorByColumn(vifAuthoring));
+      const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.point_color.title');
+
+      return [
+        this.renderMapColorControls(renderColorPalette, colorLabelText),
+        this.renderPointMapSizeControls(),
+        this.renderMapLayerControls(),
+        this.renderClusterControls()
+      ];
+    } else if (isLineMap) {
+      const renderColorPalette = !_.isNull(selectors.getLineColorByColumn(vifAuthoring));
+      const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.line_color.title');
+
+      return [
+        this.renderMapColorControls(renderColorPalette, colorLabelText),
+        this.renderLineMapWeightControls(),
+        this.renderMapLayerControls()
+      ];
+    }
+  }
+
+  renderFeatureMapControls = () => {
     var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity, onChangePointSize } = this.props;
     var pointColor = selectors.getPrimaryColor(vifAuthoring);
     var pointOpacity = selectors.getPointOpacity(vifAuthoring);
@@ -611,7 +999,7 @@ export class PresentationPane extends Component {
     return [pointControls, this.renderMapLayerControls()];
   }
 
-  renderRegionMapControls() {
+  renderRegionMapControls = () => {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
     var defaultColorScale = selectors.getColorScale(vifAuthoring);
 
@@ -644,7 +1032,7 @@ export class PresentationPane extends Component {
     return [colorControls, this.renderMapLayerControls()];
   }
 
-  renderMapLayerControls() {
+  renderMapLayerControls = () => {
     var { vifAuthoring, baseLayers, onSelectBaseLayer, onChangeBaseLayerOpacity } = this.props;
     var defaultBaseLayer = selectors.getBaseLayer(vifAuthoring);
     var defaultBaseLayerOpacity = selectors.getBaseLayerOpacity(vifAuthoring);
@@ -688,14 +1076,14 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderPieChartControls() {
+  renderPieChartControls = () => {
     return [
       this.renderColorPalette(),
       this.renderLabels()
     ];
   }
 
-  renderEmptyPane() {
+  renderEmptyPane = () => {
     return <EmptyPane />;
   }
 
@@ -740,6 +1128,8 @@ export class PresentationPane extends Component {
 
     } else if (selectors.isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
+    } else if (selectors.isNewGLMap(vifAuthoring)) {
+      configuration = this.renderNewMapControls();
     } else if (selectors.isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
     } else if (selectors.isRegionMap(vifAuthoring)) {
@@ -796,6 +1186,50 @@ function mapDispatchToProps(dispatch) {
 
     onChangePointSize: pointSize => {
       dispatch(actions.setPointSize(_.round(pointSize, 2)));
+    },
+
+    onChangeLineWeight: lineWeight => {
+      dispatch(actions.setLineWeight(_.round(lineWeight, 2)));
+    },
+
+    onMinimumLineWeightChange: lineWeight => {
+      dispatch(actions.setMinimumLineWeight(_.round(lineWeight, 2)));
+    },
+
+    onMaximumLineWeightChange: lineWeight => {
+      dispatch(actions.setMaximumLineWeight(_.round(lineWeight, 2)));
+    },
+
+    onMinimumPointSizeChange: pointSize => {
+      dispatch(actions.setMinimumPointSize(_.round(pointSize, 2)));
+    },
+
+    onMaximumPointSizeChange: pointSize => {
+      dispatch(actions.setMaximumPointSize(_.round(pointSize, 2)));
+    },
+
+    onNumberOfDataClassesChange: numberOfDataClasses => {
+      dispatch(actions.setNumberOfDataClasses(numberOfDataClasses));
+    },
+
+    onMaxClusteringZoomLevelChange: zoomLevel => {
+      dispatch(actions.setMaxClusteringZoomLevel(zoomLevel));
+    },
+
+    onPointThresholdChange: pointThreshold => {
+      dispatch(actions.setPointThreshold(pointThreshold));
+    },
+
+    onClusterRadiusChange: clusterRadius => {
+      dispatch(actions.setClusterRadius(clusterRadius));
+    },
+
+    onMaxClusterSizeChange: maxClusterSize => {
+      dispatch(actions.setMaxClusterSize(maxClusterSize));
+    },
+
+    onStackRadiusChange: stackRadius => {
+      dispatch(actions.setStackRadius(stackRadius));
     },
 
     onChangeShowDimensionLabels: (event) => {

@@ -6,9 +6,19 @@ import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { VisualizationTypeSelector } from 'common/authoring_workflow/components/VisualizationTypeSelector';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 describe('VisualizationTypeSelector', function() {
+  before(() => {
+    FeatureFlags.updateTestFixture({ enable_new_maps: false });
+  });
+
   describe('rendering', function() {
     var component;
+
+    before(() => {
+      FeatureFlags.updateTestFixture({ enable_new_maps: false });
+    });
 
     describe('without data', function() {
       beforeEach(function() {

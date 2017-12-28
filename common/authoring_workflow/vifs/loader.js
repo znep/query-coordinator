@@ -7,13 +7,17 @@ import * as actions from '../actions';
 const paths = {
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
+  clusterRadius: 'series[0].mapOptions.clusterRadius',
+  colorLinesBy: 'series[0].mapOptions.colorLinesBy',
   colorPalette: 'series[0].color.palette',
+  colorPointsBy: 'series[0].mapOptions.colorPointsBy',
   computedColumnName: 'configuration.computedColumnName',
   customColorPalette: 'series[0].color.customPalette',
   datasetUid: 'series[0].dataSource.datasetUid',
   description: 'description',
   dimensionColumnName: 'series[0].dataSource.dimension.columnName',
   dimensionGroupingColumnName: 'series[0].dataSource.dimension.grouping.columnName',
+  dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   domain: 'series[0].dataSource.domain',
   errorBarsBarColor: 'series[0].errorBars.barColor',
   errorBarsLowerBoundColumnName: 'series[0].errorBars.lowerBoundColumnName',
@@ -22,17 +26,25 @@ const paths = {
   labelLeft: 'configuration.axisLabels.left',
   labelRight: 'configuration.axisLabels.right',
   labelTop: 'configuration.axisLabels.top',
-  dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   limit: 'series[0].dataSource.limit',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
+  mapType: 'series[0].mapOptions.mapType',
+  maxClusteringZoomLevel: 'series[0].mapOptions.maxClusteringZoomLevel',
+  maxClusterSize: 'series[0].mapOptions.maxClusterSize',
+  maximumLineWeight: 'series[0].mapOptions.maximumLineWeight',
+  maximumPointSize: 'series[0].mapOptions.maximumPointSize',
   measureAggregationFunction: 'series[{0}].dataSource.measure.aggregationFunction',
   measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   measureAxisMinValue: 'configuration.measureAxisMinValue',
   measureColumnName: 'series[{0}].dataSource.measure.columnName',
+  minimumLineWeight: 'series[0].mapOptions.minimumLineWeight',
+  minimumPointSize: 'series[0].mapOptions.minimumPointSize',
   negativeColor: 'configuration.legend.negativeColor',
+  numberOfDataClasses: 'series[0].mapOptions.numberOfDataClasses',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
   pointSize: 'configuration.pointSize',
+  pointThreshold: 'series[0].mapOptions.pointThreshold',
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
   primaryColor: 'series[{0}].color.primary',
@@ -40,6 +52,7 @@ const paths = {
   referenceLineLabel: 'referenceLines[{0}].label',
   referenceLines: 'referenceLines',
   referenceLineValue: 'referenceLines[{0}].value',
+  resizePointsBy: 'series[0].mapOptions.resizePointsBy',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[{0}].color.secondary',
   secondaryMeasureAxisMaxValue: 'configuration.secondaryMeasureAxisMaxValue',
@@ -55,6 +68,7 @@ const paths = {
   showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   showLegend: 'configuration.showLegend',
   stacked: 'series[0].stacked',
+  stackRadius: 'series[0].mapOptions.stackRadius',
   stackedOneHundredPercent: 'series[0].stacked.oneHundredPercent',
   title: 'title',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
@@ -64,6 +78,7 @@ const paths = {
   useSecondaryAxisForLines: 'configuration.useSecondaryAxisForLines',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
+  weighLinesBy: 'series[0].mapOptions.weighLinesBy',
   zeroColor: 'configuration.legend.zeroColor'
 };
 
@@ -262,14 +277,6 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setOrderBy(get(paths.orderBy)));
   }
 
-  if (has(paths.pointOpacity)) {
-    dispatch(actions.setPointOpacity(get(paths.pointOpacity)));
-  }
-
-  if (has(paths.pointSize)) {
-    dispatch(actions.setPointSize(get(paths.pointSize)));
-  }
-
   if (has(paths.positiveColor)) {
     dispatch(actions.setPositiveColor(get(paths.positiveColor)));
   }
@@ -346,6 +353,74 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.zeroColor)) {
     dispatch(actions.setZeroColor(get(paths.zeroColor)));
+  }
+
+  if (has(paths.mapType)) {
+    dispatch(actions.setMapType(get(paths.mapType)));
+  }
+
+  if (has(paths.pointSize)) {
+    dispatch(actions.setPointSize(get(paths.pointSize)));
+  }
+
+  if (has(paths.pointOpacity)) {
+    dispatch(actions.setPointOpacity(get(paths.pointOpacity)));
+  }
+
+  if (has(paths.resizePointsBy)) {
+    dispatch(actions.setPointSizeByColumn(get(paths.resizePointsBy)));
+  }
+
+  if (has(paths.minimumPointSize)) {
+    dispatch(actions.setMinimumPointSize(get(paths.minimumPointSize)));
+  }
+
+  if (has(paths.maximumPointSize)) {
+    dispatch(actions.setMaximumPointSize(get(paths.maximumPointSize)));
+  }
+
+  if (has(paths.numberOfDataClasses)) {
+    dispatch(actions.setNumberOfDataClasses(get(paths.numberOfDataClasses)));
+  }
+
+  if (has(paths.maxClusteringZoomLevel)) {
+    dispatch(actions.setMaxClusteringZoomLevel(get(paths.maxClusteringZoomLevel)));
+  }
+
+  if (has(paths.pointThreshold)) {
+    dispatch(actions.setPointThreshold(get(paths.pointThreshold)));
+  }
+
+  if (has(paths.clusterRadius)) {
+    dispatch(actions.setClusterRadius(get(paths.clusterRadius)));
+  }
+
+  if (has(paths.maxClusterSize)) {
+    dispatch(actions.setMaxClusterSize(get(paths.maxClusterSize)));
+  }
+
+  if (has(paths.stackRadius)) {
+    dispatch(actions.setStackRadius(get(paths.stackRadius)));
+  }
+
+  if (has(paths.colorPointsBy)) {
+    dispatch(actions.setPointColorByColumn(get(paths.colorPointsBy)));
+  }
+
+  if (has(paths.weighLinesBy)) {
+    dispatch(actions.setLineWeightByColumn(get(paths.weighLinesBy)));
+  }
+
+  if (has(paths.minimumLineWeight)) {
+    dispatch(actions.setMinimumLineWeight(get(paths.minimumLineWeight)));
+  }
+
+  if (has(paths.maximumLineWeight)) {
+    dispatch(actions.setMaximumLineWeight(get(paths.maximumLineWeight)));
+  }
+
+  if (has(paths.colorLinesBy)) {
+    dispatch(actions.setPointColorByColumn(get(paths.colorLinesBy)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

@@ -747,6 +747,8 @@ en:
           title: Histogram
         combo_chart:
           title: Combo Chart
+        map:
+          title: Map
         pie_chart:
           error_limit_out_of_bounds: Please choose a value between {0} and {1}.
           title: Pie Chart
@@ -908,6 +910,14 @@ en:
               none: Show all
               subtitle: Number of slices to display
               title: Slice Display Options
+            point_map_options:
+              resize_points_by_value: Resize Points by Value
+              color_points_by_value: Color by Value
+              no_value: None
+            line_map_options:
+              line_weight_by_value: Scale Line Weight by Value
+              line_color_by_value: Color by Value
+              no_value: None
             region:
               groups:
                 ready_to_use: Ready To Use
@@ -983,22 +993,37 @@ en:
               title: Opacity
             bottom_axis_title:
               title: Bottom Axis Title
+            cluster_radius:
+              title: Cluster Radius
             color_palette:
               title: Color Palette
             color_scale:
               title: Color Scale
+            data_classes:
+              title: Number of Data Classes
             description:
               title: Description
             left_axis_title:
               title: Left Axis Title
             line_color:
               title: Line Color
+            line_weight:
+              title: Line Weight
+              minimum: Min
+              maximum: Max
+            max_cluster_size:
+              title: Max Cluster Size
             point_color:
-              title: Color
+              title: Point Color
             point_opacity:
-              title: Opacity
+              title: Point Opacity
             point_size:
-              title: Size
+              title: Point Size
+              minimum: Min
+              maximum: Max
+            point_threshold:
+              title: Point Threshold
+              description: The number of points in view that can be rendered before clustering occurs (subject to performance limits).
             right_axis_title:
               title: Right Axis Title
             show_dimension_labels:
@@ -1009,6 +1034,11 @@ en:
               title: Show Value Labels
             show_value_labels_as_percent:
               title: Label chart slices as %
+            stack_radius:
+              title: Stack Radius
+            stop_clustering_at_zoom_level:
+              title: Stop Clustering at Zoom Level
+              description: Depending on the size of your map, clustering may occur beyond the zoom level you set.
             title:
               title: Title
             top_axis_title:
@@ -1016,11 +1046,14 @@ en:
           subheaders:
             axis_titles: Axis Titles
             colors: Color
+            clusters: Clusters
             data_labels: Data Labels
             general: General
             labels: Labels
+            line_weight: Line Weight
             map: Map
             points: Points
+            point_size: Point Size
           title: Presentation
       preview:
         center_and_zoom: Current zoom level and positioning will be preserved on insertion.

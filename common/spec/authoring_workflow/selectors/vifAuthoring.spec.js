@@ -80,6 +80,30 @@ describe('vifAuthoring', () => {
     });
   });
 
+  describe('isNewGLMap', () => {
+    describe('when it is a New WebGL map', () => {
+      it('returns true', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'map';
+
+        expect(
+          selector.isNewGLMap(state)
+        ).to.be.true;
+      });
+    });
+
+    describe('when it is not a New WebGL map', () => {
+      it('returns false', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'featureMap';
+
+        expect(
+          selector.isNewGLMap(state)
+        ).to.be.false;
+      });
+    });
+  });
+
   describe('isValidRegionMapVif', () => {
     describe('when it is valid', () => {
       it('returns true', () => {
@@ -106,6 +130,34 @@ describe('vifAuthoring', () => {
 
         expect(
           selector.isValidRegionMapVif(state)
+        ).to.be.false;
+      });
+    });
+  });
+
+  describe('isValidNewGLMapVif', () => {
+    describe('when it is valid', () => {
+      it('returns true', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'map';
+
+        _.set(state, 'vifs.map.series[0].dataSource.dimension.columnName', 'example_dimension');
+        _.set(state, 'vifs.map.series[0].dataSource.datasetUid', 'exam-ples');
+        _.set(state, 'vifs.map.series[0].dataSource.domain', 'example.com');
+
+        expect(
+          selector.isValidNewGLMapVif(state)
+        ).to.be.true;
+      });
+    });
+
+    describe('when it is invalid', () => {
+      it('returns false', () => {
+        const state = getDefaultState();
+        state.authoring.selectedVisualizationType = 'columnChart';
+
+        expect(
+          selector.isValidNewGLMapVif(state)
         ).to.be.false;
       });
     });

@@ -4,6 +4,7 @@ import metadata from './metadata';
 import authoring from './authoring';
 
 import barChart from './vifs/barChart';
+import map from './vifs/map';
 import regionMap from './vifs/regionMap';
 import columnChart from './vifs/columnChart';
 import comboChart from './vifs/comboChart';
@@ -23,6 +24,7 @@ module.exports = combineReducers({
     vifs: combineReducers({
       initialVif,
       barChart,
+      map,
       regionMap,
       columnChart,
       comboChart,

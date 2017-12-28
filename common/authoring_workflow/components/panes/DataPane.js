@@ -5,11 +5,15 @@ import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import {
   getValidMeasures,
+  isPointMapColumn,
+  isLineMapColumn,
   hasData,
   hasError,
   isLoading
 } from '../../selectors/metadata';
 import {
+  getDimension,
+  getSelectedVisualizationType,
   getSeries,
   getTreatNullValuesAsZero,
   getVisualizationType,
@@ -18,8 +22,8 @@ import {
   isColumnChart,
   isComboChart,
   isGroupingOrMultiSeries,
-  isMultiSeries,
   isPieChart,
+  isMultiSeries,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
 import {
@@ -37,23 +41,12 @@ import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
 import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
 import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
+import PointMapOptionsSelector from '../PointMapOptionsSelector';
+import LineMapOptionsSelector from '../LineMapOptionsSelector';
+import { FeatureFlags } from 'common/feature_flags';
 
 export class DataPane extends Component {
-  constructor(props) {
-    super(props);
-
-    _.bindAll(this, [
-      'renderMetadataLoading',
-      'renderMetadataError',
-      'renderTreatNullValuesAsZero',
-      'renderGroupingOptions',
-      'renderTimelineOptions',
-      'renderDisplayOptions',
-      'renderErrorBarsOptions'
-    ]);
-  }
-
-  renderMetadataLoading() {
+  renderMetadataLoading = () => {
     return (
       <div className="alert">
         <div className="metadata-loading">
@@ -63,7 +56,7 @@ export class DataPane extends Component {
     );
   }
 
-  renderMetadataError() {
+  renderMetadataError = () => {
     return (
       <div className="metadata-error alert error">
         <strong>{I18n.t('shared.visualizations.panes.data.uhoh')}</strong> {I18n.t('shared.visualizations.panes.data.loading_metadata_error')}
@@ -71,7 +64,7 @@ export class DataPane extends Component {
     );
   }
 
-  renderTreatNullValuesAsZero() {
+  renderTreatNullValuesAsZero = () => {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'treat-null-values-as-zero',
@@ -93,7 +86,7 @@ export class DataPane extends Component {
     );
   }
 
-  renderGroupingOptions() {
+  renderGroupingOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender = !isMultiSeries(vifAuthoring) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) &&
@@ -106,7 +99,7 @@ export class DataPane extends Component {
     ) : null;
   }
 
-  renderTimelineOptions() {
+  renderTimelineOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender = isTimelineChart(vifAuthoring);
 
@@ -118,7 +111,7 @@ export class DataPane extends Component {
     ) : null;
   }
 
-  renderDisplayOptions() {
+  renderDisplayOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender =
       isBarChart(vifAuthoring) ||
@@ -142,7 +135,7 @@ export class DataPane extends Component {
     ) : null;
   }
 
-  renderErrorBarsOptions() {
+  renderErrorBarsOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isComboChart(vifAuthoring)) &&
       !isGroupingOrMultiSeries(vifAuthoring);
@@ -154,7 +147,13 @@ export class DataPane extends Component {
     ) : null;
   }
 
-  renderMeasureSelector() {
+  renderMeasureSelector = () => {
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (isNewGLMapEnabled) {
+      return;
+    }
+
     const { vifAuthoring } = this.props;
 
     const attributes = {
@@ -168,13 +167,54 @@ export class DataPane extends Component {
       <MeasureSelector {...attributes} />;
 
     return (
-      <div className="measure-list-container">
-        <BlockLabel
-          title={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.title')}
-          description={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.description')} />
-        {measureSelector}
+      <div className="authoring-field">
+        <div className="measure-list-container">
+          <BlockLabel
+            title={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.title')}
+            description={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.description')} />
+          {measureSelector}
+        </div>
       </div>
     );
+  }
+
+  renderRegionSelector = () => {
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (isNewGLMapEnabled) {
+      return;
+    }
+
+    return (
+      <div className="authoring-field">
+        <RegionSelector />
+      </div>
+    );
+  }
+
+  renderNewMapOptionsSelector = () => {
+    const { vifAuthoring, metadata } = this.props;
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+      const dimension = getDimension(vifAuthoring);
+      const isPointMap = isPointMapColumn(metadata, dimension);
+      const isLineMap = isLineMapColumn(metadata, dimension);
+
+      if (isPointMap) {
+        return (
+          <div className="authoring-field">
+            <PointMapOptionsSelector />
+          </div>
+        );
+      } else if (isLineMap) {
+        return (
+          <div className="authoring-field">
+            <LineMapOptionsSelector />
+          </div>
+        );
+      }
+    }
   }
 
   render() {
@@ -192,6 +232,8 @@ export class DataPane extends Component {
     const displayOptions = this.renderDisplayOptions();
     const errorBarsOptions = this.renderErrorBarsOptions();
     const measureSelector = this.renderMeasureSelector();
+    const regionSelector = this.renderRegionSelector();
+    const renderNewMapOptionsSelector = this.renderNewMapOptionsSelector();
 
     const sections = (
       <AccordionContainer>
@@ -206,12 +248,9 @@ export class DataPane extends Component {
           <div className="authoring-field">
             <DimensionSelector />
           </div>
-          <div className="authoring-field">
-            {measureSelector}
-          </div>
-          <div className="authoring-field">
-            <RegionSelector />
-          </div>
+          {renderNewMapOptionsSelector}
+          {measureSelector}
+          {regionSelector}
         </AccordionPane>
         {groupingOptions}
         {timelineOptions}

@@ -84,19 +84,19 @@ describe('AuthoringWorkflow reducer', function() {
         });
       }
 
-      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'regionMap', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setDescription', 'Description', 'description', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setViewSourceDataLink', true, 'configuration.viewSourceDataLink', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'regionMap', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setDescription', 'Description', 'description', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setViewSourceDataLink', true, 'configuration.viewSourceDataLink', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
 
-      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
 
       shouldSetVif('setMeasure', [0, 'anything'], 'series[0].dataSource.measure.columnName', ['regionMap', 'columnChart', 'timelineChart', 'histogram', 'pieChart']);
       shouldSetVif('setMeasureAggregation', [0, 'count'], 'series[0].dataSource.measure.aggregationFunction', null);
 
-      shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
+      shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap', 'map']);
       shouldSetVif('setSecondaryColor', [0, '#00F'], 'series[0].color.secondary', ['columnChart', 'histogram']);
 
-      shouldSetVif('setPointSize', 1.3, 'configuration.pointSize', ['featureMap']);
+      shouldSetVif('setPointSize', 1.3, 'configuration.pointSize', ['featureMap', 'map']);
 
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.negativeColor', ['regionMap']);
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['regionMap']);
@@ -108,7 +108,7 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap']);
       shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap']);
 
-      shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap']);
+      shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap', 'map']);
 
       shouldSetVif('setDimensionLabelAreaSize', 'dimensionLabelAreaSize', 'configuration.dimensionLabelAreaSize', ['barChart']);
       shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['barChart']);
@@ -119,12 +119,12 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setShowValueLabels', true, 'configuration.showValueLabels', ['barChart', 'pieChart']);
       shouldSetVif('setShowValueLabelsAsPercent', true, 'configuration.showValueLabelsAsPercent', ['pieChart']);
 
-      shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
-      shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
+      shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
+      shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
 
-      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
+      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap', 'map']);
 
-      shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
+      shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'map', 'regionMap']);
 
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
@@ -148,6 +148,24 @@ describe('AuthoringWorkflow reducer', function() {
           var newState = reducer(getTestState(), action);
 
           expect(_.get(newState.vifAuthoring.vifs.featureMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+        });
+      });
+
+      describe('when configuring a New map', function() {
+        resetsCenterAndZoomWhenChangingDimensions();
+
+        it('sets configuration.pointOpacity', function() {
+          var action = actions.setPointOpacity('1');
+          var newState = reducer(getTestState(), action);
+
+          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.pointOpacity')).to.equal(1);
+        });
+
+        it('sets configuration.baseLayerOpacity', function() {
+          var action = actions.setBaseLayerOpacity('0.5');
+          var newState = reducer(getTestState(), action);
+
+          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseLayerOpacity')).to.equal(0.5);
         });
       });
 

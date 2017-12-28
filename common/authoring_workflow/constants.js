@@ -4,6 +4,8 @@ export const INPUT_DEBOUNCE_MILLISECONDS = 700;
 export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
 export const MAXIMUM_MEASURES = 12;
 export const MAXIMUM_COMBO_CHART_MEASURES = 6;
+export const NUMERIC_COLUMN_TYPES = ['number', 'money', 'percent'];
+export const GEO_LOCATION_COLUMN_TYPES = ['location', 'point', 'multipoint', 'line', 'multiline', 'polygon', 'multipolygon'];
 
 export const COLUMN_TYPES = [
   {
@@ -21,18 +23,22 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'line',
+    preferredVisualizationTypes: ['map'],
     icon: 'icon-geo'
   },
   {
     type: 'multiline',
+    preferredVisualizationTypes: ['map'],
     icon: 'icon-geo'
   },
   {
     type: 'multipoint',
+    preferredVisualizationTypes: ['map'],
     icon: 'icon-geo'
   },
   {
     type: 'multipolygon',
+    preferredVisualizationTypes: ['map'],
     icon: 'icon-geo'
   },
   {
@@ -52,11 +58,17 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'point',
-    preferredVisualizationTypes: ['featureMap', 'regionMap'],
+    preferredVisualizationTypes: ['featureMap', 'regionMap', 'map'],
     icon: 'icon-map'
   },
   {
+    type: 'location',
+    preferredVisualizationTypes: ['map'],
+    icon: 'icon-geo'
+  },
+  {
     type: 'polygon',
+    preferredVisualizationTypes: ['map'],
     icon: 'icon-geo'
   },
   {
@@ -108,6 +120,12 @@ export const VISUALIZATION_TYPES = [
     title: I18n.t('shared.visualizations.charts.feature_map.title'),
     icon: 'icon-map',
     preferredDimensionTypes: ['point', 'location']
+  },
+  {
+    type: 'map',
+    title: I18n.t('shared.visualizations.charts.map.title'),
+    icon: 'icon-geo',
+    preferredDimensionTypes: GEO_LOCATION_COLUMN_TYPES
   },
   {
     type: 'timelineChart',

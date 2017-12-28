@@ -47,6 +47,10 @@ describe('loader', function() {
       propagatesChangesStore('columnChart');
     });
 
+    describe('map', function() {
+      propagatesChangesStore('map');
+    });
+
     describe('featureMap', function() {
       propagatesChangesStore('featureMap');
     });

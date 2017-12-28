@@ -6,6 +6,7 @@ import { getStore } from './testStore';
 import mockFilter from './data/mockFilter';
 import mockView from './data/mockView';
 import mockVif from './data/mockVif';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('App', function() {
   let server;
@@ -39,9 +40,10 @@ describe('App', function() {
         authoringWorkflow: {
           isActive: false
         }
-      })
+      });
 
-      element = element = renderComponentWithStore(App, {}, store)
+      element = element = renderComponentWithStore(App, {}, store);
+      FeatureFlags.updateTestFixture({ enable_new_maps: false });
     });
 
     it('renders an edit bar', () => {

@@ -143,4 +143,25 @@ describe('components/HrefDownload', function() {
       assert.isNull(accessPoints[1].querySelector('.btn[href="bulbapedia"]'));
     });
   });
+
+  describe('title text', function() {
+    it('uses the regular title when usaid_features_enabled is false', function() {
+      const element = renderComponent(HrefDownload, getProps());
+      const hrefHeader = element.querySelector('.landing-page-section-header');
+      assert.ok(hrefHeader);
+      assert.equal(hrefHeader.textContent, 'Access this Data');
+    });
+
+    it('uses the data asset title when usaid_features_enabled is true', function() {
+      FeatureFlags.useTestFixture({
+        usaid_features_enabled: true
+      });
+
+      const element = renderComponent(HrefDownload, {view: {...getProps().view, metadata: {isParent: true}}});
+      const hrefHeader = element.querySelector('.landing-page-section-header');
+      assert.ok(hrefHeader);
+      assert.equal(hrefHeader.textContent, 'Associated Datasets');
+    });
+
+  })
 });

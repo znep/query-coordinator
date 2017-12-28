@@ -51,6 +51,13 @@ export default class InfoPaneButtons extends Component {
     }
   }
 
+  useDataAssetStrings() {
+    const { view } = this.props;
+    return FeatureFlags.value('usaid_features_enabled') &&
+      view.metadata &&
+      view.metadata.isParent === true;
+  }
+
   renderVisualizeAndFilterLink() {
     const { view, onClickVisualizeAndFilter } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
@@ -186,7 +193,7 @@ export default class InfoPaneButtons extends Component {
       <a
         href={`${localizeLink(view.gridUrl)}?pane=manage`}
         className="btn btn-simple btn-sm unstyled-link manage">
-        {I18n.manage_dataset}
+        {this.useDataAssetStrings() ? I18n.manage_data_asset : I18n.manage_dataset}
       </a>
     );
   }
@@ -198,7 +205,8 @@ export default class InfoPaneButtons extends Component {
     const contactFormLink = !view.disableContactDatasetOwner ? (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="contact-form">
-          {I18n.action_buttons.contact_owner}
+          {this.useDataAssetStrings() ?
+            I18n.action_buttons.contact_asset_owner : I18n.action_buttons.contact_owner}
         </a>
       </li>
     ) : null;
@@ -226,9 +234,14 @@ export default class InfoPaneButtons extends Component {
     const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
 
     if (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled) {
-      const watchDatasetLinkText = view.subscribed ?
-        I18n.action_buttons.unwatch_dataset :
-        I18n.action_buttons.watch_dataset;
+      let watchDatasetLinkText;
+      if (this.useDataAssetStrings()) {
+        watchDatasetLinkText = view.subscribed ?
+          I18n.action_buttons.unwatch_data_asset : I18n.action_buttons.watch_data_asset;
+      } else {
+        watchDatasetLinkText = view.subscribed ?
+          I18n.action_buttons.unwatch_dataset : I18n.action_buttons.watch_dataset;
+      }
 
       watchDatasetLink = (
         <li>

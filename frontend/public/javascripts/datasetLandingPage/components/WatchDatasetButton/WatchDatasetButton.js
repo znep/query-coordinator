@@ -21,6 +21,18 @@ export class WatchDatasetButton extends Component {
     event.preventDefault();
   }
 
+  watchButtonText(subscribed, useDataAssetStrings) {
+    if (useDataAssetStrings) {
+      return I18n.action_buttons[
+          subscribed ? 'unwatch_data_asset' : 'watch_data_asset'
+        ];
+    } else {
+      return I18n.action_buttons[
+          subscribed ? 'unwatch_dataset' : 'watch_dataset'
+        ];
+    }
+  }
+
   render() {
     const inputAttributes = {
       id: 'show-dimension-labels',
@@ -28,12 +40,11 @@ export class WatchDatasetButton extends Component {
       defaultChecked: false
     };
     const { subscribed } = this.props.view;
+    const { useDataAssetStrings } = this.props;
     const watchDatasetFlagIcon = classNames('flag-icon',
       subscribed ? 'socrata-icon-watched' : 'socrata-icon-watch'
     );
-    const watchDatasetButtonText = I18n.action_buttons[
-      subscribed ? 'unwatch_dataset' : 'watch_dataset'
-    ];
+    const watchDatasetButtonText = this.watchButtonText(subscribed, useDataAssetStrings);
 
     return (
       <div className="watch-dataset-button">
@@ -51,7 +62,8 @@ export class WatchDatasetButton extends Component {
 
 WatchDatasetButton.propTypes = {
   view: PropTypes.object.isRequired,
-  onSubscriptionChange: PropTypes.func
+  onSubscriptionChange: PropTypes.func,
+  useDataAssetStrings: PropTypes.bool
 };
 
 function mapDispatchToProps(dispatch) {

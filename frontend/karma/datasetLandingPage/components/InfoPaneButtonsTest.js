@@ -18,6 +18,7 @@ describe('components/InfoPaneButtons', () => {
       enable_visualization_canvas: true,
       enable_external_data_integrations: true,
       enable_user_notifications: true,
+      usaid_features_enabled: false
     });
   });
 
@@ -266,7 +267,104 @@ describe('components/InfoPaneButtons', () => {
         const element = renderComponent(InfoPaneButtons, getProps({}));
         assert.isNull(element.querySelector('.watch-dataset-link'));
       });
-
     });
   });
+
+  describe('usaid_features_enabled is on', () => {
+    beforeEach(() =>  {
+      window.sessionData.email = 'test@mail.com';
+      FeatureFlags.updateTestFixture({ usaid_features_enabled: true });
+    });
+
+    afterEach(() => {
+      window.sessionData.email = '';
+      FeatureFlags.updateTestFixture({ usaid_features_enabled: false });
+    });
+
+    it('uses data asset text for manage button on parent views', () => {
+      const element = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          isBlobby: true,
+          metadata: { isParent: true }
+        }
+      }));
+      const manageButton = element.querySelector('.btn.manage');
+      assert.ok(manageButton);
+      assert.equal(manageButton.text, 'Manage Data Asset');
+    });
+
+    it('uses dataset text for manage button on child views', () => {
+      const childElement = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          isBlobby: true,
+          metadata: { isParent: false }
+        }
+      }));
+      const manageButton = childElement.querySelector('.btn.manage');
+      assert.ok(manageButton);
+      assert.equal(manageButton.text, 'Manage Dataset');
+    });
+
+    it('uses data asset text for contact button on parent views', () => {
+      const parentElement = renderComponent(InfoPaneButtons,  getProps({
+        view: { metadata: { isParent: true } }
+      }));
+      const contactLink = parentElement.querySelector('a[data-modal="contact-form"]');
+       assert.ok(contactLink);
+       assert.equal(contactLink.text, 'Contact Data Asset Owner');
+    });
+
+    it('uses data asset text for contact button on child views', () => {
+      const childElement = renderComponent(InfoPaneButtons,  getProps({
+        view: { metadata: { isParent: false } }
+      }));
+      const childContactLink = childElement.querySelector('a[data-modal="contact-form"]');
+       assert.ok(childContactLink);
+       assert.equal(childContactLink.text, 'Contact Dataset Owner');
+    })
+
+    it('uses data asset text for watch button on parent views', () => {
+      const unsubscribedElement = renderComponent(InfoPaneButtons, getProps({
+        view: { metadata: { isParent: true } }
+      }));
+
+      const watchDatasetLink = unsubscribedElement.querySelector('.watch-dataset-link');
+
+      assert.ok(watchDatasetLink);
+      assert.equal(watchDatasetLink.text, 'Watch this Data Asset')
+
+      const subcribedElement = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          subscribed: true,
+          metadata: { isParent: true }
+        }
+      }));
+
+      const unwatchDatasetLink = subcribedElement.querySelector('.watch-dataset-link');
+      assert.ok(unwatchDatasetLink);
+      assert.equal(unwatchDatasetLink.text, 'Unwatch this Data Asset')
+    });
+
+    it('uses data asset text for watch button on parent views', () => {
+      const unsubscribedChildElement = renderComponent(InfoPaneButtons, getProps({
+        view: { metadata: { isParent: false } }
+      }));
+
+      const watchDatasetLink = unsubscribedChildElement.querySelector('.watch-dataset-link');
+
+      assert.ok(watchDatasetLink);
+      assert.equal(watchDatasetLink.text, 'Watch this Dataset')
+
+      const subcribedElement = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          subscribed: true,
+          metadata: { isParent: false }
+        }
+      }));
+
+      const unwatchDatasetLink = subcribedElement.querySelector('.watch-dataset-link');
+      assert.ok(unwatchDatasetLink);
+      assert.equal(unwatchDatasetLink.text, 'Unwatch this Dataset')
+    });
+  })
 });

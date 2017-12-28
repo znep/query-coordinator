@@ -100,6 +100,24 @@ describe('Edit modal reducer', () => {
 
         assert.isNull(state.cachedRowCount);
       });
+
+      it('resets metric config to default', () => {
+        const viewMetadata = {
+          id: 'xxxx-xxxx',
+          columns: []
+        };
+
+        _.set(state, 'measure.metricConfig.dataSource', {
+          uid: 'test-test'
+        });
+
+        _.set(state, 'measure.metricConfig.type', CalculationTypeNames.SUM);
+        _.set(state, 'measure.metricConfig.arguments.foo', 'hello');
+
+        state = reducer(state, actions.editor.setDataSourceUid('test-news'));
+        assert.equal(state.measure.metricConfig.type, CalculationTypeNames.COUNT);
+        assert.notNestedProperty(state, 'measure.metricConfig.arguments.foo');
+      });
     });
   });
 
@@ -127,24 +145,6 @@ describe('Edit modal reducer', () => {
       state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
 
       assert.deepEqual(state.dataSourceView, viewMetadata);
-    });
-
-    it('resets metric config to default', () => {
-      const viewMetadata = {
-        id: 'xxxx-xxxx',
-        columns: []
-      };
-
-      _.set(state, 'measure.metricConfig.dataSource', {
-        uid: 'test-test'
-      });
-
-      _.set(state, 'measure.metricConfig.type', CalculationTypeNames.SUM);
-      _.set(state, 'measure.metricConfig.arguments.foo', 'hello');
-
-      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
-      assert.equal(state.measure.metricConfig.type, CalculationTypeNames.COUNT);
-      assert.notNestedProperty(state, 'measure.metricConfig.arguments.foo');
     });
 
     it('throws if not given a number for the rowCount', () => {

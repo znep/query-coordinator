@@ -112,7 +112,13 @@ describe('DataPanel', () => {
 
       describe('when an invalid dataset is selected', () => {
         beforeEach(() =>  {
-          props = getProps({ dataSourceName: 'Invalid Dataset', rowCount: -1, uid: 'test-test' });
+          props = getProps({
+            dataSourceName: 'Invalid Dataset',
+            rowCount: -1,
+            measure: {
+              dataSourceLensUid: 'test-test'
+            }
+          });
           element = shallow(<DataPanel {...props} />);
         });
 
@@ -132,20 +138,30 @@ describe('DataPanel', () => {
 
       describe('when selecting a different dataset', () => {
         it('calls onChangeDataSource when the "Choose" button is clicked', () => {
-          props = getProps({ uid: 'test-test', onChangeDataSource: sinon.spy() });
+          props = getProps({
+            onChangeDataSource: sinon.spy(),
+            measure: {
+              dataSourceLensUid: 'test-dtaa'
+            }
+          });
           element = mount(<DataPanel {...props} />);
 
-          getIframe(element).node.onDatasetSelected({ id: 'four-four' });
-          sinon.assert.calledWithExactly(props.onChangeDataSource, 'four-four');
+          getIframe(element).node.onDatasetSelected({ id: 'sthg-neww' });
+          sinon.assert.calledWithExactly(props.onChangeDataSource, 'sthg-neww');
         });
       });
 
       describe('when selecting an already-selected dataset', () => {
         it('does not call onChangeDataSource when the "Choose" button is clicked', () => {
-          props = getProps({ uid: 'test-test', onChangeDataSource: sinon.spy() });
+          props = getProps({
+            onChangeDataSource: sinon.spy(),
+            measure: {
+              dataSourceLensUid: 'test-dtaa'
+            }
+          });
           element = mount(<DataPanel {...props} />);
 
-          getIframe(element).node.onDatasetSelected({ id: 'test-test' });
+          getIframe(element).node.onDatasetSelected({ id: 'test-dtaa' });
           sinon.assert.notCalled(props.onChangeDataSource);
         });
       });

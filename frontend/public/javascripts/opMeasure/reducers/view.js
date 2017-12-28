@@ -8,14 +8,6 @@ const INITIAL_STATE = _.merge({}, window.socrata.opMeasure, {
   activePane: 'summary',
   isDirty: false,
   saveState: SaveStates.IDLE
-  // TODO: Set default metric props as part of setting up window.initialState?
-  // measure: {
-  //   metric: {
-  //     reportingPeriod: {
-  //       type: PeriodTypes.CLOSED
-  //     }
-  //   }
-  // }
 });
 
 // View reducer.
@@ -30,7 +22,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         saving: true,
-        saveError: null,
+        saveError: false,
         showSaveToastMessage: false
       };
 
@@ -39,7 +31,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         isDirty: !!action.error,
         saving: false,
-        saveError: action.error,
+        saveError: !!action.error,
         showSaveToastMessage: true
       };
 

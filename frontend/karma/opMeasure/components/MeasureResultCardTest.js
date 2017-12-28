@@ -12,6 +12,7 @@ describe('MeasureResultCard', () => {
   const getProps = (props) => {
     return {
       measure: {},
+      coreView: {},
       ...props
     };
   };

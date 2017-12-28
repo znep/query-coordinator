@@ -61,9 +61,8 @@ describe('thunk actions', () => {
           test: 'foo'
         };
         const expectedActions = [
-          editorActions.OPEN_EDIT_MODAL,
-          editorActions.SET_DATA_SOURCE_UID,
-          editorActions.RECEIVE_DATA_SOURCE_VIEW
+          editorActions.RECEIVE_DATA_SOURCE_VIEW,
+          editorActions.OPEN_EDIT_MODAL
         ];
 
         const store = mockStore({
@@ -89,8 +88,7 @@ describe('thunk actions', () => {
           }
         };
         const expectedActions = [
-          editorActions.OPEN_EDIT_MODAL,
-          editorActions.SET_DATA_SOURCE_UID
+          editorActions.OPEN_EDIT_MODAL
         ];
 
         const store = mockStore({
@@ -153,7 +151,7 @@ describe('thunk actions', () => {
     });
   });
 
-  describe('setDataSource', () => {
+  describe('changeDataSource', () => {
     const uid = 'test-test';
     let getRowCountStub;
     let getDatasetMetadataStub;
@@ -173,13 +171,13 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches setDataSource(undefined)', (done) => {
+      it('dispatches setDataSourceUid(undefined)', (done) => {
         const expectedActions = [
           { type: editorActions.SET_DATA_SOURCE_UID, uid: undefined }
         ];
 
         const store = mockStore();
-        store.dispatch(editorActions.setDataSource('four-for'));
+        store.dispatch(editorActions.changeDataSource('four-for'));
 
         _.defer(() => {
           assert.deepEqual(store.getActions(), expectedActions);
@@ -206,7 +204,7 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches receiveDataSourceMetadata', (done) => {
+      it('dispatches setDataSourceUid(four-four)', (done) => {
         const expectedActions = [
           {
             type: editorActions.SET_DATA_SOURCE_UID,
@@ -221,7 +219,58 @@ describe('thunk actions', () => {
         ];
 
         const store = mockStore();
-        store.dispatch(editorActions.setDataSource(uid));
+        store.dispatch(editorActions.changeDataSource(uid));
+
+        _.defer(() => {
+          assert.deepEqual(store.getActions(), expectedActions);
+          sinon.assert.calledOnce(getRowCountStub);
+          sinon.assert.calledOnce(getDatasetMetadataStub);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('loadDataSourceView', () => {
+    const uid = 'test-test';
+    let getRowCountStub;
+    let getDatasetMetadataStub;
+    let getDisplayableFilterableColumnsStub;
+    let viewMetadata;
+
+    afterEach(() => {
+      EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
+    });
+
+    describe('a valid 4x4 is provided', () => {
+      beforeEach(() => {
+        viewMetadata = { id: 'test-test', columns: [] };
+        getRowCountStub = sinon.stub().resolves(12345);
+        getDatasetMetadataStub = sinon.stub().resolves(viewMetadata);
+        getDisplayableFilterableColumnsStub = sinon.stub().resolves('displayable filterable');
+
+        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
+          this.getRowCount = getRowCountStub;
+        });
+
+        EditorActionsAPI.__Rewire__('MetadataProvider', function() {
+          this.getDatasetMetadata = getDatasetMetadataStub;
+          this.getDisplayableFilterableColumns = getDisplayableFilterableColumnsStub;
+        });
+      });
+
+      it('dispatches receiveDataSourceMetadata', (done) => {
+        const expectedActions = [
+          {
+            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
+            rowCount: 12345,
+            dataSourceView: viewMetadata,
+            displayableFilterableColumns: 'displayable filterable'
+          }
+        ];
+
+        const store = mockStore();
+        store.dispatch(editorActions.loadDataSourceView(uid));
 
         _.defer(() => {
           assert.deepEqual(store.getActions(), expectedActions);

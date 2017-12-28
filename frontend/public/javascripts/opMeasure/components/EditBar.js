@@ -32,13 +32,13 @@ export class EditBar extends PureComponent {
     const {
       editBusy,
       isDirty,
-      measure,
+      coreView,
       onClickEdit,
       onClickPreview,
       onClickSave,
       saving
     } = this.props;
-    const { name } = measure || {};
+    const { name } = coreView || {};
     const editBarProps = { name };
 
     return (
@@ -62,7 +62,7 @@ export class EditBar extends PureComponent {
 }
 
 EditBar.propTypes = {
-  measure: PropTypes.shape({
+  coreView: PropTypes.shape({
     name: PropTypes.string
   }),
   editBusy: PropTypes.bool,
@@ -70,13 +70,14 @@ EditBar.propTypes = {
   onClickEdit: PropTypes.func,
   onClickPreview: PropTypes.func,
   onClickSave: PropTypes.func,
-  saveError: PropTypes.any,
+  saveError: PropTypes.bool,
   saving: PropTypes.bool,
   showSaveToastMessage: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   const {
+    coreView,
     isDirty,
     measure,
     saveError,
@@ -86,7 +87,7 @@ function mapStateToProps(state) {
   const editBusy = _.get(measure, 'dataSourceLensUid') && !_.get(state.editor, 'dataSourceView');
 
   return {
-    measure: state.view.measure,
+    coreView,
     editBusy,
     isDirty,
     saveError,

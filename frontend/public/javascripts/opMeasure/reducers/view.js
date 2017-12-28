@@ -37,6 +37,7 @@ export default (state = INITIAL_STATE, action) => {
     case actions.view.SAVE_COMPLETE:
       return {
         ...state,
+        isDirty: !!action.error,
         saving: false,
         saveError: action.error,
         showSaveToastMessage: true

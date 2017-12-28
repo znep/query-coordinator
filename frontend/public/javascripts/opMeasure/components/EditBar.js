@@ -31,6 +31,7 @@ export class EditBar extends PureComponent {
   render() {
     const {
       editBusy,
+      isDirty,
       measure,
       onClickEdit,
       onClickPreview,
@@ -43,10 +44,10 @@ export class EditBar extends PureComponent {
     return (
       <SocrataComponentsEditBar {...editBarProps}>
         <div className="edit-bar-child">
-          <Button variant="primary" dark busy={editBusy} onClick={onClickEdit}>
+          <Button className="btn-edit" variant="primary" dark busy={editBusy} onClick={onClickEdit}>
             {I18n.t('open_performance.edit')}
           </Button>
-          <Button className="btn-save" dark onClick={onClickSave} busy={saving}>
+          <Button className="btn-save" dark onClick={onClickSave} busy={saving} disabled={!isDirty}>
             {I18n.t('open_performance.save')}
           </Button>
           {this.renderSaveToast()}
@@ -65,21 +66,29 @@ EditBar.propTypes = {
     name: PropTypes.string
   }),
   editBusy: PropTypes.bool,
+  isDirty: PropTypes.bool,
   onClickEdit: PropTypes.func,
   onClickPreview: PropTypes.func,
   onClickSave: PropTypes.func,
   saveError: PropTypes.any,
-  showSaveToastMessage: PropTypes.bool,
-  saving: PropTypes.bool
+  saving: PropTypes.bool,
+  showSaveToastMessage: PropTypes.bool
 };
 
 function mapStateToProps(state) {
-  const { measure, saving, saveError, showSaveToastMessage } = state.view;
+  const {
+    isDirty,
+    measure,
+    saveError,
+    saving,
+    showSaveToastMessage
+  } = state.view;
   const editBusy = _.get(measure, 'dataSourceLensUid') && !_.get(state.editor, 'dataSourceView');
 
   return {
     measure: state.view.measure,
     editBusy,
+    isDirty,
     saveError,
     showSaveToastMessage,
     saving

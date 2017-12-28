@@ -12,8 +12,9 @@ class AssetActionBar extends React.Component {
     super(props);
 
     this.currentView = sift(window,
-      'initialState.view.coreView',
-      'blist.dataset'
+      'initialState.view.coreView', // Primer
+      'initialState.view', // DSMUI
+      'blist.dataset' // Grid View
     ) || this.props.currentView; // For tests.
     if (!this.currentView) {
       throw new Error('The Asset Action Bar does not make much sense without a current view.');

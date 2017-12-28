@@ -1,86 +1,29 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { SocrataIcon, Button } from 'common/components';
-import cx from 'classnames';
-import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
-import { spring } from 'react-motion';
-import { connect } from 'react-redux';
-import connectLocalization from 'common/i18n/components/connectLocalization';
 import _ from 'lodash';
+import React from 'react';
+import { connect } from 'react-redux';
+import { spring } from 'react-motion';
 
-class NotificationBox extends Component {
-  render() {
-    const { content, onDismiss, style, type, canDismiss = false } = this.props;
-    const className = cx(
-      'alert',
-      {
-        [type]: true
-      },
-      this.props.className
-    );
-    const htmlContent = {
-      __html: content
-    };
-    return (
-      <div className="socrata-notification">
-        <div className={className} style={style}>
-          <span dangerouslySetInnerHTML={htmlContent} />
-          {canDismiss ? (
-            <Button variant="transparent" onClick={() => onDismiss()}>
-              <SocrataIcon name="close-2" />
-            </Button>
-          ) : null}
-        </div>
-      </div>
-    );
-  }
-}
+import { ToastNotification } from 'common/components';
 
-NotificationBox.defaultProps = {
-  canDismiss: false,
-  onDismiss: () => {}
-};
-
-NotificationBox.propTypes = {
-  content: PropTypes.string,
-  onDismiss: PropTypes.func,
-  type: PropTypes.oneOf(['warning', 'default', 'info', 'success', 'error']),
-  canDismiss: PropTypes.bool
-};
-
-export default class Notification extends Component {
-  render() {
-    const { showNotification, ...props } = this.props;
-    return (
-      <ConditionTransitionMotion
-        condition={showNotification}
-        willEnter={() => ({ opacity: 0, right: -16 })}
-        willLeave={() => ({ opacity: spring(0), right: spring(-16) })}
-        style={{ opacity: spring(1), right: spring(16) }}>
-        {style => <NotificationBox style={style} {...props} />}
-      </ConditionTransitionMotion>
-    );
-  }
-}
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
 const mapStateToProps = ({ ui: { notificationContent, notificationType, showNotification } }, { I18n }) => {
   const content = _.has(notificationContent, 'translationKey')
     ? I18n.translate(notificationContent.translationKey, notificationContent)
     : notificationContent;
 
+  const customTransition = {
+    willEnter: () => ({ opacity: 0, right: -16 }),
+    willLeave: () => ({ opacity: spring(0), right: spring(-16) }),
+    style: { opacity: spring(1), right: spring(16) }
+  };
+
   return {
-    content,
-    type: notificationType,
-    showNotification
+    children: <span dangerouslySetInnerHTML={{ __html: content }} />,
+    customTransition,
+    showNotification,
+    type: notificationType
   };
 };
 
-export const LocalizedNotification = connectLocalization(connect(mapStateToProps)(Notification));
-
-export const types = {
-  DEFAULT: 'default',
-  INFO: 'info',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ERROR: 'error'
-};
+export const LocalizedNotification = connectLocalization(connect(mapStateToProps)(ToastNotification));

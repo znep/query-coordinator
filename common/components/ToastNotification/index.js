@@ -19,7 +19,12 @@ export default class ToastNotification extends Component {
     onDismiss: PropTypes.func,
     positionTop: PropTypes.number,
     showNotification: PropTypes.bool,
-    type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error'])
+    type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error']),
+
+    // Returns a set of props to pass to ConditionTransitionMotion.
+    // This is optional - the default uses positionTop to make a default
+    // animation.
+    customTransition: PropTypes.object
   };
 
   static defaultProps = {
@@ -61,13 +66,16 @@ export default class ToastNotification extends Component {
   }
 
   render() {
-    const { positionTop, showNotification } = this.props;
+    const { customTransition, positionTop, showNotification } = this.props;
+    const defaultTransition= {
+      willEnter: () => ({ opacity: 0, top: -positionTop }),
+      willLeave: () => ({ opacity: spring(0), top: spring(-positionTop) }),
+      style: { opacity: spring(1), top: spring(positionTop) }
+    };
     return (
       <ConditionTransitionMotion
         condition={showNotification}
-        willEnter={() => ({ opacity: 0, top: -positionTop })}
-        willLeave={() => ({ opacity: spring(0), top: spring(-positionTop) })}
-        style={{ opacity: spring(1), top: spring(positionTop) }} >
+        {...(customTransition || defaultTransition)}>
         {style => this.renderNotification(style)}
       </ConditionTransitionMotion>
     );

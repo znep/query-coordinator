@@ -44,7 +44,7 @@ class Head extends PureComponent {
 
   render() {
     const columns = ['asset_type', 'acting_user_name', 'activity_type',
-      'dataset_name', 'created_at', 'actions'];
+      'affected_item', 'created_at', 'actions'];
 
     return (
       <thead>

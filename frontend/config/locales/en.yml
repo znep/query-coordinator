@@ -3581,6 +3581,7 @@ en:
     admin:
       activity_feed:
         any_user: Any User
+        api_error: API Error
         asset_types:
           blob: File or Document
           calendar: Calendar
@@ -3599,13 +3600,14 @@ en:
           pulse: Pulse
           story: Story
           working_copy: Working Copy
+        cancel: Cancel
         columns:
+          acting_user_name: Initiated By
           actions: Actions
           activity_type: Event
-          acting_user_name: Initiated By
+          affected_item: Item Affected
           asset_type: Type
           created_at: Date
-          dataset_name: Item Affected
         download: Download
         event_messages:
           failure:
@@ -3827,6 +3829,11 @@ en:
               collaborator_added: Collaborator Added
               collaborator_removed: Collaborator Removed
               data_update_failure: Data Update Failure
+              data_update_import_failure: Data Update Import Failure
+              data_update_import_in_progress: Data Update Import In Progress
+              data_update_import_started: Data Update Import Started
+              data_update_import_success_with_data_errors: Data Update Import Success With Data Errors
+              data_update_import_success: Data Update Import Success
               data_update_in_progress: Data Update In Progress
               data_update_prepare_curated_region_failure: Data Update Prepare Curated Region Failure
               data_update_prepare_curated_region_in_progress: Data Update Prepare Curated Region In Progress
@@ -3881,18 +3888,21 @@ en:
         result_count:
           one: "%{first}-%{last} of 1 result"
           other: "%{first}-%{last} of %{count} results"
+        restore: Restore
+        restored: Restored
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"?
+        restore_success: Success! Your dataset was restored.
         services:
           DeltaImporter2: DataSync
           Imports2: Web Interface
           ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
           PublishingAPI: Publishing API
         show_details: Show Details
-        table_fetch_error: Sorry, there was an error fetching results. Please reload the page and try again.
-        type: Type
         tabs:
           all: All Activity
           failure: Data Update Failures
           deleted: Deleted Assets
+        type: Type
       assets:
         asset_inventory: Assets
       canvas:

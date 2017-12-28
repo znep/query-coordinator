@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
 import * as api from 'lib/api';
-import * as mockData from '../data/mockFetchTable';
+import mockData from '../data/mockFetchTable';
 
 describe('lib/api', () => {
 
@@ -44,7 +44,7 @@ describe('lib/api', () => {
     let fetchTableStub;
 
     beforeEach(() => {
-      const response = _.constant(Promise.resolve(mockResponse(mockData.data1, 200)));
+      const response = _.constant(Promise.resolve(mockResponse(mockData, 200)));
 
       fetchTableStub = sinon.
         stub(window, 'fetch').
@@ -68,7 +68,7 @@ describe('lib/api', () => {
         fetchTable(options).
         then((data) => {
           sinon.assert.calledOnce(fetchTableStub);
-          assert.deepEqual(data, mockData.data1);
+          assert.deepEqual(data, mockData);
           done();
         });
     });

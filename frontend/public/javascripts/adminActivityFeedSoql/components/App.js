@@ -5,28 +5,45 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import LocalizedText from 'common/i18n/components/LocalizedText';
-import FeedbackPanel from 'common/components/FeedbackPanel';
+import FeedbackPanel from '../../common/components/FeedbackPanel';
 import Table from './Table';
 import Footer from './Footer';
 import Tabs from './Tabs';
 import Topbar from './Topbar';
 import FilterPanel from './FilterPanel';
+import RestoreModal from './RestoreModal';
 
 export class App extends Component {
   renderError() {
-    const { fetchTableError } = this.props;
+    const { apiError } = this.props;
 
-    if (fetchTableError) {
-      if (_.isString(fetchTableError) || _.isObject(fetchTableError)) {
-        console.error('activityLog:renderError: ', fetchTableError);
+    if (apiError) {
+      if (_.isString(apiError) || _.isObject(apiError)) {
+        console.error('activityLog:renderError: ', apiError);
       }
 
       return (
         <div className="alert error">
-          <LocalizedText localeKey="screens.admin.activity_feed.table_fetch_error" />
+          <LocalizedText localeKey="screens.admin.activity_feed.api_error" />
         </div>
       );
     }
+  }
+
+  renderSuccess() {
+    const { successMessage } = this.props;
+
+    if (!successMessage) {
+      return null;
+    }
+
+    return (
+      <div className="alert success">
+        <span>
+          {successMessage}
+        </span>
+      </div>
+    );
   }
 
   render() {
@@ -47,12 +64,14 @@ export class App extends Component {
           <div className={resultsClassnames}>
             <Topbar />
             {this.renderError()}
+            {this.renderSuccess()}
             <Table />
             <Footer />
           </div>
           <FilterPanel />
+          <RestoreModal />
         </div>
-        <FeedbackPanel {...window.serverConfig} />
+        <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" />
       </div>
     );
   }
@@ -60,17 +79,18 @@ export class App extends Component {
 
 App.propTypes = {
   isMobile: PropTypes.bool.isRequired,
-  fetchTableError: PropTypes.oneOfType([
+  apiError: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.string,
     PropTypes.bool
-  ])
+  ]),
+  successMessage: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({
   isMobile: state.windowDimensions.isMobile,
-  fetchingTable: state.table.fetchingTable,
-  fetchTableError: state.table.fetchTableError
+  apiError: state.common.apiError,
+  successMessage: state.common.successMessage
 });
 
 export default connect(mapStateToProps)(App);

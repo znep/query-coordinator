@@ -2,11 +2,11 @@ import _ from 'lodash';
 import { assert } from 'chai';
 
 import DetailsRow from 'components/Table/DetailsRow';
-import * as mockData from '../../data/mockFetchTable';
+import mockData from '../../data/mockFetchTable';
 import mockTranslations from '../../mockTranslations';
 
 describe('Table/DetailsRow', () => {
-  const activity = mockData.data1[3];
+  const activity = mockData[3];
   const details = JSON.parse(activity.details);
 
   const element = renderComponentWithLocalization(DetailsRow, { activity });

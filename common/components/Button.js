@@ -83,6 +83,7 @@ class Button extends Component {
     } = this.props;
 
     const onClickFiltered = function() {
+      // Note that the inner <button> automatically handles the disabled case.
       if (!busy && onClick) {
         onClick.apply(this, arguments);
       }

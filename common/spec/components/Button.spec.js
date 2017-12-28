@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -19,6 +20,26 @@ const SUPPORTED_SIZES = {
 
 
 describe('Button', function() {
+  describe('onClick prop on click', () => {
+    it('should be called when `busy` is not set', () => {
+      const onClick = sinon.stub();
+      const element = shallow(<Button onClick={onClick} />);
+      // Our with the button element is at the onClick level. We need not
+      // concern ourselves with what causes a button to fire onClick.
+      element.find('button').prop('onClick')();
+      sinon.assert.calledOnce(onClick);
+    });
+
+    it('should not be called when `busy` is set', () => {
+      const onClick = sinon.stub();
+      const element = shallow(<Button busy onClick={onClick} />);
+      // Our with the button element is at the onClick level. We need not
+      // concern ourselves with what causes a button to fire onClick.
+      element.find('button').prop('onClick')();
+      sinon.assert.notCalled(onClick);
+    });
+  });
+
   it('should show children as content', function() {
     const props = {
       children: ['Hello world!']

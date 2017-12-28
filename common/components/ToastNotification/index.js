@@ -43,9 +43,7 @@ export default class ToastNotification extends Component {
 
     const className = classNames(
       'alert',
-      {
-        [type]: true
-      },
+      type,
       this.props.className
     );
 
@@ -67,7 +65,7 @@ export default class ToastNotification extends Component {
 
   render() {
     const { customTransition, positionTop, showNotification } = this.props;
-    const defaultTransition= {
+    const defaultTransition = {
       willEnter: () => ({ opacity: 0, top: -positionTop }),
       willLeave: () => ({ opacity: spring(0), top: spring(-positionTop) }),
       style: { opacity: spring(1), top: spring(positionTop) }

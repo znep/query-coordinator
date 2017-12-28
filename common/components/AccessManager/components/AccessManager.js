@@ -90,7 +90,7 @@ class AccessManager extends Component {
           onDismiss={dismissToastNotification}
           showNotification={toastMessageVisible}
           type="success">
-          <span dangerouslySetInnerHTML={{ __html: toastMessage}} />
+          <span dangerouslySetInnerHTML={{ __html: toastMessage }} />
         </ToastNotification>
         <div styleName={visible ? 'overlay' : 'overlay-hidden'}>
           <div styleName="modal">

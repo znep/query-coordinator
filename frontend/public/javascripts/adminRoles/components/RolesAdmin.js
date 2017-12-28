@@ -35,9 +35,9 @@ const renderWithLocalization = ({ translations, locale, localePrefix }, children
 const mapStateToProps = (state, { localization: { translate } }) => {
   const appState = getAppState(state);
   const notificationObj = getNotificationFromState(state);
-  const notification = notificationObj.
-    update('content', content => translate(content, notificationObj.toJS())).
-    toJS();
+  const notification = notificationObj
+    .update('content', content => translate(content, notificationObj.toJS()))
+    .toJS();
   return {
     hasLoadDataFailure: appState === LOAD_DATA_FAILURE,
     isLoading: appState === LOADING,

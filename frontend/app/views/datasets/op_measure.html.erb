@@ -22,7 +22,8 @@ end
 
 <% content_for :scripts do %>
   <script type="text/javascript" id="op-measure-initial-state">
-    var initialState = <%== op_measure_initial_state.to_json %>;
+    window.socrata = window.socrata || {};
+    window.socrata.opMeasure = <%== op_measure_initial_state.to_json %>;
   </script>
 
   <%= render_feature_flags_for_javascript %>

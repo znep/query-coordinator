@@ -27,7 +27,7 @@ describe('AboutThisMeasure', () => {
 
     beforeEach(() => {
       const measure = {
-        metric: {
+        metricConfig: {
           type: CalculationTypeNames.SUM,
           reportingPeriod: {
             size: PeriodSizes[0],

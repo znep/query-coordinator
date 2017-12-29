@@ -12,6 +12,7 @@ describe('MeasureResultCard', () => {
   const getProps = (props) => {
     return {
       measure: {},
+      coreView: {},
       ...props
     };
   };
@@ -45,14 +46,14 @@ describe('MeasureResultCard', () => {
       0
     );
 
-    const explicitNonPercent = _.set({}, 'metric.display.asPercent', false);
+    const explicitNonPercent = _.set({}, 'metricConfig.display.asPercent', false);
     assert.lengthOf(
       shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={explicitNonPercent} />).
         find('.measure-result-big-number.percent'),
       0
     );
 
-    const percentMeasure = _.set({}, 'metric.display.asPercent', true);
+    const percentMeasure = _.set({}, 'metricConfig.display.asPercent', true);
     assert.lengthOf(
       shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={percentMeasure} />).
         find('.measure-result-big-number.percent'),
@@ -66,7 +67,7 @@ describe('MeasureResultCard', () => {
     };
     let card;
 
-    const measureWithFixedDecimalPlaces = _.set({}, 'metric.display.decimalPlaces', 5);
+    const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 5);
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
     assert.equal(getRenderedValue(card), '33.12345');
 
@@ -74,7 +75,7 @@ describe('MeasureResultCard', () => {
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
     assert.equal(getRenderedValue(card), '33.12345678');
 
-    const measureWithManyDecimalPlaces = _.set({}, 'metric.display.decimalPlaces', 100);
+    const measureWithManyDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 100);
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
     assert.equal(getRenderedValue(card), '33.12345678'); // Still truncates at a max length.
 
@@ -84,7 +85,7 @@ describe('MeasureResultCard', () => {
   });
 
   // We may want to adjust the logic for when to humanize numbers.
-  // Perhaps the metric.display should take in a boolean prop to indicate when to humanize,
+  // Perhaps the metricConfig.display should take in a boolean prop to indicate when to humanize,
   // but for now, we only humanize when number of characters are too many to fit.
   it('displays human readable numbers for large values', () => {
     const computedMeasure = {

@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
 
-import { setDataSource } from '../../actions/editor';
+import { changeDataSource } from '../../actions/editor';
 
 // Configuration panel for connecting a measure to a data source.
 export class DataPanel extends Component {
@@ -20,9 +20,10 @@ export class DataPanel extends Component {
     // before passing it on; in other words, this function is a boundary between
     // modern code and legacy code.
     this.iframe.onDatasetSelected = (dataset) => {
-      const { uid, onChangeDataSource } = this.props;
+      const { measure, onChangeDataSource } = this.props;
+      const { dataSourceLensUid } = measure || {};
 
-      if (dataset.id !== uid) {
+      if (dataset.id !== dataSourceLensUid) {
         onChangeDataSource(dataset.id);
       }
     };
@@ -119,7 +120,7 @@ export class DataPanel extends Component {
 
   // Invalid state: dataset retrieval failed, rowCount === -1
   renderSelectionInvalidState() {
-    const { uid } = this.props;
+    const { dataSourceLensUid } = this.props.measure;
     return (
       <div className="selected-dataset alert error">
         <p>
@@ -127,7 +128,7 @@ export class DataPanel extends Component {
             {I18n.t('selected_dataset_label', { scope: this.scope })}
           </span>
           <span className="selected-dataset-name">
-            {uid}
+            {dataSourceLensUid}
           </span>
         </p>
         <p>{I18n.t('message_invalid', { scope: this.scope })} | {this.renderResetLink()}</p>
@@ -193,17 +194,19 @@ export class DataPanel extends Component {
 DataPanel.propTypes = {
   dataSourceName: PropTypes.string,
   rowCount: PropTypes.number,
-  uid: PropTypes.string,
+  measure: PropTypes.shape({
+    dataSourceLensUid: PropTypes.string
+  }),
   onChangeDataSource: PropTypes.func
 };
 
 export function mapStateToProps(state) {
-  const dataSourceConfig = _.get(state, 'editor.measure.metric.dataSource', {});
-  const dataSourceName = _.get(state, 'editor.dataSourceViewMetadata.name', '');
+  const measure = _.get(state, 'editor.measure', {});
+  const dataSourceName = _.get(state, 'editor.dataSourceView.name', '');
   const rowCount = _.get(state, 'editor.cachedRowCount');
 
   return {
-    ...dataSourceConfig,
+    measure,
     dataSourceName,
     rowCount
   };
@@ -211,7 +214,7 @@ export function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onChangeDataSource: setDataSource
+    onChangeDataSource: changeDataSource
   }, dispatch);
 }
 

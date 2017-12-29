@@ -42,13 +42,13 @@ describe('sections/goals/components/BulkEditForm/BulkEditForm', () => {
 
   const itShowsFullFooter = () => {
     it('shows one button in the footer', () => {
-      assert.lengthOf(output.find('Footer SocrataButton'), 2);
+      assert.lengthOf(output.find('Footer Button'), 2);
     });
   };
 
   const itShowsCloseOnlyFooter = () => {
     it('shows one button in the footer', () => {
-      assert.lengthOf(output.find('Footer SocrataButton'), 1);
+      assert.lengthOf(output.find('Footer Button'), 1);
     });
   };
 

@@ -1,6 +1,6 @@
 $edit-bar-height: 60px;
 $edit-bar-font-color: $light-grey-3;
-$edit-bar-name-width: 330px;
+$edit-bar-name-width: 0px; // Disabled for now.
 $edit-bar-menu-width: 60px;
 $edit-bar-z-index: 8;
 
@@ -36,10 +36,9 @@ $edit-bar-z-index: 8;
 
     .btn-save {
       width: 110px;
-      background-color: transparent;
-      color: $edit-bar-font-color;
 
       &:not([disabled]) {
+        background-color: transparent;
         &:hover, &:focus {
           background-color: $dark-grey-2;
           color: $white;

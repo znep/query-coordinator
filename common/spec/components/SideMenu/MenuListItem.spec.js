@@ -1,9 +1,10 @@
 import _ from 'lodash';
-import { Simulate } from 'react-dom/test-utils';
-import { MenuListItem } from 'components/SideMenu';
-import { renderPureComponent } from '../../helpers';
+import React from 'react';
+import { shallow } from 'enzyme';
 
-/* eslint-disable new-cap */
+import { SocrataIcon } from 'common/components';
+import { MenuListItem } from 'components/SideMenu';
+
 describe('MenuListItem', () => {
   let element;
 
@@ -16,38 +17,36 @@ describe('MenuListItem', () => {
   }
 
   beforeEach(() => {
-    element = renderPureComponent(MenuListItem(getProps()));
-  });
-
-  it('renders', () => {
-    assert.isNotNull(element);
+    element = shallow(<MenuListItem {...getProps()} />);
   });
 
   describe('iconName', () => {
     it('renders if provided', () => {
-      assert.isNotNull(element.querySelector('.socrata-icon'));
+      assert.isTrue(element.find(SocrataIcon).exists());
     });
 
     it('does not render if not provided', () => {
-      element = renderPureComponent(MenuListItem(getProps({
+      const props = getProps({
         iconName: null
-      })));
-      assert.isNull(element.querySelector('.socrata-icon'));
+      });
+      element = shallow(<MenuListItem {...props} />);
+      assert.isFalse(element.find(SocrataIcon).exists());
     });
   });
 
   it('renders the text', () => {
-    assert.include(element.innerText, 'Menu Item');
+    assert.include(element.text(), 'Menu Item');
   });
 
-  it('invokes onClick when clicked', () => {
+  it('invokes onClick when the button is clicked', () => {
     const stub = sinon.stub();
-    element = renderPureComponent(MenuListItem(getProps({
+    const props = getProps({
       onClick: stub
-    })));
-    Simulate.click(element.querySelector('button'));
+    });
+    element = shallow(<MenuListItem {...props} />);
 
-    assert.isTrue(stub.calledOnce);
+    element.find('button').prop('onClick')();
+
+    sinon.assert.calledOnce(stub);
   });
 });
-/* eslint-enable new-cap */

@@ -1,8 +1,12 @@
 import $ from 'jquery';
 import _ from 'lodash';
+
+import { shallow } from 'enzyme';
+import React from 'react';
+import { Simulate } from 'react-dom/test-utils';
+
 import InfoPane from 'components/InfoPane';
 import { renderComponent } from '../helpers';
-import { Simulate } from 'react-dom/test-utils';
 
 describe('InfoPane', () => {
   function getProps(props) {
@@ -182,6 +186,17 @@ describe('InfoPane', () => {
     it('renders nothing', () => {
       const element = renderComponent(InfoPane, { name: 'Just the Title' });
       assert.isNull(getContent(element));
+    });
+  });
+
+  describe('description', () => {
+    it('does not crash with a null description', () => {
+      const instance = shallow(<InfoPane description={null} />);
+      assert.doesNotThrow(() => {
+        // Bug was going from a null description to a set description.
+        instance.setProps({ description: 'foo' });
+        instance.setProps({ description: null });
+      });
     });
   });
 

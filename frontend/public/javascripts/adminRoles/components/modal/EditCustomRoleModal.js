@@ -10,7 +10,7 @@ import { createNewRole, endRenameRole } from '../../actions';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { spring } from 'react-motion';
 import { RENAME_INDIVIDUAL_CUSTOM_ROLE, NEW_CUSTOM_ROLE } from '../../appStates';
-import SocrataButton from 'common/components/SocrataButton';
+import { Button } from 'common/components';
 import CustomRoleForm from './CustomRoleForm';
 import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../selectors';
 import { connectLocalization } from 'common/components/Localization';
@@ -85,16 +85,16 @@ class EditCustomRoleModal extends Component {
 
             <ModalFooter>
               <div>
-                <SocrataButton
-                  buttonType="primary"
-                  buttonStyle="inverse"
+                <Button
+                  variant="primary"
+                  inverse
                   onClick={() => cancelCreateNewRole()}
                 >
                   {translate('screens.admin.roles.buttons.cancel')}
-                </SocrataButton>
-                <SocrataButton buttonType="primary" className={styles['save-button']} onClick={onSubmit}>
+                </Button>
+                <Button variant="primary" className={styles['save-button']} onClick={onSubmit}>
                   {translate(`screens.admin.roles.buttons.${editingNewRole ? 'create' : 'save'}`)}
-                </SocrataButton>
+                </Button>
               </div>
             </ModalFooter>
           </Modal>}

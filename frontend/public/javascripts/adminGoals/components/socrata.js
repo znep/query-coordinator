@@ -4,7 +4,6 @@ import Flannel from './SocrataFlannel';
 export { Modal };
 export { Flannel };
 
-export { default as Button } from './SocrataButton';
 export { default as DownloadButton } from './SocrataDownloadButton/SocrataDownloadButton';
 export { default as Checkbox } from './SocrataCheckbox/SocrataCheckbox';
 

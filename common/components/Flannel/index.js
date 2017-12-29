@@ -129,6 +129,8 @@ export class Flannel extends Component {
     } else {
       document.body.classList.remove('modal-open');
 
+      if (!this.flannelRef) { return; }
+
       const flannelRect = this.flannelRef.getBoundingClientRect();
       const bodyWidth = document.body.offsetWidth; // Without scrollbar
       // Supposed to be without scrollbar, but this is inconsistent. Subtract a nerf factor.

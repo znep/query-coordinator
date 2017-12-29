@@ -6,6 +6,9 @@ import { FeatureFlags } from 'common/feature_flags';
 import * as React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
+
+import { Button } from 'common/components';
+
 import * as Components from '../../../../components';
 import * as Constants from '../../../../constants';
 
@@ -304,17 +307,20 @@ class BulkEditForm extends React.Component {
 
     return (
       <Components.Socrata.Modal.Footer>
-        <Components.Socrata.Button small
-                                   onClick={ bulkEditActions.closeModal }
-                                   disabled={ saveInProgress }>
+        <Button
+          size="sm"
+          onClick={ bulkEditActions.closeModal }
+          disabled={ saveInProgress }>
           { cancelLabel }
-        </Components.Socrata.Button>
-        <Components.Socrata.Button small primary
-                                   onClick={ this.updateGoals }
-                                   disabled={ isUpdateDisabled }
-                                   inProgress={ saveInProgress }>
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={ this.updateGoals }
+          disabled={ isUpdateDisabled }
+          inProgress={ saveInProgress }>
           { updateLabel }
-        </Components.Socrata.Button>
+        </Button>
       </Components.Socrata.Modal.Footer>
     );
   }
@@ -373,9 +379,9 @@ class BulkEditForm extends React.Component {
     const closeLabel = Helpers.translator(translations, 'admin.bulk_edit.close');
     return (
       <Components.Socrata.Modal.Footer>
-        <Components.Socrata.Button small onClick={ dismissModal }>
+        <Button small onClick={ dismissModal }>
           { closeLabel }
-        </Components.Socrata.Button>
+        </Button>
       </Components.Socrata.Modal.Footer>
     );
   }

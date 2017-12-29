@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import cssModules from 'react-css-modules';
 import styles from './role-edit-control.module.scss';
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import SocrataButton from 'common/components/SocrataButton';
+import { Button } from 'common/components';
 import { startEditRole, deleteRole, startRenameRole } from '../../actions';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/fp/bindAll';
@@ -81,14 +81,14 @@ class RoleEditControl extends React.Component {
 
     return (
       <div styleName="container" ref={ref => (this.dropdownRef = ref)}>
-        <SocrataButton
-          buttonType="simple"
-          buttonSize="xs"
+        <Button
+          variant="simple"
+          size="xs"
           styleName="role-edit-control"
           onClick={() => this.setState({ showDropdown: !showDropdown })}
         >
           <SocrataIcon name="kebab" />
-        </SocrataButton>
+        </Button>
         {showDropdown &&
           <ul>
             <DropdownItem

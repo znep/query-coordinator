@@ -1,20 +1,13 @@
 import _ from 'lodash';
 
 import actions from '../actions';
-import { ModeStates, PeriodTypes, SaveStates } from '../lib/constants';
+import { ModeStates, SaveStates } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
-const INITIAL_STATE = _.merge({}, window.initialState, {
+const INITIAL_STATE = _.merge({}, window.socrata.opMeasure, {
   activePane: 'summary',
   isDirty: false,
-  saveState: SaveStates.IDLE,
-  measure: {
-    metric: {
-      reportingPeriod: {
-        type: PeriodTypes.CLOSED
-      }
-    }
-  }
+  saveState: SaveStates.IDLE
 });
 
 // View reducer.
@@ -25,6 +18,29 @@ export default (state = INITIAL_STATE, action) => {
   }
 
   switch (action.type) {
+    case actions.view.SAVE_START:
+      return {
+        ...state,
+        saving: true,
+        saveError: false,
+        showSaveToastMessage: false
+      };
+
+    case actions.view.SAVE_COMPLETE:
+      return {
+        ...state,
+        isDirty: !!action.error,
+        saving: false,
+        saveError: !!action.error,
+        showSaveToastMessage: true
+      };
+
+    case actions.view.CLEAR_SAVE_TOAST:
+      return {
+        ...state,
+        showSaveToastMessage: false
+      };
+
     case actions.view.SET_ACTIVE_PANE:
       return {
         ...state,
@@ -35,7 +51,8 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDirty: true,
-        measure: action.measure
+        measure: action.measure,
+        coreView: action.coreView
       };
 
     case actions.view.ENTER_EDIT_MODE: {

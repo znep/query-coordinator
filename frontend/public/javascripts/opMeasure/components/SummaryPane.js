@@ -15,7 +15,9 @@ import SavedMeasureResultCard from './SavedMeasureResultCard';
 // the methodological underpinnings of the measure.
 export class SummaryPane extends Component {
   renderScrollPane() {
-    const { name, shortName } = this.props.measure;
+    const { measure, coreView } = this.props;
+    const { shortName } = measure.metadata || {};
+    const { name } = coreView;
 
     return (
       <div className="scroll-pane">
@@ -106,8 +108,10 @@ export class SummaryPane extends Component {
 }
 
 SummaryPane.propTypes = {
+  coreView: PropTypes.shape({
+    name: PropTypes.string
+  }).isRequired,
   measure: PropTypes.shape({
-    name: PropTypes.string.isRequired,
     shortName: PropTypes.string,
     metadata: PropTypes.shape({
       analysis: PropTypes.string,

@@ -13,7 +13,7 @@ import {
 } from '../selectors';
 import { DEFAULT, EDIT_CUSTOM_ROLES } from '../appStates';
 import includes from 'lodash/fp/includes';
-import SocrataButton from 'common/components/SocrataButton';
+import { Button } from 'common/components';
 import { connectLocalization } from 'common/components/Localization';
 
 const mapStateToProps = state => {
@@ -58,25 +58,25 @@ class EditBar extends React.Component {
             </a>
           : null}
         {hasConfigurableRoleFeature
-          ? <SocrataButton
-              buttonType="default"
+          ? <Button
+              variant="default"
               buttonDisabledStyle="light"
               disabled={!isEditCustomRolesEnabled}
               onClick={() => startEditCustomRoles()}
             >
               <i className="socrata-icon-edit" />
               {translate('screens.admin.roles.buttons.edit_custom_roles')}
-            </SocrataButton>
+            </Button>
           : null}
         {hasConfigurableRoleFeature
-          ? <SocrataButton
-              buttonType="primary"
+          ? <Button
+              variant="primary"
               disabled={!isAddCustomRoleEnabled}
               onClick={() => newCustomRole()}
             >
               <i className="socrata-icon-plus3" />
               {translate('screens.admin.roles.buttons.new_custom_role')}
-            </SocrataButton>
+            </Button>
           : null}
       </div>
     );

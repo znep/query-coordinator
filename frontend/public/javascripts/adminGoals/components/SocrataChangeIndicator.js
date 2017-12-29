@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import SocrataButton from './SocrataButton';
+import { Button } from 'common/components';
 
 /**
  * Used for changed form fields to inform user.
@@ -14,10 +14,10 @@ export default class SocrataChangeIndicator extends React.Component {
   render() {
     return (
       <div className="sc-check-indicator">
-        <SocrataButton extraSmall onClick={ this.props.onRevert }>
+        <Button size="xs" onClick={ this.props.onRevert }>
           <span className="sc-check-indicator-check icon-checkmark3" />
           <span className="sc-check-indicator-revert icon-undo" />
-        </SocrataButton>
+        </Button>
       </div>
     );
   }

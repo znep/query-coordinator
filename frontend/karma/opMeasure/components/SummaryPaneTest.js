@@ -8,9 +8,15 @@ import { SummaryPane } from 'components/SummaryPane';
 describe('SummaryPane', () => {
   const getProps = (props) => {
     return _.merge({}, {
-      measure: {
+      coreView: {
         name: 'My Measure',
         description: 'My measure has a description',
+        rowsUpdatedAt: 123,
+        viewLastModified: 345,
+        createdAt: 456
+      },
+      activePane: 'summary',
+      measure: {
         metadata: {
           analysis: 'Some analysis text',
           methods: 'Some methods text'

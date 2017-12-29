@@ -2,6 +2,9 @@ import _ from 'lodash';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom'; // eslint-disable-line no-unused-vars
 import * as ReactRedux  from 'react-redux';
+
+import { Button } from 'common/components';
+
 import * as Components from '../../../components';
 import * as Actions from '../actions';
 import * as Helpers from '../../../helpers';
@@ -65,12 +68,12 @@ class SocrataBulkActions extends React.Component {
             <p className="small" dangerouslySetInnerHTML={ { __html: infoDescription } }/>
           </Components.Socrata.Flannel.Content>
           <Components.Socrata.Flannel.Footer>
-            <Components.Socrata.Button primary medium onClick={ this.handleInfoBoxDismiss }>
+            <Button variant="primary" onClick={ this.handleInfoBoxDismiss }>
               {ok}
-            </Components.Socrata.Button>
-            <Components.Socrata.Button medium onClick={ this[`handleCancel${infoBoxFor}`] }>
+            </Button>
+            <Button onClick={ this[`handleCancel${infoBoxFor}`] }>
               {cancel}
-            </Components.Socrata.Button>
+            </Button>
           </Components.Socrata.Flannel.Footer>
         </Components.Socrata.Flannel.Wrapper>
       ) : null;
@@ -86,9 +89,9 @@ class SocrataBulkActions extends React.Component {
     return (
       <div className="bulk-actions">
         <div className="btn-group">
-          <Components.Socrata.Button simple disabled={ selectedRowsCount < 2 } onClick={ openBulkEditModal }>
+          <Button variant="simple" disabled={ selectedRowsCount < 2 } onClick={ openBulkEditModal }>
             { editTitle }
-          </Components.Socrata.Button>
+          </Button>
 
           <Components.Socrata.DownloadButton ref="csv"
                                              simple

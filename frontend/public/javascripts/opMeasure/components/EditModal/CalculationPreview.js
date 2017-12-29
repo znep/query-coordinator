@@ -116,10 +116,10 @@ CalculationPreview.propTypes = {
 };
 
 export function mapStateToProps(state) {
-  const calculationType = _.get(state, 'editor.measure.metric.type');
-  const decimalPlaces = _.get(state, 'editor.measure.metric.display.decimalPlaces', 0);
-  const displayAsPercent = _.get(state, 'editor.measure.metric.display.asPercent', false);
-  const unitLabel = _.get(state, 'editor.measure.metric.display.label', '');
+  const calculationType = _.get(state, 'editor.measure.metricConfig.type');
+  const decimalPlaces = _.get(state, 'editor.measure.metricConfig.display.decimalPlaces', 0);
+  const displayAsPercent = _.get(state, 'editor.measure.metricConfig.display.asPercent', false);
+  const unitLabel = _.get(state, 'editor.measure.metricConfig.display.label', '');
 
   return {
     calculationType,

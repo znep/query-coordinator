@@ -256,6 +256,9 @@ describe DatasetsController do
     context 'for a published OP measure' do
       before(:each) do
         allow(view).to receive(:op_measure?).and_return(true)
+        stub_request(:get, 'http://localhost:8080/measures_v1/test-data.json').
+          with(:headers => request_headers).
+          to_return(:status => 200, :body => '{}', :headers => {})
       end
 
       it 'renders the OP measure if the module/feature flag combo is enabled' do
@@ -286,6 +289,10 @@ describe DatasetsController do
       allow(subject).to receive(:get_view).and_return(view)
       allow(subject).to receive(:using_canonical_url?).and_return(true)
       allow(subject).to receive(:op_standalone_measures_enabled?).and_return(true)
+
+      stub_request(:get, 'http://localhost:8080/measures_v1/test-data.json').
+        with(:headers => request_headers).
+        to_return(:status => 200, :body => '{}', :headers => {})
     end
 
     describe 'GET /category/view_name/id/edit' do

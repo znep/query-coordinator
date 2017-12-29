@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cx from 'classnames';
+import classNames from 'classnames';
 import { spring } from 'react-motion';
 
 import { SocrataIcon } from '../SocrataIcon';
@@ -16,63 +16,63 @@ export const types = {
 
 export default class ToastNotification extends Component {
   static propTypes = {
-    canDismiss: PropTypes.bool,
-    content: PropTypes.string,
-    onDismiss: PropTypes.func.isRequired,
+    onDismiss: PropTypes.func,
     positionTop: PropTypes.number,
     showNotification: PropTypes.bool,
-    type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error'])
+    type: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'error']),
+
+    // Returns a set of props to pass to ConditionTransitionMotion.
+    // This is optional - the default uses positionTop to make a default
+    // animation.
+    customTransition: PropTypes.object
   };
 
   static defaultProps = {
-    canDismiss: false,
-    content: '',
     positionTop: 35,
     showNotification: false,
     type: null
-  }
+  };
 
-  renderNotification = (style) => {
+  render() {
     const {
-      canDismiss,
-      content,
+      children,
+      customTransition,
       onDismiss,
+      positionTop,
+      showNotification,
       type
     } = this.props;
 
-    const className = cx(
+    const defaultTransition = {
+      willEnter: () => ({ opacity: 0, top: -positionTop }),
+      willLeave: () => ({ opacity: spring(0), top: spring(-positionTop) }),
+      style: { opacity: spring(1), top: spring(positionTop) }
+    };
+
+    const contentClassName = classNames(
       'alert',
-      {
-        [type]: true
-      },
+      type,
       this.props.className
     );
 
     return (
-      <div className="socrata-toast-notification">
-        <div className={className} style={style}>
-          <span dangerouslySetInnerHTML={{ __html: content }} />
-          {canDismiss
-            ? (
-            <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
-              <SocrataIcon name="close-2" />
-            </button>
-              )
-            : null}
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    const { positionTop, showNotification } = this.props;
-    return (
       <ConditionTransitionMotion
         condition={showNotification}
-        willEnter={() => ({ opacity: 0, top: -positionTop })}
-        willLeave={() => ({ opacity: spring(0), top: spring(-positionTop) })}
-        style={{ opacity: spring(1), top: spring(positionTop) }} >
-        {style => this.renderNotification(style)}
+        {...(customTransition || defaultTransition)}>
+        {(style) => (
+          <div className="socrata-toast-notification">
+            <div className={contentClassName} style={style}>
+              {children}
+              {onDismiss
+                ? (
+                <button className="btn btn-transparent btn-dismiss" onClick={() => onDismiss()}>
+                  <SocrataIcon name="close-2" />
+                </button>
+                  )
+                : null}
+            </div>
+          </div>
+        )}
       </ConditionTransitionMotion>
     );
   }

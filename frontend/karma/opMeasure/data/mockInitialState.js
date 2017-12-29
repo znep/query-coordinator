@@ -1,19 +1,17 @@
 export default {
+  coreView: {
+    name: 'Test Measure',
+    description: 'A description of the measure'
+  },
   mode: 'EDIT',
   measure: {
-    name: 'Test Measure',
-    description: 'A description of the measure',
-    coreView: {
-      'mock': 'view'
-    },
     metadata: {
       analysis: 'Some analysis text',
       methods: 'Some methods text'
     },
-    metric: {
+    metricConfig: {
       type: 'count',
       label: 'Units',
-      dataSource: {},
       arguments: {}
     }
   }

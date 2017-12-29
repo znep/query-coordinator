@@ -7,13 +7,13 @@ describe('measureCalculator', () => {
   const nullDataProvider = {};
 
   describe('isColumnUsableWithMeasureArgument', () => {
-    const countMeasure = _.set({}, 'metric.type', CalculationTypeNames.COUNT);
-    const sumMeasure = _.set({}, 'metric.type', CalculationTypeNames.SUM);
-    const countRateMeasure = _.set({}, 'metric.type', CalculationTypeNames.RATE);
-    _.set(countRateMeasure, 'metric.arguments.aggregationType', 'count');
-    const sumRateMeasure = _.set({}, 'metric.type', CalculationTypeNames.RATE);
-    _.set(sumRateMeasure, 'metric.arguments.aggregationType', 'sum');
-    const recentValueMeasure = _.set({}, 'metric.type', CalculationTypeNames.RECENT_VALUE);
+    const countMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.COUNT);
+    const sumMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.SUM);
+    const countRateMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RATE);
+    _.set(countRateMeasure, 'metricConfig.arguments.aggregationType', 'count');
+    const sumRateMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RATE);
+    _.set(sumRateMeasure, 'metricConfig.arguments.aggregationType', 'sum');
+    const recentValueMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RECENT_VALUE);
 
     const dateCol = { renderTypeName: 'calendar_date' };
     const numberCol = { renderTypeName: 'number' };
@@ -87,8 +87,8 @@ describe('measureCalculator', () => {
     describe('denominator is zero', () => {
       it('sets dividingByZero to true in the response', async () => {
         const singularity = {};
-        _.set(singularity, 'metric.type', 'rate');
-        _.set(singularity, 'metric.arguments', {
+        _.set(singularity, 'metricConfig.type', 'rate');
+        _.set(singularity, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.COUNT,
           fixedDenominator: '0'
         });
@@ -102,8 +102,8 @@ describe('measureCalculator', () => {
     describe('denominator is nonzero', () => {
       it('sets dividingByZero to false in the response', async () => {
         const nonZeroDenominator = {};
-        _.set(nonZeroDenominator, 'metric.type', 'rate');
-        _.set(nonZeroDenominator, 'metric.arguments', {
+        _.set(nonZeroDenominator, 'metricConfig.type', 'rate');
+        _.set(nonZeroDenominator, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.COUNT,
           fixedDenominator: '10'
         });
@@ -116,8 +116,8 @@ describe('measureCalculator', () => {
     describe('fixed denominator', () => {
       describe('no aggregation', () => {
         const fixed = {};
-        _.set(fixed, 'metric.type', 'rate');
-        _.set(fixed, 'metric.arguments', {
+        _.set(fixed, 'metricConfig.type', 'rate');
+        _.set(fixed, 'metricConfig.arguments', {
           fixedDenominator: '123'
         });
 
@@ -130,8 +130,8 @@ describe('measureCalculator', () => {
 
       describe('count aggregation', () => {
         const countFixed = {};
-        _.set(countFixed, 'metric.type', 'rate');
-        _.set(countFixed, 'metric.arguments', {
+        _.set(countFixed, 'metricConfig.type', 'rate');
+        _.set(countFixed, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.COUNT,
           fixedDenominator: '10'
         });
@@ -144,7 +144,7 @@ describe('measureCalculator', () => {
 
         it('computes numerator and divides by the fixed denominator', async () => {
           const countFixedWithNumerator = _.set(_.cloneDeep(countFixed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           // Rig the data provider to return 50 for row count, which will satisfy the
@@ -158,11 +158,11 @@ describe('measureCalculator', () => {
 
         it('includes column condition in query', (done) => {
           const countWithCondition = _.set(_.cloneDeep(countFixed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           _.set(countWithCondition,
-            'metric.arguments.numeratorColumnCondition',
+            'metricConfig.arguments.numeratorColumnCondition',
             { function: 'valueRange', arguments: { start: 3, end: 5 } }
           );
 
@@ -177,15 +177,15 @@ describe('measureCalculator', () => {
       });
       describe('sum aggregation', () => {
         const sumFixed = {};
-        _.set(sumFixed, 'metric.type', 'rate');
-        _.set(sumFixed, 'metric.arguments', {
+        _.set(sumFixed, 'metricConfig.type', 'rate');
+        _.set(sumFixed, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.SUM,
           fixedDenominator: '20'
         });
 
         it('throws if nulls are excluded', () => {
           const sumWithExcludeInDenominator = _.set(_.cloneDeep(sumFixed),
-            'metric.arguments.denominatorIncludeNullValues',
+            'metricConfig.arguments.denominatorIncludeNullValues',
             false
           );
           assert.throws(() => calculateRateMeasure(sumWithExcludeInDenominator, dataProvider));
@@ -198,7 +198,7 @@ describe('measureCalculator', () => {
 
         it('computes numerator and divides by the fixed denominator', async () => {
           const sumFixedWithNumerator = _.set(_.cloneDeep(sumFixed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           const dataProvider = {
@@ -215,8 +215,8 @@ describe('measureCalculator', () => {
     describe('computed denominator', () => {
       describe('no aggregation', () => {
         const computed = {};
-        _.set(computed, 'metric.type', 'rate');
-        _.set(computed, 'metric.arguments', {
+        _.set(computed, 'metricConfig.type', 'rate');
+        _.set(computed, 'metricConfig.arguments', {
           denominatorColumn: 'denominatorCol'
         });
 
@@ -228,8 +228,8 @@ describe('measureCalculator', () => {
 
       describe('count aggregation', () => {
         const countComputed = {};
-        _.set(countComputed, 'metric.type', 'rate');
-        _.set(countComputed, 'metric.arguments', {
+        _.set(countComputed, 'metricConfig.type', 'rate');
+        _.set(countComputed, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.COUNT,
           denominatorColumn: 'denominatorCol'
         });
@@ -245,12 +245,12 @@ describe('measureCalculator', () => {
 
         it('computes numerator and divides by the denominator', async () => {
           const numeratorAndDenominator = _.set(_.cloneDeep(countComputed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           // This will differentiate the queries for mocking purposes.
           _.set(numeratorAndDenominator,
-            'metric.arguments.numeratorColumnCondition',
+            'metricConfig.arguments.numeratorColumnCondition',
             { function: 'valueRange', arguments: { start: 3, end: 5 } }
           );
           const dataProvider = {
@@ -265,8 +265,8 @@ describe('measureCalculator', () => {
       });
       describe('sum aggregation', () => {
         const sumComputed = {};
-        _.set(sumComputed, 'metric.type', 'rate');
-        _.set(sumComputed, 'metric.arguments', {
+        _.set(sumComputed, 'metricConfig.type', 'rate');
+        _.set(sumComputed, 'metricConfig.arguments', {
           aggregationType: CalculationTypeNames.SUM,
           denominatorColumn: 'denominatorCol'
         });
@@ -284,7 +284,7 @@ describe('measureCalculator', () => {
 
         it('computes numerator and divides by the denominator', async () => {
           const numeratorAndDenominator = _.set(_.cloneDeep(sumComputed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           const dataProvider = {
@@ -302,11 +302,11 @@ describe('measureCalculator', () => {
 
         it('includes no column condition in query (noop filter)', (done) => {
           const sumWithNoopCondition = _.set(_.cloneDeep(sumComputed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           _.set(sumWithNoopCondition,
-            'metric.arguments.numeratorColumnCondition',
+            'metricConfig.arguments.numeratorColumnCondition',
             { function: 'noop', arguments: null }
           );
 
@@ -323,11 +323,11 @@ describe('measureCalculator', () => {
 
         it('includes column condition in query (real filter)', (done) => {
           const sumWithCondition = _.set(_.cloneDeep(sumComputed),
-            'metric.arguments.numeratorColumn',
+            'metricConfig.arguments.numeratorColumn',
             'numeratorCol'
           );
           _.set(sumWithCondition,
-            'metric.arguments.numeratorColumnCondition',
+            'metricConfig.arguments.numeratorColumnCondition',
             { function: 'valueRange', arguments: { start: 3, end: 5 } }
           );
 
@@ -352,19 +352,19 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metric.dataSource.uid', 'test-test');
-        _.set(measure, 'metric.arguments.column', 'some column name');
-        _.set(measure, 'metric.type', 'count');
+        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'metricConfig.arguments.column', 'some column name');
+        _.set(measure, 'metricConfig.type', 'count');
       });
 
       it('returns empty if dataSource uid is not set', async () => {
-        _.unset(measure, 'metric.dataSource.uid');
+        _.unset(measure, 'metricConfig.dataSource.uid');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
 
       it('returns empty if column is not set', async () => {
-        _.unset(measure, 'metric.arguments.column');
+        _.unset(measure, 'metricConfig.arguments.column');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
@@ -375,19 +375,19 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metric.type', 'sum');
-        _.set(measure, 'metric.dataSource.uid', 'test-test');
-        _.set(measure, 'metric.arguments.column', 'some column name');
+        _.set(measure, 'metricConfig.type', 'sum');
+        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'metricConfig.arguments.column', 'some column name');
       });
 
       it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metric.dataSource.uid');
+        _.unset(measure, 'metricConfig.dataSource.uid');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
 
       it('returns empty if column is not set', async () => {
-        _.unset(measure, 'metric.arguments.column');
+        _.unset(measure, 'metricConfig.arguments.column');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
@@ -398,26 +398,26 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metric.type', 'recent_value');
-        _.set(measure, 'metric.dataSource.uid', 'test-test');
-        _.set(measure, 'metric.arguments.valueColumn', 'foos');
-        _.set(measure, 'metric.arguments.dateColumn', 'bars');
+        _.set(measure, 'metricConfig.type', 'recent_value');
+        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'metricConfig.arguments.valueColumn', 'foos');
+        _.set(measure, 'metricConfig.arguments.dateColumn', 'bars');
       });
 
       it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metric.dataSource.uid');
+        _.unset(measure, 'metricConfig.dataSource.uid');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
 
       it('returns empty if valueColumn is not set', async () => {
-        _.unset(measure, 'metric.arguments.valueColumn');
+        _.unset(measure, 'metricConfig.arguments.valueColumn');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
 
       it('returns empty if dateColumn is not set', async () => {
-        _.unset(measure, 'metric.arguments.dateColumn');
+        _.unset(measure, 'metricConfig.arguments.dateColumn');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
@@ -428,21 +428,21 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metric.type', 'rate');
-        _.set(measure, 'metric.dataSource.uid', 'test-test');
-        _.set(measure, 'metric.arguments.aggregationType', 'sum');
-        _.set(measure, 'metric.arguments.numeratorColumn', 'columnA');
-        _.set(measure, 'metric.arguments.denominatorColumn', 'columnB');
+        _.set(measure, 'metricConfig.type', 'rate');
+        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'metricConfig.arguments.aggregationType', 'sum');
+        _.set(measure, 'metricConfig.arguments.numeratorColumn', 'columnA');
+        _.set(measure, 'metricConfig.arguments.denominatorColumn', 'columnB');
       });
 
       it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metric.dataSource.uid');
+        _.unset(measure, 'metricConfig.dataSource.uid');
 
         assert.isEmpty(await calculateMeasure(measure));
       });
 
       it('returns empty if neither aggregationType nor fixedDenominator is set', async () => {
-        _.unset(measure, 'metric.arguments.aggregationType');
+        _.unset(measure, 'metricConfig.arguments.aggregationType');
         assert.isEmpty(await calculateMeasure(measure));
       });
     });

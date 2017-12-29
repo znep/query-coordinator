@@ -27,6 +27,7 @@ import {
 } from './Accordion';
 import AssetBrowser from './AssetBrowser';
 import AssetTypeIcon from './AssetTypeIcon';
+import Button from './Button';
 import ColorPicker from './ColorPicker';
 import Dropdown from './Dropdown';
 import Picklist from './Picklist';
@@ -81,6 +82,7 @@ module.exports = {
   AssetTypeIcon,
   BlobDownload,
   BlobPreview,
+  Button,
   Checkbox,
   ColorPicker,
   DatePicker,

@@ -51,20 +51,23 @@ export class App extends Component {
   }
 
   render() {
-    const { activePane, mode } = this.props;
+    const { activePane, isEditing, mode } = this.props;
 
-    const isEditing = mode === ModeStates.EDIT;
+    // Note carefully. The mode being `EDIT` does _not_
+    // mean that the edit modal is open - simply that the
+    // user is at /edit.
+    const isEditMode = mode === ModeStates.EDIT;
     const isPreviewing = mode === ModeStates.PREVIEW;
 
     const measureBodyClasses = classnames('measure-body', {
-      'edit-mode': isEditing,
+      'edit-mode': isEditMode,
       'preview-mode': isPreviewing
     });
 
     return (
       <div className={measureBodyClasses}>
         {isPreviewing && <PreviewBar />}
-        {isEditing && <EditBar />}
+        {isEditMode && <EditBar />}
 
         <div>
           <InfoPane />
@@ -86,6 +89,7 @@ export class App extends Component {
 
 App.propTypes = {
   activePane: PropTypes.string.isRequired,
+  isEditing: PropTypes.bool.isRequired,
   mode: PropTypes.oneOf(_.values(ModeStates)).isRequired
 };
 
@@ -94,7 +98,9 @@ App.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  return state.view;
+  const { activePane, mode } = state.view;
+  const { isEditing } = state.editor;
+  return { activePane, isEditing, mode };
 }
 
 export default connect(mapStateToProps)(App);

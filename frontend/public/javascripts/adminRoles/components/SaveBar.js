@@ -12,7 +12,7 @@ import ConditionTransitionMotion from 'common/components/ConditionTransitionMoti
 import { editCustomRoles, saveRoles } from '../actions';
 import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../selectors';
 import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
-import SocrataButton from 'common/components/SocrataButton';
+import { Button } from 'common/components';
 import styles from './save-bar.module.scss';
 
 const mapStateToProps = state => {
@@ -47,15 +47,15 @@ class SaveBar extends React.Component {
     const { cancelEditCustomRoles, isSaving, localization: { translate } } = this.props;
 
     return (
-      <SocrataButton
-        buttonType="primary"
-        buttonStyle={isSaving ? undefined : 'inverse'}
+      <Button
+        variant="primary"
+        inverse={!isSaving}
         buttonDisabledStyle={'light'}
         disabled={isSaving}
         onClick={() => cancelEditCustomRoles()}
       >
         {translate('screens.admin.roles.buttons.cancel')}
-      </SocrataButton>
+      </Button>
     );
   }
 
@@ -63,9 +63,9 @@ class SaveBar extends React.Component {
     const { dirtyRoles, isSaving, saveRoles, localization: { translate } } = this.props;
 
     return (
-      <SocrataButton
-        buttonType="primary"
-        buttonStyle={isSaving ? 'busy' : undefined}
+      <Button
+        variant="primary"
+        busy={isSaving}
         styleName="save-button"
         onClick={() => saveRoles(dirtyRoles)}
         disabled={isSaving}
@@ -77,7 +77,7 @@ class SaveBar extends React.Component {
           <div styleName="spinner-container">
             <span className="spinner-default spinner-btn-primary" />
           </div>}
-      </SocrataButton>
+      </Button>
     );
   }
 

@@ -19,16 +19,18 @@ describe('thunk actions', () => {
   });
 
   describe('openEditModal', () => {
-    it('clones the view measure and opens the edit modal', (done) => {
+    it('clones the view measure coreView and opens the edit modal', (done) => {
       const measure = { test: 'foo' };
+      const coreView = { name: 'my measure' };
       const expectedActions = [
-        { type: editorActions.OPEN_EDIT_MODAL, measure }
+        { type: editorActions.OPEN_EDIT_MODAL, measure, coreView }
       ];
 
       const store = mockStore({
-        view: { measure },
+        view: { measure, coreView },
         editor: { isEditing: false, measure: null }
       });
+
       store.dispatch(editorActions.openEditModal());
 
       _.defer(() => {
@@ -55,17 +57,12 @@ describe('thunk actions', () => {
 
       it('restores non-persisted data source state', (done) => {
         const measure = {
-          test: 'foo',
-          metric: {
-            dataSource: {
-              uid: 'test-test'
-            }
-          }
+          dataSourceLensUid: 'test-test',
+          test: 'foo'
         };
         const expectedActions = [
-          editorActions.OPEN_EDIT_MODAL,
-          editorActions.SET_DATA_SOURCE_UID,
-          editorActions.RECEIVE_DATA_SOURCE_METADATA
+          editorActions.RECEIVE_DATA_SOURCE_VIEW,
+          editorActions.OPEN_EDIT_MODAL
         ];
 
         const store = mockStore({
@@ -91,8 +88,7 @@ describe('thunk actions', () => {
           }
         };
         const expectedActions = [
-          editorActions.OPEN_EDIT_MODAL,
-          editorActions.SET_DATA_SOURCE_UID
+          editorActions.OPEN_EDIT_MODAL
         ];
 
         const store = mockStore({
@@ -114,14 +110,15 @@ describe('thunk actions', () => {
     describe('when the edit modal validates', () => {
       it('updates the view measure and closes the edit modal', (done) => {
         const measure = { test: 'foo' };
+        const coreView = { name: 'test core view' };
         const expectedActions = [
           { type: validateActions.VALIDATE_ALL },
-          { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure }
+          { type: editorActions.ACCEPT_EDIT_MODAL_CHANGES, measure, coreView }
         ];
 
         const store = mockStore({
-          view: { measure: null },
-          editor: { isEditing: true, measure }
+          view: { measure: null, coreView },
+          editor: { isEditing: true, measure, coreView }
         });
         store.dispatch(editorActions.acceptEditModalChanges());
 
@@ -154,7 +151,7 @@ describe('thunk actions', () => {
     });
   });
 
-  describe('setDataSource', () => {
+  describe('changeDataSource', () => {
     const uid = 'test-test';
     let getRowCountStub;
     let getDatasetMetadataStub;
@@ -174,13 +171,13 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches setDataSource(undefined)', (done) => {
+      it('dispatches setDataSourceUid(undefined)', (done) => {
         const expectedActions = [
           { type: editorActions.SET_DATA_SOURCE_UID, uid: undefined }
         ];
 
         const store = mockStore();
-        store.dispatch(editorActions.setDataSource('four-for'));
+        store.dispatch(editorActions.changeDataSource('four-for'));
 
         _.defer(() => {
           assert.deepEqual(store.getActions(), expectedActions);
@@ -207,22 +204,73 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches receiveDataSourceMetadata', (done) => {
+      it('dispatches setDataSourceUid(four-four)', (done) => {
         const expectedActions = [
           {
             type: editorActions.SET_DATA_SOURCE_UID,
             uid
           },
           {
-            type: editorActions.RECEIVE_DATA_SOURCE_METADATA,
+            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
             rowCount: 12345,
-            dataSourceViewMetadata: viewMetadata,
+            dataSourceView: viewMetadata,
             displayableFilterableColumns: 'displayable filterable'
           }
         ];
 
         const store = mockStore();
-        store.dispatch(editorActions.setDataSource(uid));
+        store.dispatch(editorActions.changeDataSource(uid));
+
+        _.defer(() => {
+          assert.deepEqual(store.getActions(), expectedActions);
+          sinon.assert.calledOnce(getRowCountStub);
+          sinon.assert.calledOnce(getDatasetMetadataStub);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('loadDataSourceView', () => {
+    const uid = 'test-test';
+    let getRowCountStub;
+    let getDatasetMetadataStub;
+    let getDisplayableFilterableColumnsStub;
+    let viewMetadata;
+
+    afterEach(() => {
+      EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
+    });
+
+    describe('a valid 4x4 is provided', () => {
+      beforeEach(() => {
+        viewMetadata = { id: 'test-test', columns: [] };
+        getRowCountStub = sinon.stub().resolves(12345);
+        getDatasetMetadataStub = sinon.stub().resolves(viewMetadata);
+        getDisplayableFilterableColumnsStub = sinon.stub().resolves('displayable filterable');
+
+        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
+          this.getRowCount = getRowCountStub;
+        });
+
+        EditorActionsAPI.__Rewire__('MetadataProvider', function() {
+          this.getDatasetMetadata = getDatasetMetadataStub;
+          this.getDisplayableFilterableColumns = getDisplayableFilterableColumnsStub;
+        });
+      });
+
+      it('dispatches receiveDataSourceMetadata', (done) => {
+        const expectedActions = [
+          {
+            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
+            rowCount: 12345,
+            dataSourceView: viewMetadata,
+            displayableFilterableColumns: 'displayable filterable'
+          }
+        ];
+
+        const store = mockStore();
+        store.dispatch(editorActions.loadDataSourceView(uid));
 
         _.defer(() => {
           assert.deepEqual(store.getActions(), expectedActions);

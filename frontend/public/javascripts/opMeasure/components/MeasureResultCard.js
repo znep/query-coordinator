@@ -15,9 +15,9 @@ export class MeasureResultCard extends Component {
     const { computedMeasure, dataRequestInFlight, placeholder, maxLength } = this.props;
     const result = _.get(computedMeasure, 'result'); // as a String from toFixed()
     const dividingByZero = _.get(computedMeasure, 'dividingByZero');
-    const asPercent = _.get(this.props, 'measure.metric.display.asPercent', false);
+    const asPercent = _.get(this.props, 'measure.metricConfig.display.asPercent', false);
     // Default value of -1 for decimalPlaces indicates that no precision was set.
-    const decimalPlaces = _.get(this.props, 'measure.metric.display.decimalPlaces', -1);
+    const decimalPlaces = _.get(this.props, 'measure.metricConfig.display.decimalPlaces', -1);
 
     if (dividingByZero) {
       return (
@@ -63,7 +63,7 @@ export class MeasureResultCard extends Component {
   }
 
   render() {
-    const subtitle = _.get(this.props, 'measure.metric.display.label', '');
+    const subtitle = _.get(this.props, 'measure.metricConfig.display.label', '');
     const hasResult = !!_.get(this.props, 'computedMeasure.result');
 
     const cardClasses = classnames('measure-result-card', {

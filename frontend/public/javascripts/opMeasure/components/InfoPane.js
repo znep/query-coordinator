@@ -28,8 +28,8 @@ function mapStateToProps(state) {
   };
 
   return {
-    name: state.view.measure.name,
-    description: state.view.measure.description,
+    name: state.view.coreView.name,
+    description: state.view.coreView.description,
     provenance: null,
     isPaneCollapsible: false,
     renderButtons() {

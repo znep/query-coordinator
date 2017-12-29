@@ -27,7 +27,7 @@ describe('Edit modal reducer', () => {
     });
 
     it('removes columns from arguments if they are incompatible with the new aggregation type', () => {
-      state.dataSourceViewMetadata = {
+      state.dataSourceView = {
         columns: [
           { fieldName: 'date', renderTypeName: 'calendar_date' },
           { fieldName: 'text', renderTypeName: 'text' },
@@ -40,48 +40,46 @@ describe('Edit modal reducer', () => {
       state = reducer(state, actions.editor.setCalculationType('rate'));
       state = reducer(state, actions.editor.setNumeratorColumn('date'));
       state = reducer(state, actions.editor.setDenominatorColumn('text'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'date');
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'text');
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'date');
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'text');
 
       // Check count calculations. They are OK with any column types.
       state = reducer(state, actions.editor.setAggregationType('count'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'date'); // Same as before
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'text'); // Same as before
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'date'); // Same as before
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'text'); // Same as before
 
       // Now check going from count to sum. Sum calculations require a numerical type.
       // Our current columns are date and text, so both should be removed once we select sum.
       state = reducer(state, actions.editor.setAggregationType('sum'));
-      assert.notNestedProperty(state, 'measure.metric.arguments.numeratorColumn'); // Gone (was date).
-      assert.notNestedProperty(state, 'measure.metric.arguments.denominatorColumn'); // Gone (was text).
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.numeratorColumn'); // Gone (was date).
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.denominatorColumn'); // Gone (was text).
 
       // Now, verify that sum accepts both Money and Number (those being numerical types).
       state = reducer(state, actions.editor.setAggregationType('count'));
       state = reducer(state, actions.editor.setNumeratorColumn('number'));
       state = reducer(state, actions.editor.setDenominatorColumn('money'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number'); // Test sanity.
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money'); // Test sanity.
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number'); // Test sanity.
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money'); // Test sanity.
       state = reducer(state, actions.editor.setAggregationType('sum'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number'); // Numeric type, so should still be set.
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money'); // Numeric type, so should still be set.
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number'); // Numeric type, so should still be set.
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money'); // Numeric type, so should still be set.
 
       // Finally, ensure selecting count does not inadvertently clear out numeric types.
       state = reducer(state, actions.editor.setAggregationType('count'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.numeratorColumn', 'number');
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorColumn', 'money');
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number');
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money');
     });
   });
 
   describe('SET_DATA_SOURCE_UID', () => {
     it('updates the data source uid in the measure metric', () => {
-      const dataSource = {
-        uid: 'test-test'
-      };
+      const dataSourceUid = 'test-test'
 
-      assert.notNestedProperty(state.measure, 'metric.dataSource');
+      assert.notNestedProperty(state.measure, 'dataSourceLensUid');
 
-      state = reducer(state, actions.editor.setDataSourceUid('test-test'));
+      state = reducer(state, actions.editor.setDataSourceUid(dataSourceUid));
 
-      assert.deepEqual(state.measure.metric.dataSource, dataSource);
+      assert.deepEqual(state.measure.dataSourceLensUid, dataSourceUid);
     });
 
     describe('when resetting the data source', () => {
@@ -102,14 +100,30 @@ describe('Edit modal reducer', () => {
 
         assert.isNull(state.cachedRowCount);
       });
+
+      it('resets metric config to default', () => {
+        const viewMetadata = {
+          id: 'xxxx-xxxx',
+          columns: []
+        };
+
+        _.set(state, 'measure.metricConfig.dataSource', {
+          uid: 'test-test'
+        });
+
+        _.set(state, 'measure.metricConfig.type', CalculationTypeNames.SUM);
+        _.set(state, 'measure.metricConfig.arguments.foo', 'hello');
+
+        state = reducer(state, actions.editor.setDataSourceUid('test-news'));
+        assert.equal(state.measure.metricConfig.type, CalculationTypeNames.COUNT);
+        assert.notNestedProperty(state, 'measure.metricConfig.arguments.foo');
+      });
     });
   });
 
-  describe('RECEIVE_DATA_SOURCE_METADATA', () => {
+  describe('RECEIVE_DATA_SOURCE_VIEW', () => {
     it('updates cachedRowCount in the editor state', () => {
-      _.set(state, 'measure.metric.dataSource', {
-        uid: 'test-test'
-      });
+      _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
       assert.notNestedProperty(state, 'cachedRowCount');
 
@@ -118,53 +132,29 @@ describe('Edit modal reducer', () => {
       assert.equal(state.cachedRowCount, 100);
     });
 
-    it('updates the dataSourceViewMetadata in editor state', () => {
+    it('updates the dataSourceView in editor state', () => {
       const viewMetadata = {
         id: 'xxxx-xxxx',
         columns: []
       };
 
-      _.set(state, 'measure.metric.dataSource', {
-        uid: 'test-test'
-      });
+      _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
-      assert.notNestedProperty(state, 'dataSourceViewMetadata');
+      assert.notNestedProperty(state, 'dataSourceView');
 
       state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
 
-      assert.deepEqual(state.dataSourceViewMetadata, viewMetadata);
-    });
-
-    it('resets metric config to default', () => {
-      const viewMetadata = {
-        id: 'xxxx-xxxx',
-        columns: []
-      };
-
-      _.set(state, 'measure.metric.dataSource', {
-        uid: 'test-test'
-      });
-
-      _.set(state, 'measure.metric.type', CalculationTypeNames.SUM);
-      _.set(state, 'measure.metric.arguments.foo', 'hello');
-
-      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
-      assert.equal(state.measure.metric.type, CalculationTypeNames.COUNT);
-      assert.notNestedProperty(state, 'measure.metric.arguments.foo');
+      assert.deepEqual(state.dataSourceView, viewMetadata);
     });
 
     it('throws if not given a number for the rowCount', () => {
-      _.set(state, 'measure.metric.dataSource', {
-        uid: 'test-test'
-      });
+      _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
       assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata('100', {})));
     });
 
-    it('throws if not given an object for the dataSourceViewMetadata', () => {
-      _.set(state, 'measure.metric.dataSource', {
-        uid: 'test-test'
-      });
+    it('throws if not given an object for the dataSourceView', () => {
+      _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
       assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata(100, 'im not really an object')));
     });
@@ -186,7 +176,7 @@ describe('Edit modal reducer', () => {
 
       const newCondition2 = { type: 'mock2' };
       state = reducer(state, actions.editor.setNumeratorColumnCondition(_.cloneDeep(newCondition2)));
-      assert.deepEqual(state.measure.metric.arguments.numeratorColumnCondition, newCondition2);
+      assert.deepEqual(state.measure.metricConfig.arguments.numeratorColumnCondition, newCondition2);
     });
   });
 
@@ -194,16 +184,16 @@ describe('Edit modal reducer', () => {
     it('updates the column in metric arguments with the column field name', () => {
       const columnFieldName = 'yay im a column';
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
 
       state = reducer(state, actions.editor.setColumn(columnFieldName));
-      assert.equal(state.measure.metric.arguments.column, columnFieldName);
+      assert.equal(state.measure.metricConfig.arguments.column, columnFieldName);
     });
 
     it('throws if not given a string for fieldName', () => {
       const notAString = 42;
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.column');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
 
       assert.throws(() => reducer(state, actions.editor.setColumn(notAString)));
     });
@@ -213,16 +203,16 @@ describe('Edit modal reducer', () => {
     it('updates the valueColumn in metric arguments with the column field name', () => {
       const columnFieldName = 'some value column';
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.valueColumn');
 
       state = reducer(state, actions.editor.setValueColumn(columnFieldName));
-      assert.equal(state.measure.metric.arguments.valueColumn, columnFieldName);
+      assert.equal(state.measure.metricConfig.arguments.valueColumn, columnFieldName);
     });
 
     it('throws if not given a string for fieldName', () => {
       const notAString = 42;
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.valueColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.valueColumn');
 
       assert.throws(() => reducer(state, actions.editor.setValueColumn(notAString)));
     });
@@ -232,16 +222,16 @@ describe('Edit modal reducer', () => {
     it('updates the dateColumn in metric arguments with the column field name', () => {
       const columnFieldName = 'some date column';
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.dateColumn');
 
       state = reducer(state, actions.editor.setDateColumn(columnFieldName));
-      assert.equal(state.measure.metric.arguments.dateColumn, columnFieldName);
+      assert.equal(state.measure.metricConfig.arguments.dateColumn, columnFieldName);
     });
 
     it('throws if not given a string for fieldName', () => {
       const notAString = 42;
 
-      assert.notNestedProperty(state, 'measure.metric.arguments.dateColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.dateColumn');
 
       assert.throws(() => reducer(state, actions.editor.setDateColumn(notAString)));
     });
@@ -259,50 +249,50 @@ describe('Edit modal reducer', () => {
 
   describe('SET_CALCULATION_TYPE', () => {
     it('updates the calculation type in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.type');
+      assert.notNestedProperty(state, 'measure.metricConfig.type');
 
       state = reducer(state, actions.editor.setCalculationType('count'));
 
-      assert.nestedPropertyVal(state, 'measure.metric.type', 'count' );
+      assert.nestedPropertyVal(state, 'measure.metricConfig.type', 'count' );
     });
 
     it('sets default arguments', () => {
       state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', true);
 
       state = reducer(state, actions.editor.setCalculationType('rate'));
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.denominatorIncludeNullValues', true);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
     });
 
     it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
       state = reducer(state, actions.editor.setCalculationType('sum'));
-      _.set(state, 'measure.metric.arguments.column', 'some column');
-      _.set(state, 'measure.metric.arguments.something', 'what');
-      _.set(state, 'measure.metric.dataSource.uid', 'test-test');
+      _.set(state, 'measure.metricConfig.arguments.column', 'some column');
+      _.set(state, 'measure.metricConfig.arguments.something', 'what');
+      _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
       state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.notNestedProperty(state, 'measure.metric.arguments.column');
-      assert.notNestedProperty(state, 'measure.metric.arguments.something');
-      assert.equal(state.measure.metric.dataSource.uid, 'test-test');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.something');
+      assert.equal(state.measure.dataSourceLensUid, 'test-test');
     });
   });
 
   describe('SET_UNIT_LABEL', () => {
     it('updates the label in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.display.label');
+      assert.notNestedProperty(state, 'measure.metricConfig.display.label');
 
       state = reducer(state, actions.editor.setUnitLabel('cold hard cash'));
 
-      assert.nestedPropertyVal(state, 'measure.metric.display.label', 'cold hard cash' );
+      assert.nestedPropertyVal(state, 'measure.metricConfig.display.label', 'cold hard cash' );
     });
   });
 
   describe('SET_START_DATE', () => {
     it('updates the start date in the metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.reportingPeriod.startDate');
+      assert.notNestedProperty(state, 'measure.metricConfig.reportingPeriod.startDate');
       const testDate = '2017-11-29';
       state = reducer(state, actions.editor.setStartDate(testDate));
-      assert.equal(state.measure.metric.reportingPeriod.startDate, testDate);
+      assert.equal(state.measure.metricConfig.reportingPeriod.startDate, testDate);
     });
 
     // TODO: Test for bogus date values?
@@ -313,7 +303,7 @@ describe('Edit modal reducer', () => {
       const { OPEN, CLOSED } = PeriodTypes;
       state = reducer(state, actions.editor.setPeriodType(OPEN));
 
-      assert.equal(state.measure.metric.reportingPeriod.type, OPEN);
+      assert.equal(state.measure.metricConfig.reportingPeriod.type, OPEN);
     });
 
     // TODO: Test for invalid period types?
@@ -321,9 +311,9 @@ describe('Edit modal reducer', () => {
 
   describe('SET_PERIOD_SIZE', () => {
     it('updates the period size in the metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.reportingPeriod.size');
+      assert.notNestedProperty(state, 'measure.metricConfig.reportingPeriod.size');
       state = reducer(state, actions.editor.setPeriodSize(PeriodSizes[0]));
-      assert.equal(state.measure.metric.reportingPeriod.size, PeriodSizes[0]);
+      assert.equal(state.measure.metricConfig.reportingPeriod.size, PeriodSizes[0]);
     });
 
     // TODO: Should we test for bogus size values?
@@ -331,25 +321,25 @@ describe('Edit modal reducer', () => {
 
   describe('TOGGLE_DISPLAY_AS_PERCENT', () => {
     it('toggles display.asPercent in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metric.display.asPercent');
+      assert.notNestedProperty(state, 'measure.metricConfig.display.asPercent');
 
       state = reducer(state, actions.editor.toggleDisplayAsPercent());
-      assert.nestedPropertyVal(state, 'measure.metric.display.asPercent', true);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.display.asPercent', true);
 
       state = reducer(state, actions.editor.toggleDisplayAsPercent());
-      assert.nestedPropertyVal(state, 'measure.metric.display.asPercent', false);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.display.asPercent', false);
     });
   });
 
   describe('TOGGLE_INCLUDE_NULL_VALUES', () => {
     it('toggles arguments.includeNullValues in the measure metric, with a default implied value of true', () => {
-      assert.notNestedProperty(state, 'measure.metric.arguments.includeNullValues');
+      assert.notNestedProperty(state, 'measure.metricConfig.arguments.includeNullValues');
 
       state = reducer(state, actions.editor.toggleIncludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', false);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', false);
 
       state = reducer(state, actions.editor.toggleIncludeNullValues());
-      assert.nestedPropertyVal(state, 'measure.metric.arguments.includeNullValues', true);
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', true);
     });
   });
 
@@ -365,31 +355,31 @@ describe('Edit modal reducer', () => {
 
   describe('SET_DESCRIPTION', () => {
     it('updates the description of the measure', () => {
-      assert.notNestedProperty(state.measure, 'description');
+      assert.notNestedProperty(state, 'coreView.description');
 
       state = reducer(state, actions.editor.setDescription('Some description'));
 
-      assert.equal(state.measure.description, 'Some description');
+      assert.equal(state.coreView.description, 'Some description');
     });
   });
 
   describe('SET_FULL_TITLE', () => {
     it('sets the full title of the measure', () => {
-      assert.notNestedProperty(state.measure, 'name');
+      assert.notNestedProperty(state, 'coreView.name');
 
       state = reducer(state, actions.editor.setName('Full name'));
 
-      assert.equal(state.measure.name, 'Full name');
+      assert.equal(state.coreView.name, 'Full name');
     });
   });
 
   describe('SET_SHORT_TITLE', () => {
     it('sets the short title of the measure', () => {
-      assert.notNestedProperty(state.measure, 'shortName');
+      assert.isUndefined(state.measure.metadata, 'shortName');
 
       state = reducer(state, actions.editor.setShortName('Short name'));
 
-      assert.equal(state.measure.shortName, 'Short name');
+      assert.equal(state.measure.metadata.shortName, 'Short name');
     });
   });
 
@@ -401,7 +391,7 @@ describe('Edit modal reducer', () => {
     //       include the "fake" field.
     const fakeMeasure = {
       fake: 'measure',
-      metric: {
+      metricConfig: {
         type: 'sum'
       }
     };
@@ -424,7 +414,7 @@ describe('Edit modal reducer', () => {
           measure: fakeMeasure
         });
 
-        assert.equal(state.measure.metric.sum, fakeMeasure.metric.sum);
+        assert.equal(state.measure.metricConfig.type, fakeMeasure.metricConfig.type);
         // NOTE: pristineMeasure should also have filtered out fields that are not in our schema.
         // TODO: Create a schema file for our state.
         assert.deepPropertyVal(state, 'pristineMeasure', fakeMeasure);
@@ -433,14 +423,14 @@ describe('Edit modal reducer', () => {
 
     it('when metric type is not set', () => {
       it('defaults metric type to "count"', () => {
-        const stateWithoutType = _.omit(state, 'measure.metric.type');
+        const stateWithoutType = _.omit(state, 'measure.metricConfig.type');
 
         state = reducer(stateWithoutType, {
           type: actions.editor.OPEN_EDIT_MODAL,
           measure: stateWithoutType.measure
         });
 
-        assert.deepPropertyVal(state, 'measure.metric.type', 'count');
+        assert.deepPropertyVal(state, 'measure.metricConfig.type', 'count');
       });
     });
   });

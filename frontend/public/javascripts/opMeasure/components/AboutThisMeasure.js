@@ -10,11 +10,11 @@ import { PeriodTypes } from '../lib/constants';
 // Pane containing high-level (mostly prose) description of the measure.
 export class AboutThisMeasure extends Component {
   render() {
-    const calculationType = _.get(this.props, 'measure.metric.type', '');
+    const calculationType = _.get(this.props, 'measure.metricConfig.type', '');
     const {
       size: reportingPeriodSize,
       type: reportingPeriodType
-    } = _.get(this.props, 'measure.metric.reportingPeriod', {});
+    } = _.get(this.props, 'measure.metricConfig.reportingPeriod', {});
 
     // We only want to display this component when it will contain some info.
     if (!calculationType && !(reportingPeriodSize && reportingPeriodType)) {
@@ -73,7 +73,7 @@ export class AboutThisMeasure extends Component {
 
 AboutThisMeasure.propTypes = {
   measure: PropTypes.shape({
-    metric: PropTypes.object
+    metricConfig: PropTypes.object
   }).isRequired
 };
 

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
@@ -8,7 +9,9 @@ import { setAnalysis, setMethods } from '../../actions/editor';
 // Configuration panel for methods and analysis.
 export class MethodsPanel extends Component {
   render() {
-    const { analysis, methods, onChangeAnalysis, onChangeMethods } = this.props;
+    const { measure, onChangeAnalysis, onChangeMethods } = this.props;
+    const methods = _.get(measure, 'metadata.methods', '');
+    const analysis = _.get(measure, 'metadata.analysis', '');
 
     return (
       <form>
@@ -34,14 +37,16 @@ export class MethodsPanel extends Component {
 }
 
 MethodsPanel.propTypes = {
-  analysis: PropTypes.string,
-  methods: PropTypes.string,
+  measure: PropTypes.shape({
+    analysis: PropTypes.string,
+    methods: PropTypes.string
+  }),
   onChangeAnalysis: PropTypes.func,
   onChangeMethods: PropTypes.func
 };
 
 function mapStateToProps(state) {
-  return state.editor.measure.metadata;
+  return state.editor;
 }
 
 function mapDispatchToProps(dispatch) {

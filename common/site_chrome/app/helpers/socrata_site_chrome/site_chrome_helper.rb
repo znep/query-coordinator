@@ -461,5 +461,9 @@ module SocrataSiteChrome
       get_feature_flag('enable_alert_notifications_for_role_users') &&
         (is_superadmin? || !current_user_role.nil? )
     end
+
+    def is_development_mode?
+      Rails.env.development?
+    end
   end
 end

@@ -18,9 +18,15 @@ class NotificationAPI {
     let channelId = `user: ${userId}`;
     const socketOptions = { params: { user_id: userId } };
     if (useLogger) {
-      socketOptions.logger = (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); };
+      socketOptions.logger = (kind, msg, data) => { console.info(kind, msg, data); };
     }
     let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
+    if (_.get(options, 'developmentMode') && !this._hasEverJoined) {
+      socket.onError(() => {
+        console.warn('User Notifications: Error connecting, disabling connection in development mode.');
+        socket.disconnect();
+      });
+    }
 
     socket.connect();
 
@@ -38,13 +44,14 @@ class NotificationAPI {
       self.update();
       self._channel.join().
         receive('ok', (resp) => {
+          self._hasEverJoined = true;
           if (useLogger) {
-            console.log('Joined user channel');
+            console.info('Joined user channel');
           }
         }).
         receive('error', (resp) => {
           if (useLogger) {
-            console.log('Unable to join', resp);
+            console.info('Unable to join', resp);
           }
         });
     }, function() {});

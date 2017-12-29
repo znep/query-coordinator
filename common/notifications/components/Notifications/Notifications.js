@@ -38,7 +38,11 @@ class Notifications extends Component {
     };
 
     if (props.options.showUserNotifications && props.userid) {
-      this.userNotificationAPI = new UserNotificationAPI(props.userid, this.onNotificationsUpdate.bind(this));
+      this.userNotificationAPI = new UserNotificationAPI(
+        props.userid,
+        this.onNotificationsUpdate.bind(this),
+        { developmentMode: _.get(props, 'options.developmentMode', false) }
+      );
     }
 
     _.bindAll(this,

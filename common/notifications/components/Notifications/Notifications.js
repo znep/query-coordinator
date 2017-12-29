@@ -415,7 +415,7 @@ Notifications.propTypes = {
     lockScrollbar: PropTypes.bool,
     scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,
-    showMyAlertPreference: PropTypes.bool.isRequired,
+    showMyAlertPreference: PropTypes.bool,
     inProductTransientNotificationsEnabled: PropTypes.bool.isRequired,
     showUserNotifications: PropTypes.bool.isRequired
   }).isRequired

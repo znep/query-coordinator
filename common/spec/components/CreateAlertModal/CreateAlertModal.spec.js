@@ -26,7 +26,6 @@ describe('CreateAlertModal', () => {
     let createAlertPromise = sinon.stub(CreateAlertApi, 'create').returns(Promise.resolve({ status: 200 }));
     let element = mount(<CreateAlertModal onClose={spy} />);
     let saveButton = element.find('.create-button');
-    let nameField = element.find('.alert-name-section input');
     element.setState({ alertName: 'alert' });
     saveButton.simulate('click');
     sinon.assert.calledOnce(createAlertPromise);
@@ -50,4 +49,11 @@ describe('CreateAlertModal', () => {
     TestUtils.Simulate.click(closeButton);
     sinon.assert.calledOnce(spy);
   });
+
+  it('should show deleted button if edit mode is on', () => {
+    const spy = sinon.spy();
+    const element = renderComponent(CreateAlertModal, { onClose: spy, editMode: true });
+    assert.isNotNull(element.querySelectorAll('.delete-button'));
+  });
+
 });

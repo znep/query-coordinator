@@ -371,8 +371,15 @@ en:
         title: Create Alert
       create_alert_modal:
         title: Create Alert for this Dataset
+        edit_mode_title: Manage Alerts
         alert_name_label: Name
         alert_name_placeholder: Name this Alert
+        delete_view:
+          title: Are you sure you want to delete your alert?
+          description: Once an alert is deleted, it cannot be recovered.
+          button:
+            delete: 'Yes'
+            cancel: Cancel
         advance_search:
           alert_title: Create your own alert
           description: SoQL. An alert will be sent each time the dataset is updated and the parameters are met
@@ -385,6 +392,7 @@ en:
         tab:
           advance_alert: Advanced Alert
         button:
+          delete: Delete
           validate: Validate
           create: Save
     site_chrome:
@@ -601,6 +609,7 @@ en:
           subscribe_email: Subscribe to email notifications
           tab:
             notification: Notifications & Alerts
+            my_alerts: My Alerts
           table_header:
             feature: FEATURE
             product_alerts: IN-PRODUCT ALERTS
@@ -652,6 +661,9 @@ en:
           my_alerts:
             title: My Alerts
             description: Notify me when my alerts are triggered
+          my_alert_tab:
+            delete_message: has been successfully deleted.
+            empty_message: You have no alerts created.
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.

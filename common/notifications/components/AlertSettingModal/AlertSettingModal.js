@@ -10,6 +10,7 @@ import AlertPreferenceAPI from '../../api/AlertPreferenceAPI';
 import ErrorMessage from 'common/notifications/components/ErrorMessage';
 import Spinner from '../Spinner';
 import I18n from 'common/i18n';
+import MyAlerts from './MyAlerts/MyAlerts';
 
 class AlertSettingModal extends Component {
 
@@ -107,8 +108,9 @@ class AlertSettingModal extends Component {
         currentUserRole,
         isSuperAdmin,
         currentDomainFeatures,
-        showMyAlertPreference,
-        inProductTransientNotificationsEnabled
+        inProductTransientNotificationsEnabled,
+        showMyAlertPreference
+
       } = this.props;
 
       return (
@@ -159,14 +161,25 @@ class AlertSettingModal extends Component {
 
   renderTabs() {
     const { userPreferencesLoaded, selectedTab } = this.state;
-
+    const { showMyAlertPreference } = this.props;
     if (userPreferencesLoaded) {
-      return <Tabs onTabChange={this.onTabChange} selectedTab={selectedTab} />;
+      return (
+        <Tabs
+          showMyAlertsTab={showMyAlertPreference}
+          onTabChange={this.onTabChange}
+          selectedTab={selectedTab} />
+      );
     }
   }
 
   renderTabContent() {
-    return this.renderNotificationTabContent();
+    const { selectedTab } = this.state;
+
+    if (selectedTab == 'notification') {
+      return this.renderNotificationTabContent();
+    } else if (selectedTab == 'my_alerts') {
+      return (<MyAlerts />);
+    }
   }
 
   renderModalFooter() {
@@ -191,6 +204,7 @@ class AlertSettingModal extends Component {
 
   render() {
     const { onClose } = this.props;
+    const { selectedTab } = this.state;
     const containerStyle = {
       'maxWidth': '800px',
       'maxHeight': 'calc(100vh - 40px)',
@@ -199,6 +213,7 @@ class AlertSettingModal extends Component {
       'bottom': 'auto'
     };
 
+    let showFooterData = (selectedTab != 'my_alerts');
     return (
       <Modal styleName="alert-setting-modal" onDismiss={onClose} containerStyle={containerStyle}>
         <ModalHeader
@@ -211,7 +226,7 @@ class AlertSettingModal extends Component {
           {this.state.showSpinner ? <Spinner /> : null}
         </ModalContent>
 
-        {this.renderModalFooter()}
+        {showFooterData ? this.renderModalFooter() : null}
       </Modal>
     );
   }

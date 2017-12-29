@@ -12,7 +12,7 @@ describe('CreateAlertButton', () => {
   it('on click should open create alert modal', () => {
     var element = renderComponent(CreateAlertButton, {});
     TestUtils.Simulate.click(element.querySelector('label'));
-    const createAlertModal = element.querySelector('.create-alert-modal');
+    const createAlertModal = element.querySelector('.create-alert-modal-container');
     assert.isNotNull(createAlertModal);
   });
 

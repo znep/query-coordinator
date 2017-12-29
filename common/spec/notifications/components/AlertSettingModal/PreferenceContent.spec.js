@@ -196,18 +196,22 @@ describe('PreferenceContent', () => {
 
   describe('My Alert', () => {
     it('should renders my alert contents', () => {
-      const element = renderLocalizationElement(PreferenceContent, { showMyAlertPreference: true });
+      const element = renderLocalizationElement(PreferenceContent, {
+        ...defaultProps,
+        showMyAlertPreference: true
+      });
       assert.isNotNull(element.querySelector('#notify-subscribe-my-alert'));
     });
 
     it('should not renders my alert contents if showMyAlertPreference props is false', () => {
-      const element = renderLocalizationElement(PreferenceContent, {});
+      const element = renderLocalizationElement(PreferenceContent, defaultProps);
       assert.isNull(element.querySelector('#notify-subscribe-my-alert'));
     });
 
     it('should update preference when subscription value changes', () => {
       var onAlertNotificationChange = sinon.spy();
       const props = {
+        ...defaultProps,
         onAlertNotificationChange: onAlertNotificationChange,
         showMyAlertPreference: true
       };

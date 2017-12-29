@@ -32,11 +32,8 @@ function getDefaultHeaders() {
 }
 
 export const createAlertApi = (() => {
-  let datasetId = _.get(window, 'sessionData.viewId');
   return {
     validate: (alertParams) => {
-      alertParams.domain = _.get(window, 'location.host');
-      alertParams.dataset_uid = datasetId;
       return fetch('/api/notifications_and_alerts/alerts/validate_raw_soql', {
         method: 'POST',
         headers: getDefaultHeaders(),
@@ -47,8 +44,6 @@ export const createAlertApi = (() => {
       then((response) => response.json());
     },
     create: (alertParams) => {
-      alertParams.domain = _.get(window, 'location.host');
-      alertParams.dataset_uid = datasetId;
       return fetch('/api/notifications_and_alerts/alerts', {
         method: 'POST',
         headers: getDefaultHeaders(),
@@ -58,6 +53,25 @@ export const createAlertApi = (() => {
       then(checkStatus).
       then((response) => response.json()).
       then((response) => response.data);
+    },
+    update: (params, alertId) => {
+      return fetch(`/api/notifications_and_alerts/alerts/${alertId}`, {
+        method: 'PUT',
+        headers: getDefaultHeaders(),
+        credentials: 'same-origin',
+        body: JSON.stringify({ alert: params })
+      }).
+      then(checkStatus).
+      then((response) => response.json()).
+      then((response) => response.data);
+    },
+    delete: (alertId) => {
+      return fetch(`/api/notifications_and_alerts/alerts/${alertId}`, {
+        method: 'DELETE',
+        headers: getDefaultHeaders(),
+        credentials: 'same-origin'
+      }).
+      then(checkStatus);
     }
   };
 })();

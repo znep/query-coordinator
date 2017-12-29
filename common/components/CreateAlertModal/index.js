@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import styles from './index.module.scss';
 import Tabs from './Tabs';
-import classNames from 'classnames';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import CreateAlertApi from './api/CreateAlertApi';
-
+import DeleteView from './DeleteView';
 import I18n from 'common/i18n';
 
 class CreateAlertModal extends Component {
@@ -20,7 +21,8 @@ class CreateAlertModal extends Component {
       isInvalidQuery: false,
       isLoading: false,
       showInfoText: false,
-      enableValidationInfo: false
+      enableValidationInfo: false,
+      showDeleteAlertPage: false
     };
 
     _.bindAll(this, [
@@ -29,12 +31,32 @@ class CreateAlertModal extends Component {
       'onRawSoqlQueryChange',
       'onCreateAlertClick',
       'validateQuery',
-      'renderAlertInfo'
+      'renderAlertInfo',
+      'onDeleteButtonClick',
+      'alertParams',
+      'renderDeletePage',
+      'deleteCancel',
+      'deleteSuccess'
     ]);
+  }
+
+  componentWillMount() {
+    const { alert, editMode, tab } = this.props;
+    let { selectedTab, alertName, rawSoqlQuery } = this.state;
+    if (editMode) {
+      selectedTab = (tab || selectedTab);
+      alertName = _.get(alert, 'name');
+      rawSoqlQuery = _.get(alert, 'query_string');
+    }
+    this.setState({ selectedTab, alertName, rawSoqlQuery });
   }
 
   onTabChange(selectedTab) {
     this.setState({ selectedTab });
+  }
+
+  onDeleteButtonClick() {
+    this.setState({ showDeleteAlertPage: true });
   }
 
   onAlertNameChange(event) {
@@ -49,16 +71,21 @@ class CreateAlertModal extends Component {
 
 
   onCreateAlertClick() {
-    const { alertName, rawSoqlQuery } = this.state;
-    const { onClose } = this.props;
-    let alertParams = { type: 'push' };
-    alertParams['query_string'] = rawSoqlQuery;
-    alertParams.name = alertName;
+    const { alertName } = this.state;
+    const { onClose, editMode, alert } = this.props;
+    let alertPromise = null;
+
+    if (editMode) {
+      alertPromise = CreateAlertApi.update(this.alertParams(), alert.id);
+    } else {
+      alertPromise = CreateAlertApi.create(this.alertParams());
+    }
+
     if (_.isEmpty(alertName)) {
       this.setState({ enableValidationInfo: true });
     } else {
       this.setState({ isLoading: true });
-      CreateAlertApi.create(alertParams).then((response) => {
+      alertPromise.then((response) => {
         this.setState({ isLoading: false });
         onClose();
       }).catch((error) => {
@@ -69,14 +96,37 @@ class CreateAlertModal extends Component {
     }
   }
 
-  validateQuery() {
+  deleteCancel() {
+    this.setState({ showDeleteAlertPage: false });
+  }
+
+  deleteSuccess() {
+    const { onClose } = this.props;
+    onClose({ isDeleted: true });
+  }
+
+
+  alertParams() {
     const { alertName, rawSoqlQuery } = this.state;
-    let alertParams = {};
+    const { alert } = this.props;
+    let alertParams = { type: 'push' };
+
+    if (_.isEmpty(alert)) {
+      alertParams.domain = _.get(window, 'location.host');
+      alertParams.dataset_uid = _.get(window, 'sessionData.viewId');
+    } else {
+      alertParams.domain = _.get(alert, 'domain');
+      alertParams.dataset_uid = _.get(alert, 'dataset_uid');
+    }
     alertParams['query_string'] = rawSoqlQuery;
     alertParams.name = alertName;
+    return alertParams;
+  }
+
+  validateQuery() {
     this.setState({ isLoading: true });
     this.setState({ enableValidationInfo: true });
-    CreateAlertApi.validate(alertParams).then((response) => {
+    CreateAlertApi.validate(this.alertParams()).then((response) => {
       if (_.get(response, 'valid', false)) {
         this.setState({ isInvalidQuery: false });
         this.setState({ isLoading: false });
@@ -93,6 +143,19 @@ class CreateAlertModal extends Component {
     });
   }
 
+  renderDeletePage() {
+    const { showDeleteAlertPage } = this.state;
+    const { alert } = this.props;
+    if (showDeleteAlertPage) {
+      return (
+        <DeleteView
+          alert={alert}
+          onCancel={this.deleteCancel}
+          onDeleteSuccess={this.deleteSuccess} />
+      );
+    }
+  }
+
   renderTabs() {
     const { selectedTab } = this.state;
     return <Tabs onTabChange={this.onTabChange} selectedTab={selectedTab} />;
@@ -102,12 +165,27 @@ class CreateAlertModal extends Component {
     return this.renderAdvanceTabContent();
   }
 
+  renderDeleteButton() {
+    const { editMode } = this.props;
+
+    if (editMode) {
+      return (
+        <button
+          styleName="btn btn-error"
+          className="delete-button"
+          onClick={this.onDeleteButtonClick}>
+          {I18n.t('delete', { scope: 'shared.components.create_alert_modal.button' })}
+        </button>
+      );
+    }
+  }
+
   renderAlertInfo() {
     const { enableValidationInfo, isLoading, isInvalidQuery, alertName } = this.state;
     let infoText;
     if (isLoading) {
       infoText = (
-        <div className="alert-info success-info">
+        <div styleName="alert-info success-info">
           <span>
             {I18n.t('loading', { scope: 'shared.components.create_alert_modal.info' })}
           </span>
@@ -116,7 +194,7 @@ class CreateAlertModal extends Component {
     } else if (enableValidationInfo) {
       if (_.isEmpty(alertName)) {
         infoText = (
-          <div className="alert-info error-info">
+          <div styleName="alert-info error-info">
             <span>
               {I18n.t('name_error', { scope: 'shared.components.create_alert_modal.info' })}
             </span>
@@ -124,8 +202,8 @@ class CreateAlertModal extends Component {
         );
       } else if (isInvalidQuery) {
         infoText = (
-          <div className="alert-info error-info">
-            <span className="info-icon socrata-icon-close"></span>
+          <div styleName="alert-info error-info">
+            <span styleName="info-icon" className="socrata-icon-close"></span>
             <span>
               {I18n.t('invalid_query', { scope: 'shared.components.create_alert_modal.info' })}
             </span>
@@ -133,8 +211,8 @@ class CreateAlertModal extends Component {
         );
       } else {
         infoText = (
-          <div className="alert-info success-info">
-            <span className="info-icon socrata-icon-check"></span>
+          <div styleName="alert-info success-info">
+            <span styleName="info-icon" className="socrata-icon-check"></span>
             <span>
               {I18n.t('valid_query', { scope: 'shared.components.create_alert_modal.info' })}
             </span>
@@ -152,15 +230,15 @@ class CreateAlertModal extends Component {
     const description = I18n.t('description', { scope: 'shared.components.create_alert_modal.advance_search' });
 
     return (
-      <div className="advance-alert-section">
+      <div styleName="advance-alert-section">
         {this.renderAlertInfo()}
-        <div className="advance-alert-content">
-          <div className="advance-alert-title">{alertTitle}</div>
-          <div className="advance-alert-description">{description}</div>
+        <div styleName="advance-alert-content">
+          <div styleName="advance-alert-title">{alertTitle}</div>
+          <div styleName="advance-alert-description">{description}</div>
         </div>
 
         <div>
-          <label className="raw-query-title">
+          <label styleName="raw-query-title">
             {I18n.t('text_box_description', { scope: 'shared.components.create_alert_modal.advance_search' })}
           </label>
           <textarea
@@ -174,8 +252,8 @@ class CreateAlertModal extends Component {
   renderModalFooter() {
     let { alertName } = this.state;
     return (
-      <ModalFooter>
-        <div className="alert-name-section">
+      <ModalFooter styleName="footer-section">
+        <div styleName="alert-name-section">
           <label>
             {I18n.t('alert_name_label', { scope: 'shared.components.create_alert_modal' })}:
           </label>
@@ -185,13 +263,16 @@ class CreateAlertModal extends Component {
             value={alertName}
             onChange={this.onAlertNameChange} />
         </div>
+        {this.renderDeleteButton()}
         <button
-          className="validate-button btn btn-default"
+          styleName="btn btn-default"
+          className="validate-button"
           onClick={(event) => this.validateQuery()}>
           {I18n.t('validate', { scope: 'shared.components.create_alert_modal.button' })}
         </button>
         <button
-          className="create-button btn btn-primary"
+          styleName="btn btn-primary"
+          className="create-button"
           onClick={(event) => this.onCreateAlertClick()}>
           {I18n.t('create', { scope: 'shared.components.create_alert_modal.button' })}
         </button>
@@ -200,38 +281,64 @@ class CreateAlertModal extends Component {
   }
 
   render() {
-    const { onClose } = this.props;
+    const { onClose, editMode } = this.props;
+    const { showDeleteAlertPage } = this.state;
     const containerStyle = {
       'maxWidth': '800px',
       'maxHeight': 'calc(100vh - 40px)',
       'padding': '20px',
       'margin': '40px auto',
       'bottom': 'auto',
-      'overflow': 'auto',
-      'font-size': '12px'
+      'overflow': ' auto',
+      'minHeight': '400px'
     };
+    let alertModalTitle;
+    let modalContent;
+
+    if (editMode) {
+      alertModalTitle = I18n.t('edit_mode_title', { scope: 'shared.components.create_alert_modal' });
+    } else {
+      alertModalTitle = I18n.t('title', { scope: 'shared.components.create_alert_modal' });
+    }
+
+    if (showDeleteAlertPage) {
+      modalContent = this.renderDeletePage();
+    } else {
+      modalContent = (
+        <div>
+          {this.renderTabs()}
+          {this.renderTabContent()}
+        </div>
+      );
+    }
 
     return (
-      <div className="create-alert-modal">
+      <div styleName="create-alert-modal" className="create-alert-modal-container">
         <Modal onDismiss={onClose} containerStyle={containerStyle}>
           <ModalHeader
-            title={I18n.t('title', { scope: 'shared.components.create_alert_modal' })}
+            title={alertModalTitle}
             onDismiss={onClose} />
 
-          <ModalContent styleName="alert-setting-modal-content">
-            {this.renderTabs()}
-            {this.renderTabContent()}
+          <ModalContent>
+            {modalContent}
           </ModalContent>
 
-          {this.renderModalFooter()}
+          {showDeleteAlertPage ? null : this.renderModalFooter()}
         </Modal>
       </div>
     );
   }
 }
 
-CreateAlertModal.propTypes = {
-  onClose: PropTypes.func
+CreateAlertModal.defaultProps = {
+  alert: {},
+  editMode: false
 };
 
-export default CreateAlertModal;
+CreateAlertModal.propTypes = {
+  onClose: PropTypes.func,
+  editMode: PropTypes.bool,
+  alert: PropTypes.object
+};
+
+export default cssModules(CreateAlertModal, styles, { allowMultiple: true });

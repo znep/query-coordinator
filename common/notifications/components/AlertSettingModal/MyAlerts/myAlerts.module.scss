@@ -1,0 +1,54 @@
+@import '../../../common.module.scss';
+
+.my-alert-tab {
+  .alert-heading {
+    font-size: 17px;
+  }
+  .alert-row {
+
+    .alert-dataset {
+      color: $header-link-hover-color !important;
+      font-size: 12px;
+    }
+
+    span {
+      display: block;
+
+      &.alert-name {
+        text-transform: capitalize;
+        font-size: 16px;
+        font-weight: bold;
+        color: $black;
+      }
+
+      &.alert-query {
+        font-size: 11px;
+      }
+    }
+
+    .edit-column div {
+      font-size: 12px;
+      text-transform: lowercase;
+      text-decoration: underline;
+      color: $header-link-hover-color !important;
+      cursor: pointer;
+    }
+  }
+
+  .delete-info{
+
+    span {
+      background-color: $primary-light;
+      border-radius: 5px;
+      color: $black;
+      display: block;
+      font-size: 14px;
+      padding: 8px;
+      width: 100%;
+    }
+
+    hr {
+      border: 1px solid $light-grey-5;
+    }
+  }
+}

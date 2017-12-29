@@ -1,0 +1,161 @@
+@import '~common/styleguide/variables/_colors.scss';
+
+.create-alert-modal {
+  min-height: 70%;
+  font-size: 12px;
+
+  .alert-info {
+    padding-bottom: 10px;
+
+    .info-icon {
+      font-size: 23px;
+      vertical-align: middle;
+    }
+
+    &.success-info {
+      font-size: 14px;
+      vertical-align: middle;
+      color: $success;
+    }
+
+    &.error-info {
+      font-size: 14px;
+      vertical-align: middle;
+      color: $error;
+    }
+  }
+
+  .btn-error {
+    color: $white;
+    background-color: $error;
+    border-color: $error;
+  }
+
+  .btn-primary {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
+  }
+
+  .btn-default {
+    color: $grey;
+    background-color: $white;
+    border-color: $light-grey-1;
+  }
+
+  .advance-alert-section {
+
+    .advance-alert-content {
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    .advance-alert-title {
+      display: block;
+      font-size: 16px !important;
+      font-weight: bold;
+    }
+
+    .advance-alert-description {
+      font-size: 12px !important;
+    }
+
+    textarea {
+      font-size: 12px;
+      width: 98%;
+      height: 120px;
+      margin-top: 5px;
+      border: 1px solid $light-grey-5;
+    }
+
+    .raw-query-title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+
+  .footer-section {
+    border-top: 1px solid $light-grey-5;
+    padding: 20px 0px 0px;
+
+    .alert-name-section {
+      float: left;
+
+      label {
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      input {
+        padding: 8px 6px;
+        margin-left: 10px;
+        width: 250px;
+        &::-webkit-input-placeholder {
+          font-style: italic;
+        }
+        &::-moz-placeholder {
+          font-style: italic;
+        }
+        &:-ms-input-placeholder {
+          font-style: italic;
+        }
+      }
+    }
+
+    .btn {
+      cursor: pointer;
+      opacity: 0.8;
+      margin-right: 10px;
+      font-size: 12px !important;
+      padding: 8px 15px !important;
+      &:hover {
+        opacity: 1;
+      }
+
+    }
+  }
+
+  .advance-alert-title,
+  .advance-alert-description {
+    color: $black;
+  }
+
+  .delete-view {
+
+    hr {
+      border: 1px solid $light-grey-5;
+    }
+    .title {
+      margin-top: 20px;
+      display: block;
+      font-size: 12px !important;
+      font-weight: bold;
+      color: $black;
+    }
+
+    .delete-options {
+      margin-top: 20px;
+
+      .btn {
+        font-size: 12px;
+        margin-right: 10px;
+        width: 75px;
+        padding: 5px 15px;
+        cursor: pointer;
+      }
+
+      .btn-yes {
+        background-color: $alert-delete-yes-button-background-color;
+        color: $white;
+      }
+
+      .btn-no {
+        background-color: $light-grey-3;
+        color: $black;
+
+      }
+    }
+  }
+
+}
+

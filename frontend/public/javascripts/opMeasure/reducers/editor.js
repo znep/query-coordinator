@@ -85,8 +85,17 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     case actions.editor.SET_DATA_SOURCE_UID: {
       const { uid } = action;
       const newState = { ...state };
-      _.set(newState, 'cachedRowCount', uid ? null : undefined);
-      _.set(newState, 'measure.dataSourceLensUid', uid);
+
+      // `uid` will be undefined when the data source is 'reset'
+      if (!uid) {
+        _.set(newState, 'measure.dataSourceLensUid', null);
+        _.set(newState, 'dataSourceView', null);
+        _.set(newState, 'cachedRowCount', undefined);
+      } else {
+        _.set(newState, 'measure.dataSourceLensUid', uid);
+        _.set(newState, 'cachedRowCount', null);
+      }
+
       return setCalculationType(newState, CalculationTypeNames.COUNT); // Clear any existing measure config.
     }
     case actions.editor.RECEIVE_DATA_SOURCE_VIEW: {

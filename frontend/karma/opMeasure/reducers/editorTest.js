@@ -100,6 +100,15 @@ describe('Edit modal reducer', () => {
 
         assert.isUndefined(state.cachedRowCount);
       });
+
+      it('sets dataSourceLensUid and dataSourceView to null', () => {
+        _.set(state, 'measure.dataSourceLensUid', 'some-data')
+        _.set(state, 'dataSourceView', { foo: "bar" });
+
+        state = reducer(state, actions.editor.setDataSourceUid(''));
+        assert.isNull(state.measure.dataSourceLensUid);
+        assert.isNull(state.dataSourceView);
+      });
     });
 
     describe('when setting a new data source', () => {

@@ -184,6 +184,24 @@ $large: 769px;
       margin-top: 0;
     }
 
+    .calculation-panel-form {
+      position: relative;
+
+      .cover {
+        cursor: not-allowed;
+        // Over-sized to create some virtual padding.
+        // Otherwise, the cover looks weird aligned with the
+        // edges of the form elements.
+        width: 110%;
+        height: 110%;
+        background: rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: -5%;
+        left: -5%;
+        z-index: 51; // To cover Dropdown.
+      }
+    }
+
     .calculation-type-selector {
       margin-bottom: 16px;
     }
@@ -195,12 +213,25 @@ $large: 769px;
     .no-data-source {
       $box-height: 300px;
 
-      color: $dark-grey-2;
+      color: $dark-grey-1;
       width: 100%;
       height: $box-height;
       background: $light-grey-6;
-      line-height: $box-height;
+      position: relative;
       text-align: center;
+      margin-bottom: 15px;
+
+      .centerbox {
+        flex-direction: column;
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+
+        h2 {
+          margin-bottom: 20px;
+        }
+      }
     }
 
     .metric-container {

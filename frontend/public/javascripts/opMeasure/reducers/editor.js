@@ -4,7 +4,7 @@ import { assert, assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
 
 import validate from './validate';
 import actions from '../actions';
-import { CalculationTypeNames } from '../lib/constants';
+import { CalculationTypeNames, EditTabs } from '../lib/constants';
 import { isColumnUsableWithMeasureArgument } from '../measureCalculator';
 
 const validateActionRegex = /^VALIDATE_/;
@@ -52,6 +52,7 @@ const setCalculationType = (state, type) => {
 // Initial state for the edit modal reducer.
 export const INITIAL_STATE = Object.freeze({
   isEditing: false,
+  activePanel: EditTabs.GENERAL_INFO,
   measure: {},
   pristineMeasure: {},
   pristineCoreView: {},
@@ -75,6 +76,12 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case actions.editor.SET_ACTIVE_PANEL: {
+      return {
+        ...state,
+        activePanel: action.panelId
+      };
+    }
     case actions.editor.SET_DATA_SOURCE_UID: {
       const { uid } = action;
       const newState = { ...state };

@@ -30,3 +30,11 @@ export const PeriodSizes = Object.freeze([
   'month',
   'week'
 ]);
+
+export const EditTabs = Object.freeze({
+  CALCULATION: 'calculation',
+  DATA_SOURCE: 'data-source',
+  GENERAL_INFO: 'general-info',
+  METHODS_AND_ANALYSIS: 'methods-and-analysis',
+  REPORTING_PERIOD: 'reporting-period'
+});

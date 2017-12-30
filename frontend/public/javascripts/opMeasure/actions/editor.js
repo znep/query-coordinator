@@ -5,6 +5,12 @@ import { TRAILING_UID_REGEX } from 'common/http/constants';
 
 import { validateAll } from './validate';
 
+export const SET_ACTIVE_PANEL = 'SET_ACTIVE_PANEL';
+export const setActivePanel = (panelId) => ({
+  type: SET_ACTIVE_PANEL,
+  panelId
+});
+
 export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
 export const setDataSourceUid = (uid) => ({
   type: SET_DATA_SOURCE_UID,

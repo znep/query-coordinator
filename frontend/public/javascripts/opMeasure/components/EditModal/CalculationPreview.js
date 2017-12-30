@@ -73,6 +73,7 @@ export class CalculationPreview extends Component {
 
     return (
       <div className="metric-preview">
+        <h5>{I18n.t('open_performance.measure.edit_modal.calculation.sample_result')}</h5>
         <EditedMeasureResultCard />
         <div className="metric-display-options">
           <h6 className="metric-display-options-title">

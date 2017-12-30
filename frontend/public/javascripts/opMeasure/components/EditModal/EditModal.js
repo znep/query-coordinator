@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
 
-import { cancelEditModal, acceptEditModalChanges } from '../../actions/editor';
+import { cancelEditModal, acceptEditModalChanges, setActivePanel } from '../../actions/editor';
+import { EditTabs } from '../../lib/constants';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
 import GeneralPanel from './GeneralPanel';
@@ -22,14 +23,9 @@ export class EditModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selectedTab: 'general-info'
-    };
-
     _.bindAll(this, [
       'onCancel',
       'onComplete',
-      'onTabNavigation',
       'renderTabList',
       'renderPanels'
     ]);
@@ -45,18 +41,12 @@ export class EditModal extends Component {
     this.props.onComplete(this.props.measure);
   }
 
-  onTabNavigation(tabID) {
-    this.setState({
-      selectedTab: tabID
-    });
-  }
-
   renderTabList() {
     const renderTab = (tab) => {
       const tabAttributes = _.extend(tab, {
         key: tab.id,
-        isSelected: tab.id === this.state.selectedTab,
-        onTabNavigation: () => this.onTabNavigation(tab.id)
+        isSelected: tab.id === this.props.activePanel,
+        onTabNavigation: () => this.props.onTabClick(tab.id)
       });
 
       return <EditModalTab {...tabAttributes} />;
@@ -73,7 +63,7 @@ export class EditModal extends Component {
     const renderPanel = (tab) => {
       const panelAttributes = _.extend(tab, {
         key: tab.id,
-        isSelected: tab.id === this.state.selectedTab
+        isSelected: tab.id === this.props.activePanel
       });
 
       return (
@@ -139,6 +129,7 @@ export class EditModal extends Component {
 }
 
 EditModal.propTypes = {
+  activePanel: PropTypes.string,
   isEditing: PropTypes.bool,
   measure: PropTypes.object,
   coreView: PropTypes.object,
@@ -146,33 +137,34 @@ EditModal.propTypes = {
   pristineMeasure: PropTypes.object,
   tabs: PropTypes.array,
   onCancel: PropTypes.func,
-  onComplete: PropTypes.func
+  onComplete: PropTypes.func,
+  onTabClick: PropTypes.func
 };
 
 EditModal.defaultProps = {
   isEditing: false,
   tabs: [{
-    id: 'general-info',
+    id: EditTabs.GENERAL_INFO,
     title: I18n.t('open_performance.measure.edit_modal.general_info.tab_title'),
     icon: 'info-inverse',
     panelComponent: GeneralPanel
   }, {
-    id: 'data-source',
+    id: EditTabs.DATA_SOURCE,
     title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
     icon: 'data',
     panelComponent: DataPanel
   }, {
-    id: 'methods-and-analysis',
+    id: EditTabs.METHODS_AND_ANALYSIS,
     title: I18n.t('open_performance.measure.edit_modal.methods_and_analysis.tab_title'),
     icon: 'story',
     panelComponent: MethodsPanel
   }, {
-    id: 'calculation',
+    id: EditTabs.CALCULATION,
     title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
     icon: 'puzzle',
     panelComponent: CalculationPanel
   }, {
-    id: 'reporting-period',
+    id: EditTabs.REPORTING_PERIOD,
     title: I18n.t('open_performance.measure.edit_modal.reporting_period.tab_title'),
     icon: 'date',
     panelComponent: ReportingPeriodPanel
@@ -188,7 +180,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     onCancel: cancelEditModal,
-    onComplete: acceptEditModalChanges
+    onComplete: acceptEditModalChanges,
+    onTabClick: setActivePanel
   }, dispatch);
 }
 

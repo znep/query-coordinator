@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { CalculationTypeNames, PeriodTypes, PeriodSizes } from 'lib/constants';
+import { CalculationTypeNames, EditTabs, PeriodTypes, PeriodSizes } from 'lib/constants';
 import reducer from 'reducers/editor';
 import actions from 'actions';
 
@@ -16,6 +16,16 @@ describe('Edit modal reducer', () => {
 
   afterEach(() => {
     state = undefined;
+  });
+
+  describe('SET_ACTIVE_PANEL', () => {
+    it('updates which edit modal tab is active', () => {
+      state = reducer(state, actions.editor.setActivePanel(EditTabs.GENERAL_INFO));
+      assert.equal(state.activePanel, EditTabs.GENERAL_INFO);
+
+      state = reducer(state, actions.editor.setActivePanel(EditTabs.DATA_SOURCE));
+      assert.equal(state.activePanel, EditTabs.DATA_SOURCE);
+    });
   });
 
   describe('SET_AGGREGATION_TYPE', () => {

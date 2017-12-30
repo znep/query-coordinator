@@ -7,15 +7,57 @@ import { shallow } from 'enzyme';
 import { CalculationPanel, mapStateToProps } from 'components/EditModal/CalculationPanel';
 
 describe('CalculationPanel', () => {
+  const getProps = (props) => {
+    return {
+      hasDataSource: true,
+      onChangeDecimalPlaces: _.noop,
+      onChangeUnitLabel: _.noop,
+      onSetCalculationType: sinon.stub(),
+      openDataSourceTab: _.noop,
+      calculationType: 'count',
+      ...props
+    };
+  };
+
+  describe('when no dataset', () => {
+    it('renders disabled cover over form', () => {
+      const props = getProps({
+        hasDataSource: false
+      });
+      const element = shallow(<CalculationPanel {...props} />);
+
+      const cover = element.find('.cover');
+      assert.equal(cover.length, 1);
+    });
+
+    it('renders button to navigate to DataSource panel', () => {
+      const props = getProps({
+        hasDataSource: false,
+        openDataSourceTab: sinon.stub()
+      });
+      const element = shallow(<CalculationPanel {...props} />);
+
+      const noDataBox = element.find('.no-data-source');
+      // TODO: Re-Check this after switching to common Button.
+      const navBtn = noDataBox.find('button');
+      assert.equal(navBtn.length, 1);
+
+      navBtn.simulate('click');
+
+      sinon.assert.calledOnce(props.openDataSourceTab);
+    });
+  });
+
+
   describe('calculator buttons', () => {
     it('calls the onSetCalculationType with correct type', () => {
-      const props = {
-        hasDataSource: true,
-        onSetCalculationType: sinon.stub(),
-        calculationType: 'count'
-      };
+      const props = getProps();
 
       const element = shallow(<CalculationPanel {...props} />);
+
+      // Make sure that the cover is not rendered.
+      const cover = element.find('.cover');
+      assert.equal(cover.length, 0);
 
       const countBtn = element.find('.count-calculation');
       countBtn.simulate('click');

@@ -51,7 +51,7 @@ describe('EditModal', () => {
     assert.isTrue(getVisibility('#methods-and-analysis-panel'));
   });
 
-  describe('save button', () => {
+  describe('accept button', () => {
     it('is disabled if the measure has not been changed', () => {
       const element = renderComponentWithStore(EditModal, {}, getStore());
       const button = getAcceptButton(element);

@@ -372,7 +372,9 @@ function renderNumberCellUnsafePlainText(input, column) {
     return '';
   }
 
-  const safeAmount = new BigNumber(input);
+  // Initialize BigNumber with string to deal with a limitation of
+  // 15 significant digits. https://github.com/MikeMcl/bignumber.js/issues/11
+  const safeAmount = new BigNumber(String(input));
   const locale = utils.getLocale(window);
   const format = _.extend({
     precisionStyle: 'standard',

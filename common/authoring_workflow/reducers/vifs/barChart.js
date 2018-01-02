@@ -117,7 +117,6 @@ export default function barChart(state, action) {
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:
     case actions.SET_VIEW_SOURCE_DATA_LINK:
-    case actions.SET_X_AXIS_SCALING_MODE:
       return baseVifReducer(state, action);
 
     default:

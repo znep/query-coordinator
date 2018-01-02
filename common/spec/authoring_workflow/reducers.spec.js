@@ -27,14 +27,14 @@ function forAllVifs(state, verifier) {
   _.each(state.vifAuthoring.vifs, verifier);
 }
 
-describe('AuthoringWorkflow reducer', function() {
-  describe('vif', function() {
-    it('returns the default state if the input state is undefined', function() {
+describe('AuthoringWorkflow reducer', () => {
+  describe('vif', () => {
+    it('returns the default state if the input state is undefined', () => {
       assert.deepEqual(getDefaultState().vifAuthoring.vifs, getTestState().vifAuthoring.vifs);
       assert.deepPropertyVal(getDefaultState(), 'vifAuthoring.authoring.selectedVisualizationType', null);
     });
 
-    it('ignores weird actions', function() {
+    it('ignores weird actions', () => {
       var badAction = {
         type: 'JAYWALKING'
       };
@@ -42,9 +42,9 @@ describe('AuthoringWorkflow reducer', function() {
       expect(reducer(getTestState(), badAction).vifAuthoring).to.deep.equal(getTestState().vifAuthoring);
     });
 
-    describe('vif setters', function() {
+    describe('vif setters', () => {
       function resetsCenterAndZoomWhenChangingDimensions() {
-        it('resets center and zoom when reconfiguring dimension', function() {
+        it('resets center and zoom when reconfiguring dimension', () => {
           var objectPath = 'vifAuthoring.vifs.featureMap.configuration';
           var action = actions.setDimension('dimension');
           var state = getTestState();
@@ -59,7 +59,7 @@ describe('AuthoringWorkflow reducer', function() {
       }
 
       function shouldSetVif(actionName, value, vifPath, vifTypes) {
-        it(`sets ${vifPath} to ${value} using ${actionName} for ${vifTypes}`, function() {
+        it(`sets ${vifPath} to ${value} using ${actionName} for ${vifTypes}`, () => {
           var action;
 
           if (_.isArray(value)) {
@@ -70,7 +70,7 @@ describe('AuthoringWorkflow reducer', function() {
 
           var newState = reducer(getTestState(), action);
 
-          forAllVifs(newState, function(vif, type) {
+          forAllVifs(newState, (vif, type) => {
             if (_.includes(vifTypes, type)) {
               var newValue = _.get(vif, vifPath);
 
@@ -133,17 +133,32 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
 
-      describe('when configuring a Feature map', function() {
+      describe('when settings the x-axis scaling mode', () => {
+
+        it('sets scaling mode to fit', () => {
+          const action = actions.setXAxisScalingMode({ shouldFit: true });
+          const newState = reducer(getTestState(), action);
+          assert.equal(_.get(newState.vifAuthoring.vifs.timelineChart, 'configuration.xAxisScalingMode'), 'fit');
+        });
+
+        it('sets scaling mode to pan', () => {
+          const action = actions.setXAxisScalingMode({ shouldFit: false });
+          const newState = reducer(getTestState(), action);
+          assert.equal(_.get(newState.vifAuthoring.vifs.timelineChart, 'configuration.xAxisScalingMode'), 'pan');
+        });
+      });
+
+      describe('when configuring a Feature map', () => {
         resetsCenterAndZoomWhenChangingDimensions();
 
-        it('sets configuration.pointOpacity', function() {
+        it('sets configuration.pointOpacity', () => {
           var action = actions.setPointOpacity('1');
           var newState = reducer(getTestState(), action);
 
           expect(_.get(newState.vifAuthoring.vifs.featureMap, 'configuration.pointOpacity')).to.equal(1);
         });
 
-        it('sets configuration.baseLayerOpacity', function() {
+        it('sets configuration.baseLayerOpacity', () => {
           var action = actions.setBaseLayerOpacity('0.5');
           var newState = reducer(getTestState(), action);
 
@@ -228,10 +243,10 @@ describe('AuthoringWorkflow reducer', function() {
         });
       });
 
-      describe('when a new dimension is selected', function() {
+      describe('when a new dimension is selected', () => {
         var state;
 
-        beforeEach(function() {
+        beforeEach(() => {
           state = reducer(
             getTestState(),
             actions.setDimensionGroupingColumnName('groupingColumn')
@@ -254,10 +269,10 @@ describe('AuthoringWorkflow reducer', function() {
         });
       });
 
-      describe('when configuring a Region map', function() {
+      describe('when configuring a Region map', () => {
         resetsCenterAndZoomWhenChangingDimensions();
 
-        it('sets configuration.computedColumnName', function() {
+        it('sets configuration.computedColumnName', () => {
           var computedColumnName = 'hello';
           var action = actions.setComputedColumn(computedColumnName);
           var newState = reducer(getTestState(), action);
@@ -266,7 +281,7 @@ describe('AuthoringWorkflow reducer', function() {
           expect(_.get(regionMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
         });
 
-        it('sets configuration.shapefile', function() {
+        it('sets configuration.shapefile', () => {
           var shapefileUid = 'walr-uses';
           var primaryKey = 'primaryKey';
           var geometryLabel = 'geometryLabel';
@@ -280,7 +295,7 @@ describe('AuthoringWorkflow reducer', function() {
           expect(_.get(regionMap, 'configuration.shapefile.geometryLabel')).to.equal(geometryLabel);
         });
 
-        it('sets configuration.baseLayerOpacity', function() {
+        it('sets configuration.baseLayerOpacity', () => {
           var action = actions.setBaseLayerOpacity('0.5');
           var newState = reducer(getTestState(), action);
           var regionMap = newState.vifAuthoring.vifs.regionMap;
@@ -301,8 +316,8 @@ describe('AuthoringWorkflow reducer', function() {
     });
   });
 
-  describe('metadata', function() {
-    it('returns the default state if the input state is undefined', function() {
+  describe('metadata', () => {
+    it('returns the default state if the input state is undefined', () => {
       var metadata = getDefaultState().metadata;
       expect(metadata.isLoading).to.equal(false);
       expect(metadata.data).to.equal(null);
@@ -312,44 +327,44 @@ describe('AuthoringWorkflow reducer', function() {
       expect(metadata.curatedRegions).to.equal(null);
     });
 
-    describe('REQUEST_METADATA', function() {
+    describe('REQUEST_METADATA', () => {
       let state;
       let action;
       let newState;
       var domain = 'https://example.com';
       var datasetUid = 'asdf-qwer';
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = getDefaultState();
         action = actions.requestMetadata(domain, datasetUid);
         newState = reducer(state, action);
       });
 
-      it('sets isLoading to true', function() {
+      it('sets isLoading to true', () => {
         expect(newState.metadata.isLoading).to.equal(true);
       });
 
-      it('clears the data key', function() {
+      it('clears the data key', () => {
         expect(newState.metadata.data).to.equal(null);
       });
 
-      it('sets the domain', function() {
+      it('sets the domain', () => {
         expect(newState.metadata.domain).to.equal(domain);
       });
 
-      it('sets the datasetUid', function() {
+      it('sets the datasetUid', () => {
         expect(newState.metadata.datasetUid).to.equal(datasetUid);
       });
     });
 
-    describe('RECEIVE_METADATA', function() {
+    describe('RECEIVE_METADATA', () => {
       const datasetMetadata = { id: 'data-sets', columns: [] };
       const baseViewMetadata = { id: 'base-view', columns: [] };
       let state;
       let action;
       let newState;
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = _.merge(getDefaultState(), {
           metadata: {
             isLoading: true
@@ -364,21 +379,21 @@ describe('AuthoringWorkflow reducer', function() {
         newState = reducer(state, action);
       });
 
-      it('sets isLoading to false', function() {
+      it('sets isLoading to false', () => {
         assert.isFalse(newState.metadata.isLoading);
       });
 
-      it('sets the data key', function() {
+      it('sets the data key', () => {
         assert.deepEqual(newState.metadata.data, datasetMetadata);
       });
     });
 
-    describe('HANDLE_METADATA_ERROR', function() {
+    describe('HANDLE_METADATA_ERROR', () => {
       let state;
       let action;
       let newState;
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = _.merge(getDefaultState(), {
           metadata: {
             isLoading: true
@@ -389,55 +404,55 @@ describe('AuthoringWorkflow reducer', function() {
         newState = reducer(state, action);
       });
 
-      it('sets isLoading to false', function() {
+      it('sets isLoading to false', () => {
         expect(newState.metadata.isLoading).to.equal(false);
       });
 
-      it('sets the error key', function() {
+      it('sets the error key', () => {
         expect(newState.metadata.error).to.equal('error!');
       });
 
-      it('clears domain', function() {
+      it('clears domain', () => {
         expect(newState.metadata.domain).to.be.null;
       });
 
-      it('clears datasetUid', function() {
+      it('clears datasetUid', () => {
         expect(newState.metadata.datasetUid).to.be.null;
       });
     });
 
-    describe('REQUEST_CURATED_REGIONS', function() {
+    describe('REQUEST_CURATED_REGIONS', () => {
       let state;
       let action;
       let newState;
       var domain = 'https://example.com';
       var datasetUid = 'asdf-qwer';
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = getDefaultState();
         action = actions.requestCuratedRegions();
         newState = reducer(state, action);
       });
 
-      it('sets isCuratedRegionsLoading to true', function() {
+      it('sets isCuratedRegionsLoading to true', () => {
         expect(newState.metadata.isCuratedRegionsLoading).to.equal(true);
       });
 
-      it('clears the hasCuratedRegionsError key', function() {
+      it('clears the hasCuratedRegionsError key', () => {
         expect(newState.metadata.hasCuratedRegionsError).to.equal(false);
       });
 
-      it('clears the curatedRegions key', function() {
+      it('clears the curatedRegions key', () => {
         expect(newState.metadata.curatedRegions).to.equal(null);
       });
     });
 
-    describe('RECEIVE_CURATED_REGIONS', function() {
+    describe('RECEIVE_CURATED_REGIONS', () => {
       let state;
       let action;
       let newState;
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = _.merge(getDefaultState(), {
           metadata: {
             isCuratedRegionsLoading: true
@@ -449,25 +464,25 @@ describe('AuthoringWorkflow reducer', function() {
         newState = reducer(state, action);
       });
 
-      it('sets isCuratedRegionsLoading to false', function() {
+      it('sets isCuratedRegionsLoading to false', () => {
         expect(newState.metadata.isCuratedRegionsLoading).to.equal(false);
       });
 
-      it('clears the hasCuratedRegionsError key', function() {
+      it('clears the hasCuratedRegionsError key', () => {
         expect(newState.metadata.hasCuratedRegionsError).to.equal(false);
       });
 
-      it('sets the curatedRegions key', function() {
+      it('sets the curatedRegions key', () => {
         expect(newState.metadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
       });
     });
 
-    describe('HANDLE_CURATED_REGIONS_ERROR', function() {
+    describe('HANDLE_CURATED_REGIONS_ERROR', () => {
       let state;
       let action;
       let newState;
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = _.merge(getDefaultState(), {
           metadata: {
             isCuratedRegionsLoading: true
@@ -478,35 +493,35 @@ describe('AuthoringWorkflow reducer', function() {
         newState = reducer(state, action);
       });
 
-      it('sets isCuratedRegionsLoading to false', function() {
+      it('sets isCuratedRegionsLoading to false', () => {
         expect(newState.metadata.isCuratedRegionsLoading).to.equal(false);
       });
 
-      it('sets the hasCuratedRegionsError key', function() {
+      it('sets the hasCuratedRegionsError key', () => {
         expect(newState.metadata.hasCuratedRegionsError).to.equal(true);
       });
 
-      it('clears the curatedRegions key', function() {
+      it('clears the curatedRegions key', () => {
         expect(newState.metadata.curatedRegions).to.be.null;
       });
     });
 
-    describe('SET_FILTERS', function() {
+    describe('SET_FILTERS', () => {
       let state;
       let action;
       let newState;
 
-      beforeEach(function() {
+      beforeEach(() => {
         state = getTestState();
         action = actions.setFilters(mockFilters);
         newState = reducer(state, action);
       });
 
-      it('sets the authoring filters', function() {
+      it('sets the authoring filters', () => {
         expect(newState.vifAuthoring.authoring.filters).to.deep.equal(mockFilters);
       });
 
-      it('sets the filters for each vif', function() {
+      it('sets the filters for each vif', () => {
         const filters = newState.vifAuthoring.vifs.columnChart.series[0].dataSource.filters;
         expect(filters).to.deep.equal(mockFilters);
       });

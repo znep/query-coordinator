@@ -8,10 +8,9 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
 
-import { setXAxisScalingMode, resetState } from '../actions';
+import { resetState } from '../actions';
 import {
   getCurrentVif,
-  getXAxisScalingMode,
   isTimelineChart,
   isInsertableVisualization,
   hasMadeChangesToVifs,
@@ -43,7 +42,6 @@ export class AuthoringWorkflow extends Component {
       'onCancel',
       'onBack',
       'onTabNavigation',
-      'scalingMode',
       'renderFilterBar',
       'renderBackButton',
       'renderResetButton'
@@ -98,29 +96,6 @@ export class AuthoringWorkflow extends Component {
     }
   }
 
-  scalingMode() {
-    const checkboxAttributes = {
-      type: 'checkbox',
-      onChange: this.props.onChangeXAxisScalingMode,
-      checked: getXAxisScalingMode(this.props.vifAuthoring) === 'fit',
-      id: 'x-axis-scaling-mode'
-    };
-
-    return (
-      <form className="x-axis-scaling-mode-container">
-        <div className="checkbox">
-          <input {...checkboxAttributes} />
-          <label htmlFor="x-axis-scaling-mode">
-            <span className="fake-checkbox">
-              <span className="icon-checkmark3"></span>
-            </span>
-            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.x_axis_scaling_mode.title')}
-          </label>
-        </div>
-      </form>
-    );
-  }
-
   renderFilterBar() {
     return this.props.enableFiltering ? <FilterBar /> : null;
   }
@@ -158,7 +133,6 @@ export class AuthoringWorkflow extends Component {
   render() {
     const { metadata, vifAuthoring, backButtonText } = this.props;
     const isNotInsertable = !isInsertableVisualization(vifAuthoring) || isUserCurrentlyActive(vifAuthoring);
-    const scalingMode = null; // This feature is hidden for now.
     const modalFooterActionsClassNames = classNames({
       'with-back-button': _.isString(backButtonText)
     });
@@ -178,7 +152,6 @@ export class AuthoringWorkflow extends Component {
               <VisualizationTypeSelector />
               <VisualizationPreviewContainer />
               <TableView />
-              {scalingMode}
             </div>
           </div>
         </ModalContent>
@@ -207,10 +180,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeXAxisScalingMode(event) {
-      const xAxisScalingMode = event.target.checked;
-      dispatch(setXAxisScalingMode(xAxisScalingMode));
-    },
     onReset: () => dispatch(resetState())
   };
 }

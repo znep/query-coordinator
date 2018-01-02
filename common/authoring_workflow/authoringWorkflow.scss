@@ -354,7 +354,7 @@
       margin: 12px 0;
 
       &.disabled {
-        color: #bbb;
+        color: $light-grey-2;
         cursor: not-allowed;
       }
 
@@ -595,7 +595,7 @@
       .secondary-axis-container {
 
         &.disabled{
-          color: #bbb;
+          color: $light-grey-2;
           cursor: not-allowed;
         }
       }
@@ -668,7 +668,7 @@
           }
 
           &.disabled {
-            color: #777;
+            color: $light-grey-2;
             cursor: not-allowed;
           }
         }
@@ -717,7 +717,7 @@
         text-decoration: none;
 
         &.disabled {
-          color: #777;
+          color: $light-grey-2;
           cursor: not-allowed;
         }
 
@@ -787,7 +787,7 @@
     #grouping-display-100-percent-stacked-container {
 
       &.disabled {
-        color: #bbb;
+        color: $light-grey-2;
         cursor: not-allowed;
       }
     }
@@ -835,7 +835,7 @@
     #limit-none-container {
 
       &.disabled {
-        color: #bbb;
+        color: $light-grey-2;
         cursor: not-allowed;
       }
     }
@@ -853,7 +853,7 @@
       margin: 0;
 
       &.disabled {
-        color: #bbb;
+        color: $light-grey-2;
         cursor: not-allowed;
       }
     }
@@ -871,6 +871,13 @@
 
     #show-other-category-container {
       margin-left: 27px;
+    }
+
+    #x-axis-scaling-mode-container {
+      &.disabled {
+        color: $light-grey-2;
+        cursor: not-allowed;
+      }
     }
   }
 

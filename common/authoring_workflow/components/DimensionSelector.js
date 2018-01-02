@@ -4,20 +4,26 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Picklist } from 'common/components';
 import I18n from 'common/i18n';
-
 import Dimension from './Dimension';
-import { setDimension, setOrderBy } from '../actions';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
+
 import {
-  getAnyDimension,
-  getVisualizationType
-} from '../selectors/vifAuthoring';
+  setDimension,
+  setOrderBy,
+  setXAxisScalingMode
+} from '../actions';
+
+import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 
 import {
   getRecommendedDimensions,
   getValidDimensions,
   hasData
 } from '../selectors/metadata';
+
+import {
+  getAnyDimension,
+  getVisualizationType
+} from '../selectors/vifAuthoring';
 
 export class DimensionSelector extends Component {
   constructor(props) {
@@ -86,7 +92,7 @@ export class DimensionSelector extends Component {
   }
 
   onChangeDimension(dimension) {
-    const { onSelectDimension, onSelectOrderBy } = this.props;
+    const { onSelectDimension, onSelectOrderBy, onSetXAxisScalingModePan } = this.props;
 
     if (dimension == null) {
       return;
@@ -98,6 +104,7 @@ export class DimensionSelector extends Component {
       onSelectOrderBy('dimension', 'asc');
     } else {
       onSelectOrderBy('measure', 'desc');
+      onSetXAxisScalingModePan();
     }
   }
 
@@ -112,6 +119,7 @@ DimensionSelector.propTypes = {
   metadata: PropTypes.object,
   onSelectDimension: PropTypes.func,
   onSelectOrderBy: PropTypes.func,
+  onSetXAxisScalingModePan: PropTypes.func,
   vifAuthoring: PropTypes.object
 };
 
@@ -124,8 +132,13 @@ function mapDispatchToProps(dispatch) {
     onSelectDimension: (dimension) => {
       dispatch(setDimension(dimension.value));
     },
+
     onSelectOrderBy: (parameter, sort) => {
       dispatch(setOrderBy({ parameter, sort }));
+    },
+
+    onSetXAxisScalingModePan: () => {
+      dispatch(setXAxisScalingMode({ shouldFit: false }));
     }
   };
 }

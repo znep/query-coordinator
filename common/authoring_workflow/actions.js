@@ -610,7 +610,7 @@ export function setShowLegend(showLegend) {
 }
 
 export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
-export function setXAxisScalingMode(shouldFit) {
+export function setXAxisScalingMode({ shouldFit }) {
   return {
     type: SET_X_AXIS_SCALING_MODE,
     xAxisScalingMode: shouldFit ? 'fit' : 'pan'

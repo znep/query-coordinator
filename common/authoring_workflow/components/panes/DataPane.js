@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -9,14 +10,17 @@ import {
   isLineMapColumn,
   hasData,
   hasError,
+  isDimensionTypeCalendarDate,
   isLoading
 } from '../../selectors/metadata';
 import {
+  getAnyDimension,
   getDimension,
   getSelectedVisualizationType,
   getSeries,
   getTreatNullValuesAsZero,
   getVisualizationType,
+  getXAxisScalingMode,
   hasErrorBars,
   isBarChart,
   isColumnChart,
@@ -27,7 +31,8 @@ import {
   isTimelineChart
 } from '../../selectors/vifAuthoring';
 import {
-  setTreatNullValuesAsZero
+  setTreatNullValuesAsZero,
+  setXAxisScalingMode
 } from '../../actions';
 
 import { AccordionContainer, AccordionPane } from 'common/components';
@@ -86,6 +91,38 @@ export class DataPane extends Component {
     );
   }
 
+  renderXAxisScalingMode = () => {
+    const { metadata, vifAuthoring } = this.props;
+    const column = getAnyDimension(vifAuthoring);
+    const disabled = !isDimensionTypeCalendarDate(metadata, column);
+    const checked = (getXAxisScalingMode(vifAuthoring) === 'fit');
+
+    const containerAttributes = {
+      className: classNames('authoring-field checkbox', { disabled }),
+      id: 'x-axis-scaling-mode-container'
+    };
+
+    const inputAttributes = {
+      checked,
+      disabled,
+      id: 'x-axis-scaling-mode',
+      onChange: this.props.onChangeXAxisScalingMode,
+      type: 'checkbox'
+    };
+
+    return (
+      <div {...containerAttributes}>
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor="x-axis-scaling-mode">
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {I18n.t('shared.visualizations.panes.data.fields.x_axis_scaling_mode.title')}
+        </label>
+      </div>
+    );
+  }
+
   renderGroupingOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender = !isMultiSeries(vifAuthoring) &&
@@ -107,6 +144,7 @@ export class DataPane extends Component {
       <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
         <TimelinePrecisionSelector />
         {this.renderTreatNullValuesAsZero()}
+        {this.renderXAxisScalingMode()}
       </AccordionPane>
     ) : null;
   }
@@ -284,6 +322,11 @@ function mapDispatchToProps(dispatch) {
     onChangeTreatNullValuesAsZero: (event) => {
       const treatNullValuesAsZero = event.target.checked;
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
+    },
+
+    onChangeXAxisScalingMode: (event) => {
+      const shouldFit = event.target.checked;
+      dispatch(setXAxisScalingMode({ shouldFit }));
     }
   };
 }

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import PropTypes from 'prop-types';

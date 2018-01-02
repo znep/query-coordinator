@@ -11,7 +11,8 @@ function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onSelectTimelinePrecision: sinon.spy(),
-    onChangeTreatNullValuesAsZero: sinon.spy()
+    onChangeTreatNullValuesAsZero: sinon.spy(),
+    onChangeXAxisScalingMode: sinon.spy()
   });
 
   return {
@@ -20,14 +21,14 @@ function render(type) {
   };
 }
 
-describe('DataPane', function() {
+describe('DataPane', () => {
   var component;
   var props;
 
   function setUpVisualization(type) {
     FeatureFlags.updateTestFixture({ enable_new_maps: false });
 
-    return function() {
+    return () => {
       var renderedParts = render(type);
 
       component = renderedParts.component;
@@ -47,22 +48,36 @@ describe('DataPane', function() {
   }
 
   function rendersTreatNullValuesAsZeroAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a treat null values as zero checkbox', function() {
+    describe('rendering', () => {
+      it('renders a treat null values as zero checkbox', () => {
         assert.isNotNull(component.querySelector('#treat-null-values-as-zero'));
       });
     });
 
-    describe('events', function() {
-      describe('when changing the treat null values as zero checkbox', function() {
+    describe('events', () => {
+      describe('when changing the treat null values as zero checkbox', () => {
         emitsEvent('#treat-null-values-as-zero', 'onChangeTreatNullValuesAsZero');
       });
     });
   }
 
-  describe('rendering', function() {
-    describe('with an error', function() {
-      it('renders a metadata error message', function() {
+  function rendersXAxisScaleMode() {
+    describe('rendering', () => {
+      it('renders a "scales to fit chart area" checkbox', () => {
+        assert.isNotNull(component.querySelector('#x-axis-scaling-mode'));
+      });
+    });
+
+    describe('events', () => {
+      describe('when changing the "scales to fit chart area" checkbox', () => {
+        emitsEvent('#x-axis-scaling-mode', 'onChangeXAxisScalingMode');
+      });
+    });
+  }
+
+  describe('rendering', () => {
+    describe('with an error', () => {
+      it('renders a metadata error message', () => {
         var component = renderComponent(DataPane, defaultProps({
           metadata: { error: true }
         }));
@@ -71,8 +86,8 @@ describe('DataPane', function() {
       });
     });
 
-    describe('while loading', function() {
-      it('renders a loading spinner', function() {
+    describe('while loading', () => {
+      it('renders a loading spinner', () => {
         var component = renderComponent(DataPane, defaultProps({
           metadata: { isLoading: true }
         }));
@@ -82,31 +97,32 @@ describe('DataPane', function() {
     });
   });
 
-  describe('when the current visualization type is not "barChart or pieChart or columnChart"', function() {
+  describe('when the current visualization type is not "barChart or pieChart or columnChart"', () => {
 
     beforeEach(setUpVisualization(''));
 
-    it('does not render a limit none radio button', function() {
+    it('does not render a limit none radio button', () => {
       assert.isNull(component.querySelector('#limit-none'));
     });
 
-    it('does not render a limit count radio button', function() {
+    it('does not render a limit count radio button', () => {
       assert.isNull(component.querySelector('#limit-count'));
     });
 
-    it('does not render a limit count number input field', function() {
+    it('does not render a limit count number input field', () => {
       assert.isNull(component.querySelector('#limit-count-value'));
     });
 
-    it('does not render a show other category checkbox', function() {
+    it('does not render a show other category checkbox', () => {
       assert.isNull(component.querySelector('#show-other-category'));
     });
   });
 
-  describe('timelineChart', function() {
+  describe('timelineChart', () => {
     beforeEach(setUpVisualization('timelineChart'));
 
     rendersTreatNullValuesAsZeroAndEmitsEvents();
+    rendersXAxisScaleMode();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });
 });

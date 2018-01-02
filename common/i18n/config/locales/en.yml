@@ -962,6 +962,8 @@ en:
               placeholder: Select a visualization type...
               recommended: Recommended
               recommended_based_on: Recommended based on your dimension selection.
+            x_axis_scaling_mode:
+              title: Scale to fit chart area
           loading_metadata: Loading metadata...
           loading_metadata_error: This dataset is empty, private or has been deleted. Please check the dataset itself for availability.
           subheaders:

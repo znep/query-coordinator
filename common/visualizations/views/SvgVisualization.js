@@ -10,6 +10,7 @@ const spandexSubscriber = require('common/spandex/subscriber').default;
 
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
+const DataTypeFormatter = require('./DataTypeFormatter');
 const { MetadataProvider, SoqlDataProvider } = require('../dataProviders');
 
 import {
@@ -859,7 +860,11 @@ function SvgVisualization($element, vif, options) {
     const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append($('<td>', { 'colspan': 2 }).text(referenceLine.label));
 
-    let value = d3.format('s')(referenceLine.value);
+    let value = DataTypeFormatter.renderNumberCellHTML(
+      referenceLine.value,
+      { format: { forceHumane: true } }
+    );
+
     value = isPercent ? `${value}%` : value;
 
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });

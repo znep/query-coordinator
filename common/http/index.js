@@ -8,6 +8,7 @@ if (_.isUndefined(window.serverConfig)) {
 // Because consistency is hard.
 export function csrfToken() {
   const tokens = [
+    _.get(window, 'socrata.csrfToken'),
     _.get(window, 'serverConfig.csrfToken'),
     getCookie('socrata-csrf-token'),
     _.get(document.querySelector('meta[name="csrf-token"]'), 'content')

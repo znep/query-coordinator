@@ -1,5 +1,5 @@
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
-import { permissionsUrl, fetchWithDefaults } from '../Util';
+import { permissionsUrl, fetchJsonWithDefaults } from '../Util';
 import * as permissionsActions from '../actions/PermissionsActions';
 import * as uiActions from '../actions/UiActions';
 import * as selectors from './Selectors';
@@ -9,8 +9,7 @@ export function* fetchPermissions() {
   const assetUid = yield select(selectors.getAssetUid);
 
   try {
-    const response = yield call(fetchWithDefaults, permissionsUrl(assetUid));
-    const permissions = yield call(response.json.bind(response));
+    const permissions = yield call(fetchJsonWithDefaults, permissionsUrl(assetUid));
 
     // sometimes core replies back with a 200...
     // but an "error" boolean means there's _really_ an error
@@ -31,7 +30,7 @@ export function* savePermissions() {
 
   try {
     yield call(
-      fetchWithDefaults,
+      fetchJsonWithDefaults,
       permissionsUrl(assetUid),
       {
         method: 'PUT',

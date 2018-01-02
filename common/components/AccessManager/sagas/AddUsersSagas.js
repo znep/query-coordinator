@@ -2,7 +2,7 @@ import { delay } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import * as addUsersActions from '../actions/AddUsersActions';
 import { getAddedUsers, getSelectedUsers } from './Selectors';
-import { filterSearchResults, getDomain, userAutocompleteUrl, fetchWithDefaults } from '../Util';
+import { filterSearchResults, getDomain, userAutocompleteUrl, fetchJsonWithDefaults } from '../Util';
 import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from '../Constants';
 
 // grab list of (roled) users from the catalog
@@ -19,11 +19,10 @@ export function* userSearchQueryChanged(action) {
       // this is the desired behavior when searching for users to give permission to
       // Note that users can still be added by email if they are un-roled on the domain
       // (we may want to control this in the future)
-      const response = yield call(
-        fetchWithDefaults,
+      const results = yield call(
+        fetchJsonWithDefaults,
         userAutocompleteUrl(query, domain || getDomain())
       );
-      const results = yield call(response.json.bind(response));
 
       const addedUsers = yield select(getAddedUsers);
       const selectedUsers = yield select(getSelectedUsers);

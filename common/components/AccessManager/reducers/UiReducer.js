@@ -34,7 +34,7 @@ const showAccessManager = (state, action) => {
 const saveSuccess = (state) => {
   const { refreshPageOnSave } = state;
 
-  // if we've been told ro refresh the page on save success, do so now
+  // if we've been told to refresh the page on save success, do so now
   // (this is mostly for when elements showing permissions on a view
   // but don't get updated when they change in this component)
   if (refreshPageOnSave) {

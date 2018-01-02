@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { fetchPermissions, savePermissions } from 'common/components/AccessManager/sagas/PermissionsSagas';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
-import { permissionsUrl, fetchWithDefaults } from 'common/components/AccessManager/Util';
+import { permissionsUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
 
 describe('PermissionsSagas', () => {
   const fakeAssetId = 'fake-uuid';
@@ -44,13 +44,10 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)
         )
       );
-
-      // fake getting back the response from the fetch call
-      gen.next(new Response(JSON.stringify(mockPermissions)));
 
       assert.deepEqual(
         gen.next(mockPermissions).value,
@@ -74,7 +71,7 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)
         )
       );
@@ -101,7 +98,7 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.next(fakeAssetId).value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)
         )
       );
@@ -112,8 +109,6 @@ describe('PermissionsSagas', () => {
       };
 
       // fake getting back the response from the fetch call
-      gen.next(new Response(JSON.stringify(mockResponse)));
-
       assert.deepEqual(
         gen.next(mockResponse).value,
         put(permissionsActions.fetchPermissionsFail(mockResponse))
@@ -142,7 +137,7 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.next(mockPermissions).value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId),
           {
             method: 'PUT',
@@ -177,7 +172,7 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.next(mockPermissions).value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId),
           {
             method: 'PUT',

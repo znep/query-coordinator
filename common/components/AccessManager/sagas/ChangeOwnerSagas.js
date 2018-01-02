@@ -2,7 +2,7 @@ import { delay } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import * as changeOwnerActions from '../actions/ChangeOwnerActions';
 import { getCurrentOwner } from './Selectors';
-import { filterOwnerSearchResults, userAutocompleteUrl, fetchWithDefaults } from '../Util';
+import { filterOwnerSearchResults, userAutocompleteUrl, fetchJsonWithDefaults } from '../Util';
 import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from '../Constants';
 
 // search for ALL users
@@ -15,13 +15,12 @@ function* ownerSearchQueryChanged(action) {
     yield call(delay, CATALOG_SEARCH_DEBOUNCE_MILLISECONDS);
 
     try {
-      const response = yield call(
-        fetchWithDefaults,
+      const results = yield call(
+        fetchJsonWithDefaults,
         // by not passing a domain here, we get ALL users on the platform
         // this is only for feature parity and we may want to change it in the future
         userAutocompleteUrl(query)
       );
-      const results = yield call(response.json.bind(response));
 
       const currentOwner = yield select(getCurrentOwner);
 

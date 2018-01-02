@@ -1,6 +1,6 @@
 import { call, put, select } from 'redux-saga/effects';
 import { assert } from 'chai';
-import { userAutocompleteUrl, fetchWithDefaults } from 'common/components/AccessManager/Util';
+import { userAutocompleteUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
 import { userSearchQueryChanged } from 'common/components/AccessManager/sagas/AddUsersSagas';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
 import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
@@ -17,13 +17,10 @@ describe('AddUsersSagas', () => {
       assert.deepEqual(
         gen.next().value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           userAutocompleteUrl(query, domain)
         )
       );
-
-      // fake getting back the response from the fetch call
-      gen.next(new Response(JSON.stringify(MockUserSearchResults)));
     };
 
     it('filters addedUsers', () => {
@@ -134,7 +131,7 @@ describe('AddUsersSagas', () => {
       assert.deepEqual(
         gen.next().value,
         call(
-          fetchWithDefaults,
+          fetchJsonWithDefaults,
           userAutocompleteUrl(query, domain)
         )
       );

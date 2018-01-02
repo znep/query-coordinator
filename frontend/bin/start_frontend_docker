@@ -1,0 +1,32 @@
+#!/bin/bash
+
+image_tag="$1"
+# Necessary for logs in /mnt/mesos/sandbox
+mkdir -p mesos_sandbox
+
+AWS_PROFILE=infrastructure docker run \
+  -e ODYSSEUS_APP_NAME=needed_for_docker \
+  -e ODYSSEUS_HOST=needed_for_docker \
+  -e APP_TOKEN=needed_for_docker \
+  -e DATA_CARDS_APP_TOKEN=needed_for_docker \
+  -e ENABLE_PNG_DOWNLOAD_UI=true \
+  -e FEATURE_FLAG_SIGNALLER_URI=http://local.dev.socrata.net:14567 \
+  -e CORESERVICE_URI=local.dev.socrata.net:8080 \
+  -e MEMCACHED_HOSTS=local.dev.socrata.net:11211 \
+  -e ZOOKEEPER_HOSTS=local.dev.socrata.net:2181 \
+  -e SESSION_STORE_SECRET=testsessionstoresecretwhichmustbeatleast30characters \
+  -e SECRET_KEY_BASE=testsessionstorebase \
+  -e SESSION_SALT=testsalt \
+  -e RAILS_ENV=staging \
+  -e RAILS_LOG_FILE=stdout \
+  -e AUTH0_ID=w59XZV0YDqx7us3GFHnHncXrAzFWkCnG \
+  -e AUTH0_SECRET=rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI \
+  -e AUTH0_URI=socrata.auth0.com \
+  -e AUTH0_DATABASE_CONNECTION=Username-Password-Staging \
+  -e IMPORT_STATUS_SERVICE_HOSTNAME=local.dev.socrata.net \
+  -e IMPORT_STATUS_SERVICE_PORT=8081 \
+  -e DATASET_MANAGEMENT_API_HOSTNAME=local.dev.socrata.net \
+  -e DATASET_MANAGEMENT_API_PORT=4000 \
+  -v mesos_sandbox:/mnt/mesos/sandbox \
+  -p 3000:3000 \
+  -d -t 649617362025.dkr.ecr.us-west-2.amazonaws.com/internal/frontend:$image_tag

@@ -23,6 +23,12 @@ These steps are written under the assumption a dev is working with a designer or
 
 1. Send `socrata-icons.sketch` from this folder to your designer so they can make the required edits.
 2. Have them export the changed or added icons (export button on top-right) in Sketch.
+   **Designers**: Remember that the image must be flattened, ie. there should be no `translate` entries in the .svg file.
+   To do this:
+   1. Ungroup the paths (+ delete extraneous layers/groups)
+   2. Layers > Combine > Flatten. Removes all the messy transformation and rotation code, but leaves the icon intact.
+   3. Open the file in a text editor and make sure "translate" doesn't appear in the file.
+
 
 ### Step 2: Developer generates fonts.
 

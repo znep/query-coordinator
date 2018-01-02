@@ -34,6 +34,32 @@ describe View do
     end
   end
 
+  describe 'measure display types' do
+    let(:fake_views) do
+      [
+        {
+          'id' => 'fake-fak1',
+          'name' => 'Fake 1',
+          'view_type' => 'measure',
+          'display_type' => 'measure'
+        },
+        {
+          'id' => 'fake-fak2',
+          'name' => 'Fake 2',
+          'view_type' => 'story'
+        }
+      ]
+    end
+
+    it 'Should return true when given a measure' do
+      expect(View.new(fake_views[0]).op_measure?)
+    end
+
+    it 'Should return false when given a page that is not a measure' do
+      expect(!View.new(fake_views[1]).op_measure?)
+    end
+  end
+
   describe 'draft display types' do
     let(:fake_views) do
       [

@@ -60,6 +60,7 @@ module Cetera
           'map' => ::Cetera::Displays::Map,
           'calendar' => ::Cetera::Displays::Calendar,
           'filter' => ::Cetera::Displays::Filter,
+          'measure' => ::Cetera::Displays::Measure,
 
           # Cetera is replacing type 'href' with type 'link',
           'href' => ::Cetera::Displays::Link,

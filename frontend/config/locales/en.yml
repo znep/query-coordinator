@@ -508,6 +508,7 @@ en:
       forms: Forms
       href: External Datasets
       maps: Maps
+      measures: Measures
       new_view: Data Lens pages
       pulse: Pulse
       story: Stories
@@ -992,6 +993,7 @@ en:
           form: Form
           href: External Link
           map: Map
+          measure: Measure
           predeply_api: Pre-deploy API
           pulse: Pulse
           story: Story
@@ -1116,6 +1118,7 @@ en:
           forms: Forms
           href: External Datasets
           maps: Maps
+          measures: Measures
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
@@ -1813,6 +1816,7 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
+      measure: measure
       pulse: pulse
       story: story
       table: table
@@ -1827,6 +1831,7 @@ en:
       form: Forms
       grouped: Grouped Views
       map: Maps
+      measure: Measures
     visibility:
       private: private
       public: public
@@ -5495,6 +5500,7 @@ en:
           chart: chart
           fatrow: rich list
           map: map
+          measure: measure
           page: single row
           table: table
           socrataVizTable: table

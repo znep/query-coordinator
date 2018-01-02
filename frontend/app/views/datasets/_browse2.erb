@@ -188,24 +188,27 @@
 
             # From `core-misc`:
             #
-            # TABLES(ViewFinderConst.COLUMN_DISPLAY_TYPE, "table", "fatrow", "page"),
-            # HREF(ViewFinderConst.COLUMN_DISPLAY_TYPE, "href"),
-            # NEW_VIEW(ViewFinderConst.COLUMN_DISPLAY_TYPE, "new_view", "data_lens"),
-            # STORY(ViewFinderConst.COLUMN_DISPLAY_TYPE, "story"),
-            # PULSE(ViewFinderConst.COLUMN_DISPLAY_TYPE, "pulse"),
+            # ASSETINVENTORY(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.ASSETINVENTORY),
             # BLOB(ViewFinderConst.COLUMN_VIEW_TYPE, ViewType.BLOBBY.toString()),
-            # MAPS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "map", "intensitymap", "geomap", "data_lens_map"),
-            # CALENDARS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "calendar"),
-            # CHARTS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "chart", "annotatedtimeline", "imagesparkline", "areachart", "barchart", "columnchart", "linechart", "piechart", "data_lens_chart"),
-            # FORMS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "form"),
-            # DRAFT(ViewFinderConst.COLUMN_DISPLAY_TYPE, "draft");
+            # CALENDARS(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.CALENDAR),
+            # CHARTS(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.CHART),
+            # DRAFT(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.DRAFT),
+            # FORMS(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.FORM),
+            # HREF(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.HREF, DisplayType.FEDERATED),
+            # MEASURES(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.MEASURE),
+            # MAPS(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.MAP),
+            # NEW_VIEW(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.DATA_LENS, DisplayType.VISUALIZATION),
+            # PULSE(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.PULSE),
+            # STORY(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.STORY),
+            # TABLES(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.TABLE, DisplayType.FATROW, DisplayType.PAGE, DisplayType.ASSETINVENTORY),
+            # VISUALIZATION(ViewFinderConst.COLUMN_DISPLAY_TYPE, DisplayType.VISUALIZATION);
 
             case result.display.type
             # 'blist' appears to be the default in case no other type matches.
             # The other types in this `when` block represent various states that
             # a dataset can be in.
             #
-            # See: ../app/models/displays/table.rb
+            # See: frontend/app/models/displays/table.rb
             when 'unpublished', 'snapshotted', 'blist'
               result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
@@ -269,6 +272,11 @@
             when 'form'
               result_display_type_icon_class = 'icon-check'
               result_display_title = t('controls.browse.browse2.display_types.form')
+
+            # MEASURES
+            when 'measure'
+              result_display_type_icon_class = 'socrata-icon-op-measure'
+              result_display_title = t('controls.browse.browse2.display_types.measure')
             end
 
             # Certain values must be derived differently based on whether this

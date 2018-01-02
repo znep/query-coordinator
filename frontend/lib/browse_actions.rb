@@ -44,6 +44,7 @@ module BrowseActions
 
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
+    add_measures_view_type_if_enabled!(view_types)
 
     whitelisted_view_types = CurrentDomain.property(:view_types_facet, :catalog)
     if whitelisted_view_types # WARN: if you leave this an empty array, no view types!
@@ -756,6 +757,23 @@ module BrowseActions
       # Stories are more contextualized than datasets, so put them above dataset entry
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, stories_view_type)
+    end
+  end
+
+  # should this also check to see if govstat is turned on?
+  def measures_catalog_entries_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:open_performance_standalone_measures]
+  end
+
+  def add_measures_view_type_if_enabled!(view_type_list)
+    if measures_catalog_entries_enabled?
+      measures_view_type = {
+        :text => ::I18n.t('controls.browse.facets.view_types.measures'),
+        :value => 'measure',
+        :class => 'typeMeasure'
+      }
+
+      view_type_list.push(measures_view_type)
     end
   end
 

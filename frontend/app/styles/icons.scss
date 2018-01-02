@@ -216,6 +216,9 @@ $data-lens-color: #80acca;
   &.typeGrouped #{$subselector} {
     background-position: 0 -494px;
   }
+  &.typeMeasure #{$subselector} {  // Stealing from unused "grouped" because we're not
+    background-position: 0 -494px; // going to spend time designing for browse1
+  }
   &.close #{$subselector},
   &.remove #{$subselector} {
     background-position: 0 -507px;

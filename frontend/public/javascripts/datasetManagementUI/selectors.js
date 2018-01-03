@@ -26,7 +26,9 @@ export function rowsUpserted(entities, taskSetId) {
 }
 
 export function currentRevision(entities, revisionSeq) {
-  return _.values(entities.revisions).find(rev => rev.revision_seq === revisionSeq);
+  return _.values(entities.revisions).find(
+    rev => rev.revision_seq === revisionSeq
+  );
 }
 
 export function currentOutputSchema(entities, revisionSeq) {
@@ -53,7 +55,10 @@ export function currentSource(entities, revisionSeq) {
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {
-  const unsortedColumns = _.filter(entities.input_columns, ic => ic.input_schema_id === inputSchemaId);
+  const unsortedColumns = _.filter(
+    entities.input_columns,
+    ic => ic.input_schema_id === inputSchemaId
+  );
   return _.sortBy(unsortedColumns, 'position');
 }
 
@@ -61,7 +66,8 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
   return _.chain(entities.output_schema_columns)
     .filter({ output_schema_id: outputSchemaId })
     .map(outputSchemaColumn => {
-      const outputColumn = entities.output_columns[outputSchemaColumn.output_column_id];
+      const outputColumn =
+        entities.output_columns[outputSchemaColumn.output_column_id];
       return {
         ...outputColumn,
         transform: entities.transforms[outputColumn.transform_id],
@@ -72,14 +78,19 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
     .value();
 }
 
-export function outputColumnsForInputSchemaUniqByTransform(entities, inputSchemaId) {
-  const outputSchemaIds = _.filter(entities.output_schemas, { input_schema_id: inputSchemaId })
-    .map(os => os.id);
+export function outputColumnsForInputSchemaUniqByTransform(
+  entities,
+  inputSchemaId
+) {
+  const outputSchemaIds = _.filter(entities.output_schemas, {
+    input_schema_id: inputSchemaId
+  }).map(os => os.id);
 
   return _.chain(entities.output_schema_columns)
     .filter(osc => _.includes(outputSchemaIds, osc.output_schema_id))
     .map(outputSchemaColumn => {
-      const outputColumn = entities.output_columns[outputSchemaColumn.output_column_id];
+      const outputColumn =
+        entities.output_columns[outputSchemaColumn.output_column_id];
       return {
         ...outputColumn,
         transform: entities.transforms[outputColumn.transform_id],
@@ -91,11 +102,14 @@ export function outputColumnsForInputSchemaUniqByTransform(entities, inputSchema
     .value();
 }
 
-export function getRowData(entities, inputSchemaId, displayState, outputColumns) {
-
+export function getRowData(
+  entities,
+  inputSchemaId,
+  displayState,
+  outputColumns
+) {
   const startRow = (displayState.pageNo - 1) * PAGE_SIZE;
   const endRow = startRow + PAGE_SIZE;
-
   // A somewhat ambiguous term. The TableBody component (used on the data preview
   // page) expects rows as an array of objects, with each object corresponding
   // to a row. `rowIndicies` therefore is an array of index numbers that is used
@@ -115,11 +129,20 @@ export function getRowData(entities, inputSchemaId, displayState, outputColumns)
       rowIndices = [];
     }
   } else if (displayState.type === DisplayState.ROW_ERRORS) {
-    const rowOffsets = _.filter(entities.row_errors, { input_schema_id: inputSchemaId }).map(
-      rowError => rowError.offset
-    );
+    const rowOffsets = _.filter(entities.row_errors, {
+      input_schema_id: inputSchemaId
+    }).map(rowError => rowError.offset);
 
-    rowIndices = rowOffsets.slice(startRow, endRow);
+    // This ternary is necessary because we load row errors in an inconstent way:
+    // if you upload a file, we have all the row-errors client side, so we need to
+    // slice off a chunk of them here (rowOffsets.slice) to display 1 page at a time.
+    // However, on a hard-reload of the page, we make an api call with `offset` and
+    // `limit` call params, meaning we only load the row errors for the current page.
+    // In this case, we don't want to slice off a chunk but instead display all of them.
+    rowIndices =
+      rowOffsets.length > PAGE_SIZE
+        ? rowOffsets.slice(startRow, endRow)
+        : rowOffsets;
   } else {
     rowIndices = _.range(startRow, endRow);
   }
@@ -159,8 +182,12 @@ export function allColumnsWithOSID(entities) {
 
 export function treeForOutputSchema(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId] || {};
-  const inputSchema = _.isEmpty(outputSchema) ? {} : entities.input_schemas[outputSchema.input_schema_id];
-  const source = _.isEmpty(inputSchema) ? {} : entities.sources[inputSchema.source_id];
+  const inputSchema = _.isEmpty(outputSchema)
+    ? {}
+    : entities.input_schemas[outputSchema.input_schema_id];
+  const source = _.isEmpty(inputSchema)
+    ? {}
+    : entities.sources[inputSchema.source_id];
 
   return {
     outputSchema,
@@ -178,7 +205,9 @@ export function allTransformsDone(columnsWithTransforms = []) {
 export function sourcesInProgress(apiCalls) {
   return _.filter(
     apiCalls,
-    apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_SOURCE
+    apiCall =>
+      apiCall.status === STATUS_CALL_IN_PROGRESS &&
+      apiCall.operation === CREATE_SOURCE
   );
 }
 
@@ -191,9 +220,15 @@ export function totalRows(entities, revisionSequence) {
 
   const rev = _.find(entities.revisions, r => r.revision_seq === revSeq);
 
-  const os = rev && rev.output_schema_id ? entities.output_schemas[rev.output_schema_id] : null;
+  const os =
+    rev && rev.output_schema_id
+      ? entities.output_schemas[rev.output_schema_id]
+      : null;
 
-  const is = os && os.input_schema_id ? entities.input_schemas[os.input_schema_id] : null;
+  const is =
+    os && os.input_schema_id
+      ? entities.input_schemas[os.input_schema_id]
+      : null;
 
   const rows = is ? is.total_rows : null;
 
@@ -201,7 +236,11 @@ export function totalRows(entities, revisionSequence) {
 }
 
 export function rowsTransformed(outputColumns) {
-  return _.min(outputColumns.map(col => col.transform.contiguous_rows_processed || 0)) || 0;
+  return (
+    _.min(
+      outputColumns.map(col => col.transform.contiguous_rows_processed || 0)
+    ) || 0
+  );
 }
 
 export function pathForOutputSchema(entities, outputSchemaId) {
@@ -221,8 +260,11 @@ export function sourceFromInputSchema(entities, inputSchemaId) {
 }
 
 export function rowLoadOperationsInProgress(apiCalls) {
-  return _.filter(apiCalls, call => call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS)
-    .length;
+  return _.filter(
+    apiCalls,
+    call =>
+      call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS
+  ).length;
 }
 
 export const inputSchemas = (entities, sourceId) => {
@@ -230,13 +272,17 @@ export const inputSchemas = (entities, sourceId) => {
 };
 
 export const latestOutputSchemaForSource = (entities, sourceId) => {
-  const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];
+  const inputSchema = _.filter(entities.input_schemas, {
+    source_id: sourceId
+  })[0];
 
   if (!inputSchema) {
     return null; // an input schema has not yet been parsed out of this upload
   }
 
-  const outputSchemas = _.filter(entities.output_schemas, { input_schema_id: inputSchema.id });
+  const outputSchemas = _.filter(entities.output_schemas, {
+    input_schema_id: inputSchema.id
+  });
 
   return _.maxBy(_.values(outputSchemas), 'id');
 };

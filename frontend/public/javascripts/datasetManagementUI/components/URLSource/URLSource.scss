@@ -1,0 +1,31 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.import-url-section-container {
+  background-color: $light-grey-7;
+  padding: 1em;
+  font-size: 1rem;
+  min-height: 385px;
+  height: 100%;
+
+  form > * {
+    margin-bottom: 0.4em;
+  }
+
+  form {
+    button {
+      min-width: 95px;
+    }
+  }
+
+  h2 {
+    width: 90%;
+    font-size: 25px;
+    margin: 0 auto;
+    margin-bottom: 0.3em;
+  }
+
+  .accessibility-label {
+    display: none;
+  }
+}

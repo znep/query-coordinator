@@ -289,7 +289,7 @@ class HrefForm extends Component {
                 this.handleAddURL(href.id);
               }} />
           ))}
-          <input type="submit" id="submit-href-form" className={styles.hidden} />
+          <input type="submit" id="submit-href-form" className={styles.hidden} value="submit" />
         </form>
         <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
           {I18n.show_sources.add_dataset}

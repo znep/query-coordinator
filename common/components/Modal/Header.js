@@ -30,9 +30,7 @@ export const Header = (props) => {
 
   return (
     <header className={headerClasses}>
-      <h1 className="h5 modal-header-title">
-        {title}
-      </h1>
+      {title && <h1 className="h5 modal-header-title">{title}</h1>}
       {children}
       {renderCloseButton(showCloseButton)}
     </header>

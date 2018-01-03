@@ -64,7 +64,7 @@ class URLSource extends Component {
     };
 
     return (
-      <section className={styles.container}>
+      <section className="import-url-section-container">
         <div className={styles.imageContainer}>
           <img
             alt="external source"
@@ -76,6 +76,7 @@ class URLSource extends Component {
             <h2>{SubI18n.title}</h2>
             <div className={styles.browseMsg}>{SubI18n.url_prompt}</div>
             <form>
+              <label htmlFor="import-url" className="accessibility-label">{I18n.format_column.url}</label>
               <TextInput
                 field={{
                   name: 'import-url',

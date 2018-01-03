@@ -22,6 +22,7 @@ class Field extends Component {
     }
 
     let element;
+    let hasOwnLabel = false;
 
     switch (field.elementType) {
       case 'text':
@@ -37,6 +38,7 @@ class Field extends Component {
         element = <TagsInput field={field} inErrorState={inErrorState} handleAddTag={handleChange} />;
         break;
       case 'attachmentsInput':
+        hasOwnLabel = true;
         element = (
           <AttachmentsInput field={field} inErrorState={inErrorState} handleAttachmentChange={handleChange} />
         );
@@ -47,9 +49,13 @@ class Field extends Component {
 
     return (
       <div className={field.halfWidth ? styles.halfWidth : ''}>
-        <label htmlFor={field.name} className={labelClassNames.join(' ')}>
-          {field.label}
-        </label>
+        {
+          !hasOwnLabel && (
+            <label htmlFor={field.name} className={labelClassNames.join(' ')}>
+              {field.label}
+            </label>
+          )
+        }
         {field.isPrivate && (
           <div>
             <SocrataIcon name="private" className={styles.icon} />

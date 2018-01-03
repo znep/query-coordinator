@@ -7,28 +7,28 @@ import ColumnField from 'containers/ColumnFieldContainer';
 import styles from './ColumnForm.module.scss';
 
 // makeFieldsFromColumn :: OutputColumn -> Array Field
-function makeFieldsFromColumn(oc) {
+function makeFieldsFromColumn(outputColumn) {
   return [
     {
-      name: 'display_name',
+      name: `${outputColumn.id}-display_name`,
       label: I18n.metadata_manage.column_tab.name,
       elementType: 'text',
       isRequired: true,
-      value: oc.display_name
+      value: outputColumn.display_name
     },
     {
-      name: 'description',
+      name: `${outputColumn.id}-description`,
       label: I18n.metadata_manage.column_tab.description,
       elementType: 'text',
       isRequired: false,
-      value: oc.description
+      value: outputColumn.description
     },
     {
-      name: 'field_name',
+      name: `${outputColumn.id}-field_name`,
       label: I18n.metadata_manage.column_tab.field_name,
       elementType: 'text',
       isRequired: true,
-      value: oc.field_name
+      value: outputColumn.field_name
     }
   ];
 }
@@ -57,7 +57,7 @@ class ColumnForm extends Component {
               </div>
             ))}
           </Fieldset>
-          <input type="submit" id="submit-column-form" className={styles.hidden} />
+          <input type="submit" id="submit-column-form" className={styles.hidden} value="submit" />
         </form>
       </WithFlash>
     );

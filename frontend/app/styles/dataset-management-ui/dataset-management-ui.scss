@@ -7,6 +7,8 @@
 #app .dataset-management-ui {
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
   @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/URLSource/URLSource';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnHeader/ColumnHeader';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowOutputSchema/_ShowOutputSchema';
 }
 

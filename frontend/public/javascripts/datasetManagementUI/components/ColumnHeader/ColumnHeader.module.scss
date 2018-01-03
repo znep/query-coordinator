@@ -5,18 +5,6 @@
   opacity: 0.1;
 }
 
-.dropdownButton {
-  composes: btn from global;
-  composes: btn-xs from global;
-  composes: btn-simple from global;
-  composes: socrata-icon-kebab from global;
-  padding: 3px 3px !important;
-  border: 1px solid $light-grey-2;
-}
-.dropdownButton {
-  padding: 5px;
-}
-
 .columnHeader {
   font-size: 13px;
   position: relative;

@@ -39,7 +39,7 @@ const DatasetForm = ({ fieldsets = {}, handleDatasetChange, handleDatasetFormSub
               </Fieldset>
             );
           })}
-          <input type="submit" id="submit-dataset-form" className={styles.hidden} />
+          <input type="submit" id="submit-dataset-form" className={styles.hidden} value="submit" />
         </form>
       </div>
     </WithFlash>

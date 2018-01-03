@@ -1,0 +1,17 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.column-header {
+  .dropdown-btn {
+    padding: 3px 3px !important;
+    border: 1px solid $light-grey-2;
+    .accessibility-text {
+      overflow: hidden;
+      display:inline-block;
+      width: 0;
+      height: 0;
+      user-select: none;
+      visibility: hidden;
+    }
+  }
+}

@@ -354,7 +354,11 @@ export class ColumnHeader extends Component {
       displayTrueWidthOptions: true,
       options: this.optionsFor(outputColumn),
       placeholder: () => {
-        return <button className={styles.dropdownButton} />;
+        return (
+          <button className="dropdown-btn btn btn-xs btn-simple socrata-icon-kebab">
+            <span className="accessibility-text">Dropdown Menu</span>
+          </button>
+        );
       }
     };
 
@@ -378,7 +382,7 @@ export class ColumnHeader extends Component {
       </Link>
     );
 
-    const classNames = [styles.columnHeader];
+    const classNames = [styles.columnHeader, 'column-header'];
 
     if (isDisabled) {
       classNames.push(styles.columnHeaderDisabled);

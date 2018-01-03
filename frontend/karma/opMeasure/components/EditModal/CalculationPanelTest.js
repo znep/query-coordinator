@@ -73,7 +73,7 @@ describe('CalculationPanel', () => {
 
       const recentValueBtn = element.find('.recent-calculation');
       recentValueBtn.simulate('click');
-      sinon.assert.alwaysCalledWith(props.onSetCalculationType, 'recent_value');
+      sinon.assert.alwaysCalledWith(props.onSetCalculationType, 'recent');
     });
   });
 });

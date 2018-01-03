@@ -27,7 +27,7 @@ export class CalculationPanel extends Component {
           'btn': true,
           'btn-default': !isCurrentType,
           'btn-primary': isCurrentType,
-          [`${type.split('_')[0]}-calculation`]: true
+          [`${type}-calculation`]: true
         });
 
         return (
@@ -73,7 +73,7 @@ export class CalculationPanel extends Component {
         return (<calculationTypes.Sum />);
       case CalculationTypeNames.RATE:
         return (<calculationTypes.Rate />);
-      case CalculationTypeNames.RECENT_VALUE:
+      case CalculationTypeNames.RECENT:
         return (<calculationTypes.RecentValue />);
       default:
         throw new Error(`Unknown calculation type: ${calculationType}`);

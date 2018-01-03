@@ -16,7 +16,7 @@ export const SaveStates = Object.freeze({
 export const CalculationTypeNames = Object.freeze({
   COUNT: 'count',
   RATE: 'rate',
-  RECENT_VALUE: 'recent_value',
+  RECENT: 'recent',
   SUM: 'sum'
 });
 

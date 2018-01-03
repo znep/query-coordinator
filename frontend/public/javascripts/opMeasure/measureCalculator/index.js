@@ -14,7 +14,7 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
   const renderTypeName = _.get(column, 'renderTypeName');
   const columnIsNumeric = renderTypeName === 'number' || renderTypeName === 'money';
 
-  if (type === CalculationTypeNames.RECENT_VALUE) {
+  if (type === CalculationTypeNames.RECENT) {
     // Special enough to be clearer as a separate path.
     return (argument === 'dateColumn' && renderTypeName === 'calendar_date') ||
       (argument === 'valueColumn' && columnIsNumeric);
@@ -279,7 +279,7 @@ export const calculateMeasure = async (measure) => {
       return calculateCountMeasure(measure);
     case CalculationTypeNames.SUM:
       return calculateSumMeasure(measure);
-    case CalculationTypeNames.RECENT_VALUE:
+    case CalculationTypeNames.RECENT:
       return calculateRecentValueMeasure(measure);
     case CalculationTypeNames.RATE:
       return calculateRateMeasure(measure);

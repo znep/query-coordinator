@@ -13,7 +13,7 @@ describe('measureCalculator', () => {
     _.set(countRateMeasure, 'metricConfig.arguments.aggregationType', 'count');
     const sumRateMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RATE);
     _.set(sumRateMeasure, 'metricConfig.arguments.aggregationType', 'sum');
-    const recentValueMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RECENT_VALUE);
+    const recentValueMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RECENT);
 
     const dateCol = { renderTypeName: 'calendar_date' };
     const numberCol = { renderTypeName: 'number' };
@@ -393,12 +393,12 @@ describe('measureCalculator', () => {
       });
     });
 
-    describe('for recent_value calculations', () => {
+    describe('for recent value calculations', () => {
       let measure;
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metricConfig.type', 'recent_value');
+        _.set(measure, 'metricConfig.type', 'recent');
         _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
         _.set(measure, 'metricConfig.arguments.valueColumn', 'foos');
         _.set(measure, 'metricConfig.arguments.dateColumn', 'bars');

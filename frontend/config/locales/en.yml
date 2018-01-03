@@ -3165,7 +3165,7 @@ en:
       count: Count
       sum: Sum
       rate: Rate
-      recent_value: Recent Value
+      recent: Recent Value
     dismiss: Dismiss
     edit: Edit
     edit_menu_label: Menu
@@ -3223,7 +3223,7 @@ en:
               numerator_title: Set Numerator
               sample_fraction: Sample Fraction
               set_column_conditions: Set Column Conditions
-            recent_value:
+            recent:
               column_condition: Column Condition
               date_column: Date Column
               help_body: Chooses the most recent value of a column, given the condition and date column selected.

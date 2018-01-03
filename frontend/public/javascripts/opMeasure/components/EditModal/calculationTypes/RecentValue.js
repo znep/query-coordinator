@@ -42,15 +42,15 @@ export class RecentValue extends Component {
     return (
       <div className="metric-config">
         <h5>
-          {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.title')}
+          {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.title')}
         </h5>
         <div className="column-dropdown">
           <label className="block-label" id={valueColDropdownOptions.labelledBy}>
-            {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.value_column')}
+            {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.value_column')}
           </label>
           <ColumnDropdown {...valueColDropdownOptions} />
           <label className="block-label" id={dateColDropdownOptions.labelledBy}>
-            {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.date_column')}
+            {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.date_column')}
           </label>
           <ColumnDropdown {...dateColDropdownOptions} />
         </div>
@@ -62,9 +62,9 @@ export class RecentValue extends Component {
     return (
       <div className="metric-definition-text">
         <h5>
-          {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.help_title')}
+          {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.help_title')}
         </h5>
-        {I18n.t('open_performance.measure.edit_modal.calculation.types.recent_value.help_body')}
+        {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.help_body')}
       </div>
     );
   }

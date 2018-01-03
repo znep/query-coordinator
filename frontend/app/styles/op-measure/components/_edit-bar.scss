@@ -28,10 +28,9 @@ $edit-bar-z-index: 8;
       margin-right: 5px;
     }
 
+    // Hide the EditBar buttons for mobile displays.
     @media (max-width: $small), (max-height: $small) {
-      .btn-edit {
-        display: none;
-      }
+      display: none;
     }
 
     .btn-save {

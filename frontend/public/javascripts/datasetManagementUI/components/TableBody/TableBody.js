@@ -21,7 +21,11 @@ class TableBody extends Component {
   shouldComponentUpdate(nextProps) {
     const nextStuff = {
       columns: nextProps.columns.map(
-        c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
+        c => {
+          return c.transform
+            ? [c.transform.id, c.transform.error_indices, c.format]
+            : null;
+        }
       ),
       displayState: nextProps.displayState,
       apiCalls: nextProps.apiCalls,
@@ -30,7 +34,11 @@ class TableBody extends Component {
 
     const currentStuff = {
       columns: this.props.columns.map(
-        c => (c.transform ? [c.transform.id, c.transform.error_indices, c.format] : null)
+        c => {
+          return c.transform
+            ? [c.transform.id, c.transform.error_indices, c.format]
+            : null;
+        }
       ),
       displayState: this.props.displayState,
       apiCalls: this.props.apiCalls,
@@ -75,7 +83,11 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map(row => {
-      return row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row);
+      return row.rowError ? (
+        <RowError key={row.rowIdx} row={row} />
+      ) : (
+        this.renderNormalRow(row)
+      );
     });
 
     return (

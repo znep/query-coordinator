@@ -95,6 +95,16 @@ export function getRowData(entities, inputSchemaId, displayState, outputColumns)
 
   const startRow = (displayState.pageNo - 1) * PAGE_SIZE;
   const endRow = startRow + PAGE_SIZE;
+
+  // A somewhat ambiguous term. The TableBody component (used on the data preview
+  // page) expects rows as an array of objects, with each object corresponding
+  // to a row. `rowIndicies` therefore is an array of index numbers that is used
+  // to create the array of row-objects. Below, an array like [0, 1, 2, 3...] is
+  // created, then mapped over to make the array of row-objects. If the user changes
+  // the table to display page 2, then the generated index array looks like
+  // [50, 51, 52...]. The point is that a rowIndex is really just a DSMUI concept
+  // used to load and display data on the table preview page. It does not strictly
+  // relate to the row number in the original tabular source file.
   let rowIndices;
 
   if (displayState.type === DisplayState.COLUMN_ERRORS) {
@@ -105,9 +115,11 @@ export function getRowData(entities, inputSchemaId, displayState, outputColumns)
       rowIndices = [];
     }
   } else if (displayState.type === DisplayState.ROW_ERRORS) {
-    rowIndices = _.filter(entities.row_errors, { input_schema_id: inputSchemaId }).map(
+    const rowOffsets = _.filter(entities.row_errors, { input_schema_id: inputSchemaId }).map(
       rowError => rowError.offset
     );
+
+    rowIndices = rowOffsets.slice(startRow, endRow);
   } else {
     rowIndices = _.range(startRow, endRow);
   }

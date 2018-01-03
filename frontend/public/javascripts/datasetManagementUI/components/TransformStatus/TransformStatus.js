@@ -19,6 +19,7 @@ import styles from './TransformStatus.module.scss';
 const SubI18n = I18n.show_output_schema.column_header;
 
 const GEOSPATIAL_TYPES = [
+  'location',
   'multiline',
   'multipoint',
   'multipolygon',

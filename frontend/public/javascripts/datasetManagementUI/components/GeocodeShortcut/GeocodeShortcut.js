@@ -2,68 +2,27 @@
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import * as Links from '../../links/links';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { hideModal } from 'reduxStuff/actions/modal';
-import * as Selectors from 'selectors';
-import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import * as DisplayState from 'lib/displayState';
 import FlashMessage from 'containers/FlashMessageContainer';
 import ColumnPreview from './ColumnPreview';
 import HideOriginal from './HideOriginal';
 import ErrorHandling from './ErrorHandling';
-import { traverse } from 'lib/ast';
-import { browserHistory } from 'react-router';
 import styles from './GeocodeShortcut.module.scss';
 import flashMessageStyles from 'components/FlashMessage/FlashMessage.module.scss';
 
 import {
-  LatLngFields,
-  composeFromLatLng,
-  decomposeFromLatLng,
-  relevantMappingsForLatLng
+  LatLngFields
 } from './LatLngFields';
 
 import {
-  CombinedFields,
-  composeFromCombined,
-  decomposeFromCombined,
-  relevantMappingsForCombined
+  CombinedFields
 } from './CombinedFields';
 
 import {
-  ComponentFields,
-  composeFromComponents,
-  decomposeFromComponents,
-  relevantMappingsForComponents
+  ComponentFields
 } from './ComponentFields';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;
-
-function generateDefaultMappings(inputColumns, outputColumns) {
-  return [
-    // geocode func arg name, clads type classifier name
-    ['full_address', 'address'],
-    ['address', 'address'],
-    ['city', 'city'],
-    ['state', 'state_or_province'],
-    ['zip', 'zip_or_postal']
-  ].map(([name, classifier]) => {
-    const inputColumn = _.find(inputColumns, ic => ic.semantic_type === classifier);
-    let outputColumn;
-
-    if (inputColumn) {
-      outputColumn = _.find(outputColumns, oc => {
-        const [icId] = oc.transform.transform_input_columns.map(({ input_column_id: id }) => id);
-        return icId === inputColumn.id;
-      });
-    }
-
-    return [name, outputColumn];
-  });
-}
 
 // Different types of composition strategies
 const COMPONENTS = 'COMPONENTS';
@@ -77,314 +36,10 @@ const fieldSet = (composedFrom, mappings, setMapping, outputColumns) =>
     COMBINED: <CombinedFields outputColumns={outputColumns} setMapping={setMapping} mappings={mappings} />
   }[composedFrom]);
 
-export class GeocodeShortcut extends Component {
-  constructor() {
-    super();
-    this.state = {
-      mappings: [],
-      composedFrom: COMPONENTS,
-      shouldHideOriginal: false,
-      shouldConvertToNull: false
-    };
-    _.bindAll(this, ['setMapping', 'toggleConvertToNull', 'toggleHideOriginal', 'toggleErrorDisplayState']);
-  }
-
-  componentWillMount() {
-    const { params: { outputSchemaId } } = this.props;
-    this.setOutputSchema(_.toNumber(outputSchemaId));
-  }
-
-  componentDidMount() {
-    this.maybeSetColumnsHidden();
-  }
-
-  setMapping(addressComponent, outputColumn) {
-    const mappings = this.state.mappings
-      .filter(([component]) => component !== addressComponent)
-      .concat([[addressComponent, outputColumn]]);
-    this.setState({
-      ...this.state,
-      mappings
-    });
-  }
-
-  setOutputSchema(outputSchemaId) {
-    const { entities } = this.props;
-    // TODO: this is awful and terrible - maybe ping ryan about this
-    // question: it's hard to know which column we want here
-    const outputColumn = _.find(Selectors.columnsForOutputSchema(entities, outputSchemaId), oc =>
-      traverse(oc.transform.parsed_expr, false, (node, acc) => {
-        if ((node && node.function_name === 'geocode') || (node && node.function_name === 'make_point')) {
-          return node;
-        }
-        return acc;
-      })
-    );
-
-    this.setState({
-      ...this.getMappingsFromOutputColumn(outputColumn),
-      ...this.getErrorForgivenessFromOutputColumn(outputColumn),
-      ...this.getDisplayState(outputSchemaId),
-      outputColumnId: outputColumn && outputColumn.id,
-      outputSchemaId
-    });
-  }
-
-  getDisplayState(outputSchemaId) {
-    return {
-      displayState: DisplayState.normal(1, outputSchemaId)
-    };
-  }
-
-  getOutputSchema() {
-    const id = _.toNumber(this.state.outputSchemaId || this.props.params.outputSchemaId);
-    return this.props.entities.output_schemas[id];
-  }
-
-  getErrorForgivenessFromOutputColumn(outputColumn) {
-    if (outputColumn && outputColumn.transform && outputColumn.transform.parsed_expr) {
-      const { parsed_expr: ast } = outputColumn.transform;
-      // If the wrapping function is forgive, we're converting geocoding
-      // errors into null values
-      const shouldConvertToNull = ast.function_name === 'forgive';
-      return { shouldConvertToNull };
-    }
-    return { shouldConvertToNull: false };
-  }
-
-  getMappingsFromOutputColumn(outputColumn) {
-    if (outputColumn && outputColumn.transform && outputColumn.transform.parsed_expr) {
-      const { parsed_expr: ast } = outputColumn.transform;
-      // Now we need to seed the column mapping, so we need to walk the ast
-      // until we find the `geocode` function and pluck its arguments out
-      const geocodeFunc = traverse(ast, false, (node, acc) => {
-        if (node && node.function_name === 'geocode') {
-          return node;
-        }
-        return acc;
-      });
-
-      // This is a limitation of the Geocode shortcut -
-      // each arg has to be a column, nothing else will
-      // work
-      if (geocodeFunc) {
-        return this.getStateFromGeocodeFuncAst(geocodeFunc);
-      }
-
-      // So we haven't found an output column that is derived from geocoding - so
-      // let's try to fill the third tab in this dialog with a make_point
-      // output column
-      const makePointFunc = traverse(ast, false, (node, acc) => {
-        if (node && node.function_name === 'make_point') {
-          return node;
-        }
-        return acc;
-      });
-
-      if (makePointFunc) {
-        return this.getStateFromMakePointAst(makePointFunc);
-      }
-    }
-    return {
-      mappings: generateDefaultMappings(
-        Selectors.columnsForInputSchema(this.props.entities, _.toNumber(this.props.params.inputSchemaId)),
-        this.getOutputColumns()
-      )
-    };
-  }
-
-  getStateFromGeocodeFuncAst(geocodeFunc) {
-    if (geocodeFunc.args.length === 1) {
-      return {
-        mappings: decomposeFromCombined(geocodeFunc, this.getAllOutputColumns()),
-        composedFrom: COMBINED
-      };
-    } else if (geocodeFunc.args.length === 4) {
-      // Now we want to set the mappings from the component name to the input column
-      // referred to in the AST
-      return {
-        mappings: decomposeFromComponents(geocodeFunc, this.getAllOutputColumns()),
-        composedFrom: COMPONENTS
-      };
-    }
-    return {
-      configurationError: SubI18n.transform_too_complex
-    };
-  }
-
-  getStateFromMakePointAst(geocodeFunc) {
-    return {
-      mappings: decomposeFromLatLng(geocodeFunc, this.getAllOutputColumns()),
-      composedFrom: LATLNG
-    };
-  }
-
-  getOutputColumn() {
-    return _.find(
-      Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id),
-      ({ id }) => id === this.state.outputColumnId
-    );
-  }
-
-  getOutputColumns() {
-    // TODO: refine this selector; will break if you have multiple oc's with the
-    // same mapping (if e.g. you change a col name)
-    return Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
-  }
-
-  getAllOutputColumns() {
-    return Selectors.outputColumnsForInputSchemaUniqByTransform(
-      this.props.entities,
-      this.getOutputSchema().input_schema_id
-    );
-  }
-
-  maybeSetColumnsHidden() {
-    const { id: currentOutputSchemaId } = this.getOutputSchema();
-    // Restore the checkbox state from the output schema state
-    const shouldHideOriginal = _.every(
-      this.relevantArgsForComposition()
-        .filter(oc => !!oc) // filter out nones
-        .filter(oc => !_.isString(oc)) // filter out constants
-        .map(oc => oc.outputSchemaId !== currentOutputSchemaId) // are all the things that are left not in current os?
-    );
-
-    this.setState({
-      shouldHideOriginal
-    });
-  }
-
-  requireArgsBeColumnRefsOrNull({ args }) {
-    return _.every(args, a => a === null || a.type === 'column_ref');
-  }
-
-  relevantArgsForComposition() {
-    const argsOf = mappingNames =>
-      this.state.mappings
-        .filter(([name]) => _.includes(mappingNames, name))
-        .map(([_name, outputColumn]) => outputColumn); // eslint-disable-line
-
-    switch (this.state.composedFrom) {
-      case COMPONENTS:
-        return argsOf(relevantMappingsForComponents());
-      case COMBINED:
-        return argsOf(relevantMappingsForCombined());
-      case LATLNG:
-        return argsOf(relevantMappingsForLatLng());
-      default:
-        return [];
-    }
-  }
-
-  isPreviewable() {
-    return this.genNewExpression() === this.genExistingExpr();
-  }
-
-  genExistingExpr() {
-    const oc = this.getOutputColumn();
-    if (oc) {
-      const transform = this.props.entities.transforms[oc.transform_id];
-      return transform && transform.transform_expr;
-    }
-  }
-
-  genNewExpression() {
-    const maybeForgive = expr => {
-      if (this.state.shouldConvertToNull) {
-        return `forgive(${expr})`;
-      }
-      return expr;
-    };
-
-    switch (this.state.composedFrom) {
-      case COMPONENTS:
-        return maybeForgive(composeFromComponents(this.state.mappings, this.isObe()));
-      case COMBINED:
-        return maybeForgive(composeFromCombined(this.state.mappings, this.isObe()));
-      case LATLNG:
-        return maybeForgive(composeFromLatLng(this.state.mappings, this.isObe()));
-      default:
-        throw new Error(`Invalid composition: ${this.state.composedFrom}`);
-    }
-  }
-
-  isObe() {
-    if (this.props.view.displayType === 'draft') {
-      return window.serverConfig.featureFlags.ingress_strategy === 'obe';
-    }
-    return !this.props.view.newBackend;
-  }
-
-  genDesiredColumns() {
-    // will be all cols + the generated geo one or just the geo one, depending
-    // on if the user checked the "Do Not Import Original Cols" box
-    let existingColumns = Selectors.columnsForOutputSchema(this.props.entities, this.getOutputSchema().id);
-
-    const anyMappings = _.some(
-      this.state.mappings.map(([_name, value]) => value !== null) // eslint-disable-line
-    );
-
-    const colsOrConstants = this.relevantArgsForComposition().filter(oc => !!oc);
-
-    // If the user checked "Do Not Import Original Cols" box...
-    if (this.state.shouldHideOriginal) {
-      // filter out the original cols from the ones we plan to show on the SchemaPreview page...
-      const columnIdsToHide = colsOrConstants.map(oc => oc.id);
-
-      existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
-    } else {
-      // otherwise add the things in the list that are columns, ignoring all the constants
-      const columnsToShow = colsOrConstants.filter(oc => !!oc.transform && !!oc.transform.transform_expr);
-      const existingColIds = existingColumns.map(oc => oc.id);
-
-      existingColumns = columnsToShow.filter(oc => !existingColIds.includes(oc.id)).concat(existingColumns);
-    }
-
-    let desiredColumns;
-    const targetColumn = this.getOutputColumn();
-    if (targetColumn) {
-      if (!anyMappings) {
-        desiredColumns = existingColumns.filter(oc => oc.id !== targetColumn.id);
-      } else {
-        // We already have a target column - so the default behavior
-        // is to replace the existing one with one of a new expression
-        desiredColumns = existingColumns.map(oc => {
-          if (oc.id === targetColumn.id) {
-            // This is the column we want to update - clone it, but with the new expression
-            return ShowActions.buildNewOutputColumn(oc, () => this.genNewExpression());
-          } else {
-            // Otherwise, we just clone it
-            return ShowActions.cloneOutputColumn(oc);
-          }
-        });
-      }
-    } else {
-      desiredColumns = existingColumns.map(ShowActions.cloneOutputColumn);
-      if (anyMappings) {
-        desiredColumns.push({
-          field_name: 'geocoded_column',
-          position: desiredColumns.length + 1, // position is 1 based, not 0, because core
-          display_name: SubI18n.new_column_name,
-          description: '',
-          transform: {
-            transform_expr: this.genNewExpression()
-          },
-          is_primary_key: false
-        });
-      }
-    }
-
-    return desiredColumns.map((dc, i) => ({ ...dc, position: i + 1 }));
-  }
-
-  createNewOutputSchema() {
+class GeocodeShortcut extends Component {
+  createNewOutputSchema(desiredColumns) {
     return this.props
-      .newOutputSchema(_.toNumber(this.props.params.inputSchemaId), this.genDesiredColumns())
-      .then(resp => {
-        const { resource: { id: outputSchemaId } } = resp;
-        this.setOutputSchema(outputSchemaId);
-        return resp;
-      })
+      .newOutputSchema(desiredColumns)
       .catch(resp => {
         const { body } = resp;
         if (body && body.params) {
@@ -397,84 +52,72 @@ export class GeocodeShortcut extends Component {
       });
   }
 
-  toggleHideOriginal() {
-    this.setState({
-      ...this.state,
-      shouldHideOriginal: !this.state.shouldHideOriginal
-    });
-  }
-
-  toggleConvertToNull() {
-    this.setState({
-      ...this.state,
-      shouldConvertToNull: !this.state.shouldConvertToNull
-    });
-  }
-
-  toggleErrorDisplayState() {
-    const transform = this.getOutputColumn().transform;
-    const displayState = DisplayState.inErrorMode(this.state.displayState, transform)
-      ? DisplayState.normal(1, this.getOutputSchema().id)
-      : DisplayState.columnErrors(transform.id, 1, this.getOutputSchema().id);
-
-    this.setState({
-      ...this.state,
-      displayState
-    });
-  }
-
-  isOutputschemaStateDesired() {
-    return this.isPreviewable() && this.genDesiredColumns().length === this.getOutputColumns().length;
-  }
-
   render() {
-    const { params, entities, redirectToOutputSchema } = this.props;
-    const { mappings, shouldHideOriginal, shouldConvertToNull, composedFrom, displayState } = this.state;
-    const outputColumn = this.getOutputColumn();
-    const { inputSchemaId } = params;
-    const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
-    const outputSchema = this.getOutputSchema();
+    const {
+      params,
+      entities,
+      redirectGeocodePane,
+      displayState,
+      inputSchema,
+      outputSchema,
+      outputColumn,
+      anySelected,
+      isPreviewable
+    } = this.props;
 
-    const onPreview = () => this.createNewOutputSchema().then(resp => {
-      redirectToOutputSchema(resp.resource.id);
+    const {
+      mappings,
+      shouldHideOriginal,
+      shouldConvertToNull,
+      composedFrom,
+      desiredColumns,
+      configurationError
+    } = this.props.formState;
+
+
+    const onPreview = () => this.createNewOutputSchema(desiredColumns).then(resp => {
+      redirectGeocodePane(resp.resource.id);
     });
 
     const isLatLng = composedFrom === LATLNG;
     const isCombined = composedFrom === COMBINED;
     const isComponents = composedFrom === COMPONENTS;
 
-    const composeLatlng = () => this.setState({ ...this.state, composedFrom: LATLNG });
+    const composeLatlng = () => this.props.setComposedFrom(LATLNG);
     const latlngClassname = classNames({
       [styles.compositionSelected]: isLatLng,
       [styles.compositionButton]: !isLatLng
     });
-    const composeComponents = () => this.setState({ ...this.state, composedFrom: COMPONENTS });
+    const composeComponents = () => this.props.setComposedFrom(COMPONENTS);
     const componentsClassname = classNames({
       [styles.compositionSelected]: isComponents,
       [styles.compositionButton]: !isComponents
     });
-    const composeCombined = () => this.setState({ ...this.state, composedFrom: COMBINED });
+    const composeCombined = () => this.props.setComposedFrom(COMBINED);
     const combinedClassname = classNames({
       [styles.compositionSelected]: isCombined,
       [styles.compositionButton]: !isCombined
     });
 
-    const relevantColumns = this.relevantArgsForComposition();
-    const anySelected = relevantColumns.length > 0 && _.some(relevantColumns);
 
-    const content = !this.state.configurationError ? (
+    const content = !configurationError ? (
       <div className={styles.content}>
         <div className={styles.formWrap}>
           <form>
-            {fieldSet(this.state.composedFrom, mappings, this.setMapping, this.getAllOutputColumns())}
+            {fieldSet(
+              this.props.formState.composedFrom,
+              mappings,
+              this.props.setMapping,
+              this.props.allOutputColumns
+            )}
 
             <HideOriginal
               shouldHideOriginal={shouldHideOriginal}
-              toggleHideOriginal={this.toggleHideOriginal} />
+              toggleHideOriginal={this.props.toggleHideOriginal} />
 
             <ErrorHandling
               shouldConvertToNull={shouldConvertToNull}
-              toggleConvertToNull={this.toggleConvertToNull} />
+              toggleConvertToNull={this.props.toggleConvertToNull} />
           </form>
         </div>
         <ColumnPreview
@@ -484,14 +127,13 @@ export class GeocodeShortcut extends Component {
           inputSchema={inputSchema}
           outputSchema={outputSchema}
           displayState={displayState}
-          isPreviewable={this.isPreviewable()}
+          isPreviewable={isPreviewable}
           onPreview={onPreview}
-          onClickError={this.toggleErrorDisplayState}
           params={params} />
       </div>
     ) : (
       <div className={classNames(flashMessageStyles.error, styles.configurationError)}>
-        {this.state.configurationError}
+        {configurationError}
       </div>
     );
 
@@ -499,16 +141,16 @@ export class GeocodeShortcut extends Component {
       <div className={styles.geocodeWrapper}>
         <h2>{SubI18n.title}</h2>
         <div className={styles.geocodeOptions}>
-          <p>Transform your data into coordinates</p>
+          <p>{SubI18n.what_is_geocoding}</p>
           <div className={styles.compositionSelector}>
             <button onClick={composeLatlng} className={latlngClassname}>
-              Lat/Long
+              {SubI18n.lat_long}
             </button>
             <button onClick={composeComponents} className={componentsClassname}>
-              Address (separated)
+              {SubI18n.addr_separate}
             </button>
             <button onClick={composeCombined} className={combinedClassname}>
-              Combined Address
+              {SubI18n.addr_combined}
             </button>
           </div>
         </div>
@@ -523,35 +165,26 @@ GeocodeShortcut.propTypes = {
   view: PropTypes.object.isRequired,
   onDismiss: PropTypes.func,
   entities: PropTypes.object.isRequired,
+  displayState: PropTypes.object.isRequired,
   newOutputSchema: PropTypes.func.isRequired,
   showError: PropTypes.func.isRequired,
-  redirectToOutputSchema: PropTypes.func.isRequired,
-  params: PropTypes.object.isRequired
+  redirectGeocodePane: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired,
+  formState: PropTypes.object.isRequired,
+
+  setMapping: PropTypes.func.isRequired,
+  toggleHideOriginal: PropTypes.func.isRequired,
+  toggleConvertToNull: PropTypes.func.isRequired,
+  setComposedFrom: PropTypes.func.isRequired,
+
+  inputSchema: PropTypes.object.isRequired,
+  outputSchema: PropTypes.object.isRequired,
+  outputColumns: PropTypes.array.isRequired,
+  outputColumn: PropTypes.object,
+  allOutputColumns: PropTypes.array.isRequired,
+
+  anySelected: PropTypes.bool.isRequired,
+  isPreviewable: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { params }) => ({
-  entities,
-  params,
-  view: entities.views[params.fourfour]
-});
-
-const mergeProps = (stateProps, { dispatch }, ownProps) => {
-  const dispatchProps = {
-    onDismiss: () => dispatch(hideModal()),
-
-    newOutputSchema: (inputSchemaId, desiredColumns) =>
-      dispatch(ShowActions.newOutputSchema(inputSchemaId, desiredColumns)),
-
-    redirectToOutputSchema: outputSchemaId => {
-      browserHistory.push(Links.geocodeColumn(
-        { ...ownProps.params, outputSchemaId: outputSchemaId }
-      ));
-    },
-
-    showError: message => dispatch(FlashActions.showFlashMessage('error', message, 10000))
-  };
-
-  return { ...stateProps, ...dispatchProps, ...ownProps };
-};
-
-export default connect(mapStateToProps, null, mergeProps)(GeocodeShortcut);
+export { GeocodeShortcut, COMBINED, COMPONENTS, LATLNG };

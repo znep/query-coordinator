@@ -7,7 +7,7 @@ import {
   fieldPropTypes,
   stringLiteral
 } from './Fields';
-import { stripToTextAst } from 'lib/ast';
+import { stripToTextAst, stripToNumberAst } from 'lib/ast';
 
 
 const ComponentFields = ({ outputColumns, setMapping, mappings }) => (
@@ -58,6 +58,7 @@ const decomposeFromComponents = (geocodeFunc, outputColumns) => {
       || stringLiteral(state)],
     ['zip', columnMatchingAst(outputColumns, zip)
       || columnMatchingAst(outputColumns, stripToTextAst(zip))
+      || columnMatchingAst(outputColumns, stripToNumberAst(zip))
       || stringLiteral(zip)]
   ];
 };

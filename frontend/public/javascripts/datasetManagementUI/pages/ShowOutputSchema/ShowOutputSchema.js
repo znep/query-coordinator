@@ -17,30 +17,21 @@ import FatalError from 'containers/FatalErrorContainer';
 import OutputSchemaSidebar from 'components/OutputSchemaSidebar/OutputSchemaSidebar';
 import SaveOutputSchemaButton from './SaveOutputSchemaButton';
 import SaveParseOptionsButton from './SaveParseOptionsButton';
+import SaveGeocodeShortcutButton from './SaveGeocodeShortcutButton';
 import SaveColButton from './SaveColButton';
 import styles from './ShowOutputSchema.module.scss';
 
 function getCurrentPane(location) {
-  let currentPane;
-
-  if (location && location.pathname) {
-    currentPane = location.pathname
-      .split('?')
-      .shift()
-      .split('/')
-      .pop();
+  if (_.includes(location.pathname, 'georeference')) {
+    return 'geocodeShortcut';
   }
-
-  switch (currentPane) {
-    case 'parse_options':
-      return 'parseOptions';
-    case 'add_col':
-      return 'addColumn';
-    case 'georeference':
-      return 'geocodeShortcut';
-    default:
-      return 'tablePreview';
+  if (_.includes(location.pathname, 'parse_options')) {
+    return 'parseOptions';
   }
+  if (_.includes(location.pathname, 'add_col')) {
+    return 'addColumn';
+  }
+  return 'tablePreview';
 }
 
 export class ShowOutputSchema extends Component {
@@ -50,11 +41,7 @@ export class ShowOutputSchema extends Component {
       case 'parseOptions':
         return <SaveParseOptionsButton {...this.props} />;
       case 'geocodeShortcut':
-        return (<button
-          className={styles.processBtn}
-          onClick={this.props.showOutputSchema}>
-          {I18n.home_pane.save_for_later}
-        </button>);
+        return <SaveGeocodeShortcutButton {...this.props} />;
       case 'addColumn':
         return (
           <SaveColButton
@@ -117,7 +104,6 @@ ShowOutputSchema.propTypes = {
   numLoadsInProgress: PropTypes.number.isRequired,
   goToRevisionBase: PropTypes.func.isRequired,
   saveCurrentOutputSchema: PropTypes.func.isRequired,
-  showOutputSchema: PropTypes.func.isRequired,
   addCol: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   params: PropTypes.shape({
@@ -180,12 +166,15 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
         browserHistory.push(Links.revisionBase(ownProps.params));
       });
     },
-    showOutputSchema: () => {
-      dispatch(Actions.redirectToOutputSchema(stateProps.params, stateProps.params.outputSchemaId));
+    redirectToOutputSchema: (outputSchemaId) => {
+      dispatch(Actions.redirectToOutputSchema(stateProps.params, outputSchemaId));
     },
     saveCurrentParseOptions: (params, source, parseOptions) => {
       dispatch(updateSourceParseOptions(params, source, parseOptions));
     },
+    newOutputSchema: (desiredColumns) =>
+      dispatch(Actions.newOutputSchema(stateProps.inputSchema.id, desiredColumns)),
+
     addCol: () =>
       dispatch(Actions.addCol(stateProps.addColForm.state, ownProps.params))
         .then(resp => {

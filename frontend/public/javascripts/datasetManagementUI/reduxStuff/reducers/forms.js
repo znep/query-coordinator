@@ -37,6 +37,12 @@ const initialState = {
     clearInternalState: false,
     errors: {},
     state: {}
+  },
+  geocodeShortcutForm: {
+    state: {},
+    errors: [],
+    showErrors: false,
+    isDirty: false
   }
 };
 

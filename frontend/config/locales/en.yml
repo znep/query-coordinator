@@ -2413,6 +2413,10 @@ en:
         transform_error: There was an unexpected error with the following expression
       geocode_shortcut:
         title: Georeference your dataset
+        what_is_geocoding: Transform your data into coordinates
+        lat_long: Lat/Long
+        addr_separate: Address (separated)
+        addr_combined: Combined Address
         none: None
         constant: Constant
         what_is_an_error: Treats the cell as an error, which removes the row from the dataset on import

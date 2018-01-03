@@ -74,7 +74,19 @@ export default function rootRoute(store) {
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />
-        <Route path="georeference" component={GeocodeShortcutPane} />
+
+        <Route path="georeference" component={GeocodeShortcutPane}>
+          <Route
+            path="column_errors/:errorsTransformId"
+            component={GeocodeShortcutPane}>
+            <Route
+              path="page/:pageNo"
+              component={GeocodeShortcutPane} />
+          </Route>
+          <Route
+            path="page/:pageNo"
+            component={GeocodeShortcutPane} />
+        </Route>
 
         <Route path="editor/:outputColumnId" component={TransformColumnPane}>
           <Route

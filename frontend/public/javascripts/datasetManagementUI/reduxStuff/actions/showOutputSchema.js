@@ -73,7 +73,8 @@ export function createNewOutputSchemaSuccess(payload) {
 export const redirectToOutputSchema = (params, outputSchemaId) => (dispatch, getState) => {
   const { entities } = getState();
   const { source, inputSchema } = Selectors.treeForOutputSchema(entities, outputSchemaId);
-  return browserHistory.push(Links.showOutputSchema(params, source.id, inputSchema.id, outputSchemaId));
+  const to = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchemaId);
+  return browserHistory.push(to);
 };
 
 export const newOutputSchema = (inputSchemaId, desiredColumns) => dispatch => {

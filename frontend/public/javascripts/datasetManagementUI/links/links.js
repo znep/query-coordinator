@@ -33,6 +33,7 @@ export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId
   const showBase = `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
     `/output/${outputSchemaId}`;
   const page = `${pageNo ? `/page/${pageNo}` : ''}`;
+
   if (params.transformEditor) {
     return `${showBase}${transformColumnFragment(params)}${page}`;
   } else {
@@ -57,6 +58,11 @@ export const geocodeShortcut = params => {
     `${revisionBase(params)}/sources/${sourceId}/schemas/${inputSchemaId}` +
     `/output/${outputSchemaId}/georeference`
   );
+};
+
+
+export const geocodeShortcutErrors = (params, transformId) => {
+  return `${geocodeShortcut(params)}/column_errors/${transformId}`;
 };
 
 export const showAddCol = params => {
@@ -114,7 +120,6 @@ export const showColumnErrors = (
   if (params.transformEditor) {
     return `${showBase}${transformColumnFragment(params)}${columnErrors}${page}`;
   }
-
   return `${showBase}${columnErrors}${page}`;
 
 };

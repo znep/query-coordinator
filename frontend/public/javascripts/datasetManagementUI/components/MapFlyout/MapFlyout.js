@@ -72,14 +72,30 @@ class Bbox {
       case 'MultiPolygon':
         return this.expandMultiPolygon(geom);
       default:
-        console.error(`Invalid geom type ${geom.type}`);
+        // Check if it's a location column
+        if (geom.latitude && geom.longitude) {
+          return this.expandPoint({
+            type: 'Point',
+            coordinates: [geom.longitude, geom.latitude]
+          });
+        }
     }
   }
 
   toLeaflet() {
-    const southWest = L.latLng(this.miny, this.maxx);
-    const northEast = L.latLng(this.maxy, this.minx);
-    return L.latLngBounds(southWest, northEast);
+    if ((this.minx === this.maxx) && (this.miny === this.maxy)) {
+      // So this is a weird special case that leaflet will blow up on - if you
+      // have a bound box with 0 area, it will crash in weird ways. So in the case of us just
+      // having a single point, zoom out a little bit.
+      const delta = 0.001;
+      const southWest = L.latLng(this.miny - delta, this.maxx + delta);
+      const northEast = L.latLng(this.maxy + delta, this.minx - delta);
+      return L.latLngBounds(southWest, northEast);
+    } else {
+      const southWest = L.latLng(this.miny, this.maxx);
+      const northEast = L.latLng(this.maxy, this.minx);
+      return L.latLngBounds(southWest, northEast);
+    }
   }
 }
 
@@ -211,6 +227,23 @@ class MapFlyout extends React.Component {
     });
   }
 
+  _locationGroup(genMarker) {
+    const markers = this.flatMapGeoms((geom, attributes) => {
+      if (geom.longitude && geom.latitude) {
+        const coordinates = [geom.longitude, geom.latitude];
+        return [bindPopup(
+          genMarker(coordinates),
+          this.props.outputColumns,
+          attributes
+        )];
+      } else {
+        return [];
+      }
+    });
+
+    return L.layerGroup(markers);
+  }
+
   _singleGroup(genMarker) {
     const markers = this.flatMapGeoms((geom, attributes) => {
       return [bindPopup(
@@ -251,6 +284,8 @@ class MapFlyout extends React.Component {
         return this._multiGroup(lineMarker);
       case 'multipolygon':
         return this._multiGroup(polygonMarker);
+      case 'location':
+        return this._locationGroup(pointMarker);
       default:
         console.error('Unsupported shape type', this.props.transform.output_soql_type);
         return;

@@ -8,7 +8,7 @@ const HideOriginal = ({ toggleHideOriginal, shouldHideOriginal }) => {
   const checked = shouldHideOriginal ? 'checked' : '';
   return (
     <div className={styles.hideOriginal}>
-      <input id="hide-original" type="checkbox" checked={checked} />
+      <input id="hide-original" type="checkbox" defaultChecked={checked} />
       <label htmlFor="hide-original" onClick={toggleHideOriginal}>
         <span className={styles.fakeCheckbox}>
           <span className="socrata-icon-checkmark3" />

@@ -1,11 +1,13 @@
 /* eslint react/prop-types: 0 */
 import PropTypes from 'prop-types';
-
+import { browserHistory } from 'react-router';
 import React from 'react';
 import TransformStatus from 'components/TransformStatus/TransformStatus';
 import TableBody from 'containers/TableBodyContainer';
 import styles from './GeocodeShortcut.module.scss';
 import columnHeaderStyles from 'components/ColumnHeader/ColumnHeader.module.scss';
+import * as DisplayState from 'lib/displayState';
+import * as Links from '../../links/links';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;
 
@@ -18,10 +20,16 @@ const ColumnPreview = ({
   inputSchema,
   outputColumn,
   displayState,
-  onPreview,
-  onClickError
+  onPreview
 }) => {
   let body;
+  const onClickError = () => {
+    const linkPath = DisplayState.inErrorMode(displayState, outputColumn.transform)
+      ? Links.geocodeShortcut(params)
+      : Links.geocodeShortcutErrors(params, outputColumn.transform.id);
+
+    browserHistory.push(linkPath);
+  };
 
   if (!anySelected) {
     body = (
@@ -92,7 +100,6 @@ ColumnPreview.propTypes = {
   params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
   onPreview: PropTypes.func.isRequired,
-  onClickError: PropTypes.func.isRequired,
   outputcolumn: PropTypes.object,
   isPreviewable: PropTypes.bool.isRequired,
   anySelected: PropTypes.bool.isRequired

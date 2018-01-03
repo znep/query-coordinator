@@ -1,6 +1,11 @@
 #!/bin/bash
 
-image_tag="$1"
+image="$1"
+if [ -z "$image" ]; then
+  echo "ERR: please specify image as first argument to script"
+  exit 1
+fi
+
 # Necessary for logs in /mnt/mesos/sandbox
 mkdir -p mesos_sandbox
 
@@ -29,4 +34,4 @@ AWS_PROFILE=infrastructure docker run \
   -e DATASET_MANAGEMENT_API_PORT=4000 \
   -v mesos_sandbox:/mnt/mesos/sandbox \
   -p 3000:3000 \
-  -d -t 649617362025.dkr.ecr.us-west-2.amazonaws.com/internal/frontend:$image_tag
+  -d -t "$image"

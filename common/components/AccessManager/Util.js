@@ -1,6 +1,6 @@
 import isEmail from 'validator/lib/isEmail';
 import { DOMAIN_RIGHTS } from './Constants';
-import { fetchJson } from '../../http';
+import { fetchJsonWithDefaulHeaders } from '../../http';
 
 /**
  * Returns true is the "userList" already contains a user that has the
@@ -129,7 +129,7 @@ export const permissionsUrl = (assetUid) => `/api/views/${assetUid}/permissions`
  * @param {string} url URL to fetch
  * @param {object} options Options to pass to fetch (Optional)
  */
-export const fetchJsonWithDefaults = (url, options = {}) => fetchJson(
+export const fetchJsonWithDefaults = (url, options = {}) => fetchJsonWithDefaulHeaders(
   url,
   {
     credentials: 'same-origin',

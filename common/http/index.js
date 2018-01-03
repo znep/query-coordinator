@@ -74,3 +74,15 @@ export const fetchJson = (apiPath, options) =>
   fetch(apiPath, options).
   then(checkStatus).
   then(response => response.json());
+
+export const fetchJsonWithDefaulHeaders = (apiPath, options) =>
+  fetchJson(
+    apiPath,
+    {
+      ...options,
+      headers: {
+        ...options.headers,
+        ...defaultHeaders
+      }
+    }
+  );

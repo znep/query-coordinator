@@ -5,27 +5,18 @@ import I18n from 'common/i18n';
 import { SocrataUid } from '../../lib/socrata_proptypes';
 import SocrataIcon from 'common/components/SocrataIcon';
 import EditButton from '../edit_button';
+import Dropdown from 'common/components/Dropdown';
+import Button from 'common/components/Button';
 
 class PublicationAction extends React.Component {
   constructor(props) {
     super(props);
 
     this.i18n_scope = 'shared.components.asset_action_bar.publication_action';
-    this.state = {
-      moreActionsVisible: false
-    };
 
     _.bindAll(this, [
-      'showMoreActions', 'closeMoreActions'
+      'handleMoreActions'
     ]);
-  }
-
-  showMoreActions() {
-    this.setState({ moreActionsVisible: true });
-  }
-
-  closeMoreActions() {
-    this.setState({ moreActionsVisible: false });
   }
 
   // This function is called twice and isn't memoized.
@@ -45,49 +36,68 @@ class PublicationAction extends React.Component {
     return this.props.allowedTo.manage && _.some(this.moreActionsAllowed());
   }
 
-  renderMoreActionButton() {
-    return (
-      <button className="btn btn-simple more-actions-button" onClick={this.showMoreActions}>
-        <SocrataIcon name="waiting" />
-      </button>
-    );
+  handleMoreActions(option) {
+    const { value } = option;
+    const { publishedViewUid } = this.props;
+    switch (value) {
+      case 'revert-to-published':
+        // TODO someday. Currently postponed.
+        console.log('revert-to-published option selected');
+        break;
+      case 'view-published':
+        window.location.assign(`/d/${publishedViewUid}`);
+        break;
+      case 'change-audience':
+        // TODO by someone else. Expecting to call an external function of some kind.
+        console.log('change-audience option selected');
+        break;
+    }
   }
 
-  renderMoreActions() {
+  enumerateMoreActions() {
     const currentlyAbleTo = this.moreActionsAllowed();
-    const { publishedViewUid } = this.props;
     let actions = [];
 
     if (currentlyAbleTo.revert) {
-      actions.push(<button className="btn btn-alternate-2" key="revert-action">
-        {I18n.t('revert_published', { scope: this.i18n_scope })}
-      </button>);
+      actions.push({
+        title: I18n.t('revert_published', { scope: this.i18n_scope }),
+        value: 'revert-to-published'
+      });
     }
 
     if (currentlyAbleTo.view) {
-      actions.push(<a
-        href={`/d/${publishedViewUid}`}
-        className="btn btn-alternate-2"
-        key="view-action">
-        {I18n.t('view_published', { scope: this.i18n_scope })}
-      </a>);
+      actions.push({
+        title: I18n.t('view_published', { scope: this.i18n_scope }),
+        value: 'view-published'
+      });
     }
 
     if (currentlyAbleTo.changeAudience) {
-      actions.push(<button
-        className="btn btn-alternate-2"
-        key="change-audience-action">
-        {I18n.t('change_audience', { scope: this.i18n_scope })}
-      </button>);
+      actions.push({
+        title: I18n.t('change_audience', { scope: this.i18n_scope }),
+        value: 'change-audience'
+      });
     }
 
+    return actions;
+  }
+
+  renderMoreActionButton() {
+    const placeholder = () => {
+      return (<Button className="more-actions-button" variant="simple">
+        <SocrataIcon name="waiting" />
+      </Button>);
+    };
+
+    const dropdownOptions = {
+      options: this.enumerateMoreActions(),
+      placeholder,
+      showOptionsBelowHandle: true,
+      displayTrueWidthOptions: true,
+      onSelection: this.handleMoreActions
+    };
     return (
-      <div>
-        <div onClick={this.closeMoreActions} className="asset-action-bar-overlay" />
-        <div className="more-actions">
-          {actions}
-        </div>
-      </div>
+      <Dropdown {...dropdownOptions} />
     );
   }
 
@@ -114,7 +124,6 @@ class PublicationAction extends React.Component {
       <div className="publication-action">
         {this.renderPrimaryActionButton()}
         {this.moreActionsExist() && this.renderMoreActionButton()}
-        {this.state.moreActionsVisible && this.renderMoreActions()}
       </div>
     );
   }

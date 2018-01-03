@@ -6,11 +6,13 @@ import _ from 'lodash';
 import ColumnField from 'containers/ColumnFieldContainer';
 import styles from './ColumnForm.module.scss';
 
+
 // makeFieldsFromColumn :: OutputColumn -> Array Field
 function makeFieldsFromColumn(outputColumn) {
   return [
     {
       name: `${outputColumn.id}-display_name`,
+      id: 'display_name',
       label: I18n.metadata_manage.column_tab.name,
       elementType: 'text',
       isRequired: true,
@@ -18,6 +20,7 @@ function makeFieldsFromColumn(outputColumn) {
     },
     {
       name: `${outputColumn.id}-description`,
+      id: 'description',
       label: I18n.metadata_manage.column_tab.description,
       elementType: 'text',
       isRequired: false,
@@ -25,6 +28,7 @@ function makeFieldsFromColumn(outputColumn) {
     },
     {
       name: `${outputColumn.id}-field_name`,
+      id: 'field_name',
       label: I18n.metadata_manage.column_tab.field_name,
       elementType: 'text',
       isRequired: true,
@@ -36,7 +40,6 @@ function makeFieldsFromColumn(outputColumn) {
 class ColumnForm extends Component {
   render() {
     const { columns, handleColumnChange, handleColumnFormSubmit } = this.props;
-
     const sortedColumns = _.orderBy(_.values(columns), 'position');
 
     return (
@@ -52,7 +55,7 @@ class ColumnForm extends Component {
                     key={`${column.id}-${field.name}`}
                     field={field}
                     columnId={column.id}
-                    handleChange={e => handleColumnChange(column.id, field.name, e.target.value)} />
+                    handleChange={e => handleColumnChange(column.id, field.id, e.target.value)} />
                 ))}
               </div>
             ))}

@@ -9,11 +9,13 @@ import _ from 'lodash';
 // https://github.com/jackrzhang/react-custom-proptypes
 const chainTypeCheckWithIsRequired = (validate) => {
   const checkIsRequired = (isRequired, props, propName, componentName) => {
-    if (_.isUndefined(props[propName])) {
-      return new Error(
-        'The prop `' + propName + '` is marked as required in ' +
-        ('`' + componentName + '`, but its value is `undefined`.')
-      );
+    if (isRequired) {
+      if (_.isUndefined(props[propName])) {
+        return new Error(
+          'The prop `' + propName + '` is marked as required in ' +
+          ('`' + componentName + '`, but its value is `undefined`.')
+        );
+      }
     } else {
       return validate(props, propName, componentName);
     }

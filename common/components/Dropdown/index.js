@@ -113,7 +113,8 @@ export class Dropdown extends Component {
       const xWithinDropdown = mouseX >= dropdownRect.left && mouseX <= dropdownRect.right;
       const yWithinDropdown = mouseY >= dropdownRect.top && mouseY <= dropdownRect.bottom;
 
-      const mousedDownOnDropdown = xWithinDropdown && yWithinDropdown;
+      const placeholder = $(event.target).closest('.dropdown-container');
+      const mousedDownOnDropdown = (xWithinDropdown && yWithinDropdown) || placeholder.length !== 0;
 
       // Close the dropdown if outside click detected
       if (!mousedDownOnDropdown) {
@@ -237,7 +238,10 @@ export class Dropdown extends Component {
       this.optionsRef.style.left = `${optionsLeft}px`;
 
       // Calculate Y Position
-      const optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
+      let optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
+      if (this.props.showOptionsBelowHandle) {
+        optionsTop += containerDimensions.height;
+      }
       this.optionsRef.style.top = `${optionsTop}px`;
 
       // Calculate Height
@@ -417,6 +421,7 @@ Dropdown.propTypes = {
     PropTypes.string,
     PropTypes.func
   ]),
+  showOptionsBelowHandle: PropTypes.bool,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   // Since this dropdown is not a form input element (gotta love custom
@@ -432,6 +437,7 @@ Dropdown.defaultProps = {
   onSelection: _.noop,
   options: [],
   placeholder: null,
+  showOptionsBelowHandle: false,
   size: 'large'
 };
 

@@ -269,8 +269,9 @@ en:
           edit_prompt_message: Edit the source file for this dataset.
           title: Download this Resource
       asset_action_bar:
-        manage_access: Manage Access
+        manage_access: Manage Collaborators
         publication_action:
+          change_audience: Change Audience
           draft:
             primary_action_text: Publish
           pending:

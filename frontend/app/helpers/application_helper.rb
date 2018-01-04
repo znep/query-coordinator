@@ -1227,13 +1227,25 @@ module ApplicationHelper
     )
   end
 
+  # See: https://docs.google.com/spreadsheets/d/1oiN0gz-9TfQ_9WQxRBMVT8JkZOV5iH5X2tXrjkWMzGQ/edit#gid=2111165319
+  def current_user_can_see_asset_action_bar?
+    return false unless current_user
+
+    return true if current_user.has_right?(UserRights::EDIT_OTHERS_DATASETS)
+
+    # 'Viewer', the lowest level, grant allows seeing the A2B.
+    # Any further inspection of grants happens at the component level.
+    @view.shared_to?(current_user)
+  end
+
   def render_asset_action_bar?
     return false unless FeatureFlags.value_for(:enable_asset_action_bar,
                                                view: @view, request: request)
 
+    return false unless current_user_can_see_asset_action_bar?
+
     # Currently we want it to show on DSLP and nowhere else,
     # but it will eventually be in other places.
-
     %(
       datasets
     ).include?(controller_name)

@@ -28,6 +28,12 @@
     <div id="custom-dropdown-container"></div>
   </div>
   <div class="styleguide-code-example" id="styleguide-code-example-3"></div>
+
+  <h2 class="styleguide-header">Dropdown below the handle</h2>
+  <div class="styleguide-example">
+    <div id="dropdown-below-handle-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-4"></div>
 </section>
 
 <% content_for :scripts do %>
@@ -121,6 +127,45 @@
       ReactDOM.render(
         React.createElement(components.Dropdown, customRenderProps),
         document.getElementById('custom-dropdown-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-4">
+    $(() => {
+      const DropdownBelowHandle = (props) => {
+        const { iconClassName, title, value } = props;
+
+        return (
+          React.createElement('div', {className: 'special-dropdown-option'}, [
+            React.createElement('div', { key: 'enclosing_div' }, title.toUpperCase()),
+            React.createElement('span', {className: iconClassName, key: value}),
+            React.createElement('span', {className: iconClassName, key: value + '1'}),
+            React.createElement('span', {className: iconClassName, key: value + '2'}),
+            React.createElement('span', {className: iconClassName, key: value + '3'})
+          ])
+        );
+      };
+
+      const renderer = (option) => React.createElement(DropdownBelowHandle, option);
+
+      const customRenderProps = {
+        showOptionsBelowHandle: true,
+        onSelection: (option) => {
+          const { title, value } = option;
+          console.log(`option selected: ${title}, ${value}`);
+        },
+        placeholder: () => React.createElement('button', {className: 'btn btn-alternate-3'}, 'Hello, World!'),
+        options: [
+          { title: 'One', value: 'one' },
+          { title: 'Two', value: 'two' },
+          { title: "Three", value: 'three' }
+        ]
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Dropdown, customRenderProps),
+        document.getElementById('dropdown-below-handle-container')
       );
     });
   </script>

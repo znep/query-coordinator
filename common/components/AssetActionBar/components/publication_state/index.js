@@ -11,23 +11,23 @@ class PublicationState extends React.Component {
 
     const { socrataIcon, translationKey } = {
       'draft': {
-        socrataIcon: 'draft',
+        socrataIcon: 'edit',
         translationKey: 'draft'
       },
       'pending': {
-        socrataIcon: 'pending',
+        socrataIcon: 'pending2',
         translationKey: 'pending'
       },
       'published': {
-        socrataIcon: 'checkmark-alt',
+        socrataIcon: 'checkmark3',
         translationKey: 'published'
       }
     }[publicationState];
     return (
-      <div className="publication-state">
+      <button className="btn btn-transparent publication-state">
         <SocrataIcon name={socrataIcon} className={`publication-state-${publicationState}`} />
         {I18n.t(translationKey, { scope })}
-      </div>
+      </button>
     );
   }
 }

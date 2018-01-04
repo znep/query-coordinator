@@ -1,5 +1,9 @@
 // All tag-level styles should go here to keep things import-able from other places
 
+html {
+  font-size: 10px;
+}
+
 hr {
   border-style: none;
   border-top: 1px solid $light-grey-1;

@@ -9,7 +9,10 @@ import PublicationState from 'common/components/AssetActionBar/components/public
 
 describe('components/AssetActionBar', () => {
   const getProps = (publicationStage = 'published') => {
-    return { currentView: { name: 'test name', publicationStage } };
+    return {
+      currentView: { name: 'test name', owner: { id: 'test-user' }, publicationStage },
+      currentUser: { id: 'test-user' }
+    };
   };
 
   it('has a manage access button', () => {

@@ -23,8 +23,11 @@
   padding: 1em;
   padding-left: 0.5em;
   list-style-type: none;
+  height: calc(100% - 210px);
+  overflow-y: auto;
 
   li {
+    word-wrap: break-word;
     margin-bottom: 1em;
     padding-left: 0.5em;
     border-left: 1px solid $light-grey-4;

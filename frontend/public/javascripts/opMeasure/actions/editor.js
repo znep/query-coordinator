@@ -11,24 +11,40 @@ export const setActivePanel = (panelId) => ({
   panelId
 });
 
-export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
-export const setDataSourceUid = (uid) => ({
-  type: SET_DATA_SOURCE_UID,
-  uid
-});
-
-export const RECEIVE_DATA_SOURCE_VIEW = 'RECEIVE_DATA_SOURCE_VIEW';
-export const receiveDataSourceMetadata = (rowCount, dataSourceView, displayableFilterableColumns) => (
-  {
-    type: RECEIVE_DATA_SOURCE_VIEW,
+export const SET_DATA_SOURCE_METADATA_SUCCESS = 'SET_DATA_SOURCE_METADATA_SUCCESS';
+export const setDataSourceMetadataSuccess =
+  (uid, rowCount, dataSourceView, displayableFilterableColumns) => ({
+    type: SET_DATA_SOURCE_METADATA_SUCCESS,
+    uid,
     rowCount,
     dataSourceView,
     displayableFilterableColumns
-  }
-);
+  });
+
+export const SET_DATA_SOURCE_METADATA_FAIL = 'SET_DATA_SOURCE_METADATA_FAIL';
+export const setDataSourceMetadataFail = () => ({
+  type: SET_DATA_SOURCE_METADATA_FAIL
+});
+
+export const fetchDataSourceViewSuccess = (uid, rowCount, dataSourceView, displayableFilterableColumns) => {
+  return async (dispatch) => {
+    if (_.some(displayableFilterableColumns, ['renderTypeName', 'calendar_date'])) {
+      dispatch(
+        setDataSourceMetadataSuccess(uid, rowCount, dataSourceView, displayableFilterableColumns)
+      );
+    } else {
+      dispatch(setDataSourceMetadataFail());
+    }
+  };
+};
+
+export const FETCH_DATA_SOURCE_VIEW_FAIL = 'FETCH_DATA_SOURCE_VIEW_FAIL';
+export const fetchDataSourceViewFail = () => ({
+  type: FETCH_DATA_SOURCE_VIEW_FAIL
+});
 
 // Loads the metadata for the view found at dataSourceLensUid.
-export const loadDataSourceView = (uid) => {
+export const fetchDataSourceView = (uid) => {
   return async (dispatch, getState) => {
     if (!uid) {
       return;
@@ -57,29 +73,32 @@ export const loadDataSourceView = (uid) => {
       rowCount = await soqlDataProvider.getRowCount();
       metadata = await metadataPromise;
       columns = await metadataProvider.getDisplayableFilterableColumns(metadata);
+
+      dispatch(
+        fetchDataSourceViewSuccess(
+          uid,
+          rowCount,
+          metadata,
+          columns
+        )
+      );
     } catch (ex) {
       console.error(ex);
-
-      metadata = null;
-      columns = [];
-      rowCount = -1;
+      dispatch(fetchDataSourceViewFail());
     }
-
-    dispatch(
-      receiveDataSourceMetadata(
-        rowCount,
-        metadata,
-        columns
-      )
-    );
   };
 };
+
+export const RESET_DATA_SOURCE = 'RESET_DATA_SOURCE';
+export const resetDataSource = () => ({
+  type: RESET_DATA_SOURCE
+});
 
 export const changeDataSource = (dataSourceString) => {
   return async (dispatch) => {
     const uid = _.get(dataSourceString.match(TRAILING_UID_REGEX), '1');
-    dispatch(setDataSourceUid(uid));
-    dispatch(loadDataSourceView(uid));
+
+    dispatch(fetchDataSourceView(uid));
   };
 };
 
@@ -112,7 +131,6 @@ export const setAggregationType = (aggregationType) => ({
   type: SET_AGGREGATION_TYPE,
   aggregationType
 });
-
 
 export const SET_NUMERATOR_COLUMN = 'SET_NUMERATOR_COLUMN';
 export const setNumeratorColumn = (fieldName) => ({
@@ -219,7 +237,7 @@ export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
 export const openEditModal = () => async (dispatch, getState) => {
   // Need to fetch view metadata first.
   const dataSourceLensUid = _.get(getState(), 'view.measure.dataSourceLensUid');
-  await loadDataSourceView(dataSourceLensUid)(dispatch, getState);
+  await fetchDataSourceView(dataSourceLensUid)(dispatch, getState);
   const { measure, coreView } = getState().view;
   dispatch({
     type: OPEN_EDIT_MODAL,

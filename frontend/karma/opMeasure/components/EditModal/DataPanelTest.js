@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
 
-import { DataPanel, DataSourceStates, mapStateToProps } from 'components/EditModal/DataPanel';
+import { DataPanel, mapStateToProps } from 'components/EditModal/DataPanel';
 
 describe('DataPanel', () => {
   describe('mapStateToProps', () => {
@@ -110,25 +110,39 @@ describe('DataPanel', () => {
         });
       });
 
-      describe('when an invalid dataset is selected', () => {
+      describe('when a dataset with no date column is selected', () => {
         beforeEach(() =>  {
           props = getProps({
-            dataSourceName: 'Invalid Dataset',
-            rowCount: -1,
             measure: {
               dataSourceLensUid: 'test-test'
+            },
+            errors: {
+              setDataSourceMetadataError: true
             }
           });
           element = shallow(<DataPanel {...props} />);
         });
 
         it('displays the correct messages', () => {
-          assert.equal(getDatasetName(element).text(), 'test-test');
-          assert.include(getText(element).last().text(), 'The selected dataset is not suitable');
+          assert.include(getText(element).last().text(), 'The selected dataset does not contain a date column');
+        });
+      });
+
+      describe('when fetching dataset fails', () => {
+        beforeEach(() =>  {
+          props = getProps({
+            measure: {
+              dataSourceLensUid: 'test-test'
+            },
+            errors: {
+              fetchDataSourceViewError: true
+            }
+          });
+          element = shallow(<DataPanel {...props} />);
         });
 
-        it('renders a reset link', () => {
-          assert.isTrue(getResetLink(element).exists());
+        it('displays the correct messages', () => {
+          assert.include(getText(element).last().text(), 'The selected dataset is not suitable');
         });
       });
     });

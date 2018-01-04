@@ -6,7 +6,7 @@ import createLogger from 'redux-logger';
 
 import rootReducer from './reducers';
 
-import { loadDataSourceView } from 'actions/editor';
+import { fetchDataSourceView } from 'actions/editor';
 import { ModeStates } from './lib/constants';
 
 const middleware = [thunk, createDebounce()];
@@ -26,7 +26,7 @@ const store = createStore(rootReducer, applyMiddleware(...middleware));
 // Prefetch data source if editing.
 const dataSourceLensUid = _.get(window, 'socrata.opMeasure.measure.dataSourceLensUid');
 if (dataSourceLensUid && socrata.opMeasure.mode === ModeStates.EDIT) {
-  store.dispatch(loadDataSourceView(dataSourceLensUid));
+  store.dispatch(fetchDataSourceView(dataSourceLensUid));
 }
 
 export default store;

@@ -8,11 +8,14 @@ import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
 
-import { changeDataSource } from '../../actions/editor';
+import { changeDataSource, resetDataSource } from '../../actions/editor';
+
+const i18nOptions = { scope: 'open_performance.measure.edit_modal.data_source' };
 
 // Configuration panel for connecting a measure to a data source.
 export class DataPanel extends Component {
   state = { loaded: false }
+
 
   componentDidMount() {
     // onDatasetSelected is the old asset selector's contract. Its argument is
@@ -33,16 +36,15 @@ export class DataPanel extends Component {
     delete this.iframe.onDatasetSelected;
   }
 
-  scope = 'open_performance.measure.edit_modal.data_source'
 
   handleReset = (event) => {
     event.preventDefault();
-    this.props.onChangeDataSource('');
+    this.props.onResetDataSource();
   }
 
   renderResetLink() {
     return (
-      <a href="#" onClick={this.handleReset}>{I18n.t('reset', { scope: this.scope })}</a>
+      <a href="#" onClick={this.handleReset}>{I18n.t('reset', i18nOptions)}</a>
     );
   }
 
@@ -57,13 +59,13 @@ export class DataPanel extends Component {
       <div className="selected-dataset alert">
         <p>
           <span className="selected-dataset-label">
-            {I18n.t('selected_dataset_label', { scope: this.scope })}
+            {I18n.t('selected_dataset_label', i18nOptions)}
           </span>
           <span className="selected-dataset-name selected-dataset-empty">
-            {I18n.t('selected_dataset_placeholder', { scope: this.scope })}
+            {I18n.t('selected_dataset_placeholder', i18nOptions)}
           </span>
         </p>
-        <p>{I18n.t('message_default', { scope: this.scope })}</p>
+        <p>{I18n.t('message_default', i18nOptions)}</p>
       </div>
     );
   }
@@ -85,14 +87,14 @@ export class DataPanel extends Component {
       <div className="selected-dataset alert success">
         <p>
           <span className="selected-dataset-label">
-            {I18n.t('selected_dataset_label', { scope: this.scope })}
+            {I18n.t('selected_dataset_label', i18nOptions)}
           </span>
           <span className="selected-dataset-name">
             {dataSourceName}
           </span>
         </p>
         <p>
-          {I18n.t('message_valid', { scope: this.scope, rowCount: formatNumber(rowCount) })}
+          {I18n.t('message_valid', _.merge(i18nOptions, { rowCount: formatNumber(rowCount) }))}
           {' | '}
           {this.renderResetLink()}
         </p>
@@ -107,31 +109,32 @@ export class DataPanel extends Component {
       <div className="selected-dataset alert warning">
         <p>
           <span className="selected-dataset-label">
-            {I18n.t('selected_dataset_label', { scope: this.scope })}
+            {I18n.t('selected_dataset_label', i18nOptions)}
           </span>
           <span className="selected-dataset-name">
             {dataSourceName}
           </span>
         </p>
-        <p>{I18n.t('message_empty', { scope: this.scope })} | {this.renderResetLink()}</p>
+        <p>{I18n.t('message_empty', i18nOptions)} | {this.renderResetLink()}</p>
       </div>
     );
   }
 
-  // Invalid state: dataset retrieval failed, rowCount === -1
+  // Invalid state: dataset retrieval failed, or missing date column
   renderSelectionInvalidState() {
-    const { dataSourceLensUid } = this.props.measure;
+    const { errors } = this.props;
+
+    let errorMsg;
+    if (errors.fetchDataSourceViewError) {
+      errorMsg = I18n.t('message_invalid', i18nOptions);
+    }
+    if (errors.setDataSourceMetadataError) {
+      errorMsg = I18n.t('message_no_date_column', i18nOptions);
+    }
+
     return (
       <div className="selected-dataset alert error">
-        <p>
-          <span className="selected-dataset-label">
-            {I18n.t('selected_dataset_label', { scope: this.scope })}
-          </span>
-          <span className="selected-dataset-name">
-            {dataSourceLensUid}
-          </span>
-        </p>
-        <p>{I18n.t('message_invalid', { scope: this.scope })} | {this.renderResetLink()}</p>
+        <p>{errorMsg}</p>
       </div>
     );
   }
@@ -157,33 +160,33 @@ export class DataPanel extends Component {
   }
 
   render() {
-    const { rowCount } = this.props;
+    const { errors, rowCount } = this.props;
+    const hasError = _.includes(_.values(errors), true);
 
     return (
       <div>
-        <h3>{I18n.t('title', { scope: this.scope })}</h3>
+        <h3>{I18n.t('title', i18nOptions)}</h3>
         <form onSubmit={(event) => event.preventDefault()}>
           {
-            _.isUndefined(rowCount) &&
+            (!hasError && _.isUndefined(rowCount)) &&
             this.renderSelectionDefaultState()
           }
           {
-            _.isNull(rowCount) &&
+            (!hasError && _.isNull(rowCount)) &&
             this.renderSelectionFetchingState()
           }
           {
-            rowCount > 0 &&
+            (!hasError && rowCount > 0) &&
             this.renderSelectionValidState()
           }
           {
-            rowCount === 0 &&
+            (!hasError && rowCount === 0) &&
             this.renderSelectionEmptyState()
           }
           {
-            rowCount < 0 &&
+            (hasError) &&
             this.renderSelectionInvalidState()
           }
-
           {this.renderIframe()}
         </form>
       </div>
@@ -197,24 +200,32 @@ DataPanel.propTypes = {
   measure: PropTypes.shape({
     dataSourceLensUid: PropTypes.string
   }),
-  onChangeDataSource: PropTypes.func
+  onChangeDataSource: PropTypes.func,
+  onResetDataSource: PropTypes.func,
+  errors: PropTypes.shape({
+    fetchDataSourceViewError: PropTypes.bool,
+    setDataSourceMetadataError: PropTypes.bool
+  })
 };
 
 export function mapStateToProps(state) {
   const measure = _.get(state, 'editor.measure', {});
   const dataSourceName = _.get(state, 'editor.dataSourceView.name', '');
   const rowCount = _.get(state, 'editor.cachedRowCount');
+  const errors = _.get(state, 'editor.errors', {});
 
   return {
     measure,
     dataSourceName,
-    rowCount
+    rowCount,
+    errors
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onChangeDataSource: changeDataSource
+    onChangeDataSource: changeDataSource,
+    onResetDataSource: resetDataSource
   }, dispatch);
 }
 

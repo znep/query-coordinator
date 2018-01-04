@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { assert, assertIsNumber, assertIsOneOfTypes } from 'common/js_utils';
+import { assert, assertIsNumber, assertIsString, assertIsOneOfTypes } from 'common/js_utils';
 
 import validate from './validate';
 import actions from '../actions';
@@ -49,6 +49,26 @@ const setCalculationType = (state, type) => {
   return newState;
 };
 
+const resetDataSource = (state) => {
+  const { measure, errors } = state;
+
+  return {
+    ...state,
+    measure: {
+      ...measure,
+      dataSourceLensUid: null
+    },
+    cachedRowCount: undefined,
+    dataSourceView: null,
+    displayableFilterableColumns: [],
+    errors: {
+      ...errors,
+      fetchDataSourceViewError: false,
+      setDataSourceMetadataError: false
+    }
+  };
+};
+
 // Initial state for the edit modal reducer.
 export const INITIAL_STATE = Object.freeze({
   isEditing: false,
@@ -82,37 +102,68 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         activePanel: action.panelId
       };
     }
-    case actions.editor.SET_DATA_SOURCE_UID: {
-      const { uid } = action;
-      const newState = { ...state };
 
-      // `uid` will be undefined when the data source is 'reset'
-      if (!uid) {
-        _.set(newState, 'measure.dataSourceLensUid', null);
-        _.set(newState, 'dataSourceView', null);
-        _.set(newState, 'cachedRowCount', undefined);
-      } else {
-        _.set(newState, 'measure.dataSourceLensUid', uid);
-        _.set(newState, 'cachedRowCount', null);
-      }
-
-      return setCalculationType(newState, CalculationTypeNames.COUNT); // Clear any existing measure config.
-    }
-    case actions.editor.RECEIVE_DATA_SOURCE_VIEW: {
+    case actions.editor.SET_DATA_SOURCE_METADATA_SUCCESS: {
+      const { measure, errors } = state;
+      const { uid, rowCount, dataSourceView, displayableFilterableColumns } = action;
       // N.B.: This action is dispatched when the editor is loaded. It does not imply the user
       // chose a new data source - we could just be loading an existing measure.
       // This means that we won't touch the metricConfig - if the user is switching data
       // sources, dispatch a SET_DATA_SOURCE_UID first to reset the metricConfig to defaults.
-      assertIsNumber(action.rowCount);
-      assertIsOneOfTypes(action.dataSourceView, 'object');
+      assertIsString(uid);
+      assertIsNumber(rowCount);
+      assertIsOneOfTypes(dataSourceView, 'object');
 
       return {
         ...state,
-        cachedRowCount: action.rowCount,
-        dataSourceView: action.dataSourceView,
-        displayableFilterableColumns: action.displayableFilterableColumns
+        measure: {
+          ...measure,
+          dataSourceLensUid: uid
+        },
+        cachedRowCount: rowCount,
+        dataSourceView: dataSourceView,
+        displayableFilterableColumns: displayableFilterableColumns,
+        errors: {
+          ...errors,
+          fetchDataSourceViewError: false,
+          setDataSourceMetadataError: false
+        }
       };
     }
+
+    // Invalid state: dataset fetch request failed
+    case actions.editor.FETCH_DATA_SOURCE_VIEW_FAIL: {
+      const newState = resetDataSource(state);
+      const { errors } = newState;
+
+      return {
+        ...newState,
+        errors: {
+          ...errors,
+          fetchDataSourceViewError: true
+        }
+      };
+    }
+
+    // Invalid state: set dataset metadata failed due to missing calendar_date column
+    case actions.editor.SET_DATA_SOURCE_METADATA_FAIL: {
+      const newState = resetDataSource(state);
+      const { errors } = newState;
+
+      return {
+        ...newState,
+        errors: {
+          ...errors,
+          setDataSourceMetadataError: true
+        }
+      };
+    }
+
+    // Default state: no dataset selected
+    case actions.editor.RESET_DATA_SOURCE: {
+      return resetDataSource(state);
+    }
+
     case actions.editor.SET_CALCULATION_TYPE: {
       return setCalculationType(state, action.calculationType);
     }

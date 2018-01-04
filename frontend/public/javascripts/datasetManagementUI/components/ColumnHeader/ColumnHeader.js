@@ -320,25 +320,26 @@ export class ColumnHeader extends Component {
     } = this.props;
 
     const isDisabled = activeApiCallInvolvingThis || !canTransform;
-
+    let isSelectorDisabled = isDisabled;
     let convertibleTo = [];
+
+    // Simple case of only transforming via the selection dropdown
     if (outputColumn.inputColumns.length === 1) {
       const inputColumn = outputColumn.inputColumns[0];
 
       const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
       convertibleTo = Object.keys(inputColumnTypeInfo.conversions);
-    }
 
-    // TODO: add this back if/when we figure out a way to convert in dsmui without
-    // needing an input column. The current codepath intentionally throws an error.
-    // else if (outputColumn.transform && outputColumn.transform.parsed_expr) {
-    //   const isCreatedColumn = outputColumn.transform.parsed_expr.args[0] === null;
-    //
-    //   if (isCreatedColumn) {
-    //     const canonicalName = conversionsToCanonicalName(outputColumn.transform.parsed_expr.function_name);
-    //     convertibleTo = Object.keys(soqlProperties[canonicalName].conversions);
-    //   }
-    // }
+      isSelectorDisabled = isSelectorDisabled || convertibleTo.length === 0;
+    } else {
+      // More complex case: someone has a transform which
+      // was made through the geocoding dialog or transform editor
+      // This means the simple to_text/to_number/etc transforms must be disabled,
+      // so we disable the selector
+      isSelectorDisabled = true;
+      // and then say we can convert to ourself so the selector at least has a title
+      convertibleTo.push(this.columnType());
+    }
 
     const types = convertibleTo.map(type => ({
       humanName: Translations.type_display_names[type.toLowerCase()],
@@ -346,8 +347,6 @@ export class ColumnHeader extends Component {
     }));
 
     const orderedTypes = _.sortBy(types, 'humanName');
-
-    const isSelectorDisabled = isDisabled || orderedTypes.length === 0;
 
     const dropdownProps = {
       onSelection: e => this[e.value](outputColumn),

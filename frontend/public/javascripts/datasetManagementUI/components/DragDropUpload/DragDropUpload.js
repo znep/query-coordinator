@@ -174,6 +174,7 @@ export class DragDropUpload extends Component {
                       {`${I18n.show_uploads.filetypes} ${enabledFileExtensionsStr}`}
                     </div>
                     <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
+                    <div className={styles.fileTypes}>{I18n.show_uploads.dirs_not_supported}</div>
                   </div>
               }
             </div>

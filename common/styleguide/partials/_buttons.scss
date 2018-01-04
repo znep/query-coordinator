@@ -16,24 +16,42 @@
   letter-spacing: 0;
 
   .spinner-default {
-    width: 1rem;
-    height: 1rem;
-    border-width: 2px;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-width: 3px;
   }
 
   &.btn-lg {
     font-size: ms(1);
     padding: ms(-2) ms(1);
+
+    .spinner-default {
+      width: 1rem;
+      height: 1rem;
+      border-width: 2px;
+    }
   }
 
   &.btn-sm {
     font-size: ms(-1);
     padding: ms(-6) ms(-1);
+
+    .spinner-default {
+      width: 0.85rem;
+      height: 0.85rem;
+      border-width: 2px;
+    }
   }
 
   &.btn-xs {
     font-size: ms(-2);
     padding: ms(-8) ms(-1);
+
+    .spinner-default {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-width: 2px;
+    }
   }
 
   [class*="socrata-icon-"] {

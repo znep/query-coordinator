@@ -86,9 +86,12 @@ RSpec.describe ProfileHelper, type: :helper do
     end
 
     describe 'when encountering a draft view' do
+      before(:each) do
+        rspec_stub_feature_flags_with(:enable_dataset_management_ui => true)
+      end
+
       let(:is_story) { false }
       let(:is_draft) { true }
-      let(:dataset_management_page_enabled?) { true }
 
       describe 'when the user has edit rights' do
         let(:can_edit) { true }

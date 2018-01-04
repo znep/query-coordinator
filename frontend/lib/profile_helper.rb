@@ -25,7 +25,7 @@ module ProfileHelper
       return preview_story_url(view) if view.can_preview_story?(current_user)
     end
 
-    if view.draft? and view.can_edit? and dataset_management_page_enabled?
+    if view.draft? and view.can_edit? and FeatureFlags.derive(nil, request).enable_dataset_management_ui
       category = view.category ? view.category.convert_to_url : "dataset"
       return current_revision_path({:id => view.id, :view_name => view.name.convert_to_url, :category => category})
     end

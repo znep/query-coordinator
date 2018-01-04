@@ -113,11 +113,6 @@ module ApplicationHelper
       FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
-# DATASET MANAGEMENT PAGE
-  def dataset_management_page_enabled?
-    FeatureFlags.derive(nil, request).enable_dataset_management_ui
-  end
-
 # PAGE-HEADER
 
   def get_favicon_tag

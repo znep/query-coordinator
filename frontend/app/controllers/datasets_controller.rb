@@ -275,7 +275,7 @@ class DatasetsController < ApplicationController
   end
 
   def show_revision
-    if dataset_management_page_enabled?
+    if FeatureFlags.derive(nil, request).enable_dataset_management_ui
       @view = get_view(params[:id])
       return if @view.nil?
       unless using_canonical_url?
@@ -298,7 +298,7 @@ class DatasetsController < ApplicationController
   end
 
   def current_revision
-    if dataset_management_page_enabled?
+    if FeatureFlags.derive(nil, request).enable_dataset_management_ui
       # ask dsmapi for the list of revisions
       open_revisions = DatasetManagementAPI.get_open_revisions(params[:id], cookies)
       if open_revisions.length > 0

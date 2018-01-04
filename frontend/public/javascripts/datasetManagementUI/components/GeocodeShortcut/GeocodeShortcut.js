@@ -29,13 +29,6 @@ const COMPONENTS = 'COMPONENTS';
 const COMBINED = 'COMBINED';
 const LATLNG = 'LATLNG';
 
-const fieldSet = (composedFrom, mappings, setMapping, outputColumns) =>
-  ({
-    LATLNG: <LatLngFields outputColumns={outputColumns} setMapping={setMapping} mappings={mappings} />,
-    COMPONENTS: <ComponentFields outputColumns={outputColumns} setMapping={setMapping} mappings={mappings} />,
-    COMBINED: <CombinedFields outputColumns={outputColumns} setMapping={setMapping} mappings={mappings} />
-  }[composedFrom]);
-
 class GeocodeShortcut extends Component {
   createNewOutputSchema(desiredColumns) {
     return this.props
@@ -99,17 +92,35 @@ class GeocodeShortcut extends Component {
       [styles.compositionButton]: !isCombined
     });
 
+    let fieldSet;
+    switch (this.props.formState.composedFrom) {
+      case LATLNG:
+        fieldSet = (<LatLngFields
+          outputColumns={this.props.allOutputColumns}
+          setMapping={this.props.setMapping}
+          mappings={mappings} />);
+        break;
+      case COMPONENTS:
+        fieldSet = (<ComponentFields
+          outputColumns={this.props.allOutputColumns}
+          setMapping={this.props.setMapping}
+          mappings={mappings} />);
+        break;
+      case COMBINED:
+        fieldSet = (<CombinedFields
+          outputColumns={this.props.allOutputColumns}
+          setMapping={this.props.setMapping}
+          mappings={mappings} />);
+        break;
+      default:
+        fieldSet = null;
+    }
 
     const content = !configurationError ? (
       <div className={styles.content}>
         <div className={styles.formWrap}>
           <form>
-            {fieldSet(
-              this.props.formState.composedFrom,
-              mappings,
-              this.props.setMapping,
-              this.props.allOutputColumns
-            )}
+            {fieldSet}
 
             <HideOriginal
               shouldHideOriginal={shouldHideOriginal}

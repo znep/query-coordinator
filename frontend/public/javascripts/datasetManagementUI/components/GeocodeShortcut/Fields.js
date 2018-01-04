@@ -45,7 +45,7 @@ function outputColumnSelection(
     .filter(oc => _.includes(typeWhitelist, oc.transform.output_soql_type))
     .map(oc => ({
       title: oc.display_name,
-      value: oc,
+      value: oc.field_name,
       render: optionRenderer
     }))
     .concat([empty]);
@@ -59,12 +59,13 @@ function outputColumnSelection(
       if (value === ENTER_CONSTANT) {
         setMapping(addressComponent, '');
       } else if (value) {
-        setMapping(addressComponent, value);
+        const newOutputColumn = _.find(outputColumns, oc => oc.field_name === value);
+        setMapping(addressComponent, newOutputColumn);
       } else {
         setMapping(addressComponent, null);
       }
     },
-    value: _.isString(outputColumn) ? ENTER_CONSTANT : outputColumn,
+    value: _.isString(outputColumn) ? ENTER_CONSTANT : (outputColumn && outputColumn.field_name),
     options
   };
 

@@ -105,23 +105,26 @@
         </div>
       </div>
 
-      <div class="settings_group">
-        <div class="configuration_title">
-          <h6>
-            <%= t('reapproval', scope: 'approvals.settings.approval_process') %>
-          </h6>
+      <!-- EN-21078: Hide "Re-approval" settings group for now -->
+      <!--
+        <div class="settings_group">
+          <div class="configuration_title">
+            <h6>
+              <%= t('reapproval', scope: 'approvals.settings.approval_process') %>
+            </h6>
+          </div>
+          <div class="configuration_options">
+            <ul>
+              <li class="<%= @approval_workflow.manual? && 'selected' %>">
+                <%= check_box_tag('reapproval_strategy', 'manual', @approval_workflow.manual?, :disabled => true, :class => 'embiggen') %>
+                <label class="checkbox_label" for="reapproval_strategy">
+                  <%= t('working_copies', scope: 'approvals.settings.approval_process') %>
+                </label>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="configuration_options">
-          <ul>
-            <li class="<%= @approval_workflow.manual? && 'selected' %>">
-              <%= check_box_tag('reapproval_strategy', 'manual', @approval_workflow.manual?, :disabled => true, :class => 'embiggen') %>
-              <label class="checkbox_label" for="reapproval_strategy">
-                <%= t('working_copies', scope: 'approvals.settings.approval_process') %>
-              </label>
-            </li>
-          </ul>
-        </div>
-      </div>
+      -->
     <% end %>
 
     <div class="settings_group">

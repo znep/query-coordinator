@@ -435,8 +435,8 @@ en:
     settings:
       title: Settings
       introduction:
-        paragraph_1: Set the approval process for how assets get published on this site. You can set all assets to be approved or rejected automatically, or require manual approval.
-        paragraph_2: Only approved assets display on your site's Data Catalog.
+        paragraph_1: This Approval workflow allows you to control whether or not assets published by privileged users on your site immediately become available to the public, or if such assets require review before becoming publicly-available. You can set different behavior for "Official" assets (i.e. those owned by users with roles on your site) and "Community" assets (i.e. those owned by users without roles on your site, typically data consumers from the general public) below.
+        paragraph_2: 'Note: Only "approved" assets are available to the public and discoverable in your data catalog. Once an asset has been "approved" in the Approval Queue, all future edits to this asset will be automatically approved by the system. Of course, assets can be manually "rejected" later, if necessary.'
       approval_process:
         official: Official asset settings
         roled_users: Assets published by roled users (publishers, designers, etc.)...

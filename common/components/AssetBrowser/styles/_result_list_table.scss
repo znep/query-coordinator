@@ -210,6 +210,8 @@ $result_list_row_bg_hover_color: $primary-light;
         tr.result-list-row {
           .actions {
             .approval-action-buttons {
+              white-space: nowrap;
+
               > div {
                 display: inline-block;
 

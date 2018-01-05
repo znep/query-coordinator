@@ -4,6 +4,10 @@
 @import 'common/feedback-panel';
 @import 'common/visualizations/views/styles/socrata-visualizations';
 
+html {
+  font-size: 12px;
+}
+
 #app .dataset-management-ui {
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
   @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';

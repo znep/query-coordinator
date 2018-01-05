@@ -59,6 +59,7 @@ class EditButton extends React.Component {
     this.fetchWorkingCopy();
     this.i18n_scope = 'shared.components.asset_action_bar.publication_action';
     this.state = { workingCopy: 'needToCreate' };
+    this.workingCopyCreatedDuringThisBrowserSession = false;
 
     _.bindAll(this, [
       'createWorkingCopy'
@@ -104,11 +105,23 @@ class EditButton extends React.Component {
         } else if (workingCopy) {
           this.workingCopy = workingCopy;
           this.setState({ workingCopy: 'ready' });
+
+          // Parity behavioral decision:
+          // If the working copy creation was started during this browser session, then after
+          // it is complete, we should redirect the user to the working copy.
+          // If the working copy creation was started by a different browser session (it may
+          // have been another user, for example), then do not redirect.
+          //
+          // This matches the behavior found in dataset-show.js.
+          if (this.workingCopyCreatedDuringThisBrowserSession) {
+            window.location.assign(this.urlForWorkingCopy());
+          }
         }
       });
   }
 
   createWorkingCopy() {
+    this.workingCopyCreatedDuringThisBrowserSession = true;
     this.setState({ workingCopy: 'creating' });
 
     const uid = this.props.currentViewUid;

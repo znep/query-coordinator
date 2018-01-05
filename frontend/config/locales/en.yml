@@ -930,9 +930,6 @@ en:
         create_dataset_beta: Create a Dataset (beta)
         create_dataset_beta_short: Dataset (beta)
         create_dataset_beta_verb: Create (beta)
-        create_dataset_preview: Create a Dataset (preview)
-        create_dataset_preview_short: Dataset (preview)
-        create_dataset_preview_verb: Create (preview)
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete

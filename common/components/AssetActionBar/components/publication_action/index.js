@@ -8,6 +8,20 @@ import EditButton from '../edit_button';
 import Dropdown from 'common/components/Dropdown';
 import Button from 'common/components/Button';
 
+import 'whatwg-fetch';
+import { defaultHeaders, fetchJson } from 'common/http';
+
+const fetchOptions = {
+  credentials: 'same-origin',
+  headers: defaultHeaders
+};
+
+const deleteViewByUid = (uid) => {
+  const url = `/api/views/${uid}.json`;
+
+  return fetch(url, _.assign({}, fetchOptions, { method: 'DELETE' }));
+};
+
 class PublicationAction extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +39,7 @@ class PublicationAction extends React.Component {
     const { allowedTo, publicationState, publishedViewUid } = this.props;
 
     return {
+      discardDraft: allowedTo.manage && publicationState === 'draft',
       // We're not including Revert for now as per ChristianH.
       revert: false, // publicationState === 'draft' && publishedViewUid,
       view: publishedViewUid,
@@ -38,7 +53,7 @@ class PublicationAction extends React.Component {
 
   handleMoreActions(option) {
     const { value } = option;
-    const { publishedViewUid } = this.props;
+    const { currentViewUid, publishedViewUid } = this.props;
     switch (value) {
       case 'revert-to-published':
         // TODO someday. Currently postponed.
@@ -51,6 +66,10 @@ class PublicationAction extends React.Component {
         // TODO by someone else. Expecting to call an external function of some kind.
         console.log('change-audience option selected');
         break;
+      case 'discard-draft':
+        deleteViewByUid(currentViewUid).
+          then(() => { window.location.assign(`/d/${publishedViewUid}`); });
+        break;
     }
   }
 
@@ -62,6 +81,13 @@ class PublicationAction extends React.Component {
       actions.push({
         title: I18n.t('revert_published', { scope: this.i18n_scope }),
         value: 'revert-to-published'
+      });
+    }
+
+    if (currentlyAbleTo.discardDraft) {
+      actions.push({
+        title: I18n.t('discard_draft', { scope: this.i18n_scope }),
+        value: 'discard-draft'
       });
     }
 

@@ -39,10 +39,6 @@
       <li role="menuitem">
         <%= link_to(t('shared.site_chrome.header.create_menu.dataset'), site_chrome_massage_url('/datasets/new?beta=true&data_asset=false')) %>
       </li>
-    <%- elsif current_user_can_see_dsmp_preview? -%>
-      <li role="menuitem">
-        <%= link_to(t('shared.site_chrome.header.create_menu.dataset_preview'), site_chrome_massage_url('/datasets/new?beta=true')) %>
-      </li>
     <%- elsif current_user_can_see_create_datasets_beta? -%>
       <li role="menuitem">
         <%= link_to(t('shared.site_chrome.header.create_menu.dataset_beta'), site_chrome_massage_url('/datasets/new?beta=true')) %>

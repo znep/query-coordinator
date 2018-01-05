@@ -192,7 +192,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     case actions.editor.SET_DATE_COLUMN:
       assertIsOneOfTypes(action.fieldName, 'string');
 
-      return updateMeasureProperty(state, 'metricConfig.arguments.dateColumn', action.fieldName);
+      return updateMeasureProperty(state, 'metricConfig.dateColumn', action.fieldName);
 
     case actions.editor.SET_ANALYSIS:
       return updateMeasureProperty(state, 'metadata.analysis', action.analysis);

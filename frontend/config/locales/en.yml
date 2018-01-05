@@ -3192,7 +3192,6 @@ en:
           choose_aggregation: Choose aggregation...
           choose_column: Choose a column...
           data_source_needed: Connect your data to power your metric
-          date_column: Date Column
           display_options:
             decimal_places: Decimal Places
             title: Display Options
@@ -3200,6 +3199,8 @@ en:
             unit_label_placeholder: Per ...
             display_as_percent: Display as percent
           include_nulls: Include missing or null values
+          reference_date_column_subtitle: Used to organize your visualization.
+          reference_date_column_title: Set Reference Date Column
           sample_result: Sample Result
           subtitle: Choose a calculation type and configure math options.
           tab_title: Calculation
@@ -3209,6 +3210,7 @@ en:
               help_body: This calculation type counts the number of rows in the selected data source.  Checking "Include missing or null values" will skip over the cells that do not contain a value.
               help_title: How is Count Calculated?
               title: Count Options
+              column_selector_title: Choose column to count
             rate:
               aggregation_subtitle: Configure math for numerator and denominator
               aggregation_title: Set Aggregation
@@ -3235,7 +3237,6 @@ en:
               set_column_conditions: Set Column Conditions
             recent:
               column_condition: Column Condition
-              date_column: Date Column
               help_body: Chooses the most recent value of a column, given the condition and date column selected.
               help_title: How is Recent Value Calculated?
               title: Select an Exact Value by Date

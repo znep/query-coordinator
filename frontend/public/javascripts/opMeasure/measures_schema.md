@@ -40,6 +40,7 @@ When working with the measure in the Frontend, the JSON will look like:
   },
   metricConfig: {
     type: String,
+    dateColumn: String,
     arguments: {
       # See 'arguments' section
     },
@@ -69,7 +70,7 @@ The set of arguments can change based on the type of calculation (`metricConfig.
 ```
 {
   arguments: {
-    column: String
+    column: String,
   }
 }
 ```
@@ -78,8 +79,7 @@ The set of arguments can change based on the type of calculation (`metricConfig.
 ```
 {
   arguments: {
-    valueColumn: String,
-    dateColumn: String
+    valueColumn: String
   }
 }
 ```
@@ -89,12 +89,12 @@ The set of arguments can change based on the type of calculation (`metricConfig.
 {
   arguments: {
     aggregationType: String, // ['count' or 'sum']
-    numeratorColumn: String,
     denominatorColumn: String, // [not provided if `fixedDenominator`is set]
+    denominatorExcludeNullValues: Boolean,    // only relevant if aggregationType == 'count' && denominatorColumn is set
     fixedDenominator: String,  // should be parsable number
-    numeratorColumnCondition: Filter Object // See https://github.com/socrata/platform-ui/blob/master/common/visualizations/VIF.md#appendix-soql-filter-objects
-    numeratorExcludeNullValues: Boolean,    // only relevant if aggregationType == 'count'
-    denominatorExcludeNullValues: Boolean    // only relevant if aggregationType == 'count' && denominatorColumn is set
+    numeratorColumn: String,
+    numeratorColumnCondition: Filter Object, // See https://github.com/socrata/platform-ui/blob/master/common/visualizations/VIF.md#appendix-soql-filter-objects
+    numeratorExcludeNullValues: Boolean    // only relevant if aggregationType == 'count'
   }
 }
 ```

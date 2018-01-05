@@ -36,6 +36,11 @@ describe('measureCalculator', () => {
       scenario(numberCol, countMeasure, 'valueColumn', true);
       scenario(moneyCol, countMeasure, 'valueColumn', true);
       scenario(textCol, countMeasure, 'valueColumn', true);
+
+      scenario(dateCol, countMeasure, 'dateColumn', true);
+      scenario(numberCol, countMeasure, 'dateColumn', false);
+      scenario(moneyCol, countMeasure, 'dateColumn', false);
+      scenario(textCol, countMeasure, 'dateColumn', false);
     });
 
     describe('sum measure', () => {
@@ -43,6 +48,11 @@ describe('measureCalculator', () => {
       scenario(numberCol, sumMeasure, 'valueColumn', true);
       scenario(moneyCol, sumMeasure, 'valueColumn', true);
       scenario(textCol, sumMeasure, 'valueColumn', false);
+
+      scenario(dateCol, sumMeasure, 'dateColumn', true);
+      scenario(numberCol, sumMeasure, 'dateColumn', false);
+      scenario(moneyCol, sumMeasure, 'dateColumn', false);
+      scenario(textCol, sumMeasure, 'dateColumn', false);
     });
 
     describe('count rate measure', () => {
@@ -55,6 +65,11 @@ describe('measureCalculator', () => {
       scenario(numberCol, countRateMeasure, 'denominatorColumn', true);
       scenario(moneyCol, countRateMeasure, 'denominatorColumn', true);
       scenario(textCol, countRateMeasure, 'denominatorColumn', true);
+
+      scenario(dateCol, countRateMeasure, 'dateColumn', true);
+      scenario(numberCol, countRateMeasure, 'dateColumn', false);
+      scenario(moneyCol, countRateMeasure, 'dateColumn', false);
+      scenario(textCol, countRateMeasure, 'dateColumn', false);
     });
 
     describe('sum rate measure', () => {
@@ -67,6 +82,11 @@ describe('measureCalculator', () => {
       scenario(numberCol, sumRateMeasure, 'denominatorColumn', true);
       scenario(moneyCol, sumRateMeasure, 'denominatorColumn', true);
       scenario(textCol, sumRateMeasure, 'denominatorColumn', false);
+
+      scenario(dateCol, sumRateMeasure, 'dateColumn', true);
+      scenario(numberCol, sumRateMeasure, 'dateColumn', false);
+      scenario(moneyCol, sumRateMeasure, 'dateColumn', false);
+      scenario(textCol, sumRateMeasure, 'dateColumn', false);
     });
 
     describe('recent value measure', () => {
@@ -401,7 +421,7 @@ describe('measureCalculator', () => {
         _.set(measure, 'metricConfig.type', 'recent');
         _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
         _.set(measure, 'metricConfig.arguments.valueColumn', 'foos');
-        _.set(measure, 'metricConfig.arguments.dateColumn', 'bars');
+        _.set(measure, 'metricConfig.dateColumn', 'bars');
       });
 
       it('returns empty if uid is not set', async () => {
@@ -417,7 +437,7 @@ describe('measureCalculator', () => {
       });
 
       it('returns empty if dateColumn is not set', async () => {
-        _.unset(measure, 'metricConfig.arguments.dateColumn');
+        _.unset(measure, 'metricConfig.dateColumn');
 
         assert.isEmpty(await calculateMeasure(measure));
       });

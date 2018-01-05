@@ -14,10 +14,13 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
   const renderTypeName = _.get(column, 'renderTypeName');
   const columnIsNumeric = renderTypeName === 'number' || renderTypeName === 'money';
 
+  if (argument === 'dateColumn') {
+    return renderTypeName === 'calendar_date';
+  }
+
   if (type === CalculationTypeNames.RECENT) {
     // Special enough to be clearer as a separate path.
-    return (argument === 'dateColumn' && renderTypeName === 'calendar_date') ||
-      (argument === 'valueColumn' && columnIsNumeric);
+    return argument === 'valueColumn' && columnIsNumeric;
   } else {
     // All other types
     const aggregationType = _.get(measure, 'metricConfig.arguments.aggregationType');
@@ -157,7 +160,7 @@ export const calculateSumMeasure = async (measure) => {
 export const calculateRecentValueMeasure = async (measure) => {
   const dataProvider = setupSoqlDataProvider(measure);
   const valueColumnFieldName = _.get(measure, 'metricConfig.arguments.valueColumn');
-  const dateColumnFieldName = _.get(measure, 'metricConfig.arguments.dateColumn');
+  const dateColumnFieldName = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
 
   if (!dataProvider || !valueColumnFieldName || !dateColumnFieldName) {

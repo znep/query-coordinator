@@ -6,16 +6,14 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import ColumnDropdown from '../ColumnDropdown';
-import { setValueColumn, setDateColumn } from '../../../actions/editor';
+import { setValueColumn } from '../../../actions/editor';
 
 export class RecentValue extends Component {
   // Left-hand pane with count-specific options.
   renderConfigPane() {
     const {
-      dateColumnFieldName,
       displayableFilterableColumns,
       measure,
-      onSelectDateColumn,
       onSelectValueColumn,
       valueColumnFieldName
     } = this.props;
@@ -29,15 +27,6 @@ export class RecentValue extends Component {
       onSelectColumn: onSelectValueColumn
     };
 
-    const dateColDropdownOptions = {
-      columnFieldName: dateColumnFieldName,
-      displayableFilterableColumns,
-      labelledBy: 'date-column',
-      measure,
-      measureArgument: 'dateColumn',
-      onSelectColumn: onSelectDateColumn
-    };
-
 
     return (
       <div className="metric-config">
@@ -49,10 +38,6 @@ export class RecentValue extends Component {
             {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.value_column')}
           </label>
           <ColumnDropdown {...valueColDropdownOptions} />
-          <label className="block-label" id={dateColDropdownOptions.labelledBy}>
-            {I18n.t('open_performance.measure.edit_modal.calculation.types.recent.date_column')}
-          </label>
-          <ColumnDropdown {...dateColDropdownOptions} />
         </div>
       </div>
     );
@@ -78,14 +63,12 @@ export class RecentValue extends Component {
 }
 
 RecentValue.propTypes = {
-  dateColumnFieldName: PropTypes.string,
   displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
     renderTypeName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
   measure: PropTypes.object.isRequired,
-  onSelectDateColumn: PropTypes.func.isRequired,
   onSelectValueColumn: PropTypes.func.isRequired,
   valueColumnFieldName: PropTypes.string
 };
@@ -105,7 +88,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onSelectDateColumn: setDateColumn,
     onSelectValueColumn: setValueColumn
   }, dispatch);
 }

@@ -34,6 +34,9 @@ export class Count extends Component {
 
     return (
       <div className="metric-config">
+        <h5>
+          {I18n.t('open_performance.measure.edit_modal.calculation.types.count.column_selector_title')}
+        </h5>
         <div className="column-dropdown">
           <ColumnDropdown {...dropdownOptions} />
         </div>

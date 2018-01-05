@@ -7,11 +7,22 @@ import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 
-import { setActivePanel, setCalculationType, setUnitLabel, setDecimalPlaces } from '../../actions/editor';
+import {
+  setDateColumn,
+  setActivePanel,
+  setCalculationType,
+  setUnitLabel,
+  setDecimalPlaces
+} from '../../actions/editor';
 
 import calculationTypes from './calculationTypes';
 import { CalculationTypeNames, EditTabs } from '../../lib/constants';
+import ColumnDropdown from './ColumnDropdown';
 import CalculationPreview from './CalculationPreview';
+
+const i18nOptions = {
+  scope: 'open_performance.measure.edit_modal'
+};
 
 // Configuration panel for methods and analysis.
 export class CalculationPanel extends Component {
@@ -51,14 +62,44 @@ export class CalculationPanel extends Component {
       <div className="no-data-source">
         <div className="centerbox">
           <h2>
-            {I18n.t('open_performance.measure.edit_modal.calculation.data_source_needed')}
+            {I18n.t('calculation.data_source_needed', i18nOptions)}
           </h2>
           <button
             className="btn btn-inverse btn-primary"
             onClick={openDataSourceTab}>
-            {I18n.t('open_performance.measure.edit_modal.select_dataset')}
+            {I18n.t('select_dataset', i18nOptions)}
           </button>
         </div>
+      </div>
+    );
+  }
+
+  renderDateColumnChooser() {
+    const {
+      dateColumnFieldName,
+      displayableFilterableColumns,
+      measure,
+      onSelectDateColumn
+    } = this.props;
+
+    const dateColDropdownOptions = {
+      columnFieldName: dateColumnFieldName,
+      displayableFilterableColumns,
+      labelledBy: 'date-column',
+      measure,
+      measureArgument: 'dateColumn',
+      onSelectColumn: onSelectDateColumn
+    };
+
+    return (
+      <div className="calculation-panel-reference-date">
+        <h5>
+          {I18n.t('calculation.reference_date_column_title', i18nOptions)}
+        </h5>
+        <label className="block-label" id={dateColDropdownOptions.labelledBy}>
+          {I18n.t('calculation.reference_date_column_subtitle', i18nOptions)}
+        </label>
+        <ColumnDropdown {...dateColDropdownOptions} />
       </div>
     );
   }
@@ -88,16 +129,16 @@ export class CalculationPanel extends Component {
     const cover = !hasDataSource ? (
       <div
         className="cover"
-        title={I18n.t('open_performance.measure.edit_modal.calculation.data_source_needed')} />
+        title={I18n.t('calculation.data_source_needed', i18nOptions)} />
     ) : null;
 
     return (
       <div>
         <h3 className="calculation-panel-title">
-          {I18n.t('open_performance.measure.edit_modal.calculation.title')}
+          {I18n.t('calculation.title', i18nOptions)}
         </h3>
         <p className="calculation-panel-subtitle">
-          {I18n.t('open_performance.measure.edit_modal.calculation.subtitle')}
+          {I18n.t('calculation.subtitle', i18nOptions)}
         </p>
         {dataLink}
         <div className="calculation-panel-form">
@@ -106,6 +147,7 @@ export class CalculationPanel extends Component {
             <div className="calculation-type-selector btn-group">
               {this.renderCalculatorTypeButtons()}
             </div>
+            {this.renderDateColumnChooser()}
             {this.renderSpecificCalculator()}
           </form>
           {cover}
@@ -117,10 +159,18 @@ export class CalculationPanel extends Component {
 
 CalculationPanel.propTypes = {
   calculationType: PropTypes.string,
+  dateColumnFieldName: PropTypes.string,
   decimalPlaces: PropTypes.number,
+  displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
+    renderTypeName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    fieldName: PropTypes.string.isRequired
+  })),
   hasDataSource: PropTypes.bool.isRequired,
+  measure: PropTypes.object.isRequired,
   onChangeDecimalPlaces: PropTypes.func.isRequired,
   onChangeUnitLabel: PropTypes.func.isRequired,
+  onSelectDateColumn: PropTypes.func.isRequired,
   onSetCalculationType: PropTypes.func.isRequired,
   openDataSourceTab: PropTypes.func.isRequired,
   unitLabel: PropTypes.string
@@ -132,16 +182,23 @@ function mapStateToProps(state) {
   const hasDataSource = !!_.get(state, 'editor.measure.dataSourceLensUid');
   const unitLabel = _.get(state, 'editor.measure.metricConfig.label', '');
 
+  const dateColumnFieldName = _.get(state, 'editor.measure.metricConfig.dateColumn');
+  const displayableFilterableColumns = _.get(state, 'editor.displayableFilterableColumns');
+
   return {
     calculationType,
+    dateColumnFieldName,
     decimalPlaces,
+    displayableFilterableColumns,
     hasDataSource,
+    measure: state.editor.measure,
     unitLabel
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    onSelectDateColumn: setDateColumn,
     onChangeDecimalPlaces: setDecimalPlaces,
     onChangeUnitLabel: setUnitLabel,
     onSetCalculationType: setCalculationType,

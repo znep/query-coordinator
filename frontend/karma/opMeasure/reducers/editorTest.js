@@ -238,19 +238,19 @@ describe('Edit modal reducer', () => {
   });
 
   describe('SET_DATE_COLUMN', () => {
-    it('updates the dateColumn in metric arguments with the column field name', () => {
+    it('updates the dateColumn in the root metric object with the column field name', () => {
       const columnFieldName = 'some date column';
 
-      assert.notNestedProperty(state, 'measure.metricConfig.arguments.dateColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.dateColumn');
 
       state = reducer(state, actions.editor.setDateColumn(columnFieldName));
-      assert.equal(state.measure.metricConfig.arguments.dateColumn, columnFieldName);
+      assert.equal(state.measure.metricConfig.dateColumn, columnFieldName);
     });
 
     it('throws if not given a string for fieldName', () => {
       const notAString = 42;
 
-      assert.notNestedProperty(state, 'measure.metricConfig.arguments.dateColumn');
+      assert.notNestedProperty(state, 'measure.metricConfig.dateColumn');
 
       assert.throws(() => reducer(state, actions.editor.setDateColumn(notAString)));
     });

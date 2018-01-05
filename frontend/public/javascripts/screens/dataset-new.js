@@ -111,7 +111,7 @@ $(function() {
         onInitialize: function($pane, config, state, command) {
           state.selectTypeTips = [];
           // tooltips
-          $pane.find('.newKindList > li > a.tile').each(function() {
+          $pane.find('.newKindList > li > a').each(function() {
             var $this = $(this);
             state.selectTypeTips.push($this.socrataTip({
               message: $this.attr('title').clean(),

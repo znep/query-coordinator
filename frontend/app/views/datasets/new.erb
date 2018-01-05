@@ -24,25 +24,20 @@
           <p class="headline"><%= t("#{prefix}.prompt") %></p>
           <ul class="newKindList clearfix">
             <li>
-              <a href="#create" class="tile create" title="<%= t("#{prefix}.create_explain") %>">
+              <a href="#create" class="create" title="<%= t("#{prefix}.create_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.create") %></p>
               </a>
             </li>
             <li>
-              <a href="#import" class="tile upload" title="<%= t("#{prefix}.import_explain") %>">
+              <a href="#import" class="upload" title="<%= t("#{prefix}.import_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.import") %></p>
               </a>
-              <% if current_user_can_see_dsmp_preview? %>
-                <a class="dsmpPreview" href="/datasets/new?beta=true">
-                  <span class="socrata-icon-eye"></span> <span class="text">Preview the new experience</span>
-                </a>
-              <% end %>
             </li>
             <%- if CurrentDomain.module_enabled?(:esri_integration) -%>
             <li>
-              <a href="#mapLayer" class="tile mapLayer" title="<%= t("#{prefix}.mapLayer_explain") %>">
+              <a href="#mapLayer" class="mapLayer" title="<%= t("#{prefix}.mapLayer_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.mapLayer") %></p>
               </a>
@@ -50,34 +45,24 @@
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:geospatial) -%>
             <li>
-              <a href="#shapefile" class="tile shapefile" title="<%= t("#{prefix}.shapefile_explain") %>">
+              <a href="#shapefile" class="shapefile" title="<%= t("#{prefix}.shapefile_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.shapefile") %></p>
               </a>
             </li>
             <%- end -%>
             <li>
-              <a href="#blobby" class="tile blobby" title="<%= t("#{prefix}.blobby_explain") %>">
+              <a href="#blobby" class="blobby" title="<%= t("#{prefix}.blobby_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.blobby") %></p>
               </a>
-              <% if current_user_can_see_dsmp_preview? %>
-                <a class="dsmpPreview" href="/datasets/new?beta=true">
-                  <span class="socrata-icon-eye"></span> <span class="text">Preview the new experience</span>
-                </a>
-              <% end %>
             </li>
             <%- if CurrentDomain.member?(current_user) -%>
             <li>
-              <a href="#external" class="tile external" title="<%= t("#{prefix}.external_explain") %>">
+              <a href="#external" class="external" title="<%= t("#{prefix}.external_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.external") %></p>
               </a>
-              <% if current_user_can_see_dsmp_preview? %>
-                <a class="dsmpPreview" href="/datasets/new?beta=true">
-                  <span class="socrata-icon-eye"></span> <span class="text">Preview the new experience</span>
-                </a>
-              <% end %>
             </li>
             <%- end -%>
           </ul>
@@ -87,13 +72,13 @@
           <p class="headline"><%= t("#{prefix}.headline") %></p>
           <ul class="uploadTypeList clearfix">
             <li>
-              <a href="#local" class="tile byUpload" title="<%= t("#{prefix}.local_explain") %>">
+              <a href="#local" class="byUpload" title="<%= t("#{prefix}.local_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.local") %></p>
               </a>
             </li>
             <li>
-              <a href="#web" class="tile byCrossload" title="<%= t("#{prefix}.web_explain") %>">
+              <a href="#web" class="byCrossload" title="<%= t("#{prefix}.web_explain") %>">
                 <span class="icon"></span>
                 <p><%= t("#{prefix}.web") %></p>
               </a>

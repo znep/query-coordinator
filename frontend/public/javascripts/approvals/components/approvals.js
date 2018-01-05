@@ -47,6 +47,7 @@ export default class Approvals extends Component {
     return (
       <AssetBrowser
         columns={['type', 'name', 'submitted_at', 'owner', 'status', 'actions']}
+        enableAssetInventoryLink={false}
         initialTab={constants.MY_QUEUE_TAB}
         showAssetCounts={false}
         showFilters

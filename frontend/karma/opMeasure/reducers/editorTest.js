@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { CalculationTypeNames, EditTabs, PeriodTypes, PeriodSizes } from 'lib/constants';
+import { EditTabs, PeriodTypes, PeriodSizes } from 'lib/constants';
 import reducer from 'reducers/editor';
 import actions from 'actions';
 
@@ -17,6 +17,13 @@ describe('Edit modal reducer', () => {
   afterEach(() => {
     state = undefined;
   });
+
+  const setDataSourceData = () => {
+    _.set(state, 'measure.dataSourceLensUid', 'test-test');
+    _.set(state, 'cachedRowCount', 42);
+    _.set(state, 'dataSourceView', { some: 'thing' });
+    _.set(state, 'displayableFilterableColumns', ['not empty']);
+  };
 
   describe('SET_ACTIVE_PANEL', () => {
     it('updates which edit modal tab is active', () => {
@@ -81,72 +88,11 @@ describe('Edit modal reducer', () => {
     });
   });
 
-  describe('SET_DATA_SOURCE_UID', () => {
-    it('updates the data source uid in the measure metric', () => {
-      const dataSourceUid = 'test-test'
-
-      assert.notNestedProperty(state.measure, 'dataSourceLensUid');
-
-      state = reducer(state, actions.editor.setDataSourceUid(dataSourceUid));
-
-      assert.deepEqual(state.measure.dataSourceLensUid, dataSourceUid);
-    });
-
-    describe('when resetting the data source', () => {
-      it('sets cachedRowCount to undefined', () => {
-        state.cachedRowCount = 3;
-
-        state = reducer(state, actions.editor.setDataSourceUid(''));
-
-        assert.isUndefined(state.cachedRowCount);
-      });
-
-      it('sets dataSourceLensUid and dataSourceView to null', () => {
-        _.set(state, 'measure.dataSourceLensUid', 'some-data')
-        _.set(state, 'dataSourceView', { foo: "bar" });
-
-        state = reducer(state, actions.editor.setDataSourceUid(''));
-        assert.isNull(state.measure.dataSourceLensUid);
-        assert.isNull(state.dataSourceView);
-      });
-    });
-
-    describe('when setting a new data source', () => {
-      it('sets cachedRowCount to null', () => {
-        state.cachedRowCount = 3;
-
-        state = reducer(state, actions.editor.setDataSourceUid('test-test'));
-
-        assert.isNull(state.cachedRowCount);
-      });
-
-      it('resets metric config to default', () => {
-        const viewMetadata = {
-          id: 'xxxx-xxxx',
-          columns: []
-        };
-
-        _.set(state, 'measure.metricConfig.dataSource', {
-          uid: 'test-test'
-        });
-
-        _.set(state, 'measure.metricConfig.type', CalculationTypeNames.SUM);
-        _.set(state, 'measure.metricConfig.arguments.foo', 'hello');
-
-        state = reducer(state, actions.editor.setDataSourceUid('test-news'));
-        assert.equal(state.measure.metricConfig.type, CalculationTypeNames.COUNT);
-        assert.notNestedProperty(state, 'measure.metricConfig.arguments.foo');
-      });
-    });
-  });
-
-  describe('RECEIVE_DATA_SOURCE_VIEW', () => {
+  describe('SET_DATA_SOURCE_METADATA_SUCCESS', () => {
     it('updates cachedRowCount in the editor state', () => {
-      _.set(state, 'measure.dataSourceLensUid', 'test-test');
-
       assert.notNestedProperty(state, 'cachedRowCount');
 
-      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, {}));
+      state = reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', 100, {}));
 
       assert.equal(state.cachedRowCount, 100);
     });
@@ -157,25 +103,72 @@ describe('Edit modal reducer', () => {
         columns: []
       };
 
-      _.set(state, 'measure.dataSourceLensUid', 'test-test');
-
       assert.notNestedProperty(state, 'dataSourceView');
 
-      state = reducer(state, actions.editor.receiveDataSourceMetadata(100, viewMetadata));
+      state = reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', 100, viewMetadata));
 
       assert.deepEqual(state.dataSourceView, viewMetadata);
     });
 
-    it('throws if not given a number for the rowCount', () => {
-      _.set(state, 'measure.dataSourceLensUid', 'test-test');
+    it('throws if not given a string for the uid', () => {
+      assert.throws(() => reducer(state, actions.editor.setDataSourceMetadataSuccess(undefined, 42, {})));
+    });
 
-      assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata('100', {})));
+    it('throws if not given a number for the rowCount', () => {
+      assert.throws(() => reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', '42', {})));
     });
 
     it('throws if not given an object for the dataSourceView', () => {
-      _.set(state, 'measure.dataSourceLensUid', 'test-test');
+      assert.throws(() => reducer(state, actions.editor.setDataSourceMetadataSuccess(100, 'im not really an object')));
+    });
+  });
 
-      assert.throws(() => reducer(state, actions.editor.receiveDataSourceMetadata(100, 'im not really an object')));
+  describe('SET_DATA_SOURCE_METADATA_FAIL', () => {
+    it('clears the dataSource from the editor state', () => {
+      setDataSourceData(state);
+
+      state = reducer(state, actions.editor.setDataSourceMetadataFail());
+
+      assert.isNull(state.measure.dataSourceLensUid);
+      assert.isUndefined(state.cachedRowCount);
+      assert.isNull(state.dataSourceView);
+      assert.isEmpty(state.displayableFilterableColumns);
+    });
+
+    it('sets `state.errors.setDataSourceMetadataError` to true', () => {
+      state = reducer(state, actions.editor.setDataSourceMetadataFail());
+      assert.isTrue(state.errors.setDataSourceMetadataError);
+    });
+  });
+
+  describe('FETCH_DATA_SOURCE_VIEW_FAIL', () => {
+    it('clears the dataSource from the editor state', () => {
+      setDataSourceData(state);
+
+      state = reducer(state, actions.editor.setDataSourceMetadataFail());
+
+      assert.isNull(state.measure.dataSourceLensUid);
+      assert.isUndefined(state.cachedRowCount);
+      assert.isNull(state.dataSourceView);
+      assert.isEmpty(state.displayableFilterableColumns);
+    });
+
+    it('sets `state.errors.fetchDataSourceViewError` to true', () => {
+      state = reducer(state, actions.editor.fetchDataSourceViewFail());
+      assert.isTrue(state.errors.fetchDataSourceViewError);
+    });
+  });
+
+  describe('RESET_DATA_SOURCE', () => {
+    it('clears the dataSource from the editor state', () => {
+      setDataSourceData(state);
+
+      state = reducer(state, actions.editor.resetDataSource());
+
+      assert.isNull(state.measure.dataSourceLensUid);
+      assert.isUndefined(state.cachedRowCount);
+      assert.isNull(state.dataSourceView);
+      assert.isEmpty(state.displayableFilterableColumns);
     });
   });
 
@@ -319,7 +312,7 @@ describe('Edit modal reducer', () => {
 
   describe('SET_PERIOD_TYPE', () => {
     it('updates the period type in the metric', () => {
-      const { OPEN, CLOSED } = PeriodTypes;
+      const { OPEN } = PeriodTypes;
       state = reducer(state, actions.editor.setPeriodType(OPEN));
 
       assert.equal(state.measure.metricConfig.reportingPeriod.type, OPEN);

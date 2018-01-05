@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 
 import * as editorActions from 'actions/editor';
 import * as validateActions from 'actions/validate';
-import * as viewActions from 'actions/view';
 
 import { __RewireAPI__ as EditorActionsAPI } from 'actions/editor';
 
@@ -40,15 +39,18 @@ describe('thunk actions', () => {
     });
 
     describe('when a data source has been configured', () => {
+      const dateColumn = { name: 'columnA', renderTypeName: 'calendar_date'};
+      const getDisplayableFilterableColumnsStub = sinon.stub().resolves([dateColumn]);
+
       beforeEach(() => {
         EditorActionsAPI.__Rewire__('MetadataProvider', function() {
           this.getDatasetMetadata = _.noop;
-          this.getDisplayableFilterableColumns = _.noop;
+          this.getDisplayableFilterableColumns = getDisplayableFilterableColumnsStub;
         });
         EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
           this.getRowCount = _.noop;
         });
-      })
+      });
 
       afterEach(() => {
         EditorActionsAPI.__ResetDependency__('MetadataProvider');
@@ -61,7 +63,7 @@ describe('thunk actions', () => {
           test: 'foo'
         };
         const expectedActions = [
-          editorActions.RECEIVE_DATA_SOURCE_VIEW,
+          editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
           editorActions.OPEN_EDIT_MODAL
         ];
 
@@ -153,6 +155,8 @@ describe('thunk actions', () => {
 
   describe('changeDataSource', () => {
     const uid = 'test-test';
+    const dateColumn = { name: 'columnA', renderTypeName: 'calendar_date'};
+
     let getRowCountStub;
     let getDatasetMetadataStub;
     let getDisplayableFilterableColumnsStub;
@@ -162,37 +166,12 @@ describe('thunk actions', () => {
       EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
     });
 
-    describe('when a 4x4 has not been provided', () => {
-      beforeEach(() => {
-        getRowCountStub = sinon.stub();
-
-        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
-          this.getRowCount = getRowCountStub;
-        });
-      });
-
-      it('dispatches setDataSourceUid(undefined)', (done) => {
-        const expectedActions = [
-          { type: editorActions.SET_DATA_SOURCE_UID, uid: undefined }
-        ];
-
-        const store = mockStore();
-        store.dispatch(editorActions.changeDataSource('four-for'));
-
-        _.defer(() => {
-          assert.deepEqual(store.getActions(), expectedActions);
-          sinon.assert.notCalled(getRowCountStub);
-          done();
-        });
-      });
-    });
-
     describe('a valid 4x4 is provided', () => {
       beforeEach(() => {
         viewMetadata = { id: 'test-test', columns: [] };
         getRowCountStub = sinon.stub().resolves(12345);
         getDatasetMetadataStub = sinon.stub().resolves(viewMetadata);
-        getDisplayableFilterableColumnsStub = sinon.stub().resolves('displayable filterable');
+        getDisplayableFilterableColumnsStub = sinon.stub().resolves([dateColumn]);
 
         EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
           this.getRowCount = getRowCountStub;
@@ -204,17 +183,14 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches setDataSourceUid(four-four)', (done) => {
+      it('dispatches fetchDataSourceView(four-four)', (done) => {
         const expectedActions = [
           {
-            type: editorActions.SET_DATA_SOURCE_UID,
-            uid
-          },
-          {
-            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
+            uid: 'test-test',
+            type: editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
             rowCount: 12345,
             dataSourceView: viewMetadata,
-            displayableFilterableColumns: 'displayable filterable'
+            displayableFilterableColumns: [dateColumn]
           }
         ];
 
@@ -231,8 +207,10 @@ describe('thunk actions', () => {
     });
   });
 
-  describe('loadDataSourceView', () => {
+  describe('fetchDataSourceView', () => {
     const uid = 'test-test';
+    const dateColumn = { name: 'columnA', renderTypeName: 'calendar_date'};
+
     let getRowCountStub;
     let getDatasetMetadataStub;
     let getDisplayableFilterableColumnsStub;
@@ -242,12 +220,12 @@ describe('thunk actions', () => {
       EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
     });
 
-    describe('a valid 4x4 is provided', () => {
+    describe('when a valid 4x4 is provided', () => {
       beforeEach(() => {
         viewMetadata = { id: 'test-test', columns: [] };
         getRowCountStub = sinon.stub().resolves(12345);
         getDatasetMetadataStub = sinon.stub().resolves(viewMetadata);
-        getDisplayableFilterableColumnsStub = sinon.stub().resolves('displayable filterable');
+        getDisplayableFilterableColumnsStub = sinon.stub().resolves([dateColumn]);
 
         EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
           this.getRowCount = getRowCountStub;
@@ -259,24 +237,50 @@ describe('thunk actions', () => {
         });
       });
 
-      it('dispatches receiveDataSourceMetadata', (done) => {
-        const expectedActions = [
-          {
-            type: editorActions.RECEIVE_DATA_SOURCE_VIEW,
-            rowCount: 12345,
-            dataSourceView: viewMetadata,
-            displayableFilterableColumns: 'displayable filterable'
-          }
-        ];
+      describe('for a dataset with a date column', () => {
+        it('dispatches setDataSourceMetadataSuccess', (done) => {
+          const expectedActions = [
+            {
+              type: editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
+              uid: 'test-test',
+              rowCount: 12345,
+              dataSourceView: viewMetadata,
+              displayableFilterableColumns: [dateColumn]
+            }
+          ];
 
-        const store = mockStore();
-        store.dispatch(editorActions.loadDataSourceView(uid));
+          const store = mockStore();
+          store.dispatch(editorActions.fetchDataSourceView(uid));
 
-        _.defer(() => {
-          assert.deepEqual(store.getActions(), expectedActions);
-          sinon.assert.calledOnce(getRowCountStub);
-          sinon.assert.calledOnce(getDatasetMetadataStub);
-          done();
+          _.defer(() => {
+            assert.deepEqual(store.getActions(), expectedActions);
+            sinon.assert.calledOnce(getRowCountStub);
+            sinon.assert.calledOnce(getDatasetMetadataStub);
+            done();
+          });
+        });
+      });
+
+      describe('for a dataset without a date column', () => {
+        it('dispatches setDataSourceMetadataFail', (done) => {
+          const notADateColumn = { name: 'foo', renderTypeName: 'text' };
+          getDisplayableFilterableColumnsStub = sinon.stub().resolves([notADateColumn]);
+
+          const expectedActions = [
+            {
+              type: editorActions.SET_DATA_SOURCE_METADATA_FAIL
+            }
+          ];
+
+          const store = mockStore();
+          store.dispatch(editorActions.fetchDataSourceView(uid));
+
+          _.defer(() => {
+            assert.deepEqual(store.getActions(), expectedActions);
+            sinon.assert.calledOnce(getRowCountStub);
+            sinon.assert.calledOnce(getDatasetMetadataStub);
+            done();
+          });
         });
       });
     });

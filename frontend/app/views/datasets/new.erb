@@ -22,6 +22,18 @@
       <ul class="clearfix">
         <li class="selectTypePane" data-wizardpanename="selectType">
           <p class="headline"><%= t("#{prefix}.prompt") %></p>
+          <%- if FeatureFlags.derive(nil, request).dsmp_level == "preview" -%>
+            <div class="alert">
+              <span class="msg">
+                <%= t("#{prefix}.preview_msg_pt1") %>
+                <br>
+                <%= t("#{prefix}.preview_msg_pt2") %>
+                <a href="<%= new_dataset_path(beta: true) %>">
+                  <%= t("#{prefix}.preview_msg_link_txt") %>
+                </a>
+              </span>
+            </div>
+          <%- end -%>
           <ul class="newKindList clearfix">
             <li>
               <a href="#create" class="create" title="<%= t("#{prefix}.create_explain") %>">

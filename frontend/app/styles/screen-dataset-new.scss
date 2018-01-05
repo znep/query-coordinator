@@ -1,3 +1,8 @@
+// can't load styleguide on the wizard page without breaking
+// all the things, but can at least use color variables
+@import 'common/styleguide/variables/_color_helpers.scss';
+@import 'common/styleguide/variables/_colors.scss';
+
 @mixin has-action-link {
   a {
     @include sprite-menu-icons("&");
@@ -7,6 +12,43 @@
     };
     &:hover {
       @include opacity(0.8);
+    }
+  }
+}
+
+.contentBox {
+  padding: 0;
+}
+
+.newDatasetForm {
+  h1 {
+    padding: 1rem;
+  }
+
+  .alert {
+    background-color: $primary-light;
+    color: $primary-dark;
+    font-size: 1.4em;
+    border-top: 1px solid $primary;
+    border-bottom: 1px solid $primary;
+    min-height: 52px;
+    text-align: center;
+    margin-top: 1.4em;
+    position: relative;
+
+    .msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      a {
+        text-decoration: underline;
+      }
+
+      a:hover {
+        color: $primary-dark;
+      }
     }
   }
 }
@@ -31,6 +73,7 @@
 
 // PANE ZERO: choose type
 .newKindList, .importTypeList, .uploadTypeList {
+  padding: 1rem;
   margin: 2em auto 5em;
   width: 71.6em;
   li {

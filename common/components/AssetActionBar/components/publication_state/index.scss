@@ -22,15 +22,15 @@
     color: white;
 
     &.publication-state-draft {
-      background-color: #e0a208;
+      background-color: $warning;
     }
 
     &.publication-state-pending {
-      background-color: #185074;
+      background-color: $alternate-2;
     }
 
     &.publication-state-published {
-      background-color: #17b389;
+      background-color: $success;
     }
   }
 }

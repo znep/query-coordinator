@@ -104,7 +104,7 @@ class PublicationAction extends React.Component {
   renderPrimaryActionButton() {
     const { currentViewUid, allowedTo, publicationState } = this.props;
 
-    if (allowedTo.edit && publicationState === 'published') {
+    if (allowedTo.edit && _.includes(['published', 'pending'], publicationState)) {
       return <EditButton currentViewUid={currentViewUid} />;
     }
 

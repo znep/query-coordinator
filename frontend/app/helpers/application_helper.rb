@@ -72,6 +72,18 @@ module ApplicationHelper
     !!FeatureFlags.derive(nil, request)[name]
   end
 
+  # TODO: Remove this method when Approvals is done rolling out.
+  # If it is 2019 or later, begin any troubleshooting by getting angry.
+  def using_approvals?(phase)
+    old_approvals = module_enabled?(:routing_approval)
+    new_approvals = FeatureFlags.value_for(:use_fontana_approvals, request: request)
+    case phase
+      when :old then old_approvals && !new_approvals
+      when :new then new_approvals
+      else raise ArgumentError.new('appropriate phases: old and new')
+    end
+  end
+
 # CACHE HELPERS
 
   def cache_key(prefix, state)

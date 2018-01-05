@@ -197,7 +197,7 @@ module AdministrationHelper
   end
 
   def user_can_see_routing_approval?
-    module_enabled?(:routing_approval) && current_user.can_approve?
+    using_approvals?(:old) && current_user.can_approve?
   end
 
   def user_can_see_content_section?
@@ -220,13 +220,13 @@ module AdministrationHelper
   def user_can_configure_approvals?
     return false unless current_user
 
-    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::CONFIGURE_APPROVALS)
+    using_approvals?(:new) && current_user.has_right?(UserRights::CONFIGURE_APPROVALS)
   end
 
   def user_can_review_approvals?
     return false unless current_user
 
-    feature_flag?('use_fontana_approvals', request) && current_user.has_right?(UserRights::REVIEW_APPROVALS)
+    using_approvals?(:new) && current_user.has_right?(UserRights::REVIEW_APPROVALS)
   end
 
   def a11y_metadata_category_summary(categories, columns)

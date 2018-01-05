@@ -48,7 +48,7 @@
     <%- end %>
   </div>
 
-  <%- if module_enabled?(:routing_approval) && current_user.present? && @view.flag?('default') &&
+  <%- if using_approvals?(:old) && current_user.present? && @view.flag?('default') &&
     (current_user.can_approve? || @view.has_rights?(ViewRights::UPDATE_VIEW)) -%>
   <%- approval = Approval.find()[0] -%>
   <%- if approval.present? -%>

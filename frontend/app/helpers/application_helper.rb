@@ -1238,6 +1238,9 @@ module ApplicationHelper
     @view.shared_to?(current_user)
   end
 
+  # Note that this method controls two things:
+  # - If the Asset Action Bar shows up, and
+  # - If UI elements replaced by the A2B are hidden
   def render_asset_action_bar?
     return false unless FeatureFlags.value_for(:enable_asset_action_bar,
                                                view: @view, request: request)

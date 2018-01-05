@@ -36,7 +36,9 @@
     </div>
 
     <%- if @view.is_unpublished? -%>
-    <h3 class="unpublished" title="<%= t('screens.ds.bar.working_copy_notice') %>"><%= t('screens.ds.bar.working_copy_title') %></h3>
+      <%- unless render_asset_action_bar? %>
+        <h3 class="unpublished" title="<%= t('screens.ds.bar.working_copy_notice') %>"><%= t('screens.ds.bar.working_copy_title') %></h3>
+      <%- end %>
     <%- end -%>
     <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>">
       <%= @view.name %>
@@ -49,15 +51,17 @@
     <%# Only show the publish button on working copies if the user is logged in and their role allows them to publish a dataset %>
     <%- if @view.is_unpublished? && current_user && (current_user.has_right_to_publish?(@view) || current_user.is_superadmin?) -%>
      <%# Grey out the publish button if the dataset isn't ready to publish  %>
-     <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
-       <%- if @view.can_publish? && dataset_landing_page_enabled? -%>
-         title="<%= t('screens.ds.bar.publish_prompt_with_dataset_landing_page') %>"
-       <%- elsif @view.can_publish? -%>
-         title="<%= t('screens.ds.bar.publish_prompt') %>"
-      <%- else -%>
-        title="<%= t('controls.grid.published.geocodes_pending') %>"
-      <%- end -%>
-        ><%= t('screens.ds.bar.publish_button') %></a>
+     <%- unless render_asset_action_bar? %>
+      <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
+        <%- if @view.can_publish? && dataset_landing_page_enabled? -%>
+          title="<%= t('screens.ds.bar.publish_prompt_with_dataset_landing_page') %>"
+        <%- elsif @view.can_publish? -%>
+          title="<%= t('screens.ds.bar.publish_prompt') %>"
+       <%- else -%>
+         title="<%= t('controls.grid.published.geocodes_pending') %>"
+       <%- end -%>
+         ><%= t('screens.ds.bar.publish_button') %></a>
+     <%- end %>
     <%- end -%>
 
     <div class="basedOnParent"><%= t('screens.ds.bar.based_on_parent_html') %></div>
@@ -70,7 +74,9 @@
     </div>
 
     <%- if !@view.is_published? -%>
-    <a id="publishedLink"><%= t('screens.ds.bar.view_published_html') %></a>
+      <%- unless render_asset_action_bar? %>
+        <a id="publishedLink"><%= t('screens.ds.bar.view_published_html') %></a>
+      <%- end %>
     <%- end -%>
 
     <div id="description">

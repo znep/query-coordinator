@@ -24,7 +24,7 @@ class DatasetsController < ApplicationController
       # User doesn't have access to create new datasets
       return render_forbidden('You do not have permission to create new datasets')
     end
-    if FeatureFlags.derive(nil, request).enable_dataset_management_ui && params[:beta]
+    if FeatureFlags.derive(nil, request).dsmp_level != "off" && params[:beta]
       @data_asset = params[:data_asset].nil? ? nil : params[:data_asset].downcase == "true"
       @il8n_prefix = @data_asset ? "dataset_management_ui.create.data_asset" : "dataset_management_ui.create.dataset"
       render 'datasets/new-dsmui', layout: 'styleguide'
@@ -275,7 +275,7 @@ class DatasetsController < ApplicationController
   end
 
   def show_revision
-    if FeatureFlags.derive(nil, request).enable_dataset_management_ui
+    if FeatureFlags.derive(nil, request).dsmp_level != "off"
       @view = get_view(params[:id])
       return if @view.nil?
       unless using_canonical_url?
@@ -298,7 +298,7 @@ class DatasetsController < ApplicationController
   end
 
   def current_revision
-    if FeatureFlags.derive(nil, request).enable_dataset_management_ui
+    if FeatureFlags.derive(nil, request).dsmp_level != "off"
       # ask dsmapi for the list of revisions
       open_revisions = DatasetManagementAPI.get_open_revisions(params[:id], cookies)
       if open_revisions.length > 0

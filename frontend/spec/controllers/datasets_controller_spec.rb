@@ -595,7 +595,7 @@ describe DatasetsController do
   describe 'entering DSMP' do
     before(:each) do
       stub_site_chrome
-      rspec_stub_feature_flags_with(:enable_dataset_management_ui => true)
+      rspec_stub_feature_flags_with(:dsmp_level => "beta")
     end
 
     context 'GET /:category/:view_name/:id/revisions/revision_seq' do

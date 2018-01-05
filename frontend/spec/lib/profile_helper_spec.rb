@@ -87,7 +87,7 @@ RSpec.describe ProfileHelper, type: :helper do
 
     describe 'when encountering a draft view' do
       before(:each) do
-        rspec_stub_feature_flags_with(:enable_dataset_management_ui => true)
+        rspec_stub_feature_flags_with(:dsmp_level => "preview")
       end
 
       let(:is_story) { false }

@@ -24,10 +24,12 @@ export class Modal extends Component {
     ]);
 
     this.state = this.computeState();
+    this.tryEscDismiss = this.tryEscDismiss.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.checkDimensions);
+    document.addEventListener('keyup', this.tryEscDismiss);
     document.documentElement.classList.add('modal-open');
 
     // Handle a11y focusing concerns
@@ -37,6 +39,7 @@ export class Modal extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.checkDimensions);
+    document.removeEventListener('keyup', this.tryEscDismiss);
     document.documentElement.classList.remove('modal-open');
 
     // Handle a11y focusing concerns
@@ -106,8 +109,8 @@ export class Modal extends Component {
         className={modalClasses}
         style={overlayStyle}
         role="dialog"
-        onKeyDown={this.tryFocusTrap}
         onKeyUp={this.tryEscDismiss}
+        onKeyDown={this.tryFocusTrap}
         onClick={this.tryOverlayClickDismiss}>
         <div className="modal-container" style={containerStyle} ref={(ref) => this.modalContainer = ref}>
           {children}

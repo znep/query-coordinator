@@ -670,12 +670,12 @@ export class PresentationPane extends Component {
       );
     } else {
       const { onChangeLineWeight } = this.props;
-      const lineWeight = selectors.getLineWeightByColumn(vifAuthoring);
+      const lineWeight = selectors.getLineWeight(vifAuthoring);
       const lineWeightAttributes = {
         id: 'line-weight',
         rangeMin: 1,
-        rangeMax: 3.2,
-        step: 0.1,
+        rangeMax: 10,
+        step: 1,
         value: lineWeight,
         onChange: onChangeLineWeight,
         delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
@@ -758,15 +758,15 @@ export class PresentationPane extends Component {
         </div>
       );
     } else {
-      const { onChangePointSize } = this.props;
-      const pointSize = selectors.getPointSize(vifAuthoring);
+      const { onChangePointMapPointSize } = this.props;
+      const pointMapPointSize = selectors.getPointMapPointSize(vifAuthoring);
       const pointSizeAttributes = {
         id: 'point-size',
         rangeMin: 1,
-        rangeMax: 3.2,
-        step: 0.1,
-        value: pointSize,
-        onChange: onChangePointSize,
+        rangeMax: 10,
+        step: 1,
+        value: pointMapPointSize,
+        onChange: onChangePointMapPointSize,
         delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
       };
 
@@ -832,8 +832,8 @@ export class PresentationPane extends Component {
     };
     const maxClusterSizeAttributes = {
       id: 'max-cluster-size',
-      rangeMin: 1,
-      rangeMax: 10,
+      rangeMin: 20,
+      rangeMax: 80,
       step: 1,
       value: maxClusterSize,
       onChange: onMaxClusterSizeChange,
@@ -1188,6 +1188,10 @@ function mapDispatchToProps(dispatch) {
 
     onChangePointSize: pointSize => {
       dispatch(actions.setPointSize(_.round(pointSize, 2)));
+    },
+
+    onChangePointMapPointSize: (pointMapPointSize) => {
+      dispatch(actions.setPointMapPointSize(_.round(pointMapPointSize, 2)));
     },
 
     onChangeLineWeight: lineWeight => {

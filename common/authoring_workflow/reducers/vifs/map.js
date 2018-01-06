@@ -40,6 +40,16 @@ export default function map(state, action) {
       _.set(state, 'configuration.pointSize', _.isFinite(size) ? _.clamp(size, 1, 3.2) : null);
       break;
 
+    case actions.SET_POINT_MAP_POINT_SIZE:
+      const pointSize = parseFloat(action.pointMapPointSize);
+      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 1, 10) : null);
+      break;
+
+    case actions.SET_LINE_WEIGHT:
+      const lineWeight = parseFloat(action.lineWeight);
+      _.set(state, 'series[0].mapOptions.lineWeight', _.isFinite(lineWeight) ? _.clamp(lineWeight, 1, 10) : null);
+      break;
+
     case actions.SET_MINIMUM_LINE_WEIGHT:
       const minimumLineWeight = parseFloat(action.minimumLineWeight);
       _.set(state, 'series[0].mapOptions.minimumLineWeight', _.isFinite(minimumLineWeight) ? _.clamp(minimumLineWeight, 1, 10) : null);
@@ -77,12 +87,12 @@ export default function map(state, action) {
 
     case actions.SET_CLUSTER_RADIUS:
       const clusterRadius = parseInt(action.clusterRadius);
-      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 1, 80) : null);
+      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 80) : null);
       break;
 
     case actions.SET_MAX_CLUSTER_SIZE:
       const maxClusterSize = parseInt(action.maxClusterSize);
-      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 20, 80) : null);
       break;
 
     case actions.SET_STACK_RADIUS:

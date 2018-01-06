@@ -108,6 +108,11 @@ export const getPointSize = createSelector(
   (vif) => _.get(vif, 'configuration.pointSize', 1)
 );
 
+export const getPointMapPointSize = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.pointMapPointSize', 1)
+);
+
 export const getMapType = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.mapType', null)
@@ -150,7 +155,7 @@ export const getClusterRadius = createSelector(
 
 export const getMaxClusterSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 8)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 20)
 );
 
 export const getStackRadius = createSelector(
@@ -161,6 +166,11 @@ export const getStackRadius = createSelector(
 export const getPointColorByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.colorPointsBy', null)
+);
+
+export const getLineWeight = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', 5)
 );
 
 export const getLineWeightByColumn = createSelector(

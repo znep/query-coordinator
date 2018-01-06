@@ -27,6 +27,7 @@ const paths = {
   labelRight: 'configuration.axisLabels.right',
   labelTop: 'configuration.axisLabels.top',
   limit: 'series[0].dataSource.limit',
+  lineWeight: 'series[0].mapOptions.lineWeight',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
   mapType: 'series[0].mapOptions.mapType',
   maxClusteringZoomLevel: 'series[0].mapOptions.maxClusteringZoomLevel',
@@ -45,6 +46,7 @@ const paths = {
   pointOpacity: 'configuration.pointOpacity',
   pointAggregation: 'series[0].mapOptions.pointAggregation',
   pointSize: 'configuration.pointSize',
+  pointMapPointSize: 'series[0].mapOptions.pointMapPointSize',
   pointThreshold: 'series[0].mapOptions.pointThreshold',
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
@@ -364,6 +366,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPointSize(get(paths.pointSize)));
   }
 
+  if (has(paths.pointMapPointSize)) {
+    dispatch(actions.setPointMapPointSize(get(paths.pointMapPointSize)));
+  }
+
   if (has(paths.pointOpacity)) {
     dispatch(actions.setPointOpacity(get(paths.pointOpacity)));
   }
@@ -408,6 +414,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPointColorByColumn(get(paths.colorPointsBy)));
   }
 
+  if (has(paths.lineWeight)) {
+    dispatch(actions.setLineWeight(get(paths.lineWeight)));
+  }
+
   if (has(paths.weighLinesBy)) {
     dispatch(actions.setLineWeightByColumn(get(paths.weighLinesBy)));
   }
@@ -421,7 +431,7 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.colorLinesBy)) {
-    dispatch(actions.setPointColorByColumn(get(paths.colorLinesBy)));
+    dispatch(actions.setLineColorByColumn(get(paths.colorLinesBy)));
   }
 
   if (has(paths.pointAggregation)) {

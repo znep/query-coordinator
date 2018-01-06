@@ -868,6 +868,14 @@ export function setPointSize(pointSize) {
   };
 }
 
+export const SET_POINT_MAP_POINT_SIZE = 'SET_POINT_MAP_POINT_SIZE';
+export function setPointMapPointSize(pointMapPointSize) {
+  return {
+    type: SET_POINT_MAP_POINT_SIZE,
+    pointMapPointSize
+  };
+}
+
 export const SET_POINT_OPACITY = 'SET_POINT_OPACITY';
 export function setPointOpacity(pointOpacity) {
   return {
@@ -953,6 +961,14 @@ export function setPointColorByColumn(colorPointsBy) {
   return {
     type: SET_POINT_COLOR_BY_COLUMN,
     colorPointsBy
+  };
+}
+
+export const SET_LINE_WEIGHT = 'SET_LINE_WEIGHT';
+export function setLineWeight(lineWeight) {
+  return {
+    type: SET_LINE_WEIGHT,
+    lineWeight
   };
 }
 

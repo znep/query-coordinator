@@ -930,9 +930,6 @@ en:
         create_dataset_beta: Create a Dataset (beta)
         create_dataset_beta_short: Dataset (beta)
         create_dataset_beta_verb: Create (beta)
-        create_dataset_preview: Create a Dataset (preview)
-        create_dataset_preview_short: Dataset (preview)
-        create_dataset_preview_verb: Create (preview)
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete
@@ -5352,6 +5349,9 @@ en:
         import_explain: Choose this if you already have a data file on your computer you wish to import. Supported formats are .csv, .tsv, .xls, and .xlsx.
         mapLayer: Connect with an ESRI Map Layer
         mapLayer_explain: Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.
+        preview_msg_pt1: We're redesigning the import experience!
+        preview_msg_pt2: Try out the
+        preview_msg_link_txt: new workflow.
         prompt: How would you like to create your new Dataset?
         shapefile: Import Geospatial Data
         shapefile_explain: Choose this if you have geospatial data which you would like to import into the catalog.

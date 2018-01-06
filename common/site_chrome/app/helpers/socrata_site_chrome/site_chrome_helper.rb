@@ -154,22 +154,14 @@ module SocrataSiteChrome
     def current_user_can_see_create_datasets_beta?
       return false unless site_chrome_current_user
 
-      get_feature_flag('enable_dataset_management_ui') &&
+      get_feature_flag('dsmp_level') == "beta" &&
         (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?)
-    end
-
-    def current_user_can_see_dsmp_preview?
-      return false unless site_chrome_current_user
-
-      (
-        get_feature_flag('enable_dataset_management_ui') && get_feature_flag('dsmp_preview')
-      ) || false
     end
 
     def current_user_can_see_create_data_assets?
       return false unless site_chrome_current_user
 
-      get_feature_flag('usaid_features_enabled') && get_feature_flag('enable_dataset_management_ui') &&
+      get_feature_flag('usaid_features_enabled') && get_feature_flag('dsmp_level') != "off" &&
         (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?)
     end
 

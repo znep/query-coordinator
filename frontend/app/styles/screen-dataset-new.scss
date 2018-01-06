@@ -1,3 +1,8 @@
+// can't load styleguide on the wizard page without breaking
+// all the things, but can at least use color variables
+@import 'common/styleguide/variables/_color_helpers.scss';
+@import 'common/styleguide/variables/_colors.scss';
+
 @mixin has-action-link {
   a {
     @include sprite-menu-icons("&");
@@ -7,6 +12,43 @@
     };
     &:hover {
       @include opacity(0.8);
+    }
+  }
+}
+
+.contentBox {
+  padding: 0;
+}
+
+.newDatasetForm {
+  h1 {
+    padding: 1rem;
+  }
+
+  .alert {
+    background-color: $primary-light;
+    color: $primary-dark;
+    font-size: 1.4em;
+    border-top: 1px solid $primary;
+    border-bottom: 1px solid $primary;
+    min-height: 52px;
+    text-align: center;
+    margin-top: 1.4em;
+    position: relative;
+
+    .msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      a {
+        text-decoration: underline;
+      }
+
+      a:hover {
+        color: $primary-dark;
+      }
     }
   }
 }
@@ -31,6 +73,7 @@
 
 // PANE ZERO: choose type
 .newKindList, .importTypeList, .uploadTypeList {
+  padding: 1rem;
   margin: 2em auto 5em;
   width: 71.6em;
   li {
@@ -77,41 +120,6 @@
       }
     }
   }
-
-  // dsmp_preview /////////////////////////////////////
-  li {
-    a.dsmpPreview {
-      margin-top: 8px;
-      display: inline-block;
-      color: #1c6387;
-      background-color: #eaf4f9;
-      border: 1px solid #288dc1;
-      outline: none;
-      text-shadow: none;
-      font-size: 1.2em;
-      height: auto;
-      width: 100%;
-      padding: 0.6em 0;
-      text-decoration: none;
-      transition: background-color .2s, color .2s, border-color .2s;
-      &:hover {
-        background-color: lighten(#eaf4f9, 2%);
-        border-color: darken(#288dc1, 15%);
-        color: lighten(#1c6387, 2%);
-      }
-      .socrata-icon-eye {
-        font-size: 1.3em;
-        vertical-align: text-bottom;
-        display: inline-block;
-        margin-right: 3px;
-      }
-      span.text {
-        position: relative;
-        top: -1px;
-      }
-    }
-  }
-  // end dsmp_preview ///////////////////////////////////
 }
 
 .importTypeList, .uploadTypeList {

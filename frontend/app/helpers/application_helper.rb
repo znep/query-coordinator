@@ -113,11 +113,6 @@ module ApplicationHelper
       FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
-# DATASET MANAGEMENT PAGE
-  def dataset_management_page_enabled?
-    FeatureFlags.derive(nil, request).enable_dataset_management_ui
-  end
-
 # PAGE-HEADER
 
   def get_favicon_tag
@@ -1038,13 +1033,6 @@ module ApplicationHelper
   def current_user_can_create_story?
     FeatureFlags.derive(nil, request).stories_enabled &&
       current_user.has_right?(UserRights::CREATE_STORY)
-  end
-
-  def current_user_can_see_dsmp_preview?
-    (
-      FeatureFlags.derive(nil, request)[:enable_dataset_management_ui] &&
-      FeatureFlags.derive(nil, request)[:dsmp_preview]
-    ) || false
   end
 
   def current_user_can_create_measure?

@@ -103,7 +103,6 @@ export class PresentationPane extends Component {
       options: colorPalettesWithCustomOption,
       value: colorPaletteValue,
       onSelection: (event) => {
-
         const selectedColorPalette = (isMultiSeries && (event.value === 'custom')) ? null : event.value;
         onSelectColorPalette(selectedColorPalette);
       }
@@ -560,8 +559,7 @@ export class PresentationPane extends Component {
 
   renderMapColorControls = (renderColorPalette, colorLabelText) => {
     if (renderColorPalette) {
-      const { vifAuthoring } = this.props;
-      const { colorPalettes, onSelectColorPalette } = this.props;
+      const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
       const colorPaletteValue = selectors.getMapColorPalette(vifAuthoring);
       const colorPaletteAttributes = {
         id: 'color-palette',
@@ -918,13 +916,17 @@ export class PresentationPane extends Component {
     if (isPointMap) {
       const renderColorPalette = !_.isNull(selectors.getPointColorByColumn(vifAuthoring));
       const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.point_color.title');
+      let mapControls = [this.renderMapLayerControls()];
 
-      return [
-        this.renderMapColorControls(renderColorPalette, colorLabelText),
-        this.renderPointMapSizeControls(),
-        this.renderMapLayerControls(),
-        this.renderClusterControls()
-      ];
+      if (selectors.getPointAggregation(vifAuthoring) === 'none') {
+        mapControls = _.concat([
+          this.renderMapColorControls(renderColorPalette, colorLabelText),
+          this.renderPointMapSizeControls(),
+          this.renderClusterControls()
+        ], mapControls);
+      }
+
+      return mapControls;
     } else if (isLineMap) {
       const renderColorPalette = !_.isNull(selectors.getLineColorByColumn(vifAuthoring));
       const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.line_color.title');

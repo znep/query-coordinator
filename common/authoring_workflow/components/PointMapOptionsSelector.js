@@ -6,7 +6,12 @@ import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../constants';
-import { getPointColorByColumn, getPointSizeByColumn, getMapType } from '../selectors/vifAuthoring';
+import {
+  getPointColorByColumn,
+  getPointSizeByColumn,
+  getMapType,
+  getPointAggregation
+} from '../selectors/vifAuthoring';
 import { getNumericalAndTextColumns, getNumericalColumns } from '../selectors/metadata';
 import { setPointColorByColumn, setPointSizeByColumn } from '../actions';
 
@@ -37,10 +42,11 @@ export class PointMapOptionsSelector extends Component {
       },
       ...columnOptions
     ];
-    const hasOnlyDefaultValue = options.length <= 1;
+    const hasPointAggregation = _.includes(['heat_map', 'region_map'], getPointAggregation(vifAuthoring));
+    const disabled = (columnOptions.length === 0) || hasPointAggregation;
 
     return {
-      disabled: hasOnlyDefaultValue,
+      disabled,
       id: dropdownId,
       placeholder: I18n.t('no_value', { scope: translationScope }),
       options,

@@ -133,6 +133,8 @@ describe('AuthoringWorkflow reducer', () => {
 
       shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
 
+      shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
+
       describe('when settings the x-axis scaling mode', () => {
 
         it('sets scaling mode to fit', () => {

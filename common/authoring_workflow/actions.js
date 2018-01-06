@@ -987,3 +987,11 @@ export function setLineColorByColumn(colorLinesBy) {
     colorLinesBy
   };
 }
+
+export const SET_POINT_AGGREGATION = 'SET_POINT_AGGREGATION';
+export function setPointAggregation(pointAggregation) {
+  return {
+    type: SET_POINT_AGGREGATION,
+    pointAggregation
+  };
+}

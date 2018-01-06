@@ -127,6 +127,10 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.mapType', action.mapType);
       break;
 
+    case actions.SET_POINT_AGGREGATION:
+      _.set(state, 'series[0].mapOptions.pointAggregation', action.pointAggregation);
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_FILTERS:
     case actions.SET_TITLE:

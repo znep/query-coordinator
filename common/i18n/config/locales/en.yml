@@ -923,6 +923,9 @@ en:
               none: Show all
               subtitle: Number of slices to display
               title: Slice Display Options
+            point_aggregation_options:
+              none: None
+              heat_map: Heat Map
             point_map_options:
               resize_points_by_value: Resize Points by Value
               color_points_by_value: Color by Value
@@ -971,6 +974,7 @@ en:
             data_selection: Data Selection
             timeline_options: Timeline Display Options
             error_bars: Error Bars
+            point_aggregation: Point Aggregation
           title: Data
           uhoh: Uh oh!
         legends_and_flyouts:

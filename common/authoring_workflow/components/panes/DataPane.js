@@ -48,6 +48,7 @@ import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
 import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
 import PointMapOptionsSelector from '../PointMapOptionsSelector';
 import LineMapOptionsSelector from '../LineMapOptionsSelector';
+import PointMapAggregationSelector from '../PointMapAggregationSelector';
 import { FeatureFlags } from 'common/feature_flags';
 
 export class DataPane extends Component {
@@ -255,6 +256,24 @@ export class DataPane extends Component {
     }
   }
 
+  renderPointAggregationOptions = () => {
+    const { vifAuthoring, metadata } = this.props;
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+      const dimension = getDimension(vifAuthoring);
+      const isPointMap = isPointMapColumn(metadata, dimension);
+
+      if (isPointMap) {
+        return (
+          <AccordionPane key="point-aggregation" title={I18n.t('shared.visualizations.panes.data.subheaders.point_aggregation')}>
+            <PointMapAggregationSelector />
+          </AccordionPane>
+        );
+      }
+    }
+  }
+
   render() {
     const { metadata } = this.props;
 
@@ -272,6 +291,7 @@ export class DataPane extends Component {
     const measureSelector = this.renderMeasureSelector();
     const regionSelector = this.renderRegionSelector();
     const renderNewMapOptionsSelector = this.renderNewMapOptionsSelector();
+    const renderPointAggregationOptions = this.renderPointAggregationOptions();
 
     const sections = (
       <AccordionContainer>
@@ -290,6 +310,7 @@ export class DataPane extends Component {
           {measureSelector}
           {regionSelector}
         </AccordionPane>
+        {renderPointAggregationOptions}
         {groupingOptions}
         {timelineOptions}
         {displayOptions}

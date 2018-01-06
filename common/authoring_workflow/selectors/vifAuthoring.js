@@ -183,6 +183,11 @@ export const getLineColorByColumn = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.colorLinesBy', null)
 );
 
+export const getPointAggregation = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.pointAggregation', 'none')
+);
+
 export const getColorScale = createSelector(
   getCurrentVif,
   (vif) => {

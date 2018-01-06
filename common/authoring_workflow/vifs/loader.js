@@ -43,6 +43,7 @@ const paths = {
   numberOfDataClasses: 'series[0].mapOptions.numberOfDataClasses',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
+  pointAggregation: 'series[0].mapOptions.pointAggregation',
   pointSize: 'configuration.pointSize',
   pointThreshold: 'series[0].mapOptions.pointThreshold',
   positiveColor: 'configuration.legend.positiveColor',
@@ -421,6 +422,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.colorLinesBy)) {
     dispatch(actions.setPointColorByColumn(get(paths.colorLinesBy)));
+  }
+
+  if (has(paths.pointAggregation)) {
+    dispatch(actions.setPointAggregation(get(paths.pointAggregation)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

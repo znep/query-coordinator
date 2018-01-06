@@ -1223,7 +1223,7 @@ module ApplicationHelper
 
     # 'Viewer', the lowest level, grant allows seeing the A2B.
     # Any further inspection of grants happens at the component level.
-    @view.shared_to?(current_user)
+    @view.shared_to?(current_user) if @view
   end
 
   # Note that this method controls two things:

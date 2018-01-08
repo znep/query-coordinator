@@ -39,6 +39,7 @@ class PublicationAction extends React.Component {
     const { allowedTo, publicationState, publishedViewUid } = this.props;
 
     return {
+      deleteDataset: allowedTo.manage && publicationState === 'published',
       discardDraft: allowedTo.manage && publicationState === 'draft',
       // We're not including Revert for now as per ChristianH.
       revert: false, // publicationState === 'draft' && publishedViewUid,
@@ -66,6 +67,10 @@ class PublicationAction extends React.Component {
         // TODO by someone else. Expecting to call an external function of some kind.
         console.log('change-audience option selected');
         break;
+      case 'delete-dataset':
+        deleteViewByUid(currentViewUid).
+          then(() => { window.location.assign('/profile'); });
+        break;
       case 'discard-draft':
         deleteViewByUid(currentViewUid).
           then(() => { window.location.assign(`/d/${publishedViewUid}`); });
@@ -88,6 +93,13 @@ class PublicationAction extends React.Component {
       actions.push({
         title: I18n.t('discard_draft', { scope: this.i18n_scope }),
         value: 'discard-draft'
+      });
+    }
+
+    if (currentlyAbleTo.deleteDataset) {
+      actions.push({
+        title: I18n.t('delete_dataset', { scope: this.i18n_scope }),
+        value: 'delete-dataset'
       });
     }
 

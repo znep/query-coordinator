@@ -272,6 +272,7 @@ en:
         manage_access: Manage Collaborators
         publication_action:
           change_audience: Change Audience
+          delete_dataset: Delete this Dataset
           discard_draft: Delete this Draft
           draft:
             primary_action_text: Publish

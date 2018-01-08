@@ -1,8 +1,11 @@
 module VisualizationCanvasHelper
   def visualization_canvas_translations
     translations = LocaleCache.render_translations([LocalePart.visualization_canvas])['visualization_canvas']
+    # XXX: Client-side code depends on translations from a different part of the
+    # translations hierarchy.
     translations.deep_merge(
-      'common' => LocaleCache.render_translations([LocalePart.common])['common']
+      'common' => LocaleCache.render_translations([LocalePart.common])['common'],
+      'dataset_landing_page' => LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']
     )
   end
 

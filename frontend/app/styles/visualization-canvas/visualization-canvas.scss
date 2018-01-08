@@ -1,6 +1,7 @@
 @import 'common/styleguide/variables/colors';
 
 @import "variables/breakpoints";
+@import "common/export-flannel";
 @import "common/feedback-panel";
 
 @import "common/visualizations/views/styles/socrata-visualizations";
@@ -568,5 +569,13 @@ footer#site-chrome-footer {
 
   footer#site-chrome-footer {
     display: none;
+  }
+}
+
+.btn-container {
+  display: inline-block;
+
+  .btn {
+    line-height: 16px;
   }
 }

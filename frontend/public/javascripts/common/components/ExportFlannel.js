@@ -34,7 +34,7 @@ export default class ExportFlannel extends PureComponent {
 
     const url = getDownloadLink(view.id, format);
     const type = getDownloadType(format);
-    const label = I18n.export[format] || format.toUpperCase();
+    const label = I18n.dataset_landing_page.export[format] || format.toUpperCase();
 
     return (
       <li key={format} className="download-link">
@@ -95,7 +95,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <a {...componentProps}>
-        {I18n.action_buttons.download}
+        {I18n.dataset_landing_page.action_buttons.download}
       </a>
     );
   }
@@ -111,7 +111,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <a {...componentProps}>
-        {I18n.action_buttons.download}
+        {I18n.dataset_landing_page.action_buttons.download}
       </a>
     );
   }
@@ -126,7 +126,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <span {...targetProps}>
-        {I18n.action_buttons.export}
+        {I18n.dataset_landing_page.action_buttons.export}
       </span>
     );
   }
@@ -138,12 +138,12 @@ export default class ExportFlannel extends PureComponent {
       id: 'export-flannel',
       className: 'btn-container export-flannel',
       target: () => this.targetElement,
-      title: I18n.export.flannel_title.replace('%{dataset_title}', view.name),
+      title: I18n.dataset_landing_page.export.flannel_title.replace('%{dataset_title}', view.name),
       onDismiss: this.closeFlannel
     };
 
     const exportFlannelHeaderProps = {
-      title: I18n.export.flannel_title.replace('%{dataset_title}', view.name),
+      title: I18n.dataset_landing_page.export.flannel_title.replace('%{dataset_title}', view.name),
       onDismiss: this.closeFlannel
     };
 
@@ -152,13 +152,13 @@ export default class ExportFlannel extends PureComponent {
         <FlannelHeader {...exportFlannelHeaderProps} />
         <FlannelContent>
           <div>
-            {I18n.export.flannel_description.replace('%{dataset_title}', view.name)}
+            {I18n.dataset_landing_page.export.flannel_description.replace('%{dataset_title}', view.name)}
           </div>
           <ul className="featured-download-links">
             {this.getFeaturedLinks()}
           </ul>
           <div className="additional-links-title">
-            {I18n.export.flannel_additional_links_title}
+            {I18n.dataset_landing_page.export.flannel_additional_links_title}
           </div>
           <div className="restof-download-links clearBoth">
             {this.getRestofLinks()}

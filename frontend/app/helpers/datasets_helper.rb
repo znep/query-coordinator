@@ -656,7 +656,8 @@ module DatasetsHelper
     [
       !view.has_rights?(ViewRights::DELETE_VIEW),
       view.geoParent.present?,
-      view.is_activity_feed_dataset?
+      view.is_activity_feed_dataset?,
+      render_asset_action_bar?
     ].any?
   end
 

@@ -518,6 +518,7 @@ en:
         map_working_copy_initial_view_published: Map Published
         assetinventory_working_copy_initial_view_published: Asset Inventory Published
         story_working_copy_initial_view_published: Story Published
+        blob_working_copy_initial_view_published: Blob Published
         draft_initial_view_published_default_key: Asset Initial View Published
         draft_draft_initial_view_published: Dataset Published
         data_lens_draft_initial_view_published: Data Lens Published
@@ -526,6 +527,7 @@ en:
         map_draft_initial_view_published: Map Published
         assetinventory_draft_initial_view_published: Asset Inventory Published
         story_draft_initial_view_published: Story Published
+        blob_draft_initial_view_published: Blob Published
         working_copy_view_published_default_key: Working Copy View Published
         draft_working_copy_view_published: Draft Updated
         data_lens_working_copy_view_published: Data Lens Updated
@@ -534,6 +536,7 @@ en:
         map_working_copy_view_published: Map Updated
         assetinventory_working_copy_view_published: Asset Inventory Updated
         story_working_copy_view_published: Story Updated
+        blob_working_copy_view_published: Blob Updated
         draft_view_published_default_key: Asset View Published
         draft_draft_view_published: Dataset Updated
         data_lens_draft_view_published: Data Lens Updated
@@ -542,6 +545,7 @@ en:
         map_draft_view_published: Map Updated
         assetinventory_draft_view_published: Asset Inventory Updated
         story_draft_view_published: Story Updated
+        blob_draft_view_published: Blob Updated
         approval_changed_rejected: Publishing Request Rejected
         approval_changed_approved: Publishing Request Approved
         view_created: Draft Created
@@ -557,6 +561,7 @@ en:
         map_view_owner_changed: Map Owner Changed
         assetinventory_view_owner_changed: Asset Inventory Owner Changed
         story_view_owner_changed: Story Owner Changed
+        blob_view_owner_changed: Blob Owner Changed
         asset_owner_changed_default_key: Asset Owner Changed
         draft_asset_owner_changed: Draft Owner Changed
         data_lens_asset_owner_changed: Data Lens Owner Changed
@@ -565,6 +570,7 @@ en:
         map_asset_owner_changed: Map Owner Changed
         assetinventory_asset_owner_changed: Asset Inventory Owner Changed
         story_asset_owner_changed: Story Owner Changed
+        blob_asset_owner_changed: Blob Owner Changed
         view_permissions_changed: Permissions Updated
         asset_permissions_changed: Permissions Updated
         collaborator_added_default_key: Asset Shared
@@ -575,6 +581,7 @@ en:
         map_collaborator_added: Map Shared
         assetinventory_collaborator_added: Asset Inventory Shared
         story_collaborator_added: Story Shared
+        blob_collaborator_added: Blob Shared
         collaborator_removed_default_key: Asset Unshared
         draft_collaborator_removed: Draft Unshared
         data_lens_collaborator_removed: Data Lens Unshared
@@ -583,6 +590,7 @@ en:
         map_collaborator_removed: Map Unshared
         assetinventory_collaborator_removed: Asset Inventory Unshared
         story_collaborator_removed: Story Unshared
+        blob_collaborator_removed: Blob Unshared
         collaborator_changed_default_key: Asset Access Changed
         draft_collaborator_changed: Draft Access Changed
         data_lens_collaborator_changed: Data Lens Access Changed
@@ -591,6 +599,7 @@ en:
         map_collaborator_changed: Map Access Changed
         assetinventory_collaborator_changed: Asset Inventory Access Changed
         story_collaborator_changed: Story Access Changed
+        blob_collaborator_changed: Blob Access Changed
         user_added: User Added
         user_removed: User Removed
         user_role_changed: User Role Changed
@@ -602,6 +611,16 @@ en:
         map_submitted_for_review: Map Submitted for Review
         assetinventory_submitted_for_review: Asset Inventory Submitted for Review
         story_submitted_for_review: Story Submitted for Review
+        blob_submitted_for_review: Blob Submitted for Review
+        deleted_default_key: Asset Deleted
+        draft_deleted: Dataset Deleted
+        data_lens_deleted: Data Lens Deleted
+        dataset_deleted: Dataset Deleted
+        chart_deleted: Chart Deleted
+        map_deleted: Map Deleted
+        assetinventory_deleted: Asset Inventory Deleted
+        story_deleted: Story Deleted
+        blob_deleted: Blob Deleted
         alert_setting_modal:
           settings: Settings
           save: Save

@@ -268,9 +268,11 @@ function genDesiredColumns(view, existingColumns, targetColumn, formState) {
     existingColumns = existingColumns.filter(oc => !_.includes(columnIdsToHide, oc.id));
   } else {
     // otherwise add the things in the list that are columns, ignoring all the constants
-    const columnsToShow = colsOrConstants.filter(oc => !!oc.transform && !!oc.transform.transform_expr);
-    const existingColIds = existingColumns.map(oc => oc.id);
-    existingColumns = columnsToShow.filter(oc => !existingColIds.includes(oc.id)).concat(existingColumns);
+    const existingFieldNames = existingColumns.map(oc => oc.field_name);
+    const columnsToShow = colsOrConstants
+      .filter(oc => !!oc.transform && !!oc.transform.transform_expr)
+      .filter(oc => !existingFieldNames.includes(oc.field_name));
+    existingColumns = columnsToShow.concat(existingColumns);
   }
 
   let desiredColumns;

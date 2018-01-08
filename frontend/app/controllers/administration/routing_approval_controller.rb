@@ -6,7 +6,7 @@ class Administration::RoutingApprovalController < AdministrationController
   #
   # Dataset Routing & Approval
   #
-  before_filter :only => [:index, :queue, :approve_view, :manage, :manage_save] {|c| c.check_module('routing_approval')}
+  before_filter :only => [:index, :queue, :approve_view, :manage, :manage_save] {|c| c.check_old_approvals }
   before_filter :only => [:index, :queue] {|c| c.check_approval_rights}
   before_filter :only => [:manage, :manage_save] {|c| c.check_auth_level(UserRights::MANAGE_APPROVAL)}
 

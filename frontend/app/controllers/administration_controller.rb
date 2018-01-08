@@ -1174,6 +1174,10 @@ class AdministrationController < ApplicationController
     run_access_check{CurrentDomain.module_enabled?(mod)}
   end
 
+  def check_old_approvals
+    run_access_check{AppHelper.instance.using_approvals?(:old)}
+  end
+
   def check_module_available(mod)
     run_access_check{CurrentDomain.module_available?(mod)}
   end

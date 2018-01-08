@@ -193,6 +193,16 @@ export const getLineColorByColumn = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.colorLinesBy', null)
 );
 
+export const getBoundaryColorByColumn = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.colorBoundariesBy', null)
+);
+
+export const getQuantificationMethod = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.quantificationMethod', 'numerical')
+);
+
 export const getPointAggregation = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.pointAggregation', 'none')

@@ -21,7 +21,13 @@ import DebouncedInput from '../shared/DebouncedInput';
 import DebouncedTextArea from '../shared/DebouncedTextArea';
 import * as selectors from '../../selectors/vifAuthoring';
 import * as actions from '../../actions';
-import { hasData, isPointMapColumn, isLineMapColumn } from '../../selectors/metadata';
+import {
+  hasData,
+  isPointMapColumn,
+  isLineMapColumn,
+  isBoundaryMapColumn,
+  isNumericDimensionType
+} from '../../selectors/metadata';
 import PointSizePreview from '../shared/PointSizePreview';
 import LineWeightPreview from '../shared/LineWeightPreview';
 
@@ -46,6 +52,8 @@ export class PresentationPane extends Component {
     this.props.onSelectColorScale(colorScale);
   }
 
+  scope = 'shared.visualizations.panes.presentation';
+
   renderPrimaryColor = (labelText) => {
     const { vifAuthoring, onChangePrimaryColor } = this.props;
     const primaryColor = selectors.getPrimaryColor(vifAuthoring);
@@ -57,12 +65,11 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
         <div>
           <label className="block-label" htmlFor="primary-color">{labelText}</label>
           <ColorPicker {...colorPickerAttributes} />
         </div>
-        {this.renderPointOpacityControls()}
       </AccordionPane>
     );
   }
@@ -109,9 +116,9 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
         <label className="block-label" htmlFor="color-palette">
-          {I18n.t('shared.visualizations.panes.presentation.fields.color_palette.title')}
+          {I18n.t('fields.color_palette.title', { scope: this.scope })}
         </label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorPaletteAttributes} />
@@ -191,7 +198,7 @@ export class PresentationPane extends Component {
     } else if (customPaletteSelected && hasCustomColorPaletteError) {
       return (
         <div className="custom-color-palette-error alert error">
-          {I18n.t('shared.visualizations.panes.presentation.custom_color_palette_error')}
+          {I18n.t('custom_color_palette_error', { scope: this.scope })}
         </div>
       );
     } else {
@@ -200,12 +207,12 @@ export class PresentationPane extends Component {
   }
 
   renderDimensionLabels = () => {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeShowDimensionLabels } = this.props;
     const inputAttributes = {
+      defaultChecked: selectors.getShowDimensionLabels(vifAuthoring),
       id: 'show-dimension-labels',
       type: 'checkbox',
-      onChange: this.props.onChangeShowDimensionLabels,
-      defaultChecked: selectors.getShowDimensionLabels(vifAuthoring)
+      onChange: onChangeShowDimensionLabels
     };
 
     return (
@@ -216,7 +223,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('shared.visualizations.panes.presentation.fields.show_dimension_labels.title')}
+            {I18n.t('fields.show_dimension_labels.title', { scope: this.scope })}
           </label>
         </div>
       </div>
@@ -237,7 +244,7 @@ export class PresentationPane extends Component {
     const dimensionLabels = dimensionLabelsVisible ? this.renderDimensionLabels() : null;
 
     return (
-      <AccordionPane key="labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.labels')}>
+      <AccordionPane key="labels" title={I18n.t('subheaders.labels', { scope: this.scope })}>
         {dimensionLabels}
         {valueLabels}
         {valueLabelsAsPercent}
@@ -246,12 +253,12 @@ export class PresentationPane extends Component {
   }
 
   renderShowValueLabels = () => {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeShowValueLabels } = this.props;
     const inputAttributes = {
+      defaultChecked: selectors.getShowValueLabels(vifAuthoring),
       id: 'show-value-labels',
       type: 'checkbox',
-      onChange: this.props.onChangeShowValueLabels,
-      defaultChecked: selectors.getShowValueLabels(vifAuthoring)
+      onChange: onChangeShowValueLabels
     };
 
     return (
@@ -262,7 +269,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('shared.visualizations.panes.presentation.fields.show_value_labels.title')}
+            {I18n.t('fields.show_value_labels.title', { scope: this.scope })}
           </label>
         </div>
       </div>
@@ -270,15 +277,15 @@ export class PresentationPane extends Component {
   }
 
   renderShowPercentLabels = () => {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeShowValueLabelsAsPercent } = this.props;
     const showLabels = selectors.getShowValueLabels(vifAuthoring);
 
     const inputAttributes = {
+      defaultChecked: selectors.getShowValueLabelsAsPercent(vifAuthoring),
+      disabled: !showLabels,
       id: 'show-value-labels-as-percent',
       type: 'checkbox',
-      onChange: this.props.onChangeShowValueLabelsAsPercent,
-      defaultChecked: selectors.getShowValueLabelsAsPercent(vifAuthoring),
-      disabled: !showLabels
+      onChange: onChangeShowValueLabelsAsPercent
     };
 
     const authoringFieldClasses = classNames('authoring-field', {
@@ -293,7 +300,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('shared.visualizations.panes.presentation.fields.show_value_labels_as_percent.title')}
+            {I18n.t('fields.show_value_labels_as_percent.title', { scope: this.scope })}
           </label>
         </div>
       </div>
@@ -333,7 +340,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-bottom',
         onChangeLabelBottom,
-        I18n.t('shared.visualizations.panes.presentation.fields.bottom_axis_title.title'),
+        I18n.t('fields.bottom_axis_title.title', { scope: this.scope }),
         _.get(axisLabels, 'bottom', '')
       ) : null;
 
@@ -341,7 +348,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-left',
         onChangeLabelLeft,
-        I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title'),
+        I18n.t('fields.left_axis_title.title', { scope: this.scope }),
         _.get(axisLabels, 'left', '')
       ) : null;
 
@@ -349,7 +356,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-right',
         onChangeLabelRight,
-        I18n.t('shared.visualizations.panes.presentation.fields.right_axis_title.title'),
+        I18n.t('fields.right_axis_title.title', { scope: this.scope }),
         _.get(axisLabels, 'right', '')
       ) : null;
 
@@ -357,12 +364,12 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-top',
         onChangeLabelTop,
-        I18n.t('shared.visualizations.panes.presentation.fields.top_axis_title.title'),
+        I18n.t('fields.top_axis_title.title', { scope: this.scope }),
         _.get(axisLabels, 'top', '')
       ) : null;
 
     return (
-      <AccordionPane key="axis-labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.axis_titles')}>
+      <AccordionPane key="axis-labels" title={I18n.t('subheaders.axis_titles', { scope: this.scope })}>
         {leftLabel}
         {rightLabel}
         {bottomLabel}
@@ -393,12 +400,12 @@ export class PresentationPane extends Component {
   }
 
   renderShowSourceDataLink = () => {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeShowSourceDataLink } = this.props;
     const inputAttributes = {
+      checked: selectors.getViewSourceDataLink(vifAuthoring),
       id: 'show-source-data-link',
       type: 'checkbox',
-      onChange: this.props.onChangeShowSourceDataLink,
-      checked: selectors.getViewSourceDataLink(vifAuthoring)
+      onChange: onChangeShowSourceDataLink
     };
 
     return (
@@ -408,7 +415,7 @@ export class PresentationPane extends Component {
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.t('shared.visualizations.panes.presentation.fields.show_source_data_link.title')}
+          {I18n.t('fields.show_source_data_link.title', { scope: this.scope })}
         </label>
       </div>
     );
@@ -420,7 +427,7 @@ export class PresentationPane extends Component {
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="title">{I18n.t('shared.visualizations.panes.presentation.fields.title.title')}</label>
+        <label className="block-label" htmlFor="title">{I18n.t('fields.title.title', { scope: this.scope })}</label>
         <DebouncedInput id="title" className="text-input" type="text" onChange={onChangeTitle} value={title} />
       </div>
     );
@@ -432,7 +439,7 @@ export class PresentationPane extends Component {
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="description">{I18n.t('shared.visualizations.panes.presentation.fields.description.title')}</label>
+        <label className="block-label" htmlFor="description">{I18n.t('fields.description.title', { scope: this.scope })}</label>
         <DebouncedTextArea id="description" className="text-input text-area" onChange={onChangeDescription} value={description} />
       </div>
     );
@@ -440,7 +447,7 @@ export class PresentationPane extends Component {
 
   renderGeneral = () => {
     return (
-      <AccordionPane title={I18n.t('shared.visualizations.panes.presentation.subheaders.general')}>
+      <AccordionPane title={I18n.t('subheaders.general', { scope: this.scope })}>
         {this.renderTitleField()}
         {this.renderDescriptionField()}
         {this.renderShowSourceDataLink()}
@@ -457,7 +464,7 @@ export class PresentationPane extends Component {
   }
 
   renderBarChartControls = () => {
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -475,7 +482,7 @@ export class PresentationPane extends Component {
   }
 
   renderColumnChartControls = () => {
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -493,7 +500,7 @@ export class PresentationPane extends Component {
   }
 
   renderComboChartControls = () => {
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -503,7 +510,7 @@ export class PresentationPane extends Component {
   }
 
   renderHistogramControls = () => {
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -512,7 +519,7 @@ export class PresentationPane extends Component {
   }
 
   renderTimelineChartControls = () => {
-    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
+    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -548,7 +555,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
+            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope: this.scope })}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
@@ -557,40 +564,35 @@ export class PresentationPane extends Component {
     }
   }
 
-  renderMapColorControls = (renderColorPalette, colorLabelText) => {
-    if (renderColorPalette) {
-      const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-      const colorPaletteValue = selectors.getMapColorPalette(vifAuthoring);
-      const colorPaletteAttributes = {
-        id: 'color-palette',
-        options: colorPalettes,
-        value: colorPaletteValue,
-        onSelection: (event) => {
-          onSelectColorPalette(event.value);
-        }
-      };
+  renderColorPaletteForMaps = (colorLabelText) => {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const colorPaletteValue = selectors.getMapColorPalette(vifAuthoring);
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettes,
+      value: colorPaletteValue,
+      onSelection: (event) => {
+        onSelectColorPalette(event.value);
+      }
+    };
 
-      return (
-        <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
-          <label className="block-label" htmlFor="color-palette">
-            {I18n.t('shared.visualizations.panes.presentation.fields.color_palette.title')}
-          </label>
-          <div className="color-scale-dropdown-container">
-            <Dropdown {...colorPaletteAttributes} />
-          </div>
-          {this.renderPointOpacityControls()}
-        </AccordionPane>
-      );
-    } else {
-      return this.renderPrimaryColor(colorLabelText);
-    }
+    return (
+      <div>
+        <label className="block-label" htmlFor="color-palette">
+          {I18n.t('fields.color_palette.title', { scope: this.scope })}
+        </label>
+        <div className="color-scale-dropdown-container">
+          <Dropdown {...colorPaletteAttributes} />
+        </div>
+      </div>
+    );
   }
 
-  renderDataClassesSelector = () => {
+  renderDataClassesSelector = (disableDropdown = false) => {
     const { vifAuthoring, onNumberOfDataClassesChange } = this.props;
     const numberOfDataClasses = selectors.getNumberOfDataClasses(vifAuthoring);
-
     const dataClassesAttributes = {
+      disableDropdown,
       id: 'data-classes',
       options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: parseInt(i) })),
       value: numberOfDataClasses,
@@ -602,7 +604,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="data-classes">
-          {I18n.t('shared.visualizations.panes.presentation.fields.data_classes.title')}
+          {I18n.t('fields.data_classes.title', { scope: this.scope })}
         </label>
         <div className="data-classes-dropdown-container">
           <Dropdown {...dataClassesAttributes} />
@@ -644,7 +646,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="minimum-line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.minimum')}</label>
+              htmlFor="minimum-line-weight">{I18n.t('fields.line_weight.minimum', { scope: this.scope })}</label>
             <div id="minimum-line-weight" className="debounced-slider-with-preview">
               <div className="line-weight-slider-container">
                 <DebouncedSlider {...minimumLineWeightAttributes} />
@@ -656,7 +658,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="maximum-line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.maximum')}</label>
+              htmlFor="maximum-line-weight">{I18n.t('fields.line_weight.maximum', { scope: this.scope })}</label>
             <div id="maximum-line-weight" className="debounced-slider-with-preview">
               <div className="line-weight-slider-container">
                 <DebouncedSlider {...maximumLineWeightAttributes} />
@@ -685,7 +687,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="line-weight">{I18n.t('shared.visualizations.panes.presentation.fields.line_weight.title')}</label>
+            htmlFor="line-weight">{I18n.t('fields.line_weight.title', { scope: this.scope })}</label>
           <div id="line-weight">
             <DebouncedSlider {...lineWeightAttributes} />
           </div>
@@ -694,7 +696,7 @@ export class PresentationPane extends Component {
     }
 
     return (
-      <AccordionPane key="lineWeightControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.line_weight')}>
+      <AccordionPane key="lineWeightControls" title={I18n.t('subheaders.line_weight', { scope: this.scope })}>
         {LineMapWeightControls}
       </AccordionPane>
     );
@@ -733,7 +735,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="minimum-point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.minimum')}</label>
+              htmlFor="minimum-point-size">{I18n.t('fields.point_size.minimum', { scope: this.scope })}</label>
             <div id="minimum-point-size" className="debounced-slider-with-preview">
               <div className="point-size-slider-container">
                 <DebouncedSlider {...minimumPointSizeAttributes} />
@@ -745,7 +747,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="maximum-point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.maximum')}</label>
+              htmlFor="maximum-point-size">{I18n.t('fields.point_size.maximum', { scope: this.scope })}</label>
             <div id="maximum-point-size" className="debounced-slider-with-preview">
               <div className="point-size-slider-container">
                 <DebouncedSlider {...maximumPointSizeAttributes} />
@@ -774,7 +776,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
+            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope: this.scope })}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -783,9 +785,31 @@ export class PresentationPane extends Component {
     }
 
     return (
-      <AccordionPane key="pointSizeControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.point_size')}>
+      <AccordionPane key="pointSizeControls" title={I18n.t('subheaders.point_size', { scope: this.scope })}>
         {pointMapSizeControls}
       </AccordionPane>
+    );
+  }
+
+  renderSliderControl = (name, rangeMin, rangeMax, step, value, onChange, description) => {
+    const attributes = {
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      id: name,
+      rangeMin,
+      rangeMax,
+      step,
+      value,
+      onChange
+    };
+
+    return (
+      <div className="authoring-field">
+        <BlockLabel
+          title={I18n.t(`fields.${name}.title`, { scope: this.scope })}
+          htmlFor={name}
+          description={description} />
+        <DebouncedSlider {...attributes} />
+      </div>
     );
   }
 
@@ -798,113 +822,188 @@ export class PresentationPane extends Component {
       onMaxClusterSizeChange,
       onStackRadiusChange
     } = this.props;
-    const maxClusteringZoomLevel = selectors.getMaxClusteringZoomLevel(vifAuthoring);
-    const pointThreshold = selectors.getPointThreshold(vifAuthoring);
-    const clusterRadius = selectors.getClusterRadius(vifAuthoring);
-    const maxClusterSize = selectors.getMaxClusterSize(vifAuthoring);
-    const stackRadius = selectors.getStackRadius(vifAuthoring);
-    const maxClusteringZoomLevelAttributes = {
-      id: 'max-clustering-zoom-level',
-      rangeMin: 1,
-      rangeMax: 23,
-      step: 1,
-      value: maxClusteringZoomLevel,
-      onChange: onMaxClusteringZoomLevelChange,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
-    };
-    const pointThresholdAttributes = {
-      id: 'point-threshold',
-      rangeMin: 100,
-      rangeMax: 10000,
-      step: 100,
-      value: pointThreshold,
-      onChange: onPointThresholdChange,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
-    };
-    const clusterRadiusAttributes = {
-      id: 'cluster-radius',
-      rangeMin: 20,
-      rangeMax: 80,
-      step: 1,
-      value: clusterRadius,
-      onChange: onClusterRadiusChange,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
-    };
-    const maxClusterSizeAttributes = {
-      id: 'max-cluster-size',
-      rangeMin: 20,
-      rangeMax: 80,
-      step: 1,
-      value: maxClusterSize,
-      onChange: onMaxClusterSizeChange,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
-    };
-    const stackRadiusAttributes = {
-      id: 'stack-radius',
-      rangeMin: 1,
-      rangeMax: 80,
-      step: 1,
-      value: stackRadius,
-      onChange: onStackRadiusChange,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+
+    const maxClusteringZoomLevelSlider = this.renderSliderControl(
+      'max_clustering_zoom_level',
+      1,
+      23,
+      1,
+      selectors.getMaxClusteringZoomLevel(vifAuthoring),
+      onMaxClusteringZoomLevelChange,
+      I18n.t('fields.max_clustering_zoom_level.description', { scope: this.scope })
+    );
+    const pointThresholdSlider = this.renderSliderControl(
+      'point_threshold',
+      100,
+      10000,
+      100,
+      selectors.getPointThreshold(vifAuthoring),
+      onPointThresholdChange,
+      I18n.t('fields.point_threshold.description', { scope: this.scope })
+    );
+    const clusterRadiusSlider = this.renderSliderControl(
+      'cluster_radius',
+      20,
+      80,
+      1,
+      selectors.getClusterRadius(vifAuthoring),
+      onClusterRadiusChange,
+      null
+    );
+    const maxClusterSizeSlider = this.renderSliderControl(
+      'max_cluster_size',
+      1,
+      10,
+      1,
+      selectors.getMaxClusterSize(vifAuthoring),
+      onMaxClusterSizeChange,
+      null
+    );
+    const stackRadiusSlider = this.renderSliderControl(
+      'stack_radius',
+      1,
+      80,
+      1,
+      selectors.getStackRadius(vifAuthoring),
+      onStackRadiusChange,
+      null
+    );
+
+    return (
+      <AccordionPane key="clusterControls" title={I18n.t('subheaders.clusters', { scope: this.scope })}>
+        {maxClusteringZoomLevelSlider}
+        {pointThresholdSlider}
+        {clusterRadiusSlider}
+        {maxClusterSizeSlider}
+        {stackRadiusSlider}
+      </AccordionPane>
+    );
+  }
+
+  renderRadioButton = (quantificationMethod) => {
+    const { vifAuthoring } = this.props;
+    const selectedQuantificationMethod = selectors.getQuantificationMethod(vifAuthoring);
+    const className = `${quantificationMethod}-quantification-method`;
+    const id = `${quantificationMethod}-quantification-method-container`;
+    const inputAttributes = {
+      checked: selectedQuantificationMethod === quantificationMethod,
+      id,
+      name: 'quantification-method-options',
+      type: 'radio',
+      onChange: () => { this.props.onQuantificationMethodChange(quantificationMethod); }
     };
 
     return (
-      <AccordionPane key="clusterControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.clusters')}>
-        <div className="authoring-field">
-          <BlockLabel
-            title={I18n.t('shared.visualizations.panes.presentation.fields.stop_clustering_at_zoom_level.title')}
-            htmlFor="max-clustering-zoom-level"
-            description={I18n.t('shared.visualizations.panes.presentation.fields.stop_clustering_at_zoom_level.description')} />
-          <div id="max-clustering-zoom-level">
-            <DebouncedSlider {...maxClusteringZoomLevelAttributes} />
+      <div className={className}>
+        <input {...inputAttributes} />
+        <label htmlFor={id}>
+          <span className="fake-radiobutton" />
+          <div className="translation-within-label">
+            {I18n.t(`fields.quantification_method.${quantificationMethod}`, { scope: this.scope })}
           </div>
-        </div>
+        </label>
+      </div>
+    );
+  }
 
-        <div className="authoring-field">
-          <BlockLabel
-            title={I18n.t('shared.visualizations.panes.presentation.fields.point_threshold.title')}
-            htmlFor="point-threshold"
-            description={I18n.t('shared.visualizations.panes.presentation.fields.point_threshold.description')} />
-          <div id="point-threshold">
-            <DebouncedSlider {...pointThresholdAttributes} />
-          </div>
-        </div>
+  renderQuantificationMethodOptions = () => {
+    return (
+      <div className="authoring-field">
+        <label className="block-label">
+          {I18n.t('subheaders.quantification_method', { scope: this.scope })}
+        </label>
 
-        <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="cluster-radius">
-            {I18n.t('shared.visualizations.panes.presentation.fields.cluster_radius.title')}
-          </label>
-          <div id="cluster-radius">
-            <DebouncedSlider {...clusterRadiusAttributes} />
-          </div>
+        <div className="radiobutton">
+          {this.renderRadioButton('numerical')}
+          {this.renderRadioButton('categorical')}
         </div>
+      </div>
+    );
+  }
 
-        <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="max-cluster-size">
-            {I18n.t('shared.visualizations.panes.presentation.fields.max_cluster_size.title')}
-          </label>
-          <div id="max-cluster-size">
-            <DebouncedSlider {...maxClusterSizeAttributes} />
-          </div>
-        </div>
+  renderPrimaryColorForMaps = (labelText) => {
+    const { vifAuthoring, onChangePrimaryColor } = this.props;
+    const primaryColor = selectors.getPrimaryColor(vifAuthoring);
 
-        <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="stack-radius">
-            {I18n.t('shared.visualizations.panes.presentation.fields.stack_radius.title')}
-          </label>
-          <div id="stack-radius">
-            <DebouncedSlider {...stackRadiusAttributes} />
-          </div>
-        </div>
+    const colorPickerAttributes = {
+      handleColorChange: (primaryColor) => onChangePrimaryColor(0, primaryColor),
+      palette: COLORS,
+      value: primaryColor
+    };
+
+    return (
+      <div>
+        <label className="block-label">{labelText}</label>
+        <ColorPicker {...colorPickerAttributes} />
+      </div>
+    );
+  }
+
+  renderPointMapControls = () => {
+    const { vifAuthoring } = this.props;
+    const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
+    const colorControls = (
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) ?
+          this.renderPrimaryColorForMaps(colorLabelText) :
+          this.renderColorPaletteForMaps(colorLabelText)}
+        {this.renderPointOpacityControls()}
       </AccordionPane>
     );
+
+    return [
+      colorControls,
+      this.renderPointMapSizeControls(),
+      this.renderMapLayerControls(),
+      this.renderClusterControls()
+    ];
+  }
+
+  renderLineMapControls = () => {
+    const { vifAuthoring } = this.props;
+    const colorLabelText = I18n.t('fields.line_color.title', { scope: this.scope });
+    const colorControls = (
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+        {_.isNull(selectors.getLineColorByColumn(vifAuthoring)) ?
+          this.renderPrimaryColorForMaps(colorLabelText) :
+          this.renderColorPaletteForMaps(colorLabelText)}
+      </AccordionPane>
+    );
+
+    return [
+      colorControls,
+      this.renderLineMapWeightControls(),
+      this.renderMapLayerControls()
+    ];
+  }
+
+  renderBoundaryMapControls = () => {
+    const { vifAuthoring, metadata } = this.props;
+    const boundaryColorByColumn = selectors.getBoundaryColorByColumn(vifAuthoring);
+    const colorLabelText = I18n.t('fields.boundary_color.title', { scope: this.scope });
+    const disableDataClassesDropdown = selectors.getQuantificationMethod(vifAuthoring) !== 'numerical';
+    let renderColorPalette = false;
+    let isNumericalColumnSelected = false;
+
+    if (!_.isNull(boundaryColorByColumn)) {
+      renderColorPalette = true;
+      isNumericalColumnSelected = isNumericDimensionType(metadata, { columnName: boundaryColorByColumn });
+    }
+
+    const colorControls = (
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+        {renderColorPalette ?
+          this.renderColorPaletteForMaps(colorLabelText) :
+          this.renderPrimaryColorForMaps(colorLabelText)}
+        {isNumericalColumnSelected && this.renderQuantificationMethodOptions()}
+        {isNumericalColumnSelected && this.renderDataClassesSelector(disableDataClassesDropdown)}
+      </AccordionPane>
+    );
+
+    return [
+      colorControls,
+      this.renderMapLayerControls()
+    ];
   }
 
   renderNewMapControls = () => {
@@ -912,31 +1011,17 @@ export class PresentationPane extends Component {
     const dimension = selectors.getDimension(vifAuthoring);
     const isPointMap = isPointMapColumn(metadata, dimension);
     const isLineMap = isLineMapColumn(metadata, dimension);
+    const isBoundaryMap = isBoundaryMapColumn(metadata, dimension);
 
     if (isPointMap) {
-      const renderColorPalette = !_.isNull(selectors.getPointColorByColumn(vifAuthoring));
-      const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.point_color.title');
-      let mapControls = [this.renderMapLayerControls()];
-
-      if (selectors.getPointAggregation(vifAuthoring) === 'none') {
-        mapControls = _.concat([
-          this.renderMapColorControls(renderColorPalette, colorLabelText),
-          this.renderPointMapSizeControls(),
-          this.renderClusterControls()
-        ], mapControls);
-      }
-
-      return mapControls;
+      return this.renderPointMapControls();
     } else if (isLineMap) {
-      const renderColorPalette = !_.isNull(selectors.getLineColorByColumn(vifAuthoring));
-      const colorLabelText = I18n.t('shared.visualizations.panes.presentation.fields.line_color.title');
-
-      return [
-        this.renderMapColorControls(renderColorPalette, colorLabelText),
-        this.renderLineMapWeightControls(),
-        this.renderMapLayerControls()
-      ];
+      return this.renderLineMapControls();
+    } else if (isBoundaryMap) {
+      return this.renderBoundaryMapControls();
     }
+
+    return null;
   }
 
   renderFeatureMapControls = () => {
@@ -972,17 +1057,17 @@ export class PresentationPane extends Component {
     };
 
     const pointControls = (
-      <AccordionPane key="pointControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.points')}>
+      <AccordionPane key="pointControls" title={I18n.t('subheaders.points', { scope: this.scope })}>
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-color">{I18n.t('shared.visualizations.panes.presentation.fields.point_color.title')}</label>
+            htmlFor="point-color">{I18n.t('fields.point_color.title', { scope: this.scope })}</label>
           <ColorPicker {...pointColorAttributes} />
         </div>
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
+            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope: this.scope })}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
@@ -990,7 +1075,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
+            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope: this.scope })}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -1021,10 +1106,10 @@ export class PresentationPane extends Component {
     };
 
     const colorControls = (
-      <AccordionPane key="colorControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colorControls" title={I18n.t('subheaders.colors', { scope: this.scope })}>
         <label
           className="block-label"
-          htmlFor="color-scale">{I18n.t('shared.visualizations.panes.presentation.fields.color_scale.title')}</label>
+          htmlFor="color-scale">{I18n.t('fields.color_scale.title', { scope: this.scope })}</label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorScaleAttributes} />
         </div>
@@ -1057,11 +1142,11 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="mapLayerControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.map')}>
+      <AccordionPane key="mapLayerControls" title={I18n.t('subheaders.map', { scope: this.scope })}>
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="base-layer">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer.title')}</label>
+            htmlFor="base-layer">{I18n.t('fields.base_layer.title', { scope: this.scope })}</label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
@@ -1069,7 +1154,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="base-layer-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer_opacity.title')}</label>
+            htmlFor="base-layer-opacity">{I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}</label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>
@@ -1174,19 +1259,19 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setPrimaryColor(seriesIndex, primaryColor));
     },
 
-    onSelectBaseLayer: baseLayer => {
+    onSelectBaseLayer: (baseLayer) => {
       dispatch(actions.setBaseLayer(baseLayer.value));
     },
 
-    onChangeBaseLayerOpacity: baseLayerOpacity => {
+    onChangeBaseLayerOpacity: (baseLayerOpacity) => {
       dispatch(actions.setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
     },
 
-    onChangePointOpacity: pointOpacity => {
+    onChangePointOpacity: (pointOpacity) => {
       dispatch(actions.setPointOpacity(_.round(pointOpacity, 2)));
     },
 
-    onChangePointSize: pointSize => {
+    onChangePointSize: (pointSize) => {
       dispatch(actions.setPointSize(_.round(pointSize, 2)));
     },
 
@@ -1194,48 +1279,52 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setPointMapPointSize(_.round(pointMapPointSize, 2)));
     },
 
-    onChangeLineWeight: lineWeight => {
+    onChangeLineWeight: (lineWeight) => {
       dispatch(actions.setLineWeight(_.round(lineWeight, 2)));
     },
 
-    onMinimumLineWeightChange: lineWeight => {
+    onMinimumLineWeightChange: (lineWeight) => {
       dispatch(actions.setMinimumLineWeight(_.round(lineWeight, 2)));
     },
 
-    onMaximumLineWeightChange: lineWeight => {
+    onMaximumLineWeightChange: (lineWeight) => {
       dispatch(actions.setMaximumLineWeight(_.round(lineWeight, 2)));
     },
 
-    onMinimumPointSizeChange: pointSize => {
+    onMinimumPointSizeChange: (pointSize) => {
       dispatch(actions.setMinimumPointSize(_.round(pointSize, 2)));
     },
 
-    onMaximumPointSizeChange: pointSize => {
+    onMaximumPointSizeChange: (pointSize) => {
       dispatch(actions.setMaximumPointSize(_.round(pointSize, 2)));
     },
 
-    onNumberOfDataClassesChange: numberOfDataClasses => {
+    onNumberOfDataClassesChange: (numberOfDataClasses) => {
       dispatch(actions.setNumberOfDataClasses(numberOfDataClasses));
     },
 
-    onMaxClusteringZoomLevelChange: zoomLevel => {
+    onMaxClusteringZoomLevelChange: (zoomLevel) => {
       dispatch(actions.setMaxClusteringZoomLevel(zoomLevel));
     },
 
-    onPointThresholdChange: pointThreshold => {
+    onPointThresholdChange: (pointThreshold) => {
       dispatch(actions.setPointThreshold(pointThreshold));
     },
 
-    onClusterRadiusChange: clusterRadius => {
+    onClusterRadiusChange: (clusterRadius) => {
       dispatch(actions.setClusterRadius(clusterRadius));
     },
 
-    onMaxClusterSizeChange: maxClusterSize => {
+    onMaxClusterSizeChange: (maxClusterSize) => {
       dispatch(actions.setMaxClusterSize(maxClusterSize));
     },
 
-    onStackRadiusChange: stackRadius => {
+    onStackRadiusChange: (stackRadius) => {
       dispatch(actions.setStackRadius(stackRadius));
+    },
+
+    onQuantificationMethodChange: (quantificationMethod) => {
+      dispatch(actions.setQuantificationMethod(quantificationMethod));
     },
 
     onChangeShowDimensionLabels: (event) => {
@@ -1272,7 +1361,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setLabelRight(event.target.value));
     },
 
-    onSelectColorScale: colorScale => {
+    onSelectColorScale: (colorScale) => {
       dispatch(actions.setColorScale(...colorScale.scale));
     },
 
@@ -1296,7 +1385,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setDescription(event.target.value));
     },
 
-    onChangeShowSourceDataLink: event => {
+    onChangeShowSourceDataLink: (event) => {
       const viewSourceDataLink = event.target.checked;
       dispatch(actions.setViewSourceDataLink(viewSourceDataLink));
     }

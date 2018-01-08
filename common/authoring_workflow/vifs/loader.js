@@ -8,6 +8,7 @@ const paths = {
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
   clusterRadius: 'series[0].mapOptions.clusterRadius',
+  colorBoundariesBy: 'series[0].mapOptions.colorBoundariesBy',
   colorLinesBy: 'series[0].mapOptions.colorLinesBy',
   colorPalette: 'series[0].color.palette',
   colorPointsBy: 'series[0].mapOptions.colorPointsBy',
@@ -51,6 +52,7 @@ const paths = {
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
   primaryColor: 'series[{0}].color.primary',
+  quantificationMethod: 'series[0].mapOptions.quantificationMethod',
   referenceLineColor: 'referenceLines[{0}].color',
   referenceLineLabel: 'referenceLines[{0}].label',
   referenceLines: 'referenceLines',
@@ -410,6 +412,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setStackRadius(get(paths.stackRadius)));
   }
 
+  if (has(paths.quantificationMethod)) {
+    dispatch(actions.setQuantificationMethod(get(paths.quantificationMethod)));
+  }
+
   if (has(paths.colorPointsBy)) {
     dispatch(actions.setPointColorByColumn(get(paths.colorPointsBy)));
   }
@@ -432,6 +438,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.colorLinesBy)) {
     dispatch(actions.setLineColorByColumn(get(paths.colorLinesBy)));
+  }
+
+  if (has(paths.colorBoundariesBy)) {
+    dispatch(actions.setBoundaryColorByColumn(get(paths.colorBoundariesBy)));
   }
 
   if (has(paths.pointAggregation)) {

@@ -137,6 +137,14 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.mapType', action.mapType);
       break;
 
+    case actions.SET_BOUNDARY_COLOR_BY_COLUMN:
+      _.set(state, 'series[0].mapOptions.colorBoundariesBy', action.colorBoundariesBy);
+      break;
+
+    case actions.SET_QUANTIFICATION_METHOD:
+      _.set(state, 'series[0].mapOptions.quantificationMethod', action.quantificationMethod);
+      break;
+
     case actions.SET_POINT_AGGREGATION:
       _.set(state, 'series[0].mapOptions.pointAggregation', action.pointAggregation);
       break;

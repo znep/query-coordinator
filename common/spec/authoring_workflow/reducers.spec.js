@@ -151,6 +151,8 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setMaximumLineWeight', 7, 'series[0].mapOptions.maximumLineWeight', ['map']);
       shouldSetVif('setLineColorByColumn', 'columnName', 'series[0].mapOptions.colorLinesBy', ['map']);
       shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
+      shouldSetVif('setBoundaryColorByColumn', 'columnName', 'series[0].mapOptions.colorBoundariesBy', ['map']);
+      shouldSetVif('setQuantificationMethod', 'numerical', 'series[0].mapOptions.quantificationMethod', ['map']);
 
       describe('when settings the x-axis scaling mode', () => {
 

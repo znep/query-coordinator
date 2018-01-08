@@ -1004,6 +1004,22 @@ export function setLineColorByColumn(colorLinesBy) {
   };
 }
 
+export const SET_BOUNDARY_COLOR_BY_COLUMN = 'SET_BOUNDARY_COLOR_BY_COLUMN';
+export function setBoundaryColorByColumn(colorBoundariesBy) {
+  return {
+    type: SET_BOUNDARY_COLOR_BY_COLUMN,
+    colorBoundariesBy
+  };
+}
+
+export const SET_QUANTIFICATION_METHOD = 'SET_QUANTIFICATION_METHOD';
+export function setQuantificationMethod(quantificationMethod) {
+  return {
+    type: SET_QUANTIFICATION_METHOD,
+    quantificationMethod
+  };
+}
+
 export const SET_POINT_AGGREGATION = 'SET_POINT_AGGREGATION';
 export function setPointAggregation(pointAggregation) {
   return {

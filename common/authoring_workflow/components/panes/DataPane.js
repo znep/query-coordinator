@@ -8,6 +8,7 @@ import {
   getValidMeasures,
   isPointMapColumn,
   isLineMapColumn,
+  isBoundaryMapColumn,
   hasData,
   hasError,
   isDimensionTypeCalendarDate,
@@ -48,6 +49,7 @@ import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
 import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
 import PointMapOptionsSelector from '../PointMapOptionsSelector';
 import LineMapOptionsSelector from '../LineMapOptionsSelector';
+import BoundaryMapOptionsSelector from '../BoundaryMapOptionsSelector';
 import PointMapAggregationSelector from '../PointMapAggregationSelector';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -239,20 +241,15 @@ export class DataPane extends Component {
       const dimension = getDimension(vifAuthoring);
       const isPointMap = isPointMapColumn(metadata, dimension);
       const isLineMap = isLineMapColumn(metadata, dimension);
+      const isBoundaryMap = isBoundaryMapColumn(metadata, dimension);
 
-      if (isPointMap) {
-        return (
-          <div className="authoring-field">
-            <PointMapOptionsSelector />
-          </div>
-        );
-      } else if (isLineMap) {
-        return (
-          <div className="authoring-field">
-            <LineMapOptionsSelector />
-          </div>
-        );
-      }
+      return (
+        <div className="authoring-field">
+          {isPointMap && <PointMapOptionsSelector />}
+          {isLineMap && <LineMapOptionsSelector />}
+          {isBoundaryMap && <BoundaryMapOptionsSelector />}
+        </div>
+      );
     }
   }
 

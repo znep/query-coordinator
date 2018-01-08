@@ -859,6 +859,9 @@ en:
               none: Show all
               subtitle: Number of bars to display
               title: Bar Display Options
+            boundary_map_options:
+              boundary_color_by_value: Color by Value
+              no_value: None
             column_chart_limit:
               count: Show
               none: Show all
@@ -906,6 +909,10 @@ en:
               none_selected: None Selected
               select_column: Select Column...
               upper_bound_column: Upper Bound Column
+            line_map_options:
+              line_weight_by_value: Scale Line Weight by Value
+              line_color_by_value: Color by Value
+              no_value: None
             measure:
               description: A measure is a numeric field or the count of rows associated with the selected dimension.
               color_and_flyout_label: '{0} ({1})'
@@ -929,10 +936,6 @@ en:
             point_map_options:
               resize_points_by_value: Resize Points by Value
               color_points_by_value: Color by Value
-              no_value: None
-            line_map_options:
-              line_weight_by_value: Scale Line Weight by Value
-              line_color_by_value: Color by Value
               no_value: None
             region:
               groups:
@@ -972,9 +975,9 @@ en:
           loading_metadata_error: This dataset is empty, private or has been deleted. Please check the dataset itself for availability.
           subheaders:
             data_selection: Data Selection
-            timeline_options: Timeline Display Options
             error_bars: Error Bars
             point_aggregation: Point Aggregation
+            timeline_options: Timeline Display Options
           title: Data
           uhoh: Uh oh!
         legends_and_flyouts:
@@ -1012,6 +1015,8 @@ en:
               title: Opacity
             bottom_axis_title:
               title: Bottom Axis Title
+            boundary_color:
+              title: Color
             cluster_radius:
               title: Cluster Radius
             color_palette:
@@ -1043,6 +1048,9 @@ en:
             point_threshold:
               title: Point Threshold
               description: The number of points in view that can be rendered before clustering occurs (subject to performance limits).
+            quantification_method:
+              numerical: Numerical
+              categorical: Categorical
             right_axis_title:
               title: Right Axis Title
             show_dimension_labels:
@@ -1055,7 +1063,7 @@ en:
               title: Label chart slices as %
             stack_radius:
               title: Stack Radius
-            stop_clustering_at_zoom_level:
+            max_clustering_zoom_level:
               title: Stop Clustering at Zoom Level
               description: Depending on the size of your map, clustering may occur beyond the zoom level you set.
             title:
@@ -1073,6 +1081,7 @@ en:
             map: Map
             points: Points
             point_size: Point Size
+            quantification_method: Quantification Method
           title: Presentation
       preview:
         center_and_zoom: Current zoom level and positioning will be preserved on insertion.

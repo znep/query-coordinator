@@ -161,6 +161,12 @@ export const getMapType = (state, column) => {
   return mapType;
 };
 
+export const isNumericDimensionType = (state, column) => {
+  const dimensionType = getDimensionType(state, column);
+
+  return _.includes(NUMERIC_COLUMN_TYPES, dimensionType.type);
+};
+
 export const getDimensionType = (state, column) => {
   const dimension = _.find(getValidDimensions(state), dimension => {
     return column && column.columnName === dimension.fieldName;

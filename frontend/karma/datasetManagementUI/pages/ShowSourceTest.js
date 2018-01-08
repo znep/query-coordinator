@@ -9,7 +9,11 @@ import state from '../data/initialState';
 describe('ShowSource page', () => {
   const defaultProps = {
     goHome: _.noop,
-    inProgress: false
+    inProgress: false,
+    hrefFormDirty: false,
+    saveHrefForm: () => {},
+    schemaExists: false,
+    onHrefPage: false
   };
 
   const ownProps = {

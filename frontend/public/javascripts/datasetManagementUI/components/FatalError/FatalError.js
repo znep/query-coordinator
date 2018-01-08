@@ -44,7 +44,7 @@ const FatalError = props => {
 
 FatalError.propTypes = {
   source: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object.isRequired,
+  outputSchema: PropTypes.object,
   outputColumns: PropTypes.array.isRequired
 };
 

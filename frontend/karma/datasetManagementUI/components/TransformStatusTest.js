@@ -22,6 +22,7 @@ describe('components/TransformStatus', () => {
       inputSchemaId: '0',
       outputSchemaId: '0'
     },
+    outputSchema: {},
     flyouts: false,
     onClickError: _.noop,
     shortcuts: [],

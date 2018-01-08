@@ -8,6 +8,7 @@ import AddColForm, {
 
 describe('components/AddColForm', () => {
   const props = {
+    entities: {},
     errors: { displayName: [], fieldName: [] },
     clearInternalState: false,
     inputColumns: {

@@ -41,6 +41,7 @@ describe('ShowOutputSchema page', () => {
         inputSchemaId: '98',
         outputSchemaId: '144'
       },
+      addColForm: {},
       location: {
         pathname:
           '/dataset/dfsdfdsf/kg5j-unyr/revisions/0/sources/115/schemas/98/output/144',

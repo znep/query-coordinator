@@ -19,7 +19,7 @@ describe('components/URLSource', () => {
     stopPropagation: () => {}
   };
 
-  const component = shallow(<URLSource createURLSource={fakePromise} />);
+  const component = shallow(<URLSource hrefExists={false} createURLSource={fakePromise} />);
 
   it('calls StartImport when button is clicked', () => {
     component.find('Connect(ApiCallButton)').simulate('click', fakeEvent);

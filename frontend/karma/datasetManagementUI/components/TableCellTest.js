@@ -30,7 +30,7 @@ describe('components/TableCell', () => {
   });
 
   it('renders a number', () => {
-    const element = shallow(<TableCell cell={{ ok: 42 }} type={'number'} />);
+    const element = shallow(<TableCell cell={{ ok: '42' }} type={'number'} />);
     assert.isTrue(element.exists());
     assert.isTrue(element.find('NumberCell').exists());
   });

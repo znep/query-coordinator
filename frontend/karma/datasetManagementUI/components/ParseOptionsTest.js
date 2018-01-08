@@ -8,6 +8,7 @@ import * as Selectors from 'selectors';
 
 describe('components/ParseOptions', () => {
   const defaultProps = () => ({
+    source: {},
     form: {
       errors: {},
       parseOptions: {

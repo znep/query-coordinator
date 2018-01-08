@@ -18,7 +18,7 @@ describe('components/TableCell/NumberCell', () => {
 
     it('renders without commas', () => {
       const element = shallow(renderNumber({
-        value: 42000,
+        value: '42000',
         format: {
           noCommas: true
         }
@@ -29,7 +29,7 @@ describe('components/TableCell/NumberCell', () => {
 
     it('renders with special group separator and decimal separator', () => {
       const element = shallow(renderNumber({
-        value: 42000.42,
+        value: '42000.42',
         format: {
           groupSeparator: '.',
           decimalSeparator: ','
@@ -41,7 +41,7 @@ describe('components/TableCell/NumberCell', () => {
 
     it('renders with different precision', () => {
       const element = shallow(renderNumber({
-        value: 42000.42,
+        value: '42000.42',
         format: {
           precision: 8
         }
@@ -53,7 +53,7 @@ describe('components/TableCell/NumberCell', () => {
 
   it('renders a scientific notation number', () => {
     const element = shallow(renderNumber({
-      value: 42,
+      value: '42',
       format: {
         precisionStyle: 'scientific'
       }
@@ -64,7 +64,7 @@ describe('components/TableCell/NumberCell', () => {
 
   it('renders a percentage number', () => {
     const element = shallow(renderNumber({
-      value: 42,
+      value: '42',
       format: {
         precisionStyle: 'percentage'
       }
@@ -75,7 +75,7 @@ describe('components/TableCell/NumberCell', () => {
 
   it('renders a financial number', () => {
     const element = shallow(renderNumber({
-      value: 42,
+      value: '42',
       format: {
         precisionStyle: 'financial'
       }
@@ -88,7 +88,7 @@ describe('components/TableCell/NumberCell', () => {
   describe('currency rendering', () => {
     it('renders a currency number with 2 decimals precision by default', () => {
       const element = shallow(renderNumber({
-        value: 42,
+        value: '42',
         format: {
           precisionStyle: 'currency'
         }
@@ -99,7 +99,7 @@ describe('components/TableCell/NumberCell', () => {
 
     it('renders currency with currency style', () => {
       const element = shallow(renderNumber({
-        value: 42,
+        value: '42',
         format: {
           precisionStyle: 'currency',
           currencyStyle: 'GBP'
@@ -111,7 +111,7 @@ describe('components/TableCell/NumberCell', () => {
 
     it('renders currency with different precision', () => {
       const element = shallow(renderNumber({
-        value: 42,
+        value: '42',
         format: {
           precisionStyle: 'currency',
           currencyStyle: 'GBP',

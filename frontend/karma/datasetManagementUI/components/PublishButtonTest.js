@@ -8,7 +8,9 @@ const defaultProps = {
   dataSatisfied: false,
   metadataSatisfied: false,
   publishing: false,
-  publishDataset: _.noop
+  publishDataset: _.noop,
+  requiresParenthood: false,
+  parenthoodSatisfied: true
 };
 
 describe('"Publish Dataset" button and flyout', () => {

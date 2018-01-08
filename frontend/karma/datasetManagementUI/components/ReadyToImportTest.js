@@ -7,6 +7,7 @@ import ReadyToImport from 'components/ReadyToImport/ReadyToImport';
 
 describe('components/ReadyToImport', () => {
   const defaultProps = {
+    createConfigAndOpenModal: () => {},
     source: {
       created_at: '2017-04-19T00:45:21.212Z',
       id: 263,

@@ -31,6 +31,8 @@ describe('components/SourceSidebar', () => {
       name: 'yeah',
       category: 'dataset'
     },
+    hideHrefLink: false,
+
     sources: [
       {
         id: 178,

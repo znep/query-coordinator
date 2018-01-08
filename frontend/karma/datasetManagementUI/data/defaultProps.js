@@ -698,6 +698,8 @@ export const ShowOutputSchemaProps = {
   ],
   canApplyRevision: true,
   numLoadsInProgress: 0,
+  fatalError: false,
+  addCol: () => {},
   displayState: {
     type: 'NORMAL',
     pageNo: 1,

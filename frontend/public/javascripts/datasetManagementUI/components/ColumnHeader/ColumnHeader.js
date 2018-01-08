@@ -241,7 +241,7 @@ export class ColumnHeader extends Component {
   }
 
   isTransformDisabled() {
-    return this.isInProgress();
+    return false;
   }
 
   optionsFor() {

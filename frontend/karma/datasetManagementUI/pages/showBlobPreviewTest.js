@@ -18,7 +18,8 @@ describe('ShowBlobPreview', () => {
       filesize: 30
     },
     saveCurrentBlob: sinon.spy(),
-    goHome: sinon.spy()
+    goHome: sinon.spy(),
+    sourcesLink: ''
   }
 
   const component = shallow(<ShowBlobPreview {...props} />)

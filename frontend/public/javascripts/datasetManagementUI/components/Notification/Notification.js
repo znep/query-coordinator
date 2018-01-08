@@ -120,7 +120,7 @@ Notification.propTypes = {
   percentCompleted: PropTypes.number,
   children: PropTypes.object,
   message: PropTypes.object.isRequired,
-  id: PropTypes.number,
+  id: PropTypes.any.isRequired,
   removeNotification: PropTypes.func.isRequired,
   isInfinite: PropTypes.bool
 };

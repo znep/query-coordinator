@@ -1,6 +1,4 @@
 $(function() {
-  'use strict';
-
   var MIN_DESKTOP_WIDTH = 885;
   // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
   var DESCRIPTION_TRUNCATION_THRESHOLD = 58;
@@ -382,8 +380,8 @@ $(function() {
   var getDS = blist.browse.getDS = function($item) {
     var id = $item.closest('.browse2-result').attr('data-view-id');
 
-    if (!(blist.browse.datasets[id] instanceof Dataset)) {
-      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
+    if (!(blist.browse.datasets[id] instanceof Dataset) && !(blist.browse.datasets[id] instanceof TabularDataset)) {
+      blist.browse.datasets[id] = createDatasetFromView(blist.browse.datasets[id]);
     }
 
     return blist.browse.datasets[id];

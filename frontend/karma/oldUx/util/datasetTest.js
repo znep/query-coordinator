@@ -14,13 +14,13 @@ describe('blist.dataset', function () {
   });
 
   it('should instantiate', function() {
-    new Dataset();
+    createDatasetFromView();
   });
 
   describe('cleanCopyIncludingRenderTypeName', function() {
 
     it('returns a JSON representation of the dataset in which columns have a "renderTypeName" property', function() {
-      var dataset = new Dataset({
+      var dataset = createDatasetFromView({
         columns: [
           {
             id: 1,
@@ -82,8 +82,8 @@ describe('blist.dataset', function () {
       var dataset;
 
       beforeEach(function() {
-        delete blist.feature_flags.enable_2017_grid_view_refresh;
-        dataset = new Dataset({metadata:{renderTypeConfig:{}}});
+        delete window.socrata.featureFlags.enable_2017_grid_view_refresh;
+        dataset = createDatasetFromView({metadata:{renderTypeConfig:{}}});
         sinon.stub(dataset, 'makeRequest');
       });
 
@@ -96,13 +96,13 @@ describe('blist.dataset', function () {
       var dataset;
 
       beforeEach(function() {
-        blist.feature_flags.enable_2017_grid_view_refresh = true;
-        dataset = new Dataset({metadata:{renderTypeConfig:{}}});
+        window.socrata.featureFlags.enable_2017_grid_view_refresh = true;
+        dataset = createDatasetFromView({metadata:{renderTypeConfig:{}}});
         sinon.stub(dataset, 'makeRequest');
       });
 
       afterEach(function() {
-        delete blist.feature_flags.enable_2017_grid_view_refresh;
+        delete window.socrata.featureFlags.enable_2017_grid_view_refresh;
       });
 
 
@@ -122,7 +122,7 @@ describe('blist.dataset', function () {
     var dataset;
 
     beforeEach(function() {
-      dataset = new Dataset({id: 'test-test'});
+      dataset = createDatasetFromView({id: 'test-test'});
     });
 
     describe('if getNewBackendId fails', function() {
@@ -239,7 +239,7 @@ describe('blist.dataset', function () {
     var dataset;
 
     beforeEach(function() {
-      dataset = new Dataset({id: 'test-test'});
+      dataset = createDatasetFromView({id: 'test-test'});
     });
 
     describe('if the dataset has no layers', function() {
@@ -282,7 +282,7 @@ describe('blist.dataset', function () {
     var dataset;
 
     beforeEach(function() {
-      dataset = new Dataset({id: 'four-four'});
+      dataset = createDatasetFromView({id: 'four-four'});
     });
 
     describe('if the dataset is in the old backend and not geospatial', function() {
@@ -326,7 +326,7 @@ describe('blist.dataset', function () {
     var updateSpy;
 
     beforeEach(function() {
-      dataset = new Dataset({id: 'test-test'});
+      dataset = createDatasetFromView({id: 'test-test'});
       updateSpy = sinon.spy(dataset, 'update');
       dataset.setSearchString(searchString, true);
     });

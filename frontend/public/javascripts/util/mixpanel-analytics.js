@@ -174,6 +174,38 @@ $(document).ready(function() {
 
   var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);
 
+  var getMixpanelViewType = function(view) {
+
+    if (!view) {
+      return MISSING_PROP_VALUE;
+    }
+
+    var type = view.type;
+
+    if (type === 'blist') {
+      type = view.isPublished() ? 'dataset' : 'working_copy';
+    }
+
+    var humanReadableTypes = {
+      api: 'API view',
+      blob: 'non-tabular file or document',
+      calendar: 'calendar',
+      chart: 'chart',
+      data_lens: 'data lens',
+      dataset: 'dataset',
+      filter: 'filtered view',
+      form: 'form',
+      group: 'grouped view',
+      grouped: 'grouped view',
+      href: 'external dataset',
+      map: 'map',
+      table: 'table',
+      working_copy: 'working copy'
+    };
+
+    return humanReadableTypes[type] || type || MISSING_PROP_VALUE;
+  };
+
   // WARNING: in some areas, for example the import wizard, blist.currentUser will not be loaded yet, even if logged in
   var staticPageProperties = {
     'Dataset Owner': ownerId,
@@ -188,7 +220,7 @@ $(document).ready(function() {
     'User Owns Dataset': ownerId === userId,
     'User Role Name': _.get(blist, 'currentUserJson.roleName', MISSING_PROP_VALUE),
     'View Id': _.get(blist, 'dataset.id', MISSING_PROP_VALUE),
-    'View Type': _.get(blist, 'dataset._mixpanelViewType', MISSING_PROP_VALUE)
+    'View Type': getMixpanelViewType(blist.dataset)
   };
 
   // TODO: Properly manage user identification in Mixpanel instead of

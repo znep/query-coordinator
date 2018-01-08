@@ -45,7 +45,7 @@
           pageCache: true,
           success: function(dss) {
             user._datasets = _.map(dss, function(d) {
-              return new Dataset(d);
+              return createDatasetFromView(d);
             });
             callback(user._datasets);
           }

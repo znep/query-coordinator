@@ -606,7 +606,7 @@
         break;
       case 'hide-column':
         // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
-        if (blist.feature_flags.enable_2017_grid_view_refresh) {
+        if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
           var options = {
             id: cmObj.settings.column.id
           };
@@ -642,7 +642,7 @@
         break;
       case 'edit-column':
         // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
-        if (blist.feature_flags.enable_2017_grid_view_refresh) {
+        if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
           var nbeColumnManagerOptions = {
             id: cmObj.settings.column.id
           };

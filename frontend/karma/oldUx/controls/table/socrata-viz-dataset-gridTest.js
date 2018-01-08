@@ -135,10 +135,9 @@ _.all = _.every;
 
 describe('$.fn.socrataVizDatasetGrid', function () {
   beforeEach(function() {
+    window.socrata.featureFlags.enable_2017_grid_view_refresh = true;
+    window.socrata.featureFlags.force_soda1_usage_in_javascript_dataset_model = false;
     blist.configuration = {};
-    blist.feature_flags = {
-      enable_2017_grid_view_refresh: true
-    };
     blist.rights = {
       view: {}
     }
@@ -148,15 +147,16 @@ describe('$.fn.socrataVizDatasetGrid', function () {
   });
 
   afterEach(function() {
+    delete window.socrata.featureFlags.enable_2017_grid_view_refresh;
+    delete window.socrata.featureFlags.force_soda1_usage_in_javascript_dataset_model;
     delete blist.configuration;
-    delete blist.feature_flags;
     delete blist.rights;
     delete blist.datatypes;
   });
 
   describe('.generateInlineData()', function() {
     it('returns the expected inline data object', function() {
-      var view = new Dataset(TEST_VIEW);
+      var view = createDatasetFromView(TEST_VIEW);
       view.domainCName = 'test.example.com';
       var inlineData = $.fn.socrataVizDatasetGrid.generateInlineData(
         view,

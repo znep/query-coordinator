@@ -278,7 +278,7 @@
     translations: ['controls.grid', 'screens.ds']
   };
 
-  if (blist.feature_flags.enable_2017_grid_view_refresh) {
+  if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
     typeConfigs.table = socrataVizTableTypeConfig;
   } else {
     typeConfigs.table = legacyTableTypeConfig;

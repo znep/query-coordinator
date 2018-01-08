@@ -196,7 +196,7 @@
       if (!chartObj._gettingAggs) {
         chartObj._gettingAggs = true;
 
-        if (blist.feature_flags.enable_2017_grid_view_refresh && blist.dataset.newBackend) {
+        if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false) && blist.dataset.newBackend) {
           // EN-20712 - Support classic viz on NBE-only datasets
           //
           // For experimental classic-viz-on-NBE-only-datasets support, just don't

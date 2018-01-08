@@ -1,6 +1,4 @@
 $(function() {
-  'use strict';
-
   var $innerContainer = $('#renderTypeContainer');
 
   function renderMissingColumnMessage() {
@@ -54,7 +52,7 @@ $(function() {
       // Dataset will modify the JSON blob passed into its constructor.
       // We want to insulate our caller from this.
       viewObject = _.cloneDeep(viewObject);
-      var dataset = new Dataset(viewObject);
+      var dataset = createDatasetFromView(viewObject);
 
       // Clear out any errors that were shown.
       $('.missing-columns-warning, .missing-dataset-error').remove();

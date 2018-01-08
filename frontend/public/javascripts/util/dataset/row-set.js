@@ -122,7 +122,7 @@
       var rs = this;
       var bucketSize = rs._dataset.bucketSize;
 
-      if (!rs._dataset.usingBuckets()) {
+      if (!_.isFunction(rs._dataset.usingBuckets) || !rs._dataset.usingBuckets()) {
         return {
           start: 0,
           finish: rs._totalCount
@@ -1101,7 +1101,7 @@
         var groupSelect = [];
 
         _.each(rs._jsonQuery.group, function(gb) {
-          var qbCF = Dataset.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
+          var qbCF = LegacyFilterHelpers.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
 
           if ($.isBlank(qbCF)) {
             return;
@@ -1128,7 +1128,7 @@
                 rs._jsonQuery.select,
                 function(s) {
                   if (!$.isBlank(s.aggregate)) {
-                    var qbCF = Dataset.translateColumnToQueryBase(s.columnFieldName, rs._dataset);
+                    var qbCF = LegacyFilterHelpers.translateColumnToQueryBase(s.columnFieldName, rs._dataset);
 
                     if ($.isBlank(qbCF)) {
                       return null;
@@ -1158,12 +1158,12 @@
           if ($.isBlank(orderByColumn)) {
             return null;
           }
-          var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);
+          var qbC = LegacyFilterHelpers.translateColumnToQueryBase(orderByColumn, rs._dataset);
           if ($.isBlank(qbC)) {
             return null;
           }
 
-          var aggregateFn = Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery);
+          var aggregateFn = LegacyFilterHelpers.aggregateForColumn(qbC.fieldName, rs._jsonQuery);
           var aggregateFieldName = qbC.fieldNameForRollup(aggregateFn);
           var aggregateFieldNameWithAlias = rs._soqlFnCall(aggregateFn, qbC.fieldName);
 

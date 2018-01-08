@@ -19,7 +19,7 @@ class ClassicVisualizationController < ApplicationController
   # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view
   # logic. Access the viewCache directly here, since we're doing it wrong if that doesn't work anyway.
   def render_dataset_setup_js
-    "blist.dataset = new Dataset(blist.viewCache['#{@view.id}']);"
+    "blist.dataset = createDatasetFromView(blist.viewCache['#{@view.id}']);"
   end
 
   def render_inline_setup_js(target_dom_id, context, debug = false)

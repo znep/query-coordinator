@@ -612,10 +612,10 @@
           dataset._queryBase.query.filterCondition));
         baseRootCondition = setUpRoot(baseRootCondition, dataset._queryBase);
         rootCondition = blist.filter.generateSODA1(blist.filter.subtractQueries(
-          Dataset.translateFilterColumnsToBase(
-            Dataset.translateFilterCondition(rootCondition, dataset, false), dataset
+          LegacyFilterHelpers.translateFilterColumnsToBase(
+            LegacyFilterHelpers.translateFilterCondition(rootCondition, dataset, false), dataset
           ).where,
-          Dataset.translateFilterCondition(baseRootCondition, dataset._queryBase, false).where,
+          LegacyFilterHelpers.translateFilterCondition(baseRootCondition, dataset._queryBase, false).where,
           dataset._queryBase
         ) || {});
       }

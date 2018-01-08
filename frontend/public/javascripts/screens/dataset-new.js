@@ -362,7 +362,7 @@ $(function() {
           var saveFormMetadata = function() {
             if (_.isUndefined(state.submittedView)) {
               var useNBE = blist.feature_flags.ingress_strategy === 'nbe';
-              new Dataset(viewData).saveNew(useNBE, successCallback, errorCallback);
+              createDatasetFromView(viewData).saveNew(useNBE, successCallback, errorCallback);
             } else {
               state.submittedView.update(viewData);
               state.submittedView.save(successCallback, errorCallback);

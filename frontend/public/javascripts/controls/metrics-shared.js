@@ -1,8 +1,6 @@
 /*global Dataset, Highcharts, ServerModel, User, a11y */
 
 (function() {
-  'use strict';
-
   var metricsNS = blist.namespace.fetch('blist.metrics');
   blist.namespace.fetch('blist.metrics.transforms');
   var sanitizer = blist.util.htmlSanitizer;
@@ -171,7 +169,7 @@
                   linkText: sanitizer.sanitizeHtmlRestrictive(responseData.name),
                   value: value,
                   textValue: Highcharts.numberFormat(value, 0),
-                  href: new Dataset(responseData).url + (metricsNS.datasetPostfix || '')
+                  href: createDatasetFromView(responseData).url + (metricsNS.datasetPostfix || '')
                 });
               }
             }

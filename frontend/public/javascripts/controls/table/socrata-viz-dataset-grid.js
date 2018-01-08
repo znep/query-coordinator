@@ -1,4 +1,4 @@
-if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
+if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
 
   (function($) {
 
@@ -79,7 +79,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
       var columnsSortedByPosition = _.sortBy(columns, 'position');
       var isNewBackend = _.get(view, 'newBackend', false);
       var useSoda1Semantics = (
-        window.blist.feature_flags.force_soda1_usage_in_javascript_dataset_model ||
+        _.get(window, 'socrata.featureFlags.force_soda1_usage_in_javascript_dataset_model', false) ||
         !isNewBackend
       );
       var rowIdentifier = (isNewBackend) ? 'id' : 'uuid';
@@ -234,8 +234,8 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
             var flyoutRenderer = new window.blist.Visualizations.views.FlyoutRenderer();
 
             // If the only thing changing is pagination, you can just call
-            // 'loadRowsFromModel(startIndex, endIndex)' instead of resetting
-            // all the state and rerendering everything based on the vif.
+            // 'loadRows(startIndex, endIndex)' instead of resetting all
+            // the state and rerendering everything based on the vif.
             function renderTableFromScratch() {
 
               currentStartIndex = 0;
@@ -243,17 +243,15 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
               currentTotalRowCount = 0;
               lastRenderedVif = null;
 
-              loadRowsFromModel(currentStartIndex, currentEndIndex);
+              loadRows(currentStartIndex, currentEndIndex);
             }
 
             function updateConditionalFormatting() {
-              self._view.save();
-
               var inlineData = _.get(lastRenderedVif, 'series[0].dataSource', null);
 
               if (!_.isNull(inlineData)) {
 
-                inlineData.view = _.cloneDeep(self._view.cleanCopyIncludingRenderTypeName());
+                inlineData.view = _.cloneDeep(self.view.cleanCopyIncludingRenderTypeName());
 
                 delete inlineData.type;
 
@@ -283,44 +281,71 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
               lastRenderedVif = newVifToRender;
             }
 
-            function loadRowsFromModel(startIndex, endIndex) {
+            function loadRows(startIndex, endIndex) {
+              var tabularDatasetModelEnabled = _.get(window, 'socrata.featureFlags.enable_2017_experimental_tabular_dataset_model', false);
+              var successCallback = function(rowsResponse) {
+                var actualRows;
 
-              self._model.loadRows(
-                startIndex,
-                endIndex,
-                function(rows) {
+                if (tabularDatasetModelEnabled) {
+
+                  currentTotalRowCount = rowsResponse.totalRows;
+                  actualRows = rowsResponse.rows;
+                } else {
 
                   currentTotalRowCount = _.get(
-                    self._view,
+                    self.view,
                     '_activeRowSet._totalCount',
                     null
                   );
-
-                  renderInlineData(
-                    $.fn.socrataVizDatasetGrid.generateInlineData(
-                      self._view,
-                      rows,
-                      startIndex,
-                      endIndex,
-                      currentTotalRowCount
-                    )
-                  );
-
-                  // EN-19522 - Grid Refresh: pagination disappears after search
-                  //
-                  // The layout engine for the grid view page attempts to be too
-                  // clever and ends up placing the bottom of the table, and the
-                  // various footer elements, off the bottom of the page. If the
-                  // page were able to be scrolled anyway, that wouldn't be much
-                  // more than just an annoying problem, but actually the very
-                  // same layout engine also sets overflow: hidden on the body.
-                  //
-                  // In this case, we just fix the layout bug after it is
-                  // triggered by telling the thing layout engine to try again
-                  // after the search results have been loaded.
-                  window.blist.datasetPage.adjustSize();
+                  actualRows = rowsResponse;
                 }
-              );
+
+                renderInlineData(
+                  $.fn.socrataVizDatasetGrid.generateInlineData(
+                    self.view,
+                    actualRows,
+                    startIndex,
+                    endIndex,
+                    currentTotalRowCount
+                  )
+                );
+
+                // EN-19522 - Grid Refresh: pagination disappears after search
+                //
+                // The layout engine for the grid view page attempts to be too
+                // clever and ends up placing the bottom of the table, and the
+                // various footer elements, off the bottom of the page. If the
+                // page were able to be scrolled anyway, that wouldn't be much
+                // more than just an annoying problem, but actually the very
+                // same layout engine also sets overflow: hidden on the body.
+                //
+                // In this case, we just fix the layout bug after it is
+                // triggered by telling the thing layout engine to try again
+                // after the search results have been loaded.
+                window.blist.datasetPage.adjustSize();
+              };
+              var errorCallback = function(error) {
+                console.error(error);
+              };
+
+              if (tabularDatasetModelEnabled) {
+
+                Soda1DataProvider.getRows(
+                  self.view.getReadOnlyView(),
+                  startIndex,
+                  endIndex - startIndex,
+                  successCallback,
+                  errorCallback
+                );
+              } else {
+
+                self.view.getRows(
+                  startIndex,
+                  endIndex,
+                  successCallback,
+                  errorCallback
+                );
+              }
             }
 
             function getCurrentUserColumns() {
@@ -371,11 +396,11 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                 // experience. So we're no longer responding to column width changes
                 // *at all* if it's not a working copy, and if it is, we just update
                 // it since we're already editing things.
-                var isWorkingCopy = self._view.publicationStage === 'unpublished';
+                var isWorkingCopy = self.view.publicationStage === 'unpublished';
 
                 if (isWorkingCopy) {
 
-                  var newView = _.cloneDeep(self._view.cleanCopy());
+                  var newView = _.cloneDeep(self.view.cleanCopy());
                   newView.columns.forEach(function(column) {
 
                     if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
@@ -384,8 +409,8 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                     }
                   });
 
-                  self._view.update(newView, false, false);
-                  self._view.save();
+                  self.view.update(newView, false, false);
+                  self.view.save();
                 }
               }
 
@@ -416,10 +441,10 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                 on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(e) {
                   var columnName = e.originalEvent.detail;
                   var existingOrder = _.cloneDeep(
-                    _.get(self._view, 'metadata.jsonQuery.order', [])
+                    _.get(self.view, 'metadata.jsonQuery.order', [])
                   );
                   var newOrder;
-                  var newMetadata = $.extend(true, {}, self._view.metadata);
+                  var newMetadata = $.extend(true, {}, self.view.metadata);
 
                   if (
                     existingOrder.length === 1 &&
@@ -440,7 +465,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
 
                   _.set(newMetadata, 'jsonQuery.order', newOrder);
 
-                  self._view.update(
+                  self.view.update(
                     {
                       metadata: newMetadata
                     },
@@ -451,7 +476,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
 
               $datasetGrid.
                 on('SOCRATA_VISUALIZATION_ROW_DOUBLE_CLICKED', function(e) {
-                  var isWorkingCopy = self._view.publicationStage === 'unpublished';
+                  var isWorkingCopy = self.view.publicationStage === 'unpublished';
 
                   if (isWorkingCopy) {
                     var payload = e.originalEvent.detail;
@@ -474,11 +499,11 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                     columnFieldName: e.originalEvent.detail.columnName,
                     ascending: e.originalEvent.detail.ascending
                   }];
-                  var newMetadata = $.extend(true, {}, self._view.metadata);
+                  var newMetadata = $.extend(true, {}, self.view.metadata);
 
                   _.set(newMetadata, 'jsonQuery.order', newOrder);
 
-                  self._view.update(
+                  self.view.update(
                     {
                       metadata: newMetadata
                     },
@@ -497,7 +522,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                   currentStartIndex -= PAGE_SIZE;
                   currentEndIndex -= PAGE_SIZE;
 
-                  loadRowsFromModel(currentStartIndex, currentEndIndex);
+                  loadRows(currentStartIndex, currentEndIndex);
                 });
 
               // See comment above handler for the ...PAGINATION_PREVIOUS event.
@@ -507,7 +532,7 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                   currentStartIndex += PAGE_SIZE;
                   currentEndIndex += PAGE_SIZE;
 
-                  loadRowsFromModel(currentStartIndex, currentEndIndex);
+                  loadRows(currentStartIndex, currentEndIndex);
                 });
 
               $datasetGrid.on('SOCRATA_VISUALIZATION_FLYOUT', function(e) {
@@ -545,13 +570,13 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
              * Execution starts here!
              */
 
-            self.setView(this.settings.view);
+            self.view = self.settings.view;
             // Override the NBE bucket size because we are now using a paginated
             // table rather than requesting 1000 rows at a time in order to make
             // the infini-scrolling table somewhat responsive.
-            self._view.bucketSize = PAGE_SIZE;
-            self._view.bind('query_change', renderTableFromScratch);
-            self._view.bind(
+            self.view.bucketSize = PAGE_SIZE;
+            self.view.bind('query_change', renderTableFromScratch);
+            self.view.bind(
               'columns_changed',
               function() {
                 // EN-19727 - Editing Column Order Freezes Edit Pane
@@ -572,43 +597,16 @@ if (window.blist.feature_flags.enable_2017_grid_view_refresh) {
                 renderTableFromScratch();
               }
             );
-            self._view.bind('conditionalformatting_change', updateConditionalFormatting);
+            self.view.bind('conditionalformatting_change', updateConditionalFormatting);
 
-            $datasetGrid = self.$dom();
-            $datasetGrid.data('datasetGrid', self);
+            $datasetGrid = $(self.currentGrid);
 
             renderTableFromScratch();
             attachTableEventHandlers();
           },
 
-          /* eslint-disable no-unused-vars */
-          // Not sure that this method ever gets called. Keeping the argument in
-          // place, however, in case someone else gets a bright idea based on the
-          // name 'drillLink'.
-          drillDown: function(drillLink) {},
-          /* eslint-enable no-unused-vars */
-
-          $dom: function() {
-            if (!this._$dom) {
-              this._$dom = $(this.currentGrid);
-            }
-            return this._$dom;
-          },
-
-          setView: function(newView) {
-            this._view = newView;
-
-            if (!this._model) {
-              this._model = $().blistModel();
-            }
-
-            this._model.options({
-              view: newView
-            });
-          },
-
           isValid: function() {
-            return !$.isBlank(this._view);
+            return !$.isBlank(this.view);
           }
         }
       }

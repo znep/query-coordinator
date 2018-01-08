@@ -1,4 +1,4 @@
-if (!blist.feature_flags.enable_2017_grid_view_refresh) {
+if (!_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
 
   /**
    * History of table:
@@ -701,19 +701,7 @@ if (!blist.feature_flags.enable_2017_grid_view_refresh) {
         }
         // Make sure they can edit -- if not, trigger an event
         if (!canEdit()) {
-          if (
-            // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only
-            // grid view
-            //
-            // canEdit() will always return false when the below feature flag is
-            // enabled, but we also do not want to suggest that the user can just
-            // create a working copy to make a change, so we also do not want to
-            // trigger the 'attempted_edit' event when the feature flag is set to
-            // true, as that event eventually pops up a message offering to create
-            // a working copy so you can edit the cell etc. etc.
-            !blist.feature_flags.enable_2017_grid_view_refresh &&
-            mode == DEFAULT_EDIT_MODE
-          ) {
+          if (mode == DEFAULT_EDIT_MODE) {
             $(cell).trigger('attempted_edit');
           }
           return false;

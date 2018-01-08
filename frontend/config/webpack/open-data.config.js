@@ -56,6 +56,17 @@ module.exports = _.defaultsDeep({
       './util/dataset/form.js',
       './util/dataset/map.js',
       './util/geo-helpers.js',
+      // START (new view refactory things)
+      './util/dataset/create-dataset-from-view.js',
+      './util/dataset/tabular-dataset.js',
+      './util/read-only-view.js',
+      './util/view-persistor.js',
+      './util/view-renderer.js',
+      './util/soda-1-data-provider.js',
+      './util/geo-helpers.js',
+      './util/jsonquery-helpers.js',
+      './util/legacy-filter-helpers.js',
+      // END (new view refactory things)
       './util/view-cache.js',
       './util/styles.js',
       './util/templates.js',

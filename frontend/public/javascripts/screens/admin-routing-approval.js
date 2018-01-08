@@ -1,7 +1,6 @@
 /* global Dataset, User */
 /* eslint new-cap: 0, camelcase: 0 */
 (function() {
-  'use strict';
 
   function t(str, props) {
     return $.t('screens.admin.routing_approval.' + str, props);
@@ -220,7 +219,7 @@
       var id = $item.closest('tr').attr('data-viewId');
       if (!(blist.routingApproval.datasets[id] instanceof Dataset)) {
         blist.routingApproval.datasets[id] =
-          new Dataset(blist.routingApproval.datasets[id]);
+          createDatasetFromView(blist.routingApproval.datasets[id]);
         blist.routingApproval.datasets[id].setApprovalTemplate(
           blist.routingApproval.approvalTemplate);
       }

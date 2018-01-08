@@ -71,7 +71,25 @@
 
       if (_.indexOf(this._view.flags, 'restorable') != -1) {
         message = $.t('screens.ds.grid_sidebar.delete.confirm_restorable', {
-          number_of_days_restorable: Dataset.getNumberOfDaysRestorable()
+          number_of_days_restorable: (function() {
+            var numberOfDaysRestorable = 0;
+
+            try {
+              // TODO: This was taken verbatim from /util/dataset/dataset.js,
+              // but it's clearly broken insofar as it will return a jQuery
+              // ajax instance and not a number. Let's fix this, but eventually,
+              // since apparently nobody has ever filed a bug about it, either.
+              numberOfDaysRestorable = parseInt(
+                $.ajax({
+                  url: '/views.json?method=numberOfDaysRestorable',
+                  async: false
+                }).responseText,
+                10
+              );
+            } catch (e) {} // eslint-disable-line no-empty
+
+            return numberOfDaysRestorable;
+          })()
         });
       } else {
         message = $.t('screens.ds.grid_sidebar.delete.confirm_permanent', {

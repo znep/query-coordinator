@@ -28,7 +28,7 @@
       }).
       value();
 
-    if (!hasParent && blist.dataset.hasDatasetLinkColumn()) {
+    if (!hasParent && _.isFunction(blist.dataset.hasDatasetLinkColumn) && blist.dataset.hasDatasetLinkColumn()) {
       types.push({
         value: 'link',
         text: $.t('core.data_types.link')
@@ -114,8 +114,9 @@
               // wrap in function to set up the "this" var
               // so that it points to the view when
               // getLinkedColumnOptions is called.
-                function(keyCol, notUsed, $field, curVal) {
+              function(keyCol, notUsed, $field, curVal) {
                 var v = this._view;
+                if (!_.isFunction(v.getLinkedColumnOptions)) return [];
                 return v.getLinkedColumnOptions.call(v, keyCol, notUsed, $field, curVal);
               }
             }

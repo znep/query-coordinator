@@ -198,7 +198,7 @@
   }, 'controlPane');
 
   if (
-    !blist.feature_flags.enable_2017_grid_view_refresh &&
+    !_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false) &&
     ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.showHide)
   ) {
     $.gridSidebar.registerConfig('manage.showHide', 'pane_showHideColumns', 5);

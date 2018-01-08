@@ -128,11 +128,11 @@
         }
       }
 
-      this.bucketSize = parseInt(blist.feature_flags.nbe_bucket_size, 10) || 1000;
+      this.bucketSize = parseInt(_.get(window, 'socrata.featureFlags.nbe_bucket_size', 1000), 10);
     },
 
     usingBuckets: function() {
-      return this.newBackend && false !== blist.feature_flags.nbe_bucket_size;
+      return this.newBackend && false !== _.get(window, 'socrata.featureFlags.nbe_bucket_size', 1000);
     },
 
     rowForID: function(id) {
@@ -322,7 +322,7 @@
       var dsSaved = function(newDS) {
         // core always removes metadata.jsonQuery while frontend still depends on it.
         // This recreate metadata.jsonQuery from view.query
-        var nds = new Dataset(newDS);
+        var nds = createDatasetFromView(newDS);
         var originalQuery = nds._getQueryGrouping();
         nds._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
 
@@ -353,7 +353,7 @@
       var url = (useNBE) ? '/views?nbe=true' : '/views';
       var dsOrig = this;
       var dsCreated = function(newDS) {
-        newDS = new Dataset(newDS);
+        newDS = createDatasetFromView(newDS);
 
         if (!$.isBlank(dsOrig.accessType)) {
           newDS.setAccessType(dsOrig.accessType);
@@ -995,7 +995,7 @@
       // Pillaged from RowSet#_makeSODA2Request
       // Inject tears here because lack of DRYness.
       var soqlWhere = blist.filter.generateSOQLWhere(
-        blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
+        blist.filter.subtractQueries(LegacyFilterHelpers.translateFilterColumnsToBase(
             rs._jsonQuery.where, ds),
           baseQuery.where), ds._queryBase);
 
@@ -1931,7 +1931,7 @@
             if (parDS.id == ds.id) {
               ds._parent = ds;
             } else {
-              ds._parent = new Dataset(parDS);
+              ds._parent = createDatasetFromView(parDS);
               if (!$.isBlank(ds.accessType)) {
                 ds._parent.setAccessType(ds.accessType);
               }
@@ -1998,7 +1998,7 @@
           ds.makeRequest({
             url: '/views/{0}.json'.format(this.publishedViewUid),
             success: function(pv) {
-              ds._publishedView = new Dataset(pv);
+              ds._publishedView = createDatasetFromView(pv);
               callback(ds._publishedView);
             },
             error: function(xhr) {
@@ -2159,7 +2159,7 @@
             alert(JSON.parse(req.responseText).message);
           },
           success: function(linkedDataset) {
-            var lds = new Dataset(linkedDataset);
+            var lds = createDatasetFromView(linkedDataset);
             if (!$.isBlank(ds.accessType)) {
               lds.setAccessType(ds.accessType);
             }
@@ -2292,7 +2292,7 @@
           error: errorCallback,
           success: function(r) {
             delete ds.copyPending;
-            ds._unpublishedView = new Dataset(r);
+            ds._unpublishedView = createDatasetFromView(r);
             if (_.isFunction(successCallback)) {
               successCallback(ds._unpublishedView);
             }
@@ -2318,7 +2318,7 @@
         type: 'POST',
         error: errorCallback,
         success: function(r) {
-          var pubDS = new Dataset(r);
+          var pubDS = createDatasetFromView(r);
           if (_.isFunction(successCallback)) {
             successCallback(pubDS);
           }
@@ -2362,7 +2362,7 @@
             stage: 'unpublished'
           },
           success: function(pv) {
-            ds._unpublishedView = new Dataset(pv);
+            ds._unpublishedView = createDatasetFromView(pv);
             callback(ds._unpublishedView);
           },
           error: function(xhr) {
@@ -2757,7 +2757,7 @@
     _determineUseSODA2: function() {
       var ds = this;
 
-      if (blist.feature_flags.force_soda1_usage_in_javascript_dataset_model) {
+      if (_.get(window, 'socrata.featureFlags.force_soda1_usage_in_javascript_dataset_model', false)) {
         ds._useSODA2 = false;
       } else if (ds.newBackend || blist.configuration.useSoda2) {
         ds._useSODA2 = true;
@@ -2782,7 +2782,6 @@
       ds._determineUseSODA2();
 
       ds.type = getType(ds);
-      ds._mixpanelViewType = getMixpanelViewType(ds);
 
       if (ds.isUnpublished()) {
         ds.styleClass = 'Unpublished';
@@ -3126,7 +3125,7 @@
       ds.metadata.jsonQuery = ds.metadata.jsonQuery || {};
 
       var jsonQueryChanged = !_.isEqual($.deepCompact(oldJsonQuery), $.deepCompact(ds.metadata.jsonQuery));
-      var hasOldJsonQuery = blist.feature_flags.relax_jsonquery_existence_check ?
+      var hasOldJsonQuery = _.get(window, 'socrata.featureFlags.relax_jsonquery_existence_check', false) ?
         !_.isEmpty(oldJsonQuery) :
         !_.isUndefined(oldJsonQuery);
       var hasNewJsonQuery = !_.isEmpty(ds.metadata.jsonQuery);
@@ -3200,9 +3199,9 @@
         // update jsonQuery (new version) if query has changed
         if (!_.isUndefined(oldQuery) && !_.isEqual($.deepCompact(oldQuery), $.deepCompact(ds.query)) ||
           _.isEmpty(ds.metadata.jsonQuery) && !_.isEmpty(ds.query)) {
-          ds.metadata.jsonQuery.group = Dataset.translateGroupBys(
+          ds.metadata.jsonQuery.group = LegacyFilterHelpers.translateGroupBys(
             ds.query.groupBys, ds, ds._getGroupedFunctions());
-          var tfc = Dataset.translateFilterCondition(ds.query.filterCondition, ds);
+          var tfc = LegacyFilterHelpers.translateFilterCondition(ds.query.filterCondition, ds);
           ds.metadata.jsonQuery.where = tfc.where;
           ds.metadata.jsonQuery.having = tfc.having;
           var tfcDefaults = $.deepCompact(tfc.defaults);
@@ -3211,7 +3210,7 @@
           }
           ds.metadata.jsonQuery.namedFilters = ds.metadata.jsonQuery.namedFilters || {};
           _.each(ds.query.namedFilters, function(nf, id) {
-            var tnf = Dataset.translateFilterCondition(nf, ds);
+            var tnf = LegacyFilterHelpers.translateFilterCondition(nf, ds);
             // One Simple Trick To Remove Undefineds!
             ds.metadata.jsonQuery.namedFilters[id] = $.extend({}, {
               where: tnf.where,
@@ -3410,7 +3409,7 @@
         // 'invalidateAll' on the Dataset model when the grouping aggregations
         // change that happens inside the !_.isEqual() check below).
         (
-          blist.feature_flags.enable_2017_grid_view_refresh &&
+          _.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false) &&
           !_.isEqual(oldGroupAggs, newGroupAggs)
         )
       ) {
@@ -3702,7 +3701,7 @@
       url += '.json';
       var rd = req.rowData;
       if (ds._useSODA2) {
-        if (blist.feature_flags.send_soql_version) {
+        if (_.get(window, 'socrata.featureFlags.send_soql_version', false)) {
           url += '?$$version=2.0';
         }
         rd = $.extend(true, {}, rd);
@@ -3952,7 +3951,7 @@
           return v;
         }
 
-        var nv = new Dataset(v);
+        var nv = createDatasetFromView(v);
         nv.bind('removed', function() {
           ds._viewRemoved(this);
         });
@@ -4038,7 +4037,7 @@
             return v;
           }
 
-          var nv = new Dataset(v);
+          var nv = createDatasetFromView(v);
           if (!$.isBlank(ds.accessType)) {
             nv.setAccessType(ds.accessType);
           }
@@ -4181,7 +4180,7 @@
           alert(JSON.parse(req.responseText).message);
         },
         success: function(linkedDataset) {
-          var lds = new Dataset(linkedDataset);
+          var lds = createDatasetFromView(linkedDataset);
           cachedLinkedDatasetOptions[viewUid] = [];
           var cldo = cachedLinkedDatasetOptions[viewUid];
 
@@ -4244,7 +4243,7 @@
       dataType: 'json',
       success: function(view) {
         if (_.isFunction(successCallback)) {
-          successCallback(new Dataset(view));
+          successCallback(createDatasetFromView(view));
         }
       },
       error: errorCallback
@@ -4373,7 +4372,7 @@
             ds = cachedView;
           }
         } else {
-          ds = new Dataset(cachedView);
+          ds = createDatasetFromView(cachedView);
         }
         if (isAnonymous) {
           ds.isAnonymous(isAnonymous);
@@ -4397,7 +4396,7 @@
           }
 
           if (_.isUndefined(blist.sharedDatasetCache[view.id])) {
-            blist.sharedDatasetCache[view.id] = new Dataset(view);
+            blist.sharedDatasetCache[view.id] = createDatasetFromView(view);
           }
 
           if (!$.isBlank(view.resourceName) && _.isUndefined(blist.viewCache[view.resourceName])) {
@@ -4410,7 +4409,7 @@
 
           if (_.isFunction(successCallback)) {
             if (clone || blist.sharedDatasetCache[view.id].isAnonymous() != isAnonymous) {
-              dsToReturn = new Dataset(view);
+              dsToReturn = createDatasetFromView(view);
             } else {
               dsToReturn = blist.sharedDatasetCache[view.id];
             }
@@ -4440,7 +4439,7 @@
           successCallback({
             count: results.count,
             views: _.map(results.results, function(v) {
-              var ds = new Dataset(v.view);
+              var ds = createDatasetFromView(v.view);
               // Put row results in a special safe key
               ds.rowResults = v.rows;
               ds.rowResultCount = v.totalRows;
@@ -4454,218 +4453,6 @@
       },
       error: errorCallback
     });
-  };
-
-  Dataset.translateFilterCondition = function(fc, ds, simplify) {
-    if ($.isBlank(simplify)) {
-      simplify = true;
-    }
-    fc = $.extend(true, {}, fc);
-    if (ds.isGrouped()) {
-      // Ugh, separate out having from where
-      // We can only separate at an AND: an OR must stay together
-      // We're only going to separate at the top level, b/c it gets complicated below that
-      var splitWhere = fc,
-        splitDefault,
-        splitHaving;
-      if (!$.isBlank(fc) && fc.type == 'operator' && _.isArray(fc.children) && fc.children.length > 0) {
-        var havingCols = _.compact(_.map(ds.query.groupBys, function(gb) {
-          return ds.columnForIdentifier(gb.columnId);
-        }).concat(_.filter(ds.realColumns,
-          function(c) {
-            return $.subKeyDefined(c, 'format.grouping_aggregate');
-          })));
-        var isHaving = function(cond) {
-          if (cond.type == 'column') {
-            return _.any(havingCols, function(c) {
-              return c.fieldName == cond.columnFieldName || c.id == cond.columnId;
-            });
-          } else if (!_.isEmpty(cond.children)) {
-            return _.all(cond.children, function(cCond) {
-              return isHaving(cCond);
-            });
-          } else {
-            // literals
-            return true;
-          }
-        };
-
-        fc = blist.filter.collapseChildren(fc);
-        if (fc.value == 'AND') {
-          var children = _.groupBy(fc.children, function(cond) {
-            // Find trees that only reference post-group columns
-            if (_.isEmpty(cond.children)) {
-              return 'defaults';
-            } else if (isHaving(cond)) {
-              return 'having';
-            } else {
-              return 'where';
-            }
-          });
-          if (!_.isEmpty(children.having)) {
-            splitHaving = {
-              type: 'operator',
-              value: 'AND',
-              children: children.having
-            };
-            fc.children = _.difference(fc.children, children.having);
-          }
-          if (!_.isEmpty(children.defaults)) {
-            splitDefault = {
-              type: 'operator',
-              value: 'AND',
-              children: children.defaults
-            };
-            fc.children = _.difference(fc.children, children.defaults);
-          }
-        } else if (isHaving(fc)) {
-          splitHaving = fc;
-          splitWhere = null;
-        }
-      }
-      return {
-        where: translateSubFilter(splitWhere, ds, simplify, false),
-        having: translateSubFilter(splitHaving, ds, simplify, true),
-        defaults: translateSubFilter(splitDefault, ds, false, false)
-      };
-    } else {
-      var defaults = _.isEmpty(fc) ? null : _.filter(fc, function(cond) {
-        return _.isEmpty(cond.children);
-      });
-      return {
-        where: translateSubFilter(fc, ds, simplify, false),
-        defaults: translateSubFilter(defaults, ds, false, false)
-      };
-    }
-  };
-
-  function translateSubFilter(fc, ds, simplify, isHaving) {
-    // This is a cheat. Maps NBE interface.
-    if ($.isPresent(fc) && _.isString(fc.soql)) {
-      return fc;
-    }
-
-    if ($.isBlank(fc) ||
-      simplify && (fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0)) {
-      return null;
-    }
-
-    var filterQ = {
-      operator: fc.value
-    };
-    if (!$.isBlank(fc.metadata)) {
-      filterQ.metadata = fc.metadata;
-    }
-
-    if (filterQ.operator == 'AND' || filterQ.operator == 'OR') {
-      filterQ.children = _.compact(_.map(fc.children, function(c) {
-        var fcc = translateSubFilter(c, ds, simplify, isHaving);
-        return fcc;
-      }));
-      if (simplify) {
-        if (filterQ.children.length == 0) {
-          return null;
-        } else if (filterQ.children.length == 1) {
-          var cf = filterQ.children[0];
-          cf.metadata = $.extend(filterQ.metadata, cf.metadata);
-          filterQ = cf;
-        }
-      }
-    } else {
-      var col;
-      _.each(fc.children, function(c) {
-        if (c.type == 'column') {
-          if (!$.isBlank(ds)) {
-            col = ds.columnForIdentifier(c.columnFieldName || c.columnId);
-          }
-
-          if (!$.isBlank(c.columnFieldName)) {
-            filterQ.columnFieldName = c.columnFieldName;
-          } else if (!$.isBlank(col)) {
-            filterQ.columnFieldName = col.fieldName;
-          }
-          if (isHaving && $.subKeyDefined(col, 'format.grouping_aggregate') && ds._useSODA2) {
-            filterQ.columnFieldName = blist.datatypes.soda2Aggregate(
-              col.format.grouping_aggregate) + '_' + filterQ.columnFieldName;
-          }
-
-          // Don't put in redundant subcolumns (ie, when no sub-column)
-          // Special case for 'url': subcolumn name is also 'url'.
-          if (!$.isBlank(c.value) && (c.value == 'url' || c.value != (col || {}).dataTypeName)) {
-            filterQ.subColumn = c.value;
-          }
-        } else if (c.type == 'literal') {
-          var v = c.value;
-          if ($.isBlank(filterQ.value)) {
-            filterQ.value = v;
-          } else {
-            filterQ.value = $.makeArray(filterQ.value);
-            filterQ.value.push(v);
-          }
-        }
-      });
-    }
-
-    return filterQ;
-  }
-
-  Dataset.translateGroupBys = function(gb, ds, groupFuncs) {
-    if (_.isEmpty(gb)) {
-      return null;
-    }
-
-    return _.sortBy(_.compact(_.map(gb, function(g) {
-      var c = ds.columnForIdentifier(g.columnId);
-      if ($.isBlank(c)) {
-        return null;
-      }
-      return {
-        columnFieldName: c.fieldName,
-        groupFunction: blist.datatypes.soda2GroupFunction(($.isBlank(groupFuncs) ?
-          c.format.group_function : groupFuncs[c.fieldName]), c)
-      };
-    })), 'columnFieldName');
-  };
-
-  Dataset.aggregateForColumn = function(column, jsonQuery) {
-    return (_.detect(jsonQuery.select, function(select) {
-      return select.aggregate && select.columnFieldName == column;
-    }) || {}).aggregate;
-  };
-
-  Dataset.translateColumnToQueryBase = function(c, dataset) {
-    var isStr = _.isString(c);
-    if (isStr) {
-      c = dataset.columnForIdentifier(c);
-    }
-    if ($.isBlank(c)) {
-      return null;
-    }
-    var qbc = dataset._queryBase.columnForIdentifier(c.fieldName) ||
-      dataset._queryBase.columnForIdentifier(c.tableColumnId);
-    if ($.isBlank(qbc)) {
-      return null;
-    }
-    return isStr ? qbc.fieldName : qbc;
-  };
-
-  Dataset.translateFilterColumnsToBase = function(filter, dataset) {
-    var newF = $.extend({}, filter);
-    if (!_.isEmpty(newF.children)) {
-      newF.children = _.compact(_.map(newF.children, function(fc) {
-        return Dataset.translateFilterColumnsToBase(fc, dataset);
-      }));
-      if (_.isEmpty(newF.children)) {
-        return null;
-      }
-    }
-    if (!$.isBlank(newF.columnFieldName)) {
-      newF.columnFieldName = Dataset.translateColumnToQueryBase(newF.columnFieldName, dataset);
-      if ($.isBlank(newF.columnFieldName)) {
-        return null;
-      }
-    }
-    return newF;
   };
 
   var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
@@ -4705,34 +4492,6 @@
     }
 
     return type;
-  }
-
-  // Returns a human-friendly Mixpanel 'View Type' (for internal use only!)
-  function getMixpanelViewType(ds) {
-    var type = ds.type;
-
-    if (type === 'blist') {
-      type = ds.isPublished() ? 'dataset' : 'working_copy';
-    }
-
-    var humanReadableTypes = {
-      api: 'API view',
-      blob: 'non-tabular file or document',
-      calendar: 'calendar',
-      chart: 'chart',
-      data_lens: 'data lens',
-      dataset: 'dataset',
-      filter: 'filtered view',
-      form: 'form',
-      group: 'grouped view',
-      grouped: 'grouped view',
-      href: 'external dataset',
-      map: 'map',
-      table: 'table',
-      working_copy: 'working copy'
-    };
-
-    return humanReadableTypes[type] || type;
   }
 
   function getDisplayName(ds) {
@@ -5106,8 +4865,8 @@
    */
   function maybeShowIncorrectGridPreviewNotice(originalDataset, newDataset) {
     var shouldForceUseOfModifyingLensIdInGroupedChildView = _.get(
-      blist,
-      'feature_flags.force_use_of_modifying_lens_id_in_grouped_child_view',
+      window,
+      'socrata.featureFlags.force_use_of_modifying_lens_id_in_grouped_child_view',
       false
     );
     var originalDatasetHasGroupBys = !_.isUndefined(
@@ -5194,8 +4953,8 @@
     }
 
     var shouldForceUseOfModifyingLensIdInGroupedChildView = _.get(
-      blist,
-      'feature_flags.force_use_of_modifying_lens_id_in_grouped_child_view',
+      window,
+      'socrata.featureFlags.force_use_of_modifying_lens_id_in_grouped_child_view',
       false
     );
 

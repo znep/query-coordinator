@@ -46,7 +46,7 @@ $(function() {
       var eachItem = function(comment) {
         var commie = $.extend({}, comment, {
           user: new User(comment.user),
-          view: new Dataset(comment.view)
+          view: createDatasetFromView(comment.view)
         });
         comments[comment.id] = commie;
         return commie;

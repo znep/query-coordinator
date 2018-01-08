@@ -1,3 +1,5 @@
+if (!_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
+
 /**
  * This is mostly deprecated now; it provides some basic ties between the new
  * Dataset model, datasetGrid and blistTable.  It proxies a few things, and adds
@@ -1191,3 +1193,5 @@ blist.namespace.fetch('blist.data');
     }
   });
 })(jQuery);
+
+}

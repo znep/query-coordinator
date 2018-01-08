@@ -41,7 +41,7 @@ $(function() {
         break;
     }
     if (!(blist.browse.datasets[id] instanceof Dataset)) {
-      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
+      blist.browse.datasets[id] = createDatasetFromView(blist.browse.datasets[id]);
     }
     return blist.browse.datasets[id];
   };

@@ -255,7 +255,7 @@ http://www.socrata.com
       # is returned by `enable_2017_grid_view_refresh_for_current_request?`. This is funky, and I hope we can
       # remove it soon, but I think it's better than trying to duplicate the Ruby logic in JavaScript.
     -%>
-    blist.feature_flags.enable_2017_grid_view_refresh = <%= raw enable_2017_grid_view_refresh_for_current_request? %>;
+    window.socrata.featureFlags.enable_2017_grid_view_refresh = <%= raw enable_2017_grid_view_refresh_for_current_request? %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;

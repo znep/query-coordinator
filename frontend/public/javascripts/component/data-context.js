@@ -16,7 +16,7 @@
             }
 
             if (!$.isBlank(dc.dataset) && !(dc.dataset instanceof Dataset)) {
-                dc.dataset = new Dataset(dc.dataset);
+                dc.dataset = createDatasetFromView(dc.dataset);
                 dc.dataset.isAnonymous(!blist.configuration.privateData);
             }
 

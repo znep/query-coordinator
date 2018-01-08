@@ -500,6 +500,20 @@
       completeCallback = completeCallback || function() {};
       var cpObj = this;
       var $pane = cpObj.$content();
+      var enableTabularDatasetModel = _.get(window, 'socrata.featureFlags.enable_2017_experimental_tabular_dataset_model', false);
+
+      if (enableTabularDatasetModel && (cpObj.settings.name === 'sortRollUp' || cpObj.settings.name === 'unifiedFilter')) {
+
+        // EN-20968 - Move away from jsonQuery
+        //
+        // Migrate the view to have all the jsonQuery shenannigans. Eventually we
+        // will want to modify this data-shaping UI so that it does not create query
+        // metadata in the formats we do not intend to support, but the effort to do
+        // this is probably in the same order of magnitude as rewriting the whole
+        // thing from scratch-ish because the UI is all auto-generated based on the
+        // properties we don't want to support.
+        cpObj._view.initializeFromViewObject(JsonQueryHelpers.viewWithJsonQuery(cpObj._view.serialize()));
+      }
 
       if (!cpObj._isReady) {
         if ($.isBlank(cpObj._cachedRender) || !$.isBlank(data)) {

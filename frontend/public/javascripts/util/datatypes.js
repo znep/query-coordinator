@@ -720,7 +720,7 @@ blist.namespace.fetch('blist.datatypes');
       // images being rendered as links (with file sizes in kb appended to the
       // title).
       if (
-        !blist.feature_flags.enable_2017_grid_view_refresh &&
+        !_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false) &&
         /image\/\w+;/.test(fileData.contentType)
       ) {
         return renderPhoto.apply(null, arguments);

@@ -1310,7 +1310,7 @@ var Interpolator = require('../util/interpolator');
             $uploadFileErrorHelp.slideUp();
             $uploadPane.find('.uploadFileName').val(t('no_file_selected'));
             if (state.type == 'blobby') {
-              state.submittedView = new Dataset(response);
+              state.submittedView = createDatasetFromView(response);
               command.next(state.afterUpload || 'metadata');
             } else {
               state.scan = response;
@@ -1963,7 +1963,7 @@ var Interpolator = require('../util/interpolator');
             fileType: ext,
             syntheticPoints: syntheticPoints,
             onComplete: function() {
-              state.submittedView = new Dataset(dataset);
+              state.submittedView = createDatasetFromView(dataset);
               var nextState;
               if ($.subKeyDefined(state.submittedView, 'metadata.warnings')) {
                 nextState = 'importWarnings';
@@ -2011,7 +2011,7 @@ var Interpolator = require('../util/interpolator');
           data: dataPayload,
           reportServiceErrors: true,
           success: function(response) {
-            state.submittedView = new Dataset(response);
+            state.submittedView = createDatasetFromView(response);
             command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
               'importWarnings' : (isReimport ? 'finish' : 'metadata'));
             interpolator.stop();

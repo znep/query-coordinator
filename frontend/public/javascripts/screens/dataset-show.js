@@ -12,9 +12,9 @@ $(document).ready(function() {
 
   if (
     userCanCreateDatasets &&
-    window.blist.feature_flags.enable_2017_grid_view_refresh_preview_banner
+    _.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh_preview_banner', false)
   ) {
-    var refreshEnabled = window.blist.feature_flags.enable_2017_grid_view_refresh_for_users_who_can_create_datasets;
+    var refreshEnabled = _.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh_for_users_who_can_create_datasets', false);
     var url;
     var bannerText;
     var bannerLinkText;
@@ -331,7 +331,7 @@ $(function() {
     defaultTypes: defRen,
     editEnabled: (
       // EN-10110/EN-16621 - Disable cell-level editing for NBE-only datasets
-      !blist.feature_flags.enable_2017_grid_view_refresh &&
+      !_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false) &&
       !blist.dataset.isImmutable() &&
       ((blist.dataset.isUnpublished() && blist.dataset.isDefault()) || blist.dataset.viewType != 'tabular')
     ),
@@ -339,7 +339,7 @@ $(function() {
     common: {
       editColumnCallback: function(col) {
         // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
-        if (!blist.feature_flags.enable_2017_grid_view_refresh) {
+        if (!_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
           datasetPageNS.sidebar.hide();
           datasetPageNS.sidebar.show('columnProperties', col);
         }
@@ -367,7 +367,7 @@ $(function() {
   });
 
   var $dataGrid;
-  if (blist.feature_flags.enable_2017_grid_view_refresh) {
+  if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
     $dataGrid = datasetPageNS.rtManager.$domForType('socrataVizTable');
   } else {
     $dataGrid = datasetPageNS.rtManager.$domForType('table');
@@ -394,7 +394,7 @@ $(function() {
   // sidebar and sidebar tabs
   var $columnChoosersDomForType;
   var waitOnDataset;
-  if (blist.feature_flags.enable_2017_grid_view_refresh) {
+  if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) {
     $columnChoosersDomForType = blist.$container.renderTypeManager().$domForType('socrataVizTable');
     waitOnDataset = false;
   } else {
@@ -521,7 +521,7 @@ $(function() {
     resetSearchForm();
   });
 
-  if (!$.isBlank(blist.dataset.metadata.jsonQuery.search)) {
+  if (!$.isBlank(_.get(blist, 'dataset.metadata.jsonQuery.search', ''))) {
     $searchForm.find(':input').focus().val(blist.dataset.metadata.jsonQuery.search).blur();
     $clearSearch.show();
   }

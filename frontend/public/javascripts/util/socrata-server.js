@@ -81,11 +81,17 @@
               throw new Error('There was a problem with our servers');
             }
           }
+          /* eslint-disable indent */
+          // Not indenting the below because the comment about the Rails backend not yet being
+          // settled is too precious to change.
+          if (model.hasOwnProperty('_captureSodaServerHeaders')) {
           // TODO This is a terrible hack to serve until code in the Rails backend is settled
           // TODO This doesn't handle filtered views, which could depend on OoD datasets
           if (model.displayName === 'dataset' || model.displayName === 'working copy') {
             model._captureSodaServerHeaders(xhr);
           }
+          }
+          /* eslint-enable indent */
           model._finishRequest();
           if (_.isFunction(allCompleteCallback)) {
             allCompleteCallback.apply(this, arguments);

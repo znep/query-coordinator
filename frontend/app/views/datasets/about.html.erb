@@ -22,7 +22,7 @@
 <% end %>
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    blist.dataset = new Dataset(<%= safe_json(@view) %>);
+    blist.dataset = createDatasetFromView(<%= safe_json(@view) %>);
   </script>
   <%= include_webpack_bundle 'open-data/dataset-about-full.js' %>
 <% end %>

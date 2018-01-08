@@ -31,9 +31,17 @@ class AssetActionBar extends React.Component {
       manage: false
     };
 
+    const isGrantedMutationRights = () => {
+      const MUTATION_RIGHTS = ['add', 'delete', 'write', 'update_view'];
+      return _.intersection(MUTATION_RIGHTS, this.currentView.rights).length > 0;
+    };
+
     if (this.currentUser.id === this.currentView.owner.id) {
       // Owner has all grants.
       this.grantedPermissionTo = _.mapValues(this.grantedPermissionTo, _.constant(true));
+    } else if (isGrantedMutationRights()) {
+      // Mutation rights were granted by core.
+      this.grantedPermissionTo.edit = true;
     } else {
       // See: https://docs.google.com/spreadsheets/d/1oiN0gz-9TfQ_9WQxRBMVT8JkZOV5iH5X2tXrjkWMzGQ/edit#gid=2111165319
       _.each(_.get(this.currentView, 'grants'), (grant) => {

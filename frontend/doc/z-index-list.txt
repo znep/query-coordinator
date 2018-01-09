@@ -67,6 +67,7 @@ Visualization Canvas:
 7 Filter bar columns in main application
 8 Edit bar
 9 Site chrome admin header
+52 Color palette preview container
 53 Filter bar collapsed filters in Authoring Experience
 60 Filter bar controls in Authoring Experience
 1001 Share modal size dropdown

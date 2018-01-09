@@ -11,6 +11,7 @@ import {
   BASE_LAYERS,
   COLOR_SCALES,
   COLOR_PALETTES,
+  COLOR_PALETTE_VALUES,
   COLORS,
   MAP_SLIDER_DEBOUNCE_MILLISECONDS,
   SERIES_TYPE_FLYOUT
@@ -31,6 +32,7 @@ import {
 } from '../../selectors/metadata';
 import PointSizePreview from '../shared/PointSizePreview';
 import LineWeightPreview from '../shared/LineWeightPreview';
+import ColorPalettePreview from '../shared/ColorPalettePreview';
 
 export class PresentationPane extends Component {
   componentWillReceiveProps = (nextProps) => {
@@ -579,13 +581,15 @@ export class PresentationPane extends Component {
         onSelectColorPalette(event.value);
       }
     };
+    const colorSwatch = _.take(COLOR_PALETTE_VALUES[colorPaletteValue], 5);
 
     return (
       <div>
         <label className="block-label" htmlFor="color-palette">
           {I18n.t('fields.color_palette.title', { scope: this.scope })}
         </label>
-        <div className="color-scale-dropdown-container">
+        <div className="color-scale-dropdown-container has-color-palette-preview">
+          <ColorPalettePreview colors={colorSwatch} />
           <Dropdown {...colorPaletteAttributes} />
         </div>
       </div>

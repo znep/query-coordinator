@@ -939,6 +939,8 @@ en:
               upper_bound_column: Upper Bound Column
             flyout_measure:
               add_flyout_value: Add Flyout Value
+            geo_column:
+              empty_selection: Select a Geo Column from the list below
             line_map_options:
               line_weight_by_value: Scale Line Weight by Value
               line_color_by_value: Color by Value

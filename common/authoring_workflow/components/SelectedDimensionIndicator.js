@@ -34,12 +34,14 @@ export class SelectedDimensionIndicator extends React.Component {
   }
 
   renderEmpty() {
-    return <span>{I18n.t('shared.visualizations.panes.data.fields.dimension.empty_selection')}</span>;
+    const { visualizationType } = this.props;
+    const translationKey = visualizationType === 'map' ? 'geo_column' : 'dimension';
+
+    return <span>{I18n.t(`${translationKey}.empty_selection`, { scope: 'shared.visualizations.panes.data.fields' })}</span>;
   }
 
   render() {
     const { dimensionFieldName } = this.props;
-
     const classes = classNames('selected-dimension-indicator', {
       empty: _.isNull(dimensionFieldName)
     });
@@ -58,6 +60,7 @@ const mapStateToProps = (state) => {
   const visualizationType = getVisualizationType(vifAuthoring);
 
   return {
+    visualizationType,
     dimensionFieldName: _.get(getAnyDimension(vifAuthoring), 'columnName', null),
     validDimensions: getValidDimensions(metadata),
     recommendedDimensions: getRecommendedDimensions(metadata, visualizationType)

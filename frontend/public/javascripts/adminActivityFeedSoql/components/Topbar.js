@@ -1,41 +1,17 @@
-import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import I18nJS from 'common/i18n';
-import Autocomplete from 'common/autocomplete/components/Autocomplete';
+import SearchBox from './SearchBox';
 import SocrataIcon from 'common/components/SocrataIcon';
 import ClearFilters from './ClearFilters';
 import * as actions from '../actions';
 
 class Topbar extends PureComponent {
 
-  fetchAutocompleteSuggestions(searchTerm, callback) { //eslint-disable-line
-
-  }
-
-  renderAutoComplete() {
-    const { currentQuery, isMobile } = this.props;
-
-    const autocompleteOptions = {
-      animate: true,
-      anonymous: false,
-      collapsible: false,
-      currentQuery,
-      getSearchResults: this.fetchAutocompleteSuggestions,
-      millisecondsBeforeSearch: 60,
-      mobile: isMobile,
-      onChooseResult: _.noop,
-      onClearSearch: _.noop,
-      adminHeaderClasses: []
-    };
-
-    return <Autocomplete {...autocompleteOptions} className="autocomplete" />;
-  }
-
   render() {
-    const { isMobile, filters, toggleFilters } = this.props;
+    const { isMobile, filters, toggleFilters, changeAffectedItemSearch } = this.props;
 
     const topbarClassnames = classNames('topbar clearfix', {
       'mobile': isMobile
@@ -57,10 +33,17 @@ class Topbar extends PureComponent {
     const clearFiltersButton = isMobile ?
       null : <ClearFilters {...clearFiltersProps} />;
 
+    const searchBoxProps = {
+      searchValue: filters.affectedItemSearch,
+      searchCallback: changeAffectedItemSearch,
+      placeholder: I18nJS.t('screens.admin.activity_feed.columns.dataset_name'),
+      className: 'affected-item-searchbox'
+    };
+
     return (
       <div className={topbarClassnames}>
         {mobileFilterToggle}
-        {this.renderAutoComplete()}
+        <SearchBox {...searchBoxProps} />
         {clearFiltersButton}
       </div>
     );
@@ -84,7 +67,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  toggleFilters: () => dispatch(actions.common.toggleFilters())
+  toggleFilters: () => dispatch(actions.common.toggleFilters()),
+  changeAffectedItemSearch: (value) => dispatch(actions.filters.changeAffectedItemSearch(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topbar);

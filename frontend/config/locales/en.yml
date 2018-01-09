@@ -456,6 +456,7 @@ en:
       cancel: Cancel
       save: Save
       edit: Edit
+      missing_workflow: 'Error: Cannot find Approvals workflow'
     title: Routing and Approval
   catalog_landing_page:
     activation:

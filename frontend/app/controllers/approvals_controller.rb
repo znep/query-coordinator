@@ -3,6 +3,7 @@ class ApprovalsController < AdministrationController
   include ApplicationHelper
   include AdministrationHelper
   include AssetBrowserHelper
+  include ApprovalsHelper
 
   before_filter :require_approval_right
   before_filter :fetch_approvers, :only => :settings
@@ -49,14 +50,7 @@ class ApprovalsController < AdministrationController
   end
 
   def fetch_approvers
-    # This dance is due to the find_with_right API returning JSON with missing User properties (i.e. email)
-    # TODO https://socrata.atlassian.net/browse/EN-20844
-    @approvers = User.find_with_right(UserRights::CONFIGURE_APPROVALS).map do |user|
-      User.find(user.id)
-    end
-    @approvers.concat(User.find_with_right(UserRights::REVIEW_APPROVALS).map do |user|
-      User.find(user.id)
-    end).uniq!(&:id).sort_by(&:displayName)
+    @approvers = fetch_users_with_approvals_rights
   end
 
   def require_approval_right

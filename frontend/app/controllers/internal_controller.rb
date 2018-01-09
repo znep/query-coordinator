@@ -1,4 +1,5 @@
 class InternalController < ApplicationController
+  include InternalHelper
 
   ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS = [ :show_domain, :feature_flags, :show_config, :show_property ]
 
@@ -6,7 +7,6 @@ class InternalController < ApplicationController
   before_filter :redirect_to_current_domain, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
   before_filter :redirect_domain_id_to_domain_cname, :only => ACTIONS_ACCEPTING_DOMAIN_ID_REDIRECTS
   before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
-  before_filter :prevent_invalid_modules, :only => [ :add_module_feature, :create_domain ]
 
   skip_before_filter :require_user, :only => [ :demos ]
   skip_before_filter :check_auth, :only => [ :demos ]
@@ -25,13 +25,6 @@ class InternalController < ApplicationController
     { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' },
     { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' }
   ]
-
-  ROUTING_APPROVAL_ERROR = <<~EOM
-    Routing & Approval cannot be enabled because this site currently has the new Approvals workflow
-    (feature flag = "use_fontana_approvals") enabled. These workflows manage the 'approval status' of each
-    asset, and only one of these two workflows can be enabled at a time. NOTE: Product Development is planning
-    to deprecate Routing & Approval in early 2018; for more information, please ask in #discovery on Slack.
-  EOM
 
   def disable_site_chrome?
     true
@@ -108,15 +101,8 @@ class InternalController < ApplicationController
     }
 
     @known_config_types = ExternalConfig.for(:configuration_types).for_autocomplete(params)
-    if can_use_routing_and_approval_module?
-      @module_notices = {
-        routing_approval: 'Routing and Approval does not properly clean up when disabled, so once added you cannot remove it!'
-      }.with_indifferent_access
-    else
-      @module_notices = {
-        routing_approval: ROUTING_APPROVAL_ERROR
-      }.with_indifferent_access
-    end
+
+    @module_notices = module_notices_for('routing_approval', 'view_moderation')
 
     @modules = (AccountModule.find + KNOWN_FEATURES).map do |duck_module|
       (duck_module.try(:as_json) || duck_module).symbolize_keys.tap do |_module|
@@ -697,11 +683,9 @@ class InternalController < ApplicationController
       feature_is_a_module = AccountModule.include?(feature)
       module_already_added = Domain.find(domain_cname, true).modules.include?(feature)
 
-      if feature == 'routing_approval'
-        unless can_use_routing_and_approval_module?
-          errors << ROUTING_APPROVAL_ERROR
-          next
-        end
+      unless can_enable_module?(feature)
+        errors << module_error_for(feature)
+        next
       end
 
       if feature_is_a_module && !module_already_added
@@ -854,21 +838,7 @@ class InternalController < ApplicationController
     end
   end
 
-  def can_use_routing_and_approval_module?
-    FeatureFlags.derive[:use_fontana_approvals] != true
-  end
-
-  def prevent_invalid_modules
-    if params[:module].to_h[:name] == 'routing_approval'
-      unless can_use_routing_and_approval_module?
-        errors << ROUTING_APPROVAL_ERROR
-        return redirect_to show_domain_path(domain_id: params[:domain_id])
-      end
-    end
-  end
-
   def module_features_on_by_default
     %w(canvas2 geospatial staging_lockdown staging_api_lockdown)
   end
-
 end

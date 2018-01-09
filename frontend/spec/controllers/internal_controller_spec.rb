@@ -102,6 +102,8 @@ describe InternalController do
   end
 
   describe 'preventing invalid modules' do
+    MODULE_NAMES_UNDER_TEST = ['routing_approval', 'view_moderation']
+
     let(:create_domain_params) do
       {
         'utf8' => '✓',
@@ -124,91 +126,102 @@ describe InternalController do
       rspec_stub_feature_flags_with(flags)
     end
 
-    describe 'create_domain' do
-      let(:account_module) { AccountModule.new }
-      let(:does_include) { true }
-
-      before do
-        allow(AccountModule).to receive(:include?).and_return(does_include)
-        allow(AccountTier).to receive(:find_by_name).and_return(AccountTier.new('id' => 1))
-        allow(Domain).to receive(:create).and_return(Domain.new('cname' => 'cname'))
-        allow(Domain).to receive(:add_account_module)
-        allow(Configuration).to receive(:find_by_type).and_return([Configuration.new('id' => 1)])
-        allow(Configuration).to receive(:create)
-        allow_any_instance_of(Configuration).to receive(:create_property)
-        allow(subject).to receive(:module_features_on_by_default).and_return(
-          %w(canvas2 geospatial staging_lockdown staging_api_lockdown routing_approval)
-        )
-      end
-
-      context 'use_fontana_approvals feature flag is false' do
-        let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
-
-        it 'allows adding the routing_approval module' do
-          VCR.use_cassette('prevent_invalid_modules') do
-            post :create_domain, create_domain_params
-            expect(flash[:error]).to be_blank
-          end
-        end
-      end
-
-      context 'use_fontana_approvals is true' do
-        let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
-
-        it 'prevents adding the routing_approval module' do
-          VCR.use_cassette('prevent_invalid_modules') do
-            post :create_domain, create_domain_params
-            expect(assigns(:flashes)[:error].include?(InternalController::ROUTING_APPROVAL_ERROR)).to eq(true)
-          end
-        end
-      end
-    end
-
-    describe 'add_a_module_feature' do
-      let(:module_feature_params) do
-        {
-          'utf8' => '✓',
-          'authenticity_token' => 'n0yWUwYdaf/cBd4LIv8Mq2hekMvuhWe/ifYEaAx7+8vqd7U35vHOt0PsrAQh3SapyqN/r7Q3DANHSD/f67gvnA==',
-          'new-feature_name' => 'routing_approval',
-          'new-feature_enabled' => 'enabled',
-          'commit' => 'Add',
-          'domain_id' => 'cname'
-        }
-      end
-      let(:account_module) { AccountModule.new }
-      let(:does_include) { false }
-
-      before do
-        allow(AccountModule).to receive(:find).and_return(account_module)
-        allow(AccountModule).to receive(:include?).and_return(does_include)
-        allow_any_instance_of(Configuration).to receive(:update_property)
-        allow_any_instance_of(Configuration).to receive(:create_property)
-      end
-
-      context 'use_fontana_approvals feature flag is false' do
-        let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
-
-        it 'allows adding the routing_approval module' do
-          VCR.use_cassette('prevent_invalid_modules') do
-            post :add_module_feature, module_feature_params
-            expect(flash[:error]).to be_blank
-          end
-        end
-      end
-
-      context 'use_fontana_approvals is true' do
-        let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
+    MODULE_NAMES_UNDER_TEST.each do |module_name|
+      describe 'create_domain' do
+        let(:account_module) { AccountModule.new }
         let(:does_include) { true }
 
-        it 'prevents adding the routing_approval module' do
+        before do
+          allow(AccountModule).to receive(:include?).and_return(does_include)
+          allow(AccountTier).to receive(:find_by_name).and_return(AccountTier.new('id' => 1))
+          allow(Domain).to receive(:create).and_return(Domain.new('cname' => 'cname'))
           allow(Domain).to receive(:add_account_module)
-          VCR.use_cassette('prevent_invalid_modules') do
-            post :add_module_feature, module_feature_params
-            expect(flash[:error]).to eq(InternalController::ROUTING_APPROVAL_ERROR)
+          allow(Configuration).to receive(:find_by_type).and_return([Configuration.new('id' => 1)])
+          allow(Configuration).to receive(:create)
+          allow_any_instance_of(Configuration).to receive(:create_property)
+        end
+
+
+        context 'use_fontana_approvals feature flag is false' do
+          let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
+
+          it "allows adding the #{module_name} module" do
+            allow(subject).to receive(:module_features_on_by_default).and_return(
+              %W(canvas2 geospatial staging_lockdown staging_api_lockdown #{module_name})
+            )
+
+            VCR.use_cassette('prevent_invalid_modules') do
+              post :create_domain, create_domain_params
+              expect(flash[:error]).to be_blank
+            end
+          end
+        end
+
+        context 'use_fontana_approvals is true' do
+          let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
+
+          it "prevents adding the #{module_name} module" do
+            allow(subject).to receive(:module_features_on_by_default).and_return(
+              %W(canvas2 geospatial staging_lockdown staging_api_lockdown #{module_name})
+            )
+
+            VCR.use_cassette('prevent_invalid_modules') do
+              post :create_domain, create_domain_params
+              expect(assigns(:flashes)[:error].include?(subject.module_error_for(module_name))).to eq(true)
+            end
+          end
+        end
+      end
+
+      describe 'add_a_module_feature' do
+        let(:default_module_feature_params) do
+          {
+            'utf8' => '✓',
+            'authenticity_token' => 'n0yWUwYdaf/cBd4LIv8Mq2hekMvuhWe/ifYEaAx7+8vqd7U35vHOt0PsrAQh3SapyqN/r7Q3DANHSD/f67gvnA==',
+            'new-feature_enabled' => 'enabled',
+            'commit' => 'Add',
+            'domain_id' => 'cname'
+          }
+        end
+
+        def params_for(feature_name)
+          default_module_feature_params.merge('new-feature_name' => feature_name)
+        end
+
+        let(:account_module) { AccountModule.new }
+        let(:does_include) { false }
+
+        before do
+          allow(AccountModule).to receive(:find).and_return(account_module)
+          allow(AccountModule).to receive(:include?).and_return(does_include)
+          allow_any_instance_of(Configuration).to receive(:update_property)
+          allow_any_instance_of(Configuration).to receive(:create_property)
+        end
+
+        context 'use_fontana_approvals feature flag is false' do
+          let(:flags) { { 'use_fontana_approvals' => false }.with_indifferent_access }
+
+          it "allows adding the #{module_name} module" do
+            VCR.use_cassette('prevent_invalid_modules') do
+              post :add_module_feature, params_for(module_name)
+              expect(flash[:error]).to be_blank
+            end
+          end
+        end
+
+        context 'use_fontana_approvals is true' do
+          let(:flags) { { 'use_fontana_approvals' => true }.with_indifferent_access }
+          let(:does_include) { true }
+
+          it "prevents adding the #{module_name} module" do
+            allow(Domain).to receive(:add_account_module)
+            VCR.use_cassette('prevent_invalid_modules') do
+              post :add_module_feature, params_for(module_name)
+              expect(flash[:error]).to eq(subject.module_error_for(module_name))
+            end
           end
         end
       end
     end
   end
-
 end

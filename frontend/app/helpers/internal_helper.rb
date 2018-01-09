@@ -258,4 +258,42 @@ module InternalHelper
     (/^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/ =~ candidate) == 0
   end
 
+  def can_enable_module?(module_name)
+    case module_name.to_s
+    when 'routing_approval', 'view_moderation'
+      FeatureFlags.derive[:use_fontana_approvals] != true
+    else
+      true
+    end
+  end
+
+  def module_error_for(module_name)
+    text = module_text_for(module_name)
+    [
+      "#{text} cannot be enabled because this site currently has the new Approvals workflow",
+      "(feature flag = 'use_fontana_approvals') enabled. These workflows manage the 'approval status' of each",
+      "asset, and only one of these two workflows can be enabled at a time. NOTE: Product Development is planning",
+      "to deprecate #{text} in early 2018; for more information, please ask in #discovery on Slack."
+    ].join(' ')
+  end
+
+  def module_text_for(module_name)
+    {
+      routing_approval: 'Routing and Approval',
+      view_moderation: 'View Moderation'
+    }[module_name.to_sym]
+  end
+
+  def module_notice_for(module_name)
+    module_text = if can_enable_module?(module_name) && module_name == 'view_moderation'
+                    "#{module_text_for(module_name)} does not properly clean up when disabled, so once added you cannot remove it!"
+                  elsif !can_enable_module?(module_name)
+                    module_error_for(module_name)
+                  end
+    { module_name.to_sym => module_text }.compact.with_indifferent_access
+  end
+
+  def module_notices_for(*module_names)
+    module_names.map { |module_name| module_notice_for(module_name) }.reduce({}, :merge).with_indifferent_access
+  end
 end

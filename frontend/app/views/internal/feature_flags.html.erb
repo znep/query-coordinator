@@ -6,9 +6,7 @@
 
 <%= render '/internal/left_nav' %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.internal.feature_flags') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.internal.feature_flags') %>
 
 <div class="contentBox withLeftNavigation featureFlags">
   <%= render 'production_warning' %>

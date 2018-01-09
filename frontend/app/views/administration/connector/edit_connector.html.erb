@@ -4,9 +4,7 @@
   <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.connector.title')  %>
-<% end %>
+<% admin_breadcrumb('screens.admin.connector.title') %>
 
 <%= render '/administration/left_nav' %>
 

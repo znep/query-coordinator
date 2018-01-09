@@ -3,7 +3,7 @@
     <%= admin_nav_link_to('screens.admin.index.page_title', :controller => '/administration') %>
     <%- if content_for?(:breadcrumb) %>
       <span class="socrata-icon-arrow-right separator"></span>
-      <span class="current-page"><%= yield :breadcrumb %></span>
+      <%= yield :breadcrumb %>
     <%- end %>
     <%- if current_user.try(:is_superadmin?) -%>
       <a class="internal-link" href="<%= url_for :controller => '/internal', :action => 'index' %>">

@@ -431,7 +431,7 @@ en:
     header:
       breadcrumbs:
         approvals: Approvals
-        approvals_settings: Approvals Settings
+        approvals_settings: Settings
     settings:
       title: Settings
       introduction:

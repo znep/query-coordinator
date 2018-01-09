@@ -10,9 +10,7 @@
   <title><%= t('govstat.admin.page_title') %> | <%= get_site_title %></title>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('govstat.admin.page_title') %>
-<% end %>
+<% admin_breadcrumb('govstat.admin.page_title') %>
 
 <div id="app"></div>
 

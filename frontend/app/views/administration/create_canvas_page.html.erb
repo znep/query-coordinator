@@ -15,9 +15,7 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('dataslate.create.title') %>
-<% end %>
+<% admin_breadcrumb('dataslate.create.title') %>
 
 <%= render '/administration/left_nav' %>
 

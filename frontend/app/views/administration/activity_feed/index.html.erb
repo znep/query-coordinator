@@ -18,9 +18,7 @@
   <%= render_translations LocalePart.table %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.jobs.index_page.title') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.jobs.index_page.title') %>
 
 <% content_for :admin_header do %>
   <div id="activity-feed-header"></div>

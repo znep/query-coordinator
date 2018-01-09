@@ -6,9 +6,7 @@
   <title><%= t('screens.admin.sdp.edit.editing', :title => @widget_customization.name) %> | <%= t('screens.admin.sdp.edit.default_title') %> | <%= get_site_title %></title>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.sdp.listing.default_title') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.sdp.listing.default_title') %>
 
 <%= render '/administration/left_nav' %>
 

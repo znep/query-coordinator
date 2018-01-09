@@ -2,9 +2,7 @@
   <title><%= I18n.t('approvals.title') %> | <%= get_site_title %></title>
 <%- end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('approvals.header.breadcrumbs.approvals') %>
-<% end %>
+<% admin_breadcrumb('approvals.header.breadcrumbs.approvals') %>
 
 <div id="approvals-content"></div>
 

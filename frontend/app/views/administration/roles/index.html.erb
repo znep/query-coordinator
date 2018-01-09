@@ -11,9 +11,7 @@
     <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-    <%= t("screens.admin.roles.index_page.title") %>
-<% end %>
+<% admin_breadcrumb("screens.admin.roles.index_page.title") %>
 
 <%= display_standard_flashes %>
 

@@ -5,9 +5,7 @@
   <title><%= t("#{socrata_federation}.title") %> | <%= get_site_title %></title>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t("#{socrata_federation}.title") %>
-<% end %>
+<% admin_breadcrumb("#{socrata_federation}.title") %>
 
 <%= render '/administration/left_nav' %>
 

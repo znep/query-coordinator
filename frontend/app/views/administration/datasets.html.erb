@@ -8,9 +8,7 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t("screens.admin.datasets.title") %>
-<% end %>
+<% admin_breadcrumb("screens.admin.datasets.title") %>
 
 <%= render '/administration/left_nav' %>
 

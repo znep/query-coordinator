@@ -3,7 +3,9 @@
 <%- end %>
 
 <% content_for :breadcrumb do %>
-  <%= t('approvals.header.breadcrumbs.approvals_settings') %>
+  <%= admin_nav_link_to('approvals.header.breadcrumbs.approvals', :controller => 'approvals', :action => 'show' ) %>
+  <span class="socrata-icon-arrow-right separator"></span>
+  <span class="current-page"><%= t('approvals.header.breadcrumbs.approvals_settings') %></span>
 <% end %>
 
 <div class="approvals_settings">

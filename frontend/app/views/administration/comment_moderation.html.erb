@@ -4,9 +4,7 @@
   <title><%= I18n.t('screens.admin.comment_moderation.moderation') %> | <%= get_site_title %></title>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.index.comment_moderation') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.index.comment_moderation') %>
 
 <%= render '/administration/left_nav' %>
 

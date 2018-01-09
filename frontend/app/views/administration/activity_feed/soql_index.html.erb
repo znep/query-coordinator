@@ -9,9 +9,7 @@
   <%= rendered_stylesheet_tag 'administration-activity-feed-soql' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.jobs.index_page.title') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.jobs.index_page.title') %>
 
 <div id="app" class="activity-feed-app">
   <div class="placeholder-wrapper">

@@ -4,9 +4,7 @@
   <%= rendered_stylesheet_tag 'admin-users-v2' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.users.title') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.users.title') %>
 
 <% @site_chrome_admin_header_options = {size: 'small'} %>
 <% @suppress_site_chrome_header = render_site_admin_chrome? %>

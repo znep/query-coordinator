@@ -354,4 +354,9 @@ module AdministrationHelper
     I18n.t('table.summary', template_opts)
   end
 
+  def admin_breadcrumb(i18n_key)
+    content_for(:breadcrumb) do
+      content_tag(:span, t(i18n_key), :class => 'current-page')
+    end
+  end
 end

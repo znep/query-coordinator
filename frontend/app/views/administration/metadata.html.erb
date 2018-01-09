@@ -9,9 +9,7 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<% content_for :breadcrumb do %>
-  <%= t("#{prefix}.title") %>
-<% end %>
+<% admin_breadcrumb("#{prefix}.title") %>
 
 <%= render '/administration/left_nav' %>
 

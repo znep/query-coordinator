@@ -3,9 +3,7 @@
   <%= rendered_stylesheet_tag 'administration-internal-asset-manager' %>
 <%- end %>
 
-<% content_for :breadcrumb do %>
-  <%= t('screens.admin.assets.asset_inventory') %>
-<% end %>
+<% admin_breadcrumb('screens.admin.assets.asset_inventory') %>
 
 <div class="catalog-results" id="internal-asset-manager-asset-browser"></div>
 

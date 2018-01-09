@@ -33,8 +33,7 @@ SaveGeocodeShortcutButton.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const form = state.ui.forms.geocodeShortcutForm;
-  const desiredColumns = form && form.state && form.state.desiredColumns;
-
+  const desiredColumns = _.get(form, 'state.desiredColumns');
   const enabled = !!desiredColumns;
   let onClick = _.noop;
 

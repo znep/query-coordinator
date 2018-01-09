@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { genNewExpression, mapStateToProps } from 'containers/GeocodeShortcutContainer';
+import { genNewExpression, mapStateToProps, sortOutputColumns } from 'containers/GeocodeShortcutContainer';
 import entities from 'data/entities';
 import * as Selectors from 'selectors';
 import { mount } from 'enzyme';
@@ -543,5 +543,27 @@ describe('containers/GeocodeShortcutContainer', () => {
     }, defaultProps)
 
     assert.isTrue(props.formState.shouldHideOriginal);
+  });
+
+  describe('sortOutputColumns', () => {
+    it('sorts the output colummns', () => {
+      const outputCols = [
+        { position: 1, field_name: "some_geo_column" },
+        { position: 2, field_name: "zip" },
+        { position: 3, field_name: "county" },
+        { position: 4, field_name: "address" },
+        { position: 5, field_name: "state" },
+        { position: 6, field_name: "salary" }
+      ]
+      const initialOutputCols = ["address", "city", "zip", "state"]
+      assert.deepEqual(sortOutputColumns(initialOutputCols, outputCols), [
+        { position: 1, field_name: "address" },
+        { position: 2, field_name: "zip" },
+        { position: 3, field_name: "state" },
+        { position: 4, field_name: "some_geo_column" },
+        { position: 5, field_name: "county" },
+        { position: 6, field_name: "salary" }
+      ]);
+    });
   });
 });

@@ -84,6 +84,7 @@ function getOutputColumn(entities, outputSchema) {
 
 // Restore a form state from a target output column (which has a transform, which has an AST)
 export function buildDefaultFormState(
+  currentFormState,
   view,
   entities,
   inputColumns,
@@ -100,11 +101,11 @@ export function buildDefaultFormState(
   );
 
   formState = {
+    ...currentFormState,
     ...formState,
     ...getShouldHideOriginalFromOutputColumn(entities, outputSchema, outputColumn, formState),
     ...getErrorForgivenessFromOutputColumn(outputColumn)
   };
-
   const desiredColumns = genDesiredColumns(
     view,
     outputColumns,
@@ -251,6 +252,42 @@ function isObe(view) {
   return !view.newBackend;
 }
 
+// given an array of old output columns (as an array of field_name strings) and a new
+// set of output columns, it returns a new copy of output columns based on the order
+// of the old output columns.
+//
+// any columns not found in the old output cols will be placed at the end
+export function sortOutputColumns(initialOutputColumns = [], outputColumns = []) {
+  const initOutputCols = {};
+  _.forEach(initialOutputColumns, (name, i) => initOutputCols[name] = i + 1);
+
+  function compare(a, b) {
+    // if not in initial output cols, sort by `position` attr
+    if (!initOutputCols[a.field_name] && !initOutputCols[b.field_name]) {
+      if (a.position <= b.position) {
+        return -1;
+      } else {
+        return 1;
+      }
+    } else if (!initOutputCols[a.field_name]) {
+      // if not left-side column is not in initial col, move it to the right
+      return 1;
+    } else if (!initOutputCols[b.field_name]) {
+      return -1;
+    } else if (initOutputCols[a.field_name] < initOutputCols[b.field_name]) {
+      return -1;
+    } else if (initOutputCols[a.field_name] > initOutputCols[b.field_name]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  const sorted = outputColumns.slice().sort(compare);
+  const repositioned = _.map(sorted, (col, i) => ({ ...col, position: i + 1 }));
+  return repositioned;
+}
+
 function genDesiredColumns(view, existingColumns, targetColumn, formState) {
   // will be all cols + the generated geo one or just the geo one, depending
   // on if the user checked the "Do Not Import Original Cols" box
@@ -308,7 +345,9 @@ function genDesiredColumns(view, existingColumns, targetColumn, formState) {
     }
   }
 
-  return desiredColumns.map((dc, i) => ({ ...dc, position: i + 1 }));
+  const initialOutputCols = formState.initialOutputColumns;
+  const desiredCols = desiredColumns.map((dc, i) => ({ ...dc, position: i + 1 }));
+  return sortOutputColumns(initialOutputCols, desiredCols);
 }
 
 export const mapStateToProps = ({ entities, ui }, props) => {
@@ -332,8 +371,8 @@ export const mapStateToProps = ({ entities, ui }, props) => {
       inputSchemaId
     );
 
-
     formState = buildDefaultFormState(
+      formState,
       view,
       entities,
       inputColumns,
@@ -373,9 +412,7 @@ export const mapStateToProps = ({ entities, ui }, props) => {
 };
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
-
   const formState = stateProps.formState;
-
   // The reason we need to sync this to the store is because there are two
   // buttons living in diff components that need to use this in order to make
   // a new schema

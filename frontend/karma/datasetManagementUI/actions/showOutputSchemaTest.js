@@ -213,5 +213,4 @@ describe('showOutputSchema actions', () => {
     });
 
   });
-
 });

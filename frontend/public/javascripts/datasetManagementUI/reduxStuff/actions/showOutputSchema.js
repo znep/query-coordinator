@@ -82,7 +82,6 @@ export const newOutputSchema = (inputSchemaId, desiredColumns) => dispatch => {
     operation: NEW_OUTPUT_SCHEMA,
     callParams: {}
   };
-
   return dispatch(createNewOutputSchema(inputSchemaId, desiredColumns, call));
 };
 

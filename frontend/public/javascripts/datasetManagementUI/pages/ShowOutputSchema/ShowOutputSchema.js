@@ -134,7 +134,7 @@ export function mapStateToProps(state, ownProps) {
 
   const parseOptionsForm = state.ui.forms.parseOptionsForm;
 
-  const addColForm = state.ui.forms.addColForm;
+  const { addColForm, geocodeShortcutForm } = state.ui.forms;
 
   return {
     revision,
@@ -148,6 +148,7 @@ export function mapStateToProps(state, ownProps) {
     canApplyRevision,
     fatalError,
     addColForm,
+    geocodeShortcutForm,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'location'])),
     params

@@ -10,7 +10,7 @@
     "test": "RAILS_ENV=karma node --max_old_space_size=4096 ./node_modules/.bin/karma start spec/karma/karma.conf.js",
     "test-watch": "RAILS_ENV=karma node --max_old_space_size=4096 ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
     "test-browser": "RAILS_ENV=karma node --max_old_space_size=4096 ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false --browsers Chrome",
-    "webpack": "webpack --config config/webpack.config.js --bail",
+    "webpack": "NODE_PATH=./node_modules NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack --config config/webpack.config.js --bail",
     "watch": "webpack-dev-server --config config/webpack.config.js",
     "build": "npm run webpack",
     "postinstall": "npm run webpack"

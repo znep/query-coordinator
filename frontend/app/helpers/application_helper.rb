@@ -76,7 +76,8 @@ module ApplicationHelper
   # If it is 2019 or later, begin any troubleshooting by getting angry.
   def using_approvals?(phase)
     old_approvals = module_enabled?(:routing_approval)
-    new_approvals = FeatureFlags.value_for(:use_fontana_approvals, request: request)
+    new_approvals = FeatureFlags.value_for(:use_fontana_approvals,
+                                           request: defined?(request) ? request : nil)
     case phase
       when :old then old_approvals && !new_approvals
       when :new then new_approvals

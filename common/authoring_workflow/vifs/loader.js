@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as actions from '../actions';
+import { SERIES_TYPE_FLYOUT } from '../constants';
 
 /**
  * Note: These properties are in alphabetical order.
@@ -106,46 +107,84 @@ export const load = (dispatch, vif) => {
   if (has(paths.series)) {
 
     const seriesCount = get(paths.series).length;
+    let flyoutSeriesIndex = 0;
 
-    for (let i = 0; i < seriesCount; i++) {
+    for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
 
-      if (i > 0) { // the first series already exists in the vif templates, no need to create it.
-        dispatch(actions.appendSeries({ isInitialLoad: true }));
-      }
+      const seriesTypePath = paths.seriesType.format(seriesIndex);
+      let seriesVariant;
+      let seriesType;
 
-      const seriesTypePath = paths.seriesType.format(i);
       if (has(seriesTypePath)) {
-        dispatch(actions.setSeriesType(i, get(seriesTypePath)));
+        seriesType = get(paths.seriesType.format(seriesIndex));
+        const parts = seriesType.split('.');
+
+        if (parts.length > 1) {
+          seriesVariant = parts[1];
+        }
       }
 
-      const measureColumnNamePath = paths.measureColumnName.format(i);
+      const isFlyoutSeries = seriesType === SERIES_TYPE_FLYOUT;
+
+      if (seriesIndex > 0) { // the first series already exists in the vif templates, no need to create it.
+
+        dispatch(actions.appendSeries({
+          isFlyoutSeries,
+          isInitialLoad: true,
+          seriesIndex,
+          seriesVariant
+        }));
+
+      } else {
+
+        // At present this only affects combo chart whose series type at index 0 could be,
+        // comboChart.column or comboChart.line.  It defaults to comboChart.column so we need to
+        // explicitly set the variant it to the vif value.
+        if (!_.isNil(seriesVariant)) {
+          dispatch(actions.setSeriesVariant(seriesIndex, seriesVariant));
+        }
+      }
+
+      const measureColumnNamePath = paths.measureColumnName.format(seriesIndex);
       if (has(measureColumnNamePath)) {
-        dispatch(actions.setMeasure(i, get(measureColumnNamePath)));
+        dispatch(actions.setMeasureColumn({
+          columnName: get(measureColumnNamePath),
+          isFlyoutSeries,
+          relativeIndex: isFlyoutSeries ? flyoutSeriesIndex : seriesIndex
+        }));
       }
 
-      const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);
+      const measureAggregationFunctionPath = paths.measureAggregationFunction.format(seriesIndex);
       if (has(measureAggregationFunctionPath)) {
-        dispatch(actions.setMeasureAggregation(i, get(measureAggregationFunctionPath)));
+        dispatch(actions.setMeasureAggregation({
+          aggregationFunction: get(measureAggregationFunctionPath),
+          isFlyoutSeries,
+          relativeIndex: isFlyoutSeries ? flyoutSeriesIndex : seriesIndex
+        }));
       }
 
-      const primaryColorPath = paths.primaryColor.format(i);
+      const primaryColorPath = paths.primaryColor.format(seriesIndex);
       if (has(primaryColorPath)) {
-        dispatch(actions.setPrimaryColor(i, get(primaryColorPath)));
+        dispatch(actions.setPrimaryColor(seriesIndex, get(primaryColorPath)));
       }
 
-      const secondaryColorPath = paths.secondaryColor.format(i);
+      const secondaryColorPath = paths.secondaryColor.format(seriesIndex);
       if (has(secondaryColorPath)) {
-        dispatch(actions.setSecondaryColor(i, get(secondaryColorPath)));
+        dispatch(actions.setSecondaryColor(seriesIndex, get(secondaryColorPath)));
       }
 
-      const unitOnePath = paths.unitOne.format(i);
+      const unitOnePath = paths.unitOne.format(seriesIndex);
       if (has(unitOnePath)) {
-        dispatch(actions.setUnitsOne(i, get(unitOnePath)));
+        dispatch(actions.setUnitsOne(seriesIndex, get(unitOnePath)));
       }
 
-      const unitOtherPath = paths.unitOther.format(i);
+      const unitOtherPath = paths.unitOther.format(seriesIndex);
       if (has(unitOtherPath)) {
-        dispatch(actions.setUnitsOther(i, get(unitOtherPath)));
+        dispatch(actions.setUnitsOther(seriesIndex, get(unitOtherPath)));
+      }
+
+      if (isFlyoutSeries) {
+        flyoutSeriesIndex++;
       }
     }
   }

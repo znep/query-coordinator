@@ -70,14 +70,19 @@ export default function regionMap(state, action) {
       _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
 
+    case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_COLUMN:
+      if (!action.isFlyoutSeries && (action.relativeIndex == 0)) {
+        return baseVifReducer(state, action);
+      }
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:
     case actions.SET_DOMAIN:
     case actions.SET_FILTERS:
-    case actions.SET_MEASURE:
-    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

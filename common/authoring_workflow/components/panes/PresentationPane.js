@@ -12,7 +12,8 @@ import {
   COLOR_SCALES,
   COLOR_PALETTES,
   COLORS,
-  MAP_SLIDER_DEBOUNCE_MILLISECONDS
+  MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+  SERIES_TYPE_FLYOUT
 } from '../../constants';
 
 import EmptyPane from './EmptyPane';
@@ -77,7 +78,7 @@ export class PresentationPane extends Component {
   renderColorPalette = () => {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
     const colorPaletteFromVif = selectors.getColorPalette(vifAuthoring);
-    const isMultiSeries = selectors.isMultiSeries(vifAuthoring);
+    const hasMultipleNonFlyoutSeries = selectors.hasMultipleNonFlyoutSeries(vifAuthoring);
 
     let colorPaletteValue;
     let customColorSelector;
@@ -85,10 +86,10 @@ export class PresentationPane extends Component {
     // If single-series and palette=='custom', set colorPaletteValue = colorPaletteFromVif and render the single-series
     // custom color picker.
     //
-    if (!isMultiSeries && (colorPaletteFromVif === 'custom')) {
+    if (!hasMultipleNonFlyoutSeries && (colorPaletteFromVif === 'custom')) {
       colorPaletteValue = colorPaletteFromVif;
       customColorSelector = this.renderSingleSeriesCustomColorSelector();
-    } else if (isMultiSeries && (colorPaletteFromVif === null)) {
+    } else if (hasMultipleNonFlyoutSeries && (colorPaletteFromVif === null)) {
     // If multi-series and palette is null, set colorPaletteValue = 'custom' and render the multi-series custom color
     // picker.
     //
@@ -110,7 +111,7 @@ export class PresentationPane extends Component {
       options: colorPalettesWithCustomOption,
       value: colorPaletteValue,
       onSelection: (event) => {
-        const selectedColorPalette = (isMultiSeries && (event.value === 'custom')) ? null : event.value;
+        const selectedColorPalette = (hasMultipleNonFlyoutSeries && (event.value === 'custom')) ? null : event.value;
         onSelectColorPalette(selectedColorPalette);
       }
     };
@@ -135,11 +136,14 @@ export class PresentationPane extends Component {
       return null;
     }
 
-    const series = selectors.getSeries(vifAuthoring);
-    const colorSelectors = series.map((item, index) => {
+    const nonFlyoutSeries = selectors.getNonFlyoutSeries(vifAuthoring).map((item, index) => {
+      return _.extend({ seriesIndex: index }, item);
+    });
+
+    const colorSelectors = nonFlyoutSeries.map((item) => {
 
       const colorPickerAttributes = {
-        handleColorChange: (primaryColor) => onChangePrimaryColor(index, primaryColor),
+        handleColorChange: (primaryColor) => onChangePrimaryColor(item.seriesIndex, primaryColor),
         palette: COLORS,
         value: item.color.primary
       };
@@ -147,7 +151,7 @@ export class PresentationPane extends Component {
       const title = getMeasureTitle(metadata, item);
 
       return (
-        <div className="custom-color-container" key={index}>
+        <div className="custom-color-container" key={item.seriesIndex}>
           <ColorPicker {...colorPickerAttributes} />
           <label className="color-value">{title}</label>
         </div>
@@ -1183,7 +1187,7 @@ export class PresentationPane extends Component {
 
     if (selectors.isBarChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
+      if (selectors.isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring)) {
         configuration = this.renderGroupedBarChartControls();
       } else {
         configuration = this.renderBarChartControls();
@@ -1191,7 +1195,7 @@ export class PresentationPane extends Component {
 
     } else if (selectors.isColumnChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
+      if (selectors.isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring)) {
         configuration = this.renderGroupedColumnChartControls();
       } else {
         configuration = this.renderColumnChartControls();
@@ -1199,7 +1203,7 @@ export class PresentationPane extends Component {
 
     } else if (selectors.isComboChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
+      if (selectors.isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring)) {
         configuration = this.renderGroupedComboChartControls();
       } else {
         configuration = this.renderComboChartControls();
@@ -1207,7 +1211,7 @@ export class PresentationPane extends Component {
 
     } else if (selectors.isTimelineChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
+      if (selectors.isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring)) {
         configuration = this.renderGroupedTimelineChartControls();
       } else {
         configuration = this.renderTimelineChartControls();

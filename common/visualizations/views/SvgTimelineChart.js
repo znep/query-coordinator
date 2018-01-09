@@ -13,14 +13,28 @@ import {
 const I18n = require('common/i18n').default;
 // Constants
 import {
+  AXIS_DEFAULT_COLOR,
+  AXIS_GRID_COLOR,
   AXIS_LABEL_MARGIN,
+  AXIS_TICK_COLOR,
   DEFAULT_CIRCLE_HIGHLIGHT_RADIUS,
+  DEFAULT_DESKTOP_COLUMN_WIDTH,
+  DEFAULT_MOBILE_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DIMENSION_LABELS_FONT_COLOR,
+  DIMENSION_LABELS_FONT_SIZE,
+  DIMENSION_LABELS_MAX_CHARACTERS,
+  DIMENSION_LABELS_ROTATION_ANGLE,
+  FONT_STACK,
+  LEGEND_BAR_HEIGHT,
+  MEASURE_LABELS_FONT_COLOR,
+  MEASURE_LABELS_FONT_SIZE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
-  LEGEND_BAR_HEIGHT
-} from './SvgStyleConstants';
+  SERIES_TYPE_FLYOUT,
+  SERIES_TYPE_TIMELINE_CHART
+} from './SvgConstants';
 
 import { getMeasures } from '../helpers/measure';
 
@@ -35,31 +49,18 @@ const MARGINS = {
 };
 const AREA_DOT_RADIUS = 1;
 const AREA_STROKE_WIDTH = 3;
-const AXIS_DEFAULT_COLOR = '#979797';
-const AXIS_GRID_COLOR = '#f1f1f1';
-const AXIS_TICK_COLOR = '#adadad';
-const DEFAULT_DESKTOP_DATUM_WIDTH = 14;
-const DEFAULT_MOBILE_DATUM_WIDTH = 50;
 const DIMENSION_LABELS_CATEGORICAL_FIXED_HEIGHT = 88;
-const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
-const DIMENSION_LABELS_FONT_SIZE = 14;
-const DIMENSION_LABELS_MAX_CHARACTERS = 8;
-const DIMENSION_LABELS_ROTATION_ANGLE = 82.5;
 const DIMENSION_LABELS_TIME_FIXED_HEIGHT = 24;
-const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const LABEL_NO_VALUE = I18n.t('shared.visualizations.charts.common.no_value');
-const LABEL_OTHER = I18n.t('shared.visualizations.charts.common.other_category');
 const LINE_DOT_RADIUS = 2;
 const LINE_STROKE_WIDTH = 3;
 const MAX_ROW_COUNT_WITHOUT_PAN = 1000;
-const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
-const MEASURE_LABEL_FONT_SIZE = 14;
 const MINIMUM_HIGHLIGHT_WIDTH = 5;
 const RECOMMENDED_TICK_DISTANCE = 150;
 
 function SvgTimelineChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
   const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+  const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
   const parseDate = d3.
     time.
@@ -78,13 +79,15 @@ function SvgTimelineChart($element, vif, options) {
   let d3YScale;
   let dataToRender;
   let dataToRenderBySeries;
+  let flyoutDataToRender;
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
   let maxYValue;
+  let measures;
   let minYValue;
   let precision;
-  let measures;
   let referenceLines;
+  let timelineDataToRender;
   let xAxisPanDistanceFromZoom = 0;
 
   _.extend(this, new SvgVisualization($element, vif, options));
@@ -110,6 +113,13 @@ function SvgTimelineChart($element, vif, options) {
     if (newData) {
 
       dataToRender = newData;
+      self.addSeriesIndices(dataToRender);
+
+      timelineDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_TIMELINE_CHART);
+      flyoutDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
+
+      measures = getMeasures(self, dataToRender);
+
       // Note: the vast majority of rendering code reads from
       // 'dataToRenderBySeries', not 'dataToRender'. If memory usage becomes
       // problematic, the few places that read from 'dataToRender' can be
@@ -117,7 +127,7 @@ function SvgTimelineChart($element, vif, options) {
       // of extra computation for halving memory usage. In this case, we would
       // not want to store a reference to 'newData' at all but rather just
       // to the result of 'mapDataTableToDataTablesBySeries()'.
-      dataToRenderBySeries = mapDataTableToDataTablesBySeries(newData);
+      dataToRenderBySeries = mapDataTableToDataTablesBySeries(timelineDataToRender);
     }
 
     if (newColumns) {
@@ -180,9 +190,11 @@ function SvgTimelineChart($element, vif, options) {
   function mapDataTableToDataTablesBySeries(dataTable) {
     const dataTableDimensionIndex = dataTable.columns.indexOf('dimension');
 
-    measures = getMeasures(self, dataToRender);
+    const filteredMeasures = _.filter(measures, (measure) => {
+      return (_.get(measure, 'palette.series.type', '') === SERIES_TYPE_TIMELINE_CHART);
+    });
 
-    const dataTablesBySeries = measures.map((measure, i) => {
+    const dataTablesBySeries = filteredMeasures.map((measure, i) => {
       const dataTableMeasureIndex = dataTableDimensionIndex + 1 + i;
       let rows = dataTable.rows.map((row) => {
         return [
@@ -215,8 +227,8 @@ function SvgTimelineChart($element, vif, options) {
 
   function renderData() {
     const minimumDatumWidth = self.isMobile() ?
-      DEFAULT_MOBILE_DATUM_WIDTH :
-      DEFAULT_DESKTOP_DATUM_WIDTH;
+      DEFAULT_MOBILE_COLUMN_WIDTH :
+      DEFAULT_DESKTOP_COLUMN_WIDTH;
 
     const axisLabels = self.getAxisLabels();
     const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
@@ -228,8 +240,8 @@ function SvgTimelineChart($element, vif, options) {
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
     const d3ClipPathId = `timeline-chart-clip-path-${_.uniqueId()}`;
-    const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
-    const dimensionValues = dataToRender.rows.map(
+    const dataTableDimensionIndex = timelineDataToRender.columns.indexOf('dimension');
+    const dimensionValues = timelineDataToRender.rows.map(
       (row) => row[dataTableDimensionIndex]
     );
 
@@ -264,7 +276,7 @@ function SvgTimelineChart($element, vif, options) {
     precision = _.get(self.getVif(), 'series[0].dataSource.precision');
 
     const dimensionColumnName = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-    const isUsingTimeScale = isDimensionCalendarDate(dimensionColumnName, dataToRender.columnFormats);
+    const isUsingTimeScale = isDimensionCalendarDate(dimensionColumnName, timelineDataToRender.columnFormats);
 
     // See comment in renderXAxis() for an explanation as to why this is
     // separate.
@@ -411,8 +423,8 @@ function SvgTimelineChart($element, vif, options) {
 
       renderedYAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
-        attr('font-size', `${MEASURE_LABEL_FONT_SIZE}px`).
-        attr('fill', MEASURE_LABEL_FONT_COLOR).
+        attr('font-size', `${MEASURE_LABELS_FONT_SIZE}px`).
+        attr('fill', MEASURE_LABELS_FONT_COLOR).
         attr('stroke', 'none');
 
       let d3YGridAxis = d3YAxis.
@@ -588,8 +600,8 @@ function SvgTimelineChart($element, vif, options) {
         attr('cx', getCx).
         attr('cy', getCy).
         attr('data-default-fill', 'transparent').
+        attr('data-dimension-index', (d, index) => index).
         attr('data-dimension-value-html', (d, index) => dimensionValues[index]).
-        attr('data-measure-index', (d, index) => index).
         attr('data-series-index', seriesIndex).
         attr('fill', 'transparent').
         attr('r', radius);
@@ -662,7 +674,14 @@ function SvgTimelineChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({ measures, referenceLines });
+        const nonFlyoutMeasures = _.filter(measures, (measure) => {
+          return _.get(measure, 'palette.series.type') !== SERIES_TYPE_FLYOUT;
+        });
+
+        const legendItems = self.getLegendItems({
+          measures: nonFlyoutMeasures,
+          referenceLines
+        });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -690,7 +709,7 @@ function SvgTimelineChart($element, vif, options) {
       width = viewportWidth;
       xAxisPanningEnabled = false;
 
-      if (dataToRender.rows.length > MAX_ROW_COUNT_WITHOUT_PAN) {
+      if (timelineDataToRender.rows.length > MAX_ROW_COUNT_WITHOUT_PAN) {
 
         self.renderError(
           I18n.t(
@@ -704,7 +723,7 @@ function SvgTimelineChart($element, vif, options) {
 
       width = Math.max(
         viewportWidth,
-        minimumDatumWidth * dataToRender.rows.length
+        minimumDatumWidth * timelineDataToRender.rows.length
       );
 
       xAxisPanDistance = width - viewportWidth;
@@ -764,13 +783,13 @@ function SvgTimelineChart($element, vif, options) {
       // the last time bucket properly.
       //
       if (precision !== 'none') {
-        domainEndDate = getIncrementedDateByPrecision(domainEndDate, dataToRender.precision);
+        domainEndDate = getIncrementedDateByPrecision(domainEndDate, timelineDataToRender.precision);
         endDate = domainEndDate.toISOString();
       }
     }
 
     const allMeasureValues = _.flatMap(
-      dataToRender.rows.map((row) => {
+      timelineDataToRender.rows.map((row) => {
         return row.slice(dataTableDimensionIndex + 1);
       })
     );
@@ -1053,13 +1072,14 @@ function SvgTimelineChart($element, vif, options) {
           // possible to use the () => {} syntax here.
           function(datum) {
             const seriesIndex = parseInt(this.getAttribute('data-series-index'), 10);
+            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
 
             if (!isCurrentlyPanning()) {
               const measure = measures[seriesIndex];
               const value = datum[measureValueIndex];
 
               showCircleHighlight(this, measure);
-              showCircleFlyout(this, { measure, value });
+              showCircleFlyout(this, { dimensionIndex, measure, value });
             }
           }
         ).
@@ -1082,17 +1102,17 @@ function SvgTimelineChart($element, vif, options) {
                 let dimensionValue;
 
                 if (_.isNil(datum)) {
-                  dimensionValue = LABEL_NO_VALUE;
-                } else if (datum === LABEL_OTHER) {
-                  dimensionValue = LABEL_OTHER;
+                  dimensionValue = noValueLabel;
+                } else if (datum === otherLabel) {
+                  dimensionValue = otherLabel;
                 } else {
-                  const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+                  const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
                   const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-                  dimensionValue = formatValueHTML(datum, column, dataToRender);
+                  dimensionValue = formatValueHTML(datum, column, timelineDataToRender);
                 }
 
                 showGroupFlyout({
-                  dataToRender,
+                  dataToRender: timelineDataToRender,
                   datum,
                   dimensionIndex,
                   dimensionValue
@@ -1256,20 +1276,20 @@ function SvgTimelineChart($element, vif, options) {
     const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
     const firstSeriesRows = dataToRenderBySeries[0].rows;
 
-    const firstSeriesIndex = _.clamp(
+    const dimensionIndex = _.clamp(
       (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
       0,
       firstSeriesRows.length - 1
     );
 
-    const seriesDimensionIndex = 0;
-    let flyoutXOffset;
+    const dimensionValueIndex = 0;
+    let xOffset;
 
-    const startDate = parseDate(firstSeriesRows[firstSeriesIndex][seriesDimensionIndex]);
-    const endDate = getIncrementedDateByPrecision(startDate, dataToRender.precision);
+    const startDate = parseDate(firstSeriesRows[dimensionIndex][dimensionValueIndex]);
+    const endDate = getIncrementedDateByPrecision(startDate, timelineDataToRender.precision);
 
     if (allSeriesAreLineVariant()) {
-      flyoutXOffset = d3XScale(startDate);
+      xOffset = d3XScale(startDate);
     } else {
 
       if (precision !== 'none') {
@@ -1278,34 +1298,31 @@ function SvgTimelineChart($element, vif, options) {
         // peaks to appear in the middle of the intervals, as opposed to the
         // beginning of them (if we do not do this shift, the a range of 2001-2002
         // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
-        flyoutXOffset = d3XScale(
+        xOffset = d3XScale(
           new Date(
             startDate.getTime() +
             getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
           )
         );
       } else {
-        flyoutXOffset = d3XScale(startDate);
+        xOffset = d3XScale(startDate);
       }
     }
 
-    flyoutXOffset += xAxisPanDistanceFromZoom;
-    flyoutXOffset += (self.getAxisLabels().left ? AXIS_LABEL_MARGIN : 0);
-
-    const flyoutData = dataToRenderBySeries.map((series) => {
+    const data = dataToRenderBySeries.map((series) => {
       const measureIndex = 1;
 
       let label = series.columns[measureIndex];
       // We do not want to apply formatting if the label is `(Other)` category
       if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
         const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-        label = _.isNil(groupingColumn) ? label : formatValueHTML(label, groupingColumn, dataToRender, true);
+        label = _.isNil(groupingColumn) ? label : formatValueHTML(label, groupingColumn, timelineDataToRender, true);
       }
 
-      let value = series.rows[firstSeriesIndex][measureIndex];
+      let value = series.rows[dimensionIndex][measureIndex];
       if (!_.isNil(value)) {
         const measureColumn = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-        value = formatValueHTML(value, measureColumn, dataToRender);
+        value = formatValueHTML(value, measureColumn, timelineDataToRender);
       }
 
       return {
@@ -1315,9 +1332,10 @@ function SvgTimelineChart($element, vif, options) {
     });
 
     const payload = {
+      data,
+      dimensionIndex,
       startDate,
-      xOffset: flyoutXOffset,
-      data: flyoutData
+      xOffset
     };
 
     if (precision !== 'none') {
@@ -1381,11 +1399,12 @@ function SvgTimelineChart($element, vif, options) {
       attr('display', 'none');
   }
 
-  function showCircleFlyout(columnElement, { measure, value }) {
+  function showCircleFlyout(columnElement, { dimensionIndex, measure, value }) {
+    // Circle measure
     const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
-    const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
+    const seriesIndex = self.getSeriesIndexByMeasureIndex(measure.measureIndex);
 
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
         $('<td>', { 'colspan': 2 }).html(
           (titleHTML) ? titleHTML : ''
@@ -1399,21 +1418,14 @@ function SvgTimelineChart($element, vif, options) {
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
     const $table = $('<table>', { 'class': 'socrata-flyout-table' });
+    const $tableContainer = $('<div>').
+      append($table);
 
-    let valueHTML;
-
-    if (value === null) {
-      valueHTML = noValueLabel;
-    } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueHTML = formatValueHTML(value, column, dataToRender, true);
-
-      if (value === 1) {
-        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
-      } else {
-        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
-      }
-    }
+    const valueHTML = self.getValueHtml({
+      dataToRender,
+      seriesIndex,
+      value
+    });
 
     $valueCell.html(valueHTML);
 
@@ -1423,13 +1435,26 @@ function SvgTimelineChart($element, vif, options) {
     ]);
 
     $table.append([
-      $title,
+      $titleRow,
       $valueRow
     ]);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Payload
     const payload = {
       element: columnElement,
-      content: $table,
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       dark: true
@@ -1442,48 +1467,36 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function showGroupFlyout({ dataToRender, datum, dimensionIndex, dimensionValue }) {
-
-    // Content
-    //
-    const titleHTML = dimensionValue || LABEL_NO_VALUE;
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
-    append($('<td>', { 'colspan': 2 }).
-    html(titleHTML));
+    // Group measures
+    const titleHTML = dimensionValue || noValueLabel;
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).
+      html(titleHTML));
 
     const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($title);
+      append($titleRow);
+
+    const $tableContainer = $('<div>').
+      append($table);
 
     const measureValues = dataToRender.rows[dimensionIndex].slice(1);
 
-    let $labelValueRows;
-
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
-    $labelValueRows = measureValues.map((value, measureIndex) => {
-      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+    const $labelValueRows = measureValues.map((value, measureIndex) => {
+      const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
       const measure = measures[measureIndex];
+
       const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         html(measure.labelHtml).
         css('color', measure.getColor());
+
       const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
-      const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
-      const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
-
-      let valueHTML;
-
-      if (value === null) {
-        valueHTML = LABEL_NO_VALUE;
-      } else {
-        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueHTML = formatValueHTML(value, column, dataToRender, true);
-
-        if (value === 1) {
-          valueHTML += ` ${_.escape(unitOne)}`;
-        } else {
-          valueHTML += ` ${_.escape(unitOther)}`;
-        }
-      }
-
+      const valueHTML = self.getValueHtml({
+        dataToRender,
+        seriesIndex,
+        value
+      });
       $valueCell.html(valueHTML);
 
       return $('<tr>', { 'class': 'socrata-flyout-row' }).
@@ -1495,8 +1508,19 @@ function SvgTimelineChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
     // Positioning
-    //
     const boundingClientRect = self.
       $element.
       find('.timeline-chart')[0].
@@ -1518,10 +1542,9 @@ function SvgTimelineChart($element, vif, options) {
     const halfBandWidth = Math.round(d3XScale.rangeBand() / 2);
 
     // Payload
-    //
     const payload = {
       belowTarget: false,
-      content: $table,
+      content: $tableContainer,
       dark: true,
       flyoutOffset: {
         left: (boundingClientRect.left + MARGINS.LEFT + flyoutXOffset + halfBandWidth + translateXOffset),
@@ -1536,68 +1559,70 @@ function SvgTimelineChart($element, vif, options) {
     );
   }
 
-  function showFlyout(flyoutData) {
+  function showFlyout({ data, dimensionIndex, endDate, startDate, xOffset }) {
     let title;
 
-    if (_.isNil(flyoutData.endDate)) {
+    if (_.isNil(endDate)) {
 
       const dimensionColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-      const value = flyoutData.startDate.toISOString();
-      title = formatValueHTML(value, dimensionColumn, dataToRender);
+      const value = startDate.toISOString();
+      title = formatValueHTML(value, dimensionColumn, timelineDataToRender);
 
     } else if (allSeriesAreLineVariant()) {
 
-      title = formatDateForFlyout(flyoutData.startDate);
+      title = formatDateForFlyout(startDate);
 
     } else {
 
-      const formattedStartDate = formatDateForFlyout(flyoutData.startDate);
-      const formattedEndDate = formatDateForFlyout(flyoutData.endDate);
+      const formattedStartDate = formatDateForFlyout(startDate);
+      const formattedEndDate = formatDateForFlyout(endDate);
       title = `${formattedStartDate} to ${formattedEndDate}`;
     }
 
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append($('<td>', { 'colspan': 2 }).text(title ? title : ''));
 
     const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($title);
+      append($titleRow);
 
-    const $labelValueRows = flyoutData.data.
-      map((datum, seriesIndex) => {
-        const measure = dataToRenderBySeries[seriesIndex].measure;
-        const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
-        const label = labelMatcher.test(datum.label) ? '' : datum.label;
+    const $tableContainer = $('<div>').
+      append($table);
 
-        const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
-          text(label).
-          css('color', measure.getColor());
+    const $labelValueRows = data.map((datum, seriesIndex) => {
+      const measure = dataToRenderBySeries[seriesIndex].measure;
+      const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
+      const label = labelMatcher.test(datum.label) ? '' : datum.label;
 
-        let datumValueString;
+      const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
+        text(label).
+        css('color', measure.getColor());
 
-        if (datum.value === null) {
-          datumValueString = I18n.t('shared.visualizations.charts.common.no_value');
-        } else {
-          const datumValueUnit = (datum.value === 1) ?
-            self.getUnitOneBySeriesIndex(seriesIndex) :
-            self.getUnitOtherBySeriesIndex(seriesIndex);
+      let datumValueString;
 
-          datumValueString = `${datum.value} ${datumValueUnit}`;
-        }
+      if (datum.value === null) {
+        datumValueString = I18n.t('shared.visualizations.charts.common.no_value');
+      } else {
+        const datumValueUnit = (datum.value === 1) ?
+          self.getUnitOneBySeriesIndex(seriesIndex) :
+          self.getUnitOtherBySeriesIndex(seriesIndex);
 
-        const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
-          text(datumValueString);
+        datumValueString = `${datum.value} ${datumValueUnit}`;
+      }
 
-        return $('<tr>', { 'class': 'socrata-flyout-row' }).
-          append([
-            $labelCell,
-            $valueCell
-          ]);
-      });
+      const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
+        text(datumValueString);
+
+      return $('<tr>', { 'class': 'socrata-flyout-row' }).
+        append([
+          $labelCell,
+          $valueCell
+        ]);
+    });
 
     // Note: d3.max will return undefined if passed an array of non-numbers
     // (such as when we try to show a flyout for a null value).
     const maxFlyoutValue = d3.max(
-      flyoutData.data.map((datum) => datum.value)
+      data.map((datum) => datum.value)
     );
 
     let maxFlyoutValueOffset;
@@ -1625,6 +1650,19 @@ function SvgTimelineChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Positioning
     if (_.isNumber(maxFlyoutValue)) {
       maxFlyoutValueOffset = d3YScale(maxFlyoutValue);
     } else if (minYValue <= 0 && maxYValue >= 0) {
@@ -1640,15 +1678,16 @@ function SvgTimelineChart($element, vif, options) {
       find('.timeline-chart')[0].
       getBoundingClientRect();
 
+    // Payload
     const payload = {
-      content: $table,
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       flyoutOffset: {
         left: (
           boundingClientRect.left +
           MARGINS.LEFT +
-          flyoutData.xOffset +
+          xOffset +
           1
         ),
         top: (
@@ -1672,11 +1711,6 @@ function SvgTimelineChart($element, vif, options) {
       'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT',
       null
     );
-  }
-
-  function getSeriesIndexByMeasureIndex(measureIndex) {
-    const columnName = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-    return _.isEmpty(columnName) ? measureIndex : 0;
   }
 
   function getIncrementedDateByPrecision(date, precision) {
@@ -1755,7 +1789,7 @@ function SvgTimelineChart($element, vif, options) {
           label = noValueLabel;
         } else {
           const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-          label = formatValuePlainText(d, column, dataToRender);
+          label = formatValuePlainText(d, column, timelineDataToRender);
         }
 
         return conditionallyTruncateLabel(label);
@@ -1774,13 +1808,13 @@ function SvgTimelineChart($element, vif, options) {
   function generateYAxis(yScale) {
     const vif = self.getVif();
     const column = _.get(vif, 'series[0].dataSource.measure.columnName');
-    const renderType = _.get(dataToRender, `columnFormats.${column}.renderTypeName`);
+    const renderType = _.get(timelineDataToRender, `columnFormats.${column}.renderTypeName`);
 
     let formatter;
     if (renderType === 'money') {
-      formatter = createMoneyFormatter(column, dataToRender);
+      formatter = createMoneyFormatter(column, timelineDataToRender);
     } else {
-      formatter = (d) => formatValueHTML(d, column, dataToRender, true);
+      formatter = (d) => formatValueHTML(d, column, timelineDataToRender, true);
     }
 
     return d3.svg.axis().

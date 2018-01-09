@@ -10,16 +10,28 @@ const I18n = require('common/i18n').default;
 
 // Constants
 import {
+  AXIS_DEFAULT_COLOR,
+  AXIS_GRID_COLOR,
   AXIS_LABEL_MARGIN,
+  AXIS_TICK_COLOR,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DIMENSION_LABELS_FONT_COLOR,
+  DIMENSION_LABELS_FONT_SIZE,
   ERROR_BARS_DEFAULT_BAR_COLOR,
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
+  FONT_STACK,
   LEGEND_BAR_HEIGHT,
+  MEASURE_LABELS_FONT_COLOR,
+  MEASURE_LABELS_FONT_SIZE,
+  NO_VALUE_SENTINEL,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
-  REFERENCE_LINES_UNDERLAY_THICKNESS
-} from './SvgStyleConstants';
+  REFERENCE_LINES_UNDERLAY_THICKNESS,
+  SERIES_TYPE_BAR_CHART,
+  SERIES_TYPE_FLYOUT,
+  SMALL_VIEWPORT_WIDTH
+} from './SvgConstants';
 
 import { getMeasures } from '../helpers/measure';
 
@@ -32,31 +44,21 @@ const MARGINS = {
   BOTTOM: 0,
   LEFT: 32
 };
-const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+
+const DEFAULT_DESKTOP_BAR_HEIGHT = 14;
+const DEFAULT_MOBILE_BAR_HEIGHT = 50;
 const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
-const DIMENSION_LABELS_ROTATION_ANGLE = 0;
-const DIMENSION_LABELS_FONT_SIZE = 14;
-const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 11; // Empirically determined to work well enough.
-const MEASURE_LABELS_FONT_SIZE = 14;
-const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
+/* eslint-disable no-unused-vars */
+const MAX_BAR_COUNT_WITHOUT_PAN = 50;
+/* eslint-enable no-unused-vars */
 const MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH = 50;
 const MEASURE_VALUE_TEXT_INSIDE_BAR_COLOR = '#f8f8f8';
 const MEASURE_VALUE_TEXT_OUTSIDE_BAR_COLOR = '#5e5e5e';
 const MEASURE_VALUE_TEXT_X_PADDING = 3;
 const MEASURE_VALUE_TEXT_Y_PADDING = 3;
-const DEFAULT_DESKTOP_BAR_HEIGHT = 14;
-const DEFAULT_MOBILE_BAR_HEIGHT = 50;
-/* eslint-disable no-unused-vars */
-const MAX_BAR_COUNT_WITHOUT_PAN = 50;
-/* eslint-enable no-unused-vars */
-const AXIS_DEFAULT_COLOR = '#979797';
-const AXIS_TICK_COLOR = '#adadad';
-const AXIS_GRID_COLOR = '#f1f1f1';
-const NO_VALUE_SENTINEL = '__NO_VALUE__';
 // Limits width of dimension chart labels.
 const MIN_WIDTH_RESERVED_FOR_CHART = 25;
-const SMALL_VIEWPORT_WIDTH = 400;
 
 function SvgBarChart($element, vif, options) {
   // These constants need to be defined inside the function
@@ -66,11 +68,14 @@ function SvgBarChart($element, vif, options) {
   const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
   const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
+
   let $chartElement;
+  let barDataToRender;
   let dataToRender;
   let d3DimensionYScale;
   let d3GroupingYScale;
   let d3XScale;
+  let flyoutDataToRender;
   let lastRenderedSeriesHeight = 0;
   let lastRenderedZoomTranslate = 0;
   let measures;
@@ -121,6 +126,13 @@ function SvgBarChart($element, vif, options) {
 
     if (newData) {
       dataToRender = newData;
+      self.addSeriesIndices(dataToRender);
+
+      barDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_BAR_CHART);
+
+      if (!self.isGrouping()) {
+        flyoutDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
+      }
     }
 
     if (newColumns) {
@@ -134,7 +146,7 @@ function SvgBarChart($element, vif, options) {
 
   this.invalidateSize = function() {
 
-    if ($chartElement && dataToRender) {
+    if ($chartElement && barDataToRender) {
       renderData();
     }
   };
@@ -244,8 +256,8 @@ function SvgBarChart($element, vif, options) {
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
     const d3ClipPathId = `bar-chart-clip-path-${_.uniqueId()}`;
-    const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
-    const dimensionValues = dataToRender.rows.map(
+    const dataTableDimensionIndex = barDataToRender.columns.indexOf('dimension');
+    const dimensionValues = barDataToRender.rows.map(
       (row) => row[dataTableDimensionIndex]
     );
 
@@ -404,8 +416,7 @@ function SvgBarChart($element, vif, options) {
         attr('font-size', `${DIMENSION_LABELS_FONT_SIZE}px`).
         attr('fill', DIMENSION_LABELS_FONT_COLOR).
         attr('stroke', 'none').
-        attr('style', 'text-anchor: end').
-        attr('transform', `rotate(${DIMENSION_LABELS_ROTATION_ANGLE})`);
+        attr('style', 'text-anchor: end');
 
       let baselineValue = 0;
 
@@ -474,7 +485,7 @@ function SvgBarChart($element, vif, options) {
     }
 
     function renderErrorBars() {
-      if (_.isUndefined(dataToRender.errorBars)) {
+      if (_.isUndefined(barDataToRender.errorBars)) {
         return;
       }
 
@@ -483,24 +494,24 @@ function SvgBarChart($element, vif, options) {
       const color = _.get(self.getVif(), 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR);
 
       const getMinErrorBarXPosition = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = barDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const minValue = _.clamp(d3.min(errorBarValues), minXValue, maxXValue);
         return d3XScale(minValue);
       };
 
       const getMaxErrorBarXPosition = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = barDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const maxValue = _.clamp(d3.max(errorBarValues), minXValue, maxXValue);
         return d3XScale(maxValue);
       };
 
       const getMinErrorBarWidth = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = barDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         return self.isInRange(d3.min(errorBarValues), minXValue, maxXValue) ? ERROR_BARS_STROKE_WIDTH : 0;
       };
 
       const getMaxErrorBarWidth = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = barDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         return self.isInRange(d3.max(errorBarValues), minXValue, maxXValue) ? ERROR_BARS_STROKE_WIDTH : 0;
       };
 
@@ -621,7 +632,7 @@ function SvgBarChart($element, vif, options) {
           attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0));
       }
 
-      if (self.getShowValueLabels() && !isStacked && _.isUndefined(dataToRender.errorBars)) {
+      if (self.getShowValueLabels() && !isStacked && _.isUndefined(barDataToRender.errorBars)) {
 
         dimensionGroupSvgs.selectAll('text').
           attr(
@@ -830,7 +841,7 @@ function SvgBarChart($element, vif, options) {
             } else if (d === otherLabel) {
               return otherLabel;
             } else if (_.isNumber(d)) {
-              return ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+              return ColumnFormattingHelpers.formatValueHTML(d, column, barDataToRender, true);
             } else {
               return '';
             }
@@ -914,7 +925,15 @@ function SvgBarChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measures, referenceLines });
+        const nonFlyoutMeasures = _.filter(measures, (measure) => {
+          return _.get(measure, 'palette.series.type') !== SERIES_TYPE_FLYOUT;
+        });
+
+        const legendItems = self.getLegendItems({
+          dataTableDimensionIndex,
+          measures: nonFlyoutMeasures,
+          referenceLines
+        });
 
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
@@ -942,9 +961,9 @@ function SvgBarChart($element, vif, options) {
     const isStacked = self.isStacked();
     const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
 
-    groupedDataToRender = dataToRender.rows;
+    groupedDataToRender = barDataToRender.rows;
     numberOfGroups = groupedDataToRender.length;
-    numberOfItemsPerGroup = isStacked ? 1 : dataToRender.rows[0].length - 1;
+    numberOfItemsPerGroup = isStacked ? 1 : barDataToRender.rows[0].length - 1;
 
     // TODO: Figure out how we want to handle scaling modes.
     // // Compute height based on the x-axis scaling mode.
@@ -1029,8 +1048,8 @@ function SvgBarChart($element, vif, options) {
 
       } else {
 
-        const dataMinXValue = getMinXValue(dataToRender, dataTableDimensionIndex, referenceLines);
-        const dataMaxXValue = getMaxXValue(dataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMinXValue = getMinXValue(barDataToRender, dataTableDimensionIndex, referenceLines);
+        const dataMaxXValue = getMaxXValue(barDataToRender, dataTableDimensionIndex, referenceLines);
 
         minXValue = measureAxisMinValue || Math.min(dataMinXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
@@ -1075,12 +1094,12 @@ function SvgBarChart($element, vif, options) {
     d3DimensionYScale = generateYScale(
       dimensionValues,
       height,
-      self.isGroupingOrMultiSeries()
+      self.isGroupingOrHasMultipleNonFlyoutSeries()
     );
 
     // This scale is used for groupings of bars under a single dimension category.
     d3GroupingYScale = generateYGroupScale(
-      _.range(0, measures.length),
+      _.range(0, barDataToRender.columns.length - 1),
       d3DimensionYScale);
 
     d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
@@ -1187,7 +1206,7 @@ function SvgBarChart($element, vif, options) {
           } else {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-            return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
+            return ColumnFormattingHelpers.formatValueHTML(value, column, barDataToRender);
           }
 
         }).
@@ -1214,7 +1233,7 @@ function SvgBarChart($element, vif, options) {
             } else {
               const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
               const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, barDataToRender);
             }
           }
         ).
@@ -1245,7 +1264,7 @@ function SvgBarChart($element, vif, options) {
           } else {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-            return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
+            return ColumnFormattingHelpers.formatValueHTML(value, column, barDataToRender);
           }
         }
       ).
@@ -1270,7 +1289,7 @@ function SvgBarChart($element, vif, options) {
       append('rect').
       attr('class', 'reference-line-underlay');
 
-    if (!_.isUndefined(dataToRender.errorBars)) {
+    if (!_.isUndefined(barDataToRender.errorBars)) {
       dimensionGroupSvgs.selectAll('line.error-bar-left').
         data((d) => d.slice(1)).
         enter().
@@ -1308,7 +1327,7 @@ function SvgBarChart($element, vif, options) {
             if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, barDataToRender);
             }
           }
         ).
@@ -1389,16 +1408,13 @@ function SvgBarChart($element, vif, options) {
           function() {
 
             if (!isCurrentlyPanning()) {
-              const measureIndex = parseInt(
-                this.getAttribute('data-measure-index'),
-                10
-              );
+              const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
+              const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
+
               const dimensionGroup = this.parentNode;
               const siblingBar = d3.select(dimensionGroup).select(
                 `rect.bar[data-measure-index="${measureIndex}"]`
               )[0][0];
-
-              const measure = measures[measureIndex];
 
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
@@ -1408,7 +1424,7 @@ function SvgBarChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showBarHighlight(siblingBar);
-              showBarFlyout(siblingBar, { measure, value });
+              showBarFlyout(siblingBar, { measureIndex, dimensionIndex, value });
             }
           }
         ).
@@ -1433,11 +1449,8 @@ function SvgBarChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const measureIndex = parseInt(
-              this.getAttribute('data-measure-index'),
-              10
-            );
-            const measure = measures[measureIndex];
+            const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
+            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1448,16 +1461,14 @@ function SvgBarChart($element, vif, options) {
             const percent = parseFloat(this.getAttribute('data-percent'));
 
             showBarHighlight(this);
-            showBarFlyout(this, { measure, value, percent });
+            showBarFlyout(this, { measureIndex, dimensionIndex, value });
           }
         }
       ).
       on(
         'mouseleave',
         () => {
-
           if (!isCurrentlyPanning()) {
-
             hideHighlight();
             hideFlyout();
           }
@@ -1498,16 +1509,13 @@ function SvgBarChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const measureIndex = parseInt(
-              this.getAttribute('data-measure-index'),
-              10
-            );
+            const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
+            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
+
             const dimensionGroup = this.parentNode;
             const siblingBar = d3.select(dimensionGroup).select(
               `rect.bar[data-measure-index="${measureIndex}"]`
             )[0][0];
-
-            const measure = measures[measureIndex];
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1518,7 +1526,7 @@ function SvgBarChart($element, vif, options) {
             const percent = parseFloat(this.getAttribute('data-percent'));
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, { measure, value, percent });
+            showBarFlyout(siblingBar, { measureIndex, dimensionIndex, value });
           }
         }
       ).
@@ -1550,7 +1558,7 @@ function SvgBarChart($element, vif, options) {
               } else {
                 const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
                 const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-                dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, dataToRender);
+                dimensionValue = ColumnFormattingHelpers.formatValueHTML(datum[0], column, barDataToRender);
               }
 
               // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
@@ -1562,18 +1570,18 @@ function SvgBarChart($element, vif, options) {
               // Don't use a strict equality comparison in the filter as getAttribute returns a string and
               // dimensionValue may not be a string.
               //
-              const dimensionGroup = d3.select(
+              const groupElement = d3.select(
                 _(yAxisAndSeriesSvg.node().querySelectorAll('g.dimension-group[data-dimension-value-html]')).
                   filter((group) => group.getAttribute('data-dimension-value-html') == dimensionValue).
                   first()
               );
 
-              if (dimensionGroup.empty()) {
+              if (groupElement.empty()) {
                 return;
               }
 
               const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
-              showGroupFlyout(seriesElement, dimensionGroup, dimensionValues, positions);
+              showGroupFlyout({ seriesElement, groupElement, dimensionValues, positions });
             }
           }
         ).
@@ -1632,10 +1640,8 @@ function SvgBarChart($element, vif, options) {
     });
   }
 
-  function generateYScale(domain, height, isMultiSeries) {
-    const padding = (isMultiSeries) ?
-      0.3 :
-      0.1;
+  function generateYScale(domain, height, hasMultipleNonFlyoutSeries) {
+    const padding = hasMultipleNonFlyoutSeries ? 0.3 : 0.1;
 
     return d3.scale.ordinal().
       domain(domain).
@@ -1702,7 +1708,7 @@ function SvgBarChart($element, vif, options) {
         } else {
           const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
             // NOTE: We must use plain text; our axes are SVG (not HTML).
-          label = ColumnFormattingHelpers.formatValuePlainText(d, column, dataToRender, true);
+          label = ColumnFormattingHelpers.formatValuePlainText(d, column, barDataToRender, true);
         }
 
         return conditionallyTruncateLabel(label);
@@ -1832,12 +1838,12 @@ function SvgBarChart($element, vif, options) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-      const renderType = _.get(dataToRender, `columnFormats.${column}.renderTypeName`);
+      const renderType = _.get(barDataToRender, `columnFormats.${column}.renderTypeName`);
 
       if (renderType === 'money') {
-        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, dataToRender);
+        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, barDataToRender);
       } else {
-        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, dataToRender, true);
+        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, barDataToRender, true);
       }
     }
 
@@ -1909,17 +1915,21 @@ function SvgBarChart($element, vif, options) {
     });
   }
 
-  function showGroupFlyout(seriesElement, groupElement, dimensionValues, positions) {
+  function showGroupFlyout({ seriesElement, groupElement, dimensionValues, positions }) {
+    // Group measures
     const titleHTML = groupElement.attr('data-dimension-value-html');
-
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
         $('<td>', { 'colspan': 2 }).html(
           (titleHTML === NO_VALUE_SENTINEL) ? noValueLabel : titleHTML
         )
       );
     const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($title);
+      append($titleRow);
+
+    const $tableContainer = $('<div>').
+      append($table);
+
     const dimensionValue = groupElement.data()[0][0];
     const dimensionIndex = dimensionValues.indexOf(dimensionValue);
     const measureValues = groupElement.data()[0].slice(1);
@@ -1929,39 +1939,24 @@ function SvgBarChart($element, vif, options) {
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
     $labelValueRows = measureValues.map((value, measureIndex) => {
+      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const measure = measures[measureIndex];
       const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         html(measure.labelHtml).
         css('color', measure.getColor());
       const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
-      const unitOne = self.getUnitOneBySeriesIndex(
-        getSeriesIndexByMeasureIndex(measureIndex)
-      );
-      const unitOther = self.getUnitOtherBySeriesIndex(
-        getSeriesIndexByMeasureIndex(measureIndex)
-      );
-
-      let valueHTML;
-
-      if (value === null) {
-        valueHTML = noValueLabel;
-      } else {
-        const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
-        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
-
-        if (value === 1) {
-          valueHTML += ` ${_.escape(unitOne)}`;
-        } else {
-          valueHTML += ` ${_.escape(unitOther)}`;
-        }
-      }
+      const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
+      const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
 
       const percent = parseFloat(positions[dimensionIndex][measureIndex].percent);
-      const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
-      const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
+      const valueHTML = self.getValueHtml({
+        dataToRender,
+        seriesIndex,
+        value,
+        percent
+      });
 
-      $valueCell.html(`${valueHTML} ${percentAsString}`);
+      $valueCell.html(valueHTML);
 
       return $('<tr>', { 'class': 'socrata-flyout-row' }).
         append([
@@ -1972,8 +1967,21 @@ function SvgBarChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Payload
     const payload = {
-      content: $table,
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       dark: true
@@ -2013,42 +2021,37 @@ function SvgBarChart($element, vif, options) {
     );
   }
 
-  function showBarFlyout(barElement, { measure, value, percent }) {
-    const titleHTML = barElement.getAttribute('data-dimension-value-html') || noValueLabel;
+  function showBarFlyout(barElement, { measureIndex, dimensionIndex, value, percent }) {
+    // Bar measure
+    const measure = measures[measureIndex];
+    const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
 
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    const titleHTML = barElement.getAttribute('data-dimension-value-html') || noValueLabel;
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
         $('<td>', { 'colspan': 2 }).html(
           (titleHTML) ? titleHTML : ''
         )
       );
+
     const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
       html(measure.labelHtml).
       css('color', measure.getColor());
+
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
     const $table = $('<table>', { 'class': 'socrata-flyout-table' });
+    const $tableContainer = $('<div>').
+      append($table);
 
-    let valueHTML;
+    const valueHTML = self.getValueHtml({
+      dataToRender,
+      seriesIndex,
+      value,
+      percent
+    });
 
-    if (value === null) {
-      valueHTML = noValueLabel;
-    } else {
-      const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
-
-      if (value === 1) {
-        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
-      } else {
-        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
-      }
-    }
-
-    const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
-    const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
-
-    $valueCell.html(`${valueHTML} ${percentAsString}`);
+    $valueCell.html(valueHTML);
 
     $valueRow.append([
       $labelCell,
@@ -2056,13 +2059,26 @@ function SvgBarChart($element, vif, options) {
     ]);
 
     $table.append([
-      $title,
+      $titleRow,
       $valueRow
     ]);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Payload
     const payload = {
       element: barElement,
-      content: $table,
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       dark: true

@@ -10,13 +10,22 @@ const I18n = require('common/i18n').default;
 // that have been observed 'in the wild'. They may need to be adjusted slightly
 // in the future, but the adjustments will likely be small in scale.
 import {
+  AXIS_DEFAULT_COLOR,
+  AXIS_GRID_COLOR,
   AXIS_LABEL_MARGIN,
+  AXIS_TICK_COLOR,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DIMENSION_LABEL_FONT_COLOR,
+  DIMENSION_LABEL_FONT_SIZE,
+  FONT_STACK,
+  MEASURE_LABELS_FONT_COLOR,
+  MEASURE_LABELS_FONT_SIZE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
-  LEGEND_BAR_HEIGHT
-} from './SvgStyleConstants';
+  LEGEND_BAR_HEIGHT,
+  SMALL_VIEWPORT_WIDTH
+} from './SvgConstants';
 
 import { getMeasures } from '../helpers/measure';
 
@@ -30,16 +39,7 @@ const CHART_PADDING = {
   RIGHT: 16
 };
 const COLUMN_MARGIN = 1;
-const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const DIMENSION_LABEL_FONT_SIZE = 14;
-const DIMENSION_LABEL_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_HEIGHT = 30;
-const MEASURE_LABEL_FONT_SIZE = 14;
-const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
-const AXIS_DEFAULT_COLOR = '#979797';
-const AXIS_TICK_COLOR = '#adadad';
-const AXIS_GRID_COLOR = '#f1f1f1';
-const SMALL_VIEWPORT_WIDTH = 440; // Not including margins, y-axis, or padding.
 const MIN_TICK_WIDTH = 80; // Rough minimum size for a tick label to avoid overlap.
 
 // Just a safeguard; the data fetching code should never make a huge # of buckets.
@@ -60,7 +60,7 @@ function bindStyles() {
         font-family: ${FONT_STACK};
       }
       .histogram .y.axis text {
-        font-size: ${MEASURE_LABEL_FONT_SIZE};
+        font-size: ${MEASURE_LABELS_FONT_SIZE};
       }
       .histogram .x.axis text {
         font-size: ${DIMENSION_LABEL_FONT_SIZE};
@@ -386,8 +386,8 @@ function SvgHistogram($element, vif, options) {
 
       yAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
-        attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
-        attr('fill', MEASURE_LABEL_FONT_COLOR).
+        attr('font-size', MEASURE_LABELS_FONT_SIZE + 'px').
+        attr('fill', MEASURE_LABELS_FONT_COLOR).
         attr('stroke', 'none');
 
       yGridSvg.
@@ -967,7 +967,7 @@ function SvgHistogram($element, vif, options) {
     var value = datum.value;
     var valueHTML;
     var payload = null;
-    var $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    var $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
         $('<td>', { 'colspan': 2 }).
           html(
@@ -1006,7 +1006,7 @@ function SvgHistogram($element, vif, options) {
     ]);
 
     $table.append([
-      $title,
+      $titleRow,
       $valueRow
     ]);
 

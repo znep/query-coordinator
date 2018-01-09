@@ -432,7 +432,7 @@ describe('SvgBarChart', () => {
         }
       });
       barChart.chart.render(null, multiSeriesTestData);
-      assert.isTrue(barChart.chart.isMultiSeries());
+      assert.isTrue(barChart.chart.hasMultipleNonFlyoutSeries());
       const $bars = barChart.element.find('.dimension-group:first > .bar');
       assert.equal($bars.length, 3);
     });

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {
   DEFAULT_PRIMARY_COLOR,
   COLOR_PALETTES
-} from '../../views/SvgStyleConstants';
+} from '../../views/SvgConstants';
 
 // Palettes have a fallback behavior for when:
 //   * No custom color is specified for a given item.

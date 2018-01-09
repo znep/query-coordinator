@@ -17,6 +17,13 @@ export default function histogram(state, action) {
       state = vifs().histogram;
       break;
 
+    case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_COLUMN:
+      if (!action.isFlyoutSeries && (action.relativeIndex == 0)) {
+        return baseVifReducer(state, action);
+      }
+      break;
+
     case actions.APPEND_REFERENCE_LINE:
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_REFERENCE_LINE:
@@ -27,8 +34,6 @@ export default function histogram(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_LABEL_BOTTOM:
     case actions.SET_LABEL_LEFT:
-    case actions.SET_MEASURE:
-    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
     case actions.SET_PRIMARY_COLOR:

@@ -274,8 +274,6 @@ export const TIMELINE_PRECISION = [
   }
 ];
 
-export const COMBO_CHART_COLUMN = 'comboChart.column';
-export const COMBO_CHART_LINE = 'comboChart.line';
 export const DEFAULT_PRIMARY_COLOR = '#71abd9';
 export const DEFAULT_SECONDARY_COLOR = '#71abd9';
 
@@ -286,3 +284,16 @@ export const DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY = {
 
 export const ERROR_BARS_DEFAULT_BAR_COLOR = '#767676';
 export const REFERENCE_LINES_DEFAULT_LINE_COLOR = '#767676';
+
+export const SERIES_TYPE_COMBO_CHART = 'comboChart';
+export const SERIES_TYPE_COMBO_CHART_COLUMN = 'comboChart.column';
+export const SERIES_TYPE_COMBO_CHART_LINE = 'comboChart.line';
+export const SERIES_TYPE_FLYOUT = 'flyout';
+export const SERIES_TYPE_PIE_CHART = 'pieChart';
+
+// Series variants really only apply to comboChart at present.  For example,
+// a comboChart series type can be "comboChart.column" or "comboChart.line".
+// The series variant is the "column" or "line" part.  The variant tells the
+// visualization to render a series of columns or lines.
+export const SERIES_VARIANT_COLUMN = 'column';
+export const SERIES_VARIANT_LINE = 'line';

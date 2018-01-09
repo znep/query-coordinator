@@ -84,14 +84,39 @@ describe('AuthoringWorkflow reducer', () => {
         });
       }
 
+      function shouldSetVifWithObject(actionName, params, value, vifPath, vifTypes) {
+        it(`sets ${vifPath} to ${value} using ${actionName} for ${vifTypes}`, () => {
+          const action = actions[actionName](params);
+          const newState = reducer(getTestState(), action);
+
+          forAllVifs(newState, (vif, type) => {
+            if (_.includes(vifTypes, type)) {
+              const newValue = _.get(vif, vifPath);
+              assert.equal(newValue, value);
+            }
+          });
+        });
+      }
+
       shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'regionMap', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
       shouldSetVif('setDescription', 'Description', 'description', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
       shouldSetVif('setViewSourceDataLink', true, 'configuration.viewSourceDataLink', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
 
       shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart']);
 
-      shouldSetVif('setMeasure', [0, 'anything'], 'series[0].dataSource.measure.columnName', ['regionMap', 'columnChart', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setMeasureAggregation', [0, 'count'], 'series[0].dataSource.measure.aggregationFunction', null);
+      shouldSetVifWithObject(
+        'setMeasureColumn',
+        { columnName: 'anything', isFlyoutSeries: false, relativeIndex: 0 },
+        'anything',
+        'series[0].dataSource.measure.columnName',
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
+
+      shouldSetVifWithObject(
+        'setMeasureAggregation',
+        { aggregationFunction: 'count', isFlyoutSeries: false, relativeIndex: 0 },
+        'count',
+        'series[0].dataSource.measure.aggregationFunction',
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
 
       shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap', 'map']);
       shouldSetVif('setSecondaryColor', [0, '#00F'], 'series[0].color.secondary', ['columnChart', 'histogram']);
@@ -232,11 +257,94 @@ describe('AuthoringWorkflow reducer', () => {
         });
 
         it('should set the primary color the first color in the "categorical" color palette', () => {
-          const newState = reducer(state, actions.appendSeries({ isInitialLoad: false }));
+          const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesIndex: 1 }));
           assert.equal(
             newState.vifAuthoring.vifs.columnChart.series[0].color.primary,
             COLOR_PALETTE_VALUES.categorical[0]
           );
+        });
+      });
+
+      describe('when a new flyout series is appended', () => {
+        let state;
+
+        beforeEach(() => {
+          state = getDefaultState();
+        });
+
+        it('should set the color palette to "categorical"', () => {
+          const newState = reducer(state, actions.appendSeries({ isFlyoutSeries: true, isInitialLoad: false }));
+          assert.equal(newState.vifAuthoring.vifs.columnChart.series.length, 2);
+          assert.equal(newState.vifAuthoring.vifs.columnChart.series[1].type, 'flyout');
+        });
+      });
+
+      describe('when a flyout series is removed', () => {
+        let state;
+
+        beforeEach(() => {
+          state = reducer(
+            getDefaultState(),
+            actions.appendSeries({ isFlyoutSeries: true, isInitialLoad: false })
+          );
+        });
+
+        it('should remove the flyout series', () => {
+
+          assert.equal(state.vifAuthoring.vifs.columnChart.series.length, 2);
+          assert.equal(state.vifAuthoring.vifs.columnChart.series[1].type, 'flyout');
+
+          const newState = reducer(state, actions.removeSeries({ isFlyoutSeries: true, relativeIndex: 0 }));
+          assert.equal(newState.vifAuthoring.vifs.columnChart.series.length, 1);
+          assert.equal(newState.vifAuthoring.vifs.columnChart.series[0].type, 'columnChart');
+        });
+      });
+
+      describe('when called setFlyoutMeasureColumn', () => {
+        let state;
+
+        beforeEach(() => {
+          state = reducer(
+            getDefaultState(),
+            actions.appendSeries({ isFlyoutSeries: true, isInitialLoad: false })
+          );
+        });
+
+        it('should set the flyout column name', () => {
+          // Flyouts are at the end of the series list, so the first flyout series is at
+          // seriesIndex 1 (and flyout relative series index 0).
+          const newState = reducer(state, actions.setMeasureColumn({
+            isFlyoutSeries: true,
+            relativeIndex: 0,
+            columnName: 'NEW_COLUMN_NAME'
+          }));
+
+          const columnName = _.get(newState, 'vifAuthoring.vifs.columnChart.series[1].dataSource.measure.columnName');
+          assert.equal(columnName, 'NEW_COLUMN_NAME');
+        });
+      });
+
+      describe('when called setFlyoutMeasureAggregation', () => {
+        let state;
+
+        beforeEach(() => {
+          state = reducer(
+            getDefaultState(),
+            actions.appendSeries({ isFlyoutSeries: true, isInitialLoad: false })
+          );
+        });
+
+        it('should set the flyout column name', () => {
+          // Flyouts are at the end of the series list, so the first flyout series is at
+          // seriesIndex 1 (and flyout relative series index 0).
+          const newState = reducer(state, actions.setMeasureAggregation({
+            aggregationFunction: 'SUM',
+            isFlyoutSeries: true,
+            relativeIndex: 0
+          }));
+
+          const aggregationFunction = _.get(newState, 'vifAuthoring.vifs.columnChart.series[1].dataSource.measure.aggregationFunction');
+          assert.equal(aggregationFunction, 'SUM');
         });
       });
 
@@ -251,12 +359,12 @@ describe('AuthoringWorkflow reducer', () => {
         });
 
         it('should reset the color palette to undefined', () => {
-          const newState = reducer(state, actions.removeSeries(0));
+          const newState = reducer(state, actions.removeSeries({ isFlyoutSeries: false, relativeIndex: 0 }));
           assert.isUndefined(newState.vifAuthoring.vifs.columnChart.series[0].color.palette);
         });
 
         it('should reset the primary color to the DEFAULT_PRIMARY_COLOR', () => {
-          const newState = reducer(state, actions.removeSeries(0));
+          const newState = reducer(state, actions.removeSeries({ isFlyoutSeries: false, relativeIndex: 0 }));
           assert.equal(
             newState.vifAuthoring.vifs.columnChart.series[0].color.primary,
             DEFAULT_PRIMARY_COLOR

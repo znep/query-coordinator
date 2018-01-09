@@ -26,7 +26,7 @@ function render(type, props) {
   };
 }
 
-describe('LegendsAndFlyoutsPane', function() {
+describe('LegendsAndFlyoutsPane', () => {
   var component;
   var props;
 
@@ -39,7 +39,7 @@ describe('LegendsAndFlyoutsPane', function() {
   });
 
   function emitsEvent(id, eventName, eventType) {
-    it(`should emit an ${eventName} event`, function(done) {
+    it(`should emit an ${eventName} event`, (done) => {
       TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
 
       setTimeout(() => {
@@ -50,59 +50,60 @@ describe('LegendsAndFlyoutsPane', function() {
   }
 
   function rendersEditableUnits() {
-    it('renders a units one input', function() {
+    it('renders a units one input', () => {
       assert.isNotNull(component.querySelector('#units-one-0'));
     });
 
-    it('renders a units other input', function() {
+    it('renders a units other input', () => {
       assert.isNotNull(component.querySelector('#units-other-0'));
     });
   }
 
   function emitsEventsForUnits() {
-    describe('when changing the units for one', function() {
+    describe('when changing the units for one', () => {
       emitsEvent('#units-one-0', 'onChangeUnitOne');
     });
 
-    describe('when changing the units for other', function() {
+    describe('when changing the units for other', () => {
       emitsEvent('#units-other-0', 'onChangeUnitOther');
     });
   }
 
-  describe('without a visualization type', function() {
-    beforeEach(function() {
+  describe('without a visualization type', () => {
+    beforeEach(() => {
       var renderedParts = render(null);
 
       component = renderedParts.component;
       props = renderedParts.props;
     });
 
-    describe('rendering', function() {
-      it('renders an empty pane info message', function() {
+    describe('rendering', () => {
+      it('renders an empty pane info message', () => {
         assert.isNotNull(component.querySelector('.authoring-empty-pane'));
       });
     });
   });
 
-  describe('regionMap', function() {
-    beforeEach(function() {
+  describe('regionMap', () => {
+    beforeEach(() => {
       var renderedParts = render('regionMap');
 
       component = renderedParts.component;
       props = renderedParts.props;
     });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
     });
   });
 
-  describe('columnChart', function() {
-    var legendsPanel;
+  describe('columnChart', () => {
+    let legendsPanel;
+    let flyoutDetailsPanel;
 
     function renderColumnChartPane(isGrouping) {
       props = {};
@@ -119,6 +120,7 @@ describe('LegendsAndFlyoutsPane', function() {
       component = renderedParts.component;
       props = renderedParts.props;
       legendsPanel = component.querySelector('[aria-label=Legends]');
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
     }
 
     function renderMultiSeriesColumnChartPane() {
@@ -136,125 +138,171 @@ describe('LegendsAndFlyoutsPane', function() {
         'something'
       );
 
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[0].type',
+        'columnChart'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[1].type',
+        'columnChart'
+      );
+
       var renderedParts = render('columnChart', props);
       component = renderedParts.component;
       props = renderedParts.props;
     }
 
-    beforeEach(function() { renderColumnChartPane(false); });
+    beforeEach(() => { renderColumnChartPane(false); });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
     });
 
-    describe('not grouping', function() {
-      it('does not render the legend pane', function() {
+    describe('not grouping', () => {
+      it('does not render the legend pane', () => {
         renderColumnChartPane(false);
         assert.isNull(legendsPanel);
       });
-    });
 
-    describe('grouping', function() {
-      it('renders the legend pane', function() {
-        renderColumnChartPane(true);
-        assert.isNotNull(legendsPanel);
+      it('renders the flyout details pane', () => {
+        renderColumnChartPane(false);
+        assert.isNotNull(flyoutDetailsPanel);
       });
     });
 
-    describe('multi-series', function() {
-      it('renders multiple units containers', function() {
+    describe('grouping', () => {
+      it('renders the legend pane', () => {
+        renderColumnChartPane(true);
+        assert.isNotNull(legendsPanel);
+      });
+
+      it('does not render the flyout details pane', () => {
+        renderColumnChartPane(true);
+        assert.isNull(flyoutDetailsPanel);
+      });
+    });
+
+    describe('multi-series', () => {
+      it('renders multiple units containers', () => {
         renderMultiSeriesColumnChartPane();
         assert.isNotNull(component.querySelector('#units-container-0'));
         assert.isNotNull(component.querySelector('#units-container-1'));
       });
+
+      it('renders the flyout details pane', () => {
+        renderColumnChartPane(false);
+        assert.isNotNull(flyoutDetailsPanel);
+      });
     });
   });
 
-  describe('histogram', function() {
-    beforeEach(function() {
-      var renderedParts = render('histogram');
+  describe('histogram', () => {
+    let flyoutDetailsPanel;
 
+    beforeEach(() => {
+      let renderedParts = render('histogram');
       component = renderedParts.component;
       props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
     });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
+
+      it('does not render the flyout details pane', () => {
+        assert.isNull(flyoutDetailsPanel);
+      });
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
     });
   });
 
-  describe('featureMap', function() {
-    beforeEach(function() {
-      var renderedParts = render('featureMap');
+  describe('featureMap', () => {
+    let flyoutDetailsPanel;
 
+    beforeEach(() => {
+      let renderedParts = render('featureMap');
       component = renderedParts.component;
       props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
     });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
 
-      it('should render a dropdown with columns', function() {
+      it('should render a dropdown with columns', () => {
         assert.isNotNull(component.querySelector('#flyout-title-column'));
+      });
+
+      it('does not render the flyout details pane', () => {
+        assert.isNull(flyoutDetailsPanel);
       });
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
       emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
     });
   });
 
-  describe('newMap', function() {
-    beforeEach(function() {
+  describe('newMap', () => {
+    beforeEach(() => {
       var renderedParts = render('map');
 
       component = renderedParts.component;
       props = renderedParts.props;
     });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
 
-      it('should render a dropdown with columns', function() {
+      it('should render a dropdown with columns', () => {
         assert.isNotNull(component.querySelector('#flyout-title-column'));
       });
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
       emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
     });
   });
 
-  describe('timelineChart', function() {
+  describe('timelineChart', () => {
+    let flyoutDetailsPanel;
 
-    beforeEach(function() {
-      var renderedParts = render('timelineChart');
+    beforeEach(() => {
+      let renderedParts = render('timelineChart');
       component = renderedParts.component;
       props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
     });
 
-    describe('rendering', function() {
+    describe('rendering', () => {
       rendersEditableUnits();
+
+      it('renders the flyout details pane', () => {
+        assert.isNotNull(flyoutDetailsPanel);
+      });
     });
 
-    describe('events', function() {
+    describe('events', () => {
       emitsEventsForUnits();
     });
   });
 
-  describe('multi-series timelineChart', function() {
+  describe('multi-series timelineChart', () => {
+    let flyoutDetailsPanel;
 
-    beforeEach(function() {
+    beforeEach(() => {
       props = {};
 
       _.set(
@@ -269,15 +317,83 @@ describe('LegendsAndFlyoutsPane', function() {
         'something'
       );
 
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[0].type',
+        'columnChart'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[1].type',
+        'columnChart'
+      );
+
       var renderedParts = render('timelineChart', props);
       component = renderedParts.component;
       props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
     });
 
-    describe('multi-series', function() {
-      it('renders multiple units containers', function() {
+    describe('multi-series', () => {
+      it('renders multiple units containers', () => {
         assert.isNotNull(component.querySelector('#units-container-0'));
         assert.isNotNull(component.querySelector('#units-container-1'));
+      });
+
+      it('renders the flyout details pane', () => {
+        assert.isNotNull(flyoutDetailsPanel);
+      });
+    });
+  });
+
+  describe('barChart', () => {
+    let flyoutDetailsPanel;
+
+    beforeEach(() => {
+      let renderedParts = render('barChart');
+      component = renderedParts.component;
+      props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
+    });
+
+    describe('rendering', () => {
+      it('renders the flyout details pane', () => {
+        assert.isNotNull(flyoutDetailsPanel);
+      });
+    });
+  });
+
+  describe('pieChart', () => {
+    let flyoutDetailsPanel;
+
+    beforeEach(() => {
+      let renderedParts = render('pieChart');
+      component = renderedParts.component;
+      props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
+    });
+
+    describe('rendering', () => {
+      it('renders the flyout details pane', () => {
+        assert.isNotNull(flyoutDetailsPanel);
+      });
+    });
+  });
+
+  describe('comboChart', () => {
+    let flyoutDetailsPanel;
+
+    beforeEach(() => {
+      let renderedParts = render('comboChart');
+      component = renderedParts.component;
+      props = renderedParts.props;
+      flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
+    });
+
+    describe('rendering', () => {
+      it('renders the flyout details pane', () => {
+        assert.isNotNull(flyoutDetailsPanel);
       });
     });
   });

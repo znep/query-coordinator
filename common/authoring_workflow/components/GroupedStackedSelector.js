@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 import I18n from 'common/i18n';
 import {
   hasDimensionGroupingColumnName,
+  hasMultipleNonFlyoutSeries,
   isComboChart,
-  isMultiSeries,
   isOneHundredPercentStacked,
   isStacked
 } from '../selectors/vifAuthoring';
@@ -30,7 +30,7 @@ export class GroupedStackedSelector extends Component {
 
     const stacked = isStacked(vifAuthoring);
     const oneHundredPercentStacked = isOneHundredPercentStacked(vifAuthoring);
-    const disabled = !hasDimensionGroupingColumnName(vifAuthoring) && !isMultiSeries(vifAuthoring);
+    const disabled = !hasDimensionGroupingColumnName(vifAuthoring) && !hasMultipleNonFlyoutSeries(vifAuthoring);
 
     const groupedContainer = this.renderGroupedContainer({ checked: !stacked, disabled });
     const stackedContainer = this.renderStackedContainer({ checked: stacked && !oneHundredPercentStacked, disabled });

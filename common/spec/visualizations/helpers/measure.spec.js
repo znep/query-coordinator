@@ -44,7 +44,8 @@ describe('getMeasures', () => {
     const chart = {
       getVif: () => vif,
       isGrouping: () => false,
-      isMultiSeries: () => true
+      hasMultipleNonFlyoutSeries: () => true,
+      hasFlyoutSeries: () => false
     };
 
     it('maps each measure column to a measure with correct properties', () => {
@@ -77,7 +78,8 @@ describe('getMeasures', () => {
     const chart = {
       getVif: () => vif,
       isGrouping: () => true,
-      isMultiSeries: () => false
+      hasMultipleNonFlyoutSeries: () => false,
+      hasFlyoutSeries: () => false
     };
 
     it('maps each measure column to a measure with correct properties', () => {
@@ -132,7 +134,8 @@ describe('getMeasures', () => {
     const chart = {
       getVif: () => vif,
       isGrouping: () => false,
-      isMultiSeries: () => false
+      hasMultipleNonFlyoutSeries: () => false,
+      hasFlyoutSeries: () => false
     };
 
     it('maps each measure column to a measure with correct measureIndex and seriesIndex of 0', () => {

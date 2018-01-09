@@ -556,7 +556,7 @@ describe('SvgColumnChart', () => {
           }
         }
       });
-      assert.isTrue(columnChart.chart.isMultiSeries());
+      assert.isTrue(columnChart.chart.hasMultipleNonFlyoutSeries());
       columnChart.chart.render(null, multiSeriesTestData);
       const $columns = columnChart.element.find('.dimension-group:first > .column');
       assert.equal($columns.length, 3);

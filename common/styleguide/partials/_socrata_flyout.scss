@@ -17,6 +17,7 @@ $flyout-background-color-dark: #2f2f2f;
 $flyout-color: #8a8686;
 $flyout-bg-color: #f1eeee;
 $flyout-border-color: #ccc;
+$flyout-divider-color: #868686;
 
 $flyout-font-size: 1.4rem;
 
@@ -64,6 +65,12 @@ $flyout-font-size: 1.4rem;
           overflow: hidden;
         }
       }
+    }
+
+    .socrata-flyout-measures-table {
+      border-top: 1px solid $flyout-divider-color;
+      margin: 5px 0 0 0;
+      padding: 3px 0;
     }
   }
 

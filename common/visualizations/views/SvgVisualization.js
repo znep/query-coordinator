@@ -8,19 +8,21 @@ const I18n = require('common/i18n').default;
 const { FilterBar, SocrataIcon } = require('common/components');
 const spandexSubscriber = require('common/spandex/subscriber').default;
 
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
 const DataTypeFormatter = require('./DataTypeFormatter');
 const { MetadataProvider, SoqlDataProvider } = require('../dataProviders');
 
 import {
-  DEFAULT_HIGHLIGHT_COLOR,
+  AXIS_LABEL_COLOR,
   AXIS_LABEL_FONT_FAMILY,
   AXIS_LABEL_FONT_SIZE,
-  AXIS_LABEL_COLOR,
   AXIS_LABEL_MARGIN,
-  AXIS_LABEL_TEXT_MARGIN
-} from './SvgStyleConstants';
+  AXIS_LABEL_TEXT_MARGIN,
+  DEFAULT_HIGHLIGHT_COLOR,
+  SERIES_TYPE_FLYOUT
+} from './SvgConstants';
 
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
@@ -28,8 +30,13 @@ const DEFAULT_TYPE_VARIANTS = {
 };
 
 function SvgVisualization($element, vif, options) {
+  // These constants need to be defined inside the function
+  // because I18n does not get hydrated in embeds until after
+  // they were getting set. By moving them into the function,
+  // I18n has time to get hydrated. Relates to EN-18831
   const DEFAULT_UNIT_ONE = I18n.t('shared.visualizations.charts.common.unit.one');
   const DEFAULT_UNIT_OTHER = I18n.t('shared.visualizations.charts.common.unit.other');
+  const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
 
   const self = this;
   // See: http://stackoverflow.com/a/4819886
@@ -547,15 +554,18 @@ function SvgVisualization($element, vif, options) {
     return mobile;
   };
 
-  this.isGroupingOrMultiSeries = function() {
-    return self.isGrouping() || self.isMultiSeries();
+  this.isGroupingOrHasMultipleNonFlyoutSeries = () => {
+    return self.isGrouping() || self.hasMultipleNonFlyoutSeries();
   };
 
-  this.isMultiSeries = function() {
-    return _.get(self.getVif(), 'series', []).length >= 2;
+  this.hasMultipleNonFlyoutSeries = () => {
+    const series = _.get(self.getVif(), 'series', []);
+    const nonFlyoutSeries = _.filter(series, (item) => item.type !== SERIES_TYPE_FLYOUT);
+
+    return nonFlyoutSeries.length > 1;
   };
 
-  this.isGrouping = function() {
+  this.isGrouping = () => {
     const dimensionGroupingColumnName = _.get(
       self.getVif(),
       'series[0].dataSource.dimension.grouping.columnName',
@@ -563,6 +573,11 @@ function SvgVisualization($element, vif, options) {
     );
 
     return !_.isEmpty(dimensionGroupingColumnName);
+  };
+
+  this.hasFlyoutSeries = () => {
+    const series = _.get(self.getVif(), 'series', []);
+    return _.findIndex(series, (item) => item.type === SERIES_TYPE_FLYOUT) != -1;
   };
 
   this.isInRange = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
@@ -846,10 +861,165 @@ function SvgVisualization($element, vif, options) {
     return d3.min(sumOfNegativePercents) / 100;
   };
 
+  this.getDataToRenderOfSeriesType = (dataToRender, seriesType) => {
+    const clonedDataToRender = _.cloneDeep(dataToRender);
+
+    // Get indices of anything that is not our seriesType
+    //
+    const series = _.get(self.getVif(), 'series');
+    const indicesToExcise = series.reduce((indices, seriesItem, index) => {
+      if (seriesItem.type !== seriesType) {
+        indices.push(index + 1);
+      }
+      return indices;
+    }, []);
+
+    // Excise from columns
+    //
+    for (var j = indicesToExcise.length - 1; j >= 0; j--) {
+      clonedDataToRender.columns.splice(indicesToExcise[j], 1);
+    }
+
+    // Excise from seriesIndices
+    //
+    for (var k = indicesToExcise.length - 1; k >= 0; k--) {
+      clonedDataToRender.seriesIndices.splice(indicesToExcise[k], 1);
+    }
+
+    // Excise from rows
+    //
+    clonedDataToRender.rows = clonedDataToRender.rows.map((row) => {
+      for (var i = indicesToExcise.length - 1; i >= 0; i--) {
+        row.splice(indicesToExcise[i], 1);
+      }
+
+      return row;
+    });
+
+    return clonedDataToRender;
+  };
+
+  this.getDataToRenderByExcisingSeriesType = (dataToRender, seriesType) => {
+    const clonedDataToRender = _.cloneDeep(dataToRender);
+
+    // Get indices of anything that is not our seriesType
+    //
+    const series = _.get(self.getVif(), 'series');
+    const indicesToExcise = series.reduce((indices, seriesItem, index) => {
+      if (seriesItem.type === seriesType) {
+        indices.push(index + 1);
+      }
+      return indices;
+    }, []);
+
+    // Excise from columns
+    //
+    for (var j = indicesToExcise.length - 1; j >= 0; j--) {
+      clonedDataToRender.columns.splice(indicesToExcise[j], 1);
+    }
+
+    // Excise from seriesIndices
+    //
+    for (var k = indicesToExcise.length - 1; k >= 0; k--) {
+      clonedDataToRender.seriesIndices.splice(indicesToExcise[k], 1);
+    }
+
+    // Excise from rows
+    //
+    clonedDataToRender.rows = clonedDataToRender.rows.map((row) => {
+      for (var i = indicesToExcise.length - 1; i >= 0; i--) {
+        row.splice(indicesToExcise[i], 1);
+      }
+
+      return row;
+    });
+
+    return clonedDataToRender;
+  };
+
+  this.addSeriesIndices = (dataToRender) => {
+
+    dataToRender.seriesIndices = [null]; // first column is dimension
+
+    for (var i = 0; i < dataToRender.columns.length - 1; i++) {
+      dataToRender.seriesIndices.push(i);
+    }
+  };
+
+  this.getValueHtml = ({ dataToRender, seriesIndex, value, percent }) => {
+
+    if (_.isNil(value)) {
+      return noValueLabel;
+    }
+
+    const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+    let valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender, true);
+
+    if (value === 1) {
+      valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
+    } else {
+      valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
+    }
+
+    if (!isNaN(percent)) {
+      const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
+      valueHTML += ` (${Math.round(percent)}${percentSymbol})`;
+    }
+
+    return valueHTML;
+  };
+
+  this.getFlyoutMeasuresTable = ({ dataToRender, flyoutDataToRender, measures, dimensionIndex }) => {
+    if (self.isGrouping()) {
+      return null;
+    }
+
+    const flyoutDataRow = flyoutDataToRender.rows[dimensionIndex];
+
+    if (flyoutDataRow.length <= 1) {
+      return null;
+    }
+
+    const $flyoutTable = $('<table>', { 'class': 'socrata-flyout-table socrata-flyout-measures-table' });
+
+    for (var i = 1; i < flyoutDataRow.length; i++) {
+      const flyoutSeriesIndex = flyoutDataToRender.seriesIndices[i];
+      const flyoutMeasure = measures[flyoutSeriesIndex];
+
+      const flyoutValue = self.getValueHtml({
+        dataToRender,
+        seriesIndex: flyoutSeriesIndex,
+        value: flyoutDataRow[i]
+      });
+
+      const $flyoutLabelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
+        html(flyoutMeasure.labelHtml);
+
+      const $flyoutValueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
+        text(flyoutValue);
+
+      const $flyoutValueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
+
+      $flyoutValueRow.append([
+        $flyoutLabelCell,
+        $flyoutValueCell
+      ]);
+
+      $flyoutTable.append($flyoutValueRow);
+    }
+
+    return $flyoutTable;
+  };
+
   this.getReferenceLines = () => {
     return _.filter(
       _.get(self.getVif(), 'referenceLines', []),
       (referenceLine) => _.isFinite(referenceLine.value));
+  };
+
+  this.getSeriesIndexByMeasureIndex = (measureIndex) => {
+    const columnName = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
+    return _.isEmpty(columnName) ? measureIndex : 0;
   };
 
   this.showReferenceLineFlyout = (element, referenceLines, isPercent, flyoutOffset) => {

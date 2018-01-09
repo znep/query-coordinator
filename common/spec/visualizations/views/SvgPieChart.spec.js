@@ -20,45 +20,49 @@ describe('SvgPieChart', () => {
   const CHART_WIDTH = 800;
   const CHART_HEIGHT = 600;
 
-  const testData = [
-    {
-      rows: [
-        ['a', 10],
-        ['b', 20],
-        ['c', 30],
-        ['d', 40],
-        ['e', 50],
-        ['f', 60],
-        ['g', 70],
-        ['h', 80],
-        ['i', 90],
-        ['j', 100],
-        ['k', 110],
-        ['l', 120],
-        ['m', 130],
-        ['n', 140],
-        ['o', 150]
-      ],
-      columns: ['dimension', 'measure'],
-      columnFormats: {
-        'dimension_text_column': {
-          datatypeName: 'text',
-          fieldname: 'dimension_text_column',
-          format: {},
-          name: 'dimension_text_column',
-          renderTypeName: 'text'
-        },
-
-        'measure_number_column': {
-          datatypeName: 'number',
-          fieldname: 'measure_number_column',
-          format: {},
-          name: 'measure_number_column',
-          renderTypeName: 'number'
-        }
+  const testData = {
+    rows: [
+      ['a', 10, 100],
+      ['b', 20, 200],
+      ['c', 30, 300],
+      ['d', 40, 400],
+      ['e', 50, 500],
+      ['f', 60, 600],
+      ['g', 70, 700],
+      ['h', 80, 800],
+      ['i', 90, 900],
+      ['j', 100, 1000],
+      ['k', 110, 1100],
+      ['l', 120, 1200],
+      ['m', 130, 1300],
+      ['n', 140, 1400],
+      ['o', 150, 1500]
+    ],
+    columns: ['dimension', null, null],
+    columnFormats: {
+      'dimension_text_column': {
+        datatypeName: 'text',
+        fieldname: 'dimension_text_column',
+        format: {},
+        name: 'dimension_text_column',
+        renderTypeName: 'text'
+      },
+      'measure_number_column': {
+        datatypeName: 'number',
+        fieldname: 'measure_number_column',
+        format: {},
+        name: 'measure_number_column',
+        renderTypeName: 'number'
+      },
+      'measure_number_column_2': {
+        datatypeName: 'number',
+        fieldname: 'measure_number_column_2',
+        format: {},
+        name: 'measure_number_column_2',
+        renderTypeName: 'number'
       }
     }
-  ];
+  };
 
   let pieChart;
 
@@ -90,7 +94,29 @@ describe('SvgPieChart', () => {
             filters: []
           },
           label: 'Proficient',
-          type: 'columnChart',
+          type: 'pieChart',
+          unit: {
+            one: 'percent of students',
+            other: 'percent of students'
+          }
+        },
+        {
+          dataSource: {
+            datasetUid: 'XXXX-XXXX',
+            dimension: {
+              columnName: 'dimension_text_column',
+              aggregationFunction: null
+            },
+            domain: 'socrata.com',
+            measure: {
+              columnName: 'measure_number_column_2',
+              aggregationFunction: null
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: 'Proficient',
+          type: 'flyout',
           unit: {
             one: 'percent of students',
             other: 'percent of students'
@@ -141,11 +167,11 @@ describe('SvgPieChart', () => {
       removeChart(pieChart);
     });
 
-    it(`should create ${testData[0].rows.length} slices`, () => {
+    it(`should create ${testData.rows.length} slices`, () => {
       pieChart.chart.render(null, testData);
 
       const renderedSlices = pieChart.$element.find('.slice').length;
-      const expectedSlices = testData[0].rows.length;
+      const expectedSlices = testData.rows.length;
 
       expect(renderedSlices).to.equal(expectedSlices);
     });
@@ -153,31 +179,31 @@ describe('SvgPieChart', () => {
     it('slices should have correct data', () => {
       pieChart.chart.render(null, testData);
 
-      const total = testData[0].rows.reduce((sum, d) => sum + d[1], 0);
+      const total = testData.rows.reduce((sum, d) => sum + d[1], 0);
 
-      for (let i = 0; i < testData[0].rows.length; i++) {
+      for (let i = 0; i < testData.rows.length; i++) {
         let renderedValue = Number(pieChart.$element.find('.slice')[i].getAttribute('data-value'));
-        let expectedValue = testData[0].rows[i][1];
+        let expectedValue = testData.rows[i][1];
 
         expect(renderedValue).to.equal(expectedValue);
 
         let renderedLabel = pieChart.$element.find('.slice')[i].getAttribute('data-label');
-        let expectedLabel = testData[0].rows[i][0];
+        let expectedLabel = testData.rows[i][0];
 
         expect(renderedLabel).to.equal(expectedLabel);
 
         let renderedPercent = pieChart.$element.find('.slice')[i].getAttribute('data-percent');
-        let expectedPercent = ((100 * testData[0].rows[i][1]) / total).toString();
+        let expectedPercent = ((100 * testData.rows[i][1]) / total).toString();
 
         expect(renderedPercent).to.equal(expectedPercent);
       }
     });
 
-    it(`should create ${testData[0].rows.length} legend rows`, () => {
+    it(`should create ${testData.rows.length} legend rows`, () => {
       pieChart.chart.render(null, testData);
 
       const renderedRows = pieChart.$element.find('.legend-row').length;
-      const expectedRows = testData[0].rows.length;
+      const expectedRows = testData.rows.length;
 
       expect(renderedRows).to.equal(expectedRows);
     });
@@ -224,7 +250,7 @@ describe('SvgPieChart', () => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
-        assert.equal($content.find('.socrata-flyout-title').text(), testData[0].rows[0][0]);
+        assert.equal($content.find('.socrata-flyout-title').text(), testData.rows[0][0]);
         assert.include($content.find('.socrata-flyout-cell').text(), `(${percent}%)`);
         done();
       });
@@ -242,7 +268,29 @@ describe('SvgPieChart', () => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
-        expect($content.find('.socrata-flyout-title').text()).to.equal(testData[0].rows[0][0]);
+        expect($content.find('.socrata-flyout-title').text()).to.equal(testData.rows[0][0]);
+        done();
+      });
+
+      testHelpers.fireMouseEvent(legendRow, 'mouseover');
+    });
+
+    it('should show correct flyout measure values in flyout', done => {
+      pieChart.chart.render(null, testData);
+
+      var slice = pieChart.$element.find('.slice-group')[0];
+      var legendRow = pieChart.$element.find('.legend-row')[0];
+
+      pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
+        let payload = event.originalEvent.detail;
+        let $content = $(payload.content);
+
+        const flyoutMeasureTitleCell = $content.find('.socrata-flyout-measures-table .socrata-flyout-cell')[0];
+        assert.equal(flyoutMeasureTitleCell.textContent, 'measure_number_column_2');
+
+        const flyoutMeasureValueCell = $content.find('.socrata-flyout-measures-table .socrata-flyout-cell')[1];
+        assert.equal(flyoutMeasureValueCell.textContent, '100 percent of students');
+
         done();
       });
 

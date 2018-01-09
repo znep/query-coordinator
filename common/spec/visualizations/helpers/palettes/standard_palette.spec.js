@@ -4,7 +4,7 @@ import StandardPalette, { FALLBACK_MODE } from 'common/visualizations/helpers/pa
 import {
   DEFAULT_PRIMARY_COLOR,
   COLOR_PALETTES
-} from 'common/visualizations/views/SvgStyleConstants';
+} from 'common/visualizations/views/SvgConstants';
 
 describe('StandardPalette', () => {
   it('defaults to fallbackMode = SOLID_COLOR', () => {

@@ -17,24 +17,25 @@ import {
 import {
   getAnyDimension,
   getDimension,
+  getNonFlyoutSeries,
   getSelectedVisualizationType,
-  getSeries,
   getTreatNullValuesAsZero,
   getVisualizationType,
   getXAxisScalingMode,
   hasErrorBars,
+  hasMultipleNonFlyoutSeries,
   isBarChart,
   isColumnChart,
   isComboChart,
-  isGroupingOrMultiSeries,
+  isGroupingOrHasMultipleNonFlyoutSeries,
   isPieChart,
-  isMultiSeries,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
 import {
   setTreatNullValuesAsZero,
   setXAxisScalingMode
 } from '../../actions';
+import { SERIES_TYPE_FLYOUT } from '../../constants';
 
 import { AccordionContainer, AccordionPane } from 'common/components';
 import BlockLabel from '../shared/BlockLabel';
@@ -128,7 +129,7 @@ export class DataPane extends Component {
 
   renderGroupingOptions = () => {
     const { vifAuthoring } = this.props;
-    const shouldRender = !isMultiSeries(vifAuthoring) &&
+    const shouldRender = !hasMultipleNonFlyoutSeries(vifAuthoring) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) &&
       !hasErrorBars(vifAuthoring);
 
@@ -179,7 +180,7 @@ export class DataPane extends Component {
   renderErrorBarsOptions = () => {
     const { vifAuthoring } = this.props;
     const shouldRender = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isComboChart(vifAuthoring)) &&
-      !isGroupingOrMultiSeries(vifAuthoring);
+      !isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring);
 
     return shouldRender ? (
       <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.error_bars')}>
@@ -197,10 +198,22 @@ export class DataPane extends Component {
 
     const { vifAuthoring } = this.props;
 
+    const nonFlyoutSeries = getNonFlyoutSeries(vifAuthoring).map((item, index) => {
+      return _.extend({ seriesIndex: index }, item);
+    });
+
+    const shouldRenderAddMeasureLink =
+      isBarChart(vifAuthoring) ||
+      isColumnChart(vifAuthoring) ||
+      isComboChart(vifAuthoring) ||
+      isTimelineChart(vifAuthoring);
+
     const attributes = {
-      series: getSeries(vifAuthoring).map((seriesItem, index) => {
-        return _.extend({ seriesIndex: index }, seriesItem);
-      })
+      isFlyoutSeries: false,
+      listItemKeyPrefix: 'DataPane',
+      series: nonFlyoutSeries,
+      shouldRenderAddMeasureLink,
+      shouldRenderDeleteMeasureLink: (nonFlyoutSeries.length > 1)
     };
 
     const measureSelector = isComboChart(vifAuthoring) ?

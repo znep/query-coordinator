@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import CustomColorPaletteManager, { __RewireAPI__ as CustomColorPaletteManagerAPI } from 'common/visualizations/dataProviders/CustomColorPaletteManager';
-import { COLOR_PALETTES } from 'common/visualizations/views/SvgStyleConstants';
+import { COLOR_PALETTES } from 'common/visualizations/views/SvgConstants';
 import { customPaletteVif, customPalette } from './testData/customPalette';
 import { customPaletteVif as customPalettePieChartVif, customPalette as customPalettePieChart } from './testData/customPalettePieChart';
 import { getInitialState } from '../../authoring_workflow/testStore';

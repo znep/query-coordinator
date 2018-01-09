@@ -14,17 +14,35 @@ import I18n from 'common/i18n';
 
 // Constants
 import {
+  AXIS_DEFAULT_COLOR,
+  AXIS_GRID_COLOR,
   AXIS_LABEL_MARGIN,
+  AXIS_TICK_COLOR,
   DEFAULT_CIRCLE_HIGHLIGHT_RADIUS,
+  DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DEFAULT_MOBILE_COLUMN_WIDTH,
+  DIMENSION_LABELS_FIXED_HEIGHT,
+  DIMENSION_LABELS_FONT_COLOR,
+  DIMENSION_LABELS_FONT_SIZE,
+  DIMENSION_LABELS_ROTATION_ANGLE,
+  DIMENSION_LABELS_MAX_CHARACTERS,
   ERROR_BARS_DEFAULT_BAR_COLOR,
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
+  FONT_STACK,
+  LABEL_PADDING_WIDTH,
   LEGEND_BAR_HEIGHT,
+  MEASURE_LABELS_FONT_COLOR,
+  MEASURE_LABELS_FONT_SIZE,
+  MINIMUM_LABEL_WIDTH,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
-  REFERENCE_LINES_UNDERLAY_THICKNESS
-} from './SvgStyleConstants';
+  REFERENCE_LINES_UNDERLAY_THICKNESS,
+  SERIES_TYPE_COMBO_CHART_COLUMN,
+  SERIES_TYPE_COMBO_CHART_LINE,
+  SERIES_TYPE_FLYOUT
+} from './SvgConstants';
 
 import { getMeasures } from '../helpers/measure';
 
@@ -37,42 +55,27 @@ const MARGINS = {
   BOTTOM: 0
 };
 
-const AXIS_DEFAULT_COLOR = '#979797';
-const AXIS_TICK_COLOR = '#adadad';
-const AXIS_GRID_COLOR = '#f1f1f1';
-const COMBO_CHART_COLUMN = 'comboChart.column';
-const COMBO_CHART_LINE = 'comboChart.line';
-const DEFAULT_DESKTOP_COLUMN_WIDTH = 14;
-const DEFAULT_MOBILE_COLUMN_WIDTH = 50;
-const DIMENSION_LABELS_FIXED_HEIGHT = 88;
-const DIMENSION_LABELS_ROTATION_ANGLE = 82.5;
-const DIMENSION_LABELS_FONT_SIZE = 14;
-const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
-const DIMENSION_LABELS_MAX_CHARACTERS = 8;
-const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const LABEL_NO_VALUE = I18n.t('shared.visualizations.charts.common.no_value');
-const LABEL_OTHER = I18n.t('shared.visualizations.charts.common.other_category');
-const LABEL_PADDING_WIDTH = 15;
-const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
-const MEASURE_LABELS_FONT_SIZE = 14;
-const MINIMUM_LABEL_WIDTH = 35;
-
 function SvgComboChart($element, vif, options) {
   const self = this;
   // Embeds needs to wait to define noValueLabel until after hydration.
   const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+  const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
 
   let $chartElement;
+  let columnDataToRender;
   let dataToRender;
   let d3DimensionXScale;
   let d3GroupingXScale;
   let d3PrimaryYScale;
   let d3SecondaryYScale;
+  let flyoutDataToRender;
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
+  let lineDataToRender;
   let measureLabels;
   let measures;
   let referenceLines;
+  let renderableDataToRender;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -100,7 +103,12 @@ function SvgComboChart($element, vif, options) {
 
     if (newData) {
       dataToRender = newData;
-      this.addSeriesIndices(dataToRender);
+      self.addSeriesIndices(dataToRender);
+
+      columnDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_COMBO_CHART_COLUMN);
+      lineDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_COMBO_CHART_LINE);
+      flyoutDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
+      renderableDataToRender = self.getDataToRenderByExcisingSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
     }
 
     if (newColumns) {
@@ -108,15 +116,6 @@ function SvgComboChart($element, vif, options) {
     }
 
     renderData();
-  };
-
-  this.addSeriesIndices = (dataToRender) => {
-
-    dataToRender.seriesIndices = [null]; // first column is dimension
-
-    for (var i = 0; i < dataToRender.columns.length - 1; i++) {
-      dataToRender.seriesIndices.push(i);
-    }
   };
 
   this.invalidateSize = () => {
@@ -162,11 +161,11 @@ function SvgComboChart($element, vif, options) {
     const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
     const d3ClipPathId = `combo-chart-clip-path-${_.uniqueId()}`;
-    const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
-    const dimensionValues = dataToRender.rows.map((row) => row[dataTableDimensionIndex]);
-    const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
+    const dataTableDimensionIndex = renderableDataToRender.columns.indexOf('dimension');
+    const dimensionValues = renderableDataToRender.rows.map((row) => row[dataTableDimensionIndex]);
+    const columns = renderableDataToRender.columns.slice(dataTableDimensionIndex + 1);
 
-    if (self.isMultiSeries()) {
+    if (self.hasMultipleNonFlyoutSeries()) {
       measureLabels = columns.map((column, index) => {
         const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
 
@@ -186,7 +185,7 @@ function SvgComboChart($element, vif, options) {
       // should not overwrite with the no value label.
 
       measureLabels = columns.map((column) => {
-        return self.isGrouping() ? column || LABEL_NO_VALUE : column;
+        return self.isGrouping() ? column || noValueLabel : column;
       });
     }
 
@@ -265,7 +264,7 @@ function SvgComboChart($element, vif, options) {
         // the column which should be highlighted and show the flyout.
         chartSvg.
           selectAll('.x.axis .tick text').
-            data(dataToRender.rows);
+            data(renderableDataToRender.rows);
 
         xAxisBound = true;
       }
@@ -511,7 +510,7 @@ function SvgComboChart($element, vif, options) {
     }
 
     function renderErrorBars() {
-      if (_.isUndefined(dataToRender.errorBars)) {
+      if (_.isUndefined(columnDataToRender.errorBars)) {
         return;
       }
 
@@ -522,13 +521,13 @@ function SvgComboChart($element, vif, options) {
       const color = _.get(self.getVif(), 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR);
 
       const getMinErrorBarPosition = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const minValue = _.clamp(d3.min(errorBarValues), primaryYAxisMinValue, primaryYAxisMaxValue);
         return d3ColumnYScale(minValue);
       };
 
       const getMaxErrorBarYPosition = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const maxValue = _.clamp(d3.max(errorBarValues), primaryYAxisMinValue, primaryYAxisMaxValue);
         return d3ColumnYScale(maxValue);
       };
@@ -536,18 +535,18 @@ function SvgComboChart($element, vif, options) {
       // Because the line stroke thickness is 2px, the half of the top horizontal bar is clipped.  This function shifts
       // the clipped bar down 1 pixel.  All the other bars are rendered in normal positions.
       const getMaxErrorBarYPositionAdjusted = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const maxValue = _.clamp(d3.max(errorBarValues), primaryYAxisMinValue, primaryYAxisMaxValue);
         return (maxValue == primaryYAxisMaxValue) ? d3ColumnYScale(maxValue) + 1 : d3ColumnYScale(maxValue); // shift down a pixel if at top of viewport
       };
 
       const getMinErrorBarWidth = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         return self.isInRange(d3.min(errorBarValues), primaryYAxisMinValue, primaryYAxisMaxValue) ? ERROR_BARS_STROKE_WIDTH : 0;
       };
 
       const getMaxErrorBarWidth = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = dataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
+        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         return self.isInRange(d3.max(errorBarValues), primaryYAxisMinValue, primaryYAxisMaxValue) ? ERROR_BARS_STROKE_WIDTH : 0;
       };
 
@@ -597,13 +596,13 @@ function SvgComboChart($element, vif, options) {
         const value = dimensionValues[dimensionIndex];
 
         if (_.isNil(value)) {
-          return LABEL_NO_VALUE;
-        } else if (value === LABEL_OTHER) {
-          return LABEL_OTHER;
+          return noValueLabel;
+        } else if (value === otherLabel) {
+          return otherLabel;
         } else {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-          return formatValueHTML(value, column, dataToRender);
+          return formatValueHTML(value, column, columnDataToRender);
         }
       };
 
@@ -673,12 +672,12 @@ function SvgComboChart($element, vif, options) {
         const value = dimensionValues[d.dimensionIndex];
 
         if (_.isNil(value)) {
-          return LABEL_NO_VALUE;
-        } else if (value === LABEL_OTHER) {
-          return LABEL_OTHER;
+          return noValueLabel;
+        } else if (value === otherLabel) {
+          return otherLabel;
         } else {
           const column = _.get(self.getVif(), `series[${d.seriesIndex}].dataSource.dimension.columnName`);
-          return formatValueHTML(value, column, dataToRender);
+          return formatValueHTML(value, column, lineDataToRender);
         }
       };
 
@@ -764,7 +763,17 @@ function SvgComboChart($element, vif, options) {
       const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
 
       if (self.getShowLegend()) {
-        const legendItems = self.getLegendItems({ dataTableDimensionIndex, measures, referenceLines });
+
+        const nonFlyoutMeasures = _.filter(measures, (measure) => {
+          return _.get(measure, 'palette.series.type') !== SERIES_TYPE_FLYOUT;
+        });
+
+        const legendItems = self.getLegendItems({
+          dataTableDimensionIndex,
+          measures: nonFlyoutMeasures,
+          referenceLines
+        });
+
         self.renderLegendBar(legendItems);
         self.attachLegendBarEventHandlers();
 
@@ -814,9 +823,6 @@ function SvgComboChart($element, vif, options) {
      */
     renderLegend();
 
-    const columnDataToRender = getDataToRenderOfSeriesType(dataToRender, COMBO_CHART_COLUMN);
-    const lineDataToRender = getDataToRenderOfSeriesType(dataToRender, COMBO_CHART_LINE);
-
     // Get the data for primary and secondary axes
     //
     let primaryAxisDataToRender;
@@ -829,11 +835,11 @@ function SvgComboChart($element, vif, options) {
       primaryAxisDataToRender = columnDataToRender;
       secondaryAxisDataToRender = lineDataToRender;
     } else if (!isUsingSecondaryAxisForColumns() && !isUsingSecondaryAxisForLines()) {
-      primaryAxisDataToRender = dataToRender;
+      primaryAxisDataToRender = renderableDataToRender;
       secondaryAxisDataToRender = null;
     } else {
       primaryAxisDataToRender = null;
-      secondaryAxisDataToRender = dataToRender;
+      secondaryAxisDataToRender = renderableDataToRender;
     }
 
     // Get the left and right margins and viewportWidth
@@ -842,7 +848,7 @@ function SvgComboChart($element, vif, options) {
     const rightMargin = calculateLeftRightMargin(secondaryAxisDataToRender, viewportHeight, 'right') + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
     const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
 
-    numberOfGroups = dataToRender.rows.length;
+    numberOfGroups = renderableDataToRender.rows.length;
     numberOfItemsPerGroup = Math.max(columnDataToRender.rows[0].length - 1, 1);
 
     // When we do allow panning we get a little more sophisticated; primarily
@@ -879,7 +885,7 @@ function SvgComboChart($element, vif, options) {
     d3DimensionXScale = generateXScale(
       dimensionValues,
       width,
-      self.isGroupingOrMultiSeries()
+      self.isGroupingOrHasMultipleNonFlyoutSeries()
     );
 
     // This scale is used for groupings of columns under a single dimension
@@ -1114,13 +1120,13 @@ function SvgComboChart($element, vif, options) {
       attr('class', 'dimension-group').
       attr('data-dimension-value-html', (datum, dimensionIndex, measureIndex) => {
         if (_.isNil(datum[0])) {
-          return LABEL_NO_VALUE;
-        } else if (datum[0] === LABEL_OTHER) {
-          return LABEL_OTHER;
+          return noValueLabel;
+        } else if (datum[0] === otherLabel) {
+          return otherLabel;
         } else {
-          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-          return formatValueHTML(datum[0], column, dataToRender);
+          return formatValueHTML(datum[0], column, renderableDataToRender);
         }
       }).
       attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
@@ -1161,7 +1167,7 @@ function SvgComboChart($element, vif, options) {
       append('rect').
       attr('class', 'reference-line-underlay');
 
-    if (!_.isUndefined(dataToRender.errorBars)) {
+    if (!_.isUndefined(columnDataToRender.errorBars)) {
       dimensionGroupSvgs.selectAll('line.error-bar-top').
         data((d) => d.slice(1)).
         enter().
@@ -1259,20 +1265,13 @@ function SvgComboChart($element, vif, options) {
           function() {
 
             if (!isCurrentlyPanning()) {
-              const dimensionIndex = parseInt(
-                this.getAttribute('data-dimension-index'),
-                10
-              );
-              const measureIndex = parseInt(
-                this.getAttribute('data-measure-index'),
-                10
-              );
+              const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
+              const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
+
               const dimensionGroup = this.parentNode;
               const siblingColumn = d3.select(dimensionGroup).select(
                 `rect.column[data-measure-index="${measureIndex}"]`
               )[0][0];
-
-              const measure = measures[measureIndex];
 
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
@@ -1282,7 +1281,7 @@ function SvgComboChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showColumnHighlight(siblingColumn);
-              showColumnFlyout(siblingColumn, { measure, value });
+              showColumnFlyout(siblingColumn, { measureIndex, dimensionIndex, value });
             }
           }
         ).
@@ -1305,16 +1304,8 @@ function SvgComboChart($element, vif, options) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(
-              this.getAttribute('data-dimension-index'),
-              10
-            );
-            const measureIndex = parseInt(
-              this.getAttribute('data-measure-index'),
-              10
-            );
-
-            const measure = measures[measureIndex];
+            const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
+            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1325,7 +1316,7 @@ function SvgComboChart($element, vif, options) {
             const percent = parseFloat(this.getAttribute('data-percent'));
 
             showColumnHighlight(this);
-            showColumnFlyout(this, { measure, value, percent });
+            showColumnFlyout(this, { measureIndex, dimensionIndex, value, percent });
           }
         }
       ).
@@ -1348,7 +1339,7 @@ function SvgComboChart($element, vif, options) {
 
           if (!isCurrentlyPanning()) {
             const measureIndex = parseInt(this.getAttribute('data-measure-index'), 10);
-            const measure = measures[measureIndex];
+            const dimensionIndex = parseInt(this.getAttribute('data-dimension-index'), 10);
 
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1356,8 +1347,9 @@ function SvgComboChart($element, vif, options) {
             // the raw row data provided by d3 (the value at element 0 of the
             // array returned by .datum() is the dimension value).
             const value = d3.select(this).datum().value;
-            showCircleHighlight(this, measure);
-            showColumnFlyout(this, { measure, value });
+
+            showCircleHighlight(this, measureIndex);
+            showColumnFlyout(this, { measureIndex, dimensionIndex, value });
           }
         }
       ).
@@ -1382,13 +1374,13 @@ function SvgComboChart($element, vif, options) {
               let dimensionValue;
 
               if (_.isNil(datum[0])) {
-                dimensionValue = LABEL_NO_VALUE;
-              } else if (datum[0] === LABEL_OTHER) {
-                dimensionValue = LABEL_OTHER;
+                dimensionValue = noValueLabel;
+              } else if (datum[0] === otherLabel) {
+                dimensionValue = otherLabel;
               } else {
-                const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+                const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
                 const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-                dimensionValue = formatValueHTML(datum[0], column, dataToRender);
+                dimensionValue = formatValueHTML(datum[0], column, renderableDataToRender);
               }
 
               // We need to find nodes with a data-dimension-value-html attribute matching dimensionValue.
@@ -1413,7 +1405,7 @@ function SvgComboChart($element, vif, options) {
               showGroupFlyout({
                 groupElement,
                 dimensionValues,
-                dataToRender,
+                dataToRender: renderableDataToRender,
                 chartSvg
               });
             }
@@ -1495,7 +1487,7 @@ function SvgComboChart($element, vif, options) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = _.isNull(label) ? LABEL_NO_VALUE : label;
+    label = _.isNull(label) ? noValueLabel : label;
 
     return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1504,10 +1496,8 @@ function SvgComboChart($element, vif, options) {
       label;
   }
 
-  function generateXScale(domain, width, isMultiSeries) {
-    const padding = (isMultiSeries) ?
-      0.3 :
-      0.1;
+  function generateXScale(domain, width, hasMultipleNonFlyoutSeries) {
+    const padding = hasMultipleNonFlyoutSeries ? 0.3 : 0.1;
 
     return d3.scale.ordinal().
       domain(domain).
@@ -1544,56 +1534,18 @@ function SvgComboChart($element, vif, options) {
         let label;
 
         if (_.isNil(d)) {
-          label = LABEL_NO_VALUE;
-        } else if (d === LABEL_OTHER) {
-          label = LABEL_OTHER;
+          label = noValueLabel;
+        } else if (d === otherLabel) {
+          label = otherLabel;
         } else {
           const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
           // NOTE: We must use plain text; our axes are SVG (not HTML).
-          label = formatValuePlainText(d, column, dataToRender);
+          label = formatValuePlainText(d, column, renderableDataToRender);
         }
 
         return conditionallyTruncateLabel(label);
       }).
       outerTickSize(0);
-  }
-
-  function getDataToRenderOfSeriesType(dataToRender, seriesType) {
-    const clonedDataToRender = _.cloneDeep(dataToRender);
-
-    // Get indices of anything that is not our seriesType
-    //
-    const series = _.get(self.getVif(), 'series');
-    const indicesToExcise = series.reduce((indices, seriesItem, index) => {
-      if (seriesItem.type !== seriesType) {
-        indices.push(index + 1);
-      }
-      return indices;
-    }, []);
-
-    // Excise from columns
-    //
-    for (var j = indicesToExcise.length - 1; j >= 0; j--) {
-      clonedDataToRender.columns.splice(indicesToExcise[j], 1);
-    }
-
-    // Excise from seriesIndices
-    //
-    for (var k = indicesToExcise.length - 1; k >= 0; k--) {
-      clonedDataToRender.seriesIndices.splice(indicesToExcise[k], 1);
-    }
-
-    // Excise from rows
-    //
-    clonedDataToRender.rows = clonedDataToRender.rows.map((row) => {
-      for (var i = indicesToExcise.length - 1; i >= 0; i--) {
-        row.splice(indicesToExcise[i], 1);
-      }
-
-      return row;
-    });
-
-    return clonedDataToRender;
   }
 
   function getColumnPositions(columnDataToRender, maxYValue, minYValue) {
@@ -1754,7 +1706,7 @@ function SvgComboChart($element, vif, options) {
 
   function generateYAxis(yScale, orient) {
     const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-    const formatter = (d) => formatValueHTML(d, column, dataToRender, true);
+    const formatter = (d) => formatValueHTML(d, column, renderableDataToRender, true);
 
     const yAxis = d3.svg.axis().
       scale(yScale).
@@ -1777,11 +1729,6 @@ function SvgComboChart($element, vif, options) {
     return yAxis;
   }
 
-  function getSeriesIndexByMeasureIndex(measureIndex) {
-    const columnName = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-    return _.isEmpty(columnName) ? measureIndex : 0;
-  }
-
   function isCurrentlyPanning() {
     // EN-10810 - Bar Chart flyouts do not appear in Safari
     //
@@ -1801,7 +1748,8 @@ function SvgComboChart($element, vif, options) {
       d3.event.which !== 0;
   }
 
-  function showCircleHighlight(circleElement, measure) {
+  function showCircleHighlight(circleElement, measureIndex) {
+    const measure = measures[measureIndex];
     d3.select(circleElement).attr('fill', measure.getColor());
   }
 
@@ -1813,7 +1761,7 @@ function SvgComboChart($element, vif, options) {
       // NOTE: The below function depends on this being set by d3, so it is not
       // possible to use the () => {} syntax here.
       function() {
-        const measureIndex = getSeriesIndexByMeasureIndex(
+        const measureIndex = self.getSeriesIndexByMeasureIndex(
           parseInt(this.getAttribute('data-measure-index'), 10)
         );
         const highlightColor = self.getHighlightColorBySeriesIndex(
@@ -1844,50 +1792,41 @@ function SvgComboChart($element, vif, options) {
   }
 
   function showGroupFlyout({ groupElement, dimensionValues, dataToRender, chartSvg }) {
-
-    // Content
-    //
-    const titleHTML = groupElement.attr('data-dimension-value-html') || LABEL_NO_VALUE;
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
-    append($('<td>', { 'colspan': 2 }).
-    html(titleHTML));
+    // Group measures
+    const titleHTML = groupElement.attr('data-dimension-value-html') || noValueLabel;
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append(
+        $('<td>',
+        { 'colspan': 2 }).html(titleHTML));
 
     const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($title);
+      append($titleRow);
+
+    const $tableContainer = $('<div>').
+      append($table);
 
     const dimensionValue = groupElement.data()[0][0];
     const dimensionIndex = dimensionValues.indexOf(dimensionValue);
     const measureValues = dataToRender.rows[dimensionIndex].slice(1);
 
     let $labelValueRows;
-    let payload = null;
 
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
     $labelValueRows = measureValues.map((value, measureIndex) => {
-      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+      const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
       const measure = measures[measureIndex];
       const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         html(measure.labelHtml).
         css('color', measure.getColor());
+
       const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
-      const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
-      const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
 
-      let valueHTML;
-
-      if (value === null) {
-        valueHTML = LABEL_NO_VALUE;
-      } else {
-        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-        valueHTML = formatValueHTML(value, column, dataToRender, true);
-
-        if (value === 1) {
-          valueHTML += ` ${_.escape(unitOne)}`;
-        } else {
-          valueHTML += ` ${_.escape(unitOther)}`;
-        }
-      }
+      const valueHTML = self.getValueHtml({
+        dataToRender,
+        seriesIndex,
+        value
+      });
 
       $valueCell.html(valueHTML);
 
@@ -1900,10 +1839,21 @@ function SvgComboChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
     // Payload
-    //
-    payload = {
-      content: $table,
+    const payload = {
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       dark: true
@@ -1946,11 +1896,13 @@ function SvgComboChart($element, vif, options) {
     );
   }
 
-  function showColumnFlyout(columnElement, { measure, value, percent }) {
-    const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
-    const seriesIndex = getSeriesIndexByMeasureIndex(measure.measureIndex);
+  function showColumnFlyout(columnElement, { measureIndex, dimensionIndex, value, percent }) {
+    // Column measure
+    const measure = measures[measureIndex];
+    const seriesIndex = self.getSeriesIndexByMeasureIndex(measure.measureIndex);
 
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
+    const titleHTML = columnElement.getAttribute('data-dimension-value-html') || noValueLabel;
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append(
         $('<td>', { 'colspan': 2 }).html(
           (titleHTML) ? titleHTML : ''
@@ -1964,27 +1916,16 @@ function SvgComboChart($element, vif, options) {
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
     const $table = $('<table>', { 'class': 'socrata-flyout-table' });
+    const $tableContainer = $('<div>').
+      append($table);
 
-    let valueHTML;
-    let payload = null;
+    const valueHTML = self.getValueHtml({
+      dataToRender,
+      seriesIndex,
+      value
+    });
 
-    if (value === null) {
-      valueHTML = noValueLabel;
-    } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueHTML = formatValueHTML(value, column, dataToRender, true);
-
-      if (value === 1) {
-        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
-      } else {
-        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
-      }
-    }
-
-    const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
-    const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
-
-    $valueCell.html(`${valueHTML} ${percentAsString}`);
+    $valueCell.html(valueHTML);
 
     $valueRow.append([
       $labelCell,
@@ -1992,13 +1933,26 @@ function SvgComboChart($element, vif, options) {
     ]);
 
     $table.append([
-      $title,
+      $titleRow,
       $valueRow
     ]);
 
-    payload = {
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Payload
+    const payload = {
       element: columnElement,
-      content: $table,
+      content: $tableContainer,
       rightSideHint: false,
       belowTarget: false,
       dark: true

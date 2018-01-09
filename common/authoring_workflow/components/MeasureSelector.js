@@ -7,7 +7,6 @@ import I18n from 'common/i18n';
 import {
   AGGREGATION_TYPES,
   COLUMN_TYPES,
-  COMBO_CHART_COLUMN,
   MAXIMUM_MEASURES,
   MAXIMUM_COMBO_CHART_MEASURES
 } from '../constants';
@@ -15,9 +14,8 @@ import {
 import {
   appendSeries,
   removeSeries,
-  setMeasure,
   setMeasureAggregation,
-  setSeriesType
+  setMeasureColumn
 } from '../actions';
 
 import {
@@ -28,7 +26,6 @@ import {
   isColumnChart,
   isComboChart,
   isFeatureMap,
-  isMultiSeries,
   isTimelineChart
 } from '../selectors/vifAuthoring';
 
@@ -50,59 +47,53 @@ export class MeasureSelector extends Component {
     }
   }
 
+  getListItemKey(seriesIndex) {
+    return `${this.props.listItemKeyPrefix}:${seriesIndex}`;
+  }
+
   handleOnClickAddMeasure() {
     this.setState({ isSeriesPending: true });
   }
 
-  handleOnClickDeleteMeasure(seriesIndex) {
-    this.props.onRemoveMeasure(seriesIndex);
+  handleOnClickDeleteMeasure(seriesIndex, measureIndex) {
+    const { isFlyoutSeries, onRemoveSeries } = this.props;
+
+    onRemoveSeries(
+      isFlyoutSeries,
+      isFlyoutSeries ? measureIndex : seriesIndex
+    );
   }
 
   handleOnClickDeletePendingMeasure() {
     this.setState({ isSeriesPending: false });
   }
 
-  handleOnSelectionMeasureColumn(seriesIndex, option) {
-    this.props.onSetMeasureColumn(seriesIndex, option.value);
+  handleOnSelectionMeasureAggregation(seriesIndex, measureIndex, option) {
+    const { isFlyoutSeries, onSetMeasureAggregation } = this.props;
+
+    onSetMeasureAggregation(
+      isFlyoutSeries,
+      isFlyoutSeries ? measureIndex : seriesIndex,
+      option.value
+    );
   }
 
-  handleOnSelectionPendingMeasureColumn(option) {
-    const {
-      onAddMeasure,
-      onSetMeasureColumn,
-      onSetSeriesType,
-      seriesType,
-      vifAuthoring
-    } = this.props;
+  handleOnSelectionMeasureColumn(seriesIndex, measureIndex, option) {
+    const { isFlyoutSeries, onSetMeasureColumn } = this.props;
 
-    const allSeries = getSeries(vifAuthoring);
-    let seriesIndex;
+    onSetMeasureColumn(
+      isFlyoutSeries,
+      isFlyoutSeries ? measureIndex : seriesIndex,
+      option.value
+    );
+  }
 
-    if (isComboChart(vifAuthoring) && (seriesType === COMBO_CHART_COLUMN)) {
+  handleOnSelectionPendingMeasureColumn(seriesIndex, measureIndex, option) {
+    const { isFlyoutSeries, onAppendSeries, seriesVariant } = this.props;
 
-      // Insert column series after the last column series or if there are none, insert it at index 0.
-      // New line series are just appended to the end of the series array like series on non-combo charts.
-      //
-      const lastIndexOf = _.findLastIndex(allSeries, (series) => series.type === COMBO_CHART_COLUMN);
-      seriesIndex = lastIndexOf + 1;
-
-    } else {
-      seriesIndex = allSeries.length;
-    }
-
-    onAddMeasure(seriesIndex);
-    onSetMeasureColumn(seriesIndex, option.value);
-
-    if (!_.isEmpty(seriesType)) {
-      onSetSeriesType(seriesIndex, seriesType);
-    }
+    onAppendSeries(isFlyoutSeries, seriesVariant, option.value);
 
     this.setState({ isSeriesPending: false });
-  }
-
-  handleOnSelectionMeasureAggregation(seriesIndex, option) {
-    const { onSetMeasureAggregation } = this.props;
-    onSetMeasureAggregation(seriesIndex, option.value);
   }
 
   renderMeasureSelectors() {
@@ -123,8 +114,15 @@ export class MeasureSelector extends Component {
       }))
     ];
 
-    const measureSelectors = series.map((seriesItem) => this.renderMeasureSelector(seriesItem, options));
-    const pendingMeasureSelector = isSeriesPending ? this.renderPendingMeasureSelector(options) : null;
+    const measureSelectors = series.map((seriesItem, measureIndex) => {
+      return this.renderMeasureSelector(seriesItem, measureIndex, options);
+    });
+
+    const measureIndex = measureSelectors.length;
+    const pendingMeasureSelector = isSeriesPending ?
+      this.renderPendingMeasureSelector(options, measureIndex) :
+      null;
+
     const addMeasureLink = this.renderAddMeasureLink();
 
     return (
@@ -138,20 +136,20 @@ export class MeasureSelector extends Component {
     );
   }
 
-  renderPendingMeasureSelector(options) {
+  renderPendingMeasureSelector(options, measureIndex) {
     const { vifAuthoring } = this.props;
     const seriesIndex = getSeries(vifAuthoring).length;
 
     const measureListItemAttributes = {
       className: 'measure-list-item',
-      key: seriesIndex
+      key: this.getListItemKey(seriesIndex)
     };
 
     const hasOnlyDefaultValue = options.length <= 1;
     const measureAttributes = {
       disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
       id: `measure-selection-${seriesIndex}`,
-      onSelection: (option) => this.handleOnSelectionPendingMeasureColumn(option),
+      onSelection: (option) => this.handleOnSelectionPendingMeasureColumn(seriesIndex, measureIndex, option),
       options,
       placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
     };
@@ -168,27 +166,28 @@ export class MeasureSelector extends Component {
     );
   }
 
-  renderMeasureSelector(seriesItem, options) {
-    const { vifAuthoring } = this.props;
+  renderMeasureSelector(seriesItem, measureIndex, options) {
+    const { shouldRenderDeleteMeasureLink, vifAuthoring } = this.props;
 
     const measureListItemAttributes = {
       className: 'measure-list-item',
-      key: seriesItem.seriesIndex
+      key: this.getListItemKey(seriesItem.seriesIndex)
     };
 
     const hasOnlyDefaultValue = options.length <= 1;
     const measureAttributes = {
       disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
       id: `measure-selection-${seriesItem.seriesIndex}`,
-      onSelection: (option) => this.handleOnSelectionMeasureColumn(seriesItem.seriesIndex, option),
+      onSelection: (option) => {
+        this.handleOnSelectionMeasureColumn(seriesItem.seriesIndex, measureIndex, option);
+      },
       options,
       value: seriesItem.dataSource.measure.columnName
     };
 
-    const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesItem);
-    const allSeries = getSeries(vifAuthoring);
-    const deleteMeasureLink = (allSeries.length > 1) ?
-      this.renderDeleteMeasureLink(seriesItem.seriesIndex) :
+    const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesItem, measureIndex);
+    const deleteMeasureLink = shouldRenderDeleteMeasureLink ?
+      this.renderDeleteMeasureLink(seriesItem.seriesIndex, measureIndex) :
       null;
 
     return (
@@ -202,7 +201,7 @@ export class MeasureSelector extends Component {
     );
   }
 
-  renderMeasureAggregationSelector(seriesItem) {
+  renderMeasureAggregationSelector(seriesItem, measureIndex) {
     const { aggregationTypes, vifAuthoring } = this.props;
 
     if (_.isNull(seriesItem.dataSource.measure.columnName)) {
@@ -217,7 +216,9 @@ export class MeasureSelector extends Component {
     const measureAggregationAttributes = {
       disabled: isFeatureMap(vifAuthoring),
       id: `measure-aggregation-selection-${seriesItem.seriesIndex}`,
-      onSelection: (option) => this.handleOnSelectionMeasureAggregation(seriesItem.seriesIndex, option),
+      onSelection: (option) => {
+        this.handleOnSelectionMeasureAggregation(seriesItem.seriesIndex, measureIndex, option);
+      },
       options,
       value: seriesItem.dataSource.measure.aggregationFunction
     };
@@ -240,11 +241,11 @@ export class MeasureSelector extends Component {
     );
   }
 
-  renderDeleteMeasureLink(seriesIndex) {
+  renderDeleteMeasureLink(seriesIndex, measureIndex) {
     const attributes = {
       className: 'measure-delete-link',
       id: `measure-delete-link-${seriesIndex}`,
-      onClick: () => this.handleOnClickDeleteMeasure(seriesIndex)
+      onClick: () => this.handleOnClickDeleteMeasure(seriesIndex, measureIndex)
     };
 
     return (
@@ -272,15 +273,21 @@ export class MeasureSelector extends Component {
   }
 
   renderAddMeasureLink() {
-    const { series, vifAuthoring } = this.props;
+    const {
+      isFlyoutSeries,
+      series,
+      seriesVariant,
+      shouldRenderAddMeasureLink,
+      vifAuthoring
+    } = this.props;
+
     const { isSeriesPending } = this.state;
 
     const maximumMeasures = isComboChart(vifAuthoring) ?
       MAXIMUM_COMBO_CHART_MEASURES :
       MAXIMUM_MEASURES;
 
-    const shouldRender = (series.length < maximumMeasures) &&
-      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring) || isComboChart(vifAuthoring));
+    const shouldRender = (series.length < maximumMeasures) && shouldRenderAddMeasureLink;
 
     const isDisabled = isSeriesPending ||
       !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) ||
@@ -292,11 +299,15 @@ export class MeasureSelector extends Component {
       onClick: isDisabled ? null : () => this.handleOnClickAddMeasure()
     };
 
+    const title = isFlyoutSeries ?
+      I18n.translate('shared.visualizations.panes.data.fields.flyout_measure.add_flyout_value') :
+      I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure');
+
     return shouldRender ? (
       <div className="measure-add-measure-link-container">
         <a {...addMeasureLinkAttributes}>
           <span className="socrata-icon-add" />
-          {I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure')}
+          {title}
         </a>
       </div>
     ) : null;
@@ -309,14 +320,17 @@ export class MeasureSelector extends Component {
 }
 
 MeasureSelector.propTypes = {
+  isFlyoutSeries: PropTypes.bool,
+  listItemKeyPrefix: PropTypes.string,
   metadata: PropTypes.object,
-  onAddMeasure: PropTypes.func,
-  onRemoveMeasure: PropTypes.func,
+  onAppendSeries: PropTypes.func,
+  onRemoveSeries: PropTypes.func,
   onSetMeasureAggregation: PropTypes.func,
   onSetMeasureColumn: PropTypes.func,
-  onSetSeriesType: PropTypes.func,
   series: PropTypes.arrayOf(PropTypes.object),
-  seriesType: PropTypes.string,
+  seriesVariant: PropTypes.string,
+  shouldRenderAddMeasureLink: PropTypes.bool,
+  shouldRenderDeleteMeasureLink: PropTypes.bool,
   vifAuthoring: PropTypes.object
 };
 
@@ -324,29 +338,36 @@ MeasureSelector.defaultProps = { aggregationTypes: AGGREGATION_TYPES };
 
 function mapDispatchToProps(dispatch) {
   return {
-    onAddMeasure(seriesIndex) {
-      dispatch(
-        appendSeries({
-          isInitialLoad: false,
-          seriesIndex
-        })
-      );
+    onAppendSeries(isFlyoutSeries, seriesVariant, measureColumnName) {
+      dispatch(appendSeries({
+        isFlyoutSeries,
+        isInitialLoad: false,
+        measureColumnName,
+        seriesVariant
+      }));
     },
 
-    onRemoveMeasure(seriesIndex) {
-      dispatch(removeSeries(seriesIndex));
+    onRemoveSeries(isFlyoutSeries, relativeIndex) {
+      dispatch(removeSeries({
+        isFlyoutSeries,
+        relativeIndex
+      }));
     },
 
-    onSetMeasureAggregation(seriesIndex, aggregationFunction) {
-      dispatch(setMeasureAggregation(seriesIndex, aggregationFunction));
+    onSetMeasureAggregation(isFlyoutSeries, relativeIndex, aggregationFunction) {
+      dispatch(setMeasureAggregation({
+        aggregationFunction,
+        isFlyoutSeries,
+        relativeIndex
+      }));
     },
 
-    onSetMeasureColumn(seriesIndex, columnName) {
-      dispatch(setMeasure(seriesIndex, columnName));
-    },
-
-    onSetSeriesType(seriesIndex, seriesType) {
-      dispatch(setSeriesType(seriesIndex, seriesType));
+    onSetMeasureColumn(isFlyoutSeries, relativeIndex, columnName) {
+      dispatch(setMeasureColumn({
+        columnName,
+        isFlyoutSeries,
+        relativeIndex
+      }));
     }
   };
 }

@@ -1,15 +1,16 @@
 import _ from 'lodash';
 import I18n from 'common/i18n';
 import {
-  appendSeries,
   forEachSeries,
   removeSeries,
   setBooleanValueOrDeleteProperty,
+  setDimensionGroupingColumnName,
+  setMeasureAggregation,
+  setMeasureColumn,
+  setNumericValueOrDeleteProperty,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
-  setNumericValueOrDeleteProperty,
   setUnits,
-  setDimensionGroupingColumnName,
   trySetShowLegend,
   tryUnsetShowLegend
 } from '../../helpers';
@@ -81,35 +82,16 @@ export default function(state, action) {
       }
       break;
 
-    case actions.APPEND_SERIES:
-      appendSeries(state, {
-        isInitialLoad: action.isInitialLoad,
-        seriesIndex: action.seriesIndex
-      });
-      break;
-
     case actions.REMOVE_SERIES:
-      removeSeries(state, action.seriesIndex);
-      break;
-
-    case actions.SET_MEASURE:
-      if (action.seriesIndex < state.series.length) {
-        const series = state.series[action.seriesIndex];
-        _.set(series, 'dataSource.measure.columnName', action.columnName);
-
-        if (_.isNull(action.columnName)) {
-          _.set(series, 'dataSource.measure.aggregationFunction', 'count');
-        } else if (series.dataSource.measure.aggregationFunction === 'count') {
-          _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
-        }
-      }
+      removeSeries(state, action);
       break;
 
     case actions.SET_MEASURE_AGGREGATION:
-      if (action.seriesIndex < state.series.length) {
-        const series = state.series[action.seriesIndex];
-        _.set(series, 'dataSource.measure.aggregationFunction', action.aggregationFunction);
-      }
+      setMeasureAggregation(state, action);
+      break;
+
+    case actions.SET_MEASURE_COLUMN:
+      setMeasureColumn(state, action);
       break;
 
     case actions.SET_ORDER_BY:

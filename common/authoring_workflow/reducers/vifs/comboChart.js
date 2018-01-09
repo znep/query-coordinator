@@ -3,12 +3,14 @@ import * as actions from '../../actions';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
+  appendSeries,
   forEachSeries,
-  isGroupingOrMultiSeries,
+  isGroupingOrHasMultipleNonFlyoutSeries,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty,
   setDimensionGroupingColumnName,
   setNumericValueOrDeleteProperty,
+  setSeriesVariant,
   setStringValueOrDeleteProperty
 } from '../../helpers';
 
@@ -23,6 +25,13 @@ export default function comboChart(state, action) {
 
     case actions.RESET_STATE:
       state = vifs().comboChart;
+      break;
+
+    case actions.SET_SERIES_VARIANT:
+      setSeriesVariant(state, {
+        seriesIndex: action.seriesIndex,
+        seriesVariant: action.seriesVariant
+      });
       break;
 
     case actions.SET_SHOW_DIMENSION_LABELS:
@@ -69,7 +78,7 @@ export default function comboChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (isGroupingOrMultiSeries(state)) {
+      if (isGroupingOrHasMultipleNonFlyoutSeries(state)) {
         forEachSeries(state, series => {
           setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette);
         });
@@ -102,19 +111,6 @@ export default function comboChart(state, action) {
 
       break;
 
-    case actions.SET_SERIES_TYPE:
-      if (action.seriesIndex < state.series.length) {
-        const series = state.series[action.seriesIndex];
-        const stateSeriesType = _.get(series, 'type', '').split('.')[0];
-        const actionSeriesTypeParts = action.seriesType.split('.');
-        const actionSeriesType = actionSeriesTypeParts[0];
-
-        if ((stateSeriesType === actionSeriesType) && (actionSeriesTypeParts.length > 1)) {
-          _.set(series, 'type', `comboChart.${actionSeriesTypeParts[1]}`);
-        }
-      }
-      break;
-
     case actions.SET_SECONDARY_MEASURE_AXIS_MAX_VALUE:
       setNumericValueOrDeleteProperty(state, 'configuration.secondaryMeasureAxisMaxValue', action.measureAxisMaxValue);
       break;
@@ -123,8 +119,11 @@ export default function comboChart(state, action) {
       setNumericValueOrDeleteProperty(state, 'configuration.secondaryMeasureAxisMinValue', action.measureAxisMinValue);
       break;
 
-    case actions.APPEND_REFERENCE_LINE:
     case actions.APPEND_SERIES:
+      appendSeries(state, action);
+      break;
+
+    case actions.APPEND_REFERENCE_LINE:
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_REFERENCE_LINE:
     case actions.REMOVE_SERIES:
@@ -139,10 +138,10 @@ export default function comboChart(state, action) {
     case actions.SET_LABEL_BOTTOM:
     case actions.SET_LABEL_LEFT:
     case actions.SET_LABEL_RIGHT:
-    case actions.SET_MEASURE:
     case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
+    case actions.SET_MEASURE_COLUMN:
     case actions.SET_ORDER_BY:
     case actions.SET_PRECISION:
     case actions.SET_PRIMARY_COLOR:

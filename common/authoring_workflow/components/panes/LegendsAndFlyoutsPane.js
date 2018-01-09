@@ -4,20 +4,23 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Dropdown, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
+import { COLUMN_TYPES, SERIES_TYPE_FLYOUT } from '../../constants';
 import { getMeasureTitle } from '../../helpers';
-
-import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
+
 import {
+  getNonFlyoutSeries,
   getRowInspectorTitleColumnName,
   getSeries,
   getShowLegend,
+  getVisualizationType,
   hasReferenceLineLabels,
   isBarChart,
   isColumnChart,
   isComboChart,
   isFeatureMap,
-  isGroupingOrMultiSeries,
+  isGrouping,
+  isGroupingOrHasMultipleNonFlyoutSeries,
   isHistogram,
   isPieChart,
   isRegionMap,
@@ -33,15 +36,16 @@ import {
 } from '../../actions';
 
 import CustomizationTabPane from '../CustomizationTabPane';
-import EmptyPane from './EmptyPane';
 import DebouncedInput from '../shared/DebouncedInput';
+import EmptyPane from './EmptyPane';
+import MeasureSelector from '../MeasureSelector';
 
 export class LegendsAndFlyoutsPane extends Component {
-  renderUnits = () => {
+  renderFlyoutUnits = () => {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
 
-    const series = getSeries(vifAuthoring);
-    const unitControls = series.map((item, index) => {
+    const nonFlyoutSeries = getNonFlyoutSeries(vifAuthoring);
+    const unitControls = nonFlyoutSeries.map((item, index) => {
 
       const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');
       const unitOne = _.get(item, 'unit.one', '');
@@ -70,20 +74,20 @@ export class LegendsAndFlyoutsPane extends Component {
       };
 
       const measureTitle = getMeasureTitle(metadata, item);
-      return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
+      return this.renderFlyoutUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
 
     return (
-      <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.title')}>
+      <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units.title')}>
         <p className="authoring-field-description units-description">
-          <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.description')}</small>
+          <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units.description')}</small>
         </p>
         {unitControls}
       </AccordionPane>
     );
   }
 
-  renderUnitsForSeries = (seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) => {
+  renderFlyoutUnitsForSeries = (seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) => {
     const containerAttributes = {
       id: `units-container-${seriesIndex}`,
       className: 'units-container',
@@ -115,13 +119,43 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
+  renderFlyoutDetails = () => {
+    const { vifAuthoring } = this.props;
+
+    if (isGrouping(vifAuthoring)) {
+      return null;
+    }
+
+    const series = getSeries(vifAuthoring).map((item, index) => {
+      return _.extend({ seriesIndex: index }, item);
+    });
+
+    const flyoutSeries = _.filter(series, (item) => {
+      return item.type === SERIES_TYPE_FLYOUT;
+    });
+
+    const attributes = {
+      isFlyoutSeries: true,
+      listItemKeyPrefix: 'LegendsAndFlyoutsPane',
+      series: flyoutSeries,
+      shouldRenderAddMeasureLink: true,
+      shouldRenderDeleteMeasureLink: true
+    };
+
+    return (
+      <AccordionPane key="details" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_details.title')}>
+        <MeasureSelector {...attributes} />
+      </AccordionPane>
+    );
+  }
+
   renderLegends = () => {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
     // Currently legends are only available for grouping or multi-series visualizations or pie charts
     const isCurrentlyPieChart = isPieChart(vifAuthoring);
 
-    if (!isGroupingOrMultiSeries(vifAuthoring) && !isCurrentlyPieChart && !hasReferenceLineLabels(vifAuthoring)) {
+    if (!isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring) && !isCurrentlyPieChart && !hasReferenceLineLabels(vifAuthoring)) {
       return null;
     }
 
@@ -144,32 +178,32 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
-  renderRegionMapControls = () => {
-    return this.renderUnits();
-  }
-
   renderBarChartControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
 
   renderColumnChartControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
 
   renderComboChartControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
-  }
-
-  renderPieChartControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
 
   renderHistogramControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
+    return [this.renderFlyoutUnits(), this.renderLegends()];
+  }
+
+  renderPieChartControls = () => {
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
+  }
+
+  renderRegionMapControls = () => {
+    return this.renderFlyoutUnits();
   }
 
   renderTimelineChartControls = () => {
-    return [this.renderUnits(), this.renderLegends()];
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
 
   renderFeatureMapControls = () => {
@@ -199,7 +233,7 @@ export class LegendsAndFlyoutsPane extends Component {
       </AccordionPane>
     );
 
-    return [this.renderUnits(), rowInspector];
+    return [this.renderFlyoutUnits(), rowInspector];
   }
 
   renderNewMapControls = () => {

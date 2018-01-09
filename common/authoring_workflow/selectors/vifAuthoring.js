@@ -1,6 +1,10 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import { COLOR_PALETTES, ERROR_BARS_DEFAULT_BAR_COLOR } from '../constants';
+import {
+  COLOR_PALETTES,
+  ERROR_BARS_DEFAULT_BAR_COLOR,
+  SERIES_TYPE_FLYOUT
+} from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {});
 export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
@@ -59,6 +63,11 @@ export const hasReferenceLineLabels = createSelector(
 export const getSeries = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series', [])
+);
+
+export const getNonFlyoutSeries = createSelector(
+  getSeries,
+  (series) => _.filter(series, (item) => item.type !== SERIES_TYPE_FLYOUT)
 );
 
 export const getUseSecondaryAxisForColumns = createSelector(
@@ -435,15 +444,15 @@ export const isGrouping = createSelector(
   (dimensionGroupingColumnName) => _.isString(dimensionGroupingColumnName)
 );
 
-export const isMultiSeries = createSelector(
-  getSeries,
+export const hasMultipleNonFlyoutSeries = createSelector(
+  getNonFlyoutSeries,
   (series) => series.length > 1
 );
 
-export const isGroupingOrMultiSeries = createSelector(
+export const isGroupingOrHasMultipleNonFlyoutSeries = createSelector(
   isGrouping,
-  isMultiSeries,
-  (isGrouping, isMultiSeries) => isGrouping || isMultiSeries
+  hasMultipleNonFlyoutSeries,
+  (isGrouping, hasMultipleNonFlyoutSeries) => isGrouping || hasMultipleNonFlyoutSeries
 );
 
 export const isStacked = createSelector(

@@ -7,9 +7,12 @@ const I18n = require('common/i18n').default;
 
 import { getMeasures } from '../helpers/measure';
 import Palette, { COLOR_VARY_BY } from '../helpers/palettes';
+import {
+  NO_VALUE_SENTINEL,
+  SERIES_TYPE_PIE_CHART,
+  SERIES_TYPE_FLYOUT
+} from './SvgConstants';
 
-const MINIMUM_PIE_CHART_WIDTH = 100;
-const MAX_HORIZONTAL_LEGEND_SIZE = 250;
 const MARGINS = {
   verticalLayoutPieMargin: 0.7,
   // arc multiplier for determining flyout position
@@ -19,33 +22,38 @@ const MARGINS = {
   // space between pie and legend, multiplied by container width
   pieToLegendMargin: 0.1
 };
+
+const LEGEND_CONTAINER_PADDING = 20;
 const LEGEND_RECT_SIZE = 18;
 const LEGEND_SPACING = 4;
-const LEGEND_CONTAINER_PADDING = 20;
 const LEGEND_WRAP_PADDING = 5;
-const VERTICAL_LEGEND_SPACING = 20;
-
+const MAX_HORIZONTAL_LEGEND_SIZE = 250;
+const MINIMUM_PIE_CHART_WIDTH = 100;
 const PERCENT_LABEL_THRESHOLD = 20;
-const VALUE_LABEL_THRESHOLD = 25;
-
 const PI2 = Math.PI * 2;
+const VALUE_LABEL_THRESHOLD = 25;
+const VERTICAL_LEGEND_SPACING = 20;
 
 function SvgPieChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
   const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
   const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
   const self = this;
+
   let $chartElement; // chart container element
-  let dataToRender; // chart data
-  let width; // container element width
-  let height; // container element height
-  let outerWidth = 0; // width of pie
-  let svg; // main svg element
-  let color; // renderData and renderLegend uses this
   let centerDot; // hidden circle at the center of pie
-  let pieData; // Result of D3's pie chart helper.
+  let color; // renderData and renderLegend uses this
+  let dataToRender; // chart data
   let dimensionIndex;
+  let flyoutDataToRender;
+  let height; // container element height
   let legend;
+  let measures;
+  let outerWidth = 0; // width of pie
+  let pieData; // Result of D3's pie chart helper.
+  let pieDataToRender;
+  let svg; // main svg element
+  let width; // container element width
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -68,18 +76,22 @@ function SvgPieChart($element, vif, options) {
 
     if (newData) {
       dataToRender = newData;
+      self.addSeriesIndices(dataToRender);
+
+      pieDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_PIE_CHART);
+      flyoutDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
     }
 
     if (newColumns) {
       this.updateColumns(newColumns);
     }
 
-    renderPie();
+    renderData();
   };
 
   this.invalidateSize = () => {
-    if ($chartElement && dataToRender) {
-      renderPie();
+    if ($chartElement && pieDataToRender) {
+      renderData();
       // TODO D3 is smart enough to not rerender things that don't need to be rerendered.
       // A separate resizeLegend is premature optimization - we can simplify and avoid
       // bugs by having all rendering happen inside of renderLegend().
@@ -112,7 +124,7 @@ function SvgPieChart($element, vif, options) {
   /**
    * Render Pie
    */
-  function renderPie() {
+  function renderData() {
 
     self.$element.find('.pie-chart').empty();
 
@@ -120,12 +132,12 @@ function SvgPieChart($element, vif, options) {
 
     // creating pie
     pieData = d3.layout.pie().value(d => d[1]).sort(null);
-    let total = dataToRender[0].rows.map(d => d[1]).reduce((acc, d) => acc + d, 0);
+    const total = pieDataToRender.rows.map(d => d[1]).reduce((acc, d) => acc + d, 0);
 
-    // not compatible with multiple series
-    const measures = getMeasures(self, dataToRender[0]);
-    dimensionIndex = dataToRender[0].columns.indexOf('dimension');
-    const measureIndex = dataToRender[0].columns.indexOf('measure');
+    measures = getMeasures(self, dataToRender);
+    dimensionIndex = pieDataToRender.columns.indexOf('dimension');
+
+    const measureIndex = 1;
     const measure = measures[0];
     measure.palette = new Palette({
       vif: self.getVif(),
@@ -148,22 +160,20 @@ function SvgPieChart($element, vif, options) {
     };
 
     // pie slices
-    let arcs = g.datum(dataToRender[0].rows).selectAll('g.slice-group').
+    let arcs = g.datum(pieDataToRender.rows).selectAll('g.slice-group').
       data(pieData).
       enter().
       append('svg:g').
       attr('class', 'slice-group').
-      attr('data-index', (d, i) => i);
+      attr('data-dimension-index', (d, dimensionIndex) => dimensionIndex);
 
     let arcPaths = arcs.
       append('path').
       attr('class', 'slice').
-      attr('data-index', (d, i) => i).
-      /* eslint-disable no-unused-vars */
-      attr('data-label', (d, i) => d.data[dimensionIndex]).
-      attr('data-value', (d, i) => d.data[measureIndex]).
-      attr('data-percent', function(d, i) {
-
+      attr('data-dimension-index', (d, dimensionIndex) => dimensionIndex).
+      attr('data-label', (d) => d.data[dimensionIndex]).
+      attr('data-value', (d) => d.data[measureIndex]).
+      attr('data-percent', (d) => {
         return (total !== 0) ?
           (100 * d.data[measureIndex]) / total :
           null;
@@ -252,7 +262,7 @@ function SvgPieChart($element, vif, options) {
   function renderLegend() {
     // create legend rows with a domain created with data and decorate rows
     legend = svg.
-      datum(dataToRender[0].rows).
+      datum(pieDataToRender.rows).
       selectAll('.legend').
       data(pieData).
       enter().
@@ -276,7 +286,7 @@ function SvgPieChart($element, vif, options) {
         return otherLabel;
       } else {
         const column = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-        return _.unescape(ColumnFormattingHelpers.formatValueHTML(columnValue, column, dataToRender[0]));
+        return _.unescape(ColumnFormattingHelpers.formatValueHTML(columnValue, column, pieDataToRender));
       }
     };
 
@@ -316,7 +326,7 @@ function SvgPieChart($element, vif, options) {
             } else if (value === otherLabel) {
               return otherLabel;
             } else {
-              return ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
+              return ColumnFormattingHelpers.formatValueHTML(value, column, pieDataToRender, true);
             }
           }
         });
@@ -502,7 +512,7 @@ function SvgPieChart($element, vif, options) {
     // single legend row height
     const legendRowHeight = LEGEND_RECT_SIZE + LEGEND_SPACING;
     // total legend height
-    const legendHeight = legendRowHeight * dataToRender[0].rows.length;
+    const legendHeight = legendRowHeight * pieDataToRender.rows.length;
     const legendLeft = pieLeft + radius + padding;
     // legend offset from top
     const legendTopOffset = (height - legendHeight) / 2;
@@ -554,8 +564,8 @@ function SvgPieChart($element, vif, options) {
 
     // bind flyout to slices
     arcs.
-      on('mouseover', (d, index) => {
-        const pathElement = svg.select(`.slice[data-index="${index}"]`)[0][0];
+      on('mouseover', (d, dimensionIndex, measureIndex) => {
+        const pathElement = svg.select(`.slice[data-dimension-index="${dimensionIndex}"]`)[0][0];
 
         // Pie chart radius
         const radius = outerWidth / 2;
@@ -604,14 +614,15 @@ function SvgPieChart($element, vif, options) {
         const flyoutPositionY = pieCenter.top + midPoint[1];
 
         const data = {
-          label: pathElement.getAttribute('data-label'),
-          value: Number(pathElement.getAttribute('data-value')),
-          percent: Math.round(Number(pathElement.getAttribute('data-percent'))),
+          dimensionIndex,
           flyoutPositionX,
-          flyoutPositionY
+          flyoutPositionY,
+          measureIndex,
+          percent: Math.round(Number(pathElement.getAttribute('data-percent'))),
+          value: Number(pathElement.getAttribute('data-value'))
         };
-        showFlyout(pathElement, data);
 
+        showFlyout(pathElement, data);
       }).
       on('mouseleave', hideFlyout);
   }
@@ -622,10 +633,10 @@ function SvgPieChart($element, vif, options) {
   function attachLegendEvents(legend) {
     // bind flyout to legend rows
     legend.
-      on('mouseover', (d, index) => {
+      on('mouseover', (d, dimensionIndex) => {
         // Delegate to slice.
         var evt = new MouseEvent('mouseover');
-        svg.node().querySelector(`.slice-group[data-index="${index}"]`).dispatchEvent(evt);
+        svg.node().querySelector(`.slice-group[data-dimension-index="${dimensionIndex}"]`).dispatchEvent(evt);
       }).
       on('mouseleave', hideFlyout);
   }
@@ -636,77 +647,68 @@ function SvgPieChart($element, vif, options) {
    * @param element
    * @param data
    */
-  function showFlyout(element, data) {
+  function showFlyout(
+    element,
+    {
+      dimensionIndex,
+      flyoutPositionX,
+      flyoutPositionY,
+      measureIndex,
+      percent,
+      value
+    }) {
 
-    const label = self.getVif().series.map(series => series.label)[0];
-    const seriesIndex = self.getSeriesIndexByLabel(label);
+    // Slices
+    const measure = measures[measureIndex][0];
+    const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
+    const titleHTML = element.getAttribute('data-label') || noValueLabel;
 
-    const titleValue = _.get(
-      data,
-      'label'
-    );
-
-    let titleHTML;
-
-    if (_.isNil(titleValue)) {
-      titleHTML = noValueLabel;
-    } else if (titleValue === otherLabel) {
-      titleHTML = otherLabel;
-    } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-      titleHTML = ColumnFormattingHelpers.formatValueHTML(titleValue, column, dataToRender[0]);
-    }
-
-    // not compatible with multiple series
-    const percentSymbol = I18n.t(
-      'shared.visualizations.charts.common.percent_symbol'
-    );
-    const percentAsString = (data.percent !== null) ?
-      `(${data.percent}${percentSymbol})` :
-      '';
-
-    // Constructing html table for flyout content
-    const $title = $('<tr>', { 'class': 'socrata-flyout-title' }).
-      append($('<td>', { 'colspan': 2 }).html(titleHTML || ''));
+    const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
+      append($('<td>', { 'colspan': 2 }).html(titleHTML));
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
     const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($title);
-    const value = data.value;
+      append($titleRow);
+    const $tableContainer = $('<div>').
+      append($table);
 
-    let valueHTML;
+    const valueHTML = self.getValueHtml({
+      dataToRender,
+      seriesIndex,
+      value,
+      percent
+    });
 
-    if (value === null) {
-      valueHTML = noValueLabel;
-    } else {
-      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
-      valueHTML = ColumnFormattingHelpers.formatValueHTML(value, column, dataToRender[0], true);
-
-      if (value === 1) {
-        valueHTML += ` ${_.escape(self.getUnitOneBySeriesIndex(seriesIndex))}`;
-      } else {
-        valueHTML += ` ${_.escape(self.getUnitOtherBySeriesIndex(seriesIndex))}`;
-      }
-
-    }
-
-    $valueCell.html(`${valueHTML} ${percentAsString}`);
+    $valueCell.html(valueHTML);
 
     $valueRow.
-      append([$valueCell]).
+      append($valueCell).
       appendTo($table);
 
+    // Flyout measures
+    const $flyoutTable = self.getFlyoutMeasuresTable({
+      dataToRender,
+      flyoutDataToRender,
+      measures,
+      dimensionIndex
+    });
+
+    if (!_.isNil($flyoutTable)) {
+      $tableContainer.append($flyoutTable);
+    }
+
+    // Payload
     const payload = {
       element,
-      content: $table,
+      content: $tableContainer,
       // Not sure about making these values hardcoded
       rightSideHint: false,
       belowTarget: false,
       dark: true,
       // Flyout offset comes from event data
       flyoutOffset: {
-        left: data.flyoutPositionX,
-        top: data.flyoutPositionY
+        left: flyoutPositionX,
+        top: flyoutPositionY
       }
     };
 

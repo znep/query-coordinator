@@ -928,6 +928,8 @@ en:
               none_selected: None Selected
               select_column: Select Column...
               upper_bound_column: Upper Bound Column
+            flyout_measure:
+              add_flyout_value: Add Flyout Value
             line_map_options:
               line_weight_by_value: Scale Line Weight by Value
               line_color_by_value: Color by Value
@@ -1016,9 +1018,11 @@ en:
             legends:
               title: Legends
             row_inspector_title: Point Inspector Title
-            units:
+            flyout_units:
               description: Unit label displayed in flyouts describing chart values.
               title: Flyout Unit Label
+            flyout_details:
+              title: Flyout Details
           title: Legends and Flyouts
         nothing_here: There's nothing to configure in this pane yet!
         presentation:

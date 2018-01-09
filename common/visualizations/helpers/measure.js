@@ -68,7 +68,7 @@ export const getMeasures = (chart, dataToRender) => {
   const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
   const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
 
-  if (chart.isMultiSeries()) {
+  if (chart.hasMultipleNonFlyoutSeries() || chart.hasFlyoutSeries()) {
     // This is actually "(Count of Rows)". While the behavior is correct (Count of Rows shows
     // up in the flyout), it's very confusing. Not to be confused with
     // 'shared.visualizations.charts.common.no_value'

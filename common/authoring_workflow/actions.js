@@ -152,46 +152,51 @@ export function setDimension(dimension) {
 }
 
 export const APPEND_SERIES = 'APPEND_SERIES';
-export function appendSeries({ isInitialLoad, seriesIndex = -1 }) {
+export function appendSeries({ isFlyoutSeries, isInitialLoad, measureColumnName, seriesVariant }) {
   return {
     type: APPEND_SERIES,
+    isFlyoutSeries,
     isInitialLoad,
-    seriesIndex
+    measureColumnName,
+    seriesVariant
   };
 }
 
 export const REMOVE_SERIES = 'REMOVE_SERIES';
-export function removeSeries(seriesIndex) {
+export function removeSeries({ isFlyoutSeries, relativeIndex }) {
   return {
     type: REMOVE_SERIES,
-    seriesIndex
+    isFlyoutSeries,
+    relativeIndex
   };
 }
 
-export const SET_SERIES_TYPE = 'SET_SERIES_TYPE';
-export function setSeriesType(seriesIndex, seriesType) {
+export const SET_SERIES_VARIANT = 'SET_SERIES_VARIANT';
+export function setSeriesVariant(seriesIndex, seriesVariant) {
   return {
-    type: SET_SERIES_TYPE,
+    type: SET_SERIES_VARIANT,
     seriesIndex,
-    seriesType
-  };
-}
-
-export const SET_MEASURE = 'SET_MEASURE';
-export function setMeasure(seriesIndex, columnName) {
-  return {
-    type: SET_MEASURE,
-    seriesIndex,
-    columnName
+    seriesVariant
   };
 }
 
 export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
-export function setMeasureAggregation(seriesIndex, aggregationFunction) {
+export function setMeasureAggregation({ aggregationFunction, isFlyoutSeries, relativeIndex }) {
   return {
     type: SET_MEASURE_AGGREGATION,
-    seriesIndex,
-    aggregationFunction
+    aggregationFunction,
+    isFlyoutSeries,
+    relativeIndex
+  };
+}
+
+export const SET_MEASURE_COLUMN = 'SET_MEASURE_COLUMN';
+export function setMeasureColumn({ columnName, isFlyoutSeries, relativeIndex }) {
+  return {
+    type: SET_MEASURE_COLUMN,
+    columnName,
+    isFlyoutSeries,
+    relativeIndex
   };
 }
 

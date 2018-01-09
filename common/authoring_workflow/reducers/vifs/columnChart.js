@@ -3,8 +3,9 @@ import * as actions from '../../actions';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
+  appendSeries,
   forEachSeries,
-  isGroupingOrMultiSeries,
+  isGroupingOrHasMultipleNonFlyoutSeries,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty,
   setStringValueOrDeleteProperty,
@@ -68,15 +69,18 @@ export default function columnChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (isGroupingOrMultiSeries(state)) {
+      if (isGroupingOrHasMultipleNonFlyoutSeries(state)) {
         forEachSeries(state, series => {
           setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette);
         });
       }
       break;
 
-    case actions.APPEND_REFERENCE_LINE:
     case actions.APPEND_SERIES:
+      appendSeries(state, action);
+      break;
+
+    case actions.APPEND_REFERENCE_LINE:
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_REFERENCE_LINE:
     case actions.REMOVE_SERIES:
@@ -90,10 +94,10 @@ export default function columnChart(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_LABEL_BOTTOM:
     case actions.SET_LABEL_LEFT:
-    case actions.SET_MEASURE:
     case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
+    case actions.SET_MEASURE_COLUMN:
     case actions.SET_ORDER_BY:
     case actions.SET_PRECISION:
     case actions.SET_PRIMARY_COLOR:

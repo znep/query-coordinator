@@ -3,13 +3,24 @@ import renderComponent from '../renderComponent';
 import { ComboChartMeasureSelector } from 'common/authoring_workflow/components/ComboChartMeasureSelector';
 import I18n from 'common/i18n';
 
+const props = {
+  series: [{
+    dataSource: {
+      dimension: {
+        columnName: 'category',
+        aggregationFunction: null
+      }
+    }
+  }]
+};
+
 describe('ComboChartMeasureSelector', () => {
 
   describe('rendering', () => {
     var component;
 
     beforeEach(() => {
-      component = renderComponent(ComboChartMeasureSelector);
+      component = renderComponent(ComboChartMeasureSelector, props);
     });
 
     it('renders combo chart measure selector tabs list', () => {

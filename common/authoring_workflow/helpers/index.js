@@ -5,7 +5,11 @@ import {
   AGGREGATION_TYPES,
   COLOR_PALETTE_VALUES,
   DEFAULT_PRIMARY_COLOR,
-  DEFAULT_SECONDARY_COLOR
+  DEFAULT_SECONDARY_COLOR,
+  SERIES_TYPE_COMBO_CHART,
+  SERIES_TYPE_COMBO_CHART_COLUMN,
+  SERIES_TYPE_FLYOUT,
+  SERIES_VARIANT_COLUMN
 } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
@@ -105,38 +109,80 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
     dimensionGroupingColumnName
   );
 
-  if (dimensionGroupingColumnName === null) {
+  if (dimensionGroupingColumnName === null) { // removing grouping
 
-    // If the dimension grouping functionality is being disabled, then we
-    // also want to remove any color palette and legend visibility that has been set.
+    // Remove any properties that do not apply
     _.unset(state, 'series[0].color.palette');
     _.unset(state, 'series[0].dataSource.dimension.grouping');
     _.unset(state, 'series[0].stacked');
 
+    // Try to remove legend
     tryUnsetShowLegend(state);
 
-  } else {
+  } else { // applying grouping
 
-    // Otherwise, if the color palette has not yet been set, then assign
-    // the default palette.
+    // Assign the default color palette
     if (_.isEmpty(_.get(state, 'series[0].color.palette'))) {
       _.set(state, 'series[0].color.palette', 'categorical');
     }
 
+    // Remove any flyout series
+    for (var i = state.series.length - 1; i >= 0; i--) {
+      if (state.series[i].type === SERIES_TYPE_FLYOUT) {
+        state.series.splice(i, 1);
+      }
+    }
+
+    // Try to show legend
     trySetShowLegend(state);
   }
 };
 
-export const appendSeries = (state, { isInitialLoad, seriesIndex }) => {
+export const appendSeries = (state, { isFlyoutSeries, isInitialLoad, measureColumnName, seriesVariant }) => {
+  const series = _.get(state, 'series', []);
+  const seriesType = _.get(state, 'series[0].type', '');
 
-  // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
-  // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
+  let seriesIndex;
+
+  // This is the ordering of series:
+  // Combo chart: .column, .line, .flyout
+  // Others: no variants, .flyout
+  if (isFlyoutSeries) {
+
+    // Insert flyout series at the end
+    seriesIndex = series.length;
+
+  } else if (seriesType.includes(SERIES_TYPE_COMBO_CHART) && (seriesVariant === SERIES_VARIANT_COLUMN)) {
+
+    // For comboChart, insert column series after the last column series or if there are none, insert it at index 0.
+    seriesIndex = _.findLastIndex(series, (item) => item.type === SERIES_TYPE_COMBO_CHART_COLUMN) + 1;
+
+  } else {
+
+    // For other chart types, insert series after the last non-flyout series  or if there are none, insert it at index 0.
+    seriesIndex = _.findLastIndex(series, (item) => (item.type !== SERIES_TYPE_FLYOUT)) + 1;
+  }
+
+  addSeries(state, { isFlyoutSeries, isInitialLoad, measureColumnName, seriesIndex, seriesVariant });
+};
+
+export const addSeries = (state, { isFlyoutSeries, isInitialLoad, measureColumnName, seriesIndex, seriesVariant }) => {
+  // All vizualizations that support multi-series renderings have the same number of series.  For
+  // example, combo chart will have some series types that are comboChart.column or comboChart.line
+  // the total number of renderable series is the same any other visualization that supports multi-
+  // series rendering.
   //
-  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to
-  // 'categorical' and set the primary and secondary colors of the first series to the first color in the 'categorical'
-  // color palette.
+  // For multi-series, we use the color palette on the first series, but the palettes on all series
+  // should be in sync so that if the first series is deleted, the palette can be obtained from the
+  // second (now first) series.
   //
-  if ((state.series.length == 1) && !isInitialLoad) {
+  // If we are transitioning to multi-series in this method (and not during the initial load), set
+  // the palette to 'categorical' and set the primary and secondary colors of the first series to
+  // the first color in the 'categorical' color palette.
+  //
+  const nonFlyoutSeries = _.filter(state.series, (item) => item.type !== SERIES_TYPE_FLYOUT);
+
+  if ((nonFlyoutSeries.length == 1) && !isInitialLoad && !isFlyoutSeries) {
     const color = COLOR_PALETTE_VALUES.categorical[0];
 
     _.set(state, 'series[0].color.palette', 'categorical');
@@ -155,19 +201,46 @@ export const appendSeries = (state, { isInitialLoad, seriesIndex }) => {
 
   // Set primary color equal to the index color of the current color palette.  If no palette is set, use categorical.
   //
-  const palette = _.get(clonedSeries, 'color.palette', 'categorical');
+  let palette = _.get(clonedSeries, 'color.palette', 'categorical');
+
+  if (_.isNil(palette) || (palette === 'custom')) {
+    palette = 'categorical';
+  }
+
   const colors = COLOR_PALETTE_VALUES[palette];
   const index = state.series.length % colors.length;
 
   _.set(clonedSeries, 'color.primary', colors[index]);
   _.set(clonedSeries, 'color.secondary', colors[index]);
 
+  // Set series type like: "comboChart.line" or "flyout"
+  if (!_.isNil(seriesVariant)) {
+
+    // If the series variant is specified, append to the series type like "comboChart.column" or "comboChart.line"
+    const stateSeriesType = _.get(clonedSeries, 'type', '').split('.')[0];
+    _.set(clonedSeries, 'type', `${stateSeriesType}.${seriesVariant}`);
+
+  } else if (isFlyoutSeries) {
+
+    // If this is a flyout series, set type to "flyout"
+    _.set(clonedSeries, 'type', SERIES_TYPE_FLYOUT);
+  }
+
+  // Unset any properties we don't want cloned
+  //
+  _.unset(clonedSeries, 'unit');
+
   // Add the series
   //
-  if (seriesIndex == -1) {
-    state.series.push(clonedSeries); // append
-  } else {
-    state.series.splice(seriesIndex, 0, clonedSeries); // insert at seriesIndex
+  state.series.splice(seriesIndex, 0, clonedSeries);
+
+  // Set measure column name
+  //
+  if (!_.isNil(measureColumnName)) {
+    setMeasureColumnAtSeriesIndex(state, {
+      columnName: measureColumnName,
+      seriesIndex
+    });
   }
 
   // Adjust any other properties in the vif for multi-series
@@ -181,7 +254,41 @@ export const appendSeries = (state, { isInitialLoad, seriesIndex }) => {
   trySetShowLegend(state);
 };
 
-export const removeSeries = (state, seriesIndex) => {
+export const setMeasureAggregation = (state, { aggregationFunction, isFlyoutSeries, relativeIndex }) => {
+  const seriesIndex = isFlyoutSeries ?
+    getSeriesIndexFromFlyoutSeriesRelativeIndex(state, relativeIndex) :
+    relativeIndex;
+
+  // Set aggregation function
+  const series = state.series[seriesIndex];
+  _.set(series, 'dataSource.measure.aggregationFunction', aggregationFunction);
+};
+
+export const setMeasureColumn = (state, { columnName, isFlyoutSeries, relativeIndex }) => {
+  const seriesIndex = isFlyoutSeries ?
+    getSeriesIndexFromFlyoutSeriesRelativeIndex(state, relativeIndex) :
+    relativeIndex;
+
+  setMeasureColumnAtSeriesIndex(state, { columnName, seriesIndex });
+};
+
+function setMeasureColumnAtSeriesIndex(state, { columnName, seriesIndex }) {
+
+  // Set column name and aggregation function
+  const series = state.series[seriesIndex];
+  _.set(series, 'dataSource.measure.columnName', columnName);
+
+  if (_.isNull(columnName)) {
+    _.set(series, 'dataSource.measure.aggregationFunction', 'count');
+  } else if (series.dataSource.measure.aggregationFunction === 'count') {
+    _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
+  }
+}
+
+export const removeSeries = (state, { isFlyoutSeries, relativeIndex }) => {
+  const seriesIndex = isFlyoutSeries ?
+    getSeriesIndexFromFlyoutSeriesRelativeIndex(state, relativeIndex) :
+    relativeIndex;
 
   // Remove the series
   //
@@ -189,14 +296,32 @@ export const removeSeries = (state, seriesIndex) => {
 
   // If no longer multi-series, remove multi-series properties
   //
-  if (state.series.length == 1) {
+  const renderableSeries = _.filter(state.series, (item) => item.type !== SERIES_TYPE_FLYOUT);
+
+  if (renderableSeries.length == 1) {
     _.unset(state, 'series[0].color.palette');
     _.unset(state, 'series[0].stacked');
 
     _.set(state, 'series[0].color.primary', DEFAULT_PRIMARY_COLOR);
     _.set(state, 'series[0].color.secondary', DEFAULT_SECONDARY_COLOR);
+  }
 
-    tryUnsetShowLegend(state);
+  tryUnsetShowLegend(state);
+};
+
+export const setSeriesVariant = (state, { seriesIndex, seriesVariant }) => {
+  if (seriesIndex < state.series.length) {
+    const series = state.series[seriesIndex];
+    let parts = series.type.split('.');
+
+    if (parts.length == 1) {
+      parts.push(seriesVariant);
+    } else if (parts.length > 1) {
+      parts[1] = seriesVariant;
+    }
+
+    const seriesType = parts.join('.');
+    _.set(series, 'type', seriesType);
   }
 };
 
@@ -205,7 +330,7 @@ export const removeSeries = (state, seriesIndex) => {
 //
 export const tryUnsetShowLegend = (state) => {
 
-  if (isGroupingOrMultiSeries(state)) {
+  if (isGroupingOrHasMultipleNonFlyoutSeries(state)) {
     return;
   }
 
@@ -223,18 +348,18 @@ export const tryUnsetShowLegend = (state) => {
 export const trySetShowLegend = (state) => {
   const referenceLinesWithLabels = _.filter(state.referenceLines, (line) => !_.isEmpty(line.label));
 
-  if (!isGroupingOrMultiSeries(state) && (referenceLinesWithLabels.length == 0)) {
+  if (!isGroupingOrHasMultipleNonFlyoutSeries(state) && (referenceLinesWithLabels.length == 0)) {
     return;
   }
 
   _.set(state, 'configuration.showLegend', true);
 };
 
-export const isGroupingOrMultiSeries = (state) => {
-  const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping') !== undefined);
-  const isMultiSeries = (state.series.length > 1);
+export const isGroupingOrHasMultipleNonFlyoutSeries = (state) => {
+  const isGrouping = !_.isNil(_.get(state, 'series[0].dataSource.dimension.grouping'));
 
-  return isGrouping || isMultiSeries;
+  const filteredSeries = _.filter(state.series, (item) => item.type !== SERIES_TYPE_FLYOUT);
+  return isGrouping || (filteredSeries.length > 1);
 };
 
 export const getMeasureTitle = (metadata, series) => {
@@ -252,3 +377,16 @@ export const getMeasureTitle = (metadata, series) => {
     return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
   }
 };
+
+// Private functions
+//
+function getSeriesIndexFromFlyoutSeriesRelativeIndex(state, flyoutSeriesIndex) {
+
+  const firstFlyoutSeriesIndex = _.findIndex(state.series, (item) => item.type === SERIES_TYPE_FLYOUT);
+
+  const seriesIndex = (firstFlyoutSeriesIndex == -1) ?
+    flyoutSeriesIndex :
+    firstFlyoutSeriesIndex + flyoutSeriesIndex;
+
+  return seriesIndex;
+}

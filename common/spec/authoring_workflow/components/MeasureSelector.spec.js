@@ -65,38 +65,39 @@ var validVifAuthoringMultiSeriesMax = {
   }
 };
 
-describe('MeasureSelector', function() {
-  describe('rendering', function() {
+describe('MeasureSelector', () => {
+  describe('rendering', () => {
     var component;
 
-    describe('without metadata data', function() {
-      beforeEach(function() {
+    describe('without metadata data', () => {
+      beforeEach(() => {
         component = renderComponent(MeasureSelector, defaultProps({
           metadata: { data: null },
           series: validVifAuthoring.vifs.columnChart.series
         }));
       });
 
-      it('does not render a dropdown', function() {
+      it('does not render a dropdown', () => {
         assert.isNull(component);
       });
     });
 
-    describe('with data', function() {
-      beforeEach(function() {
+    describe('with data', () => {
+      beforeEach(() => {
         component = renderComponent(MeasureSelector, defaultProps({
           metadata: validMetadata,
-          series: validVifAuthoring.vifs.columnChart.series
+          series: validVifAuthoring.vifs.columnChart.series,
+          shouldRenderAddMeasureLink: true
         }));
       });
 
-      it('renders measure selection', function() {
+      it('renders measure selection', () => {
         assert.isNotNull(component.querySelector('#measure-selection-0'));
         assert.equal(component.querySelectorAll('#measure-selection-0 .picklist-option').length, 4);
       });
 
-      describe('with a measure selected', function() {
-        beforeEach(function() {
+      describe('with a measure selected', () => {
+        beforeEach(() => {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: validMetadata,
             vifAuthoring: validVifAuthoring,
@@ -104,13 +105,13 @@ describe('MeasureSelector', function() {
           }));
         });
 
-        it('renders measure aggregation selection', function() {
+        it('renders measure aggregation selection', () => {
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-0'));
         });
       });
 
-      describe('when there are no numeric columns', function() {
-        beforeEach(function() {
+      describe('when there are no numeric columns', () => {
+        beforeEach(() => {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: nonNumericMetadata,
             vifAuthoring: validVifAuthoring,
@@ -118,29 +119,30 @@ describe('MeasureSelector', function() {
           }));
         });
 
-        it('renders a disabled selector', function() {
+        it('renders a disabled selector', () => {
           assert.isNotNull(component.querySelector('#measure-selection-0.dropdown-disabled'));
         });
       });
 
-      it('does not render the delete measure link', function() {
+      it('does not render the delete measure link', () => {
         assert.isNull(component.querySelector('#measure-delete-link-0'));
       });
 
-      it('renders the "Add Measure" link', function() {
+      it('renders the "Add Measure" link', () => {
         assert.isNotNull(component.querySelector('#measure-add-measure-link'));
       });
 
-      describe('with multi-series measures', function() {
-        beforeEach(function() {
+      describe('with multi-series measures', () => {
+        beforeEach(() => {
           component = renderComponent(MeasureSelector, defaultProps({
             metadata: validMetadata,
             vifAuthoring: validVifAuthoringMultiSeriesMax,
-            series: validVifAuthoringMultiSeriesMax.vifs.columnChart.series
+            series: validVifAuthoringMultiSeriesMax.vifs.columnChart.series,
+            shouldRenderDeleteMeasureLink: true
           }));
         });
 
-        it('renders measure selection', function() {
+        it('renders measure selection', () => {
           assert.isNotNull(component.querySelector('#measure-selection-0'));
           assert.isNotNull(component.querySelector('#measure-selection-1'));
           assert.isNotNull(component.querySelector('#measure-selection-2'));
@@ -155,7 +157,7 @@ describe('MeasureSelector', function() {
           assert.isNotNull(component.querySelector('#measure-selection-11'));
         });
 
-        it('renders measure aggregation selection', function() {
+        it('renders measure aggregation selection', () => {
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-0'));
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-1'));
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-2'));
@@ -170,7 +172,7 @@ describe('MeasureSelector', function() {
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-11'));
         });
 
-        it('renders measure delete link', function() {
+        it('renders measure delete link', () => {
           assert.isNotNull(component.querySelector('#measure-delete-link-0'));
           assert.isNotNull(component.querySelector('#measure-delete-link-1'));
           assert.isNotNull(component.querySelector('#measure-delete-link-2'));
@@ -185,14 +187,30 @@ describe('MeasureSelector', function() {
           assert.isNotNull(component.querySelector('#measure-delete-link-11'));
         });
 
-        it('does not render the "Add Measure" link with 12 measures showing', function() {
+        it('does not render the "Add Measure" link with 12 measures showing', () => {
           assert.isNull(component.querySelector('#measure-add-measure-link'));
         });
       });
     });
+
+    describe('with data and with flyout series variant', () => {
+      beforeEach(() => {
+        component = renderComponent(MeasureSelector, defaultProps({
+          isFlyoutSeries: true,
+          metadata: validMetadata,
+          series: validVifAuthoring.vifs.columnChart.series,
+          shouldRenderAddMeasureLink: true
+        }));
+      });
+
+      it('renders the "Add Flyout Value" link', () => {
+        assert.isNotNull(component.querySelector('#measure-add-measure-link'));
+        assert.equal(component.querySelector('#measure-add-measure-link').textContent, 'Add Flyout Value');
+      });
+    });
   });
 
-  describe('events', function() {
+  describe('events', () => {
     var props;
     var component;
     var overrides = {
@@ -201,12 +219,13 @@ describe('MeasureSelector', function() {
       onSetMeasureColumn: sinon.stub(),
       onSetMeasureAggregation: sinon.stub(),
       onAddMeasure: sinon.stub(),
-      onRemoveMeasure: sinon.stub(),
-      series: validVifAuthoringMultiSeries.vifs.columnChart.series
+      onRemoveSeries: sinon.stub(),
+      series: validVifAuthoringMultiSeries.vifs.columnChart.series,
+      shouldRenderDeleteMeasureLink: true
     };
 
     var emitsDropdownEvent = function(selector, eventName) {
-      it(`should emit an ${eventName} event.`, function() {
+      it(`should emit an ${eventName} event.`, () => {
         var option = component.querySelector(`${selector} .picklist-option`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
@@ -214,28 +233,28 @@ describe('MeasureSelector', function() {
     };
 
     var emitsClickEvent = function(selector, eventName) {
-      it(`should emit an ${eventName} event.`, function() {
+      it(`should emit an ${eventName} event.`, () => {
         var option = component.querySelector(`${selector}`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });
     };
 
-    beforeEach(function() {
+    beforeEach(() => {
       props = defaultProps(overrides);
       component = renderComponent(MeasureSelector, props);
     });
 
-    describe('when changing the measure dropdown', function() {
+    describe('when changing the measure dropdown', () => {
       emitsDropdownEvent('#measure-selection-0', 'onSetMeasureColumn');
     });
 
-    describe('when changing the measure aggregation dropdown', function() {
+    describe('when changing the measure aggregation dropdown', () => {
       emitsDropdownEvent('#measure-aggregation-selection-0', 'onSetMeasureAggregation');
     });
 
-    describe('when clicking a delete link', function() {
-      emitsClickEvent('#measure-delete-link-0', 'onRemoveMeasure');
+    describe('when clicking a delete link', () => {
+      emitsClickEvent('#measure-delete-link-0', 'onRemoveSeries');
     });
   });
 });

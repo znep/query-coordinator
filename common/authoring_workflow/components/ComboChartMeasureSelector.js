@@ -7,9 +7,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Tabs from './shared/Tabs';
 import {
-  COMBO_CHART_COLUMN,
-  COMBO_CHART_LINE
+  SERIES_TYPE_COMBO_CHART_COLUMN,
+  SERIES_TYPE_COMBO_CHART_LINE,
+  SERIES_VARIANT_COLUMN,
+  SERIES_VARIANT_LINE
 } from '../constants';
+import { isPieChart } from '../selectors/vifAuthoring';
 
 export class ComboChartMeasureSelector extends Component {
   constructor(props) {
@@ -24,17 +27,25 @@ export class ComboChartMeasureSelector extends Component {
     switch (this.state.tabIndex) {
       case ComboChartMeasureSelector.columnTabIndex:
         attributes = {
+          isFlyoutSeries: false,
           key: ComboChartMeasureSelector.columnTabIndex,
-          series: _.filter(series, (series) => series.type === COMBO_CHART_COLUMN),
-          seriesType: COMBO_CHART_COLUMN
+          listItemKeyPrefix: SERIES_TYPE_COMBO_CHART_COLUMN,
+          series: _.filter(series, (series) => series.type === SERIES_TYPE_COMBO_CHART_COLUMN),
+          seriesVariant: SERIES_VARIANT_COLUMN,
+          shouldRenderAddMeasureLink: true,
+          shouldRenderDeleteMeasureLink: (series.length > 1)
         };
         break;
 
       case ComboChartMeasureSelector.lineTabIndex:
         attributes = {
+          isFlyoutSeries: false,
           key: ComboChartMeasureSelector.linesTabIndex,
-          series: _.filter(series, (series) => series.type === COMBO_CHART_LINE),
-          seriesType: COMBO_CHART_LINE
+          listItemKeyPrefix: SERIES_TYPE_COMBO_CHART_LINE,
+          series: _.filter(series, (series) => series.type === SERIES_TYPE_COMBO_CHART_LINE),
+          seriesVariant: SERIES_VARIANT_LINE,
+          shouldRenderAddMeasureLink: true,
+          shouldRenderDeleteMeasureLink: (series.length > 1)
         };
         break;
 

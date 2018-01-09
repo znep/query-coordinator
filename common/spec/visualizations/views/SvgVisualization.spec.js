@@ -12,7 +12,7 @@ import {
   DEFAULT_SECONDARY_COLOR,
   DEFAULT_HIGHLIGHT_COLOR,
   COLOR_PALETTES
-} from 'common/visualizations/views/SvgStyleConstants';
+} from 'common/visualizations/views/SvgConstants';
 import mockVif from '../mockVif';
 import mockMultiseriesVif from '../mockMultiseriesVif';
 const mockVifDomain = mockVif.series[0].dataSource.domain;
@@ -607,10 +607,10 @@ describe('SvgVisualization', () => {
     });
   });
 
-  describe('#isGroupingOrMultiSeries', () => {
+  describe('#isGroupingOrHasMultipleNonFlyoutSeries', () => {
     it('returns true when a vif contains a grouping dimension', () => {
       const viz = new SvgVisualization($element, mockVif);
-      assert.isNotTrue(viz.isGroupingOrMultiSeries());
+      assert.isNotTrue(viz.isGroupingOrHasMultipleNonFlyoutSeries());
 
       const copiedVif = _.cloneDeep(viz.getVif());
       const addedGrouping = {
@@ -618,12 +618,12 @@ describe('SvgVisualization', () => {
       };
       _.merge(copiedVif.series[0].dataSource.dimension, addedGrouping);
       viz.updateVif(copiedVif);
-      assert.isTrue(viz.isGroupingOrMultiSeries());
+      assert.isTrue(viz.isGroupingOrHasMultipleNonFlyoutSeries());
     });
 
     it('returns true when a vif contains multiple series objects', () => {
       const viz = new SvgVisualization($element, mockMultiseriesVif);
-      assert.isTrue(viz.isGroupingOrMultiSeries());
+      assert.isTrue(viz.isGroupingOrHasMultipleNonFlyoutSeries());
     });
   });
 

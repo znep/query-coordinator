@@ -158,7 +158,7 @@
             <dd>
               <p><%= one_button_form(url: delete_domain_path, text: 'Mark Domain as Deleted') %></p>
               <br/>
-              <p>This will set deleted_at for the domain in metadb (soft-delete). This removes the domain from the api results for allCustomerDomains. This means we can stop monitoring the domain, and stop indexing the domain for search, but we will not delete the data.</p>
+              <p>This will set deleted_at for the domain in metadb (soft-delete). This removes the domain from the api results for allCustomerDomains.  Some APIs like api/views/{id}[?method=getByIds], /resource/{id} will no longer work.  This means we will stop monitoring the domain, and stop indexing the domain for search. Once the name (not cname) of the domain is set to contain "delete" and the deleted_at property is not null, all extant customer data associated with the domain may be deleted at any time.</p>
             </dd>
           <%- end %>
         </dl>

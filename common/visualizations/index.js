@@ -14,6 +14,7 @@ import SvgPieChart from './SvgPieChart';
 import DistributionChart from './DistributionChart';
 import FeatureMap from './FeatureMap';
 import SvgFeatureMap from './SvgFeatureMap';
+import UnifiedMap from './UnifiedMap';
 import Table from './Table';
 import TimelineChart from './TimelineChart';
 import SvgTimelineChart from './SvgTimelineChart';
@@ -33,6 +34,7 @@ module.exports = {
   SvgColumnChart,
   SvgComboChart,
   SvgFeatureMap,
+  UnifiedMap,
   SvgHistogram,
   SvgPieChart,
   SvgRegionMap,

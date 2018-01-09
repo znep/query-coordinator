@@ -13,6 +13,7 @@ import './componentSocrataVisualizationColumnChart';
 import './componentSocrataVisualizationComboChart';
 import './componentSocrataVisualizationFeatureMap';
 import './componentSocrataVisualizationHistogram';
+import './componentSocrataVisualizationMap';
 import './componentSocrataVisualizationPieChart';
 import './componentSocrataVisualizationRegionMap';
 import './componentSocrataVisualizationTable';

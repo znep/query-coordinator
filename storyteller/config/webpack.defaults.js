@@ -86,15 +86,22 @@ function withExtraBabelPlugins(extraPlugins) {
             require.resolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
             require.resolve('sass-loader')
           ]
+        },
+        // Expose mapbox-gl used in authoring workflow.
+        {
+          test: /node_modules\/@socrata\/mapbox-gl/,
+          loader: require.resolve('imports-loader')
         }
       ],
+      noParse: /node_modules\/@socrata\/mapbox-gl/
     },
     sassLoader: {
       includePaths: getStyleguideIncludePaths()
     },
     resolve: {
       alias: {
-        'squire': path.resolve(storytellerRoot, 'node_modules/squire-rte/build/squire-raw.js')
+        'squire': path.resolve(storytellerRoot, 'node_modules/squire-rte/build/squire-raw.js'),
+        'mapbox-gl': path.resolve('./node_modules/@socrata/mapbox-gl/dist/mapbox-gl.js')
       },
       root: [ path.resolve(storytellerRoot, '..'), path.resolve(storytellerRoot, 'app/assets/javascripts/') ],
       modulesDirectories: [ path.resolve(storytellerRoot, 'node_modules') ]

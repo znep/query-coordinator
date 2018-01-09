@@ -22,7 +22,10 @@ module.exports = {
     stats: 'minimal',
     hot: true
   },
-  module: { preLoaders },
+  module: {
+    preLoaders,
+    noParse: /node_modules\/@socrata\/mapbox-gl/
+  },
   sassLoader: {
     includePaths: getStyleguideIncludePaths()
   },

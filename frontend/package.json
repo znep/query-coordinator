@@ -80,6 +80,7 @@
     "karma-mocha-reporter": "2.2.3",
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "1.7.0",
+    "@socrata/mapbox-gl": "0.0.2",
     "mocha": "3.2.0",
     "modularscale-sass": "2.1.1",
     "ngtemplate-loader": "WearyMonkey/ngtemplate-loader#63e3461",

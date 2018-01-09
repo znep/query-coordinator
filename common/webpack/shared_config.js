@@ -18,6 +18,7 @@ function getStyleguideIncludePaths() {
     'node_modules',
     'node_modules/bourbon-neat/app/assets/stylesheets',
     'node_modules/bourbon/app/assets/stylesheets',
+    'node_modules/@socrata/mapbox-gl/dist',
     'node_modules/modularscale-sass/stylesheets',
     'node_modules/normalize-scss/sass',
     'node_modules/react-datepicker/dist',

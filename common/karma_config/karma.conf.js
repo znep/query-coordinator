@@ -82,7 +82,8 @@ var webpackConfig = {
           nodeResolve('yaml-loader')
         ]
       }
-    ]
+    ],
+    noParse: /node_modules\/@socrata\/mapbox-gl/
   },
   sassLoader: {
     // Sets the search path for @include directives SPECIFICALLY in *.scss files.
@@ -95,6 +96,7 @@ var webpackConfig = {
       `${platformUiRoot}/node_modules/react-input-range/dist`,
       `${platformUiRoot}/node_modules/react-datepicker/dist`,
       `${platformUiRoot}/common/authoring_workflow`,
+      `${platformUiRoot}/common/karma_config/node_modules/@socrata/mapbox-gl/dist`,
       `${platformUiRoot}/common`,
       platformUiRoot
     ]
@@ -112,6 +114,9 @@ var webpackConfig = {
       // Allow code under test to require dependencies in karma_config's package.json.
       `${platformUiRoot}/common/karma_config/node_modules`
     ],
+    alias: {
+      'mapbox-gl': `${platformUiRoot}/common/karma_config/node_modules/@socrata/mapbox-gl/dist/mapbox-gl.js`
+    },
     modulesDirectories: [path.resolve(platformUiRoot)]
   },
   externals: {

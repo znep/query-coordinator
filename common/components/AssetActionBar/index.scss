@@ -1,6 +1,14 @@
 @import "components/publication_action/index";
 @import "components/publication_state/index";
 
+#site-chrome-admin-header + #asset-action-bar-container {
+  margin-top: 46px;
+}
+
+#site-chrome-admin-header.site-chrome-small + #asset-action-bar-container {
+  margin-top: 32px;
+}
+
 .asset-action-bar {
   background-color: $header-bg-color;
   display: flex;

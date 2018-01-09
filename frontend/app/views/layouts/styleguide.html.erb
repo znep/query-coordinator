@@ -31,15 +31,18 @@ http://www.socrata.com
         <%= I18n.t('dataset.skip-to-content') %>
       </a>
     </div>
+    <%- @unfixed_headers = 0 %>
     <%- if render_site_admin_chrome? -%>
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>
 
     <%- if render_site_chrome? && !@suppress_site_chrome_header -%>
+      <%- @unfixed_headers += 1 %>
       <%== site_chrome_header(request, response) %>
     <%- end -%>
 
     <%- if render_asset_action_bar? %>
+      <%- @unfixed_headers += 1 %>
       <div id="asset-action-bar-container"></div>
     <%- end %>
 
@@ -56,7 +59,7 @@ http://www.socrata.com
 
     <div id="access-manager-container"></div>
 
-    <main role="main" id="content">
+    <main role="main" id="content" class="unfixed-headers-<%= @unfixed_headers > 0 %>">
       <%= yield %>
     </main>
 

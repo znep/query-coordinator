@@ -117,6 +117,9 @@ class AppConfig < Hashie::Trash
   # Zendesk notifications configuration
   property :zendesk_notifications, default: {}
 
+  # Mapbox tokens
+  property :mapbox_access_token
+
   # Dataset restore configuration
   property :restore_dataset_days, default: 5
 

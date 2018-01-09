@@ -53,6 +53,7 @@ module DatasetLandingPageHelper
       :featureFlags => feature_flags_as_json,
       :locale => I18n.locale.to_s,
       :localePrefix => locale_prefix,
+      :mapboxAccessToken => ENV['MAPBOX_ACCESS_TOKEN'] || APP_CONFIG.mapbox_access_token,
       :recaptchaKey => RECAPTCHA_2_SITE_KEY,
       :usersnapProjectID => 'db69b856-0f89-42cb-aec0-83c78ba79c03'
     }

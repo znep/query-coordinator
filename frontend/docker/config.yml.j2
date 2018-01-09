@@ -137,6 +137,10 @@ default: &default
     pendo_token: {{ PENDO_TOKEN }}
   {%- endif %}
 
+  {% if MAPBOX_ACCESS_TOKEN is defined -%}
+    mapbox_access_token: {{ MAPBOX_ACCESS_TOKEN }}
+  {%- endif %}
+
   {#
    # auth alternatives
    #}

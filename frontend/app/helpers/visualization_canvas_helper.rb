@@ -27,6 +27,7 @@ module VisualizationCanvasHelper
       :environment => Rails.env,
       :locale => I18n.locale.to_s,
       :localePrefix => locale_prefix,
+      :mapboxAccessToken => ENV['MAPBOX_ACCESS_TOKEN'] || APP_CONFIG.mapbox_access_token,
       :usersnapProjectID => 'e4969b77-3ec6-4628-a022-6c12ba02cbea'
     }
 

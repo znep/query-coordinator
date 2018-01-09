@@ -103,6 +103,11 @@ default: &default
   # Pendo Tracker App Token
   pendo_token: 58b54a43-79c9-4bef-561d-bf2d671e81c5
 
+  # Mapbox App token
+  # Access token starting with 'sk' are secret keys with elevated previleges
+  # and they should not be used here.
+  mapbox_access_token: pk.eyJ1Ijoic29jcmF0YSIsImEiOiJjaW45aHg1NnMwNDJudHpseWljOTBvMzl3In0.ZvwhmPuu21nkn5HL4r2A-Q
+
 # Local development
 development: &development
   <<: *default

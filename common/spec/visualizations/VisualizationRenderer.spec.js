@@ -14,6 +14,7 @@ describe('VisualizationRenderer', () => {
       $(this).append($('div').text('mock histogram'));
     });
     sinon.stub($.fn, 'socrataSvgColumnChart').returns(() => {});
+    sinon.stub($.fn, 'socrataUnifiedMap').returns(() => {});
     mockFlyout = {
       clear: sinon.stub(),
       render: sinon.stub()
@@ -25,6 +26,7 @@ describe('VisualizationRenderer', () => {
     $('#socrata-row-inspector').remove();
     $.fn.socrataSvgHistogram.restore();
     $.fn.socrataSvgColumnChart.restore();
+    $.fn.socrataUnifiedMap.restore();
   });
 
   describe('when VIF is missing a visualization type', () => {
@@ -110,6 +112,34 @@ describe('VisualizationRenderer', () => {
           sinon.assert.calledOnce($.fn.socrataSvgColumnChart);
           sinon.assert.calledWith($.fn.socrataSvgColumnChart, mockColumnChartVif);
           assert.equal($.fn.socrataSvgColumnChart.getCall(0).thisValue[0], element);
+        });
+      });
+
+      describe('when called with a VIF type is Unified Map', () => {
+        let mockUnifiedMapVif;
+        window.serverConfig.mapboxAccessToken = 'RANDOM TOKEN';
+        beforeEach(() => {
+          mockUnifiedMapVif = _.cloneDeep(mockVif);
+          mockUnifiedMapVif.series[0].type = 'map';
+          visualization.update(mockUnifiedMapVif);
+        });
+
+        it('does not call update on existing visualization', () => {
+          const triggeredUpdate = _.some($.fn.trigger.getCalls(), (call) => {
+            return _.get(call, 'args[0].type') === 'SOCRATA_VISUALIZATION_RENDER_VIF';
+          });
+
+          assert.isFalse(triggeredUpdate);
+        });
+
+        it('destroys the existing visualization', () => {
+          assert.isTrue($.fn.trigger.calledWith('SOCRATA_VISUALIZATION_DESTROY'));
+        });
+
+        it('renders a new visualization', () => {
+          sinon.assert.calledOnce($.fn.socrataUnifiedMap);
+          sinon.assert.calledWith($.fn.socrataUnifiedMap, mockUnifiedMapVif);
+          assert.equal($.fn.socrataUnifiedMap.getCall(0).thisValue[0], element);
         });
       });
 

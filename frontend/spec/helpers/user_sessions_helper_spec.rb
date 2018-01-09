@@ -48,10 +48,6 @@ describe UserSessionsHelper, :type => :helper do
       context 'when user is member of domain' do
         let(:current_user_is_member) { true }
 
-        it 'returns govstat_root_path' do
-          expect(helper.login_redirect_url).to eq(govstat_root_path)
-        end
-
         context 'when session[:return_to] is set' do
           before(:each) do
             @request.session[:return_to] = 'return_to_path'

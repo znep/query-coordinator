@@ -98,14 +98,6 @@ describe AccountsController do
           allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(true)
         end
 
-        it 'redirects to the GovStat index page for roled users' do
-          allow(CurrentDomain).to receive(:member?).and_return(true)
-
-          post(:create, signup: user_data)
-
-          expect(response.redirect_url).to include(govstat_root_path)
-        end
-
         it 'redirects elsewhere if the user session has a redirect' do
           allow(CurrentDomain).to receive(:member?).and_return(false)
 

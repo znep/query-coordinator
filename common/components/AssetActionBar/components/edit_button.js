@@ -103,19 +103,7 @@ class EditButton extends React.Component {
           this.setState({ workingCopy: 'needToCreate' });
           this.checkIfCopyPending();
         } else if (workingCopy) {
-          this.workingCopy = workingCopy;
-          this.setState({ workingCopy: 'ready' });
-
-          // Parity behavioral decision:
-          // If the working copy creation was started during this browser session, then after
-          // it is complete, we should redirect the user to the working copy.
-          // If the working copy creation was started by a different browser session (it may
-          // have been another user, for example), then do not redirect.
-          //
-          // This matches the behavior found in dataset-show.js.
-          if (this.workingCopyCreatedDuringThisBrowserSession) {
-            window.location.assign(this.urlForWorkingCopy());
-          }
+          this.workingCopyCreated(workingCopy);
         }
       });
   }
@@ -132,8 +120,7 @@ class EditButton extends React.Component {
         switch (response.status) {
           case 200:
             return response.json().then((workingCopy) => {
-              this.workingCopy = workingCopy;
-              this.setState({ workingCopy: 'ready' });
+              this.workingCopyCreated(workingCopy);
             });
           case 202:
             this.setState({ workingCopy: 'creating' });
@@ -143,6 +130,22 @@ class EditButton extends React.Component {
             console.error('Somehow not logged in!?');
         }
       });
+  }
+
+  workingCopyCreated(workingCopy) {
+    this.workingCopy = workingCopy;
+    this.setState({ workingCopy: 'ready' });
+
+    // Parity behavioral decision:
+    // If the working copy creation was started during this browser session, then after
+    // it is complete, we should redirect the user to the working copy.
+    // If the working copy creation was started by a different browser session (it may
+    // have been another user, for example), then do not redirect.
+    //
+    // This matches the behavior found in dataset-show.js.
+    if (this.workingCopyCreatedDuringThisBrowserSession) {
+      window.location.assign(this.urlForWorkingCopy());
+    }
   }
 
   // Variously copied from util/dataset/dataset.js, base-model.js, and util/util.js

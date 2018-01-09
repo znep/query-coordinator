@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import ceteraUtils from 'common/cetera/utils';
-import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera.js';
+import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
 import { MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
 
 export const INITIAL_RESULTS_FETCHED = 'INITIAL_RESULTS_FETCHED';
@@ -177,9 +177,28 @@ export const fetchAssetCounts = (dispatch, getState, parameters = {}) => {
   });
 };
 
+export const fetchProvenanceCounts = (dispatch, getState, parameters = {}) => {
+  dispatch(ceteraActions.fetchingProvenanceCounts());
+
+  return ceteraUtils.facetCountsQuery(mergedCeteraQueryParameters(getState, parameters)).then((response) => {
+    if (response && _.isArray(response) && response.length > 0) {
+      const provenanceFacet = _.filter(response, ((facetType) => facetType.facet === 'provenance'))[0];
+
+      if (provenanceFacet && _.has(provenanceFacet, 'values')) {
+        dispatch(ceteraActions.fetchingProvenanceCountsSuccess());
+        dispatch(ceteraActions.updateProvenanceCounts(provenanceFacet.values));
+      }
+    } else {
+      dispatch(ceteraActions.fetchingProvenanceCountsError());
+    }
+  });
+};
+
 export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.noop) => {
   const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
   let { sortByRecentlyViewed } = _.merge({}, getState().filters, parameters);
+
+  const activeTab = _.get(getState(), 'header.activeTab');
 
   dispatch(ceteraActions.fetchingResults());
 
@@ -199,6 +218,9 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
       const showAssetCounts = _.get(getState(), 'assetBrowserProps.showAssetCounts');
       if (showAssetCounts) {
         fetchAssetCounts(dispatch, getState, parameters);
+      }
+      if (_.get(getState(), `assetBrowserProps.tabs[${activeTab}].props.showProvenanceCounts`) === true) {
+        fetchProvenanceCounts(dispatch, getState, parameters);
       }
     } else {
       dispatch(ceteraActions.fetchingResultsError());

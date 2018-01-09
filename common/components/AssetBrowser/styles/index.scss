@@ -59,6 +59,14 @@ body {
     justify-content: space-between;
     align-items: flex-end;
 
+    .approvals-header-content {
+      text-align: right;
+
+      > div {
+        display: inline-block;
+      }
+    }
+
     .settings_link {
       margin-bottom: 0.5rem;
 
@@ -105,7 +113,7 @@ body {
       }
     }
 
-    .asset-counts {
+    .asset-counts, .provenance-counts {
       margin: 0.5rem 0;
       display: inline-block;
 
@@ -117,7 +125,7 @@ body {
         display: none;
       }
 
-      .asset-counts-item {
+      .asset-counts-item, .provenance-counts-item {
         display: inline-block;
         margin-right: 2.5rem;
 
@@ -147,6 +155,10 @@ body {
           font-size: 0.9rem;
         }
       }
+    }
+
+    .provenance-counts {
+      margin-left: 2.5rem;
     }
   }
 

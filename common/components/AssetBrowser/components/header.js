@@ -11,6 +11,7 @@ import { ALL_ASSETS_TAB, MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/componen
 
 import * as headerActions from '../actions/header';
 import AssetCounts from './asset_counts';
+import ProvenanceCounts from './provenance_counts';
 
 export class Header extends Component {
   scope = 'shared.asset_browser.header.asset_tabs';
@@ -41,7 +42,7 @@ export class Header extends Component {
   }
 
   render() {
-    const { isMobile, showAssetCounts, settings, tabs } = this.props;
+    const { activeTab, isMobile, showAssetCounts, settings, tabs } = this.props;
     const headerClasses = classNames('header', { 'mobile': isMobile });
 
     const assetTabs = (
@@ -50,11 +51,20 @@ export class Header extends Component {
       </div>
     );
 
+    const showProvenanceCounts = _.get(tabs, `${activeTab}.props.showProvenanceCounts`) === true;
+
+    const approvalsHeaderContent = (settings || showProvenanceCounts) ? (
+      <div className="approvals-header-content">
+        {settings}
+        {showProvenanceCounts && <ProvenanceCounts />}
+      </div>
+    ) : null;
+
     return (
       <div className={headerClasses}>
         {!isMobile && assetTabs}
         {showAssetCounts && <AssetCounts />}
-        {settings}
+        {approvalsHeaderContent}
         {isMobile && assetTabs}
       </div>
     );

@@ -19,7 +19,8 @@ export default class Approvals extends Component {
           actionElement: ApprovalActionButtons,
           baseFilters: {
             approvalStatus: constants.APPROVAL_STATUS_PENDING
-          }
+          },
+          showProvenanceCounts: true
         }
       },
       [constants.HISTORY_TAB]: {

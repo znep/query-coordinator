@@ -9,6 +9,7 @@ import catalog from 'common/components/AssetBrowser/reducers/catalog';
 import filters from 'common/components/AssetBrowser/reducers/filters';
 import header from 'common/components/AssetBrowser/reducers/header';
 import mobile from 'common/components/AssetBrowser/reducers/mobile';
+import provenanceCounts from 'common/components/AssetBrowser/reducers/provenance_counts';
 import settings from 'common/components/AssetBrowser/reducers/settings';
 import windowDimensions from 'common/components/AssetBrowser/reducers/window_dimensions';
 
@@ -22,6 +23,7 @@ export default combineReducers({
   filters,
   header,
   mobile,
+  provenanceCounts,
   settings,
   windowDimensions
 });

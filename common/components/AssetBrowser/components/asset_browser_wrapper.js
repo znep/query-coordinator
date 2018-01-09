@@ -17,11 +17,11 @@ export class AssetBrowserWrapper extends Component {
   }
 
   render() {
-    const { showHeader } = this.props;
+    const { activeTab, showHeader } = this.props;
     const header = showHeader ? <Header {...this.props} /> : null;
 
     return (
-      <div className="asset-browser">
+      <div className={`asset-browser tab-${activeTab}`}>
         {header}
         <TabContent {...this.props} />
         <AlertWrapper />
@@ -31,9 +31,13 @@ export class AssetBrowserWrapper extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  activeTab: state.header.activeTab
+});
+
 const mapDispatchToProps = (dispatch) => ({
   setAssetBrowserProps: (props) => dispatch(assetBrowserPropsActions.setAssetBrowserProps(props)),
   setInitialTab: (initialTab) => dispatch(headerActions.setInitialTab(initialTab))
 });
 
-export default connect(null, mapDispatchToProps)(AssetBrowserWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(AssetBrowserWrapper);

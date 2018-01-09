@@ -1,10 +1,16 @@
 export const FETCH_ASSET_COUNTS = 'FETCH_ASSET_COUNTS';
 export const FETCH_ASSET_COUNTS_ERROR = 'FETCH_ASSET_COUNTS_ERROR';
 export const FETCH_ASSET_COUNTS_SUCCESS = 'FETCH_ASSET_COUNTS_SUCCESS';
+export const UPDATE_ASSET_COUNTS = 'UPDATE_ASSET_COUNTS';
+
+export const FETCH_PROVENANCE_COUNTS = 'FETCH_PROVENANCE_COUNTS';
+export const FETCH_PROVENANCE_COUNTS_ERROR = 'FETCH_PROVENANCE_COUNTS_ERROR';
+export const FETCH_PROVENANCE_COUNTS_SUCCESS = 'FETCH_PROVENANCE_COUNTS_SUCCESS';
+export const UPDATE_PROVENANCE_COUNTS = 'UPDATE_PROVENANCE_COUNTS';
+
 export const FETCH_RESULTS = 'FETCH_RESULTS';
 export const FETCH_RESULTS_ERROR = 'FETCH_RESULTS_ERROR';
 export const FETCH_RESULTS_SUCCESS = 'FETCH_RESULTS_SUCCESS';
-export const UPDATE_ASSET_COUNTS = 'UPDATE_ASSET_COUNTS';
 export const UPDATE_CATALOG_RESULTS = 'UPDATE_CATALOG_RESULTS';
 
 export const updateCatalogResults = (response, onlyRecentlyViewed = false, sortByRecentlyViewed = false) =>
@@ -18,3 +24,8 @@ export const updateAssetCounts = (assetCounts) => ({ type: UPDATE_ASSET_COUNTS, 
 export const fetchingAssetCounts = () => ({ type: FETCH_ASSET_COUNTS });
 export const fetchingAssetCountsSuccess = () => ({ type: FETCH_ASSET_COUNTS_SUCCESS });
 export const fetchingAssetCountsError = () => ({ type: FETCH_ASSET_COUNTS_ERROR });
+
+export const updateProvenanceCounts = (provenanceCounts) => ({ type: UPDATE_PROVENANCE_COUNTS, provenanceCounts });
+export const fetchingProvenanceCounts = () => ({ type: FETCH_PROVENANCE_COUNTS });
+export const fetchingProvenanceCountsSuccess = () => ({ type: FETCH_PROVENANCE_COUNTS_SUCCESS });
+export const fetchingProvenanceCountsError = () => ({ type: FETCH_PROVENANCE_COUNTS_ERROR });

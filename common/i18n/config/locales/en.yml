@@ -151,6 +151,13 @@ en:
           my_queue: My Queue
           settings: Settings
           history: Previously Reviewed
+        provenance_counts:
+          community:
+            one: Community
+            other: Community
+          official:
+            one: Official
+            other: Official
       mobile:
         done: Done
         filters: Filters

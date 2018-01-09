@@ -7,8 +7,14 @@ import I18n from 'common/i18n';
 import { isUserRoled } from '../../common/user';
 import { enterEditMode } from '../actions';
 import { ModeStates } from '../lib/constants';
+import ExportFlannel from 'common/components/ExportFlannel';
 
 export class InfoPaneButtons extends PureComponent {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     const { mode, onClickEdit } = this.props;
 
@@ -24,12 +30,21 @@ export class InfoPaneButtons extends PureComponent {
       }
     };
 
+    const flannelProps = Object.assign(
+      {
+        view: this.props.parentView
+      },
+      this.props
+    );
+
     return (
       <div className="btn-group">
+        <ExportFlannel {...flannelProps} />
         {renderEditButton()}
       </div>
     );
   }
+
 }
 
 InfoPaneButtons.propTypes = {

@@ -15,6 +15,7 @@ export default class ExportFlannel extends PureComponent {
     props.view.exportFormats = props.view.exportFormats.filter(type => type !== 'json');
 
     this.state = {
+      exportSetting: 'all',
       flannelOpen: props.flannelOpen
     };
 
@@ -131,6 +132,57 @@ export default class ExportFlannel extends PureComponent {
     );
   }
 
+  renderFilterDataSelector() {
+    const allDataProps = {
+      name: 'export-flannel-export-setting',
+      type: 'radio',
+      id: 'export-flannel-export-setting-all',
+      checked: (this.state.exportSetting === 'all'),
+      onChange: (event) => {
+        this.setState({exportSetting: 'all'});
+      }
+    };
+    const allData = (
+      <div className='radiobutton'>
+        <input {...allDataProps} />
+        <label htmlFor='export-flannel-export-setting-all'>
+          <span className='fake-radiobutton' />
+          <span className='translation-within-label'>
+            All Data
+          </span>
+        </label>
+      </div>
+    );
+
+    const filteredDataProps = {
+      name: 'export-flannel-export-setting',
+      type: 'radio',
+      id: 'export-flannel-export-setting-filtered',
+      checked: (this.state.exportSetting === 'filtered'),
+      onChange: (event) => {
+        this.setState({exportSetting: 'filtered'});
+      }
+    };
+    const filteredData = (
+      <div className='radiobutton'>
+        <input {...filteredDataProps} />
+        <label htmlFor='export-flannel-export-setting-filtered'>
+          <span className='fake-radiobutton' />
+          <span className='translation-within-label'>
+            Filtered Data
+          </span>
+        </label>
+      </div>
+    );
+
+    return (
+      <form>
+        {allData}
+        {filteredData}
+      </form>
+    );
+  }
+
   renderFlannel() {
     const { view } = this.props;
 
@@ -154,6 +206,7 @@ export default class ExportFlannel extends PureComponent {
           <div>
             {I18n.dataset_landing_page.export.flannel_description.replace('%{dataset_title}', view.name)}
           </div>
+          {this.props.exportFilteredData && this.renderFilterDataSelector()}
           <ul className="featured-download-links">
             {this.getFeaturedLinks()}
           </ul>

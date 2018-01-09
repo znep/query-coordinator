@@ -45,7 +45,7 @@ function mapStateToProps(state) {
       }
     },
     renderButtons() {
-      return <InfoPaneButtons />;
+      return <InfoPaneButtons parentView={view} exportFilteredData={true} />;
     }
   };
 }

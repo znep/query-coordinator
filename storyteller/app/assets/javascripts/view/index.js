@@ -18,6 +18,7 @@ import '../editor/block-component-renderers/componentSocrataVisualizationColumnC
 import '../editor/block-component-renderers/componentSocrataVisualizationComboChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationHistogram';
+import '../editor/block-component-renderers/componentSocrataVisualizationMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationPieChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationRegionMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationTable';

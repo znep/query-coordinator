@@ -14,6 +14,7 @@ import './SvgHistogram';
 import './SvgPieChart';
 import './SvgRegionMap';
 import './SvgTimelineChart';
+import './UnifiedMap';
 import './Table';
 
 import { RowInspector, FlyoutRenderer } from './views';
@@ -87,6 +88,10 @@ export const VisualizationRenderer = function(vif, element, options) {
 
       case 'regionMap':
         $element.socrataSvgRegionMap(this.vif, options);
+        break;
+
+      case 'map':
+        $element.socrataUnifiedMap(this.vif, options);
         break;
 
       case 'table':

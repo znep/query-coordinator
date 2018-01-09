@@ -11,6 +11,7 @@ module DatasetManagementUiHelper
       currentUser: User.current_user,
       localePrefix: locale_prefix,
       featureFlags: feature_flags_as_json,
+      :mapboxAccessToken => ENV['MAPBOX_ACCESS_TOKEN'] || APP_CONFIG.mapbox_access_token,
       usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a',
       isDataAsset: is_data_asset.nil? ? is_data_asset : is_data_asset == true
 

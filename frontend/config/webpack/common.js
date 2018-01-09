@@ -157,6 +157,11 @@ function getStandardLoaders(extraLoaders, options) {
     loaders: ['json', 'yaml']
   });
 
+  loaders.push({
+    test: /node_modules\/@socrata\/mapbox-gl/,
+    loader: 'imports?define=>undefined'
+  });
+
   if (options.substituteStyleLoaders) {
     if (_.isArray(options.substituteStyleLoaders)) {
       loaders = loaders.concat(options.substituteStyleLoaders);
@@ -190,7 +195,8 @@ function getStandardLoaders(extraLoaders, options) {
 function getStandardResolve(extraRoots) {
   extraRoots = extraRoots || [];
   var roots = [
-    path.resolve(frontendRoot, '..')
+    path.resolve(frontendRoot, '..'),
+    path.resolve(frontendRoot, 'node_modules/@socrata')
   ];
 
   _.each(extraRoots, function(extraRoot) {

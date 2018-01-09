@@ -25,6 +25,7 @@ module Shared
       node_modules/react-image-crop/dist
       node_modules/react-input-range/dist
       node_modules/leaflet/dist
+      node_modules/@socrata/mapbox-gl/dist
       spec/scripts
     ).map { |path| "#{Rails.root}/#{path}" }
   end

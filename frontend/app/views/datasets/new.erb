@@ -23,7 +23,7 @@
         <li class="selectTypePane" data-wizardpanename="selectType">
           <p class="headline"><%= t("#{prefix}.prompt") %></p>
           <%- if FeatureFlags.derive(nil, request).dsmp_level == "preview" -%>
-            <div class="alert">
+            <div class="alert alert-dsmp">
               <span class="msg">
                 <%= t("#{prefix}.preview_msg_pt1") %>
                 <br>

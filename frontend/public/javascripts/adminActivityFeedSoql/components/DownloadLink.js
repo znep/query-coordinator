@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import I18nJS from 'common/i18n';
 import classNames from 'classnames';
+import moment from 'moment';
+import { DATE_TIME_FORMAT } from '../constants';
 import { buildSelectClause, buildWhereClause, buildOrderClause, downloadQuery } from '../lib/queryBuilder';
 
 class DownloadLink extends Component {
@@ -35,11 +37,12 @@ class DownloadLink extends Component {
     ];
 
     const title = I18nJS.t('screens.admin.activity_feed.download');
+    const timestamp = moment().format(DATE_TIME_FORMAT);
 
     const buttonProps = {
       className: classNames('btn btn-primary btn-inverse', { 'btn-disabled': false }),
       href: downloadQuery(parts),
-      download: 'activity_log.csv',
+      download: `Activity Log ${timestamp}.csv`,
       title
     };
 

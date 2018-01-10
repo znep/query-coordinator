@@ -3,6 +3,7 @@ export const API_URL = '/api/activity_log';
 export const DOWNLOAD_URL = '/api/activity_log.csv';
 export const MOBILE_BREAKPOINT = 768;
 export const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 export const DATA_UPDATE_METHODS = [
   'Import',
   'Upsert',

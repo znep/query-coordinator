@@ -50,7 +50,7 @@ describe('components/VisibilityCell', () => {
           type: 'viewer'
         }]
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Shared to me');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Shared to me)');
     });
 
     it('does not show the "shared to me" description if the current user is not listed in the grants array', () => {
@@ -64,7 +64,7 @@ describe('components/VisibilityCell', () => {
           type: 'viewer'
         }]
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, '');
+      assert.isNull(element.querySelector('.visibility-description'));
     });
 
     it('loses out to the Hidden visibility', () => {
@@ -88,7 +88,7 @@ describe('components/VisibilityCell', () => {
       }));
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.equal(element.querySelector('strong').textContent, 'Pending');
+      assert.equal(element.querySelector('strong').textContent, 'Private');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-eye-blocked'));
     });
 
@@ -98,7 +98,7 @@ describe('components/VisibilityCell', () => {
         isModerationApproved: false,
         moderationStatus: 'rejected'
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Rejected');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Rejected)');
     });
 
     it('shows the "rejected" description if the asset has rejected routing and approval', () => {
@@ -107,7 +107,7 @@ describe('components/VisibilityCell', () => {
         isRoutingApproved: false,
         routingStatus: 'rejected'
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Rejected');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Rejected)');
     });
 
     it('shows the "hidden" description if the asset is explicitly hidden', () => {
@@ -115,7 +115,7 @@ describe('components/VisibilityCell', () => {
         visibleToAnonymous: false,
         isExplicitlyHidden: true
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Hidden from catalog');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Hidden from catalog)');
     });
 
     it('shows the "pending" description if the asset has pending view moderation', () => {
@@ -124,7 +124,7 @@ describe('components/VisibilityCell', () => {
         isModerationApproved: false,
         moderationStatus: 'pending'
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Awaiting approval');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Awaiting approval)');
     });
 
     it('shows the "pending" description if the asset has pending routing and approval', () => {
@@ -133,7 +133,7 @@ describe('components/VisibilityCell', () => {
         isRoutingApproved: false,
         routingStatus: 'pending'
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Awaiting approval');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Awaiting approval)');
     });
 
     it('shows "rejected" over "pending" if both apply to a given asset', () => {
@@ -144,7 +144,7 @@ describe('components/VisibilityCell', () => {
         isRoutingApproved: false,
         routingStatus: 'pending'
       }));
-      assert.equal(element.querySelector('.visibility-description').textContent, 'Rejected');
+      assert.equal(element.querySelector('.visibility-description').textContent, '(Rejected)');
     });
   });
 

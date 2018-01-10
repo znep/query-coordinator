@@ -83,15 +83,23 @@ export class VisibilityCell extends Component {
     if (this.props.isExplicitlyHidden) {
       visibilityIconName = 'eye-blocked';
       visibilityCellText = this.getTranslation('hidden');
-    } else if (this.isOpen()) {
+    }
+    if (this.isOpen()) {
       visibilityIconName = 'public-open';
       visibilityCellText = this.getTranslation('public');
-    } else if (this.isPrivate()) {
+    }
+    if (this.isPrivate()) {
       visibilityIconName = 'private';
       visibilityCellText = this.getTranslation('private');
-    } else if (this.isHidden()) {
+    }
+    if (this.isHidden()) {
       visibilityIconName = 'eye-blocked';
       // visibilityCellText = this.getTranslation('hidden'); // Temporary change due to EN-17295
+    }
+    if (this.isHiddenAndAwaitingApproval()) {
+      visibilityIconName = 'private';
+      visibilityCellText = this.getTranslation('private');
+    } else {
       visibilityCellText = this.getTranslation('pending');
     }
 
@@ -110,16 +118,19 @@ export class VisibilityCell extends Component {
     let descriptionText;
 
     if (this.props.isExplicitlyHidden) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.hidden_from_catalog');
-    } else if (this.isPrivateAndSharedToCurrentUser()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.shared_to_me');
-    } else if (this.isHiddenAndRejected()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.rejected');
-    } else if (this.isHiddenAndAwaitingApproval()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.awaiting_approval');
+      descriptionText = this.getTranslation('hidden_from_catalog');
+    }
+    if (this.isPrivateAndSharedToCurrentUser()) {
+      descriptionText = this.getTranslation('shared_to_me');
+    }
+    if (this.isHiddenAndRejected()) {
+      descriptionText = this.getTranslation('rejected');
+    }
+    if (this.isHiddenAndAwaitingApproval()) {
+      descriptionText = this.getTranslation('awaiting_approval');
     }
 
-    return <div className="visibility-description">{descriptionText}</div>;
+    return descriptionText ? <div className="visibility-description">({descriptionText})</div> : null;
   }
 
   render() {

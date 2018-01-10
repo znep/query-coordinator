@@ -13,6 +13,7 @@ const initialState = {
   event: null,
   assetType: null,
   affectedItemSearch: null,
+  initiatedBySearch: null,
   activeFilterCount: 0
 };
 
@@ -71,6 +72,10 @@ export default function filters(state, action) {
 
     case actions.filters.types.CHANGE_AFFECTED_ITEM_SEARCH:
       stateDiff = { affectedItemSearch: action.value };
+      break;
+
+    case actions.filters.types.CHANGE_INITIATED_BY_SEARCH:
+      stateDiff = { initiatedBySearch: action.value };
       break;
 
     case actions.filters.types.CLEAR_ALL_FILTERS:

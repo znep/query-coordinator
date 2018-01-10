@@ -30,8 +30,8 @@ export default class SearchBox extends PureComponent {
   }
 
   handleSubmit = (event) => {
-    this.props.searchCallback(this.state.value);
-
+    const { value } = this.state;
+    this.props.searchCallback(value !== '' ? value : null);
     event.preventDefault();
   }
 

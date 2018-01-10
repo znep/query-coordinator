@@ -45,6 +45,9 @@ describe('FilterPanelMobile', () => {
       assert.isNotNull(element.querySelector('.filter-section.event-filter'));
     });
 
+    it('render initiated by filter', () => {
+      assert.isNotNull(element.querySelector('.initiated-by-filter'));
+    });
   });
 
   describe('when filters closed', () => {

@@ -698,7 +698,11 @@ en:
         warning: This is a PREVIEW version of your site.
     visualizations:
       aggregations:
+        avg: Avg
         count: Count
+        max: Max
+        median: Median
+        min: Min
         none: None
         sum: Sum
       base_layers:

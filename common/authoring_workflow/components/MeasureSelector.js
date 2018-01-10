@@ -209,8 +209,8 @@ export class MeasureSelector extends Component {
     }
 
     const options = [
-      { title: I18n.translate('shared.visualizations.aggregations.none'), value: null },
-      ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type }))
+      ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type })),
+      { title: I18n.translate('shared.visualizations.aggregations.none'), value: null }
     ];
 
     const measureAggregationAttributes = {

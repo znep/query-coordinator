@@ -139,6 +139,22 @@ export const AGGREGATION_TYPES = [
   {
     type: 'sum',
     title: I18n.t('shared.visualizations.aggregations.sum')
+  },
+  {
+    type: 'avg',
+    title: I18n.t('shared.visualizations.aggregations.avg')
+  },
+  {
+    type: 'median',
+    title: I18n.t('shared.visualizations.aggregations.median')
+  },
+  {
+    type: 'max',
+    title: I18n.t('shared.visualizations.aggregations.max')
+  },
+  {
+    type: 'min',
+    title: I18n.t('shared.visualizations.aggregations.min')
   }
 ];
 

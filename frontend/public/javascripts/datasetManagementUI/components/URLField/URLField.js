@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import TextInput from 'components/TextInput/TextInput';
-import { getBasename, getExtension, compressWhitespace } from 'lib/util';
+import { getBasename, getExtension } from 'lib/util';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { DuplicateExtension, BadUrl, MissingValue } from 'containers/HrefFormContainer';
 import styles from './URLField.module.scss';
@@ -10,6 +10,7 @@ import styles from './URLField.module.scss';
 class URLField extends Component {
   render() {
     const { handleChangeUrl, handleXClick, value, errors, hrefId, uuid } = this.props;
+
     const urlErrors = _.chain(errors)
       .filter(err => err instanceof BadUrl)
       .flatMap(err => err.urls)
@@ -54,14 +55,8 @@ class URLField extends Component {
             inErrorState={urlInErrorState}
             handleChange={e =>
               handleChangeUrl({
-                url: compressWhitespace(e.target.value),
+                url: e.target.value,
                 filetype: getExtension(getBasename(e.target.value))
-              })
-            }
-            handleBlur={e =>
-              handleChangeUrl({
-                url: compressWhitespace(e.target.value, true),
-                filetype: getExtension(getBasename(e.target.value, true))
               })
             } />
           {urlInErrorState && <div className={styles.error}>{I18n.show_sources.error_url}</div>}
@@ -78,13 +73,7 @@ class URLField extends Component {
             handleChange={e =>
               handleChangeUrl({
                 ...value,
-                filetype: compressWhitespace(e.target.value)
-              })
-            }
-            handleBlur={e =>
-              handleChangeUrl({
-                ...value,
-                filetype: compressWhitespace(e.target.value, true)
+                filetype: e.target.value
               })
             } />
           {filetypeInErrorState && <div className={styles.error}>{errorMessage}</div>}

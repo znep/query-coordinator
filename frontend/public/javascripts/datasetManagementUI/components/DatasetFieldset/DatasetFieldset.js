@@ -5,7 +5,6 @@ import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import URLField from 'components/URLField/URLField';
 import styles from './DatasetFieldset.module.scss';
-import { compressWhitespace } from 'lib/util';
 
 const DatasetFieldset = ({
   href,
@@ -33,8 +32,7 @@ const DatasetFieldset = ({
             label: I18n.show_sources.label_name
           }}
           inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value))}
-          handleBlur={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value, true))} />
+          handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
       </div>
       <div>
         <label>{I18n.show_sources.label_description}</label>
@@ -77,10 +75,7 @@ const DatasetFieldset = ({
             label: I18n.show_sources.label_data_dictionary
           }}
           inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))}
-          handleBlur={e =>
-            handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value, true))
-          } />
+          handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
       </div>
     </div>
   </Fieldset>

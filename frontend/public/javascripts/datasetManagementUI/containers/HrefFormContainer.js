@@ -92,7 +92,9 @@ const findDupes = hrefURLObj => {
 };
 
 const findInvalidURLs = hrefURLObj => {
-  const urls = _.values(hrefURLObj).map(val => val.url);
+  const urls = _.values(hrefURLObj)
+    .map(val => val.url)
+    .filter(url => !!url);
 
   return urls.filter(url => !isURLHelper(url, { require_protocol: true }));
 };
@@ -123,6 +125,7 @@ export const validate = hrefs => {
     .filter(err => err)
     .map(err => new MissingValue(err.id, err.hrefId))
     .value();
+
   return [...dupes, ...badUrls, ...empties];
 };
 

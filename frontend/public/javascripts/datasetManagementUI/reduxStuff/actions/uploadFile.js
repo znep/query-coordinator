@@ -125,7 +125,6 @@ export function uploadFile(sourceId, file) {
       operation: UPLOAD_FILE,
       callParams: uploadUpdate
     };
-
     dispatch(apiCallStarted(callId, call));
     dispatch(addNotification('source', sourceId));
 
@@ -136,6 +135,10 @@ export function uploadFile(sourceId, file) {
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
         return resp;
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(callId, error));
+        throw error;
       });
   };
 }

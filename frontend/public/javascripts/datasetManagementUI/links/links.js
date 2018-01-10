@@ -87,6 +87,8 @@ export const transformColumn = (params, sourceId, inputSchemaId, outputSchemaId,
   );
 };
 
+export const sessionStatus = '/logout/expire_if_idle';
+
 export const transformColumnErrors = (
   params,
   sourceId,

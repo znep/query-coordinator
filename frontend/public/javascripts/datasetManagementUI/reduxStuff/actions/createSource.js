@@ -27,7 +27,6 @@ function createSource(params, callParams, optionalCallId = null) {
       operation: CREATE_SOURCE,
       callParams
     };
-
     dispatch(apiCallStarted(callId, call));
 
     return socrataFetch(dsmapiLinks.sourceCreate(params), {

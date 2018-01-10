@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import LocalizedText from 'common/i18n/components/LocalizedText';
+import FeedbackPanel from 'common/components/FeedbackPanel';
 import Table from './Table';
 import Footer from './Footer';
 import Tabs from './Tabs';
@@ -51,6 +52,7 @@ export class App extends Component {
           </div>
           <FilterPanel />
         </div>
+        <FeedbackPanel {...window.serverConfig} />
       </div>
     );
   }

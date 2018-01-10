@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import Table from 'components/Table';
 import * as mockData from '../../data/mockFetchTable';
+import mockTranslations from '../../mockTranslations';
 
 import testStore from '../../testStore';
 
@@ -31,8 +32,8 @@ describe('Table/Body renders cell', () => {
 
   it('event', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.event');
-
-    assert.equal(thisCell.textContent, mockData.data1[0].activity_type);
+    const translation = mockTranslations.filters.events.options[_.snakeCase(mockData.data1[0].activity_type)];
+    assert.equal(thisCell.textContent, translation);
   });
 
   it('item-affected', () => {

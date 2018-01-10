@@ -3826,11 +3826,41 @@ en:
               asset_permissions_changed: Asset Permissions Changed
               collaborator_added: Collaborator Added
               collaborator_removed: Collaborator Removed
-              data_update_started: Data Update Started
-              data_update_in_progress: Data Update In Progress
-              data_update_success: Data Update Success
-              data_update_success_with_data_errors: Data Update Success With Data Errors
               data_update_failure: Data Update Failure
+              data_update_in_progress: Data Update In Progress
+              data_update_prepare_curated_region_failure: Data Update Prepare Curated Region Failure
+              data_update_prepare_curated_region_in_progress: Data Update Prepare Curated Region In Progress
+              data_update_prepare_curated_region_started: Data Update Prepare Curated Region Started
+              data_update_prepare_curated_region_success_with_data_errors: Data Update Prepare Curated Region Success With Data Errors
+              data_update_prepare_curated_region_success: Data Update Prepare Curated Region Success
+              data_update_replace_failure: Data Update Replace Failure
+              data_update_replace_in_progress: Data Update Replace In Progress
+              data_update_replace_started: Data Update Replace Started
+              data_update_replace_success_with_data_errors: Data Update Replace Success With Data Errors
+              data_update_replace_success: Data Update Replace Success
+              data_update_restore_failure: Data Update Restore Failure
+              data_update_restore_in_progress: Data Update Restore In Progress
+              data_update_restore_started: Data Update Restore Started
+              data_update_restore_success_with_data_errors: Data Update Restore Success With Data Errors
+              data_update_restore_success: Data Update Restore Success
+              data_update_started: Data Update Started
+              data_update_success_with_data_errors: Data Update Success With Data Errors
+              data_update_success: Data Update Success
+              data_update_sync_failure: Data Update Sync Failure
+              data_update_sync_in_progress: Data Update Sync In Progress
+              data_update_sync_started: Data Update Sync Started
+              data_update_sync_success_with_data_errors: Data Update Sync Success With Data Errors
+              data_update_sync_success: Data Update Sync Success
+              data_update_unknown_failure: Data Update Unknown Failure
+              data_update_unknown_in_progress: Data Update Unknown In Progress
+              data_update_unknown_started: Data Update Unknown Started
+              data_update_unknown_success_with_data_errors: Data Update Unknown Success With Data Errors
+              data_update_unknown_success: Data Update Unknown Success
+              data_update_upsert_failure: Data Update Upsert Failure
+              data_update_upsert_in_progress: Data Update Upsert In Progress
+              data_update_upsert_started: Data Update Upsert Started
+              data_update_upsert_success_with_data_errors: Data Update Upsert Success With Data Errors
+              data_update_upsert_success: Data Update Upsert Success
               draft_created: Draft Created
               draft_deleted: Draft Deleted
               draft_published: Draft Published

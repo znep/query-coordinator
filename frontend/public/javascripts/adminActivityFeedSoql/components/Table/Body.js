@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import I18nJS from 'common/i18n';
 import LocalizedDate from 'common/i18n/components/LocalizedDate';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 import LocalizedLink from 'common/i18n/components/LocalizedLink';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import ActionsCell from './ActionsCell';
@@ -17,13 +18,17 @@ class Body extends Component {
   }
 
   renderTypeCell(data) {
-    const assetTypeTooltip = I18nJS.t(`screens.admin.activity_feed.asset_types.${data.asset_type}`);
+    let tooltip = I18nJS.lookup(`screens.admin.activity_feed.asset_types.${data.asset_type}`);
+    let displayType = data.asset_type;
+
+    if (!tooltip) {
+      tooltip = I18nJS.lookup('screens.admin.activity_feed.asset_types.dataset');
+      displayType = 'dataset';
+    }
 
     return (
       <td scope="row" className="type">
-        <AssetTypeIcon
-          displayType={data.asset_type || 'dataset'}
-          tooltip={assetTypeTooltip} />
+        <AssetTypeIcon {...{ tooltip, displayType }} />
       </td>
     );
   }
@@ -41,9 +46,11 @@ class Body extends Component {
   }
 
   renderEventCell(data) {
+    const localeKey = `screens.admin.activity_feed.filters.events.options.${_.snakeCase(data.activity_type)}`;
+
     return (
       <td scope="row" className="event">
-        {data.activity_type}
+        <LocalizedText localeKey={localeKey} />
       </td>
     );
   }

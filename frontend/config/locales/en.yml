@@ -2158,6 +2158,7 @@ en:
       columns: Columns
       rows: Rows
       title: Data Preview
+      parse_error: We had trouble parsing these rows. Please check your inputs for invalid data.
     blob_preview:
       whats_this: What's This?
       filetype: Filetype

@@ -200,7 +200,7 @@ export default class ExportFlannel extends PureComponent {
     const filteredData = (
       <div className='radiobutton'>
         <input {...filteredDataProps} />
-        <label htmlFor='export-flannel-export-setting-filtered'>
+        <label htmlFor='export-flannel-export-setting-filtered' className={filteredDataProps.disabled ? 'disabled' : ''}>
           <span className='fake-radiobutton' />
           <span className='translation-within-label'>
             Filtered Data

@@ -281,6 +281,10 @@ $default-line-spacing: 15px * $default-line-height;
       position: relative;
     }
 
+    label.disabled {
+      opacity: 0.5;
+    }
+
     input[type=radio] + label .fake-radiobutton {
       border: solid 1px #e2e2e2;
       border-radius: 10px;

@@ -143,6 +143,22 @@ $large: 769px;
       }
     }
 
+    .asset-browser {
+      // HACK: Until we can tell AssetSelector not to show a Back button,
+      //       we can hack it out with CSS.
+      .back-button {
+        display: none;
+      }
+
+      // NOTE: Tried to get these components moved to the left, but that proved
+      // very difficult with just CSS. For now leaving as a reminder that
+      // it is not trivial to change.
+      // .autocomplete, .sort-dropdown {
+      //   float: unset;
+      //   display: inline-block;
+      // }
+    }
+
     .dataset-picker {
       display: flex;
       flex-direction: column;

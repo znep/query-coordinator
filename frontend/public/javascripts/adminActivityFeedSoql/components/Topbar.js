@@ -36,7 +36,7 @@ class Topbar extends PureComponent {
     const searchBoxProps = {
       searchValue: filters.affectedItemSearch,
       searchCallback: changeAffectedItemSearch,
-      placeholder: I18nJS.t('screens.admin.activity_feed.columns.dataset_name'),
+      placeholder: I18nJS.t('screens.admin.activity_feed.columns.affected_item'),
       className: 'affected-item-searchbox'
     };
 

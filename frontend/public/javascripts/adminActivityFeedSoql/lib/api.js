@@ -9,6 +9,11 @@ import {
   apiQuery,
   buildSelectClause
 } from '../lib/queryBuilder';
+import {
+  NUMBER_OF_DAYS_RESTORABLE_QUERY,
+  GET_DELETED_VIEW_QUERY,
+  RESTORE_QUERY
+} from '../constants';
 
 const defaultFetchOptions = {
   headers: defaultHeaders,
@@ -23,6 +28,15 @@ const checkStatus = (response) => {
   const error = new Error(response.statusText);
   error.response = response;
   throw error;
+};
+
+const fetchNumberOfDaysRestorable = () => {
+  const fetchOptions = Object.assign({ method: 'GET' }, defaultFetchOptions);
+
+  return fetch(NUMBER_OF_DAYS_RESTORABLE_QUERY, fetchOptions).
+    then(checkStatus).
+    then(response => response.text()).
+    then(parseInt);
 };
 
 const fetchRowCount = (options) => {
@@ -53,4 +67,27 @@ const fetchTable = (options) => {
     then(response => response.json());
 };
 
-export { fetchTable, fetchRowCount };
+const checkDatasetRestorable = (id) => {
+  const fetchOptions = Object.assign({ method: 'GET' }, defaultFetchOptions);
+
+  return fetch(GET_DELETED_VIEW_QUERY.replace('${id}', id), fetchOptions).
+    then(checkStatus).
+    then(response => response.json()).
+    then(dataset => _.get(dataset, 'flags', []).includes('restorable')).
+    catch(() => false);
+};
+
+const restoreDataset = (id) => {
+  const fetchOptions = Object.assign({ method: 'PATCH' }, defaultFetchOptions);
+
+  return fetch(RESTORE_QUERY.replace('${id}', id), fetchOptions).
+    then(checkStatus);
+};
+
+export {
+  fetchTable,
+  fetchRowCount,
+  fetchNumberOfDaysRestorable,
+  checkDatasetRestorable,
+  restoreDataset
+};

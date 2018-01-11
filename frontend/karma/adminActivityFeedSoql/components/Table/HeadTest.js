@@ -39,8 +39,8 @@ describe('Table/Head renders cell header', () => {
 
   it('item_affected', () => {
     assert.equal(
-      element.querySelector('th.dataset-name').textContent,
-      mockTranslations.columns.dataset_name
+      element.querySelector('th.affected-item').textContent,
+      mockTranslations.columns.affected_item
     );
   });
 

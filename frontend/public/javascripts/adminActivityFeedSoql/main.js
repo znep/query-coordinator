@@ -23,6 +23,7 @@ if (window.serverConfig.environment !== 'development') {
 const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 mql.addListener((e) => store.dispatch(actions.common.changeDimensions(e.matches)));
 
+store.dispatch(actions.common.fetchNumberOfDaysRestorable());
 store.dispatch(actions.pagination.fetchRowCount());
 store.dispatch(actions.table.fetchData());
 

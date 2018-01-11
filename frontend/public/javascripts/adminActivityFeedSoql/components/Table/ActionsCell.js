@@ -16,27 +16,49 @@ class ActionsCell extends PureComponent {
   }
 
   isRestorable() {
-    return false;
+    const { restorableList, activity, data } = this.props;
+    const activitiesWithSameUid = data.
+      filter(row => row.dataset_uid === activity.dataset_uid && row.activity_type === 'AssetDeleted');
+
+    const firstInList = _.get(activitiesWithSameUid, '[0].id');
+
+    return firstInList === activity.id && restorableList[activity.dataset_uid];
   }
 
   isRestored() {
-    return false;
+    const { restorableList, activity } = this.props;
+
+    // Check if restorableList has uid as a key and value is false.
+    return !_.isUndefined(restorableList[activity.dataset_uid]) && !restorableList[activity.dataset_uid];
   }
 
-  isRestoreExpired() {
-    return false;
-  }
+  handleRestoreClicked = () => {
+    const { activity } = this.props;
 
-  handleRestoreClicked() {
-    return null;
+    this.props.showRestoreModal(activity.dataset_uid);
   }
 
   renderRestoreButton() {
-    return null;
+    const linkProps = {
+      href: '#',
+      className: 'unstyled-link',
+      tabIndex: 0,
+      onClick: this.handleRestoreClicked
+    };
+
+    return (
+      <a {...linkProps}>
+        <LocalizedText localeKey="screens.admin.activity_feed.restore" />
+      </a>
+    );
   }
 
   renderRestoredIndicator() {
-    return null;
+    return (
+      <LocalizedText
+        className="restored-dataset"
+        localeKey="screens.admin.activity_feed.restored" />
+    );
   }
 
   renderDetailsButton = () => {
@@ -73,11 +95,10 @@ class ActionsCell extends PureComponent {
     const hasDetails = this.hasDetails(activity);
     const isRestorable = this.isRestorable(activity);
     const isRestored = this.isRestored(activity);
-    const isRestoreExpired = this.isRestoreExpired(activity);
 
     if (isRestorable) {
       return this.renderRestoreButton();
-    } else if (isRestored && !isRestoreExpired) {
+    } else if (isRestored) {
       return this.renderRestoredIndicator();
     } else if (hasDetails) {
       return this.renderDetailsButton();
@@ -87,16 +108,29 @@ class ActionsCell extends PureComponent {
   }
 }
 
+ActionsCell.defaultProps = {
+  openDetailsId: null,
+  restorableList: {}
+};
+
 ActionsCell.propTypes = {
   activity: propTypes.object.isRequired,
   showDetails: propTypes.func.isRequired,
   hideDetails: propTypes.func.isRequired,
-  openDetailsId: propTypes.string
+  openDetailsId: propTypes.string,
+  showRestoreModal: propTypes.func.isRequired,
+  restorableList: propTypes.object
 };
+
+const mapStateToProps = (state) => ({
+  restorableList: state.table.restorableList,
+  data: state.table.data
+});
 
 const mapDispatchToProps = dispatch => ({
   showDetails: (id) => dispatch(actions.table.showDetails(id)),
-  hideDetails: () => dispatch(actions.table.hideDetails())
+  hideDetails: () => dispatch(actions.table.hideDetails()),
+  showRestoreModal: (id) => dispatch(actions.common.showRestoreModal(id))
 });
 
-export default connect(null, mapDispatchToProps)(ActionsCell);
+export default connect(mapStateToProps, mapDispatchToProps)(ActionsCell);

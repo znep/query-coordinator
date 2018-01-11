@@ -7,7 +7,9 @@ module.exports = function() {
       var warnings = stats.compilation.warnings;
 
       if (warnings.length > 0) {
-        console.log(warnings[0].message);
+        console.log(
+          `platform-ui/common/spec/visualizations/helpers/WebpackFailurePlugin.js:${warnings[0].message}`
+        );
 
         // Don't throw errors when in watch mode
         if (process.argv.join('').indexOf('--singleRunfalse') === -1) {

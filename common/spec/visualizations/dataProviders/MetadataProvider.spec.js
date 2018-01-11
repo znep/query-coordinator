@@ -158,7 +158,9 @@ describe('MetadataProvider', () => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
-            console.log(e.message);
+            console.log(
+              `platform-ui/common/spec/visualizations/dataProviders/MetadataProvider.spec.js:${e.message}`
+            );
             assert.isFalse(e);
             done();
           }
@@ -189,7 +191,9 @@ describe('MetadataProvider', () => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
-            console.log(e.message);
+            console.log(
+              `platform-ui/common/spec/visualizations/dataProviders/MetadataProvider.spec.js:${e.message}`
+            );
             assert.isFalse(e);
             done();
           }

@@ -106,7 +106,7 @@ export class VisibilityCell extends Component {
         <div className="visibility-description">
           ({descriptionText})
         </div>
-      )
+      );
     };
 
     return (

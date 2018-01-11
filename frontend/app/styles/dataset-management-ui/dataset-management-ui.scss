@@ -14,6 +14,7 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/URLSource/URLSource';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnHeader/ColumnHeader';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowOutputSchema/_ShowOutputSchema';
+  @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowRevision/ShowRevision';
 }
 
 // this is in the erb, so can't move to within react app

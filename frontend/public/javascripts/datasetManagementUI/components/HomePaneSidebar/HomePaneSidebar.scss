@@ -1,14 +1,42 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.sidebar {
+.sidebar.recent-actions-container {
   width: 24em;
+  height: 100%;
+  height: calc(100% - 32px);
   border-left: 1px solid $light-grey-4;
+  position: fixed;
+  right: 0;
+  top: 32px;
+  z-index: 10;
+  background-color: $white;
+  animation: slide-in 0.5s ease;
   .header-cont {
     margin: 1em 0em 1em 0em;
     h2 {
       margin: 0;
       padding: 0.2em 0.8em;
+      display: inline-block;
     }
+    .btn.dismiss {
+      padding: 8px;
+      float: right;
+      margin-right: 10px;
+      transition: transform .2s, color .2s;
+      &:hover {
+        transform: rotate(180deg);
+        color: $error-text;
+      }
+    }
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    right:-25em;
+  }
+  100% {
+    right: 0;
   }
 }

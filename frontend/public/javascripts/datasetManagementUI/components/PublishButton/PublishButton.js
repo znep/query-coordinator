@@ -38,7 +38,7 @@ function PublishReadinessFlyout(
   const flyoutText = isUSAID ? SubI18n.cant_submit_until : SubI18n.cant_publish_until;
   return (
     <div id={FLYOUT_ID} className={styles.flyout}>
-      <section className={styles.flyoutContent}>
+      <div className={styles.flyoutContent}>
         {metadataSatisfied && dataSatisfied && parenthoodSatisfied ? (
            buttonText
         ) : (
@@ -57,7 +57,7 @@ function PublishReadinessFlyout(
             </ul>
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 }

@@ -28,6 +28,7 @@ describe('ShowRevision page', () => {
   });
 
   it('renders the HomePaneSidebar', () => {
+    component.setState({ recentActionsOpened: true });
     assert.isTrue(component.find('HomePaneSidebar').exists());
   });
 });

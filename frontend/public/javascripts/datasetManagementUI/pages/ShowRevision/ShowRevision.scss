@@ -1,0 +1,29 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.show-revision-container {
+  position: relative;
+  .show-revision-content {
+    max-width:1200px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    @media screen and (max-width: 600px) {
+      padding: 15px 40px 15px 15px;
+    }
+  }
+  .recent-actions-btn {
+    position: fixed;
+    top: 16rem;
+    right: -3.4rem;
+    transform: rotate(-90deg);
+    border-bottom: none;
+    padding: 0.6rem 1rem 2rem 1rem;
+    position: fixed;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: right .2s;
+    &:hover {
+      right:-2.8rem;
+    }
+  }
+}

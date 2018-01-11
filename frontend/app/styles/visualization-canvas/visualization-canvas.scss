@@ -334,16 +334,6 @@ body {
   .visualization-canvas-body {
     margin: 0 auto;
 
-    &.edit-mode, &.preview-mode {
-      .info-pane {
-        .entry-header {
-          .entry-actions {
-            display: none;
-          }
-        }
-      }
-    }
-
     .info-pane {
       padding-top: 15px;
       margin-bottom: 0;
@@ -363,6 +353,7 @@ body {
           display: flex;
           flex: 1 1 10%;
           justify-content: flex-end;
+          padding-top: 10px;
         }
       }
 

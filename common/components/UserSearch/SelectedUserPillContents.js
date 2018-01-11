@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import UserSearchResultPropType from './UserSearchResultPropType';
+import { UserPropType } from './UserSearchResultPropType';
 import SocrataIcon from '../SocrataIcon';
 
 /**
@@ -7,8 +7,8 @@ import SocrataIcon from '../SocrataIcon';
  */
 class SelectedUserPillContents extends Component {
   static propTypes = {
-    user: UserSearchResultPropType.isRequired
-  }
+    user: UserPropType.isRequired
+  };
 
   render() {
     const { user } = this.props;

@@ -65,7 +65,13 @@ const makeExtKeys = hrefURLObj =>
 const hrefIsEmpty = href => {
   const hasUrls = !_.isEmpty(href.urls);
 
-  return !(hasUrls || href.title || href.description || href.data_dictionary_type || href.data_dictionary);
+  return !(
+    hasUrls ||
+    href.title ||
+    href.description ||
+    href.data_dictionary_type ||
+    href.data_dictionary
+  );
 };
 
 const shapeHrefState = rawState =>
@@ -172,7 +178,10 @@ FormValidationError.prototype = new Error();
 
 // CONTAINER COMPONENT
 const mapStateToProps = ({ entities, ui }, { params }) => {
-  const revision = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
+  const revision = Selectors.currentRevision(
+    entities,
+    _.toNumber(params.revisionSeq)
+  );
 
   let hrefs = [];
 
@@ -181,46 +190,81 @@ const mapStateToProps = ({ entities, ui }, { params }) => {
   }
 
   return {
-    hrefs: hrefs.map(namespaceURLs).map((href, idx) => addHrefIds(href, idx + 1)),
+    hrefs: hrefs
+      .map(namespaceURLs)
+      .map((href, idx) => addHrefIds(href, idx + 1)),
     shouldExit: ui.forms.hrefForm.shouldExit,
+    isDirty: ui.forms.hrefForm.isDirty,
     schemaExists: !!revision.output_schema_id,
     blobExists: !!revision.blob_id
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  markFormDirty: () => dispatch(FormActions.markFormDirty(FORM_NAME)),
-  markFormClean: () => dispatch(FormActions.markFormClean(FORM_NAME)),
-  setFormErrors: errors => dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
-  showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
-  clearFlash: () => dispatch(FlashActions.hideFlashMessage()),
-  validateAndSaveHrefs: hrefs => {
-    const errors = validate(hrefs);
+const mergeProps = (stateProps, { dispatch }, ownProps) => {
+  return {
+    ...stateProps,
+    ...ownProps,
+    disableSave: stateHrefs => {
+      // If the user has saved href stuff on the server, we want to let him
+      // save an empty array to hrefs since that is in effect removing the href
+      // dataset altogether. If we did not allow for this, the user could never
+      // remove an href dataset once added.
 
-    if (errors.length) {
-      return Promise.reject(new FormValidationError(FORM_NAME, errors));
+      // However, we don't want to let the user save an empty href dataset if nothing
+      // exists on the server already. So in this case, we disable the save buttons
+      // by...
+
+      // Checking if the redux store has any hrefs on the revision. The redux
+      // store hrefs array is update only on successful save, so safe to interpret
+      // an empty array as meaning "no saved hrefs on server"
+      if (!!stateProps.hrefs.length) {
+        return;
+      }
+
+      const hrefsToAdd = shapeHrefState(stateHrefs);
+
+      // If no saved hrefs on server, and no data in the dataset form locally,
+      // then mark form clean. This disables the save buttons.
+      if (hrefsToAdd.length === 0) {
+        dispatch(FormActions.markFormClean(FORM_NAME));
+      }
+    },
+    markFormDirty: () => dispatch(FormActions.markFormDirty(FORM_NAME)),
+    markFormClean: () => dispatch(FormActions.markFormClean(FORM_NAME)),
+    setFormErrors: errors =>
+      dispatch(FormActions.setFormErrors(FORM_NAME, errors)),
+    showFlash: (type, msg) =>
+      dispatch(FlashActions.showFlashMessage(type, msg)),
+    clearFlash: () => dispatch(FlashActions.hideFlashMessage()),
+    validateAndSaveHrefs: hrefs => {
+      const errors = validate(hrefs);
+
+      if (errors.length) {
+        return Promise.reject(new FormValidationError(FORM_NAME, errors));
+      }
+
+      const serverHrefs = { href: shapeHrefState(hrefs) };
+
+      return dispatch(updateRevision(serverHrefs, ownProps.params))
+        .then(resp =>
+          dispatch(editRevision(resp.resource.id, { href: resp.resource.href }))
+        )
+        .catch(err =>
+          err.response.json().then(({ params }) => {
+            if (!params) {
+              return;
+            }
+
+            const badURLs = _.chain(params.href)
+              .filter(href => !_.isEmpty(href))
+              .flatMap(href => href.urls)
+              .value();
+
+            throw new FormValidationError(FORM_NAME, [new BadUrl(badURLs)]);
+          })
+        );
     }
+  };
+};
 
-    const serverHrefs = { href: shapeHrefState(hrefs) };
-
-    return dispatch(updateRevision(serverHrefs, ownProps.params))
-      .then(resp => dispatch(editRevision(resp.resource.id, { href: resp.resource.href })))
-      .catch(err =>
-        err.response.json().then(({ params }) => {
-          if (!params) {
-            return;
-          }
-
-          const badURLs = _.chain(params.href)
-            .filter(href => !_.isEmpty(href))
-            .flatMap(href => href.urls)
-            .value();
-
-          throw new FormValidationError(FORM_NAME, [new BadUrl(badURLs)]);
-        })
-      );
-  },
-  ...ownProps
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(HrefForm);
+export default connect(mapStateToProps, null, mergeProps)(HrefForm);

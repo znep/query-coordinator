@@ -56,6 +56,12 @@ class HrefForm extends Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.props.isDirty) {
+      this.props.disableSave(this.state.hrefs);
+    }
+  }
+
   componentWillUnmount() {
     const { clearFlash } = this.props;
     clearFlash();
@@ -63,6 +69,10 @@ class HrefForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
+    this.setState({
+      errors: []
+    });
 
     this.props
       .validateAndSaveHrefs(this.state.hrefs)
@@ -77,6 +87,7 @@ class HrefForm extends Component {
       .catch(err => {
         const errors = [...this.state.errors, ...err.errors];
         this.props.showFlash('error', I18n.show_sources.save_error);
+        this.props.setFormErrors(errors);
         this.setState({
           errors
         });
@@ -92,7 +103,9 @@ class HrefForm extends Component {
   initializeHref(datasetNum, id) {
     const idIsDefined = id != null;
 
-    const datasetTitle = datasetNum ? I18n.show_sources.dataset_title.format(datasetNum) : '';
+    const datasetTitle = datasetNum
+      ? I18n.show_sources.dataset_title.format(datasetNum)
+      : '';
 
     const href = {
       id: idIsDefined ? id : this.state.currentId,
@@ -188,7 +201,10 @@ class HrefForm extends Component {
       }
     };
 
-    const newHrefs = [...this.state.hrefs.filter(h => h.id !== datasetId), newHref];
+    const newHrefs = [
+      ...this.state.hrefs.filter(h => h.id !== datasetId),
+      newHref
+    ];
 
     this.setState({
       hrefs: _.orderBy(newHrefs, 'id')
@@ -205,7 +221,10 @@ class HrefForm extends Component {
       urls: _.omit(href.urls, urlId)
     };
 
-    const newHrefs = [...this.state.hrefs.filter(h => h.id !== datasetId), newHref];
+    const newHrefs = [
+      ...this.state.hrefs.filter(h => h.id !== datasetId),
+      newHref
+    ];
 
     this.setState({
       hrefs: _.orderBy(newHrefs, 'id')
@@ -269,7 +288,9 @@ class HrefForm extends Component {
         <h2 className={styles.bigHeading}>{I18n.show_sources.title}</h2>
         <div className={styles.subtitle}>{I18n.show_sources.subtitle}</div>
         <form onSubmit={this.handleSubmit}>
-          <h3 className={styles.mediumHeading}>{I18n.show_sources.add_ext_dataset}</h3>
+          <h3 className={styles.mediumHeading}>
+            {I18n.show_sources.add_ext_dataset}
+          </h3>
           {this.state.hrefs.map((href, idx) => (
             <DatasetFieldset
               key={href.id}
@@ -289,9 +310,15 @@ class HrefForm extends Component {
                 this.handleAddURL(href.id);
               }} />
           ))}
-          <input type="submit" id="submit-href-form" className={styles.hidden} value="submit" />
+          <input
+            type="submit"
+            id="submit-href-form"
+            className={styles.hidden}
+            value="submit" />
         </form>
-        <button className={styles.addDatasetButton} onClick={this.handleAddDataset}>
+        <button
+          className={styles.addDatasetButton}
+          onClick={this.handleAddDataset} >
           {I18n.show_sources.add_dataset}
         </button>
       </section>
@@ -309,8 +336,10 @@ HrefForm.propTypes = {
   setFormErrors: PropTypes.func.isRequired,
   clearFlash: PropTypes.func.isRequired,
   showFlash: PropTypes.func.isRequired,
+  disableSave: PropTypes.func.isRequired,
   schemaExists: PropTypes.bool.isRequired,
-  blobExists: PropTypes.bool.isRequired
+  blobExists: PropTypes.bool.isRequired,
+  isDirty: PropTypes.bool.isRequired
 };
 
 export default HrefForm;

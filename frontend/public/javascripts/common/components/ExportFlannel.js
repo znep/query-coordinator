@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
 import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
+import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { FeatureFlags } from 'common/feature_flags';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
@@ -21,6 +22,8 @@ export default class ExportFlannel extends PureComponent {
       // currently support multiple VIFs anyway.
       vif: _.get(props, ['vifs', 0]),
       exportSetting: 'all',
+      rowCountAll: null,
+      rowCountFiltered: null,
       flannelOpen: props.flannelOpen
     };
 
@@ -50,6 +53,18 @@ export default class ExportFlannel extends PureComponent {
         catch(function() {
           self.setState({ ...newState, datasetUid });
         });
+      // determine row counts
+      const soqlDataProvider = new SoqlDataProvider({ domain: datasetDomain, datasetUid }, true);
+      soqlDataProvider.getRowCount().
+        then(function(resp) {
+          self.setState({ rowCountAll: resp });
+        });
+      if (whereClause !== '') {
+        soqlDataProvider.getRowCount(whereClause).
+          then(function(resp) {
+            self.setState({ rowCountFiltered: resp });
+          });
+      }
     }
   }
 
@@ -167,6 +182,22 @@ export default class ExportFlannel extends PureComponent {
     );
   }
 
+  renderRowCount(rowCount) {
+    if (rowCount) {
+      return (
+        <span>
+          ({rowCount})
+        </span>
+      );
+    } else {
+      return (
+        <span>
+          ({I18n.dataset_landing_page.export.not_available})
+        </span>
+      );
+    }
+  }
+
   renderFilterDataSelector() {
     const allDataProps = {
       name: 'export-flannel-export-setting',
@@ -183,7 +214,7 @@ export default class ExportFlannel extends PureComponent {
         <label htmlFor='export-flannel-export-setting-all'>
           <span className='fake-radiobutton' />
           <span className='translation-within-label'>
-            {I18n.dataset_landing_page.export.all_data}
+            {I18n.dataset_landing_page.export.all_data} {this.renderRowCount(this.state.rowCountAll)}
           </span>
         </label>
       </div>
@@ -205,7 +236,7 @@ export default class ExportFlannel extends PureComponent {
         <label htmlFor='export-flannel-export-setting-filtered' className={filteredDataProps.disabled ? 'disabled' : ''}>
           <span className='fake-radiobutton' />
           <span className='translation-within-label'>
-            {I18n.dataset_landing_page.export.filtered_data}
+            {I18n.dataset_landing_page.export.filtered_data} {this.renderRowCount(this.state.rowCountFiltered)}
           </span>
         </label>
       </div>

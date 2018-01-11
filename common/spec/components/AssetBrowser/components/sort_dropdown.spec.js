@@ -8,7 +8,7 @@ import _ from 'lodash';
 describe('components/SortDropdown', function() {
   const sortDropdownProps = {
     changeSortOrder: () => {},
-    order: 'relevance'
+    order: { value: 'relevance' }
   };
 
   const getProps = (props = {}) => ({ ...sortDropdownProps, ...props });

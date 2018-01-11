@@ -1926,6 +1926,9 @@ en:
       original: Original
       shapefile: Shapefile
       tsv_for_excel: TSV for Excel
+      all_data: All Data
+      filtered_data: Filtered Data
+      not_available: N/A
     error: Error
     explore_data:
       more: More...

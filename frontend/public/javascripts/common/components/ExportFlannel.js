@@ -183,7 +183,7 @@ export default class ExportFlannel extends PureComponent {
         <label htmlFor='export-flannel-export-setting-all'>
           <span className='fake-radiobutton' />
           <span className='translation-within-label'>
-            All Data
+            {I18n.dataset_landing_page.export.all_data}
           </span>
         </label>
       </div>
@@ -205,7 +205,7 @@ export default class ExportFlannel extends PureComponent {
         <label htmlFor='export-flannel-export-setting-filtered' className={filteredDataProps.disabled ? 'disabled' : ''}>
           <span className='fake-radiobutton' />
           <span className='translation-within-label'>
-            Filtered Data
+            {I18n.dataset_landing_page.export.filtered_data}
           </span>
         </label>
       </div>

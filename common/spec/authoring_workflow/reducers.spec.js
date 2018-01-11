@@ -265,6 +265,37 @@ describe('AuthoringWorkflow reducer', () => {
         });
       });
 
+      describe('when a new series with a seriesVariant of "line" is appended', () => {
+        let state;
+
+        beforeEach(() => {
+          state = getDefaultState();
+        });
+
+        describe('when considering columnChart', () => {
+          it('should append a normal series to columnChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.columnChart.series.length, 2);
+            assert.equal(newState.vifAuthoring.vifs.columnChart.series[1].type, 'columnChart');
+          });
+        });
+
+        describe('when considering comboChart', () => {
+          it('should append a "comboChart.line" series to comboChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.comboChart.series.length, 2);
+            assert.equal(newState.vifAuthoring.vifs.comboChart.series[1].type, 'comboChart.line');
+          });
+        });
+
+        describe('when considering pieChart', () => {
+          it('should not append any series to pieChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.pieChart.series.length, 1);
+          });
+        });
+      });
+
       describe('when a new flyout series is appended', () => {
         let state;
 

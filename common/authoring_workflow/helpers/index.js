@@ -199,7 +199,8 @@ export const addSeries = (state, { isFlyoutSeries, isInitialLoad, measureColumnN
   _.set(clonedSeries, 'dataSource.measure.aggregationFunction', 'count');
   _.set(clonedSeries, 'dataSource.measure.columnName', null);
 
-  // Set primary color equal to the index color of the current color palette.  If no palette is set, use categorical.
+  // Set primary color equal to the index color of the current color palette.  If no palette is
+  // set, use categorical.
   //
   let palette = _.get(clonedSeries, 'color.palette', 'categorical');
 
@@ -216,9 +217,13 @@ export const addSeries = (state, { isFlyoutSeries, isInitialLoad, measureColumnN
   // Set series type like: "comboChart.line" or "flyout"
   if (!_.isNil(seriesVariant)) {
 
-    // If the series variant is specified, append to the series type like "comboChart.column" or "comboChart.line"
-    const stateSeriesType = _.get(clonedSeries, 'type', '').split('.')[0];
-    _.set(clonedSeries, 'type', `${stateSeriesType}.${seriesVariant}`);
+    const seriesType = _.get(clonedSeries, 'type', '').split('.')[0];
+
+    // If this is a comboChart and the series variant is specified, append to the series type like
+    // "comboChart.column" or "comboChart.line"
+    if (seriesType === SERIES_TYPE_COMBO_CHART) {
+      _.set(clonedSeries, 'type', `${seriesType}.${seriesVariant}`);
+    }
 
   } else if (isFlyoutSeries) {
 

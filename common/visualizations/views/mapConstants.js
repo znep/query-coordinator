@@ -3,6 +3,12 @@ export const MAP_TYPES = Object.freeze({
   LINE_MAP: 'lineMap',
   BOUNDARY_MAP: 'boundaryMap'
 });
+
+export const POINT_AGGREATIONS = Object.freeze({
+  NONE: 'none',
+  HEAT_MAP: 'heat_map'
+});
+
 export const TILE_URL_OPTIONS = Object.freeze({
   snapPrecision: Object.freeze({
     1: 0.001,

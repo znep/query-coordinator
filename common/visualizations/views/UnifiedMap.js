@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import SvgVisualization from './SvgVisualization';
-import { MAP_TYPES } from './mapConstants';
+import { MAP_TYPES, POINT_AGGREATIONS } from './mapConstants';
 
 import MapFactory from './map/MapFactory';
 import VifBaseMap from './map/VifBaseMap';
@@ -11,6 +11,7 @@ import VifMapInteractionHandler from './map/VifMapInteractionHandler';
 import VifPointOverlay from './map/vifOverlays/VifPointOverlay';
 import VifLineOverlay from './map/vifOverlays/VifLineOverlay';
 import VifShapeOverlay from './map/vifOverlays/VifShapeOverlay';
+import VifHeatOverlay from './map/vifOverlays/VifHeatOverlay';
 
 export default class UnifiedMap extends SvgVisualization {
   constructor(element, vif, options) {
@@ -65,14 +66,23 @@ export default class UnifiedMap extends SvgVisualization {
 
   _getOverlay(vif) {
     const newMapType = _.get(vif, 'series[0].mapOptions.mapType');
+    const newPointAggregation = _.get(vif, 'series[0].mapOptions.pointAggregation');
     const existingMapType = _.get(this._existingVif, 'series[0].mapOptions.mapType');
+    const existingPointAggregation = _.get(this._existingVif, 'series[0].mapOptions.pointAggregation');
 
-    if (existingMapType === newMapType && this._currentOverlay) {
+
+    if (existingMapType === newMapType &&
+        existingPointAggregation === newPointAggregation &&
+        this._currentOverlay) {
       return this._currentOverlay;
     }
 
     if (newMapType == MAP_TYPES.POINT_MAP) {
-      return new VifPointOverlay(this._map);
+      if (newPointAggregation == POINT_AGGREATIONS.HEAT_MAP) {
+        return new VifHeatOverlay(this._map);
+      } else {
+        return new VifPointOverlay(this._map);
+      }
     } else if (newMapType === MAP_TYPES.LINE_MAP) {
       return new VifLineOverlay(this._map);
     } else if (newMapType === MAP_TYPES.BOUNDARY_MAP) {

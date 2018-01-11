@@ -130,6 +130,15 @@
         'mapType': 'lineMap',
       };
 
+      var heatMapVif = _.cloneDeep(baseVif);
+      heatMapVif.series[0].dataSource.domain = 'dataspace.demo.socrata.com';
+      heatMapVif.series[0].dataSource.datasetUid = 'r6t9-rak2';
+      heatMapVif.series[0].dataSource.dimension.columnName = 'point';
+      heatMapVif.series[0].mapOptions = {
+        'mapType': 'pointMap',
+        'pointAggregation': 'heat_map'
+      };
+
       $('#unified-map-point').socrataUnifiedMap(pointMapVif);
       $('#pointMapVif').val(JSON.stringify(pointMapVif, null, 4));
 
@@ -138,6 +147,9 @@
 
       $('#unified-map-line').socrataUnifiedMap(lineMapVif);
       $('#lineMapVif').val(JSON.stringify(lineMapVif, null, 4));
+
+      $('#unified-map-heat').socrataUnifiedMap(heatMapVif);
+      $('#heatMapVif').val(JSON.stringify(heatMapVif, null, 4));
     });
     function  changeVif(mapContainerId) {
       var unifiedMapVif = $('#' + mapContainerId +'MapVif').val();
@@ -185,6 +197,17 @@
     </div>
     <div class="right-section">
       <div id="unified-map-line" class="map"></div>
+    </div>
+  </div>
+
+  Heat Map
+  <div class="sample-container">
+    <div class="left-section">
+      <textarea rows="20" id="heatMapVif"></textarea>
+      <button onclick="changeVif('heat')">Update</button>
+    </div>
+    <div class="right-section">
+      <div id="unified-map-heat" class="map"></div>
     </div>
   </div>
 </div>

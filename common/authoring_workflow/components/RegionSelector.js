@@ -18,7 +18,8 @@ import {
   getDimension,
   getDomain,
   getShapefileUid,
-  isRegionMap
+  isRegionMap,
+  getPointAggregation
 } from '../selectors/vifAuthoring';
 
 import {
@@ -26,8 +27,10 @@ import {
   getValidCuratedRegions,
   getValidRegions,
   hasData,
-  hasRegions
+  hasRegions,
+  isPointMapColumn
 } from '../selectors/metadata';
+import { FeatureFlags } from 'common/feature_flags';
 
 export class RegionSelector extends Component {
   onSelectRegion = ({ computedColumn, curatedRegion, domain }) => {
@@ -88,12 +91,12 @@ export class RegionSelector extends Component {
   }
 
   renderSelector = () => {
-    var { metadata, vifAuthoring } = this.props;
-    var reference = (ref) => { this.selector = ref; };
-    var domain = getDomain(vifAuthoring);
-    var defaultRegion = getShapefileUid(vifAuthoring);
-
-    var computedColumns = _.map(getValidComputedColumns(metadata), (computedColumn) => {
+    const { metadata, vifAuthoring } = this.props;
+    const dimension = getDimension(vifAuthoring);
+    const reference = (ref) => { this.selector = ref; };
+    const domain = getDomain(vifAuthoring);
+    const defaultRegion = getShapefileUid(vifAuthoring);
+    const computedColumns = _.map(getValidComputedColumns(metadata), (computedColumn) => {
       return {
         title: computedColumn.name,
         value: computedColumn.uid,
@@ -102,8 +105,7 @@ export class RegionSelector extends Component {
         domain
       };
     });
-
-    var curatedRegions = _.map(getValidCuratedRegions(metadata), (curatedRegion) => {
+    const curatedRegions = _.map(getValidCuratedRegions(metadata), (curatedRegion) => {
       return {
         title: curatedRegion.name,
         value: curatedRegion.uid,
@@ -112,14 +114,33 @@ export class RegionSelector extends Component {
       };
     });
 
-    var regionAttributes = {
+    let disabled = !hasRegions(metadata);
+    let placeholder = I18n.t('shared.visualizations.panes.data.fields.region.placeholder');
+
+    if (isPointMapColumn(metadata, dimension)) {
+      disabled = disabled || !_.isEqual(getPointAggregation(vifAuthoring), 'region_map');
+      placeholder = I18n.t('shared.visualizations.panes.data.fields.region_map.placeholder');
+    }
+
+    const regionAttributes = {
       id: 'region-selection',
-      placeholder: I18n.t('shared.visualizations.panes.data.fields.region.placeholder'),
+      placeholder,
       options: [...computedColumns, ...curatedRegions],
       value: defaultRegion,
       onSelection: this.onSelectRegion,
-      disabled: !hasRegions(metadata)
+      disabled
     };
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    if (isNewGLMapEnabled) {
+      return (
+        <div className="region-selector-container" ref={reference}>
+          <Dropdown {...regionAttributes} />
+          {this.renderRegionProcessingMessage()}
+          {this.renderRegionProcessingError()}
+        </div>
+      );
+    }
 
     return (
       <div className="region-selector-container" ref={reference}>
@@ -135,10 +156,11 @@ export class RegionSelector extends Component {
   }
 
   render() {
-    var { metadata, vifAuthoring } = this.props;
-    var canRender = hasData(metadata) &&
-      isRegionMap(vifAuthoring) &&
-      _.isString(getDimension(vifAuthoring).columnName);
+    const { metadata, vifAuthoring } = this.props;
+    const dimension = getDimension(vifAuthoring);
+    const canRender = hasData(metadata) &&
+      (isRegionMap(vifAuthoring) || isPointMapColumn(metadata, dimension)) &&
+      _.isString(dimension.columnName);
 
     return canRender ?
       this.renderSelector() :

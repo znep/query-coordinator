@@ -638,6 +638,15 @@
       margin: 10px 0;
     }
 
+    .region-and-measure-list-container {
+      padding-left: 30px;
+
+      .region-selector-container,
+      .measure-list-container {
+        margin: 12px 0;
+      }
+    }
+
     .measure-list-container {
       .block-label {
         margin: 20px 0 10px;

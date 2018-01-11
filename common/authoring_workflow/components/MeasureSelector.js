@@ -22,16 +22,16 @@ import {
   getDimensionGroupingColumnName,
   getSeries,
   hasErrorBars,
-  isBarChart,
-  isColumnChart,
   isComboChart,
   isFeatureMap,
-  isTimelineChart
+  getPointAggregation,
+  getDimension
 } from '../selectors/vifAuthoring';
 
 import {
   hasData,
-  getValidMeasures
+  getValidMeasures,
+  isPointMapColumn
 } from '../selectors/metadata';
 
 export class MeasureSelector extends Component {
@@ -137,23 +137,23 @@ export class MeasureSelector extends Component {
   }
 
   renderPendingMeasureSelector(options, measureIndex) {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, metadata } = this.props;
+    const dimension = getDimension(vifAuthoring);
     const seriesIndex = getSeries(vifAuthoring).length;
-
     const measureListItemAttributes = {
       className: 'measure-list-item',
       key: this.getListItemKey(seriesIndex)
     };
-
-    const hasOnlyDefaultValue = options.length <= 1;
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
     const measureAttributes = {
-      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      disabled,
       id: `measure-selection-${seriesIndex}`,
       onSelection: (option) => this.handleOnSelectionPendingMeasureColumn(seriesIndex, measureIndex, option),
       options,
       placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
     };
-
     const deleteMeasureLink = this.renderDeletePendingMeasureLink();
 
     return (
@@ -167,16 +167,17 @@ export class MeasureSelector extends Component {
   }
 
   renderMeasureSelector(seriesItem, measureIndex, options) {
-    const { shouldRenderDeleteMeasureLink, vifAuthoring } = this.props;
-
+    const { shouldRenderDeleteMeasureLink, vifAuthoring, metadata } = this.props;
+    const dimension = getDimension(vifAuthoring);
     const measureListItemAttributes = {
       className: 'measure-list-item',
       key: this.getListItemKey(seriesItem.seriesIndex)
     };
-
-    const hasOnlyDefaultValue = options.length <= 1;
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
     const measureAttributes = {
-      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      disabled,
       id: `measure-selection-${seriesItem.seriesIndex}`,
       onSelection: (option) => {
         this.handleOnSelectionMeasureColumn(seriesItem.seriesIndex, measureIndex, option);
@@ -184,8 +185,8 @@ export class MeasureSelector extends Component {
       options,
       value: seriesItem.dataSource.measure.columnName
     };
-
     const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesItem, measureIndex);
+    const allSeries = getSeries(vifAuthoring);
     const deleteMeasureLink = shouldRenderDeleteMeasureLink ?
       this.renderDeleteMeasureLink(seriesItem.seriesIndex, measureIndex) :
       null;
@@ -202,7 +203,8 @@ export class MeasureSelector extends Component {
   }
 
   renderMeasureAggregationSelector(seriesItem, measureIndex) {
-    const { aggregationTypes, vifAuthoring } = this.props;
+    const { aggregationTypes, vifAuthoring, metadata } = this.props;
+    const dimension = getDimension(vifAuthoring);
 
     if (_.isNull(seriesItem.dataSource.measure.columnName)) {
       return null; // no aggregation dropdown when no column name is selected
@@ -212,9 +214,11 @@ export class MeasureSelector extends Component {
       ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type })),
       { title: I18n.translate('shared.visualizations.aggregations.none'), value: null }
     ];
-
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
     const measureAggregationAttributes = {
-      disabled: isFeatureMap(vifAuthoring),
+      disabled,
       id: `measure-aggregation-selection-${seriesItem.seriesIndex}`,
       onSelection: (option) => {
         this.handleOnSelectionMeasureAggregation(seriesItem.seriesIndex, measureIndex, option);

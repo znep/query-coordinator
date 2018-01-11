@@ -149,6 +149,35 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.pointAggregation', action.pointAggregation);
       break;
 
+    case actions.SET_COMPUTED_COLUMN:
+      _.set(state, 'configuration.computedColumnName', action.computedColumn);
+      break;
+
+    case actions.SET_SHAPEFILE:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
+      break;
+
+    case actions.SET_SHAPEFILE_UID:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      break;
+
+    case actions.SET_SHAPEFILE_PRIMARY_KEY:
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      break;
+
+    case actions.SET_SHAPEFILE_GEOMETRY_LABEL:
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
+      break;
+
+    case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_COLUMN:
+      if (!action.isFlyoutSeries && (action.relativeIndex == 0)) {
+        return baseVifReducer(state, action);
+      }
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_FILTERS:
     case actions.SET_TITLE:

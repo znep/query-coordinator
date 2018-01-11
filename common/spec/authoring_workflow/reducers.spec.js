@@ -109,14 +109,14 @@ describe('AuthoringWorkflow reducer', () => {
         { columnName: 'anything', isFlyoutSeries: false, relativeIndex: 0 },
         'anything',
         'series[0].dataSource.measure.columnName',
-        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'map', 'timelineChart']);
 
       shouldSetVifWithObject(
         'setMeasureAggregation',
         { aggregationFunction: 'count', isFlyoutSeries: false, relativeIndex: 0 },
         'count',
         'series[0].dataSource.measure.aggregationFunction',
-        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'map', 'timelineChart']);
 
       shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap', 'map']);
       shouldSetVif('setSecondaryColor', [0, '#00F'], 'series[0].color.secondary', ['columnChart', 'histogram']);
@@ -129,9 +129,9 @@ describe('AuthoringWorkflow reducer', () => {
 
       shouldSetVif('setColorPalette', 'alternate2', 'series[0].color.palette', ['pieChart']);
 
-      shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap']);
-      shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap']);
-      shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap']);
+      shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap', 'map']);
+      shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap', 'map']);
+      shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap', 'map']);
 
       shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap', 'map']);
 

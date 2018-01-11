@@ -969,10 +969,13 @@ en:
             point_aggregation_options:
               none: None
               heat_map: Heat Map
+              region_map: Region Map
             point_map_options:
               resize_points_by_value: Resize Points by Value
               color_points_by_value: Color by Value
               no_value: None
+            region_map:
+              placeholder: Select custom boundary...
             region:
               groups:
                 ready_to_use: Ready To Use

@@ -599,8 +599,9 @@ export class PresentationPane extends Component {
   renderDataClassesSelector = (disableDropdown = false) => {
     const { vifAuthoring, onNumberOfDataClassesChange } = this.props;
     const numberOfDataClasses = selectors.getNumberOfDataClasses(vifAuthoring);
+    const disabled = _.isUndefined(disableDropdown) ? false : disableDropdown;
     const dataClassesAttributes = {
-      disableDropdown,
+      disabled,
       id: 'data-classes',
       options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: parseInt(i) })),
       value: numberOfDataClasses,
@@ -830,7 +831,6 @@ export class PresentationPane extends Component {
       onMaxClusterSizeChange,
       onStackRadiusChange
     } = this.props;
-
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
       'max_clustering_zoom_level',
       1,
@@ -949,22 +949,34 @@ export class PresentationPane extends Component {
 
   renderPointMapControls = () => {
     const { vifAuthoring } = this.props;
-    const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
-    const colorControls = (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
-        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) ?
-          this.renderPrimaryColorForMaps(colorLabelText) :
-          this.renderColorPaletteForMaps(colorLabelText)}
-        {this.renderPointOpacityControls()}
-      </AccordionPane>
-    );
+    const selectedPointAggregation = selectors.getPointAggregation(vifAuthoring);
 
-    return [
-      colorControls,
-      this.renderPointMapSizeControls(),
-      this.renderMapLayerControls(),
-      this.renderClusterControls()
-    ];
+    if (selectedPointAggregation === 'heat_map') {
+      return [this.renderMapLayerControls()];
+    } else {
+      const isRegionMap = selectedPointAggregation === 'region_map';
+      const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
+      const colorControls = (
+        <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+          {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
+            this.renderPrimaryColorForMaps(colorLabelText) :
+            this.renderColorPaletteForMaps(colorLabelText)}
+          {!isRegionMap && this.renderPointOpacityControls()}
+          {isRegionMap && this.renderDataClassesSelector()}
+        </AccordionPane>
+      );
+
+      if (isRegionMap) {
+        return [colorControls, this.renderMapLayerControls()];
+      }
+
+      return [
+        colorControls,
+        this.renderPointMapSizeControls(),
+        this.renderMapLayerControls(),
+        this.renderClusterControls()
+      ];
+    }
   }
 
   renderLineMapControls = () => {

@@ -175,16 +175,12 @@ export const ceteraUtils = (() => {
     ceteraQueryString,
     query: (queryOptions) => {
       const { mixpanelContext } = queryOptions;
-
-      if (!mixpanelContext) {
-        console.warn(`No mixpanelContext provided. Mixpanel events may not be reported properly. Consider
-          adding mixpanelContext to this cetera query.`);
-      }
-
       const queryString = ceteraQueryString(queryOptions);
       const fetchUrl = `${CETERA_CATALOG_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
+        // When no mixpanelContext is provided. Mixpanel events may not be reported properly. Consider
+        // adding mixpanelContext to this cetera query.
         if (mixpanelContext) {
           mixpanel.sendPayload(
             mixpanelContext.eventName,

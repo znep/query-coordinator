@@ -25,7 +25,7 @@ export const getMimeType = (format) => {
   }
 };
 
-export const getDownloadLink = (viewUid, format, domainCname, protocol) => {
+export const getDownloadLink = (viewUid, format, domainCname, protocol, extraQueryParam) => {
   if (_.isEmpty(viewUid)) { return null; }
 
   const linkOptions = { format: format, protocol: protocol };
@@ -58,6 +58,10 @@ export const getDownloadLink = (viewUid, format, domainCname, protocol) => {
       break;
     default:
       extension = linkOptions.format;
+  }
+
+  if (extraQueryParam) {
+    params.query = extraQueryParam;
   }
 
   const queryString = $.param(params);

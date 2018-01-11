@@ -2,9 +2,11 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
+import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { FeatureFlags } from 'common/feature_flags';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
-import { getDownloadLink, getDownloadType } from 'common/downloadLinks';
+import { getDownloadLink, getDownloadLinkFiltered, getDownloadType } from 'common/downloadLinks';
 
 const featuredLinksList = ['csv', 'csv_for_excel'];
 
@@ -15,11 +17,38 @@ export default class ExportFlannel extends PureComponent {
     props.view.exportFormats = props.view.exportFormats.filter(type => type !== 'json');
 
     this.state = {
+      vif: _.get(props, 'vifs[0]'),
       exportSetting: 'all',
       flannelOpen: props.flannelOpen
     };
 
     _.bindAll(this, ['closeFlannel', 'openFlannel']);
+  }
+
+  componentDidMount() {
+    const self = this;
+    // determine the underlying dataset metadata and save it in the state
+    if (!this.props.idFromView) {
+      const datasetDomain = _.get(self.state.vif, 'series[0].dataSource.domain');
+      const datasetUid = _.get(self.state.vif, 'series[0].dataSource.datasetUid');
+      const metadataProvider = new MetadataProvider({ domain: datasetDomain, datasetUid }, true);
+      const whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(self.state.vif, 0);
+      let queryParam = 'select *';
+      if (whereClause.length > 0) {
+        queryParam += ` where ${whereClause}`;
+      }
+      const newState = {
+        datasetDomain,
+        queryParam
+      };
+      metadataProvider.getDatasetMigrationMetadata().
+        then(function(migrationMetadata) {
+          self.setState({ ...newState, datasetUid: _.get(migrationMetadata, 'nbe_id', datasetUid) });
+        }).
+        catch(function() {
+          self.setState({ ...newState, datasetUid });
+        });
+    }
   }
 
   closeFlannel() {
@@ -33,7 +62,11 @@ export default class ExportFlannel extends PureComponent {
   renderDownloadLink(format) {
     const { view, onDownloadData } = this.props;
 
-    const url = getDownloadLink(view.id, format);
+    let url = getDownloadLink(view.id, format);
+    if (!this.props.idFromView) {
+      const queryParam = (this.state.exportSetting === 'filtered' ? this.state.queryParam : undefined);
+      url = getDownloadLink(this.state.datasetUid, format, this.state.datasetDomain, 'https', queryParam);
+    }
     const type = getDownloadType(format);
     const label = I18n.dataset_landing_page.export[format] || format.toUpperCase();
 
@@ -159,6 +192,7 @@ export default class ExportFlannel extends PureComponent {
       type: 'radio',
       id: 'export-flannel-export-setting-filtered',
       checked: (this.state.exportSetting === 'filtered'),
+      disabled: _.get(this.state.vif, 'series[0].dataSource.filters', []).length === 0,
       onChange: (event) => {
         this.setState({exportSetting: 'filtered'});
       }
@@ -248,6 +282,7 @@ export default class ExportFlannel extends PureComponent {
 }
 
 ExportFlannel.defaultProps = {
+  idFromView: true,
   flannelOpen: false
 };
 

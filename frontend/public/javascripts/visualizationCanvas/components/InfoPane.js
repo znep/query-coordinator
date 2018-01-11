@@ -7,7 +7,7 @@ import InfoPaneComponent from '../../common/components/InfoPaneComponent';
 import InfoPaneButtons from './InfoPaneButtons';
 
 function mapStateToProps(state) {
-  const { view, isEphemeral } = state;
+  const { view, isEphemeral, vifs } = state;
   const { hideDataSourceLink } = _.get(window, 'serverConfig.customConfigurations', {});
 
   const updatedDate = isEphemeral ?
@@ -27,6 +27,12 @@ function mapStateToProps(state) {
     footer = (<span>&nbsp;</span>);
   }
 
+  const infoPaneProps = {
+    parentView: view,
+    exportFilteredData: true,
+    vifs
+  };
+
   return {
     name: view.name,
     description: view.description,
@@ -45,7 +51,7 @@ function mapStateToProps(state) {
       }
     },
     renderButtons() {
-      return <InfoPaneButtons parentView={view} exportFilteredData={true} />;
+      return <InfoPaneButtons {...infoPaneProps} />;
     }
   };
 }

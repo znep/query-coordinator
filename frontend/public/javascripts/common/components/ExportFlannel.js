@@ -17,7 +17,9 @@ export default class ExportFlannel extends PureComponent {
     props.view.exportFormats = props.view.exportFormats.filter(type => type !== 'json');
 
     this.state = {
-      vif: _.get(props, 'vifs[0]'),
+      // NB: vifs[0] is a valid assumption here because none of the vizcan pages
+      // currently support multiple VIFs anyway.
+      vif: _.get(props, ['vifs', 0]),
       exportSetting: 'all',
       flannelOpen: props.flannelOpen
     };
@@ -29,8 +31,8 @@ export default class ExportFlannel extends PureComponent {
     const self = this;
     // determine the underlying dataset metadata and save it in the state
     if (!this.props.idFromView) {
-      const datasetDomain = _.get(self.state.vif, 'series[0].dataSource.domain');
-      const datasetUid = _.get(self.state.vif, 'series[0].dataSource.datasetUid');
+      const datasetDomain = _.get(self.state.vif, ['series', 0, 'dataSource', 'domain']);
+      const datasetUid = _.get(self.state.vif, ['series', 0, 'dataSource', 'datasetUid']);
       const metadataProvider = new MetadataProvider({ domain: datasetDomain, datasetUid }, true);
       const whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(self.state.vif, 0);
       let queryParam = 'select *';
@@ -192,7 +194,7 @@ export default class ExportFlannel extends PureComponent {
       type: 'radio',
       id: 'export-flannel-export-setting-filtered',
       checked: (this.state.exportSetting === 'filtered'),
-      disabled: _.get(this.state.vif, 'series[0].dataSource.filters', []).length === 0,
+      disabled: _.get(this.state.vif, ['series', 0, 'dataSource', 'filters'], []).length === 0,
       onChange: (event) => {
         this.setState({exportSetting: 'filtered'});
       }

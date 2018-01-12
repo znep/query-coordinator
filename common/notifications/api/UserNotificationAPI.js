@@ -2,7 +2,6 @@ import 'whatwg-fetch';
 import { Socket } from 'phoenix';
 import _ from 'lodash';
 import $ from 'jquery';
-import { checkStatus } from 'common/notifications/api/helper';
 
 import { STATUS_ACTIVITY_TYPES, NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
 
@@ -17,66 +16,52 @@ class NotificationAPI {
     }
 
     let channelId = `user: ${userId}`;
+    const socketOptions = { params: { user_id: userId } };
+    if (useLogger) {
+      socketOptions.logger = (kind, msg, data) => { console.info(kind, msg, data); };
+    }
+    let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
+    if (_.get(options, 'developmentMode') && !this._hasEverJoined) {
+      socket.onError(() => {
+        console.warn('User Notifications: Error connecting, disabling connection in development mode.');
+        socket.disconnect();
+      });
+    }
 
-    this._getSocketToken().then((response) => {
-      const socketOptions = { params: { user_id: userId, token: response.token } };
-      if (useLogger) {
-        socketOptions.logger = (kind, msg, data) => {
-          console.info(kind, msg, data);
-        };
-      }
+    socket.connect();
 
-      let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
-      if (_.get(options, 'developmentMode') && !this._hasEverJoined) {
-        socket.onError(() => {
-          console.warn('User Notifications: Error connecting, disabling connection in development mode.');
-          socket.disconnect();
-        });
-      }
+    this._channel = socket.channel(channelId, {});
 
-      socket.connect();
-
-      this._channel = socket.channel(channelId, {});
-
-      let self = this;
-      self._offset = 0;
-      self._totalNotificationsCount = 0;
-      self._enqueuedNotifications = [];
-      this._loadNotifications(self._offset).then(function(response) {
-        self._notifications = self._transformNotifications(_.get(response, 'data', []));
-        self._totalNotificationsCount = _.get(response, 'count.total', 0);
-        self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
-        self._offset += _.size(self._notifications);
-        self.update();
-        self._channel.join().receive('ok', (resp) => {
+    let self = this;
+    self._offset = 0;
+    self._totalNotificationsCount = 0;
+    self._enqueuedNotifications = [];
+    this._loadNotifications(self._offset).then(function(response) {
+      self._notifications = self._transformNotifications(_.get(response, 'data', []));
+      self._totalNotificationsCount = _.get(response, 'count.total', 0);
+      self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
+      self._offset += _.size(self._notifications);
+      self.update();
+      self._channel.join().
+        receive('ok', (resp) => {
           self._hasEverJoined = true;
           if (useLogger) {
             console.info('Joined user channel');
           }
-        }).receive('error', (resp) => {
+        }).
+        receive('error', (resp) => {
           if (useLogger) {
             console.info('Unable to join', resp);
           }
         });
-      }, function() {
-      });
+    }, function() {});
 
-      this._channel.on('new_notification', (msg) => this._onNewNotification(msg.notification));
-      this._channel.on('delete_notification', (msg) => this._onNotificationDelete(msg.notification_id));
-      this._channel.on('delete_all_notifications', (msg) => this._onDeleteAllNotifications(msg.notification_id));
-      this._channel.on('mark_notification_as_read', (msg) => this._onNotificationMarkedAsRead(msg.notification_id));
-      this._channel.on('mark_notification_as_unread', (msg) => this._onNotificationMarkedAsUnRead(msg.notification_id));
-      this._callback = callback;
-    });
-  }
-
-  _getSocketToken() {
-    return fetch('/api/notifications_and_alerts/socket_token', {
-      method: 'POST',
-      credentials: 'same-origin'
-    }).
-    then((response) => checkStatus(response, 'Error while getting socket token')).
-    then((response) => response.json());
+    this._channel.on('new_notification', (msg) => this._onNewNotification(msg.notification));
+    this._channel.on('delete_notification', (msg) => this._onNotificationDelete(msg.notification_id));
+    this._channel.on('delete_all_notifications', (msg) => this._onDeleteAllNotifications(msg.notification_id));
+    this._channel.on('mark_notification_as_read', (msg) => this._onNotificationMarkedAsRead(msg.notification_id));
+    this._channel.on('mark_notification_as_unread', (msg) => this._onNotificationMarkedAsUnRead(msg.notification_id));
+    this._callback = callback;
   }
 
   _loadNotifications(offset) {

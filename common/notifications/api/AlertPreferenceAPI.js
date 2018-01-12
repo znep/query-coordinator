@@ -1,7 +1,28 @@
 import 'whatwg-fetch';
 import airbrake from 'common/airbrake';
 import _ from 'lodash';
-import { checkStatus } from 'common/notifications/api/helper';
+
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+
+function checkStatus(response) {
+  let errorMessage;
+  if (response.status === 401 || response.status === 403) {
+    // session may expired so we are reloading the page
+    window.location.reload();
+  } else if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    errorMessage = response.statusText;
+    try {
+      airbrake.notify({
+        error: `Error while set/get alert preference: ${errorMessage}`
+      });
+    } catch (err) {
+    }
+    throw new Error(errorMessage);
+  }
+}
+
 
 function getDefaultHeaders() {
   return {
@@ -82,7 +103,7 @@ export const AlertPreferenceAPI = (() => {
         headers: getDefaultHeaders(),
         credentials: 'same-origin'
       }).
-      then((response) => checkStatus(response, 'An error was encountered while getting alert preferences, please try again or contact support@socrata.com')).
+      then(checkStatus).
       then((response) => response.json()).
       then((response) => {
         return decodePreferenceFormat(response.data);
@@ -96,7 +117,7 @@ export const AlertPreferenceAPI = (() => {
         credentials: 'same-origin',
         body: JSON.stringify({ subscription_preferences: encodePreferences, settings: encodeSettings(settings) })
       }).
-      then((response) => checkStatus(response, 'An error was encountered while getting alert preferences, please try again or contact support@socrata.com')).
+      then(checkStatus).
       then((response) => response.json()).
       then((response) => response.data);
 

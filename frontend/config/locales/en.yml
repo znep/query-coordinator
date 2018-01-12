@@ -2525,7 +2525,8 @@ en:
       add_url: + Add Another URL
       dataset_title: "External Dataset {0}"
       error_url: Not a valid URL
-      error_href_exists: This dataset has been linked to data on an external server. Uploading a new source or importing data from a URL is no longer possible.
+      error_href_exists: This dataset has been linked to data on an external server. In order to upload a new data file or import data from a URL please first go to the {0} and remove the link(s).
+      error_href_exists_link_text: Link to an External Data Source tab
       error_no_dupes: This field must be unique
       error_no_empties: This field cannot be empty
       error_schema_exists: A data source has already been imported for this dataset. Linking to data from an external server is no longer possible.

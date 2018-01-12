@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import mockView from '../data/mockView';
-import ExportFlannel from 'datasetLandingPage/components/ExportFlannel';
+import mockView from '../../datasetLandingPage/data/mockView';
+import ExportFlannel from 'components/ExportFlannel';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/ExportFlannel', () => {

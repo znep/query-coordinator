@@ -5,8 +5,8 @@ describe CeteraController do
 
   describe 'get /cetera/users' do
     let(:empty_results) { { 'results' => [] } }
-    let(:two_results) { JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_two_user_results.json")) }
-    let(:all_results) { JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_four_user_results.json")) }
+    let(:two_results) { json_fixture("cetera_two_user_results.json") }
+    let(:all_results) { json_fixture("cetera_four_user_results.json") }
 
     before(:each) do
       init_anonymous_environment

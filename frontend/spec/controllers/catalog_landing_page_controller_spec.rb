@@ -6,15 +6,20 @@ describe CatalogLandingPageController do
 
   before do
     init_anonymous_environment
-    rspec_stub_feature_flags_with(cetera_search: true)
-    rspec_stub_feature_flags_with(enable_catalog_landing_page: true)
+    stub_feature_flags_with(
+      enable_catalog_landing_page: true,
+      cetera_search: true
+    )
     allow(subject).to receive(:get_site_title).and_return('site title')
   end
 
   # Note, these specs do NOT exercise the CatalogLandingPageConstraint.
   describe 'GET #show' do
     it '404s when enable_catalog_landing_page is false' do
-      rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+      stub_feature_flags_with(
+        enable_catalog_landing_page: false,
+        cetera_search: true
+      )
       get :show, :category => 'Government'
       expect(response).to have_http_status(404)
     end
@@ -62,7 +67,10 @@ describe CatalogLandingPageController do
       end
 
       it '404s when enable_catalog_landing_page is false' do
-        rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+        stub_feature_flags_with(
+          enable_catalog_landing_page: false,
+          cetera_search: true
+        )
         get :manage, :category => 'Government'
         expect(response).to have_http_status(404)
       end
@@ -137,7 +145,10 @@ describe CatalogLandingPageController do
       end
 
       it '404s when enable_catalog_landing_page is false' do
-        rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+        stub_feature_flags_with(
+          enable_catalog_landing_page: false,
+          cetera_search: true
+        )
         post :manage_write, post_body
         expect(response).to have_http_status(404)
       end

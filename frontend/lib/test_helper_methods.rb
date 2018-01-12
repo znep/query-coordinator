@@ -12,7 +12,7 @@ module TestHelperMethods
 
   def init_current_domain
     # For some reason, Domain and Configuration aren't autoloaded at this point,
-    # so force them to load before we read test/fixtures/domain.yml
+    # so force them to load before we read spec/fixtures/domain.yml
     Domain && Configuration
     @domain = YAML::load(File.open('spec/fixtures/domain.yml'))
     CurrentDomain.set_domain(@domain)
@@ -88,32 +88,10 @@ module TestHelperMethods
     init_environment(test_user: TestHelperMethods::ANONYMOUS, site_chrome: false)
   end
 
-  def load_sample_data(file)
-    sample_data = JSON::parse(File.open(file).read)
-    sample_data.each do |k, v|
-      CoreServer::Connection.any_instance.stubs(k).returns(v.to_json)
-    end
-  end
-
-  def application_helper
-    @application_helper ||= Object.new.tap do |object|
-      object.extend(ApplicationHelper)
-      object.extend(ActionView::Helpers::JavaScriptHelper)
-      object.extend(ActionView::Helpers::TagHelper)
-      object.stubs(:request => stub(:query_parameters => {}))
-    end
-  end
-
-  def stub_module_enabled_on_current_domain(module_name)
-    CurrentDomain.stubs(module_names: [ module_name.to_s ])
-    CurrentDomain.domain.stubs(features: Hashie::Mash.new.tap { |h| h.send(:"#{module_name}=", true) })
-  end
-
   def stub_feature_flags_with(options)
-    @feature_flags ||= Hashie::Mash.new(options)
-    @feature_flags.merge!(options)
-    CurrentDomain.stubs(:feature_flags => @feature_flags)
-    FeatureFlags.stubs(:derive => @feature_flags)
+    feature_flags = Hashie::Mash.new(options)
+    allow(CurrentDomain).to receive(:feature_flags).and_return(feature_flags)
+    allow(FeatureFlags).to receive(:derive).and_return(feature_flags)
   end
 
   def request_headers
@@ -128,35 +106,16 @@ module TestHelperMethods
   def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
     stub_site_chrome_instance # SocrataSiteChrome::Test::Helpers
 
-    if Object.respond_to?(:stubs)
-      # Minitest
-      SiteAppearance.stubs(
-        :find => Hashie::Mash.new(
-          :activation_state => {
-            :open_data => false,
-            :homepage => false,
-            :data_lens => false
-          }
-        )
-      )
-      SocrataSiteChrome::DomainConfig.any_instance.stubs(:config =>
-        HashWithIndifferentAccess.new(body)
-      )
-    else
-      # RSpec
-      allow(SiteAppearance).to receive(:find).and_return(
-        Hashie::Mash.new(
-          :activation_state => {
-            :open_data => false,
-            :homepage => false,
-            :data_lens => false
-          }
-        )
-      )
-      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:config).and_return(
-        HashWithIndifferentAccess.new(body)
-      )
-    end
+    allow(SiteAppearance).to receive(:find).
+      and_return(Hashie::Mash.new(
+        :activation_state => {
+          :open_data => false,
+          :homepage => false,
+          :data_lens => false
+        }
+      ))
+    allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:config).
+      and_return(HashWithIndifferentAccess.new(body))
   end
 
   def stub_site_chrome_custom_content(content = {})
@@ -167,19 +126,10 @@ module TestHelperMethods
       :footer => { :html => nil, :css => nil, :js => nil }
     }
 
-    if Object.respond_to?(:stubs)
-      SocrataSiteChrome::CustomContent.any_instance.stubs(
-        :activated? => activated,
-        :fetch => default_content.deep_merge(content)
-      )
-    else
-      allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:activated?).and_return(
-        activated
-      )
-      allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:fetch).and_return(
-        default_content.deep_merge(content)
-      )
-    end
+    allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:activated?).
+      and_return(activated)
+    allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:fetch).
+      and_return(default_content.deep_merge(content))
   end
 
   def core_cookie
@@ -327,22 +277,6 @@ module TestHelperMethods
       screenName: 'random deciduous-horn',
       rights: ['create_datasets', 'edit_others_datasets', 'edit_sdp', 'edit_site_theme', 'moderate_comments', 'manage_users', 'chown_datasets', 'edit_nominations', 'approve_nominations', 'feature_items', 'federations', 'manage_stories', 'manage_approval', 'change_configurations', 'view_domain', 'view_others_datasets', 'edit_pages', 'create_pages', 'view_goals', 'view_dashboards', 'edit_goals', 'edit_dashboards', 'create_dashboards'],
       flags: ['admin']
-    }
-  end
-
-  def stub_user_session
-    UserSessionProvider.klass.any_instance.stubs(:save).with(true).returns(Net::HTTPSuccess.new(1.1, 200, 'Success'))
-    User.stubs(current_user: User.new(some_user))
-    CoreManagedUserSession.any_instance.stubs(:auth_cookie_string).returns('Have a cookie')
-  end
-
-  def some_user
-    {
-      accept_terms: true,
-      email: 'foo@bar.com',
-      id: '1234-abcd',
-      password: 'asdf',
-      passwordConfirm: 'asdf'
     }
   end
 

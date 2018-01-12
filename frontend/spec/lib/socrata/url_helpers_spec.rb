@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Socrata::UrlHelpers' do
+describe Socrata::UrlHelpers do
   include TestHelperMethods
 
   # The contract of the Socrata::UrlHelpers module includes calls to super.
@@ -23,8 +23,9 @@ RSpec.describe 'Socrata::UrlHelpers' do
 
   before(:each) do
     init_current_domain
-    CurrentDomain.stub(:default_locale => 'the_default_locale', :cname => 'example.com')
-    I18n.stub(:locale => :the_default_locale)
+    allow(CurrentDomain).to receive(:default_locale).and_return('the_default_locale')
+    allow(CurrentDomain).to receive(:cname).and_return('example.com')
+    allow(I18n).to receive(:locale).and_return(:the_default_locale)
   end
 
   describe '#seo_friendly_url' do
@@ -36,7 +37,7 @@ RSpec.describe 'Socrata::UrlHelpers' do
 
     describe 'non-default locale' do
       before(:each) do
-        I18n.stub(:locale => :ca)
+        allow(I18n).to receive(:locale).and_return(:ca)
       end
       it 'does include the locale component' do
         expect(helpers.seo_friendly_url(fake: 'view')).to eq('https://example.com/ca/path/from/super/')
@@ -269,7 +270,7 @@ RSpec.describe 'Socrata::UrlHelpers' do
         end
 
         it 'returns link after appending locale' do
-          I18n.stub(:locale => :it)
+          allow(I18n).to receive(:locale).and_return(:it)
           expect(helpers.localized_dataset_url('https://foo.bar/Foo/Bar/abcd-efgh')).to eq('https://foo.bar/it/Foo/Bar/abcd-efgh')
         end
       end

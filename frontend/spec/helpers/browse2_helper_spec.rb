@@ -697,7 +697,7 @@ describe Browse2Helper do
     let(:is_data_lens) { true }
 
     before do
-      rspec_stub_feature_flags_with(
+      stub_feature_flags_with(
         :show_provenance_badge_in_catalog => show_provenance_badge_in_catalog,
         :enable_data_lens_provenance => enable_data_lens_provenance
       )

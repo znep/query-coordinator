@@ -1,10 +1,11 @@
-require 'test_helper'
+require 'rails_helper'
 
-class SodaCanOrderTest  < Minitest::Test
+# Translated very directly from prior Minitest code.
+describe SodaCan::Order do
 
   def setup_orders
-    metadata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4.json").read)
-    rowdata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4-rows.json").read)
+    metadata = JSON::parse(File.open("spec/fixtures/soda_can/v6f4-jvr4.json").read)
+    rowdata = JSON::parse(File.open("spec/fixtures/soda_can/v6f4-jvr4-rows.json").read)
     rowdata['entries'] = rowdata['entries'].shuffle
     sodacan =SodaCan::Processor.new(metadata, rowdata)
     ptext_asc = JSON::parse('{ "ascending" : true, "expression" : { "type" : "column", "fieldName" : "ptext"} }')
@@ -18,16 +19,16 @@ class SodaCanOrderTest  < Minitest::Test
     return sodacan, orders
   end
 
-  def test_single_order_by
+  it 'works for a single order-by' do
     sodacan, orders = setup_orders
 
     for i in 0..(orders.length - 1)
       condition = {
           "orderBys" => [ orders[i] ]
       }
-      assert sodacan.can_query?(condition), "Query rejected by SodaCan #{JSON.pretty_generate(condition)}"
+      expect(sodacan.can_query?(condition)).to be_truthy # Query rejected by SodaCan #{JSON.pretty_generate(condition)}
       sorted_rows = sodacan.get_rows(condition)
-      assert sorted_rows, "Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}"
+      expect(sorted_rows).to be_truthy # Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}
       field = condition["orderBys"][0]["expression"]["fieldName"]
       columnId = condition["orderBys"][0]["expression"]["columnId"]
       key = SodaCan::Util.get_row_hash_key(field, columnId, sodacan.meta(), false)
@@ -37,13 +38,13 @@ class SodaCanOrderTest  < Minitest::Test
       # simple coersion for nil strings
       a = a.nil? ? "" : a
       b = b.nil? ? "" : b
-      assert ((a <=> b) == (asc ? -1 : 1)), "First row field, #{sorted_rows[0][field]} is not #{asc ? "less" : "greater"} than last row field #{sorted_rows.last[field]}"
+      expect(a <=> b).to eq(asc ? -1 : 1) # First row field, #{sorted_rows[0][field]} is not #{asc ? "less" : "greater"} than last row field #{sorted_rows.last[field]}
     end
   end
 
-  def test_two_known_orders
-    metadata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4.json").read)
-    rowdata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4-rows.json").read)
+  it 'works for two order-bys' do
+    metadata = JSON::parse(File.open("spec/fixtures/soda_can/v6f4-jvr4.json").read)
+    rowdata = JSON::parse(File.open("spec/fixtures/soda_can/v6f4-jvr4-rows.json").read)
     rowdata['entries'] = rowdata['entries'].shuffle
     sodacan =SodaCan::Processor.new(metadata, rowdata)
     ptext_asc = JSON::parse('{ "ascending" : true, "expression" : { "type" : "column", "fieldName" : "ptext"} }')
@@ -51,15 +52,15 @@ class SodaCanOrderTest  < Minitest::Test
     condition = {
         "orderBys" => [ptext_asc, num_desc]
     }
-    assert sodacan.can_query?(condition), "Query rejected by SodaCan #{JSON.pretty_generate(condition)}"
+    expect(sodacan.can_query?(condition)).to be_truthy # Query rejected by SodaCan #{JSON.pretty_generate(condition)}
     sorted_rows = sodacan.get_rows(condition)
-    assert sorted_rows, "Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}"
+    expect(sorted_rows).to be_truthy # Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}
     prev_row = nil
     sorted_rows.each { |r|
       unless prev_row.nil?
-        assert r['ptext'] >= prev_row['ptext']
+        expect(r['ptext']).to be >= prev_row['ptext']
         if r['ptext'] == prev_row['ptext']
-          assert r['number'] <= prev_row['number']
+          expect(r['number']).to be <= prev_row['number']
         end
       end
     }
@@ -72,9 +73,9 @@ class SodaCanOrderTest  < Minitest::Test
       condition = {
           "orderBys" => mixed_orders
       }
-      assert sodacan.can_query?(condition), "Query rejected by SodaCan #{JSON.pretty_generate(condition)}"
+      expect(sodacan.can_query?(condition)).to be_truthy # Query rejected by SodaCan #{JSON.pretty_generate(condition)}
       sorted_rows = sodacan.get_rows(condition)
-      assert sorted_rows, "Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}"
+      expect(sorted_rows).to be_truthy # Order-by query failed #{JSON.pretty_generate(condition)} because #{JSON.pretty_generate(sodacan.hints)}
     end
   end
 

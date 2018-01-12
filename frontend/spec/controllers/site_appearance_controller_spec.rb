@@ -210,6 +210,6 @@ describe SiteAppearanceController do
   end
 
   def make_site_appearance_visible
-    rspec_stub_feature_flags_with(site_appearance_visible: true)
+    stub_feature_flags_with(site_appearance_visible: true)
   end
 end

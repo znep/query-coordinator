@@ -1,13 +1,15 @@
-require 'test_helper'
+require 'rails_helper'
 
-class SodaCanIndexTest < Minitest::Test
+describe SodaCan::Index do
 
-  def test_aspe_index
-    metadata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu.json").read)
-    rowdata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu-rows.json").read)
+  # I have no idea what this test is intended to do, nor the purpose of SodaCan.
+  # Just trying to shift all of this old stuff out of Minitest.
+  it 'does something' do
+    metadata = JSON::parse(File.open("spec/fixtures/soda_can/74nx-npbu.json").read)
+    rowdata = JSON::parse(File.open("spec/fixtures/soda_can/74nx-npbu-rows.json").read)
     sodacan =SodaCan::Processor.new(metadata, rowdata, false)
-    query_json = <<eos
-          {
+    query_json = <<~QUERY
+      {
         "filterCondition" : {
           "type" : "operator", "value" : "AND",
           "children" : [ {
@@ -33,17 +35,18 @@ class SodaCanIndexTest < Minitest::Test
           }
         } ]
       }
-eos
+    QUERY
+
     query = JSON::parse(query_json)
-    assert sodacan.can_query? (query)
+    expect(sodacan.can_query?(query)).to be_truthy
     num_rows = sodacan.get_rows(query).size
-    assert num_rows == 15, "because #{sodacan.hints} rows #{num_rows}"
+    expect(num_rows).to eq(15) # because #{sodacan.hints} rows #{num_rows}
     sodacan.hints[:indexer].each { |field, unique_vals|
       case field
         when 'type'
-          assert unique_vals == 3  # Only Goals, Objectives, Strategies
+          expect(unique_vals).to eq(3)  # Only Goals, Objectives, Strategies
         when 'archive'
-          assert unique_vals == 1
+          expect(unique_vals).to eq(1)
         else
           fail
       end

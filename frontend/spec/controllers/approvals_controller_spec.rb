@@ -8,6 +8,15 @@ describe ApprovalsController do
     allow(subject).to receive(:user_can_review_approvals?).and_return(true)
   end
 
+  let(:some_user) do
+    {
+      accept_terms: true,
+      email: 'foo@bar.com',
+      id: '1234-abcd',
+      password: 'asdf',
+      passwordConfirm: 'asdf'
+    }
+  end
   let(:workflow) { Fontana::Approval::Workflow.new.tap { |workflow| workflow.id = 1 } }
   let(:approver) { User.new(some_user) }
 

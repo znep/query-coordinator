@@ -17,7 +17,7 @@ describe MetricQueue do
         end
 
         it 'accepts a metric and adds it to the batch' do
-          Time.should_receive(:now).exactly(6).times.and_return(best_day_ever)
+          expect(Time).to receive(:now).exactly(6).times.and_return(best_day_ever)
           MetricQueue.instance.push_metric('test', 'metric', 42)
 
           expect(MetricQueue.instance.requests).to eq([{
@@ -33,13 +33,13 @@ describe MetricQueue do
           test_filename = 'test-metrics-filename'
           test_filepath = "tmp/metriclogs/#{test_filename}"
 
-          Time.should_receive(:now).at_least(7).times.and_return(best_day_ever)
-          MetricQueue.instance.should_receive(:atomic_metrics_filename).with(best_day_ever).at_least(1).times.
+          expect(Time).to receive(:now).at_least(7).times.and_return(best_day_ever)
+          expect(MetricQueue.instance).to receive(:atomic_metrics_filename).with(best_day_ever).at_least(1).times.
             and_return(test_filename)
-          MetricQueue.instance.should_receive(:flush).twice.and_call_original
+          expect(MetricQueue.instance).to receive(:flush).twice.and_call_original
 
           file = double('File')
-          File.should_receive(:open).once.with(test_filepath, 'ab').and_yield(file)
+          expect(File).to receive(:open).once.with(test_filepath, 'ab').and_yield(file)
 
           records = [
             { :entity_id => 'test', :name => 'metric', :value => 42 },
@@ -47,20 +47,20 @@ describe MetricQueue do
           ]
 
           records.each do |record|
-            file.should_receive(:write).with(start_of_record).once
-            file.should_receive(:write).with('550918984000').once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:entity_id]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:name]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:value].to_s).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with('aggregate').once
-            file.should_receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(start_of_record).once
+            expect(file).to receive(:write).with('550918984000').once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:entity_id]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:name]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:value].to_s).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with('aggregate').once
+            expect(file).to receive(:write).with(end_of_field).once
           end
 
-          FileUtils.should_receive(:mv).once.with(test_filepath, "#{test_filepath}.COMPLETED")
+          expect(FileUtils).to receive(:mv).once.with(test_filepath, "#{test_filepath}.COMPLETED")
 
           thread = nil
 
@@ -83,13 +83,13 @@ describe MetricQueue do
           test_filename = 'test-metrics-filename'
           test_filepath = "tmp/metriclogs/#{test_filename}"
 
-          Time.should_receive(:now).at_least(6).times.and_return(best_day_ever)
-          MetricQueue.instance.should_receive(:atomic_metrics_filename).with(best_day_ever).at_least(1).times.
+          expect(Time).to receive(:now).at_least(6).times.and_return(best_day_ever)
+          expect(MetricQueue.instance).to receive(:atomic_metrics_filename).with(best_day_ever).at_least(1).times.
             and_return(test_filename)
-          MetricQueue.instance.should_receive(:flush).twice.and_call_original
+          expect(MetricQueue.instance).to receive(:flush).twice.and_call_original
 
           file = double('File')
-          File.should_receive(:open).once.with(test_filepath, 'ab').and_yield(file)
+          expect(File).to receive(:open).once.with(test_filepath, 'ab').and_yield(file)
 
           entity_ids = %w(
             another
@@ -110,20 +110,20 @@ describe MetricQueue do
           end
 
           records.each do |record|
-            file.should_receive(:write).with(start_of_record).once
-            file.should_receive(:write).with('550918984000').once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:entity_id]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:name]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:value].to_s).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with('aggregate').once
-            file.should_receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(start_of_record).once
+            expect(file).to receive(:write).with('550918984000').once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:entity_id]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:name]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:value].to_s).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with('aggregate').once
+            expect(file).to receive(:write).with(end_of_field).once
           end
 
-          FileUtils.should_receive(:mv).once.with(test_filepath, "#{test_filepath}.COMPLETED")
+          expect(FileUtils).to receive(:mv).once.with(test_filepath, "#{test_filepath}.COMPLETED")
 
           thread = nil
 
@@ -139,15 +139,15 @@ describe MetricQueue do
           test_filename = 'test-metrics-filename'
           test_filepath = "tmp/metriclogs/#{test_filename}"
 
-          Time.should_receive(:now).at_least(6).times.and_return(best_day_ever)
-          MetricQueue.instance.should_receive(:atomic_metrics_filename).with(best_day_ever).exactly(10).times.
+          expect(Time).to receive(:now).at_least(6).times.and_return(best_day_ever)
+          expect(MetricQueue.instance).to receive(:atomic_metrics_filename).with(best_day_ever).exactly(10).times.
             and_return(test_filename)
-          MetricQueue.instance.should_receive(:flush).exactly(11).times.and_call_original
+          expect(MetricQueue.instance).to receive(:flush).exactly(11).times.and_call_original
 
           files = Array.new(10) { |index| double("file-#{index}") }
 
           files.each do |file|
-            File.should_receive(:open).with(test_filepath, 'ab').and_yield(file)
+            expect(File).to receive(:open).with(test_filepath, 'ab').and_yield(file)
           end
 
           entity_ids = %w(
@@ -171,20 +171,20 @@ describe MetricQueue do
           end
 
           records.each do |record|
-            record[:file].should_receive(:write).with(start_of_record).once
-            record[:file].should_receive(:write).with('550918984000').once
-            record[:file].should_receive(:write).with(end_of_field).once
-            record[:file].should_receive(:write).with(record[:entity_id]).once
-            record[:file].should_receive(:write).with(end_of_field).once
-            record[:file].should_receive(:write).with(record[:name]).once
-            record[:file].should_receive(:write).with(end_of_field).once
-            record[:file].should_receive(:write).with(record[:value].to_s).once
-            record[:file].should_receive(:write).with(end_of_field).once
-            record[:file].should_receive(:write).with('aggregate').once
-            record[:file].should_receive(:write).with(end_of_field).once
+            expect(record[:file]).to receive(:write).with(start_of_record).once
+            expect(record[:file]).to receive(:write).with('550918984000').once
+            expect(record[:file]).to receive(:write).with(end_of_field).once
+            expect(record[:file]).to receive(:write).with(record[:entity_id]).once
+            expect(record[:file]).to receive(:write).with(end_of_field).once
+            expect(record[:file]).to receive(:write).with(record[:name]).once
+            expect(record[:file]).to receive(:write).with(end_of_field).once
+            expect(record[:file]).to receive(:write).with(record[:value].to_s).once
+            expect(record[:file]).to receive(:write).with(end_of_field).once
+            expect(record[:file]).to receive(:write).with('aggregate').once
+            expect(record[:file]).to receive(:write).with(end_of_field).once
           end
 
-          FileUtils.should_receive(:mv).exactly(10).times.with(test_filepath, "#{test_filepath}.COMPLETED")
+          expect(FileUtils).to receive(:mv).exactly(10).times.with(test_filepath, "#{test_filepath}.COMPLETED")
 
           thread = nil
           threads = []
@@ -222,7 +222,7 @@ describe MetricQueue do
         end
 
         it 'accepts a metric and adds it to the batch' do
-          Time.should_receive(:now).exactly(6).times.and_return(best_day_ever)
+          expect(Time).to receive(:now).exactly(6).times.and_return(best_day_ever)
           MetricQueue.instance.push_metric('test', 'metric', 42)
 
           expect(MetricQueue.instance.requests).to eq([{
@@ -239,13 +239,13 @@ describe MetricQueue do
           test_filepath = "tmp/metriclogs/#{test_filename}"
           lock_filepath = 'tmp/metriclogs/ruby-metrics.lock'
 
-          Time.should_receive(:now).at_least(6).times.and_return(best_day_ever)
-          MetricQueue.instance.should_receive(:flush).twice.and_call_original
+          expect(Time).to receive(:now).at_least(6).times.and_return(best_day_ever)
+          expect(MetricQueue.instance).to receive(:flush).twice.and_call_original
 
-          File.should_receive(:open).once.with(lock_filepath, 'wb').and_call_original
+          expect(File).to receive(:open).once.with(lock_filepath, 'wb').and_call_original
 
           file = double('File')
-          File.should_receive(:open).once.with(test_filepath, 'ab').and_yield(file)
+          expect(File).to receive(:open).once.with(test_filepath, 'ab').and_yield(file)
 
           records = [
             { :entity_id => 'test', :name => 'metric', :value => 42 },
@@ -253,17 +253,17 @@ describe MetricQueue do
           ]
 
           records.each do |record|
-            file.should_receive(:write).with(start_of_record).once
-            file.should_receive(:write).with('550918984000').once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:entity_id]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:name]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:value].to_s).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with('aggregate').once
-            file.should_receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(start_of_record).once
+            expect(file).to receive(:write).with('550918984000').once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:entity_id]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:name]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:value].to_s).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with('aggregate').once
+            expect(file).to receive(:write).with(end_of_field).once
           end
 
           thread = nil
@@ -288,13 +288,13 @@ describe MetricQueue do
           test_filepath = "tmp/metriclogs/#{test_filename}"
           lock_filepath = 'tmp/metriclogs/ruby-metrics.lock'
 
-          Time.should_receive(:now).exactly(204).times.and_return(best_day_ever)
-          MetricQueue.instance.should_receive(:flush).twice.and_call_original
+          expect(Time).to receive(:now).exactly(204).times.and_return(best_day_ever)
+          expect(MetricQueue.instance).to receive(:flush).twice.and_call_original
 
-          File.should_receive(:open).once.with(lock_filepath, 'wb').and_call_original
+          expect(File).to receive(:open).once.with(lock_filepath, 'wb').and_call_original
 
           file = double('File')
-          File.should_receive(:open).once.with(test_filepath, 'ab').and_yield(file)
+          expect(File).to receive(:open).once.with(test_filepath, 'ab').and_yield(file)
 
           entity_ids = %w(
             another
@@ -315,17 +315,17 @@ describe MetricQueue do
           end
 
           records.each do |record|
-            file.should_receive(:write).with(start_of_record).once
-            file.should_receive(:write).with('550918984000').once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:entity_id]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:name]).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with(record[:value].to_s).once
-            file.should_receive(:write).with(end_of_field).once
-            file.should_receive(:write).with('aggregate').once
-            file.should_receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(start_of_record).once
+            expect(file).to receive(:write).with('550918984000').once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:entity_id]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:name]).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with(record[:value].to_s).once
+            expect(file).to receive(:write).with(end_of_field).once
+            expect(file).to receive(:write).with('aggregate').once
+            expect(file).to receive(:write).with(end_of_field).once
           end
 
           thread = nil
@@ -346,13 +346,13 @@ describe MetricQueue do
             test_filepath = "tmp/metriclogs/#{test_filename}"
             lock_filepath = 'tmp/metriclogs/ruby-metrics.lock'
 
-            Time.should_receive(:now).exactly(2040).times.and_return(best_day_ever)
-            MetricQueue.instance.should_receive(:flush).exactly(11).times.and_call_original
+            expect(Time).to receive(:now).exactly(2040).times.and_return(best_day_ever)
+            expect(MetricQueue.instance).to receive(:flush).exactly(11).times.and_call_original
 
             file = double('File')
 
-            File.should_receive(:open).exactly(10).times.with(lock_filepath, 'wb').and_call_original
-            File.should_receive(:open).exactly(10).times.with(test_filepath, 'ab').and_yield(file)
+            expect(File).to receive(:open).exactly(10).times.with(lock_filepath, 'wb').and_call_original
+            expect(File).to receive(:open).exactly(10).times.with(test_filepath, 'ab').and_yield(file)
 
             entity_ids = %w(
               another
@@ -374,17 +374,17 @@ describe MetricQueue do
             end
 
             records.each do |record|
-              file.should_receive(:write).with(start_of_record).once
-              file.should_receive(:write).with('550893784000').once
-              file.should_receive(:write).with(end_of_field).once
-              file.should_receive(:write).with(record[:entity_id]).once
-              file.should_receive(:write).with(end_of_field).once
-              file.should_receive(:write).with(record[:name]).once
-              file.should_receive(:write).with(end_of_field).once
-              file.should_receive(:write).with(record[:value].to_s).once
-              file.should_receive(:write).with(end_of_field).once
-              file.should_receive(:write).with('aggregate').once
-              file.should_receive(:write).with(end_of_field).once
+              expect(file).to receive(:write).with(start_of_record).once
+              expect(file).to receive(:write).with('550893784000').once
+              expect(file).to receive(:write).with(end_of_field).once
+              expect(file).to receive(:write).with(record[:entity_id]).once
+              expect(file).to receive(:write).with(end_of_field).once
+              expect(file).to receive(:write).with(record[:name]).once
+              expect(file).to receive(:write).with(end_of_field).once
+              expect(file).to receive(:write).with(record[:value].to_s).once
+              expect(file).to receive(:write).with(end_of_field).once
+              expect(file).to receive(:write).with('aggregate').once
+              expect(file).to receive(:write).with(end_of_field).once
             end
 
             thread = nil
@@ -422,23 +422,23 @@ describe MetricQueue do
               now = Time.at((milliseconds_with_delay / 1000).floor)
 
               if index > 0 && (index % 100) == 0
-                Time.should_receive(:now).exactly(4).times.and_return(now)
+                expect(Time).to receive(:now).exactly(4).times.and_return(now)
               elsif index < 1010
-                Time.should_receive(:now).exactly(1).times.and_return(now)
+                expect(Time).to receive(:now).exactly(1).times.and_return(now)
               end
 
               now
             end
 
-            MetricQueue.instance.should_receive(:flush).exactly(11).times.and_call_original
+            expect(MetricQueue.instance).to receive(:flush).exactly(11).times.and_call_original
 
             files = Array.new(3) { |index| double("File-#{index}") }
 
-            File.should_receive(:open).exactly(10).times.with(lock_filepath, 'wb').and_call_original
-            File.should_receive(:open).exactly(2).times.with(test_filepath, 'ab').and_yield(files[0])
-            File.should_receive(:open).exactly(6).times.
+            expect(File).to receive(:open).exactly(10).times.with(lock_filepath, 'wb').and_call_original
+            expect(File).to receive(:open).exactly(2).times.with(test_filepath, 'ab').and_yield(files[0])
+            expect(File).to receive(:open).exactly(6).times.
               with('tmp/metriclogs/metrics2012.0000008043d4e680.data', 'ab').and_yield(files[1])
-            File.should_receive(:open).exactly(2).times.
+            expect(File).to receive(:open).exactly(2).times.
               with('tmp/metriclogs/metrics2012.0000008043d6bb40.data', 'ab').and_yield(files[2])
 
             entity_ids = %w(
@@ -474,19 +474,18 @@ describe MetricQueue do
               }
             end
 
-            # files.each { |file| file.should_receive(:write).with(anything()).at_least(1).times }
             records.each do |record|
-              record[:file].should_receive(:write).with(start_of_record).once
-              record[:file].should_receive(:write).with((record[:time].to_i * 1000).to_s).once
-              record[:file].should_receive(:write).with(end_of_field).once
-              record[:file].should_receive(:write).with(record[:entity_id]).once
-              record[:file].should_receive(:write).with(end_of_field).once
-              record[:file].should_receive(:write).with(record[:name]).once
-              record[:file].should_receive(:write).with(end_of_field).once
-              record[:file].should_receive(:write).with(record[:value].to_s).once
-              record[:file].should_receive(:write).with(end_of_field).once
-              record[:file].should_receive(:write).with('aggregate').once
-              record[:file].should_receive(:write).with(end_of_field).once
+              expect(record[:file]).to receive(:write).with(start_of_record).once
+              expect(record[:file]).to receive(:write).with((record[:time].to_i * 1000).to_s).once
+              expect(record[:file]).to receive(:write).with(end_of_field).once
+              expect(record[:file]).to receive(:write).with(record[:entity_id]).once
+              expect(record[:file]).to receive(:write).with(end_of_field).once
+              expect(record[:file]).to receive(:write).with(record[:name]).once
+              expect(record[:file]).to receive(:write).with(end_of_field).once
+              expect(record[:file]).to receive(:write).with(record[:value].to_s).once
+              expect(record[:file]).to receive(:write).with(end_of_field).once
+              expect(record[:file]).to receive(:write).with('aggregate').once
+              expect(record[:file]).to receive(:write).with(end_of_field).once
             end
 
             thread = nil

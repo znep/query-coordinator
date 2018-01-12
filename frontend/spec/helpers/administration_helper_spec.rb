@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe AdministrationHelper do
+  include TestHelperMethods
+
   describe '#form_button' do
 
     it 'generates a form tag' do
@@ -100,7 +102,7 @@ describe AdministrationHelper do
 
   context 'when use_fontana_approvals feature flag is set' do
     before do
-      rspec_stub_feature_flags_with('use_fontana_approvals' => true)
+      stub_feature_flags_with('use_fontana_approvals' => true)
       allow(helper).to receive(:current_user).and_return(current_user)
     end
 

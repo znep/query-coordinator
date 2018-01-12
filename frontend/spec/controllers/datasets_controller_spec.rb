@@ -92,12 +92,10 @@ describe DatasetsController do
       it 'loads the page without error' do
         expect(View).to receive(:find).and_return(view)
         expect(subject).to receive(:using_canonical_url?).and_return(true)
-        view.stub(
-          :op_measure? => false,
-          :is_form? => true,
-          :can_add? => true,
-          :can_read? => false
-        )
+        allow(view).to receive(:op_measure?).and_return(false)
+        allow(view).to receive(:is_form?).and_return(true)
+        allow(view).to receive(:can_add?).and_return(true)
+        allow(view).to receive(:can_read?).and_return(false)
         logout
         get :show, :id => 'dont-matr'
         expect(response).to have_http_status(:success)
@@ -111,12 +109,10 @@ describe DatasetsController do
         login
         expect(View).to receive(:find).and_return(view)
         expect(subject).to receive(:using_canonical_url?).and_return(true)
-        view.stub(
-          :op_measure? => false,
-          :is_form? => true,
-          :can_add? => true,
-          :can_read? => false
-        )
+        allow(view).to receive(:op_measure?).and_return(false)
+        allow(view).to receive(:is_form?).and_return(true)
+        allow(view).to receive(:can_add?).and_return(true)
+        allow(view).to receive(:can_read?).and_return(false)
         get :show, :id => 'dont-matr'
         expect(response).to have_http_status(:success)
       end
@@ -242,7 +238,8 @@ describe DatasetsController do
     context 'for a published story' do
       before(:each) do
         allow(subject).to receive(:get_view).and_return(story_view)
-        CurrentDomain.stub(:default_locale => 'the_default_locale', :cname => 'example.com')
+        allow(CurrentDomain).to receive(:default_locale).and_return('the_default_locale')
+        allow(CurrentDomain).to receive(:cname).and_return('example.com')
       end
 
       it 'redirects to the stories#show page' do
@@ -595,7 +592,7 @@ describe DatasetsController do
   describe 'entering DSMP' do
     before(:each) do
       stub_site_chrome
-      rspec_stub_feature_flags_with(:dsmp_level => "beta")
+      stub_feature_flags_with(:dsmp_level => "beta")
     end
 
     context 'GET /:category/:view_name/:id/revisions/revision_seq' do
@@ -619,7 +616,7 @@ describe DatasetsController do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_return(view)
-        view.stub(:can_read? => true)
+        allow(view).to receive(:can_read?).and_return(true)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:success)
       end
@@ -638,7 +635,7 @@ describe DatasetsController do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_return(view)
-        view.stub(:can_read? => false)
+        allow(view).to receive(:can_read?).and_return(false)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:forbidden)
       end
@@ -659,7 +656,7 @@ describe DatasetsController do
         init_current_user(controller)
         login
         expect(View).to receive(:find).and_return(view)
-        view.stub(:can_read? => true)
+        allow(view).to receive(:can_read?).and_return(true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
         expect(response).to have_http_status(:redirect)
@@ -668,7 +665,7 @@ describe DatasetsController do
 
       it 'redirects to the canonical address, preserving the full path' do
         expect(View).to receive(:find).and_return(view)
-        view.stub(:can_read? => true)
+        allow(view).to receive(:can_read?).and_return(true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
         get :show_revision, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0', :rest_of_path => '/metadata/columns'
         expect(response).to have_http_status(:redirect)

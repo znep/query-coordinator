@@ -140,86 +140,88 @@ This will set up Bundler and NPM properly and will create a user for `frontend@s
 
 ## Tests
 
-tl;dr: First run the Setup steps below, then run:
+To execute all tests, run either of the following commands:
 
+    # using explicit task
     bundle exec rake test
 
-This will run all Ruby (MiniTest _and_ RSpec) and Javascript (Karma) tests.
+    # using default task
+    bundle exec rake
 
-#### To run a specific Ruby test
+Either of these commands will run all Ruby and Javascript tests.
 
-###### For MiniTest tests
+### Ruby tests
 
-    ruby -I test test/.../file.rb -n /regex_matcher_for_your_test_name/
+We use RSpec for our Ruby tests. Use the following commands to run them:
 
-> Note: The regex match technique does not work for MiniTest tests written using the
-> [MiniTest](https://github.com/seattlerb/minitest) "spec" style.
+    # run all RSpec tests
+    bundle exec rspec
 
-###### For RSpec tests
+    # run a single RSpec test file
+    bundle exec rspec spec/.../my_target_spec.rb
 
-    bundle exec rspec spec/.../file.rb:line_number
+    # run a subset of a single RSpec test file, by line number
+    bundle exec rspec spec/.../my_target_spec.rb:83
 
-> Note: The `line_number` is optional can point to a single test, a context, or a describe
-> block and all tests within the enclosing scope will be run. If you're updating RSpec tests
-> or writing new ones and you see error messages from VCR complaining about unregistered
-> HTTP requests, you can tell VCR to record the HTTP request(s) in your test by setting the
-> [record mode](https://relishapp.com/vcr/vcr/v/3-0-3/docs/record-modes) to either
-> `:record => :new_episodes` or `:record => :all`.
+> Note: The line number can point to a single test, a context, or a describe
+> block and all tests within the enclosing scope will be run.
 
-### Karma tests
+> If you're updating RSpec tests or writing new ones and you see error messages
+> from VCR complaining about unregistered HTTP requests, you can tell VCR to
+> record the HTTP request(s) in your test by setting the
+> [record mode](https://relishapp.com/vcr/vcr/v/3-0-3/docs/record-modes) to
+> either `:record => :new_episodes` or `:record => :all`.
 
-We use Karma to test our Javascript code. These tests live under `karma`.
-There are multiple test suites defined by files named `karma.conf.js`.
+RSpec documentation is available via the following links:
 
-Test suites:
+* [rspec-core](https://relishapp.com/rspec/rspec-core/docs) for basics
+* [rspec-expectations](https://relishapp.com/rspec/rspec-expectations/docs) for assertions
+* [rspec-mocks](https://relishapp.com/rspec/rspec-mocks/docs) for mocking
+* [rspec-rails](https://relishapp.com/rspec/rspec-rails/docs) for Rails-specific enhancements
 
-1. Data Lens and Angular common components: `karma/dataCards`
-2. Dataset Landing Page: `karma/datasetLandingPage`
-3. Category Landing Page: `karma/catalogLandingPage`
-4. Visualization Canvas: `karma/visualizationCanvas`
-5. Old UX tests: `karma/oldUx`
+### JavaScript tests
 
-#### Setup
+We use a combination of tools for our JavaScript tests:
 
-Ensure that you are using Ruby version 2.3.0 or greater.
+* [Karma](https://karma-runner.github.io/2.0/index.html) as the test runner
+* [Mocha](https://mochajs.org/) as the test framework
+* [Chai](chaijs.com/api/assert/) for assertions
+* [Sinon](http://sinonjs.org/) for mocking
 
-#### Karma Test Rake Tasks
+JavaScript tests live under the `karma/` directory; there are test suites in
+each subdirectory, which are defined by files named `karma.conf.js`. Use the
+following commands to run them:
 
-```sh
-bundle exec rake test:karma
-bundle exec rake test:karma:adminGoals
-bundle exec rake test:karma:adminActivityFeed
-bundle exec rake test:karma:common
-bundle exec rake test:karma:dataCards
-bundle exec rake test:karma:datasetLandingPage
-bundle exec rake test:karma:datasetManagementUI
-bundle exec rake test:karma:oldUx
-bundle exec rake test:karma:visualizationCanvas
-```
+    # run all Karma tests
+    bundle exec rake test:karma
 
-Each rake task accepts three arguments:
-
-- `watch`: Whether or not to watch files for changes. If a change to any of the tested files is
-detected, the tests will re-run.
-> IMPORTANT: If you're using vim, you need to add this to your `.vimrc`:
-
-        set backupcopy=yes
-
-  Otherwise, vim's rename-on-save behavior will confuse webpack. See
-  [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
-- `browser`: Which browser to run the tests in. Can be `phantom`, `chrome`, or `firefox`.
-- `reporter`: Which reporter to use. The default is `dots`. You can also specify
-  `mocha`, `progress`, `growl`, and `junit`, or install your own.
-
-Example invocation that watches file changes, runs the dataCards tests in chrome,
-and uses the mocha reporter:
-
-    bundle exec rake test:karma:dataCards[true,chrome,mocha]
-
-For the simple case where a single test run under Chrome is needed for a
-general pass/fail check, a faster parallelized test run is also available:
-
+    # run all Karma tests in parallel (faster but uses all CPUs)
     bundle exec rake test:karma:parallel
+
+    # run a single Karma suite
+    bundle exec rake test:karma:mySuite
+
+    # run a single Karma suite with arguments
+    bundle exec rake test:karma:mySuite[true,firefox,progress]
+    bundle exec rake test:karma:mySuite[,,progress]
+    bundle exec rake test:karma:mySuite[true]
+
+The full list of test suites, as well as the supported command options, can be
+found in the output of the Rake task list (`bundle exec rake -T`). Each task
+accepts three arguments:
+
+* `watch` (default: `false`) — whether to watch files for changes and re-run
+when a change is made.
+* `browser` (default: `ChromeNoSandboxHeadless`) — the browser in which to run
+tests. Allowed values are `ChromeNoSandboxHeadless`, `chrome`, or `firefox`.
+* `reporter` (default: `dots`) — the test output format. Allowed values are
+`dots`, `mocha`, `progress`, `growl`, or `junit`. If you have strong feelings
+about other formats such as `nyan`, you can install them yourself, but please do
+not check them in.
+
+To run a custom subset of tests, use `describe.only` and `it.only` to specify
+the scopes that you want to include for testing. **Do not check in any tests
+with `.only`!**
 
 ## Javascript/other asset package management
 
@@ -240,11 +242,7 @@ represents a configuration for a javascript module in the project.
 In development, we use `webpack-dev-server`, which serves development bundles of Javascript,
 caches the results, and refreshes them whenever a file is saved.  The command for `webpack-dev-server`
 is `npm run webpack-dev-server`.  IMPORTANT: If you're using vim, you need to
-add this to your `.vimrc`:
-
-    set backupcopy=yes
-
-Otherwise, vim's rename-on-save behavior will confuse webpack. See
+add `set backupcopy=yes` to your `.vimrc`; otherwise, vim's rename-on-save behavior will confuse webpack. See
 [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
 
 For production, webpack can generate bundles with a fingerprint hash in their

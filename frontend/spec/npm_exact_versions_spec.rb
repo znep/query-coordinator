@@ -10,7 +10,7 @@ IGNORE_LIST = %w(
 require 'json'
 require 'rails_helper'
 
-RSpec.describe 'package.json' do
+describe 'package.json' do
   it 'specifies exact versions' do
     package_json_contents = JSON::parse(File.read(Rails.root.join('package.json')))
 

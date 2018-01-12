@@ -141,7 +141,7 @@ describe View do
     end
 
     it 'returns a hash from ids to values' do
-      CurrentDomain.stubs(:cname => 'localhost')
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
 
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3').
          with(:headers => request_headers).
@@ -318,7 +318,7 @@ describe View do
 
   describe '.named_resource_url' do
     before do
-      CurrentDomain.stubs(:cname => 'localhost')
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
     end
 
     it 'does not return a url if there is no resourceName' do

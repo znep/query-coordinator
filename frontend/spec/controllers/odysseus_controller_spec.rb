@@ -72,7 +72,7 @@ describe OdysseusController do
             VCR.use_cassette('odysseus_controller/has_published_story') do
               expect(subject).to_not receive(:render_odysseus_path)
               get :classic_single_goal, :goal_id => goal_id
-              subject.should redirect_to(canonical_single_view_path)
+              expect(subject).to redirect_to(canonical_single_view_path)
             end
           end
         end
@@ -81,7 +81,7 @@ describe OdysseusController do
             VCR.use_cassette('odysseus_controller/has_private_story') do
               expect(subject).to_not receive(:render_odysseus_path)
               get :classic_single_goal, :goal_id => goal_id
-              subject.should redirect_to(login_url)
+              expect(subject).to redirect_to(login_url)
             end
           end
         end
@@ -114,7 +114,7 @@ describe OdysseusController do
             VCR.use_cassette('odysseus_controller/has_published_story') do
               expect(subject).to_not receive(:render_odysseus_path)
               get :classic_goal, :dashboard_id => dashboard_id, :category_id => category_id, :goal_id => goal_id
-              subject.should redirect_to(canonical_view_path)
+              expect(subject).to redirect_to(canonical_view_path)
             end
           end
         end
@@ -123,7 +123,7 @@ describe OdysseusController do
             VCR.use_cassette('odysseus_controller/has_private_story') do
               expect(subject).to_not receive(:render_odysseus_path)
               get :classic_goal, :dashboard_id => dashboard_id, :category_id => category_id, :goal_id => goal_id
-              subject.should redirect_to(login_url)
+              expect(subject).to redirect_to(login_url)
             end
           end
         end
@@ -141,7 +141,7 @@ describe OdysseusController do
 
       describe 'get #classic_goal_edit' do
         before do
-          rspec_stub_feature_flags_with(:open_performance_narrative_editor => flag_value)
+          stub_feature_flags_with(:open_performance_narrative_editor => flag_value)
         end
         context 'open_performance_narrative_editor is set to classic' do
           let(:flag_value) { 'classic' }
@@ -161,14 +161,14 @@ describe OdysseusController do
           it 'redirects to the canonical view url' do
             expect(subject).to_not receive(:render_odysseus_path)
             get :classic_goal_edit, :dashboard_id => dashboard_id, :category_id => category_id, :goal_id => goal_id
-            subject.should redirect_to(canonical_edit_path)
+            expect(subject).to redirect_to(canonical_edit_path)
           end
         end
       end
 
       describe 'get #classic_single_goal_edit' do
         before do
-          rspec_stub_feature_flags_with(:open_performance_narrative_editor => flag_value)
+          stub_feature_flags_with(:open_performance_narrative_editor => flag_value)
         end
         context 'open_performance_narrative_editor is set to classic' do
           let(:flag_value) { 'classic' }
@@ -188,7 +188,7 @@ describe OdysseusController do
           it 'redirects to the canonical view url' do
             expect(subject).to_not receive(:render_odysseus_path)
             get :classic_single_goal_edit, :goal_id => goal_id
-            subject.should redirect_to(canonical_single_edit_path)
+            expect(subject).to redirect_to(canonical_single_edit_path)
           end
         end
       end

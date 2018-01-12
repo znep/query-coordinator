@@ -17,7 +17,7 @@ end
 
 if Rails.configuration.webpack[:use_manifest]
   if Rails.env.test?
-    asset_manifest_path = Rails.root.join('test', 'fixtures', 'webpack_manifest.json')
+    asset_manifest_path = Rails.root.join('spec', 'fixtures', 'webpack_manifest.json')
   else
     asset_manifest_path = Rails.root.join('public', 'javascripts', 'build', 'manifest.json')
   end

@@ -1,10 +1,11 @@
-require 'test_helper'
+require 'rails_helper'
 require 'ostruct'
 
-class BrowseActionsTest < Minitest::Test
+describe BrowseActions do
+  include TestHelperMethods
 
 # Test building of the catalog links
-  def setup
+  before do
     @browse_controller = BrowseController.new
 
     init_current_domain
@@ -12,117 +13,106 @@ class BrowseActionsTest < Minitest::Test
 
     Canvas2::Util.reset
 
-    CurrentDomain.stubs(:property => nil)
+    allow(CurrentDomain).to receive(:property).and_return(nil)
 
-    @browse_controller.stubs(:current_user => nil)
+    allow(@browse_controller).to receive(:current_user).and_return(nil)
   end
 
-  def test_does_not_add_pulse_if_feature_flag_false
+  it 'test_does_not_add_pulse_if_feature_flag_false' do
     stub_feature_flags_with(:enable_pulse => false)
     view_types_list = @browse_controller.send(:view_types_facet)
-    refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
-        'enable pulse feature flag is false, but we have a pulse link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'}).to be_falsy
   end
 
-  def test_does_add_pulse_if_feature_flag_true
+  it 'test_does_add_pulse_if_feature_flag_true' do
     stub_feature_flags_with(:enable_pulse => true)
     view_types_list = @browse_controller.send(:view_types_facet)
-    assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
-      'enable pulse feature flag is true, but we do not have a pulse link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'}).to be_truthy
   end
 
-  def test_does_not_add_measures_if_feature_flag_false
+  it 'test_does_not_add_measures_if_feature_flag_false' do
     stub_feature_flags_with(:open_performance_standalone_measures => false)
     view_types_list = @browse_controller.send(:view_types_facet)
-    refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'},
-           'The open_performance_standalone_measures flag is false, but we have a measures link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'}).to be_falsy
+    # The open_performance_standalone_measures flag is false, but we have a measures link in the catalog
   end
 
-  def test_does_add_measures_if_feature_flag_true
+  it 'test_does_add_measures_if_feature_flag_true' do
     stub_feature_flags_with(:open_performance_standalone_measures => true)
     view_types_list = @browse_controller.send(:view_types_facet)
-    assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'},
-      'The open_performance_standalone_measures flag is true, but we do not have a measures link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'}).to be_truthy
+    # The open_performance_standalone_measures flag is true, but we do not have a measures link in the catalog
   end
 
-  def test_does_not_add_drafts_by_default_if_feature_flag_false
+  it 'test_does_not_add_drafts_by_default_if_feature_flag_false' do
     stub_feature_flags_with(:ingress_reenter => false)
     view_types_list = @browse_controller.send(:view_types_facet)
-    refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
-           'The draft dataset is showing up by default on the public catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'}).to be_falsy
   end
 
-  def test_does_not_add_stories_if_feature_flag_false
+  it 'test_does_not_add_stories_if_feature_flag_false' do
     stub_feature_flags_with(:stories_show_facet_in_catalog => false)
     view_types_list = @browse_controller.send(:view_types_facet)
-    refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
-        'enable stories feature flag is false, but we have a stories link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'}).to be_falsy
   end
 
-  def test_does_add_stories_if_feature_flag_true
+  it 'test_does_add_stories_if_feature_flag_true' do
     stub_feature_flags_with(:stories_show_facet_in_catalog => true)
     view_types_list = @browse_controller.send(:view_types_facet)
-    assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
-      'enable stories feature flag is true, but we do not have a stories link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'}).to be_truthy
   end
 
-  def test_contains_data_lens_regardless_of_feature_flags
+  it 'test_contains_data_lens_regardless_of_feature_flags' do
     stub_feature_flags_with(:data_lens_transition_state => 'pre_beta')
     view_types_list = @browse_controller.send(:view_types_facet)
-    assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'new_view'},
-      'we should always have a Datalens link but it is missing!')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'new_view'}).to be_truthy
   end
 
-  def test_does_not_add_api_if_using_cetera_search
+  it 'test_does_not_add_api_if_using_cetera_search' do
     stub_feature_flags_with(:cetera_search => true)
     view_types_list = @browse_controller.send(:view_types_facet)
-    refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'api'},
-      'cetera search feature flag is true, but we have an api link in the catalog')
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'api'}).to be_falsy
   end
 
   # There was a regression around this
-  def test_whitelisting_of_view_types_is_respected
+  it 'test_whitelisting_of_view_types_is_respected' do
     whitelisted_view_type_values = %w(datasets charts)
-    CurrentDomain
-      .expects(:property)
-      .with(:view_types_facet, :catalog)
-      .returns(whitelisted_view_type_values)
+    allow(CurrentDomain).to receive(:property).with(:view_types_facet, :catalog).and_return(whitelisted_view_type_values)
 
     view_types_facet = @browse_controller.send(:view_types_facet)
     actual_view_type_values = view_types_facet[:options].collect { |vt| vt[:value] }
 
-    assert_equal whitelisted_view_type_values, actual_view_type_values
+    expect(whitelisted_view_type_values).to eq(actual_view_type_values)
   end
 
   # Documenting behavior that is possibly not desired
-  def test_defined_but_empty_whitelist_allows_no_view_types
-    CurrentDomain
-      .expects(:property)
-      .with(:view_types_facet, :catalog)
-      .returns([])
+  it 'test_defined_but_empty_whitelist_allows_no_view_types' do
+    allow(CurrentDomain).to receive(:property).with(:view_types_facet, :catalog).and_return([])
 
     view_types_facet = @browse_controller.send(:view_types_facet)
     actual_view_type_values = view_types_facet[:options].collect { |vt| vt[:value] }
 
-    assert_empty actual_view_type_values
+    expect(actual_view_type_values.empty?).to eq(true)
   end
 
   # Let's make sure this keeps working
-  def test_standard_view_types_show_up_without_whitelisting
+  it 'test_standard_view_types_show_up_without_whitelisting' do
     standard_view_types = @browse_controller.send(:standard_view_types)
 
     view_types_facet = @browse_controller.send(:view_types_facet)
     actual_view_types = view_types_facet[:options]
 
-    assert standard_view_types.present?
+    expect(standard_view_types.present?).to be_truthy
     standard_view_types.each do |svt|
-      assert actual_view_types.include?(svt)
+      expect(actual_view_types.include?(svt)).to be_truthy
     end
   end
 end
 
-class BrowseActionsTest2 < Minitest::Test
-  def setup
+describe BrowseActions do
+  include TestHelperMethods
+
+  before do
     @browse_controller = BrowseController.new
 
     init_current_domain
@@ -130,44 +120,44 @@ class BrowseActionsTest2 < Minitest::Test
 
     Canvas2::Util.reset
 
-    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
+    allow(CurrentDomain).to receive(:property).and_return({:catalog => {:sortBy => 'relevance'}})
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(
-      cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net'
-    )
+    allow(APP_CONFIG).to receive(:cetera_internal_uri).and_return('http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net')
   end
 
-  def test_do_not_use_cetera_if_cetera_internal_uri_not_present
-    APP_CONFIG.stubs(cetera_internal_uri: nil)
-    refute @browse_controller.send(:using_cetera?)
+  it 'test_do_not_use_cetera_if_cetera_internal_uri_not_present' do
+    allow(APP_CONFIG).to receive(:cetera_internal_uri).and_return(nil)
+    expect(@browse_controller.send(:using_cetera?)).to be_falsy
   end
 
-  def test_do_not_use_cetera_on_admin_datasets
-    @browse_controller.stubs(:action_name => 'datasets', :controller_name => 'administration')
-    refute @browse_controller.send(:using_cetera?), 'expected using_cetera? = false when path /admin/datasets'
+  it 'test_do_not_use_cetera_on_admin_datasets' do
+    allow(@browse_controller).to receive(:action_name).and_return('datasets')
+    allow(@browse_controller).to receive(:controller_name).and_return('administration')
+    expect(@browse_controller.send(:using_cetera?)).to be_falsy
   end
 
-  def test_do_not_use_cetera_on_admin_views
-    @browse_controller.stubs(:action_name => 'views', :controller_name => 'administration')
-    refute @browse_controller.send(:using_cetera?), 'expected using_cetera? = false when path /admin/views'
+  it 'test_do_not_use_cetera_on_admin_views' do
+    allow(@browse_controller).to receive(:action_name).and_return('views')
+    allow(@browse_controller).to receive(:controller_name).and_return('administration')
+    expect(@browse_controller.send(:using_cetera?)).to be_falsy
   end
 
-  def test_use_cetera_on_browse
-    @browse_controller.stubs(:using_cetera? => true)
-    BrowseController.any_instance.stubs(:request => OpenStruct.new(path: '/browse') )
-    assert @browse_controller.send(:using_cetera?), 'expected using_cetera? = true when path /browse'
+  it 'test_use_cetera_on_browse' do
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
+    allow_any_instance_of(BrowseController).to receive(:request).and_return(OpenStruct.new(path: '/browse'))
+    expect(@browse_controller.send(:using_cetera?)).to be_truthy
   end
 
-  def test_use_cetera_on_dataslated_home_browse
-    @browse_controller.stubs(:using_cetera? => true)
-    BrowseController.any_instance.stubs(:request => OpenStruct.new(path: '/') )
-    assert @browse_controller.send(:using_cetera?), 'expected using_cetera? = true when path /'
+  it 'test_use_cetera_on_dataslated_home_browse' do
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
+    allow_any_instance_of(BrowseController).to receive(:request).and_return(OpenStruct.new(path: '/'))
+    expect(@browse_controller.send(:using_cetera?)).to be_truthy
   end
 
   # This is an emergency fix and appropriately heinous
-  def test_browse_options_for_metadata_facets
+  it 'test_browse_options_for_metadata_facets' do
     stub_feature_flags_with(:cetera_search => false)
 
     # Unsound mess, verify the symbolize_keys move
@@ -185,29 +175,31 @@ class BrowseActionsTest2 < Minitest::Test
       }.symbolize_keys
     ]
 
-    @browse_controller.stubs(custom_facets: custom_facets)
-    @browse_controller.stubs(categories_facet: nil)
-    @browse_controller.stubs(topics_facet: nil)
-    @browse_controller.stubs(:using_cetera? => false)
-    Federation.stubs(federations: [])
+    allow(@browse_controller).to receive(:custom_facets).and_return(custom_facets)
+    allow(@browse_controller).to receive(:categories_facet).and_return(nil)
+    allow(@browse_controller).to receive(:topics_facet).and_return(nil)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(false)
+    allow(Federation).to receive(:federations).and_return([])
 
-    CurrentDomain.stubs(configuration: nil)
-    CurrentDomain.stubs(default_locale: 'en')
-    I18n.stubs(locale: CurrentDomain.default_locale.to_s)
+    allow(CurrentDomain).to receive(:configuration).and_return(nil)
+    allow(CurrentDomain).to receive(:default_locale).and_return('en')
+    allow(I18n).to receive(:locale).and_return(CurrentDomain.default_locale.to_s)
 
-    Clytemnestra.stubs(search_views: [])
+    allow(Clytemnestra).to receive(:search_views).and_return([])
 
     field = 'Dataset-Information_Superhero'.to_sym
     value = 'Superman'
     request = OpenStruct.new(:params => { field => value })
     expected = [[field, value].join(':')]
 
-    assert_equal expected, @browse_controller.send(:process_browse, request)[:metadata_tag]
+    expect(expected).to eq(@browse_controller.send(:process_browse, request)[:metadata_tag])
   end
 end
 
-class BrowseActionsTest3 < Minitest::Test
-  def setup
+describe BrowseActions do
+  include TestHelperMethods
+
+  before do
     @test_custom_facets = [
       {
         'singular_description' => 'Agencies',
@@ -247,20 +239,20 @@ class BrowseActionsTest3 < Minitest::Test
 
     Canvas2::Util.reset
 
-    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
-    CurrentDomain.stubs(configuration: nil)
-    CurrentDomain.stubs(default_locale: 'en')
+    allow(CurrentDomain).to receive(:property).and_return({:catalog => {:sortBy => 'relevance'}})
+    allow(CurrentDomain).to receive(:configuration).and_return(nil)
+    allow(CurrentDomain).to receive(:default_locale).and_return('en')
 
     stub_feature_flags_with(:cetera_search => true)
 
-    I18n.stubs(locale: CurrentDomain.default_locale.to_s)
+    allow(I18n).to receive(:locale).and_return(CurrentDomain.default_locale.to_s)
 
     @browse_controller = BrowseController.new
-    @browse_controller.stubs(custom_facets: @test_custom_facets)
-    @browse_controller.stubs(categories_facet: @test_categories)
-    @browse_controller.stubs(topics_facet: nil)
+    allow(@browse_controller).to receive(:custom_facets).and_return(@test_custom_facets)
+    allow(@browse_controller).to receive(:categories_facet).and_return(@test_categories)
+    allow(@browse_controller).to receive(:topics_facet).and_return(nil)
 
-    Federation.stubs(federations: [])
+    allow(Federation).to receive(:federations).and_return([])
   end
 
   def stub_core_for_category(category)
@@ -321,7 +313,7 @@ class BrowseActionsTest3 < Minitest::Test
 
   # cetera catalog api
   def search_and_return_cetera_categories_param(category)
-    @browse_controller.stubs(:using_cetera? => true)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
     request = OpenStruct.new(:params => { category: category })
     browse_options = @browse_controller.send(:process_browse, request)
     browse_options[:search_options][:categories]
@@ -347,7 +339,7 @@ class BrowseActionsTest3 < Minitest::Test
 
   def cetera_official_boost(using_cetera, boost_official, official_boost_amt, expected_boost)
     stub_feature_flags_with(:cetera_search_boost_official_assets => boost_official)
-    @browse_controller.stubs(:using_cetera? => using_cetera)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(using_cetera)
     request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'tables'}
     if using_cetera
@@ -364,13 +356,13 @@ class BrowseActionsTest3 < Minitest::Test
     end
     browse_options = @browse_controller.send(:process_browse, request, options)
     if expected_boost == nil
-      refute browse_options[:search_options].key?(:boostOfficial)
+      expect(browse_options[:search_options].key?(:boostOfficial)).to be_falsy
     else
-      assert_equal expected_boost, browse_options[:search_options][:boostOfficial]
+      expect(expected_boost).to eq(browse_options[:search_options][:boostOfficial])
     end
   end
 
-  def test_process_browse_official_boost
+  it 'test_process_browse_official_boost' do
     expectations = {
       # [using_cetera, boost_official, official_boost_amt] => expected_boost
       [true, true, nil] => DEFAULT_OFFICIAL_BOOST,
@@ -387,32 +379,32 @@ class BrowseActionsTest3 < Minitest::Test
       [false, false, '5.0'] => nil,
     }
     expectations.each do |(uc, bo, oba), eb|
-      CurrentDomain.stubs(:property).with(:official_boost, :catalog).returns(oba)
+      allow(CurrentDomain).to receive(:property).with(:official_boost, :catalog).and_return(oba)
       cetera_official_boost(uc, bo, oba, eb)
     end
   end
 
-  def test_process_browse_unpublished_includes_drafts_if_feature_flag_enabled
+  it 'test_process_browse_unpublished_includes_drafts_if_feature_flag_enabled' do
     stub_feature_flags_with(:ingress_reenter => true)
-    @browse_controller.stubs(:using_cetera? => true)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
     request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
     stub_cetera_for_categories_and_browse(category_4_categories, ['datasets', 'drafts'])
     browse_options = @browse_controller.send(:process_browse, request, options)
-    assert_equal ['draft', 'tables'], browse_options[:search_options][:limitTo]
+    expect(browse_options[:search_options][:limitTo]).to eq(['draft', 'tables'])
   end
 
-  def test_process_browse_unpublished_excludes_drafts_if_feature_flag_false
-    @browse_controller.stubs(:using_cetera? => true)
+  it 'test_process_browse_unpublished_excludes_drafts_if_feature_flag_false' do
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
     stub_feature_flags_with(:ingress_reenter => false)
     request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
     stub_cetera_for_categories_and_browse(category_4_categories, 'datasets')
     browse_options = @browse_controller.send(:process_browse, request, options)
-    assert_equal 'tables', browse_options[:search_options][:limitTo]
+    expect(browse_options[:search_options][:limitTo]).to eq('tables')
   end
 
-  def test_no_effect_if_cetera_is_not_enabled_and_category_is_present
+  it 'test_no_effect_if_cetera_is_not_enabled_and_category_is_present' do
     stub_feature_flags_with(:cetera_search => false)
     cly_unaffected_category = 'Test Category 4'
 
@@ -422,11 +414,11 @@ class BrowseActionsTest3 < Minitest::Test
 
     expected_category = 'Test Category 4'
     stub_core_for_category(expected_category)
-    User.stubs(:current_user => nil)
-    assert_equal [expected_category], search_and_return_category_param(cly_unaffected_category)
+    allow(User).to receive(:current_user).and_return(nil)
+    expect([expected_category]).to eq(search_and_return_category_param(cly_unaffected_category))
   end
 
-  def test_no_effect_if_cetera_is_not_enabled_and_category_is_absent
+  it 'test_no_effect_if_cetera_is_not_enabled_and_category_is_absent' do
     stub_feature_flags_with(:cetera_search => false)
 
     stub_core_for_category(nil)
@@ -435,45 +427,45 @@ class BrowseActionsTest3 < Minitest::Test
       with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
       to_return(:status => 200, :body => '', :headers => {})
 
-    User.stubs(:current_user => nil)
-    assert_empty search_and_return_category_param(nil)
+    allow(User).to receive(:current_user).and_return(nil)
+    expect(search_and_return_category_param(nil).size).to eq(0)
   end
 
-  def test_parent_category_includes_its_children_in_query_to_cetera
+  it 'test_parent_category_includes_its_children_in_query_to_cetera' do
     stub_cetera_for_categories_and_browse(category_4_categories)
-    @browse_controller.stubs(:using_cetera? => true)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
 
-    assert_equal category_4_categories, search_and_return_cetera_categories_param('Test Category 4')
+    expect(category_4_categories).to eq(search_and_return_cetera_categories_param('Test Category 4'))
   end
 
-  def test_child_category_includes_only_itself_in_query_to_cetera
+  it 'test_child_category_includes_only_itself_in_query_to_cetera' do
     child_category = 'Test Category 4a'
 
     expected_categories = [child_category]
     stub_cetera_for_categories_and_browse(expected_categories)
-    @browse_controller.stubs(:using_cetera? => true)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
 
-    assert_equal expected_categories, search_and_return_cetera_categories_param(child_category)
+    expect(expected_categories).to eq(search_and_return_cetera_categories_param(child_category))
   end
 
-  def test_categories_with_no_children_query_cetera_only_about_themselves
+  it 'test_categories_with_no_children_query_cetera_only_about_themselves' do
     childless_category = 'Business'
 
     expected_categories = [childless_category]
     stub_cetera_for_categories_and_browse(expected_categories)
 
-    assert_equal expected_categories, search_and_return_cetera_categories_param(childless_category)
+    expect(expected_categories).to eq(search_and_return_cetera_categories_param(childless_category))
   end
 
-  def test_no_category_results_in_no_category_passed_to_cetera
+  it 'test_no_category_results_in_no_category_passed_to_cetera' do
     no_category = nil
 
     stub_cetera_for_categories_and_browse(expected_categories = nil)
 
-    refute(search_and_return_cetera_categories_param(no_category))
+    expect(search_and_return_cetera_categories_param(no_category)).to be_falsy
   end
 
-  def test_non_existent_category_gets_magically_injected
+  it 'test_non_existent_category_gets_magically_injected' do
     # WARN: The existing frontend code will inject any non-existant categories
     # into the categories that we receive from core server if they appear in
     # the URL query string. This is potentially a script injection vector.
@@ -486,13 +478,15 @@ class BrowseActionsTest3 < Minitest::Test
     # And it will show up in the FE's list of displayed categories
     expected_categories = [imaginary_category]
     stub_cetera_for_categories_and_browse(expected_categories)
-    @browse_controller.stubs(:using_cetera? => true)
+    allow(@browse_controller).to receive(:using_cetera?).and_return(true)
 
-    assert_equal expected_categories, search_and_return_cetera_categories_param(imaginary_category)
+    expect(expected_categories).to eq(search_and_return_cetera_categories_param(imaginary_category))
   end
 end
 
-class BrowseActionsTest4 < Minitest::Test
+describe BrowseActions do
+  include TestHelperMethods
+
   def facet(name)
     # WARN: custom_facets is Hashie::Mash, but others are just hashes
     {
@@ -514,27 +508,27 @@ class BrowseActionsTest4 < Minitest::Test
     }
   end
 
-  def setup
+  before do
     @browse_controller = BrowseController.new
     init_current_domain
     init_feature_flag_signaller
 
     Canvas2::Util.reset
 
-    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
-    CurrentDomain.stubs(configuration: nil)
-    CurrentDomain.stubs(default_locale: 'en')
+    allow(CurrentDomain).to receive(:property).and_return({:catalog => {:sortBy => 'relevance'}})
+    allow(CurrentDomain).to receive(:configuration).and_return(nil)
+    allow(CurrentDomain).to receive(:default_locale).and_return('en')
 
-    I18n.stubs(locale: CurrentDomain.default_locale.to_s)
+    allow(I18n).to receive(:locale).and_return(CurrentDomain.default_locale.to_s)
 
-    Clytemnestra.stubs(search_views: [])
+    allow(Clytemnestra).to receive(:search_views).and_return([])
 
-    Federation.stubs(federations: [])
+    allow(Federation).to receive(:federations).and_return([])
 
     # It's important to have multiple custom facets so we can test that
     # we aren't hardcoding to the 3rd slot regardless
-    @browse_controller.stubs(get_facet_cutoff: 3)
-    CurrentDomain.stubs(:property).with(:custom_facets, :catalog).returns([
+    allow(@browse_controller).to receive(:get_facet_cutoff).and_return(3)
+    allow(CurrentDomain).to receive(:property).with(:custom_facets, :catalog).and_return([
       Hashie::Mash.new(facet('custom superheroes')),
       Hashie::Mash.new(facet('custom tomatoes')),
       Hashie::Mash.new(facet('custom follies'))
@@ -550,7 +544,7 @@ class BrowseActionsTest4 < Minitest::Test
       view_types_facet
     ).each do |type_of_facet|
       name = type_of_facet.gsub('_facet', '')
-      @browse_controller.stubs(type_of_facet.to_sym => facet(name))
+      allow(@browse_controller).to receive(type_of_facet.to_sym).and_return(facet(name))
     end
 
     stub_request(:get, "http://localhost:8080/tags?method=viewsTags").with(:headers => request_headers).
@@ -566,72 +560,72 @@ class BrowseActionsTest4 < Minitest::Test
 
   end
 
-  def test_cly_topics_facet_without_param
+  it 'test_cly_topics_facet_without_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => false)
-    @browse_controller.unstub(:topics_facet)
     facets = @browse_controller.send(:topics_facet).with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
-    assert_equal(expected_facets, facets)
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_cly_topics_facet_with_matching_param
+  it 'test_cly_topics_facet_with_matching_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => false)
-    @browse_controller.unstub(:topics_facet)
     facets = @browse_controller.send(:topics_facet, :tags => 'neato').with_indifferent_access
     expected_facets = {"type"=>:topic, "title"=>"Topics", "singular_description"=>"topic", "param"=>:tags, "options"=>[{"text"=>"crazy", "value"=>"crazy", "count"=>1}, {"text"=>"neato", "value"=>"neato", "count"=>0}, {"text"=>"other", "value"=>"other", "count"=>2}, {"text"=>"tag", "value"=>"tag", "count"=>2}], "extra_options"=>[{"text"=>"crazy", "value"=>"crazy", "count"=>1}, {"text"=>"keyword", "value"=>"keyword", "count"=>1}, {"text"=>"neato", "value"=>"neato", "count"=>1}, {"text"=>"other", "value"=>"other", "count"=>2}, {"text"=>"tag", "value"=>"tag", "count"=>2}, {"text"=>"ufo", "value"=>"ufo", "count"=>1}, {"text"=>"weird", "value"=>"weird", "count"=>1}], "tag_cloud"=>true}.with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
-    assert_equal(expected_facets, facets) # Failing due to ordering?
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_cly_topics_facet_with_non_matching_param
+  it 'test_cly_topics_facet_with_non_matching_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => false)
-    @browse_controller.unstub(:topics_facet)
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     facets = @browse_controller.send(:topics_facet, :tags => 'unknown').with_indifferent_access
     expected_facets['options'] = facets['options'].push('text' => 'unknown', 'value' => 'unknown', 'count' => 0)
-    assert_equal(expected_facets, facets)
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_cetera_topics_facet_without_param
+  it 'test_cetera_topics_facet_without_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => true)
-    @browse_controller.unstub(:topics_facet)
     facets = @browse_controller.send(:topics_facet).with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Tags","singular_description":"tag","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
-    assert_equal(expected_facets, facets)
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_cetera_topics_facet_with_matching_param
+  it 'test_cetera_topics_facet_with_matching_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => true)
-    @browse_controller.unstub(:topics_facet)
     facets = @browse_controller.send(:topics_facet, :tags => 'neato').with_indifferent_access
     expected_facets = {"type"=>:topic, "title"=>"Tags", "singular_description"=>"tag", "param"=>:tags, "options"=>[{"text"=>"crazy", "value"=>"crazy", "count"=>1}, {"text"=>"neato", "value"=>"neato", "count"=>0}, {"text"=>"other", "value"=>"other", "count"=>2}, {"text"=>"tag", "value"=>"tag", "count"=>2}], "extra_options"=>[{"text"=>"crazy", "value"=>"crazy", "count"=>1}, {"text"=>"keyword", "value"=>"keyword", "count"=>1}, {"text"=>"neato", "value"=>"neato", "count"=>1}, {"text"=>"other", "value"=>"other", "count"=>2}, {"text"=>"tag", "value"=>"tag", "count"=>2}, {"text"=>"ufo", "value"=>"ufo", "count"=>1}, {"text"=>"weird", "value"=>"weird", "count"=>1}], "tag_cloud"=>true}.with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
-    assert_equal(expected_facets, facets) # Failing due to ordering?
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_cetera_topics_facet_with_non_matching_param
+  it 'test_cetera_topics_facet_with_non_matching_param' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with(:cetera_search => true)
-    @browse_controller.unstub(:topics_facet)
     facets = @browse_controller.send(:topics_facet, :tags => 'unknown').with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Tags","singular_description":"tag","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     expected_facets['options'] = facets['options'].push('text' => 'unknown', 'value' => 'unknown', 'count' => 0)
-    assert_equal(expected_facets, facets)
+    expect(expected_facets).to eq(facets)
   end
 
-  def test_categories_come_first_in_new_catalog
+  it 'test_categories_come_first_in_new_catalog' do
+    allow(@browse_controller).to receive(:topics_facet).and_call_original
     stub_feature_flags_with('cetera_search' => true)
     request = OpenStruct.new(params: { cetera_search: 'true' }.with_indifferent_access)
-    @browse_controller.unstub(:topics_facet)
     browse_options = @browse_controller.send(:process_browse, request)
     facet_titles = browse_options[:facets].map { |f| f[:title] }
     expected_titles = [
@@ -646,11 +640,11 @@ class BrowseActionsTest4 < Minitest::Test
 
     expected_titles.each_with_index do |expected, index|
       actual = facet_titles[index]
-      assert_equal expected, actual
+      expect(expected).to eq(actual)
     end
   end
 
-  def test_categories_come_third_in_old_view_types
+  it 'test_categories_come_third_in_old_view_types' do
     # By third we mean [view_types, custom_facets, categories]
     stub_feature_flags_with(:cetera_search => false)
     request = OpenStruct.new(params: {}.with_indifferent_access)
@@ -668,42 +662,42 @@ class BrowseActionsTest4 < Minitest::Test
 
     expected_titles.each_with_index do |expected, index|
       actual = facet_titles[index]
-      assert_equal expected, actual
+      expect(expected).to eq(actual)
     end
   end
 
-  def test_categories_facet_works_nil_extra_options
+  it 'test_categories_facet_works_nil_extra_options' do
     request = OpenStruct.new(params: { category: 'Some Random Category' }.with_indifferent_access)
 
     # Let's have nil for extra options
-    @browse_controller.stubs(categories_facet: facet('categories').merge(extra_options: nil))
+    allow(@browse_controller).to receive(:categories_facet).and_return(facet('categories').merge(extra_options: nil))
     browse_options = @browse_controller.send(:process_browse, request)
     cat_facet = browse_options[:facets].find { |f| f[:title] == 'Categories' }
-    refute(cat_facet[:extra_options]) # make sure the test setup worked
+    expect(cat_facet[:extra_options]).to be_falsy # make sure the test setup worked
 
     # This used to raise a TypeError as per EN-760
     res = @browse_controller.send(:selected_category_and_any_children, browse_options)
-    assert_equal ['Some Random Category'], res
+    expect(res).to eq(['Some Random Category'])
   end
 
-  def test_custom_facets_respect_facet_cutoff_when_nothing_is_selected
+  it 'test_custom_facets_respect_facet_cutoff_when_nothing_is_selected' do
     request = OpenStruct.new(params: {}.with_indifferent_access)
 
     # NOTE: Setting facet_cutoff to 0 has inconsistent behavior across facets
     (1..10).each do |cutoff|
-      @browse_controller.stubs(get_facet_cutoff: cutoff)
-      assert_equal cutoff, @browse_controller.send(:get_facet_cutoff, :custom)
+      allow(@browse_controller).to receive(:get_facet_cutoff).and_return(cutoff)
+      expect(cutoff).to eq(@browse_controller.send(:get_facet_cutoff, :custom))
 
       browse_options = @browse_controller.send(:process_browse, request)
       facet = browse_options[:facets].find { |o| o[:param] == :'custom superheroes' }
 
       expected_options_size = [cutoff, 6].min # can't have more options than exist
-      assert_equal expected_options_size, facet[:options].size
-      assert_equal 6 - expected_options_size, facet[:extra_options].to_a.size
+      expect(expected_options_size).to eq(facet[:options].size)
+      expect(6 - expected_options_size).to eq(facet[:extra_options].to_a.size)
     end
   end
 
-  def test_custom_facets_always_show_selected_option_above_fold
+  it 'test_custom_facets_always_show_selected_option_above_fold' do
     facet_name = 'custom superheroes'
     facet_value = 'Six'
     request = OpenStruct.new(
@@ -712,7 +706,7 @@ class BrowseActionsTest4 < Minitest::Test
 
     # NOTE: Setting facet_cutoff to 0 has inconsistent behavior across facets
     (1..10).each do |cutoff|
-      @browse_controller.stubs(get_facet_cutoff: cutoff)
+      allow(@browse_controller).to receive(:get_facet_cutoff).and_return(cutoff)
       browse_options = @browse_controller.send(:process_browse, request)
 
       facet = browse_options[:facets].find { |o| o[:param] == facet_name.to_sym }
@@ -722,15 +716,15 @@ class BrowseActionsTest4 < Minitest::Test
       # cutoff + 1 because we append our selected option
       # min because we can't have more visibile options than exist
       expected_options_size = [cutoff + 1, 6].min
-      assert_equal expected_options_size, options.size
+      expect(expected_options_size).to eq(options.size)
 
       # Make sure our selected option is showing up only once
-      assert_equal 1, (options + extra_options).count { |o| o['value'] == facet_value }
+      expect(1).to eq((options + extra_options).count { |o| o['value'] == facet_value })
 
       # Make sure we have the right number of extra (hidden) options
-      assert_equal 6 - expected_options_size, extra_options.size
+      expect(6 - expected_options_size).to eq(extra_options.size)
 
-      assert_equal(facet_value, options.last['value'])
+      expect(facet_value).to eq(options.last['value'])
     end
   end
 
@@ -757,8 +751,8 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def process_custom_facets_catalog(cutoff)
-    CurrentDomain.stubs(:property).with(:custom_facets, :catalog).returns(custom_facets_catalog)
-    @browse_controller.stubs(get_facet_cutoff: cutoff)
+    allow(CurrentDomain).to receive(:property).with(:custom_facets, :catalog).and_return(custom_facets_catalog)
+    allow(@browse_controller).to receive(:get_facet_cutoff).and_return(cutoff)
     browse_options = @browse_controller.send(:process_browse, OpenStruct.new(params: {}))
 
     # We go in as a Hashie::Mash but come back as a normal hash
@@ -769,8 +763,8 @@ class BrowseActionsTest4 < Minitest::Test
   def expected_partitions
     # Make sure our setup is what we expect
     options = custom_facets_catalog.first.options
-    assert_equal 3, options.count(&:summary)
-    assert_equal 5, options.count
+    expect(3).to eq(options.count(&:summary))
+    expect(5).to eq(options.count)
 
     {
       # Set cutoff one below options.count(&:summary)
@@ -799,17 +793,13 @@ class BrowseActionsTest4 < Minitest::Test
     }
   end
 
-  def test_custom_facet_partitioning_with_summary_true
+  it 'test_custom_facet_partitioning_with_summary_true' do
     expected_partitions.each do |(cutoff, expected)|
       options, extra_options = process_custom_facets_catalog(cutoff)
 
-      assert_equal(expected[:option_texts],
-                   options.pluck('text'),
-                   "Failure of options at cutoff level #{cutoff}")
+      expect(expected[:option_texts]).to eq(options.pluck('text'))
 
-      assert_equal(expected[:extra_option_texts],
-                   extra_options.to_a.pluck('text'),
-                   "Failure of extra_options at cutoff level #{cutoff}")
+      expect(expected[:extra_option_texts]).to eq(extra_options.to_a.pluck('text'))
     end
   end
 end

@@ -5,7 +5,7 @@ describe PageMetadataController do
 
   let(:user) { User.new({ 'rights' => ['create_data_lens'] }) }
   let(:page_metadata) do
-    json_fixture('v2-page-metadata.ported-from-minitest.json')['displayFormat']['data_lens_page_metadata']
+    json_fixture('v2-page-metadata.json')['displayFormat']['data_lens_page_metadata']
   end
   let(:page_metadata_with_parent) { page_metadata.merge({ 'parentLensId' => 'pare-ntid' }) }
   let(:page_id) { page_metadata['pageId'] }

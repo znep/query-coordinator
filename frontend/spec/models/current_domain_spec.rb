@@ -11,30 +11,30 @@ describe CurrentDomain, :type => :model do
   it 'handles the case when last_refresh is a String' do
     CurrentDomain.class_variable_set('@@update_times', 'whatevs' => Time.now)
     allow(CurrentDomain).to receive(:last_refresh).with('whatevs').and_return('a string')
-    CurrentDomain.should_receive(:flag_out_of_date!).with('whatevs')
+    expect(CurrentDomain).to receive(:flag_out_of_date!).with('whatevs')
     CurrentDomain.check_for_theme_update('whatevs')
   end
 
   it 'handles the case when last_refresh is a Time and in the past' do
     CurrentDomain.class_variable_set('@@update_times', 'thedomain' => Time.now)
     allow(CurrentDomain).to receive(:last_refresh).with('thedomain').and_return(Time.now - 300)
-    CurrentDomain.should_receive(:flag_out_of_date!).with('thedomain').never
-    CurrentDomain.should_receive(:reload).never
+    expect(CurrentDomain).to receive(:flag_out_of_date!).with('thedomain').never
+    expect(CurrentDomain).not_to receive(:reload)
     CurrentDomain.check_for_theme_update('thedomain')
   end
 
   it 'handles the case when last_refresh is a Time and in the future' do
     CurrentDomain.class_variable_set('@@update_times', 'adomain' => Time.now)
     allow(CurrentDomain).to receive(:last_refresh).with('adomain').and_return(Time.now + 300)
-    CurrentDomain.should_receive(:flag_out_of_date!).with('adomain').never
-    CurrentDomain.should_receive(:reload).once
+    expect(CurrentDomain).not_to receive(:flag_out_of_date!).with('adomain')
+    expect(CurrentDomain).to receive(:reload).once
     CurrentDomain.check_for_theme_update('adomain')
   end
 
   it 'handles the case when last_refresh is nil' do
     CurrentDomain.class_variable_set('@@update_times', 'youthere' => Time.now)
     allow(CurrentDomain).to receive(:last_refresh).with('youthere').and_return(nil)
-    CurrentDomain.should_receive(:flag_out_of_date!).with('youthere')
+    expect(CurrentDomain).to receive(:flag_out_of_date!).with('youthere')
     CurrentDomain.check_for_theme_update('youthere')
   end
 
@@ -81,11 +81,11 @@ describe CurrentDomain, :type => :model do
       end
 
       it 'returns the expected timestamp' do
-        expect(CurrentDomain.configUpdatedAt).to be(1489081200)
+        expect(CurrentDomain.configUpdatedAt).to eq(1489081200)
       end
 
       it 'return the same value using snake case' do
-        expect(CurrentDomain.config_updated_at).to be(1489081200)
+        expect(CurrentDomain.config_updated_at).to eq(1489081200)
       end
     end
 
@@ -95,11 +95,11 @@ describe CurrentDomain, :type => :model do
       end
 
       it 'returns the expected quantized timestamp' do
-        expect(CurrentDomain.configUpdatedAt).to be(1489081500)
+        expect(CurrentDomain.configUpdatedAt).to eq(1489081500)
       end
 
       it 'return the same quantized value using snake case' do
-        expect(CurrentDomain.config_updated_at).to be(1489081500)
+        expect(CurrentDomain.config_updated_at).to eq(1489081500)
       end
     end
   end

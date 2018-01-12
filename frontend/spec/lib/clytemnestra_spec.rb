@@ -5,7 +5,7 @@ describe Clytemnestra do
   include TestHelperMethods
 
   it 'retrieves anticipated results' do
-    payload = File.read('spec/fixtures/catalog_search_results.json')
+    payload = fixture('catalog_search_results.json')
     expected = Clytemnestra::ViewSearchResult.from_result(payload)
 
     search_options = {

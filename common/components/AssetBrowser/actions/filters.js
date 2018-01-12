@@ -17,6 +17,27 @@ export const CHANGE_VISIBILITY = 'CHANGE_VISIBILITY';
 export const CLEAR_ALL_FILTERS = 'CLEAR_ALL_FILTERS';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
 export const TOGGLE_RECENTLY_VIEWED = 'TOGGLE_RECENTLY_VIEWED';
+export const TOGGLE_AWAITING_APPROVAL = 'TOGGLE_AWAITING_APPROVAL';
+
+export const toggleAwaitingApproval = () => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: TOGGLE_AWAITING_APPROVAL });
+    clearPage(dispatch);
+    updateQueryString({ getState });
+  };
+
+  return fetchResults(
+    dispatch,
+    getState,
+    {
+      action: TOGGLE_AWAITING_APPROVAL,
+      onlyAwaitingApproval: !getState().filters.onlyAwaitingApproval,
+      pageNumber: 1,
+      q: getCurrentQuery()
+    },
+    onSuccess
+  );
+};
 
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {

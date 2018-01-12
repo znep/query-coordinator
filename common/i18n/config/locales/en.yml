@@ -47,6 +47,7 @@ en:
         insufficent_view_permission: You do not have permission to view this page.
         offset_too_large: Sorry, we do not support paging over a large set of results. You should try filtering down the result set first.
       filters:
+        awaiting_approval: Awaiting approval
         clear: Clear All Filters
         asset_types:
           label: Asset Types

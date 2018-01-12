@@ -37,6 +37,7 @@ describe('actions/pager', () => {
         {
           type: ceteraActions.UPDATE_CATALOG_RESULTS,
           response: mockCeteraResponse,
+          onlyAwaitingApproval: false,
           onlyRecentlyViewed: false,
           sortByRecentlyViewed: false
         },

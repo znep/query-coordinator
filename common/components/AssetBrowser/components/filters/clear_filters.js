@@ -23,6 +23,7 @@ export class ClearFilters extends Component {
       'assetTypes',
       'authority',
       'category',
+      'onlyAwaitingApproval',
       'onlyRecentlyViewed',
       'ownedBy.id',
       'tag',

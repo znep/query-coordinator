@@ -27,12 +27,18 @@ module AssetBrowserHelper
       :usaid_features_enabled
     )
 
+    approval_workflow = Fontana::Approval::Workflow.find
+    approval_settings = {
+      :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
+      :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
+    }
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       :airbrakeKey => ENV["#{app_name.upcase}_AIRBRAKE_API_KEY"] ||
         APP_CONFIG.send("#{app_name}_airbrake_api_key"),
       :airbrakeProjectId => ENV["#{app_name.upcase}_AIRBRAKE_PROJECT_ID"] ||
         APP_CONFIG.send("#{app_name}_airbrake_project_id"),
+      :approvalSettings => approval_settings,
       :csrfToken => form_authenticity_token.to_s,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,

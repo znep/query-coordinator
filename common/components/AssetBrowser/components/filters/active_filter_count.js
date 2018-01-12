@@ -17,6 +17,7 @@ export class ActiveFilterCount extends Component {
       'assetTypes',
       'authority',
       'category',
+      'onlyAwaitingApproval',
       'onlyRecentlyViewed',
       'ownedBy.id',
       'tag',

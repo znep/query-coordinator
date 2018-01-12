@@ -65,6 +65,7 @@ describe('actions/filters', () => {
         {
           type: ceteraActions.UPDATE_CATALOG_RESULTS,
           response: mockCeteraResponse,
+          onlyAwaitingApproval: false,
           onlyRecentlyViewed: false,
           sortByRecentlyViewed: false
         },
@@ -93,7 +94,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.TOGGLE_RECENTLY_VIEWED },
         { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
@@ -119,7 +120,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_ASSET_TYPE, value: 'charts' },
         { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
@@ -145,7 +146,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_VISIBILITY, value: 'internal' },
         { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
@@ -174,7 +175,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_Q, value: 'transformers! robots in disguise' },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
@@ -205,7 +206,7 @@ describe('actions/filters', () => {
       // TODO: I have no idea what's going on here with the repeating actions :/
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
         { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }
@@ -238,10 +239,10 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: customMockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: customMockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_Q, value: 'asdf-1234' },
         { type: sortActions.CHANGE_SORT_ORDER, order: undefined },
@@ -268,7 +269,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: ceteraActions.FETCH_RESULTS },
-        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: ceteraActions.UPDATE_CATALOG_RESULTS, response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: ceteraActions.FETCH_RESULTS_SUCCESS },
         { type: filterActions.CHANGE_CUSTOM_FACET, facetParam: 'City_Neighborhood', value: 'Capitol Hill' },
         { type: pagerActions.CHANGE_PAGE, pageNumber: 1 }

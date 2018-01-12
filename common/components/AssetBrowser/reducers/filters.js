@@ -35,6 +35,7 @@ export const getInitialState = () => {
     domainCustomFacets: getStaticData('domainCustomFacets') || [],
     domainCategories: getStaticData('domainCategories') || [],
     domainTags: getStaticData('domainTags') || [],
+    onlyAwaitingApproval: false,
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: getQueryParameter('ownerName'),
@@ -59,6 +60,7 @@ export const getUnfilteredState = (state) => ({
   domainCustomFacets: getStaticData('domainCustomFacets') || [],
   domainCategories: getStaticData('domainCategories') || [],
   domainTags: getStaticData('domainTags') || [],
+  onlyAwaitingApproval: false,
   onlyRecentlyViewed: false,
   ownedBy: {
     displayName: null,
@@ -75,6 +77,13 @@ export const getUnfilteredState = (state) => ({
 export default (state, action) => {
   if (_.isUndefined(state)) {
     return getInitialState();
+  }
+
+  if (action.type === filterActions.TOGGLE_AWAITING_APPROVAL) {
+    return {
+      ...state,
+      onlyAwaitingApproval: !state.onlyAwaitingApproval
+    };
   }
 
   if (action.type === filterActions.TOGGLE_RECENTLY_VIEWED) {

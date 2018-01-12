@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { browserHistory, withRouter } from 'react-router';
+import _ from 'lodash';
 import * as Links from 'links/links';
 import styles from './SourceMessage.module.scss';
 
@@ -9,7 +10,7 @@ const LINK_ID = 'dsmui-parse-error-link';
 function handler(e, params) {
   e.preventDefault();
 
-  if (e.target && e.target.id && e.target.id === LINK_ID) {
+  if (_.get(e, 'target.id') === LINK_ID) {
     browserHistory.push(Links.hrefSource(params));
   }
 }

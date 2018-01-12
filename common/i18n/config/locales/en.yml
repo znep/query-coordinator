@@ -1068,6 +1068,10 @@ en:
               title: Number of Data Classes
             description:
               title: Description
+            geo_coder_control:
+              title: Search by address
+            geo_locate_control:
+              title: Find me on map
             left_axis_title:
               title: Left Axis Title
             line_color:
@@ -1078,6 +1082,8 @@ en:
               maximum: Max
             max_cluster_size:
               title: Max Cluster Size
+            navigation_control:
+              title: Show navigation control
             point_color:
               title: Point Color
             point_opacity:

@@ -1,4 +1,5 @@
 @import 'mapbox-gl';
+@import '@mapbox/mapbox-gl-geocoder/lib/mapbox-gl-geocoder';
 
 .unified-map-instance {
   position:absolute;

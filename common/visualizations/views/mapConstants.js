@@ -9,6 +9,19 @@ export const POINT_AGGREATIONS = Object.freeze({
   HEAT_MAP: 'heat_map'
 });
 
+export const GEO_LOCATE_CONTROL_OPTIONS = Object.freeze({
+  positionOptions: Object.freeze({
+    enableHighAccuracy: true
+  }),
+  trackUserLocation: true
+});
+
+export const MAP_CONTROLS_POSITION = Object.freeze({
+  NAVIGATION: 'top-left',
+  GEO_LOCATE: 'bottom-left',
+  GEO_CODER: 'top-right'
+});
+
 export const TILE_URL_OPTIONS = Object.freeze({
   snapPrecision: Object.freeze({
     1: 0.001,

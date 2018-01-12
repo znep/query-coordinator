@@ -178,6 +178,9 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
       shouldSetVif('setBoundaryColorByColumn', 'columnName', 'series[0].mapOptions.colorBoundariesBy', ['map']);
       shouldSetVif('setQuantificationMethod', 'numerical', 'series[0].mapOptions.quantificationMethod', ['map']);
+      shouldSetVif('setNavigationControl', false, 'configuration.navigationControl', ['map']);
+      shouldSetVif('setGeoCoderControl', true, 'configuration.geoCoderControl', ['map']);
+      shouldSetVif('setGeoLocateControl', true, 'configuration.geoLocateControl', ['map']);
 
       describe('when settings the x-axis scaling mode', () => {
 

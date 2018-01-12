@@ -9,7 +9,10 @@ export default {
     baseLayerOpacity: 0.8,
     baseLayerUrl: BASE_LAYERS[0].value,
     datasetMetadata: false,
+    geoCoderControl: true,
+    geoLocateControl: true,
     locateUser: false,
+    navigationControl: true,
     panAndZoom: true,
     rowInspectorTitleColumnName: null,
     viewSourceDataLink: true

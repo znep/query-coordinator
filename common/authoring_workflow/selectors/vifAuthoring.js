@@ -217,6 +217,22 @@ export const getPointAggregation = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.pointAggregation', 'none')
 );
 
+export const getNavigationControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.navigationControl', true)
+);
+
+export const getGeoCoderControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.geoCoderControl', true)
+);
+
+
+export const getGeoLocateControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.geoLocateControl', true)
+);
+
 export const getColorScale = createSelector(
   getCurrentVif,
   (vif) => {

@@ -24,6 +24,8 @@ const paths = {
   errorBarsBarColor: 'series[0].errorBars.barColor',
   errorBarsLowerBoundColumnName: 'series[0].errorBars.lowerBoundColumnName',
   errorBarsUpperBoundColumnName: 'series[0].errorBars.upperBoundColumnName',
+  geoCoderControl: 'configuration.geoCoderControl',
+  geoLocateControl: 'configuration.geoLocateControl',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
   labelRight: 'configuration.axisLabels.right',
@@ -42,6 +44,7 @@ const paths = {
   measureColumnName: 'series[{0}].dataSource.measure.columnName',
   minimumLineWeight: 'series[0].mapOptions.minimumLineWeight',
   minimumPointSize: 'series[0].mapOptions.minimumPointSize',
+  navigationControl: 'configuration.navigationControl',
   negativeColor: 'configuration.legend.negativeColor',
   numberOfDataClasses: 'series[0].mapOptions.numberOfDataClasses',
   orderBy: 'series[0].dataSource.orderBy',
@@ -461,6 +464,18 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.lineWeight)) {
     dispatch(actions.setLineWeight(get(paths.lineWeight)));
+  }
+
+  if (has(paths.navigationControl)) {
+    dispatch(actions.setNavigationControl(get(paths.navigationControl)));
+  }
+
+  if (has(paths.geoCoderControl)) {
+    dispatch(actions.setGeoCoderControl(get(paths.geoCoderControl)));
+  }
+
+  if (has(paths.getGeoLocateControl)) {
+    dispatch(actions.setGeoLocateControl(get(paths.getGeoLocateControl)));
   }
 
   if (has(paths.weighLinesBy)) {

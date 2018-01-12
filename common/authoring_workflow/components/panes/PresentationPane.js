@@ -427,6 +427,52 @@ export class PresentationPane extends Component {
     );
   }
 
+  renderCheckboxControl = (name, checked, onChange) => {
+    const id = `${name}_control`;
+    const inputAttributes = {
+      checked,
+      id,
+      type: 'checkbox',
+      onChange
+    };
+
+    return (
+      <div className="checkbox">
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor={id}>
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {I18n.t(`shared.visualizations.panes.presentation.fields.${name}_control.title`)}
+        </label>
+      </div>
+    );
+  }
+
+  renderMapControlOptions = () => {
+    const {
+      vifAuthoring,
+      onChangeNavigationControl,
+      onChangeGeoLocateControl,
+      onChangeGeoCoderControl
+    } = this.props;
+    const isNavigationControlChecked = selectors.getNavigationControl(vifAuthoring);
+    const isGeoLocateControlChecked = selectors.getGeoLocateControl(vifAuthoring);
+    const isGeoCoderControlChecked = selectors.getGeoCoderControl(vifAuthoring);
+
+    if (selectors.isNewGLMap(vifAuthoring)) {
+      return (
+        <div className="map-control-options">
+          {this.renderCheckboxControl('navigation', isNavigationControlChecked, onChangeNavigationControl)}
+          {this.renderCheckboxControl('geo_locate', isGeoLocateControlChecked, onChangeGeoLocateControl)}
+          {this.renderCheckboxControl('geo_coder', isGeoCoderControlChecked, onChangeGeoCoderControl)}
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   renderTitleField = () => {
     const { vifAuthoring, onChangeTitle } = this.props;
     const title = selectors.getTitle(vifAuthoring);
@@ -457,6 +503,7 @@ export class PresentationPane extends Component {
         {this.renderTitleField()}
         {this.renderDescriptionField()}
         {this.renderShowSourceDataLink()}
+        {this.renderMapControlOptions()}
       </AccordionPane>
     );
   }
@@ -1408,6 +1455,21 @@ function mapDispatchToProps(dispatch) {
     onChangeShowSourceDataLink: (event) => {
       const viewSourceDataLink = event.target.checked;
       dispatch(actions.setViewSourceDataLink(viewSourceDataLink));
+    },
+
+    onChangeNavigationControl: (event) => {
+      const navigationControl = event.target.checked;
+      dispatch(actions.setNavigationControl(navigationControl));
+    },
+
+    onChangeGeoCoderControl: (event) => {
+      const geoCoderControl = event.target.checked;
+      dispatch(actions.setGeoCoderControl(geoCoderControl));
+    },
+
+    onChangeGeoLocateControl: (event) => {
+      const geoLocateControl = event.target.checked;
+      dispatch(actions.setGeoLocateControl(geoLocateControl));
     }
   };
 }

@@ -96,6 +96,7 @@ var webpackConfig = {
       `${platformUiRoot}/node_modules/react-input-range/dist`,
       `${platformUiRoot}/node_modules/react-datepicker/dist`,
       `${platformUiRoot}/common/authoring_workflow`,
+      `${platformUiRoot}/common/karma_config/node_modules`,
       `${platformUiRoot}/common/karma_config/node_modules/@socrata/mapbox-gl/dist`,
       `${platformUiRoot}/common`,
       platformUiRoot

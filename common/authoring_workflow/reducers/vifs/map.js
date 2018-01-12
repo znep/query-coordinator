@@ -178,6 +178,18 @@ export default function map(state, action) {
       }
       break;
 
+    case actions.SET_NAVIGATION_CONTROL:
+      _.set(state, 'configuration.navigationControl', action.navigationControl);
+      break;
+
+    case actions.SET_GEO_CODER_CONTROL:
+      _.set(state, 'configuration.geoCoderControl', action.geoCoderControl);
+      break;
+
+    case actions.SET_GEO_LOCATE_CONTROL:
+      _.set(state, 'configuration.geoLocateControl', action.geoLocateControl);
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_FILTERS:
     case actions.SET_TITLE:

@@ -1032,3 +1032,27 @@ export function setPointAggregation(pointAggregation) {
     pointAggregation
   };
 }
+
+export const SET_NAVIGATION_CONTROL = 'SET_NAVIGATION_CONTROL';
+export function setNavigationControl(navigationControl) {
+  return {
+    type: SET_NAVIGATION_CONTROL,
+    navigationControl
+  };
+}
+
+export const SET_GEO_CODER_CONTROL = 'SET_GEO_CODER_CONTROL';
+export function setGeoCoderControl(geoCoderControl) {
+  return {
+    type: SET_GEO_CODER_CONTROL,
+    geoCoderControl
+  };
+}
+
+export const SET_GEO_LOCATE_CONTROL = 'SET_GEO_LOCATE_CONTROL';
+export function setGeoLocateControl(geoLocateControl) {
+  return {
+    type: SET_GEO_LOCATE_CONTROL,
+    geoLocateControl
+  };
+}

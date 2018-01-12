@@ -135,6 +135,7 @@
     "leaflet": "0.7.7",
     "lodash": "4.14.2",
     "@socrata/mapbox-gl": "0.0.2",
+    "@mapbox/mapbox-gl-geocoder": "2.1.1",
     "mixpanel-browser": "2.11.0",
     "modularscale-sass": "2.1.1",
     "moment-timezone": "0.5.13",

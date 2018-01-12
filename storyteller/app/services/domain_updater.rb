@@ -28,6 +28,7 @@ class DomainUpdater
         socrata.visualization.table
         socrata.visualization.timelineChart
         socrata.visualization.featureMap
+        socrata.visualization.map
       )
     }
 

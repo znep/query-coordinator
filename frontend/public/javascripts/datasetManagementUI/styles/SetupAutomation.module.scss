@@ -6,6 +6,21 @@
   margin: 0 0.4em;
 }
 
+.appendUpdateExplanation {
+  composes: small from global;
+  text-align: left;
+}
+
+.appendOrReplaceSelection {
+  text-align: center;
+}
+
+.error {
+  composes: alert from global;
+  composes: error from global;
+  margin-bottom: 1em;
+}
+
 .setupAutomation {
   :global {
     .modal-container {

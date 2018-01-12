@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
@@ -19,7 +19,7 @@ function nameForConfig(source) {
   return uuid();
 }
 
-export function createImportConfig(source, outputSchemaId) {
+export function createImportConfig(source, outputSchemaId, appendOrReplace) {
   return (dispatch) => {
     const callId = uuid();
     const importConfigId = nameForConfig(source);
@@ -32,17 +32,19 @@ export function createImportConfig(source, outputSchemaId) {
       method: 'POST',
       body: JSON.stringify({
         name: importConfigId,
-        data_action: 'replace'
+        data_action: appendOrReplace
       })
-    }).
-      then(checkStatus).
-      then(getJson).
-      then(({ resource }) => {
-        dispatch(apiCallSucceeded(callId));
-        return resource;
-      }).
-      catch((err) => {
-        dispatch(apiCallFailed(callId, err));
-      });
+    })
+    .then(checkStatus)
+    .then(getJson)
+    .catch(getError)
+    .then(({ resource }) => {
+      dispatch(apiCallSucceeded(callId));
+      return resource;
+    })
+    .catch((err) => {
+      dispatch(apiCallFailed(callId, err));
+      throw err;
+    });
   };
 }

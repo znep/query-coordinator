@@ -25,7 +25,7 @@ const ReadyToImport = props => {
     errorRows,
     outputSchema,
     openModal,
-    createConfigAndOpenModal
+    openAutomationModal
   } = props;
 
   if (!outputSchema) {
@@ -52,7 +52,7 @@ const ReadyToImport = props => {
     window.serverConfig.featureFlags.socrata_py_automate_button) {
     automateButton = (<button
       className={styles.automationBtn}
-      onClick={() => createConfigAndOpenModal()}>
+      onClick={openAutomationModal}>
       Automate This
     </button>);
   }
@@ -86,7 +86,7 @@ ReadyToImport.propTypes = {
   importableRows: PropTypes.number,
   inputSchema: PropTypes.object,
   openModal: PropTypes.func,
-  createConfigAndOpenModal: PropTypes.func.isRequired
+  openAutomationModal: PropTypes.func
 };
 
 export default ReadyToImport;

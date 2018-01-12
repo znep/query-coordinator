@@ -2381,6 +2381,10 @@ en:
       containing_this_code: "Create a file (eg: my-update-script.py) containing this code:"
       use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
       activity_log: See a log of your updates here
+      choose_update_replace: Choose whether you want the script to update or replace
+      update: Update
+      replace: Replace
+      append_vs_update: When you have a row identifier set, and a row in the incoming data has the same identifier, the row in your dataset will be replaced with the new one. When you do not have a row identifier set, all incoming rows will be appended to your dataset.
     parse_options:
       title: File Configuration Options
       header_count: Header Count

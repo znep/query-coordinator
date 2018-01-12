@@ -56,9 +56,26 @@ class Body extends Component {
   }
 
   renderItemAffectedCell(data) {
+    let path;
+
+    const datasetTypes = ['calendar', 'data_lens', 'map', 'blob', 'visualization', 'href', 'chart',
+      'draft', 'dataset'];
+
+    if (datasetTypes.includes(data.asset_type) && data.dataset_uid) {
+      path = `/dataset/${data.dataset_uid}`;
+    } else if (data.asset_type === 'user' && data.target_user_id_1) {
+      path = `/profile/${data.target_user_id_1}`;
+    } else if (data.asset_type === 'story' && data.dataset_uid) {
+      path = `/stories/s/${data.dataset_uid}`;
+    }
+
+    let link = _.isNull(path) ?
+      data.affected_item :
+      <LocalizedLink className="unstyled-link" path={path}>{data.affected_item}</LocalizedLink>;
+
     return (
       <td scope="row" className="item-affected">
-        {data.affected_item}
+        {link}
       </td>
     );
   }

@@ -9,9 +9,8 @@ export class VisibilityCell extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'getTranslation', 'isOpen', 'isPrivate', 'isPrivateAndSharedToCurrentUser', 'isHidden',
-      'isHiddenAndRejected', 'isHiddenAndAwaitingApproval', 'renderVisibilityTitle',
-      'renderVisibilityDescription');
+    _.bindAll(this, 'getTranslation', 'isOpen', 'isPrivate', 'isSharedToCurrentUser', 'isHidden',
+      'isRejected', 'isPending');
   }
 
   getTranslation(key) {
@@ -26,107 +25,97 @@ export class VisibilityCell extends Component {
     return !this.props.isPublic;
   }
 
-  isPrivateAndSharedToCurrentUser() {
+  isSharedToCurrentUser() {
     const currentUserId = _.get(window.socrata, 'currentUser.id');
 
-    if (!this.isPrivate() || !currentUserId) {
-      return false;
-    }
-
-    const grantsUserIds = _.reduce(this.props.grants, (result, grant) => {
-      result.push(grant.user_id);
-      return result;
-    }, []);
-
-    return grantsUserIds.indexOf(currentUserId) !== -1;
+    return !!_.find(this.props.grants, (grant) => grant.user_id === currentUserId);
   }
 
   isHidden() {
-    const {
-      isExplicitlyHidden,
-      isModerationApproved,
-      isPublished,
-      isRoutingApproved
-    } = this.props;
+    const { isExplicitlyHidden, isModerationApproved, isPublished, isRoutingApproved } = this.props;
 
-    return (
-      isExplicitlyHidden || !isModerationApproved || !isPublished || !isRoutingApproved
-    );
+    return isExplicitlyHidden || !isModerationApproved || !isPublished || !isRoutingApproved;
   }
 
   // "Rejected" from either R&A or View Moderation
-  isHiddenAndRejected() {
+  isRejected() {
     const { moderationStatus, routingStatus } = this.props;
 
-    return (
-      moderationStatus === 'rejected' || routingStatus === 'rejected'
-    );
+    return moderationStatus === 'rejected' || routingStatus === 'rejected';
   }
 
   // "Awaiting approval" from either R&A or View Moderation
-  isHiddenAndAwaitingApproval() {
+  isPending() {
     const { moderationStatus, routingStatus } = this.props;
 
-    return (
-      moderationStatus === 'pending' || routingStatus === 'pending'
-    );
+    return moderationStatus === 'pending' || (routingStatus === 'pending' && moderationStatus !== 'rejected');
   }
 
   // Note that order here is important.
   // - Hidden takes priority, because changing any other values has no effect
   // - Privacy takes next priority, because approving it has no effect
   // - then comes the various approvals
-  renderVisibilityTitle() {
-    let visibilityCellText;
-    let visibilityIconName;
+  render() {
+    let visibilityCellText = this.getTranslation('pending');
+    let visibilityIconName = 'private';
+    let descriptionText;
+
+    if (this.isOpen()) {
+      visibilityIconName = 'public-open';
+      visibilityCellText = this.getTranslation('public');
+    }
+
+    if (this.isPrivate()) {
+      visibilityIconName = 'private';
+      visibilityCellText = this.getTranslation('private');
+    }
+
+    if (this.isHidden() && !this.isPrivate() && !this.isOpen()) {
+      visibilityIconName = 'eye-blocked';
+      visibilityCellText = this.getTranslation('private');  // See EN-17295
+    }
+
+    if (this.isRejected()) {
+      visibilityIconName = 'eye-blocked';
+      visibilityCellText = this.getTranslation('hidden');
+      descriptionText = this.getTranslation('rejected');
+    }
 
     if (this.props.isExplicitlyHidden) {
       visibilityIconName = 'eye-blocked';
       visibilityCellText = this.getTranslation('hidden');
-    } else if (this.isOpen()) {
-      visibilityIconName = 'public-open';
-      visibilityCellText = this.getTranslation('public');
-    } else if (this.isPrivate()) {
-      visibilityIconName = 'private';
-      visibilityCellText = this.getTranslation('private');
-    } else if (this.isHidden()) {
+      descriptionText = this.getTranslation('hidden_from_catalog');
+    }
+
+    if (this.isSharedToCurrentUser()) {
+      descriptionText = this.getTranslation('shared_to_me');
+    }
+
+    if (this.isPending()) {
       visibilityIconName = 'eye-blocked';
-      // visibilityCellText = this.getTranslation('hidden'); // Temporary change due to EN-17295
-      visibilityCellText = this.getTranslation('pending');
+      visibilityCellText = this.getTranslation('private');
+      descriptionText = this.getTranslation('awaiting_approval');
     }
 
-    return (
-      <span className="title">
-        <SocrataIcon name={visibilityIconName} />
-        <strong>{visibilityCellText}</strong>
-      </span>
-    );
-  }
+    const renderDescription = (descriptionText) => {
+      if (_.isEmpty(descriptionText)) {
+        return;
+      }
 
-  // Note that order here is important. If multiple cases apply, "private" takes priority over "pending",
-  // and hidden "rejected" takes priority over hidden "awaiting approval", and "hidden" takes priority
-  // over "pending" and "rejected" because even if it makes it through R&A/VM, it's still hidden
-  renderVisibilityDescription() {
-    let descriptionText;
+      return (
+        <div className="visibility-description">
+          ({descriptionText})
+        </div>
+      );
+    };
 
-    if (this.props.isExplicitlyHidden) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.hidden_from_catalog');
-    } else if (this.isPrivateAndSharedToCurrentUser()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.shared_to_me');
-    } else if (this.isHiddenAndRejected()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.rejected');
-    } else if (this.isHiddenAndAwaitingApproval()) {
-      descriptionText = I18n.t('shared.asset_browser.result_list_table.visibility_values.awaiting_approval');
-    }
-
-    return <div className="visibility-description">{descriptionText}</div>;
-  }
-
-  render() {
     return (
       <div className="visibility-cell">
-        {this.renderVisibilityTitle()}
-        {this.renderVisibilityDescription()}
+        <span className="title">
+          <SocrataIcon name={visibilityIconName} />
+          <strong>{visibilityCellText}</strong>
+        </span>
+        {renderDescription(descriptionText)}
       </div>
     );
   }

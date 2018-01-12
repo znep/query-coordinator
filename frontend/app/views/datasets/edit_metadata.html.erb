@@ -325,7 +325,49 @@
 
   <%- if CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) -%>
     <script type="text/javascript">
+
+      /**
+       * EN-20484 - Purge file data (in case you have accidentally uploaded sensitive file data)
+       */
       $(document).ready(function() {
+
+        /**
+         * This might seem silly. What seems more silly to me is the fact that doing a GET to
+         * /d/<four-four>/edit_metadata will actually somehow cause the Rails app to do a PUT
+         * to Core Server to overwrite whatever the view is in the database with whatever Rails
+         * has cached. This means that if you reload the metadata page after, say, updating the
+         * view via AJAX, Rails will overwrite whatever update you just made with whatever the
+         * view was BEFORE you made the update. Did I mention that this happens when you do a
+         * GET request?
+         *
+         * It all comes down to whether or not Rails can find a view in the params[:view] variable.
+         * I have no idea where this gets set (grepping didn't turn anything up) and a GET sure as
+         * shit isn't passing an entire view as a JSON object or anything. Great jumping george!
+         */
+        function redirectToEditMetadataCacheBustingUrl() {
+          var domain = window.location.host;
+          var fourByFour = window.blist.viewId;
+
+          window.location.href = 'https://' + domain + '/d/' + fourByFour + '/edit_metadata?_purgeFileData=' + Date.now();
+        }
+
+        function showUnsafeDeleteError() {
+
+          confirm($.t('screens.edit_metadata.unsafe_delete_error'));
+          redirectToEditMetadataCacheBustingUrl();
+        }
+
+        function actuallyPurgeFile(domain, fourByFour, fileId) {
+          var url = 'https://' + domain + '/api/views/' + fourByFour + '/files/' + fileId;
+
+          $.ajax({
+            type: 'DELETE',
+            url: url,
+            success: redirectToEditMetadataCacheBustingUrl,
+            error: showUnsafeDeleteError
+          });
+        }
+
         $('.unsafe-delete').on('click', function(e) {
 
           e.preventDefault();
@@ -333,22 +375,75 @@
           if (confirm($.t('screens.edit_metadata.unsafe_delete_disclaimer'))) {
             var domain = window.location.host;
             var fourByFour = window.blist.viewId;
+            var filePurgedFromUnpublishedView = false;
+            var filePurgedFromPublishedView = false;
             var blobId = $(e.target).attr('data-blob-id') || '';
-            var url = 'https://' + domain + '/api/views/' + fourByFour + '/files/' + blobId;
 
+            /**
+             * STEP ONE - Get all the views in the publication group. This is easier
+             *            than asking for the unpublished and published views independently
+             *            of each other, since it is one fewer network request but is still
+             *            guaranteed to return both the unpublished and published views
+             *            (as well as a number of snapshots between 0 and MAX_INT--note that
+             *            we never _allow_ more than 20-ish shapshots to be created though,
+             *            a number based on account tier, and that number is usually quite
+             *            a bit lower in any case).
+             */
             $.ajax({
-              type: 'DELETE',
-              url: url,
-              success: function() {
-                window.location.reload();
-              },
-              error: function() {
-                if (confirm($.t('screens.edit_metadata.unsafe_delete_error'))) {
-                  window.location.reload();
-                } else {
-                  window.location.reload();
+              type: 'GET',
+              url: 'https://' + domain + '/api/views/' + fourByFour + '?method=getPublicationGroup',
+              success: function(response) {
+
+                function conditionallyPurgeFileFromView(view) {
+                  var cleanAttachments = _.get(view, 'metadata.attachments', []).
+                    filter(function(attachment) {
+                      return attachment.assetId !== blobId;
+                    });
+
+                  if (!view.hasOwnProperty('metadata')) {
+                    view.metadata = {};
+                  }
+
+                  view.metadata.attachments = cleanAttachments;
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: 'https://' + domain + '/api/views/' + view.id,
+                    contentType: 'application/json',
+                    data: JSON.stringify(view),
+                    success: function() {
+
+                      if (_.get(view, 'publicationStage', 'unpublished') === 'unpublished') {
+                        filePurgedFromUnpublishedView =  true;
+                      } else {
+                        filePurgedFromPublishedView = true;
+                      }
+
+                      /**
+                       * STEP THREE - If we have expunged the file reference from both the
+                       *              unpublished and the published versions of the view,
+                       *              then delete the file through the file data API.
+                       */
+                      if (filePurgedFromUnpublishedView && filePurgedFromPublishedView) {
+                        actuallyPurgeFile(domain, fourByFour, blobId);
+                      }
+                    },
+                    error: showUnsafeDeleteError
+                  });
                 }
-              }
+
+                /**
+                 * STEP TWO - Expunge the specified file from both the unpublished and published
+                 *            versions of the view (independently, since we need to do a PUT to
+                 *            each view's /api/views endpoint to update the metadata blob).
+                 */
+                var unpublishedView = _.find(response, {publicationStage: 'unpublished'});
+                var publishedView = _.find(response, {publicationStage: 'published'});
+
+                conditionallyPurgeFileFromView(unpublishedView);
+                conditionallyPurgeFileFromView(publishedView);
+              },
+              error: showUnsafeDeleteError
             });
           }
         });

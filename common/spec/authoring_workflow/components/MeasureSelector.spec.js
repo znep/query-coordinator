@@ -33,6 +33,25 @@ var validVifAuthoring = {
   }
 };
 
+var validVifAuthoringErrorBars = {
+  vifs: {
+    columnChart: {
+      series: [{
+        dataSource: {
+          measure: {
+            columnName: 'columnName'
+          }
+        },
+        seriesIndex: 0,
+        errorBars: {
+          lowerBoundColumnName: 'columnName',
+          upperBoundColumnName: 'columnName'
+        }
+      }]
+    }
+  }
+};
+
 var validVifAuthoringMultiSeries = {
   vifs: {
     columnChart: {
@@ -107,6 +126,61 @@ describe('MeasureSelector', () => {
 
         it('renders measure aggregation selection', () => {
           assert.isNotNull(component.querySelector('#measure-aggregation-selection-0'));
+        });
+      });
+
+      describe('when there are error bars', () => {
+        beforeEach(() => {
+          component = renderComponent(MeasureSelector, defaultProps({
+            metadata: validMetadata,
+            vifAuthoring: validVifAuthoringErrorBars,
+            series: validVifAuthoringErrorBars.vifs.columnChart.series,
+            shouldRenderAddMeasureLink: true
+          }));
+        });
+
+        it('renders a disabled selector', () => {
+          const element = component.querySelector('#measure-add-measure-link');
+          assert.isNotNull(element); // verify it exists
+          assert.isTrue(element.classList.contains('disabled')); // verify it has the 'disabled' class
+        });
+      });
+
+      describe('when there are error bars and it is a flyout series', () => {
+        beforeEach(() => {
+          component = renderComponent(MeasureSelector, defaultProps({
+            metadata: validMetadata,
+            vifAuthoring: validVifAuthoringErrorBars,
+            series: validVifAuthoringErrorBars.vifs.columnChart.series,
+            shouldRenderAddMeasureLink: true,
+            isFlyoutSeries: true
+          }));
+        });
+
+        it('does not render a disabled selector', () => {
+          const element = component.querySelector('#measure-add-measure-link');
+          assert.isNotNull(element); // verify it exists
+          assert.isFalse(element.classList.contains('disabled')); // verify it does not have the 'disabled' class
+        });
+      });
+
+      describe('when there are no error bars', () => {
+        beforeEach(() => {
+          component = renderComponent(MeasureSelector, defaultProps({
+            metadata: validMetadata,
+            vifAuthoring: validVifAuthoring,
+            series: validVifAuthoring.vifs.columnChart.series,
+            shouldRenderAddMeasureLink: true
+          }));
+        });
+
+        it('does not render a disabled selector', () => {
+          assert.isNotNull(component.querySelector('#measure-add-measure-link'));
+          assert.isNull(component.querySelector('#measure-add-measure-link.disabled'));
+
+          const element = component.querySelector('#measure-add-measure-link');
+          assert.isNotNull(element); // verify it exists
+          assert.isFalse(element.classList.contains('disabled')); // verify it has the 'disabled' class
         });
       });
 

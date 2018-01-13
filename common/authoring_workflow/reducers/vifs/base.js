@@ -46,23 +46,19 @@ export default function(state, action) {
       break;
 
     case actions.SET_ERROR_BARS_LOWER_BOUND_COLUMN_NAME:
-      forEachSeries(state, series => {
-        setStringValueOrDeleteProperty(series, 'errorBars.lowerBoundColumnName', action.columnName);
+      setStringValueOrDeleteProperty(state, 'series[0].errorBars.lowerBoundColumnName', action.columnName);
 
-        if ((action.columnName === null) && (_.get(series, 'errorBars.upperBoundColumnName') === undefined)) {
-          _.unset(series, 'errorBars');
-        }
-      });
+      if (_.isNil(action.columnName) && _.isNil(_.get(state, 'series[0].errorBars.upperBoundColumnName'))) {
+        _.unset(state, 'series[0].errorBars');
+      }
       break;
 
     case actions.SET_ERROR_BARS_UPPER_BOUND_COLUMN_NAME:
-      forEachSeries(state, series => {
-        setStringValueOrDeleteProperty(series, 'errorBars.upperBoundColumnName', action.columnName);
+      setStringValueOrDeleteProperty(state, 'series[0].errorBars.upperBoundColumnName', action.columnName);
 
-        if ((action.columnName === null) && (_.get(series, 'errorBars.lowerBoundColumnName') === undefined)) {
-          _.unset(series, 'errorBars');
-        }
-      });
+      if (_.isNil(action.columnName) && _.isNil(_.get(state, 'series[0].errorBars.lowerBoundColumnName'))) {
+        _.unset(state, 'series[0].errorBars');
+      }
       break;
 
     case actions.SET_FILTERS:

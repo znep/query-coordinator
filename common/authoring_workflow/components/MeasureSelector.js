@@ -295,7 +295,7 @@ export class MeasureSelector extends Component {
 
     const isDisabled = isSeriesPending ||
       !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) ||
-      hasErrorBars(vifAuthoring);
+      (hasErrorBars(vifAuthoring) && !isFlyoutSeries);
 
     const addMeasureLinkAttributes = {
       id: 'measure-add-measure-link',

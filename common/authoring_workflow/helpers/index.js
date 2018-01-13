@@ -233,6 +233,7 @@ export const addSeries = (state, { isFlyoutSeries, isInitialLoad, measureColumnN
 
   // Unset any properties we don't want cloned
   //
+  _.unset(clonedSeries, 'errorBars');
   _.unset(clonedSeries, 'unit');
 
   // Add the series

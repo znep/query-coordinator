@@ -130,6 +130,10 @@ $result_list_row_bg_hover_color: $primary-light;
           .label {
             font-weight: 600;
           }
+
+          .json-pretty {
+            white-space: pre-wrap;
+          }
         }
       }
 

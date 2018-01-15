@@ -12,6 +12,7 @@ class InitiatedByFilter extends PureComponent {
     const { changeInitiatedBySearch, value, mobile } = this.props;
 
     const searchBoxProps = {
+      id: 'initiated-by-search-box',
       searchValue: value,
       searchCallback: changeInitiatedBySearch,
       placeholder: I18nJS.t('screens.admin.activity_feed.any_user'),

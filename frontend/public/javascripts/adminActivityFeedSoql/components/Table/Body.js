@@ -34,13 +34,21 @@ class Body extends Component {
   }
 
   renderInitiatedByCell(data) {
-    const profilePath = `/profile/${data.acting_user_id}`;
+    let profileLink;
 
-    return (
-      <td scope="row" className="initiated-by">
+    if (!_.isUndefined(data.acting_user_id)) {
+      const profilePath = `/profile/${data.acting_user_id}`;
+
+      profileLink = (
         <LocalizedLink className="unstyled-link" path={profilePath}>
           {data.acting_user_name}
         </LocalizedLink>
+      );
+    }
+
+    return (
+      <td scope="row" className="initiated-by">
+        {profileLink}
       </td>
     );
   }

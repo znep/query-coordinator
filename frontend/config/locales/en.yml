@@ -3817,6 +3817,7 @@ en:
           clear: Clear
           data_range:
             label: Date
+            tooltip: Select a date
           desktop:
             expand: Expand Filters
             contract: Contract Filters

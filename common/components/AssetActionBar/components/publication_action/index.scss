@@ -5,12 +5,28 @@
 
   .dropdown-container {
     margin-left: 9px;
+
+    // Overriding styles in Picklist/index.scss to make this class do nothing special.
+    .picklist-option-selected {
+      background-color: inherit;
+      color: inherit;
+
+      &:hover {
+        background-color: $alternate-3-light;
+      }
+    }
   }
 }
 
 #asset-action-bar-modal-target {
+  .modal-header {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
   .modal-content {
     font-size: 15px;
+    min-height: 100px;
   }
 
   .modal-footer-actions {

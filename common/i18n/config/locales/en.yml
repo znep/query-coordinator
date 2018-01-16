@@ -280,7 +280,9 @@ en:
         publication_action:
           change_audience: Change Audience
           delete_dataset: Delete this Dataset
+          delete_dataset_confirm: Are you sure you want to delete this dataset?
           discard_draft: Delete this Draft
+          discard_draft_confirm: Are you sure you want to delete this draft?
           draft:
             primary_action_text: Publish
           pending:
@@ -290,6 +292,8 @@ en:
             primary_action_text: Edit
           revert_published: Revert to last published version
           view_published: View published version
+          withdraw_approval_request: Withdraw Approval Request
+          withdraw_approval_request_confirm: Are you sure you want to withdraw this approval request?
         publication_state:
           draft: Draft
           pending: Pending

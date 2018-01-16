@@ -11,6 +11,9 @@ import Button from 'common/components/Button';
 import 'whatwg-fetch';
 import { defaultHeaders, fetchJson } from 'common/http';
 
+import ReactDOM from 'react-dom';
+import Modal, { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
+
 const fetchOptions = {
   credentials: 'same-origin',
   headers: defaultHeaders
@@ -20,6 +23,40 @@ const deleteViewByUid = (uid) => {
   const url = `/api/views/${uid}.json`;
 
   return fetch(url, _.assign({}, fetchOptions, { method: 'DELETE' }));
+};
+
+const makePrivateByUid = (uid) => {
+  const url = `/api/views/${uid}.json?method=setPermission&value=private`;
+
+  return fetch(url, _.assign({}, fetchOptions, { method: 'PUT' }));
+};
+
+const confirmation = (message) => {
+  return new Promise((resolve, reject) => {
+    const targetNode = document.querySelector('#asset-action-bar-modal-target');
+    const onDismiss = () => {
+      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
+      resolve(false);
+    };
+
+    const onAgree = () => {
+      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
+      resolve(true);
+    };
+
+    ReactDOM.render(
+      <Modal onDismiss={onDismiss}>
+        <ModalContent>
+          <p>{message}</p>
+        </ModalContent>
+        <ModalFooter>
+          <button onClick={onDismiss} className="btn btn-default">Cancel</button>
+          <button onClick={onAgree} className="btn btn-primary">OK</button>
+        </ModalFooter>
+      </Modal>,
+      targetNode
+    );
+  });
 };
 
 class PublicationAction extends React.Component {
@@ -44,7 +81,8 @@ class PublicationAction extends React.Component {
       // We're not including Revert for now as per ChristianH.
       revert: false, // publicationState === 'draft' && publishedViewUid,
       view: publishedViewUid,
-      changeAudience: allowedTo.manage && publicationState === 'published'
+      changeAudience: allowedTo.manage && publicationState === 'published',
+      withdrawApprovalRequest: allowedTo.edit && publicationState === 'pending'
     };
   }
 
@@ -68,12 +106,37 @@ class PublicationAction extends React.Component {
         console.log('change-audience option selected');
         break;
       case 'delete-dataset':
-        deleteViewByUid(currentViewUid).
-          then(() => { window.location.assign('/profile'); });
+        confirmation(I18n.t('delete_dataset_confirm', { scope: this.i18n_scope })).
+          then((confirmed) => {
+            if (confirmed) {
+              deleteViewByUid(currentViewUid).
+                then(() => { window.location.assign('/profile'); });
+            }
+          });
         break;
       case 'discard-draft':
-        deleteViewByUid(currentViewUid).
-          then(() => { window.location.assign(`/d/${publishedViewUid}`); });
+        confirmation(I18n.t('discard_draft_confirm', { scope: this.i18n_scope })).
+          then((confirmed) => {
+            if (confirmed) {
+              deleteViewByUid(currentViewUid).
+                then(() => {
+                  if (publishedViewUid) {
+                    window.location.assign(`/d/${publishedViewUid}`);
+                  } else {
+                    window.location.assign('/profile');
+                  }
+                });
+            }
+          });
+        break;
+      case 'withdraw-approval-request':
+        confirmation(I18n.t('withdraw_approval_request_confirm', { scope: this.i18n_scope })).
+          then((confirmed) => {
+            if (confirmed) {
+              makePrivateByUid(currentViewUid).
+                then(() => { window.location.reload(); });
+            }
+          });
         break;
     }
   }
@@ -114,6 +177,13 @@ class PublicationAction extends React.Component {
       actions.push({
         title: I18n.t('change_audience', { scope: this.i18n_scope }),
         value: 'change-audience'
+      });
+    }
+
+    if (currentlyAbleTo.withdrawApprovalRequest) {
+      actions.push({
+        title: I18n.t('withdraw_approval_request', { scope: this.i18n_scope }),
+        value: 'withdraw-approval-request'
       });
     }
 

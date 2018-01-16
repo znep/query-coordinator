@@ -13,6 +13,8 @@ import {
 
 import EmptyPane from './EmptyPane';
 import DebouncedSlider from '../shared/DebouncedSlider';
+import DebouncedInput from '../shared/DebouncedInput';
+
 import * as selectors from '../../selectors/vifAuthoring';
 import * as actions from '../../actions';
 
@@ -46,11 +48,11 @@ export class BasemapPane extends Component {
       { disabled }
     );
     const baseMapOpacityAttributes = {
-      disabled,
       delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      disabled,
       id: 'base-map-opacity',
-      rangeMin: 0,
       rangeMax: 1,
+      rangeMin: 0,
       step: 0.1,
       value: defaultBaseMapOpacity,
       onChange: onChangeBaseMapOpacity
@@ -105,10 +107,10 @@ export class BasemapPane extends Component {
 
   renderMapControls = () => {
     const {
-      vifAuthoring,
       onChangeGeoCoderControl,
       onChangeGeoLocateControl,
-      onChangeNavigationControl
+      onChangeNavigationControl,
+      vifAuthoring
     } = this.props;
     const isGeoCoderControlChecked = selectors.getGeoCoderControl(vifAuthoring);
     const isGeoLocateControlChecked = selectors.getGeoLocateControl(vifAuthoring);
@@ -125,8 +127,73 @@ export class BasemapPane extends Component {
     );
   }
 
+  renderBoundaryField = (id, onChange, value) => {
+    const labelAttributes = {
+      className: 'block-label',
+      htmlFor: id
+    };
+
+    const inputAttributes = {
+      className: 'text-input',
+      id,
+      type: 'number',
+      value,
+      onChange
+    };
+
+    return (
+      <div className="authoring-field">
+        <label {...labelAttributes}>
+          {I18n.t(`fields.${id}.title`, { scope: this.scope })}
+        </label>
+        <DebouncedInput {...inputAttributes} />
+      </div>
+    );
+  }
+
+  renderSearchBoundaryFields = () => {
+    const {
+      onChangeSearchBoundaryUpperLeftLatitude,
+      onChangeSearchBoundaryUpperLeftLongitude,
+      onChangeSearchBoundaryLowerRightLatitude,
+      onChangeSearchBoundaryLowerRightLongitude,
+      vifAuthoring
+    } = this.props;
+    const searchBoundaryUpperLeftLatitude = selectors.getSearchBoundaryUpperLeftLatitude(vifAuthoring);
+    const searchBoundaryUpperLeftLongitude = selectors.getSearchBoundaryUpperLeftLongitude(vifAuthoring);
+    const searchBoundaryLowerRightLatitude = selectors.getSearchBoundaryLowerRightLatitude(vifAuthoring);
+    const searchBoundaryLowerRightLongitude = selectors.getSearchBoundaryLowerRightLongitude(vifAuthoring);
+
+    return (
+      <AccordionPane
+        title={I18n.t('subheaders.search_boundary', { scope: this.scope })}
+        key="searchBoundaryFields">
+        {this.renderBoundaryField(
+          'upper_left_latitude',
+          onChangeSearchBoundaryUpperLeftLatitude,
+          searchBoundaryUpperLeftLatitude
+        )}
+        {this.renderBoundaryField(
+          'upper_left_longitude',
+          onChangeSearchBoundaryUpperLeftLongitude,
+          searchBoundaryUpperLeftLongitude
+        )}
+        {this.renderBoundaryField(
+          'lower_right_latitude',
+          onChangeSearchBoundaryLowerRightLatitude,
+          searchBoundaryLowerRightLatitude
+        )}
+        {this.renderBoundaryField(
+          'lower_right_longitude',
+          onChangeSearchBoundaryLowerRightLongitude,
+          searchBoundaryLowerRightLongitude
+        )}
+      </AccordionPane>
+    );
+  }
+
   renderBasemapControls = () => {
-    return [this.renderBasemapStyleSelector(), this.renderMapControls()];
+    return [this.renderBasemapStyleSelector(), this.renderMapControls(), this.renderSearchBoundaryFields()];
   }
 
   render() {
@@ -181,6 +248,26 @@ function mapDispatchToProps(dispatch) {
     onChangeNavigationControl: (event) => {
       const navigationControl = event.target.checked;
       dispatch(actions.setNavigationControl(navigationControl));
+    },
+
+    onChangeSearchBoundaryUpperLeftLatitude: (event) => {
+      const upperLeftLatitude = event.target.value;
+      dispatch(actions.setSearchBoundaryUpperLeftLatitude(upperLeftLatitude));
+    },
+
+    onChangeSearchBoundaryUpperLeftLongitude: (event) => {
+      const upperLeftLongitude = event.target.value;
+      dispatch(actions.setSearchBoundaryUpperLeftLongitude(upperLeftLongitude));
+    },
+
+    onChangeSearchBoundaryLowerRightLatitude: (event) => {
+      const lowerRightLatitude = event.target.value;
+      dispatch(actions.setSearchBoundaryLowerRightLatitude(lowerRightLatitude));
+    },
+
+    onChangeSearchBoundaryLowerRightLongitude: (event) => {
+      const lowerRightLongitude = event.target.value;
+      dispatch(actions.setSearchBoundaryLowerRightLongitude(lowerRightLongitude));
     }
   };
 }

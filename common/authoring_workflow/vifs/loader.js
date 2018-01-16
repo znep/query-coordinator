@@ -68,6 +68,10 @@ const paths = {
   secondaryColor: 'series[{0}].color.secondary',
   secondaryMeasureAxisMaxValue: 'configuration.secondaryMeasureAxisMaxValue',
   secondaryMeasureAxisMinValue: 'configuration.secondaryMeasureAxisMinValue',
+  searchBoundaryLowerRightLatitude: 'series[0].mapOptions.searchBoundaryLowerRightLatitude',
+  searchBoundaryLowerRightLongitude: 'series[0].mapOptions.searchBoundaryLowerRightLongitude',
+  searchBoundaryUpperLeftLatitude: 'series[0].mapOptions.searchBoundaryUpperLeftLatitude',
+  searchBoundaryUpperLeftLongitude: 'series[0].mapOptions.searchBoundaryUpperLeftLongitude',
   series: 'series',
   seriesType: 'series[{0}].type',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
@@ -476,8 +480,24 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setGeoCoderControl(get(paths.geoCoderControl)));
   }
 
-  if (has(paths.getGeoLocateControl)) {
-    dispatch(actions.setGeoLocateControl(get(paths.getGeoLocateControl)));
+  if (has(paths.geoLocateControl)) {
+    dispatch(actions.setGeoLocateControl(get(paths.geoLocateControl)));
+  }
+
+  if (has(paths.searchBoundaryLowerRightLatitude)) {
+    dispatch(actions.setSearchBoundaryLowerRightLatitude(get(paths.searchBoundaryLowerRightLatitude)));
+  }
+
+  if (has(paths.searchBoundaryLowerRightLongitude)) {
+    dispatch(actions.setSearchBoundaryLowerRightLongitude(get(paths.searchBoundaryLowerRightLongitude)));
+  }
+
+  if (has(paths.searchBoundaryUpperLeftLatitude)) {
+    dispatch(actions.setSearchBoundaryUpperLeftLatitude(get(paths.searchBoundaryUpperLeftLatitude)));
+  }
+
+  if (has(paths.searchBoundaryUpperLeftLongitude)) {
+    dispatch(actions.setSearchBoundaryUpperLeftLongitude(get(paths.searchBoundaryUpperLeftLongitude)));
   }
 
   if (has(paths.weighLinesBy)) {

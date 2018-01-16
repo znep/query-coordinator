@@ -1060,11 +1060,22 @@ en:
               title: Show Search Bar
             geo_locate_control:
               title: Show Locate Button
+            lower_right_latitude:
+              title: Lower Right Latitude
+            lower_right_longitude:
+              title: Lower Right Longitude
             navigation_control:
               title: Show Navigation Buttons
+            search_boundary:
+              description: Shift, click and drag on the map area to select a new search boundary.
+            upper_left_latitude:
+              title: Upper Left Latitude
+            upper_left_longitude:
+              title: Upper Left Longitude
           subheaders:
             base_map: Basemap
             map_controls: Map Controls
+            search_boundary: Search Boundary
           title: Basemap
         presentation:
           custom_color_palette_error: The custom color palette failed to load.

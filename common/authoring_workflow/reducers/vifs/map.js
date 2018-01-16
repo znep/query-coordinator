@@ -31,7 +31,7 @@ export default function map(state, action) {
       break;
 
     case actions.SET_POINT_OPACITY:
-      var opacity = parseFloat(action.pointOpacity);
+      const opacity = parseFloat(action.pointOpacity);
       _.set(state, 'configuration.pointOpacity', _.isFinite(opacity) ? opacity : null);
       break;
 
@@ -71,7 +71,7 @@ export default function map(state, action) {
       break;
 
     case actions.SET_NUMBER_OF_DATA_CLASSES:
-      var numberOfDataClasses = parseInt(action.numberOfDataClasses);
+      const numberOfDataClasses = parseInt(action.numberOfDataClasses);
       _.set(state, 'series[0].mapOptions.numberOfDataClasses', _.isFinite(numberOfDataClasses) ? _.clamp(numberOfDataClasses, 2, 7) : null);
       break;
 
@@ -192,6 +192,26 @@ export default function map(state, action) {
 
     case actions.SET_GEO_LOCATE_CONTROL:
       _.set(state, 'configuration.geoLocateControl', action.geoLocateControl);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE:
+      const upperLeftLatitude = parseFloat(action.searchBoundaryUpperLeftLatitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', upperLeftLatitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE:
+      const upperLeftLongitude = parseFloat(action.searchBoundaryUpperLeftLongitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', upperLeftLongitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE:
+      const lowerRightLatitude = parseFloat(action.searchBoundaryLowerRightLatitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', lowerRightLatitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE:
+      const lowerRightLongitude = parseFloat(action.searchBoundaryLowerRightLongitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', lowerRightLongitude);
       break;
 
     case actions.RECEIVE_METADATA:

@@ -183,6 +183,10 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setNavigationControl', false, 'configuration.navigationControl', ['map']);
       shouldSetVif('setGeoCoderControl', true, 'configuration.geoCoderControl', ['map']);
       shouldSetVif('setGeoLocateControl', true, 'configuration.geoLocateControl', ['map']);
+      shouldSetVif('setSearchBoundaryUpperLeftLatitude', 64.22826766646368, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', ['map']);
+      shouldSetVif('setSearchBoundaryUpperLeftLongitude', -138.61595153808594, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', ['map']);
+      shouldSetVif('setSearchBoundaryLowerRightLatitude', 53.81794822741499, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', ['map']);
+      shouldSetVif('setSearchBoundaryLowerRightLongitude', -128.93642272949219, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', ['map']);
 
 
       describe('when settings the x-axis scaling mode', () => {

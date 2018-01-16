@@ -1072,3 +1072,35 @@ export function setGeoLocateControl(geoLocateControl) {
     geoLocateControl
   };
 }
+
+export const SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE = 'SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE';
+export function setSearchBoundaryUpperLeftLatitude(searchBoundaryUpperLeftLatitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE,
+    searchBoundaryUpperLeftLatitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE = 'SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE';
+export function setSearchBoundaryUpperLeftLongitude(searchBoundaryUpperLeftLongitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE,
+    searchBoundaryUpperLeftLongitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE = 'SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE';
+export function setSearchBoundaryLowerRightLatitude(searchBoundaryLowerRightLatitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE,
+    searchBoundaryLowerRightLatitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE = 'SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE';
+export function setSearchBoundaryLowerRightLongitude(searchBoundaryLowerRightLongitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE,
+    searchBoundaryLowerRightLongitude
+  };
+}

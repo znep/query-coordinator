@@ -243,6 +243,26 @@ export const getGeoLocateControl = createSelector(
   (vif) => _.get(vif, 'configuration.geoLocateControl', true)
 );
 
+export const getSearchBoundaryUpperLeftLatitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', '')
+);
+
+export const getSearchBoundaryUpperLeftLongitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', '')
+);
+
+export const getSearchBoundaryLowerRightLatitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', '')
+);
+
+export const getSearchBoundaryLowerRightLongitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', '')
+);
+
 export const getColorScale = createSelector(
   getCurrentVif,
   (vif) => {

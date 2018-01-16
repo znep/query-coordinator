@@ -24,7 +24,11 @@ function render(type) {
     onSelectBaseMapStyle: sinon.spy(),
     onChangeGeoCoderControl: sinon.spy(),
     onChangeGeoLocateControl: sinon.spy(),
-    onChangeNavigationControl: sinon.spy()
+    onChangeNavigationControl: sinon.spy(),
+    onChangeSearchBoundaryUpperLeftLatitude: sinon.spy(),
+    onChangeSearchBoundaryUpperLeftLongitude: sinon.spy(),
+    onChangeSearchBoundaryLowerRightLatitude: sinon.spy(),
+    onChangeSearchBoundaryLowerRightLongitude: sinon.spy()
   });
 
   return {
@@ -86,6 +90,22 @@ describe('BasemapPane', () => {
       it('renders a show navigation control checkbox', () => {
         expect(component.querySelector('#navigation_control[type="checkbox"]')).to.exist;
       });
+
+      it('renders a search boundary upper left latitude input', () => {
+        expect(component.querySelector('#upper_left_latitude')).to.exist;
+      });
+
+      it('renders a search boundary upper left longitude input', () => {
+        expect(component.querySelector('#upper_left_longitude')).to.exist;
+      });
+
+      it('renders a search boundary lower right latitude input', () => {
+        expect(component.querySelector('#lower_right_latitude')).to.exist;
+      });
+
+      it('renders a search boundary lower right longitude input', () => {
+        expect(component.querySelector('#lower_right_longitude')).to.exist;
+      });
     });
 
     describe('events', () => {
@@ -118,6 +138,22 @@ describe('BasemapPane', () => {
           TestUtils.Simulate.change(checkbox);
           sinon.assert.calledOnce(props.onChangeNavigationControl);
         });
+      });
+
+      describe('when changing the search boundary upper left latitude input', () => {
+        emitsEvent('#upper_left_latitude', 'onChangeSearchBoundaryUpperLeftLatitude');
+      });
+
+      describe('when changing the search boundary upper left longitude input', () => {
+        emitsEvent('#upper_left_longitude', 'onChangeSearchBoundaryUpperLeftLongitude');
+      });
+
+      describe('when changing the search boundary lower right latitude input', () => {
+        emitsEvent('#lower_right_latitude', 'onChangeSearchBoundaryLowerRightLatitude');
+      });
+
+      describe('when changing the search boundary lower right longitude input', () => {
+        emitsEvent('#lower_right_longitude', 'onChangeSearchBoundaryLowerRightLongitude');
       });
     });
   });

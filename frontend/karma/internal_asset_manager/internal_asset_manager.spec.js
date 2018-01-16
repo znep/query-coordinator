@@ -7,6 +7,7 @@ import sinon from 'sinon';
 
 import InternalAssetManager from 'internal_asset_manager/components/internal_asset_manager';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
+import { FeatureFlags } from 'common/feature_flags';
 
 import { useTestTranslations } from 'common/i18n';
 import sharedTranslations from 'common/i18n/config/locales/en.yml';
@@ -19,16 +20,25 @@ const internalAssetManagerProps = (options = {}) => ({
   ...options
 });
 
+const mockFeatureFlags = {
+  disable_authority_badge: false,
+  stories_enabled: true,
+  usaid_features_enabled: false
+};
+
 describe('<InternalAssetManager />', () => {
   const currentUser = _.cloneDeep(window.socrata.currentUser);
   let ceteraStub;
 
   beforeEach(() => {
     useTestTranslations(sharedTranslations.en);
+    window.serverConfig = { approvalSettings: { official: 'automatic', community: 'manual' } };
+    FeatureFlags.useTestFixture(mockFeatureFlags);
     ceteraStub = sinon.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
   });
 
   afterEach(() => {
+    delete window.serverConfig;
     ceteraStub.restore();
   });
 

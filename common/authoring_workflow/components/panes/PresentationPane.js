@@ -9,7 +9,6 @@ import { getMeasureTitle } from '../../helpers';
 
 import {
   BASE_LAYERS,
-  BASE_MAP_STYLES,
   COLOR_SCALES,
   COLOR_PALETTES,
   COLOR_PALETTE_VALUES,
@@ -428,52 +427,6 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderCheckboxControl = (name, checked, onChange) => {
-    const id = `${name}_control`;
-    const inputAttributes = {
-      checked,
-      id,
-      type: 'checkbox',
-      onChange
-    };
-
-    return (
-      <div className="checkbox">
-        <input {...inputAttributes} />
-        <label className="inline-label" htmlFor={id}>
-          <span className="fake-checkbox">
-            <span className="icon-checkmark3"></span>
-          </span>
-          {I18n.t(`shared.visualizations.panes.presentation.fields.${name}_control.title`)}
-        </label>
-      </div>
-    );
-  }
-
-  renderMapControlOptions = () => {
-    const {
-      vifAuthoring,
-      onChangeNavigationControl,
-      onChangeGeoLocateControl,
-      onChangeGeoCoderControl
-    } = this.props;
-    const isNavigationControlChecked = selectors.getNavigationControl(vifAuthoring);
-    const isGeoLocateControlChecked = selectors.getGeoLocateControl(vifAuthoring);
-    const isGeoCoderControlChecked = selectors.getGeoCoderControl(vifAuthoring);
-
-    if (selectors.isNewGLMap(vifAuthoring)) {
-      return (
-        <div className="map-control-options">
-          {this.renderCheckboxControl('navigation', isNavigationControlChecked, onChangeNavigationControl)}
-          {this.renderCheckboxControl('geo_locate', isGeoLocateControlChecked, onChangeGeoLocateControl)}
-          {this.renderCheckboxControl('geo_coder', isGeoCoderControlChecked, onChangeGeoCoderControl)}
-        </div>
-      );
-    }
-
-    return null;
-  }
-
   renderTitleField = () => {
     const { vifAuthoring, onChangeTitle } = this.props;
     const title = selectors.getTitle(vifAuthoring);
@@ -504,7 +457,6 @@ export class PresentationPane extends Component {
         {this.renderTitleField()}
         {this.renderDescriptionField()}
         {this.renderShowSourceDataLink()}
-        {this.renderMapControlOptions()}
       </AccordionPane>
     );
   }
@@ -1000,7 +952,7 @@ export class PresentationPane extends Component {
     const selectedPointAggregation = selectors.getPointAggregation(vifAuthoring);
 
     if (selectedPointAggregation === 'heat_map') {
-      return [this.renderNewMapLayerControls()];
+      return [this.renderEmptyPane()];
     } else {
       const isRegionMap = selectedPointAggregation === 'region_map';
       const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
@@ -1015,13 +967,12 @@ export class PresentationPane extends Component {
       );
 
       if (isRegionMap) {
-        return [colorControls, this.renderNewMapLayerControls()];
+        return [colorControls];
       }
 
       return [
         colorControls,
         this.renderPointMapSizeControls(),
-        this.renderNewMapLayerControls(),
         this.renderClusterControls()
       ];
     }
@@ -1040,8 +991,7 @@ export class PresentationPane extends Component {
 
     return [
       colorControls,
-      this.renderLineMapWeightControls(),
-      this.renderNewMapLayerControls()
+      this.renderLineMapWeightControls()
     ];
   }
 
@@ -1068,10 +1018,7 @@ export class PresentationPane extends Component {
       </AccordionPane>
     );
 
-    return [
-      colorControls,
-      this.renderNewMapLayerControls()
-    ];
+    return [colorControls];
   }
 
   renderNewMapControls = () => {
@@ -1231,61 +1178,6 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderNewMapLayerControls = () => {
-    const {
-      vifAuthoring,
-      baseLayers,
-      baseMapStyles,
-      onSelectBaseMapStyle,
-      onChangeBaseMapOpacity
-    } = this.props;
-    const defaultBaseMapStyle = selectors.getBaseMapStyle(vifAuthoring);
-    const defaultBaseMapOpacity = selectors.getBaseMapOpacity(vifAuthoring);
-    const baseMapStyleAttributes = {
-      id: 'base-map-style',
-      options: baseMapStyles,
-      value: defaultBaseMapStyle,
-      onSelection: onSelectBaseMapStyle
-    };
-    const disabled = _.findIndex(baseLayers, ['value', defaultBaseMapStyle]) === -1;
-    const baseMapOpacityFieldClasses = classNames(
-      'authoring-field base-map-opacity-container',
-      { disabled }
-    );
-    const baseMapOpacityAttributes = {
-      disabled,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
-      id: 'base-map-opacity',
-      rangeMin: 0,
-      rangeMax: 1,
-      step: 0.1,
-      value: defaultBaseMapOpacity,
-      onChange: onChangeBaseMapOpacity
-    };
-
-    return (
-      <AccordionPane
-        key="mapLayerControls"
-        title={I18n.t('shared.visualizations.panes.presentation.subheaders.base_map')}>
-        <div className="authoring-field">
-          <label className="block-label" htmlFor="base-map-style">
-            {I18n.t('shared.visualizations.panes.presentation.fields.base_map_style.title')}
-          </label>
-          <div className="base-map-style-dropdown-container">
-            <Dropdown {...baseMapStyleAttributes} />
-          </div>
-        </div>
-
-        <div className={baseMapOpacityFieldClasses}>
-          <label className="block-label" htmlFor="base-map-opacity">
-            {I18n.t('shared.visualizations.panes.presentation.fields.base_map_opacity.title')}
-          </label>
-          <DebouncedSlider {...baseMapOpacityAttributes} />
-        </div>
-      </AccordionPane>
-    );
-  }
-
   renderPieChartControls = () => {
     return [
       this.renderColorPalette(),
@@ -1365,7 +1257,6 @@ export class PresentationPane extends Component {
 
 PresentationPane.defaultProps = {
   baseLayers: BASE_LAYERS,
-  baseMapStyles: BASE_MAP_STYLES,
   colorScales: COLOR_SCALES,
   colorPalettes: COLOR_PALETTES
 };
@@ -1389,14 +1280,6 @@ function mapDispatchToProps(dispatch) {
 
     onChangeBaseLayerOpacity: (baseLayerOpacity) => {
       dispatch(actions.setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
-    },
-
-    onSelectBaseMapStyle: (baseMapStyle) => {
-      dispatch(actions.setBaseMapStyle(baseMapStyle.value));
-    },
-
-    onChangeBaseMapOpacity: (baseMapOpacity) => {
-      dispatch(actions.setBaseMapOpacity(_.round(baseMapOpacity, 2)));
     },
 
     onChangePointOpacity: (pointOpacity) => {
@@ -1520,21 +1403,6 @@ function mapDispatchToProps(dispatch) {
     onChangeShowSourceDataLink: (event) => {
       const viewSourceDataLink = event.target.checked;
       dispatch(actions.setViewSourceDataLink(viewSourceDataLink));
-    },
-
-    onChangeNavigationControl: (event) => {
-      const navigationControl = event.target.checked;
-      dispatch(actions.setNavigationControl(navigationControl));
-    },
-
-    onChangeGeoCoderControl: (event) => {
-      const geoCoderControl = event.target.checked;
-      dispatch(actions.setGeoCoderControl(geoCoderControl));
-    },
-
-    onChangeGeoLocateControl: (event) => {
-      const geoLocateControl = event.target.checked;
-      dispatch(actions.setGeoLocateControl(geoLocateControl));
     }
   };
 }

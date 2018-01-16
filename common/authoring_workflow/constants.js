@@ -200,14 +200,14 @@ export const VECTOR_BASE_MAP_STYLES = {
   }
 };
 
-export const BASE_MAP_STYLES = [
+export const BASE_MAP_STYLES = BASE_LAYERS.concat([
   VECTOR_BASE_MAP_STYLES.basic,
   VECTOR_BASE_MAP_STYLES.streets,
   VECTOR_BASE_MAP_STYLES.bright,
   VECTOR_BASE_MAP_STYLES.light,
   VECTOR_BASE_MAP_STYLES.dark,
   VECTOR_BASE_MAP_STYLES.satellite
-].concat(BASE_LAYERS);
+]);
 
 export const COLOR_SCALES = [
   {

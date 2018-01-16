@@ -1050,6 +1050,22 @@ en:
               title: Flyout Details
           title: Legends and Flyouts
         nothing_here: There's nothing to configure in this pane yet!
+        basemap:
+          fields:
+            base_map_style:
+              title: Type
+            base_map_opacity:
+              title: Opacity
+            geo_coder_control:
+              title: Show Search Bar
+            geo_locate_control:
+              title: Show Locate Button
+            navigation_control:
+              title: Show Navigation Buttons
+          subheaders:
+            base_map: Basemap
+            map_controls: Map Controls
+          title: Basemap
         presentation:
           custom_color_palette_error: The custom color palette failed to load.
           fields:
@@ -1060,10 +1076,6 @@ en:
             base_layer:
               title: Type
             base_layer_opacity:
-              title: Opacity
-            base_map_style:
-              title: Type
-            base_map_opacity:
               title: Opacity
             bottom_axis_title:
               title: Bottom Axis Title
@@ -1079,10 +1091,6 @@ en:
               title: Number of Data Classes
             description:
               title: Description
-            geo_coder_control:
-              title: Search by address
-            geo_locate_control:
-              title: Find me on map
             left_axis_title:
               title: Left Axis Title
             line_color:
@@ -1093,8 +1101,6 @@ en:
               maximum: Max
             max_cluster_size:
               title: Max Cluster Size
-            navigation_control:
-              title: Show navigation control
             point_color:
               title: Point Color
             point_opacity:

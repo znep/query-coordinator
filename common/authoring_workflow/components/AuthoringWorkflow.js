@@ -14,7 +14,8 @@ import {
   isTimelineChart,
   isInsertableVisualization,
   hasMadeChangesToVifs,
-  isUserCurrentlyActive
+  isUserCurrentlyActive,
+  isNewGLMap
 } from '../selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
@@ -24,6 +25,7 @@ import TableView from './TableView';
 import DataPane from './panes/DataPane';
 import PresentationPane from './panes/PresentationPane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
+import BasemapPane from './panes/BasemapPane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import VisualizationTypeSelector from './VisualizationTypeSelector';
 import FilterBar from './FilterBar';
@@ -131,11 +133,13 @@ export class AuthoringWorkflow extends Component {
   }
 
   render() {
-    const { metadata, vifAuthoring, backButtonText } = this.props;
+    const { metadata, vifAuthoring, backButtonText, tabs } = this.props;
     const isNotInsertable = !isInsertableVisualization(vifAuthoring) || isUserCurrentlyActive(vifAuthoring);
     const modalFooterActionsClassNames = classNames({
       'with-back-button': _.isString(backButtonText)
     });
+    const tabToRemove = isNewGLMap(vifAuthoring) ? 'authoring-axis-and-scale' : 'authoring-basemap';
+    const tabsToRender = _.reject(tabs, (tab) => { return tab.id === tabToRemove; });
 
     return (
       <Modal className="authoring-modal" fullScreen onDismiss={this.onCancel} ref={(ref) => this.modal = ref}>
@@ -145,8 +149,8 @@ export class AuthoringWorkflow extends Component {
 
           <div className="authoring-controls">
             <div className="authoring-editor">
-              <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-              <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+              <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={tabsToRender} />
+              <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={tabsToRender} />
             </div>
             <div className="authoring-preview-container">
               <VisualizationTypeSelector />
@@ -212,6 +216,12 @@ AuthoringWorkflow.defaultProps = {
       title: I18n.t('shared.visualizations.panes.axis_and_scale.title'),
       paneComponent: AxisAndScalePane,
       icon: 'axis-scale'
+    },
+    {
+      id: 'authoring-basemap',
+      title: I18n.t('shared.visualizations.panes.basemap.title'),
+      paneComponent: BasemapPane,
+      icon: 'region'
     },
     {
       id: 'authoring-colors-and-style',

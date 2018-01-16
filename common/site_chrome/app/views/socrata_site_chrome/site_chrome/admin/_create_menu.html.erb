@@ -10,7 +10,11 @@
     <span class="socrata-icon-arrow-down"></span>
   </h1>
   <ul role="menu" aria-hidden="true">
-    <%- if current_user_can_see_create_datasets? -%>
+    <%- if current_user_can_see_create_datasets_dsmp? -%>
+      <li role="menuitem">
+        <%= link_to(t('shared.site_chrome.header.create_menu.dataset'), site_chrome_massage_url('/datasets/new?beta=true')) %>
+      </li>
+    <%- elsif current_user_can_see_create_datasets? -%>
       <li role="menuitem">
         <%= link_to(t('shared.site_chrome.header.create_menu.dataset'), site_chrome_massage_url('/datasets/new')) %>
       </li>

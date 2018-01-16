@@ -151,6 +151,14 @@ module SocrataSiteChrome
       site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?
     end
 
+    def current_user_can_see_create_datasets_dsmp?
+      return false unless site_chrome_current_user
+      return false if get_feature_flag('usaid_features_enabled')
+
+      get_feature_flag('dsmp_level') == "release" &&
+      (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?)
+    end
+
     def current_user_can_see_create_datasets_beta?
       return false unless site_chrome_current_user
 

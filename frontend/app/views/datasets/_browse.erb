@@ -143,13 +143,23 @@
                   <div class="create-resource-panel jq-dropdown-panel">
 
                     <div class="create-resource-buttons">
-                      <%- if !FeatureFlags.derive(nil, request).usaid_features_enabled -%>
+                      <%- if !FeatureFlags.derive(nil, request).usaid_features_enabled &&
+                        FeatureFlags.derive(nil, request).dsmp_level == "release" -%>
+                          <a id="create-tabular-beta"
+                              class="button createTabular secondary-button next"
+                              href="<%= new_dataset_path(beta: true) %>"
+                              title="<%= t('controls.browse.actions.create_dataset_beta_short') %>">
+                            <%= opts[:browse_in_container] ?
+                                  t('controls.browse.actions.create_dataset_shorter') :
+                                  t('controls.browse.actions.create_dataset_verb') %>
+                            <span class="icon"></span>
+                          </a>
+                      <%- elsif !FeatureFlags.derive(nil, request).usaid_features_enabled -%>
                         <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
                           <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
                           <span class="icon"></span>
                         </a>
                       <%- end -%>
-
 
                       <%- if current_user_can_create_story? -%>
                       <a id="create-story-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">

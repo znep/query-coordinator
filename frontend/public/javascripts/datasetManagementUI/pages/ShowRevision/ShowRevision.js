@@ -19,7 +19,7 @@ export class ShowRevision extends Component {
     this.setState({ recentActionsOpened: !this.state.recentActionsOpened });
   }
   render() {
-    const { params, readFromCore, isPublishedDataset, isParentRevision } = this.props;
+    const { params, readFromCore, isPublishedDataset, isParentRevision, hasOutputSchema } = this.props;
     return (
       <div className={`${styles.homeContainer} show-revision-container`}>
         <div className={`${styles.homeContent} show-revision-content`}>
@@ -33,13 +33,13 @@ export class ShowRevision extends Component {
             </button>
           )}
           <MetadataTable />
-          <div className={styles.schemaPreviewContainer}>
+          {hasOutputSchema && (<div className={styles.schemaPreviewContainer}>
             <SchemaPreview readFromCore={readFromCore} />
             {isParentRevision || <RowDetails
               fourfour={params.fourfour}
               revisionSeq={_.toNumber(params.revisionSeq)}
               isPublishedDataset={isPublishedDataset} />}
-          </div>
+          </div>)}
           {isPublishedDataset || isParentRevision || (
             <TablePreview params={params} />
           )}
@@ -53,7 +53,8 @@ ShowRevision.propTypes = {
   params: PropTypes.object.isRequired,
   isPublishedDataset: PropTypes.bool.isRequired,
   readFromCore: PropTypes.bool.isRequired,
-  isParentRevision: PropTypes.bool
+  isParentRevision: PropTypes.bool,
+  hasOutputSchema: PropTypes.bool
 };
 
 const mapStateToProps = ({ entities }, { params }) => {
@@ -70,7 +71,8 @@ const mapStateToProps = ({ entities }, { params }) => {
     params,
     isPublishedDataset,
     readFromCore: isPublishedDataset && revision.output_schema_id == null,
-    isParentRevision
+    isParentRevision,
+    hasOutputSchema: !_.isNil(revision.output_schema_id)
   };
 };
 

@@ -11,7 +11,8 @@ describe('ShowRevision page', () => {
       revisionSeq: '0'
     },
     isPublishedDataset: false,
-    readFromCore: false
+    readFromCore: false,
+    hasOutputSchema: true
   };
 
   const component = shallow(<ShowRevision {...defaultProps} />);

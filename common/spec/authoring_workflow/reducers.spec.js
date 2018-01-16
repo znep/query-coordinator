@@ -159,7 +159,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
 
       shouldSetVif('setMapType', 'pointMap', 'series[0].mapOptions.mapType', ['map']);
-      shouldSetVif('setPointMapPointSize', 1, 'series[0].mapOptions.pointMapPointSize', ['map']);
+      shouldSetVif('setPointMapPointSize', 4, 'series[0].mapOptions.pointMapPointSize', ['map']);
       shouldSetVif('setPointSizeByColumn', 'columnName', 'series[0].mapOptions.resizePointsBy', ['map']);
       shouldSetVif('setMinimumPointSize', 3, 'series[0].mapOptions.minimumPointSize', ['map']);
       shouldSetVif('setMaximumPointSize', 7, 'series[0].mapOptions.maximumPointSize', ['map']);
@@ -167,7 +167,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setMaxClusteringZoomLevel', 8, 'series[0].mapOptions.maxClusteringZoomLevel', ['map']);
       shouldSetVif('setPointThreshold', 4500, 'series[0].mapOptions.pointThreshold', ['map']);
       shouldSetVif('setClusterRadius', 50, 'series[0].mapOptions.clusterRadius', ['map']);
-      shouldSetVif('setMaxClusterSize', 20, 'series[0].mapOptions.maxClusterSize', ['map']);
+      shouldSetVif('setMaxClusterSize', 24, 'series[0].mapOptions.maxClusterSize', ['map']);
       shouldSetVif('setStackRadius', 20, 'series[0].mapOptions.stackRadius', ['map']);
       shouldSetVif('setPointColorByColumn', 'columnName', 'series[0].mapOptions.colorPointsBy', ['map']);
       shouldSetVif('setLineWeight', 5, 'series[0].mapOptions.lineWeight', ['map']);

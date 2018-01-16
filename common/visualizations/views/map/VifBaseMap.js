@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import mapboxgl from 'mapbox-gl';
-import { DEFAULT_BASE_MAP_STYLE } from '../mapConstants';
+
+import { getBaseMapStyle } from './baseMapStyle';
 
 const LAYER = {
   BASE_MAP_RASTER_LAYER: 'raster-base-map-tile'
@@ -64,10 +65,6 @@ export default class VifBaseMap {
       };
     }
   }
-}
-
-function getBaseMapStyle(vif) {
-  return _.get(vif, 'configuration.baseMapStyle', DEFAULT_BASE_MAP_STYLE);
 }
 
 function getStyleDef(vif) {

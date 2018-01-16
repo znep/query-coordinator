@@ -107,12 +107,14 @@
       pointMapVif.series[0].dataSource.dimension.columnName = 'point';
       pointMapVif.series[0].mapOptions = {
         'mapType': 'pointMap',
-        'resizePointsBy': "case_id",
-        'colorPointsBy': "status",
-        'minimumPointSize': 4,
-        'maximumPointSize': 9,
+        'clusterRadius': 80,
+        'stackRadius': 20,
+        'maxClusterSize': 40,
+        'maxClusteringZoomLevel': 11,
+        'pointMapPointSize': 10
       };
-      pointMapVif.configuration.opacity = '0.24';
+      pointMapVif.configuration.baseMapStyle = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+      pointMapVif.configuration.baseMapOpacity = '0.24';
 
       var polygonMapVif = _.cloneDeep(baseVif);
       polygonMapVif.series[0].dataSource.domain = 'dataspace.demo.socrata.com';

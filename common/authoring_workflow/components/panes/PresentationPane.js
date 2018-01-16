@@ -773,8 +773,8 @@ export class PresentationPane extends Component {
       const pointMapPointSize = selectors.getPointMapPointSize(vifAuthoring);
       const pointSizeAttributes = {
         id: 'point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: pointMapPointSize,
         onChange: onChangePointMapPointSize,
@@ -834,7 +834,7 @@ export class PresentationPane extends Component {
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
       'max_clustering_zoom_level',
       1,
-      23,
+      22,
       1,
       selectors.getMaxClusteringZoomLevel(vifAuthoring),
       onMaxClusteringZoomLevelChange,
@@ -852,7 +852,7 @@ export class PresentationPane extends Component {
     const clusterRadiusSlider = this.renderSliderControl(
       'cluster_radius',
       20,
-      80,
+      120,
       1,
       selectors.getClusterRadius(vifAuthoring),
       onClusterRadiusChange,
@@ -860,8 +860,8 @@ export class PresentationPane extends Component {
     );
     const maxClusterSizeSlider = this.renderSliderControl(
       'max_cluster_size',
-      1,
-      10,
+      24,
+      50,
       1,
       selectors.getMaxClusterSize(vifAuthoring),
       onMaxClusterSizeChange,
@@ -869,7 +869,7 @@ export class PresentationPane extends Component {
     );
     const stackRadiusSlider = this.renderSliderControl(
       'stack_radius',
-      1,
+      10,
       80,
       1,
       selectors.getStackRadius(vifAuthoring),
@@ -880,7 +880,9 @@ export class PresentationPane extends Component {
     return (
       <AccordionPane key="clusterControls" title={I18n.t('subheaders.clusters', { scope: this.scope })}>
         {maxClusteringZoomLevelSlider}
-        {pointThresholdSlider}
+        {/* Defering implementation to spiderifcation story. */}
+        {/* Hiding the form field for now. */}
+        {/* pointThresholdSlider */}
         {clusterRadiusSlider}
         {maxClusterSizeSlider}
         {stackRadiusSlider}

@@ -42,7 +42,7 @@ export default function map(state, action) {
 
     case actions.SET_POINT_MAP_POINT_SIZE:
       const pointSize = parseFloat(action.pointMapPointSize);
-      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 4, 40) : null);
       break;
 
     case actions.SET_LINE_WEIGHT:
@@ -87,17 +87,17 @@ export default function map(state, action) {
 
     case actions.SET_CLUSTER_RADIUS:
       const clusterRadius = parseInt(action.clusterRadius);
-      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 80) : null);
+      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 120) : null);
       break;
 
     case actions.SET_MAX_CLUSTER_SIZE:
       const maxClusterSize = parseInt(action.maxClusterSize);
-      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 20, 80) : null);
+      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 24, 50) : null);
       break;
 
     case actions.SET_STACK_RADIUS:
       const stackRadius = parseInt(action.stackRadius);
-      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 1, 80) : null);
+      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 10, 80) : null);
       break;
 
     case actions.SET_BASE_LAYER:

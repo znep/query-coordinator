@@ -63,6 +63,7 @@ describe('VifOverlay', () => {
         mockMap.getSource.returns(true);
 
         vifOverlay.destroy();
+
         sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
         sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');
       });
@@ -71,6 +72,7 @@ describe('VifOverlay', () => {
         mockMap.getSource.returns(false);
 
         vifOverlay.destroy();
+
         sinon.assert.neverCalledWith(mockMap.removeLayer, 'lineLayer');
         sinon.assert.neverCalledWith(mockMap.removeSource, 'lineVectorDataSource');
       });

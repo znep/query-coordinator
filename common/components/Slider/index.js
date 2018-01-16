@@ -31,7 +31,7 @@ export class Slider extends Component {
 
   render() {
     let displayableValue;
-    const { rangeMin, rangeMax, step, value } = this.props;
+    const { disabled, rangeMin, rangeMax, step, value } = this.props;
 
     if (_.isPlainObject(value)) {
       displayableValue = {
@@ -45,6 +45,7 @@ export class Slider extends Component {
     }
 
     const inputRangeProps = {
+      disabled,
       minValue: rangeMin,
       maxValue: rangeMax,
       step,
@@ -63,6 +64,10 @@ export class Slider extends Component {
 }
 
 Slider.propTypes = {
+  /**
+   * To disable the handle(s).
+   */
+  disabled: PropTypes.bool,
   /**
    * The minimum value selectable.
    */
@@ -103,6 +108,7 @@ Slider.propTypes = {
 };
 
 Slider.defaultProps = {
+  disabled: false,
   step: 5
 };
 

@@ -8,6 +8,8 @@ import { SERIES_TYPE_FLYOUT } from '../constants';
 const paths = {
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
+  baseMapStyle: 'configuration.baseMapStyle',
+  baseMapOpacity: 'configuration.baseMapOpacity',
   clusterRadius: 'series[0].mapOptions.clusterRadius',
   colorBoundariesBy: 'series[0].mapOptions.colorBoundariesBy',
   colorLinesBy: 'series[0].mapOptions.colorLinesBy',
@@ -500,6 +502,14 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.pointAggregation)) {
     dispatch(actions.setPointAggregation(get(paths.pointAggregation)));
+  }
+
+  if (has(paths.baseMapStyle)) {
+    dispatch(actions.setBaseMapStyle(get(paths.baseMapStyle)));
+  }
+
+  if (has(paths.baseMapOpacity)) {
+    dispatch(actions.setBaseMapOpacity(get(paths.baseMapOpacity)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

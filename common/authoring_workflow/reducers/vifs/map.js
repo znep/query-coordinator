@@ -120,11 +120,6 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.colorLinesBy', action.colorLinesBy);
       break;
 
-    case actions.SET_BASE_LAYER_OPACITY:
-      var baseLayerOpacity = parseFloat(action.baseLayerOpacity);
-      _.set(state, 'configuration.baseLayerOpacity', _.isFinite(baseLayerOpacity) ? baseLayerOpacity : null);
-      break;
-
     case actions.SET_ROW_INSPECTOR_TITLE_COLUMN_NAME:
       _.set(state, 'configuration.rowInspectorTitleColumnName', action.rowInspectorTitleColumnName);
       break;
@@ -176,6 +171,15 @@ export default function map(state, action) {
       if (!action.isFlyoutSeries && (action.relativeIndex == 0)) {
         return baseVifReducer(state, action);
       }
+      break;
+
+    case actions.SET_BASE_MAP_STYLE:
+      _.set(state, 'configuration.baseMapStyle', action.baseMapStyle);
+      break;
+
+    case actions.SET_BASE_MAP_OPACITY:
+      const baseMapOpacity = parseFloat(action.baseMapOpacity);
+      _.set(state, 'configuration.baseMapOpacity', _.isNaN(baseMapOpacity) ? 1 : _.clamp(baseMapOpacity, 0, 1));
       break;
 
     case actions.SET_NAVIGATION_CONTROL:

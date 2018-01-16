@@ -1033,6 +1033,22 @@ export function setPointAggregation(pointAggregation) {
   };
 }
 
+export const SET_BASE_MAP_STYLE = 'SET_BASE_MAP_STYLE';
+export function setBaseMapStyle(baseMapStyle) {
+  return {
+    type: SET_BASE_MAP_STYLE,
+    baseMapStyle
+  };
+}
+
+export const SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY';
+export function setBaseMapOpacity(baseMapOpacity) {
+  return {
+    type: SET_BASE_MAP_OPACITY,
+    baseMapOpacity
+  };
+}
+
 export const SET_NAVIGATION_CONTROL = 'SET_NAVIGATION_CONTROL';
 export function setNavigationControl(navigationControl) {
   return {

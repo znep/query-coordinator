@@ -38,42 +38,37 @@ describe('MapHelper', () => {
 
     beforeEach(() => {
       mockMap = {
-        isStyleLoaded: sinon.stub(),
-        on: sinon.stub()
+        loaded: sinon.stub(),
+        once: sinon.stub(),
+        style: ''
       };
     });
 
-    it('should call callback immediately if style already loaded', () => {
+    it('should call callback immediately if already loaded', () => {
       const callback = sinon.spy();
-      mockMap.isStyleLoaded.returns(true);
+      mockMap.loaded.returns(true);
 
       MapHelper.afterMapLoad(mockMap, callback);
 
       sinon.assert.called(callback);
     });
 
-    describe('style not already loaded', () => {
-      beforeEach(() => { mockMap.isStyleLoaded.returns(false); });
-
-      it('should defer calling callback', () => {
+    describe('not already loaded', () => {
+      it('should call callback once style initialized', () => {
+        mockMap.loaded.
+          onCall(0).returns(false).
+          onCall(1).returns(true);
         const callback = sinon.spy();
-        MapHelper.afterMapLoad(mockMap, callback);
-        sinon.assert.notCalled(callback);
-      });
 
-      it('should call callback once style loaded', () => {
-        const callback = sinon.spy();
-        mockMap.on.callsFake((event, mapEventCallback) => {
-          assert.equal(event, 'load');
+        mockMap.once.callsFake((event, mapEventCallback) => {
+          assert.equal(event, 'render');
           mapEventCallback();
         });
 
         MapHelper.afterMapLoad(mockMap, callback);
-
         sinon.assert.called(callback);
       });
     });
-
   });
-
 });
+

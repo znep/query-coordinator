@@ -46,7 +46,12 @@ export class DebouncedSlider extends React.Component {
 }
 
 DebouncedSlider.propTypes = {
+  disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired
+};
+
+DebouncedSlider.defaultProps = {
+  disabled: false
 };
 
 function mapStateToProps(state) {

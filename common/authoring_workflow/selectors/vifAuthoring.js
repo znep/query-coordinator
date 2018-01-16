@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import {
+  VECTOR_BASE_MAP_STYLES,
   COLOR_PALETTES,
   ERROR_BARS_DEFAULT_BAR_COLOR,
   SERIES_TYPE_FLYOUT
@@ -217,6 +218,16 @@ export const getPointAggregation = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.pointAggregation', 'none')
 );
 
+export const getBaseMapStyle = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.baseMapStyle', VECTOR_BASE_MAP_STYLES.basic.value)
+);
+
+export const getBaseMapOpacity = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.baseMapOpacity', 1)
+);
+
 export const getNavigationControl = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'configuration.navigationControl', true)
@@ -226,7 +237,6 @@ export const getGeoCoderControl = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'configuration.geoCoderControl', true)
 );
-
 
 export const getGeoLocateControl = createSelector(
   getCurrentVif,

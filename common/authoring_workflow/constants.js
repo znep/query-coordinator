@@ -173,6 +173,42 @@ export const BASE_LAYERS = [
   }
 ];
 
+export const VECTOR_BASE_MAP_STYLES = {
+  basic: {
+    title: I18n.t('shared.visualizations.base_map_styles.basic'),
+    value: 'mapbox://styles/mapbox/basic-v9'
+  },
+  streets: {
+    title: I18n.t('shared.visualizations.base_map_styles.streets'),
+    value: 'mapbox://styles/mapbox/streets-v9'
+  },
+  bright: {
+    title: I18n.t('shared.visualizations.base_map_styles.bright'),
+    value: 'mapbox://styles/mapbox/bright-v9'
+  },
+  light: {
+    title: I18n.t('shared.visualizations.base_map_styles.light'),
+    value: 'mapbox://styles/mapbox/light-v9'
+  },
+  dark: {
+    title: I18n.t('shared.visualizations.base_map_styles.dark'),
+    value: 'mapbox://styles/mapbox/dark-v9'
+  },
+  satellite: {
+    title: I18n.t('shared.visualizations.base_map_styles.satellite'),
+    value: 'mapbox://styles/mapbox/satellite-v9'
+  }
+};
+
+export const BASE_MAP_STYLES = [
+  VECTOR_BASE_MAP_STYLES.basic,
+  VECTOR_BASE_MAP_STYLES.streets,
+  VECTOR_BASE_MAP_STYLES.bright,
+  VECTOR_BASE_MAP_STYLES.light,
+  VECTOR_BASE_MAP_STYLES.dark,
+  VECTOR_BASE_MAP_STYLES.satellite
+].concat(BASE_LAYERS);
+
 export const COLOR_SCALES = [
   {
     title: I18n.t('shared.visualizations.color_scales.simple_blue'),

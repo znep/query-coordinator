@@ -4,14 +4,68 @@ import VifBaseMap from 'common/visualizations/views/map/VifBaseMap';
 import { mapMockVif } from './../../mapMockVif';
 
 describe('VifBaseMap', () => {
-
   describe('update', () => {
     let vifBaseMap;
     let mockMap;
 
     beforeEach(() => {
-      mockMap = { flyTo: sinon.spy() };
+      mockMap = {
+        flyTo: sinon.spy(),
+        setStyle: sinon.spy(),
+        setPaintProperty: sinon.spy()
+      };
       vifBaseMap = new VifBaseMap(mockMap);
+
+      const initialVif = mapMockVif({
+        configuration: {
+          'baseMapStyle': 'mapbox://styles/mapbox/light-v9'
+        }
+      });
+      vifBaseMap.initialize(initialVif);
+    });
+
+
+    it('should update style is configuration.baseMapStyle changed', () => {
+      const vif = mapMockVif({
+        configuration: {
+          'baseMapStyle': 'mapbox://styles/mapbox/dark-v9'
+        }
+      });
+
+      vifBaseMap.update(vif);
+      sinon.assert.calledWith(mockMap.setStyle, 'mapbox://styles/mapbox/dark-v9');
+    });
+
+
+    it('should not update style is configuration.baseMapStyle not changed', () => {
+      const vif = mapMockVif({
+        configuration: {
+          'baseMapStyle': 'mapbox://styles/mapbox/light-v9'
+        }
+      });
+
+      vifBaseMap.update(vif);
+      sinon.assert.neverCalledWith(mockMap.setStyle, 'mapbox://styles/mapbox/dark-v9');
+    });
+
+    describe('map opacity configured', () => {
+      it('should update options with configured map opacity', () => {
+        const vif = mapMockVif({
+          configuration: {
+            'baseMapOpacity': 0.5,
+            'baseMapStyle': 'dark-v9'
+          }
+        });
+        vifBaseMap._existingVif = mapMockVif({
+          configuration: {
+            'baseMapOpacity': 1,
+            'baseMapStyle': 'mapbox://styles/mapbox/light-v9'
+          }
+        });
+
+        vifBaseMap.update(vif);
+        sinon.assert.calledWith(mockMap.setPaintProperty, 'raster-base-map-tile', 'raster-opacity', 0.5);
+      });
     });
 
     describe('vif with center and zoom', () => {
@@ -51,28 +105,61 @@ describe('VifBaseMap', () => {
   });
 
   describe('getMapInitOptions', () => {
-    describe('map style configured', () => {
-      it('should return options with configured map style', () => {
-        const vif = mapMockVif({
-          configuration: {
-            'baseMapStyle': 'mapbox://styles/mapbox/dark-v9'
-          }
+    describe('options.style', () => {
+      describe('map style configured', () => {
+        it('should configured map style for mapbox vector tile', () => {
+          const vif = mapMockVif({
+            configuration: {
+              'baseMapStyle': 'mapbox://styles/mapbox/dark-v9'
+            }
+          });
+
+          const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
+
+          assert.equal(mapInitOptions.style, 'mapbox://styles/mapbox/dark-v9');
         });
 
-        const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
+        it('should style def for raster tiles', () => {
+          const vif = mapMockVif({
+            configuration: {
+              'baseMapStyle': 'dark-v9'
+            }
+          });
 
-        assert.equal(mapInitOptions.style, 'mapbox://styles/mapbox/dark-v9');
+          const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
+          assert.deepEqual(
+            mapInitOptions.style, {
+              'version': 8,
+              'glyphs': 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+              'sources': {
+                'raster-tiles': {
+                  'type': 'raster',
+                  'tiles': ['dark-v9'],
+                  'tileSize': 256
+                }
+              },
+              'layers': [{
+                'id': 'raster-base-map-tile',
+                'type': 'raster',
+                'source': 'raster-tiles',
+                'minzoom': 0,
+                'maxzoom': 22,
+                'paint': {
+                  'raster-opacity': 1
+                }
+              }]
+            }
+          );
+        });
       });
-    });
 
-    describe('map style not configured', () => {
-      it('should return options with default style ', () => {
+      it('should return default style if configuration.baseMapStyle not set', () => {
         const vif = mapMockVif();
         vif.configuration.baseMapStyle = undefined;
 
         const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
 
-        assert.equal(mapInitOptions.style, 'mapbox://styles/mapbox/light-v9');
+        assert.equal(mapInitOptions.style, 'mapbox://styles/mapbox/basic-v9');
       });
     });
 

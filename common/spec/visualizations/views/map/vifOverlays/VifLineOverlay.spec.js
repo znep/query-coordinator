@@ -8,9 +8,7 @@ describe('VifLineOverlay', () => {
   beforeEach(() => {
     mockMap = {
       addSource: sinon.spy(),
-      removeSource: sinon.spy(),
       addLayer: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy()
     };
     vifLineOverlay = new VifLineOverlay(mockMap);
@@ -21,28 +19,32 @@ describe('VifLineOverlay', () => {
       const vif = mapMockVif();
 
       vifLineOverlay.setup(vif);
-
-      expect(mockMap.addSource.callCount).to.equal(1);
-      expect(mockMap.addLayer.callCount).to.equal(1);
+      sinon.assert.calledWith(mockMap.addSource,
+        'lineVectorDataSource',
+        sinon.match({
+          geojsonTile: true,
+          type: 'vector'
+        })
+      );
+      sinon.assert.calledWith(mockMap.addLayer,
+        sinon.match({
+          id: 'lineLayer',
+          source: 'lineVectorDataSource'
+        }),
+      );
     });
   });
 
   describe('update', () => {
     it('should call the set paint property function', () => {
-      const vif = mapMockVif();
+      const vif = mapMockVif({
+        series: [{
+          color: { primary: 'red' }
+        }]
+      });
 
       vifLineOverlay.update(vif);
-
-      expect(mockMap.setPaintProperty.callCount).to.equal(1);
-    });
-  });
-
-  describe('destroy', () => {
-    it('should remove the map layer and source', () => {
-      vifLineOverlay.destroy();
-
-      expect(mockMap.removeLayer.callCount).to.equal(1);
-      expect(mockMap.removeSource.callCount).to.equal(1);
+      sinon.assert.calledWith(mockMap.setPaintProperty, 'lineLayer', 'line-color', 'red');
     });
   });
 

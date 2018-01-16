@@ -709,6 +709,13 @@ en:
         esri: Esri
         simple_blue: Simple Blue
         simple_grey: Simple Grey
+      base_map_styles:
+        basic: Basic
+        streets: Streets
+        bright: Bright
+        light: Light
+        dark: Dark
+        satellite: Satellite
       charts:
         bar_chart:
           error_exceeded_max_bar_count: For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.
@@ -1054,6 +1061,10 @@ en:
               title: Type
             base_layer_opacity:
               title: Opacity
+            base_map_style:
+              title: Type
+            base_map_opacity:
+              title: Opacity
             bottom_axis_title:
               title: Bottom Axis Title
             boundary_color:
@@ -1119,6 +1130,7 @@ en:
               title: Top Axis Title
           subheaders:
             axis_titles: Axis Titles
+            base_map: Base Map
             colors: Color
             clusters: Clusters
             data_labels: Data Labels

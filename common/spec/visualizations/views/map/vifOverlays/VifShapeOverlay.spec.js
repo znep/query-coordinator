@@ -8,9 +8,7 @@ describe('VifShapeOverlay', () => {
   beforeEach(() => {
     mockMap = {
       addSource: sinon.spy(),
-      removeSource: sinon.spy(),
       addLayer: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy()
     };
     vifShapeOverlay = new VifShapeOverlay(mockMap);
@@ -22,8 +20,19 @@ describe('VifShapeOverlay', () => {
 
       vifShapeOverlay.setup(vif);
 
-      sinon.assert.called(mockMap.addSource);
-      sinon.assert.called(mockMap.addLayer);
+      sinon.assert.calledWith(mockMap.addSource,
+        'polygonVectorDataSource',
+        sinon.match({
+          geojsonTile: true,
+          type: 'vector'
+        })
+      );
+      sinon.assert.calledWith(mockMap.addLayer,
+        sinon.match({
+          source: 'polygonVectorDataSource',
+          id: 'shape-line'
+        }),
+      );
     });
   });
 
@@ -38,17 +47,7 @@ describe('VifShapeOverlay', () => {
       });
 
       vifShapeOverlay.update(vif);
-
       sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-line', 'line-color', 'red');
-    });
-  });
-
-  describe('destroy', () => {
-    it('should remove the map layer and source', () => {
-      vifShapeOverlay.destroy();
-
-      expect(mockMap.removeLayer.callCount).to.equal(1);
-      expect(mockMap.removeSource.callCount).to.equal(1);
     });
   });
 

@@ -6,10 +6,14 @@ import utils from 'common/js_utils';
 
 const LINE_SOURCE_ID = 'lineVectorDataSource';
 const LAYERS = {
-  LINE: 'line-layer'
+  LINE: 'lineLayer'
 };
 
 export default class VifLineOverlay extends VifOverlay {
+  constructor(map) {
+    super(map, [LINE_SOURCE_ID], _.values(LAYERS));
+  }
+
   setup(vif) {
     this._map.addSource(LINE_SOURCE_ID, {
       'type': 'vector',
@@ -31,14 +35,6 @@ export default class VifLineOverlay extends VifOverlay {
 
   update(vif) {
     this._map.setPaintProperty(LAYERS.LINE, 'line-color', getLineColor(vif));
-  }
-
-  destroy() {
-    _.each(_.values(LAYERS), (layerId) => {
-      this._map.removeLayer(layerId);
-    });
-
-    this._map.removeSource(LINE_SOURCE_ID);
   }
 
   getDataUrl(vif) {

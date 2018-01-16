@@ -1,8 +1,12 @@
+import { VECTOR_BASE_MAP_STYLES } from '../../../common/authoring_workflow/constants';
+
 export const MAP_TYPES = Object.freeze({
   POINT_MAP: 'pointMap',
   LINE_MAP: 'lineMap',
   BOUNDARY_MAP: 'boundaryMap'
 });
+
+export const DEFAULT_BASE_MAP_STYLE = VECTOR_BASE_MAP_STYLES.basic.value;
 
 export const POINT_AGGREATIONS = Object.freeze({
   NONE: 'none',

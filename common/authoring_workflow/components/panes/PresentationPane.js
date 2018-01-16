@@ -9,6 +9,7 @@ import { getMeasureTitle } from '../../helpers';
 
 import {
   BASE_LAYERS,
+  BASE_MAP_STYLES,
   COLOR_SCALES,
   COLOR_PALETTES,
   COLOR_PALETTE_VALUES,
@@ -999,7 +1000,7 @@ export class PresentationPane extends Component {
     const selectedPointAggregation = selectors.getPointAggregation(vifAuthoring);
 
     if (selectedPointAggregation === 'heat_map') {
-      return [this.renderMapLayerControls()];
+      return [this.renderNewMapLayerControls()];
     } else {
       const isRegionMap = selectedPointAggregation === 'region_map';
       const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
@@ -1014,13 +1015,13 @@ export class PresentationPane extends Component {
       );
 
       if (isRegionMap) {
-        return [colorControls, this.renderMapLayerControls()];
+        return [colorControls, this.renderNewMapLayerControls()];
       }
 
       return [
         colorControls,
         this.renderPointMapSizeControls(),
-        this.renderMapLayerControls(),
+        this.renderNewMapLayerControls(),
         this.renderClusterControls()
       ];
     }
@@ -1040,7 +1041,7 @@ export class PresentationPane extends Component {
     return [
       colorControls,
       this.renderLineMapWeightControls(),
-      this.renderMapLayerControls()
+      this.renderNewMapLayerControls()
     ];
   }
 
@@ -1069,7 +1070,7 @@ export class PresentationPane extends Component {
 
     return [
       colorControls,
-      this.renderMapLayerControls()
+      this.renderNewMapLayerControls()
     ];
   }
 
@@ -1211,20 +1212,75 @@ export class PresentationPane extends Component {
     return (
       <AccordionPane key="mapLayerControls" title={I18n.t('subheaders.map', { scope: this.scope })}>
         <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="base-layer">{I18n.t('fields.base_layer.title', { scope: this.scope })}</label>
+          <label className="block-label" htmlFor="base-layer">
+            {I18n.t('fields.base_layer.title', { scope: this.scope })}>
+          </label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="base-layer-opacity">{I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}</label>
+          <label className="block-label" htmlFor="base-layer-opacity">
+            {I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}
+          </label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>
+        </div>
+      </AccordionPane>
+    );
+  }
+
+  renderNewMapLayerControls = () => {
+    const {
+      vifAuthoring,
+      baseLayers,
+      baseMapStyles,
+      onSelectBaseMapStyle,
+      onChangeBaseMapOpacity
+    } = this.props;
+    const defaultBaseMapStyle = selectors.getBaseMapStyle(vifAuthoring);
+    const defaultBaseMapOpacity = selectors.getBaseMapOpacity(vifAuthoring);
+    const baseMapStyleAttributes = {
+      id: 'base-map-style',
+      options: baseMapStyles,
+      value: defaultBaseMapStyle,
+      onSelection: onSelectBaseMapStyle
+    };
+    const disabled = _.findIndex(baseLayers, ['value', defaultBaseMapStyle]) === -1;
+    const baseMapOpacityFieldClasses = classNames(
+      'authoring-field base-map-opacity-container',
+      { disabled }
+    );
+    const baseMapOpacityAttributes = {
+      disabled,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      id: 'base-map-opacity',
+      rangeMin: 0,
+      rangeMax: 1,
+      step: 0.1,
+      value: defaultBaseMapOpacity,
+      onChange: onChangeBaseMapOpacity
+    };
+
+    return (
+      <AccordionPane
+        key="mapLayerControls"
+        title={I18n.t('shared.visualizations.panes.presentation.subheaders.base_map')}>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="base-map-style">
+            {I18n.t('shared.visualizations.panes.presentation.fields.base_map_style.title')}
+          </label>
+          <div className="base-map-style-dropdown-container">
+            <Dropdown {...baseMapStyleAttributes} />
+          </div>
+        </div>
+
+        <div className={baseMapOpacityFieldClasses}>
+          <label className="block-label" htmlFor="base-map-opacity">
+            {I18n.t('shared.visualizations.panes.presentation.fields.base_map_opacity.title')}
+          </label>
+          <DebouncedSlider {...baseMapOpacityAttributes} />
         </div>
       </AccordionPane>
     );
@@ -1309,6 +1365,7 @@ export class PresentationPane extends Component {
 
 PresentationPane.defaultProps = {
   baseLayers: BASE_LAYERS,
+  baseMapStyles: BASE_MAP_STYLES,
   colorScales: COLOR_SCALES,
   colorPalettes: COLOR_PALETTES
 };
@@ -1332,6 +1389,14 @@ function mapDispatchToProps(dispatch) {
 
     onChangeBaseLayerOpacity: (baseLayerOpacity) => {
       dispatch(actions.setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
+    },
+
+    onSelectBaseMapStyle: (baseMapStyle) => {
+      dispatch(actions.setBaseMapStyle(baseMapStyle.value));
+    },
+
+    onChangeBaseMapOpacity: (baseMapOpacity) => {
+      dispatch(actions.setBaseMapOpacity(_.round(baseMapOpacity, 2)));
     },
 
     onChangePointOpacity: (pointOpacity) => {

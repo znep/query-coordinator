@@ -178,9 +178,12 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
       shouldSetVif('setBoundaryColorByColumn', 'columnName', 'series[0].mapOptions.colorBoundariesBy', ['map']);
       shouldSetVif('setQuantificationMethod', 'numerical', 'series[0].mapOptions.quantificationMethod', ['map']);
+      shouldSetVif('setBaseMapStyle', 'mapbox://styles/mapbox/bright-v9', 'configuration.baseMapStyle', ['map']);
+      shouldSetVif('setBaseMapOpacity', 0.8, 'configuration.baseMapOpacity', ['map']);
       shouldSetVif('setNavigationControl', false, 'configuration.navigationControl', ['map']);
       shouldSetVif('setGeoCoderControl', true, 'configuration.geoCoderControl', ['map']);
       shouldSetVif('setGeoLocateControl', true, 'configuration.geoLocateControl', ['map']);
+
 
       describe('when settings the x-axis scaling mode', () => {
 
@@ -225,11 +228,11 @@ describe('AuthoringWorkflow reducer', () => {
           expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.pointOpacity')).to.equal(1);
         });
 
-        it('sets configuration.baseLayerOpacity', function() {
-          var action = actions.setBaseLayerOpacity('0.5');
+        it('sets configuration.baseMapOpacity', function() {
+          var action = actions.setBaseMapOpacity('0.5');
           var newState = reducer(getTestState(), action);
 
-          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseLayerOpacity')).to.equal(0.5);
+          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseMapOpacity')).to.equal(0.5);
         });
       });
 

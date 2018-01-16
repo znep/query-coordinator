@@ -9,9 +9,7 @@ describe('VifPointOverlay', () => {
   beforeEach(() => {
     mockMap = {
       addSource: sinon.spy(),
-      removeSource: sinon.spy(),
       addLayer: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy()
     };
     vifPointOverlay = new VifPointOverlay(mockMap);
@@ -21,26 +19,44 @@ describe('VifPointOverlay', () => {
     it('should add the map source and layer', () => {
 
       vifPointOverlay.setup(vif);
-
-      expect(mockMap.addSource.callCount).to.equal(1);
-      expect(mockMap.addLayer.callCount).to.equal(3);
+      sinon.assert.calledWith(mockMap.addSource,
+        'pointVectorDataSource',
+        sinon.match({
+          geojsonTile: true,
+          cluster: true
+        })
+      );
+      sinon.assert.calledWith(mockMap.addLayer,
+        sinon.match({
+          source: 'pointVectorDataSource',
+          id: 'cluster-circle'
+        }),
+      );
+      sinon.assert.calledWith(mockMap.addLayer,
+        sinon.match({
+          source: 'pointVectorDataSource',
+          id: 'cluster-count-label'
+        }),
+      );
+      sinon.assert.calledWith(mockMap.addLayer,
+        sinon.match({
+          source: 'pointVectorDataSource',
+          id: 'cluster-single-label'
+        }),
+      );
     });
   });
 
   describe('update', () => {
     it('should call the set paint property function', () => {
+      const vif = mapMockVif({
+        series: [{
+          color: { primary: 'red' }
+        }]
+      });
+
       vifPointOverlay.update(vif);
-
-      expect(mockMap.setPaintProperty.callCount).to.equal(1);
-    });
-  });
-
-  describe('destroy', () => {
-    it('should remove the map layer and source', () => {
-      vifPointOverlay.destroy();
-
-      expect(mockMap.removeLayer.callCount).to.equal(3);
-      expect(mockMap.removeSource.callCount).to.equal(1);
+      sinon.assert.calledWith(mockMap.setPaintProperty, 'cluster-circle', 'circle-color', 'red');
     });
   });
 

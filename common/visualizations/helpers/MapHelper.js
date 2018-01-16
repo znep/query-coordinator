@@ -3,10 +3,12 @@ import { TILE_URL_OPTIONS } from '../views/mapConstants';
 
 export default class MapHelper {
   static afterMapLoad(map, callback) {
-    if (map.isStyleLoaded()) {
+    if (map.loaded()) {
       callback();
     } else {
-      map.on('load', callback);
+      map.once('render', (mapDataEvent) => {
+        MapHelper.afterMapLoad(map, callback);
+      });
     }
   }
 

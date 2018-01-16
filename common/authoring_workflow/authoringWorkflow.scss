@@ -383,6 +383,10 @@
       &.disabled {
         color: $light-grey-2;
         cursor: not-allowed;
+
+        &.base-map-opacity-container {
+          opacity: 0.75;
+        }
       }
 
       .input-range-slider {

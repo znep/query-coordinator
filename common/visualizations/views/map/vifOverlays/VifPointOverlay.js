@@ -12,6 +12,10 @@ const LAYERS = {
 };
 
 export default class VifPointOverlay extends VifOverlay {
+  constructor(map) {
+    super(map, [POINTS_SOURCE_ID], _.values(LAYERS));
+  }
+
   setup(vif) {
     this._map.addSource(POINTS_SOURCE_ID, {
       'type': 'vector',
@@ -68,14 +72,6 @@ export default class VifPointOverlay extends VifOverlay {
 
   update(vif) {
     this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-color', getClusterCircleColor(vif));
-  }
-
-  destroy() {
-    _.each(_.values(LAYERS), (layerId) => {
-      this._map.removeLayer(layerId);
-    });
-
-    this._map.removeSource(POINTS_SOURCE_ID);
   }
 
   getDataUrl(vif) {

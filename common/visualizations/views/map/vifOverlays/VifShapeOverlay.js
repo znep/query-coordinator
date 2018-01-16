@@ -10,6 +10,10 @@ const LAYERS = {
 };
 
 export default class VifShapeOverlay extends VifOverlay {
+  constructor(map) {
+    super(map, [SHAPE_SOURCE_ID], _.values(LAYERS));
+  }
+
   setup(vif) {
     this._map.addSource(SHAPE_SOURCE_ID, {
       'type': 'vector',
@@ -30,13 +34,6 @@ export default class VifShapeOverlay extends VifOverlay {
 
   update(vif) {
     this._map.setPaintProperty(LAYERS.SHAPE_OUTLINE, 'line-color', getLineColor(vif));
-  }
-
-  destroy() {
-    _.each(_.values(LAYERS), (layerId) => {
-      this._map.removeLayer(layerId);
-    });
-    this._map.removeSource(SHAPE_SOURCE_ID);
   }
 
   getDataUrl(vif) {

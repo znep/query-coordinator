@@ -4,13 +4,13 @@ export default () => ({
     'version': 2
   },
   'configuration': {
-    'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
-    'baseLayerOpacity': 0.2,
+    'baseMapStyle': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+    'baseMapOpacity': 0.2,
+    'locateUser': false,
     'datasetMetadata': false,
     'geoCoderControl': true,
     'geoLocateControl': true,
     'rowInspectorTitleColumnName': 'incident_location',
-    'locateUser': false,
     'panAndZoom': true,
     'mapCenterAndZoom': {
       'center': {
@@ -49,6 +49,26 @@ export default () => ({
       'unit': {
         'one': 'Dream',
         'other': 'Dreams'
+      },
+      'mapOptions': {
+        'clusterRadius': 50,
+        'colorLinesBy': 'columnName',
+        'colorPointsBy': 'columnName',
+        'lineWeight': 5,
+        'mapType': 'pointMap',
+        'maxClusteringZoomLevel': 8,
+        'maxClusterSize': 20,
+        'maximumLineWeight': 7,
+        'maximumPointSize': 7,
+        'minimumLineWeight': 3,
+        'minimumPointSize': 3,
+        'numberOfDataClasses': 5,
+        'pointAggregation': 'heat_map',
+        'pointMapPointSize': 1,
+        'pointThreshold': 4500,
+        'resizePointsBy': 'columnName',
+        'stackRadius': 20,
+        'weighLinesBy': 'columnName'
       }
     }
   ],

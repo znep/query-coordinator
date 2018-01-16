@@ -112,14 +112,25 @@ shopt -u nocasematch
 if [ ! -f ${WORKSPACE}/frontend/config/locales/es.yml ]; then
   echo "Did not successfully download locales"
   echo `ls -l ${WORKSPACE}/frontend/config/locales/`
-  exit 1
+
+  if [[ ${SKIP_PUSH_LOCALE_DANGEROUS} == "true" ]]; then
+    echo "Continuing without locales because $SKIP_PUSH_LOCALE_DANGEROUS = ${SKIP_PUSH_LOCALE_DANGEROUS}"
+    echo "This build is NOT PRODUCTION READY"
+  else
+    exit 1
+  fi
 fi
 
 # Run tests (just running rake _should_ run all the tests, but this often fails)
-bundle exec rake test:units
-bundle exec rake test:functionals
-bundle exec rspec --no-color
-bundle exec rake test:karma:parallel
+if [[ ${SKIP_TESTS_DANGEROUS} != "true" ]]; then
+  bundle exec rake test:units
+  bundle exec rake test:functionals
+  bundle exec rspec --no-color
+  bundle exec rake test:karma:parallel
+else
+  echo "Skipping tests because $SKIP_TESTS_DANGEROUS = ${SKIP_TESTS_DANGEROUS}"
+fi
+
 
 # Remove certain javascript files from public/javascripts (BUT WHY)
 if [ ! ${COMPRESS_ASSETS} = "true" ] ; then

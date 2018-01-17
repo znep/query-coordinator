@@ -1845,6 +1845,11 @@ var Interpolator = require('../util/interpolator');
         urlParams.method = state.operation;
       }
 
+      var deletedAt = $.urlParam(window.location.href, 'deletedAt');
+      if (!_.isEmpty(deletedAt)) {
+        urlParams.deletedAt = deletedAt;
+      }
+
       if (blist.feature_flags.domain_locale) {
         urlParams.locale = blist.feature_flags.domain_locale;
       }

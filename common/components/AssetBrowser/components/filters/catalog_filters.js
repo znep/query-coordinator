@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import I18n from 'common/i18n';
 import * as constants from 'common/components/AssetBrowser/lib/constants.js';
-import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 
 import ClearFilters from './clear_filters';
 import AssetTypesFilter from './asset_types_filter';

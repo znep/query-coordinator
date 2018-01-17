@@ -3,7 +3,7 @@ import _ from 'lodash';
 import utils from 'common/js_utils';
 
 import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
-import { ALL_ASSETS_TAB, MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
 import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 import * as headerActions from 'common/components/AssetBrowser/actions/header';
 
@@ -28,6 +28,7 @@ export const getInitialState = () => {
     }, {});
 
   return {
+    approvalStatus: getQueryParameter('approvalStatus'),
     assetTypes: getQueryParameter('assetTypes'),
     authority: getQueryParameter('authority'),
     category: getQueryParameter('category'),
@@ -35,7 +36,6 @@ export const getInitialState = () => {
     domainCustomFacets: getStaticData('domainCustomFacets') || [],
     domainCategories: getStaticData('domainCategories') || [],
     domainTags: getStaticData('domainTags') || [],
-    onlyAwaitingApproval: false,
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: getQueryParameter('ownerName'),
@@ -53,6 +53,7 @@ export const getInitialState = () => {
 export const getCurrentQuery = () => getQueryParameter('q', '');
 
 export const getUnfilteredState = (state) => ({
+  approvalStatus: null,
   assetTypes: null,
   authority: null,
   category: null,
@@ -60,7 +61,6 @@ export const getUnfilteredState = (state) => ({
   domainCustomFacets: getStaticData('domainCustomFacets') || [],
   domainCategories: getStaticData('domainCategories') || [],
   domainTags: getStaticData('domainTags') || [],
-  onlyAwaitingApproval: false,
   onlyRecentlyViewed: false,
   ownedBy: {
     displayName: null,
@@ -82,7 +82,8 @@ export default (state, action) => {
   if (action.type === filterActions.TOGGLE_AWAITING_APPROVAL) {
     return {
       ...state,
-      onlyAwaitingApproval: !state.onlyAwaitingApproval
+      approvalStatus: state.approvalStatus === constants.APPROVAL_STATUS_PENDING ?
+        null : constants.APPROVAL_STATUS_PENDING
     };
   }
 
@@ -172,7 +173,7 @@ export default (state, action) => {
     const { newTab } = action;
     utils.assert(newTab, `${headerActions.CHANGE_TAB} action requires property: newTab`);
 
-    if (action.newTab === MY_ASSETS_TAB || action.newTab === SHARED_TO_ME_TAB) {
+    if (action.newTab === constants.MY_ASSETS_TAB || action.newTab === constants.SHARED_TO_ME_TAB) {
       return getUnfilteredState(
         {
           ...state,
@@ -181,7 +182,7 @@ export default (state, action) => {
         }
       );
     }
-    if (action.newTab === ALL_ASSETS_TAB) {
+    if (action.newTab === constants.ALL_ASSETS_TAB) {
       return getUnfilteredState(
         {
           ...state,

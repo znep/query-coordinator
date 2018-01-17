@@ -20,10 +20,10 @@ export class ClearFilters extends Component {
   filterKeyPaths() {
     const { buttonStyle } = this.props;
     return [
+      'approvalStatus',
       'assetTypes',
       'authority',
       'category',
-      'onlyAwaitingApproval',
       'onlyRecentlyViewed',
       'ownedBy.id',
       'tag',

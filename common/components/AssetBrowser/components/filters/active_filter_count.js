@@ -14,10 +14,10 @@ export class ActiveFilterCount extends Component {
 
     // See similar list of key paths in ClearFilters component
     const filterKeyPaths = [
+      'approvalStatus',
       'assetTypes',
       'authority',
       'category',
-      'onlyAwaitingApproval',
       'onlyRecentlyViewed',
       'ownedBy.id',
       'tag',

@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import I18n from 'common/i18n';
 import * as constants from 'common/components/AssetBrowser/lib/constants.js';
+import { getQueryParameter } from 'common/components/AssetBrowser/lib/query_string';
 
 import ClearFilters from './clear_filters';
 import AssetTypesFilter from './asset_types_filter';
@@ -79,6 +80,7 @@ export class CatalogFilters extends Component {
     const authorityFilterSection = onMyAssetsTab ? null : <AuthorityFilter />;
     const ownedByFilterSection = onMyAssetsTab ? null : <OwnedByFilter />;
     const visibilityFilterSection = onApprovals ? null : <VisibilityFilter />;
+    const awaitingApprovalFilter = showAwaitingApprovalFilter ? <AwaitingApprovalFilter /> : null;
 
     return (
       <div className="catalog-filters">
@@ -89,7 +91,7 @@ export class CatalogFilters extends Component {
           <form>
             <div className="filter-switches">
               <RecentlyViewedFilter />
-              {showAwaitingApprovalFilter && <AwaitingApprovalFilter />}
+              {awaitingApprovalFilter}
             </div>
             <AssetTypesFilter />
             {authorityFilterSection}

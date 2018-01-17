@@ -31,7 +31,7 @@ describe('actions/sortOrder', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true } },
         { type: 'CHANGE_PAGE', pageNumber: 1 }
@@ -48,7 +48,7 @@ describe('actions/sortOrder', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false } },
         { type: 'CHANGE_PAGE', pageNumber: 1 }
@@ -65,7 +65,7 @@ describe('actions/sortOrder', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false } },
         { type: 'CHANGE_PAGE', pageNumber: 1 }
@@ -82,7 +82,7 @@ describe('actions/sortOrder', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyAwaitingApproval: false, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true } },
         { type: 'CHANGE_PAGE', pageNumber: 1 }

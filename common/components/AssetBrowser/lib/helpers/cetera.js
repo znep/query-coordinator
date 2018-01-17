@@ -79,7 +79,6 @@ export const translateFiltersToQueryParameters = (filters) => {
     category,
     forUser,
     ids,
-    onlyAwaitingApproval,
     onlyRecentlyViewed,
     order,
     ownedBy,
@@ -120,7 +119,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     {} : filters.customFacets;
 
   return {
-    approvalStatus: onlyAwaitingApproval ? APPROVAL_STATUS_PENDING : approvalStatus,
+    approvalStatus,
     category,
     customMetadataFilters,
     forUser: forUser || _.get(ownedBy, 'id'),
@@ -198,7 +197,7 @@ export const fetchProvenanceCounts = (dispatch, getState, parameters = {}) => {
 };
 
 export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.noop) => {
-  const { onlyAwaitingApproval, onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
+  const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
   let { sortByRecentlyViewed } = _.merge({}, getState().filters, parameters);
 
   const activeTab = _.get(getState(), 'header.activeTab');
@@ -217,8 +216,7 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
       dispatch(ceteraActions.updateCatalogResults(
         response,
         onlyRecentlyViewed,
-        sortByRecentlyViewed,
-        onlyAwaitingApproval
+        sortByRecentlyViewed
       ));
       dispatch(ceteraActions.fetchingResultsSuccess());
       onSuccess(response.results.length > 0);

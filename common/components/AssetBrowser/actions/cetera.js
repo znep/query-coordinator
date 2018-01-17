@@ -16,14 +16,12 @@ export const UPDATE_CATALOG_RESULTS = 'UPDATE_CATALOG_RESULTS';
 export const updateCatalogResults = (
   response,
   onlyRecentlyViewed = false,
-  sortByRecentlyViewed = false,
-  onlyAwaitingApproval = false
+  sortByRecentlyViewed = false
 ) => ({
   type: UPDATE_CATALOG_RESULTS,
   response,
   onlyRecentlyViewed,
-  sortByRecentlyViewed,
-  onlyAwaitingApproval
+  sortByRecentlyViewed
 });
 
 export const fetchingResults = () => ({ type: FETCH_RESULTS });

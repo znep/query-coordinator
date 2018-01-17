@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
+// snake_casing these constants to try to remain consistent with core
 
 // NOTE:
+// This is a list of DOMAIN rights granted to users
 // This needs to reflect:
 //  - ALL_RIGHTS in frontend/lib/user_rights.rb
 //  - Right enum in core at unobtainium/src/main/java/com/blist/models/account/User.java
@@ -10,6 +12,7 @@ export const change_configurations = 'change_configurations';
 export const chown_datasets = 'chown_datasets';
 export const create_dashboards = 'create_dashboards';
 export const create_datasets = 'create_datasets';
+export const create_measures = 'create_measures';
 export const create_pages = 'create_pages';
 export const create_story = 'create_story';
 export const delete_story = 'delete_story';

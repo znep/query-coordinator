@@ -3461,6 +3461,8 @@ en:
         name: Create Data Lens pages
       create_datasets:
         name: Create new datasets, charts, maps, and other views
+      create_measures:
+        name: Create new Performance measures
       create_pages:
         name: Create new DataSlate pages
       create_story:
@@ -3495,6 +3497,8 @@ en:
         name: Add, remove, and manage Socrata-to-Socrata federation relationships
       manage_approval:
         name: Review and approve assets submitted for 'open' release
+      manage_goals:
+        name: Manage performance goals
       manage_provenance:
         name: Update an asset's provenance (community/official) via API
       manage_spatial_lens:

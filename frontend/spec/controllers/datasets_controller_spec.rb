@@ -293,15 +293,27 @@ describe DatasetsController do
     end
 
     describe 'GET /category/view_name/id/edit' do
-      it 'should render the OP measure edit page' do
-        get :edit, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      context 'when view is not editable' do
+        it 'should render a forbidden page' do
+          allow(view).to receive(:can_edit_measure?).and_return(false)
+          get :edit, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
-        expect(response).to have_http_status(:success)
-        expect(response).to render_template(:op_measure)
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
 
-        # options that are set specifically for edit mode
-        expect(subject.instance_variable_get('@site_chrome_admin_header_options')).to eq({size: 'small'})
-        expect(subject.instance_variable_get('@body_classes')).to eq('hide-site-chrome')
+      context 'when view is editable' do
+        it 'should render the OP measure edit page' do
+          allow(view).to receive(:can_edit_measure?).and_return(true)
+          get :edit, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+          expect(response).to have_http_status(:success)
+          expect(response).to render_template(:op_measure)
+
+          # options that are set specifically for edit mode
+          expect(subject.instance_variable_get('@site_chrome_admin_header_options')).to eq({size: 'small'})
+          expect(subject.instance_variable_get('@body_classes')).to eq('hide-site-chrome')
+        end
       end
     end
   end

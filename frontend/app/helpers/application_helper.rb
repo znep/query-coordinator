@@ -126,6 +126,11 @@ module ApplicationHelper
       FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
+  def current_user_can_create_measure?
+    op_standalone_measures_enabled? &&
+      current_user.has_right?(UserRights::CREATE_MEASURES)
+  end
+
 # PAGE-HEADER
 
   def get_favicon_tag
@@ -1046,11 +1051,6 @@ module ApplicationHelper
   def current_user_can_create_story?
     FeatureFlags.derive(nil, request).stories_enabled &&
       current_user.has_right?(UserRights::CREATE_STORY)
-  end
-
-  def current_user_can_create_measure?
-    # TODO: Pending the future of rights management, add an appropriate rights check.
-    op_standalone_measures_enabled?
   end
 
   # ONCALL-3032: Spam e-mail sent via the Socrata platform

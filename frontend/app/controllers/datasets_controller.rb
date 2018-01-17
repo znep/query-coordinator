@@ -1348,9 +1348,10 @@ class DatasetsController < ApplicationController
   end
 
   def render_as_op_measure(as_edit = false)
-    # The page will momentarily render in view mode, even if as_edit is true, and
-    # setting the @site_chrome_admin_header_options @body_classes variables below is to make
-    # the transition look less jarring.
+    if as_edit
+      return render_forbidden unless @view.can_edit_measure?
+    end
+
     return false unless @view.op_measure?
 
     if op_standalone_measures_enabled?

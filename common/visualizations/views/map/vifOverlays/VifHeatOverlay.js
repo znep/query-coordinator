@@ -1,24 +1,27 @@
 import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
-import SoqlHelpers from '../../../dataProviders/SoqlHelpers';
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
+import { getBaseMapLayerStyles } from '../baseMapStyle';
+
 import utils from 'common/js_utils';
 
 const HEAT_SOURCE_ID = 'heatVectorDataSource';
 const LAYERS = {
-  HEAT_LAYER: 'heat-layer'
+  HEAT_LAYER: 'heatLayer'
 };
 
 // Basic heat map version (No tuning option from vif)
 // Clusters on server side using snap_to_grid and draws heatmap
 // based on count of each record.
 export default class VifHeatOverlay extends VifOverlay {
+  constructor(map) {
+    super(map, [HEAT_SOURCE_ID], _.values(LAYERS));
+  }
+
   setup(vif) {
-    this._map.addSource(HEAT_SOURCE_ID, {
-      'type': 'vector',
-      'geojsonTile': true,
-      'tiles': [this.getDataUrl(vif)]
-    });
+    const baseMapLayerStyle = getBaseMapLayerStyles(vif);
+    this._map.addSource(HEAT_SOURCE_ID, this._sourceOptions(vif));
 
     this._map.addLayer({
       'id': LAYERS.HEAT_LAYER,
@@ -66,21 +69,27 @@ export default class VifHeatOverlay extends VifOverlay {
           ]
         }
       }
-    });
+    }, baseMapLayerStyle.PREPEND_HEAT_LAYER_AFTER);
+    this._existingVif = vif;
   }
 
   update(vif) {
-    // Basic version of heat map. Current implementation does not have
-    // any configuration/tuning options in vif.
+    // On source options change, resetup the overlay.
+    const existingSourceOptions = this._sourceOptions(this._existingVif);
+    const newSourceOptions = this._sourceOptions(vif);
+
+    if (!_.isEqual(existingSourceOptions, newSourceOptions)) {
+      this.destroy();
+      this.setup(vif);
+      return;
+    }
+
+    // The prepend-before for heatLayer will change only on baseMap style change.
+    // On basemap style change, we resetup the overlay already. So we dont have to
+    // take care of 'prepend-before-layer' change.
+    this._existingVif = vif;
   }
 
-  destroy() {
-    _.each(_.values(LAYERS), (layerId) => {
-      this._map.removeLayer(layerId);
-    });
-
-    this._map.removeSource(HEAT_SOURCE_ID);
-  }
 
   getDataUrl(vif) {
     const domain = _.get(vif, 'series[0].dataSource.domain');
@@ -104,6 +113,14 @@ export default class VifHeatOverlay extends VifOverlay {
       `group by snap_to_grid(${columnName}, {snap_precision}) ` +
       'limit 100000 ' +
       '#substituteSoqlParams_tileParams={z}|{x}|{y}';
+  }
+
+  _sourceOptions(vif) {
+    return {
+      'type': 'vector',
+      'geojsonTile': true,
+      'tiles': [this.getDataUrl(vif)]
+    };
   }
 }
 

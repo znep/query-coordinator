@@ -7,11 +7,14 @@ describe('VifHeatOverlay', () => {
 
   beforeEach(() => {
     mockMap = {
-      addSource: sinon.spy(),
-      removeSource: sinon.spy(),
       addLayer: sinon.spy(),
+      addSource: sinon.spy(),
+      getSource: sinon.stub().returns({}),
+      moveLayer: sinon.spy(),
+      removeSource: sinon.spy(),
       removeLayer: sinon.spy(),
-      setPaintProperty: sinon.spy()
+      setPaintProperty: sinon.spy(),
+      style: {}
     };
     vifHeatOverlay = new VifHeatOverlay(mockMap);
   });
@@ -29,13 +32,14 @@ describe('VifHeatOverlay', () => {
 
       sinon.assert.calledWith(mockMap.addLayer,
         sinon.match({
-          id: 'heat-layer',
+          id: 'heatLayer',
           paint: sinon.match({
             'heatmap-weight': sinon.match({
               'property': 'count'
             })
           })
-        })
+        }),
+        'admin_country'
       );
     });
   });
@@ -44,8 +48,33 @@ describe('VifHeatOverlay', () => {
     it('should remove the map layer and source', () => {
       vifHeatOverlay.destroy();
 
-      sinon.assert.calledWith(mockMap.removeLayer, 'heat-layer');
+      sinon.assert.calledWith(mockMap.removeLayer, 'heatLayer');
       sinon.assert.calledWith(mockMap.removeSource, 'heatVectorDataSource');
+    });
+  });
+
+  describe('update', () => {
+    beforeEach(() => { vifHeatOverlay.setup(mapMockVif()); });
+
+    describe('filters changed', () => {
+      it('should resetup sources & layers', () => {
+        const vif = mapMockVif();
+        vif.series[0].dataSource.filters = [
+          {
+            function: 'binaryOperator',
+            columnName: 'status',
+            arguments: [{ operator: '=', operand: 'Open' }],
+            joinOn: 'OR'
+          }
+        ];
+
+        vifHeatOverlay.update(vif);
+
+        sinon.assert.calledWith(mockMap.removeSource, 'heatVectorDataSource');
+        sinon.assert.calledWith(mockMap.removeLayer, 'heatLayer');
+        sinon.assert.calledWith(mockMap.addSource, 'heatVectorDataSource', sinon.match({}));
+        sinon.assert.calledWith(mockMap.addLayer, sinon.match({ id: 'heatLayer' }));
+      });
     });
   });
 

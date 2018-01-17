@@ -18,19 +18,28 @@ const updateMeasureProperty = (state, propertyPath, value) => ({
 });
 
 const setCalculationType = (state, type) => {
-  // Changing type clears everything under 'metricConfig'.
+  // Changing type clears almost everything under 'metricConfig'.
   // This is by design.
   assert(
     _.includes(_.values(CalculationTypeNames), type),
     `Unknown calculation type given: ${type}`
   );
 
-  const newState = {
-    ...state
-  };
+  const newState = _.cloneDeep(state);
 
   _.set(newState, 'measure.metricConfig', {
     type
+  });
+
+  const pathsToKeep = [
+    'measure.metricConfig.reportingPeriod',
+    'measure.metricConfig.dateColumn'
+  ];
+
+  pathsToKeep.forEach((path) => {
+    if (_.has(state, path)) {
+      _.set(newState, path, _.get(state, path));
+    }
   });
 
   // Set some defaults for calculation types.

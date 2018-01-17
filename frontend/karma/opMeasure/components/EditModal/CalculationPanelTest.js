@@ -9,12 +9,15 @@ import { CalculationPanel, mapStateToProps } from 'components/EditModal/Calculat
 describe('CalculationPanel', () => {
   const getProps = (props) => {
     return {
+      calculationType: 'count',
       hasDataSource: true,
+      measure: {},
       onChangeDecimalPlaces: _.noop,
       onChangeUnitLabel: _.noop,
+      onSelectColumn: _.noop,
+      onSelectDateColumn: _.noop,
       onSetCalculationType: sinon.stub(),
       openDataSourceTab: _.noop,
-      calculationType: 'count',
       ...props
     };
   };

@@ -1,9 +1,13 @@
 import _ from 'lodash';
+import moment from 'moment';
 import { assert } from 'chai';
 import { CalculationTypeNames } from 'lib/constants';
+import DateRange from 'lib/dateRange';
 import { calculateMeasure, calculateRateMeasure, isColumnUsableWithMeasureArgument } from 'measureCalculator';
 
 describe('measureCalculator', () => {
+  const sampleDateRange = new DateRange(moment('2018-01-10T00:21:27.375Z'), 'day');
+  const fakeDateRangeWhereClause = 'MOCK WHERE CLAUSE';
   const nullDataProvider = {};
 
   describe('isColumnUsableWithMeasureArgument', () => {
@@ -113,7 +117,9 @@ describe('measureCalculator', () => {
           fixedDenominator: '0'
         });
 
-        const response = await calculateRateMeasure(singularity, nullDataProvider);
+        const response = await calculateRateMeasure(
+          {}, singularity, fakeDateRangeWhereClause, nullDataProvider
+        );
         assert.propertyVal(response, 'denominator', '0');
         assert.propertyVal(response, 'dividingByZero', true);
       });
@@ -128,7 +134,9 @@ describe('measureCalculator', () => {
           fixedDenominator: '10'
         });
 
-        const response = await calculateRateMeasure(nonZeroDenominator, nullDataProvider);
+        const response = await calculateRateMeasure(
+          {}, nonZeroDenominator, fakeDateRangeWhereClause, nullDataProvider
+        );
         assert.propertyVal(response, 'dividingByZero', false);
       });
     });
@@ -142,7 +150,9 @@ describe('measureCalculator', () => {
         });
 
         it('returns the fixed denominator in the response', async () => {
-          const response = await calculateRateMeasure(fixed, nullDataProvider);
+          const response = await calculateRateMeasure(
+            {}, fixed, fakeDateRangeWhereClause, nullDataProvider
+          );
           assert.propertyVal(response, 'denominator', '123');
           assert.notProperty(response, 'numerator');
         });
@@ -157,7 +167,9 @@ describe('measureCalculator', () => {
         });
 
         it('returns the fixed denominator in the response', async () => {
-          const response = await calculateRateMeasure(countFixed, nullDataProvider);
+          const response = await calculateRateMeasure(
+            {}, countFixed, fakeDateRangeWhereClause, nullDataProvider
+          );
           assert.propertyVal(response, 'denominator', '10');
           assert.notProperty(response, 'numerator');
         });
@@ -170,9 +182,11 @@ describe('measureCalculator', () => {
           // Rig the data provider to return 50 for row count, which will satisfy the
           // numerator query.
           const dataProvider = {
-            getRowCount: async () => 50
+            rawQuery: async () => [{ __measure_count_alias__: 50 }]
           };
-          const response = await calculateRateMeasure(countFixedWithNumerator, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, countFixedWithNumerator, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'result', '5');
         });
 
@@ -192,7 +206,9 @@ describe('measureCalculator', () => {
               done();
             }
           };
-          calculateRateMeasure(countWithCondition, dataProvider);
+          calculateRateMeasure(
+            {}, countWithCondition, fakeDateRangeWhereClause, dataProvider
+          );
         });
       });
       describe('sum aggregation', () => {
@@ -208,11 +224,15 @@ describe('measureCalculator', () => {
             'metricConfig.arguments.denominatorIncludeNullValues',
             false
           );
-          assert.throws(() => calculateRateMeasure(sumWithExcludeInDenominator, dataProvider));
+          assert.throws(() => calculateRateMeasure(
+            {}, sumWithExcludeInDenominator, fakeDateRangeWhereClause, dataProvider)
+          );
         });
 
         it('returns the fixed denominator in the response', async () => {
-          const response = await calculateRateMeasure(sumFixed, nullDataProvider);
+          const response = await calculateRateMeasure(
+            {}, sumFixed, fakeDateRangeWhereClause, nullDataProvider
+          );
           assert.propertyVal(response, 'denominator', '20');
         });
 
@@ -226,7 +246,9 @@ describe('measureCalculator', () => {
               '__measure_sum_alias__': '80' // Numerator
             }]
           };
-          const response = await calculateRateMeasure(sumFixedWithNumerator, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, sumFixedWithNumerator, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'result', '4'); // 80 / 20
         });
       });
@@ -240,9 +262,11 @@ describe('measureCalculator', () => {
           denominatorColumn: 'denominatorCol'
         });
 
-        it('returns an empty object', async () => {
-          const response = await calculateRateMeasure(computed, nullDataProvider);
-          assert.isEmpty(response);
+        it('sets calculationNotConfigured', async () => {
+          const response = await calculateRateMeasure(
+            {}, computed, fakeDateRangeWhereClause, nullDataProvider
+          );
+          assert.propertyVal(response, 'calculationNotConfigured', true);
         });
       });
 
@@ -256,9 +280,11 @@ describe('measureCalculator', () => {
 
         it('returns the denominator in the response', async () => {
           const dataProvider = {
-            getRowCount: async () => 40 // Denominator
+            rawQuery: async () => [{ __measure_count_alias__: 40 }] // Denominator
           };
-          const response = await calculateRateMeasure(countComputed, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, countComputed, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'denominator', '40');
           assert.notProperty(response, 'numerator');
         });
@@ -274,12 +300,15 @@ describe('measureCalculator', () => {
             { function: 'valueRange', arguments: { start: 3, end: 5 } }
           );
           const dataProvider = {
-            rawQuery: async () => [{
-              '__measure_count_alias__': '100' // Numerator
-            }],
-            getRowCount: async () => 50 // Denominator
+            rawQuery: async (query) => {
+              return query.indexOf('denominatorCol') < 0 ?
+                [ { '__measure_count_alias__': '100' } ] : // Numerator
+                [ { '__measure_count_alias__': '50' } ]; // Denominator
+            }
           };
-          const response = await calculateRateMeasure(numeratorAndDenominator, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, numeratorAndDenominator, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'result', '2');
         });
       });
@@ -297,7 +326,9 @@ describe('measureCalculator', () => {
               '__measure_sum_alias__': '66' // Denominator
             }]
           };
-          const response = await calculateRateMeasure(sumComputed, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, sumComputed, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'denominator', '66');
           assert.notProperty(response, 'numerator');
         });
@@ -314,7 +345,9 @@ describe('measureCalculator', () => {
                 [ { '__measure_sum_alias__': '100' } ]; // Denominator
             }
           };
-          const response = await calculateRateMeasure(numeratorAndDenominator, dataProvider);
+          const response = await calculateRateMeasure(
+            {}, numeratorAndDenominator, fakeDateRangeWhereClause, dataProvider
+          );
           assert.propertyVal(response, 'result', '3');
           assert.propertyVal(response, 'numerator', '300');
           assert.propertyVal(response, 'denominator', '100');
@@ -333,12 +366,14 @@ describe('measureCalculator', () => {
           const dataProvider = {
             rawQuery: (query) => {
               if (query.indexOf('numeratorCol') >= 0) {
-                assert.notInclude(query, 'where');
+                assert.notInclude(query.toLowerCase(), 'null');
                 done();
               }
             }
           };
-          calculateRateMeasure(sumWithNoopCondition, dataProvider);
+          calculateRateMeasure(
+            {}, sumWithNoopCondition, fakeDateRangeWhereClause, dataProvider
+          );
         });
 
         it('includes column condition in query (real filter)', (done) => {
@@ -360,33 +395,102 @@ describe('measureCalculator', () => {
               }
             }
           };
-          calculateRateMeasure(sumWithCondition, dataProvider);
+          calculateRateMeasure(
+            {}, sumWithCondition, fakeDateRangeWhereClause, dataProvider
+          );
         });
       });
     });
   });
 
   describe('incomplete metric setup', () => {
+    describe('for blank measures', () => {
+      it('should report dataSourceNotConfigured', async () => {
+        const result = await calculateMeasure({}, sampleDateRange);
+        // Other errors will be reported, but this is the only one we care about.
+        assert.propertyVal(result, 'dataSourceNotConfigured', true);
+      });
+    });
+
+    describe('for measures with a blank metricConfig', () => {
+      it('should report dataSourceNotConfigured', async () => {
+        const result = await calculateMeasure({ metricConfig: {} }, sampleDateRange);
+        // Other errors will be reported, but this is the only one we care about.
+        assert.propertyVal(result, 'dataSourceNotConfigured', true);
+      });
+    });
+
+    describe('for measures with a valid data source and reporting period but no calculation type', () => {
+      let measure
+
+      beforeEach(() => {
+        measure = {};
+        _.set(measure, 'metricConfig.reportingPeriod', {
+          type: 'open',
+          size: 'year',
+          startDate: '1988-01-10T08:00:00.000Z'
+        });
+        _.set(measure, 'dataSourceLensUid', 'test-test');
+        _.set(measure, 'metricConfig.arguments.column', 'some column name');
+        _.set(measure, 'metricConfig.dateColumn', 'someDateColumn');
+      });
+
+      it('should report calculationNotConfigured', async () => {
+        const result = await calculateMeasure(measure, sampleDateRange);
+        assert.propertyVal(result, 'calculationNotConfigured', true);
+      });
+    });
+
     describe('for count calculations', () => {
       let measure;
 
       beforeEach(() => {
         measure = {};
-        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'metricConfig.reportingPeriod', {
+          type: 'open',
+          size: 'year',
+          startDate: '1988-01-10T08:00:00.000Z'
+        });
+        _.set(measure, 'dataSourceLensUid', 'test-test');
         _.set(measure, 'metricConfig.arguments.column', 'some column name');
+        _.set(measure, 'metricConfig.dateColumn', 'someDateColumn');
         _.set(measure, 'metricConfig.type', 'count');
       });
 
-      it('returns empty if dataSource uid is not set', async () => {
-        _.unset(measure, 'metricConfig.dataSource.uid');
+      it('sets dataSourceNotConfigured if dataSource uid is not set', async () => {
+        _.unset(measure, 'dataSourceLensUid');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'dataSourceNotConfigured', true);
       });
 
-      it('returns empty if column is not set', async () => {
+      it('sets calculationNotConfigured if column is not set', async () => {
         _.unset(measure, 'metricConfig.arguments.column');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true);
+      });
+
+      it('sets calculationNotConfigured if dateColumn is not set', async () => {
+        _.unset(measure, 'metricConfig.dateColumn');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
+      });
+
+      it('sets noReportingPeriodConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'noReportingPeriodConfigured', true
+        );
+      });
+
+      it('does not set calculationNotConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'calculationNotConfigured', false
+        );
       });
     });
 
@@ -395,21 +499,51 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
+        _.set(measure, 'metricConfig.reportingPeriod', {
+          type: 'open',
+          size: 'year',
+          startDate: '1988-01-10T08:00:00.000Z'
+        });
         _.set(measure, 'metricConfig.type', 'sum');
-        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'dataSourceLensUid', 'test-test');
         _.set(measure, 'metricConfig.arguments.column', 'some column name');
+        _.set(measure, 'metricConfig.dateColumn', 'someDateColumn');
       });
 
-      it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metricConfig.dataSource.uid');
+      it('sets dataSourceNotConfigured if dataSource uid is not set', async () => {
+        _.unset(measure, 'dataSourceLensUid');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'dataSourceNotConfigured', true);
       });
 
-      it('returns empty if column is not set', async () => {
+      it('sets calculationNotConfigured if column is not set', async () => {
         _.unset(measure, 'metricConfig.arguments.column');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true);
+      });
+
+      it('sets calculationNotConfigured if dateColumn is not set', async () => {
+        _.unset(measure, 'metricConfig.dateColumn');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
+      });
+
+      it('sets noReportingPeriodConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'noReportingPeriodConfigured', true
+        );
+      });
+
+      it('does not set calculationNotConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'calculationNotConfigured', false
+        );
       });
     });
 
@@ -418,28 +552,53 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
+        _.set(measure, 'metricConfig.reportingPeriod', {
+          type: 'open',
+          size: 'year',
+          startDate: '1988-01-10T08:00:00.000Z'
+        });
         _.set(measure, 'metricConfig.type', 'recent');
-        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'dataSourceLensUid', 'test-test');
         _.set(measure, 'metricConfig.arguments.valueColumn', 'foos');
         _.set(measure, 'metricConfig.dateColumn', 'bars');
       });
 
-      it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metricConfig.dataSource.uid');
+      it('sets dataSourceNotConfigured if dataSource uid is not set', async () => {
+        _.unset(measure, 'dataSourceLensUid');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'dataSourceNotConfigured', true);
       });
 
-      it('returns empty if valueColumn is not set', async () => {
+      it('sets calculationNotConfigured if valueColumn is not set', async () => {
         _.unset(measure, 'metricConfig.arguments.valueColumn');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
       });
 
-      it('returns empty if dateColumn is not set', async () => {
+      it('sets calculationNotConfigured if dateColumn is not set', async () => {
         _.unset(measure, 'metricConfig.dateColumn');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
+      });
+
+      it('sets noReportingPeriodConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'noReportingPeriodConfigured', true
+        );
+      });
+
+      it('does not set calculationNotConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'calculationNotConfigured', false
+        );
       });
     });
 
@@ -448,22 +607,54 @@ describe('measureCalculator', () => {
 
       beforeEach(() => {
         measure = {};
+        _.set(measure, 'metricConfig.reportingPeriod', {
+          type: 'open',
+          size: 'year',
+          startDate: '1988-01-10T08:00:00.000Z'
+        });
         _.set(measure, 'metricConfig.type', 'rate');
-        _.set(measure, 'metricConfig.dataSource.uid', 'test-test');
+        _.set(measure, 'dataSourceLensUid', 'test-test');
         _.set(measure, 'metricConfig.arguments.aggregationType', 'sum');
         _.set(measure, 'metricConfig.arguments.numeratorColumn', 'columnA');
         _.set(measure, 'metricConfig.arguments.denominatorColumn', 'columnB');
+        _.set(measure, 'metricConfig.dateColumn', 'someDateColumn');
       });
 
-      it('returns empty if uid is not set', async () => {
-        _.unset(measure, 'metricConfig.dataSource.uid');
+      it('sets dataSourceNotConfigured if dataSource uid is not set', async () => {
+        _.unset(measure, 'dataSourceLensUid');
 
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(await calculateMeasure(measure, sampleDateRange), 'dataSourceNotConfigured', true);
       });
 
-      it('returns empty if neither aggregationType nor fixedDenominator is set', async () => {
+      it('sets calculationNotConfigured if neither aggregationType nor fixedDenominator is set', async () => {
         _.unset(measure, 'metricConfig.arguments.aggregationType');
-        assert.isEmpty(await calculateMeasure(measure));
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
+      });
+
+      it('sets calculationNotConfigured if dateColumn is not set', async () => {
+        _.unset(measure, 'metricConfig.dateColumn');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, sampleDateRange), 'calculationNotConfigured', true
+        );
+      });
+
+      it('sets noReportingPeriodConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'noReportingPeriodConfigured', true
+        );
+      });
+
+      it('does not set calculationNotConfigured if reportingPeriod is not set', async () => {
+        _.unset(measure, 'metricConfig.reportingPeriod');
+
+        assert.propertyVal(
+          await calculateMeasure(measure, undefined), 'calculationNotConfigured', false
+        );
       });
     });
   });

@@ -5,9 +5,8 @@ import { MetadataPane } from 'components/MetadataPane';
 describe('MetadataPane', () => {
   const getProps = (props) => {
     return {
-      measure: {
-        coreView: {}
-      },
+      coreView: {},
+      measure: {},
       ...props
     };
   };

@@ -775,5 +775,6 @@ module.exports = {
   whereClauseNotFilteringOwnColumn,
   whereClauseFilteringOwnColumn,
   filterToWhereClauseComponent,
-  soqlEncodeValue
+  soqlEncodeValue,
+  soqlEncodeColumnName
 };

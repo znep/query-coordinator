@@ -239,6 +239,7 @@ namespace :test do
       task :update_dataset_landing_page_translations do
         translation_map = {
           '': 'dataset_landing_page',
+          dataset_landing_page: 'dataset_landing_page',
           data_types: 'core.data_types',
           common: 'common'
         }

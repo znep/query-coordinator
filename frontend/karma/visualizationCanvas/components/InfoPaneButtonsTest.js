@@ -1,15 +1,28 @@
+import _ from 'lodash';
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { InfoPaneButtons } from 'visualizationCanvas/components/InfoPaneButtons';
-import { ModeStates } from 'visualizationCanvas/lib/constants';
+import { InfoPaneButtons } from 'components/InfoPaneButtons';
+import { ModeStates } from 'lib/constants';
+import mockView from 'data/mockView';
+import mockVif from 'data/mockVif';
+import mockParentView from 'data/mockParentView';
+
+import util from 'util';
 
 describe('InfoPaneButtons', () => {
   const getProps = (props) => {
-    return {
-      onClickEdit: _.noop,
-      mode: ModeStates.VIEW,
-      ...props
-    };
+    const realProps = _.merge(
+      {
+        onClickEdit: _.noop,
+        mode: ModeStates.VIEW,
+        externalFormats: ['csv'],
+        view: mockView,
+        parentView: mockParentView,
+        vifs: [mockVif]
+      },
+      props
+    );
+    return realProps;
   };
 
   it('renders', () => {

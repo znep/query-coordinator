@@ -53,7 +53,7 @@ class NotificationSettings extends Component {
             <table className="table table-borderless table-condensed table-discrete">
               <thead>
                 <tr>
-                  <th colSpan="3">
+                  <th colSpan="3" styleName="column-name">
                     <span>{headerText}</span>
                   </th>
                 </tr>

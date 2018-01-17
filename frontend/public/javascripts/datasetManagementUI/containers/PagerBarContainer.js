@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import * as DisplayState from 'lib/displayState';
 import * as Selectors from 'selectors';
+import * as FlashActions from 'reduxStuff/actions/flashMessage';
 import PagerBar from 'components/PagerBar/PagerBar';
 
 function numItemsToPaginate(entities, outputSchemaId, displayState) {
@@ -35,6 +36,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   const changePage = targetPage => {
     if (targetPage) {
+      dispatch(FlashActions.hideFlashMessage());
       browserHistory.push(urlForPage(targetPage));
     }
   };

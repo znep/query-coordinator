@@ -13,7 +13,6 @@ export default {
     locateUser: false,
     navigationControl: true,
     panAndZoom: true,
-    rowInspectorTitleColumnName: null,
     viewSourceDataLink: true
   },
   description: '',

@@ -127,7 +127,7 @@ export class MeasureSelector extends Component {
 
     return (
       <div>
-        <ul className="measure-list">
+        <ul className="dropdowns-list">
           {measureSelectors}
           {pendingMeasureSelector}
         </ul>
@@ -141,7 +141,7 @@ export class MeasureSelector extends Component {
     const dimension = getDimension(vifAuthoring);
     const seriesIndex = getSeries(vifAuthoring).length;
     const measureListItemAttributes = {
-      className: 'measure-list-item',
+      className: 'list-item',
       key: this.getListItemKey(seriesIndex)
     };
     const disabled = options.length <= 1 ||
@@ -158,7 +158,7 @@ export class MeasureSelector extends Component {
 
     return (
       <li {...measureListItemAttributes}>
-        <div className="measure-column-selector-dropdown-container">
+        <div className="primary-dropdown-container">
           <Dropdown {...measureAttributes} />
         </div>
         {deleteMeasureLink}
@@ -170,7 +170,7 @@ export class MeasureSelector extends Component {
     const { shouldRenderDeleteMeasureLink, vifAuthoring, metadata } = this.props;
     const dimension = getDimension(vifAuthoring);
     const measureListItemAttributes = {
-      className: 'measure-list-item',
+      className: 'list-item',
       key: this.getListItemKey(seriesItem.seriesIndex)
     };
     const disabled = options.length <= 1 ||
@@ -193,7 +193,7 @@ export class MeasureSelector extends Component {
 
     return (
       <li {...measureListItemAttributes}>
-        <div className="measure-column-selector-dropdown-container">
+        <div className="primary-dropdown-container">
           <Dropdown {...measureAttributes} />
         </div>
         {measureAggregationSelector}
@@ -228,7 +228,7 @@ export class MeasureSelector extends Component {
     };
 
     return (
-      <div className="measure-aggregation-selector-dropdown-container">
+      <div className="secondary-dropdown-container">
         <Dropdown {...measureAggregationAttributes} />
       </div>
     );
@@ -247,13 +247,13 @@ export class MeasureSelector extends Component {
 
   renderDeleteMeasureLink(seriesIndex, measureIndex) {
     const attributes = {
-      className: 'measure-delete-link',
+      className: 'delete-link',
       id: `measure-delete-link-${seriesIndex}`,
       onClick: () => this.handleOnClickDeleteMeasure(seriesIndex, measureIndex)
     };
 
     return (
-      <div className="measure-delete-link-container">
+      <div className="delete-link-container">
         <a {...attributes}>
           <span className="socrata-icon-close" />
         </a>
@@ -263,12 +263,12 @@ export class MeasureSelector extends Component {
 
   renderDeletePendingMeasureLink() {
     const attributes = {
-      className: 'measure-delete-link',
+      className: 'delete-link',
       onClick: () => this.handleOnClickDeletePendingMeasure()
     };
 
     return (
-      <div className="measure-delete-link-container">
+      <div className="delete-link-container">
         <a {...attributes}>
           <span className="socrata-icon-close" />
         </a>
@@ -308,7 +308,7 @@ export class MeasureSelector extends Component {
       I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure');
 
     return shouldRender ? (
-      <div className="measure-add-measure-link-container">
+      <div className="add-link-container">
         <a {...addMeasureLinkAttributes}>
           <span className="socrata-icon-add" />
           {title}

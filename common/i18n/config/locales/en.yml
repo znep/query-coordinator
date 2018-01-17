@@ -1032,8 +1032,19 @@ en:
           uhoh: Uh oh!
         legends_and_flyouts:
           fields:
+            additional_flyout_values:
+              add_flyout_value: Add Flyout Value
+              no_value: None
+              remove_flyout_value: Remove Flyout Value
+              select_column: Select Column...
             row_inspector_title:
               no_value: No Point Inspector Title
+            maps_flyout_title:
+              no_value: None
+              title: Flyout Title
+            placeholders:
+              point: point
+              points: points
             show_legends:
               title: Show Legends
             units_one:
@@ -1044,11 +1055,14 @@ en:
               title: Plural
             sum_aggregation_unit: Total
           subheaders:
+            additional_flyout_values: Additional Flyout Values
             legends:
               title: Legends
             row_inspector_title: Point Inspector Title
+            maps_flyout_details_title: Flyout Details
             flyout_units:
               description: Unit label displayed in flyouts describing chart values.
+              description_for_maps: Unit label displayed in flyouts describing multiple points in a location.
               title: Flyout Unit Label
             flyout_details:
               title: Flyout Details

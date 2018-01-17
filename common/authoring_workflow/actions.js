@@ -1073,6 +1073,38 @@ export function setGeoLocateControl(geoLocateControl) {
   };
 }
 
+export const SET_MAP_FLYOUT_TITLE_COLUMN_NAME = 'SET_MAP_FLYOUT_TITLE_COLUMN_NAME';
+export function setMapFlyoutTitleColumnName(mapFlyoutTitleColumnName) {
+  return {
+    type: SET_MAP_FLYOUT_TITLE_COLUMN_NAME,
+    mapFlyoutTitleColumnName
+  };
+}
+
+export const ADD_BASEMAP_FLYOUT_COLUMN = 'ADD_BASEMAP_FLYOUT_COLUMN';
+export function addBasemapFlyoutColumn(columnName) {
+  return {
+    type: ADD_BASEMAP_FLYOUT_COLUMN,
+    columnName
+  };
+}
+
+export const REMOVE_BASEMAP_FLYOUT_COLUMN = 'REMOVE_BASEMAP_FLYOUT_COLUMN';
+export function removeBasemapFlyoutColumn(relativeIndex) {
+  return {
+    type: REMOVE_BASEMAP_FLYOUT_COLUMN,
+    relativeIndex
+  };
+}
+export const SET_ADDITIONAL_FLYOUT_COLUMNS = 'SET_ADDITIONAL_FLYOUT_COLUMNS';
+export function setAdditionalFlyoutColumns(columnName, relativeIndex) {
+  return {
+    type: SET_ADDITIONAL_FLYOUT_COLUMNS,
+    columnName,
+    relativeIndex
+  };
+}
+
 export const SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE = 'SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE';
 export function setSearchBoundaryUpperLeftLatitude(searchBoundaryUpperLeftLatitude) {
   return {

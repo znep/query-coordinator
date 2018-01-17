@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
-
 import * as actions from '../../actions';
 
 export default function map(state, action) {
@@ -120,10 +119,6 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.colorLinesBy', action.colorLinesBy);
       break;
 
-    case actions.SET_ROW_INSPECTOR_TITLE_COLUMN_NAME:
-      _.set(state, 'configuration.rowInspectorTitleColumnName', action.rowInspectorTitleColumnName);
-      break;
-
     case actions.SET_CENTER_AND_ZOOM:
       _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
@@ -192,6 +187,30 @@ export default function map(state, action) {
 
     case actions.SET_GEO_LOCATE_CONTROL:
       _.set(state, 'configuration.geoLocateControl', action.geoLocateControl);
+      break;
+
+    case actions.SET_MAP_FLYOUT_TITLE_COLUMN_NAME:
+      _.set(state, 'series[0].mapOptions.mapFlyoutTitleColumnName', action.mapFlyoutTitleColumnName);
+      break;
+
+    case actions.ADD_BASEMAP_FLYOUT_COLUMN:
+      const flyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      flyoutColumns.push(action.columnName);
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', flyoutColumns);
+      break;
+
+    case actions.REMOVE_BASEMAP_FLYOUT_COLUMN:
+      let additionalFlyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      additionalFlyoutColumns.splice(action.relativeIndex, 1);
+
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', additionalFlyoutColumns);
+      break;
+
+    case actions.SET_ADDITIONAL_FLYOUT_COLUMNS:
+      const columns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      columns[action.relativeIndex] = action.columnName;
+
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', columns);
       break;
 
     case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE:

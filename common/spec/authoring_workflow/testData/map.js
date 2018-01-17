@@ -6,12 +6,11 @@ export default () => ({
   'configuration': {
     'baseMapStyle': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
     'baseMapOpacity': 0.2,
-    'locateUser': false,
     'datasetMetadata': false,
     'locateUser': false,
     'geoCoderControl': true,
     'geoLocateControl': true,
-    'rowInspectorTitleColumnName': 'incident_location',
+    'locateUser': false,
     'panAndZoom': true,
     'mapCenterAndZoom': {
       'center': {
@@ -56,6 +55,7 @@ export default () => ({
         'colorLinesBy': 'columnName',
         'colorPointsBy': 'columnName',
         'lineWeight': 5,
+        'mapFlyoutTitleColumnName': 'incident_location',
         'mapType': 'pointMap',
         'maxClusteringZoomLevel': 8,
         'maxClusterSize': 24,

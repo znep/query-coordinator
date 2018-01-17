@@ -6,6 +6,7 @@ import { SERIES_TYPE_FLYOUT } from '../constants';
  * Note: These properties are in alphabetical order.
  */
 const paths = {
+  additionalFlyoutColumns: 'series[0].mapOptions.additionalFlyoutColumns',
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
   baseMapStyle: 'configuration.baseMapStyle',
@@ -35,6 +36,7 @@ const paths = {
   limit: 'series[0].dataSource.limit',
   lineWeight: 'series[0].mapOptions.lineWeight',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
+  mapFlyoutTitleColumnName: 'series[0].mapOptions.mapFlyoutTitleColumnName',
   mapType: 'series[0].mapOptions.mapType',
   maxClusteringZoomLevel: 'series[0].mapOptions.maxClusteringZoomLevel',
   maxClusterSize: 'series[0].mapOptions.maxClusterSize',
@@ -222,6 +224,10 @@ export const load = (dispatch, vif) => {
     }
   }
 
+  if (has(paths.additionalFlyoutColumns)) {
+    dispatch(actions.setAdditionalFlyoutColumns(get(paths.additionalFlyoutColumns)));
+  }
+
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));
   }
@@ -305,6 +311,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.mapCenterAndZoom)) {
     dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
+  }
+
+  if (has(paths.mapFlyoutTitleColumnName)) {
+    dispatch(actions.setMapFlyoutTitleColumnName(get(paths.mapFlyoutTitleColumnName)));
   }
 
   if (has(paths.measureAxisMaxValue)) {

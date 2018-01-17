@@ -17,6 +17,7 @@ function render(type, props) {
     onChangeUnitOne: sinon.spy(),
     onChangeUnitOther: sinon.spy(),
     onSelectRowInspectorTitle: sinon.spy(),
+    onSelectMapsFlyoutTitle: sinon.spy(),
     metadata: { domain: 'example.com', datasetUid: 'four-four', data: { columns: [] } }
   }), props);
 
@@ -272,7 +273,7 @@ describe('LegendsAndFlyoutsPane', () => {
 
     describe('events', () => {
       emitsEventsForUnits();
-      emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
+      emitsEvent('#flyout-title-column .picklist-option', 'onSelectMapsFlyoutTitle', 'click');
     });
   });
 

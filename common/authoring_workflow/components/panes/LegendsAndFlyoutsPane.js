@@ -6,14 +6,17 @@ import { Dropdown, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
 import { COLUMN_TYPES, SERIES_TYPE_FLYOUT } from '../../constants';
 import { getMeasureTitle } from '../../helpers';
-import { getDisplayableColumns, hasData } from '../../selectors/metadata';
+import { getDisplayableColumns, hasData, isPointMapColumn } from '../../selectors/metadata';
 
 import {
   getNonFlyoutSeries,
   getRowInspectorTitleColumnName,
+  getMapFlyoutTitleColumnName,
   getSeries,
   getShowLegend,
   getVisualizationType,
+  getPointAggregation,
+  getDimension,
   hasReferenceLineLabels,
   isBarChart,
   isColumnChart,
@@ -30,6 +33,7 @@ import {
 
 import {
   setRowInspectorTitleColumnName,
+  setMapFlyoutTitleColumnName,
   setShowLegend,
   setUnitsOne,
   setUnitsOther
@@ -39,26 +43,43 @@ import CustomizationTabPane from '../CustomizationTabPane';
 import DebouncedInput from '../shared/DebouncedInput';
 import EmptyPane from './EmptyPane';
 import MeasureSelector from '../MeasureSelector';
+import ColumnSelector from '../ColumnSelector';
 
 export class LegendsAndFlyoutsPane extends Component {
   renderFlyoutUnits = () => {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
 
     const nonFlyoutSeries = getNonFlyoutSeries(vifAuthoring);
+
+    const isNewGLMapEnabled = isNewGLMap(vifAuthoring);
+
     const unitControls = nonFlyoutSeries.map((item, index) => {
 
       const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');
+
       const unitOne = _.get(item, 'unit.one', '');
+
       const unitOther = _.get(item, 'unit.other', '');
+
+      let unitsOnePlaceholderKey = 'units_one.placeholder';
+      let unitsOtherPlaceholderKey = 'units_other.placeholder';
+
+      if (isNewGLMapEnabled) {
+        unitsOnePlaceholderKey = 'placeholders.point';
+        unitsOtherPlaceholderKey = 'placeholders.points';
+      } else if (hasSumAggregation) {
+        unitsOnePlaceholderKey = 'sum_aggregation_unit';
+        unitsOtherPlaceholderKey = 'sum_aggregation_unit';
+      }
 
       const unitOneAttributes = {
         id: `units-one-${index}`,
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOne(index, event.target.value),
-        placeholder: hasSumAggregation ?
-          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
-          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
+        placeholder: I18n.t(unitsOnePlaceholderKey, {
+          scope: 'shared.visualizations.panes.legends_and_flyouts.fields'
+        }),
         value: unitOne
       };
 
@@ -67,20 +88,27 @@ export class LegendsAndFlyoutsPane extends Component {
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOther(index, event.target.value),
-        placeholder: hasSumAggregation ?
-          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
-          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
+        placeholder: I18n.t(unitsOtherPlaceholderKey, {
+          scope: 'shared.visualizations.panes.legends_and_flyouts.fields'
+        }),
         value: unitOther
       };
 
-      const measureTitle = getMeasureTitle(metadata, item);
+      const measureTitle = isNewGLMapEnabled ? null : getMeasureTitle(metadata, item);
       return this.renderFlyoutUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
+    const flyoutUnitsDescriptionKey = isNewGLMapEnabled ? 'description_for_maps' : 'description';
 
     return (
-      <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units.title')}>
+      <AccordionPane
+        key="units"
+        title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units.title')}>
         <p className="authoring-field-description units-description">
-          <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units.description')}</small>
+          <small>
+            {I18n.t(flyoutUnitsDescriptionKey, {
+              scope: 'shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_units'
+            })}
+          </small>
         </p>
         {unitControls}
       </AccordionPane>
@@ -106,7 +134,7 @@ export class LegendsAndFlyoutsPane extends Component {
 
     return (
       <div {...containerAttributes}>
-        <p>{measureTitle}</p>
+        {_.isNull(measureTitle) ? null : <p>{measureTitle}</p>}
         <div className="authoring-field unit-container">
           <label {...unitsOneLabelAttributes}>{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
@@ -143,8 +171,32 @@ export class LegendsAndFlyoutsPane extends Component {
     };
 
     return (
-      <AccordionPane key="details" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_details.title')}>
+      <AccordionPane
+        key="details"
+        title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_details.title')}>
         <MeasureSelector {...attributes} />
+      </AccordionPane>
+    );
+  }
+
+  renderFlyoutDetailsForMaps = () => {
+    const attributes = {
+      listItemKeyPrefix: 'AdditionalFlyoutValues',
+      shouldRenderAddColumnLink: true,
+      shouldRenderDeleteColumnLink: true
+    };
+
+    return (
+      <AccordionPane
+        key="details"
+        title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.flyout_details.title')}>
+        {this.renderFlyoutTitle()}
+        <label>
+          {I18n.translate('additional_flyout_values', {
+            scope: 'shared.visualizations.panes.legends_and_flyouts.subheaders'
+          })}
+        </label>
+        <ColumnSelector {...attributes} />
       </AccordionPane>
     );
   }
@@ -178,6 +230,35 @@ export class LegendsAndFlyoutsPane extends Component {
     );
   }
 
+  renderFlyoutTitle = () => {
+    const { onSelectMapsFlyoutTitle, vifAuthoring, metadata } = this.props;
+    const mapFlyoutTitleColumnName = getMapFlyoutTitleColumnName(vifAuthoring);
+    const i18nScope = 'shared.visualizations.panes.legends_and_flyouts.fields.maps_flyout_title';
+    const columnAttributes = {
+      id: 'flyout-title-column',
+      placeholder: I18n.t('no_value', { scope: i18nScope }),
+      options: _.map(getDisplayableColumns(metadata), column => ({
+        title: column.name,
+        value: column.fieldName,
+        type: column.renderTypeName,
+        render: this.renderColumnOption
+      })),
+      onSelection: onSelectMapsFlyoutTitle,
+      value: mapFlyoutTitleColumnName
+    };
+
+    return (
+      <div className="authoring-field">
+        <label className="block-label" htmlFor="flyout-title-column">
+          {I18n.t('title', { scope: i18nScope })}
+        </label>
+        <div className="flyout-title-dropdown-container">
+          <Dropdown {...columnAttributes} />
+        </div>
+      </div>
+    );
+  }
+
   renderBarChartControls = () => {
     return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
@@ -206,6 +287,19 @@ export class LegendsAndFlyoutsPane extends Component {
     return [this.renderFlyoutUnits(), this.renderFlyoutDetails(), this.renderLegends()];
   }
 
+  renderNewGLMapControls = () => {
+    const { vifAuthoring, metadata } = this.props;
+    const selectedPointAggregation = getPointAggregation(vifAuthoring);
+    const dimension = getDimension(vifAuthoring);
+    const isPointMap = isPointMapColumn(metadata, dimension);
+
+    if (isPointMap && selectedPointAggregation !== 'none') {
+      return this.renderEmptyPane();
+    }
+
+    return [this.renderFlyoutUnits(), this.renderFlyoutDetailsForMaps()];
+  }
+
   renderFeatureMapControls = () => {
     const { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
     const rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
@@ -216,7 +310,7 @@ export class LegendsAndFlyoutsPane extends Component {
         title: column.name,
         value: column.fieldName,
         type: column.renderTypeName,
-        render: this.renderRowInspectorTitleColumnOption
+        render: this.renderColumnOption
       })),
       onSelection: onSelectRowInspectorTitle,
       value: rowInspectorTitleColumnName
@@ -236,11 +330,7 @@ export class LegendsAndFlyoutsPane extends Component {
     return [this.renderFlyoutUnits(), rowInspector];
   }
 
-  renderNewMapControls = () => {
-    return this.renderFeatureMapControls();
-  }
-
-  renderRowInspectorTitleColumnOption = (option) => {
+  renderColumnOption = (option) => {
     const columnType = _.find(COLUMN_TYPES, { type: option.type });
     const icon = columnType ? columnType.icon : '';
 
@@ -267,7 +357,7 @@ export class LegendsAndFlyoutsPane extends Component {
       } else if (isRegionMap(vifAuthoring)) {
         configuration = this.renderRegionMapControls();
       } else if (isNewGLMap(vifAuthoring)) {
-        configuration = this.renderNewMapControls();
+        configuration = this.renderNewGLMapControls();
       } else if (isColumnChart(vifAuthoring)) {
         configuration = this.renderColumnChartControls();
       } else if (isComboChart(vifAuthoring)) {
@@ -321,6 +411,11 @@ function mapDispatchToProps(dispatch) {
     onSelectRowInspectorTitle: flyoutTitle => {
       const columnName = flyoutTitle.value;
       dispatch(setRowInspectorTitleColumnName(columnName));
+    },
+
+    onSelectMapsFlyoutTitle: (flyoutTitle) => {
+      const columnName = flyoutTitle.value;
+      dispatch(setMapFlyoutTitleColumnName(columnName));
     },
 
     onChangeShowLegend: (e) => {

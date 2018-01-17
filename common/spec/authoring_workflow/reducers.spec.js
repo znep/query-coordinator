@@ -147,7 +147,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
       shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
 
-      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap', 'map']);
+      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 
       shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'map', 'regionMap']);
 
@@ -183,6 +183,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setNavigationControl', false, 'configuration.navigationControl', ['map']);
       shouldSetVif('setGeoCoderControl', true, 'configuration.geoCoderControl', ['map']);
       shouldSetVif('setGeoLocateControl', true, 'configuration.geoLocateControl', ['map']);
+      shouldSetVif('setMapFlyoutTitleColumnName', 'columnName', 'series[0].mapOptions.mapFlyoutTitleColumnName', ['map']);
       shouldSetVif('setSearchBoundaryUpperLeftLatitude', 64.22826766646368, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', ['map']);
       shouldSetVif('setSearchBoundaryUpperLeftLongitude', -138.61595153808594, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', ['map']);
       shouldSetVif('setSearchBoundaryLowerRightLatitude', 53.81794822741499, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', ['map']);
@@ -237,6 +238,56 @@ describe('AuthoringWorkflow reducer', () => {
           var newState = reducer(getTestState(), action);
 
           expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseMapOpacity')).to.equal(0.5);
+        });
+
+        describe('when a new additional flyout column is added', () => {
+          let state;
+
+          beforeEach(() => {
+            state = getDefaultState();
+          });
+
+          it('should add column field name to additionalFlyoutColumns', () => {
+            const newState = reducer(state, actions.addBasemapFlyoutColumn('COLUMN_NAME'));
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 1);
+          });
+        });
+
+        describe('when a additional flyout column is removed', () => {
+          let state;
+
+          beforeEach(() => {
+            state = reducer(
+              getDefaultState(),
+              actions.addBasemapFlyoutColumn('COLUMN_NAME')
+            );
+          });
+
+          it('should remove the flyout column', () => {
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 1);
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'COLUMN_NAME');
+
+            const newState = reducer(state, actions.removeBasemapFlyoutColumn(0));
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 0);
+          });
+        });
+
+        describe('when called setAdditionalFlyoutColumns', () => {
+          let state;
+
+          beforeEach(() => {
+            state = reducer(
+              getDefaultState(),
+              actions.addBasemapFlyoutColumn('COLUMN_NAME')
+            );
+          });
+
+          it('should set the flyout column name', () => {
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'COLUMN_NAME');
+            const newState = reducer(state, actions.setAdditionalFlyoutColumns('NEW_COLUMN_NAME', 0));
+
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'NEW_COLUMN_NAME');
+          });
         });
       });
 

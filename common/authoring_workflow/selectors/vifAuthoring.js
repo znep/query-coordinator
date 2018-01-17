@@ -243,6 +243,17 @@ export const getGeoLocateControl = createSelector(
   (vif) => _.get(vif, 'configuration.geoLocateControl', true)
 );
 
+
+export const getMapFlyoutTitleColumnName = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.mapFlyoutTitleColumnName', null)
+);
+
+export const getAdditionalFlyoutColumns = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.additionalFlyoutColumns', [])
+);
+
 export const getSearchBoundaryUpperLeftLatitude = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', '')

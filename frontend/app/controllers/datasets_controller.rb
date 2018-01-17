@@ -83,6 +83,10 @@ class DatasetsController < ApplicationController
       @render_styleguide_on_legacy_pages = true
     end
 
+    if @view.draft?
+      return show_revision
+    end
+
     # NBE/OBE redirect & flash messages
     if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url
@@ -298,16 +302,23 @@ class DatasetsController < ApplicationController
   end
 
   def current_revision
+    revision_seq = current_revision_seq
+    unless revision_seq.nil?
+      return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+    end
+
+    return render_404
+  end
+
+  def current_revision_seq
     if FeatureFlags.derive(nil, request).dsmp_level != "off"
       # ask dsmapi for the list of revisions
       open_revisions = DatasetManagementAPI.get_open_revisions(params[:id], cookies)
       if open_revisions.length > 0
         # get the first one and redirect to that path
-        revision_seq = open_revisions.first['revision_seq']
-        return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+        open_revisions.first['revision_seq']
       end
     end
-    return render_404
   end
 
   def blob
@@ -1136,17 +1147,29 @@ class DatasetsController < ApplicationController
       composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
       composite_params.merge!(options || {})
 
-      if @row
-        view_row_path(composite_params)
-      elsif request.path =~ /\/alt$/
-        alt_view_path(composite_params)
-      elsif request.path =~ /\/data$/
-        data_grid_path(composite_params)
-      elsif request.path =~ /\/revisions/
-        show_revision_path(composite_params)
+      if @view.draft?
+        revision_seq = current_revision_seq
+        if revision_seq.nil?
+          view_path(composite_params)
+        else
+          composite_params.merge!(revision_seq: current_revision_seq)
+          show_revision_path(composite_params)
+        end
       else
-        view_path(composite_params)
+        if @row
+          view_row_path(composite_params)
+        elsif request.path =~ /\/alt$/
+          alt_view_path(composite_params)
+        elsif request.path =~ /\/data$/
+          data_grid_path(composite_params)
+        elsif request.path =~ /\/revisions/
+          show_revision_path(composite_params)
+        else
+          view_path(composite_params)
+        end
       end
+
+
     end
   end
 

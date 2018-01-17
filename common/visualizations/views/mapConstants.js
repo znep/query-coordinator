@@ -21,9 +21,9 @@ export const GEO_LOCATE_CONTROL_OPTIONS = Object.freeze({
 });
 
 export const MAP_CONTROLS_POSITION = Object.freeze({
-  NAVIGATION: 'top-left',
+  NAVIGATION: 'bottom-left',
   GEO_LOCATE: 'bottom-left',
-  GEO_CODER: 'top-right'
+  GEO_CODER: 'top-left'
 });
 
 export const TILE_URL_OPTIONS = Object.freeze({

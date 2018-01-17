@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import Pager from 'frontend/public/javascripts/common/components/Pager';
+import Pager from 'common/components/Pager';
 import DownloadLink from './DownloadLink';
 import * as actions from '../actions';
 import utils from 'common/js_utils';

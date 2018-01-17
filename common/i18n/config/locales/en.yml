@@ -409,6 +409,13 @@ en:
           delete: Delete
           validate: Validate
           create: Save
+    pager:
+      of: of
+      invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
+      last_page: Last page
+      next_page: Next page
+      page: Page
+      previous_page: Previous page
     site_chrome:
       access_manager:
         accept: OK

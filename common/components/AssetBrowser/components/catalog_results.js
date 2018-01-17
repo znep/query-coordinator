@@ -14,7 +14,7 @@ import * as constants from '../lib/constants';
 import ActionDropdown from './action_dropdown';
 import ActiveFilterCount from './filters/active_filter_count';
 import BackButton from './back_button';
-import Pager from 'frontend/public/javascripts/common/components/Pager';
+import Pager from 'common/components/Pager';
 import ResultCount from './result_count';
 import ResultCardContainer from './result_card_container';
 import ResultListTable from './result_list_table';

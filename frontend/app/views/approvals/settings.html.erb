@@ -185,6 +185,10 @@
           $(event.target).parent('li').addClass('selected');
         }
       });
+      // If any Rails alerts, keep them for 3s and then fade them over 2s
+      setTimeout(function() {
+        $('.styleguide-alert').fadeTo(2000, 0)
+      }, 3000);
     });
   </script>
 <% end %>

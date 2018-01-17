@@ -457,6 +457,9 @@ en:
       save: Save
       edit: Edit
       missing_workflow: 'Error: Cannot find Approvals workflow'
+      notifications:
+        save_success: Changes saved successfully.
+        save_error: Something went wrong. Please contact support@socrata.com if the issue persists.
     title: Routing and Approval
   catalog_landing_page:
     activation:

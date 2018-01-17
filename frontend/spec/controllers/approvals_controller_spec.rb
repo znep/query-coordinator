@@ -60,7 +60,7 @@ describe ApprovalsController do
         expect(step_double).to receive(:community_task).and_return(community_task_double)
         expect(workflow).to receive(:steps).twice.and_return([step_double])
         post :settings, params
-        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(:action => 'settings', :id => params['id'])
       end
     end
   end

@@ -34,11 +34,14 @@ class ApprovalsController < AdministrationController
 
       @approval_workflow.require_reapproval = params[:reapproval_strategy]
 
-      @approval_workflow.update
-
-      # TODO Error handling (don't redirect when there's an error, re-render the page instead)
-      flash[:notice] = 'Settings successfully updated'
-      redirect_to '/admin/approvals'
+      begin
+        @approval_workflow.update
+        flash[:notice] = t('approvals.settings.notifications.save_success')
+        redirect_to :action => 'settings', :id => params[:id]
+      rescue RuntimeError
+        flash.now[:error] = t('approvals.settings.notifications.save_error')
+        render :action => 'settings', :id => params[:id]
+      end
     end
   end
 

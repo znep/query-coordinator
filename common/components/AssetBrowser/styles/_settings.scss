@@ -132,5 +132,17 @@
   .checkbox_label {
     margin-left: 0.5em;
   }
-
 }
+
+// To get Rails flashes to render similar to the ToastNotification component
+// See EN-21271
+#noticeContainer {
+  opacity: 0.95;
+  position: fixed;
+  width: max-content;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+

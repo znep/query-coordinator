@@ -30,13 +30,7 @@ export class InfoPaneButtons extends PureComponent {
       }
     };
 
-    const flannelProps = Object.assign(
-      {
-        view: this.props.parentView,
-        idFromView: false
-      },
-      this.props
-    );
+    const flannelProps = Object.assign({ view: this.props.parentView }, this.props);
 
     return (
       <div className="btn-group">

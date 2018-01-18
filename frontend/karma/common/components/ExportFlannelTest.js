@@ -121,27 +121,21 @@ describe('components/ExportFlannel', () => {
     assert.match(element.href, /files/);
   });
 
-  describe.only('filtered download behavior', () => {
+  describe('filtered download behavior', () => {
     const propsBase = getProps({
       view: mockViewVizCan,
       vifs: [mockVif]
     });
 
     it('does not show a filtering toggle when filtered export is disabled', () => {
-      const props = getProps({
-        exportFilteredData: false,
-        idFromView: true
-      });
+      const props = getProps({ exportFilteredData: false });
       const component = shallow(<ExportFlannel {...props} />);
       const form = component.find('#export-flannel-export-form');
       assert.equal(form.length, 0);
     });
 
     it('toggles filtered and unfiltered downloads when filtered export is enabled', () => {
-      const props = Object.assign(propsBase, {
-        exportFilteredData: true,
-        idFromView: false
-      });
+      const props = Object.assign(propsBase, { exportFilteredData: true });
       const component = shallow(<ExportFlannel {...props} />);
       const form = component.find('#export-flannel-export-form');
       assert.equal(form.length, 1);

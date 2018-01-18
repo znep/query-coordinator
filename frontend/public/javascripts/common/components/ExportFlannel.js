@@ -33,7 +33,7 @@ export default class ExportFlannel extends PureComponent {
   componentDidMount() {
     const self = this;
     // determine the underlying dataset metadata and save it in the state
-    if (!this.props.idFromView) {
+    if (this.props.exportFilteredData) {
       const datasetDomain = _.get(self.state.vif, ['series', 0, 'dataSource', 'domain']);
       const datasetUid = _.get(self.state.vif, ['series', 0, 'dataSource', 'datasetUid']);
       const metadataProvider = new MetadataProvider({ domain: datasetDomain, datasetUid }, true);
@@ -80,7 +80,7 @@ export default class ExportFlannel extends PureComponent {
     const { view, onDownloadData } = this.props;
 
     let url = getDownloadLink(view.id, format);
-    if (!this.props.idFromView) {
+    if (this.props.exportFilteredData) {
       const queryParam = (this.state.exportSetting === 'filtered' ? this.state.queryParam : undefined);
       url = getDownloadLink(this.state.datasetUid, format, this.state.datasetDomain, 'https', queryParam);
     }
@@ -315,7 +315,7 @@ export default class ExportFlannel extends PureComponent {
 }
 
 ExportFlannel.defaultProps = {
-  idFromView: true,
+  exportFilteredData: false,
   flannelOpen: false
 };
 

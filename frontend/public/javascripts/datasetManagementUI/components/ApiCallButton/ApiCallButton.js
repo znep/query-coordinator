@@ -2,27 +2,26 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } from 'lib/apiCallStatus';
 import classNames from 'classnames';
-import styles from './ApiCallButton.module.scss';
 
 const ApiCallButton = ({ status, onClick, additionalClassName, children, forceDisable }) => {
   let className;
 
   switch (status) {
     case STATUS_CALL_IN_PROGRESS:
-      className = styles.updatingBtn;
+      className = 'btn btn-primary btn-busy btn-sm';
       break;
 
     case STATUS_CALL_FAILED:
-      className = styles.errorBtn;
+      className = 'btn btn-primary btn-error';
       break;
 
     case STATUS_CALL_SUCCEEDED:
-      className = styles.successfulBtn;
+      className = 'btn btn-primary btn-success';
       break;
 
     default:
       // null if it's saved
-      className = styles.baseBtn;
+      className = 'btn btn-primary';
   }
 
   const inProgress = status === STATUS_CALL_IN_PROGRESS;
@@ -33,7 +32,7 @@ const ApiCallButton = ({ status, onClick, additionalClassName, children, forceDi
       className={classNames(className, additionalClassName)}
       onClick={onClick}
       disabled={forceDisable || inProgress}>
-      {inProgress ? <span className={styles.spinner} /> : children || I18n.common.save}
+      {inProgress ? <span className="spinner-default spinner-btn-primary" /> : children || I18n.common.save}
     </button>
   );
 };

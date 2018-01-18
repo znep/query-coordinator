@@ -9,6 +9,8 @@ import Modal from 'containers/ModalContainer';
 import { loadRevision } from 'reduxStuff/actions/loadRevision';
 import styles from './Home.module.scss';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 class Home extends Component {
   constructor() {
     super();
@@ -44,9 +46,14 @@ class Home extends Component {
         buttonPosition: 'right'
       };
 
+      // The only time we show the A2B on DSMUI is if both flags are true.
+      // If either flag is false, then we show the DSMUI header.
+      const showHeaderBar = !(FeatureFlags.value('enable_asset_action_bar') &&
+        FeatureFlags.value('enable_asset_action_bar_on_dsmui'));
+
       return (
         <div className={wrapperClasses}>
-          <AppBar />
+          {showHeaderBar && <AppBar />}
           {children}
           <NotificationList />
           <Modal />

@@ -1243,10 +1243,18 @@ module ApplicationHelper
   # - If the Asset Action Bar shows up, and
   # - If UI elements replaced by the A2B are hidden
   def render_asset_action_bar?
+    _req = defined?(request) ? request : nil
     return false unless FeatureFlags.value_for(:enable_asset_action_bar,
-                                               view: @view, request: request)
+                                               view: @view, request: _req)
 
     return false unless current_user_can_see_asset_action_bar?
+
+    # On DSMUI, we also need a second flag to decide rendering.
+    on_dsmui = controller_name == 'datasets' &&
+      %w(show_revision current_revision).include?(action_name)
+    return false if on_dsmui &&
+      FeatureFlags.value_for(:enable_asset_action_bar_on_dsmui,
+                             view: @view, request: _req) == false
 
     # Currently we want it to show on DSLP and nowhere else,
     # but it will eventually be in other places.

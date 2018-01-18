@@ -12,6 +12,7 @@ import CategoryFilter from './category_filter';
 import CustomFacetFilters from './custom_facet_filters';
 import OwnedByFilter from './owned_by_filter';
 import RecentlyViewedFilter from './recently_viewed_filter';
+import AwaitingApprovalFilter from './awaiting_approval_filter';
 import TagFilter from './tag_filter';
 import VisibilityFilter from './visibility_filter';
 
@@ -24,6 +25,7 @@ export class MobileCatalogFilters extends Component {
       activeTab,
       clearAllFilters,
       filtersOpen,
+      showAwaitingApprovalFilter,
       toggleFilters
     } = this.props;
 
@@ -63,6 +65,7 @@ export class MobileCatalogFilters extends Component {
           <div className="filter-content">
             <form>
               <RecentlyViewedFilter />
+              {showAwaitingApprovalFilter && <AwaitingApprovalFilter />}
               <AssetTypesFilter />
               {authorityFilterSection}
               {ownedByFilterSection}

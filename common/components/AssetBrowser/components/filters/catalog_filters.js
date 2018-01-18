@@ -15,6 +15,7 @@ import CategoryFilter from './category_filter';
 import CustomFacetFilters from './custom_facet_filters';
 import OwnedByFilter from './owned_by_filter';
 import RecentlyViewedFilter from './recently_viewed_filter';
+import AwaitingApprovalFilter from './awaiting_approval_filter';
 import TagFilter from './tag_filter';
 import VisibilityFilter from './visibility_filter';
 
@@ -36,7 +37,7 @@ export class CatalogFilters extends Component {
   }
 
   render() {
-    const { activeTab } = this.props;
+    const { activeTab, showAwaitingApprovalFilter } = this.props;
 
     const { filterContentOpen } = this.state;
 
@@ -78,6 +79,7 @@ export class CatalogFilters extends Component {
     const authorityFilterSection = onMyAssetsTab ? null : <AuthorityFilter />;
     const ownedByFilterSection = onMyAssetsTab ? null : <OwnedByFilter />;
     const visibilityFilterSection = onApprovals ? null : <VisibilityFilter />;
+    const awaitingApprovalFilter = showAwaitingApprovalFilter ? <AwaitingApprovalFilter /> : null;
 
     return (
       <div className="catalog-filters">
@@ -86,7 +88,10 @@ export class CatalogFilters extends Component {
         <div className={filterContentClass}>
           {filterHeader}
           <form>
-            <RecentlyViewedFilter />
+            <div className="filter-switches">
+              <RecentlyViewedFilter />
+              {awaitingApprovalFilter}
+            </div>
             <AssetTypesFilter />
             {authorityFilterSection}
             {ownedByFilterSection}

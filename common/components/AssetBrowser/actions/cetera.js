@@ -13,8 +13,16 @@ export const FETCH_RESULTS_ERROR = 'FETCH_RESULTS_ERROR';
 export const FETCH_RESULTS_SUCCESS = 'FETCH_RESULTS_SUCCESS';
 export const UPDATE_CATALOG_RESULTS = 'UPDATE_CATALOG_RESULTS';
 
-export const updateCatalogResults = (response, onlyRecentlyViewed = false, sortByRecentlyViewed = false) =>
-  ({ type: UPDATE_CATALOG_RESULTS, response, onlyRecentlyViewed, sortByRecentlyViewed });
+export const updateCatalogResults = (
+  response,
+  onlyRecentlyViewed = false,
+  sortByRecentlyViewed = false
+) => ({
+  type: UPDATE_CATALOG_RESULTS,
+  response,
+  onlyRecentlyViewed,
+  sortByRecentlyViewed
+});
 
 export const fetchingResults = () => ({ type: FETCH_RESULTS });
 export const fetchingResultsSuccess = () => ({ type: FETCH_RESULTS_SUCCESS });

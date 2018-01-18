@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ceteraUtils from 'common/cetera/utils';
 import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
-import { MY_ASSETS_TAB, SHARED_TO_ME_TAB } from 'common/components/AssetBrowser/lib/constants';
+import { APPROVAL_STATUS_PENDING } from 'common/components/AssetBrowser/lib/constants';
 
 export const INITIAL_RESULTS_FETCHED = 'INITIAL_RESULTS_FETCHED';
 export const FETCH_INITIAL_RESULTS = 'FETCH_INITIAL_RESULTS';
@@ -39,6 +39,8 @@ const translateColumnToMixpanelEvent = (columnName) => {
 
 const translateParamsToMixpanelEvent = (params) => {
   switch (params.action) {
+    case filterActions.TOGGLE_AWAITING_APPROVAL:
+      return 'Filtered Assets to Only Awaiting Approval';
     case filterActions.TOGGLE_RECENTLY_VIEWED:
       return 'Filtered Assets to Only Recently Viewed';
     case filterActions.CHANGE_ASSET_TYPE:
@@ -211,7 +213,11 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.
       const explicitOrder = _.get(parameters, 'order') || _.get(getState(), 'catalog.order');
       sortByRecentlyViewed = sortByRecentlyViewed || (onlyRecentlyViewed && _.isEmpty(explicitOrder));
 
-      dispatch(ceteraActions.updateCatalogResults(response, onlyRecentlyViewed, sortByRecentlyViewed));
+      dispatch(ceteraActions.updateCatalogResults(
+        response,
+        onlyRecentlyViewed,
+        sortByRecentlyViewed
+      ));
       dispatch(ceteraActions.fetchingResultsSuccess());
       onSuccess(response.results.length > 0);
 

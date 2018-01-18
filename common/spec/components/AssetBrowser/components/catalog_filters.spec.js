@@ -11,6 +11,7 @@ import CategoryFilter from 'common/components/AssetBrowser/components/filters/ca
 import CustomFacetFilters from 'common/components/AssetBrowser/components/filters/custom_facet_filters';
 import OwnedByFilter from 'common/components/AssetBrowser/components/filters/owned_by_filter';
 import RecentlyViewedFilter from 'common/components/AssetBrowser/components/filters/recently_viewed_filter';
+import AwaitingApprovalFilter from 'common/components/AssetBrowser/components/filters/awaiting_approval_filter';
 import TagFilter from 'common/components/AssetBrowser/components/filters/tag_filter';
 import VisibilityFilter from 'common/components/AssetBrowser/components/filters/visibility_filter';
 
@@ -24,6 +25,7 @@ const catalogFiltersProps = (options = {}) => ({
   domainCustomFacets: [],
   domainTags: [],
   onlyRecentlyViewed: false,
+  showAwaitingApprovalFilter: true,
   toggleRecentlyViewed: () => undefined,
   usersList: [],
   filters: {},
@@ -53,6 +55,7 @@ describe('components/CatalogFilters', () => {
       assert.lengthOf(wrapper.find(AuthorityFilter), 0);
 
       assert.lengthOf(wrapper.find(RecentlyViewedFilter), 1);
+      assert.lengthOf(wrapper.find(AwaitingApprovalFilter), 1);
       assert.lengthOf(wrapper.find(AssetTypesFilter), 1);
       assert.lengthOf(wrapper.find(VisibilityFilter), 1);
       assert.lengthOf(wrapper.find(CategoryFilter), 1);
@@ -68,6 +71,7 @@ describe('components/CatalogFilters', () => {
       const wrapper = shallow(<CatalogFilters {...props} />);
 
       assert.lengthOf(wrapper.find(RecentlyViewedFilter), 1);
+      assert.lengthOf(wrapper.find(AwaitingApprovalFilter), 1);
       assert.lengthOf(wrapper.find(AssetTypesFilter), 1);
       assert.lengthOf(wrapper.find(AuthorityFilter), 1);
       assert.lengthOf(wrapper.find(OwnedByFilter), 1);

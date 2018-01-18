@@ -51,6 +51,7 @@ export default class Approvals extends Component {
         enableAssetInventoryLink={false}
         initialTab={constants.MY_QUEUE_TAB}
         showAssetCounts={false}
+        showAwaitingApprovalFilter={false}
         showFilters
         showSearchField
         tabs={tabs}

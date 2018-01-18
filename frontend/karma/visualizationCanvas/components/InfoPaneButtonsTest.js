@@ -7,8 +7,6 @@ import mockView from 'data/mockView';
 import mockVif from 'data/mockVif';
 import mockParentView from 'data/mockParentView';
 
-import util from 'util';
-
 describe('InfoPaneButtons', () => {
   const getProps = (props) => {
     const realProps = _.merge(
@@ -29,6 +27,20 @@ describe('InfoPaneButtons', () => {
     const element = renderComponent(InfoPaneButtons, getProps());
 
     assert.ok(element);
+  });
+
+  describe('export button', () => {
+    it('renders in view mode', () => {
+      const element = renderComponent(InfoPaneButtons, getProps());
+      assert.ok(element.querySelector('.btn-simple.download'));
+    });
+
+    it('renders in edit mode', () => {
+      const element = renderComponent(InfoPaneButtons, getProps({
+        mode: ModeStates.EDIT
+      }));
+      assert.ok(element.querySelector('.btn-simple.download'));
+    });
   });
 
   describe('edit button', () => {

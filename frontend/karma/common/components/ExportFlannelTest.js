@@ -1,8 +1,13 @@
 import _ from 'lodash';
+import sinon from 'sinon';
 import { assert } from 'chai';
 import mockView from '../../datasetLandingPage/data/mockView';
+import mockVif from '../../visualizationCanvas/data/mockVif';
+import mockViewVizCan from '../../visualizationCanvas/data/mockView';
 import ExportFlannel from 'components/ExportFlannel';
 import { FeatureFlags } from 'common/feature_flags';
+
+import { shallow } from 'enzyme';
 
 describe('components/ExportFlannel', () => {
 
@@ -114,6 +119,23 @@ describe('components/ExportFlannel', () => {
     }));
 
     assert.match(element.href, /files/);
+  });
+
+  describe.only('filtered download state switch', () => {
+    const props = getProps({
+      exportFilteredData: true,
+      view: mockViewVizCan,
+      vifs: [mockVif],
+      idFromView: false
+    });
+
+    it('toggles filtered and unfiltered downloads', () => {
+      const component = shallow(<ExportFlannel {...props} />);
+      assert.equal(component.state('exportSetting'), 'all');
+      const radioButtonFiltered = component.find('#export-flannel-export-setting-filtered');
+      radioButtonFiltered.simulate('change');
+      assert.equal(component.state('exportSetting'), 'filtered');
+    });
   });
 
 });

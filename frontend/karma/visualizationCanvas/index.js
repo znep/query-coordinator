@@ -41,6 +41,7 @@ function requireAll(context) {
 
 // Setup mock feature flags
 FeatureFlags.useTestFixture({
+  hide_csv_for_excel_download: false,
   visualization_canvas_embed_button: 'embed-only'
 });
 

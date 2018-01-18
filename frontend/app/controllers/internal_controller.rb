@@ -23,7 +23,8 @@ class InternalController < ApplicationController
     { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.' },
     { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' },
     { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' },
-    { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' }
+    { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' },
+    { name: 'derived_view_publication', description: 'Allows working copies to be created on derived views.' }
   ]
 
   def disable_site_chrome?

@@ -16,13 +16,8 @@ const findWorkingCopyFor = (uid) => {
 
   return fetchJson(url, fetchOptions).
     then((views) => {
-      if (views.length === 0) {
-        return false;
-      } else if (views.length === 1) {
-        return views[0];
-      } else {
-        throw new Error('We should not have received more than one working copy!');
-      }
+      const draftForThisAsset = _.find(views, (view) => view.publishedViewUid === uid);
+      return draftForThisAsset || false;
     });
 };
 

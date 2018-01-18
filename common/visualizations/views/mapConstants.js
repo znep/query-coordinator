@@ -30,7 +30,8 @@ export const MAP_TYPES = Object.freeze({
 
 export const POINT_AGGREATIONS = Object.freeze({
   NONE: 'none',
-  HEAT_MAP: 'heat_map'
+  HEAT_MAP: 'heat_map',
+  REGION_MAP: 'region_map'
 });
 
 // TODO tune the precisions, right now, we are getting too many points.

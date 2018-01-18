@@ -6,6 +6,11 @@ import { editInputColumn } from 'reduxStuff/actions/inputColumns';
 import { editRevision } from 'reduxStuff/actions/revisions';
 import { batchActions } from 'reduxStuff/actions/batching';
 import { parseDate } from 'lib/parseDate';
+import { normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
+import { browserHistory } from 'react-router';
+import * as Links from 'links/links';
+import { removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
+import { sourceUpdate, createSourceSuccess } from 'reduxStuff/actions/createSource';
 import * as Selectors from 'selectors';
 
 const PROGRESS_THROTTLE_TIME = 1000;
@@ -178,5 +183,36 @@ export function subscribeToOutputSchema(os) {
     });
 
     channel.join();
+  };
+}
+
+
+export function subscribeToSource(sourceId, params) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`source:${sourceId}`);
+
+    channel.on('insert_input_schema', is => {
+      const [os] = is.output_schemas;
+
+      const payload = normalizeInsertInputSchemaEvent(is, sourceId);
+
+      dispatch(createSourceSuccess(payload));
+
+      dispatch(subscribeToAllTheThings(is));
+
+      browserHistory.push(Links.showOutputSchema(params, sourceId, is.id, os.id));
+    });
+
+    channel.on('update', changes => {
+      dispatch(sourceUpdate(sourceId, changes));
+
+      // This isn't a great place to do this - figure out a nicer way
+      // TODO: aaurhgghiguhuhgghghgh
+      if (changes.finished_at) {
+        dispatch(removeNotificationAfterTimeout(sourceId));
+      }
+    });
+
+    return channel.join();
   };
 }

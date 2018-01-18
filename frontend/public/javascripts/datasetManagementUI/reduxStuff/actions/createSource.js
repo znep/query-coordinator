@@ -7,9 +7,9 @@ import { parseDate } from 'lib/parseDate';
 import { uploadFile } from 'reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
 import * as Links from 'links/links';
-import { normalizeCreateSourceResponse, normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
-import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
-import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
+import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
+import { subscribeToSource } from 'reduxStuff/actions/subscriptions';
+import { addNotification } from 'reduxStuff/actions/notifications';
 import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
@@ -27,6 +27,7 @@ function createSource(params, callParams, optionalCallId = null) {
       operation: CREATE_SOURCE,
       callParams
     };
+
     dispatch(apiCallStarted(callId, call));
 
     return socrataFetch(dsmapiLinks.sourceCreate(params), {
@@ -80,9 +81,9 @@ function updateSource(params, source, changes) {
 
 function dontParseSource(params, source) {
   return dispatch => {
-    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } }))
-      .then(resource => {
-        dispatch(listenForInputSchema(resource.id, params));
+    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } })).then(
+      resource => {
+        dispatch(subscribeToSource(resource.id, params));
         dispatch(
           createUploadSourceSuccess(
             resource.id,
@@ -95,7 +96,8 @@ function dontParseSource(params, source) {
         dispatch(addNotification('source', resource.id));
         browserHistory.push(Links.showBlobPreview(params, resource.id));
         return resource;
-      });
+      }
+    );
   };
 }
 
@@ -103,7 +105,7 @@ export function updateSourceParseOptions(params, source, parseOptions) {
   return dispatch => {
     return dispatch(updateSource(params, source, { parse_options: parseOptions }))
       .then(resource => {
-        dispatch(listenForInputSchema(resource.id, params));
+        dispatch(subscribeToSource(resource.id, params));
         return resource;
       })
       .then(normalizeCreateSourceResponse)
@@ -155,7 +157,7 @@ export function createUploadSource(file, parseFile, params, callId) {
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
-      dispatch(listenForInputSchema(resource.id, params));
+      dispatch(subscribeToSource(resource.id, params));
 
       const bytesSource = await dispatch(uploadFile(resource.id, file));
 
@@ -185,16 +187,14 @@ export function createURLSource(url, params) {
     }
   };
 
-  return dispatch => {
-    return dispatch(createSource(params, callParams)).then(resource => {
-      dispatch(
-        createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
-      );
+  return async dispatch => {
+    const resource = await dispatch(createSource(params, callParams));
 
-      dispatch(addNotification('source', resource.id));
+    createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type);
 
-      dispatch(listenForInputSchema(resource.id, params));
-    });
+    dispatch(addNotification('source', resource.id));
+
+    dispatch(subscribeToSource(resource.id, params));
   };
 }
 
@@ -211,7 +211,7 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType, 
   };
 }
 
-function sourceUpdate(sourceId, changes) {
+export function sourceUpdate(sourceId, changes) {
   // oh ffs....we did this to ourselves.
   // TODO: fix this garbage
   if (_.isString(changes.created_at)) {
@@ -224,35 +224,5 @@ function sourceUpdate(sourceId, changes) {
     type: SOURCE_UPDATE,
     sourceId,
     changes
-  };
-}
-
-
-function listenForInputSchema(sourceId, params) {
-  return (dispatch, getState, socket) => {
-    const channel = socket.channel(`source:${sourceId}`);
-    channel.on('insert_input_schema', (is) => {
-      const [os] = is.output_schemas;
-
-      const payload = normalizeInsertInputSchemaEvent(is, sourceId);
-
-      dispatch(createSourceSuccess(payload));
-
-      dispatch(subscribeToAllTheThings(is));
-
-      browserHistory.push(Links.showOutputSchema(params, sourceId, is.id, os.id));
-    });
-
-    channel.on('update', changes => {
-      dispatch(sourceUpdate(sourceId, changes));
-
-      // This isn't a great place to do this - figure out a nicer way
-      // TODO: aaurhgghiguhuhgghghgh
-      if (changes.finished_at) {
-        dispatch(removeNotificationAfterTimeout(sourceId));
-      }
-    });
-
-    return channel.join();
   };
 }

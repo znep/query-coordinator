@@ -131,6 +131,67 @@ describe DatasetsHelper do
         allow(view).to receive_messages(:is_published? => true, :is_blist? => false, :is_tabular? => false, :can_edit? => true, :is_immutable? => false)
         expect(helper.hide_redirect?).to eq(true)
       end
+
+      it 'disallows edit/create working copy when the asset action bar is enabled' do
+        allow(FeatureFlags).to receive(:derive).and_return(
+            OpenStruct.new(:properties => OpenStruct.new(:enable_asset_action_bar => true))
+        )
+        expect(helper.hide_redirect?).to eq(true)
+      end
+    end
+
+    context 'hide_edit_column' do
+      context 'when derived view publication is not enabled' do
+        it 'returns true or false when the view is in certain states', :verify_stubs => false do
+          allow(FeatureFlags).to receive(:derive).and_return(
+            OpenStruct.new(
+              :enable_2017_grid_view_refresh_for_users_who_can_create_datasets => true,
+              :enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon => true
+            )
+          )
+          allow(CurrentDomain).to receive(:configuration).and_return(
+            OpenStruct.new(
+              :properties => OpenStruct.new(
+                :derived_view_publication => false
+              )
+            )
+          )
+          allow(view).to receive_messages(:is_blist? => true, :is_published? => true)
+          expect(helper.hide_edit_column?).to eq(true)
+          allow(view).to receive_messages(:is_blist? => true, :is_published? => false)
+          expect(helper.hide_edit_column?).to be_falsey
+          allow(view).to receive_messages(:is_blist? => false, :is_published? => true)
+          expect(helper.hide_edit_column?).to be_falsey
+          allow(view).to receive_messages(:is_blist? => false, :is_published? => false)
+          expect(helper.hide_edit_column?).to be_falsey
+          allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+          expect(helper.hide_edit_column?).to eq(true)
+        end
+      end
+
+      context 'when derived view publication is enabled' do
+        it 'returns true or false when the view is in certain states', :verify_stubs => false do
+          allow(FeatureFlags).to receive(:derive).and_return(
+            OpenStruct.new(
+              :enable_2017_grid_view_refresh_for_users_who_can_create_datasets => true,
+              :enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon => true
+            )
+          )
+          allow(CurrentDomain).to receive(:configuration).and_return(
+            OpenStruct.new(
+              :properties => OpenStruct.new(
+                :derived_view_publication => true
+              )
+            )
+          )
+          allow(view).to receive_messages(:is_unpublished? => true)
+          expect(helper.hide_edit_column?).to be_falsey
+          allow(view).to receive_messages(:is_unpublished? => false)
+          expect(helper.hide_edit_column?).to eq(true)
+          allow(view).to receive_messages(:is_activity_feed_dataset? => true)
+          expect(helper.hide_edit_column?).to eq(true)
+        end
+      end
     end
 
     context 'hide_add_column' do

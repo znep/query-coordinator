@@ -28,10 +28,13 @@ module AssetBrowserHelper
     )
 
     approval_workflow = Fontana::Approval::Workflow.find
-    approval_settings = {
-      :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
-      :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
-    }
+    if approval_workflow.try(:steps).present?
+      approval_settings = {
+        :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
+        :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
+      }
+    end
+
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       :airbrakeKey => ENV["#{app_name.upcase}_AIRBRAKE_API_KEY"] ||
@@ -47,7 +50,7 @@ module AssetBrowserHelper
       :localePrefix => locale_prefix.to_s,
       :recaptchaKey => RECAPTCHA_2_SITE_KEY,
       :usersnapProjectID => '6afbcc90-6522-4475-b3b0-635c7a9874a5' # Specific to SIAM?
-    }
+    }.compact!
 
     javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")
   end

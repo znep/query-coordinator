@@ -5,7 +5,6 @@ import Perf from 'react-addons-perf';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import { addLocation } from 'reduxStuff/actions/history';
-import styleguide from './styles/style.global.scss'; //eslint-disable-line
 import store from 'reduxStuff/store';
 import { AppContainer } from 'react-hot-loader';
 import App from 'components/App/App';

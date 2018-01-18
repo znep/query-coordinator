@@ -19,14 +19,15 @@ import {
   AXIS_TICK_COLOR,
   DEFAULT_CIRCLE_HIGHLIGHT_RADIUS,
   DEFAULT_DESKTOP_COLUMN_WIDTH,
-  DEFAULT_MOBILE_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DEFAULT_MOBILE_COLUMN_WIDTH,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
   DIMENSION_LABELS_MAX_CHARACTERS,
   DIMENSION_LABELS_ROTATION_ANGLE,
   FONT_STACK,
   LEGEND_BAR_HEIGHT,
+  LINE_DASH_ARRAY,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   REFERENCE_LINES_STROKE_DASHARRAY,
@@ -500,6 +501,8 @@ function SvgTimelineChart($element, vif, options) {
     function renderLines(seriesData, seriesIndex) {
       const { measure } = seriesData;
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
+      const { pattern } = self.getLineStyleBySeriesIndex(seriesIndex);
+      const dasharray = pattern === 'dashed' ? LINE_DASH_ARRAY : null;
 
       // If we *are not* drawing a line chart, we need to draw the area fill
       // first so that the line sits on top of it in the z-stack.
@@ -541,7 +544,8 @@ function SvgTimelineChart($element, vif, options) {
         attr('clip-path', `url(#${d3ClipPathId})`).
         attr('fill', 'none').
         attr('stroke', color).
-        attr('stroke-width', LINE_STROKE_WIDTH);
+        attr('stroke-width', LINE_STROKE_WIDTH).
+        attr('stroke-dasharray', dasharray);
     }
 
     function renderCircles(seriesData, seriesIndex) {

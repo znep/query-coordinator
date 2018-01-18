@@ -572,6 +572,19 @@ The following example would cause a column in a Column Chart with a value of 1 t
  :-------:|:---------------------------:
  |    -    |Bar Chart, Pie Chart, Column Chart|
 
+##### `lineStyle`
+
+Controls how lines will be drawn. Currently only supported by Timeline Chart. It is of type `object`.
+
+Options:
+
+| Option  | Accepted Values         | Default | Description                                                                                                                                        |   |
+|---------|-------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| pattern | solid, dashed           | solid   | Stroke pattern for the main line. Allows for dashed or solid lines.                                                                                |   |
+
+Required |Optional
+:-------:|:-------------:
+|    -    |Timeline Chart|
 ### Appendix: SoQL Filter Objects
 
 Currently, six types of filters are supported for `socrata.soql` data sources:

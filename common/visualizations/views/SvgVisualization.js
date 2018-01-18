@@ -701,6 +701,20 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
+  this.getLineStyleBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
+    return _.merge(
+      {
+        points: 'none',
+        pattern: 'solid'
+      },
+      _.get(self.getVif(), ['series', actualSeriesIndex, 'lineStyle'])
+    );
+  };
+
   /**
    * Valid options: 'fit', 'pan', 'showZero'
    */

@@ -299,7 +299,7 @@ describe('Table', () => {
         );
       });
 
-      describe('then SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', (done) => {
+      describe('then SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', () => {
         beforeEach((done) => {
           const calls = getTableDataSpy.getCalls();
           assert.lengthOf(calls, 2); // Just test sanity.

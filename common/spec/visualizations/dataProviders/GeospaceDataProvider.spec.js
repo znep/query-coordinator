@@ -248,7 +248,7 @@ describe('GeospaceDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
+    describe('on request success', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -520,7 +520,7 @@ describe('GeospaceDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
+    describe('on request success', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,

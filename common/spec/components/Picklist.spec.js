@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
 import TestUtils, { Simulate } from 'react-dom/test-utils';
+import { shallow } from 'enzyme';
 import { renderComponent } from '../helpers';
 import Picklist from 'components/Picklist';
 import { UP, DOWN, ESCAPE, ENTER } from 'common/dom_helpers/keycodes_deprecated';
@@ -310,18 +311,33 @@ describe('Picklist', () => {
         });
       });
 
-      describe('when pressing escape', (done) => {
-        const event = { keyCode: ESCAPE };
-
-        it('blurs the picklist', () => {
+      describe('when blurring', () => {
+        it('removes the focus class', (done) => {
           assert.isTrue($(element).hasClass('picklist-focused'));
 
-          Simulate.keyUp(element, event);
+          Simulate.blur(element);
           // Tiny delay needed to let all the events complete.
           _.defer(() => {
             assert.isFalse($(element).hasClass('picklist-focused'));
             done();
           });
+        });
+      });
+
+      describe('when pressing escape', () => {
+        const event = {
+          keyCode: ESCAPE,
+          stopPropagation: _.noop,
+          preventDefault: _.noop
+        };
+
+        it('calls blur on the picklist', () => {
+          const shallowRender = shallow(<Picklist {...getProps()} />);
+          shallowRender.instance().picklist = {
+            blur: sinon.stub()
+          };
+          shallowRender.simulate('keyUp', event);
+          sinon.assert.calledOnce(shallowRender.instance().picklist.blur);
         });
       });
     });

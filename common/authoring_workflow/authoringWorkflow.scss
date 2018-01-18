@@ -386,6 +386,11 @@
 
         &.base-map-opacity-container {
           opacity: 0.75;
+
+          .InputRange,
+          .input-range-slider .InputRange-slider {
+            cursor: not-allowed;
+          }
         }
       }
 
@@ -415,7 +420,8 @@
       }
     }
 
-    .units-description {
+    .units-description,
+    .search-boundary-description {
       margin: 0 0 24px
     }
 

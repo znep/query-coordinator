@@ -9,6 +9,8 @@ html {
 }
 
 #app .dataset-management-ui {
+  @import 'frontend/public/javascripts/datasetManagementUI/components/Notification/Notification';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/UploadNotification/UploadNotification';
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
   @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
   @import 'frontend/public/javascripts/datasetManagementUI/components/URLSource/URLSource';

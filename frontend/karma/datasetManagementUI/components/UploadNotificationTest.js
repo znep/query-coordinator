@@ -64,7 +64,7 @@ describe('components/UploadNotification', () => {
 
     const component = shallow(<UploadNotification {...newProps} />);
     assert.equal(component.prop('status'), 'error');
-    assert.include(component.find('.msgContainer h6').text(), 'Lost Connection');
+    assert.include(component.find('.message-container h6').text(), 'Lost Connection');
   });
 
   it('renders a specific error message when the API gives it', () => {
@@ -81,6 +81,6 @@ describe('components/UploadNotification', () => {
 
     const component = shallow(<UploadNotification {...newProps} />);
     assert.equal(component.prop('status'), 'error');
-    assert.include(component.find('.msgContainer').text(), 'Multilayer shapefiles are not supported.');
+    assert.include(component.find('.message-container').text(), 'Multilayer shapefiles are not supported.');
   });
 });

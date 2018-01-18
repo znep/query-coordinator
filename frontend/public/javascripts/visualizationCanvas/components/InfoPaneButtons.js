@@ -11,10 +11,6 @@ import ExportFlannel from 'common/components/ExportFlannel';
 
 export class InfoPaneButtons extends PureComponent {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { mode, onClickEdit } = this.props;
 

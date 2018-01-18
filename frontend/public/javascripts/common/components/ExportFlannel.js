@@ -7,7 +7,7 @@ import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvid
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { FeatureFlags } from 'common/feature_flags';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
-import { getDownloadLink, getDownloadLinkFiltered, getDownloadType } from 'common/downloadLinks';
+import { getDownloadLink, getDownloadType } from 'common/downloadLinks';
 
 const featuredLinksList = ['csv', 'csv_for_excel'];
 
@@ -204,17 +204,18 @@ export default class ExportFlannel extends PureComponent {
       type: 'radio',
       id: 'export-flannel-export-setting-all',
       checked: (this.state.exportSetting === 'all'),
-      onChange: (event) => {
-        this.setState({exportSetting: 'all'});
+      onChange: () => {
+        this.setState({ exportSetting: 'all' });
       }
     };
     const allData = (
-      <div className='radiobutton'>
+      <div className="radiobutton">
         <input {...allDataProps} />
-        <label htmlFor='export-flannel-export-setting-all'>
-          <span className='fake-radiobutton' />
-          <span className='translation-within-label'>
-            {I18n.dataset_landing_page.export.all_data} {this.renderRowCount(this.state.rowCountAll)}
+        <label htmlFor="export-flannel-export-setting-all">
+          <span className="fake-radiobutton" />
+          <span className="translation-within-label">
+            {I18n.dataset_landing_page.export.all_data}&nbsp;
+            {this.renderRowCount(this.state.rowCountAll)}
           </span>
         </label>
       </div>
@@ -226,24 +227,27 @@ export default class ExportFlannel extends PureComponent {
       id: 'export-flannel-export-setting-filtered',
       checked: (this.state.exportSetting === 'filtered'),
       disabled: _.get(this.state.vif, ['series', 0, 'dataSource', 'filters'], []).length === 0,
-      onChange: (event) => {
-        this.setState({exportSetting: 'filtered'});
+      onChange: () => {
+        this.setState({ exportSetting: 'filtered' });
       }
     };
     const filteredData = (
-      <div className='radiobutton'>
+      <div className="radiobutton">
         <input {...filteredDataProps} />
-        <label htmlFor='export-flannel-export-setting-filtered' className={filteredDataProps.disabled ? 'disabled' : ''}>
-          <span className='fake-radiobutton' />
-          <span className='translation-within-label'>
-            {I18n.dataset_landing_page.export.filtered_data} {this.renderRowCount(this.state.rowCountFiltered)}
+        <label
+          htmlFor="export-flannel-export-setting-filtered"
+          className={filteredDataProps.disabled ? 'disabled' : ''}>
+          <span className="fake-radiobutton" />
+          <span className="translation-within-label">
+            {I18n.dataset_landing_page.export.filtered_data}&nbsp;
+            {this.renderRowCount(this.state.rowCountFiltered)}
           </span>
         </label>
       </div>
     );
 
     return (
-      <form id='export-flannel-export-form'>
+      <form id="export-flannel-export-form">
         {allData}
         {filteredData}
       </form>

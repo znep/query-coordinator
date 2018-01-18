@@ -18,6 +18,12 @@ const INITIAL_STATES = {
     vifs: [mockVif],
     filters: []
   },
+  savedViewVifHasId: {
+    view: mockView,
+    parentView: mockParentView,
+    vifs: [_.extend({}, mockVif, { id: 'some-id' })],
+    filters: []
+  },
   ephemeralViewNoVif: {
     view: _.omit('id', mockView),
     parentView: mockParentView,
@@ -354,6 +360,34 @@ describe('Reducer', () => {
       it('sets isDirty to true', () => {
         assert.isTrue(state.isDirty);
       });
+
+      it('sets new id on visualization', () => {
+        assert.match(state.vifs[1].id, /^[-a-z0-9]{36}$/, 'matches guid format');
+      });
+    });
+
+    describe('when saved vif has id', () => {
+
+      sharedExamples.beforeEachSetInitialState(INITIAL_STATES.savedViewVifHasId);
+
+      describe('UPDATE_VISUALIZATION', () => {
+        let newVif;
+
+        beforeEach(() => {
+          newVif = {
+            name: 'potato',
+            origin: mockVifOrigin
+          };
+          state = reducer(state, actions.updateVisualization({
+            vif: newVif
+          }));
+        });
+
+        it('uses previously assigned id', () => {
+          assert.equal(state.vifs.length, 1);
+          assert.equal(state.vifs[0].id, INITIAL_STATES.savedViewVifHasId.vifs[0].id);
+        });
+      });
     });
 
     describe('ENTER_EDIT_MODE', () => {
@@ -611,8 +645,10 @@ describe('Reducer', () => {
       });
 
       it('sets up vif, vifIndex, isActive, and embedSize in state', () => {
-        assert.deepEqual(state.shareModal, {
-          vif: mockVifWithOrigin,
+        const vifWithoutAssignedId = _.omit(state.shareModal.vif, 'id');
+        assert.deepEqual(vifWithoutAssignedId, mockVifWithOrigin);
+
+        assert.deepEqual(_.omit(state.shareModal, 'vif'), {
           vifIndex: 0,
           isActive: true,
           embedSize: 'large'
@@ -624,8 +660,11 @@ describe('Reducer', () => {
 
         it('sets just shareModal.embedSize', () => {
           const stateAfterSetEmbedSize = reducer(state, actions.setEmbedSize(newSize));
-          assert.deepEqual(stateAfterSetEmbedSize.shareModal, {
-            vif: mockVifWithOrigin,
+
+          const vifWithoutAssignedId = _.omit(stateAfterSetEmbedSize.shareModal.vif, 'id');
+          assert.deepEqual(vifWithoutAssignedId, mockVifWithOrigin);
+
+          assert.deepEqual(_.omit(stateAfterSetEmbedSize.shareModal, 'vif'), {
             vifIndex: 0,
             isActive: true,
             embedSize: newSize

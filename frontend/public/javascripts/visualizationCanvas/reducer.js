@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuidv4 from 'uuid/v4';
 
 import { localizeLink } from 'common/locale';
 import mixpanel from 'common/mixpanel';
@@ -43,6 +44,10 @@ const applyVifOrigin = (state, vif) => {
 // Update the vif at the position currently being edited.
 const updateVifs = (state, newVif, index = state.authoringWorkflow.vifIndex) => {
   const updatedVifs = _.clone(state.vifs);
+  const currentVif = updatedVifs[index];
+
+  newVif.id = (currentVif && currentVif.id) ? currentVif.id : uuidv4();
+
   updatedVifs[index] = applyVifOrigin(state, newVif);
 
   return updatedVifs;

@@ -139,45 +139,42 @@ export function createViewSource(params) {
   };
 }
 
-// Upload Source
 export function createUploadSource(file, parseFile, params, callId) {
-  const callParams = {
-    source_type: { type: 'upload', filename: file.name },
-    parse_options: { parse_source: parseFile }
-  };
-  return dispatch => {
-    return dispatch(createSource(params, callParams, callId)).then(resource => {
-      // put source in store
+  return async dispatch => {
+    const callParams = {
+      source_type: { type: 'upload', filename: file.name },
+      parse_options: { parse_source: parseFile }
+    };
+
+    let resource;
+
+    try {
+      resource = await dispatch(createSource(params, callParams, callId));
+
       dispatch(
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
-      // listen on source channel
       dispatch(listenForInputSchema(resource.id, params));
 
-      return dispatch(uploadFile(resource.id, file))
-      .then(bytesSource => {
-        if (!parseFile) {
-          dispatch(sourceUpdate(bytesSource.resource.id, bytesSource.resource));
-          browserHistory.push(Links.showBlobPreview(params, bytesSource.resource.id));
-        }
-        return bytesSource;
-      }).catch(err => {
-        if (err.key && err.key === 'unparsable_file') {
-          // this was not a parseable file type, even though we thought it would be
-          // ex: zipfile but not shapefile, .json but not geojson
-          // recover by telling DSMAPI to make a parse_source: false copy
-          dispatch(dontParseSource(params, resource));
-        } else {
-          throw err;
-        }
-      });
-    }).catch(() => {
-      dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
-    });
+      const bytesSource = await dispatch(uploadFile(resource.id, file));
+
+      if (!parseFile) {
+        dispatch(sourceUpdate(bytesSource.resource.id, bytesSource.resource));
+        browserHistory.push(Links.showBlobPreview(params, bytesSource.resource.id));
+      }
+    } catch (err) {
+      if (resource && err.key && err.key === 'unparsable_file') {
+        // this was not a parseable file type, even though we thought it would be
+        // ex: zipfile but not shapefile, .json but not geojson
+        // recover by telling DSMAPI to make a parse_source: false copy
+        dispatch(dontParseSource(params, resource));
+      } else {
+        dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
+      }
+    }
   };
 }
-
 
 // URL Source
 export function createURLSource(url, params) {

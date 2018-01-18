@@ -6,7 +6,6 @@ import TextInput from 'components/TextInput/TextInput';
 import TextArea from 'components/TextArea/TextArea';
 import Select from 'components/Select/Select';
 import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
-import styles from './AddColForm.module.scss';
 import { soqlProperties } from 'lib/soqlTypes';
 
 export function makeFieldName(displayName = '') {
@@ -33,9 +32,9 @@ export function makeTransformExpr(fieldName, transform, entities) {
 
 const ErrorList = ({ errors = [] }) => {
   return (
-    <ul className={styles.errorList}>
+    <ul className="error-list">
       {errors.map(error => (
-        <li key={btoa(error)} className={styles.errorMessage}>
+        <li key={btoa(error)} className="error-message">
           {error}
         </li>
       ))}
@@ -133,7 +132,7 @@ class AddColForm extends Component {
     const transforms = ic ? soqlProperties[ic.soql_type].conversions : soqlProperties.text.conversions;
 
     return (
-      <form className={styles.form}>
+      <form className="dsmp-form">
         <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
           <label htmlFor="displayName">{I18n.add_col.display_name}</label>
           <TextInput

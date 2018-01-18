@@ -722,8 +722,8 @@ export class PresentationPane extends Component {
       const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
       const minimumPointSizeAttributes = {
         id: 'minimum-point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: minimumPointSize,
         onChange: onMinimumPointSizeChange,
@@ -731,8 +731,8 @@ export class PresentationPane extends Component {
       };
       const maximumPointSizeAttributes = {
         id: 'maximum-point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: maximumPointSize,
         onChange: onMaximumPointSizeChange,

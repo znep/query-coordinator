@@ -111,7 +111,12 @@
         'stackRadius': 20,
         'maxClusterSize': 40,
         'maxClusteringZoomLevel': 11,
-        'pointMapPointSize': 10
+        'pointMapPointSize': 10,
+        'resizePointsBy': 'supervisor_district',
+        'minimumPointSize': 10,
+        'maximumPointSize': 20,
+        'colorPointsBy': 'category',
+        'numberOfDataClasses': 5
       };
       pointMapVif.configuration.baseMapStyle = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
       pointMapVif.configuration.baseMapOpacity = '0.24';

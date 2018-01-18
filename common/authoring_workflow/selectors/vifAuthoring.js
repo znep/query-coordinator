@@ -135,12 +135,12 @@ export const getPointSizeByColumn = createSelector(
 
 export const getMinimumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 3)
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 10)
 );
 
 export const getMaximumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 7)
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 18)
 );
 
 export const getNumberOfDataClasses = createSelector(

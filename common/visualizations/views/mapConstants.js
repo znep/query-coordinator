@@ -1,17 +1,13 @@
 import { VECTOR_BASE_MAP_STYLES } from '../../../common/authoring_workflow/constants';
 
-export const MAP_TYPES = Object.freeze({
-  POINT_MAP: 'pointMap',
-  LINE_MAP: 'lineMap',
-  BOUNDARY_MAP: 'boundaryMap'
+export const COLOR_BY_BUCKETS_COUNT = 5;
+export const CLUSTER_BUCKETS = Object.freeze({
+  SMALL: 0,
+  MEDIUM: 100,
+  LARGE: 1000
 });
 
 export const DEFAULT_BASE_MAP_STYLE = VECTOR_BASE_MAP_STYLES.basic.value;
-
-export const POINT_AGGREATIONS = Object.freeze({
-  NONE: 'none',
-  HEAT_MAP: 'heat_map'
-});
 
 export const GEO_LOCATE_CONTROL_OPTIONS = Object.freeze({
   positionOptions: Object.freeze({
@@ -26,6 +22,18 @@ export const MAP_CONTROLS_POSITION = Object.freeze({
   GEO_CODER: 'top-left'
 });
 
+export const MAP_TYPES = Object.freeze({
+  POINT_MAP: 'pointMap',
+  LINE_MAP: 'lineMap',
+  BOUNDARY_MAP: 'boundaryMap'
+});
+
+export const POINT_AGGREATIONS = Object.freeze({
+  NONE: 'none',
+  HEAT_MAP: 'heat_map'
+});
+
+// TODO tune the precisions, right now, we are getting too many points.
 export const TILE_URL_OPTIONS = Object.freeze({
   snapPrecision: Object.freeze({
     1: 0.001,

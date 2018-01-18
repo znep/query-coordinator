@@ -62,7 +62,7 @@ export default () => ({
         'maximumLineWeight': 7,
         'maximumPointSize': 7,
         'minimumLineWeight': 3,
-        'minimumPointSize': 3,
+        'minimumPointSize': 4,
         'numberOfDataClasses': 5,
         'pointAggregation': 'heat_map',
         'pointMapPointSize': 4,

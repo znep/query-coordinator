@@ -61,12 +61,12 @@ export default function map(state, action) {
 
     case actions.SET_MINIMUM_POINT_SIZE:
       const minimumPointSize = parseFloat(action.minimumPointSize);
-      _.set(state, 'series[0].mapOptions.minimumPointSize', _.isFinite(minimumPointSize) ? _.clamp(minimumPointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.minimumPointSize', _.isFinite(minimumPointSize) ? _.clamp(minimumPointSize, 4, 40) : null);
       break;
 
     case actions.SET_MAXIMUM_POINT_SIZE:
       const maximumPointSize = parseFloat(action.maximumPointSize);
-      _.set(state, 'series[0].mapOptions.maximumPointSize', _.isFinite(maximumPointSize) ? _.clamp(maximumPointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.maximumPointSize', _.isFinite(maximumPointSize) ? _.clamp(maximumPointSize, 4, 40) : null);
       break;
 
     case actions.SET_NUMBER_OF_DATA_CLASSES:

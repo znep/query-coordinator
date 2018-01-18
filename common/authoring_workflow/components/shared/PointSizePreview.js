@@ -6,8 +6,8 @@ export class PointSizePreview extends Component {
   render() {
     const { pointSize } = this.props;
     const pointStyle = {
-      'width': 2 * pointSize + 'px',
-      'height': 2 * pointSize + 'px'
+      'width': pointSize + 'px',
+      'height': pointSize + 'px'
     };
 
     return (

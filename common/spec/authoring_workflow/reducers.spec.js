@@ -161,7 +161,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setMapType', 'pointMap', 'series[0].mapOptions.mapType', ['map']);
       shouldSetVif('setPointMapPointSize', 4, 'series[0].mapOptions.pointMapPointSize', ['map']);
       shouldSetVif('setPointSizeByColumn', 'columnName', 'series[0].mapOptions.resizePointsBy', ['map']);
-      shouldSetVif('setMinimumPointSize', 3, 'series[0].mapOptions.minimumPointSize', ['map']);
+      shouldSetVif('setMinimumPointSize', 4, 'series[0].mapOptions.minimumPointSize', ['map']);
       shouldSetVif('setMaximumPointSize', 7, 'series[0].mapOptions.maximumPointSize', ['map']);
       shouldSetVif('setNumberOfDataClasses', 5, 'series[0].mapOptions.numberOfDataClasses', ['map']);
       shouldSetVif('setMaxClusteringZoomLevel', 8, 'series[0].mapOptions.maxClusteringZoomLevel', ['map']);

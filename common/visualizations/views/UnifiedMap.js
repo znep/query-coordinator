@@ -7,6 +7,7 @@ import MapFactory from './map/MapFactory';
 import VifBaseMap from './map/VifBaseMap';
 import VifMapControls from './map/VifMapControls';
 import VifMapInteractionHandler from './map/VifMapInteractionHandler';
+import * as vifDecorator from './map/vifDecorators/vifDecorator';
 
 import VifPointOverlay from './map/vifOverlays/VifPointOverlay';
 import VifLineOverlay from './map/vifOverlays/VifLineOverlay';
@@ -17,6 +18,7 @@ export default class UnifiedMap extends SvgVisualization {
   constructor(element, vif, options) {
     super(element, vif, options);
 
+    vif = vifDecorator.getDecoratedVif(vif);
     MapFactory.build(element, vif).then((map) => {
       this._map = map;
       this._vifBaseMap = new VifBaseMap(this._map);
@@ -40,6 +42,7 @@ export default class UnifiedMap extends SvgVisualization {
   }
 
   async update(newVif) {
+    newVif = vifDecorator.getDecoratedVif(newVif);
     const newOverlay = this._getOverlay(newVif);
 
     this._vifBaseMap.update(newVif);

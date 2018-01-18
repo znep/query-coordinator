@@ -2,7 +2,7 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 import * as dsmapiLinks from 'links/dsmapiLinks';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
 import { uploadFile } from 'reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
@@ -42,8 +42,8 @@ function createSource(params, callParams, optionalCallId = null) {
 
         return resource;
       })
+      .catch(getError)
       .catch(err => {
-        dispatch(apiCallFailed(callId, err));
         throw err;
       });
   };
@@ -93,7 +93,6 @@ function dontParseSource(params, source) {
           )
         );
         dispatch(addNotification('source', resource.id));
-        browserHistory.push(Links.showBlobPreview(params, resource.id));
         return resource;
       });
   };
@@ -135,15 +134,18 @@ export function createViewSource(params) {
       .then(resp => {
         dispatch(createSourceSuccess(resp));
         return resp;
+      }).catch(err => {
+        console.error(err);
+        dispatch(apiCallFailed(null, err));
       });
   };
 }
 
 // Upload Source
-export function createUploadSource(file, parseFile, params, callId) {
+export function createUploadSource(file, shouldParseFile, params, callId) {
   const callParams = {
     source_type: { type: 'upload', filename: file.name },
-    parse_options: { parse_source: parseFile }
+    parse_options: { parse_source: shouldParseFile }
   };
   return dispatch => {
     return dispatch(createSource(params, callParams, callId)).then(resource => {
@@ -157,9 +159,8 @@ export function createUploadSource(file, parseFile, params, callId) {
 
       return dispatch(uploadFile(resource.id, file))
       .then(bytesSource => {
-        if (!parseFile) {
+        if (!shouldParseFile) {
           dispatch(sourceUpdate(bytesSource.resource.id, bytesSource.resource));
-          browserHistory.push(Links.showBlobPreview(params, bytesSource.resource.id));
         }
         return bytesSource;
       }).catch(err => {
@@ -169,6 +170,7 @@ export function createUploadSource(file, parseFile, params, callId) {
           // recover by telling DSMAPI to make a parse_source: false copy
           dispatch(dontParseSource(params, resource));
         } else {
+          dispatch(apiCallFailed(callId, err));
           throw err;
         }
       });
@@ -178,25 +180,31 @@ export function createUploadSource(file, parseFile, params, callId) {
   };
 }
 
-
 // URL Source
-export function createURLSource(url, params) {
+export function createURLSource(url, params, shouldParseFile = true) {
   const callParams = {
-    source_type: {
-      type: 'url',
-      url
-    }
+    source_type: { type: 'url', url },
+    parse_options: { parse_source: shouldParseFile }
   };
+  const callId = uuid();
 
   return dispatch => {
-    return dispatch(createSource(params, callParams)).then(resource => {
+    return dispatch(createSource(params, callParams, callId)).then(resource => {
       dispatch(
         createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
       );
 
       dispatch(addNotification('source', resource.id));
-
       dispatch(listenForInputSchema(resource.id, params));
+    }).catch(err => {
+      if (shouldParseFile && err.body && err.body.key && err.body.key === 'unparsable_file') {
+        // the content type at the end of this url indicates its not parsable
+        // recover by telling DSMAPI to make a parse_source: false with the same url
+        return dispatch(createURLSource(url, params, false));
+      } else {
+        dispatch(apiCallFailed(callId, err));
+        throw err;
+      }
     });
   };
 }
@@ -253,6 +261,11 @@ function listenForInputSchema(sourceId, params) {
       // TODO: aaurhgghiguhuhgghghgh
       if (changes.finished_at) {
         dispatch(removeNotificationAfterTimeout(sourceId));
+        const source = getState().entities.sources[sourceId];
+
+        if (source && source.parse_options && !source.parse_options.parse_source) {
+          browserHistory.push(Links.showBlobPreview(params, sourceId));
+        }
       }
     });
 

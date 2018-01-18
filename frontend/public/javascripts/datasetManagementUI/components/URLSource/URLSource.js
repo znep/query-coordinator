@@ -84,10 +84,7 @@ class URLSource extends Component {
                 }}
                 handleChange={this.onURLChange}
                 inErrorState={!!this.state.error} />
-              <span className={styles.errorMessage}>{this.state.error}</span>
-              <div className={styles.fileTypes}>
-                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
-              </div>
+              {this.state.error && <div className={styles.errorMessage}>{this.state.error}</div>}
               <ApiCallButton
                 onClick={this.onStartImport}
                 operation={CREATE_SOURCE}
@@ -95,6 +92,10 @@ class URLSource extends Component {
                 className={styles.doImportButton}>
                 {this.state.error ? SubI18n.retry : SubI18n.start_import}
               </ApiCallButton>
+              <div className={styles.fileTypes}>
+                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
+              </div>
+              <div className={styles.fileTypes}>{I18n.show_uploads.non_parsable_accepted}</div>
             </form>
           </div>
         </div>

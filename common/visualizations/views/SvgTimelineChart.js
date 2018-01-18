@@ -1597,20 +1597,14 @@ function SvgTimelineChart($element, vif, options) {
         text(label).
         css('color', measure.getColor());
 
-      let datumValueString;
+      const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
+      const valueHTML = self.getValueHtml({
+        dataToRender,
+        seriesIndex,
+        value: datum.value
+      });
 
-      if (datum.value === null) {
-        datumValueString = I18n.t('shared.visualizations.charts.common.no_value');
-      } else {
-        const datumValueUnit = (datum.value === 1) ?
-          self.getUnitOneBySeriesIndex(seriesIndex) :
-          self.getUnitOtherBySeriesIndex(seriesIndex);
-
-        datumValueString = `${datum.value} ${datumValueUnit}`;
-      }
-
-      const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
-        text(datumValueString);
+      $valueCell.html(valueHTML);
 
       return $('<tr>', { 'class': 'socrata-flyout-row' }).
         append([

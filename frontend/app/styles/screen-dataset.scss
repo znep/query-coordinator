@@ -520,6 +520,10 @@ body.grid-view-2017-refresh {
             content: "]";
           }
         }
+
+        .toolbarButton.save {
+          display: none;
+        }
       }
 
       .unpublished {
@@ -706,6 +710,16 @@ body.grid-view-2017-refresh {
             .icon {
               background-position: 0 -39px;
             }
+          }
+        }
+      }
+
+      &.minorChange {
+
+        .unsavedLine {
+
+          .toolbarButton.save {
+            display: inline;
           }
         }
       }

@@ -121,16 +121,30 @@ describe('components/ExportFlannel', () => {
     assert.match(element.href, /files/);
   });
 
-  describe.only('filtered download state switch', () => {
-    const props = getProps({
-      exportFilteredData: true,
+  describe.only('filtered download behavior', () => {
+    const propsBase = getProps({
       view: mockViewVizCan,
-      vifs: [mockVif],
-      idFromView: false
+      vifs: [mockVif]
     });
 
-    it('toggles filtered and unfiltered downloads', () => {
+    it('does not show a filtering toggle when filtered export is disabled', () => {
+      const props = getProps({
+        exportFilteredData: false,
+        idFromView: true
+      });
       const component = shallow(<ExportFlannel {...props} />);
+      const form = component.find('#export-flannel-export-form');
+      assert.equal(form.length, 0);
+    });
+
+    it('toggles filtered and unfiltered downloads when filtered export is enabled', () => {
+      const props = Object.assign(propsBase, {
+        exportFilteredData: true,
+        idFromView: false
+      });
+      const component = shallow(<ExportFlannel {...props} />);
+      const form = component.find('#export-flannel-export-form');
+      assert.equal(form.length, 1);
       assert.equal(component.state('exportSetting'), 'all');
       const radioButtonFiltered = component.find('#export-flannel-export-setting-filtered');
       radioButtonFiltered.simulate('change');

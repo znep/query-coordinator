@@ -243,7 +243,7 @@ export default class ExportFlannel extends PureComponent {
     );
 
     return (
-      <form>
+      <form id='export-flannel-export-form'>
         {allData}
         {filteredData}
       </form>

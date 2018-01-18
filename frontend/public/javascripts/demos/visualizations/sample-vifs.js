@@ -640,5 +640,156 @@ socrata.sampleVifsByChartType = {
     'title': 'Timeline Chart Example'
   },
 
+  timelineChartMultipleSeries: {
+    "format": {
+      "type": "visualization_interchange_format",
+      "version": 2
+    },
+    "configuration": {
+      "viewSourceDataLink": true,
+      "xAxisScalingMode": "pan",
+      "showLegend": true
+    },
+    "description": "",
+    "series": [
+      {
+        "color": {
+          "primary": "#a6cee3",
+          "highlight": "#cccccc",
+          "palette": "categorical",
+          "secondary": "#a6cee3"
+        },
+        "dataSource": {
+          "datasetUid": "k6cs-ww27",
+          "dimension": {
+            "columnName": "incident_occurrence",
+            "aggregationFunction": null
+          },
+          "domain": "vertex-stories.test-socrata.com",
+          "measure": {
+            "columnName": null,
+            "aggregationFunction": "count"
+          },
+          "type": "socrata.soql",
+          "filters": [],
+          "precision": null,
+          "orderBy": {
+            "parameter": "dimension",
+            "sort": "asc"
+          }
+        },
+        "label": null,
+        "type": "timelineChart"
+      },
+      {
+        "color": {
+          "primary": "#5b9ec9",
+          "highlight": "#cccccc",
+          "palette": "categorical",
+          "secondary": "#5b9ec9"
+        },
+        "dataSource": {
+          "datasetUid": "k6cs-ww27",
+          "dimension": {
+            "columnName": "incident_occurrence",
+            "aggregationFunction": null
+          },
+          "domain": "vertex-stories.test-socrata.com",
+          "measure": {
+            "columnName": "blood_alcohol_level",
+            "aggregationFunction": "sum"
+          },
+          "type": "socrata.soql",
+          "filters": [],
+          "precision": null,
+          "orderBy": {
+            "parameter": "dimension",
+            "sort": "asc"
+          }
+        },
+        "label": null,
+        "type": "timelineChart"
+      }
+    ],
+    "title": "Two series"
+  },
+
+  timelineChartWithDashedLine: {
+    "format": {
+      "type": "visualization_interchange_format",
+      "version": 2
+    },
+    "configuration": {
+      "viewSourceDataLink": true,
+      "xAxisScalingMode": "pan",
+      "showLegend": true
+    },
+    "description": "",
+    "series": [
+      {
+        "color": {
+          "primary": "#a6cee3",
+          "highlight": "#cccccc",
+          "palette": "categorical",
+          "secondary": "#a6cee3"
+        },
+        "dataSource": {
+          "datasetUid": "k6cs-ww27",
+          "dimension": {
+            "columnName": "incident_occurrence",
+            "aggregationFunction": null
+          },
+          "domain": "vertex-stories.test-socrata.com",
+          "measure": {
+            "columnName": null,
+            "aggregationFunction": "count"
+          },
+          "type": "socrata.soql",
+          "filters": [],
+          "precision": null,
+          "orderBy": {
+            "parameter": "dimension",
+            "sort": "asc"
+          }
+        },
+        "label": null,
+        "type": "timelineChart"
+      },
+      {
+        "lineStyle": {
+          "pattern": "dashed"
+        },
+        "color": {
+          "primary": "#5b9ec9",
+          "highlight": "#cccccc",
+          "palette": "categorical",
+          "secondary": "#5b9ec9"
+        },
+        "dataSource": {
+          "datasetUid": "k6cs-ww27",
+          "dimension": {
+            "columnName": "incident_occurrence",
+            "aggregationFunction": null
+          },
+          "domain": "vertex-stories.test-socrata.com",
+          "measure": {
+            "columnName": "blood_alcohol_level",
+            "aggregationFunction": "sum"
+          },
+          "type": "socrata.soql",
+          "filters": [],
+          "precision": null,
+          "orderBy": {
+            "parameter": "dimension",
+            "sort": "asc"
+          }
+        },
+        "label": null,
+        "type": "timelineChart"
+      }
+    ],
+    "title": "With one solid and one dashed line"
+  },
+
   invalidChart: {}
 };

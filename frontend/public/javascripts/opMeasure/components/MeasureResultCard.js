@@ -7,6 +7,7 @@ import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
 
 import withComputedMeasure from './withComputedMeasure';
+import { PeriodTypes } from '../lib/constants';
 
 // Calculates and displays a measure as a tile
 export class MeasureResultCard extends Component {
@@ -63,8 +64,20 @@ export class MeasureResultCard extends Component {
   }
 
   render() {
-    const subtitle = _.get(this.props, 'measure.metricConfig.display.label', '');
-    const hasResult = !!_.get(this.props, 'computedMeasure.result');
+    const { props } = this;
+    const subtitle = _.get(props, 'measure.metricConfig.display.label', '');
+    const hasResult = !!_.get(props, 'computedMeasure.result');
+    const reportingPeriod = _.get(props, 'measure.metricConfig.reportingPeriod', {});
+    const isClosed = reportingPeriod.type === PeriodTypes.CLOSED;
+    const periodType = (hasResult &&
+      <div className="reporting-period-type">
+        {
+          isClosed ?
+            I18n.t('open_performance.measure.as_of_last') :
+            I18n.t('open_performance.measure.as_of_today')
+        }
+      </div>
+    );
 
     const cardClasses = classnames('measure-result-card', {
       'measure-result-card-empty': !hasResult
@@ -76,6 +89,7 @@ export class MeasureResultCard extends Component {
         <div className="measure-result-subtitle">
           {subtitle}
         </div>
+        {periodType}
       </div>
     );
   }

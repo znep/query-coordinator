@@ -56,7 +56,7 @@ function createSource(params, callParams, optionalCallId = null) {
         // Hold off declaring the api call failed if the server returns a key
         // with above value on the error. The source create action failed and
         // returned an error, but we don't want to show the error in this case.
-        // We want to put try uploading the file as a blob and see it it works.
+        // We want to try uploading the file as a blob and see if it works.
         // If it doesn't, then we show an error.
         dispatch(apiCallFailed(callId, err));
       }

@@ -18,6 +18,7 @@ export const CREATE_SOURCE_SUCCESS = 'CREATE_SOURCE_SUCCESS';
 export const CREATE_UPLOAD_SOURCE_SUCCESS = 'CREATE_UPLOAD_SOURCE_SUCCESS';
 export const SOURCE_UPDATE = 'SOURCE_UPDATE';
 
+// CREATE SOURCE THUNKS
 // Generic Create Source
 function createSource(params, callParams, optionalCallId = null) {
   return dispatch => {
@@ -46,72 +47,6 @@ function createSource(params, callParams, optionalCallId = null) {
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
         throw err;
-      });
-  };
-}
-
-function updateSource(params, source, changes) {
-  return dispatch => {
-    const callId = uuid();
-
-    const call = {
-      operation: UPDATE_SOURCE,
-      callParams: { sourceId: source.id }
-    };
-
-    dispatch(apiCallStarted(callId, call));
-
-    return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
-      method: 'POST',
-      body: JSON.stringify(changes)
-    })
-      .then(checkStatus)
-      .then(getJson)
-      .then(resp => {
-        const { resource } = resp;
-        dispatch(apiCallSucceeded(callId));
-        return resource;
-      })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-        throw err;
-      });
-  };
-}
-
-function dontParseSource(params, source) {
-  return dispatch => {
-    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } })).then(
-      resource => {
-        dispatch(subscribeToSource(resource.id, params));
-        dispatch(
-          createUploadSourceSuccess(
-            resource.id,
-            resource.created_by,
-            resource.created_at,
-            resource.source_type,
-            100
-          )
-        );
-        dispatch(addNotification('source', resource.id));
-        browserHistory.push(Links.showBlobPreview(params, resource.id));
-        return resource;
-      }
-    );
-  };
-}
-
-export function updateSourceParseOptions(params, source, parseOptions) {
-  return dispatch => {
-    return dispatch(updateSource(params, source, { parse_options: parseOptions }))
-      .then(resource => {
-        dispatch(subscribeToSource(resource.id, params));
-        return resource;
-      })
-      .then(normalizeCreateSourceResponse)
-      .then(normalized => {
-        dispatch(createSourceSuccess(normalized));
-        return normalized;
       });
   };
 }
@@ -178,6 +113,19 @@ export function createUploadSource(file, parseFile, params, callId) {
   };
 }
 
+export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType, percentCompleted = 0) {
+  return {
+    type: CREATE_UPLOAD_SOURCE_SUCCESS,
+    source: {
+      id,
+      source_type: sourceType,
+      created_by: createdBy,
+      created_at: parseDate(createdAt),
+      percentCompleted
+    }
+  };
+}
+
 // URL Source
 export function createURLSource(url, params) {
   const callParams = {
@@ -198,16 +146,70 @@ export function createURLSource(url, params) {
   };
 }
 
-export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType, percentCompleted = 0) {
-  return {
-    type: CREATE_UPLOAD_SOURCE_SUCCESS,
-    source: {
-      id,
-      source_type: sourceType,
-      created_by: createdBy,
-      created_at: parseDate(createdAt),
-      percentCompleted
-    }
+// UPDATE SOURCE THUNKS
+function updateSource(params, source, changes) {
+  return dispatch => {
+    const callId = uuid();
+
+    const call = {
+      operation: UPDATE_SOURCE,
+      callParams: { sourceId: source.id }
+    };
+
+    dispatch(apiCallStarted(callId, call));
+
+    return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
+      method: 'POST',
+      body: JSON.stringify(changes)
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        const { resource } = resp;
+        dispatch(apiCallSucceeded(callId));
+        return resource;
+      })
+      .catch(err => {
+        dispatch(apiCallFailed(callId, err));
+        throw err;
+      });
+  };
+}
+
+export function updateSourceParseOptions(params, source, parseOptions) {
+  return dispatch => {
+    return dispatch(updateSource(params, source, { parse_options: parseOptions }))
+      .then(resource => {
+        dispatch(subscribeToSource(resource.id, params));
+        return resource;
+      })
+      .then(normalizeCreateSourceResponse)
+      .then(normalized => {
+        dispatch(createSourceSuccess(normalized));
+        return normalized;
+      });
+  };
+}
+
+function dontParseSource(params, source) {
+  return dispatch => {
+    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } })).then(
+      resource => {
+        dispatch(subscribeToSource(resource.id, params));
+        dispatch(
+          createUploadSourceSuccess(
+            resource.id,
+            resource.created_by,
+            resource.created_at,
+            resource.source_type,
+            100
+          )
+        );
+        dispatch(addNotification('source', resource.id));
+        browserHistory.push(Links.showBlobPreview(params, resource.id));
+        return resource;
+      }
+    );
   };
 }
 

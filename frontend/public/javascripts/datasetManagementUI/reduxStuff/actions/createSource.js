@@ -21,7 +21,7 @@ export const SOURCE_UPDATE = 'SOURCE_UPDATE';
 // CREATE SOURCE THUNKS
 // Generic Create Source
 function createSource(params, callParams, optionalCallId = null) {
-  return dispatch => {
+  return async dispatch => {
     const callId = optionalCallId || uuid();
 
     const call = {
@@ -31,23 +31,23 @@ function createSource(params, callParams, optionalCallId = null) {
 
     dispatch(apiCallStarted(callId, call));
 
-    return socrataFetch(dsmapiLinks.sourceCreate(params), {
-      method: 'POST',
-      body: JSON.stringify(callParams)
-    })
-      .then(checkStatus)
-      .then(getJson)
-      .then(resp => {
-        const { resource } = resp;
-
-        dispatch(apiCallSucceeded(callId));
-
-        return resource;
+    try {
+      const response = await socrataFetch(dsmapiLinks.sourceCreate(params), {
+        method: 'POST',
+        body: JSON.stringify(callParams)
       })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-        throw err;
-      });
+      .then(checkStatus)
+      .then(getJson);
+
+      const { resource } = response;
+
+      dispatch(apiCallSucceeded(callId));
+
+      return resource;
+    } catch (err) {
+      dispatch(apiCallFailed(callId, err));
+      throw err;
+    }
   };
 }
 
@@ -63,16 +63,17 @@ export function createViewSource(params) {
   const callParams = {
     source_type: { type: 'view' }
   };
-  // TODO: handle error
   // TODO: create revision channel and subscribe to it here or above to catch
   // os id updates
-  return dispatch => {
-    return dispatch(createSource(params, callParams))
-      .then(normalizeCreateSourceResponse)
-      .then(resp => {
-        dispatch(createSourceSuccess(resp));
-        return resp;
-      });
+  return async dispatch => {
+    try {
+      const resource = await dispatch(createSource(params, callParams));
+      const normalizedResource = normalizeCreateSourceResponse(resource);
+      dispatch(createSourceSuccess(normalizedResource));
+      return normalizedResource;
+    } catch (err) {
+      dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
+    }
   };
 }
 
@@ -148,7 +149,7 @@ export function createURLSource(url, params) {
 
 // UPDATE SOURCE THUNKS
 function updateSource(params, source, changes) {
-  return dispatch => {
+  return async dispatch => {
     const callId = uuid();
 
     const call = {
@@ -158,58 +159,55 @@ function updateSource(params, source, changes) {
 
     dispatch(apiCallStarted(callId, call));
 
-    return socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
-      method: 'POST',
-      body: JSON.stringify(changes)
-    })
-      .then(checkStatus)
-      .then(getJson)
-      .then(resp => {
-        const { resource } = resp;
-        dispatch(apiCallSucceeded(callId));
-        return resource;
+    try {
+      const { resource } = await socrataFetch(dsmapiLinks.sourceUpdate(source.id), {
+        method: 'POST',
+        body: JSON.stringify(changes)
       })
-      .catch(err => {
-        dispatch(apiCallFailed(callId, err));
-        throw err;
-      });
+      .then(checkStatus)
+      .then(getJson);
+
+      dispatch(apiCallSucceeded(callId));
+
+      return resource;
+    } catch (err) {
+      dispatch(apiCallFailed(callId, err));
+      throw err;
+    }
   };
 }
 
 export function updateSourceParseOptions(params, source, parseOptions) {
-  return dispatch => {
-    return dispatch(updateSource(params, source, { parse_options: parseOptions }))
-      .then(resource => {
-        dispatch(subscribeToSource(resource.id, params));
-        return resource;
-      })
-      .then(normalizeCreateSourceResponse)
-      .then(normalized => {
-        dispatch(createSourceSuccess(normalized));
-        return normalized;
-      });
+  return async dispatch => {
+    const resource = await dispatch(updateSource(params, source, { parse_options: parseOptions }));
+    const normalizedResource = normalizeCreateSourceResponse(resource);
+    dispatch(subscribeToSource(resource.id, params));
+    dispatch(createSourceSuccess(normalizedResource));
+    return normalizedResource;
   };
 }
 
 function dontParseSource(params, source) {
-  return dispatch => {
-    return dispatch(updateSource(params, source, { parse_options: { parse_source: false } })).then(
-      resource => {
-        dispatch(subscribeToSource(resource.id, params));
-        dispatch(
-          createUploadSourceSuccess(
-            resource.id,
-            resource.created_by,
-            resource.created_at,
-            resource.source_type,
-            100
-          )
-        );
-        dispatch(addNotification('source', resource.id));
-        browserHistory.push(Links.showBlobPreview(params, resource.id));
-        return resource;
-      }
+  return async dispatch => {
+    const resource = await dispatch(updateSource(params, source, { parse_options: { parse_source: false } }));
+
+    dispatch(subscribeToSource(resource.id, params));
+
+    dispatch(
+      createUploadSourceSuccess(
+        resource.id,
+        resource.created_by,
+        resource.created_at,
+        resource.source_type,
+        100
+      )
     );
+
+    dispatch(addNotification('source', resource.id));
+
+    browserHistory.push(Links.showBlobPreview(params, resource.id));
+
+    return resource;
   };
 }
 

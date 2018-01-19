@@ -277,6 +277,9 @@ en:
           edit_prompt_message: Edit the source file for this dataset.
           title: Download this Resource
       asset_action_bar:
+        confirmation:
+          agree: OK
+          cancel: Cancel
         manage_access: Manage Collaborators
         publication_action:
           change_audience: Change Audience
@@ -294,7 +297,6 @@ en:
           revert_published: Revert to last published version
           view_published: View published version
           withdraw_approval_request: Withdraw Approval Request
-          withdraw_approval_request_confirm: Are you sure you want to withdraw this approval request?
         publication_state:
           draft: Draft
           pending: Pending

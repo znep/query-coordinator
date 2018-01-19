@@ -31,7 +31,7 @@ const makePrivateByUid = (uid) => {
   return fetch(url, _.assign({}, fetchOptions, { method: 'PUT' }));
 };
 
-const confirmation = (message) => {
+const confirmation = (message, options = {}) => {
   return new Promise((resolve, reject) => {
     const targetNode = document.querySelector('#asset-action-bar-modal-target');
     const onDismiss = () => {
@@ -44,14 +44,22 @@ const confirmation = (message) => {
       resolve(true);
     };
 
+    const agreeText = options.agree ||
+      I18n.t('shared.components.asset_action_bar.confirmation.agree');
+    const cancelText = options.cancel ||
+      I18n.t('shared.components.asset_action_bar.confirmation.cancel');
+
     ReactDOM.render(
       <Modal onDismiss={onDismiss}>
+        <ModalHeader showCloseButton={false}>
+          {options.header}
+        </ModalHeader>
         <ModalContent>
           <p>{message}</p>
         </ModalContent>
         <ModalFooter>
-          <button onClick={onDismiss} className="btn btn-default">Cancel</button>
-          <button onClick={onAgree} className="btn btn-primary">OK</button>
+          <button onClick={onDismiss} className="btn btn-default">{cancelText}</button>
+          <button onClick={onAgree} className="btn btn-primary">{agreeText}</button>
         </ModalFooter>
       </Modal>,
       targetNode
@@ -93,6 +101,10 @@ class PublicationAction extends React.Component {
   handleMoreActions(option) {
     const { value } = option;
     const { currentViewUid, publishedViewUid } = this.props;
+    const redirectAfterDeletion = () => {
+      window.location.assign('/profile'); // Eventually /admin/assets
+    };
+
     switch (value) {
       case 'revert-to-published':
         // TODO someday. Currently postponed.
@@ -106,37 +118,32 @@ class PublicationAction extends React.Component {
         console.log('change-audience option selected');
         break;
       case 'delete-dataset':
-        confirmation(I18n.t('delete_dataset_confirm', { scope: this.i18n_scope })).
+        confirmation(I18n.t('delete_dataset_confirm', { scope: this.i18n_scope }),
+            { agree: I18n.t('delete_dataset', { scope: this.i18n_scope }),
+              header: I18n.t('delete_dataset', { scope: this.i18n_scope })
+            }).
           then((confirmed) => {
             if (confirmed) {
               deleteViewByUid(currentViewUid).
-                then(() => { window.location.assign('/profile'); });
+                then(redirectAfterDeletion);
             }
           });
         break;
       case 'discard-draft':
-        confirmation(I18n.t('discard_draft_confirm', { scope: this.i18n_scope })).
+        confirmation(I18n.t('discard_draft_confirm', { scope: this.i18n_scope }),
+            { agree: I18n.t('discard_draft', { scope: this.i18n_scope }),
+              header: I18n.t('discard_draft', { scope: this.i18n_scope })
+            }).
           then((confirmed) => {
             if (confirmed) {
               deleteViewByUid(currentViewUid).
-                then(() => {
-                  if (publishedViewUid) {
-                    window.location.assign(`/d/${publishedViewUid}`);
-                  } else {
-                    window.location.assign('/profile');
-                  }
-                });
+                then(redirectAfterDeletion);
             }
           });
         break;
       case 'withdraw-approval-request':
-        confirmation(I18n.t('withdraw_approval_request_confirm', { scope: this.i18n_scope })).
-          then((confirmed) => {
-            if (confirmed) {
-              makePrivateByUid(currentViewUid).
-                then(() => { window.location.reload(); });
-            }
-          });
+        makePrivateByUid(currentViewUid).
+          then(() => { window.location.reload(); });
         break;
     }
   }

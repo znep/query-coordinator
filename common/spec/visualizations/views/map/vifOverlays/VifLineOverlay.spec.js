@@ -1,9 +1,13 @@
-import VifLineOverlay from 'common/visualizations/views/map/vifOverlays/VifLineOverlay';
 import { mapMockVif } from './../../../mapMockVif';
+
+import VifLineOverlay from 'common/visualizations/views/map/vifOverlays/VifLineOverlay';
+import { getBaseMapLayerStyles } from 'common/visualizations/views/map/baseMapStyle';
+import DataProvider from 'common/visualizations/dataProviders/DataProvider';
 
 describe('VifLineOverlay', () => {
   let vifLineOverlay;
   let mockMap;
+  let fakeServer;
 
   beforeEach(() => {
     mockMap = {
@@ -12,63 +16,187 @@ describe('VifLineOverlay', () => {
       setPaintProperty: sinon.spy()
     };
     vifLineOverlay = new VifLineOverlay(mockMap);
+    vifLineOverlay._lines = { setup: sinon.spy(), update: sinon.spy() };
+    // Clearing the dataProviders cache. Otherwise it is returning,
+    // old faked responses for same queries.
+    DataProvider._instanceCache = {};
+
+    fakeServer = sinon.createFakeServer();
+    fakeServer.autoRespond = true;
   });
 
-  describe('setup', () => {
-    it('should add the map source and layer', () => {
-      const vif = mapMockVif();
-
-      vifLineOverlay.setup(vif);
-      sinon.assert.calledWith(mockMap.addSource,
-        'lineVectorDataSource',
-        sinon.match({
-          geojsonTile: true,
-          type: 'vector'
-        })
-      );
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          id: 'lineLayer',
-          source: 'lineVectorDataSource'
-        }),
-      );
-    });
+  afterEach(() => {
+    fakeServer.restore();
   });
 
-  describe('update', () => {
-    it('should call the set paint property function', () => {
-      const vif = mapMockVif({
-        series: [{
-          color: { primary: 'red' }
-        }]
+  describe('colorLinesBy and weighLinesByColumn not configured', () => {
+    describe('colorLinesBy', () => {
+      let vif;
+      beforeEach(() => {
+        vif = mapMockVif({});
+        vif.series[0].mapOptions.colorLinesBy = null;
+      });
+      describe('setup', () => {
+        it('should render lines without colorByCategories column configured', async() => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            countBy: '__count__',
+            dataUrl: sinon.match('select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),count(*) as __count__'),
+            colorBy: '__color_by_category__'
+          });
+
+          await vifLineOverlay.setup(vif);
+          sinon.assert.calledWith(vifLineOverlay._lines.setup, vif, expectedRenderOptions);
+        });
       });
 
-      vifLineOverlay.update(vif);
-      sinon.assert.calledWith(mockMap.setPaintProperty, 'lineLayer', 'line-color', 'red');
-    });
-  });
+      describe('update', () => {
+        it('should render lines without colorByCategories column configured', async() => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            countBy: '__count__',
+            dataUrl: sinon.match('query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),count(*) as __count__'),
+            colorBy: '__color_by_category__'
+          });
 
-  describe('getDataUrl', () => {
-    it('should return url with substitution params', () => {
-      const vif = mapMockVif({
-        series: [{
-          dataSource:{
-            dimension: { columnName: 'the_geom' },
-            zoom: 17
-          }
-        }]
+          await vifLineOverlay.update(vif);
+          sinon.assert.calledWith(vifLineOverlay._lines.update, vif, expectedRenderOptions);
+        });
+      });
+    });
+
+    describe('weighLinesByColumn', () => {
+      let vif;
+      beforeEach(() => {
+        vif = mapMockVif({});
+        vif.series[0].mapOptions.weighLinesBy = null;
       });
 
-      assert.equal(
-        vifLineOverlay.getDataUrl(vif),
-        'https://example.com/resource/r6t9-rak2.geojson?$query=' +
-        'select simplify_preserve_topology(snap_to_grid(the_geom,{snap_precision}),{simplify_precision}) ' +
-        'where {{\'the_geom\' column condition}} ' +
-        'group by simplify_preserve_topology(snap_to_grid(the_geom,{snap_precision}),{simplify_precision}) ' +
-        'limit 200000 ' +
-        '#substituteSoqlParams_tileParams={z}|{x}|{y}'
-      );
+      describe('setup', () => {
+        it('should render Lines without weighByRange column configured', async() => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match('query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),count(*) as __count__'),
+            countBy: '__count__'
+          });
+
+          await vifLineOverlay.setup(vif);
+          sinon.assert.calledWith(vifLineOverlay._lines.setup, vif, expectedRenderOptions);
+        });
+      });
+
+      describe('update', () => {
+        it('should render Lines without weighByRange column configured', async() => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match('query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),count(*) as __count__'),
+            countBy: '__count__'
+          });
+
+          await vifLineOverlay.update(vif);
+          sinon.assert.calledWith(vifLineOverlay._lines.update, vif, expectedRenderOptions);
+        });
+      });
     });
   });
 
+  describe('colorLinesBy column configured', () => {
+    let vif;
+
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.colorLinesBy = 'agentType';
+
+      const query = /.*example.com\/api\/id\/r6t9-rak2\.json.*/;
+      const stubResult = '[{"__color_by_category__": "Place"}, {"__color_by_category__": "City"}]';
+
+      fakeServer.respondWith(query,
+        [200, { 'Content-Type': 'application/json' }, stubResult]);
+    });
+
+    describe('setup', () => {
+      it('should setup with colorLinesBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: sinon.match(['Place', 'City']),
+          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType,true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
+          colorBy: '__color_by_category__'
+        });
+
+        await vifLineOverlay.setup(vif);
+        sinon.assert.calledWith(vifLineOverlay._lines.setup, vif, expectedRenderOptions);
+      });
+    });
+
+    describe('update', () => {
+      it('should setup with colorLinesBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: sinon.match(['Place', 'City']),
+          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType,true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
+          colorBy: '__color_by_category__',
+          aggregateAndResizeBy: '__count__'
+        });
+
+        await vifLineOverlay.update(vif);
+        sinon.assert.calledWith(vifLineOverlay._lines.update, vif, expectedRenderOptions);
+      });
+    });
+  });
+
+  describe('weighBy column configured', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.weighLinesBy = 'county_district';
+      const query = /.*example.com\/api\/id\/r6t9-rak2\.json.*/;
+
+      const stubResult = '[{"__weigh_by__": "Place"}, {"__weigh_by__": "City"}]';
+
+      fakeServer.respondWith(query,
+        [200, { 'Content-Type': 'application/json' }, stubResult]);
+    });
+
+    describe('setup', () => {
+      it('should setup with weighBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),sum(county_district) as __weigh_by__,count(*) as __count__ where {{'point' column condition}}"),
+          aggregateAndResizeBy: '__weigh_by__',
+          countBy: '__count__'
+        });
+
+        await vifLineOverlay.setup(vif);
+        sinon.assert.calledWith(vifLineOverlay._lines.setup, vif, expectedRenderOptions);
+
+      });
+    });
+
+    describe('update', () => {
+      it('should update with weighBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          dataUrl: sinon.match("query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),sum(county_district) as __weigh_by__,count(*) as __count__ where {{'point' column condition}}"),
+          aggregateAndResizeBy: '__weigh_by__',
+          countBy: '__count__'
+        });
+
+        await vifLineOverlay.update(vif);
+        sinon.assert.calledWith(vifLineOverlay._lines.update, vif, expectedRenderOptions);
+      });
+    });
+  });
+
+  describe('prepare', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.weighLinesBy = 'county_district';
+    });
+
+    it('should throw error', () => {
+      let errorResponse = 'Error preparing line map.';
+      fakeServer.respondWith([404, { 'Content-Type': 'application/json' }, errorResponse]);
+
+      vifLineOverlay.setup(vif).then((result) => {}, (error) => {
+        expect(error.soqlError).to.eq(errorResponse);
+      });
+    });
+  });
 });

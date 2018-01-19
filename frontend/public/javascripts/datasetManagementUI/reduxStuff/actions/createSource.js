@@ -1,8 +1,12 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
-import { socrataFetch, checkStatus, getJson } from 'datasetManagementUI/lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'datasetManagementUI/lib/http';
 import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import { uploadFile } from 'datasetManagementUI/reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
@@ -36,8 +40,9 @@ function createSource(params, callParams, optionalCallId = null) {
         method: 'POST',
         body: JSON.stringify(callParams)
       })
-      .then(checkStatus)
-      .then(getJson);
+        .then(checkStatus)
+        .then(getJson)
+        .catch(getError);
 
       const { resource } = response;
 
@@ -45,7 +50,17 @@ function createSource(params, callParams, optionalCallId = null) {
 
       return resource;
     } catch (err) {
-      dispatch(apiCallFailed(callId, err));
+      const unparsableError = _.get(err, 'body.key') === 'unparsable_file';
+
+      if (!unparsableError) {
+        // Hold off declaring the api call failed if the server returns a key
+        // with above value on the error. The source create action failed and
+        // returned an error, but we don't want to show the error in this case.
+        // We want to put try uploading the file as a blob and see it it works.
+        // If it doesn't, then we show an error.
+        dispatch(apiCallFailed(callId, err));
+      }
+
       throw err;
     }
   };
@@ -77,11 +92,11 @@ export function createViewSource(params) {
   };
 }
 
-export function createUploadSource(file, parseFile, params, callId) {
+export function createUploadSource(file, shouldParseFile, params, callId) {
   return async dispatch => {
     const callParams = {
       source_type: { type: 'upload', filename: file.name },
-      parse_options: { parse_source: parseFile }
+      parse_options: { parse_source: shouldParseFile }
     };
 
     let resource;
@@ -97,22 +112,23 @@ export function createUploadSource(file, parseFile, params, callId) {
 
       const bytesSource = await dispatch(uploadFile(resource.id, file));
 
-      if (!parseFile) {
+      if (!shouldParseFile) {
         dispatch(sourceUpdate(bytesSource.resource.id, bytesSource.resource));
         browserHistory.push(Links.showBlobPreview(params, bytesSource.resource.id));
       }
     } catch (err) {
-      if (resource && err.key && err.key === 'unparsable_file') {
+      if (resource && _.get(err, 'body.key') === 'unparsable_file') {
         // this was not a parseable file type, even though we thought it would be
         // ex: zipfile but not shapefile, .json but not geojson
         // recover by telling DSMAPI to make a parse_source: false copy
         dispatch(dontParseSource(params, resource));
-      } else if (err instanceof TypeError || err instanceof ProgressEvent) {
+      } else if (err instanceof TypeError) {
         // a network error occured on either createSource or uploadFile; we got
         // no response from the server via http or websocket. A TypeError is what
-        // fetch returns if it cannot reach the network at all. A ProgressEvent
-        // is what XMLHttpRequest if a network interruption occurs during the
-        // sending of bytes.
+        // fetch returns if it cannot reach the network at all. Also since we're
+        // expecting an error stream from dsmapi, we try to call .json() on it
+        // in the thunks that make api calls. Calling json() on an error that does
+        // not define that method also causes a TypeError.
         dispatch(showFlashMessage('error', I18n.notifications.connection_error_body));
       } else {
         dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
@@ -135,27 +151,38 @@ export function createUploadSourceSuccess(id, createdBy, createdAt, sourceType, 
 }
 
 // URL Source
-export function createURLSource(url, params) {
+export function createURLSource(url, params, shouldParseFile = true) {
   const callParams = {
     source_type: {
       type: 'url',
       url
-    }
+    },
+    parse_options: { parse_source: shouldParseFile }
   };
 
   return async dispatch => {
-    const resource = await dispatch(createSource(params, callParams));
+    const callId = uuid();
 
-    dispatch(createUploadSourceSuccess(
-      resource.id,
-      resource.created_by,
-      resource.created_at,
-      resource.source_type
-    ));
+    try {
+      const resource = await dispatch(createSource(params, callParams, callId));
 
-    dispatch(addNotification('source', resource.id));
+      dispatch(
+        createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
+      );
 
-    dispatch(subscribeToSource(resource.id, params));
+      dispatch(addNotification('source', resource.id));
+
+      dispatch(subscribeToSource(resource.id, params));
+    } catch (err) {
+      if (shouldParseFile && _.get(err, 'body.key') === 'unparsable_file') {
+        // the content type at the end of this url indicates its not parsable
+        // recover by telling DSMAPI to make a parse_source: false with the same url
+        dispatch(createURLSource(url, params, false));
+      } else {
+        dispatch(apiCallFailed(callId, err));
+        throw err;
+      }
+    }
   };
 }
 
@@ -176,8 +203,8 @@ function updateSource(params, source, changes) {
         method: 'POST',
         body: JSON.stringify(changes)
       })
-      .then(checkStatus)
-      .then(getJson);
+        .then(checkStatus)
+        .then(getJson);
 
       dispatch(apiCallSucceeded(callId));
 

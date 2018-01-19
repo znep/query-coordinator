@@ -102,11 +102,19 @@ describe CustomContentController do
       })
     end
 
-    it 'should require a user' do
+    trigger_lockdown = proc do
       expect(controller).to receive(:check_lockdown).once.and_call_original
       get :page, :path => test_path
       expect(response).to have_http_status(302)
     end
+
+    pass_through_lockdown = proc do
+      expect(controller).to receive(:check_lockdown).never.and_call_original
+      get :page, :path => test_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'should require a user', &trigger_lockdown
 
     context 'with a staging_lockdown_exception in place' do
       let(:dataslate_config) do
@@ -117,11 +125,7 @@ describe CustomContentController do
       end
       let(:dataslate_config_properties) { [] }
 
-      it 'should still require a user' do
-        expect(controller).to receive(:check_lockdown).once.and_call_original
-        get :page, :path => test_path
-        expect(response).to have_http_status(302)
-      end
+      it 'should still require a user', &trigger_lockdown
 
       context 'and an exception exists for this path' do
         let(:dataslate_config_properties) do
@@ -131,11 +135,7 @@ describe CustomContentController do
           }] 
         end
 
-        it 'should not require a user' do
-          expect(controller).to receive(:check_lockdown).never.and_call_original
-          get :page, :path => test_path
-          expect(response).to have_http_status(:ok)
-        end
+        it 'should not require a user', &pass_through_lockdown
       end
 
       context 'and an exception exists for this path as a regex' do
@@ -146,11 +146,7 @@ describe CustomContentController do
           }] 
         end
 
-        it 'should not require a user' do
-          expect(controller).to receive(:check_lockdown).never.and_call_original
-          get :page, :path => test_path
-          expect(response).to have_http_status(:ok)
-        end
+        it 'should not require a user', &pass_through_lockdown
       end
 
       context 'and an exception exists but not for this path' do
@@ -161,11 +157,7 @@ describe CustomContentController do
           }] 
         end
 
-        it 'should not require a user' do
-          expect(controller).to receive(:check_lockdown).once.and_call_original
-          get :page, :path => test_path
-          expect(response).to have_http_status(302)
-        end
+        it 'should not require a user', &trigger_lockdown
       end
     end
   end

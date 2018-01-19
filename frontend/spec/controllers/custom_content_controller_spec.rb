@@ -5,14 +5,17 @@ describe CustomContentController do
 
   let(:page_path) { 'hello' }
 
+  let(:dataslate_config) { '' }
+  let(:existing_routes) { '' }
+
   before do
     init_environment
 
     stub_request(:get, "http://localhost:8080/pages.json?method=getLightweightRouting").
-      to_return(:status => 200, :body => "", :headers => {})
+      to_return(:status => 200, :body => existing_routes, :headers => {})
 
     stub_request(:get, "http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=dataslate_config").
-      to_return(:status => 200, :body => "", :headers => {})
+      to_return(:status => 200, :body => dataslate_config, :headers => {})
   end
 
   describe 'routing specs' do
@@ -80,6 +83,82 @@ describe CustomContentController do
 
       get :page
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context 'when staging_lockdown is turned on' do
+    let(:test_path) { '/test-path' }
+    let(:existing_routes) do
+      [{
+        permission: 'public',
+        path: test_path
+      }].to_json
+    end
+
+    before(:each) do
+      allow(CurrentDomain).to receive(:feature?).with(:staging_lockdown).and_return(true)
+      allow(DataslateRouting).to receive(:for).and_return({
+        page: Page.parse({ path: test_path, permission: 'public' }.to_json)
+      })
+    end
+
+    trigger_lockdown = proc do
+      expect(controller).to receive(:check_lockdown).once.and_call_original
+      get :page, :path => test_path
+      expect(response).to have_http_status(302)
+    end
+
+    pass_through_lockdown = proc do
+      expect(controller).to receive(:check_lockdown).never.and_call_original
+      get :page, :path => test_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'should require a user', &trigger_lockdown
+
+    context 'with a staging_lockdown_exception in place' do
+      let(:dataslate_config) do
+        [{
+          type: 'dataslate_config',
+          properties: dataslate_config_properties
+        }].to_json
+      end
+      let(:dataslate_config_properties) { [] }
+
+      it 'should still require a user', &trigger_lockdown
+
+      context 'and an exception exists for this path' do
+        let(:dataslate_config_properties) do
+          [{
+            name: 'staging_lockdown_exceptions',
+            value: [ test_path ]
+          }] 
+        end
+
+        it 'should not require a user', &pass_through_lockdown
+      end
+
+      context 'and an exception exists for this path as a regex' do
+        let(:dataslate_config_properties) do
+          [{
+            name: 'staging_lockdown_exceptions',
+            value: [ '/test-\w+' ]
+          }] 
+        end
+
+        it 'should not require a user', &pass_through_lockdown
+      end
+
+      context 'and an exception exists but not for this path' do
+        let(:dataslate_config_properties) do
+          [{
+            name: 'staging_lockdown_exceptions',
+            value: [ '/some-other-page' ]
+          }] 
+        end
+
+        it 'should not require a user', &trigger_lockdown
+      end
     end
   end
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import connectLocalization from 'common/i18n/components/connectLocalization';
+import { connect as fullConnect } from '../../utils';
 import { Dropdown } from 'common/components';
+import * as Selectors from '../../selectors';
 
 export class RolePicker extends Component {
   static propTypes = {
@@ -33,9 +33,10 @@ export class RolePicker extends Component {
 }
 
 const mapStateToProps = (state, { I18n }) => {
-  const customRolesExist = state.roles.some(role => !role.isDefault);
+  const roles = Selectors.getRoles(state) || [];
+  const customRolesExist = roles.some(role => !role.isDefault);
 
-  const availableRoles = state.roles.map(role => {
+  const availableRoles = roles.map(role => {
     const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
     if (customRolesExist) {
       const group = role.isDefault ? I18n.t('users.roles.default') : I18n.t('users.roles.custom');
@@ -57,6 +58,4 @@ const mapStateToProps = (state, { I18n }) => {
   };
 };
 
-export const LocalizedRolePicker = connectLocalization(connect(mapStateToProps)(RolePicker));
-
-export default LocalizedRolePicker;
+export default fullConnect(mapStateToProps)(RolePicker);

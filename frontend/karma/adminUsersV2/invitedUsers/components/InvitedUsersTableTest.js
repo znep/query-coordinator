@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { mount } from 'enzyme';
 import React from 'react';
 

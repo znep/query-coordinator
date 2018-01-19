@@ -7050,6 +7050,8 @@ en:
     pm: pm
   users:
     actions:
+      confirm_remove_invited_user: Are you sure you want to remove '%{email}'?
+      confirm_remove_user: Are you sure you want to remove '%{screenName}'?
       remove_invited_user: Remove
       remove_role: Remove
       reset_password: Reset Password
@@ -7086,17 +7088,18 @@ en:
       invited_users: Invited Users
       users: Users
     notifications:
-      invited_user_removed: Invited user removed.
-      resent_email_success: Invited user invitation resent.
       add_user_success: Successfully added user.
+      invited_user_removed: Invited user removed.
       password_reset: Password reset.
+      remove_invited_user_success: Successfully removed invited user '%{email}'.
+      resent_email_success: Invited user invitation resent.
       role_changed: User's role successfully changed.
       role_removed: User's role removed.
     no_results: No results
     roles:
-      default: default
-      custom: custom
       all: All Roles
+      custom: custom
+      default: default
   visualization_canvas:
     add_visualization: Add Visualization
     alert_not_signed_in: You will not be able to save this visualization because you are not logged in.

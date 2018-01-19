@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { Success, Failure } from 'folktale/validation';
 
 import * as Validators from 'adminUsersV2/validators';

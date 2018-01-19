@@ -1,33 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import createLogger from 'redux-logger';
-import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import App from './app';
 import rootReducer from './reducers';
 import { AppContainer } from 'react-hot-loader';
+import sagas from './sagas';
 
-const getQueryParamFilters = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return {
-    role_ids: urlParams.get('roleId')
-  };
-};
+const sagaMiddleware = createSagaMiddleware();
 
 const middleware = [
-  thunk,
+  sagaMiddleware,
   createLogger({
     duration: true,
     timestamp: false,
     collapsed: true
   })
 ];
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+  (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ name: 'Users & Teams Admin' })) ||
+  compose;
+
 const preloadedState = {
-  config: window.serverConfig,
-  filters: getQueryParamFilters()
+  config: window.serverConfig
 };
 const store = createStore(rootReducer, preloadedState, composeEnhancers(applyMiddleware(...middleware)));
+sagaMiddleware.run(sagas);
 
 const render = Component => {
   ReactDOM.render(

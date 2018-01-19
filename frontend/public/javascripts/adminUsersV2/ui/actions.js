@@ -1,5 +1,4 @@
-import { types as notificationTypes } from './components/Notification';
-import * as UserActions from './users/actions';
+import { types as notificationTypes } from '../components/Notification';
 
 export const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 export const HIDE_NOTIFICATION = 'HIDE_NOTIFICATION';
@@ -12,5 +11,3 @@ export const showLocalizedSuccessNotification = (translationKey, options = {}) =
 export const showLocalizedErrorNotification = (translationKey, options = {}) =>
   showLocalizedNotification(translationKey, notificationTypes.ERROR, options);
 export const hideNotification = () => ({ type: HIDE_NOTIFICATION });
-
-export const gotoUserPage = UserActions.gotoUserPage;

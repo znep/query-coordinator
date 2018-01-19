@@ -2,9 +2,20 @@
 import { collect, Success, Failure } from 'folktale/validation';
 import validateIsEmail from 'validator/lib/isEmail';
 
-import _ from 'lodash';
+import identity from 'lodash/fp/identity';
+import isEmpty from 'lodash/fp/isEmpty';
+import isFinite from 'lodash/fp/isFinite';
+import negate from 'lodash/fp/negate';
 
-const isPresent = value => !_.isEmpty(value);
+const isPresent = negate(isEmpty);
+
+export function ValidationError(failure) {
+  this.name = 'ValidationError';
+  this.failure = failure;
+  this.message = failure.toString();
+  this.stack = (new Error()).stack;
+}
+ValidationError.prototype = new Error;
 
 export const validateEmailsPresent = emails => {
   return isPresent(emails)
@@ -27,12 +38,13 @@ export const isValidEmailGroup = emails => {
           split(',').
           map(email => isEmail(email.trim()))
       ).map(() => value.unsafeGet()),
-    Failure: _.identity
+    Failure: identity
   });
 };
 
-export const isValidRoleId = roleId => {
-  return _.isFinite(roleId) && roleId > 0
+export const isValidRoleId = id => {
+  const roleId = parseInt(id, 10);
+  return isFinite(roleId) && roleId > 0
     ? Success(roleId)
     : Failure([{ translationKey: 'users.errors.invalid_role_selected' }]);
 };

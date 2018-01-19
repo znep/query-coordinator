@@ -1,36 +1,31 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import connectLocalization from 'common/i18n/components/connectLocalization';
+import { connect as fullConnect } from '../../utils';
 import AddUserModal from './AddUserModal';
-import _ from 'lodash';
-import { toggleAddUserUi } from '../actions';
+import Button from 'common/components/Button';
+import * as Actions from '../actions';
 
 export class AddUserButton extends Component {
+  static propTypes = {
+    addUsers: PropTypes.func.isRequired
+  };
+
   render() {
-    const { I18n, onStartAddUser } = this.props;
+    const { I18n, addUsers } = this.props;
     return (
       <div className="add-user-button-container">
-        <button type="button" className="add-user-button btn btn-primary" onClick={() => onStartAddUser()}>
-          {I18n.translate('users.add_new_users.add_users')}
-        </button>
+        <Button variant="primary" className="add-user-button" onClick={addUsers}>
+          {I18n.t('users.add_new_users.add_users')}
+        </Button>
         <AddUserModal />
       </div>
     );
   }
 }
 
-AddUserButton.propTypes = {
-  onStartAddUser: PropTypes.func.isRequired
-};
 
-const mapDispatchToProps = dispatch => ({
-  onStartAddUser: () => {
-    dispatch(toggleAddUserUi(true));
-  }
+const mapDispatchToProps = ({
+  addUsers: Actions.addUsers
 });
 
-const ConnectedAddUserButton = connectLocalization(
-  connect(_.constant({}), mapDispatchToProps)(AddUserButton)
-);
-export default ConnectedAddUserButton;
+export default fullConnect(null, mapDispatchToProps)(AddUserButton);

@@ -33,5 +33,4 @@ describe('components/DateFromNow', () => {
     const component = shallow(<DateFromNow {...props} />);
     expect(component.text()).to.eq('7 days ago');
   });
-
-})
+});

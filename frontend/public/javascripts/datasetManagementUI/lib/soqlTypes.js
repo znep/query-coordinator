@@ -40,6 +40,9 @@ const soqlPropertiesList = [
       number: basicTo('number'),
       checkbox: basicTo('boolean'),
       calendar_date: (ic, entities) => {
+        if (!ic) {
+          return 'to_floating_timestamp(null);';
+        }
         // to_floating_timestamp takes a format argument. If the user switches
         // something that was guessed as
         // to_floating_timestamp(`datetime_column`, '{YYYY}-{0M}-{0D}')

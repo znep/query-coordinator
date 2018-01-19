@@ -24,7 +24,7 @@ export function makeFieldName(displayName = '') {
 
 export function makeTransformExpr(fieldName, transform, entities) {
   if (fieldName === 'null') {
-    return transform(null);
+    return transform(null, entities);
   } else {
     return transform({ field_name: fieldName }, entities);
   }

@@ -3,6 +3,7 @@ import $ from 'jquery';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import SvgTimelineChart from 'common/visualizations/views/SvgTimelineChart';
+import { LINE_DASH_ARRAY } from 'common/visualizations/views/SvgConstants';
 import testHelpers from '../testHelpers';
 
 describe('SvgTimelineChart', () => {
@@ -196,6 +197,13 @@ describe('SvgTimelineChart', () => {
         // renders an svg path
         assert.equal(renderedLine0.prop('tagName'), 'path');
         assert.lengthOf(renderedLine1, 0);
+
+        assert.isUndefined(renderedLine0.attr('stroke-dasharray'));
+      });
+
+      it('renders a solid line by default', () => {
+        const renderedLine0 = timelineChart.$element.find('.series-0-area-line');
+        assert.isUndefined(renderedLine0.attr('stroke-dasharray'));
       });
 
       it('shows values in flyout', done => {
@@ -326,6 +334,30 @@ describe('SvgTimelineChart', () => {
         ticks.each((i, e) => {
           assert.match(e.textContent, /^[0-9]+$/);
         });
+      });
+    });
+
+    describe('when the lineStyle has pattern=dashed', () => {
+      beforeEach(() => {
+        const overrideVIF = {
+          series: [
+            {
+              lineStyle: {
+                pattern: 'dashed'
+              }
+            }
+          ]
+        };
+        timelineChart = createTimelineChart(overrideVIF);
+        timelineChart.chart.render(null, testData);
+      });
+
+      it('should render a dashed line', () => {
+        const line = timelineChart.$element.find('path.series-0-area-line');
+        assert.equal(
+          line.attr('stroke-dasharray'),
+          LINE_DASH_ARRAY
+        );
       });
     });
 

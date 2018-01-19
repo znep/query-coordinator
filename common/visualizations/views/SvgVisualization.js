@@ -701,6 +701,20 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
+  this.getLineStyleBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
+    return _.merge(
+      {
+        points: 'none',
+        pattern: 'solid'
+      },
+      _.get(self.getVif(), ['series', actualSeriesIndex, 'lineStyle'])
+    );
+  };
+
   /**
    * Valid options: 'fit', 'pan', 'showZero'
    */
@@ -721,6 +735,18 @@ function SvgVisualization($element, vif, options) {
   this.getMeasureAxisMaxValue = () => {
     const value = _.get(self.getVif(), 'configuration.measureAxisMaxValue', null);
     return validateAxisValue(value, 'measure_axis_max_value_should_be_numeric');
+  };
+
+  this.getDimensionAxisMinValue = () => {
+    // TODO: When more than just time-series Timeline Charts are supported,
+    // add validation relative to expected dimension axis data type.
+    return _.get(self.getVif(), 'configuration.dimensionAxisMinValue', null);
+  };
+
+  this.getDimensionAxisMaxValue = () => {
+    // TODO: When more than just time-series Timeline Charts are supported,
+    // add validation relative to expected dimension axis data type.
+    return _.get(self.getVif(), 'configuration.dimensionAxisMaxValue', null);
   };
 
   this.getSecondaryMeasureAxisMinValue = () => {

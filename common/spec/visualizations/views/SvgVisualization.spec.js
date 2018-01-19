@@ -868,6 +868,38 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#getDimensionAxisMinValue', () => {
+    it('returns the value if present', () => {
+      const vif = _.cloneDeep(mockVif);
+      _.set(vif, 'configuration.dimensionAxisMinValue', '1999-01-01T00:00:00.000');
+      const viz = new SvgVisualization($element, vif);
+      assert.equal(viz.getDimensionAxisMinValue(), '1999-01-01T00:00:00.000');
+    });
+
+    it('returns null if value is not present', () => {
+      const vif = _.cloneDeep(mockVif);
+      _.unset(vif, 'configuration.dimensionAxisMinValue');
+      const viz = new SvgVisualization($element, vif);
+      assert.isNull(viz.getDimensionAxisMinValue());
+    });
+  });
+
+  describe('#getDimensionAxisMaxValue', () => {
+    it('returns the value if present', () => {
+      const vif = _.cloneDeep(mockVif);
+      _.set(vif, 'configuration.dimensionAxisMaxValue', '2010-01-01T00:00:00.000');
+      const viz = new SvgVisualization($element, vif);
+      assert.equal(viz.getDimensionAxisMaxValue(), '2010-01-01T00:00:00.000');
+    });
+
+    it('returns null if value is not present', () => {
+      const vif = _.cloneDeep(mockVif);
+      _.unset(vif, 'configuration.dimensionAxisMaxValue');
+      const viz = new SvgVisualization($element, vif);
+      assert.isNull(viz.getDimensionAxisMaxValue());
+    });
+  });
+
   describe('#getShowDimensionLabels', () => {
     let viz;
 

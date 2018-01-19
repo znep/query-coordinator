@@ -19,14 +19,15 @@ import {
   AXIS_TICK_COLOR,
   DEFAULT_CIRCLE_HIGHLIGHT_RADIUS,
   DEFAULT_DESKTOP_COLUMN_WIDTH,
-  DEFAULT_MOBILE_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DEFAULT_MOBILE_COLUMN_WIDTH,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
   DIMENSION_LABELS_MAX_CHARACTERS,
   DIMENSION_LABELS_ROTATION_ANGLE,
   FONT_STACK,
   LEGEND_BAR_HEIGHT,
+  LINE_DASH_ARRAY,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   REFERENCE_LINES_STROKE_DASHARRAY,
@@ -500,6 +501,8 @@ function SvgTimelineChart($element, vif, options) {
     function renderLines(seriesData, seriesIndex) {
       const { measure } = seriesData;
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
+      const { pattern } = self.getLineStyleBySeriesIndex(seriesIndex);
+      const dasharray = pattern === 'dashed' ? LINE_DASH_ARRAY : null;
 
       // If we *are not* drawing a line chart, we need to draw the area fill
       // first so that the line sits on top of it in the z-stack.
@@ -541,17 +544,26 @@ function SvgTimelineChart($element, vif, options) {
         attr('clip-path', `url(#${d3ClipPathId})`).
         attr('fill', 'none').
         attr('stroke', color).
-        attr('stroke-width', LINE_STROKE_WIDTH);
+        attr('stroke-width', LINE_STROKE_WIDTH).
+        attr('stroke-dasharray', dasharray);
     }
 
     function renderCircles(seriesData, seriesIndex) {
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
+      const lineStyle = self.getLineStyleBySeriesIndex(seriesIndex);
 
       const seriesDotsPathSvg = viewportSvg.select(`.series-${seriesIndex}-line-dots`);
       seriesDotsPathSvg.attr('clip-path', `url(#${d3ClipPathId})`);
 
       const seriesDotsSvg = seriesDotsPathSvg.selectAll('circle');
-      let radius;
+      let fill = 'transparent';
+      let defaultRadius;
+
+      // As opposed to only on hover, or even never.
+      const alwaysShowPoints = lineStyle.points !== 'none';
+      if (alwaysShowPoints) {
+        fill = seriesData.measure.getColor();
+      }
 
       if (isUsingTimeScale) {
 
@@ -560,13 +572,15 @@ function SvgTimelineChart($element, vif, options) {
         // chart the dots help to indicate non-contiguous sections which may
         // be drawn at 1 pixel wide and nearly invisible with the fill color
         // alone.
-        radius = (seriesTypeVariant === 'line') ? LINE_DOT_RADIUS : AREA_DOT_RADIUS;
+        defaultRadius = (seriesTypeVariant === 'line') ? LINE_DOT_RADIUS : AREA_DOT_RADIUS;
 
       } else {
 
         // Categorical scale uses the same size dots as the combo chart
-        radius = DEFAULT_CIRCLE_HIGHLIGHT_RADIUS;
+        defaultRadius = alwaysShowPoints ? LINE_DOT_RADIUS : DEFAULT_CIRCLE_HIGHLIGHT_RADIUS;
       }
+
+      const radius = _.isFinite(lineStyle.pointRadius) ? lineStyle.pointRadius : defaultRadius;
 
       const getCx = (d) => {
         if (!isUsingTimeScale) {
@@ -596,15 +610,35 @@ function SvgTimelineChart($element, vif, options) {
         d3YScale(d[seriesMeasureIndex]) :
         -100;
 
+      // Only one open circle supported today.
+      const openCircleIndex =
+        lineStyle.points === 'last-open' ? dimensionValues.length - 1 : null;
+
+      const openCircleLineWidth = radius / 2;
+
       seriesDotsSvg.
         attr('cx', getCx).
         attr('cy', getCy).
-        attr('data-default-fill', 'transparent').
         attr('data-dimension-index', (d, index) => index).
         attr('data-dimension-value-html', (d, index) => dimensionValues[index]).
         attr('data-series-index', seriesIndex).
-        attr('fill', 'transparent').
-        attr('r', radius);
+        // Circles have two forms. If the circle is closed, it's a simple
+        // radius and fill. If it's open, it's a radius, stroke, and fill.
+        attr('data-default-fill', (d, i) =>
+          (i === openCircleIndex) ? 'white' : fill
+        ).
+        attr('fill', (d, i) =>
+          (i === openCircleIndex) ? 'white' : fill
+        ).
+        attr('stroke-width', (d, i) =>
+          (i === openCircleIndex) ? openCircleLineWidth : 0
+        ).
+        attr('stroke', fill). // No effect if stroke-width is 0.
+        attr('r', (d, i) =>
+          // Divide openCircleIndex by 2 because half the stroke lies outside
+          // the radius, half lies inside.
+          (i === openCircleIndex) ? radius - openCircleLineWidth / 2 : radius
+        );
     }
 
     function handleZoom() {
@@ -764,17 +798,28 @@ function SvgTimelineChart($element, vif, options) {
         bisectorDates = getPrecisionNoneBisectorDates(dataToRenderBySeries[0].rows);
       }
 
-      startDate = d3.min(                      // Second, get the min dimension date of all series
-        dataToRenderBySeries.map((series) => { // First, get the min dimension date of rows in a series
-          return d3.min(series.rows, (d) => d[seriesDimensionIndex]);
-        })
-      );
+      const customStartDate = self.getDimensionAxisMinValue();
+      const customEndDate = self.getDimensionAxisMaxValue();
 
-      endDate = d3.max(                        // Second, get the max dimension date of all series
-        dataToRenderBySeries.map((series) => { // First, get the max dimension date of rows in a series
-          return d3.max(series.rows, (d) => d[seriesDimensionIndex]);
-        })
-      );
+      if (customStartDate) {
+        startDate = customStartDate;
+      } else {
+        startDate = d3.min(                      // Second, get the min dimension date of all series
+          dataToRenderBySeries.map((series) => { // First, get the min dimension date of rows in a series
+            return d3.min(series.rows, (d) => d[seriesDimensionIndex]);
+          })
+        );
+      }
+
+      if (customEndDate) {
+        endDate = customEndDate;
+      } else {
+        endDate = d3.max(                        // Second, get the max dimension date of all series
+          dataToRenderBySeries.map((series) => { // First, get the max dimension date of rows in a series
+            return d3.max(series.rows, (d) => d[seriesDimensionIndex]);
+          })
+        );
+      }
 
       domainStartDate = parseDate(startDate);
       domainEndDate = parseDate(endDate);
@@ -1353,7 +1398,7 @@ function SvgTimelineChart($element, vif, options) {
   function hideCircleHighlight() {
     // NOTE: The below function depends on this being set by d3, so it is not
     // possible to use the () => {} syntax here.
-    d3.selectAll('circle').each(function() {
+    d3.select($chartElement[0]).selectAll('circle').each(function() {
       const selection = d3.select(this);
       selection.attr('fill', selection.attr('data-default-fill'));
     });
@@ -1794,9 +1839,14 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function generateYScale(minValue, maxValue, height) {
+    // Don't cut off the top of the highest point.
+    const maxPointRadius = _(_.range(0, dataToRenderBySeries.length)).
+      map(self.getLineStyleBySeriesIndex).
+      map('pointRadius').
+      max() || 0;
     return d3.scale.linear().
       domain([minValue, maxValue]).
-      range([height, 0]);
+      range([height, 0 + maxPointRadius]);
   }
 
   function generateYAxis(yScale) {

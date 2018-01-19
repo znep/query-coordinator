@@ -74,6 +74,20 @@ Required |Optional
 :-------:|:----------------------:
 |    -    |Column Chart, Timeline Chart, Histogram, Bar Chart|
 
+##### `dimensionAxisMinValue`
+`dimensionAxisMinValue` sets minimum value for dimension axis. Note that the type of this value depends on the dimension axis type. Currently only respected for time-series Timeline Charts.
+
+Required |Optional
+:-------:|:----------------------:
+|    -    |Timeline Chart|
+
+##### `dimensionAxisMaxValue`
+`dimensionAxisMaxValue` sets maximum value for dimension axis. Note that the type of this value depends on the dimension axis type. Currently only respected for time-series Timeline Charts.
+
+Required |Optional
+:-------:|:----------------------:
+|    -    |Timeline Chart|
+
 ##### `baseLayerOpacity`
 `baseLayerOpacity` is the value that will be used as the css `opacity` value for map tiles. Its type is `<number>` and it must be in the range [0, 1].
 
@@ -572,6 +586,21 @@ The following example would cause a column in a Column Chart with a value of 1 t
  :-------:|:---------------------------:
  |    -    |Bar Chart, Pie Chart, Column Chart|
 
+##### `lineStyle`
+
+Controls how lines will be drawn. Currently only supported by Timeline Chart. It is of type `object`.
+
+Options:
+
+| Option  | Accepted Values         | Default | Description                                                                                                                                        |   |
+|---------|-------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| pattern      | solid, dashed           | solid   | Stroke pattern for the main line. Allows for dashed or solid lines.                                                                                |   |
+| points       | none, closed, last-open | none    | Controls appearance of point markers. Allows for no markers, closed (solid dot) markers, and closed markers with the final marker open (open dot). |   |
+| pointRadius  | integers                | [auto]  | Controls radius of points. Default is an automatic calculation based on chart type.                                                                |   |
+
+Required |Optional
+:-------:|:-------------:
+|    -    |Timeline Chart|
 ### Appendix: SoQL Filter Objects
 
 Currently, six types of filters are supported for `socrata.soql` data sources:

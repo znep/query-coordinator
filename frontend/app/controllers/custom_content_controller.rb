@@ -3,7 +3,7 @@ require 'digest/md5'
 class CustomContentController < ApplicationController
   include CustomContentHelper
 
-  before_filter :check_lockdown
+  before_filter :check_lockdown_with_exceptions
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user, :except => [ :template ]
   skip_before_filter :hook_auth_controller, :set_user, :sync_logged_in_cookie, :only => [:stylesheet]
@@ -368,6 +368,15 @@ class CustomContentController < ApplicationController
         }
       }]
     )
+  end
+
+  def check_lockdown_with_exceptions
+    exception_exists =
+      CurrentDomain.configuration('dataslate_config')&.
+        properties&.
+        staging_lockdown_exceptions&.
+        any? { |route| request.path =~ Regexp.new(route) }
+    check_lockdown unless exception_exists
   end
 end
 

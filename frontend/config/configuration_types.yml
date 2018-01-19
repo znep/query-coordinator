@@ -57,6 +57,9 @@ dataslate_config:
   description: 'Configuration for Dataslate pages, intended for direct manipulation by CS developers to configure how the platform should render Dataslate pages. Note: `prevent_platform_styling` expects an array of RegExp strings matching the page paths you want to prevent styling on.'
   known_properties:
   - prevent_platform_styling
+  property_type_checking:
+    prevent_platform_styling: Array
+    staging_lockdown_exceptions: Array
 email_interests:
   description: "Found this deep in core. I don't understand it yet."
   discourage_in_creation_ui:

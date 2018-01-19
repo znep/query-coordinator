@@ -16,6 +16,7 @@ describe ApplicationHelper do
 
       it 'should not include the approvalSettings section' do
         result = helper.render_asset_browser_server_config
+        expect(result).to match("window.serverConfig = {\"airbrakeEnvironment\":\"test\"")
         expect(result).not_to match('approvalSettings')
       end
     end
@@ -36,6 +37,7 @@ describe ApplicationHelper do
 
       it 'should include the approvalSettings section' do
         result = helper.render_asset_browser_server_config
+        expect(result).to match("window.serverConfig = {\"airbrakeEnvironment\":\"test\"")
         expect(result).to match('approvalSettings')
       end
     end

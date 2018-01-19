@@ -51,7 +51,7 @@ export default class MapFactory {
     const geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid }, true);
 
     try {
-      const extent = await geospaceDataProvider.getFeatureExtent(columnName);
+      const extent = await geospaceDataProvider.getFeatureExtent(columnName, true);
       return new mapboxgl.LngLatBounds(
         [extent.southwest[1], extent.southwest[0]],
         [extent.northeast[1], extent.northeast[0]]

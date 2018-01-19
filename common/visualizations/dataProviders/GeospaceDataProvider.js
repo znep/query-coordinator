@@ -23,14 +23,27 @@ function GeospaceDataProvider(config, useCache = false) {
    * Public methods
    */
 
+  /**
+   * Arguments:
+   *  columnName          : api name of column for which to find the geometric extent
+   *  ignoreInvalidLatLng : default false.
+   *                        if true, will ignore geometries exceeding lat: 90 to -90
+   *                        and lng: 180 to -180
+   */
   const featureExtentPromiseCache = {};
-  this.getFeatureExtent = function(columnName) {
+  this.getFeatureExtent = function(columnName, ignoreInvalidLatLng) {
 
-    const url = 'https://{0}/resource/{1}.json?$select=extent({2})&$$read_from_nbe=true&$$version=2.1'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid'),
-      columnName
-    );
+    let urlPattern = 'https://{0}/resource/{1}.json?$select=extent({2})';
+    if (ignoreInvalidLatLng === true) {
+      urlPattern += '&$where=within_box({2}, -90, -180, 90, 180)';
+    }
+    urlPattern += '&$$read_from_nbe=true&$$version=2.1';
+
+    const url = urlPattern.format(
+        this.getConfigurationProperty('domain'),
+        this.getConfigurationProperty('datasetUid'),
+        columnName
+      );
     const headers = {
       Accept: 'application/json'
     };

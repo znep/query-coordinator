@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './FormatColumn.module.scss';
 import classNames from 'classnames';
-import TextInput from 'components/TextInput/TextInput';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
 
 const SubI18n = I18n.format_column;
 

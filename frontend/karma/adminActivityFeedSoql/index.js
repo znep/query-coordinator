@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Localization from 'common/i18n/components/Localization';
 import mockTranslations from './mockTranslations';
 
+window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');

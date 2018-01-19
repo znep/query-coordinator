@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import modal, { initialState } from 'reduxStuff/reducers/modal';
-import { showModal, hideModal } from 'reduxStuff/actions/modal';
+import modal, { initialState } from 'datasetManagementUI/reduxStuff/reducers/modal';
+import { showModal, hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
 
 describe('modal reducer', () => {
   it('returns the correct default state', () => {

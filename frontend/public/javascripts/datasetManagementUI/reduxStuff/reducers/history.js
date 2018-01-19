@@ -1,4 +1,4 @@
-import { ADD_LOCATION } from 'reduxStuff/actions/history';
+import { ADD_LOCATION } from 'datasetManagementUI/reduxStuff/actions/history';
 
 const history = (state = [], action) => {
   switch (action.type) {

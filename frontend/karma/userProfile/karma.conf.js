@@ -1,14 +1,9 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'user-profile.config.js',
-  [ 'karma/userProfile', 'public/javascripts' ]
+  'shared.config.js',
+  [ 'karma/userProfile' ],
+  [ 'userProfile' ]
 );
-
-// In Rails, some modules are handled specially. We don't want that for tests.
-delete webpackConfig.resolve.alias;
-webpackConfig.externals = {
-  jquery: 'jQuery'
-};
 
 module.exports = function(karma) {
   karma.set(karmaConfig({

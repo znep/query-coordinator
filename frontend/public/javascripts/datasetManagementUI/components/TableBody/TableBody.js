@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import TableCell from 'components/TableCell/TableCell';
-import RowError from 'components/RowError/RowError';
+import TableCell from 'datasetManagementUI/components/TableCell/TableCell';
+import RowError from 'datasetManagementUI/components/RowError/RowError';
 import styles from './TableBody.module.scss';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 class TableBody extends Component {
   componentDidMount() {

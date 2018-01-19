@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { mount, shallow } from 'enzyme';
 
-import { ReportingPeriodPanel } from 'components/EditModal/ReportingPeriodPanel';
+import { ReportingPeriodPanel } from 'opMeasure/components/EditModal/ReportingPeriodPanel';
 
 describe('ReportingPeriodPanel', () => {
   const getProps = (props) => ({

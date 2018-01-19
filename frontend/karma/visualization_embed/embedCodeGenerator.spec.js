@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import generateEmbedCode from 'embedCodeGenerator';
+import generateEmbedCode from 'visualization_embed/embedCodeGenerator';
 import $ from 'jquery';
 import mockVif from './mockVif';
 import _ from 'lodash';

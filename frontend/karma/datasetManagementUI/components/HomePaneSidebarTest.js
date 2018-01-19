@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
+import HomePaneSidebar from 'datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
 
 describe('components/HomePaneSidebar', () => {
   it('renders', () => {

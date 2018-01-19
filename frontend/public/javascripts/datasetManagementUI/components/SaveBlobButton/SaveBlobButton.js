@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SAVE_CURRENT_BLOB } from 'reduxStuff/actions/apiCalls';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import { SAVE_CURRENT_BLOB } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
 
 const SaveBlobButton = ({
   revision,

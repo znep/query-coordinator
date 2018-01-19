@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as paginationActions from 'actions/pagination';
+import * as paginationActions from 'adminActivityFeedSoql/actions/pagination';
 
 const initialState = {
   filters: {

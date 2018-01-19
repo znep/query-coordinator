@@ -1,5 +1,8 @@
 import dotProp from 'dot-prop-immutable';
-import { CREATE_SOURCE_SUCCESS, CREATE_UPLOAD_SOURCE_SUCCESS } from 'reduxStuff/actions/createSource';
+import {
+  CREATE_SOURCE_SUCCESS,
+  CREATE_UPLOAD_SOURCE_SUCCESS
+} from 'datasetManagementUI/reduxStuff/actions/createSource';
 
 const createSource = (state, action) => {
   switch (action.type) {

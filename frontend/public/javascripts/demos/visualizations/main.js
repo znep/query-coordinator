@@ -10,7 +10,7 @@
 // and the environment the example pages expect.
 
 // Compatibility shim for example page's inability to import packages for itself.
-require('sample-vifs');
+require('demos/visualizations/sample-vifs');
 window._ = require('lodash');
 window.socrata = window.socrata || {};
 window.socrata.visualizations = require('common/visualizations');

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 import dotProp from 'dot-prop-immutable';
 import entities from './data/entities';
 

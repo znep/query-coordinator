@@ -1,4 +1,4 @@
-import { SHOW_MODAL, HIDE_MODAL } from 'reduxStuff/actions/modal';
+import { SHOW_MODAL, HIDE_MODAL } from 'datasetManagementUI/reduxStuff/actions/modal';
 
 export const initialState = {
   visible: false,

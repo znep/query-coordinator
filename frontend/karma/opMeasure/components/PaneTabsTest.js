@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { PaneTabs } from 'components/PaneTabs';
+import { PaneTabs } from 'opMeasure/components/PaneTabs';
 
 describe('PaneTabs', () => {
   const getProps = (props) => {

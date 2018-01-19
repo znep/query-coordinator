@@ -36,6 +36,10 @@ export default class InternalAssetManager extends Component {
       };
     }
 
+    const approvalSettings = _.get(window.serverConfig, 'approvalSettings', {});
+    const assetsRequireManualApproval = approvalSettings.official === 'manual' ||
+      approvalSettings.community === 'manual';
+
     return (
       <AssetBrowser
         columns={['type', 'name', 'actions', 'lastUpdatedDate', 'category', 'owner', 'visibility']}
@@ -43,6 +47,7 @@ export default class InternalAssetManager extends Component {
         showAssetCounts
         showFilters
         showSearchField
+        showAwaitingApprovalFilter={assetsRequireManualApproval}
         tabs={tabs} />
     );
   }

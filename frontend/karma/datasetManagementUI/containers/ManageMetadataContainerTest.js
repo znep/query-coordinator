@@ -13,7 +13,7 @@ import {
   shapeOutputSchemaCols,
   validateColumns,
   handleServerErrors
-} from 'containers/ManageMetadataContainer';
+} from 'datasetManagementUI/containers/ManageMetadataContainer';
 
 describe('ManageMetadata Container', () => {
   describe('getRevision', () => {

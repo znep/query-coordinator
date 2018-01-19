@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import * as tableActions from 'actions/table';
-import tableReducer from 'reducers/table';
+import * as tableActions from 'adminActivityFeedSoql/actions/table';
+import tableReducer from 'adminActivityFeedSoql/reducers/table';
 import mockData from '../data/mockFetchTable';
 
 describe('table reducer', () => {

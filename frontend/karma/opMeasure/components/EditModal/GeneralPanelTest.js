@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import { GeneralPanel } from 'components/EditModal/GeneralPanel';
+import { GeneralPanel } from 'opMeasure/components/EditModal/GeneralPanel';
 
 describe('GeneralPanel', () => {
   const getProps = (props) => {

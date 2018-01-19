@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
-import Modal from 'components/Modal/Modal';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import Modal from 'datasetManagementUI/components/Modal/Modal';
 
 const mapStateToProps = ({ ui }) => ({
   modalState: ui.modal

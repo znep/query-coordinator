@@ -3,12 +3,11 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-import { loadData, LOAD_DATA, START, COMPLETE_SUCCESS } from 'actions';
-import { toggleAddUserUi, setAddUserErrors, clearAddUserErrors } from 'users/actions';
-import rootReducer from 'reducers';
+import { loadData, LOAD_DATA, START, COMPLETE_SUCCESS } from 'adminUsersV2/actions';
+import { toggleAddUserUi, setAddUserErrors, clearAddUserErrors } from 'adminUsersV2/users/actions';
+import rootReducer, { getUsersOffset } from 'adminUsersV2/reducers';
 
 import { invitedUsers, usersResponse, rolesResponse } from './helpers/stateFixtures';
-import { getUsersOffset } from "../../public/javascripts/adminUsersV2/reducers";
 
 describe('reducers', () => {
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;

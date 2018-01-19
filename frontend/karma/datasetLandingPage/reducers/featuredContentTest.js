@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
-import reducer from 'reducers/featuredContent';
+import reducer from 'datasetLandingPage/reducers/featuredContent';
 import {
   addFeaturedItem,
   editFeaturedItem,
@@ -16,7 +16,7 @@ import {
   requestedFeaturedItemRemoval,
   handleFeaturedItemRemovalSuccess,
   handleFeaturedItemRemovalError
-} from 'actions/featuredContent';
+} from 'datasetLandingPage/actions/featuredContent';
 
 describe('reducers/featuredContent', function() {
   var state;

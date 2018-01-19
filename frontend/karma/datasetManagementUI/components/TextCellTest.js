@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import renderText from 'components/TableCell/TextCell';
+import renderText from 'datasetManagementUI/components/TableCell/TextCell';
 import React from 'react';
 import { shallow } from 'enzyme';
 

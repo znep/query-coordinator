@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styles from './ParseOptions.module.scss';
-import TextInput from 'components/TextInput/TextInput';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
 import _ from 'lodash';
 
 const SubI18n = I18n.parse_options;

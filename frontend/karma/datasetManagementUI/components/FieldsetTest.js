@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import Fieldset from 'components/Fieldset/Fieldset';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
 import TestUtils from 'react-dom/test-utils';
 import React from 'react';
 import { shallow } from 'enzyme';

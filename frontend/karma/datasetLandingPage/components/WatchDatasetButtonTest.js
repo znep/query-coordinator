@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { WatchDatasetButton } from 'components/WatchDatasetButton/WatchDatasetButton';
-import subscriptionStore from 'store/subscriptionStore'
+import { WatchDatasetButton } from 'datasetLandingPage/components/WatchDatasetButton/WatchDatasetButton';
+import subscriptionStore from 'datasetLandingPage/store/subscriptionStore'
 window.I18n = require('mockTranslations');
 
 describe('WatchDatasetButton', () => {

@@ -111,7 +111,12 @@
         'stackRadius': 20,
         'maxClusterSize': 40,
         'maxClusteringZoomLevel': 11,
-        'pointMapPointSize': 10
+        'pointMapPointSize': 10,
+        'resizePointsBy': 'supervisor_district',
+        'minimumPointSize': 10,
+        'maximumPointSize': 20,
+        'colorPointsBy': 'category',
+        'numberOfDataClasses': 5
       };
       pointMapVif.configuration.baseMapStyle = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
       pointMapVif.configuration.baseMapOpacity = '0.24';
@@ -141,6 +146,35 @@
         'pointAggregation': 'heat_map'
       };
 
+      var regionMapVif = _.cloneDeep(baseVif);
+      regionMapVif.configuration = _.merge(
+        regionMapVif.configuration,
+        {
+          'computedColumnName': ':@wards',
+          'shapefile': {
+            'geometryLabel': null,
+            'primaryKey': '_feature_id',
+            'uid': 'snuk-a5kv'
+          },
+          'legend': {
+            'type': 'continuous',
+            'negativeColor': '#F00',
+            'zeroColor': '#0F0',
+            'positiveColor': '#00F'
+          }
+        }
+      );
+      regionMapVif.series[0].dataSource.domain = 'dataspace.demo.socrata.com';
+      regionMapVif.series[0].dataSource.datasetUid = '52my-2pak';
+      regionMapVif.series[0].dataSource.dimension.measure = {
+        columnName: null,
+        aggregationFunction: 'count'
+      };
+      regionMapVif.series[0].mapOptions = {
+        'mapType': 'pointMap',
+        'pointAggregation': 'region_map'
+      };
+
       $('#unified-map-point').socrataUnifiedMap(pointMapVif);
       $('#pointMapVif').val(JSON.stringify(pointMapVif, null, 4));
 
@@ -152,6 +186,9 @@
 
       $('#unified-map-heat').socrataUnifiedMap(heatMapVif);
       $('#heatMapVif').val(JSON.stringify(heatMapVif, null, 4));
+
+      $('#unified-map-region').socrataUnifiedMap(regionMapVif);
+      $('#regionMapVif').val(JSON.stringify(regionMapVif, null, 4));
     });
     function  changeVif(mapContainerId) {
       var unifiedMapVif = $('#' + mapContainerId +'MapVif').val();
@@ -210,6 +247,17 @@
     </div>
     <div class="right-section">
       <div id="unified-map-heat" class="map"></div>
+    </div>
+  </div>
+
+  Region Map
+  <div class="sample-container">
+    <div class="left-section">
+      <textarea rows="20" id="regionMapVif"></textarea>
+      <button onclick="changeVif('region')">Update</button>
+    </div>
+    <div class="right-section">
+      <div id="unified-map-region" class="map"></div>
     </div>
   </div>
 </div>

@@ -1,5 +1,13 @@
-import { API_CALL_STARTED, API_CALL_SUCCEEDED, API_CALL_FAILED } from 'reduxStuff/actions/apiCalls';
-import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } from 'lib/apiCallStatus';
+import {
+  API_CALL_STARTED,
+  API_CALL_SUCCEEDED,
+  API_CALL_FAILED
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import {
+  STATUS_CALL_IN_PROGRESS,
+  STATUS_CALL_SUCCEEDED,
+  STATUS_CALL_FAILED
+} from 'datasetManagementUI/lib/apiCallStatus';
 
 const initialState = {};
 

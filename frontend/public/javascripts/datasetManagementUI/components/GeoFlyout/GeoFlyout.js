@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from 'components/ErrorFlyout/ErrorFlyout.module.scss';
+import styles from 'datasetManagementUI/components/ErrorFlyout/ErrorFlyout.module.scss';
 
 export function getGeoFlyoutId(transform) {
   return `transform-geo-flyout-${transform.id}`;

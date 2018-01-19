@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import RestoreModal from 'components/RestoreModal';
+import RestoreModal from 'adminActivityFeedSoql/components/RestoreModal';
 import mockData from '../data/mockFetchTable';
 import mockTranslations from '../mockTranslations';
 import testStore from '../testStore';

@@ -1,8 +1,9 @@
 var karmaConfig = require('../helpers/karma_config');
 var _ = require('lodash');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'admin-users-v2.config.js',
-  [ 'karma/adminUsersV2', '.' ]
+  'shared.config.js',
+  [ 'karma/adminUsersV2', '.' ],
+  [ 'adminUsersV2' ]
 );
 
 webpackConfig.externals = {

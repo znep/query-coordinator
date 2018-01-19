@@ -317,7 +317,7 @@ describe('SoqlDataProvider', () => {
       });
     });
 
-    describe('on request success', (done) => {
+    describe('on request success', () => {
       const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -611,7 +611,7 @@ describe('SoqlDataProvider', () => {
       });
     });
 
-    describe('on request success', (done) => {
+    describe('on request success', () => {
       const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -887,7 +887,7 @@ describe('SoqlDataProvider', () => {
       });
     });
 
-    describe('on request success', (done) => {
+    describe('on request success', () => {
       const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID

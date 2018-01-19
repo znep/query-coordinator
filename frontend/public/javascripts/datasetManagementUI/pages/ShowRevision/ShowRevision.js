@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import MetadataTable from 'containers/MetadataTableContainer';
-import SchemaPreview from 'components/SchemaPreview/SchemaPreview';
-import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
-import TablePreview from 'containers/TablePreviewContainer';
-import RowDetails from 'components/RowDetails/RowDetails';
+import MetadataTable from 'datasetManagementUI/containers/MetadataTableContainer';
+import SchemaPreview from 'datasetManagementUI/components/SchemaPreview/SchemaPreview';
+import HomePaneSidebar from 'datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
+import TablePreview from 'datasetManagementUI/containers/TablePreviewContainer';
+import RowDetails from 'datasetManagementUI/components/RowDetails/RowDetails';
 import styles from './ShowRevision.module.scss';
 
 export class ShowRevision extends Component {

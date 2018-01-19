@@ -17,6 +17,12 @@
   .InputRange-label {
     font-size: 1.2rem;
     bottom: -2.7rem;
+
+    &.InputRange-label--value {
+      bottom: 1.2rem;
+      line-height: 1;
+      top: auto;
+    }
   }
 
   .InputRange-track {

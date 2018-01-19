@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import sinon from 'sinon';
-import { FeaturedContent } from 'components/FeaturedContent';
+import { FeaturedContent } from 'catalogLandingPage/components/FeaturedContent';
 import _ from 'lodash';
 
 describe('components/FeaturedContent', () => {

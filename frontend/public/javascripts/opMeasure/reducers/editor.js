@@ -60,12 +60,16 @@ const setCalculationType = (state, type) => {
 
 const resetDataSource = (state) => {
   const { measure, errors } = state;
+  const defaultCalculationType = CalculationTypeNames.COUNT;
 
   return {
     ...state,
     measure: {
       ...measure,
-      dataSourceLensUid: null
+      dataSourceLensUid: null,
+      metricConfig: {
+        type: defaultCalculationType
+      }
     },
     cachedRowCount: undefined,
     dataSourceView: null,
@@ -113,7 +117,6 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     }
 
     case actions.editor.SET_DATA_SOURCE_METADATA_SUCCESS: {
-      const { measure, errors } = state;
       const { uid, rowCount, dataSourceView, displayableFilterableColumns } = action;
       // N.B.: This action is dispatched when the editor is loaded. It does not imply the user
       // chose a new data source - we could just be loading an existing measure.
@@ -123,20 +126,18 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       assertIsNumber(rowCount);
       assertIsOneOfTypes(dataSourceView, 'object');
 
+      const newState = resetDataSource(state);
+      const { measure } = newState;
+
       return {
-        ...state,
+        ...newState,
         measure: {
           ...measure,
           dataSourceLensUid: uid
         },
         cachedRowCount: rowCount,
         dataSourceView: dataSourceView,
-        displayableFilterableColumns: displayableFilterableColumns,
-        errors: {
-          ...errors,
-          fetchDataSourceViewError: false,
-          setDataSourceMetadataError: false
-        }
+        displayableFilterableColumns: displayableFilterableColumns
       };
     }
 

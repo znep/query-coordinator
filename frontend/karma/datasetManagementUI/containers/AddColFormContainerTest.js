@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import {
   validateFieldName,
   validateDisplayName
-} from 'containers/AddColFormContainer';
+} from 'datasetManagementUI/containers/AddColFormContainer';
 
 describe('AddColFormContainer', () => {
   it('returns an empty list of errors for a valid field name', () => {

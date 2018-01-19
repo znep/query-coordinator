@@ -1,9 +1,9 @@
 import immutable from 'immutable';
 import { assert } from 'chai';
 
-import * as actions from 'actions';
-import * as actionTypes from 'actionTypes';
-import reducer from 'reducer';
+import * as actions from 'adminActivityFeed/actions';
+import * as actionTypes from 'adminActivityFeed/actionTypes';
+import reducer from 'adminActivityFeed/reducer';
 
 import mockActivities from './mockActivities';
 

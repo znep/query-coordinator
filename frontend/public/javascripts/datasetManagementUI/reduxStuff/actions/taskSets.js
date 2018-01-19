@@ -1,4 +1,4 @@
-import { parseDate } from 'lib/parseDate';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
 
 export const ADD_TASK_SET = 'ADD_TASK_SET';
 export function addTaskSet(taskSet) {

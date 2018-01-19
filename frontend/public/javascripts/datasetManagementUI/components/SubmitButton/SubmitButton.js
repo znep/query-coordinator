@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from 'components/ApiCallButton/ApiCallButton.module.scss';
 
 // TODO : reconcile with APICallButton at some point
 const SubmitButton = ({ isDisabled, handleClick, buttonName }) => (
   <label
     htmlFor={buttonName}
-    className={`${styles.baseBtn} ${isDisabled ? styles.disabled : ''}`}
+    className={`btn btn-primary ${isDisabled ? 'dsmp-disabled' : ''}`}
     onClick={isDisabled ? e => e.preventDefault() : handleClick}
     disabled={isDisabled}>
     {I18n.common.save}

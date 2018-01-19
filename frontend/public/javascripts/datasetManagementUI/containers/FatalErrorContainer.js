@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import FatalError from 'components/FatalError/FatalError';
-import * as Selectors from 'selectors';
+import FatalError from 'datasetManagementUI/components/FatalError/FatalError';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const { outputSchemaId } = params;

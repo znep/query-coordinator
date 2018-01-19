@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import PageSelector from 'sections/goals/components/GoalTable/PageSelector';
+import PageSelector from 'adminGoals/sections/goals/components/GoalTable/PageSelector';
 import translations from 'mockTranslations';
 import Immutable from 'immutable';
 

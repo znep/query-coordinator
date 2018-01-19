@@ -64,6 +64,15 @@ class DatasetsController < ApplicationController
     render 'colocate', :layout => 'styleguide'
   end
 
+  def is_dsmp?
+    (action_name == 'new' && params[:beta]) ||
+    action_name == 'show_revision'
+  end
+
+  def disable_site_chrome?
+    is_dsmp?
+  end
+
   def show
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])

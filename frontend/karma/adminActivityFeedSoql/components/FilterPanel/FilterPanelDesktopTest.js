@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import FilterPanelDesktop from 'components/FilterPanel/FilterPanelDesktop';
+import FilterPanelDesktop from 'adminActivityFeedSoql/components/FilterPanel/FilterPanelDesktop';
 
 describe('FilterPanelDesktop', () => {
   const element = renderComponentWithLocalization(FilterPanelDesktop, {});

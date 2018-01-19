@@ -443,9 +443,102 @@ module.exports = function(options) {
     }
 
     function renderColumnProperties(column) {
+
+      function renderConvertDataTypeOptions() {
+        var dataTypeConversionMappings = {
+          blob: [],
+          calendar_date: ['text'],
+          checkbox: ['text'],
+          dataset_link: [],
+          date: ['calendar_date', 'text'],
+          document: [],
+          drop_down_list: [],
+          email: ['text'],
+          flag: ['text'],
+          geospatial: [],
+          html: ['text'],
+          line: [],
+          list: [],
+          location: [],
+          money: ['number'],
+          multiline: [],
+          multipoint: [],
+          multipolygon: [],
+          nested_table: [],
+          number: ['money'],
+          object: [],
+          percent: ['number'],
+          phone: ['text'],
+          photo: [],
+          point: [],
+          polygon: [],
+          stars: ['number'],
+          text: ['calendar_date', 'checkbox'],
+          undefined: [],
+          url: []
+        };
+
+        // NBE doesn't support datetime-with-timezone, but we need to support the OBE case, so
+        // conditionally make that conversion option available according to the NBE-ness of the
+        // dataset.
+        if (!window.blist.dataset.newBackend) {
+          dataTypeConversionMappings.calendar_date = ['date', 'text'];
+        }
+
+        var dataType = _.get(column, 'dataTypeName');
+        var dataTypeName = $.t('controls.grid_view_row_editor.data_types.' + dataType + '.name');
+        var conversionOptions = _.get(dataTypeConversionMappings, dataType, []).
+          map(function(conversionOptionDataType) {
+            var conversionOptionDataTypeName = $.t('controls.grid_view_row_editor.data_types.' + conversionOptionDataType + '.name');
+
+            return '<option value="' + conversionOptionDataType + '">' + conversionOptionDataTypeName + '</option>';
+          }).join('');
+
+        return '<option value="' + dataType + '" selected>' + dataTypeName + '</option>' + conversionOptions;
+      }
+
+      function renderColumnDataTypeSection(columnId) {
+        var columnDataTypeSection;
+        var dataType = _.get(column, 'dataTypeName');
+
+        // The NBE doesn't currently have the capability to convert column data types.
+        if (window.blist.dataset.newBackend || !window.blist.dataset.isDefault()) {
+
+          columnDataTypeSection = (
+            '<input ' +
+              'id="column-data-type-' + columnId + '" ' +
+              'class="column-data-type" ' +
+              'type="text" ' +
+              'name="column-data-type-' + columnId + '" ' +
+              'value="' + dataType + '" ' +
+              'disabled="disabled" />'
+          );
+        } else {
+
+          columnDataTypeSection = (
+            '<select ' +
+              'id="column-data-type-' + columnId + '" ' +
+              'class="column-data-type" ' +
+              'type="text" ' +
+              'name="column-data-type-' + columnId + '">' +
+              renderConvertDataTypeOptions() +
+            '</select>' +
+            '<button class="convert-column-data-type" data-column-id="' + columnId + '">' +
+              $.t('controls.grid_view_column_editor.convert_column_data_type') +
+            '</button>' +
+            '<div id="convert-column-data-type-status-' + columnId + '" class="convert-column-data-type-status">' +
+              '<span class="spinner"></span>' +
+              '<span class="convert-column-data-type-status-text"></span>' +
+            '</div>' +
+          '</div>'
+          );
+        }
+
+        return columnDataTypeSection;
+      }
+
       var id = column.id;
       var fieldName = column.fieldName;
-      var dataType = column.dataTypeName;
       var hiddenValue = ((_.get(column, 'flags') || []).indexOf('hidden') >= 0) ? ' checked' : '';
       var nameValue = _.get(column, 'name', '');
       var descriptionValue = _.get(column, 'description', '');
@@ -519,8 +612,7 @@ module.exports = function(options) {
                 'class="column-field-name" ' +
                 'type="text" ' +
                 'name="column-field-name-' + id + '" ' +
-                'value="' + fieldName + '" ' +
-                'disabled />' +
+                'value="' + fieldName + '" />' +
             '</div>' +
             '<div class="field column-data-type">' +
               '<label ' +
@@ -529,13 +621,9 @@ module.exports = function(options) {
                 'title="' + $.t('controls.grid_view_column_editor.data_type.title') + '">' +
                 $.t('controls.grid_view_column_editor.data_type.title') +
               '</label>' +
-              '<input ' +
-                'id="column-data-type-' + id + '" ' +
-                'class="column-data-type" ' +
-                'type="text" ' +
-                'name="column-data-type-' + id + '" ' +
-                'value="' + $.t('controls.grid_view_row_editor.data_types.' + dataType + '.name') + '" ' +
-                'disabled />' +
+              '<div id="column-data-type-container-' + id + '" class="convert-column-type-container">' +
+                renderColumnDataTypeSection(id) +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -724,7 +812,7 @@ module.exports = function(options) {
 
     function getColumnDefaultOptions(id) {
       var originalColumn = getColumnById(id);
-      var fieldName = originalColumn.fieldName;
+      var fieldName = $('#column-field-name-' + id).value();
       var name = $('#column-name-' + id).value();
       var description = $('#column-description-' + id).value();
       var hidden = $('#column-hidden-' + id).value();
@@ -834,6 +922,132 @@ module.exports = function(options) {
       $newColumn.removeClass('hidden');
     }
 
+    function saveView(onComplete) {
+      var viewToPut = {};
+
+      // Update the column metadata with the values in the forms.
+      viewToPut.columns = $columns.toArray().map(function(columnForm) {
+        var id = parseInt(columnForm.getAttribute('data-column-id'), 10);
+        var column = getColumnDefaultOptions(id);
+
+        column.format = getColumnFormatOptions(id);
+
+        return column;
+      });
+
+      var ajaxOptions = {
+        url: '/api/views/' + window.blist.dataset.id + '.json',
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(viewToPut),
+        dataType: 'json',
+        success: function(updatedView) {
+
+          unhideUnhiddenColumns(
+            viewToPut,
+            updatedView,
+            onComplete
+          );
+        },
+        error: function() {
+          $columnEditor.find('.loadingSpinnerContainer').addClass('hidden');
+          alert(
+            $.t('controls.grid_view_column_editor.error.save')
+          );
+          $columnEditor.find('.controls').find('button').attr('disabled', false);
+        }
+      };
+
+      $columnEditor.find('button').attr('disabled', true);
+      $columnEditor.find('.loadingSpinnerContainer').removeClass('hidden');
+
+      $.ajax(ajaxOptions);
+    }
+
+    function pollConvertColumnEndpointUntilComplete(url, onComplete) {
+      var ajaxOptions = {
+        url: url,
+        type: 'GET',
+        contentType: 'application/json',
+        success: function(response) {
+          if (response.hasOwnProperty('id') && response.hasOwnProperty('fieldName')) {
+            window.location.reload(true);
+          } else {
+
+            $('.convert-column-data-type-status-text').text(response.details.message).show();
+
+            setTimeout(function() { pollConvertColumnEndpointUntilComplete(url, onComplete); }, 5000);
+          }
+        },
+        error: function() {
+          alert(
+            $.t('controls.grid_view_column_editor.error.convert_column_data_type')
+          );
+          $columnEditor.find('button').attr('disabled', false);
+          $columnEditor.find('.loadingSpinnerContainer').addClass('hidden');
+        }
+      };
+
+      $.ajax(ajaxOptions);
+    }
+
+    // EN-21574 - Why Can't I Unhide Hidden Columns?
+    //
+    // The Column Editor makes use of the Views API to update the view
+    // with a single request. This works for everything except unhiding
+    // columns, which is based on the absence of a flag, which is never
+    // noticed because the Views API treats the absence of a thing as
+    // meaning that the thing should not be updated.
+    //
+    // Because of this, we need to figure out--after the view has been
+    // saved using the Views API--which columns had been intended to be
+    // unhidden, and make individual requests to the Columns API one by
+    // one in order to unhide each column that was intended to be
+    // unhidden.
+    function unhideUnhiddenColumns(beforeView, afterView, callback) {
+      var unhideRequests = _.get(beforeView, 'columns', []).
+        filter(function(column) {
+
+          var editedColumnNotHidden = !_.include(_.get(column, 'flags', []), 'hidden');
+          var savedColumn = _.find(_.get(afterView, 'columns', []), {id: column.id });
+          var savedColumnHidden = _.include(_.get(savedColumn, 'flags', []), 'hidden');
+
+          return editedColumnNotHidden && savedColumnHidden;
+        }).
+        map(function(columnToUpdate) {
+
+          return new Promise(function(resolve, reject) {
+            var ajaxOptions = {
+              url: '/views/' + window.blist.dataset.id + '/columns/' + columnToUpdate.id + '.json',
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify({hidden: false}),
+              dataType: 'json',
+              success: resolve,
+              error: reject
+            };
+
+            $.ajax(ajaxOptions);
+          });
+        });
+
+      Promise.
+        all(unhideRequests).
+        then(function() {
+
+          if (_.isFunction(callback)) {
+            callback();
+          }
+        }).
+        catch(function() {
+
+          // We still need to carry on, we just won't have succeeded :-(
+          if (_.isFunction(callback)) {
+            callback();
+          }
+        });
+    }
+
     var $columnsContainer = $manager.find('.columns-container');
     var $columns = $manager.find('.column');
     var $tabLinks = $manager.find('.tab-link');
@@ -858,6 +1072,7 @@ module.exports = function(options) {
     var $prev = $manager.find('.prev');
     var $next = $manager.find('.next');
     var $save = $manager.find('.save');
+    var $convertColumnDataType = $manager.find('.convert-column-data-type');
     var $delete = $manager.find('.delete');
     var $cancel = $manager.find('.overlay, .cancel');
 
@@ -974,40 +1189,68 @@ module.exports = function(options) {
     });
 
     $save.on('click', function() {
-      var viewToPut = {};
+      saveView(function() { window.location.reload(true); });
+    });
 
-      // Update the column metadata with the values in the forms.
-      viewToPut.columns = $columns.toArray().map(function(columnForm) {
-        var id = parseInt(columnForm.getAttribute('data-column-id'), 10);
-        var column = getColumnDefaultOptions(id);
+    $convertColumnDataType.on('click', function(e) {
 
-        column.format = getColumnFormatOptions(id);
+      // The NBE doesn't currently have the capability to convert column data types.
+      if (window.blist.dataset.newBackend) {
+        return;
+      }
 
-        return column;
-      });
+      if (confirm($.t('controls.grid_view_column_editor.convert_column_data_type_confirm'))) {
+        var columnId = $(e.target).attr('data-column-id');
+        var $convertColumnDataTypeStatus = $('#convert-column-data-type-status-' + columnId);
+        var convertColumn = function() {
+          var dataType = $('#column-data-type-' + columnId).value();
+          var ajaxOptions = {
+            url: '/views/' + window.blist.dataset.id + '/columns/' + columnId + '.json?method=convert&type=' + dataType,
+            type: 'POST',
+            contentType: 'application/json',
+            success: function(response) {
+              var responseIsNewColumnJson = response.hasOwnProperty('tableColumnId');
+              var onComplete = function() {
+                window.location.reload(true);
+              };
 
-      var ajaxOptions = {
-        url: '/api/views/' + window.blist.dataset.id + '.json',
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(viewToPut),
-        dataType: 'json',
-        success: function() {
-          window.location.reload(true);
-        },
-        error: function() {
-          $columnEditor.find('.loadingSpinnerContainer').addClass('hidden');
-          alert(
-            $.t('controls.grid_view_column_editor.error.save')
-          );
-          $columnEditor.find('.controls').find('button').attr('disabled', false);
-        }
-      };
+              if (responseIsNewColumnJson) {
+                onComplete();
+              } else {
 
-      $columnEditor.find('button').attr('disabled', true);
-      $columnEditor.find('.loadingSpinnerContainer').removeClass('hidden');
+                var url = (
+                  '/views/' +
+                  window.blist.dataset.id +
+                  '/columns/' +
+                  columnId +
+                  '.json?method=convert&type=' +
+                  dataType +
+                  '&ticket=' +
+                  response.ticket
+                );
 
-      $.ajax(ajaxOptions);
+                pollConvertColumnEndpointUntilComplete(url, $convertColumnDataTypeStatus, onComplete);
+              }
+            },
+            error: function() {
+              alert(
+                $.t('controls.grid_view_column_editor.error.delete')
+              );
+              $columnEditor.find('button').attr('disabled', false);
+              $columnEditor.find('.loadingSpinnerContainer').addClass('hidden');
+            }
+          };
+
+          $columnEditor.find('button').attr('disabled', true);
+          $columnEditor.find('.loadingSpinnerContainer').removeClass('hidden');
+
+          $.ajax(ajaxOptions);
+        };
+
+        $convertColumnDataTypeStatus.show();
+
+        saveView(convertColumn);
+      }
     });
 
     $delete.on('click', function(e) {

@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import immutable from 'immutable';
 import { assert } from 'chai';
 
-import serviceLocator from 'middlewares/serviceLocator';
+import serviceLocator from 'adminActivityFeed/middlewares/serviceLocator';
 
 import {
   START_LOADING,
@@ -13,18 +13,18 @@ import {
   DISMISS_RESTORE_MODAL,
   SET_ALERT,
   SET_FILTER
-} from 'actionTypes';
+} from 'adminActivityFeed/actionTypes';
 import {
   loadActivities,
   restoreDataset,
   gotoPage,
   setFilter
-} from 'actions';
+} from 'adminActivityFeed/actions';
 
 import mockActivities from './mockActivities';
 
 import MockHttpClient from './MockHttpClient';
-import ActivityFeedApi from 'frontendApi/ActivityFeedApi';
+import ActivityFeedApi from 'adminActivityFeed/frontendApi/ActivityFeedApi';
 
 const mockHttpClient = new MockHttpClient();
 const api = new ActivityFeedApi(mockHttpClient);

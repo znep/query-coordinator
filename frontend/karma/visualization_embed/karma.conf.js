@@ -1,16 +1,23 @@
-var karmaConfig = require('../helpers/karma_config');
-var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'visualization_embed.config.js',
+const _ = require('lodash');
+
+const karmaConfig = require('../helpers/karma_config');
+const webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'visualization-embed.config.js',
   [ 'karma/visualization_embed' ]
 );
-webpackConfig.externals = {
-  jquery: 'jQuery'
-};
+
+// NOTE: This will not work with webpack v2
+const babelPluginRewire = require.resolve('babel-plugin-rewire');
+const babelLoader = _.find(webpackConfig.module.loaders, { loader: 'babel'});
+const hasRewire = _.some(babelLoader.query.plugins, (plugin) => plugin === babelPluginRewire);
+
+if (!hasRewire) {
+  babelLoader.query.plugins.push(babelPluginRewire);
+}
 
 module.exports = function (karma) {
   karma.set(karmaConfig({
     files: [
-      'public/javascripts/jquery-2.2.4.js',
       'karma/visualization_embed/index.js'
     ],
     webpack: webpackConfig

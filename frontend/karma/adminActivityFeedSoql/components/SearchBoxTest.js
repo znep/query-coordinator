@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import SearchBox from 'components/SearchBox';
+import SearchBox from 'adminActivityFeedSoql/components/SearchBox';
 
 describe('SearchBox', () => {
   const props = {

@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import { mount } from 'enzyme';
 import React from 'react';
 
-import { InvitedUsersTable } from 'invitedUsers/components/InvitedUsersTable';
+import { InvitedUsersTable } from 'adminUsersV2/invitedUsers/components/InvitedUsersTable';
 import I18nJS from 'i18n-js';
 
 import { invitedUsers } from '../../helpers/stateFixtures';

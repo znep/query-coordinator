@@ -10,7 +10,7 @@ import Grid from '../util/Grid';
 import RoleRightCategory from './RoleRightCategory';
 import RoleEditControl from './RoleEditControl';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../selectors';
+import * as selectors from '../../adminRolesSelectors';
 
 import styles from './roles-grid.module.scss';
 

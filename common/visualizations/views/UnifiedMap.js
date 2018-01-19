@@ -7,16 +7,20 @@ import MapFactory from './map/MapFactory';
 import VifBaseMap from './map/VifBaseMap';
 import VifMapControls from './map/VifMapControls';
 import VifMapInteractionHandler from './map/VifMapInteractionHandler';
+import * as vifDecorator from './map/vifDecorators/vifDecorator';
 
 import VifPointOverlay from './map/vifOverlays/VifPointOverlay';
 import VifLineOverlay from './map/vifOverlays/VifLineOverlay';
 import VifShapeOverlay from './map/vifOverlays/VifShapeOverlay';
+import VifRegionOverlay from './map/vifOverlays/VifRegionOverlay';
 import VifHeatOverlay from './map/vifOverlays/VifHeatOverlay';
 
 export default class UnifiedMap extends SvgVisualization {
   constructor(element, vif, options) {
     super(element, vif, options);
+    this._element = element;
 
+    vif = vifDecorator.getDecoratedVif(vif);
     MapFactory.build(element, vif).then((map) => {
       this._map = map;
       this._vifBaseMap = new VifBaseMap(this._map);
@@ -40,6 +44,7 @@ export default class UnifiedMap extends SvgVisualization {
   }
 
   async update(newVif) {
+    newVif = vifDecorator.getDecoratedVif(newVif);
     const newOverlay = this._getOverlay(newVif);
 
     this._vifBaseMap.update(newVif);
@@ -53,7 +58,9 @@ export default class UnifiedMap extends SvgVisualization {
 
     if (this._currentOverlay.getDataUrl(newVif) !== newOverlay.getDataUrl(newVif)) {
       const featureLngLatBounds = await MapFactory.getFeatureBounds(newVif);
-      this._map.fitBounds(featureLngLatBounds, { animate: true });
+      if (featureLngLatBounds !== null) {
+        this._map.fitBounds(featureLngLatBounds, { animate: true });
+      }
     }
 
     newOverlay.loadVif(newVif);
@@ -70,9 +77,9 @@ export default class UnifiedMap extends SvgVisualization {
     const existingMapType = _.get(this._existingVif, 'series[0].mapOptions.mapType');
     const existingPointAggregation = _.get(this._existingVif, 'series[0].mapOptions.pointAggregation');
 
-
     if (existingMapType === newMapType &&
         existingPointAggregation === newPointAggregation &&
+        this._existingVif.isRegionMap() === vif.isRegionMap() &&
         this._currentOverlay) {
       return this._currentOverlay;
     }
@@ -80,6 +87,8 @@ export default class UnifiedMap extends SvgVisualization {
     if (newMapType == MAP_TYPES.POINT_MAP) {
       if (newPointAggregation == POINT_AGGREATIONS.HEAT_MAP) {
         return new VifHeatOverlay(this._map);
+      } else if (vif.isRegionMap()) {
+        return new VifRegionOverlay(this._map, this._element);
       } else {
         return new VifPointOverlay(this._map);
       }

@@ -2,33 +2,38 @@
 import _ from 'lodash';
 import * as Links from '../links/links';
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
-import * as Selectors from 'selectors';
-import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as DisplayState from 'lib/displayState';
-import { traverse } from 'lib/ast';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as ShowActions from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import { traverse } from 'datasetManagementUI/lib/ast';
 import { browserHistory } from 'react-router';
-import { GeocodeShortcut, COMPONENTS, COMBINED, LATLNG } from 'components/GeocodeShortcut/GeocodeShortcut';
+import {
+  GeocodeShortcut,
+  COMPONENTS,
+  COMBINED,
+  LATLNG
+} from 'datasetManagementUI/components/GeocodeShortcut/GeocodeShortcut';
 
 import {
   composeFromLatLng,
   decomposeFromLatLng,
   relevantMappingsForLatLng
-} from 'components/GeocodeShortcut/LatLngFields';
+} from 'datasetManagementUI/components/GeocodeShortcut/LatLngFields';
 
 import {
   composeFromCombined,
   decomposeFromCombined,
   relevantMappingsForCombined
-} from 'components/GeocodeShortcut/CombinedFields';
+} from 'datasetManagementUI/components/GeocodeShortcut/CombinedFields';
 
 import {
   composeFromComponents,
   decomposeFromComponents,
   relevantMappingsForComponents
-} from 'components/GeocodeShortcut/ComponentFields';
+} from 'datasetManagementUI/components/GeocodeShortcut/ComponentFields';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;
 

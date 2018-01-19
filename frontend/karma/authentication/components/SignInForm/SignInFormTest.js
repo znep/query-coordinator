@@ -5,8 +5,8 @@ import _ from 'lodash';
 
 import defaultOptions from '../../DefaultOptions';
 
-import SignInForm from 'components/SignInForm/SignInForm';
-import PasswordInput from 'components/SignInForm/PasswordInput';
+import SignInForm from 'authentication/components/SignInForm/SignInForm';
+import PasswordInput from 'authentication/components/SignInForm/PasswordInput';
 
 describe('<SignInForm />', () => {
   const defaultProps = {

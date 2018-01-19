@@ -1,6 +1,6 @@
 import React from 'react';
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/SourceSidebarContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/SourceSidebarContainer';
 import state from '../data/initialState';
 import dotProp from 'dot-prop-immutable';
 

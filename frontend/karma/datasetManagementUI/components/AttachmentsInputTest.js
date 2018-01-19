@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
+import AttachmentsInput from 'datasetManagementUI/components/AttachmentsInput/AttachmentsInput';
 
 const props = {
   field: {

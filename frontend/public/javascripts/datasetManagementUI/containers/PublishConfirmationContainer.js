@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { hideModal } from 'reduxStuff/actions/modal';
-import { applyRevision, updatePermission } from 'reduxStuff/actions/applyRevision';
-import PublishConfirmation from 'components/PublishConfirmation/PublishConfirmation';
-import { addNotification } from 'reduxStuff/actions/notifications';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import { applyRevision, updatePermission } from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import PublishConfirmation from 'datasetManagementUI/components/PublishConfirmation/PublishConfirmation';
+import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
 
 export function mapStateToProps({ entities, ui }, { params }) {
   const rev = _.values(entities.revisions).find(r => r.revision_seq === _.toNumber(params.revisionSeq));

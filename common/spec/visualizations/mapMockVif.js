@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import * as vifDecorator from 'common/visualizations/views/map/vifDecorators/vifDecorator';
+
 export const mapMockVif = (overrides) => {
   let base = {
     'configuration': {
@@ -45,5 +47,5 @@ export const mapMockVif = (overrides) => {
     'title': 'Title'
   };
 
-  return _.defaultsDeep(overrides, base);
+  return vifDecorator.getDecoratedVif(_.defaultsDeep(overrides, base));
 };

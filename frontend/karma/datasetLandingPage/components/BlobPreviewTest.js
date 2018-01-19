@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { mapStateToProps } from 'components/BlobPreview';
+import { mapStateToProps } from 'datasetLandingPage/components/BlobPreview';
 
 describe('components/BlobPreview', function() {
   const defaultState = {

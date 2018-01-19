@@ -1,4 +1,3 @@
-import 'script!jquery';
 import { Provider } from 'react-redux';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -18,7 +17,7 @@ FeatureFlags.useTestFixture({
 });
 
 const MockHttpClient = require('./MockHttpClient').default;
-const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
+const ActivityFeedApi = require('adminActivityFeed/frontendApi/ActivityFeedApi').default;
 
 // This needs to happen after setting all of the mock window data.
 const getDefaultStore = require('testStore').default;

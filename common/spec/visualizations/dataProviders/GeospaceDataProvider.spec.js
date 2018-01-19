@@ -248,7 +248,7 @@ describe('GeospaceDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
+    describe('on request success', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -363,6 +363,43 @@ describe('GeospaceDataProvider', function() {
           );
 
         server.respond([SUCCESS_STATUS, {}, SAMPLE_EXTENT_REQUEST_RESPONSE]);
+      });
+
+      describe('ignoreInvalidLatLng true', () => {
+        it('should make soql with where clause to ignore invalid geometries', (done) => {
+          geospaceDataProvider.
+            getFeatureExtent(VALID_COLUMN_NAME, true).
+            then(
+              function(data) {
+
+                assert.equal(data.northeast[0], NORTHEAST_EXTENT_LAT);
+                assert.equal(data.northeast[1], NORTHEAST_EXTENT_LNG);
+                done();
+              },
+              function(error) {
+
+                // Fail the test since we expected a success response.
+                assert.isTrue(undefined);
+                done();
+              }
+            ).catch(
+              function(e) {
+
+                // Fail the test since we shouldn't be encountering an
+                // exception in any case.
+                console.log(
+                  `platform-ui/common/spec/visualizations/dataProviders/GeospaceDataProvider.spec.js:${e.message}`
+                );
+                assert.isFalse(e);
+                done();
+              }
+            );
+
+          server.respond(
+            new RegExp(`where=within_box\\(${VALID_COLUMN_NAME}, -90, -180, 90, 180\\)`),
+            [SUCCESS_STATUS, {}, SAMPLE_EXTENT_REQUEST_RESPONSE]
+          );
+        });
       });
     });
   });
@@ -520,7 +557,7 @@ describe('GeospaceDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
+    describe('on request success', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,

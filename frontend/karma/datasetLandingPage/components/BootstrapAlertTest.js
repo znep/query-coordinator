@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
-import { BootstrapAlert } from 'components/BootstrapAlert';
-import mockView from 'data/mockView';
+import { BootstrapAlert } from 'datasetLandingPage/components/BootstrapAlert';
+import mockView from '../data/mockView';
 
 describe('components/BootstrapAlert', function() {
   function getProps(props) {

@@ -3,8 +3,8 @@ import {
   LOAD_ROW_ERRORS_SUCCESS,
   LOAD_COLUMN_ERRORS_SUCCESS,
   LOAD_NORMAL_PREVIEW_SUCCESS
-} from 'reduxStuff/actions/loadData';
-import { mergeRecords } from 'lib/util';
+} from 'datasetManagementUI/reduxStuff/actions/loadData';
+import { mergeRecords } from 'datasetManagementUI/lib/util';
 
 const loadData = (state, action) => {
   switch (action.type) {

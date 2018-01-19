@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import ParseOptions from 'components/ParseOptions/ParseOptions';
+import ParseOptions from 'datasetManagementUI/components/ParseOptions/ParseOptions';
 import _ from 'lodash';
-import { setFormState, markFormClean, markFormDirty } from 'reduxStuff/actions/forms';
+import { setFormState, markFormClean, markFormDirty } from 'datasetManagementUI/reduxStuff/actions/forms';
 
 const FORM_NAME = 'parseOptionsForm';
 

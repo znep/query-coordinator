@@ -3,7 +3,7 @@ import {
   getRevision,
   getView,
   shapeCustomMetadata
-} from 'containers/MetadataTableContainer';
+} from 'datasetManagementUI/containers/MetadataTableContainer';
 
 describe('MetadataTableContainer', () => {
   describe('getRevision', () => {

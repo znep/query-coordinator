@@ -69,6 +69,9 @@ http://www.socrata.com
   <% end %>
 
   <%= jquery_include %>
+  <script type="text/javascript">
+    window.jquery = window.jQuery;
+  </script>
   <%= javascript_error_helper_tag %>
   <%= render_global_socrata_state %>
 
@@ -365,6 +368,6 @@ http://www.socrata.com
   <% unless CurrentDomain.custom_tracking_code.blank? %>
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
-  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+  <%= include_webpack_bundle 'shared/siteWide' %>
 </body>
 </html>

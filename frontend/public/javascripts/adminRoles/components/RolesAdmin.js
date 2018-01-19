@@ -16,7 +16,7 @@ import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
 import ToastNotification from 'common/components/ToastNotification';
 import AppError from './util/AppError';
 import RolesGrid from './grid/RolesGrid';
-import { getAppState, getInitialState, getNotificationFromState } from '../selectors';
+import { getAppState, getInitialState, getNotificationFromState } from '../adminRolesSelectors';
 import Localization, { connectLocalization } from 'common/components/Localization';
 
 const renderWithLocalization = ({ translations, locale, localePrefix }, children) => {

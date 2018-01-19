@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import Head from 'components/Table/Head';
+import Head from 'adminActivityFeedSoql/components/Table/Head';
 import mockTranslations from '../../mockTranslations';
 
 describe('Table/Head renders cell header', () => {

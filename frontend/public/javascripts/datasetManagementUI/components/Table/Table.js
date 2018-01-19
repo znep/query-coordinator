@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ColumnHeader from 'containers/ColumnHeaderContainer';
-import TransformStatus from 'components/TransformStatus/TransformStatus';
-import TableBody from 'containers/TableBodyContainer';
-import * as DisplayState from 'lib/displayState';
-import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
+import ColumnHeader from 'datasetManagementUI/containers/ColumnHeaderContainer';
+import TransformStatus from 'datasetManagementUI/components/TransformStatus/TransformStatus';
+import TableBody from 'datasetManagementUI/containers/TableBodyContainer';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import RowErrorsLink from 'datasetManagementUI/components/RowErrorsLink/RowErrorsLink';
 import styles from './Table.module.scss';
 
 // these are the types that mean something might be vaguely geo-y. they come from clads.

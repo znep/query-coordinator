@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { Visualizations } from 'components/Visualizations';
+import { Visualizations } from 'visualizationCanvas/components/Visualizations';
 import mockVif from 'data/mockVif';
 
 describe('Visualizations', () => {

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import SourceBreadcrumbs from 'components/SourceBreadcrumbs/SourceBreadcrumbs';
-import * as Selectors from 'selectors';
+import SourceBreadcrumbs from 'datasetManagementUI/components/SourceBreadcrumbs/SourceBreadcrumbs';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 export const mapStateToProps = ({ entities, ui }, { atShowSource, params }) => {
   let inputSchema;

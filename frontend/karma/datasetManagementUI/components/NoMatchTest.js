@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import PropTypes from 'prop-types';
 import React from 'react';
-import NoMatch from 'pages/NoMatch/NoMatch';
+import NoMatch from 'datasetManagementUI/pages/NoMatch/NoMatch';
 import { shallow } from 'enzyme';
 
 describe('components/NoMatch', () => {

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
+import { AuthoringWorkflowModal } from 'visualizationCanvas/components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
 import { FeatureFlags } from 'common/feature_flags';
 

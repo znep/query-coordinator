@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { getRowCount } from 'reduxStuff/actions/views';
+import { getRowCount } from 'datasetManagementUI/reduxStuff/actions/views';
 import CommonRowDetails from '../../common/components/RowDetails';
 
 class ViewRowDetailsContainer extends Component {

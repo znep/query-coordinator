@@ -1,7 +1,8 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'admin-goals.config.js',
-  [ 'karma/adminGoals' ]
+  'shared.config.js',
+  [ 'karma/adminGoals' ],
+  [ 'adminGoals' ]
 );
 
 module.exports = function (karma) {

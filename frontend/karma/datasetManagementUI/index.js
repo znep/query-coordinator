@@ -1,4 +1,3 @@
-import 'script!jquery';
 import 'babel-polyfill-safe';
 // ^^ needed by common/components.
 import { Provider } from 'react-redux';

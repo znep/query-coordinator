@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { assert } from 'chai';
-import DateRange from 'lib/dateRange';
-import ReportingPeriods from 'lib/reportingPeriods';
+import DateRange from 'opMeasure/lib/dateRange';
+import ReportingPeriods from 'opMeasure/lib/reportingPeriods';
 
 import { assertDateRangeIs } from '../testHelpers';
 

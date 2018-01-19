@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import _ from 'lodash';
-import { HrefDownload } from 'components/HrefDownload';
-import mockServerConfig from 'data/mockServerConfig';
+import { HrefDownload } from 'datasetLandingPage/components/HrefDownload';
+import mockServerConfig from '../data/mockServerConfig';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/HrefDownload', function() {

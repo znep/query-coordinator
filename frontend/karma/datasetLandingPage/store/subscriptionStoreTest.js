@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
-import subscriptionStore from 'store/subscriptionStore';
+import subscriptionStore from 'datasetLandingPage/store/subscriptionStore';
 import { mockResponse } from 'httpHelpers';
 
 let subscribeStub = null;

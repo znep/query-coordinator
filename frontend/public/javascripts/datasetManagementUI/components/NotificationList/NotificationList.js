@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
-import UploadNotification from 'containers/UploadNotificationContainer';
-import AttachmentNotification from 'components/AttachmentNotification/AttachmentNotification';
-import Notification from 'containers/NotificationContainer';
+import UploadNotification from 'datasetManagementUI/containers/UploadNotificationContainer';
+import AttachmentNotification from
+  'datasetManagementUI/components/AttachmentNotification/AttachmentNotification';
+import Notification from 'datasetManagementUI/containers/NotificationContainer';
 import styles from './NotificationList.module.scss';
 
 // This component is responsible for choosing the kind of notification to display

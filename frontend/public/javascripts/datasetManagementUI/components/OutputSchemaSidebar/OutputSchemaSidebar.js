@@ -4,9 +4,9 @@ import _ from 'lodash';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './OutputSchemaSidebar.module.scss';
 import sidebarStyles from './Sidebar.module.scss';
-import SchemaActions from 'containers/SchemaActionsContainer';
+import SchemaActions from 'datasetManagementUI/containers/SchemaActionsContainer';
 import { IndexLink, Link } from 'react-router';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 
 const SubI18n = I18n.show_output_schema;
 

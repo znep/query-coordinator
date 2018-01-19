@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import notificationReducer from 'reduxStuff/reducers/notifications';
-import { addNotification, removeNotification } from 'reduxStuff/actions/notifications';
+import notificationReducer from 'datasetManagementUI/reduxStuff/reducers/notifications';
+import { addNotification, removeNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
 
 describe('notification reducer', () => {
   it('handles ADD_NOTIFICATION', () => {

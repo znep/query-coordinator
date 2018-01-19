@@ -40,13 +40,18 @@ export default class MapFactory {
   // and returns it as mapboxgl.LatLngBounds.
   static async getFeatureBounds(vif) {
     const domain = _.get(vif, 'series[0].dataSource.domain');
-    const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-    const columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+    let datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+    let columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+
+    if (vif.isRegionMap()) {
+      datasetUid = _.get(vif, 'configuration.shapefile.uid');
+      columnName = 'the_geom';
+    }
 
     const geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid }, true);
 
     try {
-      const extent = await geospaceDataProvider.getFeatureExtent(columnName);
+      const extent = await geospaceDataProvider.getFeatureExtent(columnName, true);
       return new mapboxgl.LngLatBounds(
         [extent.southwest[1], extent.southwest[0]],
         [extent.northeast[1], extent.northeast[0]]

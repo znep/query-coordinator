@@ -5,8 +5,8 @@ import _ from 'lodash';
 
 import defaultOptions from '../DefaultOptions';
 
-import SignIn from 'components/SignIn';
-import SocialSignIn from 'components/Social/SocialSignIn';
+import SignIn from 'authentication/components/SignIn';
+import SocialSignIn from 'authentication/components/Social/SocialSignIn';
 
 describe('<SignIn />', () => {
   const defaultProps = {

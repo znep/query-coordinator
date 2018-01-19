@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ManagerSectionHeader } from 'components/ManagerSectionHeader';
+import { ManagerSectionHeader } from 'catalogLandingPage/components/ManagerSectionHeader';
 
 describe('components/ManagerSectionHeader', () => {
   it('renders a ManagerSectionHeader', () => {

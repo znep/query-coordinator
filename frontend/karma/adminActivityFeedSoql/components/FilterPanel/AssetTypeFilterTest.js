@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 
 import testStore from '../../testStore';
-import AssetTypeFilter from 'components/FilterPanel/AssetTypeFilter';
-import assetTypeOptions from 'components/FilterPanel/assetTypeOptions';
+import AssetTypeFilter from 'adminActivityFeedSoql/components/FilterPanel/AssetTypeFilter';
+import assetTypeOptions from 'adminActivityFeedSoql/components/FilterPanel/assetTypeOptions';
 
 describe('AssetTypeFilter', () => {
   const store = testStore({

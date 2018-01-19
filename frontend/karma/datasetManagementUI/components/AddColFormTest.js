@@ -4,7 +4,7 @@ import React from 'react';
 import AddColForm, {
   makeFieldName,
   makeTransformExpr
-} from 'components/AddColForm/AddColForm';
+} from 'datasetManagementUI/components/AddColForm/AddColForm';
 
 describe('components/AddColForm', () => {
   const props = {

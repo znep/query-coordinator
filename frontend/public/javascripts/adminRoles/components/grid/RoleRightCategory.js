@@ -11,7 +11,7 @@ import TristateCheckbox from '../util/TristateCheckbox';
 import TristateIndicator from '../util/TristateIndicator';
 import { toggleRoleRightCategoryValue, toggleRoleRightValue } from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../selectors';
+import * as selectors from '../../adminRolesSelectors';
 
 import styles from './roles-grid.module.scss';
 import cssVariables from '../variables.scss';

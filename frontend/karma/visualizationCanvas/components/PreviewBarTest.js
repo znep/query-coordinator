@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { PreviewBar } from 'components/PreviewBar';
+import { PreviewBar } from 'visualizationCanvas/components/PreviewBar';
 
 describe('PreviewBar', () => {
   let onClickSpy;

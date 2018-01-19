@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 
-import { ModeStates } from 'lib/constants';
-import reducer from 'reducers/view';
-import actions from 'actions';
+import { ModeStates } from 'opMeasure/lib/constants';
+import reducer from 'opMeasure/reducers/view';
+import actions from 'opMeasure/actions';
 
 const INITIAL_STATE = Object.freeze({
   activePane: 'summary',

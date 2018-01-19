@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import ODataModal from 'components/ODataModal';
-import mockView from 'data/mockView';
+import ODataModal from 'datasetLandingPage/components/ODataModal';
+import mockView from '../data/mockView';
 
 describe('components/ODataModal', function() {
   const getProps = (props) => _.defaultsDeep({}, props, {

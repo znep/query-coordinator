@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import * as queryBuilder from 'lib/queryBuilder';
+import * as queryBuilder from 'adminActivityFeedSoql/lib/queryBuilder';
 import mockQuery from '../data/mockQuery';
 
 describe('lib/queryBuilder', () => {

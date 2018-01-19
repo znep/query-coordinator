@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import Immutable from 'immutable';
-import GoalTableHead from 'sections/goals/components/GoalTable/GoalTableHead';
+import GoalTableHead from 'adminGoals/sections/goals/components/GoalTable/GoalTableHead';
 import translations from 'mockTranslations';
 
 const getDefaultStore = require('testStore').getDefaultStore;

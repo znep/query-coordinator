@@ -5,13 +5,13 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
-import SourceSidebar from 'containers/SourceSidebarContainer';
-import WithFlash from 'components/WithFlash/WithFlash';
+import SourceBreadcrumbs from 'datasetManagementUI/containers/SourceBreadcrumbsContainer';
+import SourceSidebar from 'datasetManagementUI/containers/SourceSidebarContainer';
+import WithFlash from 'datasetManagementUI/components/WithFlash/WithFlash';
 import SaveButtons from './SaveButtons';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as Links from 'links/links';
-import * as Selectors from 'selectors';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as Links from 'datasetManagementUI/links/links';
+import * as Selectors from 'datasetManagementUI/selectors';
 import styles from './ShowSource.module.scss';
 
 export const ShowSource = ({

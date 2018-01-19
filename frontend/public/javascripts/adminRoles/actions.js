@@ -1,5 +1,5 @@
 import { keyIn, makeActionCreator } from './lib/utils';
-import { getIdFromRole, roleHasError, roleIsNew, validateRole } from './selectors';
+import { getIdFromRole, roleHasError, roleIsNew, validateRole } from './adminRolesSelectors';
 import property from 'lodash/fp/property';
 import partition from 'lodash/fp/partition';
 import CoreApi from 'common/core-roles-api';

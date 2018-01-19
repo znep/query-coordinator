@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import DetailsRow from 'components/Table/DetailsRow';
+import DetailsRow from 'adminActivityFeedSoql/components/Table/DetailsRow';
 import mockData from '../../data/mockFetchTable';
 import mockTranslations from '../../mockTranslations';
 

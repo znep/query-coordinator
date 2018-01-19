@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter } from 'react-router';
-import SchemaActions from 'components/SchemaActions/SchemaActions';
+import SchemaActions from 'datasetManagementUI/components/SchemaActions/SchemaActions';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const schemas = _.values(entities.output_schemas)

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import Modal from 'components/Modal/Modal';
+import Modal from 'datasetManagementUI/components/Modal/Modal';
 
 describe('components/Modal', () => {
   const defaultProps = {

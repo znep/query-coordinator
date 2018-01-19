@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import SubmitButton from 'components/SubmitButton/SubmitButton';
+import SubmitButton from 'datasetManagementUI/components/SubmitButton/SubmitButton';
 
 const mapStateToProps = ({ ui }, ownProps) => ({
   buttonName: ownProps.buttonName,

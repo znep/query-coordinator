@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 import { Button, ToastNotification, EditBar as SocrataComponentsEditBar } from 'common/components';
 
-import { EditBar } from 'components/EditBar';
+import { EditBar } from 'opMeasure/components/EditBar';
 
 describe('EditBar', () => {
   const getProps = (props) => {

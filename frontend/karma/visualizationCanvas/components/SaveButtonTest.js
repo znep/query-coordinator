@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
-import { SaveButton } from 'components/SaveButton';
-import { SaveStates } from 'lib/constants';
+import { SaveButton } from 'visualizationCanvas/components/SaveButton';
+import { SaveStates } from 'visualizationCanvas/lib/constants';
 
 describe('SaveButton', () => {
   const getProps = (props) => {

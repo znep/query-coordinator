@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 module.exports = function(overrides) {
-  return _.extend(
+  var karmaConfig = _.extend(
     {
       basePath: '../../',
 
@@ -51,4 +51,8 @@ module.exports = function(overrides) {
     },
     overrides
   );
+
+  karmaConfig.files = _.compact(['public/javascripts/jquery-2.2.4.js'].concat(overrides.files));
+
+  return karmaConfig;
 };

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import NotifyButton from 'components/NotifyButton/NotifyButton';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import NotifyButton from 'datasetManagementUI/components/NotifyButton/NotifyButton';
 
 function mapStateToProps({ entities, ui }) {
   // _.find returns undefined if it doesn't find anything

@@ -5,10 +5,10 @@ import { shallow } from 'enzyme';
 import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
 import { Modal, ModalHeader, ModalFooter } from 'common/components';
 
-import { cancelEditModal, acceptEditModalChanges } from 'actions/editor';
-import EditModalTab from 'components/EditModal/EditModalTab';
-import EditModalPanel from 'components/EditModal/EditModalPanel';
-import { EditModal } from 'components/EditModal/EditModal';
+import { cancelEditModal, acceptEditModalChanges } from 'opMeasure/actions/editor';
+import EditModalTab from 'opMeasure/components/EditModal/EditModalTab';
+import EditModalPanel from 'opMeasure/components/EditModal/EditModalPanel';
+import { EditModal } from 'opMeasure/components/EditModal/EditModal';
 
 describe('EditModal', () => {
   const getAcceptButton = (element) => element.

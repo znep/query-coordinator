@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { Search } from 'components/Search';
+import { Search } from 'catalogLandingPage/components/Search';
 
 describe('components/Search', function() {
   function searchProps(options) {

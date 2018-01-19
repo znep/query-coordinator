@@ -2,9 +2,9 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { NEW_OUTPUT_SCHEMA } from 'reduxStuff/actions/apiCalls';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
-import * as Selectors from 'selectors';
+import { NEW_OUTPUT_SCHEMA } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 const SaveGeocodeShortcutButton = ({
   enabled,

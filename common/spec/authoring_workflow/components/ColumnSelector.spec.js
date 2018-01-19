@@ -120,7 +120,7 @@ describe('ColumnSelector', function() {
         TestUtils.Simulate.click(addFlyoutLink);
 
         TestUtils.Simulate.click(component.querySelector('#column-selection-4 .picklist-option:nth-child(3)'));
-        sinon.assert.calledOnce(props['onAddColumnSelector']);
+        sinon.assert.calledOnce(props.onAddColumnSelector);
       });
     });
 

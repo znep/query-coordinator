@@ -7,7 +7,7 @@ import {
   fieldPropTypes,
   stringLiteral
 } from './Fields';
-import { stripToTextAst, stripToNumberAst } from 'lib/ast';
+import { stripToTextAst, stripToNumberAst } from 'datasetManagementUI/lib/ast';
 
 
 const ComponentFields = ({ outputColumns, setMapping, mappings }) => (

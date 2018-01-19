@@ -1,17 +1,6 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-#app {
-  display: flex;
-  flex-grow: 1;
-  flex-basis: auto;
-  flex-direction: column;
-
-  .modal-header {
-    z-index: 1;
-  }
-}
-
 .dataset-download-section .section-content {
   border: 1px $light-grey-4 solid;
   border-bottom-width: 2px;
@@ -65,4 +54,12 @@ button.btn-menu {
 
 a {
   cursor: pointer;
+}
+
+.dsmp-disabled:hover,
+.dsmp-disabled {
+  color: $grey;
+  border-color: $light-grey-1;
+  background-color: $light-grey-3;
+  cursor: not-allowed;
 }

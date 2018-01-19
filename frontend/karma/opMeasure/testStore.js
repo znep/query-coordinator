@@ -1,5 +1,5 @@
-import rootReducer from 'reducers';
-import { EditTabs, ModeStates } from 'lib/constants';
+import rootReducer from 'opMeasure/reducers';
+import { EditTabs, ModeStates } from 'opMeasure/lib/constants';
 
 export function getDefaultStore() {
   return redux.createStore(rootReducer);

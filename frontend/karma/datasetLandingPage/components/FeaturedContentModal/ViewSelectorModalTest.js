@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
-import { ViewSelectorModal } from 'components/FeaturedContentModal/ViewSelectorModal';
+import { ViewSelectorModal } from 'datasetLandingPage/components/FeaturedContentModal/ViewSelectorModal';
 import { Simulate } from 'react-dom/test-utils';
-import mockRelatedView from 'data/mockRelatedView';
+import mockRelatedView from '../../data/mockRelatedView';
 
 describe('components/FeaturedContentModal/ViewSelectorModal', function() {
   function getProps(props) {

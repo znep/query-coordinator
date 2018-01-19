@@ -10,7 +10,7 @@ import {
   getAppState,
   getFaqUrlFromState,
   stateHasCustomRoles
-} from '../selectors';
+} from '../adminRolesSelectors';
 import { DEFAULT, EDIT_CUSTOM_ROLES } from '../appStates';
 import includes from 'lodash/fp/includes';
 import { Button } from 'common/components';

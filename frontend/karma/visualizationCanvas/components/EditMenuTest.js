@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { EditMenu } from 'components/EditMenu';
+import { EditMenu } from 'visualizationCanvas/components/EditMenu';
 import mockView from 'data/mockView';
 import { renderIntoDocument, Simulate } from 'react-dom/test-utils';
 

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import { EditModalPanel } from 'components/EditModal/EditModalPanel';
+import { EditModalPanel } from 'opMeasure/components/EditModal/EditModalPanel';
 
 describe('EditModalPanel', () => {
   const getProps = (props) => {

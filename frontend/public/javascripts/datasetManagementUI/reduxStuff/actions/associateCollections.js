@@ -1,7 +1,11 @@
 import uuid from 'uuid';
-import { editRevision, updateRevision, shapeRevision } from 'reduxStuff/actions/revisions';
+import {
+  editRevision,
+  updateRevision,
+  shapeRevision
+} from 'datasetManagementUI/reduxStuff/actions/revisions';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed, UPDATE_REVISION }
-  from 'reduxStuff/actions/apiCalls';
+  from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import {
   accessPointFor,
   getParentUid,

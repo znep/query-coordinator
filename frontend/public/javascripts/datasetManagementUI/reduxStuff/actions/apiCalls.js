@@ -1,5 +1,5 @@
-import { socrataFetch, getJson } from 'lib/http';
-import { sessionStatus } from 'links/links';
+import { socrataFetch, getJson } from 'datasetManagementUI/lib/http';
+import { sessionStatus } from 'datasetManagementUI/links/links';
 
 // TODO: move these constants to some other file
 // these actions should be reusable with another set of operations

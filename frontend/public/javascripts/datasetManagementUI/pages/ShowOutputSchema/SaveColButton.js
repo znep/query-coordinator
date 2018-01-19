@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ADD_COLUMN } from 'reduxStuff/actions/apiCalls';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import { ADD_COLUMN } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
 
 const SaveColButton = ({ handleClick, isDirty, callParams }) => (
   <div>

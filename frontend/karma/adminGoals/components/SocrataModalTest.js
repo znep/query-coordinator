@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import * as SocrataModal from 'components/SocrataModal';
+import * as SocrataModal from 'adminGoals/components/SocrataModal';
 
 describe('components/SocrataModal', function () {
   it('does not render close button if no onClose prop provided', function () {

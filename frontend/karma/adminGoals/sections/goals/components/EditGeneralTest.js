@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import moment from 'moment';
 import translations from 'mockTranslations';
 import { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
-import EditGeneral from 'sections/goals/components/QuickEditForm/EditGeneral';
+import EditGeneral from 'adminGoals/sections/goals/components/QuickEditForm/EditGeneral';
 import { shallow } from 'enzyme';
 
 describe('sections/goals/components/QuickEditForm/EditGeneral', () => {

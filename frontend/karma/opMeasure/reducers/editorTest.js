@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { EditTabs, PeriodTypes, PeriodSizes } from 'lib/constants';
-import reducer from 'reducers/editor';
-import actions from 'actions';
+import { EditTabs, PeriodTypes, PeriodSizes } from 'opMeasure/lib/constants';
+import reducer from 'opMeasure/reducers/editor';
+import actions from 'opMeasure/actions';
 
 const { INITIAL_STATE } = reducer;
 
@@ -89,6 +89,11 @@ describe('Edit modal reducer', () => {
   });
 
   describe('SET_DATA_SOURCE_METADATA_SUCCESS', () => {
+    const viewMetadata = {
+      id: 'xxxx-xxxx',
+      columns: []
+    };
+
     it('updates cachedRowCount in the editor state', () => {
       assert.notNestedProperty(state, 'cachedRowCount');
 
@@ -98,16 +103,23 @@ describe('Edit modal reducer', () => {
     });
 
     it('updates the dataSourceView in editor state', () => {
-      const viewMetadata = {
-        id: 'xxxx-xxxx',
-        columns: []
-      };
 
       assert.notNestedProperty(state, 'dataSourceView');
 
       state = reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', 100, viewMetadata));
 
       assert.deepEqual(state.dataSourceView, viewMetadata);
+    });
+
+    it('updates the displayableFilterableColumns in editor state', () => {
+      assert.notNestedProperty(state, 'displayableFilterableColumns');
+
+      state = reducer(
+        state,
+        actions.editor.setDataSourceMetadataSuccess('test-test', 100, viewMetadata, ['a super cool column'])
+      );
+
+      assert.deepEqual(state.displayableFilterableColumns, ['a super cool column']);
     });
 
     it('throws if not given a string for the uid', () => {
@@ -120,6 +132,16 @@ describe('Edit modal reducer', () => {
 
     it('throws if not given an object for the dataSourceView', () => {
       assert.throws(() => reducer(state, actions.editor.setDataSourceMetadataSuccess(100, 'im not really an object')));
+    });
+
+    it('resets metricConfig to only contain default calculation type', () => {
+      _.set(state, 'measure.metricConfig.type', 'recent');
+      _.set(state, 'measure.metricConfig.arguments.column', 'foo');
+      _.set(state, 'measure.metricConfig.dateColumn', 'some_date_column');
+
+      state = reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', 100, viewMetadata, []));
+
+      assert.deepEqual(state.measure.metricConfig, {type: 'count'});
     });
   });
 
@@ -169,6 +191,16 @@ describe('Edit modal reducer', () => {
       assert.isUndefined(state.cachedRowCount);
       assert.isNull(state.dataSourceView);
       assert.isEmpty(state.displayableFilterableColumns);
+    });
+
+    it('resets metricConfig to only contain default calculation type', () => {
+      _.set(state, 'measure.metricConfig.type', 'recent');
+      _.set(state, 'measure.metricConfig.arguments.column', 'foo');
+      _.set(state, 'measure.metricConfig.dateColumn', 'some_date_column');
+
+      state = reducer(state, actions.editor.resetDataSource());
+
+      assert.deepEqual(state.measure.metricConfig, {type: 'count'});
     });
   });
 

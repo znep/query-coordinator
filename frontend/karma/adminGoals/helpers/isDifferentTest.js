@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import isDifferent from 'helpers/isDifferent';
+import isDifferent from 'adminGoals/helpers/isDifferent';
 
 describe('helpers/isDifferent', () => {
   const leftObject = { key: 'value', deep: { key: 'value' } };

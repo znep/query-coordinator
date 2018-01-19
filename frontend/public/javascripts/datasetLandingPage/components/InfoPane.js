@@ -5,7 +5,7 @@ import { formatDateWithLocale } from 'common/dates';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import InfoPaneButtons from './InfoPaneButtons';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
-import subscriptionStore from 'store/subscriptionStore';
+import subscriptionStore from 'datasetLandingPage/store/subscriptionStore';
 import { onSubscriptionChange as subscriptionChange } from '../actions/view';
 import { FeatureFlags } from 'common/feature_flags';
 

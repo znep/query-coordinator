@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ShowBlobPreview, BlobFileInfo } from 'pages/ShowBlobPreview/ShowBlobPreview';
-import BlobPreview from 'containers/BlobPreviewContainer';
-import BlobDownload from 'containers/BlobDownloadContainer';
+import { ShowBlobPreview, BlobFileInfo } from 'datasetManagementUI/pages/ShowBlobPreview/ShowBlobPreview';
+import BlobPreview from 'datasetManagementUI/containers/BlobPreviewContainer';
+import BlobDownload from 'datasetManagementUI/containers/BlobDownloadContainer';
 import sinon from 'sinon';
 
 describe('ShowBlobPreview', () => {

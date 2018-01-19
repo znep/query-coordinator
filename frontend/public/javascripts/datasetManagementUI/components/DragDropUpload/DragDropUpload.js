@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import SourceMessage from 'components/SourceMessage/SourceMessage';
-import { createUploadSource } from 'reduxStuff/actions/createSource';
-import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
-import * as Selectors from 'selectors';
+import SourceMessage from 'datasetManagementUI/components/SourceMessage/SourceMessage';
+import { createUploadSource } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import { showFlashMessage, hideFlashMessage } from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import { enabledFileExtensions, formatExpanation } from 'datasetManagementUI/lib/fileExtensions';
+import * as Selectors from 'datasetManagementUI/selectors';
 import styles from './DragDropUpload.module.scss';
 import uuid from 'uuid';
 

@@ -21,7 +21,7 @@
     window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
   </script>
 
-  <%= include_webpack_bundle 'authentication/index.js' %>
+  <%= include_webpack_bundle 'shared/authentication' %>
 
   <script type="text/javascript">
     // "false" here makes it show the "sign up" page initially

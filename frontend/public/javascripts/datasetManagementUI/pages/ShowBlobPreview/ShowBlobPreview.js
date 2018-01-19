@@ -5,14 +5,18 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import BlobPreview from 'containers/BlobPreviewContainer';
-import BlobDownload from 'containers/BlobDownloadContainer';
-import SaveBlobButton from 'components/SaveBlobButton/SaveBlobButton';
-import { updateRevision, editRevision, shapeRevision } from 'reduxStuff/actions/revisions';
-import FlashMessage from 'containers/FlashMessageContainer';
-import SourceBreadcrumbs from 'containers/SourceBreadcrumbsContainer';
+import BlobPreview from 'datasetManagementUI/containers/BlobPreviewContainer';
+import BlobDownload from 'datasetManagementUI/containers/BlobDownloadContainer';
+import SaveBlobButton from 'datasetManagementUI/components/SaveBlobButton/SaveBlobButton';
+import {
+  updateRevision,
+  editRevision,
+  shapeRevision
+} from 'datasetManagementUI/reduxStuff/actions/revisions';
+import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
+import SourceBreadcrumbs from 'datasetManagementUI/containers/SourceBreadcrumbsContainer';
 
 import styles from './ShowBlobPreview.module.scss';
 

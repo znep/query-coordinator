@@ -2,11 +2,11 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import uuid from 'uuid';
 import isURLHelper from 'validator/lib/isURL';
-import * as Selectors from 'selectors';
-import HrefForm from 'components/HrefForm/HrefForm';
-import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
+import * as Selectors from 'datasetManagementUI/selectors';
+import HrefForm from 'datasetManagementUI/components/HrefForm/HrefForm';
+import { updateRevision, editRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
 
 // CONSTANTS
 const FORM_NAME = 'hrefForm';

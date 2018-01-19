@@ -1,12 +1,12 @@
 import uuid from 'uuid';
-import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'datasetManagementUI/lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
   CREATE_IMPORT_CONFIG
-} from 'reduxStuff/actions/apiCalls';
-import * as dsmapiLinks from 'links/dsmapiLinks';
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 import moment from 'moment';
 
 function nameForConfig(source) {

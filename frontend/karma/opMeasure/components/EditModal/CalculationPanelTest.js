@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
-import { CalculationPanel, mapStateToProps } from 'components/EditModal/CalculationPanel';
+import { CalculationPanel, mapStateToProps } from 'opMeasure/components/EditModal/CalculationPanel';
 
 describe('CalculationPanel', () => {
   const getProps = (props) => {

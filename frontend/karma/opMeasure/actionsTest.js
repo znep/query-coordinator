@@ -3,10 +3,10 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as editorActions from 'actions/editor';
-import * as validateActions from 'actions/validate';
+import * as editorActions from 'opMeasure/actions/editor';
+import * as validateActions from 'opMeasure/actions/validate';
 
-import { __RewireAPI__ as EditorActionsAPI } from 'actions/editor';
+import { __RewireAPI__ as EditorActionsAPI } from 'opMeasure/actions/editor';
 
 // Tests in this file only cover thunks, since the other (non-thunk) actions are
 // generators for constant plain objects with no testable logic.

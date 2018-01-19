@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import _ from 'lodash';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ColumnHeader } from 'components/ColumnHeader/ColumnHeader';
+import { ColumnHeader } from 'datasetManagementUI/components/ColumnHeader/ColumnHeader';
 import dotProp from 'dot-prop-immutable';
 
 describe('components/ColumnHeader', () => {

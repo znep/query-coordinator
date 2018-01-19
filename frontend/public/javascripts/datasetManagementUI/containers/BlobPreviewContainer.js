@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { BlobPreview } from 'common/components';
-import { exportSource } from 'links/dsmapiLinks';
+import { exportSource } from 'datasetManagementUI/links/dsmapiLinks';
 
 function getBlobType(contentType) {
   if (!contentType) {

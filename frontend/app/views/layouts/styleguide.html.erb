@@ -84,6 +84,6 @@ http://www.socrata.com
       window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
     </script>
     <%= yield :scripts %>
-    <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+    <%= include_webpack_bundle 'shared/siteWide' %>
   <% end # end of body %>
 </html>

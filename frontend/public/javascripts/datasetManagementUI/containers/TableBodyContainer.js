@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import * as LoadDataActions from 'reduxStuff/actions/loadData';
-import TableBody from 'components/TableBody/TableBody';
+import * as LoadDataActions from 'datasetManagementUI/reduxStuff/actions/loadData';
+import TableBody from 'datasetManagementUI/components/TableBody/TableBody';
 
 const mapStateToProps = ({ ui }, ownProps) => {
   return {

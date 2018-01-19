@@ -1,4 +1,4 @@
-import activityFeed from 'reducers';
+import activityFeed from 'adminActivityFeedSoql/reducers';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 

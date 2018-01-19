@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
@@ -9,15 +10,36 @@ import { SocrataIcon } from 'common/components';
 
 import AboutThisMeasure from './AboutThisMeasure';
 import SavedMeasureResultCard from './SavedMeasureResultCard';
+import withComputedMeasure from './withComputedMeasure';
 
 // Pane containing the primary visual representations of the metric (value of
 // most recent reporting period + timeline), as well as prose information about
 // the methodological underpinnings of the measure.
 export class SummaryPane extends Component {
   renderScrollPane() {
-    const { measure, coreView } = this.props;
+    const { measure, coreView, computedMeasure } = this.props;
     const { shortName } = measure.metadata || {};
     const { name } = coreView;
+
+    const {
+      calculationNotConfigured,
+      dataSourceNotConfigured,
+      noReportingPeriodAvailable,
+      noReportingPeriodConfigured
+    } = computedMeasure;
+
+    let subtitle;
+
+    // computedMeasure is sometimes empty when the measureCalculator fails early.
+    if (dataSourceNotConfigured || _.isEmpty(computedMeasure)) {
+      subtitle = I18n.t('open_performance.no_dataset');
+    } else if (calculationNotConfigured) {
+      subtitle = I18n.t('open_performance.no_calculation');
+    } else if (noReportingPeriodConfigured) {
+      subtitle = I18n.t('open_performance.no_reporting_period');
+    } else if (noReportingPeriodAvailable) {
+      subtitle = I18n.t('open_performance.not_enough_data');
+    }
 
     return (
       <div className="scroll-pane">
@@ -29,8 +51,8 @@ export class SummaryPane extends Component {
 
             <div className="scroll-pane-placeholder">
               <SocrataIcon name="number" />
-              <div className="scroll-pane-placeholder-text">
-                {I18n.t('open_performance.no_dataset')}
+              <div className="scroll-pane-placeholder-text latest-metric-text">
+                {subtitle}
               </div>
             </div>
           </div>
@@ -40,7 +62,7 @@ export class SummaryPane extends Component {
 
             <div className="scroll-pane-placeholder">
               <SocrataIcon name="line-chart" />
-              <div className="scroll-pane-placeholder-text">
+              <div className="scroll-pane-placeholder-text metric-visualization-text">
                 {I18n.t('open_performance.no_visualization')}
               </div>
             </div>
@@ -89,8 +111,6 @@ export class SummaryPane extends Component {
     );
   }
 
-          // {this.renderLatestMetric()}
-
   render() {
     return (
       <div className="pane" data-pane="summary">
@@ -117,11 +137,19 @@ SummaryPane.propTypes = {
       analysis: PropTypes.string,
       methods: PropTypes.string
     })
-  }).isRequired
+  }).isRequired,
+  computedMeasure: PropTypes.object
+};
+
+SummaryPane.defaultProps = {
+  computedMeasure: {}
 };
 
 function mapStateToProps(state) {
   return state.view;
 }
 
-export default connect(mapStateToProps)(SummaryPane);
+export default compose(
+  connect(mapStateToProps),
+  withComputedMeasure()
+)(SummaryPane);

@@ -18,8 +18,9 @@ import DebouncedInput from '../shared/DebouncedInput';
 import * as selectors from '../../selectors/vifAuthoring';
 import * as actions from '../../actions';
 
+const scope = 'shared.visualizations.panes.basemap';
+
 export class BasemapPane extends Component {
-  scope = 'shared.visualizations.panes.basemap';
 
   renderEmptyPane = () => {
     return <EmptyPane />;
@@ -61,10 +62,10 @@ export class BasemapPane extends Component {
     return (
       <AccordionPane
         key="basemapStyles"
-        title={I18n.t('subheaders.base_map', { scope: this.scope })}>
+        title={I18n.t('subheaders.base_map', { scope })}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-map-style">
-            {I18n.t('fields.base_map_style.title', { scope: this.scope })}
+            {I18n.t('fields.base_map_style.title', { scope })}
           </label>
           <div className="base-map-style-dropdown-container">
             <Dropdown {...baseMapStyleAttributes} />
@@ -73,7 +74,7 @@ export class BasemapPane extends Component {
 
         <div className={baseMapOpacityFieldClasses}>
           <label className="block-label" htmlFor="base-map-opacity">
-            {I18n.t('fields.base_map_opacity.title', { scope: this.scope })}
+            {I18n.t('fields.base_map_opacity.title', { scope })}
           </label>
           <div id="base-map-opacity-container">
             <DebouncedSlider {...baseMapOpacityAttributes} />
@@ -99,7 +100,7 @@ export class BasemapPane extends Component {
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.t(`fields.${name}_control.title`, { scope: this.scope })}
+          {I18n.t(`fields.${name}_control.title`, { scope })}
         </label>
       </div>
     );
@@ -118,7 +119,7 @@ export class BasemapPane extends Component {
 
     return (
       <AccordionPane
-        title={I18n.t('subheaders.map_controls', { scope: this.scope })}
+        title={I18n.t('subheaders.map_controls', { scope })}
         key="basemapControls">
         {this.renderCheckboxControl('geo_coder', isGeoCoderControlChecked, onChangeGeoCoderControl)}
         {this.renderCheckboxControl('geo_locate', isGeoLocateControlChecked, onChangeGeoLocateControl)}
@@ -144,7 +145,7 @@ export class BasemapPane extends Component {
     return (
       <div className="authoring-field">
         <label {...labelAttributes}>
-          {I18n.t(`fields.${id}.title`, { scope: this.scope })}
+          {I18n.t(`fields.${id}.title`, { scope })}
         </label>
         <DebouncedInput {...inputAttributes} />
       </div>
@@ -166,8 +167,13 @@ export class BasemapPane extends Component {
 
     return (
       <AccordionPane
-        title={I18n.t('subheaders.search_boundary', { scope: this.scope })}
+        title={I18n.t('subheaders.search_boundary', { scope })}
         key="searchBoundaryFields">
+        <p className="authoring-field-description search-boundary-description">
+          <small>
+            {I18n.t('fields.search_boundary.description', { scope })}
+          </small>
+        </p>
         {this.renderBoundaryField(
           'upper_left_latitude',
           onChangeSearchBoundaryUpperLeftLatitude,

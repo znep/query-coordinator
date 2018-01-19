@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 
 import testStore from '../../testStore';
-import EventFilter from 'components/FilterPanel/EventFilter';
-import { EVENT_TYPES } from 'constants';
+import EventFilter from 'adminActivityFeedSoql/components/FilterPanel/EventFilter';
+import { EVENT_TYPES } from 'adminActivityFeedSoql/constants';
 
 describe('EventFilter', () => {
   const store = testStore({

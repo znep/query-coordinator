@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import DownloadLink from 'components/DownloadLink';
+import DownloadLink from 'adminActivityFeedSoql/components/DownloadLink';
 import mockData from '../data/mockFetchTable';
 import mockTranslations from '../mockTranslations';
 import testStore from '../testStore';

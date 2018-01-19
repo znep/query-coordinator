@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import testStore from '../testStore';
 import mockActivities from '../mockActivities';
 import mockTranslations from '../mockTranslations';
-import ActivityFeedTable from 'components/ActivityFeedTable';
+import ActivityFeedTable from 'adminActivityFeed/components/ActivityFeedTable';
 
 describe('ActivityFeedTable', () => {
   // Update mock data dates as they'll be compared against current date.

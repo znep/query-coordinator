@@ -1,16 +1,10 @@
 const karmaConfig = require('../helpers/karma_config');
 const _ = require('lodash');
 const webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'dataset-management-ui.config.js',
-  [ 'karma/datasetManagementUI', '.' ]
+  'shared.config.js',
+  [ 'karma/datasetManagementUI', '.' ],
+  [ 'datasetManagementUI' ]
 );
-
-webpackConfig.externals = {
-  jquery: 'jQuery',
-  // 'react/addons': true,
-  // 'react/lib/ExecutionEnvironment': true,
-  // 'react/lib/ReactContext': 'window'
-};
 
 // To make tests easier to write, we disable auto scss class prefixes.
 const styleLoaderWithDisabledAutoScssClassPrefixes =
@@ -18,6 +12,7 @@ const styleLoaderWithDisabledAutoScssClassPrefixes =
 const styleLoader = _(webpackConfig.module.loaders).find((loader) =>
   _.get(loader, 'loader', '').indexOf('localIdentName') >= 0
 );
+
 if (styleLoader) {
   styleLoader.loader = styleLoaderWithDisabledAutoScssClassPrefixes;
 } else {

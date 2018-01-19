@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TableBody from 'containers/TableBodyContainer';
-import * as DisplayState from 'lib/displayState';
+import TableBody from 'datasetManagementUI/containers/TableBodyContainer';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
 import styles from './FormatColumn.module.scss';
 const SubI18n = I18n.format_column;
 

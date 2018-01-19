@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { TransformStatus } from 'components/TransformStatus/TransformStatus';
-import { normal } from 'lib/displayState';
+import { TransformStatus } from 'datasetManagementUI/components/TransformStatus/TransformStatus';
+import { normal } from 'datasetManagementUI/lib/displayState';
 import { shallow } from 'enzyme';
 import React from 'react';
 

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import * as paginationActions from 'actions/pagination';
-import paginationReducer from 'reducers/pagination';
+import * as paginationActions from 'adminActivityFeedSoql/actions/pagination';
+import paginationReducer from 'adminActivityFeedSoql/reducers/pagination';
 
 describe('pagination reducer', () => {
 

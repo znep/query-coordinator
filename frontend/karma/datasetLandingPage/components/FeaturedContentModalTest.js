@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { FeaturedContentModal } from 'components/FeaturedContentModal';
+import { FeaturedContentModal } from 'datasetLandingPage/components/FeaturedContentModal';
 
 describe('components/FeaturedContentModal', function() {
   function getProps(props) {

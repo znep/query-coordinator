@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
 import React from 'react';
-import Tag from 'components/Tag/Tag';
+import Tag from 'datasetManagementUI/components/Tag/Tag';
 import { shallow } from 'enzyme';
 
 describe('components/Tag', () => {

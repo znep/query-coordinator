@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/PublishButtonContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/PublishButtonContainer';
 import dotProp from 'dot-prop-immutable';
 
 describe('containers/PublishButtonContainer', () => {

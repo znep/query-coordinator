@@ -3,8 +3,8 @@ import React from 'react';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { AboutThisMeasure } from 'components/AboutThisMeasure';
-import { PeriodSizes, PeriodTypes, CalculationTypeNames } from 'lib/constants';
+import { AboutThisMeasure } from 'opMeasure/components/AboutThisMeasure';
+import { PeriodSizes, PeriodTypes, CalculationTypeNames } from 'opMeasure/lib/constants';
 
 describe('AboutThisMeasure', () => {
   beforeEach(() => {

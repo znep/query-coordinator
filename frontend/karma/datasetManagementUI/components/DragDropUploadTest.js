@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { DragDropUpload } from 'components/DragDropUpload/DragDropUpload';
+import { DragDropUpload } from 'datasetManagementUI/components/DragDropUpload/DragDropUpload';
 import _ from 'lodash';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';

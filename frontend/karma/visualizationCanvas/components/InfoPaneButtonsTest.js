@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { InfoPaneButtons } from 'components/InfoPaneButtons';
-import { ModeStates } from 'lib/constants';
+import { InfoPaneButtons } from 'visualizationCanvas/components/InfoPaneButtons';
+import { ModeStates } from 'visualizationCanvas/lib/constants';
 
 describe('InfoPaneButtons', () => {
   const getProps = (props) => {

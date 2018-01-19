@@ -573,31 +573,9 @@ en:
     action_buttons:
       back: Back
     asset_selector:
-      action_buttons:
-        back: Back
-        select: Select
       header_title: Select Featured Content
       header_title_with_category: Select Featured Content in %{category}
       header_title_without_category: Select Featured Content
-      results_container:
-        no_results: No results
-        of: of
-        pager:
-          invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
-          last_page: Last page
-          next_page: Next page
-          page: Page
-          previous_page: Previous page
-        search: Search
-        search_this_category: Search this category
-        sort:
-          sort_by: Sort by
-          sort_types:
-            alphabetical: Alphabetical
-            most_accessed: Most Accessed
-            most_relevant: Most Relevant
-            recently_added: Recently Added
-            recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
     contact_data_asset_owner: Contact Data Asset Owner
     dataset_contents:
@@ -736,11 +714,14 @@ en:
   controls:
     grid_view_column_editor:
       close_without_saving: All unsaved changes will be lost. Are you sure you want to close the Column Editor?
+      convert_column_data_type: Convert Type
+      convert_column_data_type_confirm: Converting the data type of a column may require significant recomputation. Your current changes will be saved, but once the recomputation is complete your page will be refreshed.
       title: Manage Columns
       of: of
       error:
         save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
         delete: There was an error deleting the specified column. Please try again. If this problem persists, contact Socrata support.
+        convert_column_data_type: There was an error converting this column to the specified data type.
       column_properties: Column Properties
       column_formatting: Column Formatting
       delete_column: Delete Column
@@ -775,18 +756,18 @@ en:
           display_format:
             title: Display Format
           currency:
-            title: Currency
+            title: Currency Format
             common: Common
             other_currency: Other
           advanced:
-            title: Advanced
+            title: " "
             precision: Specify decimal precision
-            show_thousands_separators: Show thousands-separators
+            show_thousands_separators: Show thousands separators
             override_thousands_separator:
-              title: Override thousands-separator
+              title: Override thousands separator
               placeholder: "e.g. ,"
             override_decimal_separator:
-              title: Override decimal-separator
+              title: Override decimal separator
               placeholder: "e.g. ."
         date_formatting:
           display_format:
@@ -2566,7 +2547,7 @@ en:
       error_invalid_name: invalid name
       no_source_col: No Source Column
     show_uploads:
-      filetypes: Parseable file types are
+      filetypes: Parsable file types are
       flash_error_message: Unsupported file type
       directory_error_message: Directory uploads are not supported
       from_url: URL Source
@@ -2574,7 +2555,7 @@ en:
       no_uploads: No data sources yet
       sources: Data Sources
       submessage: ...or click Browse to choose a file from your computer
-      non_parsable_accepted: Non-parsable files can also be uploaded for storage
+      non_parsable_accepted: Other file types are also accepted and will become a "Files and Documents" asset type.
       dirs_not_supported: Directory uploads are not supported
       upload_link: Upload a Data File
       url_link: Import Data from URL
@@ -3189,6 +3170,8 @@ en:
     exit_preview_mode: Exit Preview Mode
     measure:
       about_this_measure: About This Measure
+      as_of_today: as of today
+      as_of_last: as of last closed reporting period
       calculation_type: Calculation Type
       dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
@@ -3309,8 +3292,11 @@ en:
       reporting_period: Reporting Period
     measure_visualization: Measure visualization
     metric: Metric
-    no_dataset: Metric calculation not available
+    no_calculation: Metric calculation has not been configured
+    no_dataset: Dataset has not been connected
+    no_reporting_period: Reporting period has not been configured
     no_visualization: Metric calculation not available
+    not_enough_data: Not enough data for current reporting period
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save
@@ -6088,7 +6074,7 @@ en:
           title: Download
         edit_column:
           subtitle: Edit the metadata associated with columns in this dataset or delete the column entirely
-          title: Edit Column
+          title: Edit Columns
         feed:
           route_to_more_views_subtitle: Looking for additional activity on this dataset? Click on More Views tab.
           subtitle: The discussion feed shows you the conversation and activity around a dataset

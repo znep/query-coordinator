@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import moment from 'moment';
 
-import Table from 'components/Table';
+import Table from 'adminActivityFeedSoql/components/Table';
 import mockTranslations from '../../mockTranslations';
 import mockData from '../../data/mockFetchTable';
 

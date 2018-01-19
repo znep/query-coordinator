@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { BlobDownload } from 'common/components';
-import { exportSource } from 'links/dsmapiLinks';
+import { exportSource } from 'datasetManagementUI/links/dsmapiLinks';
 
 export function mapStateToProps(state, { source, revision }) {
   return {

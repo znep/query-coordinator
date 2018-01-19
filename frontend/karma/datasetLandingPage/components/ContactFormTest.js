@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ContactForm } from 'components/ContactForm';
-import mockView from 'data/mockView';
-import recaptcha from 'lib/recaptcha';
+import { ContactForm } from 'datasetLandingPage/components/ContactForm';
+import mockView from '../data/mockView';
+import recaptcha from 'datasetLandingPage/lib/recaptcha';
 
 describe('components/ContactForm', function() {
   var defaultProps;

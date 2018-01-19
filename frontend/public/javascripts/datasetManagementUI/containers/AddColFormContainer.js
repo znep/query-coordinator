@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import AddColForm from 'components/AddColForm/AddColForm';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import AddColForm from 'datasetManagementUI/components/AddColForm/AddColForm';
 
 function isUnique(val, vals) {
   return !vals.includes(val);

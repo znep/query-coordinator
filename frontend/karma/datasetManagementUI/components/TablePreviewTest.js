@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import TablePreview from 'components/TablePreview/TablePreview';
+import TablePreview from 'datasetManagementUI/components/TablePreview/TablePreview';
 import dotProp from 'dot-prop-immutable';
 
 describe('components/TablePreview', () => {

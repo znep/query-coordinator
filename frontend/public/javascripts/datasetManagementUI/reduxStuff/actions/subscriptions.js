@@ -1,17 +1,17 @@
 import _ from 'lodash';
-import { editOutputSchema } from 'reduxStuff/actions/outputSchemas';
-import { editTransform } from 'reduxStuff/actions/transforms';
-import { editInputSchema } from 'reduxStuff/actions/inputSchemas';
-import { editInputColumn } from 'reduxStuff/actions/inputColumns';
-import { editRevision } from 'reduxStuff/actions/revisions';
-import { batchActions } from 'reduxStuff/actions/batching';
-import { parseDate } from 'lib/parseDate';
-import { normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
+import { editOutputSchema } from 'datasetManagementUI/reduxStuff/actions/outputSchemas';
+import { editTransform } from 'datasetManagementUI/reduxStuff/actions/transforms';
+import { editInputSchema } from 'datasetManagementUI/reduxStuff/actions/inputSchemas';
+import { editInputColumn } from 'datasetManagementUI/reduxStuff/actions/inputColumns';
+import { editRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
+import { batchActions } from 'datasetManagementUI/reduxStuff/actions/batching';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
+import { normalizeInsertInputSchemaEvent } from 'datasetManagementUI/lib/jsonDecoders';
 import { browserHistory } from 'react-router';
-import * as Links from 'links/links';
-import { removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
-import { sourceUpdate, createSourceSuccess } from 'reduxStuff/actions/createSource';
-import * as Selectors from 'selectors';
+import * as Links from 'datasetManagementUI /links/links';
+import { removeNotificationAfterTimeout } from 'datasetManagementUI/reduxStuff/actions/notifications';
+import { sourceUpdate, createSourceSuccess } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 const PROGRESS_THROTTLE_TIME = 1000;
 

@@ -5,19 +5,7 @@ import { getBaseMapLayerStyles } from 'common/visualizations/views/map/baseMapSt
 describe('VifPointOverlay', () => {
   let vifPointOverlay;
   let mockMap;
-  let vif;
-  const mapboxDarkMapStyle = 'mapbox://styles/mapbox/dark-v9';
-  const darkMapConfig = getBaseMapLayerStyles({
-    'configuration': {
-      'baseMapStyle': mapboxDarkMapStyle
-    }
-  });
-  const mapboxLightMapStyle = 'mapbox://styles/mapbox/light-v9';
-  const lightMapConfig = getBaseMapLayerStyles({
-    'configuration': {
-      'baseMapStyle': mapboxLightMapStyle
-    }
-  });
+  let fakeServer;
 
   beforeEach(() => {
     mockMap = {
@@ -26,276 +14,179 @@ describe('VifPointOverlay', () => {
       setPaintProperty: sinon.spy()
     };
     vifPointOverlay = new VifPointOverlay(mockMap);
-    vif = mapMockVif({
-      configuration: {
-        baseMapStyle: mapboxDarkMapStyle
-      },
-      series: [
-        {
-          color: {
-            primary : '#ff00ff'
-          },
-          mapOptions: {
-            'mapType': 'pointMap',
-            'clusterRadius': 80,
-            'stackRadius': 20,
-            'maxClusterSize': 40,
-            'maxClusteringZoomLevel': 11,
-            'pointMapPointSize': 10
-          }
-        }
-      ]
-    });
+    vifPointOverlay._pointsAndStacks = { setup: sinon.spy(), update: sinon.spy() };
+    vifPointOverlay._clusters = { setup: sinon.spy(), update: sinon.spy() };
+
+    fakeServer = sinon.createFakeServer();
+    fakeServer.autoRespond = true;
   });
 
-  describe('setup', () => {
-    beforeEach(() => {
-      vifPointOverlay.setup(vif);
-    });
-
-    it('should add the stack/point sources with clusterRadius from vif', () => {
-      sinon.assert.calledWith(mockMap.addSource,
-        'pointVectorDataSource',
-        sinon.match({
-          geojsonTile: true,
-          cluster: true,
-          clusterRadius: 20
-        })
-      );
-    });
-
-    it('should add point layer with point color/radius from vif', () => {
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'pointVectorDataSource',
-          id: 'point',
-          paint: {
-            'circle-color': '#ff00ff',
-            'circle-radius': 5
-          }
-        }),
-      );
-    });
-
-    it('should add the map stacks layer with darkStyleMap\'s style config', () => {
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'pointVectorDataSource',
-          id: 'stack-circle',
-          paint: ({
-            'circle-color': darkMapConfig.STACK_COLOR,
-            'circle-radius': darkMapConfig.STACK_SIZE / 2,
-            'circle-stroke-color': darkMapConfig.STACK_BORDER_COLOR,
-            'circle-stroke-opacity': darkMapConfig.STACK_BORDER_OPACITY,
-            'circle-stroke-width': darkMapConfig.STACK_BORDER_SIZE
-          })
-        }),
-      );
-
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'pointVectorDataSource',
-          id: 'stack-count-label',
-          paint: sinon.match({
-            'text-color': darkMapConfig.STACK_TEXT_COLOR
-          })
-        }),
-      );
-    });
-
-    it('should add the cluster sources with clusterRadius from vif', () => {
-      sinon.assert.calledWith(mockMap.addSource,
-        'clustersVectorDataSource',
-        sinon.match({
-          geojsonTile: true,
-          cluster: true,
-          clusterRadius: 80
-        })
-      );
-    });
-
-    it('should add the cluster layer with darkStyleMap\'s style config', () => {
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'clustersVectorDataSource',
-          id: 'cluster-circle',
-          paint: sinon.match({
-            'circle-color': darkMapConfig.CLUSTER_COLOR,
-            'circle-radius': sinon.match({
-              default: 12,
-              property: 'sum',
-              stops: [[0, 12], [100, 16], [1000, 20]],
-              type: 'interval'
-            }),
-            'circle-stroke-color': darkMapConfig.CLUSTER_BORDER_COLOR,
-            'circle-stroke-opacity': darkMapConfig.CLUSTER_BORDER_OPACITY,
-            'circle-stroke-width': darkMapConfig.CLUSTER_BORDER_SIZE
-          })
-        }),
-      );
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'clustersVectorDataSource',
-          id: 'cluster-count-label',
-          paint: sinon.match({
-            'text-color': darkMapConfig.CLUSTER_TEXT_COLOR
-          })
-        }),
-      );
-    });
+  afterEach(() => {
+    fakeServer.restore();
   });
 
-  describe('update source options(clusterRadius)', () => {
-    it('should resetup', () => {
-      vifPointOverlay.setup(vif);
-      let modifiedVif = mapMockVif({
-        series: [
-          {
-            mapOptions: {
-              maxClusteringZoomLevel: 15
-            }
-          }
-        ]
-      });
-      sinon.spy(vifPointOverlay, 'setup');
-
-      vifPointOverlay.update(modifiedVif);
-
-      sinon.assert.calledWith(vifPointOverlay.setup, modifiedVif);
-    });
-  });
-
-  describe('update vif', () => {
-    let newVif;
-    beforeEach(() => {
-      newVif = mapMockVif({
-        configuration: {
-          baseMapStyle: mapboxLightMapStyle
-        },
-        series: [
-          {
-            color: {
-              primary : 'red'
-            },
-            mapOptions: {
-              'mapType': 'pointMap',
-              'clusterRadius': 80,
-              'stackRadius': 20,
-              'maxClusterSize': 40,
-              'maxClusteringZoomLevel': 11,
-              'pointMapPointSize': 10
-            }
-          }
-        ]
+  describe('colorPointsBy and resizePointsByColumn not configured', () => {
+    describe('colorPointsBy', () => {
+      let vif;
+      beforeEach(() => {
+        vif = mapMockVif({});
+        vif.series[0].mapOptions.colorPointsBy = null;
       });
 
-      vifPointOverlay.setup(vif);
-      vifPointOverlay.update(newVif);
+      it('should render points and stacks without colorByCategories column configured', () => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: null,
+          aggregateAndResizeBy: '__count__',
+          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+          colorBy: '__color_by_category__'
+        });
+
+        return vifPointOverlay.setup(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+        });
+      });
+
+      it('should render points and stacks without colorByCategories column configured', () => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: null,
+          aggregateAndResizeBy: '__count__',
+          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+          colorBy: '__color_by_category__'
+        });
+
+        return vifPointOverlay.update(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+        });
+      });
     });
 
-    it('should update the points to new color from newvif', () => {
-      sinon.assert.calledWith(mockMap.setPaintProperty, 'point', 'circle-color', 'red');
-      sinon.assert.calledWith(mockMap.setPaintProperty, 'point', 'circle-radius', 5);
-    });
+    describe('resizePointsByColumn', () => {
+      let vif;
+      beforeEach(() => {
+        vif = mapMockVif({});
+        vif.series[0].mapOptions.resizePointsBy = null;
+      });
 
-    it('should update the stacks based on new vif', () => {
+      it('should render points and stacks without resizeByRange column configured', () => {
+        const expectedRenderOptions = sinon.match({
+          aggregateAndResizeBy: '__count__',
+          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+          countBy: '__count__'
+        });
 
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-circle',
-        'circle-radius',
-        lightMapConfig.STACK_SIZE / 2
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-circle',
-        'circle-color',
-        lightMapConfig.STACK_COLOR
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-circle',
-        'circle-stroke-width',
-        lightMapConfig.STACK_BORDER_SIZE
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-circle',
-        'circle-stroke-color',
-        lightMapConfig.STACK_BORDER_COLOR
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-circle',
-        'circle-stroke-opacity',
-        lightMapConfig.STACK_BORDER_OPACITY
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'stack-count-label',
-        'text-color',
-        lightMapConfig.STACK_TEXT_COLOR
-      );
-    });
+        return vifPointOverlay.setup(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+        });
+      });
 
-    it('should update the clusters based on new vif', () => {
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-circle',
-        'circle-radius',
-        sinon.match({
-          default: 12,
-          type: 'interval',
-          property: 'sum',
-          stops: [[0, 12], [100, 16], [1000, 20]]
-        })
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-circle',
-        'circle-color',
-        lightMapConfig.CLUSTER_COLOR
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-circle',
-        'circle-stroke-width',
-        lightMapConfig.CLUSTER_BORDER_SIZE
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-circle',
-        'circle-stroke-color',
-        lightMapConfig.CLUSTER_BORDER_COLOR
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-circle',
-        'circle-stroke-opacity',
-        lightMapConfig.CLUSTER_BORDER_OPACITY
-      );
-      sinon.assert.calledWith(
-        mockMap.setPaintProperty,
-        'cluster-count-label',
-        'text-color',
-        lightMapConfig.CLUSTER_TEXT_COLOR
-      );
-    });
 
-  });
+      it('should render points and stacks without resizeByRange column configured', () => {
+        const expectedRenderOptions = sinon.match({
+          aggregateAndResizeBy: '__count__',
+          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+          countBy: '__count__'
+        });
 
-  describe('getDataUrl', () => {
-    it('should return url with substitution params', () => {
-      assert.equal(
-        vifPointOverlay.getDataUrl(vif),
-        'https://example.com/resource/r6t9-rak2.geojson?$query=' +
-        'select count(*),snap_for_zoom(point,{snap_zoom}) ' +
-        'where {{\'point\' column condition}} ' +
-        'group by snap_for_zoom(point, {snap_zoom}) ' +
-        'limit 100000 ' +
-        '#substituteSoqlParams_tileParams={z}|{x}|{y}'
-      );
+        return vifPointOverlay.update(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+        });
+      });
     });
   });
 
+  describe('colorPointsBy column configured', () => {
+    let vif;
+
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.colorPointsBy = 'brokerType';
+
+      const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
+        'SELECT%20brokerType%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
+        'GROUP%20BY%20brokerType%20' +
+        'ORDER%20BY%20__count__%20desc%20' +
+        'LIMIT%205' +
+        '&$$read_from_nbe=true' +
+        '&$$version=2.1';
+      const stubResult = '[{"__color_by_category__": "It"}, {"__color_by_category__": "Cat2"}]';
+
+      fakeServer.respondWith(query,
+        [200, { 'Content-Type': 'application/json' }, stubResult]);
+    });
+
+    describe('setup', () => {
+      it('should setup with colorPointsBy renderOptions', () => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: sinon.match(['It', 'Cat2']),
+          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType,true,'__$$other$$__') as __color_by_category__"),
+          colorBy: '__color_by_category__'
+        });
+
+        return vifPointOverlay.setup(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+        });
+      });
+    });
+
+    describe('update', () => {
+      it('should setup with colorPointsBy renderOptions', () => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: sinon.match(['It', 'Cat2']),
+          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType,true,'__$$other$$__') as __color_by_category__"),
+          colorBy: '__color_by_category__'
+        });
+
+        return vifPointOverlay.update(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+        });
+      });
+    });
+  });
+
+  describe('resizeBy column configured', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.resizePointsBy = 'supervisor_district';
+      const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
+        'SELECT%20min\\(supervisor_district\\)%20as%20__resize_by_min__' +
+        '%2Cavg\\(supervisor_district\\)%20as%20__resize_by_avg__' +
+        '%2Cmax\\(supervisor_district\\)%20as%20__resize_by_max__&' +
+        '$$read_from_nbe=true' +
+        '&$$version=2.1';
+
+      const stubResult = '[{"__resize_by__": "It"}, {"__resize_by__": "Cat2"}]';
+
+      fakeServer.respondWith(query,
+        [200, { 'Content-Type': 'application/json' }, stubResult]);
+    });
+
+    describe('setup', () => {
+      it('should setup with resizeBy renderOptions', () => {
+        const expectedRenderOptions = sinon.match({
+          resizeByRange: { avg: 1, max: 1, min: 0 },
+          dataUrl: sinon.match("sum(supervisor_district) as __resize_by__,count(*) as __count__ where {{'point' column condition}} group by snap_for_zoom(point,{snap_zoom})"),
+          aggregateAndResizeBy: '__resize_by__'
+        });
+
+        return vifPointOverlay.setup(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+        });
+      });
+    });
+
+    describe('update', () => {
+      it('should update with resizeBy renderOptions', () => {
+        const expectedRenderOptions = sinon.match({
+          resizeByRange: { avg: 1, max: 1, min: 0 },
+          dataUrl: sinon.match("sum(supervisor_district) as __resize_by__,count(*) as __count__ where {{'point' column condition}} group by snap_for_zoom(point,{snap_zoom})"),
+          aggregateAndResizeBy: '__resize_by__'
+        });
+
+        return vifPointOverlay.update(vif).then(() => {
+          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+        });
+      });
+    });
+  });
 });

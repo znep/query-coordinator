@@ -1,245 +1,148 @@
 import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
-import SoqlHelpers from '../../../dataProviders/SoqlHelpers';
-import utils from 'common/js_utils';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
-import * as selectors from '../../../../authoring_workflow/selectors/vifAuthoring';
 
-const SOURCES = Object.freeze({
-  POINTS_AND_STACKS: 'pointVectorDataSource',
-  CLUSTERS: 'clustersVectorDataSource'
-});
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
+import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+import PointsAndStacks from './partials/PointsAndStacks';
+import Clusters from './partials/Clusters';
+import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
+import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
-const LAYERS = Object.freeze({
-  STACK_CIRCLE: 'stack-circle',
-  STACK_COUNT_LABEL: 'stack-count-label',
-  POINT: 'point',
-  CLUSTER_CIRCLE: 'cluster-circle',
-  CLUSTER_COUNT_LABEL: 'cluster-count-label'
-});
+const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
+const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
+const RESIZE_BY_ALIAS = '__resize_by__';
+const COUNT_ALIAS = '__count__';
 
 export default class VifPointOverlay extends VifOverlay {
   constructor(map) {
-    super(map, _.values(SOURCES), _.values(LAYERS));
+    const sourceIds = [].concat(PointsAndStacks.sourceIds()).concat(Clusters.sourceIds());
+    const layerIds = [].concat(PointsAndStacks.layerIds()).concat(Clusters.layerIds());
+    super(map, sourceIds, layerIds);
+
+    this._pointsAndStacks = new PointsAndStacks(map);
+    this._clusters = new Clusters(map);
   }
 
-  setup(vif) {
-    const layerStyles = getBaseMapLayerStyles(vif);
-    this._setupPointsAndStacks(vif, layerStyles);
-    this._setupClusters(vif, layerStyles);
-    this._existingVif = vif;
+  async setup(vif) {
+    const renderOptions = await this._prepare(vif);
+
+    this._pointsAndStacks.setup(vif, renderOptions);
+    this._clusters.setup(vif, renderOptions);
+
+    return renderOptions;
   }
 
-  update(vif) {
-    if (this._sourceOptionsChanged(vif)) {
-      this.destroy();
-      this.setup(vif);
-    } else {
-      const layerStyles = getBaseMapLayerStyles(vif);
+  async update(vif) {
+    const renderOptions = await this._prepare(vif);
 
-      // Updating point color/radius based on new vif
-      this._map.setPaintProperty(LAYERS.POINT, 'circle-color', getPointColor(vif));
-      this._map.setPaintProperty(LAYERS.POINT, 'circle-radius', getPointCircleRadius(vif));
+    this._pointsAndStacks.update(vif, renderOptions);
+    this._clusters.update(vif, renderOptions);
 
-      // Updating stack look and feel based on new base-map-style in vif
-      this._map.setPaintProperty(LAYERS.STACK_CIRCLE, 'circle-radius', layerStyles.STACK_SIZE / 2);
-      this._map.setPaintProperty(LAYERS.STACK_CIRCLE, 'circle-color', layerStyles.STACK_COLOR);
-      this._map.setPaintProperty(LAYERS.STACK_CIRCLE, 'circle-stroke-width', layerStyles.STACK_BORDER_SIZE);
-      this._map.setPaintProperty(LAYERS.STACK_CIRCLE, 'circle-stroke-color', layerStyles.STACK_BORDER_COLOR);
-      this._map.setPaintProperty(LAYERS.STACK_CIRCLE, 'circle-stroke-opacity', layerStyles.STACK_BORDER_OPACITY);
-      this._map.setPaintProperty(LAYERS.STACK_COUNT_LABEL, 'text-color', layerStyles.STACK_TEXT_COLOR);
+    return renderOptions;
+  }
 
-      // Updating cluster look and feel based on new base-map-style in vif
-      this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-radius', getClusterCircleRadiusPaintProperty(vif));
-      this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-color', layerStyles.CLUSTER_COLOR);
-      this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-stroke-width', layerStyles.CLUSTER_BORDER_SIZE);
-      this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-stroke-color', layerStyles.CLUSTER_BORDER_COLOR);
-      this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-stroke-opacity', layerStyles.CLUSTER_BORDER_OPACITY);
-      this._map.setPaintProperty(LAYERS.CLUSTER_COUNT_LABEL, 'text-color', layerStyles.CLUSTER_TEXT_COLOR);
+  // Makes required soql calls
+  //    * getting top values for coloring by.
+  //    * getting range for resizePointsBy buckets.
+  // and returns the renerOptions.
+  async _prepare(vif) {
+    this._preparingForVif = vif;
+    const colorByColumn = vif.getPointColorByColumn();
+    const resizeByColumn = vif.getPointResizeByColumn();
+
+    try {
+      let colorByCategories;
+      let resizeByRange;
+
+      [colorByCategories, resizeByRange] = await Promise.all([
+        RenderByHelper.getColorByCategories(vif, this._pointDataset(vif), colorByColumn),
+        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn)
+      ]);
+
+      if (this._preparingForVif !== vif) {
+        return Promise.reject('VIF updated while preparing');
+      }
+
+      return {
+        colorByCategories,
+        resizeByRange,
+        countBy: COUNT_ALIAS,
+        colorBy: COLOR_BY_CATEGORY_ALIAS,
+        aggregateAndResizeBy: resizeBy(vif),
+        layerStyles: getBaseMapLayerStyles(vif),
+        dataUrl: this.getDataUrl(vif, colorByCategories)
+      };
+    } catch (error) {
+      throw ('Error preparing point map.', error);
     }
-    this._existingVif = vif;
   }
 
-  getDataUrl(vif) {
-    const domain = _.get(vif, 'series[0].dataSource.domain');
-    const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-    const columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+  _pointDataset(vif) {
+    const datasetConfig = {
+      domain: vif.getDomain(),
+      datasetUid: vif.getDatasetUid()
+    };
 
-    utils.assertIsOneOfTypes(columnName, 'string');
-    utils.assertIsOneOfTypes(domain, 'string');
-    utils.assertIsOneOfTypes(datasetUid, 'string');
+    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingPointDatasetConfig, datasetConfig)) {
+      this.__pointDatasetInstance = new SoqlDataProvider(datasetConfig, true);
+      this._existingPointDatasetConfig = datasetConfig;
+    }
+
+    return this.__pointDatasetInstance;
+  }
+
+  getDataUrl(vif, colorByCategories) {
+    const columnName = vif.getColumnName();
+    const colorByColumn = vif.getPointColorByColumn();
+    const resizeByColumn = vif.getPointResizeByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
-
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
     if (!_.isEmpty(filters)) {
       conditions.push(filters);
     }
 
-    return `https://${domain}/resource/${datasetUid}.geojson?$query=` +
-      `select count(*),snap_for_zoom(${columnName},{snap_zoom}) ` +
+    let selects = [`snap_for_zoom(${columnName},{snap_zoom})`];
+    let groups = [`snap_for_zoom(${columnName},{snap_zoom})`];
+
+    if (_.isString(colorByColumn) && !_.isUndefined(colorByCategories)) {
+      // We are not grouping by colorByColumn. In case that column had 10K unique values,
+      // then grouping by the colorByColumn and snapToGrid, will return
+      // 10K * snappedToGrid location => number of results. Which will be too much.
+      // Instead, we are only interesed in the top x values(colorByCategories) in the colorbyColumn.
+      // So we select/group the remaining values as OTHER_COLOR_BY_CATEGORY and the top x in separate groups.
+      const colorByCategoriesString = _.map(colorByCategories, SoqlHelpers.soqlEncodeValue);
+      selects.push('CASE(' +
+        `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
+        `${colorByColumn},` + // if value
+        'true,' + // else condition
+        `'${OTHER_COLOR_BY_CATEGORY}'` + // else value
+        `) as ${COLOR_BY_CATEGORY_ALIAS}`);
+
+      groups.push(COLOR_BY_CATEGORY_ALIAS);
+    }
+
+    if (_.isString(resizeByColumn)) {
+      selects.push(`sum(${resizeByColumn}) as ${RESIZE_BY_ALIAS}`);
+    }
+    selects.push(`count(*) as ${COUNT_ALIAS}`);
+
+    // TODO: Select/Group by the color by column
+    return `https://${vif.getDomain()}/resource/${vif.getDatasetUid()}.geojson?$query=` +
+      `select ${selects.join(',')} ` +
       `where ${conditions.join(' AND ')} ` +
-      `group by snap_for_zoom(${columnName}, {snap_zoom}) ` +
-      'limit 100000 ' +
+      `group by ${groups.join(',')} ` +
+      'limit 50000 ' +
       '#substituteSoqlParams_tileParams={z}|{x}|{y}';
   }
+}
 
-  _sourceOptionsChanged(vif) {
-    return this.getDataUrl(this._existingVif) !== this.getDataUrl(this._existingVif) ||
-      getMaxClusteringZoomLevel(this._existingVif) !== getMaxClusteringZoomLevel(vif) ||
-      getStackRadius(this._existingVif) !== getStackRadius(vif) ||
-      getClusterRadius(this._existingVif) !== getClusterRadius(vif);
+function resizeBy(vif) {
+  const resizeByColumn = vif.getPointResizeByColumn();
+  if (_.isString(resizeByColumn)) {
+    return RESIZE_BY_ALIAS;
   }
-
-  _setupPointsAndStacks(vif, layerStyles) {
-    this._map.addSource(SOURCES.POINTS_AND_STACKS, {
-      'type': 'vector',
-      'geojsonTile': true,
-      'cluster': true,
-      'clusterRadius': getStackRadius(vif),
-      'aggregateBy': 'count',
-      'tiles': [this.getDataUrl(vif)],
-      'minzoom': getMaxClusteringZoomLevel(vif) + 1
-    });
-
-    this._map.addLayer({
-      'id': LAYERS.STACK_CIRCLE,
-      'type': 'circle',
-      'source': SOURCES.POINTS_AND_STACKS,
-      'source-layer': '_geojsonTileLayer',
-      'filter': ['any', ['has', 'point_count'], ['>', 'count', '1']],
-      'paint': {
-        'circle-radius': layerStyles.STACK_SIZE / 2,
-        'circle-color': layerStyles.STACK_COLOR,
-        'circle-stroke-width': layerStyles.STACK_BORDER_SIZE,
-        'circle-stroke-color': layerStyles.STACK_BORDER_COLOR,
-        'circle-stroke-opacity': layerStyles.STACK_BORDER_OPACITY
-      }
-    });
-
-    this._map.addLayer({
-      id: LAYERS.STACK_COUNT_LABEL,
-      type: 'symbol',
-      'source': SOURCES.POINTS_AND_STACKS,
-      'source-layer': '_geojsonTileLayer',
-      'filter': ['any', ['has', 'point_count'], ['>', 'count', '1']],
-      layout: {
-        // If clustered by mapbox,
-        //  it will have sum_abbrev (which is the sum of counts of every record)
-        // If a single record from server,
-        //  it will have count
-        // In any case either sum_abbrev will be present or count will be present.
-        // So the below expression will print the existing one and empty string for
-        // non-existing one.
-        'text-field': '{sum_abbrev}{count}',
-        'text-size': 12,
-        'text-allow-overlap': true
-      },
-      paint: {
-        'text-color': layerStyles.STACK_TEXT_COLOR
-      }
-    });
-
-    this._map.addLayer({
-      id: LAYERS.POINT,
-      type: 'circle',
-      'source': SOURCES.POINTS_AND_STACKS,
-      'source-layer': '_geojsonTileLayer',
-      'filter': ['all', ['!has', 'point_count'], ['==', 'count', '1']],
-      'paint': {
-        'circle-radius': getPointCircleRadius(vif),
-        'circle-color': getPointColor(vif)
-      }
-    });
-  }
-
-  _setupClusters(vif, layerStyles) {
-    this._map.addSource(SOURCES.CLUSTERS, {
-      'type': 'vector',
-      'geojsonTile': true,
-      'cluster': true,
-      'clusterRadius': getClusterRadius(vif),
-      'aggregateBy': 'count',
-      'tiles': [this.getDataUrl(vif)],
-      'maxzoom': getMaxClusteringZoomLevel(vif)
-    });
-
-    this._map.addLayer({
-      'id': LAYERS.CLUSTER_CIRCLE,
-      'type': 'circle',
-      'source': SOURCES.CLUSTERS,
-      'source-layer': '_geojsonTileLayer',
-      'paint': {
-        'circle-radius': getClusterCircleRadiusPaintProperty(vif),
-        'circle-color': layerStyles.CLUSTER_COLOR,
-        'circle-stroke-width': layerStyles.CLUSTER_BORDER_SIZE,
-        'circle-stroke-color': layerStyles.CLUSTER_BORDER_COLOR,
-        'circle-stroke-opacity': layerStyles.CLUSTER_BORDER_OPACITY
-      }
-    });
-
-    this._map.addLayer({
-      id: LAYERS.CLUSTER_COUNT_LABEL,
-      type: 'symbol',
-      'source': SOURCES.CLUSTERS,
-      'source-layer': '_geojsonTileLayer',
-      layout: {
-        // If clustered by mapbox,
-        //  it will have sum_abbrev (which is the sum of counts of every record)
-        // If a single record from server,
-        //  it will have count
-        // In any case either sum_abbrev will be present or count will be present.
-        // So the below expression will print the existing one and empty string for
-        // non-existing one.
-        'text-field': '{sum_abbrev}{count}',
-        'text-size': 12,
-        'text-allow-overlap': true
-      },
-      paint: {
-        'text-color': layerStyles.CLUSTER_TEXT_COLOR
-      }
-    });
-  }
-}
-
-function getClusterCircleRadiusPaintProperty(vif) {
-  return {
-    type: 'interval',
-    property: 'sum',
-    stops: [
-      [0, getClusterCircleMinRadius(vif)],
-      [100, (getClusterCircleMinRadius(vif) + getClusterCircleMaxRadius(vif)) / 2],
-      [1000, getClusterCircleMaxRadius(vif)]
-    ],
-    'default': getClusterCircleMinRadius()
-  };
-}
-
-function getClusterCircleMaxRadius(vif) {
-  return _.get(vif, 'series[0].mapOptions.maxClusterSize', 40) / 2;
-}
-
-function getClusterCircleMinRadius() {
-  return 12;
-}
-
-function getPointColor(vif) {
-  return _.get(vif, 'series[0].color.primary', '#ff00ff');
-}
-
-function getPointCircleRadius(vif) {
-  return _.get(vif, 'series[0].mapOptions.pointMapPointSize', 10) / 2;
-}
-
-function getMaxClusteringZoomLevel(vif) {
-  return _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 11);
-}
-
-function getClusterRadius(vif) {
-  return _.get(vif, 'series[0].mapOptions.clusterRadius', 80);
-}
-
-function getStackRadius(vif) {
-  return _.get(vif, 'series[0].mapOptions.stackRadius', 20);
+  return COUNT_ALIAS;
 }

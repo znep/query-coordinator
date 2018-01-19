@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { UPDATE_SOURCE } from 'reduxStuff/actions/createSource';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
+import { UPDATE_SOURCE } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
 
 const SaveParseOptionsButton = ({
   source,

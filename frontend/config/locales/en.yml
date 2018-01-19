@@ -778,18 +778,18 @@ en:
           display_format:
             title: Display Format
           currency:
-            title: Currency
+            title: Currency Format
             common: Common
             other_currency: Other
           advanced:
-            title: Advanced
+            title: " "
             precision: Specify decimal precision
-            show_thousands_separators: Show thousands-separators
+            show_thousands_separators: Show thousands separators
             override_thousands_separator:
-              title: Override thousands-separator
+              title: Override thousands separator
               placeholder: "e.g. ,"
             override_decimal_separator:
-              title: Override decimal-separator
+              title: Override decimal separator
               placeholder: "e.g. ."
         date_formatting:
           display_format:

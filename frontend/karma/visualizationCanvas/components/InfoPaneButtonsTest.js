@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { InfoPaneButtons } from 'components/InfoPaneButtons';
-import { ModeStates } from 'lib/constants';
+import { InfoPaneButtons } from 'visualizationCanvas/components/InfoPaneButtons';
+import { ModeStates } from 'visualizationCanvas/lib/constants';
 import mockView from 'data/mockView';
 import mockVif from 'data/mockVif';
 import mockParentView from 'data/mockParentView';

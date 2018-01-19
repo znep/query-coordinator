@@ -798,17 +798,28 @@ function SvgTimelineChart($element, vif, options) {
         bisectorDates = getPrecisionNoneBisectorDates(dataToRenderBySeries[0].rows);
       }
 
-      startDate = d3.min(                      // Second, get the min dimension date of all series
-        dataToRenderBySeries.map((series) => { // First, get the min dimension date of rows in a series
-          return d3.min(series.rows, (d) => d[seriesDimensionIndex]);
-        })
-      );
+      const customStartDate = self.getDimensionAxisMinValue();
+      const customEndDate = self.getDimensionAxisMaxValue();
 
-      endDate = d3.max(                        // Second, get the max dimension date of all series
-        dataToRenderBySeries.map((series) => { // First, get the max dimension date of rows in a series
-          return d3.max(series.rows, (d) => d[seriesDimensionIndex]);
-        })
-      );
+      if (customStartDate) {
+        startDate = customStartDate;
+      } else {
+        startDate = d3.min(                      // Second, get the min dimension date of all series
+          dataToRenderBySeries.map((series) => { // First, get the min dimension date of rows in a series
+            return d3.min(series.rows, (d) => d[seriesDimensionIndex]);
+          })
+        );
+      }
+
+      if (customEndDate) {
+        endDate = customEndDate;
+      } else {
+        endDate = d3.max(                        // Second, get the max dimension date of all series
+          dataToRenderBySeries.map((series) => { // First, get the max dimension date of rows in a series
+            return d3.max(series.rows, (d) => d[seriesDimensionIndex]);
+          })
+        );
+      }
 
       domainStartDate = parseDate(startDate);
       domainEndDate = parseDate(endDate);

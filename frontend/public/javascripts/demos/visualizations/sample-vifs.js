@@ -641,223 +641,227 @@ socrata.sampleVifsByChartType = {
   },
 
   timelineChartMultipleSeries: {
-    "format": {
-      "type": "visualization_interchange_format",
-      "version": 2
+    'format': {
+      'type': 'visualization_interchange_format',
+      'version': 2
     },
-    "configuration": {
-      "viewSourceDataLink": true,
-      "xAxisScalingMode": "pan",
-      "showLegend": true
+    'configuration': {
+      'viewSourceDataLink': true,
+      'xAxisScalingMode': 'pan',
+      'showLegend': true
     },
-    "description": "",
-    "series": [
+    'description': '',
+    'series': [
       {
-        "color": {
-          "primary": "#a6cee3",
-          "highlight": "#cccccc",
-          "palette": "categorical",
-          "secondary": "#a6cee3"
+        'color': {
+          'primary': '#a6cee3',
+          'highlight': '#cccccc',
+          'palette': 'categorical',
+          'secondary': '#a6cee3'
         },
-        "dataSource": {
-          "datasetUid": "k6cs-ww27",
-          "dimension": {
-            "columnName": "incident_occurrence",
-            "aggregationFunction": null
+        'dataSource': {
+          'datasetUid': 'k6cs-ww27',
+          'dimension': {
+            'columnName': 'incident_occurrence',
+            'aggregationFunction': null
           },
-          "domain": "vertex-stories.test-socrata.com",
-          "measure": {
-            "columnName": null,
-            "aggregationFunction": "count"
+          'domain': 'vertex-stories.test-socrata.com',
+          'measure': {
+            'columnName': null,
+            'aggregationFunction': 'count'
           },
-          "type": "socrata.soql",
-          "filters": [],
-          "precision": null,
-          "orderBy": {
-            "parameter": "dimension",
-            "sort": "asc"
+          'type': 'socrata.soql',
+          'filters': [],
+          'precision': null,
+          'orderBy': {
+            'parameter': 'dimension',
+            'sort': 'asc'
           }
         },
-        "label": null,
-        "type": "timelineChart"
+        'label': null,
+        'type': 'timelineChart'
       },
       {
-        "color": {
-          "primary": "#5b9ec9",
-          "highlight": "#cccccc",
-          "palette": "categorical",
-          "secondary": "#5b9ec9"
+        'color': {
+          'primary': '#5b9ec9',
+          'highlight': '#cccccc',
+          'palette': 'categorical',
+          'secondary': '#5b9ec9'
         },
-        "dataSource": {
-          "datasetUid": "k6cs-ww27",
-          "dimension": {
-            "columnName": "incident_occurrence",
-            "aggregationFunction": null
+        'dataSource': {
+          'datasetUid': 'k6cs-ww27',
+          'dimension': {
+            'columnName': 'incident_occurrence',
+            'aggregationFunction': null
           },
-          "domain": "vertex-stories.test-socrata.com",
-          "measure": {
-            "columnName": "blood_alcohol_level",
-            "aggregationFunction": "sum"
+          'domain': 'vertex-stories.test-socrata.com',
+          'measure': {
+            'columnName': 'blood_alcohol_level',
+            'aggregationFunction': 'sum'
           },
-          "type": "socrata.soql",
-          "filters": [],
-          "precision": null,
-          "orderBy": {
-            "parameter": "dimension",
-            "sort": "asc"
+          'type': 'socrata.soql',
+          'filters': [],
+          'precision': null,
+          'orderBy': {
+            'parameter': 'dimension',
+            'sort': 'asc'
           }
         },
-        "label": null,
-        "type": "timelineChart"
+        'label': null,
+        'type': 'timelineChart'
       }
     ],
-    "title": "Two series"
+    'title': 'Two series'
   },
 
   timelineChartWithDashedLine: {
-    "format": {
-      "type": "visualization_interchange_format",
-      "version": 2
+    'format': {
+      'type': 'visualization_interchange_format',
+      'version': 2
     },
-    "configuration": {
-      "viewSourceDataLink": true,
-      "xAxisScalingMode": "pan",
-      "showLegend": true
+    'configuration': {
+      'viewSourceDataLink': true,
+      'xAxisScalingMode': 'pan',
+      'showLegend': true
     },
-    "description": "",
-    "series": [
+    'description': '',
+    'series': [
       {
-        "lineStyle": {
-          "points": "closed",
-          "pointRadius": 4
+        'lineStyle': {
+          'points': 'closed',
+          'pointRadius': 4
         },
-        "color": {
-          "primary": "#a6cee3",
-          "highlight": "#cccccc",
-          "palette": "categorical",
-          "secondary": "#a6cee3"
+        'color': {
+          'primary': '#a6cee3',
+          'highlight': '#cccccc',
+          'palette': 'categorical',
+          'secondary': '#a6cee3'
         },
-        "dataSource": {
-          "datasetUid": "k6cs-ww27",
-          "dimension": {
-            "columnName": "incident_occurrence",
-            "aggregationFunction": null
+        'dataSource': {
+          'datasetUid': 'k6cs-ww27',
+          'dimension': {
+            'columnName': 'incident_occurrence',
+            'aggregationFunction': null
           },
-          "domain": "vertex-stories.test-socrata.com",
-          "measure": {
-            "columnName": null,
-            "aggregationFunction": "count"
+          'domain': 'vertex-stories.test-socrata.com',
+          'measure': {
+            'columnName': null,
+            'aggregationFunction': 'count'
           },
-          "type": "socrata.soql",
-          "filters": [
+          'type': 'socrata.soql',
+          'filters': [
             {
-              "function": "timeRange",
-              "columnName": "incident_occurrence",
-              "arguments": {
-                "start": "2001-01-01T00:00:00",
-                "end": "2001-12-31T23:59:59"
+              'function': 'timeRange',
+              'columnName': 'incident_occurrence',
+              'arguments': {
+                'start': '2001-01-01T00:00:00',
+                'end': '2001-12-31T23:59:59'
               },
-              "isHidden": true
+              'isHidden': true
             }
           ],
-          "precision": "month",
-          "orderBy": {
-            "parameter": "dimension",
-            "sort": "asc"
+          'precision': 'month',
+          'orderBy': {
+            'parameter': 'dimension',
+            'sort': 'asc'
           }
         },
-        "label": null,
-        "type": "timelineChart"
+        'label': null,
+        'type': 'timelineChart'
       },
       {
-        "lineStyle": {
-          "pattern": "dashed"
+        'lineStyle': {
+          'pattern': 'dashed'
         },
-        "color": {
-          "primary": "#5b9ec9",
-          "highlight": "#cccccc",
-          "palette": "categorical",
-          "secondary": "#5b9ec9"
+        'color': {
+          'primary': '#5b9ec9',
+          'highlight': '#cccccc',
+          'palette': 'categorical',
+          'secondary': '#5b9ec9'
         },
-        "dataSource": {
-          "datasetUid": "k6cs-ww27",
-          "dimension": {
-            "columnName": "incident_occurrence",
-            "aggregationFunction": null
+        'dataSource': {
+          'datasetUid': 'k6cs-ww27',
+          'dimension': {
+            'columnName': 'incident_occurrence',
+            'aggregationFunction': null
           },
-          "domain": "vertex-stories.test-socrata.com",
-          "measure": {
-            "columnName": "blood_alcohol_level",
-            "aggregationFunction": "sum"
+          'domain': 'vertex-stories.test-socrata.com',
+          'measure': {
+            'columnName': 'blood_alcohol_level',
+            'aggregationFunction': 'sum'
           },
-          "type": "socrata.soql",
-          "filters": [
+          'type': 'socrata.soql',
+          'filters': [
             {
-              "function": "timeRange",
-              "columnName": "incident_occurrence",
-              "arguments": {
-                "start": "2001-01-01T00:00:00",
-                "end": "2001-12-31T23:59:59"
+              'function': 'timeRange',
+              'columnName': 'incident_occurrence',
+              'arguments': {
+                'start': '2001-01-01T00:00:00',
+                'end': '2001-12-31T23:59:59'
               },
-              "isHidden": true
+              'isHidden': true
             }
           ],
-          "precision": "month",
-          "orderBy": {
-            "parameter": "dimension",
-            "sort": "asc"
+          'precision': 'month',
+          'orderBy': {
+            'parameter': 'dimension',
+            'sort': 'asc'
           }
         },
-        "label": null,
-        "type": "timelineChart"
+        'label': null,
+        'type': 'timelineChart'
       }
     ],
-    "title": "With one solid and one dashed line"
+    'title': 'With one solid and one dashed line'
   },
 
   timelineChartWithCategoricalData: {
-    "format": {
-      "type": "visualization_interchange_format",
-      "version": 2
+    'format': {
+      'type': 'visualization_interchange_format',
+      'version': 2
     },
-    "configuration": {
-      "viewSourceDataLink": true,
-      "xAxisScalingMode": "pan"
+    'configuration': {
+      'viewSourceDataLink': true,
+      'xAxisScalingMode': 'pan'
     },
-    "description": "",
-    "series": [
+    'description': '',
+    'series': [
       {
-        "color": {
-          "primary": "#71abd9",
-          "highlight": "#cccccc"
+        'color': {
+          'primary': '#71abd9',
+          'highlight': '#cccccc'
         },
-        "dataSource": {
-          "datasetUid": "k6cs-ww27",
-          "dimension": {
-            "columnName": "id",
-            "aggregationFunction": null
+        'dataSource': {
+          'datasetUid': 'k6cs-ww27',
+          'dimension': {
+            'columnName': 'id',
+            'aggregationFunction': null
           },
-          "domain": "vertex-stories.test-socrata.com",
-          "measure": {
-            "columnName": "blood_alcohol_level",
-            "aggregationFunction": "sum"
+          'domain': 'vertex-stories.test-socrata.com',
+          'measure': {
+            'columnName': 'blood_alcohol_level',
+            'aggregationFunction': 'sum'
           },
-          "type": "socrata.soql",
-          "filters": [],
-          "precision": null,
-          "orderBy": {
-            "parameter": "measure",
-            "sort": "desc"
+          'type': 'socrata.soql',
+          'filters': [],
+          'precision': null,
+          'orderBy': {
+            'parameter': 'measure',
+            'sort': 'desc'
           }
         },
-        "label": null,
-        "type": "timelineChart"
+        'label': null,
+        'type': 'timelineChart'
       }
     ],
-    "title": "Categorical data"
+    'title': 'Categorical data'
   },
 
   timelineChartWithOpenDot: {
+    configuration: {
+      dimensionAxisMinValue: '1999-01-01T00:00:00.000',
+      dimensionAxisMaxValue: '2005-01-01T00:00:00.000'
+    },
     series: [
       {
         lineStyle: {
@@ -883,7 +887,7 @@ socrata.sampleVifsByChartType = {
                 end: '2003-06-01T00:00:00.000'
               },
               columnName: 'date',
-              function: 'timeRange'
+              'function': 'timeRange'
             }
           ],
           precision: 'MONTH'
@@ -901,7 +905,7 @@ socrata.sampleVifsByChartType = {
       type: 'visualization_interchange_format',
       version: 2
     },
-    title: 'Open final dot'
+    title: 'Open final dot, custom x axis scale'
   },
 
   invalidChart: {}

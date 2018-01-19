@@ -74,6 +74,20 @@ Required |Optional
 :-------:|:----------------------:
 |    -    |Column Chart, Timeline Chart, Histogram, Bar Chart|
 
+##### `dimensionAxisMinValue`
+`dimensionAxisMinValue` sets minimum value for dimension axis. Note that the type of this value depends on the dimension axis type. Currently only respected for time-series Timeline Charts.
+
+Required |Optional
+:-------:|:----------------------:
+|    -    |Timeline Chart|
+
+##### `dimensionAxisMaxValue`
+`dimensionAxisMaxValue` sets maximum value for dimension axis. Note that the type of this value depends on the dimension axis type. Currently only respected for time-series Timeline Charts.
+
+Required |Optional
+:-------:|:----------------------:
+|    -    |Timeline Chart|
+
 ##### `baseLayerOpacity`
 `baseLayerOpacity` is the value that will be used as the css `opacity` value for map tiles. Its type is `<number>` and it must be in the range [0, 1].
 

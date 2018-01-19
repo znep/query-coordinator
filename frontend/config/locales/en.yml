@@ -573,31 +573,9 @@ en:
     action_buttons:
       back: Back
     asset_selector:
-      action_buttons:
-        back: Back
-        select: Select
       header_title: Select Featured Content
       header_title_with_category: Select Featured Content in %{category}
       header_title_without_category: Select Featured Content
-      results_container:
-        no_results: No results
-        of: of
-        pager:
-          invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
-          last_page: Last page
-          next_page: Next page
-          page: Page
-          previous_page: Previous page
-        search: Search
-        search_this_category: Search this category
-        sort:
-          sort_by: Sort by
-          sort_types:
-            alphabetical: Alphabetical
-            most_accessed: Most Accessed
-            most_relevant: Most Relevant
-            recently_added: Recently Added
-            recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
     contact_data_asset_owner: Contact Data Asset Owner
     dataset_contents:

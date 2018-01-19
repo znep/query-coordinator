@@ -105,7 +105,7 @@ export class Pager extends React.Component {
       linkTabIndex: prevLinkDisabled ? -1 : 0,
       onClick: (e) => this.prevLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.prevLinkClick(e)),
-      text: I18n.t('common.asset_selector.results_container.pager.previous_page')
+      text: I18n.t('shared.pager.previous_page')
     });
 
     const nextLinkDisabled = this.props.currentPage === this.lastPage();
@@ -116,7 +116,7 @@ export class Pager extends React.Component {
       linkTabIndex: nextLinkDisabled ? -1 : 0,
       onClick: (e) => this.nextLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.nextLinkClick(e)),
-      text: I18n.t('common.asset_selector.results_container.pager.next_page')
+      text: I18n.t('shared.pager.next_page')
     });
 
     const currentPageInputClasses = classNames('current-page-input', 'inline-block', {
@@ -124,14 +124,14 @@ export class Pager extends React.Component {
     });
 
     const errorAltText = this.state.pageIsInvalid &&
-      I18n.t('common.asset_selector.results_container.pager.invalid_page_error').
+      I18n.t('shared.pager.invalid_page_error').
         format({
           first: 1,
           last: this.lastPage()
         });
 
     const pageNumberText =
-      `${I18n.t('common.asset_selector.results_container.pager.page')} ${this.props.currentPage}`;
+      `${I18n.t('shared.pager.page')} ${this.props.currentPage}`;
 
     const currentPageInput = (
       <div className={currentPageInputClasses}>
@@ -147,7 +147,7 @@ export class Pager extends React.Component {
       </div>
     );
 
-    const lastPageText = I18n.t('common.asset_selector.results_container.pager.last_page');
+    const lastPageText = I18n.t('shared.pager.last_page');
 
     const lastPageLink = (
       <a
@@ -167,7 +167,7 @@ export class Pager extends React.Component {
       <div className="pager">
         {prevLink}
         {currentPageInput}
-        {` ${I18n.t('common.asset_selector.results_container.of')} `}
+        {` ${I18n.t('shared.pager.of')} `}
         {lastPageLink}
         {nextLink}
       </div>

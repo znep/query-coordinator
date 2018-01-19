@@ -30,6 +30,7 @@ import AssetTypeIcon from './AssetTypeIcon';
 import Button from './Button';
 import ColorPicker from './ColorPicker';
 import Dropdown from './Dropdown';
+import Pager from './Pager';
 import Picklist from './Picklist';
 import ViewCard from './ViewCard';
 import EditBar from './EditBar';
@@ -106,6 +107,7 @@ module.exports = {
   ModalFooter,
   ModalHeader,
   MultiSelect,
+  Pager,
   Picklist,
   Scrolls,
   ScrollView,

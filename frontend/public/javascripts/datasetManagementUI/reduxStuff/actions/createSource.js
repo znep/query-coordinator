@@ -107,6 +107,13 @@ export function createUploadSource(file, parseFile, params, callId) {
         // ex: zipfile but not shapefile, .json but not geojson
         // recover by telling DSMAPI to make a parse_source: false copy
         dispatch(dontParseSource(params, resource));
+      } else if (err instanceof TypeError || err instanceof ProgressEvent) {
+        // a network error occured on either createSource or uploadFile; we got
+        // no response from the server via http or websocket. A TypeError is what
+        // fetch returns if it cannot reach the network at all. A ProgressEvent
+        // is what XMLHttpRequest if a network interruption occurs during the
+        // sending of bytes.
+        dispatch(showFlashMessage('error', I18n.notifications.connection_error_body));
       } else {
         dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
       }
@@ -139,7 +146,12 @@ export function createURLSource(url, params) {
   return async dispatch => {
     const resource = await dispatch(createSource(params, callParams));
 
-    createUploadSourceSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type);
+    dispatch(createUploadSourceSuccess(
+      resource.id,
+      resource.created_by,
+      resource.created_at,
+      resource.source_type
+    ));
 
     dispatch(addNotification('source', resource.id));
 

@@ -941,7 +941,14 @@ module.exports = function(options) {
         contentType: 'application/json',
         data: JSON.stringify(viewToPut),
         dataType: 'json',
-        success: onComplete,
+        success: function(updatedView) {
+
+          unhideUnhiddenColumns(
+            viewToPut,
+            updatedView,
+            onComplete
+          );
+        },
         error: function() {
           $columnEditor.find('.loadingSpinnerContainer').addClass('hidden');
           alert(
@@ -982,6 +989,63 @@ module.exports = function(options) {
       };
 
       $.ajax(ajaxOptions);
+    }
+
+    // EN-21574 - Why Can't I Unhide Hidden Columns?
+    //
+    // The Column Editor makes use of the Views API to update the view
+    // with a single request. This works for everything except unhiding
+    // columns, which is based on the absence of a flag, which is never
+    // noticed because the Views API treats the absence of a thing as
+    // meaning that the thing should not be updated.
+    //
+    // Because of this, we need to figure out--after the view has been
+    // saved using the Views API--which columns had been intended to be
+    // unhidden, and make individual requests to the Columns API one by
+    // one in order to unhide each column that was intended to be
+    // unhidden.
+    function unhideUnhiddenColumns(beforeView, afterView, callback) {
+      var unhideRequests = _.get(beforeView, 'columns', []).
+        filter(function(column) {
+
+          var editedColumnNotHidden = !_.include(_.get(column, 'flags', []), 'hidden');
+          var savedColumn = _.find(_.get(afterView, 'columns', []), {id: column.id });
+          var savedColumnHidden = _.include(_.get(savedColumn, 'flags', []), 'hidden');
+
+          return editedColumnNotHidden && savedColumnHidden;
+        }).
+        map(function(columnToUpdate) {
+
+          return new Promise(function(resolve, reject) {
+            var ajaxOptions = {
+              url: '/views/' + window.blist.dataset.id + '/columns/' + columnToUpdate.id + '.json',
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify({hidden: false}),
+              dataType: 'json',
+              success: resolve,
+              error: reject
+            };
+
+            $.ajax(ajaxOptions);
+          });
+        });
+
+      Promise.
+        all(unhideRequests).
+        then(function() {
+
+          if (_.isFunction(callback)) {
+            callback();
+          }
+        }).
+        catch(function() {
+
+          // We still need to carry on, we just won't have succeeded :-(
+          if (_.isFunction(callback)) {
+            callback();
+          }
+        });
     }
 
     var $columnsContainer = $manager.find('.columns-container');

@@ -580,7 +580,9 @@ Options:
 
 | Option  | Accepted Values         | Default | Description                                                                                                                                        |   |
 |---------|-------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------|---|
-| pattern | solid, dashed           | solid   | Stroke pattern for the main line. Allows for dashed or solid lines.                                                                                |   |
+| pattern      | solid, dashed           | solid   | Stroke pattern for the main line. Allows for dashed or solid lines.                                                                                |   |
+| points       | none, closed, last-open | none    | Controls appearance of point markers. Allows for no markers, closed (solid dot) markers, and closed markers with the final marker open (open dot). |   |
+| pointRadius  | integers                | [auto]  | Controls radius of points. Default is an automatic calculation based on chart type.                                                                |   |
 
 Required |Optional
 :-------:|:-------------:

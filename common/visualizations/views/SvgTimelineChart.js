@@ -550,12 +550,20 @@ function SvgTimelineChart($element, vif, options) {
 
     function renderCircles(seriesData, seriesIndex) {
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);
+      const lineStyle = self.getLineStyleBySeriesIndex(seriesIndex);
 
       const seriesDotsPathSvg = viewportSvg.select(`.series-${seriesIndex}-line-dots`);
       seriesDotsPathSvg.attr('clip-path', `url(#${d3ClipPathId})`);
 
       const seriesDotsSvg = seriesDotsPathSvg.selectAll('circle');
-      let radius;
+      let fill = 'transparent';
+      let defaultRadius;
+
+      // As opposed to only on hover, or even never.
+      const alwaysShowPoints = lineStyle.points === 'closed';
+      if (alwaysShowPoints) {
+        fill = seriesData.measure.getColor();
+      }
 
       if (isUsingTimeScale) {
 
@@ -564,13 +572,15 @@ function SvgTimelineChart($element, vif, options) {
         // chart the dots help to indicate non-contiguous sections which may
         // be drawn at 1 pixel wide and nearly invisible with the fill color
         // alone.
-        radius = (seriesTypeVariant === 'line') ? LINE_DOT_RADIUS : AREA_DOT_RADIUS;
+        defaultRadius = (seriesTypeVariant === 'line') ? LINE_DOT_RADIUS : AREA_DOT_RADIUS;
 
       } else {
 
         // Categorical scale uses the same size dots as the combo chart
-        radius = DEFAULT_CIRCLE_HIGHLIGHT_RADIUS;
+        defaultRadius = alwaysShowPoints ? LINE_DOT_RADIUS : DEFAULT_CIRCLE_HIGHLIGHT_RADIUS;
       }
+
+      const radius = _.isFinite(lineStyle.pointRadius) ? lineStyle.pointRadius : defaultRadius;
 
       const getCx = (d) => {
         if (!isUsingTimeScale) {
@@ -603,11 +613,11 @@ function SvgTimelineChart($element, vif, options) {
       seriesDotsSvg.
         attr('cx', getCx).
         attr('cy', getCy).
-        attr('data-default-fill', 'transparent').
+        attr('data-default-fill', fill).
         attr('data-dimension-index', (d, index) => index).
         attr('data-dimension-value-html', (d, index) => dimensionValues[index]).
         attr('data-series-index', seriesIndex).
-        attr('fill', 'transparent').
+        attr('fill', fill).
         attr('r', radius);
     }
 
@@ -1798,9 +1808,14 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function generateYScale(minValue, maxValue, height) {
+    // Don't cut off the top of the highest point.
+    const maxPointRadius = _(_.range(0, dataToRenderBySeries.length)).
+      map(self.getLineStyleBySeriesIndex).
+      map('pointRadius').
+      max() || 0;
     return d3.scale.linear().
       domain([minValue, maxValue]).
-      range([height, 0]);
+      range([height, 0 + maxPointRadius]);
   }
 
   function generateYAxis(yScale) {

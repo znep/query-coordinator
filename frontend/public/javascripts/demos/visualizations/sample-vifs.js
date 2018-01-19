@@ -727,6 +727,10 @@ socrata.sampleVifsByChartType = {
     "description": "",
     "series": [
       {
+        "lineStyle": {
+          "points": "closed",
+          "pointRadius": 4
+        },
         "color": {
           "primary": "#a6cee3",
           "highlight": "#cccccc",
@@ -745,8 +749,18 @@ socrata.sampleVifsByChartType = {
             "aggregationFunction": "count"
           },
           "type": "socrata.soql",
-          "filters": [],
-          "precision": null,
+          "filters": [
+            {
+              "function": "timeRange",
+              "columnName": "incident_occurrence",
+              "arguments": {
+                "start": "2001-01-01T00:00:00",
+                "end": "2001-12-31T23:59:59"
+              },
+              "isHidden": true
+            }
+          ],
+          "precision": "month",
           "orderBy": {
             "parameter": "dimension",
             "sort": "asc"
@@ -777,8 +791,18 @@ socrata.sampleVifsByChartType = {
             "aggregationFunction": "sum"
           },
           "type": "socrata.soql",
-          "filters": [],
-          "precision": null,
+          "filters": [
+            {
+              "function": "timeRange",
+              "columnName": "incident_occurrence",
+              "arguments": {
+                "start": "2001-01-01T00:00:00",
+                "end": "2001-12-31T23:59:59"
+              },
+              "isHidden": true
+            }
+          ],
+          "precision": "month",
           "orderBy": {
             "parameter": "dimension",
             "sort": "asc"
@@ -789,6 +813,51 @@ socrata.sampleVifsByChartType = {
       }
     ],
     "title": "With one solid and one dashed line"
+  },
+
+  timelineChartWithCategoricalData: {
+    "format": {
+      "type": "visualization_interchange_format",
+      "version": 2
+    },
+    "configuration": {
+      "viewSourceDataLink": true,
+      "xAxisScalingMode": "pan"
+    },
+    "description": "",
+    "series": [
+      {
+        "lineStyle": {
+          "points": "closed"
+        },
+        "color": {
+          "primary": "#71abd9",
+          "highlight": "#cccccc"
+        },
+        "dataSource": {
+          "datasetUid": "k6cs-ww27",
+          "dimension": {
+            "columnName": "id",
+            "aggregationFunction": null
+          },
+          "domain": "vertex-stories.test-socrata.com",
+          "measure": {
+            "columnName": "blood_alcohol_level",
+            "aggregationFunction": "sum"
+          },
+          "type": "socrata.soql",
+          "filters": [],
+          "precision": null,
+          "orderBy": {
+            "parameter": "measure",
+            "sort": "desc"
+          }
+        },
+        "label": null,
+        "type": "timelineChart"
+      }
+    ],
+    "title": "Categorical data"
   },
 
   invalidChart: {}

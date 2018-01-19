@@ -69,7 +69,7 @@ export default class VifHeatOverlay extends VifOverlay {
           ]
         }
       }
-    }, baseMapLayerStyle.PREPEND_HEAT_LAYER_AFTER);
+    }, baseMapLayerStyle.INSERT_FILL_LAYERS_BEFORE);
     this._existingVif = vif;
   }
 

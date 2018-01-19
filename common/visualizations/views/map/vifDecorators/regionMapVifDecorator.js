@@ -28,7 +28,7 @@ export function getRegionMapBuckets(measures) {
     numberOfClasses: this.getRegionMapBucketsCount()
   });
 
-  const colors = this.getColorPallete();
+  const colors = this.getColorPalette();
 
   // Converting
   //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]

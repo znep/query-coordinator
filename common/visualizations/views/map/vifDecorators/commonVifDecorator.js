@@ -14,12 +14,12 @@ export function getColumnName() {
   return _.get(this, 'series[0].dataSource.dimension.columnName');
 }
 
-export function getColorPalleteId() {
+export function getColorPaletteId() {
   return _.get(this, 'series[0].color.palette');
 }
 
-export function getColorPallete() {
-  return _.get(COLOR_PALETTE_VALUES, this.getColorPalleteId(), COLOR_PALETTE_VALUES.categorical);
+export function getColorPalette() {
+  return _.get(COLOR_PALETTE_VALUES, this.getColorPaletteId(), COLOR_PALETTE_VALUES.categorical);
 }
 
 export function getMapType() {

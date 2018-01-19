@@ -1,9 +1,12 @@
-import VifShapeOverlay from 'common/visualizations/views/map/vifOverlays/VifShapeOverlay';
 import { mapMockVif } from './../../../mapMockVif';
+
+import VifShapeOverlay from 'common/visualizations/views/map/vifOverlays/VifShapeOverlay';
+import DataProvider from 'common/visualizations/dataProviders/DataProvider';
 
 describe('VifShapeOverlay', () => {
   let vifShapeOverlay;
   let mockMap;
+  let fakeServer;
 
   beforeEach(() => {
     mockMap = {
@@ -12,66 +15,117 @@ describe('VifShapeOverlay', () => {
       setPaintProperty: sinon.spy()
     };
     vifShapeOverlay = new VifShapeOverlay(mockMap);
+    vifShapeOverlay._shapes = { setup: sinon.spy(), update: sinon.spy() };
+
+    // Clearing the dataProviders cache. Otherwise it is returning,
+    // old faked responses for same queries.
+    DataProvider._instanceCache = {};
+
+    fakeServer = sinon.createFakeServer();
+    fakeServer.autoRespond = true;
   });
 
-  describe('setup', () => {
-    it('should set up the Source and Layer', () => {
-      const vif = mapMockVif();
+  afterEach(() => {
+    fakeServer.restore();
+  });
 
-      vifShapeOverlay.setup(vif);
-
-      sinon.assert.calledWith(mockMap.addSource,
-        'polygonVectorDataSource',
-        sinon.match({
-          geojsonTile: true,
-          type: 'vector'
-        })
-      );
-      sinon.assert.calledWith(mockMap.addLayer,
-        sinon.match({
-          source: 'polygonVectorDataSource',
-          id: 'shape-line'
-        }),
-      );
+  describe('colorBoundariesBy not configured', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.colorBoundariesBy = null;
     });
-  });
 
-  describe('update', () => {
-    it('should call the set paint property function', () => {
-      const vif = mapMockVif({
-        series: [
-          {
-            color: { primary: 'red' }
-          }
-        ]
+    it('should render shapes without colorByCategories column configured', async() => {
+      const expectedRenderOptions = sinon.match({
+        colorByCategories: null,
+        dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}) where {{'point' column condition}}"),
+        colorBy: '__color_by_category__'
       });
 
-      vifShapeOverlay.update(vif);
-      sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-line', 'line-color', 'red');
-    });
-  });
+      await vifShapeOverlay.setup(vif);
+      sinon.assert.calledWith(vifShapeOverlay._shapes.setup, vif, expectedRenderOptions);
 
-  describe('getDataUrl', () => {
-    it('should return url with substitution params', () => {
-      const vif = mapMockVif({
-        series: [{
-          dataSource:{
-            dimension: { columnName: 'the_geom' },
-            zoom: 17
-          }
-        }]
+    });
+
+    it('should render shapes without colorByCategories column configured', async() => {
+      const expectedRenderOptions = sinon.match({
+        colorByCategories: null,
+        dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}) where {{'point' column condition}}"),
+        colorBy: '__color_by_category__'
       });
 
-      assert.equal(
-        vifShapeOverlay.getDataUrl(vif),
-        'https://example.com/resource/r6t9-rak2.geojson?$query=' +
-        'select simplify_preserve_topology(snap_to_grid(the_geom,{snap_precision}),{simplify_precision}) ' +
-        'where {{\'the_geom\' column condition}} ' +
-        'group by simplify_preserve_topology(snap_to_grid(the_geom, {snap_precision}),{simplify_precision}) ' +
-        'limit 200000 ' +
-        '#substituteSoqlParams_tileParams={z}|{x}|{y}'
-      );
+      await vifShapeOverlay.update(vif);
+      sinon.assert.calledWith(vifShapeOverlay._shapes.update, vif, expectedRenderOptions);
+
     });
   });
 
+  describe('colorBoundariesBy column configured', () => {
+    let vif;
+
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.colorBoundariesBy = 'countyType';
+      const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
+        'SELECT%20countyType%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
+        'GROUP%20BY%20countyType%20' +
+        'ORDER%20BY%20__count__%20desc%20' +
+        'LIMIT%205' +
+        '&$$read_from_nbe=true' +
+        '&$$version=2.1';
+
+      const stubResult = '[{"__color_by_category__": "Street"}, {"__color_by_category__": "County"}]';
+
+      fakeServer.respondWith(query,
+        [200, { 'Content-Type': 'application/json' }, stubResult]);
+    });
+
+    describe('setup', () => {
+      it('should setup with colorBoundariesBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: ['Street', 'County'],
+          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType,true,'__$$other$$__') as __color_by_category__"),
+          colorBy: '__color_by_category__'
+        });
+
+        await vifShapeOverlay.setup(vif);
+        sinon.assert.calledWith(vifShapeOverlay._shapes.setup, vif, expectedRenderOptions);
+
+      });
+    });
+
+    describe('update', () => {
+      it('should update with colorBoundariesBy renderOptions', async() => {
+        const expectedRenderOptions = sinon.match({
+          colorByCategories: ['Street', 'County'],
+          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType,true,'__$$other$$__') as __color_by_category__"),
+          colorBy: '__color_by_category__'
+        });
+
+        await vifShapeOverlay.update(vif);
+        sinon.assert.calledWith(vifShapeOverlay._shapes.update, vif, expectedRenderOptions);
+
+      });
+    });
+  });
+
+  describe('prepare', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+      vif.series[0].mapOptions.colorBoundariesBy = 'countyType';
+    });
+
+    it('should throw error', () => {
+      let errorResponse = 'Error preparing line map.';
+
+      fakeServer.respondWith([404, { 'Content-Type': 'application/json' }, errorResponse]);
+
+      vifShapeOverlay.setup(vif).then((result) => {
+      }, (error) => {
+        expect(error.soqlError).to.eq(errorResponse);
+      });
+    });
+  });
 });

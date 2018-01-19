@@ -37,7 +37,7 @@ const BASEMAP_SPECIFIC_LAYER_STYLES = Object.freeze({
     CLUSTER_COLOR: '#046c8f ',
     CLUSTER_BORDER_COLOR: '#003b4d ',
     CLUSTER_TEXT_COLOR: '#FFFFFF ',
-    PREPEND_HEAT_LAYER_AFTER: 'admin_country',
+    INSERT_FILL_LAYERS_BEFORE: 'admin_country',
     STACK_COLOR: '#FFFFFF ',
     STACK_BORDER_COLOR: '#046c8f ',
     STACK_TEXT_COLOR: '#656565 '
@@ -46,7 +46,7 @@ const BASEMAP_SPECIFIC_LAYER_STYLES = Object.freeze({
     CLUSTER_COLOR: '#1114de ',
     CLUSTER_BORDER_COLOR: '#FFFFFF ',
     CLUSTER_TEXT_COLOR: '#FFFFFF ',
-    PREPEND_HEAT_LAYER_AFTER: 'waterway-label',
+    INSERT_FILL_LAYERS_BEFORE: 'waterway-label',
     STACK_COLOR: '#FFFFFF ',
     STACK_BORDER_COLOR: '#1114de ',
     STACK_TEXT_COLOR: '#000e60 '
@@ -55,7 +55,7 @@ const BASEMAP_SPECIFIC_LAYER_STYLES = Object.freeze({
     CLUSTER_COLOR: '#c2869b ',
     CLUSTER_BORDER_COLOR: '#741f3d ',
     CLUSTER_TEXT_COLOR: '#000',
-    PREPEND_HEAT_LAYER_AFTER: 'rail_station_label',
+    INSERT_FILL_LAYERS_BEFORE: 'rail_station_label',
     STACK_COLOR: '#FFFFFF ',
     STACK_BORDER_COLOR: '#c2869b ',
     STACK_TEXT_COLOR: '#000e60 '
@@ -64,7 +64,7 @@ const BASEMAP_SPECIFIC_LAYER_STYLES = Object.freeze({
     CLUSTER_COLOR: '#d3f7ff ',
     CLUSTER_BORDER_COLOR: '#5bd0ea ',
     CLUSTER_TEXT_COLOR: '#000000 ',
-    PREPEND_HEAT_LAYER_AFTER: 'waterway-label',
+    INSERT_FILL_LAYERS_BEFORE: 'waterway-label',
     STACK_COLOR: '#FFFFFF ',
     STACK_BORDER_COLOR: '#5bd0ea ',
     STACK_TEXT_COLOR: '#000e60 '
@@ -73,7 +73,7 @@ const BASEMAP_SPECIFIC_LAYER_STYLES = Object.freeze({
     CLUSTER_COLOR: '#fdc9d3 ',
     CLUSTER_BORDER_COLOR: '#ffffff ',
     CLUSTER_TEXT_COLOR: '#000000 ',
-    PREPEND_HEAT_LAYER_AFTER: 'waterway-label',
+    INSERT_FILL_LAYERS_BEFORE: 'waterway-label',
     STACK_COLOR: '#d6d6d6 ',
     STACK_BORDER_COLOR: '#FFFFFF ',
     STACK_TEXT_COLOR: '#000e60 '

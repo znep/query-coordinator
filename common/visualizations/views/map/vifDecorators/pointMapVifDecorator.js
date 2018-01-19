@@ -74,18 +74,18 @@ export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
 //    And set the next available color in the pallete as default
 //    for the remaining categories.
 export function getPointColor(colorByColumnAlias, colorByCategories) {
-  const colorPallete = this.getColorPallete();
+  const colorPalette = this.getColorPalette();
 
   if (colorByCategories == null) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
-  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPallete[index]]);
+  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {
     property: colorByColumnAlias,
     type: 'categorical',
     stops,
-    default: colorPallete[stops.length]
+    default: colorPalette[stops.length]
   };
 }

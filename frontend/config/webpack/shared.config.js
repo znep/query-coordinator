@@ -26,7 +26,6 @@ module.exports = _.defaultsDeep({
     'datasetLandingPageMain': 'datasetLandingPage/main.js',
     'datasetLandingPageColocate': 'datasetLandingPage/colocate.js',
     'datasetManagementUI': 'datasetManagementUI/main.js',
-    'gridViewSocrataVisualizations': 'grid_view_socrata_visualizations/main.js',
     'internalAssetManager': 'internal_asset_manager/main.js',
     'opMeasure': 'opMeasure/main.js',
     'siteAppearance': 'siteAppearance/main.js',

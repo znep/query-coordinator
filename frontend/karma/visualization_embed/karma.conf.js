@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const karmaConfig = require('../helpers/karma_config');
 const webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'visualization-embed.config.js',
+  'shared-with-jquery.config.js',
   [ 'karma/visualization_embed' ]
 );
 

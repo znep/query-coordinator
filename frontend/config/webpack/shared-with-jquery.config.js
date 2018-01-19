@@ -1,7 +1,6 @@
 /* eslint-env node */
 
-// Note: this is not in the shared config only because it cannot have jQuery as an external, since embeds
-// will be used on external pages.
+// Note: this should be used for apps that need to have jQuery bundled rather than loaded externally.
 
 var _ = require('lodash');
 var path = require('path');
@@ -12,8 +11,9 @@ var identifier = path.basename(__filename, '.config.js');
 module.exports = _.defaultsDeep({
   context: path.resolve(webpackHelpers.frontendRoot, 'public/javascripts'),
   entry: webpackHelpers.withHotModuleEntries({
-    'loader': 'visualization_embed/loader.js',
-    'main': 'visualization_embed/main.js'
+    'gridViewSocrataVisualizations': 'grid_view_socrata_visualizations/main.js',
+    'visualizationEmbedLoader': 'visualization_embed/loader.js',
+    'visualizationEmbedMain': 'visualization_embed/main.js'
   }),
   output: webpackHelpers.getOutput(identifier),
   module: {

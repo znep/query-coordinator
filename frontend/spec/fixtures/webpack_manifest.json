@@ -225,8 +225,6 @@
   "shared/datasetLandingPageColocate.js.map": "shared/datasetLandingPageColocate.js.map",
   "shared/datasetManagementUI.js": "shared/datasetManagementUI.js",
   "shared/datasetManagementUI.js.map": "shared/datasetManagementUI.js.map",
-  "shared/gridViewSocrataVisualizations.js": "shared/gridViewSocrataVisualizations.js",
-  "shared/gridViewSocrataVisualizations.js.map": "shared/gridViewSocrataVisualizations.js.map",
   "shared/internalAssetManager.js": "shared/internalAssetManager.js",
   "shared/internalAssetManager.js.map": "shared/internalAssetManager.js.map",
   "shared/opMeasure.js": "shared/opMeasure.js",
@@ -241,8 +239,10 @@
   "shared/visualizationCanvas.js.map": "shared/visualizationCanvas.js.map",
   "shared/visualizationExamplePages.js": "shared/visualizationExamplePages.js",
   "shared/visualizationExamplePages.js.map": "shared/visualizationExamplePages.js.map",
-  "visualization-embed/loader.js": "visualization-embed/loader.js",
-  "visualization-embed/loader.js.map": "visualization-embed/loader.js.map",
-  "visualization-embed/main.js": "visualization-embed/main.js",
-  "visualization-embed/main.js.map": "visualization-embed/main.js.map"
+  "shared-with-jquery/gridViewSocrataVisualizations.js": "shared-with-jquery/gridViewSocrataVisualizations.js",
+  "shared-with-jquery/gridViewSocrataVisualizations.js.map": "shared-with-jquery/gridViewSocrataVisualizations.js.map",
+  "shared-with-jquery/loader.js": "shared-with-jquery/loader.js",
+  "shared-with-jquery/loader.js.map": "shared-with-jquery/loader.js.map",
+  "shared-with-jquery/main.js": "shared-with-jquery/main.js",
+  "shared-with-jquery/main.js.map": "shared-with-jquery/main.js.map"
 }

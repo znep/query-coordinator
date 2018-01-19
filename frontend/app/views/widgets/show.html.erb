@@ -209,7 +209,7 @@
     # we boostrap the Socrata Viz package).
     if enable_2017_grid_view_refresh_for_current_request?
   -%>
-    <%= include_webpack_bundle 'shared/gridViewSocrataVisualizations' %>
+    <%= include_webpack_bundle 'shared-with-jquery/gridViewSocrataVisualizations' %>
   <%- end -%>
   <%= include_webpack_bundle 'open-data/widgets-show.js' %>
 

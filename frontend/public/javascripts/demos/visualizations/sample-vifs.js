@@ -827,9 +827,6 @@ socrata.sampleVifsByChartType = {
     "description": "",
     "series": [
       {
-        "lineStyle": {
-          "points": "closed"
-        },
         "color": {
           "primary": "#71abd9",
           "highlight": "#cccccc"
@@ -858,6 +855,53 @@ socrata.sampleVifsByChartType = {
       }
     ],
     "title": "Categorical data"
+  },
+
+  timelineChartWithOpenDot: {
+    series: [
+      {
+        lineStyle: {
+          points: 'last-open',
+          pointRadius: 4
+        },
+        dataSource: {
+          datasetUid: '52my-2pak',
+          dimension: {
+            columnName: 'date',
+            aggregationFunction: null
+          },
+          domain: 'dataspace.demo.socrata.com',
+          measure: {
+            columnName: null,
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.soql',
+          filters: [
+            {
+              arguments: {
+                start: '2001-01-01T00:00:00.000',
+                end: '2003-06-01T00:00:00.000'
+              },
+              columnName: 'date',
+              function: 'timeRange'
+            }
+          ],
+          precision: 'MONTH'
+        },
+        label: 'Incidents',
+        type: 'timelineChart',
+        unit: {
+          one: 'incident',
+          other: 'incidents'
+        }
+      }
+    ],
+    createdAt: '2014-01-01T00:00:00',
+    format: {
+      type: 'visualization_interchange_format',
+      version: 2
+    },
+    title: 'Open final dot'
   },
 
   invalidChart: {}

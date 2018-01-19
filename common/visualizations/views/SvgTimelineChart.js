@@ -560,7 +560,7 @@ function SvgTimelineChart($element, vif, options) {
       let defaultRadius;
 
       // As opposed to only on hover, or even never.
-      const alwaysShowPoints = lineStyle.points === 'closed';
+      const alwaysShowPoints = lineStyle.points !== 'none';
       if (alwaysShowPoints) {
         fill = seriesData.measure.getColor();
       }
@@ -610,15 +610,35 @@ function SvgTimelineChart($element, vif, options) {
         d3YScale(d[seriesMeasureIndex]) :
         -100;
 
+      // Only one open circle supported today.
+      const openCircleIndex =
+        lineStyle.points === 'last-open' ? dimensionValues.length - 1 : null;
+
+      const openCircleLineWidth = radius / 2;
+
       seriesDotsSvg.
         attr('cx', getCx).
         attr('cy', getCy).
-        attr('data-default-fill', fill).
         attr('data-dimension-index', (d, index) => index).
         attr('data-dimension-value-html', (d, index) => dimensionValues[index]).
         attr('data-series-index', seriesIndex).
-        attr('fill', fill).
-        attr('r', radius);
+        // Circles have two forms. If the circle is closed, it's a simple
+        // radius and fill. If it's open, it's a radius, stroke, and fill.
+        attr('data-default-fill', (d, i) =>
+          (i === openCircleIndex) ? 'white' : fill
+        ).
+        attr('fill', (d, i) =>
+          (i === openCircleIndex) ? 'white' : fill
+        ).
+        attr('stroke-width', (d, i) =>
+          (i === openCircleIndex) ? openCircleLineWidth : 0
+        ).
+        attr('stroke', fill). // No effect if stroke-width is 0.
+        attr('r', (d, i) =>
+          // Divide openCircleIndex by 2 because half the stroke lies outside
+          // the radius, half lies inside.
+          (i === openCircleIndex) ? radius - openCircleLineWidth / 2 : radius
+        );
     }
 
     function handleZoom() {
@@ -1367,7 +1387,7 @@ function SvgTimelineChart($element, vif, options) {
   function hideCircleHighlight() {
     // NOTE: The below function depends on this being set by d3, so it is not
     // possible to use the () => {} syntax here.
-    d3.selectAll('circle').each(function() {
+    d3.select($chartElement[0]).selectAll('circle').each(function() {
       const selection = d3.select(this);
       selection.attr('fill', selection.attr('data-default-fill'));
     });

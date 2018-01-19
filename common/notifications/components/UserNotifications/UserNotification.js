@@ -6,29 +6,25 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
-
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import { FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS } from 'common/notifications/constants';
+
 import styles from './user-notification.module.scss';
 
-class UserNotification extends React.Component {
-  constructor(props) {
-    super(props);
+const scope = 'shared_site_chrome_notifications';
 
-    this.state = {
-      fadeAwayTimeoutId: null
-    };
-  }
+class UserNotification extends React.Component {
+  state = { fadeAwayTimeoutId: null };
 
   componentWillMount() {
     const { isTransientNotification } = this.props;
 
     if (isTransientNotification) {
-      const { id, moveTransientNotificationIntoPanel } = this.props;
+      const { notification, moveTransientNotificationIntoPanel } = this.props;
       let { fadeAwayTimeoutId } = this.state;
 
       fadeAwayTimeoutId = setTimeout(() => {
-        moveTransientNotificationIntoPanel(id);
+        moveTransientNotificationIntoPanel(notification.id);
       }, FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS);
 
       this.setState({ fadeAwayTimeoutId });
@@ -47,13 +43,10 @@ class UserNotification extends React.Component {
   }
 
   renderAlertLabel() {
-    const {
-      notification,
-      I18n
-    } = this.props;
+    const { I18n, notification } = this.props;
 
-    if (_.isEqual(notification.type, 'alert')) {
-      return <em>{I18n.t('shared_site_chrome_notifications.filter_alert_notifications_tab_text')}</em>;
+    if (notification.type === 'alert') {
+      return <em>{I18n.t('filter_alert_notifications_tab_text', { scope })}</em>;
     }
   }
 
@@ -71,21 +64,16 @@ class UserNotification extends React.Component {
       onToggleReadUserNotification,
       I18n
     } = this.props;
-    let linkTitle;
-
-    if (notification.read) {
-      linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_unread');
-    } else {
-      linkTitle = I18n.t('shared_site_chrome_notifications.mark_as_read');
-    }
+    const { id, read } = notification;
+    const linkTitleI18nKey = read ? 'mark_as_read' : 'mark_as_unread';
 
     return (
       <span
         styleName="link-icon"
         className="toggle-notification-read-state"
         role="button"
-        title={linkTitle}
-        onClick={() => onToggleReadUserNotification(notification.id, !notification.read)}>
+        title={I18n.t(linkTitleI18nKey, { scope })}
+        onClick={() => onToggleReadUserNotification(id, !read)}>
         <SocrataIcon name="checkmark3" />
       </span>
     );
@@ -103,7 +91,7 @@ class UserNotification extends React.Component {
         styleName="link-icon"
         className="user-notification-clear-icon"
         role="button"
-        title={I18n.t('shared_site_chrome_notifications.clear_notification_text')}
+        title={I18n.t('clear_notification_text', { scope })}
         onClick={() => onClearUserNotification(notification.id)}>
         <SocrataIcon name="close-2" />
       </span>
@@ -111,13 +99,13 @@ class UserNotification extends React.Component {
   }
 
   renderUserLink() {
-    const { notification } = this.props;
+    const { userName, userProfileLink } = this.props.notification;
 
-    if (_.isNull(notification.userProfileLink)) {
-      return <span styleName="user-name">{notification.userName}</span>;
+    if (_.isNull(userProfileLink)) {
+      return <span styleName="user-name">{userName}</span>;
     }
 
-    return <a href={notification.userProfileLink} target="_blank">{notification.userName}</a>;
+    return <a href={userProfileLink} target="_blank">{userName}</a>;
   }
 
   renderNotificationTitle() {
@@ -125,13 +113,19 @@ class UserNotification extends React.Component {
       notification,
       I18n
     } = this.props;
-    let alertOrNotificationTitle;
+    const {
+      activityUniqueKey,
+      alertName,
+      link,
+      messageBody,
+      type
+    } = notification;
+    let alertOrNotificationTitle = alertName;
 
-    if (notification.type === 'alert') {
-      alertOrNotificationTitle = notification.alertName;
-    } else {
-      alertOrNotificationTitle = I18n.t(notification.activityUniqueKey, { scope: 'shared_site_chrome_notifications' });
+    if (type !== 'alert') {
+      alertOrNotificationTitle = I18n.t(activityUniqueKey, { scope });
     }
+
     const notificationTitle = (
       <div>
         <strong className="user-notification-title">
@@ -139,15 +133,15 @@ class UserNotification extends React.Component {
           {alertOrNotificationTitle}
         </strong>
 
-        <span className="notification-body">{notification.messageBody}</span>
+        <span className="notification-body">{messageBody}</span>
       </div>
     );
 
-    if (_.isNull(notification.link)) {
+    if (_.isNull(link)) {
       return <span styleName="title">{notificationTitle}</span>;
     }
 
-    return <a styleName="title" href={notification.link} target="_blank">{notificationTitle}</a>;
+    return <a styleName="title" href={link} target="_blank">{notificationTitle}</a>;
   }
 
   render() {
@@ -156,28 +150,34 @@ class UserNotification extends React.Component {
       isTransientNotification,
       I18n
     } = this.props;
-    const isUnread = !notification.read;
-    let notificationByLabel;
-    if (notification.type === 'alert') {
-      notificationByLabel = null;
-    } else {
-      notificationByLabel = <span>{I18n.t('shared_site_chrome_notifications.by_label')}</span>;
+    const {
+      createdAt,
+      id,
+      read,
+      type
+    } = notification;
+    const isUnread = !read;
+    let notificationByLabel = null;
+
+    if (type !== 'alert') {
+      notificationByLabel = <span>{I18n.t('by_label', { scope: 'shared_site_chrome_notifications' })}</span>;
     }
+
     return (
       <li
-        styleName={classNames('notification-item', notification.type, {
+        styleName={classNames('notification-item', type, {
           'unread': isUnread,
           'transient': isTransientNotification
         })}
         className={classNames('user-notification-item', { 'unread': isUnread })}
-        data-notification-id={notification.id}>
+        data-notification-id={id}>
         {this.renderSocrataLogo()}
 
         <div styleName="notification-wrapper" className="clearfix">
           <div styleName="notification-info">
             {this.renderNotificationTitle()}
             <p styleName="timestamp" className="notification-timestamp">
-              <span>{moment.utc(notification.createdAt).locale(I18n.locale).fromNow()}</span>
+              <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
               {notificationByLabel}
               {this.renderUserLink()}
             </p>
@@ -194,6 +194,7 @@ class UserNotification extends React.Component {
 }
 
 UserNotification.propTypes = {
+  isTransientNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({
     activityType: PropTypes.string,
     activityUniqueKey: PropTypes.string.isRequired,
@@ -207,7 +208,7 @@ UserNotification.propTypes = {
     userName: PropTypes.string.isRequired,
     userProfileLink: PropTypes.string
   }).isRequired,
-  isTransientNotification: PropTypes.bool.isRequired,
+  moveTransientNotificationIntoPanel: PropTypes.func,
   onClearUserNotification: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired
 };

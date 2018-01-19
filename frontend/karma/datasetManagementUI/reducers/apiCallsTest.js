@@ -1,10 +1,10 @@
 import { assert } from 'chai';
-import apiCallsReducer from 'reduxStuff/reducers/apiCalls';
+import apiCallsReducer from 'datasetManagementUI/reduxStuff/reducers/apiCalls';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed
-} from 'reduxStuff/actions/apiCalls';
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 

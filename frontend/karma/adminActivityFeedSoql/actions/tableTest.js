@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as tableActions from 'actions/table';
+import * as tableActions from 'adminActivityFeedSoql/actions/table';
 import mockData from '../data/mockFetchTable';
 
 const initialState = {

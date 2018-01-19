@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import SourceBreadcrumbs from 'components/SourceBreadcrumbs/SourceBreadcrumbs';
+import SourceBreadcrumbs from 'datasetManagementUI/components/SourceBreadcrumbs/SourceBreadcrumbs';
 
 describe('components/SourceBreadcrumbs', () => {
   const defaultProps = {

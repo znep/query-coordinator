@@ -5,7 +5,9 @@ var webpack = require('webpack');
 var _ = require('lodash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 
-var frontendRoot = path.resolve(__dirname, '..', '..');
+var platformUIRoot = path.resolve(__dirname, '..', '..', '..');
+var frontendRoot = path.resolve(platformUIRoot, 'frontend');
+var commonRoot = path.resolve(platformUIRoot, 'common');
 var packageJson = require(path.resolve(frontendRoot, 'package.json'));
 const svgFontPath = path.resolve(frontendRoot, '../common/resources/fonts/svg');
 
@@ -36,7 +38,7 @@ var jsLoaderBaseConfig = {
   include: [
     path.resolve(frontendRoot, 'public/javascripts'),
     path.resolve(frontendRoot, 'karma'),
-    path.resolve(frontendRoot, '../common')
+    commonRoot
   ]
 };
 
@@ -74,19 +76,25 @@ function getManifestPlugin(identifier) {
 }
 
 function getEslintConfig(configFile) {
+  const configFilePath = configFile ? path.resolve(frontendRoot, configFile) :
+    path.resolve(frontendRoot, '.eslintrc.json');
   return {
-    configFile: path.resolve(frontendRoot, configFile),
+    configFile: configFilePath,
     formatter: require('eslint/lib/formatters/compact'),
     failOnError: false
   };
 }
 
-function getSvgAndFontLoaders() {
+function getCssUrlResourceLoaders() {
   return [
     {
       test: /\.svg$/,
       loader: require.resolve('raw-loader'),
       include: svgFontPath
+    },
+    {
+      test: /\.png$/,
+      loader: 'url-loader?limit=100000'
     },
     {
       test: /\.(eot|woff|svg|woff2|ttf)$/,
@@ -124,12 +132,8 @@ function getStandardLoaders(extraLoaders, options) {
     babelRewirePlugin: false // Only has effect outside of production.
   }, options);
 
-  if (!isProduction && options.babelRewirePlugin) {
-    babelPlugins.push('babel-plugin-rewire');
-  }
-
   loaders.push(getBabelLoader(babelPlugins));
-  loaders = loaders.concat(getSvgAndFontLoaders());
+  loaders = loaders.concat(getCssUrlResourceLoaders());
 
   // Prevent lodash from putting itself on window.
   // See: https://github.com/lodash/lodash/issues/2671
@@ -169,17 +173,18 @@ function getStandardLoaders(extraLoaders, options) {
       loaders.push(options.substituteStyleLoaders);
     }
   } else {
-    loaders.push({
-      test: /^((?!\.global).)*(scss|css)$/, // All *.?css files but _not_ the .global.scss file
-      loaders: [
-        'style-loader?sourceMap',
-        // Note! importLoaders is either 1 or 2 in our various webpackconigs.
-        // When consolidating configs, we probably want 2.. Talk to Brandon
-        'css-loader?modules&importLoaders=2&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-        'postcss-loader', // See postcss: key in platform-ui/frontend/config/webpack/base.js
-        'sass-loader'
-      ]
-    });
+    loaders.push(
+      {
+        // Matches stylesheets without the `.module.` affix - goes through normal style loaders.
+        test: /^((?!\.module\.).)*(s?css)$/,
+        loader: 'style?sourceMap!css!postcss!sass'
+      },
+      {
+        // Matches stylesheets with the `.module.` affix - goes through CSS Module style loaders.
+        test: /.*\.module\.s?css$/,
+        loader: 'style?sourceMap!css?modules&importLoaders=2&localIdentName=[path]_[name]_[local]_[hash:base64:5]!postcss!sass'
+      }
+    );
   }
 
   return loaders;
@@ -194,10 +199,7 @@ function getStandardLoaders(extraLoaders, options) {
 // };
 function getStandardResolve(extraRoots) {
   extraRoots = extraRoots || [];
-  var roots = [
-    path.resolve(frontendRoot, '..'),
-    path.resolve(frontendRoot, 'node_modules/@socrata')
-  ];
+  var roots = [platformUIRoot, path.resolve(frontendRoot, 'node_modules/@socrata')];
 
   _.each(extraRoots, function(extraRoot) {
     roots.push(path.resolve(frontendRoot, extraRoot));
@@ -225,12 +227,14 @@ module.exports = {
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,
   getStandardLoaders: getStandardLoaders,
-  getSvgAndFontLoaders: getSvgAndFontLoaders,
+  getCssUrlResourceLoaders: getCssUrlResourceLoaders,
   getStandardResolve: getStandardResolve,
   isProduction: isProduction,
   packageJson: packageJson,
   plugins: plugins,
   resolvePath: resolvePath,
   svgFontPath: svgFontPath,
-  frontendRoot: frontendRoot
+  platformUIRoot: platformUIRoot,
+  frontendRoot: frontendRoot,
+  commonRoot: commonRoot
 };

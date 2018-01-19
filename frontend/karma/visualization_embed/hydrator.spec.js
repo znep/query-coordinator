@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import $ from 'jquery';
 import mockVif from './mockVif';
-import { __RewireAPI__ as HydratorAPI, hydrateEmbed } from 'hydrator';
+import { __RewireAPI__ as HydratorAPI, hydrateEmbed } from 'visualization_embed/hydrator';
 import _ from 'lodash';
 import sinon from 'sinon';
 

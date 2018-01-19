@@ -7,9 +7,9 @@ import {
   updateColumnType,
   outputColumnsWithChangedType,
   dropColumn
-} from 'reduxStuff/actions/showOutputSchema';
+} from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
 import mockAPI from '../testHelpers/mockAPI';
-import rootReducer from 'reduxStuff/reducers/rootReducer';
+import rootReducer from 'datasetManagementUI/reduxStuff/reducers/rootReducer';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 import state from '../data/initialState';

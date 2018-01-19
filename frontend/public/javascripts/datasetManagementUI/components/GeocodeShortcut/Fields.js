@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Dropdown } from 'common/components';
 import styles from './GeocodeShortcut.module.scss';
-import TextInput from 'components/TextInput/TextInput';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;
 const ENTER_CONSTANT = 'enter-constant';

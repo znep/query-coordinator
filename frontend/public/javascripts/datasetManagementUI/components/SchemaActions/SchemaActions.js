@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as Links from 'links/links';
-import { RecentActionsTimestamp } from 'components/RecentActionItems/RecentActionItems';
+import * as Links from 'datasetManagementUI/links/links';
+import { RecentActionsTimestamp } from 'datasetManagementUI/components/RecentActionItems/RecentActionItems';
 import { Link } from 'react-router';
 import styles from './SchemaActions.module.scss';
 

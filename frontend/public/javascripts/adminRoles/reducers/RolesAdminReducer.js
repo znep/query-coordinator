@@ -4,7 +4,7 @@ import get from 'lodash/fp/get';
 import isEmpty from 'lodash/fp/isEmpty';
 import * as appStates from '../appStates';
 import Immutable from 'immutable';
-import * as selectors from '../selectors';
+import * as selectors from '../adminRolesSelectors';
 
 export default () => {
   function toggleExpanded(state, { payload: { rightCategory } }) {

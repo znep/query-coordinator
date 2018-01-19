@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ShowSource, mapStateToProps } from 'pages/ShowSource/ShowSource';
+import { ShowSource, mapStateToProps } from 'datasetManagementUI/pages/ShowSource/ShowSource';
 import _ from 'lodash';
 import dotProp from 'dot-prop-immutable';
 import state from '../data/initialState';

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { CSSTransitionGroup } from 'react-transition-group';
-import ProgressBar from 'components/ProgressBar/ProgressBar';
+import ProgressBar from 'datasetManagementUI/components/ProgressBar/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 
 class Notification extends Component {

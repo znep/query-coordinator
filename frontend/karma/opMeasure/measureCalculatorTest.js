@@ -1,9 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { assert } from 'chai';
-import { CalculationTypeNames } from 'lib/constants';
-import DateRange from 'lib/dateRange';
-import { calculateMeasure, calculateRateMeasure, isColumnUsableWithMeasureArgument } from 'measureCalculator';
+import { CalculationTypeNames } from 'opMeasure/lib/constants';
+import DateRange from 'opMeasure/lib/dateRange';
+import {
+  calculateMeasure,
+  calculateRateMeasure,
+  isColumnUsableWithMeasureArgument
+} from 'opMeasure/measureCalculator';
 
 describe('measureCalculator', () => {
   const sampleDateRange = new DateRange(moment('2018-01-10T00:21:27.375Z'), 'day');

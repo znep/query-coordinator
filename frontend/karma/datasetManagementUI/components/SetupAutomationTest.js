@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
 import _ from 'lodash';
-import SetupAutomation from 'components/SetupAutomation/SetupAutomation';
+import SetupAutomation from 'datasetManagementUI/components/SetupAutomation/SetupAutomation';
 
 describe('components/SetupAutomation', () => {
   const defaultProps = {

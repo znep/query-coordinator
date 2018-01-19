@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { Manager } from 'components/Manager';
+import { Manager } from 'catalogLandingPage/components/Manager';
 import _ from 'lodash';
 
 describe('components/Manager', () => {

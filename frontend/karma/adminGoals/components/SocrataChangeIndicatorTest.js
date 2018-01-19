@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import SocrataChangeIndicator from 'components/SocrataChangeIndicator';
+import SocrataChangeIndicator from 'adminGoals/components/SocrataChangeIndicator';
 import translations from 'mockTranslations';
 
 describe('components/SocrataChangeIndicator', function() {

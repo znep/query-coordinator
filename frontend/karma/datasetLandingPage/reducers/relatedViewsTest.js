@@ -1,14 +1,14 @@
 import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
-import mockRelatedView from 'data/mockRelatedView';
-import reducer from 'reducers/relatedViews';
+import mockRelatedView from '../data/mockRelatedView';
+import reducer from 'datasetLandingPage/reducers/relatedViews';
 import {
   requestRelatedViews,
   receiveRelatedViews,
   handleRelatedViewsError,
   dismissRelatedViewsError,
   toggleRelatedViews
-} from 'actions/relatedViews';
+} from 'datasetLandingPage/actions/relatedViews';
 
 describe('reducers/relatedViews', function() {
   var state;

@@ -1,5 +1,3 @@
-import 'script!jquery';
-
 window.serverConfig = require('./data/mock_server_config').default;
 window.socrata = require('./data/mock_initial_state').default;
 window.sessionData = require('./data/mock_mixpanel_config').default;

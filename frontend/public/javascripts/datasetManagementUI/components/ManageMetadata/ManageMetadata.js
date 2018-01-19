@@ -6,9 +6,10 @@ import {
   COL_FORM_NAME,
   validateFieldsets,
   validateColumns
-} from 'containers/ManageMetadataContainer';
-import ManageMetadataSidebar from 'components/ManageMetadataSidebar/ManageMetadataSidebar';
-import SubmitButton from 'containers/SubmitButtonContainer';
+} from 'datasetManagementUI/containers/ManageMetadataContainer';
+import ManageMetadataSidebar from
+  'datasetManagementUI/components/ManageMetadataSidebar/ManageMetadataSidebar';
+import SubmitButton from 'datasetManagementUI/containers/SubmitButtonContainer';
 import styles from './ManageMetadata.module.scss';
 
 export const SAVED = 'SAVED';

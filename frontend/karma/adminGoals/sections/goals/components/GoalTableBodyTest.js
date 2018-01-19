@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import GoalTableBody from 'sections/goals/components/GoalTable/GoalTableBody';
+import GoalTableBody from 'adminGoals/sections/goals/components/GoalTable/GoalTableBody';
 import moment from 'moment';
 import goals from '../../../data/goalTableActions/propGoals';
 

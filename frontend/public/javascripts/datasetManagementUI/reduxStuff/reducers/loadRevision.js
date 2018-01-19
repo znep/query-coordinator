@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { LOAD_REVISION_SUCCESS } from 'reduxStuff/actions/loadRevision';
+import { LOAD_REVISION_SUCCESS } from 'datasetManagementUI/reduxStuff/actions/loadRevision';
 
 const loadRevision = (state, action) => {
   switch (action.type) {

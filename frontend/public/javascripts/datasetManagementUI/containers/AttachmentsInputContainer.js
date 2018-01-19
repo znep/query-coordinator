@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
-import { uploadAttachment } from 'reduxStuff/actions/uploadFile';
-import { getRevision } from 'containers/ManageMetadataContainer.js';
+import AttachmentsInput from 'datasetManagementUI/components/AttachmentsInput/AttachmentsInput';
+import { uploadAttachment } from 'datasetManagementUI/reduxStuff/actions/uploadFile';
+import { getRevision } from 'datasetManagementUI/containers/ManageMetadataContainer.js';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const revisionSeq = Number(params.revisionSeq);

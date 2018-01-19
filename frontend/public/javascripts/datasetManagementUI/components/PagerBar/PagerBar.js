@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
-import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
+import { PAGE_SIZE } from 'datasetManagementUI/reduxStuff/actions/loadData';
 import { commaify } from '../../../common/formatNumber';
 import Pager from '../../../common/components/Pager';
 import styles from './PagerBar.module.scss';

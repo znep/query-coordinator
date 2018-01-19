@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styles from './ParseOptions.module.scss';
-import Fieldset from 'components/Fieldset/Fieldset';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
 import GridPreview from './GridPreview';
 import ParseOption from './ParseOption';
 import ParseFlag from './ParseFlag';

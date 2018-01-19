@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import CheckBox from 'components/CheckBox/CheckBox';
+import CheckBox from 'datasetManagementUI/components/CheckBox/CheckBox';
 
 const props = {
   name: 'flag',

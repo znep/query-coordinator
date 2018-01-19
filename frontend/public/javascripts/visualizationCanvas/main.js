@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import I18n from 'common/i18n';
-import confirmUnload from 'lib/confirmUnload';
+import confirmUnload from 'visualizationCanvas/lib/confirmUnload';
 import { AppContainer } from 'react-hot-loader';
 
 import { Analytics } from 'common/analytics';

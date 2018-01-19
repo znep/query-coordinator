@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import CheckBox from 'components/CheckBox/CheckBox';
+import CheckBox from 'datasetManagementUI/components/CheckBox/CheckBox';
 
 const SubI18n = I18n.parse_options;
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { commaify } from '../../../common/formatNumber';
-import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './ReadyToImport.module.scss';
 

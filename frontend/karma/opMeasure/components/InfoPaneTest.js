@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
-import InfoPane, { mapStateToProps } from 'components/InfoPane';
+import InfoPane, { mapStateToProps } from 'opMeasure/components/InfoPane';
 
 describe('InfoPane', () => {
   it('renders', () => {

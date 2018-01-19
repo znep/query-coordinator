@@ -1,10 +1,10 @@
 import { assert } from 'chai';
-import { parseDate } from 'lib/parseDate';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import dotProp from 'dot-prop-immutable';
 import {
   mapStateToProps,
   findMatchingApiCall
-} from 'containers/ApiCallButtonContainer';
+} from 'datasetManagementUI/containers/ApiCallButtonContainer';
 
 describe('containers/ApiCallButtonContainer', () => {
   const SCALED_TEST_TIME_LIMIT = Infinity

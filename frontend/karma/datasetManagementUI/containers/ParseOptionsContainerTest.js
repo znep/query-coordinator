@@ -3,10 +3,10 @@ import React from 'react';
 import { assert } from 'chai';
 import { mount } from 'enzyme';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reduxStuff/reducers/rootReducer';
+import reducer from 'datasetManagementUI/reduxStuff/reducers/rootReducer';
 import initialState from '../data/initialState';
 import thunk from 'redux-thunk';
-import ParseOptionsContainer from 'containers/ParseOptionsContainer';
+import ParseOptionsContainer from 'datasetManagementUI/containers/ParseOptionsContainer';
 
 describe('containers/ParseOptionsContainer', () => {
   const testStore = createStore(reducer, initialState, applyMiddleware(thunk));

@@ -66,7 +66,6 @@ namespace :test do
       'visualizationCanvas' => 'update_visualization_canvas_translations',
 
       'approvals' => nil,
-      'exampleTestSuite' => nil,
       'internal_asset_manager' => nil,
       'oldUx' => nil,
       'userProfile' => nil,

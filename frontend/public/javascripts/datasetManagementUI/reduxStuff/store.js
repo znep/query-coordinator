@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createStore, compose } from 'redux';
-import rootReducer from 'reduxStuff/reducers/rootReducer';
-import middleware from 'reduxStuff/middleware';
+import rootReducer from 'datasetManagementUI/reduxStuff/reducers/rootReducer';
+import middleware from 'datasetManagementUI/reduxStuff/middleware';
 
 export function getInitialState(view, customMetadataFieldsets) {
   const initialView = {

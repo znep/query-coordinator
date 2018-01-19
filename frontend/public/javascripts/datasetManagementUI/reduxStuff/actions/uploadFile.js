@@ -1,11 +1,15 @@
 import uuid from 'uuid';
-import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 import {
   addNotification,
   removeNotificationAfterTimeout,
   updateNotification
-} from 'reduxStuff/actions/notifications';
-import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
+} from 'datasetManagementUI/reduxStuff/actions/notifications';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';

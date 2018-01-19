@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import React from 'react';
-import RowError from 'components/RowError/RowError';
+import RowError from 'datasetManagementUI/components/RowError/RowError';
 
 describe('components/RowError', () => {
   // react spits out DOM validation warnings if you don't do this

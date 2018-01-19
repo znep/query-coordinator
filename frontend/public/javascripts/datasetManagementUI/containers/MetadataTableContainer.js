@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter, browserHistory } from 'react-router';
-import MetadataTable from 'components/MetadataTable/MetadataTable';
-import { associateChildToParent } from 'reduxStuff/actions/associateCollections';
-import { UPDATE_REVISION } from 'reduxStuff/actions/apiCalls';
+import MetadataTable from 'datasetManagementUI/components/MetadataTable/MetadataTable';
+import { associateChildToParent } from 'datasetManagementUI/reduxStuff/actions/associateCollections';
+import { UPDATE_REVISION } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import { FeatureFlags } from 'common/feature_flags';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 
 export const getRevision = (rSeq, revisions) =>
   _.chain(revisions)

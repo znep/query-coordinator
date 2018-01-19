@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 import { shallow } from 'enzyme';
-import { mapStateToProps } from 'components/BlobDownload';
-import mockServerConfig from 'data/mockServerConfig';
+import { mapStateToProps } from 'datasetLandingPage/components/BlobDownload';
+import mockServerConfig from '../data/mockServerConfig';
 
 describe('BlobDownload mapStateToProps', () => {
   const defaultState = {

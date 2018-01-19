@@ -2,13 +2,13 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 
 import mixpanel from 'common/mixpanel';
-import reducer, { __RewireAPI__ as reducerAPI} from 'reducer';
-import * as actions from 'actions';
-import { ModeStates, SaveStates } from 'lib/constants';
-import mockView from 'data/mockView';
-import mockParentView from 'data/mockParentView';
-import mockVif from 'data/mockVif';
-import mockFilter from 'data/mockFilter';
+import reducer, { __RewireAPI__ as reducerAPI} from 'visualizationCanvas/reducer';
+import * as actions from 'visualizationCanvas/actions';
+import { ModeStates, SaveStates } from 'visualizationCanvas/lib/constants';
+import mockView from './data/mockView';
+import mockParentView from './data/mockParentView';
+import mockVif from './data/mockVif';
+import mockFilter from './data/mockFilter';
 import utils from 'common/js_utils';
 
 const INITIAL_STATES = {

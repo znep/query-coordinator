@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import Immutable from 'immutable';
 
-import translator from 'helpers/translator';
+import translator from 'adminGoals/helpers/translator';
 import translationsObj from 'mockTranslations';
 
 const translations = Immutable.fromJS(translationsObj);

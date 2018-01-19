@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import React from 'react';
 import _ from 'lodash';
 import { shallow } from 'enzyme';
-import PublishButton from 'components/PublishButton/PublishButton';
+import PublishButton from 'datasetManagementUI/components/PublishButton/PublishButton';
 
 const defaultProps = {
   dataSatisfied: false,

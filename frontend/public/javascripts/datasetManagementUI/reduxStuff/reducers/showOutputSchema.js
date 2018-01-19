@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { CREATE_NEW_OUTPUT_SCHEMA_SUCCESS } from 'reduxStuff/actions/showOutputSchema';
+import { CREATE_NEW_OUTPUT_SCHEMA_SUCCESS } from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
 
 const showOutputSchema = (state, action) => {
   switch (action.type) {

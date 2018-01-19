@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { assert } from 'chai';
-import GoalTableRow from 'sections/goals/components/GoalTable/GoalTableRow';
+import GoalTableRow from 'adminGoals/sections/goals/components/GoalTable/GoalTableRow';
 import propGoals, { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
 
 import translations from 'mockTranslations';

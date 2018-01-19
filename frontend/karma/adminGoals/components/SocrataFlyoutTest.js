@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import Flyout from 'components/SocrataFlyout/SocrataFlyout';
+import Flyout from 'adminGoals/components/SocrataFlyout/SocrataFlyout';
 
 describe('components/SocrataFlyout', function() {
   beforeEach(function() {

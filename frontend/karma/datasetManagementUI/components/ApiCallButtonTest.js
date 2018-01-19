@@ -2,12 +2,12 @@ import { assert } from 'chai';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import ApiCallButton from 'components/ApiCallButton/ApiCallButton';
+import ApiCallButton from 'datasetManagementUI/components/ApiCallButton/ApiCallButton';
 import {
   STATUS_CALL_IN_PROGRESS,
   STATUS_CALL_SUCCEEDED,
   STATUS_CALL_FAILED
-} from 'lib/apiCallStatus';
+} from 'datasetManagementUI/lib/apiCallStatus';
 
 describe('components/ApiCallButton', () => {
   let props;

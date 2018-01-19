@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 import CommonRowDetails from '../../common/components/RowDetails';
 
 export function mapStateToProps({ entities }, { revisionSeq, fourfour }) {

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
-import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
-import ColumnHeader from 'components/ColumnHeader/ColumnHeader';
+import { COLUMN_OPERATIONS } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { STATUS_CALL_IN_PROGRESS } from 'datasetManagementUI/lib/apiCallStatus';
+import ColumnHeader from 'datasetManagementUI/components/ColumnHeader/ColumnHeader';
 
 function activeApiCallInvolvingThis(apiCalls, column) {
   const apiCallsByColumnId = _.chain(apiCalls)

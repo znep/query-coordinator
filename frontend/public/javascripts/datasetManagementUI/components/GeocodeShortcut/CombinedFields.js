@@ -6,7 +6,7 @@ import {
   columnMatchingAst,
   fieldPropTypes
 } from './Fields';
-import { traverse, stripToTextAst } from 'lib/ast';
+import { traverse, stripToTextAst } from 'datasetManagementUI/lib/ast';
 
 const CombinedFields = ({ outputColumns, setMapping, mappings }) => (
   <div>

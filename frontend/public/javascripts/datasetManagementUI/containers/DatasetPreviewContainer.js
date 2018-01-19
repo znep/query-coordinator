@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { columnsForOutputSchema } from 'selectors';
-import DatasetPreview from 'components/DatasetPreview/DatasetPreview';
+import { columnsForOutputSchema } from 'datasetManagementUI/selectors';
+import DatasetPreview from 'datasetManagementUI/components/DatasetPreview/DatasetPreview';
 
 function mapStateToProps({ entities }, { view, outputSchema }) {
   const [defaultSort] = columnsForOutputSchema(entities, outputSchema.id);

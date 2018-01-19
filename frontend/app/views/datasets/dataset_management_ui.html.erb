@@ -31,5 +31,6 @@
       customMetadataFieldsets: <%== get_dataset_management_ui_custom_metadata.to_json %>
     };
   </script>
-  <%= include_webpack_bundle 'dataset-management-ui/main.js' %>
+
+  <%= include_webpack_bundle 'shared/datasetManagementUI' %>
 <% end %>

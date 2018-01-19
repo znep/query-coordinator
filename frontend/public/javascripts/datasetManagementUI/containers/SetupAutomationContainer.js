@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
-import SetupAutomation from 'components/SetupAutomation/SetupAutomation';
-import { createImportConfig } from 'reduxStuff/actions/createImportConfig';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import { createImportConfig } from 'datasetManagementUI/reduxStuff/actions/createImportConfig';
+import SetupAutomation from 'datasetManagementUI/components/SetupAutomation/SetupAutomation';
 
 function mapStateToProps(state, props) {
   return props;

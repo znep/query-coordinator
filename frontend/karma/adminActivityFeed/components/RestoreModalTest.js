@@ -3,16 +3,16 @@ import { assert } from 'chai';
 import { Simulate } from 'react-dom/test-utils';
 
 const MockHttpClient = require('../MockHttpClient').default;
-const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
+const ActivityFeedApi = require('adminActivityFeed/frontendApi/ActivityFeedApi').default;
 
 import testStore from '../testStore';
 import mockActivities from '../mockActivities';
-import RestoreModal from 'components/RestoreModal';
+import RestoreModal from 'adminActivityFeed/components/RestoreModal';
 import mockTranslations from '../mockTranslations';
 
 import {
   DISMISS_RESTORE_MODAL
-} from 'actionTypes';
+} from 'adminActivityFeed/actionTypes';
 
 describe('RestoreModal', () => {
 

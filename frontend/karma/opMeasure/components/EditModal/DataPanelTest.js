@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
 
 import AssetSelector from 'common/components/AssetSelector';
-import { DataPanel, mapStateToProps } from 'components/EditModal/DataPanel';
+import { DataPanel, mapStateToProps } from 'opMeasure/components/EditModal/DataPanel';
 
 describe('DataPanel', () => {
   describe('mapStateToProps', () => {

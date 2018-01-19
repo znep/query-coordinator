@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router';
-import rootRoute from 'routes';
+import rootRoute from 'datasetManagementUI/routes';
 import { Provider } from 'react-redux';
 // The reason this is a class-component rather than a functional one as well as
 // the if (!this.routes) hack below, is because of HMR jankiness. See:

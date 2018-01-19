@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ShowRevision } from 'pages/ShowRevision/ShowRevision';
+import { ShowRevision } from 'datasetManagementUI/pages/ShowRevision/ShowRevision';
 import { ShowRevisionProps } from '../data/defaultProps';
 
 describe('ShowRevision page', () => {

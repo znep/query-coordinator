@@ -1,10 +1,10 @@
-var webpackCommon = require('../../config/webpack/common');
+var webpackHelpers = require('../../config/webpack/helpers');
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'base',
   [ 'public/javascripts/common', 'public/javascripts/src', 'karma/oldUx' ]
 );
-webpackConfig.module.loaders = [ webpackCommon.getBabelLoader() ];
+webpackConfig.module.loaders = [ webpackHelpers.getBabelLoader() ];
 
 module.exports = function (karma) {
   karma.set(karmaConfig({
@@ -70,8 +70,6 @@ module.exports = function (karma) {
       '/stylesheets/images/': `http://localhost:${karma.port}/base/public/stylesheets/images/`,
       '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
-
-    frameworks: [ 'mocha' ],
 
     webpack: webpackConfig
   }));

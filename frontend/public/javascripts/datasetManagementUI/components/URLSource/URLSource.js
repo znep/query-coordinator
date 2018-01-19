@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
-import TextInput from 'components/TextInput/TextInput';
-import SourceMessage from 'components/SourceMessage/SourceMessage';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
-import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
+import { enabledFileExtensions, formatExpanation } from 'datasetManagementUI/lib/fileExtensions';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import SourceMessage from 'datasetManagementUI/components/SourceMessage/SourceMessage';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
+import { CREATE_SOURCE } from 'datasetManagementUI/reduxStuff/actions/createSource';
 import styles from './URLSource.module.scss';
 
 const SubI18n = I18n.import_from_url;

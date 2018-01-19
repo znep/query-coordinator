@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ViewSelector } from 'components/FeaturedContentModal/ViewSelector';
+import { ViewSelector } from 'datasetLandingPage/components/FeaturedContentModal/ViewSelector';
 import { Simulate } from 'react-dom/test-utils';
-import mockRelatedView from 'data/mockRelatedView';
+import mockRelatedView from '../../data/mockRelatedView';
 
 describe('components/FeaturedContentModal/ViewSelector', function() {
   function getProps(props) {

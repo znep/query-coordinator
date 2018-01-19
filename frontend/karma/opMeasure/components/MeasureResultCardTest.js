@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 
-import { MeasureResultCard } from 'components/MeasureResultCard';
+import { MeasureResultCard } from 'opMeasure/components/MeasureResultCard';
 
 describe('MeasureResultCard', () => {
   const unresolvedPromise = new Promise(_.noop);

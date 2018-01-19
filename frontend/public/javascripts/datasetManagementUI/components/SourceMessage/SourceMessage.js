@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { browserHistory, withRouter } from 'react-router';
 import _ from 'lodash';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import styles from './SourceMessage.module.scss';
 
 const LINK_ID = 'dsmui-parse-error-link';

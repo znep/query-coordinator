@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 
-import { MethodsPanel } from 'components/EditModal/MethodsPanel';
+import { MethodsPanel } from 'opMeasure/components/EditModal/MethodsPanel';
 
 describe('MethodsPanel', () => {
   const getProps = (props) => {

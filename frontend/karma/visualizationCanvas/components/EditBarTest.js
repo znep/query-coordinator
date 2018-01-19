@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { EditBar } from 'components/EditBar';
+import { EditBar } from 'visualizationCanvas/components/EditBar';
 
 describe('EditBar', () => {
   const getProps = (props) => {

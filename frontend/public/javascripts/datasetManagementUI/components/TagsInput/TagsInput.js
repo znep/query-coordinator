@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import Tag from 'components/Tag/Tag';
+import Tag from 'datasetManagementUI/components/Tag/Tag';
 import styles from './TagsInput.module.scss';
 
 class TagsInput extends Component {

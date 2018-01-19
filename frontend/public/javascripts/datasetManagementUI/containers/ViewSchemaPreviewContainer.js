@@ -1,12 +1,12 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import _ from 'lodash';
 import { Link, browserHistory, withRouter } from 'react-router';
-import { createViewSource } from 'reduxStuff/actions/createSource';
-import { getRevision } from 'reduxStuff/actions/loadRevision';
+import { createViewSource } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import { getRevision } from 'datasetManagementUI/reduxStuff/actions/loadRevision';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
-import styles from 'styles/SchemaPreview.module.scss';
+import styles from 'datasetManagementUI/styles/SchemaPreview.module.scss';
 
 const mapStateToProps = ({ entities }, { params }) => ({
   onExpandColumn: _.noop,

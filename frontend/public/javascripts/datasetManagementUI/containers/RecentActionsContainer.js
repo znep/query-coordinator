@@ -2,8 +2,8 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter } from 'react-router';
-import RecentActions from 'components/RecentActions/RecentActions';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
+import RecentActions from 'datasetManagementUI/components/RecentActions/RecentActions';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
 
 // type alias ActivityItem :: {
 //   type: String

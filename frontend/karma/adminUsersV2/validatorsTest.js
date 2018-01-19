@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai';
 import { Success, Failure } from 'folktale/validation';
 
-import * as Validators from 'validators';
+import * as Validators from 'adminUsersV2/validators';
 
 
 describe('validators', () => {

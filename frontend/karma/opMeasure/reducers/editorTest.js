@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { EditTabs, PeriodTypes, PeriodSizes } from 'lib/constants';
-import reducer from 'reducers/editor';
-import actions from 'actions';
+import { EditTabs, PeriodTypes, PeriodSizes } from 'opMeasure/lib/constants';
+import reducer from 'opMeasure/reducers/editor';
+import actions from 'opMeasure/actions';
 
 const { INITIAL_STATE } = reducer;
 

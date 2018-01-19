@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import ActionsCell from 'components/Table/ActionsCell';
+import ActionsCell from 'adminActivityFeedSoql/components/Table/ActionsCell';
 import mockData from '../../data/mockFetchTable';
 import mockTranslations from '../../mockTranslations';
 import testStore from '../../testStore';

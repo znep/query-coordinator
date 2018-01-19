@@ -15,7 +15,7 @@ import {
   handleFetchRowCountError,
   checkSubscriptionOnLoad,
   handleCheckSubscriptionOnLoadError
-} from 'actions/view';
+} from 'datasetLandingPage/actions/view';
 
 describe('actions/view', () => {
   let dispatchSpy;

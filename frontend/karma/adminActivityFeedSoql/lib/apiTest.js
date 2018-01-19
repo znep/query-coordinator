@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as api from 'lib/api';
+import * as api from 'adminActivityFeedSoql/lib/api';
 import mockData from '../data/mockFetchTable';
 
 describe('lib/api', () => {

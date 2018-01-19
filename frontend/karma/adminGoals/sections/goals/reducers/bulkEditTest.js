@@ -1,9 +1,9 @@
 import { assert } from 'chai';
-import * as BulkEditActions from 'sections/goals/actions/bulkEdit';
-import * as SharedActions from 'sections/shared/actions';
+import * as BulkEditActions from 'adminGoals/sections/goals/actions/bulkEdit';
+import * as SharedActions from 'adminGoals/sections/shared/actions';
 import Immutable from 'immutable';
 
-import reducer from 'sections/goals/reducers/bulkEdit';
+import reducer from 'adminGoals/sections/goals/reducers/bulkEdit';
 describe('bulkEdit reducer', () => {
   const reduce = (action, state) => reducer(Immutable.fromJS(state), action).toJS();
   const reduceAction = (type, data, state) => reduce({

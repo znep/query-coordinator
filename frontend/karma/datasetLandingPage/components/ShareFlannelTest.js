@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import ShareFlannel from 'components/ShareFlannel';
-import mockView from 'data/mockView';
+import ShareFlannel from 'datasetLandingPage/components/ShareFlannel';
+import mockView from '../data/mockView';
 
 describe('components/ShareFlannel', () => {
   const getProps = (props) => _.defaultsDeep({}, props, {

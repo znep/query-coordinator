@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
 import sinon from 'sinon';
-import URLSource from 'components/URLSource/URLSource';
+import URLSource from 'datasetManagementUI/components/URLSource/URLSource';
 
 describe('components/URLSource', () => {
   const spy = sinon.spy();

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import TextInput from 'components/TextInput/TextInput';
-import { getBasename, getExtension } from 'lib/util';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import { getBasename, getExtension } from 'datasetManagementUI/lib/util';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import { DuplicateExtension, BadUrl, MissingValue } from 'containers/HrefFormContainer';
+import { DuplicateExtension, BadUrl, MissingValue } from 'datasetManagementUI/containers/HrefFormContainer';
 import styles from './URLField.module.scss';
 
 class URLField extends Component {

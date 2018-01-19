@@ -2,11 +2,11 @@
 var path = require('path');
 var _ = require('lodash');
 
-var common = require('./common');
+var webpackHelpers = require('./helpers');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.frontendRoot, 'public/javascripts'),
+  context: path.resolve(webpackHelpers.frontendRoot, 'public/javascripts'),
   entry: {
     'base': [
       './plugins/date.js',
@@ -789,6 +789,6 @@ module.exports = _.defaultsDeep({
       /plugins\//
     ]
   },
-  output: common.getOutput(identifier),
-  plugins: common.plugins.concat(common.getManifestPlugin(identifier))
+  output: webpackHelpers.getOutput(identifier),
+  plugins: webpackHelpers.plugins.concat(webpackHelpers.getManifestPlugin(identifier))
 }, require('./base'));

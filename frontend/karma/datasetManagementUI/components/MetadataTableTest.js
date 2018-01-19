@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import MetadataTable from 'components/MetadataTable/MetadataTable';
+import MetadataTable from 'datasetManagementUI/components/MetadataTable/MetadataTable';
 import { InfoPane, MetadataTable as CommonMetadataTable } from 'common/components';
 import React from 'react';
 import sinon from 'sinon';

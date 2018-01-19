@@ -2,9 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { GeocodeShortcut } from 'components/GeocodeShortcut/GeocodeShortcut';
+import { GeocodeShortcut } from 'datasetManagementUI/components/GeocodeShortcut/GeocodeShortcut';
 import entities from 'data/entities';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 window.serverConfig.featureFlags.ingress_strategy = 'obe';
 

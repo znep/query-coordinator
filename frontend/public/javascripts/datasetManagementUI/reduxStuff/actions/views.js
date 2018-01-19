@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { socrataFetch, getJson, checkStatus } from 'lib/http';
-import * as sodaLinks from 'links/sodaLinks';
-import * as coreLinks from 'links/coreLinks';
-import { apiCallFailed } from 'reduxStuff/actions/apiCalls';
+import { socrataFetch, getJson, checkStatus } from 'datasetManagementUI/lib/http';
+import * as sodaLinks from 'datasetManagementUI/links/sodaLinks';
+import * as coreLinks from 'datasetManagementUI/links/coreLinks';
+import { apiCallFailed } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 
 export const EDIT_VIEW = 'EDIT_VIEW';
 export const editView = (id, payload) => ({

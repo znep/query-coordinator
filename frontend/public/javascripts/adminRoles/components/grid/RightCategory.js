@@ -9,7 +9,7 @@ import Expandable from '../util/Expandable';
 import Hoverable from '../util/Hoverable';
 import { toggleExpanded } from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../selectors';
+import * as selectors from '../../adminRolesSelectors';
 
 import styles from './roles-grid.module.scss';
 import cssVariables from '../variables.scss';

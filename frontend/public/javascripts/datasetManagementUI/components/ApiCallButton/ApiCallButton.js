@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } from 'lib/apiCallStatus';
+import {
+  STATUS_CALL_IN_PROGRESS,
+  STATUS_CALL_SUCCEEDED,
+  STATUS_CALL_FAILED
+} from 'datasetManagementUI/lib/apiCallStatus';
 import classNames from 'classnames';
 
 const ApiCallButton = ({ status, onClick, additionalClassName, children, forceDisable }) => {

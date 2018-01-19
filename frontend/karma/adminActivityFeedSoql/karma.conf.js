@@ -1,7 +1,8 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'admin-activity-feed-soql.config.js',
-  [ 'karma/adminActivityFeedSoql', 'karma/helpers', 'public/javascripts' ]
+  'shared.config.js',
+  [ 'karma/adminActivityFeedSoql', 'karma/helpers' ],
+  [ 'adminActivityFeedSoql' ]
 );
 
 module.exports = function (karma) {

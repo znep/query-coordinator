@@ -1,7 +1,8 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'admin-activity-feed.config.js',
-  [ 'karma/adminActivityFeed', 'public/javascripts' ]
+  'shared.config.js',
+  [ 'karma/adminActivityFeed' ],
+  [ 'adminActivityFeed' ]
 );
 
 module.exports = function (karma) {

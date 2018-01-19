@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import uuid from 'uuid';
-import DatasetFieldset from 'components/DatasetFieldset/DatasetFieldset';
-import SourceMessage from 'components/SourceMessage/SourceMessage';
+import DatasetFieldset from 'datasetManagementUI/components/DatasetFieldset/DatasetFieldset';
+import SourceMessage from 'datasetManagementUI/components/SourceMessage/SourceMessage';
 import { browserHistory } from 'react-router';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import styles from './HrefForm.module.scss';
 
 // This form strives to let the UI derrive from the data, so in order to control

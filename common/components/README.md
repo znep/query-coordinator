@@ -40,7 +40,7 @@ page for more information. Storyteller already does this via its `application.cs
 ```erb
   <!-- frontend flavor-->
   <%= render_feature_flags_for_javascript %>
-  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+  <%= include_webpack_bundle 'shared/siteWide' %>
 
   <!-- storyteller flavor -->
   <%= render_feature_flags_for_javascript %>

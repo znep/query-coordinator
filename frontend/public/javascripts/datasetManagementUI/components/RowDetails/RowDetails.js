@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import RevisionRowDetails from 'containers/RevisionRowDetailsContainer';
-import ViewRowDetails from 'containers/ViewRowDetailsContainer';
+import RevisionRowDetails from 'datasetManagementUI/containers/RevisionRowDetailsContainer';
+import ViewRowDetails from 'datasetManagementUI/containers/ViewRowDetailsContainer';
 
 // This component acts as a switch, showing one of two containers depending on
 // if we are editing a published dataset or not. If editing a published dataset,

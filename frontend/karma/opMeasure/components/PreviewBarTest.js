@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { PreviewBar } from 'components/PreviewBar';
+import { PreviewBar } from 'opMeasure/components/PreviewBar';
 
 describe('PreviewBar', () => {
   let onClickSpy;

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import InfoPane from 'components/InfoPane';
+import InfoPane from 'visualizationCanvas/components/InfoPane';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import { getStore } from 'testStore';

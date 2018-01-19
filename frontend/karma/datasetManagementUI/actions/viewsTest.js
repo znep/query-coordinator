@@ -2,8 +2,8 @@ import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getView } from 'reduxStuff/actions/views';
-import * as coreLinks from 'links/coreLinks';
+import { getView } from 'datasetManagementUI/reduxStuff/actions/views';
+import * as coreLinks from 'datasetManagementUI/links/coreLinks';
 
 const API_RESPONSES = {
   getView: {

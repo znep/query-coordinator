@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import FlashMessage from 'containers/FlashMessageContainer';
+import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
 import ColumnPreview from './ColumnPreview';
 import HideOriginal from './HideOriginal';
 import ErrorHandling from './ErrorHandling';
 import styles from './GeocodeShortcut.module.scss';
-import flashMessageStyles from 'components/FlashMessage/FlashMessage.module.scss';
+import flashMessageStyles from 'datasetManagementUI/components/FlashMessage/FlashMessage.module.scss';
 
 import {
   LatLngFields

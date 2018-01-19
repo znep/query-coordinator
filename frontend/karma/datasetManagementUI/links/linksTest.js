@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 
 describe('Links', () => {
   const params = {

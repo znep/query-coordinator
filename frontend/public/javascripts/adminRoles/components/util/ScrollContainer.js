@@ -6,7 +6,7 @@ import styles from './scroll-container.module.scss';
 import bindAll from 'lodash/fp/bindAll';
 import scrollIntoView from 'scroll-into-view';
 import { connect } from 'react-redux';
-import { scrollToNewRole } from '../../selectors';
+import { scrollToNewRole } from '../../adminRolesSelectors';
 
 /** ScrollView / ScrollElement
  * Inspired by https://codedaily.io/tutorials/8/Build-a-Reusable-Scroll-List-Component-with-Animated-scrollTo-in-React

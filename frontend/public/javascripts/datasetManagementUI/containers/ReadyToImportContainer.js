@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { showModal } from 'reduxStuff/actions/modal';
-import ReadyToImport from 'components/ReadyToImport/ReadyToImport';
+import { showModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import ReadyToImport from 'datasetManagementUI/components/ReadyToImport/ReadyToImport';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const { outputSchemaId } = params;

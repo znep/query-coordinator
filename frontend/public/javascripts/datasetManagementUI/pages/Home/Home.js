@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import FeedbackPanel from '../../../common/components/FeedbackPanel';
-import AppBar from 'containers/AppBarContainer';
-import NotificationList from 'containers/NotificationListContainer';
-import Modal from 'containers/ModalContainer';
-import { loadRevision } from 'reduxStuff/actions/loadRevision';
+import AppBar from 'datasetManagementUI/containers/AppBarContainer';
+import NotificationList from 'datasetManagementUI/containers/NotificationListContainer';
+import Modal from 'datasetManagementUI/containers/ModalContainer';
+import { loadRevision } from 'datasetManagementUI/reduxStuff/actions/loadRevision';
 import styles from './Home.module.scss';
 
 import { FeatureFlags } from 'common/feature_flags';

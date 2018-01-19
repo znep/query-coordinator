@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { EditBar } from 'common/components';
 import SocrataIcon from 'common/components/SocrataIcon';
-import PublishButton from 'containers/PublishButtonContainer';
+import PublishButton from 'datasetManagementUI/containers/PublishButtonContainer';
 import styles from './AppBar.module.scss';
 
 const PreviewLink = () =>

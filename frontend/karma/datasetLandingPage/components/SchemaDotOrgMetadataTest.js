@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import mockView from 'data/mockView';
-import { SchemaDotOrgMarkup } from 'components/SchemaDotOrgMarkup';
+import mockView from '../data/mockView';
+import { SchemaDotOrgMarkup } from 'datasetLandingPage/components/SchemaDotOrgMarkup';
 import { mount, shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 

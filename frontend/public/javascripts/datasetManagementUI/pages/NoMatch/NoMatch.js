@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import styles from './NoMatch.module.scss';
 
 export function NoMatch({ params }) {

@@ -1,13 +1,13 @@
 import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
-import reducer from 'reducers/featuredContent/viewSelector.js';
+import reducer from 'datasetLandingPage/reducers/featuredContent/viewSelector.js';
 import {
   setSavingFeaturedItem,
   requestDerivedViews,
   requestedDerivedViews,
   receiveDerivedViews,
   handleDerivedViewsError
-} from 'actions/featuredContent';
+} from 'datasetLandingPage/actions/featuredContent';
 
 describe('reducers/featuredContent/viewSelector', function() {
   var state;

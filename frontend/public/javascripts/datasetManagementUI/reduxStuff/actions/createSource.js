@@ -1,16 +1,26 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
-import { parseDate } from 'lib/parseDate';
-import { uploadFile } from 'reduxStuff/actions/uploadFile';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import { socrataFetch, checkStatus, getJson, getError } from 'datasetManagementUI/lib/http';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
+import { uploadFile } from 'datasetManagementUI/reduxStuff/actions/uploadFile';
 import { browserHistory } from 'react-router';
-import * as Links from 'links/links';
-import { normalizeCreateSourceResponse, normalizeInsertInputSchemaEvent } from 'lib/jsonDecoders';
-import { subscribeToAllTheThings } from 'reduxStuff/actions/subscriptions';
-import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
-import { showFlashMessage } from 'reduxStuff/actions/flashMessage';
+import * as Links from 'datasetManagementUI/links/links';
+import {
+  normalizeCreateSourceResponse,
+  normalizeInsertInputSchemaEvent
+} from 'datasetManagementUI/lib/jsonDecoders';
+import { subscribeToAllTheThings } from 'datasetManagementUI/reduxStuff/actions/subscriptions';
+import {
+  addNotification,
+  removeNotificationAfterTimeout
+} from 'datasetManagementUI/reduxStuff/actions/notifications';
+import { showFlashMessage } from 'datasetManagementUI/reduxStuff/actions/flashMessage';
 
 export const CREATE_SOURCE = 'CREATE_SOURCE';
 export const UPDATE_SOURCE = 'UPDATE_SOURCE';

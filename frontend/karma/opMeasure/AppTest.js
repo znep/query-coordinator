@@ -1,12 +1,11 @@
 import { assert } from 'chai';
-import EditBar from 'components/EditBar';
-import PreviewBar from 'components/PreviewBar';
-import InfoPane from 'components/InfoPane';
-import { App } from 'App';
-
-import { ModeStates } from 'lib/constants';
-
 import { shallow } from 'enzyme';
+
+import { App } from 'opMeasure/App';
+import EditBar from 'opMeasure/components/EditBar';
+import PreviewBar from 'opMeasure/components/PreviewBar';
+import InfoPane from 'opMeasure/components/InfoPane';
+import { ModeStates } from 'opMeasure/lib/constants';
 
 describe('App', () => {
   describe('edit mode', () => {

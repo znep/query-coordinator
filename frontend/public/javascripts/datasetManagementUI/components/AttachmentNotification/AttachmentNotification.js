@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Notification from 'containers/NotificationContainer';
+import Notification from 'datasetManagementUI/containers/NotificationContainer';
 
 // This component is called by the NotificationList component. Its main purpose
 // is to translate attachment-specific logic into props that the generic Notification

@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import TransformColumn from 'components/TransformColumn/TransformColumn';
-import { normal } from 'lib/displayState';
+import TransformColumn from 'datasetManagementUI/components/TransformColumn/TransformColumn';
+import { normal } from 'datasetManagementUI/lib/displayState';
 import { shallow } from 'enzyme';
 import React from 'react';
 

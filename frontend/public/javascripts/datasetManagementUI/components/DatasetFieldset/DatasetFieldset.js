@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Fieldset from 'components/Fieldset/Fieldset';
-import TextInput from 'components/TextInput/TextInput';
-import TextArea from 'components/TextArea/TextArea';
-import URLField from 'components/URLField/URLField';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import TextArea from 'datasetManagementUI/components/TextArea/TextArea';
+import URLField from 'datasetManagementUI/components/URLField/URLField';
 import styles from './DatasetFieldset.module.scss';
 
 const DatasetFieldset = ({

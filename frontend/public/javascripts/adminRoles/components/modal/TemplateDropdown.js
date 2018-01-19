@@ -7,7 +7,7 @@ import {
   getRoleNameTranslationKeyPathFromRole,
   getRolesFromState,
   roleIsCustom
-} from '../../selectors';
+} from '../../adminRolesSelectors';
 import cssModules from 'react-css-modules';
 import styles from './template-dropdown.module.scss';
 import Dropdown from 'common/components/Dropdown';

@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
 import testStore from '../../testStore';
-import FilterPanelMobile from 'components/FilterPanel/FilterPanelMobile';
+import FilterPanelMobile from 'adminActivityFeedSoql/components/FilterPanel/FilterPanelMobile';
 
 describe('FilterPanelMobile', () => {
 

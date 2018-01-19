@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
 import testStore from '../testStore';
-import ActivityFeedPagination from 'components/ActivityFeedPagination';
+import ActivityFeedPagination from 'adminActivityFeed/components/ActivityFeedPagination';
 
 describe('ActivityFeedPagination', () => {
   const initialState = {

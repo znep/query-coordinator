@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter, Dropdown } from 'common/components';
-import styles from 'styles/SetupAutomation.module.scss';
+import styles from 'datasetManagementUI/styles/SetupAutomation.module.scss';
 import Highlight from 'react-syntax-highlight';
 import CopyToClipboard from 'react-copy-to-clipboard';
 

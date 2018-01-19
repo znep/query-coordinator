@@ -1,5 +1,0 @@
-// NOTE: Do not add new rules here. They won't do anything. Any new rules should be added to the
-// `eslint-base` repository: https://github.com/socrata/eslint-base
-{
-  "extends": "../../../node_modules/eslint-base/.eslintrc-airbnb.json"
-}

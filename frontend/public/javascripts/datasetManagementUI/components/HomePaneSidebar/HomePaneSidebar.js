@@ -1,5 +1,5 @@
 import React from 'react';
-import RecentActions from 'containers/RecentActionsContainer';
+import RecentActions from 'datasetManagementUI/containers/RecentActionsContainer';
 import PropTypes from 'prop-types';
 
 export default function HomePaneSidebar({ toggleRecentActions }) {

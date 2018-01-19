@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
-import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
-import { CREATE_SOURCE } from 'reduxStuff/actions/createSource';
-import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
-import * as DisplayState from 'lib/displayState';
+import { STATUS_CALL_IN_PROGRESS } from 'datasetManagementUI/lib/apiCallStatus';
+import { LOAD_ROWS } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { CREATE_SOURCE } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import { PAGE_SIZE } from 'datasetManagementUI/reduxStuff/actions/loadData';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];

@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { PublishNotice } from 'components/PublishNotice';
+import { PublishNotice } from 'datasetLandingPage/components/PublishNotice';
 import { Simulate } from 'react-dom/test-utils';
-import mockView from 'data/mockView';
+import mockView from '../data/mockView';
 
 describe('components/PublishNotice', () => {
   function getProps(props) {

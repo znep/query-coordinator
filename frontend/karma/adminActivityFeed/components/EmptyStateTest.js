@@ -2,10 +2,10 @@ import React from 'react';
 import { assert } from 'chai';
 
 const MockHttpClient = require('../MockHttpClient').default;
-const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
+const ActivityFeedApi = require('adminActivityFeed/frontendApi/ActivityFeedApi').default;
 
 import testStore from '../testStore';
-import EmptyState from 'components/EmptyState';
+import EmptyState from 'adminActivityFeed/components/EmptyState';
 import mockTranslations from '../mockTranslations';
 
 describe('EmptyState', () => {

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { getDefaultStore } from 'testStore';
-import reducer from 'reducers/view';
+import reducer from 'datasetLandingPage/reducers/view';
 import {
   requestedViewPublish,
   handleViewPublishSuccess,
@@ -11,7 +11,7 @@ import {
   onSubscriptionChange,
   checkSubscriptionOnLoad,
   handleCheckSubscriptionOnLoadError
-} from 'actions/view';
+} from 'datasetLandingPage/actions/view';
 
 describe('reducers/view', () => {
   let state;

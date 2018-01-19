@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
-import mockServerConfig from 'data/mockServerConfig';
-import mockFeaturedItem from 'data/mockFeaturedItem';
-import { FeaturedContent } from 'components/FeaturedContent';
+import mockServerConfig from '../data/mockServerConfig';
+import mockFeaturedItem from '../data/mockFeaturedItem';
+import { FeaturedContent } from 'datasetLandingPage/components/FeaturedContent';
 
 describe('components/FeaturedContent', function() {
   function resetServerConfig() {

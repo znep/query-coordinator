@@ -1,6 +1,6 @@
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
-import { MetadataPane } from 'components/MetadataPane';
+import { MetadataPane } from 'opMeasure/components/MetadataPane';
 
 describe('MetadataPane', () => {
   const getProps = (props) => {

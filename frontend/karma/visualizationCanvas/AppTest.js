@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import App, { App as PureApp } from 'App';
-import { ModeStates } from 'lib/constants';
+import App, { App as PureApp } from 'visualizationCanvas/App';
+import { ModeStates } from 'visualizationCanvas/lib/constants';
 import { getStore } from './testStore';
 import mockFilter from './data/mockFilter';
 import mockView from './data/mockView';

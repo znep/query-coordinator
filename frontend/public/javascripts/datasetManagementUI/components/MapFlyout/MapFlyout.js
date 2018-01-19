@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as styles from './MapFlyout.module.scss';
-import PagerBar from 'containers/PagerBarContainer';
+import PagerBar from 'datasetManagementUI/containers/PagerBarContainer';
 import _ from 'lodash';
 import L from 'leaflet';
-import './leaflet.css';
 
 class Bbox {
   minx = Infinity;

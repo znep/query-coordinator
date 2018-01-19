@@ -12,7 +12,7 @@ import { spring } from 'react-motion';
 import { RENAME_INDIVIDUAL_CUSTOM_ROLE, NEW_CUSTOM_ROLE } from '../../appStates';
 import { Button } from 'common/components';
 import CustomRoleForm from './CustomRoleForm';
-import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../selectors';
+import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../adminRolesSelectors';
 import { connectLocalization } from 'common/components/Localization';
 
 const mapStateToProps = state => {

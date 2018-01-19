@@ -1,5 +1,5 @@
-import visualizationCanvas from 'reducer';
-import { ModeStates } from 'lib/constants';
+import visualizationCanvas from 'visualizationCanvas/reducer';
+import { ModeStates } from 'visualizationCanvas/lib/constants';
 
 export function getDefaultStore() {
   return redux.createStore(visualizationCanvas);

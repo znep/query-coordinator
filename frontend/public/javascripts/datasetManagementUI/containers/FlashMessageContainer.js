@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
-import FlashMessage from 'components/FlashMessage/FlashMessage';
+import { hideFlashMessage } from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import FlashMessage from 'datasetManagementUI/components/FlashMessage/FlashMessage';
 
 const mapStateToProps = ({ ui }) => ({
   kind: ui.flashMessage.kind,

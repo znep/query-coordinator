@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 
 export const NORMAL = 'NORMAL';
 export const normal = (pageNo, outputSchemaId) => ({

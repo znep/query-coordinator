@@ -2,7 +2,7 @@ import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION
-} from 'reduxStuff/actions/notifications';
+} from 'datasetManagementUI/reduxStuff/actions/notifications';
 
 export default function notificationReducer(state = [], action) {
   switch (action.type) {

@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SAVED, UNSAVED, ERRORED, INITIALIZED } from 'components/ManageMetadata/ManageMetadata';
+import {
+  SAVED,
+  UNSAVED,
+  ERRORED,
+  INITIALIZED
+} from 'datasetManagementUI/components/ManageMetadata/ManageMetadata';
 import styles from './StatusIndicator.module.scss';
 
 const StatusIndicator = ({ formStatus }) => {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TransformColumn from 'containers/TransformColumnContainer';
+import TransformColumn from 'datasetManagementUI/containers/TransformColumnContainer';
 import classNames from 'classnames';
 import styles from './ShowOutputSchema.module.scss';
 

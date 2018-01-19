@@ -10,7 +10,7 @@ import bindAll from 'lodash/fp/bindAll';
 import { connectLocalization } from 'common/components/Localization';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { editCustomRoles, saveRoles } from '../actions';
-import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../selectors';
+import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../adminRolesSelectors';
 import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
 import { Button } from 'common/components';
 import styles from './save-bar.module.scss';

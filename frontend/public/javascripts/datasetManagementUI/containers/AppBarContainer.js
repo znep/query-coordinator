@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import AppBar from 'components/AppBar/AppBar';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import AppBar from 'datasetManagementUI/components/AppBar/AppBar';
 
 function mapStateToProps({ entities }, { params }) {
   // only show the preview link when an upsert job has successfully completed

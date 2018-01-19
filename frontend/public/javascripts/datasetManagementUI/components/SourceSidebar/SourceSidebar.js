@@ -4,8 +4,8 @@ import _ from 'lodash';
 import React from 'react';
 import moment from 'moment';
 import { Link, IndexLink } from 'react-router';
-import * as Links from 'links/links';
-import * as Selectors from 'selectors';
+import * as Links from 'datasetManagementUI/links/links';
+import * as Selectors from 'datasetManagementUI/selectors';
 import styles from './SourceSidebar.module.scss';
 
 function titleOf(source) {

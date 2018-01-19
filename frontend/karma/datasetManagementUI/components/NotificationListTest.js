@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
-import NotificationList from 'components/NotificationList/NotificationList';
+import NotificationList from 'datasetManagementUI/components/NotificationList/NotificationList';
 
 describe('components/NotificationList', () => {
   const defaultProps = {

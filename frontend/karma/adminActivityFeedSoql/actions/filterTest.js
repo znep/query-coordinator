@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as filterActions from 'actions/filters';
+import * as filterActions from 'adminActivityFeedSoql/actions/filters';
 
 describe('filter actions', () => {
   const responseData = [{'COLUMN_ALIAS_GUARD__count':'3'}];

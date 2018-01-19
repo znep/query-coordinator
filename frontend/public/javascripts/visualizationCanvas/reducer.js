@@ -5,7 +5,7 @@ import { localizeLink } from 'common/locale';
 import mixpanel from 'common/mixpanel';
 import utils from 'common/js_utils';
 
-import * as actions from 'actions';
+import * as actions from './actions';
 import { ModeStates, SaveStates } from './lib/constants';
 import * as windowLocation from './lib/windowLocation';
 

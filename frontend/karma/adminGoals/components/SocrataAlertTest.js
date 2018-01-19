@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import SocrataAlert from 'components/SocrataAlert';
+import SocrataAlert from 'adminGoals/components/SocrataAlert';
 import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;

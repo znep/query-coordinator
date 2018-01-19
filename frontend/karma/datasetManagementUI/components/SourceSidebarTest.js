@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import SourceSidebar, {
   SourceList, SingleSourceItem, MultiParseOptionsGroup
-} from 'components/SourceSidebar/SourceSidebar';
+} from 'datasetManagementUI/components/SourceSidebar/SourceSidebar';
 
 describe('components/SourceSidebar', () => {
   const defaultProps = {

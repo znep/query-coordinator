@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import * as DisplayState from 'lib/displayState';
-import * as Selectors from 'selectors';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import PagerBar from 'components/PagerBar/PagerBar';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import PagerBar from 'datasetManagementUI/components/PagerBar/PagerBar';
 
 function numItemsToPaginate(entities, outputSchemaId, displayState) {
   switch (displayState.type) {

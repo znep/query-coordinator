@@ -1,6 +1,7 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
+@import 'app/styles/leaflet.scss';
 
 $map-width: 500px;
 $map-height: 500px;

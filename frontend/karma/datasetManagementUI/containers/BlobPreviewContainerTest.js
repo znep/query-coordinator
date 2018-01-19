@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/BlobPreviewContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/BlobPreviewContainer';
 
 describe('containers/BlobPreviewContainer', function() {
   const defaultProps = {

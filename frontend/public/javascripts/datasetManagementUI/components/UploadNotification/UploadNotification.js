@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Notification from 'containers/NotificationContainer';
+import Notification from 'datasetManagementUI/containers/NotificationContainer';
 import moment from 'moment';
 
 const isURL = (source) => source.source_type.type === 'url';

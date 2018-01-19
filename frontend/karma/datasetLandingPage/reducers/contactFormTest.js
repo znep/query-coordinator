@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
-import reducer from 'reducers/contactForm';
+import reducer from 'datasetLandingPage/reducers/contactForm';
 import {
   handleContactFormFailure,
   handleContactFormSuccess,
@@ -11,7 +11,7 @@ import {
   setContactFormRecaptchaLoaded,
   submitContactForm,
   resetContactForm
-} from 'actions/contactForm';
+} from 'datasetLandingPage/actions/contactForm';
 
 describe('reducers/contactForm', function() {
   var state;

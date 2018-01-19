@@ -2,11 +2,11 @@
 import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 import React from 'react';
-import TransformStatus from 'components/TransformStatus/TransformStatus';
-import TableBody from 'containers/TableBodyContainer';
+import TransformStatus from 'datasetManagementUI/components/TransformStatus/TransformStatus';
+import TableBody from 'datasetManagementUI/containers/TableBodyContainer';
 import styles from './GeocodeShortcut.module.scss';
-import columnHeaderStyles from 'components/ColumnHeader/ColumnHeader.module.scss';
-import * as DisplayState from 'lib/displayState';
+import columnHeaderStyles from 'datasetManagementUI/components/ColumnHeader/ColumnHeader.module.scss';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
 import * as Links from '../../links/links';
 
 const SubI18n = I18n.show_output_schema.geocode_shortcut;

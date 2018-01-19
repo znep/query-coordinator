@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ADD_LOCATION, addLocation } from 'reduxStuff/actions/history';
+import { ADD_LOCATION, addLocation } from 'datasetManagementUI/reduxStuff/actions/history';
 
 describe('history actions', () => {
   const location = {

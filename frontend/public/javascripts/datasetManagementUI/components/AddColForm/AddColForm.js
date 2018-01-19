@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import Fieldset from 'components/Fieldset/Fieldset';
-import TextInput from 'components/TextInput/TextInput';
-import TextArea from 'components/TextArea/TextArea';
-import Select from 'components/Select/Select';
-import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
-import { soqlProperties } from 'lib/soqlTypes';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import TextArea from 'datasetManagementUI/components/TextArea/TextArea';
+import Select from 'datasetManagementUI/components/Select/Select';
+import SoqlTypePillBox from 'datasetManagementUI/components/SoqlTypePillBox/SoqlTypePillBox';
+import { soqlProperties } from 'datasetManagementUI/lib/soqlTypes';
 
 export function makeFieldName(displayName = '') {
   // First 'replace' swaps all whitespace for '_'

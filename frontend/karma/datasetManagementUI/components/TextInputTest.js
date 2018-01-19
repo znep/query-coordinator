@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import TextInput from 'components/TextInput/TextInput';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
 
 const props = {
   field: {

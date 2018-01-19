@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ExternalResourceForm } from 'components/ExternalResourceEditor/ExternalResourceForm';
+import { ExternalResourceForm } from 'common/components/ExternalResourceEditor/ExternalResourceForm';
 import _ from 'lodash';
 
 describe('ExternalResourceEditor/ExternalResourceForm', () => {

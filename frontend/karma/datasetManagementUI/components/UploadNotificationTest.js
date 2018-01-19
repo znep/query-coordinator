@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
-import UploadNotification from 'components/UploadNotification/UploadNotification';
+import UploadNotification from 'datasetManagementUI/components/UploadNotification/UploadNotification';
 import moment from 'moment';
 
 describe('components/UploadNotification', () => {

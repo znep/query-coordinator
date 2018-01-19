@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import DataTable from 'components/DataTable/DataTable';
+import DataTable from 'adminActivityFeed/components/DataTable/DataTable';
 
 const emptyTableProps = {
   data: [],

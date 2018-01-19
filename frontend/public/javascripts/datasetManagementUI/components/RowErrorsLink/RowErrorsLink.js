@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { commaify } from '../../../common/formatNumber';
 import { Link, withRouter } from 'react-router';
-import * as Links from 'links/links';
-import * as DisplayState from 'lib/displayState';
-import { singularOrPlural } from 'lib/util';
+import * as Links from 'datasetManagementUI/links/links';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import { singularOrPlural } from 'datasetManagementUI/lib/util';
 import styleguide from 'common/components';
 import styles from './RowErrorsLink.module.scss';
 

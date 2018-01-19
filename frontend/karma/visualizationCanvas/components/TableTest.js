@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import Table from 'components/Table';
+import Table from 'visualizationCanvas/components/Table';
 
 describe('Table', () => {
   let element;

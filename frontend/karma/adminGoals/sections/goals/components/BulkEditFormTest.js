@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import Immutable from 'immutable';
 import translations from 'mockTranslations';
-import BulkEditForm from 'sections/goals/components/BulkEditForm/BulkEditForm';
+import BulkEditForm from 'adminGoals/sections/goals/components/BulkEditForm/BulkEditForm';
 import { shallow } from 'enzyme';
 
 //TODO: Test redux connectors.

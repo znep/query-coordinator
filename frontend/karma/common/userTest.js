@@ -4,7 +4,7 @@ import {
   userHasRight,
   isUserSuperadmin,
   isUserAdmin
-} from 'user';
+} from 'common/user';
 import {
   create_datasets,
   edit_others_datasets

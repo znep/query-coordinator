@@ -1,16 +1,23 @@
 import _ from 'lodash';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import { editRevision } from 'reduxStuff/actions/revisions';
-import { showModal } from 'reduxStuff/actions/modal';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import { addNotification } from 'reduxStuff/actions/notifications';
-import { createSourceSuccess } from 'reduxStuff/actions/createSource';
-import { subscribeToOutputSchemaThings, subscribeToRevision } from 'reduxStuff/actions/subscriptions';
-import { addFieldValuesAll, createFieldsets, validateFieldsets } from 'containers/ManageMetadataContainer';
-import { normalizeCreateSourceResponse } from 'lib/jsonDecoders';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
-import { parseDate } from 'lib/parseDate';
-import { apiCallFailed } from 'reduxStuff/actions/apiCalls';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import { editRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
+import { showModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
+import { createSourceSuccess } from 'datasetManagementUI/reduxStuff/actions/createSource';
+import {
+  subscribeToOutputSchemaThings,
+  subscribeToRevision
+} from 'datasetManagementUI/reduxStuff/actions/subscriptions';
+import {
+  addFieldValuesAll,
+  createFieldsets,
+  validateFieldsets
+} from 'datasetManagementUI/containers/ManageMetadataContainer';
+import { normalizeCreateSourceResponse } from 'datasetManagementUI/lib/jsonDecoders';
+import { socrataFetch, checkStatus, getJson } from 'datasetManagementUI/lib/http';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
+import { apiCallFailed } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 
 export const LOAD_REVISION_SUCCESS = 'LOAD_REVISION_SUCCESS';
 

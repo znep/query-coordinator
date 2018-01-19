@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import React from 'react';
-import { needToLoadAnything, loadNormalPreview } from 'reduxStuff/actions/loadData';
+import { needToLoadAnything, loadNormalPreview } from 'datasetManagementUI/reduxStuff/actions/loadData';
 import state from '../data/stateWithRevision';
-import * as DisplayState from 'lib/displayState';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
 import mockAPI from '../testHelpers/mockAPI';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';

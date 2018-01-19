@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 
-import { EditModalTab } from 'components/EditModal/EditModalTab';
+import { EditModalTab } from 'opMeasure/components/EditModal/EditModalTab';
 
 describe('EditModalTab', () => {
   const getProps = (props) => {

@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
-import InfoPaneButtons from 'components/InfoPaneButtons';
-import mockView from 'data/mockView';
+import InfoPaneButtons from 'datasetLandingPage/components/InfoPaneButtons';
+import mockView from '../data/mockView';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/InfoPaneButtons', () => {

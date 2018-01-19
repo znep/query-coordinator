@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Grid from '../util/Grid';
 import RightCategory from './RightCategory';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../selectors';
+import * as selectors from '../../adminRolesSelectors';
 
 import styles from './roles-grid.module.scss';
 

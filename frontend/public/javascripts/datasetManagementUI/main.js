@@ -4,10 +4,10 @@ import { browserHistory } from 'react-router';
 import Perf from 'react-addons-perf';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
-import { addLocation } from 'reduxStuff/actions/history';
-import store from 'reduxStuff/store';
+import { addLocation } from 'datasetManagementUI/reduxStuff/actions/history';
+import store from 'datasetManagementUI/reduxStuff/store';
 import { AppContainer } from 'react-hot-loader';
-import App from 'components/App/App';
+import App from 'datasetManagementUI/components/App/App';
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
@@ -29,8 +29,8 @@ ReactDOM.render(
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('components/App/App', () => {
-    const NextApp = require('components/App/App').default; //eslint-disable-line
+  module.hot.accept('datasetManagementUI/components/App/App', () => {
+    const NextApp = require('datasetManagementUI/components/App/App').default; //eslint-disable-line
     ReactDOM.render(
       <AppContainer>
         <NextApp store={store} history={browserHistory} />

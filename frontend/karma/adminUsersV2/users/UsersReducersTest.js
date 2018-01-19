@@ -3,8 +3,8 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-import { COMPLETE_SUCCESS, START } from 'actions';
-import { userSearch, USER_SEARCH } from 'users/actions';
+import { COMPLETE_SUCCESS, START } from 'adminUsersV2/actions';
+import { userSearch, USER_SEARCH } from 'adminUsersV2/users/actions';
 
 import { usersResponse } from '../helpers/stateFixtures';
 

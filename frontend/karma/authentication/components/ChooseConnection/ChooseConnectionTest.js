@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import defaultOptions from '../../DefaultOptions';
 
-import ChooseConnection from 'components/ChooseConnection/ChooseConnection';
+import ChooseConnection from 'authentication/components/ChooseConnection/ChooseConnection';
 
 describe('<ChooseConnection />', () => {
   const optionsWithConnections = _.cloneDeep(defaultOptions);

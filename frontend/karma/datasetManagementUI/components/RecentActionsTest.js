@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import RecentActions from 'components/RecentActions/RecentActions';
-import { ACTIVITY_TYPES } from 'containers/RecentActionsContainer';
+import RecentActions from 'datasetManagementUI/components/RecentActions/RecentActions';
+import { ACTIVITY_TYPES } from 'datasetManagementUI/containers/RecentActionsContainer';
 
 describe('components/RecentActions', () => {
   const params = {

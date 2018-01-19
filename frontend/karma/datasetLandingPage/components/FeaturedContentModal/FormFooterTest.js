@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import FormFooter from 'components/FeaturedContentModal/FormFooter';
+import FormFooter from 'datasetLandingPage/components/FeaturedContentModal/FormFooter';
 import { Simulate } from 'react-dom/test-utils';
 
 describe('components/FeaturedContentModal/FormFooter', function() {

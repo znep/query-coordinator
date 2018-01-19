@@ -3,9 +3,9 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-import { COMPLETE_SUCCESS, SHOW_NOTIFICATION, START } from 'actions';
-import { userSearch } from 'users/actions';
-import { changeUserRole, removeUserRole, USER_ROLE_CHANGE } from 'roles/actions';
+import { COMPLETE_SUCCESS, SHOW_NOTIFICATION, START } from 'adminUsersV2/actions';
+import { userSearch } from 'adminUsersV2/users/actions';
+import { changeUserRole, removeUserRole, USER_ROLE_CHANGE } from 'adminUsersV2/roles/actions';
 
 import { initialState } from '../helpers/stateFixtures';
 

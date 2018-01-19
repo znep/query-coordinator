@@ -7,7 +7,7 @@ import {
   HIDE_FLASH_MESSAGE,
   hideFlashMessage,
   showFlashMessage
-} from 'reduxStuff/actions/flashMessage';
+} from 'datasetManagementUI/reduxStuff/actions/flashMessage';
 
 const mockStore = configureStore([thunk]);
 

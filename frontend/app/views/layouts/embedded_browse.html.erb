@@ -95,7 +95,7 @@ http://www.socrata.com
 
   <%= include_webpack_bundle 'open-data/base.js' %>
 
-  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+  <%= include_webpack_bundle 'shared/siteWide' %>
 
   <%- if !Rails.env.end_with?('production') -%>
     <%= include_webpack_bundle 'open-data/debug.js' %>

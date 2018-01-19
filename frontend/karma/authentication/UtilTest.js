@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import * as Util from 'Util';
+import * as Util from 'authentication/Util';
 
 describe('Util', () => {
   const forcedConnections = [

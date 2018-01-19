@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
-import { SaveNotification } from 'components/SaveNotification';
-import { SaveStates } from 'lib/constants';
+import { SaveNotification } from 'visualizationCanvas/components/SaveNotification';
+import { SaveStates } from 'visualizationCanvas/lib/constants';
 
 describe('SaveNotification', () => {
   const getProps = (props) => {

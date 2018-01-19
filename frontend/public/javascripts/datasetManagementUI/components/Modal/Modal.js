@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal as StyleGuideModal } from 'common/components';
 import _ from 'lodash';
-import ErrorsHelp from 'containers/ErrorsHelpContainer';
-import Publishing from 'containers/PublishingContainer';
-import PublishConfirmation from 'containers/PublishConfirmationContainer';
-import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
-import SetupAutomation from 'containers/SetupAutomationContainer';
-import FormatColumn from 'containers/FormatColumnContainer';
+import ErrorsHelp from 'datasetManagementUI/containers/ErrorsHelpContainer';
+import Publishing from 'datasetManagementUI/containers/PublishingContainer';
+import PublishConfirmation from 'datasetManagementUI/containers/PublishConfirmationContainer';
+import RowIdentifierError from 'datasetManagementUI/containers/RowIdentifierErrorContainer';
+import SetupAutomation from 'datasetManagementUI/containers/SetupAutomationContainer';
+import FormatColumn from 'datasetManagementUI/containers/FormatColumnContainer';
 
 import styles from './Modal.module.scss';
 

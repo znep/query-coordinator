@@ -8,7 +8,7 @@ import {
   shapeOutputSchemas,
   createActivities,
   ACTIVITY_TYPES
-} from 'containers/RecentActionsContainer';
+} from 'datasetManagementUI/containers/RecentActionsContainer';
 
 describe('containers/RecentActionsContainer', () => {
   describe('shapeRevisions', () => {

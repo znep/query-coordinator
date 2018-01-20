@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
+import I18n from 'common/i18n';
 import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
@@ -85,7 +86,7 @@ export default class ExportFlannel extends PureComponent {
       url = getDownloadLink(this.state.datasetUid, format, this.state.datasetDomain, 'https', queryParam);
     }
     const type = getDownloadType(format);
-    const label = I18n.common.export[format] || format.toUpperCase();
+    const label = I18n.t('common.export')[format] || format.toUpperCase();
 
     return (
       <li key={format} className="download-link">
@@ -146,7 +147,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <a {...componentProps}>
-        {I18n.common.action_buttons.download}
+        {I18n.t('common.action_buttons.download')}
       </a>
     );
   }
@@ -162,7 +163,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <a {...componentProps}>
-        {I18n.common.action_buttons.download}
+        {I18n.t('common.action_buttons.download')}
       </a>
     );
   }
@@ -177,7 +178,7 @@ export default class ExportFlannel extends PureComponent {
 
     return (
       <span {...targetProps}>
-        {I18n.common.action_buttons.export}
+        {I18n.t('common.action_buttons.export')}
       </span>
     );
   }
@@ -192,7 +193,7 @@ export default class ExportFlannel extends PureComponent {
     } else {
       return (
         <span>
-          ({I18n.common.export.not_available})
+          ({I18n.t('common.export.not_available')})
         </span>
       );
     }
@@ -214,7 +215,7 @@ export default class ExportFlannel extends PureComponent {
         <label htmlFor="export-flannel-export-setting-all">
           <span className="fake-radiobutton" />
           <span className="translation-within-label">
-            {I18n.common.export.all_data}&nbsp;
+            {I18n.t('common.export.all_data')}&nbsp;
             {this.renderRowCount(this.state.rowCountAll)}
           </span>
         </label>
@@ -239,7 +240,7 @@ export default class ExportFlannel extends PureComponent {
           className={filteredDataProps.disabled ? 'disabled' : ''}>
           <span className="fake-radiobutton" />
           <span className="translation-within-label">
-            {I18n.common.export.filtered_data}&nbsp;
+            {I18n.t('common.export.filtered_data')}&nbsp;
             {this.renderRowCount(this.state.rowCountFiltered)}
           </span>
         </label>
@@ -261,12 +262,12 @@ export default class ExportFlannel extends PureComponent {
       id: 'export-flannel',
       className: 'btn-container export-flannel',
       target: () => this.targetElement,
-      title: I18n.common.export.flannel_title.replace('%{dataset_title}', view.name),
+      title: I18n.t('common.export.flannel_title', { dataset_title: view.name }),
       onDismiss: this.closeFlannel
     };
 
     const exportFlannelHeaderProps = {
-      title: I18n.common.export.flannel_title.replace('%{dataset_title}', view.name),
+      title: I18n.t('common.export.flannel_title', { dataset_title: view.name }),
       onDismiss: this.closeFlannel
     };
 
@@ -275,14 +276,14 @@ export default class ExportFlannel extends PureComponent {
         <FlannelHeader {...exportFlannelHeaderProps} />
         <FlannelContent>
           <div>
-            {I18n.common.export.flannel_description.replace('%{dataset_title}', view.name)}
+            {I18n.t('common.export.flannel_description', { dataset_title: view.name })}
           </div>
           {this.props.exportFilteredData && this.renderFilterDataSelector()}
           <ul className="featured-download-links">
             {this.getFeaturedLinks()}
           </ul>
           <div className="additional-links-title">
-            {I18n.common.export.flannel_additional_links_title}
+            {I18n.t('common.export.flannel_additional_links_title')}
           </div>
           <div className="restof-download-links clearBoth">
             {this.getRestofLinks()}

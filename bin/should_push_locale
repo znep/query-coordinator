@@ -1,0 +1,78 @@
+#! /usr/bin/env ruby
+require 'fileutils'
+require 'yaml'
+require 'set'
+require 'tmpdir'
+require_relative './socrata_localeapp_utils.rb'
+
+# flatten_key_paths method borrowed from https://stackoverflow.com/questions/28194836/rails-find-missing-keys-between-different-locales-yml-files
+# with a slight modification to include the value of the key path as well
+# Including the value will allow us to properly capture string changes for the same key path
+# for example: { en: navbar: { button: "Press me!"} } changing to { en: navbar: { button: "Click me!"} }
+# should be properly captured as a difference
+#
+# Example:
+# test = {
+#   foo: {
+#     bar: {
+#       baz: "string 1",
+#       qux: "string 2"
+#     }
+#   }
+# }
+#
+# flatten_key_paths(test) => ["foo.bar.baz.string 1", "foo.bar.qux.string 2"]
+
+def flatten_key_paths(hash = {}, prefix="")
+  hash.inject([]) do |keys, (key, value)|
+    if hash[key].is_a?(Hash)
+      keys << flatten_key_paths(hash[key], "#{prefix}#{key}.")
+    else
+      keys << "#{prefix}#{key}.#{value}"
+    end
+  end.flatten
+end
+
+project_name = ARGV[0]
+api_key = ARGV[1] || SocrataLocaleAppUtils::LOCALEAPP_API_KEY[project_name]
+
+# Check that API key aligns with project name
+SocrataLocaleAppUtils.verify_api_key(project_name, api_key)
+
+remote_translations = {}
+
+# Make a temporary place to pull the latest translations from LocaleApp for comparison
+Dir.mktmpdir do |tmp_dir|
+  FileUtils.mkdir_p("#{tmp_dir}/latest_remote_locales/config/locales")
+
+  Dir.chdir("#{tmp_dir}/latest_remote_locales") do
+    # Create this file to make localeapp happy, otherwise it complains and clutters the stdout
+    FileUtils.mkdir_p("log")
+    FileUtils.touch("localeapp.yml")
+
+    system("LOCALEAPP_API_KEY=#{api_key} localeapp pull en")
+
+    remote_translations = YAML.load_file("#{tmp_dir}/latest_remote_locales/config/locales/en.yml")
+  end
+end
+
+# Get some relative paths
+file_directory = File.dirname(__FILE__)
+path_to_local_en_yml = SocrataLocaleAppUtils.get_path_to_en_yml(project_name, file_directory)
+
+# Create sets out of the keys, and compare with the current translations in the local en.yml
+remote_translation_set = Set.new(flatten_key_paths(remote_translations))
+current_translation_set = Set.new(flatten_key_paths(YAML.load_file("#{path_to_local_en_yml}")))
+
+# If the local translations are a subset of the remote ones, then pushing will make no difference
+is_subset = current_translation_set.subset?(remote_translation_set)
+
+if is_subset
+  puts "Current strings in en.yml for [#{project_name}] are all accounted for within LocaleApp, no need to push"
+  exit(1)
+else
+  puts "LocaleApp doesnt know about the following strings, so a push is still needed to be in sync:\n\n"
+  puts current_translation_set.difference(remote_translation_set).to_a
+  puts
+  exit(0)
+end

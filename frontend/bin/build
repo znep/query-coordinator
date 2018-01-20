@@ -92,11 +92,16 @@ shopt -s nocasematch
 if [[ ${SKIP_PUSH_LOCALE_DANGEROUS} != "true" ]]; then
   # We want to push our latest en.yml up to LocaleApp and then pull down
   # additional translations in other locales.
-  echo "Pushing 'common' locales to LocaleApp"
-  `git rev-parse --show-toplevel`/bin/push_locale common
 
-  echo "Pushing 'frontend' locales to LocaleApp"
-  `git rev-parse --show-toplevel`/bin/push_locale frontend
+  if ${WORKSPACE}/bin/should_push_locale common; then
+    echo "Pushing 'common' locales to LocaleApp"
+    `git rev-parse --show-toplevel`/bin/push_locale common
+  fi
+
+  if ${WORKSPACE}/bin/should_push_locale frontend; then
+    echo "Pushing 'frontend' locales to LocaleApp"
+    `git rev-parse --show-toplevel`/bin/push_locale frontend
+  fi
 
   # Pull translations from both common / frontend
   echo "Pulling translations from LocaleApp"

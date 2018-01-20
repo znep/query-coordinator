@@ -13,9 +13,7 @@ module DatasetLandingPageHelper
     translations = LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']
     translations.deep_merge(
       'common' => LocaleCache.render_translations([LocalePart.common])['common'],
-      'data_types' => LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types'],
-      # XXX: Need this to keep ExportFlannel a common component.
-      'dataset_landing_page' => LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']
+      'data_types' => LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
     )
   end
 

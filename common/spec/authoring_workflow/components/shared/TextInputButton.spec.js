@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import renderComponent from '../../renderComponent';
 import TestUtils from 'react-dom/test-utils';
 import TextInputButton from 'common/authoring_workflow/components/shared/TextInputButton';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 describe('TextInputButton', () => {
 
@@ -35,7 +35,7 @@ describe('TextInputButton', () => {
     setTimeout(() => {
       sinon.assert.calledOnce(onChangeCallback);
       done();
-    }, INPUT_DEBOUNCE_MILLISECONDS);
+    }, getInputDebounceMs());
   });
 });
 

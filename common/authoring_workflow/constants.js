@@ -1,7 +1,17 @@
 import I18n from 'common/i18n';
 
-export const INPUT_DEBOUNCE_MILLISECONDS = 700;
-export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
+let inputDebounceMs = 700;
+let mapSliderDebounceMs = 1000;
+
+export const getInputDebounceMs = () => inputDebounceMs;
+export const getMapSliderDebounceMs = () => mapSliderDebounceMs;
+
+// Used to speed up tests.
+export const disableInputDebounce = () => {
+  inputDebounceMs = 1;
+  mapSliderDebounceMs = 1;
+};
+
 export const MAXIMUM_MEASURES = 12;
 export const MAXIMUM_COMBO_CHART_MEASURES = 6;
 export const NUMERIC_COLUMN_TYPES = ['number', 'money', 'percent'];

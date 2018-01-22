@@ -6,7 +6,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import vifs from 'common/authoring_workflow/vifs';
 import { BasemapPane } from 'common/authoring_workflow/components/panes/BasemapPane';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function createVifAuthoring(type) {
   return {
@@ -57,7 +57,7 @@ describe('BasemapPane', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

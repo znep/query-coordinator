@@ -6,7 +6,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import vifs from 'common/authoring_workflow/vifs';
 import { PresentationPane } from 'common/authoring_workflow/components/panes/PresentationPane';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function createVifAuthoring(type, groupBy) {
   const vifAuthoring = {
@@ -69,7 +69,7 @@ describe('PresentationPane', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 
@@ -196,7 +196,7 @@ describe('PresentationPane', () => {
           setTimeout(() => {
             sinon.assert.calledOnce(props.onChangeTitle);
             done();
-          }, INPUT_DEBOUNCE_MILLISECONDS);
+          }, getInputDebounceMs());
         });
       });
 
@@ -209,7 +209,7 @@ describe('PresentationPane', () => {
           setTimeout(() => {
             sinon.assert.calledOnce(props.onChangeDescription);
             done();
-          }, INPUT_DEBOUNCE_MILLISECONDS);
+          }, getInputDebounceMs());
         });
       });
 

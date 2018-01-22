@@ -2,6 +2,8 @@ import 'whatwg-fetch';
 import 'babel-polyfill';
 import 'common/visualizations/views/styles/socrata-visualizations.scss';
 
+import { disableInputDebounce } from 'common/authoring_workflow/constants';
+
 // Since we use jQuery plugins that patch themselves globally onto window.jQuery,
 // we're forced to generate a single large test bundle (instead of karma-webpack's
 // default of generating one package per test file).
@@ -20,6 +22,9 @@ window.socrata = { initialState };
 
 // Load the translations before each test.
 beforeEach(require('./helpers').useDefaultTranslations);
+
+// Disable some slow animations (saves around 50% test time).
+disableInputDebounce();
 
 function requireAll(context) {
   return context.keys().map(context);

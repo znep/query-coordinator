@@ -13,7 +13,7 @@ import {
   COLOR_PALETTES,
   COLOR_PALETTE_VALUES,
   COLORS,
-  MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+  getMapSliderDebounceMs,
   SERIES_TYPE_FLYOUT
 } from '../../constants';
 
@@ -554,7 +554,7 @@ export class PresentationPane extends Component {
         step: 5,
         value: pointOpacity,
         onChange: onChangePointOpacity,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       return (
@@ -638,7 +638,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: minimumLineWeight,
         onChange: onMinimumLineWeightChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
       const maximumLineWeightAttributes = {
         id: 'maximum-line-weight',
@@ -647,7 +647,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: maximumLineWeight,
         onChange: onMaximumLineWeightChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       LineMapWeightControls = (
@@ -689,7 +689,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: lineWeight,
         onChange: onChangeLineWeight,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       LineMapWeightControls = (
@@ -727,7 +727,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: minimumPointSize,
         onChange: onMinimumPointSizeChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
       const maximumPointSizeAttributes = {
         id: 'maximum-point-size',
@@ -736,7 +736,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: maximumPointSize,
         onChange: onMaximumPointSizeChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       pointMapSizeControls = (
@@ -778,7 +778,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: pointMapPointSize,
         onChange: onChangePointMapPointSize,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       pointMapSizeControls = (
@@ -802,7 +802,7 @@ export class PresentationPane extends Component {
 
   renderSliderControl = (name, rangeMin, rangeMax, step, value, onChange, description) => {
     const attributes = {
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      delay: getMapSliderDebounceMs(),
       id: name,
       rangeMin,
       rangeMax,
@@ -1060,7 +1060,7 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: pointOpacity / 100,
       onChange: onChangePointOpacity,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     const pointSizeAttributes = {
@@ -1070,7 +1070,7 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: pointSize,
       onChange: onChangePointSize,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     const pointControls = (
@@ -1155,7 +1155,7 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: defaultBaseLayerOpacity / 100,
       onChange: onChangeBaseLayerOpacity,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     return (

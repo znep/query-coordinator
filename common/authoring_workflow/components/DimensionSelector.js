@@ -12,8 +12,6 @@ import {
   setXAxisScalingMode
 } from '../actions';
 
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
-
 import {
   getRecommendedDimensions,
   getValidDimensions,

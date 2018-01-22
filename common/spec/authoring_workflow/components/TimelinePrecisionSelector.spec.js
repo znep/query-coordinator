@@ -4,7 +4,7 @@ import TestUtils from 'react-dom/test-utils';
 import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { TimelinePrecisionSelector } from 'common/authoring_workflow/components/TimelinePrecisionSelector';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 import { setDataSource } from '../../../authoring_workflow/actions';
 
 function render(type, dimensionColumnName) {
@@ -60,7 +60,7 @@ describe('TimelinePrecisionSelector', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

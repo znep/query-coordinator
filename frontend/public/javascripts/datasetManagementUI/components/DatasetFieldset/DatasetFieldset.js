@@ -4,7 +4,6 @@ import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
 import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
 import TextArea from 'datasetManagementUI/components/TextArea/TextArea';
 import URLField from 'datasetManagementUI/components/URLField/URLField';
-import styles from './DatasetFieldset.module.scss';
 
 const DatasetFieldset = ({
   href,
@@ -20,9 +19,9 @@ const DatasetFieldset = ({
     title={href.title}
     closable
     closeCallback={handleXClick}
-    containerClass={styles.fieldset}
-    legendClass={styles.legend}>
-    <div className={styles.fieldWrapper} data-cheetah-hook="dataset-fieldset">
+    containerClass="dsmp-fieldset"
+    legendClass="dsmp-legend">
+    <div className="field-wrapper" data-cheetah-hook="dataset-fieldset">
       <div>
         <label>{I18n.show_sources.label_name}</label>
         <TextInput
@@ -62,7 +61,7 @@ const DatasetFieldset = ({
               handleChangeUrl={handleChangeUrl(key)} />
           );
         })}
-        <a className={styles.addURLBtn} onClick={handleAddURL}>
+        <a className="add-URL-btn" onClick={handleAddURL}>
           {I18n.show_sources.add_url}
         </a>
       </div>

@@ -1,16 +1,11 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.attachmentList {
+.dsmp-attachment-list {
   list-style-type: none;
   padding-left: 0px;
 }
 
-.button {
-  composes: btn from global;
-  composes: btn-primary from global;
-}
-
-.uploadButtonInput {
+.dsmp-upload-button-input {
   display: none;
 }

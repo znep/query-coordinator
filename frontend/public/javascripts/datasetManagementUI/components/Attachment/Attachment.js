@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './Attachment.module.scss';
 
 const Attachment = ({ attachment, onRemove, onEdit }) =>
-  <li className={styles.attachment}>
+  <li className="dsmp-attachment">
     <input
       type="text"
-      className={`text-input  ${styles.filename}`}
+      className="text-input dsmp-filename"
       value={attachment.name}
       onChange={(e) => onEdit(e.target.value)} />
     <a
       onClick={onRemove}
-      className={styles.removeButton}>
-      <SocrataIcon name="close-2" className={styles.icon} />
+      className="dsmp-remove-button">
+      <SocrataIcon name="close-2" />
     </a>
   </li>;
 

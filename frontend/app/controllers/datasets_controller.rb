@@ -1357,11 +1357,11 @@ class DatasetsController < ApplicationController
   end
 
   def render_as_op_measure(as_edit = false)
+    return false unless @view.op_measure?
+
     if as_edit
       return render_forbidden unless @view.can_edit_measure?
     end
-
-    return false unless @view.op_measure?
 
     if op_standalone_measures_enabled?
       # See if the user is accessing the canonical URL; if not, redirect

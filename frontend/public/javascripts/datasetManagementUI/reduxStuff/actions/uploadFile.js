@@ -5,11 +5,14 @@ import {
   removeNotificationAfterTimeout,
   updateNotification
 } from 'datasetManagementUI/reduxStuff/actions/notifications';
+import { sourceUpdate } from 'datasetManagementUI/reduxStuff/actions/createSource';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed
 } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { getError } from 'datasetManagementUI/lib/http';
+
 
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
@@ -140,8 +143,14 @@ export function uploadFile(sourceId, file) {
         dispatch(apiCallSucceeded(callId));
         return resp;
       })
+      .catch(getError)
       .catch(error => {
         dispatch(apiCallFailed(callId, error));
+        // The UploadNotification component looks at the failed_at attribute
+        // on its source to decide if it is in an error state or not. So we need
+        // to manually update the source here in case we have a network error
+        // and can't update via socket or some other means.
+        dispatch(sourceUpdate(sourceId, { failed_at: Date.now() }));
         throw error;
       });
   };

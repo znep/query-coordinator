@@ -21,7 +21,7 @@ const DatasetFieldset = ({
     closeCallback={handleXClick}
     containerClass="dsmp-fieldset"
     legendClass="dsmp-legend">
-    <div className="field-wrapper" data-cheetah-hook="dataset-fieldset">
+    <div className="dsmp-field-wrapper" data-cheetah-hook="dataset-fieldset">
       <div>
         <label>{I18n.show_sources.label_name}</label>
         <TextInput
@@ -61,7 +61,7 @@ const DatasetFieldset = ({
               handleChangeUrl={handleChangeUrl(key)} />
           );
         })}
-        <a className="add-URL-btn" onClick={handleAddURL}>
+        <a className="dsmp-add-URL-btn" onClick={handleAddURL}>
           {I18n.show_sources.add_url}
         </a>
       </div>

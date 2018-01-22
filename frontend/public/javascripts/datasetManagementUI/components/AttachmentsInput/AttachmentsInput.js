@@ -27,14 +27,14 @@ class AttachmentsInput extends Component {
           </label>
           <input
             id="file"
-            className="upload-button-input"
+            className="dsmp-upload-button-input"
             name="file"
             type="file"
             value={''}
             aria-labelledby="add-attachment"
             onChange={evt => uploadAttachment(evt.target.files[0])} />
         </div>
-        {!!listItems.length && <ul className="attachment-list">{listItems}</ul>}
+        {!!listItems.length && <ul className="dsmp-attachment-list">{listItems}</ul>}
       </div>
     );
   }

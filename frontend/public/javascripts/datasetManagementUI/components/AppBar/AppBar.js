@@ -5,10 +5,10 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import PublishButton from 'datasetManagementUI/containers/PublishButtonContainer';
 
 const PreviewLink = () =>
-  <div className="primer-preview">
+  <div className="dsmp-primer-preview">
     <a href={`/d/${window.initialState.view.id}`} target="_blank">
       Preview Primer
-      <SocrataIcon name="preview" className="preview-icon" />
+      <SocrataIcon name="preview" className="dsmp-preview-icon" />
     </a>
   </div>;
 
@@ -19,7 +19,7 @@ export const AppBar = ({ name, showPreviewLink, revision }) =>
       &gt; Revision #{revision.revision_seq} <Link to={Links.home(params)}>(Back)</Link>
     </div>
   */}
-    <div className="button-container">
+    <div className="dsmp-button-container">
       {showPreviewLink && <PreviewLink />}
       {revision && <PublishButton />}
     </div>

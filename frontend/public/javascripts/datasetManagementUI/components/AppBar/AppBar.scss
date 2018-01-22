@@ -1,7 +1,7 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.button-container {
+.dsmp-button-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -10,7 +10,7 @@
   padding-right: 30px;
 }
 
-.primer-preview {
+.dsmp-primer-preview {
   width: 100%;
   text-align: right;
   margin-right: 3em;
@@ -21,6 +21,6 @@
   }
 }
 
-.preview-icon {
+.dsmp-preview-icon {
   margin-left: 0.5em;
 }

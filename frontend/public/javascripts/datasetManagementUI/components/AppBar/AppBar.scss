@@ -1,7 +1,7 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.buttonContainer {
+.button-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -10,7 +10,7 @@
   padding-right: 30px;
 }
 
-.primerPreview {
+.primer-preview {
   width: 100%;
   text-align: right;
   margin-right: 3em;
@@ -21,6 +21,6 @@
   }
 }
 
-.previewIcon {
+.preview-icon {
   margin-left: 0.5em;
 }

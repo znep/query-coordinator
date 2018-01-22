@@ -84,6 +84,7 @@ const paths = {
   showValueLabels: 'configuration.showValueLabels',
   showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   showLegend: 'configuration.showLegend',
+  showLegendOpened: 'configuration.showLegendOpened',
   stacked: 'series[0].stacked',
   stackRadius: 'series[0].mapOptions.stackRadius',
   stackedOneHundredPercent: 'series[0].stacked.oneHundredPercent',
@@ -378,6 +379,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.showLegend)) {
     dispatch(actions.setShowLegend(get(paths.showLegend)));
+  }
+
+  if (has(paths.showLegendOpened)) {
+    dispatch(actions.setShowLegendOpened(get(paths.showLegendOpened)));
   }
 
   if (has(paths.stackedOneHundredPercent)) {

@@ -153,10 +153,9 @@ describe('AuthoringWorkflow reducer', () => {
 
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
-
       shouldSetVif('setLimitNoneAndShowOtherCategory', undefined, 'configuration.showOtherCategory', ['barChart']);
-
       shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
+      shouldSetVif('setShowLegendOpened', true, 'configuration.showLegendOpened', ['barChart', 'columnChart', 'comboChart', 'histogram', 'timelineChart']);
 
       shouldSetVif('setMapType', 'pointMap', 'series[0].mapOptions.mapType', ['map']);
       shouldSetVif('setPointMapPointSize', 4, 'series[0].mapOptions.pointMapPointSize', ['map']);

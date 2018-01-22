@@ -957,6 +957,25 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#getShowLegendOpened', () => {
+    let viz;
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+    });
+
+    it('returns false if showLegendOpened is not set', () => {
+      assert.isFalse(viz.getShowLegendOpened());
+    });
+
+    it('returns the value of showLegendOpened if present', () => {
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.configuration.showLegendOpened = true;
+      viz.updateVif(copiedVif);
+      assert.isTrue(viz.getShowLegendOpened());
+    });
+  });
+
   describe('#emitEvent', () => {
     it('emits an event on the element', function(done) {
       $element.on('TEST_EVENT', function(event) {

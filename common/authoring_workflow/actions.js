@@ -614,6 +614,14 @@ export function setShowLegend(showLegend) {
   };
 }
 
+export const SET_SHOW_LEGEND_OPENED = 'SET_SHOW_LEGEND_OPENED';
+export function setShowLegendOpened(showLegendOpened) {
+  return {
+    type: SET_SHOW_LEGEND_OPENED,
+    showLegendOpened
+  };
+}
+
 export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
 export function setXAxisScalingMode({ shouldFit }) {
   return {

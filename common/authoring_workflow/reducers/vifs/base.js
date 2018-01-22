@@ -186,6 +186,10 @@ export default function(state, action) {
       }
       break;
 
+    case actions.SET_SHOW_LEGEND_OPENED:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showLegendOpened', action.showLegendOpened);
+      break;
+
     case actions.SET_VIEW_SOURCE_DATA_LINK:
       _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;

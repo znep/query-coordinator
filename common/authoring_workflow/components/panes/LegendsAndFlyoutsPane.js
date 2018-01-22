@@ -14,9 +14,10 @@ import {
   getMapFlyoutTitleColumnName,
   getSeries,
   getShowLegend,
-  getVisualizationType,
-  getPointAggregation,
   getDimension,
+  getPointAggregation,
+  getShowLegendOpened,
+  getVisualizationType,
   hasReferenceLineLabels,
   isBarChart,
   isColumnChart,
@@ -35,6 +36,7 @@ import {
   setRowInspectorTitleColumnName,
   setMapFlyoutTitleColumnName,
   setShowLegend,
+  setShowLegendOpened,
   setUnitsOne,
   setUnitsOther
 } from '../../actions';
@@ -202,7 +204,7 @@ export class LegendsAndFlyoutsPane extends Component {
   }
 
   renderLegends = () => {
-    const { vifAuthoring, onChangeShowLegend } = this.props;
+    const { onChangeShowLegend, onChangeShowLegendOpened, vifAuthoring } = this.props;
 
     // Currently legends are only available for grouping or multi-series visualizations or pie charts
     const isCurrentlyPieChart = isPieChart(vifAuthoring);
@@ -214,6 +216,20 @@ export class LegendsAndFlyoutsPane extends Component {
     // Pie charts default to showing the legend
     const defaultValue = isCurrentlyPieChart;
     const showLegend = getShowLegend(defaultValue)(vifAuthoring);
+    const showLegendOpened = getShowLegendOpened(vifAuthoring);
+    const scope = 'shared.visualizations.panes.legends_and_flyouts.fields';
+
+    const showLegendOpenedCheckbox = !isPieChart(vifAuthoring) ? (
+      <div className="authoring-field checkbox">
+        <input id="show-legends-opened" type="checkbox" onChange={onChangeShowLegendOpened} defaultChecked={showLegendOpened} />
+        <label className="inline-label" htmlFor="show-legends-opened">
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {I18n.t('show_legend_opened.title', { scope })}
+        </label>
+      </div>
+    ) : null;
 
     return (
       <AccordionPane key="legends" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.legends.title')}>
@@ -223,9 +239,10 @@ export class LegendsAndFlyoutsPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.show_legends.title')}
+            {I18n.t('show_legend.title', { scope })}
           </label>
         </div>
+        {showLegendOpenedCheckbox}
       </AccordionPane>
     );
   }
@@ -420,6 +437,10 @@ function mapDispatchToProps(dispatch) {
 
     onChangeShowLegend: (e) => {
       dispatch(setShowLegend(e.target.checked));
+    },
+
+    onChangeShowLegendOpened: (e) => {
+      dispatch(setShowLegendOpened(e.target.checked));
     }
   };
 }

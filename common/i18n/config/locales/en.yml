@@ -1049,14 +1049,16 @@ en:
               select_column: Select Column...
             row_inspector_title:
               no_value: No Point Inspector Title
+            show_legend:
+              title: Show Legend
+            show_legend_opened:
+              title: Show Legend Open by Default
             maps_flyout_title:
               no_value: None
               title: Flyout Title
             placeholders:
               point: point
               points: points
-            show_legends:
-              title: Show Legends
             units_one:
               placeholder: Row
               title: Singular

@@ -365,6 +365,11 @@ export const getShowLegend = (defaultValue = false) => createSelector(
   (vif) => _.get(vif, 'configuration.showLegend', defaultValue)
 );
 
+export const getShowLegendOpened = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.showLegendOpened', false)
+);
+
 export const getXAxisScalingMode = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'configuration.xAxisScalingMode')

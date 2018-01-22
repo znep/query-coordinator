@@ -187,7 +187,7 @@ export default class ExportFlannel extends PureComponent {
     if (rowCount) {
       return (
         <span>
-          ({rowCount})
+          ({rowCount} {I18n.t('common.export.row', { count: rowCount })})
         </span>
       );
     } else {

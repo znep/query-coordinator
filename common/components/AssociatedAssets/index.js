@@ -167,8 +167,11 @@ export class AssociatedAssets extends Component {
 
     const modal = modalIsOpen && (
       <Modal {...modalProps}>
-        <ModalHeader title={'Associate asset'} onDismiss={onDismiss} />
+        <ModalHeader title={'Associate with Parent Asset'} onDismiss={onDismiss} />
         <ModalContent>
+          <p className="association-note">{`Note: In order to associate your dataset with a data asset,
+            the data asset must have been submitted for review. You cannot associate a dataset with a draft
+            data asset.`}</p>
           {this.renderAssociatedAssetLinks()}
           {this.renderAddAssociatedAssetButton()}
           <div className="action-buttons">

@@ -2399,7 +2399,7 @@ en:
         source_error: There was an error with the data source
         transform_error: There was an unexpected error with the following expression
       geocode_shortcut:
-        title: Georeference your dataset
+        title: Georeference your Dataset
         what_is_geocoding: Transform your data into coordinates
         lat_long: Lat/Long
         addr_separate: Address (separated)

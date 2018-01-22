@@ -2,7 +2,10 @@
 @import 'common/styleguide/variables/colors';
 
 .geocodeWrapper {
-  margin: 1em;
+  margin: 1em 0.75em;
+  h2 {
+    line-height: 100%;
+  }
 }
 .content {
   display: flex;
@@ -18,6 +21,9 @@
 .geocodeOptions {
   border-bottom: 1px solid $light-grey-5;
   width: 100%;
+  p {
+    font-size: 13px;
+  }
 }
 
 .formWrap {

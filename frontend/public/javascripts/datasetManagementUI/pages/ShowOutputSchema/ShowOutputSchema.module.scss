@@ -80,7 +80,7 @@ $sidebar-width: 250px;
   .titleWrapper {
     h2 {
       margin-right: 0.3em;
-      padding: 2px 0px;
+      padding: 0 0 2px;
       display: inline-block;
     }
 
@@ -131,7 +131,7 @@ $sidebar-width: 250px;
 }
 
 .optionsWrap {
-  padding-top: 8px;
+  padding-top: 12px;
 }
 
 :global {
@@ -141,6 +141,6 @@ $sidebar-width: 250px;
 }
 
 .addColPane {
-  padding: 10px;
+  padding: 12px 0 10px;
   white-space: nowrap;
 }

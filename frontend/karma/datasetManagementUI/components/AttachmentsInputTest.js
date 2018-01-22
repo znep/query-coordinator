@@ -66,7 +66,7 @@ describe('components/AttachmentsInput', () => {
     });
 
     it('calls remove callback when remove icon is clicked', () => {
-      const rm = component.find('a.removeButton');
+      const rm = component.find('a.remove-button');
       rm.simulate('click', {});
 
       const [attachment] = component.props().removeAttachment.getCall(0).args;

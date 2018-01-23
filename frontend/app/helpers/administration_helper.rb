@@ -193,7 +193,7 @@ module AdministrationHelper
   end
 
   def user_can_see_roles?
-    feature_flag?('enable_configurable_roles_ui', request) && user_can?(UserRights::MANAGE_USERS)
+    feature_flag?('configurable_roles', request) && user_can?(UserRights::MANAGE_USERS)
   end
 
   def user_can_see_routing_approval?

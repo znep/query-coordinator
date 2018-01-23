@@ -19,7 +19,8 @@ import {
   getDomain,
   getShapefileUid,
   isRegionMap,
-  getPointAggregation
+  getPointAggregation,
+  getSelectedVisualizationType
 } from '../selectors/vifAuthoring';
 
 import {
@@ -116,23 +117,23 @@ export class RegionSelector extends Component {
 
     let disabled = !hasRegions(metadata);
     let placeholder = I18n.t('shared.visualizations.panes.data.fields.region.placeholder');
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isPointMapColumn(metadata, dimension)) {
-      disabled = disabled || !_.isEqual(getPointAggregation(vifAuthoring), 'region_map');
+    if (isNewGLMapEnabled) {
+      disabled = disabled || isPointMapColumn(metadata, dimension) || getPointAggregation(vifAuthoring) !== 'region_map';
       placeholder = I18n.t('shared.visualizations.panes.data.fields.region_map.placeholder');
     }
 
     const regionAttributes = {
+      disabled,
       id: 'region-selection',
-      placeholder,
       options: [...computedColumns, ...curatedRegions],
+      placeholder,
       value: defaultRegion,
-      onSelection: this.onSelectRegion,
-      disabled
+      onSelection: this.onSelectRegion
     };
-    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled) {
+    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
       return (
         <div className="region-selector-container" ref={reference}>
           <Dropdown {...regionAttributes} />

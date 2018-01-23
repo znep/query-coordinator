@@ -34,6 +34,8 @@ import {
   isPointMapColumn
 } from '../selectors/metadata';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 export class MeasureSelector extends Component {
   constructor(props) {
     super(props);
@@ -144,9 +146,10 @@ export class MeasureSelector extends Component {
       className: 'list-item',
       key: this.getListItemKey(seriesIndex)
     };
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      (isNewGLMapEnabled && isPointMapColumn(metadata, dimension) && getPointAggregation(vifAuthoring) !== 'region_map');
     const measureAttributes = {
       disabled,
       id: `measure-selection-${seriesIndex}`,
@@ -173,9 +176,10 @@ export class MeasureSelector extends Component {
       className: 'list-item',
       key: this.getListItemKey(seriesItem.seriesIndex)
     };
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      (isNewGLMapEnabled && isPointMapColumn(metadata, dimension) && getPointAggregation(vifAuthoring) !== 'region_map');
     const measureAttributes = {
       disabled,
       id: `measure-selection-${seriesItem.seriesIndex}`,
@@ -214,9 +218,10 @@ export class MeasureSelector extends Component {
       ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type })),
       { title: I18n.translate('shared.visualizations.aggregations.none'), value: null }
     ];
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      (isNewGLMapEnabled && isPointMapColumn(metadata, dimension) && getPointAggregation(vifAuthoring) !== 'region_map');
     const measureAggregationAttributes = {
       disabled,
       id: `measure-aggregation-selection-${seriesItem.seriesIndex}`,

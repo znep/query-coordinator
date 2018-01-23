@@ -190,13 +190,12 @@ export class DataPane extends Component {
   }
 
   renderMeasureSelector = () => {
+    const { vifAuthoring } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled) {
+    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
       return;
     }
-
-    const { vifAuthoring } = this.props;
 
     const nonFlyoutSeries = getNonFlyoutSeries(vifAuthoring).map((item, index) => {
       return _.extend({ seriesIndex: index }, item);
@@ -233,9 +232,10 @@ export class DataPane extends Component {
   }
 
   renderRegionSelector = () => {
+    const { vifAuthoring } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled) {
+    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
       return;
     }
 

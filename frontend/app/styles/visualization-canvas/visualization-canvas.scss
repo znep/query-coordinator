@@ -392,12 +392,6 @@ body {
         position: relative;
         z-index: 4;
 
-        &:hover, &:focus {
-          .action-btns .btn {
-            opacity: 1;
-          }
-        }
-
         .action-btns {
           $btn-z-index: 5;
 
@@ -412,7 +406,6 @@ body {
             vertical-align: top;
             font-size: 12px;
             height: 30px;
-            opacity: 0;
 
             &:hover, &:focus {
               opacity: 1;

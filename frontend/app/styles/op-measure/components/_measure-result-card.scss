@@ -1,5 +1,6 @@
 .measure-result-card {
   position: relative;
+  // TODO: width and height might be left to the container, but then maybe they should be 100%.
   width: 275px;
   height: 140px;
   border: solid 1px $light-grey-1;

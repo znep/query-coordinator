@@ -4,6 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 
+import I18n from 'common/i18n';
+
 import { MeasureResultCard } from 'opMeasure/components/MeasureResultCard';
 
 describe('MeasureResultCard', () => {
@@ -67,21 +69,24 @@ describe('MeasureResultCard', () => {
     };
     let card;
 
-    const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 5);
+    const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 1);
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.12345');
+    assert.equal(getRenderedValue(card), '33.1');
 
     const measureWithoutDecimalPlaces = {};
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.12345678');
+    assert.equal(getRenderedValue(card), '33.123'); // Truncates to the default maxLength of 6.
 
     const measureWithManyDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 100);
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.12345678'); // Still truncates at a max length.
+    assert.equal(getRenderedValue(card), '33.123'); // Still truncates at a maxLength.
 
     computedMeasure.result = '33.123';
     card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
     assert.equal(getRenderedValue(card), '33.123');
+
+    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} maxLength={100} />);
+    assert.equal(getRenderedValue(card), computedMeasure.result);
   });
 
   // We may want to adjust the logic for when to humanize numbers.
@@ -98,11 +103,71 @@ describe('MeasureResultCard', () => {
 
   it('renders a spinner if dataRequestInFlight is set', () => {
     const element = shallow(<MeasureResultCard dataRequestInFlight {...getProps()} />);
-    assert.lengthOf(element.find('.spinner'), 1);
+    assert.lengthOf(element.find('.spinner-default'), 1);
   });
 
   it('renders no spinner if dataRequestInFlight is not set', () => {
     const element = shallow(<MeasureResultCard {...getProps()} />);
-    assert.lengthOf(element.find('.spinner'), 0);
+    assert.lengthOf(element.find('.spinner-default'), 0);
   });
+
+  describe('Error messages', () => {
+    const getSubtitle = (element) => element.find('.measure-result-placeholder-text').text();
+    describe('when computedMeasure is missing', () => {
+      it('renders message about no dataset', () => {
+        const element = shallow(<MeasureResultCard {...getProps()} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+      });
+    });
+
+    describe('when computedMeasure is empty', () => {
+      it('renders message about no dataset', () => {
+        const computedMeasure = {};
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+      });
+    });
+
+    describe('when computedMeasure.dataSourceNotConfigured = true', () => {
+      it('renders message about no dataset', () => {
+        const computedMeasure = {
+          dataSourceNotConfigured: true
+        };
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+      });
+    });
+
+    describe('when computedMeasure.calculationNotConfigured = true', () => {
+      it('renders message about calculation not configured', () => {
+        const computedMeasure = {
+          calculationNotConfigured: true
+        };
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.no_calculation'));
+      });
+    });
+
+    describe('when computedMeasure.noReportingPeriodConfigured = true', () => {
+      it('renders message about reporting period not configured', () => {
+        const computedMeasure = {
+          noReportingPeriodConfigured: true
+        };
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.no_reporting_period'));
+      });
+    });
+
+    describe('when computedMeasure.noReportingPeriodAvailable = true', () => {
+      it('renders message about not enough data', () => {
+        const computedMeasure = {
+          noReportingPeriodAvailable: true
+        };
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.not_enough_data'));
+      });
+    });
+
+  });
+
 });

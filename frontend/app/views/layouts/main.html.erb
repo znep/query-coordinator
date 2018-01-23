@@ -96,6 +96,9 @@ http://www.socrata.com
   <%- end -%>
 
   <%= get_favicon_tag %>
+
+  <%# Adding shared/common bundle higher up, since all webpack bundles in the shared.config depends on this being loaded first %>
+  <%= include_webpack_bundle 'shared/common' %>
 </head>
 
 <body class="<%= body_classes %> <%= data_grid_body_class -%>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">

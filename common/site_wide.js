@@ -71,7 +71,7 @@ window.autocomplete = function(containerSelector, options, defaultState) {
  * that can be called to show the access manager modal.
  */
 /** ***************************************************************************************************/
-if (_.get(window, 'socrata.featureFlags.enable_access_manager_modal', false)) {
+if (_.get(window, 'socrata.featureFlags.enable_new_dataset_sharing_ux', false)) {
   document.addEventListener('DOMContentLoaded', () => {
     const accessManagerRoot = document.getElementById('access-manager-container');
     if (accessManagerRoot) {

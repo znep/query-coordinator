@@ -1,34 +1,21 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-
-import I18n from 'common/i18n';
+import get from 'lodash/get';
 
 import styles from './chooser.module.scss';
 import AudienceScopeChooserRadioButton from './AudienceScopeChooserRadioButton';
 
 /**
- * Renders all the radio buttons to change the chosen audience,
- * and a button to go back to the AccessSummary.
+ * Renders all the radio buttons to change the chosen audience
  */
 class AudienceScopeChooser extends Component {
   render() {
+    const renderOrgannizationScope = get(window, 'socrata.featureFlags.enable_internal_sharing', false);
     return (
-      <div>
-        <form styleName="form">
-          <AudienceScopeChooserRadioButton scope="private" />
-          <br />
-          <AudienceScopeChooserRadioButton scope="public" />
-        </form>
-
-        <div styleName="footer">
-          <Link
-            to="/"
-            className="btn btn-primary"
-            styleName="confirm-button">
-            {I18n.t('shared.site_chrome.access_manager.accept')}
-          </Link>
-        </div>
+      <div styleName="chooser">
+        <AudienceScopeChooserRadioButton scope="private" />
+        {renderOrgannizationScope && (<AudienceScopeChooserRadioButton scope="organization" />)}
+        <AudienceScopeChooserRadioButton scope="public" />
       </div>
     );
   }

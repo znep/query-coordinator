@@ -1,0 +1,24 @@
+@import 'common/components/AccessManager/common.module.scss';
+
+.confirm-button {
+  padding: 10px 31px;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  & :global(.btn-content) {
+    color: $white !important;
+  }
+
+  & :global(.spinner-container) :global(.spinner-default) {
+    border: 3px solid $white;
+    border-right-color: #53a4cd;
+  }
+}
+
+.confirm-spinner {
+  width: 24px !important;
+  height: 24px !important;
+  border-width: 4px !important;
+}

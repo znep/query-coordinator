@@ -1365,14 +1365,10 @@ function SvgTimelineChart($element, vif, options) {
       }
 
       let value = series.rows[dimensionIndex][measureIndex];
-      if (!_.isNil(value)) {
-        const measureColumn = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-        value = formatValueHTML(value, measureColumn, timelineDataToRender);
-      }
 
       return {
-        label: label,
-        value: value
+        label,
+        value
       };
     });
 
@@ -1718,6 +1714,7 @@ function SvgTimelineChart($element, vif, options) {
       getBoundingClientRect();
 
     // Payload
+    const axisLabels = self.getAxisLabels();
     const payload = {
       content: $tableContainer,
       rightSideHint: false,
@@ -1726,8 +1723,8 @@ function SvgTimelineChart($element, vif, options) {
         left: (
           boundingClientRect.left +
           MARGINS.LEFT +
-          xOffset +
-          1
+          (axisLabels.left ? AXIS_LABEL_MARGIN : 0) +
+          xOffset
         ),
         top: (
           boundingClientRect.top +

@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 
+import SocrataIcon from 'common/components/SocrataIcon';
+
+import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
+
 import UserLabel from './UserLabel';
 import styles from './list-item.module.scss';
-import SocrataIcon from '../../../SocrataIcon';
-import UserPropType from '../../propTypes/UserPropType';
 
 /**
  * Children are rendered after the user label is, for optional actions that can

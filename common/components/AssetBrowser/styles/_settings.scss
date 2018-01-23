@@ -7,7 +7,7 @@
   section {
     background-color: $white;
     border-top: 1px solid $panel-border-color;
-    padding: 1rem 35%;
+    padding: 1rem 32.5%;
     font-size: 80%;
   }
 
@@ -16,11 +16,15 @@
   }
 
   .introduction {
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
 
     .section-title {
       font-size: 120%;
     }
+  }
+
+  .learn_more {
+    margin: 1rem 0;
   }
 
   .actions {
@@ -61,12 +65,12 @@
     .socrata-icon-official2,
     .socrata-icon-community {
       position: relative;
-      width: 20px;
-      height: 20px;
-      margin-right: 0.3em;
+      width: 30px;
+      height: 30px;
+      margin-right: 0;
       float: right;
       font-size: 200%;
-      top: 0;
+      top: -0.5rem;
     }
 
     .socrata-icon-official2 {
@@ -83,7 +87,6 @@
 
     li {
       list-style-type: none;
-      display: flex;
       margin-top: 0.25rem;
       background-color: $btn-simple-background-color;
       padding: 0.33rem;
@@ -97,7 +100,7 @@
 
       input {
         position: relative;
-        top: 3px;
+        top: 1px;
 
         &.embiggen {
           font-size: 200%;
@@ -107,7 +110,12 @@
 
       label.radio_label {
         display: inline-block;
-        margin-left: 0.5em;
+        margin-left: 0.5rem;
+        font-weight: bold;
+
+        & + div {
+          margin-left: 1.5rem;
+        }
 
         div {
           font-size: 80%;
@@ -120,17 +128,13 @@
       margin-bottom: 1rem;
     }
 
-    .learn_more {
-      margin-top: 1rem;
-    }
-
     .email_address {
       color: $light-grey-2;
     }
   }
 
   .checkbox_label {
-    margin-left: 0.5em;
+    margin-left: 0.5rem;
   }
 }
 

@@ -1,9 +1,13 @@
 /* eslint-env node */
 var _ = require('lodash');
 var path = require('path');
+var webpack = require('webpack');
 
 var webpackHelpers = require('./helpers');
 var identifier = path.basename(__filename, '.config.js');
+// Meaning of a "minChunk" from https://webpack.js.org/plugins/commons-chunk-plugin/
+// The minimum number of chunks which need to contain a module before it's moved into the commons chunk.
+var COMMONS_CHUNK_MIN_CHUNKS = 5;
 
 module.exports = _.defaultsDeep({
   context: path.resolve(webpackHelpers.frontendRoot, 'public/javascripts'),
@@ -50,5 +54,14 @@ module.exports = _.defaultsDeep({
   externals: {
     jquery: 'jQuery'
   },
-  plugins: webpackHelpers.plugins.concat(webpackHelpers.getManifestPlugin(identifier))
+  plugins: [
+    // Until Webpack gets upgraded past v1.x, we'll be using a very outdated version / syntax for
+    // the CommonsChunkPlugin. The arguments here are: CommonsChunkPlugin(<name>, <filename>, <minChunks>)
+    // the meanings of <name>, <filename> and <minChunks> have not changed so you can refer to
+    // https://webpack.js.org/plugins/commons-chunk-plugin/ for more info
+    new webpack.optimize.CommonsChunkPlugin('common', 'shared/common.js', COMMONS_CHUNK_MIN_CHUNKS)
+  ].concat(
+    webpackHelpers.plugins,
+    webpackHelpers.getManifestPlugin(identifier)
+  )
 }, require('./base'));

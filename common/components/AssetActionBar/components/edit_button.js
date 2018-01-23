@@ -129,7 +129,6 @@ class EditButton extends React.Component {
 
   workingCopyCreated(workingCopy) {
     this.workingCopy = workingCopy;
-    this.setState({ workingCopy: 'ready' });
 
     // Parity behavioral decision:
     // If the working copy creation was started during this browser session, then after
@@ -140,6 +139,10 @@ class EditButton extends React.Component {
     // This matches the behavior found in dataset-show.js.
     if (this.workingCopyCreatedDuringThisBrowserSession) {
       window.location.assign(this.urlForWorkingCopy());
+    } else {
+      // We only set this if working copy was not created this browser session.
+      // That way, the user never sees it switch back to Edit shortly before redirection.
+      this.setState({ workingCopy: 'ready' });
     }
   }
 
@@ -199,7 +202,18 @@ class EditButton extends React.Component {
       }
     }[this.state.workingCopy];
 
-    const actionText = I18n.t(translationKey, { scope: this.i18n_scope });
+    const actionText = (() => {
+      if (this.state.workingCopy === 'creating') {
+        return [
+          <span className="spinner-default spinner-btn-primary" />,
+          I18n.t(translationKey, { scope: this.i18n_scope })
+        ];
+      } else {
+        return I18n.t(translationKey, { scope: this.i18n_scope });
+      }
+    })();
+
+    componentOptions.className += ' edit-button';
 
     if (this.state.workingCopy === 'ready') {
       return (<a href={this.urlForWorkingCopy()}>

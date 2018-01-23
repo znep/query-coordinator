@@ -1,9 +1,16 @@
 import { delay } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
-import * as changeOwnerActions from '../actions/ChangeOwnerActions';
+
+import {
+  filterOwnerSearchResults,
+  userAutocompleteUrl,
+  fetchJsonWithDefaults
+} from 'common/components/AccessManager/Util';
+import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from 'common/components/AccessManager/Constants';
+
+import * as changeOwnerActions from 'common/components/AccessManager/actions/ChangeOwnerActions';
+
 import { getCurrentOwner } from './Selectors';
-import { filterOwnerSearchResults, userAutocompleteUrl, fetchJsonWithDefaults } from '../Util';
-import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from '../Constants';
 
 // search for ALL users
 function* ownerSearchQueryChanged(action) {

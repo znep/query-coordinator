@@ -435,10 +435,33 @@ en:
     settings:
       title: Settings
       introduction:
-        paragraph_1: This Approval workflow allows you to control whether or not assets published by privileged users on your site immediately become available to the public, or if such assets require review before becoming publicly-available. You can set different behavior for "Official" assets (i.e. those owned by users with roles on your site) and "Community" assets (i.e. those owned by users without roles on your site, typically data consumers from the general public) below.
-        paragraph_2: 'Note: Only "approved" assets are available to the public and discoverable in your data catalog. Once an asset has been "approved" in the Approval Queue, all future edits to this asset will be automatically approved by the system. Of course, assets can be manually "rejected" later, if necessary.'
+        summary: Your Approval workflow provides designated Approvers with a queue where they can review data submitted for public release, take approval action where appropriate, and reverse prior actions when necessary.
+      learn_more: Learn more on the Socrata Knowledge Base
+      user_management: Go to User Management
+      official_assets:
+        title: Official assets
+        subtitle: When data assets are published to the public by roled users on your site, these assets should...
+        manual_approval:
+          required:
+            title: Require manual approval
+            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before becoming available to the public. After review, these assets will appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
+          not_required:
+            title: NOT require manual approval
+            subtitle: These assets will become available to the public immediately upon publishing (i.e. they will be automatically approved by the system) and will never appear in the Approval Queue. They will still appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
+      community_assets:
+        title: Community assets
+        subtitle: When data assets (charts, maps, filtered views) using public data are created and saved by members of the community on your site, these assets should...
+        manual_approval:
+          required:
+            title: Require manual approval before appearing in your data catalog
+            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before appearing in your data catalog. After review, these assets will appear in the Previously Reviewed tab for auditing purposes.
+          not_required:
+            title: Appear in the data catalog by default
+            subtitle: These assets will never appear in the Approval Queue and will appear in your data catalog by default. They will also appear in the Previously Reviewed tab for auditing purposes.
+          auto_rejected:
+            title: Never appear in the data catalog by default
+            subtitle: These assets will never appear in the Approval Queue and will not appear in your data catalog by default. They will still appear in the Previously Reviewed tab for auditing purposes.
       approval_process:
-        official: Official asset settings
         roled_users: Assets published by roled users (publishers, designers, etc.)...
         automatic: Is automatically approved and appears in the data catalog
         manual: Requires manual approval to appear in the data catalog
@@ -447,7 +470,6 @@ en:
         public_users: Content published on this site by the public...
         automatically_approve: Automatically Approve
         explanation: Access to these items will be shown in history
-        learn_more: Learn more about Community content
         reapproval: Re-approval
         working_copies: Working copies of approved assets require re-approval to appear in the data catalog
         approvers: Approvers
@@ -6197,7 +6219,6 @@ en:
           subtitle: Manage the permissions of this %{view_type}
           success: Your permissions have been saved
           title: Permissions
-          title_with_access_manager: Manage Access
           validation:
             valid_saved: This view must be valid and saved
         print:

@@ -9,7 +9,7 @@ import { Checkbox } from 'common/components';
 
 import { setUnitLabel, setDecimalPlaces, toggleDisplayAsPercent } from '../../actions/editor';
 import { CalculationTypeNames } from '../../lib/constants';
-import EditedMeasureResultCard from '../EditedMeasureResultCard';
+import MeasureResultCard from '../MeasureResultCard';
 
 // Right hand preview and display options for calculation
 export class CalculationPreview extends Component {
@@ -45,7 +45,8 @@ export class CalculationPreview extends Component {
       onChangeUnitLabel,
       unitLabel,
       onChangeDecimalPlaces,
-      decimalPlaces
+      decimalPlaces,
+      measure
     } = this.props;
 
     const decimalPlacesId = 'metric_decimal_places';
@@ -74,7 +75,7 @@ export class CalculationPreview extends Component {
     return (
       <div className="metric-preview">
         <h5>{I18n.t('open_performance.measure.edit_modal.calculation.sample_result')}</h5>
-        <EditedMeasureResultCard />
+        <MeasureResultCard measure={measure} />
         <div className="metric-display-options">
           <h6 className="metric-display-options-title">
             {I18n.t('open_performance.measure.edit_modal.calculation.display_options.title')}
@@ -113,20 +114,23 @@ CalculationPreview.propTypes = {
   onChangeDecimalPlaces: PropTypes.func,
   onChangeUnitLabel: PropTypes.func,
   onToggleDisplayAsPercent: PropTypes.func,
-  unitLabel: PropTypes.string
+  unitLabel: PropTypes.string,
+  measure: PropTypes.object.isRequired // TODO measurePropType, see MeasureResultCard
 };
 
 export function mapStateToProps(state) {
-  const calculationType = _.get(state, 'editor.measure.metricConfig.type');
-  const decimalPlaces = _.get(state, 'editor.measure.metricConfig.display.decimalPlaces', 0);
-  const displayAsPercent = _.get(state, 'editor.measure.metricConfig.display.asPercent', false);
-  const unitLabel = _.get(state, 'editor.measure.metricConfig.display.label', '');
+  const { measure } = state.editor;
+  const calculationType = _.get(measure, 'metricConfig.type');
+  const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces', 0);
+  const displayAsPercent = _.get(measure, 'metricConfig.display.asPercent', false);
+  const unitLabel = _.get(measure, 'metricConfig.display.label', '');
 
   return {
     calculationType,
     decimalPlaces,
     displayAsPercent,
-    unitLabel
+    unitLabel,
+    measure
   };
 }
 

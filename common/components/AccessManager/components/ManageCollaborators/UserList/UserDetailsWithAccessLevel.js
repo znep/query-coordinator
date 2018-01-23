@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+
+import SocrataIcon from 'common/components/SocrataIcon';
+
+import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
+import UserAccessLevelPropType from 'common/components/AccessManager/propTypes/UserAccessLevelPropType';
+
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+
+import AccessLevelDropdown from 'common/components/AccessManager/components/AccessLevelDropdown';
+import UserDetails from 'common/components/AccessManager/components/UserDetails';
+
 import styles from './user-details-with-access-level.module.scss';
-import AccessLevelDropdown from '../../AccessLevelDropdown';
-import SocrataIcon from '../../../../SocrataIcon';
-import UserDetails from '../../UserDetails';
-import UserPropType from '../../../propTypes/UserPropType';
-import UserAccessLevelPropType from '../../../propTypes/UserAccessLevelPropType';
-import * as permissionsActions from '../../../actions/PermissionsActions';
 
 /**
  * Renders user details with an access level dropdown next to them,

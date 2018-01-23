@@ -1,9 +1,11 @@
 import { call, put, select } from 'redux-saga/effects';
 import { assert } from 'chai';
 import { fetchPermissions, savePermissions } from 'common/components/AccessManager/sagas/PermissionsSagas';
+import { MODES } from 'common/components/AccessManager/Constants';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
-import { permissionsUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+import { permissionsUrl, publishUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
 
 describe('PermissionsSagas', () => {
   const fakeAssetId = 'fake-uuid';
@@ -124,8 +126,14 @@ describe('PermissionsSagas', () => {
   describe('savePermissions', () => {
     it('saves permissions', () => {
       const gen = savePermissions();
+
       assert.deepEqual(
         gen.next().value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.MANAGE_AUDIENCE).value,
         select(selectors.getAssetUid)
       );
 
@@ -158,9 +166,15 @@ describe('PermissionsSagas', () => {
     });
 
     it('catches errors', () => {
-      const gen = savePermissions();
+      const gen = savePermissions({ publishOnSave: false });
+
       assert.deepEqual(
         gen.next().value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.MANAGE_AUDIENCE).value,
         select(selectors.getAssetUid)
       );
 
@@ -184,6 +198,60 @@ describe('PermissionsSagas', () => {
       assert.deepEqual(
         gen.throw('error').value,
         put(permissionsActions.saveFail('error'))
+      );
+
+      assert.deepEqual(
+        gen.next(),
+        { done: true, value: undefined }
+      );
+    });
+
+    it('publishes on save if in publish mode', () => {
+      const gen = savePermissions();
+
+      assert.deepEqual(
+        gen.next().value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.PUBLISH).value,
+        select(selectors.getAssetUid)
+      );
+
+      assert.deepEqual(
+        gen.next(fakeAssetId).value,
+        select(selectors.getPermissions)
+      );
+
+      assert.deepEqual(
+        gen.next(mockPermissions).value,
+        call(
+          fetchJsonWithDefaults,
+          permissionsUrl(fakeAssetId),
+          {
+            method: 'PUT',
+            body: JSON.stringify(mockPermissions)
+          }
+        )
+      );
+
+      assert.deepEqual(
+        gen.next(mockPermissions).value,
+        call(
+          fetchJsonWithDefaults,
+          publishUrl(fakeAssetId),
+          {
+            method: 'POST'
+          }
+        )
+      );
+
+      const datasetId = 'fake-fake';
+
+      assert.deepEqual(
+        gen.next({ id: datasetId }).value,
+        put(uiActions.redirectTo(`/d/${datasetId}`))
       );
 
       assert.deepEqual(

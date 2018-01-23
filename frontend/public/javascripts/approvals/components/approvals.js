@@ -37,7 +37,7 @@ export default class Approvals extends Component {
     const approvalWorkflowId = _.get(window, 'socrata.assetBrowser.staticData.approvalWorkflowId');
     const settingsLink = _.includes(window.socrata.currentUser.rights, 'configure_approvals') ? (
       <div className="settings_link">
-        <SocrataIcon name="settings" />
+        <SocrataIcon name="settings-switch" />
         <a href={`/admin/approvals/settings/${approvalWorkflowId}`}>
           {I18n.t('approvals_settings', { scope: this.scope })}
         </a>

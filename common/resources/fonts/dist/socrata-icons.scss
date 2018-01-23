@@ -116,6 +116,7 @@
 .icon-redo::before, .socrata-icon-redo::before,
 .icon-region::before, .socrata-icon-region::before,
 .icon-search::before, .socrata-icon-search::before,
+.icon-settings-switch::before, .socrata-icon-settings-switch::before,
 .icon-settings::before, .socrata-icon-settings::before,
 .icon-share::before, .socrata-icon-share::before,
 .icon-sign-out::before, .socrata-icon-sign-out::before,
@@ -289,30 +290,31 @@
 .icon-redo::before, .socrata-icon-redo::before { content: "\EA74"; }
 .icon-region::before, .socrata-icon-region::before { content: "\EA75"; }
 .icon-search::before, .socrata-icon-search::before { content: "\EA76"; }
-.icon-settings::before, .socrata-icon-settings::before { content: "\EA77"; }
-.icon-share::before, .socrata-icon-share::before { content: "\EA78"; }
-.icon-sign-out::before, .socrata-icon-sign-out::before { content: "\EA79"; }
-.icon-sort-asc::before, .socrata-icon-sort-asc::before { content: "\EA7A"; }
-.icon-sort-az::before, .socrata-icon-sort-az::before { content: "\EA7B"; }
-.icon-sort-desc::before, .socrata-icon-sort-desc::before { content: "\EA7C"; }
-.icon-sort-za::before, .socrata-icon-sort-za::before { content: "\EA7D"; }
-.icon-stories-icon::before, .socrata-icon-stories-icon::before { content: "\EA7E"; }
-.icon-stories-menu::before, .socrata-icon-stories-menu::before { content: "\EA7F"; }
-.icon-story::before, .socrata-icon-story::before { content: "\EA80"; }
-.icon-sub-org::before, .socrata-icon-sub-org::before { content: "\EA81"; }
-.icon-table::before, .socrata-icon-table::before { content: "\EA82"; }
-.icon-tag::before, .socrata-icon-tag::before { content: "\EA83"; }
-.icon-team::before, .socrata-icon-team::before { content: "\EA84"; }
-.icon-text::before, .socrata-icon-text::before { content: "\EA85"; }
-.icon-twitter::before, .socrata-icon-twitter::before { content: "\EA86"; }
-.icon-undo::before, .socrata-icon-undo::before { content: "\EA87"; }
-.icon-user::before, .socrata-icon-user::before { content: "\EA88"; }
-.icon-waiting::before, .socrata-icon-waiting::before { content: "\EA89"; }
-.icon-warning-alt::before, .socrata-icon-warning-alt::before { content: "\EA8A"; }
-.icon-warning-alt2::before, .socrata-icon-warning-alt2::before { content: "\EA8B"; }
-.icon-warning::before, .socrata-icon-warning::before { content: "\EA8C"; }
-.icon-watch::before, .socrata-icon-watch::before { content: "\EA8D"; }
-.icon-watched::before, .socrata-icon-watched::before { content: "\EA8E"; }
-.icon-windows::before, .socrata-icon-windows::before { content: "\EA8F"; }
-.icon-working-copy::before, .socrata-icon-working-copy::before { content: "\EA90"; }
-.icon-yahoo::before, .socrata-icon-yahoo::before { content: "\EA91"; }
+.icon-settings-switch::before, .socrata-icon-settings-switch::before { content: "\EA77"; }
+.icon-settings::before, .socrata-icon-settings::before { content: "\EA78"; }
+.icon-share::before, .socrata-icon-share::before { content: "\EA79"; }
+.icon-sign-out::before, .socrata-icon-sign-out::before { content: "\EA7A"; }
+.icon-sort-asc::before, .socrata-icon-sort-asc::before { content: "\EA7B"; }
+.icon-sort-az::before, .socrata-icon-sort-az::before { content: "\EA7C"; }
+.icon-sort-desc::before, .socrata-icon-sort-desc::before { content: "\EA7D"; }
+.icon-sort-za::before, .socrata-icon-sort-za::before { content: "\EA7E"; }
+.icon-stories-icon::before, .socrata-icon-stories-icon::before { content: "\EA7F"; }
+.icon-stories-menu::before, .socrata-icon-stories-menu::before { content: "\EA80"; }
+.icon-story::before, .socrata-icon-story::before { content: "\EA81"; }
+.icon-sub-org::before, .socrata-icon-sub-org::before { content: "\EA82"; }
+.icon-table::before, .socrata-icon-table::before { content: "\EA83"; }
+.icon-tag::before, .socrata-icon-tag::before { content: "\EA84"; }
+.icon-team::before, .socrata-icon-team::before { content: "\EA85"; }
+.icon-text::before, .socrata-icon-text::before { content: "\EA86"; }
+.icon-twitter::before, .socrata-icon-twitter::before { content: "\EA87"; }
+.icon-undo::before, .socrata-icon-undo::before { content: "\EA88"; }
+.icon-user::before, .socrata-icon-user::before { content: "\EA89"; }
+.icon-waiting::before, .socrata-icon-waiting::before { content: "\EA8A"; }
+.icon-warning-alt::before, .socrata-icon-warning-alt::before { content: "\EA8B"; }
+.icon-warning-alt2::before, .socrata-icon-warning-alt2::before { content: "\EA8C"; }
+.icon-warning::before, .socrata-icon-warning::before { content: "\EA8D"; }
+.icon-watch::before, .socrata-icon-watch::before { content: "\EA8E"; }
+.icon-watched::before, .socrata-icon-watched::before { content: "\EA8F"; }
+.icon-windows::before, .socrata-icon-windows::before { content: "\EA90"; }
+.icon-working-copy::before, .socrata-icon-working-copy::before { content: "\EA91"; }
+.icon-yahoo::before, .socrata-icon-yahoo::before { content: "\EA92"; }

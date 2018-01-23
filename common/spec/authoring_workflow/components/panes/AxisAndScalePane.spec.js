@@ -2,7 +2,7 @@ import TestUtils from 'react-dom/test-utils';
 import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import { AxisAndScalePane } from 'common/authoring_workflow/components/panes/AxisAndScalePane';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function render(type, dimensionColumnName) {
   const referenceLines = [
@@ -87,7 +87,7 @@ describe('AxisAndScalePane', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

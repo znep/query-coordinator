@@ -6,7 +6,6 @@ import TestUtils from 'react-dom/test-utils';
 
 import defaultProps from '../defaultProps';
 import { ColumnSelector } from 'common/authoring_workflow/components/ColumnSelector';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
 
 const validVifAuthoring = {
   authoring: {

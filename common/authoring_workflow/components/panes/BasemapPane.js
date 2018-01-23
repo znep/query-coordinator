@@ -8,7 +8,7 @@ import I18n from 'common/i18n';
 import {
   BASE_LAYERS,
   BASE_MAP_STYLES,
-  MAP_SLIDER_DEBOUNCE_MILLISECONDS
+  getMapSliderDebounceMs
 } from '../../constants';
 
 import EmptyPane from './EmptyPane';
@@ -49,7 +49,7 @@ export class BasemapPane extends Component {
       { disabled }
     );
     const baseMapOpacityAttributes = {
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      delay: getMapSliderDebounceMs(),
       disabled,
       id: 'base-map-opacity',
       rangeMax: 1,

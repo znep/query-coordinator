@@ -4,7 +4,7 @@ import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import I18n from 'common/i18n';
 import { MeasureAxisOptionsDual } from 'common/authoring_workflow/components/MeasureAxisOptionsDual';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 describe('MeasureAxisOptionsDual', () => {
 
@@ -14,7 +14,7 @@ describe('MeasureAxisOptionsDual', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

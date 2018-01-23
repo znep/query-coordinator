@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { getInputDebounceMs } from '../../constants';
 import { setUserActive, setUserIdle } from '../../actions';
 import { isUserCurrentlyActive } from '../../selectors/vifAuthoring';
 
@@ -51,7 +51,7 @@ export class DebouncedInput extends React.Component {
     this.timeoutId = setTimeout(() => {
       this.props.onDebouncedInputStop();
       return this.props.onChange(event);
-    }, INPUT_DEBOUNCE_MILLISECONDS);
+    }, getInputDebounceMs());
   }
 
   handleKeyDown(event) {

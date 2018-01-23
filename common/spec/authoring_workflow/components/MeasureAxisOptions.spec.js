@@ -2,7 +2,7 @@ import TestUtils from 'react-dom/test-utils';
 import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { MeasureAxisOptions } from 'common/authoring_workflow/components/MeasureAxisOptions';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 describe('MeasureAxisOptions', () => {
   function emitsEvent(id, eventName, eventType) {
@@ -11,7 +11,7 @@ describe('MeasureAxisOptions', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

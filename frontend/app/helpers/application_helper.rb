@@ -1248,6 +1248,7 @@ module ApplicationHelper
                                                view: @view, request: _req)
 
     return false unless current_user_can_see_asset_action_bar?
+    return false if action_name == 'new'
 
     # On DSMUI, we also need a second flag to decide rendering.
     on_dsmui = controller_name == 'datasets' &&

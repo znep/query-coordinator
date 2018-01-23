@@ -8,10 +8,10 @@ import Dropdown from 'common/components/Dropdown';
 import Button from 'common/components/Button';
 import { defaultHeaders } from 'common/http';
 import I18n from 'common/i18n';
-import Modal, { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
 import { SocrataUid } from '../../lib/socrata_proptypes';
 import EditButton from '../edit_button';
+import confirmation from '../confirmation_dialog/index';
 
 const fetchOptions = {
   credentials: 'same-origin',
@@ -28,42 +28,6 @@ const makePrivateByUid = (uid) => {
   const url = `/api/views/${uid}.json?method=setPermission&value=private`;
 
   return fetch(url, _.assign({}, fetchOptions, { method: 'PUT' }));
-};
-
-const confirmation = (message, options = {}) => {
-  return new Promise((resolve, reject) => {
-    const targetNode = document.querySelector('#asset-action-bar-modal-target');
-    const onDismiss = () => {
-      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
-      resolve(false);
-    };
-
-    const onAgree = () => {
-      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
-      resolve(true);
-    };
-
-    const agreeText = options.agree ||
-      I18n.t('shared.components.asset_action_bar.confirmation.agree');
-    const cancelText = options.cancel ||
-      I18n.t('shared.components.asset_action_bar.confirmation.cancel');
-
-    ReactDOM.render(
-      <Modal onDismiss={onDismiss}>
-        <ModalHeader showCloseButton={false}>
-          {options.header}
-        </ModalHeader>
-        <ModalContent>
-          <p>{message}</p>
-        </ModalContent>
-        <ModalFooter>
-          <button onClick={onDismiss} className="btn btn-default">{cancelText}</button>
-          <button onClick={onAgree} className="btn btn-primary">{agreeText}</button>
-        </ModalFooter>
-      </Modal>,
-      targetNode
-    );
-  });
 };
 
 class PublicationAction extends Component {
@@ -131,9 +95,10 @@ class PublicationAction extends Component {
         window.socrata.showAccessManager('change_owner', true);
         break;
       case 'delete-dataset':
-        confirmation(I18n.t('delete_dataset_confirm', { scope: PublicationAction.i18nScope }),
-            { agree: I18n.t('delete_dataset', { scope: PublicationAction.i18nScope }),
-              header: I18n.t('delete_dataset', { scope: PublicationAction.i18nScope })
+        confirmation(I18n.t('delete_dataset_confirm', { scope: PublicationAction.i18n_scope }),
+            { agree: I18n.t('delete_dataset', { scope: PublicationAction.i18n_scope }),
+              header: I18n.t('delete_dataset', { scope: PublicationAction.i18n_scope }),
+              dismissOnAgree: false
             }).
           then((confirmed) => {
             if (confirmed) {
@@ -143,9 +108,10 @@ class PublicationAction extends Component {
           });
         break;
       case 'discard-draft':
-        confirmation(I18n.t('discard_draft_confirm', { scope: PublicationAction.i18nScope }),
-            { agree: I18n.t('discard_draft', { scope: PublicationAction.i18nScope }),
-              header: I18n.t('discard_draft', { scope: PublicationAction.i18nScope })
+        confirmation(I18n.t('discard_draft_confirm', { scope: PublicationAction.i18n_scope }),
+            { agree: I18n.t('discard_draft', { scope: PublicationAction.i18n_scope }),
+              header: I18n.t('discard_draft', { scope: PublicationAction.i18n_scope }),
+              dismissOnAgree: false
             }).
           then((confirmed) => {
             if (confirmed) {

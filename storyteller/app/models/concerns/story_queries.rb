@@ -7,8 +7,31 @@ module StoryQueries
       self.where(uid: uid, deleted_at: nil).order(created_at: :desc).first
     end
 
+    # TODO: If we ever start using this method again, add an order clause.
     def self.find_by_uid_and_digest(uid, digest)
       self.where(uid: uid, digest: digest, deleted_at: nil).first
+    end
+
+    def self.find_next(uid, created_at)
+      self.where(uid: uid, deleted_at: nil).
+        where('created_at > ?', created_at).
+        order(created_at: :asc).
+        first
+    end
+
+    def self.find_previous(uid, created_at)
+      self.where(uid: uid, deleted_at: nil).
+        where('created_at < ?', created_at).
+        order(created_at: :desc).
+        first
+    end
+
+    def next
+      self.class.find_next(uid, created_at)
+    end
+
+    def previous
+      self.class.find_previous(uid, created_at)
     end
 
     # This method will eventually be useful for restoring drafts to previous

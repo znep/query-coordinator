@@ -23,11 +23,6 @@ export default class Clusters {
   }
 
   setup(vif, renderOptions) {
-    const clusterCircleRadius = vif.getClusterCircleRadius(
-      renderOptions.resizeByRange,
-      renderOptions.aggregateAndResizeBy
-    );
-
     this._map.addSource(SOURCES.CLUSTERS, this._sourceOptions(vif, renderOptions));
 
     this._map.addLayer({
@@ -36,7 +31,7 @@ export default class Clusters {
       'source': SOURCES.CLUSTERS,
       'source-layer': '_geojsonTileLayer',
       'paint': {
-        'circle-radius': clusterCircleRadius,
+        'circle-radius': vif.getClusterCircleRadius(renderOptions.resizeByRange),
         'circle-color': renderOptions.layerStyles.CLUSTER_COLOR,
         'circle-stroke-width': renderOptions.layerStyles.CLUSTER_BORDER_SIZE,
         'circle-stroke-color': renderOptions.layerStyles.CLUSTER_BORDER_COLOR,
@@ -50,7 +45,14 @@ export default class Clusters {
       'source': SOURCES.CLUSTERS,
       'source-layer': '_geojsonTileLayer',
       layout: {
-        'text-field': `{${renderOptions.countBy}_abbrev}`,
+        // If clustered by mapbox,
+        //  it will have sum_abbrev (which is the sum of counts of every record)
+        // If a single record from server,
+        //  it will have count
+        // In any case either sum_abbrev will be present or count will be present.
+        // So the below expression will print the existing one and empty string for
+        // non-existing one.
+        'text-field': `{sum_abbrev}{${renderOptions.aggregateAndResizeBy}}`,
         'text-size': 12,
         'text-allow-overlap': true
       },
@@ -73,7 +75,7 @@ export default class Clusters {
     // Updating cluster look and feel based on new base-map-style in vif
     this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE,
       'circle-radius',
-      vif.getClusterCircleRadius(renderOptions.resizeByRange, renderOptions.aggregateAndResizeBy));
+      vif.getClusterCircleRadius(renderOptions.resizeByRange));
     this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE,
       'circle-color',
       renderOptions.layerStyles.CLUSTER_COLOR);
@@ -107,7 +109,7 @@ export default class Clusters {
       'geojsonTile': true,
       'cluster': true,
       'clusterRadius': vif.getClusterRadius(),
-      'aggregateBy': _.uniq([renderOptions.aggregateAndResizeBy, renderOptions.countBy]),
+      'aggregateBy': renderOptions.aggregateAndResizeBy,
       'tiles': [renderOptions.dataUrl],
       'maxzoom': vif.getMaxClusteringZoomLevel()
     };

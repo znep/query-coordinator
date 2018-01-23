@@ -17,7 +17,6 @@ describe('Clusters', () => {
     };
 
     renderOptions = {
-      countBy: '__count_by__',
       aggregateAndResizeBy: '__resize_by__',
       resizeByRange: { avg: 1, max: 1, min: 0 },
       layerStyles: {
@@ -50,7 +49,7 @@ describe('Clusters', () => {
           id: 'cluster-count-label',
           layout: sinon.match({
             'text-allow-overlap': true,
-            'text-field': '{__count_by___abbrev}',
+            'text-field': '{sum_abbrev}{__resize_by__}',
             'text-size': 12
           }),
           paint: { 'text-color': '#ffffff' },
@@ -70,7 +69,7 @@ describe('Clusters', () => {
       clusters.update(vif, renderOptions);
 
       sinon.assert.calledWith(mockMap.setPaintProperty, 'cluster-circle', 'circle-radius',
-        sinon.match({ default: 12, type: 'interval', property: '__resize_by__', stops: [[0, 12], [100, 16], [1000, 20]] })
+        sinon.match({ default: 12, type: 'interval', property: 'sum', stops: [[0, 12], [100, 16], [1000, 20]] })
       );
       sinon.assert.calledWith(mockMap.setPaintProperty, 'cluster-circle', 'circle-color', '#046c8f');
       sinon.assert.calledWith(mockMap.setPaintProperty, 'cluster-circle', 'circle-stroke-width', 2);

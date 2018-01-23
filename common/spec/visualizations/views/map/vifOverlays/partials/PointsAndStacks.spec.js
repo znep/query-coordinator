@@ -18,7 +18,7 @@ describe('PointsAndStacks', () => {
     };
 
     renderOptions = {
-      countBy: '__count_by__',
+      countBy: '__resize_by__',
       colorBy: '__color_by_category__',
       colorByCategories: null,
       aggregateAndResizeBy: '__resize_by__',
@@ -61,7 +61,7 @@ describe('PointsAndStacks', () => {
         sinon.match({
           id: 'stack-count-label',
           type: 'symbol',
-          layout: { 'text-allow-overlap': true, 'text-field': '{__count_by___abbrev}', 'text-size': 12 },
+          layout: { 'text-allow-overlap': true, 'text-field': '{sum_abbrev}{__resize_by__}', 'text-size': 12 },
           paint: sinon.match({ 'text-color': '#656565' }),
           source: 'pointVectorDataSource',
           'source-layer': '_geojsonTileLayer'
@@ -87,7 +87,7 @@ describe('PointsAndStacks', () => {
       pointsAndStacks.setup(vif, renderOptions);
       pointsAndStacks.update(vif, renderOptions);
 
-      sinon.assert.calledWith(mockMap.setFilter, 'point', ['all', ['!has', 'point_count'], ['in', '__count_by__', 1, '1']]);
+      sinon.assert.calledWith(mockMap.setFilter, 'point', ['all', ['!has', 'point_count'], ['in', '__resize_by__', 1, '1']]);
       sinon.assert.calledWith(mockMap.setPaintProperty, 'point', 'circle-color', '#eb6900');
       sinon.assert.calledWith(mockMap.setPaintProperty, 'point', 'circle-radius', 5);
       sinon.assert.calledWith(mockMap.setPaintProperty, 'point', 'circle-opacity', 1);
@@ -108,7 +108,7 @@ describe('PointsAndStacks', () => {
           color: { primary: 'green' }
         }]
       });
-      newRenderOptions.aggregateAndResizeBy = '__new_column__';
+      newRenderOptions.aggregateAndResizeBy = '__count_by__';
       pointsAndStacks.setup(vif, renderOptions);
       pointsAndStacks.update(newVif, newRenderOptions);
 

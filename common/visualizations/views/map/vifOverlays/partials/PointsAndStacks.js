@@ -48,7 +48,14 @@ export default class PointsAndStacks {
       'source-layer': '_geojsonTileLayer',
       'filter': ['any', ['has', 'point_count'], ['!in', renderOptions.countBy, 1, '1']],
       layout: {
-        'text-field': `{${renderOptions.countBy}_abbrev}`,
+        // If clustered by mapbox,
+        //  it will have sum_abbrev (which is the sum of counts of every record)
+        // If a single record from server,
+        //  it will have count
+        // In any case either sum_abbrev will be present or count will be present.
+        // So the below expression will print the existing one and empty string for
+        // non-existing one.
+        'text-field': `{sum_abbrev}{${renderOptions.aggregateAndResizeBy}}`,
         'text-size': 12,
         'text-allow-overlap': true
       },
@@ -131,7 +138,7 @@ export default class PointsAndStacks {
       'geojsonTile': true,
       'cluster': true,
       'clusterRadius': vif.getStackRadius(),
-      'aggregateBy': _.uniq([renderOptions.aggregateAndResizeBy, renderOptions.countBy]),
+      'aggregateBy': renderOptions.aggregateAndResizeBy,
       'tiles': [renderOptions.dataUrl],
       'minzoom': vif.getMaxClusteringZoomLevel() + 1
     };

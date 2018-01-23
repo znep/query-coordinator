@@ -133,30 +133,9 @@ describe('Edit modal reducer', () => {
     it('throws if not given an object for the dataSourceView', () => {
       assert.throws(() => reducer(state, actions.editor.setDataSourceMetadataSuccess(100, 'im not really an object')));
     });
-
-    it('resets metricConfig to only contain default calculation type', () => {
-      _.set(state, 'measure.metricConfig.type', 'recent');
-      _.set(state, 'measure.metricConfig.arguments.column', 'foo');
-      _.set(state, 'measure.metricConfig.dateColumn', 'some_date_column');
-
-      state = reducer(state, actions.editor.setDataSourceMetadataSuccess('test-test', 100, viewMetadata, []));
-
-      assert.deepEqual(state.measure.metricConfig, {type: 'count'});
-    });
   });
 
   describe('SET_DATA_SOURCE_METADATA_FAIL', () => {
-    it('clears the dataSource from the editor state', () => {
-      setDataSourceData(state);
-
-      state = reducer(state, actions.editor.setDataSourceMetadataFail());
-
-      assert.isNull(state.measure.dataSourceLensUid);
-      assert.isUndefined(state.cachedRowCount);
-      assert.isNull(state.dataSourceView);
-      assert.isEmpty(state.displayableFilterableColumns);
-    });
-
     it('sets `state.errors.setDataSourceMetadataError` to true', () => {
       state = reducer(state, actions.editor.setDataSourceMetadataFail());
       assert.isTrue(state.errors.setDataSourceMetadataError);
@@ -164,17 +143,6 @@ describe('Edit modal reducer', () => {
   });
 
   describe('FETCH_DATA_SOURCE_VIEW_FAIL', () => {
-    it('clears the dataSource from the editor state', () => {
-      setDataSourceData(state);
-
-      state = reducer(state, actions.editor.setDataSourceMetadataFail());
-
-      assert.isNull(state.measure.dataSourceLensUid);
-      assert.isUndefined(state.cachedRowCount);
-      assert.isNull(state.dataSourceView);
-      assert.isEmpty(state.displayableFilterableColumns);
-    });
-
     it('sets `state.errors.fetchDataSourceViewError` to true', () => {
       state = reducer(state, actions.editor.fetchDataSourceViewFail());
       assert.isTrue(state.errors.fetchDataSourceViewError);

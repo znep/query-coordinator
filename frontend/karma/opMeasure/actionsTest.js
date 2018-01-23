@@ -22,7 +22,7 @@ describe('thunk actions', () => {
       const measure = { test: 'foo' };
       const coreView = { name: 'my measure' };
       const expectedActions = [
-        { type: editorActions.OPEN_EDIT_MODAL, measure, coreView }
+        { type: editorActions.OPEN_EDIT_MODAL, measure, coreView, viewDataSourceLensUid: undefined }
       ];
 
       const store = mockStore({

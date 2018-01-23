@@ -126,28 +126,30 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       assertIsNumber(rowCount);
       assertIsOneOfTypes(dataSourceView, 'object');
 
-      const newState = resetDataSource(state);
-      const { measure } = newState;
+      const { measure } = state;
 
       return {
-        ...newState,
+        ...state,
         measure: {
           ...measure,
           dataSourceLensUid: uid
         },
         cachedRowCount: rowCount,
         dataSourceView: dataSourceView,
-        displayableFilterableColumns: displayableFilterableColumns
+        displayableFilterableColumns: displayableFilterableColumns,
+        errors: {
+          fetchDataSourceViewError: false,
+          setDataSourceMetadataError: false
+        }
       };
     }
 
     // Invalid state: dataset fetch request failed
     case actions.editor.FETCH_DATA_SOURCE_VIEW_FAIL: {
-      const newState = resetDataSource(state);
-      const { errors } = newState;
+      const { errors } = state;
 
       return {
-        ...newState,
+        ...state,
         errors: {
           ...errors,
           fetchDataSourceViewError: true
@@ -157,11 +159,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     // Invalid state: set dataset metadata failed due to missing calendar_date column
     case actions.editor.SET_DATA_SOURCE_METADATA_FAIL: {
-      const newState = resetDataSource(state);
-      const { errors } = newState;
+      const { errors } = state;
 
       return {
-        ...newState,
+        ...state,
         errors: {
           ...errors,
           setDataSourceMetadataError: true
@@ -305,8 +306,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       return _.set(state, 'measure.metadata.shortName', action.shortName);
 
     case actions.editor.OPEN_EDIT_MODAL: {
+      const editorDataSourceLensUid = _.get(state, 'measure.dataSourceLensUid');
+
       let nextState = {
-        ...state,
+        activePanel: EditTabs.GENERAL_INFO,
         isEditing: true,
         coreView: { ...action.coreView },
         measure: { ...action.measure },
@@ -314,6 +317,15 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         pristineMeasure: _.cloneDeep(action.measure),
         validationErrors: validate().validationErrors
       };
+
+      // Generally, it makes sense to clear out the state and start fresh when opening the edit modal.
+      // However, in the scenario where the user selects a data source, accepts, then opens the edit modal
+      // again, we need to re-populate the datasource data
+      if (action.viewDataSourceLensUid === editorDataSourceLensUid) {
+        nextState.cachedRowCount = state.cachedRowCount;
+        nextState.dataSourceView = state.dataSourceView;
+        nextState.displayableFilterableColumns = state.displayableFilterableColumns;
+      }
 
       // If no calculation type is set, defaults to 'count'
       const currentType = _.get(nextState, 'measure.metricConfig.type');

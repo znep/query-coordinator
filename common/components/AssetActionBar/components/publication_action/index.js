@@ -159,20 +159,6 @@ class PublicationAction extends React.Component {
       });
     }
 
-    if (currentlyAbleTo.discardDraft) {
-      actions.push({
-        title: I18n.t('discard_draft', { scope: this.i18n_scope }),
-        value: 'discard-draft'
-      });
-    }
-
-    if (currentlyAbleTo.deleteDataset) {
-      actions.push({
-        title: I18n.t('delete_dataset', { scope: this.i18n_scope }),
-        value: 'delete-dataset'
-      });
-    }
-
     if (currentlyAbleTo.view) {
       actions.push({
         title: I18n.t('view_published', { scope: this.i18n_scope }),
@@ -191,6 +177,20 @@ class PublicationAction extends React.Component {
       actions.push({
         title: I18n.t('withdraw_approval_request', { scope: this.i18n_scope }),
         value: 'withdraw-approval-request'
+      });
+    }
+
+    if (currentlyAbleTo.discardDraft) {
+      actions.push({
+        title: I18n.t('discard_draft', { scope: this.i18n_scope }),
+        value: 'discard-draft'
+      });
+    }
+
+    if (currentlyAbleTo.deleteDataset) {
+      actions.push({
+        title: I18n.t('delete_dataset', { scope: this.i18n_scope }),
+        value: 'delete-dataset'
       });
     }
 

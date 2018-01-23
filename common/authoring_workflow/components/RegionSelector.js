@@ -18,9 +18,9 @@ import {
   getDimension,
   getDomain,
   getShapefileUid,
+  isNewGLMap,
   isRegionMap,
-  getPointAggregation,
-  getSelectedVisualizationType
+  getPointAggregation
 } from '../selectors/vifAuthoring';
 
 import {
@@ -135,7 +135,7 @@ export class RegionSelector extends Component {
       onSelection: this.onSelectRegion
     };
 
-    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
       return (
         <div className="region-selector-container" ref={reference}>
           <Dropdown {...regionAttributes} />

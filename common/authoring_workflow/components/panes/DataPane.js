@@ -18,7 +18,6 @@ import {
   getAnyDimension,
   getDimension,
   getNonFlyoutSeries,
-  getSelectedVisualizationType,
   getTreatNullValuesAsZero,
   getVisualizationType,
   getXAxisScalingMode,
@@ -28,6 +27,7 @@ import {
   isColumnChart,
   isComboChart,
   isGroupingOrHasMultipleNonFlyoutSeries,
+  isNewGLMap,
   isPieChart,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
@@ -193,7 +193,7 @@ export class DataPane extends Component {
     const { vifAuthoring } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
       return;
     }
 
@@ -235,7 +235,7 @@ export class DataPane extends Component {
     const { vifAuthoring } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
       return;
     }
 
@@ -250,7 +250,7 @@ export class DataPane extends Component {
     const { vifAuthoring, metadata } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
       const dimension = getDimension(vifAuthoring);
       const isPointMap = isPointMapColumn(metadata, dimension);
       const isLineMap = isLineMapColumn(metadata, dimension);
@@ -270,7 +270,7 @@ export class DataPane extends Component {
     const { vifAuthoring, metadata } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
-    if (isNewGLMapEnabled && getSelectedVisualizationType(vifAuthoring) === 'map') {
+    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
       const dimension = getDimension(vifAuthoring);
       const isPointMap = isPointMapColumn(metadata, dimension);
 

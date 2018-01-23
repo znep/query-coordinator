@@ -120,7 +120,9 @@ export class RegionSelector extends Component {
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
     if (isNewGLMapEnabled) {
-      disabled = disabled || isPointMapColumn(metadata, dimension) || getPointAggregation(vifAuthoring) !== 'region_map';
+      disabled = disabled ||
+        isPointMapColumn(metadata, dimension) ||
+        getPointAggregation(vifAuthoring) !== 'region_map';
       placeholder = I18n.t('shared.visualizations.panes.data.fields.region_map.placeholder');
     }
 

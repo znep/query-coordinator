@@ -84,7 +84,7 @@ if [ -n "$RELEASE_MODE" ]; then
 fi
 
 # Package assets
-npm run build:prod
+time npm run build:prod
 
 bundle exec rake assets:precompile
 

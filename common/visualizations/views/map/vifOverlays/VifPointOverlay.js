@@ -107,16 +107,20 @@ export default class VifPointOverlay extends VifOverlay {
     let selects = [`snap_for_zoom(${columnName},{snap_zoom})`];
     let groups = [`snap_for_zoom(${columnName},{snap_zoom})`];
 
-    if (_.isString(colorByColumn) && !_.isUndefined(colorByCategories)) {
+    if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {
       // We are not grouping by colorByColumn. In case that column had 10K unique values,
       // then grouping by the colorByColumn and snapToGrid, will return
       // 10K * snappedToGrid location => number of results. Which will be too much.
       // Instead, we are only interesed in the top x values(colorByCategories) in the colorbyColumn.
       // So we select/group the remaining values as OTHER_COLOR_BY_CATEGORY and the top x in separate groups.
+
+      // We are concatenating empty string to the resizeBy column to convert it to string.
+      // Otherwise, depending on whether it is a numeric column or string column, we need to
+      // use quotes around values(colorByCategories value) in case statement.
       const colorByCategoriesString = _.map(colorByCategories, SoqlHelpers.soqlEncodeValue);
       selects.push('CASE(' +
         `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
-        `${colorByColumn},` + // if value
+        `${colorByColumn}||'',` + // if value
         'true,' + // else condition
         `'${OTHER_COLOR_BY_CATEGORY}'` + // else value
         `) as ${COLOR_BY_CATEGORY_ALIAS}`);
@@ -126,10 +130,10 @@ export default class VifPointOverlay extends VifOverlay {
 
     if (_.isString(resizeByColumn)) {
       selects.push(`sum(${resizeByColumn}) as ${RESIZE_BY_ALIAS}`);
+      conditions.push(`${resizeByColumn} is NOT NULL`);
     }
     selects.push(`count(*) as ${COUNT_ALIAS}`);
 
-    // TODO: Select/Group by the color by column
     return `https://${vif.getDomain()}/resource/${vif.getDatasetUid()}.geojson?$query=` +
       `select ${selects.join(',')} ` +
       `where ${conditions.join(' AND ')} ` +

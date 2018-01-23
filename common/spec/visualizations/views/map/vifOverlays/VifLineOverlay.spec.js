@@ -118,7 +118,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType,true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
+          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
           colorBy: '__color_by_category__'
         });
 
@@ -131,7 +131,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType,true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
+          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
           colorBy: '__color_by_category__',
           aggregateAndResizeBy: '__count__'
         });
@@ -158,7 +158,10 @@ describe('VifLineOverlay', () => {
     describe('setup', () => {
       it('should setup with weighBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
-          dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),sum(county_district) as __weigh_by__,count(*) as __count__ where {{'point' column condition}}"),
+          dataUrl: sinon.match('$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),' +
+            'sum(county_district) as __weigh_by__,count(*) as __count__ ' +
+            "where {{'point' column condition}} " +
+            'AND county_district is NOT NULL'),
           aggregateAndResizeBy: '__weigh_by__',
           countBy: '__count__'
         });
@@ -172,7 +175,9 @@ describe('VifLineOverlay', () => {
     describe('update', () => {
       it('should update with weighBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
-          dataUrl: sinon.match("query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),sum(county_district) as __weigh_by__,count(*) as __count__ where {{'point' column condition}}"),
+          dataUrl: sinon.match('query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),' +
+            'sum(county_district) as __weigh_by__,count(*) as __count__ ' +
+            "where {{'point' column condition}} AND county_district is NOT NULL"),
           aggregateAndResizeBy: '__weigh_by__',
           countBy: '__count__'
         });

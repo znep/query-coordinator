@@ -32,30 +32,33 @@ describe('VifPointOverlay', () => {
         vif = mapMockVif({});
         vif.series[0].mapOptions.colorPointsBy = null;
       });
+      describe('setUp', () => {
+        it('should render points and stacks without colorByCategories column configured', () => {
+          const expectedRenderOptions = sinon.match({
+            colorByCategories: null,
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+            colorBy: '__color_by_category__'
+          });
 
-      it('should render points and stacks without colorByCategories column configured', () => {
-        const expectedRenderOptions = sinon.match({
-          colorByCategories: null,
-          aggregateAndResizeBy: '__count__',
-          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-          colorBy: '__color_by_category__'
-        });
-
-        return vifPointOverlay.setup(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+          return vifPointOverlay.setup(vif).then(() => {
+            sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+          });
         });
       });
 
-      it('should render points and stacks without colorByCategories column configured', () => {
-        const expectedRenderOptions = sinon.match({
-          colorByCategories: null,
-          aggregateAndResizeBy: '__count__',
-          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-          colorBy: '__color_by_category__'
-        });
+      describe('update', () => {
+        it('should render points and stacks without colorByCategories column configured', () => {
+          const expectedRenderOptions = sinon.match({
+            colorByCategories: null,
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+            colorBy: '__color_by_category__'
+          });
 
-        return vifPointOverlay.update(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+          return vifPointOverlay.update(vif).then(() => {
+            sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+          });
         });
       });
     });
@@ -67,28 +70,31 @@ describe('VifPointOverlay', () => {
         vif.series[0].mapOptions.resizePointsBy = null;
       });
 
-      it('should render points and stacks without resizeByRange column configured', () => {
-        const expectedRenderOptions = sinon.match({
-          aggregateAndResizeBy: '__count__',
-          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-          countBy: '__count__'
-        });
+      describe('setup', () => {
+        it('should render points and stacks without resizeByRange column configured', () => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+            countBy: '__count__'
+          });
 
-        return vifPointOverlay.setup(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+          return vifPointOverlay.setup(vif).then(() => {
+            sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+          });
         });
       });
 
+      describe('update', () => {
+        it('should render points and stacks without resizeByRange column configured', () => {
+          const expectedRenderOptions = sinon.match({
+            aggregateAndResizeBy: '__count__',
+            dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
+            countBy: '__count__'
+          });
 
-      it('should render points and stacks without resizeByRange column configured', () => {
-        const expectedRenderOptions = sinon.match({
-          aggregateAndResizeBy: '__count__',
-          dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-          countBy: '__count__'
-        });
-
-        return vifPointOverlay.update(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+          return vifPointOverlay.update(vif).then(() => {
+            sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+          });
         });
       });
     });
@@ -118,7 +124,7 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType,true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -132,7 +138,7 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType,true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -165,7 +171,10 @@ describe('VifPointOverlay', () => {
       it('should setup with resizeBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           resizeByRange: { avg: 1, max: 1, min: 0 },
-          dataUrl: sinon.match("sum(supervisor_district) as __resize_by__,count(*) as __count__ where {{'point' column condition}} group by snap_for_zoom(point,{snap_zoom})"),
+          dataUrl: sinon.match('sum(supervisor_district) as __resize_by__,count(*) as __count__ ' +
+            "where {{'point' column condition}} " +
+            'AND supervisor_district is NOT NULL ' +
+            'group by snap_for_zoom(point,{snap_zoom})'),
           aggregateAndResizeBy: '__resize_by__'
         });
 
@@ -179,7 +188,10 @@ describe('VifPointOverlay', () => {
       it('should update with resizeBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           resizeByRange: { avg: 1, max: 1, min: 0 },
-          dataUrl: sinon.match("sum(supervisor_district) as __resize_by__,count(*) as __count__ where {{'point' column condition}} group by snap_for_zoom(point,{snap_zoom})"),
+          dataUrl: sinon.match('sum(supervisor_district) as __resize_by__,count(*) as __count__ ' +
+            "where {{'point' column condition}} " +
+            'AND supervisor_district is NOT NULL ' +
+            'group by snap_for_zoom(point,{snap_zoom})'),
           aggregateAndResizeBy: '__resize_by__'
         });
 

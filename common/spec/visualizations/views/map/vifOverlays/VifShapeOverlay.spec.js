@@ -85,7 +85,7 @@ describe('VifShapeOverlay', () => {
       it('should setup with colorBoundariesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: ['Street', 'County'],
-          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType,true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -99,7 +99,7 @@ describe('VifShapeOverlay', () => {
       it('should update with colorBoundariesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: ['Street', 'County'],
-          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType,true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 

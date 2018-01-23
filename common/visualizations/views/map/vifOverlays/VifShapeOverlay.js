@@ -91,16 +91,20 @@ export default class VifShapeOverlay extends VifOverlay {
     let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
     let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
 
-    if (_.isString(colorByColumn) && !_.isUndefined(colorByCategories)) {
+    if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {
       // We are not grouping by colorByColumn. In case that column had 10K unique values,
       // then grouping by the colorByColumn and snapToGrid, will return
       // 10K * snappedToGrid location => number of results. Which will be too much.
       // Instead, we are only interesed in the top x values(colorByCategories) in the colorbyColumn.
       // So we select/group the remaining values as OTHER_COLOR_BY_CATEGORY and the top x in separate groups.
+
+      // We are concatenating empty string to the resizeBy column to convert it to string.
+      // Otherwise, depending on whether it is a numeric column or string column, we need to
+      // use quotes around values(colorByCategories value) in case statement.
       const colorByCategoriesString = _.chain(colorByCategories).map(SoqlHelpers.soqlEncodeValue).map(encodeURIComponent).value();
       selects.push('CASE(' +
         `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
-        `${colorByColumn},` + // if value
+        `${colorByColumn}||'',` + // if value
         'true,' + // else condition
         `'${OTHER_COLOR_BY_CATEGORY}'` + // else value
         `) as ${COLOR_BY_CATEGORY_ALIAS}`);

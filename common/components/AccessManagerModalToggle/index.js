@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
+import values from 'lodash/values';
 
 import createStore from './AccessManagerStore';
 import ViewPropType from '../AccessManager/propTypes/ViewPropType';
@@ -7,6 +8,7 @@ import UserPropType from '../AccessManager/propTypes/UserPropType';
 import AccessManager from '../AccessManager/components/AccessManager';
 import { fetchPermissions } from '../AccessManager/actions/PermissionsActions';
 import { showAccessManager } from '../AccessManager/actions/UiActions';
+import { MODES } from '../AccessManager/Constants';
 
 /**
  * This component wraps the AccessManager in a redux store and provider.
@@ -37,7 +39,8 @@ class AccessManagerModalToggle extends Component {
     this.store = createStore({
       ui: {
         errors: [],
-        visible: false
+        visible: false,
+        footer: {}
       },
       permissions: {
         currentUser,
@@ -58,8 +61,12 @@ class AccessManagerModalToggle extends Component {
       window.socrata = {};
     }
 
-    window.socrata.showAccessManager = (refreshPageOnSave = false) => {
-      this.store.dispatch(showAccessManager(refreshPageOnSave));
+    window.socrata.showAccessManager = (mode, refreshPageOnSave = false) => {
+      if (!values(MODES).includes(mode)) {
+        console.error(`Unknown Access Manager mode: ${mode}`);
+      } else {
+        this.store.dispatch(showAccessManager(refreshPageOnSave, mode));
+      }
     };
   }
 

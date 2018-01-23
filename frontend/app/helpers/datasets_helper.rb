@@ -634,7 +634,7 @@ module DatasetsHelper
   def hide_sharing?
     [
       # when this flag is on, sharing is done via the access manager modal
-      FeatureFlags.derive(nil, request).enable_access_manager_modal,
+      FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux,
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::GRANT),
       view.geoParent.present?,
@@ -654,7 +654,7 @@ module DatasetsHelper
   def hide_plagiarize?
     [
       # when this flag is on, sharing is done via the access manager modal
-      FeatureFlags.derive(nil, request).enable_access_manager_modal,
+      FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux,
       !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS),
       view.geoParent.present?,
       view.is_activity_feed_dataset?

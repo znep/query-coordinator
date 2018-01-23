@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { sift } from 'common/js_utils';
 
@@ -7,7 +6,7 @@ import ManageAccessButton from './components/manage_access';
 import PublicationAction from './components/publication_action/index';
 import PublicationState from './components/publication_state/index';
 
-class AssetActionBar extends React.Component {
+class AssetActionBar extends Component {
   constructor(props) {
     super(props);
 

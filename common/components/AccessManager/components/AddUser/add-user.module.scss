@@ -1,24 +1,25 @@
-@import '../../common.module.scss';
+@import 'common/components/AccessManager/common.module.scss';
 
 .container {
   background-color: $light-grey-4;
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
   margin-bottom: 15px;
   box-shadow: 0 -5px 5px $light-grey-6;
-}
 
-.section {
-  display: flex;
-  flex-direction: column;
+  & :global(.multiselect-form-container) {
+    height: auto;
+  }
 }
 
 .add-user-button {
   color: $white;
   width: 75px;
   height: 45px;
-  margin-top: 22px;
 }
 
 .label {

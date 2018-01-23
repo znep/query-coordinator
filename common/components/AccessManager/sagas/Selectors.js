@@ -1,5 +1,7 @@
-import { findUserWithAccessLevel } from '../Util';
-import { ACCESS_LEVELS } from '../Constants';
+import { findUserWithAccessLevel } from 'common/components/AccessManager/Util';
+import { ACCESS_LEVELS } from 'common/components/AccessManager/Constants';
+
+export const getUiMode = state => state.ui.mode;
 
 // accessManager selectors
 export const getAssetUid = state => state.permissions.view.id;

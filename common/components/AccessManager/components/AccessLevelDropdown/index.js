@@ -6,8 +6,9 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import Dropdown from 'common/components/Dropdown';
 
+import UserAccessLevelPropType from 'common/components/AccessManager/propTypes/UserAccessLevelPropType';
+
 import styles from './dropdown.module.scss';
-import UserAccessLevelPropType from '../../propTypes/UserAccessLevelPropType';
 
 /**
  * Dropdown for choosing the "Access Level" for a user

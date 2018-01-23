@@ -3,8 +3,9 @@ import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
 
+import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
+
 import styles from './user-label.module.scss';
-import UserPropType from '../../propTypes/UserPropType';
 
 /**
  * Shows the display name and the email of the given user.

@@ -1,9 +1,5 @@
 <div class="datasetPermissions commonForm">
-  <%- if FeatureFlags.derive(nil, request).enable_access_manager_modal -%>
-    <div class="formSection">
-      <button class="btn btn-primary" onClick="window.socrata.showAccessManager()"><%= t('screens.ds.grid_sidebar.permissions.title_with_access_manager') %></button>
-    </div>
-  <%- else -%>
+  <%- unless FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux -%>
     <div class="formSection">
       <p class="formHeader">
         <%= t('screens.ds.grid_sidebar.permissions.status_html', visibility: (@view.is_public? ? t('core.visibility.public').capitalize : t('core.visibility.private').capitalize)) %>

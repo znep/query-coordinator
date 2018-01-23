@@ -1,9 +1,17 @@
 import { delay } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
-import * as addUsersActions from '../actions/AddUsersActions';
+
+import {
+  filterSearchResults,
+  getDomain,
+  userAutocompleteUrl,
+  fetchJsonWithDefaults
+} from 'common/components/AccessManager/Util';
+import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from 'common/components/AccessManager/Constants';
+
+import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+
 import { getAddedUsers, getSelectedUsers } from './Selectors';
-import { filterSearchResults, getDomain, userAutocompleteUrl, fetchJsonWithDefaults } from '../Util';
-import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from '../Constants';
 
 // grab list of (roled) users from the catalog
 export function* userSearchQueryChanged(action) {

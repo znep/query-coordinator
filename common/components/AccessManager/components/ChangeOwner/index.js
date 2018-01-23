@@ -4,17 +4,21 @@ import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
 import I18n from 'common/i18n';
+import UserSearch from 'common/components/UserSearch';
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
 
+import { ACCESS_LEVELS } from 'common/components/AccessManager/Constants';
+import { findUserWithAccessLevel } from 'common/components/AccessManager/Util';
+
+import * as changeOwnerActions from 'common/components/AccessManager/actions/ChangeOwnerActions';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+
+import SelectedUsersPropType from 'common/components/AccessManager/propTypes/SelectedUsersPropType';
+import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
+
+import UserDetails from 'common/components/AccessManager/components/UserDetails';
+
 import styles from './change-owner.module.scss';
-import * as changeOwnerActions from '../../actions/ChangeOwnerActions';
-import UserSearch from '../../../UserSearch';
-import UserDetails from '../UserDetails';
-import SelectedUsersPropType from '../../propTypes/SelectedUsersPropType';
-import UserPropType from '../../propTypes/UserPropType';
-import ChangeOwnerFooter from './ChangeOwnerFooter';
-import { ACCESS_LEVELS } from '../../Constants';
-import { findUserWithAccessLevel } from '../../Util';
 
 /**
  * Displays the current owner of the asset,
@@ -23,26 +27,42 @@ import { findUserWithAccessLevel } from '../../Util';
  */
 class ChangeOwner extends Component {
   static propTypes = {
-    confirmSelectedOwner: PropTypes.func.isRequired,
+    saveInProgress: PropTypes.bool,
     users: PropTypes.arrayOf(UserPropType),
-
-    // UserSearch props, from redux
     addSelectedOwner: PropTypes.func.isRequired,
     currentSearchQuery: PropTypes.string,
     searchResults: PropTypes.arrayOf(UserSearchResultPropType),
     removeSelectedOwner: PropTypes.func.isRequired,
     selectedOwner: SelectedUsersPropType,
-    ownerSearchQueryChanged: PropTypes.func.isRequired
+    ownerSearchQueryChanged: PropTypes.func.isRequired,
+    setConfirmButtonDisabled: PropTypes.func.isRequired
   }
 
-  hasSelectedOwner = () => this.props.selectedOwner && this.props.selectedOwner.length >= 1;
+  static defaultProps = {
+    saveInProgress: false
+  }
+
+  static updateConfirmButton = (props) => {
+    const {
+      selectedOwner,
+      setConfirmButtonDisabled
+    } = props;
+
+    setConfirmButtonDisabled(!selectedOwner || selectedOwner.length !== 1);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedOwner !== this.props.selectedOwner) {
+      ChangeOwner.updateConfirmButton(nextProps);
+    }
+  }
 
   renderCurrentOwner = () => {
     const { users } = this.props;
     const currentOwner = findUserWithAccessLevel(users, ACCESS_LEVELS.CURRENT_OWNER);
 
     return (
-      <div>
+      <div styleName="current-owner-label">
         <h3>{I18n.t('shared.site_chrome.access_manager.current_owner')}</h3>
         <hr styleName="separator" />
         <UserDetails user={currentOwner} />
@@ -83,27 +103,19 @@ class ChangeOwner extends Component {
   }
 
   render() {
-    const {
-      confirmSelectedOwner,
-      removeSelectedOwner,
-      selectedOwner
-    } = this.props;
-
+    const { saveInProgress } = this.props;
     return (
       <div>
         {this.renderCurrentOwner()}
-        {this.renderChangeOwnerSearch()}
-        <ChangeOwnerFooter
-          confirmSelectedOwner={confirmSelectedOwner}
-          selectedOwner={selectedOwner}
-          hasSelectedOwner={this.hasSelectedOwner()}
-          removeSelectedOwner={removeSelectedOwner} />
+        {!saveInProgress && this.renderChangeOwnerSearch()}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  saveInProgress: state.ui.saveInProgress,
+
   // for UserSearch
   searchResults: state.changeOwner.results ? state.changeOwner.results.results : null,
   currentSearchQuery: state.changeOwner.query,
@@ -112,12 +124,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  confirmSelectedOwner: owner => dispatch(changeOwnerActions.confirmSelectedOwner(owner)),
-
-  // for UserSearch
   addSelectedOwner: searchResult => dispatch(changeOwnerActions.addSelectedOwner(searchResult.user)),
   removeSelectedOwner: user => dispatch(changeOwnerActions.removeSelectedOwner(user)),
-  ownerSearchQueryChanged: (event) => dispatch(changeOwnerActions.ownerSearchQueryChanged(event.target.value))
+  ownerSearchQueryChanged: event => dispatch(changeOwnerActions.ownerSearchQueryChanged(event.target.value)),
+  setConfirmButtonDisabled: disabled => dispatch(uiActions.setConfirmButtonDisabled(disabled))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(cssModules(ChangeOwner, styles));

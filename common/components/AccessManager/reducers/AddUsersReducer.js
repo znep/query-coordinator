@@ -1,5 +1,6 @@
-import * as addUsersActions from '../actions/AddUsersActions';
-import * as permissionsActions from '../actions/PermissionsActions';
+import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
 
 // user is typing into the search box
 const userSearchQueryChanged = (state, action) => ({
@@ -65,10 +66,8 @@ const accessLevelChanged = (state, action) => ({
   accessLevel: action.level.value
 });
 
-// Called when the "confirm" button is clicked and the users have been added
-// to the list of users with access. Since they've been confirmed, we want to blank out
-// our search box.
-const usersAdded = (state) => ({
+
+const resetState = (state) => ({
   ...state,
   selectedUsers: [],
   accessLevel: null,
@@ -92,9 +91,9 @@ export default (state = {}, action) => {
     case addUsersActions.ACCESS_LEVEL_CHANGED:
       return accessLevelChanged(state, action);
 
-    // permissionsActions
-    case permissionsActions.ADD_USERS:
-      return usersAdded(state, action);
+    case permissionsActions.ADD_USERS: // Dispatched when the "confirm" button is clicked and the users have been added to the list of users with access
+    case uiActions.CANCEL_BUTTON_CLICKED: // Dispatched when the "cancel" button is clicked
+      return resetState(state, action);
     default:
       return state;
   }

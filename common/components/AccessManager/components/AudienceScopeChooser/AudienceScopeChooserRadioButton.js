@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
+import SocrataIcon from 'common/components/SocrataIcon';
+
+import AudienceScopePropType from 'common/components/AccessManager/propTypes/AudienceScopePropType';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+
+import AudienceScopeLabel from './AudienceScopeLabel';
 import styles from './radio-button.module.scss';
-import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
-import * as permissionsActions from '../../actions/PermissionsActions';
-import AudienceScopeLabel from '../AudienceScopeLabel';
 
 /**
  * Radio button with an audience label that will update the state with
@@ -26,23 +29,24 @@ class AudienceScopeChooserRadioButton extends Component {
     currentScope: null
   };
 
+  renderCheckMark = () => (
+    <div styleName="checkmark-icon-container">
+      <SocrataIcon name="checkmark3" styleName="checkmark-icon" />
+    </div>
+  )
+
   render() {
     const { scope, currentScope, changeScope } = this.props;
-    const id = `visibility-changer-radio-button-${scope}`;
+    const checked = currentScope === scope;
 
     return (
-      <label htmlFor={id} styleName="container">
-        <input
-          id={id}
-          type="radio"
-          name="visibility"
-          checked={currentScope === scope}
-          onChange={() => changeScope(scope)}
-          styleName="radio-button" />
-        <div styleName="label">
-          <AudienceScopeLabel scope={scope} />
-        </div>
-      </label>
+      <button
+        type="button"
+        onClick={() => changeScope(scope)}
+        styleName={checked ? 'audience-button-checked' : 'audience-button-unchecked'}>
+        {checked && this.renderCheckMark()}
+        <AudienceScopeLabel scope={scope} />
+      </button>
     );
   }
 }

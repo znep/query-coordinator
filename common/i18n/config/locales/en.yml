@@ -295,6 +295,7 @@ en:
             creating_working_copy: Creating Working Copy...
             primary_action_text: Edit
           revert_published: Revert to last published version
+          transfer_ownership: Transfer Ownership
           view_published: View published version
           withdraw_approval_request: Withdraw Approval Request
         publication_state:
@@ -430,7 +431,7 @@ en:
         add: Add
         audience:
           organization:
-            subtitle: Everyone in my Organization can view and edit
+            subtitle: Everyone in my Organization can view
             title: Organization
           private:
             subtitle: Only specific people in my Organization can view and edit
@@ -442,17 +443,29 @@ en:
         change: Change
         change_owner:
           subtitle: The owner will appear on this asset's Primer page and have the ability to delete this asset.
+          success_toast: Ownership transferred!
           title: Transfer Ownership
-        change_scope:
-          subtitle: Who can see this dataset?
+        change_audience:
+          subtitle: Who can see this asset?
+          success_toast: Audience updated!
           title: Change Audience Scope
         current_owner: Current Owner
+        manage_collaborators:
+          subtitle: Add people to collaborate on the draft version of this asset
+          success_toast: Collaborators updated!
+          title: Add Collaborators
         new_owner: New Owner
+        no_collaborators: No collaborators have been added yet. Add some below.
         no_results: No results found. Try again or enter a full email address.
         owner: Owner
         people: People
         permissions_saved: Permissions saved!
         please_select: Please select a user to transfer ownership to
+        publish:
+          subtitle: Choose who to publish this dataset to
+          success_toast: Asset published!
+          title: Publish Asset
+        publish_button: Publish
         save: Save
         summary:
           subtitle: Who can see this dataset?

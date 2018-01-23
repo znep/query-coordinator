@@ -4,8 +4,9 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import AudienceScopePropType from 'common/components/AccessManager/propTypes/AudienceScopePropType';
+
 import styles from './audience-label.module.scss';
-import AudienceScopePropType from '../../propTypes/AudienceScopePropType';
 
 /**
  * A label with an icon, a title, and a subtitle that describes a "scope"
@@ -36,17 +37,15 @@ class AudienceScopeLabel extends Component {
 
     return (
       <div styleName="container">
+        <span styleName="title">
+            {I18n.t(`shared.site_chrome.access_manager.audience.${scope}.title`)}
+        </span>
         <SocrataIcon
           name={AudienceScopeLabel.iconForScope[scope]}
           styleName="icon" />
-        <div styleName="label">
-          <span styleName="title">
-            {I18n.t(`shared.site_chrome.access_manager.audience.${scope}.title`)}
-          </span>
-          <span styleName="subtitle">
-            {I18n.t(`shared.site_chrome.access_manager.audience.${scope}.subtitle`)}
-          </span>
-        </div>
+        <span styleName="subtitle">
+          {I18n.t(`shared.site_chrome.access_manager.audience.${scope}.subtitle`)}
+        </span>
       </div>
     );
   }

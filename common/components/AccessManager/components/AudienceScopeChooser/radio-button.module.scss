@@ -1,18 +1,59 @@
-.container {
+@import 'common/components/AccessManager/common.module.scss';
+
+.audience-button {
   display: flex;
+  justify-content: center;
+  position: relative;
+
+  background: none;
+  border: none;
+
+  width: 185px;
+  height: 170px;
+  margin-right: 10px;
+
   cursor: pointer;
 }
 
-.radio-button {
-  margin-right: 10px;
-}
+.audience-button-unchecked {
+  @extend .audience-button;
 
-.label {
-  width: 75%;
   transition: background-color 0.3s;
-  border-radius: 5px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.audience-button-checked {
+  @extend .audience-button;
+
+  background-color: $primary-light;
+  border: 1px solid $btn-primary-active-border-color;
+}
+
+.checkmark-icon-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  padding: 10px;
+  width: 20px;
+  height: 20px;
+  
+  border-radius: 2px;
+  background-color: $btn-primary-active-border-color;
+}
+
+.checkmark-icon {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+
+  width: 15px;
+  height: 15px;
+
+  & svg polygon {
+    fill: $white;
   }
 }

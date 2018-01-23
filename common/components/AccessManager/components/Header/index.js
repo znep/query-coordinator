@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
+import I18n from 'common/i18n';
+
 import styles from './header.module.scss';
 
 /**
@@ -12,29 +14,26 @@ import styles from './header.module.scss';
  */
 class Header extends Component {
   static propTypes = {
-    title: PropTypes.string,
-    subtitle: PropTypes.string
-  };
+    mode: PropTypes.string
+  }
 
   static defaultProps = {
-    title: '',
-    subtitle: ''
-  };
+    mode: null
+  }
 
   render() {
-    const { title, subtitle } = this.props;
+    const { mode } = this.props;
     return (
       <header styleName="header">
-        <h2>{title}</h2>
-        {subtitle}
+        <h2>{I18n.t(`shared.site_chrome.access_manager.${mode}.title`)}</h2>
+        {I18n.t(`shared.site_chrome.access_manager.${mode}.subtitle`)}
       </header>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  title: state.ui.headerText,
-  subtitle: state.ui.headerSubtitle
+  mode: state.ui.mode
 });
 
 export default connect(mapStateToProps)(cssModules(Header, styles));

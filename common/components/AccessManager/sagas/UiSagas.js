@@ -1,9 +1,9 @@
 import { delay } from 'redux-saga';
 import { takeLatest, call, put } from 'redux-saga/effects';
 
-import { TOAST_NOTIFICATION_MILLISECONDS } from '../Constants';
-import * as permissionsActions from '../actions/PermissionsActions';
-import * as uiActions from '../actions/UiActions';
+import { TOAST_NOTIFICATION_MILLISECONDS } from 'common/components/AccessManager/Constants';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
 
 // when the save is successful, the UiReducer will add a toast notification
 // this saga will, at the same time, start a timer that automatically dismisses the notification

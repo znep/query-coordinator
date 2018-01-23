@@ -1,18 +1,16 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import I18n from 'common/i18n';
 import { SocrataUid } from '../../lib/socrata_proptypes';
 import SocrataIcon from 'common/components/SocrataIcon';
 import EditButton from '../edit_button';
+import confirmation from '../confirmation_dialog/index';
 import Dropdown from 'common/components/Dropdown';
 import Button from 'common/components/Button';
 
 import 'whatwg-fetch';
 import { defaultHeaders, fetchJson } from 'common/http';
-
-import ReactDOM from 'react-dom';
-import Modal, { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
 const fetchOptions = {
   credentials: 'same-origin',
@@ -29,42 +27,6 @@ const makePrivateByUid = (uid) => {
   const url = `/api/views/${uid}.json?method=setPermission&value=private`;
 
   return fetch(url, _.assign({}, fetchOptions, { method: 'PUT' }));
-};
-
-const confirmation = (message, options = {}) => {
-  return new Promise((resolve, reject) => {
-    const targetNode = document.querySelector('#asset-action-bar-modal-target');
-    const onDismiss = () => {
-      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
-      resolve(false);
-    };
-
-    const onAgree = () => {
-      _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
-      resolve(true);
-    };
-
-    const agreeText = options.agree ||
-      I18n.t('shared.components.asset_action_bar.confirmation.agree');
-    const cancelText = options.cancel ||
-      I18n.t('shared.components.asset_action_bar.confirmation.cancel');
-
-    ReactDOM.render(
-      <Modal onDismiss={onDismiss}>
-        <ModalHeader showCloseButton={false}>
-          {options.header}
-        </ModalHeader>
-        <ModalContent>
-          <p>{message}</p>
-        </ModalContent>
-        <ModalFooter>
-          <button onClick={onDismiss} className="btn btn-default">{cancelText}</button>
-          <button onClick={onAgree} className="btn btn-primary">{agreeText}</button>
-        </ModalFooter>
-      </Modal>,
-      targetNode
-    );
-  });
 };
 
 class PublicationAction extends React.Component {
@@ -120,7 +82,8 @@ class PublicationAction extends React.Component {
       case 'delete-dataset':
         confirmation(I18n.t('delete_dataset_confirm', { scope: this.i18n_scope }),
             { agree: I18n.t('delete_dataset', { scope: this.i18n_scope }),
-              header: I18n.t('delete_dataset', { scope: this.i18n_scope })
+              header: I18n.t('delete_dataset', { scope: this.i18n_scope }),
+              dismissOnAgree: false
             }).
           then((confirmed) => {
             if (confirmed) {
@@ -132,7 +95,8 @@ class PublicationAction extends React.Component {
       case 'discard-draft':
         confirmation(I18n.t('discard_draft_confirm', { scope: this.i18n_scope }),
             { agree: I18n.t('discard_draft', { scope: this.i18n_scope }),
-              header: I18n.t('discard_draft', { scope: this.i18n_scope })
+              header: I18n.t('discard_draft', { scope: this.i18n_scope }),
+              dismissOnAgree: false
             }).
           then((confirmed) => {
             if (confirmed) {

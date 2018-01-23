@@ -253,7 +253,7 @@ export const ceteraUtils = (() => {
           ),
           categories: ceteraResult.classification.categories,
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
-          isPublic: true, // Not implemented yet. See cetera::result_row
+          isPublic: ceteraResult.metadata.is_public,
           link: ceteraResult.link,
           previewImageUrl: ceteraResult.preview_image_url,
           tags: ceteraResult.classification.tags,

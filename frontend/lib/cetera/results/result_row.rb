@@ -105,10 +105,8 @@ module Cetera
         type == 'datalens'
       end
 
-      # WARN: This is going to change!!!
-      # Cetera only returns public objects as of 2015/10/19
       def is_public?
-        true
+        !!@metadata['is_public']
       end
 
       def story?

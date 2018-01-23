@@ -6,6 +6,10 @@ import { FeatureFlags } from 'common/feature_flags';
 import ResultCard from 'common/components/AssetBrowser/components/result_card';
 
 describe('components/ResultCard', () => {
+  before(() => {
+    FeatureFlags.updateTestFixture({ usaid_features_enabled: false });
+  });
+
   const defaultProps = {
     categories: ['Fun'],
     description: 'jorts and other denim articles of clothing',
@@ -70,6 +74,22 @@ describe('components/ResultCard', () => {
       updatedAt: '2016-12-15T12:52:12.006Z',
       url: 'http://davidhasselhoffonline.com/',
       viewCount: 9999999
+    });
+  });
+
+  describe('when the asset is public', () => {
+    it('does not render an icon indicating that the asset is private', () => {
+      const wrapper = mount(<ResultCard {...resultCardProps({ isPublic: true })} />);
+      assert.isDefined(wrapper);
+      assert.lengthOf(wrapper.find('.entry-header .entry-title .socrata-icon-private'), 0);
+    });
+  });
+
+  describe('when the asset is private', () => {
+    it('renders an icon indicating that the asset is private', () => {
+      const wrapper = mount(<ResultCard {...resultCardProps({ isPublic: false })} />);
+      assert.isDefined(wrapper);
+      assert.lengthOf(wrapper.find('.entry-header .entry-title .socrata-icon-private'), 1);
     });
   });
 });

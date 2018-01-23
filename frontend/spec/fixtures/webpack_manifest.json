@@ -215,6 +215,8 @@
   "shared/catalogLandingPageMain.js.map": "shared/catalogLandingPageMain.js.map",
   "shared/catalogLandingPageManage.js": "shared/catalogLandingPageManage.js",
   "shared/catalogLandingPageManage.js.map": "shared/catalogLandingPageManage.js.map",
+  "shared/common.js.map": "shared/common.js.map",
+  "shared/common.js": "shared/common.js",
   "shared/componentExamplePagesMain.js": "shared/componentExamplePagesMain.js",
   "shared/componentExamplePagesMain.js.map": "shared/componentExamplePagesMain.js.map",
   "shared/componentExamplePagesButton.js": "shared/componentExamplePagesButton.js",

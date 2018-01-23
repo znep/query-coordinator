@@ -3,6 +3,7 @@ en:
     performance_measures:
       no_calculation: Metric calculation has not been configured
       no_dataset: Dataset has not been connected
+      no_recent_value: PLACEHOLDER - No value in reference date column
       no_reporting_period: Reporting period has not been configured
       no_visualization: Metric calculation not available
       not_enough_data: Not enough data for current reporting period

@@ -1141,7 +1141,7 @@ en:
               minimum: Min
               maximum: Max
             max_cluster_size:
-              title: Max Cluster Size
+              title: Cluster Size
             point_color:
               title: Point Color
             point_opacity:

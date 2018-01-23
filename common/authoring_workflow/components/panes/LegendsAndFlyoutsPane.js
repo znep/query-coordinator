@@ -250,24 +250,32 @@ export class LegendsAndFlyoutsPane extends Component {
   renderFlyoutTitle = () => {
     const { onSelectMapsFlyoutTitle, vifAuthoring, metadata } = this.props;
     const mapFlyoutTitleColumnName = getMapFlyoutTitleColumnName(vifAuthoring);
-    const i18nScope = 'shared.visualizations.panes.legends_and_flyouts.fields.maps_flyout_title';
+    const scope = 'shared.visualizations.panes.legends_and_flyouts.fields.maps_flyout_title';
+    const columnOptions = _.map(getDisplayableColumns(metadata), column => ({
+      title: column.name,
+      value: column.fieldName,
+      type: column.renderTypeName,
+      render: this.renderColumnOption
+    }));
+    const options = [
+      {
+        title: I18n.t('no_value', { scope }),
+        value: null
+      },
+      ...columnOptions
+    ];
     const columnAttributes = {
       id: 'flyout-title-column',
-      placeholder: I18n.t('no_value', { scope: i18nScope }),
-      options: _.map(getDisplayableColumns(metadata), column => ({
-        title: column.name,
-        value: column.fieldName,
-        type: column.renderTypeName,
-        render: this.renderColumnOption
-      })),
-      onSelection: onSelectMapsFlyoutTitle,
-      value: mapFlyoutTitleColumnName
+      placeholder: I18n.t('no_value', { scope }),
+      options,
+      value: mapFlyoutTitleColumnName,
+      onSelection: onSelectMapsFlyoutTitle
     };
 
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="flyout-title-column">
-          {I18n.t('title', { scope: i18nScope })}
+          {I18n.t('title', { scope })}
         </label>
         <div className="flyout-title-dropdown-container">
           <Dropdown {...columnAttributes} />

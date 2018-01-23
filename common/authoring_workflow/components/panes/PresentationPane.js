@@ -954,30 +954,30 @@ export class PresentationPane extends Component {
     const selectedPointAggregation = selectors.getPointAggregation(vifAuthoring);
 
     if (selectedPointAggregation === 'heat_map') {
-      return [this.renderEmptyPane()];
-    } else {
-      const isRegionMap = selectedPointAggregation === 'region_map';
-      const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
-      const colorControls = (
-        <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
-          {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
-            this.renderPrimaryColorForMaps(colorLabelText) :
-            this.renderColorPaletteForMaps(colorLabelText)}
-          {!isRegionMap && this.renderPointOpacityControls()}
-          {isRegionMap && this.renderDataClassesSelector()}
-        </AccordionPane>
-      );
-
-      if (isRegionMap) {
-        return [colorControls];
-      }
-
-      return [
-        colorControls,
-        this.renderPointMapSizeControls(),
-        this.renderClusterControls()
-      ];
+      return null;
     }
+
+    const isRegionMap = selectedPointAggregation === 'region_map';
+    const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
+    const colorControls = (
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
+          this.renderPrimaryColorForMaps(colorLabelText) :
+          this.renderColorPaletteForMaps(colorLabelText)}
+        {!isRegionMap && this.renderPointOpacityControls()}
+        {isRegionMap && this.renderDataClassesSelector()}
+      </AccordionPane>
+    );
+
+    if (isRegionMap) {
+      return [colorControls];
+    }
+
+    return [
+      colorControls,
+      this.renderPointMapSizeControls(),
+      this.renderClusterControls()
+    ];
   }
 
   renderLineMapControls = () => {

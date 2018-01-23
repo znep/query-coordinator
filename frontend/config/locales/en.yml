@@ -569,6 +569,12 @@ en:
     search:
       hint: Search
     title: Search & Browse %{params}
+
+  ######## WARNING ########
+  # These are _NOT_ the strings for platform-ui/common!
+  # This is a legacy namespace. Try not to use it.
+  # You probably want commmon/i18n/config/locales/en.yml
+  ######## WARNING ########
   common:
     action_buttons:
       back: Back

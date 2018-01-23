@@ -34,6 +34,8 @@ import {
   isPointMapColumn
 } from '../selectors/metadata';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 export class MeasureSelector extends Component {
   constructor(props) {
     super(props);
@@ -96,6 +98,16 @@ export class MeasureSelector extends Component {
     this.setState({ isSeriesPending: false });
   }
 
+  shouldRenderMeasureForNewGLMap() {
+    const { vifAuthoring, metadata } = this.props;
+    const dimension = getDimension(vifAuthoring);
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    return isNewGLMapEnabled &&
+      isPointMapColumn(metadata, dimension) &&
+      getPointAggregation(vifAuthoring) !== 'region_map';
+  }
+
   renderMeasureSelectors() {
     const { metadata, series, vifAuthoring } = this.props;
     const { isSeriesPending } = this.state;
@@ -137,8 +149,7 @@ export class MeasureSelector extends Component {
   }
 
   renderPendingMeasureSelector(options, measureIndex) {
-    const { vifAuthoring, metadata } = this.props;
-    const dimension = getDimension(vifAuthoring);
+    const { vifAuthoring } = this.props;
     const seriesIndex = getSeries(vifAuthoring).length;
     const measureListItemAttributes = {
       className: 'list-item',
@@ -146,7 +157,7 @@ export class MeasureSelector extends Component {
     };
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      this.shouldRenderMeasureForNewGLMap();
     const measureAttributes = {
       disabled,
       id: `measure-selection-${seriesIndex}`,
@@ -167,15 +178,14 @@ export class MeasureSelector extends Component {
   }
 
   renderMeasureSelector(seriesItem, measureIndex, options) {
-    const { shouldRenderDeleteMeasureLink, vifAuthoring, metadata } = this.props;
-    const dimension = getDimension(vifAuthoring);
+    const { shouldRenderDeleteMeasureLink, vifAuthoring } = this.props;
     const measureListItemAttributes = {
       className: 'list-item',
       key: this.getListItemKey(seriesItem.seriesIndex)
     };
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      this.shouldRenderMeasureForNewGLMap();
     const measureAttributes = {
       disabled,
       id: `measure-selection-${seriesItem.seriesIndex}`,
@@ -203,8 +213,7 @@ export class MeasureSelector extends Component {
   }
 
   renderMeasureAggregationSelector(seriesItem, measureIndex) {
-    const { aggregationTypes, vifAuthoring, metadata } = this.props;
-    const dimension = getDimension(vifAuthoring);
+    const { aggregationTypes, vifAuthoring } = this.props;
 
     if (_.isNull(seriesItem.dataSource.measure.columnName)) {
       return null; // no aggregation dropdown when no column name is selected
@@ -216,7 +225,7 @@ export class MeasureSelector extends Component {
     ];
     const disabled = options.length <= 1 ||
       isFeatureMap(vifAuthoring) ||
-      (isPointMapColumn(metadata, dimension) && !_.isEqual(getPointAggregation(vifAuthoring), 'region_map'));
+      this.shouldRenderMeasureForNewGLMap();
     const measureAggregationAttributes = {
       disabled,
       id: `measure-aggregation-selection-${seriesItem.seriesIndex}`,

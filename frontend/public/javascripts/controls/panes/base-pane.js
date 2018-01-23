@@ -1622,7 +1622,7 @@
       defaultValue: $.arrayify(args.item.defaultValue || []),
       extraClass: 'colorInput'
     });
-    var defColor = curValue ||
+    var defColor = (curValue && curValue.match(/(#[0-9a-f]{6})/i) || [])[1] ||
       item.defaultValue[args.context.repeaterIndex] ||
       item.defaultValue[0];
     var wrapper = _.last(contents);

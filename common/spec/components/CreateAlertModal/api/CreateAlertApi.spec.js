@@ -3,7 +3,7 @@ import CreateAlertApi from 'common/components/CreateAlertModal/api/CreateAlertAp
 
 let validationApiStub = null;
 let createApiStub = null;
-
+let validateCustomAlertApiStub = null;
 describe('CreateAlertApi', () => {
 
   describe('CreateAlertApi.validate', () => {
@@ -110,6 +110,57 @@ describe('CreateAlertApi', () => {
             createApiStub.restore();
           }
         );
+      });
+    });
+  });
+
+  describe('CreateAlertApi.validateCustomAlert', () => {
+    describe('successful response', () => {
+      let mockResponse = new Response(JSON.stringify({ data: [] }), { status: 200 });
+
+      beforeEach(() => {
+        validateCustomAlertApiStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
+      });
+
+      afterEach(() => {
+        validateCustomAlertApiStub.restore();
+      });
+
+      it('should hit custom alert validation query url as post method', () => {
+        CreateAlertApi.validateCustomAlert({});
+        const request = window.fetch.args[0][1];
+        assert.equal(request.method, 'POST');
+        assert.equal(window.fetch.args[0][0], '/api/notifications_and_alerts/alerts/validate_abstract_params');
+        validateCustomAlertApiStub.restore();
+      });
+    });
+
+    describe('unsuccessful response', () => {
+      let airBrakeStub = null;
+      let consoleErrorStub = null;
+
+      beforeEach(() => {
+        airBrakeStub = sinon.stub(airbrake, 'notify');
+        consoleErrorStub = sinon.stub(window.console, 'error');
+        validateCustomAlertApiStub = sinon.stub(window, 'fetch').returns(Promise.resolve({ status: 500 }));
+      });
+
+      afterEach(() => {
+        validateCustomAlertApiStub.restore();
+        airBrakeStub.restore();
+        consoleErrorStub.restore();
+      });
+
+      it('throws a connection error', () => {
+        return CreateAlertApi.validateCustomAlert({}).then(
+          () => {
+            throw new Error('Unexpected resolution');
+          },
+          (error) => {
+            assert.equal(error.toString(), 'Error');
+            validateCustomAlertApiStub.restore();
+          }
+          );
       });
     });
   });

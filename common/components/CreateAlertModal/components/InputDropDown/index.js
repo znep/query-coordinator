@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
-import classNames from 'classnames';
 import _ from 'lodash';
 import $ from 'jquery';
+import classNames from 'classnames';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import Picklist from 'common/components/Picklist';
 import { positionPicklist } from 'common/components/Dropdown/helper';
 
 import styles from './index.module.scss';
+
 /**
   InputDropDown.
   Displays a input text box and a dropdown on textbox focus. On input textbox
@@ -94,7 +95,7 @@ class InputDropDownMenu extends Component {
   renderInputType() {
     const { onInputChange, placeholder, value } = this.props;
     const { selectedOption } = this.state;
-    let inputValue = _.get(selectedOption, 'title', value);
+    const inputValue = _.get(selectedOption, 'title', value);
     return (
       <input
         styleName="small"
@@ -109,8 +110,8 @@ class InputDropDownMenu extends Component {
 
   renderPickList() {
     const { listId, options } = this.props;
-    let { selectedOption, showDropDown } = this.state;
-    let picklistProps = {
+    const { selectedOption, showDropDown } = this.state;
+    const picklistProps = {
       options: options,
       ref: ref => this.picklistRef = ref,
       value: selectedOption,
@@ -119,7 +120,7 @@ class InputDropDownMenu extends Component {
       id: listId
     };
 
-    let classes = classNames(
+    const classes = classNames(
       'onclick-dropdown-menu small',
       { 'hidden': (_.isEmpty(options) || !showDropDown) }
     );

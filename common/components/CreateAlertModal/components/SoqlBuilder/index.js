@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import _ from 'lodash';
 import classNames from 'classnames';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
@@ -13,11 +13,14 @@ import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 import styles from './index.module.scss';
 
 /**
- <description>
- @prop soqlSlices
- @prop onSoqlChange
-*/
+  SoqlBuilder renders form fields(using SoqlSliceBuilder) for soql query. On a change,
+  it will propagate back the soql slices back to the parent. Also renders add/delete buttons,
+  for adding/removing soql slices.
 
+  SoqlSlice: A soql slice can be a
+    - group by or a
+    - a condition
+*/
 class SoqlBuilder extends Component {
   state = {
     datasetColumns: [],
@@ -31,15 +34,15 @@ class SoqlBuilder extends Component {
     const rowCountText = I18n.t('column.row_count', { scope: this.translationScope });
 
     // api to fetch columns
-    let columnPromise = datasetApi.getColumns({ viewId });
+    const columnPromise = datasetApi.getColumns({ viewId });
     // api to check dataset is NBE or OBE
     // OBE wont support some query operators (eg: like)
-    let migrationPromise = datasetApi.getMigration({ viewId });
+    const migrationPromise = datasetApi.getMigration({ viewId });
 
     this.setState({ isDataLoading: true });
     Promise.all([columnPromise, migrationPromise]).then((results) => {
-      let migrationData = results[1] || {};
-      let datasetColumns = results[0] || [];
+      const migrationData = results[1] || {};
+      const datasetColumns = results[0] || [];
 
       // adding group_by, row count option in column list
       datasetColumns.push({ title: groupByText, value: 'group_by', column_type: 'groupBy' });
@@ -50,20 +53,20 @@ class SoqlBuilder extends Component {
         isDataLoading: false
       });
     }).catch((error) => {
-      let datasetColumns = [];
-      this.setState({ datasetColumns, haveNbeView: false, isDataLoading: false });
+      this.setState({ datasetColumns: [], haveNbeView: false, isDataLoading: false });
     });
   }
 
   onSoqlSliceChange = (alert, index) => {
-    let { onSoqlChange, soqlSlices } = this.props;
+    const { onSoqlChange, soqlSlices } = this.props;
 
     soqlSlices[index] = alert;
     onSoqlChange(soqlSlices);
   };
 
   addSoqlSlice = () => {
-    let { onSoqlChange, soqlSlices } = this.props;
+    const { onSoqlChange, soqlSlices } = this.props;
+
     if (!_.isEmpty(soqlSlices)) {
       soqlSlices.push({ logical_operator: 'and' });
     } else {
@@ -75,7 +78,7 @@ class SoqlBuilder extends Component {
   translationScope = 'shared.components.create_alert_modal.custom_alert';
 
   removeSoqlSlice = (index) => {
-    let { onSoqlChange, soqlSlices } = this.props;
+    const { onSoqlChange, soqlSlices } = this.props;
 
     soqlSlices.splice(index, 1);
     onSoqlChange(soqlSlices);
@@ -83,7 +86,7 @@ class SoqlBuilder extends Component {
 
   renderBuilder() {
     const { datasetColumns, haveNbeView } = this.state;
-    let { mapboxAccessToken, soqlSlices, viewId } = this.props;
+    const { mapboxAccessToken, soqlSlices, viewId } = this.props;
 
     const slicesContent = soqlSlices.map((slice, index) =>
       <SoqlSliceBuilder
@@ -115,6 +118,7 @@ class SoqlBuilder extends Component {
 
   render() {
     const { isDataLoading } = this.state;
+
     return (
       <div styleName="soql-builder">
         {isDataLoading ? <Spinner /> : this.renderBuilder()}

@@ -9,6 +9,7 @@ describe('Tabs', () => {
   it('renders an element', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
+
     assert.isDefined(element);
   });
 
@@ -16,13 +17,16 @@ describe('Tabs', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
     const liTabs = element.find('li');
+
     assert.equal(liTabs.length, 2);
   });
 
   it('should call tab change function on click', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
+
     element.find('li').first().simulate('click');
+
     sinon.assert.calledOnce(spy);
   });
 
@@ -31,7 +35,7 @@ describe('Tabs', () => {
     const props = { editMode: true, selectedTab: 'customAlert', onTabChange: spy };
     const element = mount(<Tabs {...props} />);
     const liTabs = element.find('li');
+
     assert.equal(liTabs.length, 1);
   });
-
 });

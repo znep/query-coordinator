@@ -1,17 +1,15 @@
 import airbrake from 'common/airbrake';
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 
-let getColumnsStub = null;
-let getTopValuesByColumnStub = null;
-
 describe('datasetApi', () => {
-  let airBrakeStub = null;
-  let consoleErrorStub = null;
+  let getColumnsStub;
+  let getTopValuesByColumnStub;
+  let airBrakeStub;
+  let consoleErrorStub;
 
   describe('datasetApi.getColumns', () => {
-
     describe('successful response', () => {
-      let mockResponse = new Response(
+      const mockResponse = new Response(
         JSON.stringify({
           'columns': [
             {
@@ -21,7 +19,7 @@ describe('datasetApi', () => {
             }
           ]
         }), { status: 200 }
-        );
+      );
 
       beforeEach(() => {
         getColumnsStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
@@ -32,7 +30,7 @@ describe('datasetApi', () => {
       });
 
       it('should get dataset columns in dataset', () => {
-        let expectedOutput = [{
+        const expectedOutput = [{
           column_type: 'test_dataTypeName',
           title: 'test_asset',
           value: 'test_filed_name'
@@ -80,7 +78,7 @@ describe('datasetApi', () => {
   describe('datasetApi.getTopValuesByColumn', () => {
 
     describe('successful response', () => {
-      let mockResponse = new Response(
+      const mockResponse = new Response(
         JSON.stringify([{
           'test_column': 'test_column'
         }]), { status: 200 });
@@ -94,8 +92,8 @@ describe('datasetApi', () => {
       });
 
       it('should get top values by column in dataset using get method', () => {
-        let params = { column: 'test_column', limit: 10, viewId: 'test-tset' };
-        let expectedOutput = [{
+        const params = { column: 'test_column', limit: 10, viewId: 'test-tset' };
+        const expectedOutput = [{
           title: 'test_column',
           value: 'test_column'
         }];
@@ -113,7 +111,6 @@ describe('datasetApi', () => {
     });
 
     describe('unsuccessful response', () => {
-
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
@@ -145,7 +142,7 @@ describe('datasetApi', () => {
     let getMigrationStub;
 
     describe('successful response', () => {
-      let mockResponse = new Response(
+      const mockResponse = new Response(
         JSON.stringify({ valid:true }), { status: 200 }
         );
 
@@ -201,7 +198,7 @@ describe('datasetApi', () => {
     let getColumnValuesStub;
 
     describe('successful response', () => {
-      let mockResponse = new Response(
+      const mockResponse = new Response(
         JSON.stringify([{
           'test': 'test'
         }]), { status: 200 });
@@ -215,8 +212,8 @@ describe('datasetApi', () => {
       });
 
       it('should get columns values from dataset using get method', () => {
-        let params = { column: 'test', searchText: 'test', viewId: 'test-tset' };
-        let expectedOutput = [{
+        const params = { column: 'test', searchText: 'test', viewId: 'test-tset' };
+        const expectedOutput = [{
           title: 'test',
           value: 'test'
         }];
@@ -235,7 +232,6 @@ describe('datasetApi', () => {
     });
 
     describe('unsuccessful response', () => {
-
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');
@@ -267,7 +263,7 @@ describe('datasetApi', () => {
     let geoSearchStub;
 
     describe('successful response', () => {
-      let mockResponse = new Response(
+      const mockResponse = new Response(
         JSON.stringify({
           'features': [
             {
@@ -287,7 +283,7 @@ describe('datasetApi', () => {
       });
 
       it('should get palces using geo search', () => {
-        let expectedOutput = [{
+        const expectedOutput = [{
           geometry: 'test_geometry',
           title: 'test_place',
           value: 'test_place'
@@ -307,7 +303,6 @@ describe('datasetApi', () => {
     });
 
     describe('unsuccessful response', () => {
-
       beforeEach(() => {
         airBrakeStub = sinon.stub(airbrake, 'notify');
         consoleErrorStub = sinon.stub(window.console, 'error');

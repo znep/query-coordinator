@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
+
 import { defaultHeaders, fetchJson } from 'common/http';
 
 // Extracts column info from /api/views/four-four response and converts it into

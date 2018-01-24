@@ -17,11 +17,13 @@ describe('CustomAlert', () => {
 
   it('renders an element', () => {
     const element = mount(<CustomAlert {...getProps()} />);
+
     assert.isDefined(element);
   });
 
   it('should renders alert breadcrumbs', () => {
     const element = mount(<CustomAlert {...getProps()} />);
+
     assert.lengthOf(element.find('.alert-breadcrumbs'), 1);
   });
 
@@ -30,33 +32,33 @@ describe('CustomAlert', () => {
 
     it('should renders Alert Type Page', () => {
       const element = mount(<CustomAlert {...props} />);
+
       element.setState({ isDataLoading: false });
       assert.equal(element.find('.alert-type-page').length, 1);
     });
 
     it('should renders with threshold alert type select option', () => {
       const element = mount(<CustomAlert {...props} />);
+
       element.setState({ isDataLoading: false });
       assert.equal(element.find('.threshold-option').length, 1);
     });
   });
 
   describe('Alert Parameter Page', () => {
-
     let getColumnsPromise;
     let getMigrationPromise;
     window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
+
     beforeEach(() => {
       getColumnsPromise = sinon.stub(datasetApi, 'getColumns').returns(Promise.resolve({ status: 200 }));
       getMigrationPromise = sinon.stub(datasetApi, 'getMigration').returns(Promise.resolve({ status: 200 }));
-
     });
 
     afterEach(() => {
       getColumnsPromise.restore();
       getMigrationPromise.restore();
     });
-
 
     it('should renders Soql builder', () => {
       const props = getProps({
@@ -68,7 +70,6 @@ describe('CustomAlert', () => {
       element.setState({ isDataLoading: false, customAlert: [] });
       assert.lengthOf(element.find(SoqlBuilder), 1);
     });
-
   });
 
   describe('Alert Trigger Page', () => {
@@ -79,15 +80,18 @@ describe('CustomAlert', () => {
 
     it('should renders Alert Trigger Page', () => {
       const element = mount(<CustomAlert {...props} />);
+
       element.setState({ isDataLoading: false });
+
       assert.equal(element.find('.alert-trigger-page').length, 1);
     });
 
     it('should renders with rolling query option', () => {
       const element = mount(<CustomAlert {...props} />);
+
       element.setState({ isDataLoading: false });
+
       assert.equal(element.find('.rolling-query').length, 1);
     });
   });
-
 });

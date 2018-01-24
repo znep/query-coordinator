@@ -29,17 +29,20 @@ describe('SoqlSliceBuilder', () => {
 
   it('renders an element', () => {
     const element = mount(<SoqlSliceBuilder {...getProps()} />);
+
     assert.isDefined(element);
   });
 
   it('renders column selector field', () => {
     const element = mount(<SoqlSliceBuilder {...getProps()} />);
+
     assert.lengthOf(element.find('.dataset-column-selector'), 1);
   });
 
   it('renders logical operator field if alertIndex is greater than zero', () => {
     const props = getProps({ sliceIndex: 1 });
     const element = mount(<SoqlSliceBuilder {...props} />);
+
     assert.lengthOf(element.find('.logical-operator'), 1);
   });
 
@@ -58,6 +61,7 @@ describe('SoqlSliceBuilder', () => {
       const slice = { column: 'textColumn', operator: '>', value: 'abc' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.column-value-field'), 1);
     });
@@ -66,19 +70,19 @@ describe('SoqlSliceBuilder', () => {
       const slice = { column: 'textColumn' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.column-value-field'), 0);
     });
-
   });
 
 
   describe('Number column', () => {
-
     it('should render aggregator and text value field for number column type', () => {
       const slice = { column: 'numberColumn', operator: '>', value: 'abc' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.value-field'), 1);
     });
@@ -87,6 +91,7 @@ describe('SoqlSliceBuilder', () => {
       const slice = { column: 'numberColumn', aggregation: 'SUM', function_operator: '>' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.function-operator-field'), 1);
     });
@@ -95,6 +100,7 @@ describe('SoqlSliceBuilder', () => {
       const slice = { column: 'numberColumn' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.value-field'), 0);
     });
@@ -107,18 +113,20 @@ describe('SoqlSliceBuilder', () => {
         onSliceValueChange: onSliceValueChangeSpy
       });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       element.find('input').simulate('change');
+
       sinon.assert.calledOnce(onSliceValueChangeSpy);
     });
 
   });
 
   describe('Date column', () => {
-
     it('should render operator field and date range selector for date column type', () => {
       const slice = { column: 'dateColumn', operator: 'with in' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.date-range'), 1);
     });
@@ -127,14 +135,13 @@ describe('SoqlSliceBuilder', () => {
       const slice = { column: 'dateColumn' };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.date-range'), 0);
     });
-
   });
 
   describe('Location column', () => {
-
     it('should render location input and radius slider for location column type', () => {
       const slice = {
         column: 'locationColumn',
@@ -144,6 +151,7 @@ describe('SoqlSliceBuilder', () => {
       };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find(GeocoderTypeahead), 1);
       assert.lengthOf(element.find(RadiusSlider), 1);
@@ -156,14 +164,13 @@ describe('SoqlSliceBuilder', () => {
       };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find(RadiusSlider), 0);
     });
-
   });
 
   describe('Row Identifier column', () => {
-
     it('should render value field and operator for row identifier column type', () => {
       const slice = {
         column: 'rowIdentifier',
@@ -172,6 +179,7 @@ describe('SoqlSliceBuilder', () => {
       };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.value-field'), 1);
     });
@@ -182,22 +190,24 @@ describe('SoqlSliceBuilder', () => {
       };
       const props = getProps({ slice: slice });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.aggregation-selector'), 1);
       assert.lengthOf(element.find('.value-field'), 0);
     });
   });
 
   describe('Delete Slice', () => {
-
     it('should render delete icon if slice index greater than zero', () => {
       const props = getProps({ sliceIndex: 1 });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.icon-close'), 1);
     });
 
     it('should not render delete icon if slice index less than one', () => {
       const props = getProps({ sliceIndex: 0 });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       assert.lengthOf(element.find('.icon-close'), 0);
     });
 
@@ -208,9 +218,10 @@ describe('SoqlSliceBuilder', () => {
         removeSliceEntry: removeSliceEntrySpy
       });
       const element = mount(<SoqlSliceBuilder {...props} />);
+
       element.find('.icon-close').simulate('click');
+
       sinon.assert.calledOnce(removeSliceEntrySpy);
     });
-
   });
 });

@@ -1,21 +1,18 @@
+import _ from 'lodash';
 import classNames from 'classnames';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import _ from 'lodash';
 
 import I18n from 'common/i18n';
 
 import styles from './index.module.scss';
 
 /**
- <description>
- @prop alertName - alert name
- @prop enableValidationInfo - boolean to enable alert info
- @prop isLoading - boolean to show loding info
- @prop isInvalidQuery - boolean to show invalid qurey info
+ For alert's create/edit operations, renders
+   - form-data-loading spinner.
+   - validation messages.
 */
-
 class AlertInfo extends Component {
 
   validationMessage() {

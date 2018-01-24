@@ -5,14 +5,15 @@ import { mount } from 'enzyme';
 import AlertInfo from 'common/components/CreateAlertModal/AlertInfo';
 
 describe('AlertInfo', () => {
-
   it('renders an element', () => {
     const element = mount(<AlertInfo />);
+
     assert.isDefined(element);
   });
 
   it('should show lodaing message if lodaing is true', () => {
     const element = mount(<AlertInfo isLoading />);
+
     assert.isTrue(element.find('.loading-message').exists());
   });
 
@@ -21,6 +22,7 @@ describe('AlertInfo', () => {
       enableValidationInfo: true
     };
     const element = mount(<AlertInfo {...props} />);
+
     assert.isTrue(element.find('.name-error').exists());
   });
 
@@ -31,6 +33,7 @@ describe('AlertInfo', () => {
       isInvalidQuery: true
     };
     const element = mount(<AlertInfo {...props} />);
+
     assert.isTrue(element.find('.invaild-query').exists());
   });
 
@@ -41,6 +44,7 @@ describe('AlertInfo', () => {
       isInvalidQuery: false
     };
     const element = mount(<AlertInfo {...props} />);
+
     assert.isTrue(element.find('.vaild-query').exists());
   });
 });

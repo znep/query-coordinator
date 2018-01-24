@@ -8,7 +8,6 @@ import SoqlSliceBuilder from 'common/components/CreateAlertModal/components/Soql
 import Spinner from 'common/components/Spinner';
 
 describe('SoqlBuilder', () => {
-
   let getColumnsPromise;
   let getMigrationPromise;
 
@@ -22,16 +21,17 @@ describe('SoqlBuilder', () => {
     getMigrationPromise.restore();
   });
 
-
   it('renders an element', () => {
     const spy = sinon.spy();
     const element = mount(<SoqlBuilder viewId="abcd-dcba" />);
+
     assert.isDefined(element);
   });
 
   it('on load it should call get columns, migration query', () => {
     const spy = sinon.spy();
     const element = mount(<SoqlBuilder viewId="abcd-dcba" />);
+
     sinon.assert.calledOnce(getColumnsPromise);
     sinon.assert.calledOnce(getMigrationPromise);
   });
@@ -39,20 +39,26 @@ describe('SoqlBuilder', () => {
   it('should show spinner untill dataset query complete', () => {
     const spy = sinon.spy();
     const element = mount(<SoqlBuilder viewId="abcd-dcba" />);
+
     element.setState({ isDataLoading: true });
+
     assert.lengthOf(element.find(Spinner), 1);
   });
 
   it('should render query builder after dataset query complete', () => {
     const spy = sinon.spy();
     const element = mount(<SoqlBuilder viewId="abcd-dcba" soqlSlices={[{}]} />);
+
     element.setState({ isDataLoading: false });
+
     assert.lengthOf(element.find(SoqlSliceBuilder), 1);
   });
 
   it('should renders with add parameter button', () => {
     const element = mount(<SoqlBuilder viewId="abcd-dcba" />);
+
     element.setState({ isDataLoading: false });
+
     assert.equal(element.find('.add-parameter-button').length, 1);
   });
 
@@ -60,7 +66,9 @@ describe('SoqlBuilder', () => {
     const soqlChange = sinon.spy();
     const element = mount(<SoqlBuilder viewId="abcd-dcba" onSoqlChange={soqlChange} />);
     element.setState({ isDataLoading: false });
+
     element.find('.add-parameter-button').simulate('click');
+
     sinon.assert.calledOnce(soqlChange);
   });
 });

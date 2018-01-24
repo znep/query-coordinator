@@ -1,12 +1,12 @@
-import cssModules from 'react-css-modules';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
-
-import styles from './index.module.scss';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import Slider from 'common/components/Slider';
+
+import styles from './index.module.scss';
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 10;

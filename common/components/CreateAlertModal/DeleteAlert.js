@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styles from './index.module.scss';
-import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import CreateAlertApi from './api/CreateAlertApi';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import I18n from 'common/i18n';
 
-class DeleteView extends Component {
+import CreateAlertApi from './api/CreateAlertApi';
+import styles from './index.module.scss';
+
+class DeleteAlert extends Component {
   constructor() {
     super();
 
@@ -58,11 +60,10 @@ class DeleteView extends Component {
   }
 }
 
-DeleteView.propTypes = {
+DeleteAlert.propTypes = {
   alert: PropTypes.object.isRequired,
   onCancel: PropTypes.func,
   onDeleteSuccess: PropTypes.func
 };
 
-
-export default cssModules(DeleteView, styles, { allowMultiple: true });
+export default cssModules(DeleteAlert, styles, { allowMultiple: true });

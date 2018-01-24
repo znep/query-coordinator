@@ -36,32 +36,39 @@ describe('DatasetColumnValueTypeahead', () => {
 
   it('renders an element', () => {
     const element = mount(<DatasetColumnValueTypeahead {...getProps()} />);
+
     assert.isDefined(element);
   });
 
   it('should call onInputChange function on InputDropDown change', () => {
     const element = mount(<DatasetColumnValueTypeahead {...getProps()} />);
     const inputDropDown = element.find(InputDropDown);
+
     inputDropDown.props().onInputChange();
+
     sinon.assert.calledOnce(onSelectSpy);
   });
 
   it('should call onSelect function on InputDropDown select', () => {
     const element = mount(<DatasetColumnValueTypeahead {...getProps()} />);
     const inputDropDown = element.find(InputDropDown);
+
     inputDropDown.props().onSelect();
+
     sinon.assert.calledOnce(onSelectSpy);
   });
 
   it('on load it should call get top columns value query', () => {
     const props = getProps({ haveNbeView: false });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
+
     sinon.assert.calledOnce(getTopValuesByColumnPromise);
   });
 
   it('on load it should not call get top columns value query', () => {
     const props = getProps({ haveNbeView: true });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
+
     sinon.assert.notCalled(getTopValuesByColumnPromise);
   });
 
@@ -69,7 +76,9 @@ describe('DatasetColumnValueTypeahead', () => {
     const props = getProps({ haveNbeView: true });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
     const inputDropDown = element.find(InputDropDown);
+
     inputDropDown.props().onInputChange('abc');
+
     setTimeout(function() {
       sinon.assert.calledOnce(getColumnValuesPromise);
       done();
@@ -81,7 +90,9 @@ describe('DatasetColumnValueTypeahead', () => {
     const props = getProps({ haveNbeView: false });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
     const inputDropDown = element.find(InputDropDown);
+
     inputDropDown.props().onInputChange('abc');
+
     sinon.assert.notCalled(getColumnValuesPromise);
   });
 });

@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
-import airbrake from 'common/airbrake';
 import _ from 'lodash';
+import airbrake from 'common/airbrake';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 

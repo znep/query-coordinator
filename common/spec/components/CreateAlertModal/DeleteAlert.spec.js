@@ -8,22 +8,26 @@ describe('DeleteAlert', () => {
   it('renders an element', () => {
     const spy = sinon.spy();
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
+
     assert.isNotNull(element);
   });
 
   it('should renders an Modal with yes & cancel button', () => {
     const spy = sinon.spy();
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
+
     assert.isNotNull(element.querySelector('.yes-button'));
     assert.isNotNull(element.querySelector('.cancel-button'));
   });
 
   it('on yes should call delete alert promise', () => {
     const spy = sinon.spy();
-    let createAlertPromise = sinon.stub(CreateAlertApi, 'delete').returns(Promise.resolve({ status: 200 }));
+    const createAlertPromise = sinon.stub(CreateAlertApi, 'delete').returns(Promise.resolve({ status: 200 }));
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
-    let yesButton = element.querySelector('.yes-button');
+    const yesButton = element.querySelector('.yes-button');
+
     TestUtils.Simulate.click(yesButton);
+
     sinon.assert.calledOnce(createAlertPromise);
     createAlertPromise.restore();
   });
@@ -31,10 +35,10 @@ describe('DeleteAlert', () => {
   it('on cancel should call onCancel function', () => {
     const spy = sinon.spy();
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
-    let cancelButton = element.querySelector('.cancel-button');
+    const cancelButton = element.querySelector('.cancel-button');
 
     TestUtils.Simulate.click(cancelButton);
+
     sinon.assert.calledOnce(spy);
   });
-
 });

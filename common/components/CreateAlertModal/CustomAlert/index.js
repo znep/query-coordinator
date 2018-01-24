@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import _ from 'lodash';
 import classNames from 'classnames';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
@@ -13,18 +13,22 @@ import datasetApi from '../api/datasetApi';
 import SoqlBuilder from '../components/SoqlBuilder';
 
 /**
- <description>
- @prop customAlert - array of custom alert values
- @prop viewId - dataset id to create custom alert
- @prop onCustomAlertChange - trigger when custom alert values change
- @prop mapboxAccessToken -
- @prop customAlertType - represent custom alert type
- @prop onCustomAlertTypeChange - trigger when custom alert type changes
- @prop customAlertTriggerType - represent alert trigger type
- @prop onTriggerTypeChange - trigger when custom alert trigger type changes
- @prop editMode - enabling edit mode
-*/
+  CustomAlert => Alert created by selecting conditions/groupbys/aggregations using form
+  fields (opposite to AdvancedAlert where you give the entire soql query as input).
 
+  CreateCustomAlert has three setps
+  1.) AlertType:
+      a.) entire-data
+      b.) new-rows-only
+  2.) Parameters:
+      Construct the soql query for triggering the alert using form fields(SoqlBuilder)
+  3.) Trigger: (select the trigger type for the alert.)
+     PUSH: trigger the alert(send notification/email), as soon as the alert threshold crosses.
+       a.) rolling: send alert on every update if threshold exceeds
+       b.) one-and-done: send alert once on update and mute
+     PERIODICAL:
+       a.) periodic: check and trigger the alert on a duration basis (daily|weekly|monthly)
+*/
 class CreateCustomAlert extends Component {
   state = {
     customAlert: [{}],
@@ -49,6 +53,7 @@ class CreateCustomAlert extends Component {
 
   renderAlertTypePage() {
     const { customAlertType, onCustomAlertTypeChange } = this.props;
+
     return (
       <div className="alert-type-page">
         <div styleName="title">
@@ -128,6 +133,7 @@ class CreateCustomAlert extends Component {
 
   renderCustomAlertContent() {
     const { customAlertPage, editMode } = this.props;
+
     if (customAlertPage === 'alertType' && !editMode) {
       return this.renderAlertTypePage();
     } else if (customAlertPage === 'parameters') {
@@ -139,7 +145,8 @@ class CreateCustomAlert extends Component {
 
   renderBreadcrumbs() {
     const { customAlertPage, customAlertType, editMode, enableSaveButton } = this.props;
-    let disableParamPage = !editMode && _.isEmpty(customAlertType);
+    const disableParamPage = !editMode && _.isEmpty(customAlertType);
+
     return (
       <div styleName="breadcrumbs" className="alert-breadcrumbs">
         <ul>

@@ -5,16 +5,17 @@ import { mount } from 'enzyme';
 import AdvancedAlert from 'common/components/CreateAlertModal/AdvancedAlert';
 
 describe('AdvancedAlert', () => {
-
   it('renders an element', () => {
     const spy = sinon.spy();
     const element = mount(<AdvancedAlert onRawSoqlQueryChange={spy} />);
+
     assert.isDefined(element);
   });
 
   it('should renders text area for row soql input', () => {
     const spy = sinon.spy();
     const element = mount(<AdvancedAlert onRawSoqlQueryChange={spy} />);
+
     assert.isTrue(element.find('.advance-alert').exists());
     assert.isTrue(element.find('#alert-raw-query').exists());
   });
@@ -22,7 +23,9 @@ describe('AdvancedAlert', () => {
   it('should call onRawSoqlQueryChange function on soql input change', () => {
     const spy = sinon.spy();
     const element = mount(<AdvancedAlert onRawSoqlQueryChange={spy} />);
+
     element.find('#alert-raw-query').simulate('change');
+
     sinon.assert.calledOnce(spy);
   });
 });

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import cssModules from 'react-css-modules';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import DateRangePicker from 'common/components/DateRangePicker';
@@ -99,6 +99,7 @@ class SoqlSliceBuilder extends Component {
 
   onSliceColumnChnange = (newSlice) => {
     const { slice, sliceIndex, onSliceValueChange } = this.props;
+
     // adding logical operator value on column change
     if (!_.isEmpty(slice.logical_operator)) {
       newSlice.logical_operator = slice.logical_operator;
@@ -129,8 +130,8 @@ class SoqlSliceBuilder extends Component {
       this.onSliceParamChange('operator', option.value);
       if (_.includes(DATE_COLUMN_TYPES, columnType)) {
         // added default value for slice date
-        let startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
-        let endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
+        const startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
+        const endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
         this.onSliceParamChange('start_date', startDate);
         this.onSliceParamChange('end_date', endDate);
       }
@@ -139,7 +140,8 @@ class SoqlSliceBuilder extends Component {
   };
 
   onSliceParamChange = (field, value) => {
-    let { slice, sliceIndex, onSliceValueChange } = this.props;
+    const { slice, sliceIndex, onSliceValueChange } = this.props;
+
     slice[field] = value;
     onSliceValueChange(slice, sliceIndex);
   };
@@ -158,8 +160,8 @@ class SoqlSliceBuilder extends Component {
   };
 
   onLocationValueChange = (geocodeResult) => {
-    let { slice } = this.props;
-    let coordinates = _.get(geocodeResult, 'geometry.coordinates', []);
+    const { slice } = this.props;
+    const coordinates = _.get(geocodeResult, 'geometry.coordinates', []);
 
     // Todo: called multiple times. Need to fix this.
     // location columns lat, lng values
@@ -174,6 +176,7 @@ class SoqlSliceBuilder extends Component {
   getSelectedOption = (props) => {
     const { slice, datasetColumns } = props;
     const value = _.get(slice, 'column');
+
     return _.find(datasetColumns, { value }) || {};
   }
 
@@ -181,8 +184,7 @@ class SoqlSliceBuilder extends Component {
 
   renderFunctionalOperatorField() {
     const { slice } = this.props;
-
-    let conditionDropDownOption = {
+    const conditionDropDownOption = {
       options: [
         { title: '>', value: '>' },
         { title: '<', value: '<' },
@@ -212,7 +214,7 @@ class SoqlSliceBuilder extends Component {
     const columnType = _.get(selectedDatasetColumn, 'column_type');
     const showAggregationInput = _.includes(AGGREGATION_TYPES, slice.aggregation);
     const placeHolder = I18n.t('placeholder.value', { scope: this.translationScope });
-    let showValueInput = (showAggregationInput && !_.isEmpty(slice.function_operator)) ||
+    const showValueInput = (showAggregationInput && !_.isEmpty(slice.function_operator)) ||
       (!_.isEmpty(slice.operator) && !showAggregationInput);
 
     if (showValueInput && _.includes(['number', 'money', 'amount', 'row_identifier'], columnType)) {
@@ -233,10 +235,10 @@ class SoqlSliceBuilder extends Component {
     const { slice } = this.props;
     const { selectedDatasetColumn } = this.state;
     const columnType = _.get(selectedDatasetColumn, 'column_type');
-    let startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
-    let endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
-    let dateFieldSelected = _.includes(DATE_COLUMN_TYPES, columnType);
-    let dateRangeOptions = {
+    const startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
+    const endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
+    const dateFieldSelected = _.includes(DATE_COLUMN_TYPES, columnType);
+    const dateRangeOptions = {
       value: { start: startDate, end: endDate },
       onChange: this.onDatePickerChange,
       datePickerOverrides: {
@@ -263,14 +265,13 @@ class SoqlSliceBuilder extends Component {
   renderAggregateTypeField() {
     const { slice } = this.props;
     const { selectedDatasetColumn } = this.state;
-
-    let aggregateDropDownOption = {
+    const aggregateDropDownOption = {
       options: aggregateOptions(selectedDatasetColumn),
       placeholder: I18n.t('placeholder.aggregation', { scope: this.translationScope }),
       size: 'small',
       showOptionsBelowHandle: true
     };
-    let aggregationValue = (slice.operator || slice.aggregation);
+    const aggregationValue = (slice.operator || slice.aggregation);
 
     if (_.isEmpty(slice.statement) && !_.isEmpty(slice.column)) {
       return (
@@ -330,8 +331,8 @@ class SoqlSliceBuilder extends Component {
     const orText = I18n.t('aggregation.or', { scope: this.translationScope });
 
     if (sliceIndex > 0) {
-      let buttonText = (slice.logical_operator === 'or') ? orText : andText;
-      let buttonValue = (slice.logical_operator === 'or') ? 'and' : 'or';
+      const buttonText = (slice.logical_operator === 'or') ? orText : andText;
+      const buttonValue = (slice.logical_operator === 'or') ? 'and' : 'or';
       return (
         <div styleName="field-selector" className="logical-operator">
           <button

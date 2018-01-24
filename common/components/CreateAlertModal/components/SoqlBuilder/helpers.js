@@ -36,7 +36,7 @@ export const aggregateOptions = (selectedDatasetColumn) => {
     { title: '>=', value: '>=' }];
   const locationOptions = [{ title: I18n.t('near', { scope: translationScope }), value: 'NEAR' }];
 
-  let optionsHash = { 'row_identifier': formatListOption(['<', '>', '=', '<=', '>=']) };
+  const optionsHash = { 'row_identifier': formatListOption(['<', '>', '=', '<=', '>=']) };
   _.each(STRING_COLUMN_TYPES, function(columnType) {
     optionsHash[columnType] = textOptions;
   });

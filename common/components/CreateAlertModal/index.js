@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
@@ -202,7 +202,7 @@ class CreateAlertModal extends Component {
   getAlertParams() { // eslint-disable-line react/sort-comp
     const { alertName, customAlert, rawSoqlQuery, selectedTab } = this.state;
     const { alert } = this.props;
-    let alertParams = { type: 'push' };
+    const alertParams = { type: 'push' };
 
     // params will be changed based on alert type
     if (_.isEmpty(alert)) {

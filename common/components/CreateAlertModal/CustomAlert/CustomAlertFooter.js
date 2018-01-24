@@ -60,6 +60,7 @@ class CustomAlertFooter extends Component {
   setButtonStates = (props) => {
     const { customAlertPage, editMode } = props;
     const nextState = BUTTON_STATES[customAlertPage] || {};
+
     nextState.showDeleteButton = editMode && customAlertPage === 'trigger';
     this.setState(nextState);
   };

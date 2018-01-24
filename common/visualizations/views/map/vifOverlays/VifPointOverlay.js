@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
+import Legend from './partials/Legend';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
@@ -16,18 +17,23 @@ const RESIZE_BY_ALIAS = '__resize_by__';
 const COUNT_ALIAS = '__count__';
 
 export default class VifPointOverlay extends VifOverlay {
-  constructor(map) {
+  constructor(map, visualizationElement) {
     const sourceIds = [].concat(PointsAndStacks.sourceIds()).concat(Clusters.sourceIds());
     const layerIds = [].concat(PointsAndStacks.layerIds()).concat(Clusters.layerIds());
     super(map, sourceIds, layerIds);
 
     this._pointsAndStacks = new PointsAndStacks(map);
     this._clusters = new Clusters(map);
+    this._legend = new Legend(visualizationElement);
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
 
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._pointsAndStacks.setup(vif, renderOptions);
     this._clusters.setup(vif, renderOptions);
 
@@ -37,6 +43,10 @@ export default class VifPointOverlay extends VifOverlay {
   async update(vif) {
     const renderOptions = await this._prepare(vif);
 
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._pointsAndStacks.update(vif, renderOptions);
     this._clusters.update(vif, renderOptions);
 
@@ -91,6 +101,11 @@ export default class VifPointOverlay extends VifOverlay {
     }
 
     return this.__pointDatasetInstance;
+  }
+
+  destroy() {
+    super.destroy();
+    this._legend.destroy();
   }
 
   getDataUrl(vif, colorByCategories) {

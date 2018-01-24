@@ -11,11 +11,25 @@ describe('VifPointOverlay', () => {
     mockMap = {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
-      setPaintProperty: sinon.spy()
+      getSource: sinon.stub().returns({}),
+      removeSource: sinon.spy(),
+      removeLayer: sinon.spy(),
+      setPaintProperty: sinon.spy(),
+      style: {}
     };
     vifPointOverlay = new VifPointOverlay(mockMap);
-    vifPointOverlay._pointsAndStacks = { setup: sinon.spy(), update: sinon.spy() };
-    vifPointOverlay._clusters = { setup: sinon.spy(), update: sinon.spy() };
+    vifPointOverlay._pointsAndStacks = {
+      setup: sinon.spy(),
+      update: sinon.spy()
+    };
+    vifPointOverlay._clusters = {
+      setup: sinon.spy(),
+      update: sinon.spy()
+    };
+    vifPointOverlay._legend = {
+      show: sinon.spy(),
+      destroy: sinon.spy()
+    };
 
     fakeServer = sinon.createFakeServer();
     fakeServer.autoRespond = true;
@@ -102,6 +116,7 @@ describe('VifPointOverlay', () => {
 
   describe('colorPointsBy column configured', () => {
     let vif;
+    let expectedBuckets;
 
     beforeEach(() => {
       vif = mapMockVif({});
@@ -118,6 +133,11 @@ describe('VifPointOverlay', () => {
 
       fakeServer.respondWith(query,
         [200, { 'Content-Type': 'application/json' }, stubResult]);
+      expectedBuckets = [
+        sinon.match({ category: 'It', color: '#e41a1c' }),
+        sinon.match({ category: 'Cat2', color: '#9e425a' }),
+        sinon.match({ category: 'Other', color: '#596a98' })
+      ];
     });
 
     describe('setup', () => {
@@ -129,7 +149,16 @@ describe('VifPointOverlay', () => {
         });
 
         return vifPointOverlay.setup(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.setup, vif, expectedRenderOptions);
+          sinon.assert.calledWith(
+            vifPointOverlay._pointsAndStacks.setup,
+            vif,
+            expectedRenderOptions
+          );
+          sinon.assert.calledWith(
+            vifPointOverlay._legend.show,
+            expectedBuckets,
+            'categorical'
+          );
         });
       });
     });
@@ -143,7 +172,16 @@ describe('VifPointOverlay', () => {
         });
 
         return vifPointOverlay.update(vif).then(() => {
-          sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
+          sinon.assert.calledWith(
+            vifPointOverlay._pointsAndStacks.update,
+            vif,
+            expectedRenderOptions
+          );
+          sinon.assert.calledWith(
+            vifPointOverlay._legend.show,
+            expectedBuckets,
+            'categorical'
+          );
         });
       });
     });
@@ -199,6 +237,18 @@ describe('VifPointOverlay', () => {
           sinon.assert.calledWith(vifPointOverlay._pointsAndStacks.update, vif, expectedRenderOptions);
         });
       });
+    });
+  });
+
+  describe('destroy', () => {
+    it('should remove the map layer, source and legend', () => {
+      vifPointOverlay.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'stack-circle');
+      sinon.assert.calledWith(mockMap.removeLayer, 'stack-count-label');
+      sinon.assert.calledWith(mockMap.removeLayer, 'point');
+      sinon.assert.calledWith(mockMap.removeSource, 'pointVectorDataSource');
+      sinon.assert.called(vifPointOverlay._legend.destroy);
     });
   });
 });

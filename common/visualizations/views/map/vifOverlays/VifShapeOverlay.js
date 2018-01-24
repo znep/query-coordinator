@@ -1,8 +1,9 @@
 import _ from 'lodash';
 
+import Legend from './partials/Legend';
+import Shapes from './partials/Shapes';
 import VifOverlay from './VifOverlay';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
-import Shapes from './partials/Shapes';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
@@ -15,17 +16,22 @@ const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
 // and hands it over to shapes partial for rendering using mapbox-gl's sources/layers
 
 export default class VifShapeOverlay extends VifOverlay {
-  constructor(map) {
+  constructor(map, visualizationElement) {
     const sourceIds = [].concat(Shapes.sourceIds());
     const layerIds = [].concat(Shapes.layerIds());
     super(map, sourceIds, layerIds);
 
+    this._legend = new Legend(visualizationElement);
     this._shapes = new Shapes(map);
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
 
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._shapes.setup(vif, renderOptions);
 
     return renderOptions;
@@ -34,6 +40,10 @@ export default class VifShapeOverlay extends VifOverlay {
   async update(vif) {
     const renderOptions = await this._prepare(vif);
 
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._shapes.update(vif, renderOptions);
 
     return renderOptions;
@@ -76,6 +86,11 @@ export default class VifShapeOverlay extends VifOverlay {
     }
 
     return this.__shapeDatasetInstance;
+  }
+
+  destroy() {
+    super.destroy();
+    this._legend.destroy();
   }
 
   getDataUrl(vif, colorByCategories) {

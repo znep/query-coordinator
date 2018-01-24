@@ -2,31 +2,31 @@ import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
 import Regions from './partials/Regions';
-import RegionMapLegend from './partials/RegionMapLegend';
+import Legend from './partials/Legend';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 
 export default class VifRegionOverlay extends VifOverlay {
-  constructor(map, element) {
+  constructor(map, visualizationElement) {
     super(map, Regions.sourceIds(), Regions.layerIds());
 
     this._regions = new Regions(map);
-    this._regionMapLegend = new RegionMapLegend(element);
+    this._legend = new Legend(visualizationElement);
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
 
     this._regions.setup(vif, renderOptions);
-    this._regionMapLegend.show(vif, renderOptions);
+    this._legend.show(renderOptions.buckets);
   }
 
   async update(vif) {
     const renderOptions = await this._prepare(vif);
 
     this._regions.update(vif, renderOptions);
-    this._regionMapLegend.show(vif, renderOptions);
+    this._legend.show(renderOptions.buckets);
   }
 
   async _prepare(vif) {
@@ -84,6 +84,11 @@ export default class VifRegionOverlay extends VifOverlay {
       `where {{'${columnName}' column condition}} ` +
       'limit 10000 ' +
       '#substituteSoqlParams_tileParams={z}|{x}|{y}';
+  }
+
+  destroy() {
+    super.destroy();
+    this._legend.destroy();
   }
 
   _pointDataset(vif) {

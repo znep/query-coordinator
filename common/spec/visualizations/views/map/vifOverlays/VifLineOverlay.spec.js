@@ -13,10 +13,21 @@ describe('VifLineOverlay', () => {
     mockMap = {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
-      setPaintProperty: sinon.spy()
+      getSource: sinon.stub().returns({}),
+      removeSource: sinon.spy(),
+      removeLayer: sinon.spy(),
+      setPaintProperty: sinon.spy(),
+      style: {}
     };
     vifLineOverlay = new VifLineOverlay(mockMap);
-    vifLineOverlay._lines = { setup: sinon.spy(), update: sinon.spy() };
+    vifLineOverlay._lines = {
+      setup: sinon.spy(),
+      update: sinon.spy()
+    };
+    vifLineOverlay._legend = {
+      show: sinon.spy(),
+      destroy: sinon.spy()
+    };
     // Clearing the dataProviders cache. Otherwise it is returning,
     // old faked responses for same queries.
     DataProvider._instanceCache = {};
@@ -102,6 +113,7 @@ describe('VifLineOverlay', () => {
 
   describe('colorLinesBy column configured', () => {
     let vif;
+    let expectedBuckets;
 
     beforeEach(() => {
       vif = mapMockVif({});
@@ -112,6 +124,11 @@ describe('VifLineOverlay', () => {
 
       fakeServer.respondWith(query,
         [200, { 'Content-Type': 'application/json' }, stubResult]);
+      expectedBuckets = [
+        { category: 'Place', color: '#e41a1c' },
+        { category: 'City', color: '#9e425a' },
+        { category: 'Other', color: '#596a98' }
+      ];
     });
 
     describe('setup', () => {
@@ -123,7 +140,16 @@ describe('VifLineOverlay', () => {
         });
 
         await vifLineOverlay.setup(vif);
-        sinon.assert.calledWith(vifLineOverlay._lines.setup, vif, expectedRenderOptions);
+        sinon.assert.calledWith(
+          vifLineOverlay._lines.setup,
+          vif,
+          expectedRenderOptions
+        );
+        sinon.assert.calledWith(
+          vifLineOverlay._legend.show,
+          expectedBuckets,
+          'categorical'
+        );
       });
     });
 
@@ -137,7 +163,16 @@ describe('VifLineOverlay', () => {
         });
 
         await vifLineOverlay.update(vif);
-        sinon.assert.calledWith(vifLineOverlay._lines.update, vif, expectedRenderOptions);
+        sinon.assert.calledWith(
+          vifLineOverlay._lines.update,
+          vif,
+          expectedRenderOptions
+        );
+        sinon.assert.calledWith(
+          vifLineOverlay._legend.show,
+          expectedBuckets,
+          'categorical'
+        );
       });
     });
   });
@@ -202,6 +237,16 @@ describe('VifLineOverlay', () => {
       vifLineOverlay.setup(vif).then((result) => {}, (error) => {
         expect(error.soqlError).to.eq(errorResponse);
       });
+    });
+  });
+
+  describe('destroy', () => {
+    it('should remove the map layer, source and legend', () => {
+      vifLineOverlay.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
+      sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');
+      sinon.assert.called(vifLineOverlay._legend.destroy);
     });
   });
 });

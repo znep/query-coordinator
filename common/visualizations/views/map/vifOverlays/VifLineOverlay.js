@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
 import Lines from './partials/Lines';
+import Legend from './partials/Legend';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
@@ -18,16 +19,22 @@ const COUNT_ALIAS = '__count__';
 // and hands it over to lines partial for rendering
 // using mapbox-gl's sources/layers.
 export default class VifLineOverlay extends VifOverlay {
-  constructor(map) {
+  constructor(map, visualizationElement) {
     const sourceIds = [].concat(Lines.sourceIds());
     const layerIds = [].concat(Lines.layerIds());
     super(map, sourceIds, layerIds);
 
+    this._legend = new Legend(visualizationElement);
     this._lines = new Lines(map);
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
+
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._lines.setup(vif, renderOptions);
 
     return renderOptions;
@@ -35,6 +42,11 @@ export default class VifLineOverlay extends VifOverlay {
 
   async update(vif) {
     const renderOptions = await this._prepare(vif);
+
+    this._legend.show(
+      vif.getColorByBuckets(renderOptions.colorByCategories),
+      'categorical'
+    );
     this._lines.update(vif, renderOptions);
 
     return renderOptions;
@@ -85,6 +97,11 @@ export default class VifLineOverlay extends VifOverlay {
     }
 
     return this.__lineDatasetInstance;
+  }
+
+  destroy() {
+    super.destroy();
+    this._legend.destroy();
   }
 
   getDataUrl(vif, colorByCategories) {

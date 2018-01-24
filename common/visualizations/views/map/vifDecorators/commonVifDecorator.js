@@ -52,3 +52,33 @@ export function getMeasureForeignKey() {
   return _.get(this, 'configuration.computedColumnName');
 }
 
+export function getColorByBuckets(colorByCategories) {
+  const colors = this.getColorPalette();
+
+  // Converting
+  //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
+  //  colorByCategories => [2011, 2012, 2013, ......]
+  // to
+  //  [
+  //    {category: 2011, color: '#aaa'},
+  //    {category: 2012, color: '#bbb'},
+  //    ...
+  //  ]
+  if (_.isNull(colorByCategories)) {
+    return [];
+  }
+
+  return _.chain(colorByCategories).
+    zipWith(colors, (category, color) => {
+      return {
+        category: category,
+        color: color
+      };
+    }).
+    take(colorByCategories.length).
+    concat({
+      category: 'Other',
+      color: colors[colorByCategories.length]
+    }).
+    value();
+}

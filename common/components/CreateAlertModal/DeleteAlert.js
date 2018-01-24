@@ -27,29 +27,30 @@ class DeleteView extends Component {
 
   render() {
     const { onCancel } = this.props;
+    const translationScope = 'shared.components.create_alert_modal.delete_view';
     return (
       <div styleName="delete-view" className="delete-page">
         <hr />
         <div styleName="title">
           <h4>
-            {I18n.t('title', { scope: 'shared.components.create_alert_modal.delete_view' })}
+            {I18n.t('title', { scope: translationScope })}
           </h4>
         </div>
         <div>
-            {I18n.t('description', { scope: 'shared.components.create_alert_modal.delete_view' })}
+            {I18n.t('description', { scope: translationScope })}
         </div>
         <div styleName="delete-options">
           <button
             styleName="btn btn-yes"
             className="yes-button"
             onClick={this.deleteAlert}>
-            {I18n.t('delete', { scope: 'shared.components.create_alert_modal.delete_view.button' })}
+            {I18n.t('button.delete', { scope: translationScope })}
           </button>
           <button
             styleName="btn btn-no"
             className="cancel-button"
             onClick={onCancel}>
-            {I18n.t('cancel', { scope: 'shared.components.create_alert_modal.delete_view.button' })}
+            {I18n.t('button.cancel', { scope: translationScope })}
           </button>
         </div>
       </div>

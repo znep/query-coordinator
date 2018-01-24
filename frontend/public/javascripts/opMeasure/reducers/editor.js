@@ -25,6 +25,11 @@ const setCalculationType = (state, type) => {
     `Unknown calculation type given: ${type}`
   );
 
+  const existingType = _.get(state, 'measure.metricConfig.type');
+  if (type === existingType) {
+    return state;
+  }
+
   const newState = _.cloneDeep(state);
 
   _.set(newState, 'measure.metricConfig', {

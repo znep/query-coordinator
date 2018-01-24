@@ -260,32 +260,42 @@ describe('Edit modal reducer', () => {
   });
 
   describe('SET_CALCULATION_TYPE', () => {
-    it('updates the calculation type in the measure metric', () => {
-      assert.notNestedProperty(state, 'measure.metricConfig.type');
-
-      state = reducer(state, actions.editor.setCalculationType('count'));
-
-      assert.nestedPropertyVal(state, 'measure.metricConfig.type', 'count' );
+    describe('when the new type matches the existing type', () => {
+      it('does nothing', () => {
+        _.set(state, 'measure.metricConfig.type', 'count');
+        const nextState = reducer(state, actions.editor.setCalculationType('count'));
+        assert.deepEqual(state, nextState);
+      });
     });
 
-    it('sets default arguments', () => {
-      state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', true);
+    describe('when the new type differs from the existing type', () => {
+      it('updates the calculation type in the measure metric', () => {
+        assert.notNestedProperty(state, 'measure.metricConfig.type');
 
-      state = reducer(state, actions.editor.setCalculationType('rate'));
-      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
-    });
+        state = reducer(state, actions.editor.setCalculationType('count'));
 
-    it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
-      state = reducer(state, actions.editor.setCalculationType('sum'));
-      _.set(state, 'measure.metricConfig.arguments.column', 'some column');
-      _.set(state, 'measure.metricConfig.arguments.something', 'what');
-      _.set(state, 'measure.dataSourceLensUid', 'test-test');
+        assert.nestedPropertyVal(state, 'measure.metricConfig.type', 'count' );
+      });
 
-      state = reducer(state, actions.editor.setCalculationType('count'));
-      assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
-      assert.notNestedProperty(state, 'measure.metricConfig.arguments.something');
-      assert.equal(state.measure.dataSourceLensUid, 'test-test');
+      it('sets default arguments', () => {
+        state = reducer(state, actions.editor.setCalculationType('count'));
+        assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', true);
+
+        state = reducer(state, actions.editor.setCalculationType('rate'));
+        assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
+      });
+
+      it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
+        state = reducer(state, actions.editor.setCalculationType('sum'));
+        _.set(state, 'measure.metricConfig.arguments.column', 'some column');
+        _.set(state, 'measure.metricConfig.arguments.something', 'what');
+        _.set(state, 'measure.dataSourceLensUid', 'test-test');
+
+        state = reducer(state, actions.editor.setCalculationType('count'));
+        assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
+        assert.notNestedProperty(state, 'measure.metricConfig.arguments.something');
+        assert.equal(state.measure.dataSourceLensUid, 'test-test');
+      });
     });
   });
 

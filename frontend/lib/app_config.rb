@@ -12,6 +12,7 @@ class AppConfig < Hashie::Trash
   property :consul_host
   property :coreservice_uri
   property :feature_flag_signaller_uri
+  property :feature_flag_monitor_uri
   property :odysseus_app_name
   property :odysseus_uri
   property :zk_hosts

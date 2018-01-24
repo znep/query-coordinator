@@ -20,13 +20,11 @@ const fetchOptions = {
 
 const deleteViewByUid = (uid) => {
   const url = `/api/views/${uid}.json`;
-
   return fetch(url, _.assign({}, fetchOptions, { method: 'DELETE' }));
 };
 
 const makePrivateByUid = (uid) => {
   const url = `/api/views/${uid}.json?method=setPermission&value=private`;
-
   return fetch(url, _.assign({}, fetchOptions, { method: 'PUT' }));
 };
 
@@ -34,16 +32,12 @@ class PublicationAction extends Component {
   static propTypes = {
     allowedTo: PropTypes.object.isRequired,
     currentViewUid: SocrataUid.isRequired,
+    currentViewType: PropTypes.string,
     publicationState: PropTypes.oneOf(['draft', 'pending', 'published']).isRequired,
     publishedViewUid: SocrataUid
   };
 
   static i18nScope = 'shared.components.asset_action_bar.publication_action';
-
-  static deleteViewByUid = (uid) => {
-    const url = `/api/views/${uid}.json`;
-    return fetch(url, _.assign({}, fetchOptions, { method: 'DELETE' }));
-  };
 
   // This function is called twice and isn't memoized.
   // If you add anything remotely complex, you'll want to add memoization, too.
@@ -95,9 +89,9 @@ class PublicationAction extends Component {
         window.socrata.showAccessManager('change_owner', true);
         break;
       case 'delete-dataset':
-        confirmation(I18n.t('delete_dataset_confirm', { scope: PublicationAction.i18n_scope }),
-            { agree: I18n.t('delete_dataset', { scope: PublicationAction.i18n_scope }),
-              header: I18n.t('delete_dataset', { scope: PublicationAction.i18n_scope }),
+        confirmation(I18n.t('delete_dataset_confirm', { scope: PublicationAction.i18nScope }),
+            { agree: I18n.t('delete_dataset', { scope: PublicationAction.i18nScope }),
+              header: I18n.t('delete_dataset', { scope: PublicationAction.i18nScope }),
               dismissOnAgree: false
             }).
           then((confirmed) => {
@@ -108,9 +102,9 @@ class PublicationAction extends Component {
           });
         break;
       case 'discard-draft':
-        confirmation(I18n.t('discard_draft_confirm', { scope: PublicationAction.i18n_scope }),
-            { agree: I18n.t('discard_draft', { scope: PublicationAction.i18n_scope }),
-              header: I18n.t('discard_draft', { scope: PublicationAction.i18n_scope }),
+        confirmation(I18n.t('discard_draft_confirm', { scope: PublicationAction.i18nScope }),
+            { agree: I18n.t('discard_draft', { scope: PublicationAction.i18nScope }),
+              header: I18n.t('discard_draft', { scope: PublicationAction.i18nScope }),
               dismissOnAgree: false
             }).
           then((confirmed) => {
@@ -168,14 +162,14 @@ class PublicationAction extends Component {
 
     if (currentlyAbleTo.discardDraft) {
       actions.push({
-        title: I18n.t('discard_draft', { scope: PublicationAction.i18n_scope }),
+        title: I18n.t('discard_draft', { scope: PublicationAction.i18nScope }),
         value: 'discard-draft'
       });
     }
 
     if (currentlyAbleTo.deleteDataset) {
       actions.push({
-        title: I18n.t('delete_dataset', { scope: PublicationAction.i18n_scope }),
+        title: I18n.t('delete_dataset', { scope: PublicationAction.i18nScope }),
         value: 'delete-dataset'
       });
     }
@@ -205,7 +199,7 @@ class PublicationAction extends Component {
   }
 
   renderPrimaryActionButton() {
-    const { currentViewUid, allowedTo, publicationState } = this.props;
+    const { currentViewUid, currentViewType, allowedTo, publicationState } = this.props;
 
     const actionText = I18n.t(`${publicationState}.primary_action_text`, {
       scope: PublicationAction.i18nScope
@@ -213,7 +207,9 @@ class PublicationAction extends Component {
 
     if (allowedTo.edit) {
       if (_.includes(['published', 'pending'], publicationState)) {
-        return <EditButton currentViewUid={currentViewUid} />;
+        return (<EditButton
+          currentViewUid={currentViewUid}
+          currentViewType={currentViewType} />);
       } else if (publicationState === 'draft') {
         return (
           <button

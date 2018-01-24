@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import I18n from 'common/i18n';
+import PropTypes from 'prop-types';
 import { SocrataUid } from '../lib/socrata_proptypes';
 import 'whatwg-fetch';
 import { defaultHeaders, fetchJson } from 'common/http';
@@ -51,9 +52,13 @@ class EditButton extends React.Component {
   constructor(props) {
     super(props);
 
-    this.fetchWorkingCopy();
+    if (this.props.currentViewType !== 'tabular') {
+      this.state = { workingCopy: 'cannotCreate' };
+    } else {
+      this.fetchWorkingCopy();
+      this.state = { workingCopy: 'needToCreate' };
+    }
     this.i18n_scope = 'shared.components.asset_action_bar.publication_action';
-    this.state = { workingCopy: 'needToCreate' };
     this.workingCopyCreatedDuringThisBrowserSession = false;
 
     _.bindAll(this, [
@@ -121,8 +126,10 @@ class EditButton extends React.Component {
             this.setState({ workingCopy: 'creating' });
             this.checkIfCopyPending();
             break;
-          case 403:
-            console.error('Somehow not logged in!?');
+          default:
+            response.json().then(
+              json => console.error(response.statusText, ':', json.message));
+            break;
         }
       });
   }
@@ -184,7 +191,12 @@ class EditButton extends React.Component {
   }
 
   render() {
+    const { currentViewUid } = this.props;
     const { componentOptions, translationKey } = {
+      'cannotCreate': {
+        componentOptions: { className: 'btn btn-primary btn-dark' },
+        translationKey: 'published.primary_action_text'
+      },
       'creating': {
         componentOptions: { className: 'btn btn-primary btn-dark btn-disabled' },
         translationKey: 'published.creating_working_copy'
@@ -221,6 +233,12 @@ class EditButton extends React.Component {
           {actionText}
         </button>
       </a>);
+    } else if (this.state.workingCopy === 'cannotCreate') {
+      return (<a href={`/d/${currentViewUid}/edit`}>
+        <button {...componentOptions}>
+          {actionText}
+        </button>
+      </a>);
     } else {
       return (
         <button {...componentOptions}>
@@ -232,7 +250,8 @@ class EditButton extends React.Component {
 }
 
 EditButton.propTypes = {
-  currentViewUid: SocrataUid.isRequired
+  currentViewUid: SocrataUid.isRequired,
+  currentViewType: PropTypes.string
 };
 
 export default EditButton;

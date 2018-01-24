@@ -8,6 +8,7 @@ import { isUserRoled } from '../../common/user';
 import { enterEditMode } from '../actions';
 import { ModeStates } from '../lib/constants';
 import ExportFlannel from 'common/components/ExportFlannel';
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 
 export class InfoPaneButtons extends PureComponent {
 
@@ -26,7 +27,35 @@ export class InfoPaneButtons extends PureComponent {
       }
     };
 
-    const flannelProps = Object.assign({ view: this.props.parentView }, this.props);
+    const whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(
+      {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        series: [
+          {
+            dataSource: {
+              datasetUid: this.props.parentView.id,
+              dimension: {},
+              domain: window.location.hostname,
+              type: 'socrata.soql',
+              filters: this.props.filters
+            },
+            type: 'table'
+          }
+        ]
+      },
+      0
+    );
+
+    const flannelProps = {
+      exportFormats: this.props.view.exportFormats,
+      exportFilteredData: this.props.exportFilteredData,
+      view: this.props.parentView,
+      onDownloadData: this.props.onDownloadData,
+      whereClause: whereClause
+    };
 
     return (
       <div className="btn-group">
@@ -40,11 +69,12 @@ export class InfoPaneButtons extends PureComponent {
 
 InfoPaneButtons.propTypes = {
   mode: PropTypes.string.isRequired,
+  parentView: PropTypes.object.isRequired,
   onClickEdit: PropTypes.func
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'mode');
+  return state;
 }
 
 function mapDispatchToProps(dispatch) {

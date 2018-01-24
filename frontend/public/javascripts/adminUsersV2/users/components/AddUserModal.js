@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import RolePicker from '../../roles/components/RolePicker';
 import Button from 'common/components/Button';
@@ -10,6 +10,7 @@ import * as Selectors from '../../selectors';
 
 export class AddUserModal extends Component {
   static propTypes = {
+    I18n: I18nPropType.isRequired,
     cancelAddUsersModal: PropTypes.func.isRequired,
     errors: PropTypes.array,
     modalDisabled: PropTypes.bool,

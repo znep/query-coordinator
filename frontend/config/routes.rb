@@ -181,6 +181,8 @@ Rails.application.routes.draw do
       get :federations
       get :users, :as => :users_admin
       get 'users/invited', :as => :invited_users_admin,  :action => :users
+      get 'teams', :as => :teams_admin,  :action => :users
+      get 'teams/:id', :action => :users
       get :comment_moderation
       get :sdp_templates
       get :datasets # Once we no longer use the use_internal_asset_manager feature flag, 💀 this route

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RolePicker from '../../roles/components/RolePicker';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import * as RoleActions from '../../roles/actions';
 import * as Selectors from '../../selectors';
 
@@ -29,7 +29,7 @@ class UserFilter extends Component {
 
 UserFilter.propTypes = {
   roleId: PropTypes.string,
-  I18n: PropTypes.object
+  I18n: I18nPropType.isRequired
 };
 
 const mapStateToProps = state => {

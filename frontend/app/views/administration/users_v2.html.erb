@@ -1,10 +1,10 @@
 <% content_for :head do %>
-  <title><%= t('screens.admin.users.title') %> | <%= get_site_title %></title>
+  <title><%= t(FeatureFlags.derive(@view, request).enable_teams ? 'screens.admin.users.teams_title' : 'screens.admin.users.title') %> | <%= get_site_title %></title>
   <%= rendered_stylesheet_tag 'styleguide' %>
   <%= rendered_stylesheet_tag 'admin-users-v2' %>
 <% end %>
 
-<% admin_breadcrumb('screens.admin.users.title') %>
+<% admin_breadcrumb(FeatureFlags.derive(@view, request).enable_teams ? 'screens.admin.users.teams_title' : 'screens.admin.users.title') %>
 
 <% @site_chrome_admin_header_options = {size: 'small'} %>
 

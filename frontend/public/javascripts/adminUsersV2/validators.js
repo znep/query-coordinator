@@ -48,3 +48,10 @@ export const isValidRoleId = id => {
     ? Success(roleId)
     : Failure([{ translationKey: 'users.errors.invalid_role_selected' }]);
 };
+
+export const isValidTeamName = teamName => {
+  return isPresent(teamName)
+    ? Success(teamName)
+    : Failure([{ translationKey: 'users.errors.no_team_name_provided' }]);
+};
+

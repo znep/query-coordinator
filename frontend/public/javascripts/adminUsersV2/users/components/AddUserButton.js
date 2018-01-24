@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import AddUserModal from './AddUserModal';
 import Button from 'common/components/Button';
 import * as Actions from '../actions';
 
 export class AddUserButton extends Component {
   static propTypes = {
+    I18n: I18nPropType.isRequired,
     addUsers: PropTypes.func.isRequired
   };
 

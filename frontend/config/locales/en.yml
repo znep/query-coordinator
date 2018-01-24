@@ -4235,6 +4235,8 @@ en:
         stories_description: Edit custom story themes (Socrata Super-Admins only)
         users: Users
         users_description: Create and manage user roles on your site
+        users_teams: Users & Teams
+        users_teams_description: Create and manage users and teams on your site
         view_moderation: View Moderation
         view_moderation_description: Review and manage user-created views for inclusion in your catalog
       internal:
@@ -5313,6 +5315,7 @@ en:
         search: Search
         search_for_users: Search for Users to Add
         search_results: Search Results for '%{term}'
+        teams_title: Users & Teams
         title: Users
         user_saved: User saved
         users_table_description: Users
@@ -7057,12 +7060,25 @@ en:
     pm: pm
   users:
     actions:
+      confirm_delete_team: Are you sure you want to delete the team '%{name}'?
       confirm_remove_invited_user: Are you sure you want to remove '%{email}'?
       confirm_remove_user: Are you sure you want to remove '%{screenName}'?
+      delete_team: Delete Team...
+      edit_team: Edit Team Details
       remove_invited_user: Remove
       remove_role: Remove
       reset_password: Reset Password
       resend_invited_user_email: Resend invite
+    add_new_team:
+      add_team: Add New Team
+      add_team_success_notification: Successfully added team.
+      add_team_title: Add New Team
+      add_team_label: Add Team
+      cancel: Cancel
+      description_label: Description
+      description_placeholder: Add a description
+      name_label: Team Name
+      name_placeholder: Enter a Name
     add_new_users:
       add_users: Add New User...
       subtitle: Add a single user or multiple users with the same role.
@@ -7072,41 +7088,66 @@ en:
       role_label: Role
       role_placeholder: Select user role...
       success_toast: Successfully added user.
+    edit_team:
+      add_team_members: Add Team Members
+      add_team_member_failure_html: Unable to add '%{displayName}' to team. If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
+      add_team_member_success: Added '%{displayName}' to team
+      add_team_members_success: Added members to team
+      back_to_all_teams: Back to All Teams
+      confirm_remove_team_member: Are you sure you want to remove '%{displayName}' from '%{teamName}'?
+      edit_team: Edit Team Details
+      edit_team_success_notification: Successfully updated team.
+      edit_team_title: Edit Team Details
+      remove_team_member: Remove from Team
+      remove_team_member_failure: Unable to remove '%{displayName}' from team
+      remove_team_member_success: Removed '%{displayName}' from team
     errors:
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: No role selected
       no_emails_provided: No email addresses provided
+      no_team_name_provided: No team name provided
       own_role: Unable to change/remove your own role.
       server_error_html: An error has occurred while performing this action.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
       unknown: An unknown error has occurred.
     export_as_csv: Export as CSV
     headers:
       actions: Actions
+      description: Description
       email: Email
       invited: Invited
       last_active: Last Active
+      members: Members
       name: Name
+      owner: Owner
       role: Role
+      team_name: Team Name
+      teams: Teams
       uid: UID
     last_active:
       today: today
       unknown: unknown
     navigation:
       invited_users: Invited Users
+      teams: Teams
       users: Users
     notifications:
       add_user_success: Successfully added user.
+      delete_team_success: Successfully deleted team.
       invited_user_removed: Invited user removed.
       password_reset: Password reset.
       remove_invited_user_success: Successfully removed invited user '%{email}'.
       resent_email_success: Invited user invitation resent.
       role_changed: User's role successfully changed.
       role_removed: User's role removed.
+      team_deleted: Successfully deleted team.
     no_results: No results
     roles:
       all: All Roles
       custom: custom
       default: default
+    team_roles:
+      member: Member
+      owner: Owner
   visualization_canvas:
     add_visualization: Add Visualization
     alert_not_signed_in: You will not be able to save this visualization because you are not logged in.

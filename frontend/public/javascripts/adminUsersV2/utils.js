@@ -2,6 +2,8 @@ import { connect as reduxConnect } from 'react-redux';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import flow from 'lodash/fp/flow';
 
+export { I18nPropType } from 'common/i18n/components/connectLocalization';
+
 /** Utility function that combines localization and redux store, making sure to add the localization
  * first so it can be used in mapStateToProps/mapDispatchToProps
  * @param mapStateToProps

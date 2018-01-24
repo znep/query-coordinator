@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connectLocalization from 'common/i18n/components/connectLocalization';
+import { I18nPropType } from '../utils';
 
 import has from 'lodash/fp/has';
 import isEmpty from 'lodash/fp/isEmpty';
 
 class ErrorList extends Component {
   static propTypes = {
+    I18n: I18nPropType.isRequired,
     errors: PropTypes.array
   };
 
@@ -34,7 +36,7 @@ class ErrorList extends Component {
 
     return (
       <div className="alert error">
-        <ul className="error-list">{errors.map(this.renderError)}</ul>
+        <ul className="alert-list">{errors.map(this.renderError)}</ul>
       </div>
     );
   }

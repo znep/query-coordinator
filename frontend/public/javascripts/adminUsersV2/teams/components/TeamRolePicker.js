@@ -4,7 +4,7 @@ import { connect as fullConnect, I18nPropType } from '../../utils';
 import { Dropdown } from 'common/components';
 import * as Selectors from '../../selectors';
 
-export class RolePicker extends Component {
+export class TeamRolePicker extends Component {
   static propTypes = {
     availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
     roleId: PropTypes.string,
@@ -33,29 +33,11 @@ export class RolePicker extends Component {
 }
 
 const mapStateToProps = (state, { I18n }) => {
-  const roles = Selectors.getRoles(state) || [];
-  const customRolesExist = roles.some(role => !role.isDefault);
-
-  const availableRoles = roles.map(role => {
-    const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name;
-    if (customRolesExist) {
-      const group = role.isDefault ? I18n.t('users.roles.default') : I18n.t('users.roles.custom');
-      return {
-        title,
-        value: role.id,
-        group
-      };
-    } else {
-      return {
-        title,
-        value: role.id
-      };
-    }
-  });
+  const teamRoles = Selectors.getTeamRoles(state);
 
   return {
-    availableRoles
+    availableRoles: teamRoles.map(role => ({ title: I18n.t(`users.team_roles.${role}`), value: role }))
   };
 };
 
-export default fullConnect(mapStateToProps)(RolePicker);
+export default fullConnect(mapStateToProps)(TeamRolePicker);

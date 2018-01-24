@@ -5,15 +5,21 @@ import * as fromUi from './ui/reducers';
 
 import flow from 'lodash/fp/flow';
 import get from 'lodash/fp/get';
+import curry from 'lodash/fp/curry';
 import curryRight from 'lodash/fp/curryRight';
+import { combineSelectors } from 'combine-selectors-redux';
+import { selectors as teamsSelectors } from './teams/reducers';
 
 /** Config State Selectors **/
 export const getInvitedUsersAdminPath = get('config.routes.invitedUsersAdminPath');
+export const getTeamsAdminPath = get('config.routes.teamsAdminPath');
+export const getTeamViewPath = curry((id, state) => `${getTeamsAdminPath(state)}/${id}`);
 export const getUsersAdminPath = get('config.routes.usersAdminPath');
 export const getUsersCsvUrl = get('config.routes.csvUrl');
 export const getUsersResultsLimit = get('config.usersResultsLimit');
 export const getDomain = get('config.domain');
 export const getDefaultMemberRoleId = get('config.defaultMemberRoleId');
+export const getEnableTeams = get('config.enableTeams');
 
 /** UI State Selectors **/
 export const getUiState = get('ui');
@@ -68,4 +74,33 @@ export const getInvitedUserCount = flow(getInvitedUsersState, fromInvitedUsers.g
 export const getInvitedUsersLoading = flow(getInvitedUsersState, fromInvitedUsers.getInvitedUsersLoading);
 export const getInvitedUserEmailById = (state, id) =>
   flow(getInvitedUsersState, curryRight(fromInvitedUsers.getInvitedUserEmailById)(id))(state);
+
+export const selectors = combineSelectors({
+  teams: teamsSelectors
+});
+
+/** Teams State Selectors **/
+export const getTeamsList = selectors.teams.teams.getTeamsList;
+export const getTeamsLoadingData = selectors.teams.ui.getLoadingData;
+export const getTeamsLoadingTeam = selectors.teams.ui.getLoadingTeam;
+export const getShowEditTeamModal = selectors.teams.ui.getShowEditTeamModal;
+export const getDisableEditTeamModal = selectors.teams.ui.getDisableEditTeamModal;
+export const getShowAddTeamMembersModal = selectors.teams.ui.getShowAddTeamMembersModal;
+export const getDisableAddTeamMembersModal = selectors.teams.ui.getDisableAddTeamMembersModal;
+export const getTeamFormId = selectors.teams.teams.getTeamFormId;
+export const getTeamFormName = selectors.teams.teams.getTeamFormName;
+export const getTeamFormDescription = selectors.teams.teams.getTeamFormDescription;
+export const getTeamFormErrors = selectors.teams.teams.getTeamFormErrors;
+export const getTeam = selectors.teams.teams.getTeam;
+export const getTeamNameById = selectors.teams.teams.getTeamNameById;
+export const getTeamRoles = selectors.teams.teams.getTeamRoles;
+export const getTeamsCount = selectors.teams.teams.getTeamsCount;
+export const findTeamMemberById = selectors.teams.teams.findTeamMemberById;
+export const getTeamUserSearch = selectors.teams.teams.getUserSearch;
+
+export const getTeamUserSearchCurrentQuery = selectors.teams.teams.getUserSearchCurrentQuery;
+export const getTeamUserSearchResults = selectors.teams.teams.getUserSearchResults;
+export const getTeamUserSearchSelectedUsers = selectors.teams.teams.getUserSearchSelectedUsers;
+export const getTeamAddMemberErrors = selectors.teams.teams.getAddMemberErrors;
+export const getTeamAddMemberSuccesses = selectors.teams.teams.getAddMemberSuccesses;
 

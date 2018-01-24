@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import toString from 'lodash/toString';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
@@ -12,7 +12,7 @@ export class InvitedUsersTable extends React.Component {
   static propTypes = {
     invitedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
     loadingData: PropTypes.bool.isRequired,
-    I18n: PropTypes.object.isRequired
+    I18n: I18nPropType.isRequired
   };
 
   renderInvitedCell = createdAt => <DateFromNow timestamp={createdAt} />;

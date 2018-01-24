@@ -13,4 +13,5 @@ public/javascripts/util/pluralize.js
 public/javascripts/util/polyfills.js
 public/javascripts/util/typed-arrays.js
 public/javascripts/common/generated-core-roles-api.js
+public/javascripts/common/generated-core-teams-api.js
 socrata-components

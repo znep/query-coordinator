@@ -114,7 +114,7 @@ body.modal-open {
     padding: ms(2);
   }
 
-  *:first-child {
+  > *:first-child {
     margin-top: 0;
   }
 }

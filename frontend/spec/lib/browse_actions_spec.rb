@@ -33,14 +33,14 @@ describe BrowseActions do
   it 'test_does_not_add_measures_if_feature_flag_false' do
     stub_feature_flags_with(:open_performance_standalone_measures => false)
     view_types_list = @browse_controller.send(:view_types_facet)
-    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'}).to be_falsy
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measures'}).to be_falsy
     # The open_performance_standalone_measures flag is false, but we have a measures link in the catalog
   end
 
   it 'test_does_add_measures_if_feature_flag_true' do
     stub_feature_flags_with(:open_performance_standalone_measures => true)
     view_types_list = @browse_controller.send(:view_types_facet)
-    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measure'}).to be_truthy
+    expect(view_types_list[:options].any? { |link_item| link_item[:value] == 'measures'}).to be_truthy
     # The open_performance_standalone_measures flag is true, but we do not have a measures link in the catalog
   end
 

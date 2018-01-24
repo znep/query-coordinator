@@ -93,7 +93,9 @@ export default class ExportFlannel extends PureComponent {
 
     let url = getDownloadLink(view.id, format);
     if (this.props.exportFilteredData) {
-      const queryParam = (this.state.exportSetting === 'filtered' ? this.state.queryParamFiltered : undefined);
+      const queryParam = (this.state.exportSetting === 'filtered' ?
+                          this.state.queryParamFiltered :
+                          undefined);
       url = getDownloadLink(this.state.datasetUid, format, this.state.datasetDomain, 'https', queryParam);
     }
     const type = getDownloadType(format);
@@ -116,7 +118,7 @@ export default class ExportFlannel extends PureComponent {
   }
 
   getFeaturedLinks() {
-    const { view, exportFormats } = this.props;
+    const { exportFormats } = this.props;
 
     const featuredLinks = exportFormats.
       filter(format => featuredLinksList.includes(format)).
@@ -127,7 +129,7 @@ export default class ExportFlannel extends PureComponent {
   }
 
   getRestofLinks() {
-    const { view, exportFormats } = this.props;
+    const { exportFormats } = this.props;
 
     const restofLinks = exportFormats.
       filter(format => !featuredLinksList.includes(format)).

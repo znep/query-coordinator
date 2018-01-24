@@ -67,7 +67,8 @@ class MyAlerts extends Component {
   }
 
   formatDatasetName(datasetName) {
-    let name = datasetName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-').replace(/\-+/g, '-');
+    // sometimes datesetName may be null
+    let name = (datasetName || '').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-').replace(/\-+/g, '-');
 
     if (name.length < 1) {
       name = '-';
@@ -129,10 +130,14 @@ class MyAlerts extends Component {
 
   render() {
     const { isAlertsLoading, showEditAlertModal, currentSelectedAlert } = this.state;
+    const { mapboxAccessToken } = this.props;
+    let editAlertType = _.get(currentSelectedAlert, 'query_type', 'raw');
     const createAlertModal = (
       <CreateAlertModal
         editMode={showEditAlertModal}
         onClose={this.onCloseAlertModal}
+        editAlertType={editAlertType}
+        mapboxAccessToken={mapboxAccessToken}
         alert={currentSelectedAlert} />
     );
     return (

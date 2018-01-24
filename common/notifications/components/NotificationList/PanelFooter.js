@@ -38,7 +38,8 @@ class PanelFooter extends Component {
       currentDomainFeatures,
       showMyAlertPreference,
       inProductTransientNotificationsEnabled,
-      onShowTransientNotificationsChange
+      onShowTransientNotificationsChange,
+      mapboxAccessToken
     } = this.props;
 
     if (showAlertSettingModal) {
@@ -50,6 +51,7 @@ class PanelFooter extends Component {
           showMyAlertPreference={showMyAlertPreference}
           inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
           onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+          mapboxAccessToken={mapboxAccessToken}
           currentUserRole={currentUserRole} />
       );
     }

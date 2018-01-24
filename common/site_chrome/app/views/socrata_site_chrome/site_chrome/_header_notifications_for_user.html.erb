@@ -25,7 +25,8 @@
           isSuperAdmin: <%== is_superadmin? %>,
           showMyAlertPreference: <%= show_alert_preference? %>,
           inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
-          developmentMode: <%== is_development_mode? %>
+          developmentMode: <%== is_development_mode? %>,
+          mapboxAccessToken: <%== mapbox_access_token.to_json %>
         };
 
         window.headerNotifications('#site-chrome-header-notifications',

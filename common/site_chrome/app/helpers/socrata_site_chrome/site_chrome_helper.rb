@@ -465,5 +465,9 @@ module SocrataSiteChrome
     def is_development_mode?
       Rails.env.development?
     end
+
+    def mapbox_access_token
+      ENV['MAPBOX_ACCESS_TOKEN']
+    end
   end
 end

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import styles from './tabs.module.scss';
+import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import classNames from 'classnames';
+import styles from './tabs.module.scss';
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import I18n from 'common/i18n';
 
@@ -37,5 +38,10 @@ class Tabs extends Component {
     );
   }
 }
+
+Tabs.propTypes = {
+  selectedTab: PropTypes.string,
+  onTabChange: PropTypes.func
+};
 
 export default connectLocalization(cssModules(Tabs, styles, { allowMultiple: true }));

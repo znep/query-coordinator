@@ -120,7 +120,8 @@ class NotificationList extends Component {
       currentDomainFeatures,
       showMyAlertPreference,
       inProductTransientNotificationsEnabled,
-      onShowTransientNotificationsChange
+      onShowTransientNotificationsChange,
+      mapboxAccessToken
     } = this.props;
 
     if ((showProductNotifications && !showUserNotifications) || (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
@@ -139,6 +140,7 @@ class NotificationList extends Component {
         showMyAlertPreference={showMyAlertPreference}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
         onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        mapboxAccessToken={mapboxAccessToken}
         isSuperAdmin={isSuperAdmin} />);
     } else if (showUserNotifications) {
       const {
@@ -160,6 +162,7 @@ class NotificationList extends Component {
         showMyAlertPreference={showMyAlertPreference}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
         onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        mapboxAccessToken={mapboxAccessToken}
         isSuperAdmin={isSuperAdmin} />);
     }
   }

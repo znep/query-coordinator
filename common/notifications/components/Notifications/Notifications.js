@@ -323,7 +323,8 @@ class Notifications extends Component {
         isSuperAdmin,
         currentDomainFeatures,
         showMyAlertPreference,
-        inProductTransientNotificationsEnabled
+        inProductTransientNotificationsEnabled,
+        mapboxAccessToken
       } = this.props.options;
       const {
         areNotificationsLoading,
@@ -376,6 +377,7 @@ class Notifications extends Component {
             showMyAlertPreference={showMyAlertPreference}
             inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
             onShowTransientNotificationsChange={this.onShowTransientNotificationsChange}
+            mapboxAccessToken={mapboxAccessToken}
             viewOlderLink={viewOlderLink} />
         </div>
       );

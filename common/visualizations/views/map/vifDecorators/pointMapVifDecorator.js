@@ -29,12 +29,12 @@ export function getPointOpacity() {
   return _.get(this, 'configuration.pointOpacity', 1);
 }
 
-export function getClusterCircleRadius(resizeByRange) {
+export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
   const minRadius = 12;
   const maxRadius = _.get(this, 'series[0].mapOptions.maxClusterSize', 40) / 2;
   return {
     type: 'interval',
-    property: 'sum',
+    property: aggregateAndResizeBy,
     stops: [
       [CLUSTER_BUCKETS.SMALL * resizeByRange.avg, minRadius],
       [CLUSTER_BUCKETS.MEDIUM * resizeByRange.avg, (minRadius + maxRadius) / 2],

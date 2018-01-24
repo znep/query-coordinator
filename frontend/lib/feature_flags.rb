@@ -26,9 +26,9 @@ class FeatureFlags
       Signaller.for(flag: flag_name).set(on_domain: options[:domain],
                                          to_value: flag_value,
                                          authorization: auth_header)
-      if AppConfig.feature_flag_monitor_uri
+      if APP_CONFIG.feature_flag_monitor_uri
         poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
-        HTTParty.post(URI.join(AppConfig.feature_flag_monitor_uri, poke_ffm),
+        HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
                       body: {}.to_json, headers: auth_header)
       end
     end
@@ -37,9 +37,9 @@ class FeatureFlags
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
       Signaller.for(flag: flag_name).reset(on_domain: options[:domain],
                                            authorization: auth_header)
-      if AppConfig.feature_flag_monitor_uri
+      if APP_CONFIG.feature_flag_monitor_uri
         poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
-        HTTParty.post(URI.join(AppConfig.feature_flag_monitor_uri, poke_ffm),
+        HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
                       body: {}.to_json, headers: auth_header)
       end
     end

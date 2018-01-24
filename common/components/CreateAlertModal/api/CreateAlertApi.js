@@ -7,7 +7,7 @@ import _ from 'lodash';
 function checkStatus(response) {
   let errorMessage;
   if (response.status === 401 || response.status === 403) {
-    // session may expired so we are reloading the page
+    // session may have expired so we are reloading the page
     window.location.reload();
   } else if (response.status >= 200 && response.status < 300) {
     return response;
@@ -35,6 +35,16 @@ export const createAlertApi = (() => {
   return {
     validate: (alertParams) => {
       return fetch('/api/notifications_and_alerts/alerts/validate_raw_soql', {
+        method: 'POST',
+        headers: getDefaultHeaders(),
+        credentials: 'same-origin',
+        body: JSON.stringify({ alert: alertParams })
+      }).
+      then(checkStatus).
+      then((response) => response.json());
+    },
+    validateCustomAlert: (alertParams) => {
+      return fetch('/api/notifications_and_alerts/alerts/validate_abstract_params', {
         method: 'POST',
         headers: getDefaultHeaders(),
         credentials: 'same-origin',

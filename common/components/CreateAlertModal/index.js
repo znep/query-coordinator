@@ -169,10 +169,15 @@ class CreateAlertModal extends Component {
   onValidateAlert() {
     const { selectedTab } = this.state;
     const params = this.getAlertParams();
-    let promise = CreateAlertApi.validate(params);
+    let promise;
 
     this.setState({ enableValidationInfo: true, isLoading: true });
-    
+
+    if (selectedTab === 'customAlert') {
+      promise = CreateAlertApi.validateCustomAlert(params);
+    } else {
+      promise = CreateAlertApi.validate(params);
+    }
     promise.then((response) => {
       if (_.get(response, 'valid', false)) {
         this.setState({ isInvalidQuery: false, enableSaveButton: true, isLoading: false });

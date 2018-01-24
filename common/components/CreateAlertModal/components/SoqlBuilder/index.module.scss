@@ -1,0 +1,34 @@
+@import "../../index.module.scss";
+
+.soql-builder {
+  .soql-slices-section {
+    margin-top: 15px;
+
+    .add-soql-slice-button {
+      margin: 15px 3px 3px 3px;
+      font-size: 12px;
+      padding: 10px;
+    }
+  }
+
+  & :global(:not(.socrata-icon-logo-color).socrata-icon) {
+    color: $grey;
+    fill: $grey;
+    height: 14px;
+    width: 14px;
+
+    & svg {
+
+      height: 14px;
+      width: 14px;
+
+      &,
+      * {
+        color: $grey;
+        fill: $grey;
+      }
+    }
+  }
+
+
+}

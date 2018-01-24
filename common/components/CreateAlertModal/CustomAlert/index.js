@@ -10,6 +10,7 @@ import Spinner from 'common/components/Spinner';
 
 import styles from './index.module.scss';
 import datasetApi from '../api/datasetApi';
+import SoqlBuilder from '../components/SoqlBuilder';
 
 /**
  <description>
@@ -80,6 +81,15 @@ class CreateCustomAlert extends Component {
   }
 
   renderAlertParametersPage() {
+    const { customAlert, viewId, mapboxAccessToken } = this.props;
+
+    return (
+      <SoqlBuilder
+        viewId={viewId}
+        mapboxAccessToken={mapboxAccessToken}
+        onSoqlChange={this.onCustomAlertChange}
+        soqlSlices={customAlert} />
+    );
   }
 
   renderAlertTriggerSelectionPage() {

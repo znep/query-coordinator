@@ -61,6 +61,14 @@ describe('components/ExportFlannel', () => {
     assert.equal(element.querySelectorAll('.download-link').length, allFormats.length);
   });
 
+  it('does not render json option', () => {
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: ['json'],
+    }));
+
+    assert.lengthOf(element.querySelectorAll('.download-link'), 0);
+  });
+
   it('renders CSV for Excel Option', () => {
     const element = renderComponent(ExportFlannel, getProps({
       exportFormats: ['csv_for_excel'],

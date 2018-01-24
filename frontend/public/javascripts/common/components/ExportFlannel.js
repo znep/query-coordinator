@@ -117,10 +117,12 @@ export default class ExportFlannel extends PureComponent {
     return !(FeatureFlags.value('hide_csv_for_excel_download') && value.match(/^csv_for_excel/));
   }
 
-  getFeaturedLinks() {
-    const { exportFormats } = this.props;
+  getExportFormats() {
+    return _.filter(this.props.exportFormats, (type) => type !== 'json');
+  }
 
-    const featuredLinks = exportFormats.
+  getFeaturedLinks() {
+    const featuredLinks = this.getExportFormats().
       filter(format => featuredLinksList.includes(format)).
       filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this));
@@ -129,9 +131,7 @@ export default class ExportFlannel extends PureComponent {
   }
 
   getRestofLinks() {
-    const { exportFormats } = this.props;
-
-    const restofLinks = exportFormats.
+    const restofLinks = this.getExportFormats().
       filter(format => !featuredLinksList.includes(format)).
       filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this)).

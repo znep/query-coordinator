@@ -2071,6 +2071,7 @@ class View < Model
       :name => name,
       :description => html_description,
       :category => category,
+      :exportFormats => DatasetLandingPage.export_formats,
       # If the view is ephemeral, we have columns, but if the view has been saved, columns is an
       # empty array (because Core currently ignores columns for anything that looks like a data lens).
       # We know a view has been saved if it doesn't have an id, so we need to fetch the parent and

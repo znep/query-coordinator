@@ -306,6 +306,26 @@ en:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color
         with_currently_selected_color: with currently selected color
+      export:
+        action_buttons:
+          download: Download
+          export: Export
+        csv_for_excel: CSV for Excel
+        csv_for_excel_europe: CSV for Excel (Europe)
+        csv_without_geo: CSV (without geospatial data)
+        flannel_title: Download %{dataset_title}
+        flannel_description: Download %{dataset_title} for offline use in other applications.
+        flannel_additional_links_title: Additional Formats
+        json_without_geo: JSON (without geospatial data)
+        original: Original
+        shapefile: Shapefile
+        tsv_for_excel: TSV for Excel
+        all_data: All Data
+        filtered_data: Filtered Data
+        not_available: N/A
+        row:
+          one: row
+          other: rows
       filter_bar:
         add_filter: Add Filter
         apply: Apply

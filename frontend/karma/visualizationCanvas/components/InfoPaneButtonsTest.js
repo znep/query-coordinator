@@ -13,10 +13,9 @@ describe('InfoPaneButtons', () => {
       {
         onClickEdit: _.noop,
         mode: ModeStates.VIEW,
-        externalFormats: ['csv'],
         view: mockView,
         parentView: mockParentView,
-        vifs: [mockVif]
+        filters: []
       },
       props
     );

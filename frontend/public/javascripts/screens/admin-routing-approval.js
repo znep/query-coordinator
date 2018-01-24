@@ -159,7 +159,7 @@
         ths.push({
           tagName: 'th',
           'class': 'unitCount',
-          contents
+          contents: contents
         });
       });
       $stageBreakdown.find('thead tr').append($.tag(ths));

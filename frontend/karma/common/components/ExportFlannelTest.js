@@ -9,6 +9,9 @@ import { FeatureFlags } from 'common/feature_flags';
 
 import { shallow } from 'enzyme';
 
+// TODO: Move into platform-ui/common/spec
+// TODO: Actually mock out requests and test response.
+// See EN-21748
 describe('components/ExportFlannel', () => {
 
   beforeEach(() => {
@@ -50,35 +53,53 @@ describe('components/ExportFlannel', () => {
   });
 
   it('renders all the options', () => {
-    const element = renderComponent(ExportFlannel, getProps());
+    const allFormats = [ 'csv', 'csv_for_excel', 'csv_for_excel_europe', 'tsv_for_excel' ];
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: allFormats,
+    }));
 
-    const typesLengthExceptJson = mockView.exportFormats.filter(type => type !== 'json').length;
+    assert.equal(element.querySelectorAll('.download-link').length, allFormats.length);
+  });
 
-    assert.equal(element.querySelectorAll('.download-link').length, typesLengthExceptJson);
+  it('does not render json option', () => {
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: ['json'],
+    }));
+
+    assert.lengthOf(element.querySelectorAll('.download-link'), 0);
   });
 
   it('renders CSV for Excel Option', () => {
-    const element = renderComponent(ExportFlannel, getProps());
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: ['csv_for_excel'],
+    }));
     const downloadOption = element.querySelector('[data-type="CSV for Excel"]');
 
+    assert.equal(element.querySelectorAll('.download-link').length, 1);
     assert.ok(downloadOption);
     assert.include(downloadOption.getAttribute('href'), '.csv');
     assert.include(downloadOption.getAttribute('href'), 'bom');
   });
 
   it('renders TSV for Excel Option', () => {
-    const element = renderComponent(ExportFlannel, getProps());
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: ['tsv_for_excel'],
+    }));
     const downloadOption = element.querySelector('[data-type="TSV for Excel"]');
 
+    assert.equal(element.querySelectorAll('.download-link').length, 1);
     assert.ok(downloadOption);
     assert.include(downloadOption.getAttribute('href'), '.tsv');
     assert.include(downloadOption.getAttribute('href'), 'bom');
   });
 
   it('renders CSV for Excel Europe Option', () => {
-    const element = renderComponent(ExportFlannel, getProps());
+    const element = renderComponent(ExportFlannel, getProps({
+      exportFormats: ['csv_for_excel_europe'],
+    }));
     const downloadOption = element.querySelector('[data-type="CSV for Excel (Europe)"]');
 
+    assert.equal(element.querySelectorAll('.download-link').length, 1);
     assert.ok(downloadOption);
     assert.include(downloadOption.getAttribute('href'), '.csv');
     assert.include(downloadOption.getAttribute('href'), 'format');
@@ -93,12 +114,16 @@ describe('components/ExportFlannel', () => {
     });
 
     it('does not render "CSV for Excel" option', () => {
-      const element = renderComponent(ExportFlannel, getProps());
+      const element = renderComponent(ExportFlannel, getProps({
+        exportFormats: [ 'csv', 'json', 'csv_for_excel', 'csv_for_excel_europe', 'tsv_for_excel' ],
+      }));
       assert.isNotOk(element.querySelector('[data-type="CSV for Excel"]'));
     });
 
     it('does not render "CSV for Excel Europe" Option', () => {
-      const element = renderComponent(ExportFlannel, getProps());
+      const element = renderComponent(ExportFlannel, getProps({
+        exportFormats: [ 'csv', 'json', 'csv_for_excel', 'csv_for_excel_europe', 'tsv_for_excel' ],
+      }));
       assert.isNotOk(element.querySelector('[data-type="CSV for Excel (Europe)"]'));
     });
 

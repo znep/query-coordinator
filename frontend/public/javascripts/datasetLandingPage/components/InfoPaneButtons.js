@@ -335,7 +335,7 @@ export default class InfoPaneButtons extends Component {
         {this.renderViewDataButton()}
         {this.renderExploreDataDropdown()}
         {this.renderManageButton()}
-        <ExportFlannel {...this.props} />
+        <ExportFlannel {...this.props} exportFormats={view.exportFormats} />
         {apiLink}
         {shareFlannel}
         {this.renderMoreActions()}

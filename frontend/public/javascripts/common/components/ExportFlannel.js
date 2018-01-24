@@ -5,7 +5,6 @@ import React, { PureComponent } from 'react';
 import I18n from 'common/i18n';
 import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
-import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { FeatureFlags } from 'common/feature_flags';
 import { Flannel, FlannelHeader, FlannelContent } from 'common/components/Flannel';
 import { getDownloadLink, getDownloadType } from 'common/downloadLinks';
@@ -16,12 +15,7 @@ export default class ExportFlannel extends PureComponent {
   constructor(props) {
     super(props);
 
-    props.view.exportFormats = props.view.exportFormats.filter(type => type !== 'json');
-
     this.state = {
-      // NB: vifs[0] is a valid assumption here because none of the vizcan pages
-      // currently support multiple VIFs anyway.
-      vif: _.get(props, ['vifs', 0]),
       exportSetting: 'all',
       rowCountAll: null,
       rowCountFiltered: null,
@@ -31,42 +25,59 @@ export default class ExportFlannel extends PureComponent {
     _.bindAll(this, ['closeFlannel', 'openFlannel']);
   }
 
-  componentDidMount() {
+  propsRefreshHelper(props) {
     const self = this;
+    const { exportFilteredData, view, whereClause } = props;
     // determine the underlying dataset metadata and save it in the state
-    if (this.props.exportFilteredData) {
-      const datasetDomain = _.get(self.state.vif, ['series', 0, 'dataSource', 'domain']);
-      const datasetUid = _.get(self.state.vif, ['series', 0, 'dataSource', 'datasetUid']);
-      const metadataProvider = new MetadataProvider({ domain: datasetDomain, datasetUid }, true);
-      const whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(self.state.vif, 0);
-      let queryParam = 'select *';
-      if (whereClause.length > 0) {
-        queryParam += ` where ${whereClause}`;
-      }
-      const newState = {
-        datasetDomain,
-        queryParam
-      };
-      metadataProvider.getDatasetMigrationMetadata().
-        then(function(migrationMetadata) {
-          self.setState({ ...newState, datasetUid: _.get(migrationMetadata, 'nbe_id', datasetUid) });
-        }).
-        catch(function() {
-          self.setState({ ...newState, datasetUid });
-        });
-      // determine row counts
-      const soqlDataProvider = new SoqlDataProvider({ domain: datasetDomain, datasetUid }, true);
-      soqlDataProvider.getRowCount().
-        then(function(resp) {
-          self.setState({ rowCountAll: resp });
-        });
-      if (whereClause !== '') {
-        soqlDataProvider.getRowCount(whereClause).
-          then(function(resp) {
-            self.setState({ rowCountFiltered: resp });
+    if (exportFilteredData) {
+      const datasetDomain = window.location.hostname;
+      const datasetUid = view.id;
+      if (datasetDomain && datasetUid) {
+        const metadataProvider = new MetadataProvider({ domain: datasetDomain, datasetUid }, true);
+        let queryParamFiltered = 'select *';
+        if (!_.isEmpty(whereClause)) {
+          queryParamFiltered += ` where ${whereClause}`;
+        }
+        const newState = {
+          datasetDomain,
+          queryParamFiltered
+        };
+        metadataProvider.getDatasetMigrationMetadata().
+          then(function(migrationMetadata) {
+            self.setState({ ...newState, datasetUid: _.get(migrationMetadata, 'nbe_id', datasetUid) });
+          }).
+          catch(function() {
+            self.setState({ ...newState, datasetUid });
           });
+        // determine row counts
+        const soqlDataProvider = new SoqlDataProvider({ domain: datasetDomain, datasetUid }, true);
+        soqlDataProvider.getRowCount().
+          then(function(resp) {
+            self.setState({ rowCountAll: resp });
+          });
+        if (whereClause !== '') {
+          soqlDataProvider.getRowCount(whereClause).
+            then(function(resp) {
+              self.setState({ rowCountFiltered: resp });
+            });
+        } else {
+          self.setState(
+            {
+              exportSetting: 'all',
+              rowCountFiltered: null
+            }
+          );
+        }
       }
     }
+  }
+
+  componentDidMount() {
+    this.propsRefreshHelper(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.propsRefreshHelper(nextProps);
   }
 
   closeFlannel() {
@@ -82,7 +93,9 @@ export default class ExportFlannel extends PureComponent {
 
     let url = getDownloadLink(view.id, format);
     if (this.props.exportFilteredData) {
-      const queryParam = (this.state.exportSetting === 'filtered' ? this.state.queryParam : undefined);
+      const queryParam = (this.state.exportSetting === 'filtered' ?
+                          this.state.queryParamFiltered :
+                          undefined);
       url = getDownloadLink(this.state.datasetUid, format, this.state.datasetDomain, 'https', queryParam);
     }
     const type = getDownloadType(format);
@@ -104,10 +117,12 @@ export default class ExportFlannel extends PureComponent {
     return !(FeatureFlags.value('hide_csv_for_excel_download') && value.match(/^csv_for_excel/));
   }
 
-  getFeaturedLinks() {
-    const { view } = this.props;
+  getExportFormats() {
+    return _.filter(this.props.exportFormats, (type) => type !== 'json');
+  }
 
-    const featuredLinks = view.exportFormats.
+  getFeaturedLinks() {
+    const featuredLinks = this.getExportFormats().
       filter(format => featuredLinksList.includes(format)).
       filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this));
@@ -116,9 +131,7 @@ export default class ExportFlannel extends PureComponent {
   }
 
   getRestofLinks() {
-    const { view } = this.props;
-
-    const restofLinks = view.exportFormats.
+    const restofLinks = this.getExportFormats().
       filter(format => !featuredLinksList.includes(format)).
       filter(this.csvForExcelOrTrue).
       map(this.renderDownloadLink.bind(this)).
@@ -227,7 +240,7 @@ export default class ExportFlannel extends PureComponent {
       type: 'radio',
       id: 'export-flannel-export-setting-filtered',
       checked: (this.state.exportSetting === 'filtered'),
-      disabled: _.get(this.state.vif, ['series', 0, 'dataSource', 'filters'], []).length === 0,
+      disabled: _.isEmpty(this.props.whereClause),
       onChange: () => {
         this.setState({ exportSetting: 'filtered' });
       }
@@ -321,11 +334,14 @@ export default class ExportFlannel extends PureComponent {
 
 ExportFlannel.defaultProps = {
   exportFilteredData: false,
+  exportFormats: ['csv'],
   flannelOpen: false
 };
 
 ExportFlannel.propTypes = {
+  exportFormats: PropTypes.array,
   view: PropTypes.object.isRequired,
   onDownloadData: PropTypes.func,
+  whereClause: PropTypes.string,
   flannelOpen: PropTypes.bool
 };

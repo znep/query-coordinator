@@ -455,6 +455,10 @@ en:
           viewer: Viewer
           contributor: Contributor
           owner: Co-owner
+        access_levels_strict_permissions:
+          viewer: Can view
+          contributor: Can edit
+          owner: Can edit & manage
         add: Add
         audience:
           organization:
